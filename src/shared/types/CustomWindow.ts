@@ -1,3 +1,6 @@
 export interface CustomWindow extends Window {
-	version: string;
+	APP_INFO: {
+		version: string;
+		mode: 'development' | 'production' | 'test';
+	};
 }
