@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-This repository contains the React AVO Client app front-end.
+This repository contains the React AVO Client app front-end for the end user.
 
 ## Technical
 
@@ -49,9 +49,9 @@ NodeJS proxy w/Typescript and Express.js
 
 #### Prerequisites
 
-#### Backend
+#### Front-end
 
-The deployment happens through Jenkins which will build a docker image and upload it to the viaa docker repository.
+Jenkins builds a docker image and uploads it to the viaa docker registry.
 
 ## Usage
 
