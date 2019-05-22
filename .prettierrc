@@ -2,3 +2,4 @@ printWidth: 100
 singleQuote: true
 endOfLine: auto
 trailingComma: es5
+useTabs: true
