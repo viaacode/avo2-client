@@ -9,7 +9,7 @@ import App from './App';
 
 (window as CustomWindow).APP_INFO = {
 	mode: process.env.NODE_ENV,
-	version: pkg.version
+	version: pkg.version,
 };
 
 ReactDOM.render(<App />, document.getElementById('root'));
