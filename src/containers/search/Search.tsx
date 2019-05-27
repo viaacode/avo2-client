@@ -11,8 +11,10 @@ type SearchState = {
 		searchTerm: string;
 		typeIds: string[];
 		educationLevelIds: string[];
-		fromYear: string;
-		toYear: string;
+		broadcastDate: {
+			fromYear: string;
+			toYear: string;
+		};
 	};
 	searchResults: IFilterItem[];
 };
@@ -22,11 +24,13 @@ export class Search extends Component<{}, SearchState> {
 		super(props, state);
 		this.state = {
 			formState: {
-				searchTerm: '',
-				typeIds: [],
-				educationLevelIds: [],
-				fromYear: '',
-				toYear: '',
+				searchTerm: 'test',
+				typeIds: ['video', 'audio'],
+				educationLevelIds: ['kleuter', 'lager'],
+				broadcastDate: {
+					fromYear: '2000',
+					toYear: '2019',
+				},
 			},
 			searchResults: [],
 		};
@@ -63,18 +67,18 @@ export class Search extends Component<{}, SearchState> {
 		if (!_.isEmpty(this.state.formState.educationLevelIds)) {
 			filterOptions.educationLevelIds = this.state.formState.educationLevelIds.map(parseInt);
 		}
-		if (this.state.formState.fromYear) {
+		if (this.state.formState.broadcastDate.fromYear) {
 			_.set(
 				filterOptions,
 				'broadcastDate.from',
-				new Date(1, 0, parseInt(this.state.formState.fromYear, 10)).toISOString()
+				new Date(1, 0, parseInt(this.state.formState.broadcastDate.fromYear, 10)).toISOString()
 			);
 		}
-		if (this.state.formState.toYear) {
+		if (this.state.formState.broadcastDate.toYear) {
 			_.set(
 				filterOptions,
 				'broadcastDate.until',
-				new Date(1, 0, parseInt(this.state.formState.toYear, 10)).toISOString()
+				new Date(1, 0, parseInt(this.state.formState.broadcastDate.toYear, 10)).toISOString()
 			);
 		}
 
@@ -95,6 +99,7 @@ export class Search extends Component<{}, SearchState> {
 						name="searchTerm"
 						id="searchTerm"
 						placeholder="Search term"
+						value={this.state.formState.searchTerm}
 						onChange={this.handleFilterFieldChange}
 					/>
 
@@ -102,8 +107,8 @@ export class Search extends Component<{}, SearchState> {
 						multiple
 						id="typeIds"
 						name="typeIds"
+						value={this.state.formState.typeIds}
 						onChange={this.handleFilterFieldChange}
-						defaultValue={['typeIds']}
 					>
 						<option disabled value="typeIds">
 							Type
@@ -118,31 +123,33 @@ export class Search extends Component<{}, SearchState> {
 						multiple
 						id="educationLevelIds"
 						name="educationLevelIds"
+						value={this.state.formState.educationLevelIds}
 						onChange={this.handleFilterFieldChange}
-						defaultValue={['educationLevelIds']}
 					>
 						<option disabled value="educationLevelIds">
 							Onderwijsniveau
 						</option>
-						<option value="video">Video</option>
-						<option value="audio">Audio</option>
-						<option value="collection">Collectie</option>
-						<option value="map">Map</option>
+						<option value="kleuter">Kleuter</option>
+						<option value="lager">Lager</option>
+						<option value="middelbaar">Middelbaar</option>
+						<option value="hoger">Hoger</option>
 					</select>
 
 					<input
-						name="fromYear"
-						id="fromYear"
+						name="broardcastDate.fromYear"
+						id="broardcastDate.fromYear"
 						type="number"
-						placeholder="fromYear"
+						placeholder="after"
+						value={this.state.formState.broadcastDate.fromYear}
 						onChange={this.handleFilterFieldChange}
 					/>
 
 					<input
-						name="toYear"
-						id="toYear"
+						name="broardcastDate.toYear"
+						id="broardcastDate.toYear"
 						type="number"
-						placeholder="toYear"
+						placeholder="before"
+						value={this.state.formState.broadcastDate.toYear}
 						onChange={this.handleFilterFieldChange}
 					/>
 

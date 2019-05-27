@@ -5,7 +5,7 @@ export async function doSearch(
 	from: number = 0,
 	size: number = 30
 ): Promise<IFilterResponse> {
-	const url = `${process.env.REACT_APP_PROXY_URL}/search`;
+	const url = `${process.env.REACT_APP_PROXY_URL}/search/filter`;
 	return fetch(url, {
 		method: 'POST',
 		body: JSON.stringify({
