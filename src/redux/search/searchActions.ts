@@ -1,7 +1,7 @@
 import { IFilters, ISearchRequest, ISearchResponse } from '../../types';
 
 export async function doSearch(
-	filters: Partial<IFilters>,
+	filters?: Partial<IFilters>,
 	from: number = 0,
 	size: number = 30
 ): Promise<ISearchResponse> {

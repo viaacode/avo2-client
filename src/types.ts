@@ -2,7 +2,7 @@
 
 export interface IFilters {
 	query: string;
-	administrative_type: string[]; //    Type
+	'administrative_type.filter': string[]; //    Type
 	'lom_typical_age_range.filter': string[]; //  Onderwijs niveau
 	'lom_context.filter': string[]; //            Domein
 	dcterms_issued: {
@@ -19,18 +19,20 @@ export interface IFilters {
 		gte: number;
 		lte: number;
 	};
-	original_cp: string[]; //            Aanbieder
+	'original_cp.filter': string[]; //            Aanbieder
 }
 
 export interface ISearchRequest {
-	filters: Partial<IFilters>;
+	// Used on client to verify request structure
+	filters?: Partial<IFilters>;
 	from: number;
 	size: number;
 }
 
 export interface ISearchResponse {
-	results: ISearchResultItem[];
-	count: number;
+	results?: ISearchResultItem[];
+	count?: number;
+	aggregations: IFilterOptions;
 }
 
 export interface ISearchResultItem {
@@ -54,4 +56,11 @@ export interface ISearchResultItem {
 	fragment_duration_seconds: number;
 	administrative_type: string;
 	administrative_external_id: string;
+}
+
+export interface IFilterOptions {
+	[prop: string]: {
+		option_name: string;
+		option_count: number;
+	}[];
 }

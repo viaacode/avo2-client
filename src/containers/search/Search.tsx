@@ -1,8 +1,8 @@
-import { capitalize, cloneDeep, isEmpty, isNil, omitBy } from 'lodash-es';
+import { capitalize, cloneDeep, forEach, isEmpty, isNil, map, omitBy } from 'lodash-es';
 import React, { ChangeEvent, Component } from 'react';
 import { setPartialState } from '../../helpers/setPartialState';
 import * as searchActions from '../../redux/search/searchActions';
-import { IFilters, ISearchResponse, ISearchResultItem } from '../../types';
+import { IFilterOptions, IFilters, ISearchResponse, ISearchResultItem } from '../../types';
 
 type SearchProps = {};
 
@@ -17,8 +17,9 @@ export class Search extends Component<{}, SearchState> {
 		super(props, state);
 		this.state = {
 			formState: {
+				// Default values for filters for easier testing of search api // TODO clear default filters
 				query: 'wie verdient er aan uw schulden',
-				administrative_type: ['video', 'audio'],
+				'administrative_type.filter': ['video', 'audio'],
 				'lom_typical_age_range.filter': ['Secundair 2de graad', 'Secundair 3de graad'],
 				'lom_context.filter': [],
 				dcterms_issued: {
@@ -33,55 +34,37 @@ export class Search extends Component<{}, SearchState> {
 					gte: 0,
 					lte: 300,
 				},
-				original_cp: [],
+				'original_cp.filter': [],
 			},
-			// TODO get these from an API
-			multiOptions: {
-				administrative_type: ['video', 'audio', 'collection', 'folder'],
-				'lom_typical_age_range.filter': [
-					'Secundair 1de graad',
-					'Secundair 2de graad',
-					'Secundair 3de graad',
-				],
-				'lom_context.filter': [
-					'Lager onderwijs',
-					'Kleuter onderwijs',
-					'Secundair onderwijs',
-					'Hoger onderwijs',
-				],
-				lom_languages: ['nl', 'fr', 'en'],
-				'lom_keywords.filter': [
-					'armoede',
-					'schulden',
-					'afbetaling',
-					'armoedegrens',
-					'economie',
-					'factuur',
-					'geld',
-					'gerechtsdeurwaarder',
-					'kansarmoede',
-					'rekening',
-					'schuldbemiddeling',
-					'veiling',
-					'voedselbank',
-					'voedselbedeling',
-				],
-				'lom_classification.filter': [
-					'PAV - MAVO - GASV - ASPV',
-					'economie - SEI - boekhouding - bedrijfsbeheer',
-					'gedrags- en cultuurwetenschappen',
-					'levensbeschouwing',
-					'politieke en sociale wetenschappen - maatschappijleer',
-					'handel - kantoor - verkoop',
-					'psychologie en pedagogie',
-					'recht',
-					'wijsbegeerte en moraalwetenschappen',
-				],
-				'dc_titles_serie.filter': ['Pano', 'Panorama'],
-				original_cp: ['VRT'],
-			},
+			multiOptions: {},
 			searchResults: [],
 		};
+
+		searchActions
+			.doSearch(undefined, 0, 30)
+			.then((response: Partial<ISearchResponse>) => {
+				const aggregations: IFilterOptions | undefined = response.aggregations;
+				if (aggregations) {
+					const multiOptions: { [prop: string]: string[] } = {};
+					forEach(
+						aggregations,
+						(values: { option_name: string; option_count: number }[], prop: string) => {
+							multiOptions[prop] = map(values, value => {
+								return `${value.option_name} (${value.option_count})`;
+							});
+						}
+					);
+					this.setState({
+						...this.state,
+						multiOptions,
+						searchResults: response.results || [],
+					});
+				}
+			})
+			.catch(err => {
+				// TODO show error toast
+				console.error(err);
+			});
 	}
 
 	handleFilterFieldChange = (event: ChangeEvent) => {
@@ -114,7 +97,7 @@ export class Search extends Component<{}, SearchState> {
 
 		console.log('results: ', searchResponse.results);
 
-		this.setState({ searchResults: searchResponse.results });
+		this.setState({ searchResults: searchResponse.results || [] });
 	};
 
 	renderMultiSelect(label: string, propertyName: keyof IFilters) {
@@ -129,7 +112,7 @@ export class Search extends Component<{}, SearchState> {
 				<option disabled value="" key="default">
 					{label}
 				</option>
-				{this.state.multiOptions[propertyName].map(option => (
+				{(this.state.multiOptions[propertyName] || []).map(option => (
 					<option value={option} key={option}>
 						{capitalize(option)}
 					</option>
@@ -139,59 +122,67 @@ export class Search extends Component<{}, SearchState> {
 		);
 	}
 
+	renderFilterControls() {
+		return (
+			<div>
+				<input
+					name="query"
+					id="query"
+					placeholder="Search term"
+					value={this.state.formState.query}
+					onChange={this.handleFilterFieldChange}
+				/>
+				{this.renderMultiSelect('Type', 'administrative_type.filter')}
+				{this.renderMultiSelect('Onderwijsniveau', 'lom_typical_age_range.filter')}
+				{this.renderMultiSelect('Domein', 'lom_context.filter')}
+				<input
+					name="dcterms_issued.gte"
+					id="dcterms_issued.gte"
+					type="string"
+					placeholder="after"
+					value={this.state.formState.dcterms_issued.gte}
+					onChange={this.handleFilterFieldChange}
+				/>
+				<input
+					name="dcterms_issued.lte"
+					id="dcterms_issued.lte"
+					type="string"
+					placeholder="before"
+					value={this.state.formState.dcterms_issued.lte}
+					onChange={this.handleFilterFieldChange}
+				/>
+				{this.renderMultiSelect('Taal', 'lom_languages')}
+				{this.renderMultiSelect('Onderwerp', 'lom_keywords.filter')}
+				{this.renderMultiSelect('Vak', 'lom_classification.filter')}
+				{this.renderMultiSelect('Serie', 'dc_titles_serie.filter')}
+				<input
+					name="fragment_duration_seconds.gte"
+					id="fragment_duration_seconds.gte"
+					type="string"
+					placeholder="longer than"
+					value={this.state.formState.fragment_duration_seconds.gte}
+					onChange={this.handleFilterFieldChange}
+				/>
+				<input
+					name="fragment_duration_seconds.lte"
+					id="fragment_duration_seconds.lte"
+					type="string"
+					placeholder="shorter than"
+					value={this.state.formState.fragment_duration_seconds.lte}
+					onChange={this.handleFilterFieldChange}
+				/>
+				{this.renderMultiSelect('Aanbieder', 'original_cp.filter')}
+			</div>
+		);
+	}
+
 	render() {
 		return (
 			<div className="search-page">
 				<div>search page works</div>
 				<div className="filters">
 					<h2>Filters</h2>
-					<input
-						name="query"
-						id="query"
-						placeholder="Search term"
-						value={this.state.formState.query}
-						onChange={this.handleFilterFieldChange}
-					/>
-					{this.renderMultiSelect('Type', 'administrative_type')}
-					{this.renderMultiSelect('Onderwijsniveau', 'lom_typical_age_range.filter')}
-					{this.renderMultiSelect('Domein', 'lom_context.filter')}
-					<input
-						name="dcterms_issued.gte"
-						id="dcterms_issued.gte"
-						type="string"
-						placeholder="after"
-						value={this.state.formState.dcterms_issued.gte}
-						onChange={this.handleFilterFieldChange}
-					/>
-					<input
-						name="dcterms_issued.lte"
-						id="dcterms_issued.lte"
-						type="string"
-						placeholder="before"
-						value={this.state.formState.dcterms_issued.lte}
-						onChange={this.handleFilterFieldChange}
-					/>
-					{this.renderMultiSelect('Taal', 'lom_languages')}
-					{this.renderMultiSelect('Onderwerp', 'lom_keywords.filter')}
-					{this.renderMultiSelect('Vak', 'lom_classification.filter')}
-					{this.renderMultiSelect('Serie', 'dc_titles_serie.filter')}
-					<input
-						name="fragment_duration_seconds.gte"
-						id="fragment_duration_seconds.gte"
-						type="string"
-						placeholder="longer than"
-						value={this.state.formState.fragment_duration_seconds.gte}
-						onChange={this.handleFilterFieldChange}
-					/>
-					<input
-						name="fragment_duration_seconds.lte"
-						id="fragment_duration_seconds.lte"
-						type="string"
-						placeholder="shorter than"
-						value={this.state.formState.fragment_duration_seconds.lte}
-						onChange={this.handleFilterFieldChange}
-					/>
-					{this.renderMultiSelect('Aanbieder', 'original_cp')}
+					{this.renderFilterControls()}
 					<button onClick={this.submitSearchForm}>Search</button>
 				</div>
 				<div>
@@ -200,7 +191,8 @@ export class Search extends Component<{}, SearchState> {
 					{this.state.searchResults.map(result => (
 						<div key={result.pid}>
 							<span className="title">{result.dc_title}</span>
-							<img src={result.thumbnail_path} />
+							<br />
+							<img src={result.thumbnail_path} style={{ maxWidth: '300px' }} alt="" />
 						</div>
 					))}
 				</div>
