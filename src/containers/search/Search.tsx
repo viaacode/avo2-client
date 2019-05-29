@@ -1,14 +1,14 @@
-import { capitalize, cloneDeep, forEach, isEmpty, isNil, map, omitBy } from 'lodash-es';
+import { capitalize, cloneDeep, get, isEmpty, isNil, omitBy, set } from 'lodash-es';
 import React, { ChangeEvent, Component } from 'react';
 import { setPartialState } from '../../helpers/setPartialState';
 import * as searchActions from '../../redux/search/searchActions';
-import { FilterOptions, Filters, SearchResponse, SearchResultItem } from '../../types';
+import { FilterOptions, Filters, OptionProp, SearchResponse, SearchResultItem } from '../../types';
 
 type SearchProps = {};
 
 type SearchState = {
 	formState: Filters;
-	multiOptions: { [key: string]: string[] };
+	multiOptions: { [key: string]: OptionProp[] };
 	searchResults: SearchResultItem[];
 };
 
@@ -23,19 +23,38 @@ export class Search extends Component<{}, SearchState> {
 				'lom_typical_age_range.filter': ['Secundair 2de graad', 'Secundair 3de graad'],
 				'lom_context.filter': [],
 				dcterms_issued: {
-					gte: '2000-01-01', // ISO date string
-					lte: '2020-01-01', // ISO date string
+					gte: '2000-01-01',
+					lte: '2020-01-01',
 				},
 				lom_languages: ['nl', 'fr'],
 				'lom_keywords.filter': ['armoede'],
 				'lom_classification.filter': ['levensbeschouwing'],
 				'dc_titles_serie.filter': ['Pano'],
 				fragment_duration_seconds: {
-					gte: 0,
-					lte: 300,
+					gte: '0',
+					lte: '300',
 				},
 				'original_cp.filter': [],
 			},
+			// formState: {
+			// 	query: '',
+			// 	'administrative_type.filter': [],
+			// 	'lom_typical_age_range.filter': [],
+			// 	'lom_context.filter': [],
+			// 	dcterms_issued: {
+			// 		gte: '',
+			// 		lte: '',
+			// 	},
+			// 	lom_languages: [],
+			// 	'lom_keywords.filter': [],
+			// 	'lom_classification.filter': [],
+			// 	'dc_titles_serie.filter': [],
+			// 	fragment_duration_seconds: {
+			// 		gte: '',
+			// 		lte: '',
+			// 	},
+			// 	'original_cp.filter': [],
+			// },
 			multiOptions: {},
 			searchResults: [],
 		};
@@ -45,18 +64,9 @@ export class Search extends Component<{}, SearchState> {
 			.then((response: Partial<SearchResponse>) => {
 				const aggregations: FilterOptions | undefined = response.aggregations;
 				if (aggregations) {
-					const multiOptions: { [prop: string]: string[] } = {};
-					forEach(
-						aggregations,
-						(values: { option_name: string; option_count: number }[], prop: string) => {
-							multiOptions[prop] = map(values, value => {
-								return `${value.option_name} (${value.option_count})`;
-							});
-						}
-					);
 					this.setState({
 						...this.state,
-						multiOptions,
+						multiOptions: aggregations,
 						searchResults: response.results || [],
 					});
 				}
@@ -70,7 +80,7 @@ export class Search extends Component<{}, SearchState> {
 	handleFilterFieldChange = (event: ChangeEvent) => {
 		const target: any = event.target;
 		if (target) {
-			const name = target.name;
+			let name = target.name;
 			let value: any;
 
 			if (target.selectedOptions) {
@@ -78,7 +88,18 @@ export class Search extends Component<{}, SearchState> {
 			} else {
 				value = target.value;
 			}
-			setPartialState(this, `formState.${name}`, value);
+
+			// Split of suffix, so this can be set as a nested property, instead of being part of the property name
+			let suffix = '';
+			if (name.endsWith('.gte')) {
+				suffix = '.gte';
+				name = name.substring(0, name.length - '.gte'.length);
+			}
+			if (name.endsWith('.lte')) {
+				suffix = '.lte';
+				name = name.substring(0, name.length - '.lte'.length);
+			}
+			setPartialState(this, `formState["${name}"]${suffix}`, value);
 		} else {
 			console.error('Change event without a value: ', event);
 		}
@@ -91,6 +112,18 @@ export class Search extends Component<{}, SearchState> {
 		let filterOptions: Partial<Filters> = cloneDeep(this.state.formState);
 
 		filterOptions = omitBy(filterOptions, value => isEmpty(value) || isNil(value));
+
+		// Convert strings from input fields to numbers for backend elasticsearch
+		set(
+			filterOptions,
+			'fragment_duration_seconds.gte',
+			parseInt(String(get(filterOptions, 'fragment_duration_seconds.gte') || '0'), 10)
+		);
+		set(
+			filterOptions,
+			'fragment_duration_seconds.lte',
+			parseInt(String(get(filterOptions, 'fragment_duration_seconds.lte') || '0'), 10)
+		);
 
 		// TODO do the search by dispatching a redux action
 		const searchResponse: SearchResponse = await searchActions.doSearch(filterOptions, 0, 10);
@@ -106,15 +139,16 @@ export class Search extends Component<{}, SearchState> {
 				multiple
 				id={propertyName}
 				name={propertyName}
+				key={propertyName}
 				value={this.state.formState[propertyName] as any}
 				onChange={this.handleFilterFieldChange}
 			>
 				<option disabled value="" key="default">
 					{label}
 				</option>
-				{(this.state.multiOptions[propertyName] || []).map(option => (
-					<option value={option} key={option}>
-						{capitalize(option)}
+				{(this.state.multiOptions[propertyName] || []).map((option: OptionProp) => (
+					<option value={option.option_name} key={option.option_name}>
+						{capitalize(option.option_name)} ({option.option_count})
 					</option>
 				))}
 				;
