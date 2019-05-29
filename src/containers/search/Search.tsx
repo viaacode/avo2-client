@@ -2,14 +2,14 @@ import { capitalize, cloneDeep, forEach, isEmpty, isNil, map, omitBy } from 'lod
 import React, { ChangeEvent, Component } from 'react';
 import { setPartialState } from '../../helpers/setPartialState';
 import * as searchActions from '../../redux/search/searchActions';
-import { IFilterOptions, IFilters, ISearchResponse, ISearchResultItem } from '../../types';
+import { FilterOptions, Filters, SearchResponse, SearchResultItem } from '../../types';
 
 type SearchProps = {};
 
 type SearchState = {
-	formState: IFilters;
+	formState: Filters;
 	multiOptions: { [key: string]: string[] };
-	searchResults: ISearchResultItem[];
+	searchResults: SearchResultItem[];
 };
 
 export class Search extends Component<{}, SearchState> {
@@ -42,8 +42,8 @@ export class Search extends Component<{}, SearchState> {
 
 		searchActions
 			.doSearch(undefined, 0, 30)
-			.then((response: Partial<ISearchResponse>) => {
-				const aggregations: IFilterOptions | undefined = response.aggregations;
+			.then((response: Partial<SearchResponse>) => {
+				const aggregations: FilterOptions | undefined = response.aggregations;
 				if (aggregations) {
 					const multiOptions: { [prop: string]: string[] } = {};
 					forEach(
@@ -88,19 +88,19 @@ export class Search extends Component<{}, SearchState> {
 		console.log(this.state.formState);
 
 		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-		let filterOptions: Partial<IFilters> = cloneDeep(this.state.formState);
+		let filterOptions: Partial<Filters> = cloneDeep(this.state.formState);
 
 		filterOptions = omitBy(filterOptions, value => isEmpty(value) || isNil(value));
 
 		// TODO do the search by dispatching a redux action
-		const searchResponse: ISearchResponse = await searchActions.doSearch(filterOptions, 0, 10);
+		const searchResponse: SearchResponse = await searchActions.doSearch(filterOptions, 0, 10);
 
 		console.log('results: ', searchResponse.results);
 
 		this.setState({ searchResults: searchResponse.results || [] });
 	};
 
-	renderMultiSelect(label: string, propertyName: keyof IFilters) {
+	renderMultiSelect(label: string, propertyName: keyof Filters) {
 		return (
 			<select
 				multiple

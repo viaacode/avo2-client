@@ -1,6 +1,6 @@
 // TODO use interface from avo2-types package
 
-export interface IFilters {
+export interface Filters {
 	query: string;
 	'administrative_type.filter': string[]; //    Type
 	'lom_typical_age_range.filter': string[]; //  Onderwijs niveau
@@ -22,20 +22,20 @@ export interface IFilters {
 	'original_cp.filter': string[]; //            Aanbieder
 }
 
-export interface ISearchRequest {
+export interface SearchRequest {
 	// Used on client to verify request structure
-	filters?: Partial<IFilters>;
+	filters?: Partial<Filters>;
 	from: number;
 	size: number;
 }
 
-export interface ISearchResponse {
-	results?: ISearchResultItem[];
-	count?: number;
-	aggregations: IFilterOptions;
+export interface SearchResponse {
+	results: SearchResultItem[];
+	count: number;
+	aggregations: FilterOptions;
 }
 
-export interface ISearchResultItem {
+export interface SearchResultItem {
 	pid: string;
 	table_name: string;
 	dc_title: string;
@@ -58,9 +58,11 @@ export interface ISearchResultItem {
 	administrative_external_id: string;
 }
 
-export interface IFilterOptions {
-	[prop: string]: {
-		option_name: string;
-		option_count: number;
-	}[];
+interface OptionProps {
+	option_name: string;
+	option_count: number;
+}
+
+export interface FilterOptions {
+	[prop: string]: OptionProps[];
 }
