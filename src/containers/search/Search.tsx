@@ -1,20 +1,31 @@
-import { capitalize, cloneDeep, get, isEmpty, isNil, omitBy, set } from 'lodash-es';
+import * as H from 'history';
+import { capitalize, cloneDeep, get, isEmpty, isNil, noop, omitBy, set } from 'lodash-es';
+import * as queryString from 'query-string';
 import React, { ChangeEvent, Component } from 'react';
+import { match, RouteComponentProps, StaticContext } from 'react-router';
 import { setPartialState } from '../../helpers/setPartialState';
 import * as searchActions from '../../redux/search/searchActions';
-import { FilterOptions, Filters, OptionProp, SearchResponse, SearchResultItem } from '../../types';
+import { Filters, OptionProp, SearchResponse, SearchResultItem } from '../../types';
 
 type SearchProps = {};
 
-type SearchState = {
+interface SearchState extends StaticContext {
 	formState: Filters;
 	multiOptions: { [key: string]: OptionProp[] };
 	searchResults: SearchResultItem[];
-};
+}
 
-export class Search extends Component<{}, SearchState> {
-	constructor(props: SearchProps, state: SearchState) {
+export class Search extends Component<{}, SearchState>
+	implements RouteComponentProps<{}, SearchState> {
+	history: H.History;
+	location: H.Location;
+	match: match;
+
+	constructor(props: RouteComponentProps, state: SearchState) {
 		super(props, state);
+		this.history = props.history;
+		this.location = props.location;
+		this.match = props.match;
 		this.state = {
 			formState: {
 				// Default values for filters for easier testing of search api // TODO clear default filters
@@ -58,23 +69,34 @@ export class Search extends Component<{}, SearchState> {
 			multiOptions: {},
 			searchResults: [],
 		};
+	}
 
-		searchActions
-			.doSearch(undefined, 0, 30)
-			.then((response: Partial<SearchResponse>) => {
-				const aggregations: FilterOptions | undefined = response.aggregations;
-				if (aggregations) {
-					this.setState({
-						...this.state,
-						multiOptions: aggregations,
-						searchResults: response.results || [],
-					});
+	async componentDidMount() {
+		console.log('did mount');
+		await this.checkFiltersInQueryParams();
+
+		this.submitSearchForm().then(noop);
+	}
+
+	componentWillUnmount() {
+		console.log('unmounting');
+	}
+
+	async checkFiltersInQueryParams(): Promise<void> {
+		return new Promise<void>(resolve => {
+			// Check if current url already has a query param set
+			const queryParams = queryString.parse(this.location.search);
+			try {
+				if (queryParams.query) {
+					this.setState({ formState: JSON.parse(queryParams.query as string) }, resolve);
+				} else {
+					resolve();
 				}
-			})
-			.catch(err => {
-				// TODO show error toast
-				console.error(err);
-			});
+			} catch (err) {
+				// TODO show toast error: Ongeldige zoek query
+				resolve();
+			}
+		});
 	}
 
 	handleFilterFieldChange = (event: ChangeEvent) => {
@@ -99,38 +121,52 @@ export class Search extends Component<{}, SearchState> {
 				suffix = '.lte';
 				name = name.substring(0, name.length - '.lte'.length);
 			}
-			setPartialState(this, `formState["${name}"]${suffix}`, value);
+			setPartialState(this, `formState["${name}"]${suffix}`, value).then(noop);
 		} else {
 			console.error('Change event without a value: ', event);
 		}
 	};
 
 	submitSearchForm = async () => {
-		console.log(this.state.formState);
+		console.log('submit search form');
+		try {
+			console.log(this.state.formState);
 
-		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-		let filterOptions: Partial<Filters> = cloneDeep(this.state.formState);
+			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+			let filterOptions: Partial<Filters> = cloneDeep(this.state.formState);
 
-		filterOptions = omitBy(filterOptions, value => isEmpty(value) || isNil(value));
+			this.history.push({
+				pathname: '/search',
+				search: `?query=${JSON.stringify(this.state.formState)}`,
+			});
 
-		// Convert strings from input fields to numbers for backend elasticsearch
-		set(
-			filterOptions,
-			'fragment_duration_seconds.gte',
-			parseInt(String(get(filterOptions, 'fragment_duration_seconds.gte') || '0'), 10)
-		);
-		set(
-			filterOptions,
-			'fragment_duration_seconds.lte',
-			parseInt(String(get(filterOptions, 'fragment_duration_seconds.lte') || '0'), 10)
-		);
+			filterOptions = omitBy(filterOptions, value => isEmpty(value) || isNil(value));
 
-		// TODO do the search by dispatching a redux action
-		const searchResponse: SearchResponse = await searchActions.doSearch(filterOptions, 0, 10);
+			// Convert strings from input fields to numbers for backend elasticsearch
+			set(
+				filterOptions,
+				'fragment_duration_seconds.gte',
+				parseInt(String(get(filterOptions, 'fragment_duration_seconds.gte') || '0'), 10)
+			);
+			set(
+				filterOptions,
+				'fragment_duration_seconds.lte',
+				parseInt(String(get(filterOptions, 'fragment_duration_seconds.lte') || '0'), 10)
+			);
 
-		console.log('results: ', searchResponse.results);
+			// TODO do the search by dispatching a redux action
+			const searchResponse: SearchResponse = await searchActions.doSearch(filterOptions, 0, 10);
 
-		this.setState({ searchResults: searchResponse.results || [] });
+			console.log('results: ', searchResponse.results);
+
+			this.setState({
+				...this.state,
+				multiOptions: searchResponse.aggregations,
+				searchResults: searchResponse.results || [],
+			});
+		} catch (err) {
+			// TODO show error toast
+		}
 	};
 
 	renderMultiSelect(label: string, propertyName: keyof Filters) {
