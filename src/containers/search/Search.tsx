@@ -6,11 +6,10 @@ import {
 	get,
 	isArray,
 	isEmpty,
+	isNil,
 	isObject,
 	noop,
 	omitBy,
-	set,
-	unset,
 } from 'lodash-es';
 import * as queryString from 'query-string';
 import React, { ChangeEvent, Component } from 'react';
@@ -18,6 +17,7 @@ import { match, RouteComponentProps, StaticContext } from 'react-router';
 import { setPartialState } from '../../helpers/setPartialState';
 import * as searchActions from '../../redux/search/searchActions';
 import {
+	FilterOptionSearch,
 	Filters,
 	OptionProp,
 	SearchOrderDirection,
@@ -30,6 +30,7 @@ type SearchProps = {};
 
 interface SearchState extends StaticContext {
 	formState: Filters;
+	filterOptionSearch: FilterOptionSearch;
 	orderProperty: SearchOrderProperty;
 	orderDirection: SearchOrderDirection;
 	multiOptions: { [key: string]: OptionProp[] };
@@ -62,10 +63,6 @@ export class Search extends Component<{}, SearchState>
 			// 	'keywords': ['armoede'],
 			// 	'subject': ['levensbeschouwing'],
 			// 	'serie': ['Pano'],
-			// 	duration: {
-			// 		gte: '0',
-			// 		lte: '300',
-			// 	},
 			// 	'provider': [],
 			// },
 			formState: {
@@ -81,11 +78,17 @@ export class Search extends Component<{}, SearchState>
 				keyword: [],
 				subject: [],
 				serie: [],
-				duration: {
-					gte: '',
-					lte: '',
-				},
 				provider: [],
+			},
+			filterOptionSearch: {
+				type: '',
+				educationLevel: '',
+				domain: '',
+				language: '',
+				keyword: '',
+				subject: '',
+				serie: '',
+				provider: '',
 			},
 			orderProperty: 'relevance',
 			orderDirection: 'desc',
@@ -122,10 +125,19 @@ export class Search extends Component<{}, SearchState>
 		});
 	}
 
+	handleFilterOptionSearchChange = (event: ChangeEvent) => {
+		const target = event.target as HTMLInputElement;
+		if (target) {
+			const name = target.name;
+			const value = target.value;
+			setPartialState(this, `filterOptionSearch["${name}"]`, value).then(noop);
+		}
+	};
+
 	handleFilterFieldChange = (event: ChangeEvent) => {
 		const target: any = event.target;
 		if (target) {
-			let name = target.name;
+			const name = target.name;
 			let value: any;
 
 			if (target.selectedOptions) {
@@ -134,17 +146,7 @@ export class Search extends Component<{}, SearchState>
 				value = target.value;
 			}
 
-			// Split of suffix, so this can be set as a nested property, instead of being part of the property name
-			let suffix = '';
-			if (name.endsWith('.gte')) {
-				suffix = '.gte';
-				name = name.substring(0, name.length - '.gte'.length);
-			}
-			if (name.endsWith('.lte')) {
-				suffix = '.lte';
-				name = name.substring(0, name.length - '.lte'.length);
-			}
-			setPartialState(this, `formState["${name}"]${suffix}`, value).then(noop);
+			setPartialState(this, `formState.${name}`, value).then(noop);
 		} else {
 			console.error('Change event without a value: ', event);
 		}
@@ -166,33 +168,16 @@ export class Search extends Component<{}, SearchState>
 		);
 	};
 
-	private cleanupFilterObject(filters: Filters): Partial<Filters> {
-		const filterOptions: Partial<Filters> = omitBy(filters, value => {
+	private cleanupFilterObject(obj: any): any {
+		return omitBy(obj, (value: any) => {
 			return (
-				value === '' ||
-				((isObject(value) || isArray(value)) && isEmpty(value)) ||
-				(isArray(value) && every(value, value => value === ''))
+				value === '' || // Empty string
+				isNil(value) || // Undefined or null
+				((isObject(value) || isArray(value)) && isEmpty(value)) || // Empty object or array
+				(isArray(value) && every(value, value => value === '')) || // Object with empty gte and lte values
+				(isObject(value) && !(value as any).gte && !(value as any).lte)
 			);
 		});
-
-		// Convert strings from input fields to numbers for backend elasticsearch
-		set(
-			filterOptions,
-			'duration.gte',
-			parseInt(String(get(filterOptions, 'duration.gte') || '0'), 10)
-		);
-		set(
-			filterOptions,
-			'duration.lte',
-			parseInt(String(get(filterOptions, 'duration.lte') || '0'), 10)
-		);
-		if (!get(filterOptions, 'duration.gte') && !get(filterOptions, 'duration.lte')) {
-			unset(filterOptions, 'duration');
-		}
-		if (!get(filterOptions, 'broadcastDate.gte') && !get(filterOptions, 'broadcastDate.lte')) {
-			unset(filterOptions, 'broadcastDate');
-		}
-		return filterOptions;
 	}
 
 	submitSearchForm = async () => {
@@ -214,9 +199,15 @@ export class Search extends Component<{}, SearchState>
 				cloneDeep(this.state.formState)
 			);
 
+			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+			const filterOptionSearch: Partial<FilterOptionSearch> = this.cleanupFilterObject(
+				cloneDeep(this.state.filterOptionSearch)
+			);
+
 			// TODO do the search by dispatching a redux action
 			const searchResponse: SearchResponse = await searchActions.doSearch(
 				filterOptions,
+				filterOptionSearch,
 				this.state.orderProperty,
 				this.state.orderDirection,
 				0,
@@ -237,24 +228,35 @@ export class Search extends Component<{}, SearchState>
 
 	renderMultiSelect(label: string, propertyName: keyof Filters) {
 		return (
-			<select
-				multiple
-				id={propertyName}
-				name={propertyName}
-				key={propertyName}
-				value={this.state.formState[propertyName] as any}
-				onChange={this.handleFilterFieldChange}
-			>
-				<option value="" key="default">
-					{label}
-				</option>
-				{(this.state.multiOptions[propertyName] || []).map((option: OptionProp) => (
-					<option value={option.option_name} key={option.option_name}>
-						{capitalize(option.option_name)} ({option.option_count})
+			<div style={{ display: 'inline-block', margin: '15px' }}>
+				<input
+					type="text"
+					id={propertyName}
+					name={propertyName}
+					placeholder="Filter options"
+					onChange={this.handleFilterOptionSearchChange}
+					style={{ display: 'block', width: '100%' }}
+				/>
+				<select
+					multiple
+					id={propertyName}
+					name={propertyName}
+					key={propertyName}
+					value={this.state.formState[propertyName] as any}
+					onChange={this.handleFilterFieldChange}
+					style={{ display: 'block', width: '100%' }}
+				>
+					<option value="" key="default">
+						{label}
 					</option>
-				))}
-				;
-			</select>
+					{(this.state.multiOptions[propertyName] || []).map((option: OptionProp) => (
+						<option value={option.option_name} key={option.option_name}>
+							{capitalize(option.option_name)} ({option.option_count})
+						</option>
+					))}
+					;
+				</select>
+			</div>
 		);
 	}
 
@@ -267,46 +269,35 @@ export class Search extends Component<{}, SearchState>
 					placeholder="Search term"
 					value={this.state.formState.query}
 					onChange={this.handleFilterFieldChange}
+					style={{ margin: '15px' }}
 				/>
 				{this.renderMultiSelect('Type', 'type')}
 				{this.renderMultiSelect('Onderwijsniveau', 'educationLevel')}
 				{this.renderMultiSelect('Domein', 'domain')}
-				<input
-					name="broadcastDate.gte"
-					id="broadcastDate.gte"
-					type="string"
-					placeholder="after"
-					value={this.state.formState.broadcastDate.gte}
-					onChange={this.handleFilterFieldChange}
-				/>
-				<input
-					name="broadcastDate.lte"
-					id="broadcastDate.lte"
-					type="string"
-					placeholder="before"
-					value={this.state.formState.broadcastDate.lte}
-					onChange={this.handleFilterFieldChange}
-				/>
+				<div style={{ display: 'inline-block', margin: '15px' }}>
+					<input
+						name="broadcastDate.gte"
+						id="broadcastDate.gte"
+						type="string"
+						placeholder="after"
+						value={this.state.formState.broadcastDate.gte}
+						onChange={this.handleFilterFieldChange}
+						style={{ display: 'block' }}
+					/>
+					<input
+						name="broadcastDate.lte"
+						id="broadcastDate.lte"
+						type="string"
+						placeholder="before"
+						value={this.state.formState.broadcastDate.lte}
+						onChange={this.handleFilterFieldChange}
+						style={{ display: 'block' }}
+					/>
+				</div>
 				{this.renderMultiSelect('Taal', 'language')}
 				{this.renderMultiSelect('Onderwerp', 'keyword')}
 				{this.renderMultiSelect('Vak', 'subject')}
 				{this.renderMultiSelect('Serie', 'serie')}
-				<input
-					name="duration.gte"
-					id="duration.gte"
-					type="string"
-					placeholder="longer than"
-					value={this.state.formState.duration.gte}
-					onChange={this.handleFilterFieldChange}
-				/>
-				<input
-					name="duration.lte"
-					id="duration.lte"
-					type="string"
-					placeholder="shorter than"
-					value={this.state.formState.duration.lte}
-					onChange={this.handleFilterFieldChange}
-				/>
 				{this.renderMultiSelect('Aanbieder', 'provider')}
 			</div>
 		);
