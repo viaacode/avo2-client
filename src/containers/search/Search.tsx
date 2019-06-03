@@ -51,41 +51,41 @@ export class Search extends Component<{}, SearchState>
 			// formState: {
 			// 	// Default values for filters for easier testing of search api // TODO clear default filters
 			// 	query: 'wie verdient er aan uw schulden',
-			// 	'administrative_type.filter': ['video', 'audio'],
-			// 	'lom_typical_age_range.filter': ['Secundair 2de graad', 'Secundair 3de graad'],
-			// 	'lom_context.filter': [],
-			// 	dcterms_issued: {
+			// 	'type': ['video', 'audio'],
+			// 	'educationLevel': ['Secundair 2de graad', 'Secundair 3de graad'],
+			// 	'domain': [],
+			// 	broadcastDate: {
 			// 		gte: '2000-01-01',
 			// 		lte: '2020-01-01',
 			// 	},
-			// 	lom_languages: ['nl', 'fr'],
-			// 	'lom_keywords.filter': ['armoede'],
-			// 	'lom_classification.filter': ['levensbeschouwing'],
-			// 	'dc_titles_serie.filter': ['Pano'],
-			// 	fragment_duration_seconds: {
+			// 	language: ['nl', 'fr'],
+			// 	'keywords': ['armoede'],
+			// 	'subject': ['levensbeschouwing'],
+			// 	'serie': ['Pano'],
+			// 	duration: {
 			// 		gte: '0',
 			// 		lte: '300',
 			// 	},
-			// 	'original_cp.filter': [],
+			// 	'provider': [],
 			// },
 			formState: {
 				query: '',
-				'administrative_type.filter': [],
-				'lom_typical_age_range.filter': [],
-				'lom_context.filter': [],
-				dcterms_issued: {
+				type: [],
+				educationLevel: [],
+				domain: [],
+				broadcastDate: {
 					gte: '',
 					lte: '',
 				},
-				lom_languages: [],
-				'lom_keywords.filter': [],
-				'lom_classification.filter': [],
-				'dc_titles_serie.filter': [],
-				fragment_duration_seconds: {
+				language: [],
+				keyword: [],
+				subject: [],
+				serie: [],
+				duration: {
 					gte: '',
 					lte: '',
 				},
-				'original_cp.filter': [],
+				provider: [],
 			},
 			orderProperty: 'relevance',
 			orderDirection: 'desc',
@@ -166,6 +166,35 @@ export class Search extends Component<{}, SearchState>
 		);
 	};
 
+	private cleanupFilterObject(filters: Filters): Partial<Filters> {
+		const filterOptions: Partial<Filters> = omitBy(filters, value => {
+			return (
+				value === '' ||
+				((isObject(value) || isArray(value)) && isEmpty(value)) ||
+				(isArray(value) && every(value, value => value === ''))
+			);
+		});
+
+		// Convert strings from input fields to numbers for backend elasticsearch
+		set(
+			filterOptions,
+			'duration.gte',
+			parseInt(String(get(filterOptions, 'duration.gte') || '0'), 10)
+		);
+		set(
+			filterOptions,
+			'duration.lte',
+			parseInt(String(get(filterOptions, 'duration.lte') || '0'), 10)
+		);
+		if (!get(filterOptions, 'duration.gte') && !get(filterOptions, 'duration.lte')) {
+			unset(filterOptions, 'duration');
+		}
+		if (!get(filterOptions, 'broadcastDate.gte') && !get(filterOptions, 'broadcastDate.lte')) {
+			unset(filterOptions, 'broadcastDate');
+		}
+		return filterOptions;
+	}
+
 	submitSearchForm = async () => {
 		console.log('submit search form');
 		try {
@@ -239,46 +268,46 @@ export class Search extends Component<{}, SearchState>
 					value={this.state.formState.query}
 					onChange={this.handleFilterFieldChange}
 				/>
-				{this.renderMultiSelect('Type', 'administrative_type.filter')}
-				{this.renderMultiSelect('Onderwijsniveau', 'lom_typical_age_range.filter')}
-				{this.renderMultiSelect('Domein', 'lom_context.filter')}
+				{this.renderMultiSelect('Type', 'type')}
+				{this.renderMultiSelect('Onderwijsniveau', 'educationLevel')}
+				{this.renderMultiSelect('Domein', 'domain')}
 				<input
-					name="dcterms_issued.gte"
-					id="dcterms_issued.gte"
+					name="broadcastDate.gte"
+					id="broadcastDate.gte"
 					type="string"
 					placeholder="after"
-					value={this.state.formState.dcterms_issued.gte}
+					value={this.state.formState.broadcastDate.gte}
 					onChange={this.handleFilterFieldChange}
 				/>
 				<input
-					name="dcterms_issued.lte"
-					id="dcterms_issued.lte"
+					name="broadcastDate.lte"
+					id="broadcastDate.lte"
 					type="string"
 					placeholder="before"
-					value={this.state.formState.dcterms_issued.lte}
+					value={this.state.formState.broadcastDate.lte}
 					onChange={this.handleFilterFieldChange}
 				/>
-				{this.renderMultiSelect('Taal', 'lom_languages')}
-				{this.renderMultiSelect('Onderwerp', 'lom_keywords.filter')}
-				{this.renderMultiSelect('Vak', 'lom_classification.filter')}
-				{this.renderMultiSelect('Serie', 'dc_titles_serie.filter')}
+				{this.renderMultiSelect('Taal', 'language')}
+				{this.renderMultiSelect('Onderwerp', 'keyword')}
+				{this.renderMultiSelect('Vak', 'subject')}
+				{this.renderMultiSelect('Serie', 'serie')}
 				<input
-					name="fragment_duration_seconds.gte"
-					id="fragment_duration_seconds.gte"
+					name="duration.gte"
+					id="duration.gte"
 					type="string"
 					placeholder="longer than"
-					value={this.state.formState.fragment_duration_seconds.gte}
+					value={this.state.formState.duration.gte}
 					onChange={this.handleFilterFieldChange}
 				/>
 				<input
-					name="fragment_duration_seconds.lte"
-					id="fragment_duration_seconds.lte"
+					name="duration.lte"
+					id="duration.lte"
 					type="string"
 					placeholder="shorter than"
-					value={this.state.formState.fragment_duration_seconds.lte}
+					value={this.state.formState.duration.lte}
 					onChange={this.handleFilterFieldChange}
 				/>
-				{this.renderMultiSelect('Aanbieder', 'original_cp.filter')}
+				{this.renderMultiSelect('Aanbieder', 'provider')}
 			</div>
 		);
 	}
@@ -316,43 +345,15 @@ export class Search extends Component<{}, SearchState>
 						<div key={result.pid}>
 							<span className="title">{result.dc_title}</span>
 							<br />
+							<span className="title">{result.dcterms_issued}</span>
+							<br />
 							<img src={result.thumbnail_path} style={{ maxWidth: '300px' }} alt="" />
+							<br />
+							<br />
 						</div>
 					))}
 				</div>
 			</div>
 		);
-	}
-
-	private cleanupFilterObject(filters: Filters): Partial<Filters> {
-		const filterOptions: Partial<Filters> = omitBy(filters, value => {
-			return (
-				value === '' ||
-				((isObject(value) || isArray(value)) && isEmpty(value)) ||
-				(isArray(value) && every(value, value => value === ''))
-			);
-		});
-
-		// Convert strings from input fields to numbers for backend elasticsearch
-		set(
-			filterOptions,
-			'fragment_duration_seconds.gte',
-			parseInt(String(get(filterOptions, 'fragment_duration_seconds.gte') || '0'), 10)
-		);
-		set(
-			filterOptions,
-			'fragment_duration_seconds.lte',
-			parseInt(String(get(filterOptions, 'fragment_duration_seconds.lte') || '0'), 10)
-		);
-		if (
-			!get(filterOptions, 'fragment_duration_seconds.gte') &&
-			!get(filterOptions, 'fragment_duration_seconds.lte')
-		) {
-			unset(filterOptions, 'fragment_duration_seconds');
-		}
-		if (!get(filterOptions, 'dcterms_issued.gte') && !get(filterOptions, 'dcterms_issued.lte')) {
-			unset(filterOptions, 'dcterms_issued');
-		}
-		return filterOptions;
 	}
 }
