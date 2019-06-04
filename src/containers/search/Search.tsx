@@ -1,8 +1,8 @@
-import * as H from 'history';
+import { History, Location } from 'history';
 import { capitalize, cloneDeep, get, isEmpty, isNil, noop, omitBy, set } from 'lodash-es';
-import * as queryString from 'query-string';
+import queryString from 'query-string';
 import React, { ChangeEvent, Component } from 'react';
-import { match, RouteComponentProps, StaticContext } from 'react-router';
+import { RouteComponentProps, StaticContext } from 'react-router';
 import { setPartialState } from '../../helpers/setPartialState';
 import * as searchActions from '../../redux/search/searchActions';
 import { Filters, OptionProp, SearchResponse, SearchResultItem } from '../../types';
@@ -15,17 +15,14 @@ interface SearchState extends StaticContext {
 	searchResults: SearchResultItem[];
 }
 
-export class Search extends Component<{}, SearchState>
-	implements RouteComponentProps<{}, SearchState> {
-	history: H.History;
-	location: H.Location;
-	match: match;
+export class Search extends Component<RouteComponentProps<SearchProps>, SearchState> {
+	history: History;
+	location: Location;
 
-	constructor(props: RouteComponentProps, state: SearchState) {
-		super(props, state);
+	constructor(props: RouteComponentProps) {
+		super(props);
 		this.history = props.history;
 		this.location = props.location;
-		this.match = props.match;
 		this.state = {
 			formState: {
 				// Default values for filters for easier testing of search api // TODO clear default filters
@@ -72,14 +69,9 @@ export class Search extends Component<{}, SearchState>
 	}
 
 	async componentDidMount() {
-		console.log('did mount');
 		await this.checkFiltersInQueryParams();
 
 		this.submitSearchForm().then(noop);
-	}
-
-	componentWillUnmount() {
-		console.log('unmounting');
 	}
 
 	async checkFiltersInQueryParams(): Promise<void> {
@@ -156,8 +148,6 @@ export class Search extends Component<{}, SearchState>
 
 			// TODO do the search by dispatching a redux action
 			const searchResponse: SearchResponse = await searchActions.doSearch(filterOptions, 0, 10);
-
-			console.log('results: ', searchResponse.results);
 
 			this.setState({
 				...this.state,
