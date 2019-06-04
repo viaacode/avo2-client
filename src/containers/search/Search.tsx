@@ -128,9 +128,8 @@ export class Search extends Component<{}, SearchState>
 	handleFilterOptionSearchChange = (event: ChangeEvent) => {
 		const target = event.target as HTMLInputElement;
 		if (target) {
-			const name = target.name;
-			const value = target.value;
-			setPartialState(this, `filterOptionSearch["${name}"]`, value).then(noop);
+			const { name, value } = target;
+			setPartialState(this, `filterOptionSearch.${name}`, value).then(noop);
 		}
 	};
 
