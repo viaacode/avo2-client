@@ -7,9 +7,9 @@ import {
 	isArray,
 	isEmpty,
 	isNil,
-	isObject,
+	isPlainObject,
 	noop,
-	omitBy,
+	pickBy,
 } from 'lodash-es';
 import * as queryString from 'query-string';
 import React, { ChangeEvent, Component } from 'react';
@@ -52,18 +52,18 @@ export class Search extends Component<{}, SearchState>
 			// formState: {
 			// 	// Default values for filters for easier testing of search api // TODO clear default filters
 			// 	query: 'wie verdient er aan uw schulden',
-			// 	'type': ['video', 'audio'],
-			// 	'educationLevel': ['Secundair 2de graad', 'Secundair 3de graad'],
-			// 	'domain': [],
+			// 	type: ['video', 'audio'],
+			// 	educationLevel: ['Secundair 2de graad', 'Secundair 3de graad'],
+			// 	domain: [],
 			// 	broadcastDate: {
 			// 		gte: '2000-01-01',
 			// 		lte: '2020-01-01',
 			// 	},
 			// 	language: ['nl', 'fr'],
-			// 	'keywords': ['armoede'],
-			// 	'subject': ['levensbeschouwing'],
-			// 	'serie': ['Pano'],
-			// 	'provider': [],
+			// 	keyword: ['armoede'],
+			// 	subject: ['levensbeschouwing'],
+			// 	serie: ['Pano'],
+			// 	provider: [],
 			// },
 			formState: {
 				query: '',
@@ -169,31 +169,25 @@ export class Search extends Component<{}, SearchState>
 	};
 
 	private cleanupFilterObject(obj: any): any {
-		return omitBy(obj, (value: any) => {
+		return pickBy(obj, (value: any) => {
+			const isEmptyString = value === '';
+			const isUndefinedOrNull = isNil(value);
+			const isEmptyObjectOrArray = (isPlainObject(value) || isArray(value)) && isEmpty(value);
+			const isArrayWithEmptyValues = isArray(value) && every(value, value => value === '');
+			const isEmptyRangeObject = isPlainObject(value) && !(value as any).gte && !(value as any).lte;
+
 			return (
-				value === '' || // Empty string
-				isNil(value) || // Undefined or null
-				((isObject(value) || isArray(value)) && isEmpty(value)) || // Empty object or array
-				(isArray(value) && every(value, value => value === '')) || // Object with empty gte and lte values
-				(isObject(value) && !(value as any).gte && !(value as any).lte)
+				!isEmptyString &&
+				!isUndefinedOrNull &&
+				!isEmptyObjectOrArray &&
+				!isArrayWithEmptyValues &&
+				!isEmptyRangeObject
 			);
 		});
 	}
 
 	submitSearchForm = async () => {
-		console.log('submit search form');
 		try {
-			console.log(this.state.formState);
-
-			// Remember this search by adding it to the query params in the url
-			this.history.push({
-				pathname: '/search',
-				search:
-					`?query=${JSON.stringify(this.state.formState)}` +
-					`&orderProperty=${this.state.orderProperty}` +
-					`&orderDirection=${this.state.orderDirection}`,
-			});
-
 			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
 			const filterOptions: Partial<Filters> = this.cleanupFilterObject(
 				cloneDeep(this.state.formState)
@@ -204,6 +198,15 @@ export class Search extends Component<{}, SearchState>
 				cloneDeep(this.state.filterOptionSearch)
 			);
 
+			// Remember this search by adding it to the query params in the url
+			this.history.push({
+				pathname: '/search',
+				search:
+					`?query=${JSON.stringify(filterOptions)}` +
+					`&orderProperty=${this.state.orderProperty}` +
+					`&orderDirection=${this.state.orderDirection}`,
+			});
+
 			// TODO do the search by dispatching a redux action
 			const searchResponse: SearchResponse = await searchActions.doSearch(
 				filterOptions,
@@ -213,8 +216,6 @@ export class Search extends Component<{}, SearchState>
 				0,
 				10
 			);
-
-			console.log('results: ', searchResponse.results);
 
 			this.setState({
 				...this.state,
@@ -280,7 +281,7 @@ export class Search extends Component<{}, SearchState>
 						id="broadcastDate.gte"
 						type="string"
 						placeholder="after"
-						value={this.state.formState.broadcastDate.gte}
+						value={get(this.state, 'formState.broadcastDate.gte')}
 						onChange={this.handleFilterFieldChange}
 						style={{ display: 'block' }}
 					/>
@@ -289,7 +290,7 @@ export class Search extends Component<{}, SearchState>
 						id="broadcastDate.lte"
 						type="string"
 						placeholder="before"
-						value={this.state.formState.broadcastDate.lte}
+						value={get(this.state, 'formState.broadcastDate.lte')}
 						onChange={this.handleFilterFieldChange}
 						style={{ display: 'block' }}
 					/>
@@ -306,7 +307,6 @@ export class Search extends Component<{}, SearchState>
 	render() {
 		return (
 			<div className="search-page">
-				<div>search page works</div>
 				<div>
 					<label>Sorteer op:</label>
 					<select id="order" name="order" onChange={this.handleOrderChanged}>
