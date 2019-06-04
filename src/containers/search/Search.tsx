@@ -1,7 +1,7 @@
 import { capitalize, cloneDeep, get, isEmpty, isNil, omitBy, set } from 'lodash-es';
 import React, { ChangeEvent, Component } from 'react';
-import { setPartialState } from '../../helpers/setPartialState';
-import * as searchActions from '../../redux/search/searchActions';
+import { setDeepState } from '../../helpers/setDeepState';
+import { doSearch } from '../../redux/search/searchActions';
 import { FilterOptions, Filters, OptionProp, SearchResponse, SearchResultItem } from '../../types';
 
 type SearchProps = {};
@@ -12,9 +12,9 @@ type SearchState = {
 	searchResults: SearchResultItem[];
 };
 
-export class Search extends Component<{}, SearchState> {
-	constructor(props: SearchProps, state: SearchState) {
-		super(props, state);
+export class Search extends Component<SearchProps, SearchState> {
+	constructor(props: SearchProps) {
+		super(props);
 		this.state = {
 			formState: {
 				// Default values for filters for easier testing of search api // TODO clear default filters
@@ -59,8 +59,7 @@ export class Search extends Component<{}, SearchState> {
 			searchResults: [],
 		};
 
-		searchActions
-			.doSearch(undefined, 0, 30)
+		doSearch(undefined, 0, 30)
 			.then((response: Partial<SearchResponse>) => {
 				const aggregations: FilterOptions | undefined = response.aggregations;
 				if (aggregations) {
@@ -99,7 +98,7 @@ export class Search extends Component<{}, SearchState> {
 				suffix = '.lte';
 				name = name.substring(0, name.length - '.lte'.length);
 			}
-			setPartialState(this, `formState["${name}"]${suffix}`, value);
+			setDeepState(this, `formState["${name}"]${suffix}`, value);
 		} else {
 			console.error('Change event without a value: ', event);
 		}
@@ -126,7 +125,7 @@ export class Search extends Component<{}, SearchState> {
 		);
 
 		// TODO do the search by dispatching a redux action
-		const searchResponse: SearchResponse = await searchActions.doSearch(filterOptions, 0, 10);
+		const searchResponse: SearchResponse = await doSearch(filterOptions, 0, 10);
 
 		console.log('results: ', searchResponse.results);
 
