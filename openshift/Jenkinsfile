@@ -48,7 +48,8 @@ pipeline {
                         openshift.withProject("sc-avo2") {
                             if (openshift.selector("buildconfig", "avo2-client-s2i").exists()) {
                             sh'''#!/bin/bash
-                            echo starting a build 
+                            echo starting a build
+                            npm install npx
                             npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
                             '''
 
@@ -67,8 +68,6 @@ pipeline {
                                       npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
                                       echo " roll out QAS"
                                       oc process -l app=avo2-client -l component=frontend -l ENV=qas -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
-
-                                      #npx nodeshift --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose
                                     '''
                               }
                         }
