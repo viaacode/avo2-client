@@ -48,12 +48,16 @@ pipeline {
                         openshift.withProject("sc-avo2") {
                             if (openshift.selector("deploymentconfig", "avo2-client-dev").exists()) {
 			       sh '''#!/bin/bash
-          				echo 'install'
+          				echo 'app exists'
 
           				'''
                             } else {sh'''#!/bin/bash
-                                      echo "build"
-
+                                      echo "install tmpl"
+                                      oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
+                                      echo "templete installed , you can use it with add to project choose from project"
+                                      oc project sc-avo2
+                                      npm install npx
+                                      npx nodeshift --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose
                                     '''
                               }
                         }
