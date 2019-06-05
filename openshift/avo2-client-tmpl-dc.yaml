@@ -111,5 +111,5 @@ objects:
   status:
     loadBalancer: {}
 parameters:
-  name: ENV
-  value: dev
+  - name: ENV
+    value: dev
