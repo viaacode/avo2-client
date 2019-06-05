@@ -46,12 +46,12 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
-                            if (openshift.selector("buildconfig", "avo2-client").exists()) {
+                            if (openshift.selector("buildconfig", "avo2-client-s2i").exists()) {
 			       sh '''#!/bin/bash
           				echo 'app exists apply changes to template and roll out qas'
                         oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
 
-                        oc process -p ENV=qas openshift/avo2-client-tmpl-dc.yaml | oc apply -l app=avo2-client-dev,ENV=qas -f -
+                        oc process -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -l app=avo2-client-dev,ENV=qas -f -
 
           				'''
                             } else {sh'''#!/bin/bash
@@ -63,7 +63,7 @@ pipeline {
                                       npm install npx
                                       npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
                                       echo " roll out QAS"
-                                      oc process -p ENV=dev openshift/avo2-client-tmpl-dc.yaml | oc apply -l app=avo2-client-dev,ENV=dev -f -
+                                      oc process -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -l app=avo2-client,ENV=qas -f -
 
                                       #npx nodeshift --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose
                                     '''
