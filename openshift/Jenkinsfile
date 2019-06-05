@@ -22,7 +22,7 @@ pipeline {
     }
     options {
         // set a timeout of 20 minutes for this pipeline
-        timeout(time: 20, unit: 'MINUTES')
+        timeout(time: 40, unit: 'MINUTES')
     }
     stages {
         stage('preamble') {
@@ -32,10 +32,10 @@ pipeline {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
                             echo "We need anyuid for node"
-			                         sh '''#!/bin/bash
+			    sh '''#!/bin/bash
                                echo this is setup by the bash script
                                #oc adm policy add-scc-to-user anyuid -n sc-avo2  -z default
-                            '''
+                               '''
                         }
                     }
                 }
