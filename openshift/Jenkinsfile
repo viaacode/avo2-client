@@ -41,14 +41,17 @@ pipeline {
                 }
             }
         }
-        stage('check dc') {
+        stage('check Install') {
             steps {
                 script {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
-                            if (openshift.selector("deploymentconfig", "avo2-client-dev").exists()) {
+                            if (openshift.selector("buildconfig", "avo2-client").exists()) {
 			       sh '''#!/bin/bash
-          				echo 'app exists'
+          				echo 'app exists apply changes to template and roll out qas'
+                        oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
+
+                        oc process -p ENV=qas openshift/avo2-client-tmpl-dc.yaml | oc apply -l app=avo2-client-dev,ENV=qas -f -
 
           				'''
                             } else {sh'''#!/bin/bash
@@ -56,8 +59,13 @@ pipeline {
                                       oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
                                       echo "templete installed , you can use it with add to project choose from project"
                                       oc project sc-avo2
+
                                       npm install npx
-                                      npx nodeshift --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose
+                                      npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
+                                      echo " roll out QAS"
+                                      oc process -p ENV=dev openshift/avo2-client-tmpl-dc.yaml | oc apply -l app=avo2-client-dev,ENV=dev -f -
+
+                                      #npx nodeshift --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose
                                     '''
                               }
                         }
