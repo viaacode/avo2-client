@@ -47,13 +47,16 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             if (openshift.selector("buildconfig", "avo2-client-s2i").exists()) {
-			       sh '''#!/bin/bash
-          				echo 'app exists apply changes to template and roll out qas'
-                        oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
+                            sh'''#!/bin/bash
+                            echo starting a build 
+                            npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
+                            '''
 
-                        oc process -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -l app=avo2-client-dev,ENV=qas -f -
-
-          				'''
+			                          sh '''#!/bin/bash
+          				                  echo 'app exists apply changes to template and roll out qas'
+                                    oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
+                                    oc process -l app=avo2-client -l component=frontend -l ENV=qas -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+          				                   '''
                             } else {sh'''#!/bin/bash
                                       echo "install tmpl"
                                       oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
@@ -63,7 +66,7 @@ pipeline {
                                       npm install npx
                                       npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
                                       echo " roll out QAS"
-                                      oc process -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -l app=avo2-client,ENV=qas -f -
+                                      oc process -l app=avo2-client -l component=frontend -l ENV=qas -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
 
                                       #npx nodeshift --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose
                                     '''
@@ -89,7 +92,22 @@ pipeline {
                 }
             }
         }
+        stage('Tag ') {
+     steps {
+     input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
 
+         script {
+             openshift.withCluster() {
+                 openshift.withProject("sc-avo2") {
+                      echo "Tag "
+                      sh '''#/bin/bash
+                      oc -n sc-avo2  tag  avo2-client:latest  avo2-client:prd
+                      '''
+                 }
+             }
+         } // script
+     } // steps
+ } // stage
 
     } // stages
     post {
