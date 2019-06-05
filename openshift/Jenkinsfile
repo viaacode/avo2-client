@@ -3,7 +3,7 @@
 
 def TEMPLATEPATH = 'https://raw.githubusercontent.com/viaacode/avo2-client/master/openshift/avo2-client-tmpl-dc.yaml'
 def TEMPLATENAME = 'avo2-client'
-def TARGET_NS = 'sc-avo2''
+def TARGET_NS = 'sc-avo2'
 def templateSelector = openshift.selector( "template", "avo2-client")
 
 
@@ -17,7 +17,7 @@ pipeline {
       node {
 
         // spin up a pod to run this build on
-        label 'master'
+        label 'nodejs'
       }
     }
     options {
