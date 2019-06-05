@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  labels:
+    name: avo2-client
+    app: avo2-client-dev
+  name: avo2-client-dev
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/viaacode/avo2-client.git
+
+  strategy:
+    type: JenkinsPipeline
+    jenkinsPipelineStrategy:
+      jenkinsfilePath: openshift/Jenkinsfile
