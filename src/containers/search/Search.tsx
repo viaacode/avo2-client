@@ -6,11 +6,10 @@ import {
 	get,
 	isArray,
 	isEmpty,
-	isObject,
+	isNil,
+	isPlainObject,
 	noop,
-	omitBy,
-	set,
-	unset,
+	pickBy,
 } from 'lodash-es';
 import * as queryString from 'query-string';
 import React, { ChangeEvent, Component } from 'react';
@@ -18,6 +17,7 @@ import { match, RouteComponentProps, StaticContext } from 'react-router';
 import { setPartialState } from '../../helpers/setPartialState';
 import * as searchActions from '../../redux/search/searchActions';
 import {
+	FilterOptionSearch,
 	Filters,
 	OptionProp,
 	SearchOrderDirection,
@@ -30,6 +30,7 @@ type SearchProps = {};
 
 interface SearchState extends StaticContext {
 	formState: Filters;
+	filterOptionSearch: FilterOptionSearch;
 	orderProperty: SearchOrderProperty;
 	orderDirection: SearchOrderDirection;
 	multiOptions: { [key: string]: OptionProp[] };
@@ -51,41 +52,43 @@ export class Search extends Component<{}, SearchState>
 			// formState: {
 			// 	// Default values for filters for easier testing of search api // TODO clear default filters
 			// 	query: 'wie verdient er aan uw schulden',
-			// 	'administrative_type.filter': ['video', 'audio'],
-			// 	'lom_typical_age_range.filter': ['Secundair 2de graad', 'Secundair 3de graad'],
-			// 	'lom_context.filter': [],
-			// 	dcterms_issued: {
+			// 	type: ['video', 'audio'],
+			// 	educationLevel: ['Secundair 2de graad', 'Secundair 3de graad'],
+			// 	domain: [],
+			// 	broadcastDate: {
 			// 		gte: '2000-01-01',
 			// 		lte: '2020-01-01',
 			// 	},
-			// 	lom_languages: ['nl', 'fr'],
-			// 	'lom_keywords.filter': ['armoede'],
-			// 	'lom_classification.filter': ['levensbeschouwing'],
-			// 	'dc_titles_serie.filter': ['Pano'],
-			// 	fragment_duration_seconds: {
-			// 		gte: '0',
-			// 		lte: '300',
-			// 	},
-			// 	'original_cp.filter': [],
+			// 	language: ['nl', 'fr'],
+			// 	keyword: ['armoede'],
+			// 	subject: ['levensbeschouwing'],
+			// 	serie: ['Pano'],
+			// 	provider: [],
 			// },
 			formState: {
 				query: '',
-				'administrative_type.filter': [],
-				'lom_typical_age_range.filter': [],
-				'lom_context.filter': [],
-				dcterms_issued: {
+				type: [],
+				educationLevel: [],
+				domain: [],
+				broadcastDate: {
 					gte: '',
 					lte: '',
 				},
-				lom_languages: [],
-				'lom_keywords.filter': [],
-				'lom_classification.filter': [],
-				'dc_titles_serie.filter': [],
-				fragment_duration_seconds: {
-					gte: '',
-					lte: '',
-				},
-				'original_cp.filter': [],
+				language: [],
+				keyword: [],
+				subject: [],
+				serie: [],
+				provider: [],
+			},
+			filterOptionSearch: {
+				type: '',
+				educationLevel: '',
+				domain: '',
+				language: '',
+				keyword: '',
+				subject: '',
+				serie: '',
+				provider: '',
 			},
 			orderProperty: 'relevance',
 			orderDirection: 'desc',
@@ -122,10 +125,18 @@ export class Search extends Component<{}, SearchState>
 		});
 	}
 
+	handleFilterOptionSearchChange = (event: ChangeEvent) => {
+		const target = event.target as HTMLInputElement;
+		if (target) {
+			const { name, value } = target;
+			setPartialState(this, `filterOptionSearch.${name}`, value).then(noop);
+		}
+	};
+
 	handleFilterFieldChange = (event: ChangeEvent) => {
 		const target: any = event.target;
 		if (target) {
-			let name = target.name;
+			const name = target.name;
 			let value: any;
 
 			if (target.selectedOptions) {
@@ -134,17 +145,7 @@ export class Search extends Component<{}, SearchState>
 				value = target.value;
 			}
 
-			// Split of suffix, so this can be set as a nested property, instead of being part of the property name
-			let suffix = '';
-			if (name.endsWith('.gte')) {
-				suffix = '.gte';
-				name = name.substring(0, name.length - '.gte'.length);
-			}
-			if (name.endsWith('.lte')) {
-				suffix = '.lte';
-				name = name.substring(0, name.length - '.lte'.length);
-			}
-			setPartialState(this, `formState["${name}"]${suffix}`, value).then(noop);
+			setPartialState(this, `formState.${name}`, value).then(noop);
 		} else {
 			console.error('Change event without a value: ', event);
 		}
@@ -166,35 +167,54 @@ export class Search extends Component<{}, SearchState>
 		);
 	};
 
+	private cleanupFilterObject(obj: any): any {
+		return pickBy(obj, (value: any) => {
+			const isEmptyString = value === '';
+			const isUndefinedOrNull = isNil(value);
+			const isEmptyObjectOrArray = (isPlainObject(value) || isArray(value)) && isEmpty(value);
+			const isArrayWithEmptyValues = isArray(value) && every(value, value => value === '');
+			const isEmptyRangeObject = isPlainObject(value) && !(value as any).gte && !(value as any).lte;
+
+			return (
+				!isEmptyString &&
+				!isUndefinedOrNull &&
+				!isEmptyObjectOrArray &&
+				!isArrayWithEmptyValues &&
+				!isEmptyRangeObject
+			);
+		});
+	}
+
 	submitSearchForm = async () => {
-		console.log('submit search form');
 		try {
-			console.log(this.state.formState);
-
-			// Remember this search by adding it to the query params in the url
-			this.history.push({
-				pathname: '/search',
-				search:
-					`?query=${JSON.stringify(this.state.formState)}` +
-					`&orderProperty=${this.state.orderProperty}` +
-					`&orderDirection=${this.state.orderDirection}`,
-			});
-
 			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
 			const filterOptions: Partial<Filters> = this.cleanupFilterObject(
 				cloneDeep(this.state.formState)
 			);
 
+			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+			const filterOptionSearch: Partial<FilterOptionSearch> = this.cleanupFilterObject(
+				cloneDeep(this.state.filterOptionSearch)
+			);
+
+			// Remember this search by adding it to the query params in the url
+			this.history.push({
+				pathname: '/search',
+				search:
+					`?query=${JSON.stringify(filterOptions)}` +
+					`&orderProperty=${this.state.orderProperty}` +
+					`&orderDirection=${this.state.orderDirection}`,
+			});
+
 			// TODO do the search by dispatching a redux action
 			const searchResponse: SearchResponse = await searchActions.doSearch(
 				filterOptions,
+				filterOptionSearch,
 				this.state.orderProperty,
 				this.state.orderDirection,
 				0,
 				10
 			);
-
-			console.log('results: ', searchResponse.results);
 
 			this.setState({
 				...this.state,
@@ -208,24 +228,35 @@ export class Search extends Component<{}, SearchState>
 
 	renderMultiSelect(label: string, propertyName: keyof Filters) {
 		return (
-			<select
-				multiple
-				id={propertyName}
-				name={propertyName}
-				key={propertyName}
-				value={this.state.formState[propertyName] as any}
-				onChange={this.handleFilterFieldChange}
-			>
-				<option value="" key="default">
-					{label}
-				</option>
-				{(this.state.multiOptions[propertyName] || []).map((option: OptionProp) => (
-					<option value={option.option_name} key={option.option_name}>
-						{capitalize(option.option_name)} ({option.option_count})
+			<div style={{ display: 'inline-block', margin: '15px' }}>
+				<input
+					type="text"
+					id={propertyName}
+					name={propertyName}
+					placeholder="Filter options"
+					onChange={this.handleFilterOptionSearchChange}
+					style={{ display: 'block', width: '100%' }}
+				/>
+				<select
+					multiple
+					id={propertyName}
+					name={propertyName}
+					key={propertyName}
+					value={this.state.formState[propertyName] as any}
+					onChange={this.handleFilterFieldChange}
+					style={{ display: 'block', width: '100%' }}
+				>
+					<option value="" key="default">
+						{label}
 					</option>
-				))}
-				;
-			</select>
+					{(this.state.multiOptions[propertyName] || []).map((option: OptionProp) => (
+						<option value={option.option_name} key={option.option_name}>
+							{capitalize(option.option_name)} ({option.option_count})
+						</option>
+					))}
+					;
+				</select>
+			</div>
 		);
 	}
 
@@ -238,47 +269,36 @@ export class Search extends Component<{}, SearchState>
 					placeholder="Search term"
 					value={this.state.formState.query}
 					onChange={this.handleFilterFieldChange}
+					style={{ margin: '15px' }}
 				/>
-				{this.renderMultiSelect('Type', 'administrative_type.filter')}
-				{this.renderMultiSelect('Onderwijsniveau', 'lom_typical_age_range.filter')}
-				{this.renderMultiSelect('Domein', 'lom_context.filter')}
-				<input
-					name="dcterms_issued.gte"
-					id="dcterms_issued.gte"
-					type="string"
-					placeholder="after"
-					value={this.state.formState.dcterms_issued.gte}
-					onChange={this.handleFilterFieldChange}
-				/>
-				<input
-					name="dcterms_issued.lte"
-					id="dcterms_issued.lte"
-					type="string"
-					placeholder="before"
-					value={this.state.formState.dcterms_issued.lte}
-					onChange={this.handleFilterFieldChange}
-				/>
-				{this.renderMultiSelect('Taal', 'lom_languages')}
-				{this.renderMultiSelect('Onderwerp', 'lom_keywords.filter')}
-				{this.renderMultiSelect('Vak', 'lom_classification.filter')}
-				{this.renderMultiSelect('Serie', 'dc_titles_serie.filter')}
-				<input
-					name="fragment_duration_seconds.gte"
-					id="fragment_duration_seconds.gte"
-					type="string"
-					placeholder="longer than"
-					value={this.state.formState.fragment_duration_seconds.gte}
-					onChange={this.handleFilterFieldChange}
-				/>
-				<input
-					name="fragment_duration_seconds.lte"
-					id="fragment_duration_seconds.lte"
-					type="string"
-					placeholder="shorter than"
-					value={this.state.formState.fragment_duration_seconds.lte}
-					onChange={this.handleFilterFieldChange}
-				/>
-				{this.renderMultiSelect('Aanbieder', 'original_cp.filter')}
+				{this.renderMultiSelect('Type', 'type')}
+				{this.renderMultiSelect('Onderwijsniveau', 'educationLevel')}
+				{this.renderMultiSelect('Domein', 'domain')}
+				<div style={{ display: 'inline-block', margin: '15px' }}>
+					<input
+						name="broadcastDate.gte"
+						id="broadcastDate.gte"
+						type="string"
+						placeholder="after"
+						value={get(this.state, 'formState.broadcastDate.gte')}
+						onChange={this.handleFilterFieldChange}
+						style={{ display: 'block' }}
+					/>
+					<input
+						name="broadcastDate.lte"
+						id="broadcastDate.lte"
+						type="string"
+						placeholder="before"
+						value={get(this.state, 'formState.broadcastDate.lte')}
+						onChange={this.handleFilterFieldChange}
+						style={{ display: 'block' }}
+					/>
+				</div>
+				{this.renderMultiSelect('Taal', 'language')}
+				{this.renderMultiSelect('Onderwerp', 'keyword')}
+				{this.renderMultiSelect('Vak', 'subject')}
+				{this.renderMultiSelect('Serie', 'serie')}
+				{this.renderMultiSelect('Aanbieder', 'provider')}
 			</div>
 		);
 	}
@@ -286,7 +306,6 @@ export class Search extends Component<{}, SearchState>
 	render() {
 		return (
 			<div className="search-page">
-				<div>search page works</div>
 				<div>
 					<label>Sorteer op:</label>
 					<select id="order" name="order" onChange={this.handleOrderChanged}>
@@ -316,43 +335,15 @@ export class Search extends Component<{}, SearchState>
 						<div key={result.pid}>
 							<span className="title">{result.dc_title}</span>
 							<br />
+							<span className="title">{result.dcterms_issued}</span>
+							<br />
 							<img src={result.thumbnail_path} style={{ maxWidth: '300px' }} alt="" />
+							<br />
+							<br />
 						</div>
 					))}
 				</div>
 			</div>
 		);
-	}
-
-	private cleanupFilterObject(filters: Filters): Partial<Filters> {
-		const filterOptions: Partial<Filters> = omitBy(filters, value => {
-			return (
-				value === '' ||
-				((isObject(value) || isArray(value)) && isEmpty(value)) ||
-				(isArray(value) && every(value, value => value === ''))
-			);
-		});
-
-		// Convert strings from input fields to numbers for backend elasticsearch
-		set(
-			filterOptions,
-			'fragment_duration_seconds.gte',
-			parseInt(String(get(filterOptions, 'fragment_duration_seconds.gte') || '0'), 10)
-		);
-		set(
-			filterOptions,
-			'fragment_duration_seconds.lte',
-			parseInt(String(get(filterOptions, 'fragment_duration_seconds.lte') || '0'), 10)
-		);
-		if (
-			!get(filterOptions, 'fragment_duration_seconds.gte') &&
-			!get(filterOptions, 'fragment_duration_seconds.lte')
-		) {
-			unset(filterOptions, 'fragment_duration_seconds');
-		}
-		if (!get(filterOptions, 'dcterms_issued.gte') && !get(filterOptions, 'dcterms_issued.lte')) {
-			unset(filterOptions, 'dcterms_issued');
-		}
-		return filterOptions;
 	}
 }
