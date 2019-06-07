@@ -1,4 +1,5 @@
 import {
+	FilterOptionSearch,
 	Filters,
 	SearchOrderDirection,
 	SearchOrderProperty,
@@ -8,6 +9,7 @@ import {
 
 export async function doSearch(
 	filters?: Partial<Filters>,
+	filterOptionSearch?: Partial<FilterOptionSearch>,
 	orderProperty: SearchOrderProperty = 'relevance',
 	orderDirection: SearchOrderDirection = 'desc',
 	from: number = 0,
@@ -16,6 +18,7 @@ export async function doSearch(
 	const url = `${process.env.REACT_APP_PROXY_URL}/search/search`;
 	const body: SearchRequest = {
 		filters,
+		filterOptionSearch,
 		orderProperty,
 		orderDirection,
 		from,
