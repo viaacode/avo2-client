@@ -1,0 +1,122 @@
+/* import shared library */
+@Library('jenkins-shared-libs')_
+
+def TEMPLATEPATH = 'https://raw.githubusercontent.com/viaacode/avo2-client/master/openshift/avo2-client-tmpl-dc.yaml'
+def TEMPLATENAME = 'avo2-client'
+def TARGET_NS = 'sc-avo2'
+def templateSelector = openshift.selector( "template", "avo2-client")
+
+
+
+
+// NOTE, the "pipeline" directive/closure from the declarative pipeline syntax needs to include, or be nested outside,
+// and "openshift" directive/closure from the OpenShift Client Plugin for Jenkins.  Otherwise, the declarative pipeline engine
+// will not be fully engaged.
+pipeline {
+    agent {
+      node {
+
+        // spin up a pod to run this build on
+        label 'nodejs'
+      }
+    }
+    options {
+        // set a timeout of 20 minutes for this pipeline
+        timeout(time: 40, unit: 'MINUTES')
+    }
+    stages {
+        stage('preamble') {
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject("sc-avo2") {
+                            echo "Using project: ${openshift.project()}"
+                            echo "We need anyuid for node"
+			    sh '''#!/bin/bash
+                               echo this is setup by the bash script
+                               #oc adm policy add-scc-to-user anyuid -n sc-avo2  -z default
+                               '''
+                        }
+                    }
+                }
+            }
+        }
+        stage('check Install') {
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject("sc-avo2") {
+                            if (openshift.selector("buildconfig", "avo2-client-s2i").exists()) {
+                            sh'''#!/bin/bash
+                            echo starting a build
+                            oc project sc-avo2
+                            npm install npx
+                            npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
+                            '''
+
+			                          sh '''#!/bin/bash
+          				                  echo 'app exists apply changes to template and roll out qas'
+                                    oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
+                                    oc process -l app=avo2-client -l component=frontend -l ENV=qas -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+          				                   '''
+                            } else {sh'''#!/bin/bash
+                                      echo "install tmpl"
+                                      oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
+                                      echo "templete installed , you can use it with add to project choose from project"
+                                      oc project sc-avo2
+
+                                      npm install npx
+                                      npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
+                                      echo " roll out QAS"
+                                      oc process -l app=avo2-client -l component=frontend -l ENV=qas -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                                    '''
+                              }
+                        }
+                    }
+                } // script
+            } // steps
+        } // stage
+
+        stage('test') {
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject("sc-avo2") {
+                             sh'''#!/bin/bash
+                             echo "basic port test are in deployments "
+
+                             '''
+
+                        }
+                    }
+                }
+            }
+        }
+        stage('Tag ') {
+     steps {
+     input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
+
+         script {
+             openshift.withCluster() {
+                 openshift.withProject("sc-avo2") {
+                      echo "Tag "
+                      sh '''#/bin/bash
+                      oc -n sc-avo2  tag  avo2-client:latest  avo2-client:prd
+                      '''
+                 }
+             }
+         } // script
+     } // steps
+ } // stage
+
+    } // stages
+    post {
+        always {
+            script {
+               slackNotifier(currentBuild.currentResult)
+            }
+        }
+    }
+
+
+} // pipeline
