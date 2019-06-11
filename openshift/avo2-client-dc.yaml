@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: apps.openshift.io/v1
+    kind: DeploymentConfig
+    metadata:
+      name: avo2-client
+      namespace: sc-avo2
+      labels:
+        project: avo2-client
+        version: 0.1.0
+        provider: nodeshift
+        app: avo2-client
+      annotations:
+        nodeshift/git-branch: master
+        nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 2
+      selector:
+        app: avo2-client
+        project: avo2-client
+        provider: nodeshift
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - avo2-client
+            from:
+              kind: ImageStreamTag
+              namespace: sc-avo2
+              name: 'avo2-client:latest'
+      template:
+        metadata:
+          labels:
+            project: avo2-client
+            version: 0.1.0
+            provider: nodeshift
+            app: avo2-client
+          annotations:
+            nodeshift/git-branch: master
+            nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
+        spec:
+          containers:
+            - image: avo2-client
+              name: avo2-client
+              securityContext:
+                privileged: false
+              ports:
+                - containerPort: 8080
+                  name: http
+                  protocol: TCP
+              env: []
+  - apiVersion: v1
+    kind: Service
+    spec:
+      selector:
+        project: avo2-client
+        provider: nodeshift
+      ports:
+        - protocol: TCP
+          port: 8080
+          targetPort: 8080
+          name: http
+      type: ClusterIP
+    metadata:
+      name: avo2-client
+      namespace: sc-avo2
+      labels:
+        project: avo2-client
+        version: 0.1.0
+        provider: nodeshift
+      annotations:
+        nodeshift/git-branch: master
+        nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    spec:
+      to:
+        kind: Service
+        name: avo2-client
+      port:
+        targetPort: 8080
+    metadata:
+      name: avo2-client
+      labels:
+        project: avo2-client
+        version: 0.1.0
+        provider: nodeshift
