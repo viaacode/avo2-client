@@ -14,8 +14,8 @@ import {
 import queryString from 'query-string';
 import React, { ChangeEvent, Component } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
-import { setPartialState } from '../../helpers/setPartialState';
-import * as searchActions from '../../redux/search/searchActions';
+import { setDeepState } from '../../helpers/setDeepState';
+import { doSearch } from '../../redux/search/searchActions';
 import {
 	FilterOptionSearch,
 	Filters,
@@ -126,7 +126,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		const target = event.target as HTMLInputElement;
 		if (target) {
 			const { name, value } = target;
-			setPartialState(this, `filterOptionSearch.${name}`, value).then(noop);
+			setDeepState(this, `filterOptionSearch.${name}`, value).then(noop);
 		}
 	};
 
@@ -142,7 +142,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				value = target.value;
 			}
 
-			setPartialState(this, `formState.${name}`, value).then(noop);
+			setDeepState(this, `formState.${name}`, value).then(noop);
 		} else {
 			console.error('Change event without a value: ', event);
 		}
@@ -204,7 +204,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			});
 
 			// TODO do the search by dispatching a redux action
-			const searchResponse: SearchResponse = await searchActions.doSearch(
+			const searchResponse: SearchResponse = await doSearch(
 				filterOptions,
 				filterOptionSearch,
 				this.state.orderProperty,

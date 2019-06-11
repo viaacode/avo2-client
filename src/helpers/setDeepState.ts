@@ -8,7 +8,7 @@ import { Component } from 'react';
  * @param path
  * @param value
  */
-export function setPartialState(component: Component, path: string, value: any) {
+export function setDeepState(component: Component, path: string, value: any) {
 	return new Promise(resolve => {
 		const newState = set(component.state, path, value);
 		component.setState(newState, resolve);
