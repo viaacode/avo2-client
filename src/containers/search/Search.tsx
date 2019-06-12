@@ -26,6 +26,8 @@ import {
 	SearchResultItem,
 } from '../../types';
 
+import { TextInput } from '../../components/avo2-components/src';
+
 type SearchProps = {};
 
 interface SearchState extends StaticContext {
@@ -130,22 +132,8 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		}
 	};
 
-	handleFilterFieldChange = (event: ChangeEvent) => {
-		const target: any = event.target;
-		if (target) {
-			const name = target.name;
-			let value: any;
-
-			if (target.selectedOptions) {
-				value = [...target.selectedOptions].map(o => o.value);
-			} else {
-				value = target.value;
-			}
-
-			setDeepState(this, `formState.${name}`, value).then(noop);
-		} else {
-			console.error('Change event without a value: ', event);
-		}
+	handleFilterFieldChange = (value: string | string[], id: string) => {
+		setDeepState(this, `formState.${id}`, value).then(noop);
 	};
 
 	handleOrderChanged = (event: ChangeEvent) => {
@@ -240,7 +228,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					name={propertyName}
 					key={propertyName}
 					value={this.state.formState[propertyName] as any}
-					onChange={this.handleFilterFieldChange}
+					onChange={changeEvent =>
+						this.handleFilterFieldChange(
+							([...changeEvent.target.selectedOptions] as unknown) as string[],
+							propertyName
+						)
+					}
 					style={{ display: 'block', width: '100%' }}
 				>
 					<option value="" key="default">
@@ -260,35 +253,27 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	renderFilterControls() {
 		return (
 			<div>
-				<input
-					name="query"
+				<TextInput
 					id="query"
 					placeholder="Search term"
-					value={this.state.formState.query}
-					onChange={this.handleFilterFieldChange}
-					style={{ margin: '15px' }}
+					defaultValue={this.state.formState.query}
+					onChange={value => this.handleFilterFieldChange(value, 'query')}
 				/>
 				{this.renderMultiSelect('Type', 'type')}
 				{this.renderMultiSelect('Onderwijsniveau', 'educationLevel')}
 				{this.renderMultiSelect('Domein', 'domain')}
 				<div style={{ display: 'inline-block', margin: '15px' }}>
-					<input
-						name="broadcastDate.gte"
+					<TextInput
 						id="broadcastDate.gte"
-						type="string"
 						placeholder="after"
-						value={get(this.state, 'formState.broadcastDate.gte')}
-						onChange={this.handleFilterFieldChange}
-						style={{ display: 'block' }}
+						defaultValue={get(this.state, 'formState.broadcastDate.gte')}
+						onChange={value => this.handleFilterFieldChange(value, 'broadcastDate.gte')}
 					/>
-					<input
-						name="broadcastDate.lte"
+					<TextInput
 						id="broadcastDate.lte"
-						type="string"
 						placeholder="before"
-						value={get(this.state, 'formState.broadcastDate.lte')}
-						onChange={this.handleFilterFieldChange}
-						style={{ display: 'block' }}
+						defaultValue={get(this.state, 'formState.broadcastDate.lte')}
+						onChange={value => this.handleFilterFieldChange(value, 'broadcastDate.lte')}
 					/>
 				</div>
 				{this.renderMultiSelect('Taal', 'language')}
