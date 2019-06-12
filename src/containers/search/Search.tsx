@@ -10,11 +10,12 @@ import {
 	isPlainObject,
 	noop,
 	pickBy,
+	remove,
 } from 'lodash-es';
 import queryString from 'query-string';
 import React, { ChangeEvent, Component } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
-import { setDeepState } from '../../helpers/setDeepState';
+import { setDeepState, unsetDeepState } from '../../helpers/setDeepState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
 	FilterOptionSearch,
@@ -300,6 +301,109 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		);
 	}
 
+	renderSelectedFilter(filterProp: keyof Filters, filterValue: any) {
+		const filterStyles = {
+			margin: '5px',
+			padding: '5px',
+			backgroundColor: 'grey',
+			color: 'white',
+			cursor: 'pointer',
+		};
+
+		// Do not render query filter or empty filters
+		if (
+			filterProp === 'query' ||
+			filterValue === '' ||
+			filterValue === [] ||
+			(isArray(filterValue) && every(filterValue, filter => !filter)) // Array of empty strings
+		) {
+			return null;
+		}
+
+		// Render date range option filters
+		if (isPlainObject(filterValue)) {
+			if (filterValue.gte && filterValue.lte) {
+				return (
+					<span
+						key={`${filterProp}-${filterValue.gte}-${filterValue.lte}`}
+						style={filterStyles}
+						onClick={() => this.deleteFilter(filterProp, filterValue)}
+					>
+						{filterValue.gte} - {filterValue.lte}
+					</span>
+				);
+			}
+			if (filterValue.gte) {
+				return (
+					<span
+						key={`${filterProp}-${filterValue.gte}`}
+						style={filterStyles}
+						onClick={() => this.deleteFilter(filterProp, filterValue)}
+					>
+						na {filterValue.gte}
+					</span>
+				);
+			}
+			if (filterValue.gte) {
+				return (
+					<span
+						key={`${filterProp}-${filterValue.lte}`}
+						style={filterStyles}
+						onClick={() => this.deleteFilter(filterProp, filterValue)}
+					>
+						voor {filterValue.lte}
+					</span>
+				);
+			}
+			return null; // Do not render a filter if date object is empty: {gte: "", lte: ""}
+		}
+
+		// Render multi option filters
+		if (isArray(filterValue)) {
+			return filterValue.map(filterValue => (
+				<span
+					key={`${filterProp}-${filterValue}`}
+					style={filterStyles}
+					onClick={() => this.deleteFilter(filterProp, filterValue)}
+				>
+					{filterValue}
+				</span>
+			));
+		}
+
+		console.error('Failed to render selected filter: ', filterProp, filterValue);
+		return null;
+	}
+
+	renderSelectedFilters() {
+		return (
+			<div>
+				{(Object.keys(this.state.formState) as (keyof Filters)[]).map((filterProp: keyof Filters) =>
+					this.renderSelectedFilter(filterProp, this.state.formState[filterProp])
+				)}
+			</div>
+		);
+	}
+
+	async deleteFilter(filterProp: keyof Filters, filterValue: any) {
+		if (isPlainObject(filterValue) && (filterValue.gte || filterValue.lte)) {
+			await unsetDeepState(this, `formState.${filterProp}`);
+			return;
+		}
+		if (isArray(this.state.formState[filterProp])) {
+			const filterArray: string[] = this.state.formState[filterProp] as string[];
+			remove(filterArray, filterItem => filterItem === filterValue);
+			if (filterArray.length) {
+				await setDeepState(this, `formState.${filterProp}`, filterArray);
+				return;
+			}
+			await unsetDeepState(this, `formState.${filterProp}`);
+			return;
+		}
+
+		console.error('Failed to remove selected filter: ', filterProp, filterValue);
+	}
+
 	render() {
 		return (
 			<div className="search-page">
@@ -322,6 +426,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				</div>
 				<div className="filters">
 					<h2>Filters</h2>
+					{this.renderSelectedFilters()}
 					{this.renderFilterControls()}
 					<button onClick={this.submitSearchForm}>Search</button>
 				</div>
