@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 import { setDeepState } from '../../helpers/setDeepState';
 
 import { Checkbox } from '../avo2-components/src';
+import { CheckboxGroup } from '../avo2-components/src/components/CheckboxGroup/CheckboxGroup';
+import { Dropdown } from '../avo2-components/src/components/Dropdown/Dropdown';
+import { FormGroup } from '../avo2-components/src/components/Form/FormGroup';
 
 export interface CheckboxOption {
 	label: string;
@@ -51,16 +54,15 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 	};
 
 	render() {
-		const { options, label } = this.props;
+		const { options, label, id } = this.props;
 		const splitCount = this.props.collapsedItemCount || Math.min(options.length, 10);
 		const showExpandToggle = splitCount < options.length;
 
 		return (
-			<div className="o-form-group-layout o-form-group-layout--standard">
-				<div className="o-form-group">
-					{label ? <label className="o-form-group__label">{label}</label> : null}
-					<div className="o-form-group__controls">
-						<div className="c-checkbox-group">
+			<Dropdown label={label} autoSize={true}>
+				<div className="u-spacer">
+					<FormGroup label={label} labelFor={id}>
+						<CheckboxGroup>
 							{options.map(
 								(option: CheckboxOption, index: number) =>
 									(index < splitCount || this.state.showCollapsed) && (
@@ -81,10 +83,10 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 									</div>
 								</a>
 							)}
-						</div>
-					</div>
+						</CheckboxGroup>
+					</FormGroup>
 				</div>
-			</div>
+			</Dropdown>
 		);
 	}
 }

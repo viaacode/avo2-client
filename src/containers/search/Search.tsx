@@ -12,9 +12,9 @@ import {
 	pickBy,
 } from 'lodash-es';
 import queryString from 'query-string';
-import React, { ChangeEvent, Component } from 'react';
+import React, { ChangeEvent, Component, ReactNode } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
-import { setDeepState } from '../../helpers/setDeepState';
+import { setDeepState, unsetDeepState } from '../../helpers/setDeepState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
 	FilterOptionSearch,
@@ -26,7 +26,14 @@ import {
 	SearchResultItem,
 } from '../../types';
 
-import { TextInput } from '../../components/avo2-components/src';
+import { Button, Container, Form, Select, TextInput } from '../../components/avo2-components/src';
+import { DatePicker } from '../../components/avo2-components/src/components/DatePicker/DatePicker';
+import { Dropdown } from '../../components/avo2-components/src/components/Dropdown/Dropdown';
+import { FormGroup } from '../../components/avo2-components/src/components/Form/FormGroup';
+import {
+	CheckboxDropdown,
+	CheckboxOption,
+} from '../../components/CheckboxDropdown/CheckboxDropdown';
 
 type SearchProps = {};
 
@@ -132,19 +139,25 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		}
 	};
 
-	handleFilterFieldChange = (value: string | string[], id: string) => {
-		setDeepState(this, `formState.${id}`, value).then(noop);
+	handleFilterFieldChange = (
+		value: string | string[] | { gte: string; lte: string } | null,
+		id: string
+	) => {
+		if (value) {
+			setDeepState(this, `formState.${id}`, value).then(noop);
+		} else {
+			unsetDeepState(this, `formState.${id}`).then(noop);
+		}
 	};
 
-	handleOrderChanged = (event: ChangeEvent) => {
-		const value = get(event, 'target.value') || 'relevance_desc';
-		const valueParts = value.split('_');
-		const orderProperty = valueParts[0];
-		const orderDirection = valueParts[1];
+	handleOrderChanged = (value: string = 'relevance_desc') => {
+		const valueParts: string[] = value.split('_');
+		const orderProperty: string = valueParts[0];
+		const orderDirection: string = valueParts[1];
 		this.setState(
 			{
-				orderProperty,
-				orderDirection,
+				orderProperty: orderProperty as SearchOrderProperty,
+				orderDirection: orderDirection as SearchOrderDirection,
 			},
 			async () => {
 				await this.submitSearchForm();
@@ -211,71 +224,79 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		}
 	};
 
-	renderMultiSelect(label: string, propertyName: keyof Filters) {
+	renderMultiSelect(label: string, propertyName: keyof Filters): ReactNode {
+		const multiOptions = (this.state.multiOptions[propertyName] || []).map(
+			(option: OptionProp): CheckboxOption => {
+				return {
+					label: `${capitalize(option.option_name)} (${option.option_count})`,
+					id: option.option_name,
+					checked: false,
+				};
+			}
+		);
+
+		// <input
+		// type="text"
+		// id={propertyName}
+		// name={propertyName}
+		// placeholder="Filter options"
+		// onChange={this.handleFilterOptionSearchChange}
+		// style={{ display: 'block', width: '100%' }}
+		// />
+
 		return (
-			<div style={{ display: 'inline-block', margin: '15px' }}>
-				<input
-					type="text"
-					id={propertyName}
-					name={propertyName}
-					placeholder="Filter options"
-					onChange={this.handleFilterOptionSearchChange}
-					style={{ display: 'block', width: '100%' }}
-				/>
-				<select
-					multiple
-					id={propertyName}
-					name={propertyName}
-					key={propertyName}
-					value={this.state.formState[propertyName] as any}
-					onChange={changeEvent =>
-						this.handleFilterFieldChange(
-							([...changeEvent.target.selectedOptions] as unknown) as string[],
-							propertyName
-						)
-					}
-					style={{ display: 'block', width: '100%' }}
-				>
-					<option value="" key="default">
-						{label}
-					</option>
-					{(this.state.multiOptions[propertyName] || []).map((option: OptionProp) => (
-						<option value={option.option_name} key={option.option_name}>
-							{capitalize(option.option_name)} ({option.option_count})
-						</option>
-					))}
-					;
-				</select>
-			</div>
+			<li className="c-filter-dropdown">
+				<CheckboxDropdown label={label} id={propertyName} options={multiOptions} />
+			</li>
+		);
+	}
+
+	renderDateRange(label: string, propertyName: keyof Filters): ReactNode {
+		return (
+			<li className="c-filter-dropdown">
+				<Dropdown label="Uitzenddatum">
+					<div className="u-spacer">
+						<label>Hoe specifiek?</label>
+						<br />
+						<span>TODO add radio buttons</span>
+						<br />
+						<FormGroup label="Van">
+							<DatePicker
+								id={`${propertyName}.gte`}
+								defaultValue={get(this.state, `formState.${propertyName}.gte`)}
+								onChange={value =>
+									this.handleFilterFieldChange(
+										value && value.toISOString().substring(0, '2000-01-01'.length),
+										`${propertyName}.gte`
+									)
+								}
+							/>
+						</FormGroup>
+						<FormGroup label="Tot">
+							<DatePicker
+								id={`${propertyName}.lte`}
+								defaultValue={get(this.state, `formState.${propertyName}.lte`)}
+								onChange={value =>
+									this.handleFilterFieldChange(
+										value && value.toISOString().substring(0, '2000-01-01'.length),
+										`${propertyName}.lte`
+									)
+								}
+							/>
+						</FormGroup>
+					</div>
+				</Dropdown>
+			</li>
 		);
 	}
 
 	renderFilterControls() {
 		return (
-			<div>
-				<TextInput
-					id="query"
-					placeholder="Search term"
-					defaultValue={this.state.formState.query}
-					onChange={value => this.handleFilterFieldChange(value, 'query')}
-				/>
+			<div className="c-filter-dropdown-list">
 				{this.renderMultiSelect('Type', 'type')}
 				{this.renderMultiSelect('Onderwijsniveau', 'educationLevel')}
 				{this.renderMultiSelect('Domein', 'domain')}
-				<div style={{ display: 'inline-block', margin: '15px' }}>
-					<TextInput
-						id="broadcastDate.gte"
-						placeholder="after"
-						defaultValue={get(this.state, 'formState.broadcastDate.gte')}
-						onChange={value => this.handleFilterFieldChange(value, 'broadcastDate.gte')}
-					/>
-					<TextInput
-						id="broadcastDate.lte"
-						placeholder="before"
-						defaultValue={get(this.state, 'formState.broadcastDate.lte')}
-						onChange={value => this.handleFilterFieldChange(value, 'broadcastDate.lte')}
-					/>
-				</div>
+				{this.renderDateRange('Uitzenddatum', 'broadcastDate')}
 				{this.renderMultiSelect('Taal', 'language')}
 				{this.renderMultiSelect('Onderwerp', 'keyword')}
 				{this.renderMultiSelect('Vak', 'subject')}
@@ -286,29 +307,46 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	}
 
 	render() {
+		const orderOptions = [
+			{ label: 'Meest relevant', value: 'relevance_desc' },
+			{ label: 'Meest bekeken', value: 'views_desc' },
+			{ label: 'Uitzenddatum aflopend', value: 'broadcastDate_desc' },
+			{ label: 'Uitzenddatum oplopend', value: 'broadcastDate_asc' },
+			{ label: 'Laatst toegevoegd', value: 'addedDate_desc' },
+			{ label: 'Laatst gewijzigd', value: 'editDate_desc' },
+		];
+
 		return (
-			<div className="search-page">
-				<div>
-					<label>Sorteer op:</label>
-					<select id="order" name="order" onChange={this.handleOrderChanged}>
-						<option value="relevance_desc">Meest relevant</option>
-						<option disabled value="views_desc">
-							Meest bekeken
-						</option>
-						<option value="broadcastDate_desc">Uitzenddatum aflopend</option>
-						<option value="broadcastDate_asc">Uitzenddatum oplopend</option>
-						<option disabled value="addedDate_desc">
-							Laatst toegevoegd
-						</option>
-						<option disabled value="editDate_desc">
-							Laatst gewijzigd
-						</option>
-					</select>
-				</div>
+			<Container mode={'horizontal'}>
+				<Form type="inline">
+					<FormGroup label="Sorteer op" labelFor="sortBy">
+						<Select
+							id="sortBy"
+							options={orderOptions}
+							onChange={value => this.handleOrderChanged(value)}
+						/>
+					</FormGroup>
+				</Form>
+				<br />
 				<div className="filters">
-					<h2>Filters</h2>
-					{this.renderFilterControls()}
-					<button onClick={this.submitSearchForm}>Search</button>
+					<div className="u-spacer-bottom-l">
+						<div className="u-limit-width-bp3">
+							<Form type="inline">
+								<FormGroup>
+									<TextInput
+										id="query"
+										placeholder="Vul uw zoekterm in..."
+										defaultValue={this.state.formState.query}
+										onChange={value => this.handleFilterFieldChange(value, 'query')}
+									/>
+								</FormGroup>
+								<FormGroup>
+									<Button label="Zoeken" type="primary" onClick={this.submitSearchForm} />
+								</FormGroup>
+							</Form>
+						</div>
+					</div>
+					<ul className="c-filter-dropdown-list">{this.renderFilterControls()}</ul>
 				</div>
 				<div>
 					<h2>Results</h2>
@@ -325,7 +363,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 						</div>
 					))}
 				</div>
-			</div>
+			</Container>
 		);
 	}
 }
