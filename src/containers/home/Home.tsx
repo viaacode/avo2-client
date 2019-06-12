@@ -10,6 +10,10 @@ export class Home extends Component<{}, HomeState> {
 	// }
 
 	render() {
-		return <div>homepage works</div>;
+		return (
+			<div>
+				<h2>Home page</h2>
+			</div>
+		);
 	}
 }

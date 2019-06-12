@@ -14,6 +14,7 @@ import {
 import queryString from 'query-string';
 import React, { ChangeEvent, Component } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
+import { Link } from 'react-router-dom';
 import { setDeepState } from '../../helpers/setDeepState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
@@ -303,6 +304,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	render() {
 		return (
 			<div className="search-page">
+				<h2>Search page</h2>
 				<div>
 					<label>Sorteer op:</label>
 					<select id="order" name="order" onChange={this.handleOrderChanged}>
@@ -329,7 +331,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					<h2>Results</h2>
 					<div className="results-container" />
 					{this.state.searchResults.map(result => (
-						<div key={result.pid}>
+						<Link key={result.pid} to={`detail/${result.pid}`}>
 							<span className="title">{result.dc_title}</span>
 							<br />
 							<span className="title">{result.dcterms_issued}</span>
@@ -337,7 +339,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 							<img src={result.thumbnail_path} style={{ maxWidth: '300px' }} alt="" />
 							<br />
 							<br />
-						</div>
+						</Link>
 					))}
 				</div>
 			</div>
