@@ -2,7 +2,6 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 
 import { action } from '@storybook/addon-actions';
-import { CheckboxDropdown, CheckboxDropdownState } from './CheckboxDropdown';
 
 export const countOptions = [
 	{
@@ -70,7 +69,7 @@ export const countOptions = [
 describe('<Checkbox />', () => {
 	it('Should be able to render', () => {
 		shallow(
-			<CheckboxDropdown
+			<DateRangeDropdown
 				label="Counting"
 				id="counting"
 				options={countOptions}
@@ -81,7 +80,7 @@ describe('<Checkbox />', () => {
 
 	it('Should be able to render with less than 10 items', () => {
 		const checkboxDropdownComponent = shallow(
-			<CheckboxDropdown
+			<DateRangeDropdown
 				label="Counting"
 				id="counting"
 				options={countOptions.slice(0, 5)}
@@ -93,7 +92,7 @@ describe('<Checkbox />', () => {
 
 	it('Should be able to render with default collapsedItemCount of 10', () => {
 		const checkboxDropdownComponent = shallow(
-			<CheckboxDropdown
+			<DateRangeDropdown
 				label="Counting"
 				id="counting"
 				options={countOptions}
@@ -113,7 +112,7 @@ describe('<Checkbox />', () => {
 
 	it('Should be able to render with custom collapsedItemCount of 6', () => {
 		const checkboxDropdownComponent = shallow(
-			<CheckboxDropdown
+			<DateRangeDropdown
 				label="Counting"
 				id="counting"
 				options={countOptions}
@@ -136,7 +135,7 @@ describe('<Checkbox />', () => {
 		const onChangeHandler = jest.fn();
 
 		const checkboxDropdownComponent = mount(
-			<CheckboxDropdown
+			<DateRangeDropdown
 				label="Counting"
 				id="counting"
 				options={countOptions}

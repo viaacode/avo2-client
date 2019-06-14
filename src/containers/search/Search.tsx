@@ -3,7 +3,6 @@ import {
 	capitalize,
 	cloneDeep,
 	every,
-	get,
 	isArray,
 	isEmpty,
 	isNil,
@@ -27,13 +26,12 @@ import {
 } from '../../types';
 
 import { Button, Container, Form, Select, TextInput } from '../../components/avo2-components/src';
-import { DatePicker } from '../../components/avo2-components/src/components/DatePicker/DatePicker';
-import { Dropdown } from '../../components/avo2-components/src/components/Dropdown/Dropdown';
 import { FormGroup } from '../../components/avo2-components/src/components/Form/FormGroup';
 import {
 	CheckboxDropdown,
 	CheckboxOption,
 } from '../../components/CheckboxDropdown/CheckboxDropdown';
+import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
 
 type SearchProps = {};
 
@@ -246,7 +244,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 
 		return (
 			<li className="c-filter-dropdown">
-				<CheckboxDropdown label={label} id={propertyName} options={multiOptions} />
+				<CheckboxDropdown
+					label={label}
+					id={propertyName}
+					options={multiOptions}
+					onChange={this.handleFilterFieldChange}
+				/>
 			</li>
 		);
 	}
@@ -254,38 +257,11 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	renderDateRange(label: string, propertyName: keyof Filters): ReactNode {
 		return (
 			<li className="c-filter-dropdown">
-				<Dropdown label="Uitzenddatum">
-					<div className="u-spacer">
-						<label>Hoe specifiek?</label>
-						<br />
-						<span>TODO add radio buttons</span>
-						<br />
-						<FormGroup label="Van">
-							<DatePicker
-								id={`${propertyName}.gte`}
-								defaultValue={get(this.state, `formState.${propertyName}.gte`)}
-								onChange={value =>
-									this.handleFilterFieldChange(
-										value && value.toISOString().substring(0, '2000-01-01'.length),
-										`${propertyName}.gte`
-									)
-								}
-							/>
-						</FormGroup>
-						<FormGroup label="Tot">
-							<DatePicker
-								id={`${propertyName}.lte`}
-								defaultValue={get(this.state, `formState.${propertyName}.lte`)}
-								onChange={value =>
-									this.handleFilterFieldChange(
-										value && value.toISOString().substring(0, '2000-01-01'.length),
-										`${propertyName}.lte`
-									)
-								}
-							/>
-						</FormGroup>
-					</div>
-				</Dropdown>
+				<DateRangeDropdown
+					label={label}
+					id={propertyName}
+					onChange={this.handleFilterFieldChange}
+				/>
 			</li>
 		);
 	}

@@ -2,7 +2,7 @@ import { compact, fromPairs, map } from 'lodash-es';
 import React, { Component } from 'react';
 import { setDeepState } from '../../helpers/setDeepState';
 
-import { Checkbox } from '../avo2-components/src';
+import { Button, Checkbox, Form } from '../avo2-components/src';
 import { CheckboxGroup } from '../avo2-components/src/components/CheckboxGroup/CheckboxGroup';
 import { Dropdown } from '../avo2-components/src/components/Dropdown/Dropdown';
 import { FormGroup } from '../avo2-components/src/components/Form/FormGroup';
@@ -18,12 +18,13 @@ export interface CheckboxDropdownProps {
 	id: string;
 	options: CheckboxOption[];
 	collapsedItemCount?: number;
-	onChange?: (checkedOptions: string[], id: string) => void;
+	onChange: (checkedOptions: string[], id: string) => void;
 }
 
 export interface CheckboxDropdownState {
 	checkedStates: { [checkboxId: string]: boolean };
 	showCollapsed: boolean;
+	isOpen: boolean;
 }
 
 export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxDropdownState> {
@@ -34,6 +35,7 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 				props.options.map((option: CheckboxOption) => [option.id, option.checked])
 			),
 			showCollapsed: false,
+			isOpen: false,
 		};
 	}
 
@@ -53,6 +55,17 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 		});
 	};
 
+	applyFilter(): void {
+		this.props.onChange(
+			compact(
+				Object.keys(this.state.checkedStates).map(key =>
+					this.state.checkedStates[key] ? key : null
+				)
+			),
+			this.props.id
+		);
+	}
+
 	render() {
 		const { options, label, id } = this.props;
 		const splitCount = this.props.collapsedItemCount || Math.min(options.length, 10);
@@ -61,30 +74,41 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 		return (
 			<Dropdown label={label} autoSize={true}>
 				<div className="u-spacer">
-					<FormGroup label={label} labelFor={id}>
-						<CheckboxGroup>
-							{options.map(
-								(option: CheckboxOption, index: number) =>
-									(index < splitCount || this.state.showCollapsed) && (
-										<Checkbox
-											key={option.id}
-											id={option.id}
-											label={option.label}
-											defaultChecked={option.checked}
-											onChange={(checked: boolean) => this.handleToggle(checked, option.id)}
-										/>
-									)
-							)}
-							{showExpandToggle && (
-								// eslint-disable-next-line jsx-a11y/anchor-is-valid
-								<a className="c-link-toggle" onClick={this.handleShowCollapsedClick}>
-									<div className="c-link-toggle__label u-spacer-bottom">
-										{this.state.showCollapsed ? 'Toon minder' : 'Toon meer'}
-									</div>
-								</a>
-							)}
-						</CheckboxGroup>
-					</FormGroup>
+					<Form>
+						<FormGroup label={label} labelFor={id}>
+							<CheckboxGroup>
+								{options.map(
+									(option: CheckboxOption, index: number) =>
+										(index < splitCount || this.state.showCollapsed) && (
+											<Checkbox
+												key={option.id}
+												id={option.id}
+												label={option.label}
+												defaultChecked={option.checked}
+												onChange={(checked: boolean) => this.handleToggle(checked, option.id)}
+											/>
+										)
+								)}
+								{showExpandToggle && (
+									// eslint-disable-next-line jsx-a11y/anchor-is-valid
+									<a className="c-link-toggle" onClick={this.handleShowCollapsedClick}>
+										<div className="c-link-toggle__label u-spacer-bottom">
+											{this.state.showCollapsed ? 'Toon minder' : 'Toon meer'}
+										</div>
+									</a>
+								)}
+							</CheckboxGroup>
+						</FormGroup>
+						<FormGroup>
+							<Button
+								label="Toepassen"
+								type="primary"
+								block={true}
+								className="c-dropdown-menu__close"
+								onClick={() => this.applyFilter()}
+							/>
+						</FormGroup>
+					</Form>
 				</div>
 			</Dropdown>
 		);
