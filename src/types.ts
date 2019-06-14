@@ -5,15 +5,17 @@ export interface Filters {
 	type: string[];
 	educationLevel: string[];
 	domain: string[];
-	broadcastDate: {
-		gte: string;
-		lte: string;
-	};
+	broadcastDate: DateRange;
 	language: string[];
 	keyword: string[];
 	subject: string[]; // Vak
 	serie: string[];
 	provider: string[];
+}
+
+export interface DateRange {
+	gte: string | '' | null | undefined;
+	lte: string | '' | null | undefined;
 }
 
 export interface FilterOptionSearch {

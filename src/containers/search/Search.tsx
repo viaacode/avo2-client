@@ -2,6 +2,7 @@ import { History, Location } from 'history';
 import {
 	capitalize,
 	cloneDeep,
+	compact,
 	every,
 	isArray,
 	isEmpty,
@@ -16,6 +17,7 @@ import { RouteComponentProps, StaticContext } from 'react-router';
 import { setDeepState, unsetDeepState } from '../../helpers/setDeepState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
+	DateRange,
 	FilterOptionSearch,
 	Filters,
 	OptionProp,
@@ -39,11 +41,13 @@ import {
 	ToolbarRight,
 	ToolbarTitle,
 } from '../../components/avo2-components/src';
+
 import {
 	CheckboxDropdown,
 	CheckboxOption,
 } from '../../components/CheckboxDropdown/CheckboxDropdown';
 import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
+import { LANGUAGES } from '../../helpers/languages';
 
 type SearchProps = {};
 
@@ -124,22 +128,22 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	}
 
 	async componentDidMount() {
-		await this.checkFiltersInQueryParams();
+		await this.getFiltersFromQueryParams();
 
 		this.submitSearchForm().then(noop);
 	}
 
-	async checkFiltersInQueryParams(): Promise<void> {
+	async getFiltersFromQueryParams(): Promise<void> {
 		return new Promise<void>(resolve => {
 			// Check if current url already has a query param set
 			const queryParams = queryString.parse(this.location.search);
 			try {
-				if (!queryParams.query && !queryParams.orderProperty && !queryParams.orderDirection) {
+				if (!queryParams.filters && !queryParams.orderProperty && !queryParams.orderDirection) {
 					resolve();
 				}
 				const newState: SearchState = cloneDeep(this.state);
 				if (queryParams.query) {
-					newState.formState = JSON.parse(queryParams.query as string);
+					newState.formState = JSON.parse(queryParams.filters as string);
 				}
 				newState.orderProperty = (queryParams.orderProperty || 'relevance') as SearchOrderProperty;
 				newState.orderDirection = (queryParams.orderProperty || 'desc') as SearchOrderDirection;
@@ -151,6 +155,20 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		});
 	}
 
+	private setFiltersInQueryParams(filterOptions: Partial<Filters>): void {
+		// Remember this search by adding it to the query params in the url
+		const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
+		const orderProperty =
+			this.state.orderProperty === 'relevance' ? null : `orderProperty=${this.state.orderProperty}`;
+		const orderDirection =
+			this.state.orderDirection === 'desc' ? null : `orderProperty=${this.state.orderDirection}`;
+		const queryParams: string = compact([filters, orderProperty, orderDirection]).join('&');
+		this.history.push({
+			pathname: '/search',
+			search: queryParams.length ? `?${queryParams}` : '',
+		});
+	}
+
 	handleFilterOptionSearchChange = (event: ChangeEvent) => {
 		const target = event.target as HTMLInputElement;
 		if (target) {
@@ -159,16 +177,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		}
 	};
 
-	handleFilterFieldChange = (
-		value: string | string[] | { gte: string; lte: string } | null,
-		id: string
-	) => {
+	handleFilterFieldChange = async (value: string | string[] | DateRange | null, id: string) => {
 		if (value) {
-			setDeepState(this, `formState.${id}`, value).then(noop);
+			await setDeepState(this, `formState.${id}`, value);
 		} else {
-			unsetDeepState(this, `formState.${id}`).then(noop);
+			await unsetDeepState(this, `formState.${id}`);
 		}
-		this.submitSearchForm().then(noop);
 	};
 
 	handleOrderChanged = (value: string = 'relevance_desc') => {
@@ -216,14 +230,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				cloneDeep(this.state.filterOptionSearch)
 			);
 
-			// Remember this search by adding it to the query params in the url
-			this.history.push({
-				pathname: '/search',
-				search:
-					`?query=${JSON.stringify(filterOptions)}` +
-					`&orderProperty=${this.state.orderProperty}` +
-					`&orderDirection=${this.state.orderDirection}`,
-			});
+			this.setFiltersInQueryParams(filterOptions);
 
 			// TODO do the search by dispatching a redux action
 			const searchResponse: SearchResponse = await doSearch(
@@ -251,8 +258,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	renderMultiSelect(label: string, propertyName: keyof Filters): ReactNode {
 		const multiOptions = (this.state.multiOptions[propertyName] || []).map(
 			(option: OptionProp): CheckboxOption => {
+				let label = capitalize(option.option_name);
+				if (propertyName === 'language') {
+					label = capitalize(LANGUAGES.nl[option.option_name] || option.option_name);
+				}
 				return {
-					label: `${capitalize(option.option_name)} (${option.option_count})`,
+					label: `${label} (${option.option_count})`,
 					id: option.option_name,
 					checked: false,
 				};
@@ -274,7 +285,10 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					label={label}
 					id={propertyName}
 					options={multiOptions}
-					onChange={this.handleFilterFieldChange}
+					onChange={async (values: string[]) => {
+						await this.handleFilterFieldChange(values, propertyName);
+						await this.submitSearchForm();
+					}}
 				/>
 			</li>
 		);
@@ -286,7 +300,10 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				<DateRangeDropdown
 					label={label}
 					id={propertyName}
-					onChange={this.handleFilterFieldChange}
+					onChange={async (range: DateRange) => {
+						await this.handleFilterFieldChange(range, propertyName);
+						await this.submitSearchForm();
+					}}
 				/>
 			</li>
 		);
@@ -341,8 +358,9 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			{ label: 'Laatst toegevoegd', value: 'addedDate_desc' },
 			{ label: 'Laatst gewijzigd', value: 'editDate_desc' },
 		];
+		const resultsCount = this.state.results.count;
 		const resultStart = this.state.currentPage * ITEMS_PER_PAGE;
-		const resultEnd = resultStart + ITEMS_PER_PAGE;
+		const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE, resultsCount);
 
 		return (
 			<Container mode={'horizontal'}>
@@ -386,7 +404,9 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 												id="query"
 												placeholder="Vul uw zoekterm in..."
 												defaultValue={this.state.formState.query}
-												onChange={value => this.handleFilterFieldChange(value, 'query')}
+												onChange={(searchTerm: string) =>
+													this.handleFilterFieldChange(searchTerm, 'query')
+												}
 											/>
 										</FormGroup>
 										<FormGroup inlineMode="shrink">
