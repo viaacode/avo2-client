@@ -264,7 +264,11 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		}
 	};
 
-	renderMultiSelect(label: string, propertyName: keyof Filters): ReactNode {
+	renderMultiSelect(
+		label: string,
+		propertyName: keyof Filters,
+		disabled: boolean = false
+	): ReactNode {
 		const multiOptions = (this.state.multiOptions[propertyName] || []).map(
 			(option: OptionProp): CheckboxOption => {
 				let label = capitalize(option.option_name);
@@ -294,6 +298,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					label={label}
 					id={propertyName}
 					options={multiOptions}
+					disabled={disabled}
 					onChange={async (values: string[]) => {
 						await this.handleFilterFieldChange(values, propertyName);
 						await this.submitSearchForm();
@@ -323,13 +328,13 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			<div className="c-filter-dropdown-list">
 				{this.renderMultiSelect('Type', 'type')}
 				{this.renderMultiSelect('Onderwijsniveau', 'educationLevel')}
-				{this.renderMultiSelect('Domein', 'domain')}
+				{this.renderMultiSelect('Domein', 'domain', true)}
 				{this.renderDateRange('Uitzenddatum', 'broadcastDate')}
 				{this.renderMultiSelect('Taal', 'language')}
 				{this.renderMultiSelect('Onderwerp', 'keyword')}
 				{this.renderMultiSelect('Vak', 'subject')}
 				{this.renderMultiSelect('Serie', 'serie')}
-				{this.renderMultiSelect('Aanbieder', 'provider')}
+				{this.renderMultiSelect('Aanbieder', 'provider', true)}
 			</div>
 		);
 	}
