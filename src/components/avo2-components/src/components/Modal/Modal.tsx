@@ -29,7 +29,7 @@ export interface ModalProps {
 	children: ReactNode;
 	isOpen: boolean;
 	title?: string;
-	size?: 'small' | 'medium' | 'fullscreen' | 'auto';
+	size?: 'small' | 'medium' | 'large' | 'fullscreen' | 'auto';
 	onClose?: () => void;
 }
 
@@ -86,6 +86,7 @@ export const Modal: FunctionComponent<ModalProps> = ({
 					className={classNames('c-modal', {
 						'c-modal--small': size === 'small',
 						'c-modal--medium': size === 'medium',
+						'c-modal--large': size === 'large',
 						'c-modal--fullscreen': size === 'fullscreen',
 						'c-modal--height-auto': size === 'auto',
 					})}

@@ -37,7 +37,7 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 		};
 	}
 
-	handleToggle = async (checked: boolean, id: string) => {
+	handleCheckboxToggled = async (checked: boolean, id: string) => {
 		await setDeepState(this, `checkedStates.${id}`, checked);
 	};
 
@@ -78,7 +78,9 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 													id={option.id}
 													label={option.label}
 													defaultChecked={option.checked}
-													onChange={(checked: boolean) => this.handleToggle(checked, option.id)}
+													onChange={(checked: boolean) =>
+														this.handleCheckboxToggled(checked, option.id)
+													}
 												/>
 											)
 									)}

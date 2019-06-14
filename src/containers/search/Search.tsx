@@ -47,6 +47,7 @@ import {
 	CheckboxDropdown,
 	CheckboxOption,
 } from '../../components/CheckboxDropdown/CheckboxDropdown';
+import { CheckboxModal } from '../../components/CheckboxModal/CheckboxModal';
 import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
 import { LANGUAGES } from '../../helpers/languages';
 
@@ -226,29 +227,36 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		});
 	}
 
+	async executeSearch(): Promise<SearchResponse> {
+		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+		const filterOptions: Partial<Filters> = this.cleanupFilterObject(
+			cloneDeep(this.state.formState)
+		);
+
+		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+		const filterOptionSearch: Partial<FilterOptionSearch> = this.cleanupFilterObject(
+			cloneDeep(this.state.filterOptionSearch)
+		);
+
+		// TODO do the search by dispatching a redux action
+		return await doSearch(
+			filterOptions,
+			filterOptionSearch,
+			this.state.orderProperty,
+			this.state.orderDirection,
+			this.state.currentPage * ITEMS_PER_PAGE,
+			ITEMS_PER_PAGE
+		);
+	}
+
+	// private getFilterOptions(searchTerm: string, propertyName: string): Promise<OptionProp[]> {
+	// 	const searchResponse: SearchResponse = await this.executeSearch();
+	// 	return searchResponse.aggregations[propertyName];
+	// }
+
 	submitSearchForm = async () => {
 		try {
-			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-			const filterOptions: Partial<Filters> = this.cleanupFilterObject(
-				cloneDeep(this.state.formState)
-			);
-
-			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-			const filterOptionSearch: Partial<FilterOptionSearch> = this.cleanupFilterObject(
-				cloneDeep(this.state.filterOptionSearch)
-			);
-
-			this.setFiltersInQueryParams();
-
-			// TODO do the search by dispatching a redux action
-			const searchResponse: SearchResponse = await doSearch(
-				filterOptions,
-				filterOptionSearch,
-				this.state.orderProperty,
-				this.state.orderDirection,
-				this.state.currentPage * ITEMS_PER_PAGE,
-				ITEMS_PER_PAGE
-			);
+			const searchResponse: SearchResponse = await this.executeSearch();
 
 			this.setState({
 				...this.state,
@@ -258,13 +266,15 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					count: searchResponse.count,
 				},
 			});
+
+			this.setFiltersInQueryParams();
 			window.scrollTo(0, 0);
 		} catch (err) {
 			// TODO show error toast
 		}
 	};
 
-	renderMultiSelect(
+	private renderCheckboxDropdown(
 		label: string,
 		propertyName: keyof Filters,
 		disabled: boolean = false
@@ -283,21 +293,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			}
 		);
 
-		// <input
-		// type="text"
-		// id={propertyName}
-		// name={propertyName}
-		// placeholder="Filter options"
-		// onChange={this.handleFilterOptionSearchChange}
-		// style={{ display: 'block', width: '100%' }}
-		// />
-
 		return (
 			<li style={{ display: 'flex' }}>
 				<CheckboxDropdown
 					label={label}
 					id={propertyName}
-					options={multiOptions}
+					options={multiOptions} // TODO reset state of CheckboxModal when closed, but not applied. confirmed by leen
 					disabled={disabled}
 					onChange={async (values: string[]) => {
 						await this.handleFilterFieldChange(values, propertyName);
@@ -308,14 +309,51 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		);
 	}
 
-	renderDateRange(label: string, propertyName: keyof Filters): ReactNode {
+	private renderCheckboxModal(label: string, propertyName: string) {
+		const multiOptions = (this.state.multiOptions[propertyName] || []).map(
+			(option: OptionProp): CheckboxOption => {
+				const label = capitalize(option.option_name);
+				return {
+					label: `${label} (${option.option_count})`,
+					id: option.option_name,
+					checked: false,
+				};
+			}
+		);
+
+		// <input
+		// type="text"
+		// id={propertyName}
+		// name={propertyName}
+		// placeholder="Filter options"
+		// onChange={this.handleFilterOptionSearchChange}
+		// style={{ display: 'block', width: '100%' }}
+		// />
+
+		// optionsCallback={this.getFilterOptions}
+		return (
+			<li style={{ display: 'flex' }}>
+				<CheckboxModal
+					label={label}
+					id={propertyName}
+					initialOptions={multiOptions} // TODO reset state of CheckboxModal when closed, but not applied. confirmed by leen
+					onChange={async (values: string[]) => {
+						await this.handleFilterFieldChange(values, propertyName);
+						await this.submitSearchForm();
+					}}
+				/>
+			</li>
+		);
+	}
+
+	private renderDateRangeDropdown(label: string, propertyName: keyof Filters): ReactNode {
 		return (
 			<li style={{ display: 'flex' }}>
 				<DateRangeDropdown
 					label={label}
 					id={propertyName}
 					onChange={async (range: DateRange) => {
-						await this.handleFilterFieldChange(range, propertyName);
+						await this.handleFilterFieldChange(range, propertyName); // TODO reset state of CheckboxModal when closed, but not applied. confirmed by leen
 						await this.submitSearchForm();
 					}}
 				/>
@@ -326,15 +364,15 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	renderFilterControls() {
 		return (
 			<div className="c-filter-dropdown-list">
-				{this.renderMultiSelect('Type', 'type')}
-				{this.renderMultiSelect('Onderwijsniveau', 'educationLevel')}
-				{this.renderMultiSelect('Domein', 'domain', true)}
-				{this.renderDateRange('Uitzenddatum', 'broadcastDate')}
-				{this.renderMultiSelect('Taal', 'language')}
-				{this.renderMultiSelect('Onderwerp', 'keyword')}
-				{this.renderMultiSelect('Vak', 'subject')}
-				{this.renderMultiSelect('Serie', 'serie')}
-				{this.renderMultiSelect('Aanbieder', 'provider', true)}
+				{this.renderCheckboxDropdown('Type', 'type')}
+				{this.renderCheckboxDropdown('Onderwijsniveau', 'educationLevel')}
+				{this.renderCheckboxDropdown('Domein', 'domain', true)}
+				{this.renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
+				{this.renderCheckboxDropdown('Taal', 'language')}
+				{this.renderCheckboxModal('Onderwerp', 'keyword')}
+				{this.renderCheckboxModal('Vak', 'subject')}
+				{this.renderCheckboxModal('Serie', 'serie')}
+				{this.renderCheckboxDropdown('Aanbieder', 'provider', true)}
 			</div>
 		);
 	}
@@ -425,6 +463,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 												id="query"
 												placeholder="Vul uw zoekterm in..."
 												defaultValue={this.state.formState.query}
+												icon="search"
 												onChange={(searchTerm: string) =>
 													this.handleFilterFieldChange(searchTerm, 'query')
 												}
