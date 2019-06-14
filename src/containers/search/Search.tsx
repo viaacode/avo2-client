@@ -33,6 +33,7 @@ import {
 	Form,
 	FormGroup,
 	Navbar,
+	Pagination,
 	Select,
 	TextInput,
 	Toolbar,
@@ -147,6 +148,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				}
 				newState.orderProperty = (queryParams.orderProperty || 'relevance') as SearchOrderProperty;
 				newState.orderDirection = (queryParams.orderProperty || 'desc') as SearchOrderDirection;
+				newState.currentPage = parseInt((queryParams.page as string) || '1', 10) - 1;
 				this.setState(newState, resolve);
 			} catch (err) {
 				// TODO show toast error: Ongeldige zoek query
@@ -155,14 +157,20 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		});
 	}
 
-	private setFiltersInQueryParams(filterOptions: Partial<Filters>): void {
+	private setFiltersInQueryParams(): void {
+		const filterOptions: Partial<Filters> = this.cleanupFilterObject(
+			cloneDeep(this.state.formState)
+		);
+
 		// Remember this search by adding it to the query params in the url
 		const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
 		const orderProperty =
 			this.state.orderProperty === 'relevance' ? null : `orderProperty=${this.state.orderProperty}`;
 		const orderDirection =
 			this.state.orderDirection === 'desc' ? null : `orderProperty=${this.state.orderDirection}`;
-		const queryParams: string = compact([filters, orderProperty, orderDirection]).join('&');
+		const page = this.state.currentPage === 0 ? null : `page=${this.state.currentPage + 1}`;
+
+		const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
 		this.history.push({
 			pathname: '/search',
 			search: queryParams.length ? `?${queryParams}` : '',
@@ -230,7 +238,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				cloneDeep(this.state.filterOptionSearch)
 			);
 
-			this.setFiltersInQueryParams(filterOptions);
+			this.setFiltersInQueryParams();
 
 			// TODO do the search by dispatching a redux action
 			const searchResponse: SearchResponse = await doSearch(
@@ -239,7 +247,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				this.state.orderProperty,
 				this.state.orderDirection,
 				this.state.currentPage * ITEMS_PER_PAGE,
-				this.state.currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE
+				ITEMS_PER_PAGE
 			);
 
 			this.setState({
@@ -250,6 +258,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					count: searchResponse.count,
 				},
 			});
+			window.scrollTo(0, 0);
 		} catch (err) {
 			// TODO show error toast
 		}
@@ -280,7 +289,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		// />
 
 		return (
-			<li className="c-filter-dropdown">
+			<li style={{ display: 'flex' }}>
 				<CheckboxDropdown
 					label={label}
 					id={propertyName}
@@ -296,7 +305,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 
 	renderDateRange(label: string, propertyName: keyof Filters): ReactNode {
 		return (
-			<li className="c-filter-dropdown">
+			<li style={{ display: 'flex' }}>
 				<DateRangeDropdown
 					label={label}
 					id={propertyName}
@@ -349,6 +358,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		);
 	}
 
+	private setPage = async (pageIndex: number): Promise<void> => {
+		await setDeepState(this, 'currentPage', pageIndex);
+		this.setFiltersInQueryParams();
+		await this.submitSearchForm();
+	};
+
 	render() {
 		const orderOptions = [
 			{ label: 'Meest relevant', value: 'relevance_desc' },
@@ -359,6 +374,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			{ label: 'Laatst gewijzigd', value: 'editDate_desc' },
 		];
 		const resultsCount = this.state.results.count;
+		const pageCount = Math.ceil(resultsCount / ITEMS_PER_PAGE);
 		const resultStart = this.state.currentPage * ITEMS_PER_PAGE;
 		const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE, resultsCount);
 
@@ -373,7 +389,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 								</ToolbarItem>
 								<ToolbarItem>
 									<p className="c-body-1 u-text-muted">
-										{resultStart}-{resultEnd} van {this.state.results.count} resultaten
+										{resultStart}-{resultEnd} van {resultsCount} resultaten
 									</p>
 								</ToolbarItem>
 							</Fragment>
@@ -420,7 +436,16 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					</Container>
 				</Navbar>
 				<Container mode="vertical">
-					<Container>{this.renderSearchResults()}</Container>
+					<Container>
+						{this.renderSearchResults()}
+						<div className="u-spacer-l">
+							<Pagination
+								pageCount={pageCount}
+								currentPage={this.state.currentPage}
+								onPageChange={this.setPage}
+							/>
+						</div>
+					</Container>
 				</Container>
 			</Container>
 		);

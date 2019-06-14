@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 
 import classNames from 'classnames';
 
@@ -7,21 +7,18 @@ import { Icon } from '../Icon/Icon';
 export interface PaginationProps {
 	pageCount: number;
 	displayCount?: number;
-	initialPageIndex?: number;
+	currentPage?: number;
 	onPageChange?: (page: number) => void;
 }
 
 export const Pagination: FunctionComponent<PaginationProps> = ({
 	pageCount,
 	displayCount = 5,
-	initialPageIndex = 0,
+	currentPage = 0,
 	onPageChange = () => {},
 }: PaginationProps) => {
-	const [currentPage, setCurrentPage] = useState(initialPageIndex);
-
 	function changePage(page: number) {
-		if (page >= 0 && page <= pageCount - 1 && page !== currentPage) {
-			setCurrentPage(page);
+		if (page >= 0 && page <= pageCount - 1) {
 			onPageChange(page);
 		}
 	}
@@ -32,7 +29,7 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
 			return Array.from({ length: pageCount }, (value: number, index: number) => index);
 		}
 
-		// generate first x pages if currentPage is less than the displaycount
+		// generate first x pages if currentPage is less than the displayCount
 		if (currentPage < displayCount / 2) {
 			return Array.from({ length: displayCount }, (value: number, index: number) => index);
 		}
@@ -69,7 +66,7 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
 						className={classNames('c-pagination__btn', {
 							'c-pagination__btn--active': pageIndex === currentPage,
 						})}
-						onClick={() => changePage(pageIndex)}
+						onClick={pageIndex !== currentPage ? () => changePage(pageIndex) : () => {}}
 					>
 						{pageIndex + 1}
 					</div>

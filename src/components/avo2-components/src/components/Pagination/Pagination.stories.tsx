@@ -13,7 +13,7 @@ storiesOf('Pagination', module)
 		<Pagination
 			pageCount={20}
 			displayCount={7}
-			initialPageIndex={9}
+			currentPage={9}
 			onPageChange={action('onPageChange')}
 		/>
 	));
