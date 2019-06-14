@@ -97,6 +97,7 @@ export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRan
 								label="Toepassen"
 								type="primary"
 								block={true}
+								className="c-dropdown-menu__close"
 								onClick={() => onChange(this.state.range, id)}
 							/>
 						</FormGroup>

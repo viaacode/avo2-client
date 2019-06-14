@@ -146,6 +146,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		} else {
 			unsetDeepState(this, `formState.${id}`).then(noop);
 		}
+		this.submitSearchForm().then(noop);
 	};
 
 	handleOrderChanged = (value: string = 'relevance_desc') => {

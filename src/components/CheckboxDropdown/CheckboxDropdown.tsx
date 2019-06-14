@@ -41,12 +41,6 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 
 	handleToggle = async (checked: boolean, id: string) => {
 		await setDeepState(this, `checkedStates.${id}`, checked);
-		if (this.props.onChange) {
-			this.props.onChange(
-				compact(map(this.state.checkedStates, (value: boolean, key: string) => value && key)),
-				this.props.id
-			);
-		}
 	};
 
 	handleShowCollapsedClick = () => {
