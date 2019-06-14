@@ -3,19 +3,26 @@ import React, { Fragment } from 'react';
 
 import { Toolbar } from './Toolbar';
 import { ToolbarCenter, ToolbarLeft, ToolbarRight } from './Toolbar.slots';
+import { ToolbarItem } from './ToolbarItem';
 
 describe('<Toolbar />', () => {
 	it('Should be able to render', () => {
 		shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 				<ToolbarCenter>
-					<Fragment>Center</Fragment>
+					<ToolbarItem>
+						<Fragment>Center</Fragment>
+					</ToolbarItem>
 				</ToolbarCenter>
 				<ToolbarRight>
-					<Fragment>Right</Fragment>
+					<ToolbarItem>
+						<Fragment>Right</Fragment>
+					</ToolbarItem>
 				</ToolbarRight>
 			</Toolbar>
 		);
@@ -25,13 +32,19 @@ describe('<Toolbar />', () => {
 		const toolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 				<ToolbarCenter>
-					<Fragment>Center</Fragment>
+					<ToolbarItem>
+						<Fragment>Center</Fragment>
+					</ToolbarItem>
 				</ToolbarCenter>
 				<ToolbarRight>
-					<Fragment>Right</Fragment>
+					<ToolbarItem>
+						<Fragment>Right</Fragment>
+					</ToolbarItem>
 				</ToolbarRight>
 			</Toolbar>
 		);
@@ -51,14 +64,18 @@ describe('<Toolbar />', () => {
 		const regularToolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
 		const mediumToolbarComponent = shallow(
 			<Toolbar size="medium">
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
@@ -74,14 +91,18 @@ describe('<Toolbar />', () => {
 		const regularToolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
 		const spacedToolbarComponent = shallow(
 			<Toolbar spaced={true}>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
@@ -97,14 +118,18 @@ describe('<Toolbar />', () => {
 		const regularToolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
 		const autoHeightToolbarComponent = shallow(
 			<Toolbar autoHeight={true}>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
@@ -120,14 +145,18 @@ describe('<Toolbar />', () => {
 		const regularToolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
 		const alignTopToolbarComponent = shallow(
 			<Toolbar alignTop={true}>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
@@ -143,14 +172,18 @@ describe('<Toolbar />', () => {
 		const regularToolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
 		const interactiveCenterToolbarComponent = shallow(
 			<Toolbar interactiveCenter={true}>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
@@ -170,14 +203,18 @@ describe('<Toolbar />', () => {
 		const regularToolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
 		const altCenterToolbarComponent = shallow(
 			<Toolbar altCenter={true}>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
@@ -193,14 +230,18 @@ describe('<Toolbar />', () => {
 		const regularToolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
 		const justifiedToolbarComponent = shallow(
 			<Toolbar justified={true}>
 				<ToolbarLeft>
-					<Fragment>Left</Fragment>
+					<ToolbarItem>
+						<Fragment>Left</Fragment>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
@@ -216,7 +257,9 @@ describe('<Toolbar />', () => {
 		const toolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarLeft>
-					<p id="test">Hello!</p>
+					<ToolbarItem>
+						<p id="test">Hello!</p>
+					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
 		);
@@ -243,7 +286,9 @@ describe('<Toolbar />', () => {
 		const toolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarCenter>
-					<p id="test">Hello!</p>
+					<ToolbarItem>
+						<p id="test">Hello!</p>
+					</ToolbarItem>
 				</ToolbarCenter>
 			</Toolbar>
 		);
@@ -270,7 +315,9 @@ describe('<Toolbar />', () => {
 		const toolbarComponent = shallow(
 			<Toolbar>
 				<ToolbarRight>
-					<p id="test">Hello!</p>
+					<ToolbarItem>
+						<p id="test">Hello!</p>
+					</ToolbarItem>
 				</ToolbarRight>
 			</Toolbar>
 		);

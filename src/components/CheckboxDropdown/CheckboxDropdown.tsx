@@ -1,11 +1,8 @@
-import { compact, fromPairs, map } from 'lodash-es';
+import { compact, fromPairs } from 'lodash-es';
 import React, { Component } from 'react';
 import { setDeepState } from '../../helpers/setDeepState';
 
-import { Button, Checkbox, Form } from '../avo2-components/src';
-import { CheckboxGroup } from '../avo2-components/src/components/CheckboxGroup/CheckboxGroup';
-import { Dropdown } from '../avo2-components/src/components/Dropdown/Dropdown';
-import { FormGroup } from '../avo2-components/src/components/Form/FormGroup';
+import { Button, Checkbox, CheckboxGroup, Dropdown, Form, FormGroup } from '../avo2-components/src';
 
 export interface CheckboxOption {
 	label: string;

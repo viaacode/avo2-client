@@ -8,6 +8,7 @@ import { Badge } from './components/Badge/Badge';
 import { Blankslate } from './components/Blankslate/Blankslate';
 import { Button } from './components/Button/Button';
 import { Checkbox } from './components/Checkbox/Checkbox';
+import { CheckboxGroup } from './components/CheckboxGroup/CheckboxGroup';
 import { Container } from './components/Container/Container';
 import { DatePicker } from './components/DatePicker/DatePicker';
 import { Dropdown } from './components/Dropdown/Dropdown';
@@ -17,6 +18,8 @@ import { Column } from './components/Grid/Column';
 import { Grid } from './components/Grid/Grid';
 import { Icon } from './components/Icon/Icon';
 import { Modal } from './components/Modal/Modal';
+import { ModalBody, ModalFooterLeft, ModalFooterRight } from './components/Modal/Modal.slots';
+import { Navbar } from './components/Navbar/Navbar';
 import { Pagination } from './components/Pagination/Pagination';
 import { RadioButton } from './components/RadioButton/RadioButton';
 import { RadioButtonGroup } from './components/RadioButtonGroup/RadioButtonGroup';
@@ -26,6 +29,9 @@ import { Swatch } from './components/Swatch/Swatch';
 import { TagList } from './components/TagList/TagList';
 import { TextInput } from './components/TextInput/TextInput';
 import { Toolbar } from './components/Toolbar/Toolbar';
+import { ToolbarCenter, ToolbarLeft, ToolbarRight } from './components/Toolbar/Toolbar.slots';
+import { ToolbarItem } from './components/Toolbar/ToolbarItem';
+import { ToolbarTitle } from './components/Toolbar/ToolbarTitle';
 
 export {
 	COLORS,
@@ -35,6 +41,7 @@ export {
 	Blankslate,
 	Button,
 	Checkbox,
+	CheckboxGroup,
 	Container,
 	DatePicker,
 	Dropdown,
@@ -44,6 +51,10 @@ export {
 	Column,
 	Icon,
 	Modal,
+	ModalBody,
+	ModalFooterLeft,
+	ModalFooterRight,
+	Navbar,
 	Pagination,
 	RadioButton,
 	RadioButtonGroup,
@@ -53,4 +64,9 @@ export {
 	TagList,
 	TextInput,
 	Toolbar,
+	ToolbarLeft,
+	ToolbarCenter,
+	ToolbarRight,
+	ToolbarItem,
+	ToolbarTitle,
 };

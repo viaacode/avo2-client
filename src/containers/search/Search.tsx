@@ -11,7 +11,7 @@ import {
 	pickBy,
 } from 'lodash-es';
 import queryString from 'query-string';
-import React, { ChangeEvent, Component, ReactNode } from 'react';
+import React, { ChangeEvent, Component, Fragment, ReactNode } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
 import { setDeepState, unsetDeepState } from '../../helpers/setDeepState';
 import { doSearch } from '../../redux/search/searchActions';
@@ -25,8 +25,20 @@ import {
 	SearchResultItem,
 } from '../../types';
 
-import { Button, Container, Form, Select, TextInput } from '../../components/avo2-components/src';
-import { FormGroup } from '../../components/avo2-components/src/components/Form/FormGroup';
+import {
+	Button,
+	Container,
+	Form,
+	FormGroup,
+	Navbar,
+	Select,
+	TextInput,
+	Toolbar,
+	ToolbarItem,
+	ToolbarLeft,
+	ToolbarRight,
+	ToolbarTitle,
+} from '../../components/avo2-components/src';
 import {
 	CheckboxDropdown,
 	CheckboxOption,
@@ -35,13 +47,19 @@ import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeD
 
 type SearchProps = {};
 
+const ITEMS_PER_PAGE = 10;
+
 interface SearchState extends StaticContext {
 	formState: Filters;
 	filterOptionSearch: FilterOptionSearch;
 	orderProperty: SearchOrderProperty;
 	orderDirection: SearchOrderDirection;
 	multiOptions: { [key: string]: OptionProp[] };
-	searchResults: SearchResultItem[];
+	results: {
+		items: SearchResultItem[];
+		count: number;
+	};
+	currentPage: number;
 }
 
 export class Search extends Component<RouteComponentProps<SearchProps>, SearchState> {
@@ -97,7 +115,11 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			orderProperty: 'relevance',
 			orderDirection: 'desc',
 			multiOptions: {},
-			searchResults: [],
+			results: {
+				items: [],
+				count: 0,
+			},
+			currentPage: 0,
 		};
 	}
 
@@ -209,14 +231,17 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				filterOptionSearch,
 				this.state.orderProperty,
 				this.state.orderDirection,
-				0,
-				10
+				this.state.currentPage * ITEMS_PER_PAGE,
+				this.state.currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE
 			);
 
 			this.setState({
 				...this.state,
 				multiOptions: searchResponse.aggregations,
-				searchResults: searchResponse.results || [],
+				results: {
+					items: searchResponse.results,
+					count: searchResponse.count,
+				},
 			});
 		} catch (err) {
 			// TODO show error toast
@@ -283,6 +308,30 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		);
 	}
 
+	private renderSearchResults() {
+		return (
+			<ul className="c-search-result-list">
+				{this.state.results.items.map(result => (
+					<li key={result.pid}>
+						<div className="c-search-result">
+							<div className="c-search-result__image">
+								<img src={result.thumbnail_path} style={{ maxWidth: '300px' }} alt="" />
+							</div>
+							<div className="c-search-result__content">
+								<span className="title">{result.dc_title}</span>
+								<br />
+								<span className="title">{result.dcterms_issued}</span>
+								<br />
+								<br />
+								<br />
+							</div>
+						</div>
+					</li>
+				))}
+			</ul>
+		);
+	}
+
 	render() {
 		const orderOptions = [
 			{ label: 'Meest relevant', value: 'relevance_desc' },
@@ -292,54 +341,67 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			{ label: 'Laatst toegevoegd', value: 'addedDate_desc' },
 			{ label: 'Laatst gewijzigd', value: 'editDate_desc' },
 		];
+		const resultStart = this.state.currentPage * ITEMS_PER_PAGE;
+		const resultEnd = resultStart + ITEMS_PER_PAGE;
 
 		return (
 			<Container mode={'horizontal'}>
-				<Form type="inline">
-					<FormGroup label="Sorteer op" labelFor="sortBy">
-						<Select
-							id="sortBy"
-							options={orderOptions}
-							onChange={value => this.handleOrderChanged(value)}
-						/>
-					</FormGroup>
-				</Form>
-				<br />
-				<div className="filters">
-					<div className="u-spacer-bottom-l">
-						<div className="u-limit-width-bp3">
+				<Navbar>
+					<Toolbar>
+						<ToolbarLeft>
+							<Fragment>
+								<ToolbarItem>
+									<ToolbarTitle>Zoekresultaten</ToolbarTitle>
+								</ToolbarItem>
+								<ToolbarItem>
+									<p className="c-body-1 u-text-muted">
+										{resultStart}-{resultEnd} van {this.state.results.count} resultaten
+									</p>
+								</ToolbarItem>
+							</Fragment>
+						</ToolbarLeft>
+						<ToolbarRight>
 							<Form type="inline">
-								<FormGroup>
-									<TextInput
-										id="query"
-										placeholder="Vul uw zoekterm in..."
-										defaultValue={this.state.formState.query}
-										onChange={value => this.handleFilterFieldChange(value, 'query')}
+								<FormGroup label="Sorteer op" labelFor="sortBy">
+									<Select
+										id="sortBy"
+										options={orderOptions}
+										onChange={value => this.handleOrderChanged(value)}
 									/>
 								</FormGroup>
-								<FormGroup>
-									<Button label="Zoeken" type="primary" onClick={this.submitSearchForm} />
-								</FormGroup>
 							</Form>
+						</ToolbarRight>
+					</Toolbar>
+				</Navbar>
+				<Navbar autoHeight={true}>
+					<Container>
+						{/*TODO replace with spacer component when it is built*/}
+						<div className="u-spacer-top-l">
+							{/*TODO replace with spacer component when it is built*/}
+							<div className="u-spacer-bottom-l">
+								<div className="u-limit-width-bp3">
+									<Form type="inline">
+										<FormGroup inlineMode="grow">
+											<TextInput
+												id="query"
+												placeholder="Vul uw zoekterm in..."
+												defaultValue={this.state.formState.query}
+												onChange={value => this.handleFilterFieldChange(value, 'query')}
+											/>
+										</FormGroup>
+										<FormGroup inlineMode="shrink">
+											<Button label="Zoeken" type="primary" onClick={this.submitSearchForm} />
+										</FormGroup>
+									</Form>
+								</div>
+							</div>
+							{this.renderFilterControls()}
 						</div>
-					</div>
-					<ul className="c-filter-dropdown-list">{this.renderFilterControls()}</ul>
-				</div>
-				<div>
-					<h2>Results</h2>
-					<div className="results-container" />
-					{this.state.searchResults.map(result => (
-						<div key={result.pid}>
-							<span className="title">{result.dc_title}</span>
-							<br />
-							<span className="title">{result.dcterms_issued}</span>
-							<br />
-							<img src={result.thumbnail_path} style={{ maxWidth: '300px' }} alt="" />
-							<br />
-							<br />
-						</div>
-					))}
-				</div>
+					</Container>
+				</Navbar>
+				<Container mode="vertical">
+					<Container>{this.renderSearchResults()}</Container>
+				</Container>
 			</Container>
 		);
 	}

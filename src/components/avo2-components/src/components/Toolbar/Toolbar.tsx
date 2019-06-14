@@ -52,23 +52,13 @@ export const Toolbar: FunctionComponent<ToolbarProps> = ({
 				'c-toolbar__justified': justified,
 			})}
 		>
-			{left && (
-				<div className="c-toolbar__left">
-					<div className="c-toolbar__item">{left}</div>
-				</div>
-			)}
+			{left && <div className="c-toolbar__left">{left}</div>}
 			{center && (
 				<div className="c-toolbar__center">
-					<div className="c-toolbar__center-inner">
-						<div className="c-toolbar__item">{center}</div>
-					</div>
+					<div className="c-toolbar__center-inner">{center}</div>
 				</div>
 			)}
-			{right && (
-				<div className="c-toolbar__right">
-					<div className="c-toolbar__item">{right}</div>
-				</div>
-			)}
+			{right && <div className="c-toolbar__right">{right}</div>}
 		</div>
 	);
 };
