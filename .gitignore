@@ -247,5 +247,3 @@ jspm_packages
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-/src/components/avo2-components

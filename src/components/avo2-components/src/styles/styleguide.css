@@ -1,0 +1,236 @@
+/* ==========================================================================
+  Style guide settings
+   ========================================================================== */
+/* Better display for modals when prototype nav is open
+   ========================================================================== */
+.br-prototype-nav-is-open .c-modal-context,
+.br-prototype-nav-is-open .c-navbar--fixed {
+	left: 250px;
+	width: calc(100% - 250px);
+}
+
+/* ==========================================================================
+	 Style guide undo styles
+
+	 In the "real world" (e.g. the app itself) some HTML elements are hidden by default, or positioned in specific ways.
+	 In the styleguide sometimes we want to undo some of that for demonstrational purposes.
+	  ========================================================================== */
+/* Settings: preprocessor variables, colors, global settings
+	  ========================================================================== */
+/* ==========================================================================
+	 Colors
+	 Only define colors here. Don't use sass color functions, stick to hex values,
+	 or the color component in styleguide won't regenerate automatically anymore.
+	========================================================================== */
+/* Grays
+	========================================================================== */
+/* Primary colors
+	 ========================================================================== */
+/* Secondary colors
+	 ========================================================================== */
+/* Tertiary colors
+	  ========================================================================== */
+/* Filter alert message colors
+	 ========================================================================== */
+/* Repeat color variables for semantic mapping
+	  For example, you can use this file to globally change the colors of primary buttons and links;
+	 these are usually mapped to $color-primary at the component level.
+
+	 This is in a separate file because _settings.color.scss is being used to generate documentation
+	 about the colors, and we technically cannot read variables that reference other variables.
+	========================================================================== */
+/* ==========================================================================
+	  Variables
+	  ---
+	  Global SCSS variables (override default values defined in component files)
+	  ========================================================================== */
+/* Typography
+	  ========================================================================== */
+/* Colors
+	  ========================================================================== */
+/* Breakpoints
+	  ========================================================================== */
+/* Z-index stack
+	  ========================================================================== */
+/* Bars
+	  ========================================================================== */
+/* General
+	  ========================================================================== */
+/* Form groups
+	  ========================================================================== */
+/* Button overrides
+	  ========================================================================== */
+/* Code button
+	  We use a separate style to have a subtle button
+	  ========================================================================== */
+.br-sample-show-code-btn {
+	color: #45647B;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	font-size: 12px;
+	border: none;
+	padding: 0;
+}
+
+.br-sample-show-code-btn:focus {
+	color: #3FB1D6;
+	outline: 2px solid rgba(63, 177, 214, 0.33);
+}
+
+.br-sample-show-code-btn-html {
+	margin-right: 1rem;
+}
+
+/* Styling for grid documentation
+	  ========================================================================== */
+.br-styleguide #component-01-o-grid [class*=o-grid-col] {
+	color: #FFF;
+	background: #45647B;
+	margin-bottom: 1.6rem;
+	padding: 1rem;
+	text-align: center;
+}
+
+/* Inverse
+	  ========================================================================== */
+#component-06-c-button-borderless-inverse .br-sample-content,
+#component-03-c-button-secondary-inverse .br-sample-content {
+	background: #1D2B35;
+}
+
+/* Color swatches (for colors documentation)
+	  ========================================================================== */
+.c-swatch-list {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+}
+
+.c-swatch {
+	margin: 0 2.4rem 2.4rem 0;
+}
+
+.c-swatch__block {
+	width: 16rem;
+	height: 4.8rem;
+	border-radius: 0.3rem;
+	margin-bottom: 0.4rem;
+}
+
+.c-swatch__info {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+	font-size: 1.2rem;
+}
+
+.c-swatch__color-hex {
+	color: #45647B;
+}
+
+/* Styling for icon documentation
+	  ========================================================================== */
+.c-styleguide-svg-icons {
+	border: 0.1rem solid #E5E5E5;
+	padding: 2.4rem;
+	margin-bottom: 4rem;
+}
+
+.c-styleguide-svg-icons__category {
+	-ms-flex-wrap: nowrap;
+	flex-wrap: nowrap;
+	column-count: 4;
+}
+
+.c-styleguide-svg-icon {
+	break-inside: avoid;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: center;
+	align-items: center;
+	padding: 0.8rem 0;
+}
+
+.c-styleguide-svg-icon .svg-icon,
+.c-styleguide-svg-icon .o-svg-icon,
+.c-styleguide-svg-icon .if {
+	-ms-flex-preferred-size: 20%;
+	flex-basis: 20%;
+}
+
+.c-styleguide-svg-icon code {
+	font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	-ms-flex-preferred-size: 80%;
+	flex-basis: 80%;
+	font-size: 1.2rem;
+	background: none;
+	padding: 0;
+}
+
+/* Improve styles for nav (overwrite some Bedrock defaults)
+	  ========================================================================== */
+.br-bordered-list li a,
+.br-bordered-list .br-tree-dir h4 {
+	padding: .6rem;
+}
+
+.br-bordered-list li a:hover {
+	background-color: #D6DEE3;
+}
+
+.br-bordered-list li a.br-bordered-list__link--active {
+	background-color: #D6DEE3;
+}
+
+/* Styleguide nav
+	  =====================================================================  */
+.br-styleguide-navigation-holder {
+	background-color: white;
+	border-right: 1px solid #D6DEE3;
+}
+
+/* Improve styles for content area
+	  =====================================================================  */
+.br-styleguide-content-inner {
+	max-width: 80rem;
+	margin: 0 auto;
+}
+
+/* Floating alert - undo fixed positioning in styleguide context
+	  ========================================================================== */
+.br-styleguide .c-alert--floating {
+	position: static;
+	left: 0;
+	transform: none;
+	animation: none;
+}
+
+/* Styleguide list
+	  ========================================================================== */
+.c-styleguide-list {
+	margin-left: 1rem;
+}
+
+.c-styleguide-list li:first-child {
+	padding-top: .2rem;
+}
+
+.c-styleguide-list li a {
+	text-decoration: none;
+	display: block;
+	padding: .8rem 0;
+	color: #557891;
+}
+
+.c-styleguide-list li a:hover {
+	color: #3FB1D6;
+}
+
+.c-styleguide-list li.c-styleguide-list__item--active a {
+	color: #0F171D;
+}
+
+/*# sourceMappingURL=styleguide.css.map */
