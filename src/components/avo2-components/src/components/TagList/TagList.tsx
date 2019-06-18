@@ -28,9 +28,11 @@ export const TagList: FunctionComponent<TagListProps> = ({
 							className={classNames('c-label-swatch', `c-label-swatch--color-${(index % 10) + 1}`)}
 						/>
 					)}
-					{swatches ? <p className="c-label-text">{tag}</p> : tag}
+					<p className={classNames({ 'c-tag__label': !swatches, 'c-label-text': swatches })}>
+						{tag}
+					</p>
 					{closable && (
-						<a onClick={() => onTagClosed(tag)} style={{ flex: 'initial' }}>
+						<a onClick={() => onTagClosed(tag)}>
 							<Icon name="close" />
 						</a>
 					)}
