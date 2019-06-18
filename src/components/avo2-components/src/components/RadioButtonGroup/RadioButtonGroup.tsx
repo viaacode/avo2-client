@@ -1,5 +1,7 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 
+import classNames from 'classnames';
+
 export interface RadioButtonGroupProps {
 	children: ReactNode;
 	inline?: boolean;
@@ -8,8 +10,6 @@ export interface RadioButtonGroupProps {
 export const RadioButtonGroup: FunctionComponent<RadioButtonGroupProps> = ({
 	children,
 	inline,
-}: RadioButtonGroupProps) => {
-	const additionalClasses = inline ? 'c-radio-group--inline' : '';
-
-	return <div className={`c-radio-group ${additionalClasses}`}>{children}</div>;
-};
+}: RadioButtonGroupProps) => (
+	<div className={classNames('c-radio-group', { 'c-radio-group--inline': inline })}>{children}</div>
+);

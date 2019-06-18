@@ -9,12 +9,13 @@ import { RadioButton } from './RadioButton';
 storiesOf('RadioButton', module)
 	.addParameters({ jest: ['RadioButton'] })
 	.add('Radio Button', () => (
-		<RadioButton name="List1" label="One" onChange={action('Radio button selected')} />
+		<RadioButton name="List1" label="One" value="One" onChange={action('Radio button selected')} />
 	))
 	.add('Radio Button default checked', () => (
 		<RadioButton
 			name="List2"
 			label="One"
+			value="One"
 			onChange={action('Radio button selected')}
 			defaultChecked
 		/>

@@ -1,14 +1,19 @@
+import React, { FunctionComponent, ReactNode, useState } from 'react';
+
 import classNames from 'classnames';
 import { get } from 'lodash-es';
 import PopperJS, { Data, ModifierFn } from 'popper.js';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
 import { Manager, Popper, Reference } from 'react-popper';
-import { Icon } from '../..';
+
+import { useCallbackRef } from '../../hooks/useCallbackRef';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { useKeyPress } from '../../hooks/useKeyPress';
 
+import { Icon } from '../Icon/Icon';
+
 export interface DropdownProps {
 	label: string;
+	isOpen: boolean;
 	placement?:
 		| 'auto'
 		| 'auto-start'
@@ -25,10 +30,10 @@ export interface DropdownProps {
 		| 'left'
 		| 'left-start'
 		| 'left-end';
-	autoSize?: boolean; // defaults to false, meaning: the flyout with will be the same as the reference element
+	autoSize?: boolean;
+	children: ReactNode;
 	onOpen?: () => void;
 	onClose?: () => void;
-	children: ReactNode;
 }
 
 /**
@@ -41,82 +46,37 @@ export interface DropdownProps {
  */
 export const Dropdown: FunctionComponent<DropdownProps> = ({
 	label,
+	isOpen,
 	placement = 'bottom-start',
 	autoSize = false,
-	onOpen,
-	onClose,
 	children,
+	onOpen = () => {},
+	onClose = () => {},
 }: DropdownProps) => {
-	const [dropdownOpen, setOpen] = useState(false);
+	const [dropdownFlyout, dropdownFlyoutRef] = useCallbackRef();
+	const [dropdownButton, dropdownButtonRef] = useCallbackRef();
 
-	let dropdownButton: HTMLButtonElement | null = null;
-	let dropdownFlyout: HTMLDivElement | null = null;
-
-	/**
-	 * Check if passed element is part of the component
-	 * @param elem
-	 */
-	const isPartOfElement = (elem: Element | null): boolean => {
-		if (!dropdownButton || !dropdownFlyout) {
-			return false;
-		}
-		if (!elem) {
-			return false;
-		}
-		if (
-			elem.classList.contains('c-dropdown-menu__close') ||
-			elem.closest('.c-dropdown-menu__close')
-		) {
-			// Close button inside the menu
-			return false;
-		}
-		// If either the dropdown or the flyout contains the element then it is part of the dropdown
-		return (
-			dropdownButton.contains(elem) ||
-			// Dropdown menu
-			dropdownFlyout.contains(elem)
-		);
-	};
-
-	/**
-	 * Toggles the flyout elements visibility if no boolean is passed
-	 * If you pass "true", the flyout will be set to visible, even if it was visible before the call
-	 * If you pass "false" the flyout will be hidden, even if it was hidden before the call
-	 * @param shouldOpen
-	 */
-	const toggleOpen = (shouldOpen: boolean = !dropdownOpen) => {
-		if (dropdownOpen && !shouldOpen) {
-			setOpen(shouldOpen);
-			if (onClose) {
-				onClose();
-			}
-		} else if (!dropdownOpen && shouldOpen) {
-			setOpen(shouldOpen);
-			if (onOpen) {
-				onOpen();
-			}
-		} else {
-			setOpen(shouldOpen);
+	const toggle = (openState: boolean = !isOpen) => {
+		if (openState !== isOpen) {
+			openState ? onOpen() : onClose();
 		}
 	};
 
-	/**
-	 * We let popper calculate all the required styles, then we modify them a little based on the autoSize settings
-	 * @param data
-	 * @param options
-	 */
+	const toggleClosed = () => toggle(false);
+
+	// We let popper calculate all the required styles, then we modify them a little based on the `autoSize` settings
 	const computeStyle = (data: Data, options: Object) => {
 		const computeStylesFn: ModifierFn = get(PopperJS, 'Defaults.modifiers.computeStyle.fn');
-		if (!computeStylesFn) {
-			// TODO show error
-			return data;
-		}
+
 		const newData = computeStylesFn(data, options);
+
 		if (!autoSize) {
-			// Make the width off the popper the same size as the reference element
+			// Make the width of the popper the same size as the reference element
 			newData.styles.width = `${newData.offsets.reference.width}px`;
 		}
+
 		newData.styles.overflow = 'hidden';
+
 		return newData;
 	};
 
@@ -126,38 +86,28 @@ export const Dropdown: FunctionComponent<DropdownProps> = ({
 		},
 	};
 
-	useKeyPress('Escape', () => toggleOpen(false));
-	useClickOutside(isPartOfElement, () => toggleOpen(false));
+	useKeyPress('Escape', toggleClosed);
+	useClickOutside(dropdownFlyout, toggleClosed, [dropdownButton]);
 
 	return (
 		<Manager>
-			<Reference>
+			<Reference innerRef={dropdownButtonRef}>
 				{({ ref }) => (
-					<button
-						className="c-button c-button--secondary"
-						ref={reference => {
-							dropdownButton = reference;
-							ref(reference);
-						}}
-						onClick={() => toggleOpen()}
-					>
+					<button className="c-button c-button--secondary" ref={ref} onClick={() => toggle()}>
 						<div className="c-button__content">
 							<div className="c-button__label">{label}</div>
-							<Icon name={dropdownOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
+							<Icon name={isOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
 						</div>
 					</button>
 				)}
 			</Reference>
-			<Popper placement={placement} modifiers={modifiers}>
+			<Popper placement={placement} modifiers={modifiers} innerRef={dropdownFlyoutRef}>
 				{({ ref, style, placement }) => (
 					<div
 						className={classNames('c-menu', {
-							'c-menu--visible': dropdownOpen,
+							'c-menu--visible': isOpen,
 						})}
-						ref={reference => {
-							dropdownFlyout = reference;
-							ref(reference);
-						}}
+						ref={ref}
 						data-placement={placement}
 						style={style}
 					>
