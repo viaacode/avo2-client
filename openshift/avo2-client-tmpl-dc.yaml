@@ -13,18 +13,19 @@ objects:
     creationTimestamp: null
     generation: 3
     labels:
-      app: avo2-client-${ENV}
-      project: avo2-client-${ENV}
-      provider: nodeshift
+      app: avo2-client
+      ENV: ${ENV}
+
+      component: frontend
       version: 0.1.0
     name: avo2-client-${ENV}
   spec:
     replicas: 1
     revisionHistoryLimit: 2
     selector:
-      app: avo2-client-${ENV}
-      project: avo2-client-${ENV}
-      provider: nodeshift
+      app: avo2-client
+      ENV: ${ENV}
+      component: frontend
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -42,10 +43,9 @@ objects:
           nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
         creationTimestamp: null
         labels:
-          app: avo2-client-${ENV}
-          project: avo2-client-${ENV}
-          provider: nodeshift
-          version: 0.1.0
+          app: avo2-client
+          ENV: ${ENV}
+          component: frontend
       spec:
         containers:
         - image: docker-registry.default.svc:5000/sc-avo2/avo2-client@sha256:aeaa45767dc73f4d8c4d802b57252d799e737b4e54bbd68119f9ef689ea491dc
@@ -93,9 +93,9 @@ objects:
       nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
     creationTimestamp: null
     labels:
-      project: avo2-client-${ENV}
-      provider: nodeshift
-      version: 0.1.0
+      app: avo2-client
+      ENV: ${ENV}
+      component: frontend
     name: avo2-client-${ENV}
   spec:
     ports:
@@ -104,8 +104,9 @@ objects:
       protocol: TCP
       targetPort: 8080
     selector:
-      project: avo2-client-${ENV}
-      provider: nodeshift
+      app: avo2-client
+      ENV: ${ENV}
+      component: frontend
     sessionAffinity: None
     type: ClusterIP
   status:
