@@ -27,6 +27,7 @@ export interface DateRangeDropdownState {
 		lte: string;
 	};
 	showYearControls: boolean;
+	isDropdownOpen: boolean;
 }
 
 export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRangeDropdownState> {
@@ -38,6 +39,7 @@ export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRan
 				lte: '',
 			},
 			showYearControls: true,
+			isDropdownOpen: false,
 		};
 	}
 
@@ -57,12 +59,26 @@ export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRan
 		await setDeepState(this, 'showYearControls', type === 'year');
 	};
 
+	openDropdown = async () => {
+		await setDeepState(this, 'isDropdownOpen', true);
+	};
+
+	closeDropdown = async () => {
+		await setDeepState(this, 'isDropdownOpen', false);
+	};
+
 	render() {
 		const { label, id, onChange } = this.props;
-		const { showYearControls } = this.state;
+		const { showYearControls, isDropdownOpen } = this.state;
 
 		return (
-			<Dropdown label={label} autoSize={true}>
+			<Dropdown
+				label={label}
+				autoSize={true}
+				isOpen={isDropdownOpen}
+				onOpen={this.openDropdown}
+				onClose={this.closeDropdown}
+			>
 				<div className="u-spacer">
 					<Form>
 						<FormGroup label="Hoe specifiek?">
@@ -70,6 +86,7 @@ export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRan
 								<RadioButton
 									label="Op jaartal"
 									name="year"
+									value="year"
 									defaultChecked={true}
 									onChange={async (checked: boolean) => {
 										if (checked) {
@@ -80,6 +97,7 @@ export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRan
 								<RadioButton
 									label="Specifieke datums"
 									name="year"
+									value="date"
 									onChange={async (checked: boolean) => {
 										if (checked) {
 											await this.dateTypeChanged('date');

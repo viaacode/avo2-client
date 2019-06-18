@@ -36,7 +36,7 @@ export interface CheckboxModalProps {
 
 export interface CheckboxModalState {
 	checkedStates: { [checkboxId: string]: boolean };
-	isOpen: boolean;
+	isModalOpen: boolean;
 	searchTerm: string;
 }
 
@@ -47,7 +47,7 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 			checkedStates: fromPairs(
 				props.initialOptions.map((option: CheckboxOption) => [option.id, option.checked])
 			),
-			isOpen: false,
+			isModalOpen: false,
 			searchTerm: '',
 		};
 	}
@@ -69,13 +69,13 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 
 	private openModal = () => {
 		this.setState({
-			isOpen: true,
+			isModalOpen: true,
 		});
 	};
 
 	private closeModal = () => {
 		this.setState({
-			isOpen: false,
+			isModalOpen: false,
 		});
 	};
 
@@ -88,7 +88,7 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 							key={option.id}
 							id={option.id}
 							label={option.label}
-							defaultChecked={option.checked}
+							checked={option.checked}
 							onChange={(checked: boolean) => this.handleCheckboxToggled(checked, option.id)}
 						/>
 					))}
@@ -99,7 +99,7 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 
 	render() {
 		const { initialOptions, label, disabled } = this.props;
-		const { isOpen } = this.state;
+		const { isModalOpen } = this.state;
 
 		const oneThird = Math.ceil(initialOptions.length / 3);
 		const firstColumnOptions = initialOptions.slice(0, oneThird);
@@ -111,10 +111,10 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 				<button className="c-button c-button--secondary" onClick={this.openModal}>
 					<div className="c-button__content">
 						<div className="c-button__label">{label}</div>
-						<Icon name={isOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
+						<Icon name={isModalOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
 					</div>
 				</button>
-				<Modal isOpen={isOpen} title={label} size="large" onClose={this.closeModal}>
+				<Modal isOpen={isModalOpen} title={label} size="large" onClose={this.closeModal}>
 					<ModalHeaderRight>
 						<TextInput placeholder="Zoeken..." icon="search" />
 					</ModalHeaderRight>

@@ -22,7 +22,7 @@ export interface CheckboxDropdownProps {
 export interface CheckboxDropdownState {
 	checkedStates: { [checkboxId: string]: boolean };
 	showCollapsed: boolean;
-	isOpen: boolean;
+	isDropdownOpen: boolean;
 }
 
 export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxDropdownState> {
@@ -33,7 +33,7 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 				props.options.map((option: CheckboxOption) => [option.id, option.checked])
 			),
 			showCollapsed: false,
-			isOpen: false,
+			isDropdownOpen: false,
 		};
 	}
 
@@ -58,14 +58,29 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 		);
 	}
 
+	openDropdown = async () => {
+		await setDeepState(this, 'isDropdownOpen', true);
+	};
+
+	closeDropdown = async () => {
+		await setDeepState(this, 'isDropdownOpen', false);
+	};
+
 	render() {
 		const { options, label, id, disabled } = this.props;
+		const { checkedStates, isDropdownOpen } = this.state;
 		const splitCount = this.props.collapsedItemCount || Math.min(options.length, 10);
 		const showExpandToggle = splitCount < options.length;
 
 		return (
 			<div style={{ opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
-				<Dropdown label={label} autoSize={true}>
+				<Dropdown
+					label={label}
+					autoSize={true}
+					isOpen={isDropdownOpen}
+					onOpen={this.openDropdown}
+					onClose={this.closeDropdown}
+				>
 					<div className="u-spacer">
 						<Form>
 							<FormGroup label={label} labelFor={id}>
@@ -77,7 +92,7 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 													key={option.id}
 													id={option.id}
 													label={option.label}
-													defaultChecked={option.checked}
+													checked={checkedStates[option.id]}
 													onChange={(checked: boolean) =>
 														this.handleCheckboxToggled(checked, option.id)
 													}
