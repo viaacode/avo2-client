@@ -332,16 +332,6 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			}
 		);
 
-		// <input
-		// type="text"
-		// id={propertyName}
-		// name={propertyName}
-		// placeholder="Filter options"
-		// onChange={this.handleFilterOptionSearchChange}
-		// style={{ display: 'block', width: '100%' }}
-		// />
-
-		// optionsCallback={this.getFilterOptions}
 		return (
 			<li style={{ display: 'flex' }}>
 				<CheckboxModal
@@ -378,11 +368,11 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				{this.renderCheckboxDropdown('Type', 'type')}
 				{this.renderCheckboxDropdown('Onderwijsniveau', 'educationLevel')}
 				{this.renderCheckboxDropdown('Domein', 'domain', true)}
+				{this.renderCheckboxModal('Vak', 'subject')}
+				{this.renderCheckboxModal('Onderwerp', 'keyword')}
+				{this.renderCheckboxModal('Serie', 'serie')}
 				{this.renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
 				{this.renderCheckboxDropdown('Taal', 'language')}
-				{this.renderCheckboxModal('Onderwerp', 'keyword')}
-				{this.renderCheckboxModal('Vak', 'subject')}
-				{this.renderCheckboxModal('Serie', 'serie')}
 				{this.renderCheckboxDropdown('Aanbieder', 'provider', true)}
 			</div>
 		);
@@ -531,7 +521,8 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			{ label: 'Laatst gewijzigd', value: 'editDate_desc' },
 		];
 		const resultsCount = this.state.results.count;
-		const pageCount = Math.ceil(resultsCount / ITEMS_PER_PAGE);
+		// elasticsearch can only handle 10000 results efficiently
+		const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
 		const resultStart = this.state.currentPage * ITEMS_PER_PAGE;
 		const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE, resultsCount);
 
