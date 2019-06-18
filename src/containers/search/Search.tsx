@@ -484,11 +484,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		if (isArray(this.state.formState[tagInfo.prop])) {
 			const filterArray: string[] = this.state.formState[tagInfo.prop] as string[];
 			remove(filterArray, filterItem => filterItem === tagInfo.value);
-			if (filterArray.length) {
-				await setDeepState(this, `formState.${tagInfo.prop}`, filterArray);
-			} else {
-				await unsetDeepState(this, `formState.${tagInfo.prop}`);
-			}
+			await setDeepState(this, `formState.${tagInfo.prop}`, filterArray);
 			await this.submitSearchForm();
 		} else {
 			console.error('Failed to remove selected filter: ', tagInfo.prop, tagInfo.value);
