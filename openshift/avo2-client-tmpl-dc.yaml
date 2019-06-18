@@ -53,11 +53,11 @@ objects:
           name: avo2-client-${ENV}
           env:
             - name: REACT_APP_PROXY_URL
-              value: http://avo2-proxy-${ENV}:3000
+              value: ${REACT_APP_PROXY_URL}
             - name: NODE_ENV
               value: production
             - name: PORT
-              value: 8080
+              value: "8080"
           ports:
           - containerPort: 8080
             name: http
@@ -107,9 +107,9 @@ objects:
   spec:
     ports:
     - name: http
-      port: 8080
+      port: ${PORT}
       protocol: TCP
-      targetPort: 8080
+      targetPort: ${PORT}
     selector:
       app: avo2-client
       ENV: ${ENV}
@@ -121,3 +121,7 @@ objects:
 parameters:
   - name: ENV
     value: dev
+  - name: NODE_ENV
+    value: production
+  - name: REACT_APP_PROXY_URL
+    value: http://avo2-proxy-qas:3000
