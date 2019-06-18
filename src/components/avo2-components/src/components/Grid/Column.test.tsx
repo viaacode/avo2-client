@@ -9,11 +9,17 @@ describe('<Column />', () => {
 	});
 
 	it('Should correctly set the sizing className', () => {
-		const size = '12';
+		const size1 = '12';
+		const size2 = '1-4';
+		const size3 = '2-11';
 
-		const columnComponent = shallow(<Column size={size}>Hello!</Column>);
+		const columnComponent1 = shallow(<Column size={size1}>Hello!</Column>);
+		const columnComponent2 = shallow(<Column size={size2}>Hello!</Column>);
+		const columnComponent3 = shallow(<Column size={size3}>Hello!</Column>);
 
-		expect(columnComponent.hasClass(`o-grid-col-${size}`)).toEqual(true);
+		expect(columnComponent1.hasClass(`o-grid-col-${size1}`)).toEqual(true);
+		expect(columnComponent2.hasClass(`o-grid-col-bp${size2}`)).toEqual(true);
+		expect(columnComponent3.hasClass(`o-grid-col-bp${size3}`)).toEqual(true);
 	});
 
 	it('Should correctly pass children', () => {

@@ -23,9 +23,9 @@ export interface ColumnProps {
 		| '1-7'
 		| '1-8'
 		| '1-9'
-		| '1-1'
-		| '1-1'
-		| '1-1'
+		| '1-10'
+		| '1-11'
+		| '1-12'
 		| '2-1'
 		| '2-2'
 		| '2-3'
@@ -35,9 +35,9 @@ export interface ColumnProps {
 		| '2-7'
 		| '2-8'
 		| '2-9'
-		| '2-1'
-		| '2-1'
-		| '2-1'
+		| '2-10'
+		| '2-11'
+		| '2-12'
 		| '3-1'
 		| '3-2'
 		| '3-3'
@@ -47,9 +47,9 @@ export interface ColumnProps {
 		| '3-7'
 		| '3-8'
 		| '3-9'
-		| '3-1'
-		| '3-1'
-		| '3-1'
+		| '3-10'
+		| '3-11'
+		| '3-12'
 		| 'static'
 		| 'flex';
 	children: ReactNode;
@@ -57,7 +57,7 @@ export interface ColumnProps {
 
 export const Column: FunctionComponent<ColumnProps> = ({ size, children }: ColumnProps) => {
 	let className = 'o-grid-col-';
-	if (className.includes('-')) {
+	if (size.includes('-')) {
 		className += `bp${size}`;
 	} else {
 		className += size;
