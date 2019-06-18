@@ -3,6 +3,7 @@ import React, { ChangeEvent, FunctionComponent, useState } from 'react';
 interface SelectOption {
 	value: string;
 	label: string;
+	disabled?: boolean;
 }
 
 export interface SelectProps {
@@ -40,8 +41,8 @@ export const Select: FunctionComponent<SelectProps> = ({
 				disabled={disabled}
 				onChange={onValueChange}
 			>
-				{options.map(({ value, label }, index) => (
-					<option key={index} value={value}>
+				{options.map(({ value, label, disabled }, index) => (
+					<option key={index} value={value} disabled={disabled}>
 						{label}
 					</option>
 				))}

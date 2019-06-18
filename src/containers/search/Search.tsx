@@ -294,7 +294,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			(option: OptionProp): CheckboxOption => {
 				let label = capitalize(option.option_name);
 				if (propertyName === 'language') {
-					label = capitalize(LANGUAGES.nl[option.option_name] || option.option_name);
+					label = this.languageCodeToLabel(option.option_name);
 				}
 				return {
 					label: `${label} (${option.option_count})`,
@@ -318,6 +318,10 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				/>
 			</li>
 		);
+	}
+
+	private languageCodeToLabel(code: string): string {
+		return capitalize(LANGUAGES.nl[code]) || code;
 	}
 
 	private renderCheckboxModal(label: string, propertyName: string) {
@@ -424,8 +428,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		// Render multi option filters
 		if (isArray(filterValue)) {
 			return filterValue.map((filterVal: string) => {
+				let label = filterVal;
+				if (filterProp === 'language') {
+					label = this.languageCodeToLabel(filterVal);
+				}
 				return {
-					label: filterVal,
+					label,
 					prop: filterProp,
 					value: filterVal,
 				};
@@ -514,11 +522,11 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	render() {
 		const orderOptions = [
 			{ label: 'Meest relevant', value: 'relevance_desc' },
-			{ label: 'Meest bekeken', value: 'views_desc' },
+			{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
 			{ label: 'Uitzenddatum aflopend', value: 'broadcastDate_desc' },
 			{ label: 'Uitzenddatum oplopend', value: 'broadcastDate_asc' },
-			{ label: 'Laatst toegevoegd', value: 'addedDate_desc' },
-			{ label: 'Laatst gewijzigd', value: 'editDate_desc' },
+			{ label: 'Laatst toegevoegd', value: 'addedDate_desc', disabled: true },
+			{ label: 'Laatst gewijzigd', value: 'editDate_desc', disabled: true },
 		];
 		const resultsCount = this.state.results.count;
 		// elasticsearch can only handle 10000 results efficiently

@@ -13,7 +13,7 @@ const options = [
 	{ label: 'Polonium', value: 'Po' },
 	{ label: 'Rhodium', value: 'Rh' },
 	{ label: 'Yttrium', value: 'Y' },
-	{ label: 'Uranium', value: 'U' },
+	{ label: 'Uranium', value: 'U', disabled: true },
 ];
 
 describe('<Select />', () => {
@@ -39,6 +39,7 @@ describe('<Select />', () => {
 		optionElements.forEach((optionElement, index) => {
 			expect(optionElement.prop('value')).toEqual(options[index].value);
 			expect(optionElement.text()).toEqual(options[index].label);
+			expect(optionElement.prop('disabled')).toEqual(options[index].disabled);
 		});
 	});
 

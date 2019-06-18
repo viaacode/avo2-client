@@ -14,9 +14,9 @@ const options = [
 	{ label: 'Vanadium', value: 'V' },
 	{ label: 'Palladium', value: 'Pd' },
 	{ label: 'Polonium', value: 'Po' },
-	{ label: 'Rhodium', value: 'Rh' },
-	{ label: 'Yttrium', value: 'Y' },
-	{ label: 'Uranium', value: 'U' },
+	{ label: 'Rhodium (disabled)', value: 'Rh', disabled: true },
+	{ label: 'Yttrium (disabled)', value: 'Y', disabled: true },
+	{ label: 'Uranium (disabled)', value: 'U', disabled: true },
 ];
 
 storiesOf('Select', module)
