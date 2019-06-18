@@ -4,12 +4,16 @@ import {
 	cloneDeep,
 	compact,
 	every,
+	find,
+	flatten,
 	isArray,
 	isEmpty,
 	isNil,
 	isPlainObject,
 	noop,
 	pickBy,
+	remove,
+	reverse,
 } from 'lodash-es';
 import queryString from 'query-string';
 import React, { ChangeEvent, Component, Fragment, ReactNode } from 'react';
@@ -35,6 +39,7 @@ import {
 	Navbar,
 	Pagination,
 	Select,
+	TagList,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -66,6 +71,12 @@ interface SearchState extends StaticContext {
 		count: number;
 	};
 	currentPage: number;
+}
+
+interface TagInfo {
+	label: string;
+	prop: keyof Filters;
+	value: any;
 }
 
 export class Search extends Component<RouteComponentProps<SearchProps>, SearchState> {
@@ -377,6 +388,113 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		);
 	}
 
+	private getTagInfos(filterProp: keyof Filters, filterValue: any): TagInfo[] {
+		// Do not render query filter or empty filters
+		if (
+			filterProp === 'query' ||
+			filterValue === '' ||
+			filterValue === [] ||
+			(isArray(filterValue) && every(filterValue, filter => !filter)) // Array of empty strings
+		) {
+			return [];
+		}
+
+		// Render date range option filters
+		if (isPlainObject(filterValue)) {
+			if (filterValue.gte && filterValue.lte) {
+				return [
+					{
+						label: `${this.formatDate(filterValue.gte)} - ${this.formatDate(filterValue.lte)}`,
+						prop: filterProp,
+						value: filterValue,
+					},
+				];
+			}
+			if (filterValue.gte) {
+				return [
+					{
+						label: `na ${this.formatDate(filterValue.gte)}`,
+						prop: filterProp,
+						value: filterValue,
+					},
+				];
+			}
+			if (filterValue.lte) {
+				return [
+					{
+						label: `voor ${this.formatDate(filterValue.lte)}`,
+						prop: filterProp,
+						value: filterValue,
+					},
+				];
+			}
+			return []; // Do not render a filter if date object is empty: {gte: "", lte: ""}
+		}
+
+		// Render multi option filters
+		if (isArray(filterValue)) {
+			return filterValue.map((filterVal: string) => {
+				return {
+					label: filterVal,
+					prop: filterProp,
+					value: filterVal,
+				};
+			});
+		}
+
+		console.error('Failed to render selected filter: ', filterProp, filterValue);
+		return [];
+	}
+
+	/**
+	 * Converts a date from format 2000-12-31 to 31/12/2000
+	 */
+	formatDate(dateString: string): string {
+		return reverse(dateString.split('-')).join('/');
+	}
+
+	renderSelectedFilters() {
+		const tagInfos: TagInfo[] = flatten(
+			(Object.keys(this.state.formState) as (keyof Filters)[]).map((filterProp: keyof Filters) =>
+				this.getTagInfos(filterProp, this.state.formState[filterProp])
+			)
+		);
+		return (
+			<div className="u-spacer-bottom-l">
+				<TagList
+					closable={true}
+					swatches={false}
+					onTagClosed={async (tagLabel: string) => {
+						const tagInfo = find(tagInfos, (tagInfo: TagInfo) => tagInfo.label === tagLabel);
+						if (tagInfo) {
+							await this.deleteFilter(tagInfo);
+						}
+					}}
+					tags={tagInfos.map((tagInfo: TagInfo) => tagInfo.label)}
+				/>
+			</div>
+		);
+	}
+
+	async deleteFilter(tagInfo: TagInfo) {
+		if (isPlainObject(tagInfo.value) && (tagInfo.value.gte || tagInfo.value.lte)) {
+			await unsetDeepState(this, `formState.${tagInfo.prop}`);
+			return;
+		}
+		if (isArray(this.state.formState[tagInfo.prop])) {
+			const filterArray: string[] = this.state.formState[tagInfo.prop] as string[];
+			remove(filterArray, filterItem => filterItem === tagInfo.value);
+			if (filterArray.length) {
+				await setDeepState(this, `formState.${tagInfo.prop}`, filterArray);
+			} else {
+				await unsetDeepState(this, `formState.${tagInfo.prop}`);
+			}
+			await this.submitSearchForm();
+		} else {
+			console.error('Failed to remove selected filter: ', tagInfo.prop, tagInfo.value);
+		}
+	}
+
 	private renderSearchResults() {
 		return (
 			<ul className="c-search-result-list">
@@ -475,6 +593,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 									</Form>
 								</div>
 							</div>
+							{this.renderSelectedFilters()}
 							{this.renderFilterControls()}
 						</div>
 					</Container>

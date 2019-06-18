@@ -30,7 +30,7 @@ export const TagList: FunctionComponent<TagListProps> = ({
 					)}
 					{swatches ? <p className="c-label-text">{tag}</p> : tag}
 					{closable && (
-						<a onClick={() => onTagClosed(tag)}>
+						<a onClick={() => onTagClosed(tag)} style={{ flex: 'initial' }}>
 							<Icon name="close" />
 						</a>
 					)}
