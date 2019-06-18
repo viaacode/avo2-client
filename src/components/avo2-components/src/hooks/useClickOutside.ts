@@ -1,24 +1,33 @@
 import { useEffect } from 'react';
 
 export function useClickOutside(
-	isPartOfElement: (elem: Element | null) => boolean,
-	onClickOutside: () => void
+	ref: Element,
+	onClickOutside: (event: MouseEvent | TouchEvent) => void,
+	exemptions: Element[] = []
 ) {
 	useEffect(() => {
-		function clickOutsideHandler(event: MouseEvent) {
-			if (!isPartOfElement(event.target as Element | null)) {
-				if (onClickOutside) {
-					onClickOutside();
-				}
+		function clickOutsideHandler(event: MouseEvent | TouchEvent) {
+			if (
+				ref !== event.target &&
+				!ref.contains(event.target as Node) &&
+				!exemptions.some(
+					(element: Element) => element === event.target || element.contains(event.target as Node)
+				)
+			) {
+				onClickOutside(event);
 			}
 		}
 
-		// Add event listeners
-		document.addEventListener('mouseup', clickOutsideHandler);
+		if (ref) {
+			// Add event listeners
+			document.addEventListener('mousedown', clickOutsideHandler);
+			document.addEventListener('touchstart', clickOutsideHandler);
 
-		// Remove event listeners on cleanup
-		return () => {
-			document.removeEventListener('mouseup', clickOutsideHandler);
-		};
-	});
+			// Remove event listeners on cleanup
+			return () => {
+				document.removeEventListener('mousedown', clickOutsideHandler);
+				document.removeEventListener('touchstart', clickOutsideHandler);
+			};
+		}
+	}, [ref, onClickOutside, exemptions]);
 }
