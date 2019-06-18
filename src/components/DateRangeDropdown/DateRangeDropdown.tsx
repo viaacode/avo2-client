@@ -10,6 +10,9 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	RadioButton,
+	RadioButtonGroup,
+	TextInput,
 } from '../avo2-components/src';
 
 export interface DateRangeDropdownProps {
@@ -23,7 +26,7 @@ export interface DateRangeDropdownState {
 		gte: string;
 		lte: string;
 	};
-	showYearInterval: boolean;
+	showYearControls: boolean;
 }
 
 export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRangeDropdownState> {
@@ -34,7 +37,7 @@ export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRan
 				gte: '',
 				lte: '',
 			},
-			showYearInterval: true,
+			showYearControls: true,
 		};
 	}
 
@@ -44,53 +47,114 @@ export class DateRangeDropdown extends Component<DateRangeDropdownProps, DateRan
 		} else {
 			await unsetDeepState(this, id);
 		}
-		if (this.props.onChange) {
-			this.props.onChange(this.state.range, this.props.id);
-		}
+	};
+
+	/**
+	 * Called when the user switches between "year" range and "full date" range controls
+	 * @param type
+	 */
+	dateTypeChanged = async (type: 'year' | 'date') => {
+		await setDeepState(this, 'showYearControls', type === 'year');
 	};
 
 	render() {
 		const { label, id, onChange } = this.props;
+		const { showYearControls } = this.state;
 
 		return (
 			<Dropdown label={label} autoSize={true}>
 				<div className="u-spacer">
 					<Form>
-						<label>Hoe specifiek?</label>
-						<br />
-						<span>TODO add radio buttons</span>
-						<br />
-						<FormGroup>
-							<Grid>
-								<Column size="6">
-									<FormGroup label="Van">
-										<DatePicker
-											id={`range.gte`}
-											defaultValue={get(this.state, `formState.range.gte`)}
-											onChange={value =>
-												this.handleDateChange(
-													value && value.toISOString().substring(0, '2000-01-01'.length),
-													`range.gte`
-												)
-											}
-										/>
-									</FormGroup>
-								</Column>
-								<Column size="6">
-									<FormGroup label="Tot">
-										<DatePicker
-											id={`range.lte`}
-											defaultValue={get(this.state, `formState.range.lte`)}
-											onChange={value =>
-												this.handleDateChange(
-													value && value.toISOString().substring(0, '2000-01-01'.length),
-													`range.lte`
-												)
-											}
-										/>
-									</FormGroup>
-								</Column>
-							</Grid>
+						<FormGroup label="Hoe specifiek?">
+							<RadioButtonGroup inline={true}>
+								<RadioButton
+									label="Op jaartal"
+									name="year"
+									defaultChecked={true}
+									onChange={async (checked: boolean) => {
+										if (checked) {
+											await this.dateTypeChanged('year');
+										}
+									}}
+								/>
+								<RadioButton
+									label="Specifieke datums"
+									name="year"
+									onChange={async (checked: boolean) => {
+										if (checked) {
+											await this.dateTypeChanged('date');
+										}
+									}}
+								/>
+							</RadioButtonGroup>
+							{showYearControls && (
+								<Grid>
+									<Column size="6">
+										<FormGroup label="Van">
+											<TextInput
+												id={`range.gte`}
+												placeholder="JJJJ"
+												defaultValue={
+													(get(this.state, `formState.range.gte`) || '').split('-')[0] || undefined
+												}
+												onChange={async (value: string) => {
+													if (value.length === 4) {
+														await this.handleDateChange(`${value}-01-01`, `range.gte`);
+													}
+												}}
+											/>
+										</FormGroup>
+									</Column>
+									<Column size="6">
+										<FormGroup label="Tot">
+											<TextInput
+												id={`range.lte`}
+												placeholder="JJJJ"
+												defaultValue={
+													(get(this.state, `formState.range.lte`) || '').split('-')[0] || undefined
+												}
+												onChange={async (value: string) => {
+													if (value.length === 4) {
+														await this.handleDateChange(`${value}-12-31`, `range.lte`);
+													}
+												}}
+											/>
+										</FormGroup>
+									</Column>
+								</Grid>
+							)}
+							{!showYearControls && (
+								<Grid>
+									<Column size="6">
+										<FormGroup label="Van">
+											<DatePicker
+												id={`range.gte`}
+												defaultValue={get(this.state, `formState.range.gte`)}
+												onChange={value =>
+													this.handleDateChange(
+														value && value.toISOString().substring(0, '2000-01-01'.length),
+														`range.gte`
+													)
+												}
+											/>
+										</FormGroup>
+									</Column>
+									<Column size="6">
+										<FormGroup label="Tot">
+											<DatePicker
+												id={`range.lte`}
+												defaultValue={get(this.state, `formState.range.lte`)}
+												onChange={value =>
+													this.handleDateChange(
+														value && value.toISOString().substring(0, '2000-01-01'.length),
+														`range.lte`
+													)
+												}
+											/>
+										</FormGroup>
+									</Column>
+								</Grid>
+							)}
 						</FormGroup>
 						<FormGroup>
 							<Button
