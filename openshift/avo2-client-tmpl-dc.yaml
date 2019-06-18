@@ -107,9 +107,9 @@ objects:
   spec:
     ports:
     - name: http
-      port: ${PORT}
+      port: 8080
       protocol: TCP
-      targetPort: ${PORT}
+      targetPort: 8080
     selector:
       app: avo2-client
       ENV: ${ENV}
