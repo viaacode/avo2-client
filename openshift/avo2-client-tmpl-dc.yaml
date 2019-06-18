@@ -51,6 +51,13 @@ objects:
         - image: docker-registry.default.svc:5000/sc-avo2/avo2-client@sha256:aeaa45767dc73f4d8c4d802b57252d799e737b4e54bbd68119f9ef689ea491dc
           imagePullPolicy: Always
           name: avo2-client-${ENV}
+          env:
+            - name: REACT_APP_PROXY_URL
+              value: http://avo2-proxy-${ENV}:3000
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: 8080
           ports:
           - containerPort: 8080
             name: http
