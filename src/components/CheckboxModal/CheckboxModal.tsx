@@ -73,6 +73,12 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 		});
 	};
 
+	private closeModal = () => {
+		this.setState({
+			isOpen: false,
+		});
+	};
+
 	private renderCheckboxGroup(options: CheckboxOption[]) {
 		return (
 			<FormGroup>
@@ -108,7 +114,7 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 						<Icon name={isOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
 					</div>
 				</button>
-				<Modal isOpen={isOpen} title={label} size="large">
+				<Modal isOpen={isOpen} title={label} size="large" onClose={this.closeModal}>
 					<ModalHeaderRight>
 						<TextInput placeholder="Zoeken..." icon="search" />
 					</ModalHeaderRight>
@@ -125,12 +131,7 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 					</ModalBody>
 					<ModalFooterLeft>
 						<FormGroup>
-							<Button
-								label="Annuleren"
-								type="secondary"
-								block={true}
-								className="c-dropdown-menu__close"
-							/>
+							<Button label="Annuleren" type="secondary" block={true} onClick={this.closeModal} />
 						</FormGroup>
 					</ModalFooterLeft>
 					<ModalFooterRight>
@@ -139,8 +140,10 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 								label="Toepassen"
 								type="primary"
 								block={true}
-								className="c-dropdown-menu__close"
-								onClick={() => this.applyFilter()}
+								onClick={() => {
+									this.applyFilter();
+									this.closeModal();
+								}}
 							/>
 						</FormGroup>
 					</ModalFooterRight>
