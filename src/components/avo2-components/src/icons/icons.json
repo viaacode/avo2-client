@@ -1,0 +1,947 @@
+[
+  {
+    "fileName": "activity.svg",
+    "name": "activity",
+    "type": ""
+  },
+  {
+    "fileName": "add.svg",
+    "name": "add",
+    "type": ""
+  },
+  {
+    "fileName": "alert-circle.svg",
+    "name": "alert-circle",
+    "type": ""
+  },
+  {
+    "fileName": "alert-octagon.svg",
+    "name": "alert-octagon",
+    "type": ""
+  },
+  {
+    "fileName": "alert-triangle.svg",
+    "name": "alert-triangle",
+    "type": ""
+  },
+  {
+    "fileName": "archive.svg",
+    "name": "archive",
+    "type": ""
+  },
+  {
+    "fileName": "arrow-down-circle.svg",
+    "name": "arrow-down-circle",
+    "type": "arrows"
+  },
+  {
+    "fileName": "arrow-down-left.svg",
+    "name": "arrow-down-left",
+    "type": "arrows"
+  },
+  {
+    "fileName": "arrow-down-right.svg",
+    "name": "arrow-down-right",
+    "type": "arrows"
+  },
+  {
+    "fileName": "arrow-down.svg",
+    "name": "arrow-down",
+    "type": "arrows"
+  },
+  {
+    "fileName": "arrow-left.svg",
+    "name": "arrow-left",
+    "type": "arrows"
+  },
+  {
+    "fileName": "arrow-right.svg",
+    "name": "arrow-right",
+    "type": "arrows"
+  },
+  {
+    "fileName": "arrow-up.svg",
+    "name": "arrow-up",
+    "type": "arrows"
+  },
+  {
+    "fileName": "caret-down.svg",
+    "name": "caret-down",
+    "type": "arrows"
+  },
+  {
+    "fileName": "caret-left.svg",
+    "name": "caret-left",
+    "type": "arrows"
+  },
+  {
+    "fileName": "caret-right.svg",
+    "name": "caret-right",
+    "type": "arrows"
+  },
+  {
+    "fileName": "caret-up.svg",
+    "name": "caret-up",
+    "type": "arrows"
+  },
+  {
+    "fileName": "chevron-down.svg",
+    "name": "chevron-down",
+    "type": "arrows"
+  },
+  {
+    "fileName": "chevron-left.svg",
+    "name": "chevron-left",
+    "type": "arrows"
+  },
+  {
+    "fileName": "chevron-right.svg",
+    "name": "chevron-right",
+    "type": "arrows"
+  },
+  {
+    "fileName": "chevron-up.svg",
+    "name": "chevron-up",
+    "type": "arrows"
+  },
+  {
+    "fileName": "chevrons-down.svg",
+    "name": "chevrons-down",
+    "type": "arrows"
+  },
+  {
+    "fileName": "chevrons-left.svg",
+    "name": "chevrons-left",
+    "type": "arrows"
+  },
+  {
+    "fileName": "chevrons-right.svg",
+    "name": "chevrons-right",
+    "type": "arrows"
+  },
+  {
+    "fileName": "chevrons-up.svg",
+    "name": "chevrons-up",
+    "type": "arrows"
+  },
+  {
+    "fileName": "bar-chart.svg",
+    "name": "bar-chart",
+    "type": ""
+  },
+  {
+    "fileName": "bell-off.svg",
+    "name": "bell-off",
+    "type": ""
+  },
+  {
+    "fileName": "bell.svg",
+    "name": "bell",
+    "type": ""
+  },
+  {
+    "fileName": "book-open.svg",
+    "name": "book-open",
+    "type": ""
+  },
+  {
+    "fileName": "book.svg",
+    "name": "book",
+    "type": ""
+  },
+  {
+    "fileName": "bookmark-filled.svg",
+    "name": "bookmark-filled",
+    "type": ""
+  },
+  {
+    "fileName": "bookmark.svg",
+    "name": "bookmark",
+    "type": ""
+  },
+  {
+    "fileName": "box.svg",
+    "name": "box",
+    "type": ""
+  },
+  {
+    "fileName": "briefcase.svg",
+    "name": "briefcase",
+    "type": ""
+  },
+  {
+    "fileName": "calendar.svg",
+    "name": "calendar",
+    "type": ""
+  },
+  {
+    "fileName": "camera-off.svg",
+    "name": "camera-off",
+    "type": ""
+  },
+  {
+    "fileName": "camera.svg",
+    "name": "camera",
+    "type": ""
+  },
+  {
+    "fileName": "check-circle.svg",
+    "name": "check-circle",
+    "type": ""
+  },
+  {
+    "fileName": "check-square.svg",
+    "name": "check-square",
+    "type": ""
+  },
+  {
+    "fileName": "check.svg",
+    "name": "check",
+    "type": ""
+  },
+  {
+    "fileName": "circle.svg",
+    "name": "circle",
+    "type": ""
+  },
+  {
+    "fileName": "clipboard.svg",
+    "name": "clipboard",
+    "type": ""
+  },
+  {
+    "fileName": "clock.svg",
+    "name": "clock",
+    "type": ""
+  },
+  {
+    "fileName": "close.svg",
+    "name": "close",
+    "type": ""
+  },
+  {
+    "fileName": "code.svg",
+    "name": "code",
+    "type": ""
+  },
+  {
+    "fileName": "collection.svg",
+    "name": "collection",
+    "type": ""
+  },
+  {
+    "fileName": "contract.svg",
+    "name": "contract",
+    "type": ""
+  },
+  {
+    "fileName": "copy.svg",
+    "name": "copy",
+    "type": ""
+  },
+  {
+    "fileName": "credit-card.svg",
+    "name": "credit-card",
+    "type": ""
+  },
+  {
+    "fileName": "crop.svg",
+    "name": "crop",
+    "type": ""
+  },
+  {
+    "fileName": "crosshair.svg",
+    "name": "crosshair",
+    "type": ""
+  },
+  {
+    "fileName": "klascement.svg",
+    "name": "klascement",
+    "type": "custom"
+  },
+  {
+    "fileName": "smartschool.svg",
+    "name": "smartschool",
+    "type": "custom"
+  },
+  {
+    "fileName": "database.svg",
+    "name": "database",
+    "type": ""
+  },
+  {
+    "fileName": "delete.svg",
+    "name": "delete",
+    "type": ""
+  },
+  {
+    "fileName": "download-cloud.svg",
+    "name": "download-cloud",
+    "type": ""
+  },
+  {
+    "fileName": "download.svg",
+    "name": "download",
+    "type": ""
+  },
+  {
+    "fileName": "edit-2.svg",
+    "name": "edit-2",
+    "type": ""
+  },
+  {
+    "fileName": "edit-3.svg",
+    "name": "edit-3",
+    "type": ""
+  },
+  {
+    "fileName": "edit.svg",
+    "name": "edit",
+    "type": ""
+  },
+  {
+    "fileName": "external-link.svg",
+    "name": "external-link",
+    "type": ""
+  },
+  {
+    "fileName": "eye-off.svg",
+    "name": "eye-off",
+    "type": ""
+  },
+  {
+    "fileName": "eye.svg",
+    "name": "eye",
+    "type": ""
+  },
+  {
+    "fileName": "fast-forward.svg",
+    "name": "fast-forward",
+    "type": ""
+  },
+  {
+    "fileName": "file-minus.svg",
+    "name": "file-minus",
+    "type": ""
+  },
+  {
+    "fileName": "file-plus.svg",
+    "name": "file-plus",
+    "type": ""
+  },
+  {
+    "fileName": "file-text.svg",
+    "name": "file-text",
+    "type": ""
+  },
+  {
+    "fileName": "file.svg",
+    "name": "file",
+    "type": ""
+  },
+  {
+    "fileName": "filter.svg",
+    "name": "filter",
+    "type": ""
+  },
+  {
+    "fileName": "flag.svg",
+    "name": "flag",
+    "type": ""
+  },
+  {
+    "fileName": "folder-minus.svg",
+    "name": "folder-minus",
+    "type": ""
+  },
+  {
+    "fileName": "folder-plus.svg",
+    "name": "folder-plus",
+    "type": ""
+  },
+  {
+    "fileName": "folder.svg",
+    "name": "folder",
+    "type": ""
+  },
+  {
+    "fileName": "fullscreen.svg",
+    "name": "fullscreen",
+    "type": ""
+  },
+  {
+    "fileName": "gift.svg",
+    "name": "gift",
+    "type": ""
+  },
+  {
+    "fileName": "globe.svg",
+    "name": "globe",
+    "type": ""
+  },
+  {
+    "fileName": "hash.svg",
+    "name": "hash",
+    "type": ""
+  },
+  {
+    "fileName": "headphone.svg",
+    "name": "headphone",
+    "type": ""
+  },
+  {
+    "fileName": "heart-filled.svg",
+    "name": "heart-filled",
+    "type": ""
+  },
+  {
+    "fileName": "heart.svg",
+    "name": "heart",
+    "type": ""
+  },
+  {
+    "fileName": "help-circle.svg",
+    "name": "help-circle",
+    "type": ""
+  },
+  {
+    "fileName": "home.svg",
+    "name": "home",
+    "type": ""
+  },
+  {
+    "fileName": "image.svg",
+    "name": "image",
+    "type": ""
+  },
+  {
+    "fileName": "inbox.svg",
+    "name": "inbox",
+    "type": ""
+  },
+  {
+    "fileName": "info.svg",
+    "name": "info",
+    "type": ""
+  },
+  {
+    "fileName": "layout.svg",
+    "name": "layout",
+    "type": ""
+  },
+  {
+    "fileName": "link-2.svg",
+    "name": "link-2",
+    "type": ""
+  },
+  {
+    "fileName": "link.svg",
+    "name": "link",
+    "type": ""
+  },
+  {
+    "fileName": "list.svg",
+    "name": "list",
+    "type": ""
+  },
+  {
+    "fileName": "lock.svg",
+    "name": "lock",
+    "type": ""
+  },
+  {
+    "fileName": "log-in.svg",
+    "name": "log-in",
+    "type": ""
+  },
+  {
+    "fileName": "log-out.svg",
+    "name": "log-out",
+    "type": ""
+  },
+  {
+    "fileName": "mail.svg",
+    "name": "mail",
+    "type": ""
+  },
+  {
+    "fileName": "maximize-2.svg",
+    "name": "maximize-2",
+    "type": ""
+  },
+  {
+    "fileName": "maximize.svg",
+    "name": "maximize",
+    "type": ""
+  },
+  {
+    "fileName": "menu.svg",
+    "name": "menu",
+    "type": ""
+  },
+  {
+    "fileName": "message-circle.svg",
+    "name": "message-circle",
+    "type": ""
+  },
+  {
+    "fileName": "message-square.svg",
+    "name": "message-square",
+    "type": ""
+  },
+  {
+    "fileName": "mic.svg",
+    "name": "mic",
+    "type": ""
+  },
+  {
+    "fileName": "minimize-2.svg",
+    "name": "minimize-2",
+    "type": ""
+  },
+  {
+    "fileName": "minimize.svg",
+    "name": "minimize",
+    "type": ""
+  },
+  {
+    "fileName": "minus-circle.svg",
+    "name": "minus-circle",
+    "type": ""
+  },
+  {
+    "fileName": "more-horizontal.svg",
+    "name": "more-horizontal",
+    "type": ""
+  },
+  {
+    "fileName": "move.svg",
+    "name": "move",
+    "type": ""
+  },
+  {
+    "fileName": "circle-check.svg",
+    "name": "circle-check",
+    "type": "multicolor"
+  },
+  {
+    "fileName": "circle-info.svg",
+    "name": "circle-info",
+    "type": "multicolor"
+  },
+  {
+    "fileName": "circle-warning.svg",
+    "name": "circle-warning",
+    "type": "multicolor"
+  },
+  {
+    "fileName": "music.svg",
+    "name": "music",
+    "type": ""
+  },
+  {
+    "fileName": "notification.svg",
+    "name": "notification",
+    "type": ""
+  },
+  {
+    "fileName": "notifications.svg",
+    "name": "notifications",
+    "type": ""
+  },
+  {
+    "fileName": "octagon.svg",
+    "name": "octagon",
+    "type": ""
+  },
+  {
+    "fileName": "package.svg",
+    "name": "package",
+    "type": ""
+  },
+  {
+    "fileName": "paperclip.svg",
+    "name": "paperclip",
+    "type": ""
+  },
+  {
+    "fileName": "pause-add.svg",
+    "name": "pause-add",
+    "type": ""
+  },
+  {
+    "fileName": "pause-circle.svg",
+    "name": "pause-circle",
+    "type": ""
+  },
+  {
+    "fileName": "pause.svg",
+    "name": "pause",
+    "type": ""
+  },
+  {
+    "fileName": "percent.svg",
+    "name": "percent",
+    "type": ""
+  },
+  {
+    "fileName": "pie-chart.svg",
+    "name": "pie-chart",
+    "type": ""
+  },
+  {
+    "fileName": "play-circle.svg",
+    "name": "play-circle",
+    "type": ""
+  },
+  {
+    "fileName": "play-small.svg",
+    "name": "play-small",
+    "type": ""
+  },
+  {
+    "fileName": "play.svg",
+    "name": "play",
+    "type": ""
+  },
+  {
+    "fileName": "plus-circle.svg",
+    "name": "plus-circle",
+    "type": ""
+  },
+  {
+    "fileName": "plus.svg",
+    "name": "plus",
+    "type": ""
+  },
+  {
+    "fileName": "power.svg",
+    "name": "power",
+    "type": ""
+  },
+  {
+    "fileName": "printer.svg",
+    "name": "printer",
+    "type": ""
+  },
+  {
+    "fileName": "radio.svg",
+    "name": "radio",
+    "type": ""
+  },
+  {
+    "fileName": "refresh-ccw.svg",
+    "name": "refresh-ccw",
+    "type": ""
+  },
+  {
+    "fileName": "refresh-cw.svg",
+    "name": "refresh-cw",
+    "type": ""
+  },
+  {
+    "fileName": "repeat.svg",
+    "name": "repeat",
+    "type": ""
+  },
+  {
+    "fileName": "rewind.svg",
+    "name": "rewind",
+    "type": ""
+  },
+  {
+    "fileName": "rotate-ccw.svg",
+    "name": "rotate-ccw",
+    "type": ""
+  },
+  {
+    "fileName": "rotate-cw.svg",
+    "name": "rotate-cw",
+    "type": ""
+  },
+  {
+    "fileName": "rss.svg",
+    "name": "rss",
+    "type": ""
+  },
+  {
+    "fileName": "scissors.svg",
+    "name": "scissors",
+    "type": ""
+  },
+  {
+    "fileName": "search.svg",
+    "name": "search",
+    "type": ""
+  },
+  {
+    "fileName": "send.svg",
+    "name": "send",
+    "type": ""
+  },
+  {
+    "fileName": "settings.svg",
+    "name": "settings",
+    "type": ""
+  },
+  {
+    "fileName": "share-2.svg",
+    "name": "share-2",
+    "type": ""
+  },
+  {
+    "fileName": "share.svg",
+    "name": "share",
+    "type": ""
+  },
+  {
+    "fileName": "shuffle.svg",
+    "name": "shuffle",
+    "type": ""
+  },
+  {
+    "fileName": "sidebar.svg",
+    "name": "sidebar",
+    "type": ""
+  },
+  {
+    "fileName": "skip-back.svg",
+    "name": "skip-back",
+    "type": ""
+  },
+  {
+    "fileName": "skip-forward.svg",
+    "name": "skip-forward",
+    "type": ""
+  },
+  {
+    "fileName": "slash.svg",
+    "name": "slash",
+    "type": ""
+  },
+  {
+    "fileName": "sliders.svg",
+    "name": "sliders",
+    "type": ""
+  },
+  {
+    "fileName": "instagram.svg",
+    "name": "instagram",
+    "type": "social"
+  },
+  {
+    "fileName": "twitter.svg",
+    "name": "twitter",
+    "type": "social"
+  },
+  {
+    "fileName": "square.svg",
+    "name": "square",
+    "type": ""
+  },
+  {
+    "fileName": "star.svg",
+    "name": "star",
+    "type": ""
+  },
+  {
+    "fileName": "stop-circle.svg",
+    "name": "stop-circle",
+    "type": ""
+  },
+  {
+    "fileName": "subtitles.svg",
+    "name": "subtitles",
+    "type": ""
+  },
+  {
+    "fileName": "tag.svg",
+    "name": "tag",
+    "type": ""
+  },
+  {
+    "fileName": "target.svg",
+    "name": "target",
+    "type": ""
+  },
+  {
+    "fileName": "terminal.svg",
+    "name": "terminal",
+    "type": ""
+  },
+  {
+    "fileName": "thumbs-down.svg",
+    "name": "thumbs-down",
+    "type": ""
+  },
+  {
+    "fileName": "thumbs-up.svg",
+    "name": "thumbs-up",
+    "type": ""
+  },
+  {
+    "fileName": "trash-2.svg",
+    "name": "trash-2",
+    "type": ""
+  },
+  {
+    "fileName": "trending-down.svg",
+    "name": "trending-down",
+    "type": ""
+  },
+  {
+    "fileName": "trending-up.svg",
+    "name": "trending-up",
+    "type": ""
+  },
+  {
+    "fileName": "triangle.svg",
+    "name": "triangle",
+    "type": ""
+  },
+  {
+    "fileName": "tv.svg",
+    "name": "tv",
+    "type": ""
+  },
+  {
+    "fileName": "type.svg",
+    "name": "type",
+    "type": ""
+  },
+  {
+    "fileName": "underline.svg",
+    "name": "underline",
+    "type": ""
+  },
+  {
+    "fileName": "unlock.svg",
+    "name": "unlock",
+    "type": ""
+  },
+  {
+    "fileName": "upload.svg",
+    "name": "upload",
+    "type": ""
+  },
+  {
+    "fileName": "user-check.svg",
+    "name": "user-check",
+    "type": ""
+  },
+  {
+    "fileName": "user-plus.svg",
+    "name": "user-plus",
+    "type": ""
+  },
+  {
+    "fileName": "user-x.svg",
+    "name": "user-x",
+    "type": ""
+  },
+  {
+    "fileName": "user.svg",
+    "name": "user",
+    "type": ""
+  },
+  {
+    "fileName": "users.svg",
+    "name": "users",
+    "type": ""
+  },
+  {
+    "fileName": "video-off.svg",
+    "name": "video-off",
+    "type": ""
+  },
+  {
+    "fileName": "video.svg",
+    "name": "video",
+    "type": ""
+  },
+  {
+    "fileName": "volume-1.svg",
+    "name": "volume-1",
+    "type": ""
+  },
+  {
+    "fileName": "volume-2.svg",
+    "name": "volume-2",
+    "type": ""
+  },
+  {
+    "fileName": "volume-mute.svg",
+    "name": "volume-mute",
+    "type": ""
+  },
+  {
+    "fileName": "volume-x.svg",
+    "name": "volume-x",
+    "type": ""
+  },
+  {
+    "fileName": "volume.svg",
+    "name": "volume",
+    "type": ""
+  },
+  {
+    "fileName": "align-center.svg",
+    "name": "align-center",
+    "type": "wysiwyg"
+  },
+  {
+    "fileName": "align-justify.svg",
+    "name": "align-justify",
+    "type": "wysiwyg"
+  },
+  {
+    "fileName": "align-left.svg",
+    "name": "align-left",
+    "type": "wysiwyg"
+  },
+  {
+    "fileName": "align-right.svg",
+    "name": "align-right",
+    "type": "wysiwyg"
+  },
+  {
+    "fileName": "bold.svg",
+    "name": "bold",
+    "type": "wysiwyg"
+  },
+  {
+    "fileName": "italic.svg",
+    "name": "italic",
+    "type": "wysiwyg"
+  },
+  {
+    "fileName": "x-circle.svg",
+    "name": "x-circle",
+    "type": ""
+  },
+  {
+    "fileName": "x-square.svg",
+    "name": "x-square",
+    "type": ""
+  },
+  {
+    "fileName": "x.svg",
+    "name": "x",
+    "type": ""
+  },
+  {
+    "fileName": "youtube.svg",
+    "name": "youtube",
+    "type": ""
+  },
+  {
+    "fileName": "zoom-in.svg",
+    "name": "zoom-in",
+    "type": ""
+  },
+  {
+    "fileName": "zoom-out.svg",
+    "name": "zoom-out",
+    "type": ""
+  }
+]

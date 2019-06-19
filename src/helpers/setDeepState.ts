@@ -1,4 +1,4 @@
-import { set } from 'lodash-es';
+import { cloneDeep, set, unset } from 'lodash-es';
 import { Component } from 'react';
 
 /**
@@ -11,6 +11,14 @@ import { Component } from 'react';
 export function setDeepState(component: Component, path: string, value: any) {
 	return new Promise(resolve => {
 		const newState = set(component.state, path, value);
+		component.setState(newState, resolve);
+	});
+}
+
+export function unsetDeepState(component: Component, path: string) {
+	return new Promise(resolve => {
+		const newState = cloneDeep(component.state);
+		unset(newState, path);
 		component.setState(newState, resolve);
 	});
 }
