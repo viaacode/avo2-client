@@ -155,6 +155,11 @@ export { Book } from './Book';
 export { Bookmark } from './Bookmark';
 
 /**
+ * BOOKMARKFILLED
+ */
+export { BookmarkFilled } from './BookmarkFilled';
+
+/**
  * BOOKOPEN
  */
 export { BookOpen } from './BookOpen';
@@ -393,6 +398,11 @@ export { Headphone } from './Headphone';
  * HEART
  */
 export { Heart } from './Heart';
+
+/**
+ * HEARTFILLED
+ */
+export { HeartFilled } from './HeartFilled';
 
 /**
  * HELPCIRCLE

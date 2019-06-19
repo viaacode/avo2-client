@@ -150,6 +150,11 @@
     "type": ""
   },
   {
+    "fileName": "bookmark-filled.svg",
+    "name": "bookmark-filled",
+    "type": ""
+  },
+  {
     "fileName": "bookmark.svg",
     "name": "bookmark",
     "type": ""
@@ -382,6 +387,11 @@
   {
     "fileName": "headphone.svg",
     "name": "headphone",
+    "type": ""
+  },
+  {
+    "fileName": "heart-filled.svg",
+    "name": "heart-filled",
     "type": ""
   },
   {
