@@ -32,7 +32,7 @@ pipeline {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
                             echo "We need anyuid for node"
-			    sh '''#!/bin/bash
+			                         sh '''#!/bin/bash
                                echo this is setup by the bash script
                                #oc adm policy add-scc-to-user anyuid -n sc-avo2  -z default
                                '''
@@ -57,7 +57,7 @@ pipeline {
 			                          sh '''#!/bin/bash
           				                  echo 'app exists apply changes to template and roll out qas'
                                     oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
-                                    oc process -l app=avo2-client -l component=frontend -l ENV=qas -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                                    oc process -l app=avo2-client -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
           				                   '''
                             } else {sh'''#!/bin/bash
                                       echo "install tmpl"
@@ -68,7 +68,7 @@ pipeline {
                                       npm install npx
                                       npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
                                       echo " roll out QAS"
-                                      oc process -l app=avo2-client -l component=frontend -l ENV=qas -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                                      oc process -l app=avo2-client -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                                     '''
                               }
                         }
