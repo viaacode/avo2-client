@@ -22,6 +22,7 @@ import {
 	generateSearchLinks,
 } from '../../components/avo2-components/src/helpers/generateLink';
 import { formatDate, formatDuration } from '../../helpers/formatting';
+import { LANGUAGES } from '../../helpers/languages';
 import { SearchResultItem } from '../../types';
 
 type DetailProps = {};
@@ -86,7 +87,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background="alt">
-					<Container>
+					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
 								<ToolbarItem>
@@ -130,7 +131,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 					</Container>
 				</Container>
 				<Container mode="vertical">
-					<Container>
+					<Container mode="horizontal">
 						<Grid>
 							<Column size="2-8">
 								<div className="o-container-vertical-list">
@@ -161,7 +162,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<p>{item.dcterms_abstract}</p>
 										<div className="u-spacer-top-s">
 											<div className="u-text-center">
-												<Button type="secondary">Meer lezen</Button>
+												<Button type="secondary" label="Meer lezen" />
 											</div>
 										</div>
 										<div className="c-hr" />
@@ -186,7 +187,11 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 														<td>{generateSearchLink('serie', item.dc_titles_serie)}</td>
 													</td>
 													<th scope="row">Taal</th>
-													<td>{(item.lom_languages || []).join(', ')}</td>
+													<td>
+														{(item.lom_languages || [])
+															.map(languageCode => LANGUAGES.nl[languageCode])
+															.join(', ')}
+													</td>
 												</tr>
 											</tbody>
 										</table>

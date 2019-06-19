@@ -2,7 +2,9 @@ import { padStart, reverse } from 'lodash-es';
 
 export function formatDuration(numSeconds: number | null | undefined) {
 	const seconds: number = numSeconds || 0;
-	return Math.round(seconds / 60) + padStart(String(seconds % 60), 2, '0');
+	const min = Math.round(seconds / 60);
+	const sec = seconds % 60;
+	return `${min}:${padStart(String(sec), 2, '0')}`;
 }
 
 /**

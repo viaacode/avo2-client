@@ -589,7 +589,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE, resultsCount);
 
 		return (
-			<Container mode={'horizontal'}>
+			<Container mode="horizontal">
 				<Navbar>
 					<Toolbar>
 						<ToolbarLeft>
@@ -618,7 +618,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					</Toolbar>
 				</Navbar>
 				<Navbar autoHeight={true}>
-					<Container>
+					<Container mode="horizontal">
 						{/*TODO replace with spacer component when it is built*/}
 						<div className="u-spacer-top-l">
 							{/*TODO replace with spacer component when it is built*/}
@@ -648,7 +648,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					</Container>
 				</Navbar>
 				<Container mode="vertical">
-					<Container>
+					<Container mode="horizontal">
 						{this.renderSearchResults()}
 						<div className="u-spacer-l">
 							<Pagination

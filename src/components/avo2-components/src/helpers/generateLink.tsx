@@ -1,5 +1,5 @@
 import { isArray } from 'lodash-es';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Filters } from '../../../../types';
 
@@ -9,9 +9,14 @@ export function generateSearchLinks(
 	className: string = ''
 ) {
 	if (isArray(filterValue)) {
-		return filterValue.map(
-			(value: string) => `${generateSearchLink(filterProp, value, className)},`
-		);
+		return filterValue.map((value: string, index: number) => {
+			return (
+				<Fragment>
+					{generateSearchLink(filterProp, value, className)}
+					{index === filterValue.length - 1 ? '' : ', '}
+				</Fragment>
+			);
+		});
 	}
 	return generateSearchLink(filterProp, filterValue, className);
 }
