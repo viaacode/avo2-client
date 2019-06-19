@@ -2,7 +2,7 @@
 
 export interface Filters {
 	query: string;
-	type: string[];
+	type: ContentType[];
 	educationLevel: string[];
 	domain: string[];
 	broadcastDate: DateRange;
@@ -13,13 +13,15 @@ export interface Filters {
 	provider: string[];
 }
 
+export type ContentType = 'collection' | 'video' | 'audio';
+
 export interface DateRange {
 	gte: string | '' | null | undefined;
 	lte: string | '' | null | undefined;
 }
 
 export interface FilterOptionSearch {
-	type: string;
+	type: ContentType;
 	educationLevel: string;
 	domain: string;
 	language: string;
@@ -30,7 +32,6 @@ export interface FilterOptionSearch {
 }
 
 export interface SearchRequest {
-	// Used on client to verify request structure
 	filters?: Partial<Filters>;
 	filterOptionSearch?: Partial<FilterOptionSearch>;
 	orderProperty?: SearchOrderProperty;
@@ -64,7 +65,7 @@ export interface SearchResultItem {
 	algemeen_briefing_id: string[];
 	fragment_duration_time: null;
 	fragment_duration_seconds: number;
-	administrative_type: string;
+	administrative_type: ContentType;
 	administrative_external_id: string;
 }
 
@@ -83,4 +84,5 @@ export type SearchOrderProperty =
 	| 'broadcastDate'
 	| 'addedDate'
 	| 'editDate';
+
 export type SearchOrderDirection = 'asc' | 'desc';

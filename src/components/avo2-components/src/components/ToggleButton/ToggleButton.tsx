@@ -22,7 +22,9 @@ export const ToggleButton: FunctionComponent<ToggleButtonProps> = ({
 
 	function onButtonClick() {
 		setFilled(!filled);
-		onClick(!filled);
+		if (onClick) {
+			onClick(!filled);
+		}
 	}
 
 	function getIcon() {

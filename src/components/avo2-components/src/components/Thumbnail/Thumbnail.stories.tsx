@@ -22,7 +22,7 @@ storiesOf('Thumbnail', module)
 				src="images/thumbnail.jpg"
 				category="collection"
 				meta="4 items"
-				label="collectie"
+				label="collection"
 			/>
 		</div>
 	))

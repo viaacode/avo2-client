@@ -13,7 +13,7 @@ import {
 	noop,
 	pickBy,
 	remove,
-	reverse,
+	truncate,
 } from 'lodash-es';
 import queryString from 'query-string';
 import React, { ChangeEvent, Component, Fragment, ReactNode } from 'react';
@@ -22,7 +22,7 @@ import { setDeepState, unsetDeepState } from '../../helpers/setDeepState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
 	DateRange,
-	FilterOptionSearch,
+	// FilterOptionSearch,
 	Filters,
 	OptionProp,
 	SearchOrderDirection,
@@ -36,11 +36,15 @@ import {
 	Container,
 	Form,
 	FormGroup,
+	MetaData,
+	MetaDataItem,
 	Navbar,
 	Pagination,
 	Select,
 	TagList,
 	TextInput,
+	Thumbnail,
+	ToggleButton,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -54,6 +58,7 @@ import {
 } from '../../components/CheckboxDropdown/CheckboxDropdown';
 import { CheckboxModal } from '../../components/CheckboxModal/CheckboxModal';
 import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
+import { formatDate, formatDuration } from '../../helpers/formatting';
 import { LANGUAGES } from '../../helpers/languages';
 
 type SearchProps = {};
@@ -62,7 +67,7 @@ const ITEMS_PER_PAGE = 10;
 
 interface SearchState extends StaticContext {
 	formState: Filters;
-	filterOptionSearch: FilterOptionSearch;
+	// filterOptionSearch: FilterOptionSearch;
 	orderProperty: SearchOrderProperty;
 	orderDirection: SearchOrderDirection;
 	multiOptions: { [key: string]: OptionProp[] };
@@ -119,16 +124,16 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				serie: [],
 				provider: [],
 			},
-			filterOptionSearch: {
-				type: '',
-				educationLevel: '',
-				domain: '',
-				language: '',
-				keyword: '',
-				subject: '',
-				serie: '',
-				provider: '',
-			},
+			// filterOptionSearch: {
+			// 	type: '',
+			// 	educationLevel: '',
+			// 	domain: '',
+			// 	language: '',
+			// 	keyword: '',
+			// 	subject: '',
+			// 	serie: '',
+			// 	provider: '',
+			// },
 			orderProperty: 'relevance',
 			orderDirection: 'desc',
 			multiOptions: {},
@@ -244,15 +249,15 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			cloneDeep(this.state.formState)
 		);
 
-		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-		const filterOptionSearch: Partial<FilterOptionSearch> = this.cleanupFilterObject(
-			cloneDeep(this.state.filterOptionSearch)
-		);
+		// // Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+		// const filterOptionSearch: Partial<FilterOptionSearch> = this.cleanupFilterObject(
+		// 	cloneDeep(this.state.filterOptionSearch)
+		// );
 
 		// TODO do the search by dispatching a redux action
 		return await doSearch(
 			filterOptions,
-			filterOptionSearch,
+			{},
 			this.state.orderProperty,
 			this.state.orderDirection,
 			this.state.currentPage * ITEMS_PER_PAGE,
@@ -398,7 +403,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			if (filterValue.gte && filterValue.lte) {
 				return [
 					{
-						label: `${this.formatDate(filterValue.gte)} - ${this.formatDate(filterValue.lte)}`,
+						label: `${formatDate(filterValue.gte)} - ${formatDate(filterValue.lte)}`,
 						prop: filterProp,
 						value: filterValue,
 					},
@@ -407,7 +412,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			if (filterValue.gte) {
 				return [
 					{
-						label: `na ${this.formatDate(filterValue.gte)}`,
+						label: `na ${formatDate(filterValue.gte)}`,
 						prop: filterProp,
 						value: filterValue,
 					},
@@ -416,7 +421,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			if (filterValue.lte) {
 				return [
 					{
-						label: `voor ${this.formatDate(filterValue.lte)}`,
+						label: `voor ${formatDate(filterValue.lte)}`,
 						prop: filterProp,
 						value: filterValue,
 					},
@@ -442,13 +447,6 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 
 		console.error('Failed to render selected filter: ', filterProp, filterValue);
 		return [];
-	}
-
-	/**
-	 * Converts a date from format 2000-12-31 to 31/12/2000
-	 */
-	formatDate(dateString: string): string {
-		return reverse(dateString.split('-')).join('/');
 	}
 
 	renderSelectedFilters() {
@@ -489,26 +487,82 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		}
 	}
 
+	private renderSearchResult(result: SearchResultItem) {
+		const metaData = [];
+		let thumbnailMeta = '';
+		if (result.administrative_type === 'audio' || result.administrative_type === 'video') {
+			// TODO investigate why all durations return 0
+			if (result.fragment_duration_time) {
+				thumbnailMeta = formatDuration(result.fragment_duration_time || 0);
+				metaData.push({
+					label: thumbnailMeta,
+				});
+			}
+		} else {
+			// TODO get number of items from result item after bart updates the elasticsearch index
+			thumbnailMeta = `${25} items`;
+			metaData.push({
+				label: thumbnailMeta,
+			});
+		}
+		const contentLink = `detail/${result.pid}`;
+
+		return (
+			<div className="c-search-result" key={result.pid}>
+				<div className="c-search-result__image">
+					<Thumbnail
+						category={result.administrative_type}
+						src={result.thumbnail_path}
+						meta={thumbnailMeta}
+						label={result.administrative_type}
+						alt={result.dcterms_abstract}
+					/>
+				</div>
+				<div className="c-search-result__content">
+					<div className="o-flex o-flex--justify-between o-flex--align-top">
+						<div className="o-flex__item">
+							<h2 className="c-search-result__title">
+								<a href={contentLink}>{result.dc_title}</a>
+							</h2>
+							<a className="c-body-2" href={`search?filters={"provider":[${result.original_cp}]}`}>
+								{result.original_cp}
+							</a>
+						</div>
+						<div className="o-flex__item o-flex__item--shrink">
+							<div className="c-button-toolbar">
+								<ToggleButton active={false} icon="heart" />
+								{/*TODO implement bookmark behavior + set initial active*/}
+							</div>
+						</div>
+					</div>
+					<p className="c-search-result__description">
+						{truncate(result.dcterms_abstract, { length: 240 })}
+					</p>
+					<div className="u-spacer-bottom-s">
+						<div className="o-flex o-flex--justify-between o-flex--wrap">
+							<MetaData category={result.administrative_type}>
+								<MetaDataItem label={result.dcterms_issued} />
+								<MetaDataItem
+									label={String(25)}
+									icon={result.administrative_type === 'audio' ? 'headphone' : 'eye'}
+								/>
+								{/* TODO get number of views after bart updates the elasticsearch index */}
+								<MetaDataItem label={String(25)} icon="heart" />
+								{/* TODO get number of favorites after bart updates the elasticsearch index */}
+							</MetaData>
+							<TagList tags={['Redactiekeuze', 'Partner']} swatches={false} />
+							{/* TODO set correct labels */}
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	private renderSearchResults() {
 		return (
 			<ul className="c-search-result-list">
-				{this.state.results.items.map(result => (
-					<li key={result.pid}>
-						<div className="c-search-result">
-							<div className="c-search-result__image">
-								<img src={result.thumbnail_path} style={{ maxWidth: '300px' }} alt="" />
-							</div>
-							<div className="c-search-result__content">
-								<span className="title">{result.dc_title}</span>
-								<br />
-								<span className="title">{result.dcterms_issued}</span>
-								<br />
-								<br />
-								<br />
-							</div>
-						</div>
-					</li>
-				))}
+				{this.state.results.items.map(this.renderSearchResult)}
 			</ul>
 		);
 	}
