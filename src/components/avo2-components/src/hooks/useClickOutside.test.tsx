@@ -14,7 +14,7 @@ const TestComponent = ({ onClickOutside }: { onClickOutside: () => void }) => {
 		onClickOutside();
 	};
 
-	useClickOutside(isPartOfElement, handleClickOutside);
+	// useClickOutside(isPartOfElement, handleClickOutside);
 
 	return <span ref={spanElem} />;
 };

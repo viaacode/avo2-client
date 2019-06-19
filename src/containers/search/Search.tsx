@@ -53,6 +53,7 @@ import {
 	ToolbarTitle,
 } from '../../components/avo2-components/src';
 
+import { generateSearchLink } from '../../components/avo2-components/src/helpers/generateLink';
 import {
 	CheckboxDropdown,
 	CheckboxOption,
@@ -525,9 +526,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 							<h2 className="c-search-result__title">
 								<a href={contentLink}>{result.dc_title}</a>
 							</h2>
-							<a className="c-body-2" href={`search?filters={"provider":[${result.original_cp}]}`}>
-								{result.original_cp}
-							</a>
+							{generateSearchLink('provider', result.original_cp, 'c-body-2')}
 						</div>
 						<div className="o-flex__item o-flex__item--shrink">
 							<div className="c-button-toolbar">

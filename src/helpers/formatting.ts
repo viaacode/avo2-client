@@ -1,12 +1,13 @@
 import { padStart, reverse } from 'lodash-es';
 
-export function formatDuration(numSeconds: number) {
-	return Math.round(numSeconds / 60) + padStart(String(numSeconds % 60), 2, '0');
+export function formatDuration(numSeconds: number | null | undefined) {
+	const seconds: number = numSeconds || 0;
+	return Math.round(seconds / 60) + padStart(String(seconds % 60), 2, '0');
 }
 
 /**
  * Converts a date from format 2000-12-31 to 31/12/2000
  */
-export function formatDate(dateString: string): string {
-	return reverse(dateString.split('-')).join('/');
+export function formatDate(dateString: string, separator: string = '/'): string {
+	return reverse(dateString.split('-')).join(separator);
 }

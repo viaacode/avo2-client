@@ -73,7 +73,7 @@ describe('<Checkbox />', () => {
 			<CheckboxModal
 				label="Counting"
 				id="counting"
-				options={countOptions}
+				initialOptions={countOptions}
 				onChange={action('CheckboxModal changed')}
 			/>
 		);
@@ -84,7 +84,7 @@ describe('<Checkbox />', () => {
 			<CheckboxModal
 				label="Counting"
 				id="counting"
-				options={countOptions.slice(0, 5)}
+				initialOptions={countOptions.slice(0, 5)}
 				onChange={action('CheckboxModal changed')}
 			/>
 		);
@@ -96,7 +96,7 @@ describe('<Checkbox />', () => {
 			<CheckboxModal
 				label="Counting"
 				id="counting"
-				options={countOptions}
+				initialOptions={countOptions}
 				onChange={action('CheckboxModal changed')}
 			/>
 		);
@@ -116,8 +116,7 @@ describe('<Checkbox />', () => {
 			<CheckboxModal
 				label="Counting"
 				id="counting"
-				options={countOptions}
-				collapsedItemCount={6}
+				initialOptions={countOptions}
 				onChange={action('CheckboxModal changed')}
 			/>
 		);
@@ -139,7 +138,7 @@ describe('<Checkbox />', () => {
 			<CheckboxModal
 				label="Counting"
 				id="counting"
-				options={countOptions}
+				initialOptions={countOptions}
 				onChange={onChangeHandler}
 			/>
 		);

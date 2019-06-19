@@ -18,6 +18,7 @@ import { FormGroup } from './components/Form/FormGroup';
 import { Column } from './components/Grid/Column';
 import { Grid } from './components/Grid/Grid';
 import { Icon } from './components/Icon/Icon';
+import { Image } from './components/Image/Image';
 import { MediaCard } from './components/MediaCard/MediaCard';
 import { MetaData } from './components/MetaData/MetaData';
 import { MetaDataItem } from './components/MetaDataItem/MetaDataItem';
@@ -57,6 +58,7 @@ export {
 	Grid,
 	Column,
 	Icon,
+	Image,
 	MediaCard,
 	MetaData,
 	MetaDataItem,

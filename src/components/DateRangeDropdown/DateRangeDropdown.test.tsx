@@ -2,69 +2,7 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 
 import { action } from '@storybook/addon-actions';
-
-export const countOptions = [
-	{
-		label: 'One',
-		id: 'one',
-		checked: false,
-	},
-	{
-		label: 'Two',
-		id: 'two',
-		checked: false,
-	},
-	{
-		label: 'Three',
-		id: 'three',
-		checked: false,
-	},
-	{
-		label: 'Four',
-		id: 'four',
-		checked: false,
-	},
-	{
-		label: 'Five',
-		id: 'five',
-		checked: false,
-	},
-	{
-		label: 'Six',
-		id: 'six',
-		checked: false,
-	},
-	{
-		label: 'Seven',
-		id: 'seven',
-		checked: false,
-	},
-	{
-		label: 'Eight',
-		id: 'eight',
-		checked: false,
-	},
-	{
-		label: 'Nine',
-		id: 'nine',
-		checked: false,
-	},
-	{
-		label: 'Ten',
-		id: 'ten',
-		checked: false,
-	},
-	{
-		label: 'Elven',
-		id: 'elven',
-		checked: false,
-	},
-	{
-		label: 'Twelve',
-		id: 'twelve',
-		checked: false,
-	},
-];
+import { DateRangeDropdown, DateRangeDropdownState } from './DateRangeDropdown';
 
 describe('<Checkbox />', () => {
 	it('Should be able to render', () => {
@@ -72,7 +10,6 @@ describe('<Checkbox />', () => {
 			<DateRangeDropdown
 				label="Counting"
 				id="counting"
-				options={countOptions}
 				onChange={action('CheckboxDropdown changed')}
 			/>
 		);
@@ -83,7 +20,6 @@ describe('<Checkbox />', () => {
 			<DateRangeDropdown
 				label="Counting"
 				id="counting"
-				options={countOptions.slice(0, 5)}
 				onChange={action('CheckboxDropdown changed')}
 			/>
 		);
@@ -95,7 +31,6 @@ describe('<Checkbox />', () => {
 			<DateRangeDropdown
 				label="Counting"
 				id="counting"
-				options={countOptions}
 				onChange={action('CheckboxDropdown changed')}
 			/>
 		);
@@ -115,8 +50,6 @@ describe('<Checkbox />', () => {
 			<DateRangeDropdown
 				label="Counting"
 				id="counting"
-				options={countOptions}
-				collapsedItemCount={6}
 				onChange={action('CheckboxDropdown changed')}
 			/>
 		);
@@ -135,12 +68,7 @@ describe('<Checkbox />', () => {
 		const onChangeHandler = jest.fn();
 
 		const checkboxDropdownComponent = mount(
-			<DateRangeDropdown
-				label="Counting"
-				id="counting"
-				options={countOptions}
-				onChange={onChangeHandler}
-			/>
+			<DateRangeDropdown label="Counting" id="counting" onChange={onChangeHandler} />
 		);
 
 		const defaultState = {
@@ -162,18 +90,14 @@ describe('<Checkbox />', () => {
 
 		checkboxes.at(2).simulate('change', { target: { checked: true } });
 
-		expect(
-			(checkboxDropdownComponent.state() as CheckboxDropdownState).checkedStates
-		).toMatchObject({
+		expect((checkboxDropdownComponent.state() as DateRangeDropdownState).range).toMatchObject({
 			...defaultState,
 			three: true,
 		});
 
 		checkboxes.at(3).simulate('change', { target: { checked: true } });
 
-		expect(
-			(checkboxDropdownComponent.state() as CheckboxDropdownState).checkedStates
-		).toMatchObject({
+		expect((checkboxDropdownComponent.state() as DateRangeDropdownState).range).toMatchObject({
 			...defaultState,
 			three: true,
 			four: true,
@@ -181,9 +105,7 @@ describe('<Checkbox />', () => {
 
 		checkboxes.at(2).simulate('change', { target: { checked: false } });
 
-		expect(
-			(checkboxDropdownComponent.state() as CheckboxDropdownState).checkedStates
-		).toMatchObject({
+		expect((checkboxDropdownComponent.state() as DateRangeDropdownState).range).toMatchObject({
 			...defaultState,
 			four: true,
 		});
