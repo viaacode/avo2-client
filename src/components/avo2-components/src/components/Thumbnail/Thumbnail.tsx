@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import classNames from 'classnames';
 
-import { Icon } from '../Icon/Icon';
+import { Icon } from '../..';
 
 export interface ThumbnailProps {
 	category: 'collection' | 'video' | 'audio';
@@ -20,12 +20,13 @@ export const Thumbnail: FunctionComponent<ThumbnailProps> = ({
 	meta,
 }: ThumbnailProps) => {
 	const [loaded, setLoaded] = useState(false);
+	const iconName = category === 'audio' ? 'headphone' : category;
 
 	return (
 		<div
 			className={classNames('c-thumbnail', 'c-thumbnail-media', `c-thumbnail-media--${category}`)}
 		>
-			<div className="c-thumbnail-placeholder">{category && <Icon name={category} />}</div>
+			<div className="c-thumbnail-placeholder">{category && <Icon name={iconName} />}</div>
 			{src && (
 				<div className="c-thumbnail-image">
 					<img src={src} alt={alt} onLoad={() => setLoaded(true)} />
@@ -37,7 +38,7 @@ export const Thumbnail: FunctionComponent<ThumbnailProps> = ({
 				})}
 			>
 				<div className="c-thumbnail-media__category">
-					<Icon name={category} />
+					<Icon name={iconName} />
 					{label && <p>{label}</p>}
 				</div>
 				{meta && <div className="c-thumbnail-media__meta">{meta}</div>}
