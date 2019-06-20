@@ -48,7 +48,7 @@ export const MediaCard: FunctionComponent<MediaCardProps> = ({
 				<a href={href}>{title}</a>
 			</h4>
 			{metaData && (
-				<MetaData category={category}>
+				<MetaData>
 					{metaData.map((metaDataItem, index) => (
 						<MetaDataItem key={index} icon={metaDataItem.icon} label={metaDataItem.label} />
 					))}

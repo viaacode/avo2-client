@@ -1,7 +1,7 @@
 import { isArray } from 'lodash-es';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Filters } from '../../../../types';
+import { Filters } from '../types';
 
 export function generateSearchLinks(
 	key: string,

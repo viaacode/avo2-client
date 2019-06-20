@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { Fragment, FunctionComponent } from 'react';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 
 import { Detail } from './containers/detail/Detail';
@@ -7,7 +7,7 @@ import { Search } from './containers/search/Search';
 
 const App: FunctionComponent = () => {
 	return (
-		<>
+		<Fragment>
 			<h1>Archief voor Onderwijs Homepage</h1>
 			<Router>
 				<Link to="/home">Home</Link> <Link to="/search">Search</Link>
@@ -17,7 +17,7 @@ const App: FunctionComponent = () => {
 					<Route exact path="/detail/:id" component={Detail} />
 				</div>
 			</Router>
-		</>
+		</Fragment>
 	);
 };
 

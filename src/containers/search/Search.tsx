@@ -52,7 +52,6 @@ import {
 	ToolbarTitle,
 } from '../../components/avo2-components/src';
 
-import { generateSearchLink } from '../../components/avo2-components/src/helpers/generateLink';
 import {
 	CheckboxDropdown,
 	CheckboxOption,
@@ -60,6 +59,7 @@ import {
 import { CheckboxModal } from '../../components/CheckboxModal/CheckboxModal';
 import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
 import { formatDate, formatDuration } from '../../helpers/formatting';
+import { generateSearchLink } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
 
 type SearchProps = {};
@@ -539,7 +539,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					</p>
 					<div className="u-spacer-bottom-s">
 						<div className="o-flex o-flex--justify-between o-flex--wrap">
-							<MetaData category={result.administrative_type}>
+							<MetaData>
 								<MetaDataItem label={result.dcterms_issued} />
 								<MetaDataItem
 									label={String(25)}

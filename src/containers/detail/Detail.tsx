@@ -17,11 +17,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '../../components/avo2-components/src';
-import {
-	generateSearchLink,
-	generateSearchLinks,
-} from '../../components/avo2-components/src/helpers/generateLink';
 import { formatDate, formatDuration } from '../../helpers/formatting';
+import { generateSearchLink, generateSearchLinks } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
 import { SearchResultItem } from '../../types';
 
@@ -118,7 +115,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 							</ToolbarLeft>
 							<ToolbarRight>
 								<ToolbarItem>
-									<MetaData category={item.administrative_type}>
+									<MetaData>
 										{/* TODO link meta data to actual data */}
 										<MetaDataItem label={String(188)} icon="eye" />
 										<MetaDataItem label={String(370)} icon="bookmark" />

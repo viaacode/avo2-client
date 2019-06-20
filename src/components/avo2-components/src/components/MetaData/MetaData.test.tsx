@@ -7,7 +7,7 @@ import { MetaData } from './MetaData';
 describe('<MetaDataItem />', () => {
 	it('Should be able to render', () => {
 		shallow(
-			<MetaData category="video">
+			<MetaData>
 				<MetaDataItem label="VRT" />s
 				<MetaDataItem icon="headphone" label="738" />
 				<MetaDataItem label="2d geleden" />
@@ -17,7 +17,7 @@ describe('<MetaDataItem />', () => {
 
 	it('Should set the correct className', () => {
 		const metaDataComponent = shallow(
-			<MetaData category="video">
+			<MetaData>
 				<MetaDataItem label="VRT" />
 				<MetaDataItem icon="headphone" label="738" />
 				<MetaDataItem label="2d geleden" />
@@ -29,7 +29,7 @@ describe('<MetaDataItem />', () => {
 
 	it('Should set the correct className with each category', () => {
 		const metaDataComponent = shallow(
-			<MetaData category="video">
+			<MetaData>
 				<MetaDataItem label="VRT" />
 				<MetaDataItem icon="headphone" label="738" />
 				<MetaDataItem label="2d geleden" />
@@ -53,7 +53,7 @@ describe('<MetaDataItem />', () => {
 
 	it('Should correctly pass children', () => {
 		const metaDataComponent = mount(
-			<MetaData category="video">
+			<MetaData>
 				<MetaDataItem label="VRT" />
 				<MetaDataItem icon="headphone" label="738" />
 				<MetaDataItem label="2d geleden" />
