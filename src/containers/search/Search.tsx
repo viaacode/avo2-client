@@ -530,7 +530,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 						</div>
 						<div className="o-flex__item o-flex__item--shrink">
 							<div className="c-button-toolbar">
-								<ToggleButton active={false} icon="heart" />
+								<ToggleButton active={false} icon="bookmark" />
 								{/*TODO implement bookmark behavior + set initial active*/}
 							</div>
 						</div>
@@ -547,7 +547,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 									icon={result.administrative_type === 'audio' ? 'headphone' : 'eye'}
 								/>
 								{/* TODO get number of views after bart updates the elasticsearch index */}
-								<MetaDataItem label={String(25)} icon="heart" />
+								<MetaDataItem label={String(25)} icon="bookmark" />
 								{/* TODO get number of favorites after bart updates the elasticsearch index */}
 							</MetaData>
 							<TagList tags={['Redactiekeuze', 'Partner']} swatches={false} />

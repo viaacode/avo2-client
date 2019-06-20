@@ -120,7 +120,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 									<MetaData category={item.administrative_type}>
 										{/* TODO link meta data to actual data */}
 										<MetaDataItem label={String(188)} icon="eye" />
-										<MetaDataItem label={String(370)} icon="heart" />
+										<MetaDataItem label={String(370)} icon="bookmark" />
 										{item.administrative_type === 'collection' && (
 											<MetaDataItem label={String(12)} icon="collection" />
 										)}
@@ -150,7 +150,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 													<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
 												</div>
 												<div className="c-button-toolbar">
-													<ToggleButton type="tertiary" icon="heart" active={false} />
+													<ToggleButton type="tertiary" icon="bookmark" active={false} />
 													<Button type="tertiary" icon="share-2" />
 													<Button type="tertiary" icon="flag" />
 												</div>
