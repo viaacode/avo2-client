@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Filters } from '../../../../types';
 
 export function generateSearchLinks(
+	key: string,
 	filterProp: keyof Filters,
 	filterValue: string | string[] | undefined,
 	className: string = ''
@@ -11,7 +12,7 @@ export function generateSearchLinks(
 	if (isArray(filterValue)) {
 		return filterValue.map((value: string, index: number) => {
 			return (
-				<Fragment>
+				<Fragment key={`${key}:${filterProp}":${value}`}>
 					{generateSearchLink(filterProp, value, className)}
 					{index === filterValue.length - 1 ? '' : ', '}
 				</Fragment>

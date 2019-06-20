@@ -77,7 +77,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 			},
 		};
 		// TODO: get item from store by id
-		const itemId: string = (props.match.params as any)['id'];
+		// const itemId: string = (props.match.params as any)['id'];
 	}
 
 	async componentDidMount() {}
@@ -100,7 +100,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<h1 className="c-h2 u-m-b-0">{item.dc_title}</h1>
 										<MetaData spaced={true}>
 											<MetaDataItem>
-												{generateSearchLinks('provider', item.original_cp)}
+												{generateSearchLinks(item.pid as string, 'provider', item.original_cp)}
 											</MetaDataItem>
 											{item.dcterms_issued && (
 												<MetaDataItem>
@@ -110,7 +110,8 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 												</MetaDataItem>
 											)}
 											<MetaDataItem>
-												Uit reeks: {generateSearchLinks('serie', item.dc_titles_serie)}
+												Uit reeks:{' '}
+												{generateSearchLinks(item.pid as string, 'serie', item.dc_titles_serie)}
 											</MetaDataItem>
 										</MetaData>
 									</div>
@@ -181,9 +182,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 												</tr>
 												<tr>
 													<th scope="row">Reeks</th>
-													<td>
-														<td>{generateSearchLink('serie', item.dc_titles_serie)}</td>
-													</td>
+													<td>{generateSearchLink('serie', item.dc_titles_serie)}</td>
 													<th scope="row">Taal</th>
 													<td>
 														{(item.lom_languages || [])
@@ -199,13 +198,21 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 												<tr>
 													<th scope="row">Geschikt voor</th>
 													<td>
-														{generateSearchLinks('educationLevel', item.lom_typical_age_range)}
+														{generateSearchLinks(
+															item.pid as string,
+															'educationLevel',
+															item.lom_typical_age_range
+														)}
 													</td>
 												</tr>
 												<tr>
 													<th scope="row">Vakken</th>
 													<td>
-														<td>{generateSearchLinks('subject', item.lom_classification)}</td>
+														{generateSearchLinks(
+															item.pid as string,
+															'subject',
+															item.lom_classification
+														)}
 													</td>
 												</tr>
 											</tbody>

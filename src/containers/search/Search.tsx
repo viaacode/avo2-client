@@ -16,9 +16,8 @@ import {
 	truncate,
 } from 'lodash-es';
 import queryString from 'query-string';
-import React, { ChangeEvent, Component, Fragment, ReactNode } from 'react';
+import React, { Component, Fragment, ReactNode } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
-import { Link } from 'react-router-dom';
 import { setDeepState, unsetDeepState } from '../../helpers/setDeepState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
@@ -196,13 +195,13 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		});
 	}
 
-	handleFilterOptionSearchChange = (event: ChangeEvent) => {
-		const target = event.target as HTMLInputElement;
-		if (target) {
-			const { name, value } = target;
-			setDeepState(this, `filterOptionSearch.${name}`, value).then(noop);
-		}
-	};
+	// handleFilterOptionSearchChange = (event: ChangeEvent) => {
+	// 	const target = event.target as HTMLInputElement;
+	// 	if (target) {
+	// 		const { name, value } = target;
+	// 		setDeepState(this, `filterOptionSearch.${name}`, value).then(noop);
+	// 	}
+	// };
 
 	handleFilterFieldChange = async (value: string | string[] | DateRange | null, id: string) => {
 		if (value) {
