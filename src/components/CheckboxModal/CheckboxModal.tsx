@@ -88,7 +88,7 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 							key={option.id}
 							id={option.id}
 							label={option.label}
-							checked={option.checked}
+							checked={this.state.checkedStates[option.id]}
 							onChange={(checked: boolean) => this.handleCheckboxToggled(checked, option.id)}
 						/>
 					))}
