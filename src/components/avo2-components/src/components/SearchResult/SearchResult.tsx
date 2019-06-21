@@ -2,7 +2,7 @@ import { noop, truncate } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
-import { MetaData, MetaDataItem, TagList, Thumbnail, ToggleButton } from '../..';
+import { Button, MetaData, MetaDataItem, TagList, Thumbnail, ToggleButton } from '../..';
 import { formatDate, formatDuration } from '../../helpers/formatting';
 
 export interface SearchResultProps {
@@ -14,11 +14,11 @@ export interface SearchResultProps {
 	description?: string;
 	title: string;
 	link: string;
-	creator: string;
-	creatorSearchLink: string;
+	originalCp: string;
 	date: string;
 	tags?: string[];
 	onToggleBookmark?: (active: boolean, id: string) => void;
+	onOriginalCpLinkClicked?: (originalCp: string) => void;
 }
 
 export const SearchResult: FunctionComponent<SearchResultProps> = ({
@@ -30,11 +30,11 @@ export const SearchResult: FunctionComponent<SearchResultProps> = ({
 	description,
 	title,
 	link,
-	creator,
-	creatorSearchLink,
+	originalCp,
 	date,
 	tags = [],
 	onToggleBookmark = noop,
+	onOriginalCpLinkClicked = noop,
 }: SearchResultProps) => {
 	const metaData = [];
 	let thumbnailMeta = '';
@@ -72,9 +72,9 @@ export const SearchResult: FunctionComponent<SearchResultProps> = ({
 						<h2 className="c-search-result__title">
 							<Link to={link}>{title}</Link>
 						</h2>
-						<Link className="c-body-2" to={creatorSearchLink}>
-							{creator}
-						</Link>
+						<a onClick={() => onOriginalCpLinkClicked(originalCp)} style={{ cursor: 'pointer' }}>
+							{originalCp}
+						</a>
 					</div>
 					<div className="o-flex__item o-flex__item--shrink">
 						<div className="c-button-toolbar">

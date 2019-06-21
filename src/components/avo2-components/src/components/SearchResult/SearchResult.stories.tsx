@@ -42,7 +42,7 @@ export const fakeSearchResult = {
 	lom_typical_age_range: ['Secundair 2de graad', 'Secundair 3de graad'],
 	lom_intended_enduser_role: ['Docent', 'Student'],
 	algemeen_briefing_id: ['9da4cc22-331c-41a6-8c42-781581148f56'],
-	fragment_duration_time: null,
+	duration_seconds: null,
 	fragment_duration_seconds: 0,
 	administrative_type: 'video',
 	administrative_external_id: 'bg2h71p77x',
@@ -55,13 +55,12 @@ storiesOf('SearchResult', module)
 			<SearchResult
 				link={`detail/${fakeSearchResult.pid}`}
 				type={fakeSearchResult.administrative_type as 'collection' | 'video' | 'audio'}
-				creator={fakeSearchResult.original_cp}
-				creatorSearchLink={`search?filters={"provider":["${fakeSearchResult.original_cp}"]}`}
+				originalCp={fakeSearchResult.original_cp}
 				date={fakeSearchResult.dcterms_issued}
 				pid={fakeSearchResult.pid}
 				title={fakeSearchResult.dc_title}
 				description={fakeSearchResult.dcterms_abstract}
-				duration={fakeSearchResult.fragment_duration_time || 0}
+				duration={fakeSearchResult.duration_seconds || 0}
 				numberOfItems={25}
 				tags={['Redactiekeuze', 'Partner']}
 				thumbnailPath={fakeSearchResult.thumbnail_path}

@@ -64,7 +64,7 @@ describe('<Select />', () => {
 	it('Should be able to set an initial value', () => {
 		const defaultValue = options[5].value;
 
-		const selectComponent = shallow(<Select options={options} defaultValue={defaultValue} />);
+		const selectComponent = shallow(<Select options={options} value={defaultValue} />);
 
 		const selectElement = selectComponent.find('select');
 

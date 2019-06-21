@@ -10,13 +10,12 @@ const searchResult = (
 		<SearchResult
 			link={`detail/${fakeSearchResult.pid}`}
 			type={fakeSearchResult.administrative_type as 'collection' | 'video' | 'audio'}
-			creator={fakeSearchResult.original_cp}
-			creatorSearchLink={`search?filters={"provider":["${fakeSearchResult.original_cp}"]}`}
+			originalCp={fakeSearchResult.original_cp}
 			date={fakeSearchResult.dcterms_issued}
 			pid={fakeSearchResult.pid}
 			title={fakeSearchResult.dc_title}
 			description={fakeSearchResult.dcterms_abstract}
-			duration={fakeSearchResult.fragment_duration_time || 0}
+			duration={fakeSearchResult.duration_seconds || 0}
 			numberOfItems={25}
 			tags={['Redactiekeuze', 'Partner']}
 			thumbnailPath={fakeSearchResult.thumbnail_path}

@@ -23,6 +23,6 @@ storiesOf('Select', module)
 	.addParameters({ jest: ['Select'] })
 	.add('Select', () => (
 		<Fragment>
-			<Select options={options} onChange={action('onChange')} />
+			<Select options={options} value="Db" onChange={action('onChange')} />
 		</Fragment>
 	));

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent, useState } from 'react';
+import React, { ChangeEvent, FunctionComponent } from 'react';
 
 interface SelectOption {
 	value: string;
@@ -10,7 +10,7 @@ export interface SelectProps {
 	options: SelectOption[];
 	id?: string;
 	disabled?: boolean;
-	defaultValue?: string;
+	value?: string;
 	onChange?: (value: string) => void;
 }
 
@@ -18,18 +18,11 @@ export const Select: FunctionComponent<SelectProps> = ({
 	options,
 	id,
 	disabled = false,
-	defaultValue,
+	value,
 	onChange = () => {},
 }: SelectProps) => {
-	const [value, setValue] = useState(defaultValue);
-
 	function onValueChange(event: ChangeEvent<HTMLSelectElement>) {
-		const { value: val } = event.target;
-
-		if (val !== value) {
-			setValue(val);
-			onChange(val);
-		}
+		onChange(event.target.value);
 	}
 
 	return (
