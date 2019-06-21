@@ -8,12 +8,12 @@ storiesOf('Thumbnail', module)
 	.addParameters({ jest: ['Thumbnail'] })
 	.add('Thumbnail (image)', () => (
 		<div className="o-grid-col-bp3-4">
-			<Thumbnail src="images/thumbnail.jpg" meta="4 items" category="video" label="collectie" />
+			<Thumbnail src="images/thumbnail.jpg" meta="4 items" category="video" label="collection" />
 		</div>
 	))
 	.add('Thumbnail (placeholder)', () => (
 		<div className="o-grid-col-bp3-4">
-			<Thumbnail meta="4 items" category="collection" label="collectie" />
+			<Thumbnail meta="4 items" category="collection" label="collection" />
 		</div>
 	))
 	.add('Thumbnail with label', () => (
@@ -33,6 +33,6 @@ storiesOf('Thumbnail', module)
 	))
 	.add('Thumbnail without meta', () => (
 		<div className="o-grid-col-bp3-4">
-			<Thumbnail src="images/thumbnail.jpg" category="video" label="collectie" />
+			<Thumbnail src="images/thumbnail.jpg" category="video" label="collection" />
 		</div>
 	));
