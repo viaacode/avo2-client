@@ -567,7 +567,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		// elasticsearch can only handle 10000 results efficiently
 		const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
 		const resultStart = this.state.currentPage * ITEMS_PER_PAGE + 1;
-		const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE, resultsCount);
+		const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
 		return (
 			<Container mode="horizontal">
