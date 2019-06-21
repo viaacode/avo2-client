@@ -20,6 +20,7 @@ import { Grid } from './components/Grid/Grid';
 import { Icon } from './components/Icon/Icon';
 import { Image } from './components/Image/Image';
 import { MediaCard } from './components/MediaCard/MediaCard';
+import { MediaCardMetaData, MediaCardThumbnail } from './components/MediaCard/MediaCard.slots';
 import { MetaData } from './components/MetaData/MetaData';
 import { MetaDataItem } from './components/MetaDataItem/MetaDataItem';
 import { Modal } from './components/Modal/Modal';
@@ -60,6 +61,8 @@ export {
 	Icon,
 	Image,
 	MediaCard,
+	MediaCardMetaData,
+	MediaCardThumbnail,
 	MetaData,
 	MetaDataItem,
 	Modal,

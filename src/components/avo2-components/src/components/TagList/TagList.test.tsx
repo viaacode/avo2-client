@@ -63,11 +63,11 @@ describe('<TagList />', () => {
 		expect(tagListComponent.find('.c-tag__label')).toHaveLength(0);
 	});
 
-	it('Should set the correct className for labels when rendering without swatches', () => {
+	it('Should not render a label wrapper when rendering without swatches', () => {
 		const tagListComponent = shallow(<TagList tags={tags} swatches={false} />);
 
 		expect(tagListComponent.find('.c-label-text')).toHaveLength(0);
-		expect(tagListComponent.find('.c-tag__label')).toHaveLength(tags.length);
+		expect(tagListComponent.find('.c-tag__label')).toHaveLength(0);
 	});
 
 	it('Should be able to render with borders', () => {

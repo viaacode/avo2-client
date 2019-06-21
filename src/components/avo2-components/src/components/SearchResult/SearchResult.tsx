@@ -2,7 +2,7 @@ import { noop, truncate } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Button, MetaData, MetaDataItem, TagList, Thumbnail, ToggleButton } from '../..';
+import { MetaData, MetaDataItem, TagList, Thumbnail, ToggleButton } from '../..';
 import { formatDate, formatDuration } from '../../helpers/formatting';
 
 export interface SearchResultProps {
@@ -17,12 +17,15 @@ export interface SearchResultProps {
 	originalCp: string;
 	date: string;
 	tags?: string[];
-	onToggleBookmark?: (active: boolean, id: string) => void;
-	onOriginalCpLinkClicked?: (originalCp: string) => void;
+	originalCpLink: string;
+	onToggleBookmark?: (id: string, active: boolean) => void;
+	onTitleLinkClicked?: (id: string, title: string) => void;
+	onOriginalCpLinkClicked?: (id: string, originalCp?: string) => void;
+	onThumbnailClicked?: (id: string, thumbnailSrc?: string) => void;
 }
 
 export const SearchResult: FunctionComponent<SearchResultProps> = ({
-	pid,
+	pid: id,
 	type,
 	thumbnailPath,
 	duration = 0,
@@ -33,8 +36,11 @@ export const SearchResult: FunctionComponent<SearchResultProps> = ({
 	originalCp,
 	date,
 	tags = [],
+	originalCpLink,
 	onToggleBookmark = noop,
+	onTitleLinkClicked = noop,
 	onOriginalCpLinkClicked = noop,
+	onThumbnailClicked = noop,
 }: SearchResultProps) => {
 	const metaData = [];
 	let thumbnailMeta = '';
@@ -54,9 +60,9 @@ export const SearchResult: FunctionComponent<SearchResultProps> = ({
 	}
 
 	return (
-		<div className="c-search-result" key={pid}>
+		<div className="c-search-result" key={id}>
 			<div className="c-search-result__image">
-				<Link to={link}>
+				<Link to={link} onClick={() => onThumbnailClicked(id, thumbnailPath)}>
 					<Thumbnail
 						category={type}
 						src={thumbnailPath}
@@ -70,18 +76,20 @@ export const SearchResult: FunctionComponent<SearchResultProps> = ({
 				<div className="o-flex o-flex--justify-between o-flex--align-top">
 					<div className="o-flex__item">
 						<h2 className="c-search-result__title">
-							<Link to={link}>{title}</Link>
+							<Link to={link} onClick={() => onTitleLinkClicked(id, title)}>
+								{title}
+							</Link>
 						</h2>
-						<a onClick={() => onOriginalCpLinkClicked(originalCp)} style={{ cursor: 'pointer' }}>
+						<Link to={originalCpLink} onClick={() => onOriginalCpLinkClicked(id, originalCp)}>
 							{originalCp}
-						</a>
+						</Link>
 					</div>
 					<div className="o-flex__item o-flex__item--shrink">
 						<div className="c-button-toolbar">
 							<ToggleButton
 								active={false}
 								icon="bookmark"
-								onClick={(active: boolean) => onToggleBookmark(active, pid)}
+								onClick={(active: boolean) => onToggleBookmark(id, active)}
 							/>
 							{/*TODO implement bookmark behavior + set initial active*/}
 						</div>
