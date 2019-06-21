@@ -66,9 +66,8 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 				],
 				lom_typical_age_range: ['Secundair 2de graad', 'Secundair 3de graad'],
 				lom_intended_enduser_role: ['Docent', 'Student'],
-				algemeen_briefing_id: ['a29aa718-91b7-4a43-9813-a598b83799c7'],
-				fragment_duration_time: null,
-				fragment_duration_seconds: 0,
+				duration_time: '00:08:32',
+				duration_seconds: 512,
 				administrative_type: 'video',
 				administrative_external_id: '8911n96442',
 			},
@@ -173,7 +172,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 													<th scope="row">Aanbieder</th>
 													<td>{generateSearchLink('provider', item.original_cp)}</td>
 													<th scope="row">Speelduur</th>
-													<td>{formatDuration(item.fragment_duration_time)}</td>
+													<td>{formatDuration(item.duration_seconds)}</td>
 												</tr>
 												<tr>
 													<th scope="row">Reeks</th>

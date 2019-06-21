@@ -65,9 +65,9 @@ export interface SearchResultItem {
 	lom_classification: string[];
 	lom_typical_age_range: string[];
 	lom_intended_enduser_role: string[];
-	algemeen_briefing_id: string[];
-	fragment_duration_time: null;
-	fragment_duration_seconds: number;
+	briefing_id: string[];
+	duration_time: string;
+	duration_seconds: number;
 	administrative_type: ContentType;
 }
 

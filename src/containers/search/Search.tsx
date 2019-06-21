@@ -106,22 +106,6 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		this.history = props.history;
 		this.location = props.location;
 		this.state = {
-			// formState: {
-			// 	// Default values for filters for easier testing of search api // TODO clear default filters
-			// 	query: 'wie verdient er aan uw schulden',
-			// 	type: ['video', 'audio'],
-			// 	educationLevel: ['Secundair 2de graad', 'Secundair 3de graad'],
-			// 	domain: [],
-			// 	broadcastDate: {
-			// 		gte: '2000-01-01',
-			// 		lte: '2020-01-01',
-			// 	},
-			// 	language: ['nl', 'fr'],
-			// 	keyword: ['armoede'],
-			// 	subject: ['levensbeschouwing'],
-			// 	serie: ['Pano'],
-			// 	provider: [],
-			// },
 			formState: DEFAULT_FORM_STATE,
 			// filterOptionSearch: {
 			// 	type: '',
@@ -153,15 +137,6 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			});
 	}
 
-	componentDidUpdate() {
-		this.getFiltersFromQueryParams()
-			.then(noop)
-			.catch(err => {
-				// TODO show error toast
-				console.error(err);
-			});
-	}
-
 	async getFiltersFromQueryParams(initialSearch: boolean = false): Promise<void> {
 		// Check if current url already has a query param set
 		const queryParams = queryString.parse(this.location.search);
@@ -178,7 +153,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					newState.formState = JSON.parse(queryParams.filters as string);
 				}
 				newState.orderProperty = (queryParams.orderProperty || 'relevance') as SearchOrderProperty;
-				newState.orderDirection = (queryParams.orderProperty || 'desc') as SearchOrderDirection;
+				newState.orderDirection = (queryParams.orderDirection || 'desc') as SearchOrderDirection;
 				newState.currentPage = parseInt((queryParams.page as string) || '1', 10) - 1;
 			} else {
 				// No filter query params present => reset state
@@ -211,7 +186,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		const orderProperty =
 			this.state.orderProperty === 'relevance' ? null : `orderProperty=${this.state.orderProperty}`;
 		const orderDirection =
-			this.state.orderDirection === 'desc' ? null : `orderProperty=${this.state.orderDirection}`;
+			this.state.orderDirection === 'desc' ? null : `orderDirection=${this.state.orderDirection}`;
 		const page = this.state.currentPage === 0 ? null : `page=${this.state.currentPage + 1}`;
 
 		const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
@@ -237,19 +212,15 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		}
 	};
 
-	handleOrderChanged = (value: string = 'relevance_desc') => {
+	handleOrderChanged = async (value: string = 'relevance_desc') => {
 		const valueParts: string[] = value.split('_');
-		const orderProperty: string = valueParts[0];
-		const orderDirection: string = valueParts[1];
-		this.setState(
-			{
-				orderProperty: orderProperty as SearchOrderProperty,
-				orderDirection: orderDirection as SearchOrderDirection,
-			},
-			async () => {
-				await this.submitSearchForm();
-			}
-		);
+		const orderProperty: SearchOrderProperty = valueParts[0] as SearchOrderProperty;
+		const orderDirection: SearchOrderDirection = valueParts[1] as SearchOrderDirection;
+		await setState(this, {
+			orderProperty: orderProperty as SearchOrderProperty,
+			orderDirection: orderDirection as SearchOrderDirection,
+		});
+		await this.submitSearchForm();
 	};
 
 	private cleanupFilterObject(obj: any): any {
@@ -515,13 +486,13 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		}
 	}
 
-	private renderSearchResult(result: SearchResultItem) {
+	private renderSearchResult = (result: SearchResultItem) => {
 		const metaData = [];
 		let thumbnailMeta = '';
 		if (result.administrative_type === 'audio' || result.administrative_type === 'video') {
 			// TODO investigate why all durations return 0
-			if (result.fragment_duration_time) {
-				thumbnailMeta = formatDuration(result.fragment_duration_time || 0);
+			if (result.duration_seconds) {
+				thumbnailMeta = formatDuration(result.duration_seconds || 0);
 				metaData.push({
 					label: thumbnailMeta,
 				});
@@ -542,17 +513,18 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				type={result.administrative_type}
 				title={result.dc_title}
 				link={contentLink}
-				creator={result.original_cp}
-				creatorSearchLink={`/search?filters={"provider":["${result.original_cp}"]}`}
+				originalCp={result.original_cp}
 				date={result.dcterms_issued}
 				thumbnailPath={result.thumbnail_path}
 				tags={['Redactiekeuze', 'Partner']}
 				numberOfItems={25}
-				duration={result.fragment_duration_time || 0}
+				duration={result.duration_seconds || 0}
 				description={result.dcterms_abstract}
+				onToggleBookmark={this.handleBookmarkToggle}
+				onOriginalCpLinkClicked={this.handleOriginalCpLinkClicked}
 			/>
 		);
-	}
+	};
 
 	private renderSearchResults() {
 		return (
@@ -568,6 +540,18 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		await this.submitSearchForm();
 	};
 
+	private handleBookmarkToggle(active: boolean, id: string) {
+		console.log('TODO handle search result bookmark button toggle', active, id);
+	}
+
+	private handleOriginalCpLinkClicked = async (originalCp: string) => {
+		await setDeepState(this, 'formState', {
+			...DEFAULT_FORM_STATE,
+			provider: [originalCp],
+		});
+		this.setFiltersInQueryParams();
+	};
+
 	render() {
 		const orderOptions = [
 			{ label: 'Meest relevant', value: 'relevance_desc' },
@@ -577,10 +561,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			{ label: 'Laatst toegevoegd', value: 'addedDate_desc', disabled: true },
 			{ label: 'Laatst gewijzigd', value: 'editDate_desc', disabled: true },
 		];
+		const defaultOrder = `${this.state.orderProperty || 'relevance'}_${this.state.orderDirection ||
+			'desc'}`;
 		const resultsCount = this.state.results.count;
 		// elasticsearch can only handle 10000 results efficiently
 		const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
-		const resultStart = this.state.currentPage * ITEMS_PER_PAGE;
+		const resultStart = this.state.currentPage * ITEMS_PER_PAGE + 1;
 		const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE, resultsCount);
 
 		return (
@@ -606,6 +592,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 										<Select
 											id="sortBy"
 											options={orderOptions}
+											value={defaultOrder}
 											onChange={value => this.handleOrderChanged(value)}
 										/>
 									</FormGroup>
