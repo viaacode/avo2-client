@@ -88,7 +88,15 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 								<ToolbarItem>
 									<div className="u-spacer-bottom">
 										<div className="c-content-type c-content-type--video">
-											{item.administrative_type && <Icon name={item.administrative_type} />}
+											{item.administrative_type && (
+												<Icon
+													name={
+														item.administrative_type === 'audio'
+															? 'headphone'
+															: item.administrative_type
+													}
+												/>
+											)}
 											<p>Video</p>
 										</div>
 									</div>
