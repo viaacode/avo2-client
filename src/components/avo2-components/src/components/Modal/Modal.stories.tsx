@@ -1,6 +1,7 @@
 import React, { Fragment, ReactElement, useState } from 'react';
 
 import { storiesOf } from '@storybook/react';
+import { loremIpsum } from 'lorem-ipsum';
 
 import { Button } from '../Button/Button';
 
@@ -99,4 +100,14 @@ storiesOf('Modal', module)
 				</ModalFooterRight>
 			</Modal>
 		</ModalStoryComponent>
+	))
+	.add('Scrollable modal', () => (
+		<Modal isOpen={true} title="Modal title" size="small" scrollable={true}>
+			<ModalBody>
+				<p>{loremIpsum({ count: 20 })}</p>
+			</ModalBody>
+			<ModalFooterRight>
+				<Button type="primary" label="Ok" />
+			</ModalFooterRight>
+		</Modal>
 	));

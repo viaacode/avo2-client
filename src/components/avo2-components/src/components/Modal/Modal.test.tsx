@@ -43,8 +43,20 @@ describe('<Modal />', () => {
 			</Modal>
 		);
 
+		const largeModalComponent = shallow(
+			<Modal isOpen={false} size="large">
+				<Fragment />
+			</Modal>
+		);
+
 		const fullscreenModalComponent = shallow(
 			<Modal isOpen={false} size="fullscreen">
+				<Fragment />
+			</Modal>
+		);
+
+		const fullwidthModalComponent = shallow(
+			<Modal isOpen={false} size="fullwidth">
 				<Fragment />
 			</Modal>
 		);
@@ -57,13 +69,29 @@ describe('<Modal />', () => {
 
 		const smallModalInnerElement = smallModalComponent.find('.c-modal');
 		const mediumModalInnerElement = mediumModalComponent.find('.c-modal');
+		const largeModalInnerElement = largeModalComponent.find('.c-modal');
 		const fullscreenModalInnerElement = fullscreenModalComponent.find('.c-modal');
+		const fullwidthModalInnerElement = fullwidthModalComponent.find('.c-modal');
 		const autoSizeModalModalInnerElement = autoSizeModalComponent.find('.c-modal');
 
 		expect(smallModalInnerElement.hasClass('c-modal--small')).toEqual(true);
 		expect(mediumModalInnerElement.hasClass('c-modal--medium')).toEqual(true);
+		expect(largeModalInnerElement.hasClass('c-modal--large')).toEqual(true);
 		expect(fullscreenModalInnerElement.hasClass('c-modal--fullscreen')).toEqual(true);
+		expect(fullwidthModalInnerElement.hasClass('c-modal--fullwidth')).toEqual(true);
 		expect(autoSizeModalModalInnerElement.hasClass('c-modal--height-auto')).toEqual(true);
+	});
+
+	it('Should set the correct className for scrollable modals', () => {
+		const modalComponent = shallow(
+			<Modal isOpen={false} size="small" scrollable={true}>
+				<Fragment />
+			</Modal>
+		);
+
+		const modalInnerElement = modalComponent.find('.c-modal');
+
+		expect(modalInnerElement.hasClass('c-modal--scrollable')).toEqual(true);
 	});
 
 	it('Should be able to render with a title', () => {

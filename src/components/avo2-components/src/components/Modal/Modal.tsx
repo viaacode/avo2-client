@@ -1,33 +1,22 @@
-import React, {
-	Fragment,
-	FunctionComponent,
-	MouseEvent,
-	ReactElement,
-	ReactNode,
-	ReactNodeArray,
-} from 'react';
+import React, { Fragment, FunctionComponent, MouseEvent, ReactNode } from 'react';
 
 import classNames from 'classnames';
 import ReactDOM from 'react-dom';
 
 import { useKeyPress } from '../../hooks/useKeyPress';
+import { useSlot } from '../../hooks/useSlot';
 
 import { Button } from '../Button/Button';
 
-import {
-	ModalBody,
-	ModalFooterLeft,
-	ModalFooterRight,
-	ModalHeaderRight,
-	ModalSlotProps,
-} from './Modal.slots';
+import { ModalBody, ModalFooterLeft, ModalFooterRight, ModalHeaderRight } from './Modal.slots';
 import { ModalBackdrop } from './ModalBackdrop';
 
 export interface ModalProps {
 	children: ReactNode;
 	isOpen: boolean;
 	title?: string;
-	size?: 'small' | 'medium' | 'large' | 'fullscreen' | 'auto';
+	size?: 'small' | 'medium' | 'large' | 'fullscreen' | 'fullwidth' | 'auto';
+	scrollable?: boolean;
 	onClose?: () => void;
 }
 
@@ -36,25 +25,15 @@ export const Modal: FunctionComponent<ModalProps> = ({
 	isOpen,
 	title,
 	size,
+	scrollable,
 	onClose = () => {},
 }: ModalProps) => {
-	const body = getSlot(ModalBody);
-	const headerRight = getSlot(ModalHeaderRight);
-	const footerRight = getSlot(ModalFooterRight);
-	const footerLeft = getSlot(ModalFooterLeft);
+	const body = useSlot(ModalBody, children);
+	const headerRight = useSlot(ModalHeaderRight, children);
+	const footerRight = useSlot(ModalFooterRight, children);
+	const footerLeft = useSlot(ModalFooterLeft, children);
 
 	useKeyPress('Escape', close);
-
-	function getSlot(type: FunctionComponent<ModalSlotProps>) {
-		const slots: ReactNodeArray = Array.isArray(children) ? children : [children];
-		const element: ReactElement = slots.find((c: any) => c.type === type) as ReactElement;
-
-		if (element && element.props.children) {
-			return element.props.children;
-		}
-
-		return null;
-	}
 
 	function close() {
 		onClose();
@@ -77,8 +56,11 @@ export const Modal: FunctionComponent<ModalProps> = ({
 					className={classNames('c-modal', {
 						'c-modal--small': size === 'small',
 						'c-modal--medium': size === 'medium',
+						'c-modal--large': size === 'large',
 						'c-modal--fullscreen': size === 'fullscreen',
+						'c-modal--fullwidth': size === 'fullwidth',
 						'c-modal--height-auto': size === 'auto',
+						'c-modal--scrollable': scrollable,
 					})}
 				>
 					<div className="c-modal__header c-modal__header--bordered">
