@@ -8,17 +8,17 @@ import {
 	flatten,
 	isArray,
 	isEmpty,
+	isEqual,
 	isNil,
 	isPlainObject,
 	noop,
 	pickBy,
 	remove,
-	truncate,
 } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Component, Fragment, ReactNode } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
-import { setDeepState, unsetDeepState } from '../../helpers/setDeepState';
+import { setDeepState, setState, unsetDeepState } from '../../helpers/setState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
 	DateRange,
@@ -36,15 +36,11 @@ import {
 	Container,
 	Form,
 	FormGroup,
-	MetaData,
-	MetaDataItem,
 	Navbar,
 	Pagination,
 	Select,
 	TagList,
 	TextInput,
-	Thumbnail,
-	ToggleButton,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -52,6 +48,7 @@ import {
 	ToolbarTitle,
 } from '../../components/avo2-components/src';
 
+import { SearchResult } from '../../components/avo2-components/src/components/SearchResult/SearchResult';
 import {
 	CheckboxDropdown,
 	CheckboxOption,
@@ -59,7 +56,6 @@ import {
 import { CheckboxModal } from '../../components/CheckboxModal/CheckboxModal';
 import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
 import { formatDate, formatDuration } from '../../helpers/formatting';
-import { generateSearchLink } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
 
 type SearchProps = {};
@@ -84,6 +80,22 @@ interface TagInfo {
 	prop: keyof Filters;
 	value: any;
 }
+
+const DEFAULT_FORM_STATE = {
+	query: '',
+	type: [],
+	educationLevel: [],
+	domain: [],
+	broadcastDate: {
+		gte: '',
+		lte: '',
+	},
+	language: [],
+	keyword: [],
+	subject: [],
+	serie: [],
+	provider: [],
+};
 
 export class Search extends Component<RouteComponentProps<SearchProps>, SearchState> {
 	history: History;
@@ -110,21 +122,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			// 	serie: ['Pano'],
 			// 	provider: [],
 			// },
-			formState: {
-				query: '',
-				type: [],
-				educationLevel: [],
-				domain: [],
-				broadcastDate: {
-					gte: '',
-					lte: '',
-				},
-				language: [],
-				keyword: [],
-				subject: [],
-				serie: [],
-				provider: [],
-			},
+			formState: DEFAULT_FORM_STATE,
 			// filterOptionSearch: {
 			// 	type: '',
 			// 	educationLevel: '',
@@ -146,33 +144,61 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		};
 	}
 
-	async componentDidMount() {
-		await this.getFiltersFromQueryParams();
-
-		this.submitSearchForm().then(noop);
+	componentDidMount() {
+		this.getFiltersFromQueryParams(true)
+			.then(noop)
+			.catch(err => {
+				// TODO show error toast
+				console.error(err);
+			});
 	}
 
-	async getFiltersFromQueryParams(): Promise<void> {
-		return new Promise<void>(resolve => {
-			// Check if current url already has a query param set
-			const queryParams = queryString.parse(this.location.search);
-			try {
-				if (!queryParams.filters && !queryParams.orderProperty && !queryParams.orderDirection) {
-					resolve();
-				}
-				const newState: SearchState = cloneDeep(this.state);
-				if (queryParams.query) {
+	componentDidUpdate() {
+		this.getFiltersFromQueryParams()
+			.then(noop)
+			.catch(err => {
+				// TODO show error toast
+				console.error(err);
+			});
+	}
+
+	async getFiltersFromQueryParams(initialSearch: boolean = false): Promise<void> {
+		// Check if current url already has a query param set
+		const queryParams = queryString.parse(this.location.search);
+		try {
+			const newState: SearchState = cloneDeep(this.state);
+			if (
+				queryParams.filters ||
+				queryParams.orderProperty ||
+				queryParams.orderDirection ||
+				queryParams.page
+			) {
+				// Extract info from filter query params
+				if (queryParams.filters) {
 					newState.formState = JSON.parse(queryParams.filters as string);
 				}
 				newState.orderProperty = (queryParams.orderProperty || 'relevance') as SearchOrderProperty;
 				newState.orderDirection = (queryParams.orderProperty || 'desc') as SearchOrderDirection;
 				newState.currentPage = parseInt((queryParams.page as string) || '1', 10) - 1;
-				this.setState(newState, resolve);
-			} catch (err) {
-				// TODO show toast error: Ongeldige zoek query
-				resolve();
+			} else {
+				// No filter query params present => reset state
+				newState.formState = DEFAULT_FORM_STATE;
+				newState.orderProperty = 'relevance';
+				newState.orderDirection = 'desc';
+				newState.currentPage = 0;
 			}
-		});
+
+			if (!isEqual(newState, this.state)) {
+				// Only rerender if query params actually changed
+				await setState(this, newState);
+				await this.submitSearchForm();
+			} else if (initialSearch) {
+				await this.submitSearchForm();
+			}
+		} catch (err) {
+			// TODO show toast error: Ongeldige zoek query
+			console.error(err);
+		}
 	}
 
 	private setFiltersInQueryParams(): void {
@@ -507,55 +533,24 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				label: thumbnailMeta,
 			});
 		}
-		const contentLink = `detail/${result.pid}`;
+		const contentLink = `detail/${result.id}`;
 
 		return (
-			<div className="c-search-result" key={result.pid}>
-				<div className="c-search-result__image">
-					<Thumbnail
-						category={result.administrative_type}
-						src={result.thumbnail_path}
-						meta={thumbnailMeta}
-						label={result.administrative_type}
-						alt={result.dcterms_abstract}
-					/>
-				</div>
-				<div className="c-search-result__content">
-					<div className="o-flex o-flex--justify-between o-flex--align-top">
-						<div className="o-flex__item">
-							<h2 className="c-search-result__title">
-								<a href={contentLink}>{result.dc_title}</a>
-							</h2>
-							{generateSearchLink('provider', result.original_cp, 'c-body-2')}
-						</div>
-						<div className="o-flex__item o-flex__item--shrink">
-							<div className="c-button-toolbar">
-								<ToggleButton active={false} icon="bookmark" />
-								{/*TODO implement bookmark behavior + set initial active*/}
-							</div>
-						</div>
-					</div>
-					<p className="c-search-result__description">
-						{truncate(result.dcterms_abstract, { length: 240 })}
-					</p>
-					<div className="u-spacer-bottom-s">
-						<div className="o-flex o-flex--justify-between o-flex--wrap">
-							<MetaData>
-								<MetaDataItem label={result.dcterms_issued} />
-								<MetaDataItem
-									label={String(25)}
-									icon={result.administrative_type === 'audio' ? 'headphone' : 'eye'}
-								/>
-								{/* TODO get number of views after bart updates the elasticsearch index */}
-								<MetaDataItem label={String(25)} icon="bookmark" />
-								{/* TODO get number of favorites after bart updates the elasticsearch index */}
-							</MetaData>
-							<TagList tags={['Redactiekeuze', 'Partner']} swatches={false} />
-							{/* TODO set correct labels */}
-						</div>
-					</div>
-				</div>
-			</div>
+			<SearchResult
+				key={result.id}
+				pid={result.id}
+				type={result.administrative_type}
+				title={result.dc_title}
+				link={contentLink}
+				creator={result.original_cp}
+				creatorSearchLink={`/search?filters={"provider":["${result.original_cp}"]}`}
+				date={result.dcterms_issued}
+				thumbnailPath={result.thumbnail_path}
+				tags={['Redactiekeuze', 'Partner']}
+				numberOfItems={25}
+				duration={result.fragment_duration_time || 0}
+				description={result.dcterms_abstract}
+			/>
 		);
 	}
 

@@ -47,7 +47,10 @@ export interface SearchResponse {
 }
 
 export interface SearchResultItem {
-	pid: string;
+	id: string;
+	external_id?: string;
+	administrative_external_id?: string;
+	pid?: string;
 	table_name: string;
 	dc_title: string;
 	dc_titles_serie: string;
@@ -66,7 +69,6 @@ export interface SearchResultItem {
 	fragment_duration_time: null;
 	fragment_duration_seconds: number;
 	administrative_type: ContentType;
-	administrative_external_id: string;
 }
 
 export interface OptionProp {

@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import React, { Component } from 'react';
-import { setDeepState, unsetDeepState } from '../../helpers/setDeepState';
+import { setDeepState, unsetDeepState } from '../../helpers/setState';
 
 import {
 	Button,

@@ -11,6 +11,7 @@ import {
 	MetaData,
 	MetaDataItem,
 	TagList,
+	Thumbnail,
 	ToggleButton,
 	Toolbar,
 	ToolbarItem,
@@ -33,7 +34,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 		super(props);
 		this.state = {
 			item: {
-				pid: '8911n96442',
+				id: '8911n96442',
 				table_name: 'shared.items',
 				dc_title: 'De Canvasconnectie: Jean-Hervé Peron',
 				dc_titles_serie: 'De Canvasconnectie',
@@ -76,8 +77,6 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 		// const itemId: string = (props.match.params as any)['id'];
 	}
 
-	async componentDidMount() {}
-
 	render() {
 		const item = this.state.item;
 
@@ -93,29 +92,26 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 											{item.administrative_type && <Icon name={item.administrative_type} />}
 											<p>Video</p>
 										</div>
-										<h1 className="c-h2 u-m-b-0">{item.dc_title}</h1>
-										<MetaData spaced={true}>
-											<MetaDataItem>
-												{generateSearchLinks(item.pid as string, 'provider', item.original_cp)}
-											</MetaDataItem>
-											{item.dcterms_issued && (
-												<MetaDataItem>
-													<p className="c-body-2 u-text-muted">
-														Gepubliceerd op {formatDate(item.dcterms_issued, '/')}
-													</p>
-												</MetaDataItem>
-											)}
-											<MetaDataItem>
-												Uit reeks:{' '}
-												{generateSearchLinks(item.pid as string, 'serie', item.dc_titles_serie)}
-											</MetaDataItem>
-										</MetaData>
 									</div>
+									<h1 className="c-h2 u-m-b-0">{item.dc_title}</h1>
+									<MetaData spaced={true} category={item.administrative_type || 'video'}>
+										<MetaDataItem>{generateSearchLink('provider', item.original_cp)}</MetaDataItem>
+										{item.dcterms_issued && (
+											<MetaDataItem>
+												<p className="c-body-2 u-text-muted">
+													Gepubliceerd op {formatDate(item.dcterms_issued, '/')}
+												</p>
+											</MetaDataItem>
+										)}
+										<MetaDataItem>
+											Uit reeks: {generateSearchLink('serie', item.dc_titles_serie)}
+										</MetaDataItem>
+									</MetaData>
 								</ToolbarItem>
 							</ToolbarLeft>
 							<ToolbarRight>
 								<ToolbarItem>
-									<MetaData>
+									<MetaData category={item.administrative_type || 'video'}>
 										{/* TODO link meta data to actual data */}
 										<MetaDataItem label={String(188)} icon="eye" />
 										<MetaDataItem label={String(370)} icon="bookmark" />
@@ -198,7 +194,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 													<th scope="row">Geschikt voor</th>
 													<td>
 														{generateSearchLinks(
-															item.pid as string,
+															item.id as string,
 															'educationLevel',
 															item.lom_typical_age_range
 														)}
@@ -208,7 +204,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 													<th scope="row">Vakken</th>
 													<td>
 														{generateSearchLinks(
-															item.pid as string,
+															item.id as string,
 															'subject',
 															item.lom_classification
 														)}
@@ -237,6 +233,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										</table>
 									</div>
 								</div>
+								m
 							</Column>
 							<Column size="2-4">
 								<Container mode="vertical">
@@ -245,38 +242,66 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												metaData={[{ label: item.original_cp || '' }]}
-												href={`detail/${item.pid}`}
+												href={`detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="horizontal"
-											/>
+											>
+												<Thumbnail
+													category={item.administrative_type || 'video'}
+													src={item.thumbnail_path}
+												/>
+												<MetaData category={item.administrative_type || 'video'}>
+													<MetaDataItem label={item.original_cp || ''} />
+												</MetaData>
+											</MediaCard>
 										</li>
 										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												metaData={[{ label: item.original_cp || '' }]}
-												href={`detail/${item.pid}`}
+												href={`detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="horizontal"
-											/>
+											>
+												<Thumbnail
+													category={item.administrative_type || 'video'}
+													src={item.thumbnail_path}
+												/>
+												<MetaData category={item.administrative_type || 'video'}>
+													<MetaDataItem label={item.original_cp || ''} />
+												</MetaData>
+											</MediaCard>
 										</li>
 										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												metaData={[{ label: item.original_cp || '' }]}
-												href={`detail/${item.pid}`}
+												href={`detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="horizontal"
-											/>
+											>
+												<Thumbnail
+													category={item.administrative_type || 'video'}
+													src={item.thumbnail_path}
+												/>
+												<MetaData category={item.administrative_type || 'video'}>
+													<MetaDataItem label={item.original_cp || ''} />
+												</MetaData>
+											</MediaCard>
 										</li>
 										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												metaData={[{ label: item.original_cp || '' }]}
-												href={`detail/${item.pid}`}
+												href={`detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="horizontal"
-											/>
+											>
+												<Thumbnail
+													category={item.administrative_type || 'video'}
+													src={item.thumbnail_path}
+												/>
+												<MetaData category={item.administrative_type || 'video'}>
+													<MetaDataItem label={item.original_cp || ''} />
+												</MetaData>
+											</MediaCard>
 										</li>
 									</ul>
 								</Container>

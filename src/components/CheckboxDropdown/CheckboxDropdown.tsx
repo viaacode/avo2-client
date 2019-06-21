@@ -1,6 +1,6 @@
 import { compact, fromPairs } from 'lodash-es';
 import React, { Component } from 'react';
-import { setDeepState } from '../../helpers/setDeepState';
+import { setDeepState } from '../../helpers/setState';
 
 import { Button, Checkbox, CheckboxGroup, Dropdown, Form, FormGroup } from '../avo2-components/src';
 

@@ -2,6 +2,17 @@ import { cloneDeep, set, unset } from 'lodash-es';
 import { Component } from 'react';
 
 /**
+ * Promisified setState function
+ * @param component
+ * @param newState
+ */
+export function setState(component: Component, newState: any) {
+	return new Promise<void>(resolve => {
+		component.setState(newState, resolve);
+	});
+}
+
+/**
  * Sets a property which is nested more than one level deep in the state,
  * without deleting any of the other deeply nested values
  * @param component
