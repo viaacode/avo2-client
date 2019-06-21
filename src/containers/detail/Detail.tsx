@@ -1,6 +1,7 @@
 import React, { Component, Fragment, ReactNode } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
 import { Link } from 'react-router-dom';
+import { Scrollbar } from 'react-scrollbars-custom';
 import {
 	Button,
 	Column,
@@ -360,14 +361,20 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 							</Column>
 							<Column size="2-4">
 								<Container mode="vertical">
-									<div style={{ maxHeight: '471px', overflowY: 'auto' }}>
+									<Scrollbar
+										style={{
+											width: '100%',
+											height: '471px',
+											overflowY: 'auto',
+										}}
+									>
 										<h4 className="c-h4">Beschrijving</h4>
 										<ExpandableContainer collapsedHeight={387}>
-											<p style={{ textOverflow: 'ellipsis' }}>
+											<p style={{ paddingRight: '1rem' }}>
 												{this.formatTimestamps(item.dcterms_abstract)}
 											</p>
 										</ExpandableContainer>
-									</div>
+									</Scrollbar>
 								</Container>
 							</Column>
 						</Grid>
