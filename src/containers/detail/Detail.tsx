@@ -18,6 +18,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '../../components/avo2-components/src';
+import { ExpandableContainer } from '../../components/ExpandableContainer/ExpandableContainer';
 import { formatDate, formatDuration } from '../../helpers/formatting';
 import { generateSearchLink, generateSearchLinks } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
@@ -159,13 +160,10 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										</div>
 									</div>
 									<div className="o-container-vertical o-container-vertical--padding-small">
-										<h4 className="c-h4">Omschrijving</h4>
-										<p>{item.dcterms_abstract}</p>
-										<div className="u-spacer-top-s">
-											<div className="u-text-center">
-												<Button type="secondary" label="Meer lezen" />
-											</div>
-										</div>
+										<h4 className="c-h4">Beschrijving</h4>
+										<ExpandableContainer>
+											<p style={{ textOverflow: 'ellipsis' }}>{item.dcterms_abstract}</p>
+										</ExpandableContainer>
 										<div className="c-hr" />
 										<table className="c-table c-table--horizontal c-table--untable">
 											<tbody>
