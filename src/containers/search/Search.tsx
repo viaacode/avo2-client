@@ -56,6 +56,7 @@ import {
 import { CheckboxModal } from '../../components/CheckboxModal/CheckboxModal';
 import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
 import { formatDate, formatDuration } from '../../helpers/formatting';
+import { generateSearchLinkString } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
 
 type SearchProps = {};
@@ -514,6 +515,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				title={result.dc_title}
 				link={contentLink}
 				originalCp={result.original_cp}
+				originalCpLink={generateSearchLinkString('provider', result.original_cp)}
 				date={result.dcterms_issued}
 				thumbnailPath={result.thumbnail_path}
 				tags={['Redactiekeuze', 'Partner']}
@@ -540,16 +542,19 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		await this.submitSearchForm();
 	};
 
-	private handleBookmarkToggle(active: boolean, id: string) {
+	private handleBookmarkToggle(id: string, active: boolean) {
 		console.log('TODO handle search result bookmark button toggle', active, id);
 	}
 
-	private handleOriginalCpLinkClicked = async (originalCp: string) => {
-		await setDeepState(this, 'formState', {
-			...DEFAULT_FORM_STATE,
-			provider: [originalCp],
-		});
-		this.setFiltersInQueryParams();
+	private handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
+		if (originalCp) {
+			await setDeepState(this, 'formState', {
+				...DEFAULT_FORM_STATE,
+				provider: [originalCp],
+			});
+			this.setFiltersInQueryParams();
+			await this.submitSearchForm();
+		}
 	};
 
 	render() {

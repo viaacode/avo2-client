@@ -29,9 +29,13 @@ export function generateSearchLink(
 ) {
 	return (
 		filterValue && (
-			<Link className={className} to={`/search?filters={"${filterProp}":["${filterValue}"]}`}>
+			<Link className={className} to={generateSearchLinkString(filterProp, filterValue)}>
 				{filterValue}
 			</Link>
 		)
 	);
+}
+
+export function generateSearchLinkString(filterProp: keyof Filters, filterValue: string) {
+	return `/search?filters={"${filterProp}":["${filterValue}"]}`;
 }

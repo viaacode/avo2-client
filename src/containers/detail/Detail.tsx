@@ -8,6 +8,8 @@ import {
 	Icon,
 	Image,
 	MediaCard,
+	MediaCardMetaData,
+	MediaCardThumbnail,
 	MetaData,
 	MetaDataItem,
 	TagList,
@@ -238,7 +240,6 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										</table>
 									</div>
 								</div>
-								m
 							</Column>
 							<Column size="2-4">
 								<Container mode="vertical">
@@ -251,13 +252,17 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 												category={item.administrative_type || 'video'}
 												orientation="horizontal"
 											>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
-												</MetaData>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
 											</MediaCard>
 										</li>
 										<li>
@@ -267,13 +272,17 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 												category={item.administrative_type || 'video'}
 												orientation="horizontal"
 											>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
-												</MetaData>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
 											</MediaCard>
 										</li>
 										<li>
@@ -283,13 +292,17 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 												category={item.administrative_type || 'video'}
 												orientation="horizontal"
 											>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
-												</MetaData>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
 											</MediaCard>
 										</li>
 										<li>
@@ -299,13 +312,17 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 												category={item.administrative_type || 'video'}
 												orientation="horizontal"
 											>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
-												</MetaData>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
 											</MediaCard>
 										</li>
 									</ul>
