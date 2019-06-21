@@ -294,7 +294,8 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	private renderCheckboxDropdown(
 		label: string,
 		propertyName: keyof Filters,
-		disabled: boolean = false
+		disabled: boolean = false,
+		style: any = {}
 	): ReactNode {
 		const multiOptions = (this.state.multiOptions[propertyName] || []).map(
 			(option: OptionProp): CheckboxOption => {
@@ -311,7 +312,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		);
 
 		return (
-			<li style={{ display: 'flex' }}>
+			<li style={{ display: 'flex', ...style }}>
 				<CheckboxDropdown
 					label={label}
 					id={propertyName}
@@ -383,7 +384,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				{this.renderCheckboxModal('Serie', 'serie')}
 				{this.renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
 				{this.renderCheckboxDropdown('Taal', 'language')}
-				{this.renderCheckboxDropdown('Aanbieder', 'provider', true)}
+				{this.renderCheckboxDropdown('Aanbieder', 'provider', false, { marginRight: 0 })}
 			</div>
 		);
 	}
@@ -590,31 +591,33 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		return (
 			<Container mode="horizontal">
 				<Navbar>
-					<Toolbar>
-						<ToolbarLeft>
-							<Fragment>
-								<ToolbarItem>
-									<ToolbarTitle>Zoekresultaten</ToolbarTitle>
-								</ToolbarItem>
-								<ToolbarItem>
-									<p className="c-body-1 u-text-muted">
-										{resultStart}-{resultEnd} van {resultsCount} resultaten
-									</p>
-								</ToolbarItem>
-							</Fragment>
-						</ToolbarLeft>
-						<ToolbarRight>
-							<Form type="inline">
-								<FormGroup label="Sorteer op" labelFor="sortBy">
-									<Select
-										id="sortBy"
-										options={orderOptions}
-										onChange={value => this.handleOrderChanged(value)}
-									/>
-								</FormGroup>
-							</Form>
-						</ToolbarRight>
-					</Toolbar>
+					<Container mode="horizontal">
+						<Toolbar>
+							<ToolbarLeft>
+								<Fragment>
+									<ToolbarItem>
+										<ToolbarTitle>Zoekresultaten</ToolbarTitle>
+									</ToolbarItem>
+									<ToolbarItem>
+										<p className="c-body-1 u-text-muted">
+											{resultStart}-{resultEnd} van {resultsCount} resultaten
+										</p>
+									</ToolbarItem>
+								</Fragment>
+							</ToolbarLeft>
+							<ToolbarRight>
+								<Form type="inline">
+									<FormGroup label="Sorteer op" labelFor="sortBy">
+										<Select
+											id="sortBy"
+											options={orderOptions}
+											onChange={value => this.handleOrderChanged(value)}
+										/>
+									</FormGroup>
+								</Form>
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
 				</Navbar>
 				<Navbar autoHeight={true}>
 					<Container mode="horizontal">
