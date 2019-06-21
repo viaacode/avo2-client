@@ -2,49 +2,64 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 
-import { MediaCard } from './MediaCard';
+import { MetaData } from '../MetaData/MetaData';
+import { MetaDataItem } from '../MetaDataItem/MetaDataItem';
+import { Thumbnail } from '../Thumbnail/Thumbnail';
 
-const mockMetaData = [
-	{
-		label: 'VRT',
-	},
-	{
-		icon: 'eye',
-		label: '728',
-	},
-	{
-		label: '2d geleden',
-	},
-];
+import { MediaCard } from './MediaCard';
+import { MediaCardMetaData, MediaCardThumbnail } from './MediaCard.slots';
 
 storiesOf('MediaCard', module)
 	.addParameters({ jest: ['MediaCard'] })
-	.add('Medias card (vertical)', () => (
+	.add('Media card (vertical)', () => (
 		<div className="o-grid-col-bp3-4">
 			<MediaCard
 				title="What an amazing title!"
 				href="#"
-				metaData={mockMetaData}
 				category="collection"
-				thumbnailSrc="images/thumbnail.jpg"
-				thumbnailMeta="7 items"
-				thumbnailLabel="colllection"
-				thumbnailAlt="What an amazing title!"
-			/>
+				orientation="vertical"
+			>
+				<MediaCardThumbnail>
+					<Thumbnail
+						category="collection"
+						src="images/thumbnail.jpg"
+						meta="7 items"
+						label="collection"
+						alt="What an amazing thumbnail!"
+					/>
+				</MediaCardThumbnail>
+				<MediaCardMetaData>
+					<MetaData category="collection">
+						<MetaDataItem label="vrt" />
+						<MetaDataItem label="728" icon="eye" />
+						<MetaDataItem label="2d geleden" />
+					</MetaData>
+				</MediaCardMetaData>
+			</MediaCard>
 		</div>
 	))
 	.add('Media card (horizontal)', () => (
-		<div className="o-grid-col-bp4-4">
-			<MediaCard
-				orientation="horizontal"
-				title="What an amazing title!"
-				href="#"
-				metaData={mockMetaData}
-				category="collection"
-				thumbnailSrc="images/thumbnail.jpg"
-				thumbnailMeta="7 items"
-				thumbnailLabel="colllection"
-				thumbnailAlt="What an amazing title!"
-			/>
-		</div>
+		<MediaCard
+			title="What an amazing title!"
+			href="#"
+			category="collection"
+			orientation="horizontal"
+		>
+			<MediaCardThumbnail>
+				<Thumbnail
+					category="collection"
+					src="images/thumbnail.jpg"
+					meta="7 items"
+					label="collection"
+					alt="What an amazing thumbnail!"
+				/>
+			</MediaCardThumbnail>
+			<MediaCardMetaData>
+				<MetaData category="collection">
+					<MetaDataItem label="vrt" />
+					<MetaDataItem label="728" icon="eye" />
+					<MetaDataItem label="2d geleden" />
+				</MetaData>
+			</MediaCardMetaData>
+		</MediaCard>
 	));

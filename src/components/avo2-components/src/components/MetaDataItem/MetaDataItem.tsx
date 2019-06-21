@@ -20,7 +20,7 @@ export const MetaDataItem: FunctionComponent<MetaDataItemProps> = ({
 			'c-meta-data-item--icon': icon,
 		})}
 	>
-		{icon && !children && <Icon name={icon} />}
+		{!children && icon && <Icon name={icon} />}
 		{!children && <p>{label}</p>}
 		{children}
 	</li>

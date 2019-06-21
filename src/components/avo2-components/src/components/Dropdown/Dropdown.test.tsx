@@ -1,7 +1,6 @@
 import { mount, shallow } from 'enzyme';
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import { Button, Modal } from '../..';
 import { Dropdown } from './Dropdown';
 
 describe('<Dropdown />', () => {

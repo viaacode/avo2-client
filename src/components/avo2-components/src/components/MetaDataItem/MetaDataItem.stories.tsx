@@ -8,12 +8,12 @@ import { MetaDataItem } from './MetaDataItem';
 storiesOf('MetaDataItem', module)
 	.addParameters({ jest: ['MetaDataItem'] })
 	.add('Meta data item', () => (
-		<MetaData>
+		<MetaData category="video">
 			<MetaDataItem label="VRT" />
 		</MetaData>
 	))
 	.add('Meta data item with icon', () => (
-		<MetaData>
+		<MetaData category="audio">
 			<MetaDataItem icon="headphone" label="768" />
 		</MetaData>
 	));

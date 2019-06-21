@@ -1,13 +1,14 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 
 import classNames from 'classnames';
-import { get } from 'lodash-es';
 import PopperJS, { Data, ModifierFn } from 'popper.js';
 import { Manager, Popper, Reference } from 'react-popper';
 
 import { useCallbackRef } from '../../hooks/useCallbackRef';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { useKeyPress } from '../../hooks/useKeyPress';
+
+import { get } from '../../utils/get';
 
 import { Icon } from '../Icon/Icon';
 
