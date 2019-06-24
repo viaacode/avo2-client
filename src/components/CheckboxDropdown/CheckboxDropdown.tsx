@@ -47,7 +47,15 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 		});
 	};
 
-	applyFilter(): void {
+	resetCheckboxStates = () => {
+		this.setState({
+			checkedStates: fromPairs(
+				this.props.options.map((option: CheckboxOption) => [option.id, option.checked])
+			),
+		});
+	};
+
+	applyFilter = async (): Promise<void> => {
 		this.props.onChange(
 			compact(
 				Object.keys(this.state.checkedStates).map(key =>
@@ -56,9 +64,11 @@ export class CheckboxDropdown extends Component<CheckboxDropdownProps, CheckboxD
 			),
 			this.props.id
 		);
-	}
+		await this.closeDropdown();
+	};
 
 	openDropdown = async () => {
+		await this.resetCheckboxStates();
 		await setDeepState(this, 'isDropdownOpen', true);
 	};
 

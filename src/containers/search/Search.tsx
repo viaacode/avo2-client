@@ -6,6 +6,7 @@ import {
 	every,
 	find,
 	flatten,
+	get,
 	isArray,
 	isEmpty,
 	isEqual,
@@ -304,7 +305,9 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				return {
 					label: `${label} (${option.option_count})`,
 					id: option.option_name,
-					checked: false,
+					checked: ((this.state.formState[propertyName] as string[]) || []).includes(
+						option.option_name
+					),
 				};
 			}
 		);
@@ -329,14 +332,16 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		return capitalize(LANGUAGES.nl[code]) || code;
 	}
 
-	private renderCheckboxModal(label: string, propertyName: string) {
+	private renderCheckboxModal(label: string, propertyName: keyof Filters) {
 		const multiOptions = (this.state.multiOptions[propertyName] || []).map(
 			(option: OptionProp): CheckboxOption => {
 				const label = capitalize(option.option_name);
 				return {
 					label: `${label} (${option.option_count})`,
 					id: option.option_name,
-					checked: false,
+					checked: ((this.state.formState[propertyName] as string[]) || []).includes(
+						option.option_name
+					),
 				};
 			}
 		);
@@ -362,6 +367,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				<DateRangeDropdown
 					label={label}
 					id={propertyName}
+					range={get(this, 'state.formState.broadcastDate') || { gte: '', lte: '' }}
 					onChange={async (range: DateRange) => {
 						await this.handleFilterFieldChange(range, propertyName); // TODO reset state of CheckboxModal when closed, but not applied. confirmed by leen
 						await this.submitSearchForm();
@@ -618,7 +624,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 											<TextInput
 												id="query"
 												placeholder="Vul uw zoekterm in..."
-												defaultValue={this.state.formState.query}
+												value={this.state.formState.query}
 												icon="search"
 												onChange={(searchTerm: string) =>
 													this.handleFilterFieldChange(searchTerm, 'query')

@@ -10,6 +10,7 @@ describe('<Checkbox />', () => {
 			<DateRangeDropdown
 				label="Counting"
 				id="counting"
+				range={{ gte: '', lte: '' }}
 				onChange={action('CheckboxDropdown changed')}
 			/>
 		);

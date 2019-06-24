@@ -60,7 +60,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 				this.setState({ item: detailResponse });
 			})
 			.catch(err => {
-				console.error('Failed to get detail frop the server', err, { id: this.state.id });
+				console.error('Failed to get detail from the server', err, { id: this.state.id });
 			});
 	}
 

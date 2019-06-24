@@ -1,6 +1,6 @@
 import { compact, fromPairs } from 'lodash-es';
 import React, { Component } from 'react';
-import { setDeepState } from '../../helpers/setState';
+import { setDeepState, setState } from '../../helpers/setState';
 
 import {
 	Button,
@@ -52,7 +52,21 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 		};
 	}
 
-	applyFilter(): void {
+	/**
+	 * Use the state from the parent page before showing the checkboxes to the user
+	 */
+	resetCheckboxStates = async (): Promise<void> => {
+		await setState(this, {
+			checkedStates: fromPairs(
+				this.props.initialOptions.map((option: CheckboxOption) => [option.id, option.checked])
+			),
+		});
+	};
+
+	/**
+	 * State is only passed from the component to the parent when the user clicks the "Apply" button
+	 */
+	applyFilter = async (): Promise<void> => {
 		this.props.onChange(
 			compact(
 				Object.keys(this.state.checkedStates).map(key =>
@@ -61,20 +75,22 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 			),
 			this.props.id
 		);
-	}
+		await this.closeModal();
+	};
 
 	handleCheckboxToggled = async (checked: boolean, id: string) => {
 		await setDeepState(this, `checkedStates.${id}`, checked);
 	};
 
-	private openModal = () => {
-		this.setState({
+	private openModal = async (): Promise<void> => {
+		await this.resetCheckboxStates();
+		await setState(this, {
 			isModalOpen: true,
 		});
 	};
 
-	private closeModal = () => {
-		this.setState({
+	private closeModal = async (): Promise<void> => {
+		await setState(this, {
 			isModalOpen: false,
 		});
 	};
