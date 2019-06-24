@@ -42,10 +42,10 @@ describe('<RadioButton />', () => {
 
 	it('Should set the defaultChecked-prop as the initial state', () => {
 		const radioButtonComponentTrue = shallow(
-			<RadioButton name="List7" label="One" id="one" value="one" defaultChecked={true} />
+			<RadioButton name="List7" label="One" value="one" checked={true} />
 		);
 		const radioButtonComponentFalse = shallow(
-			<RadioButton name="List8" label="One" id="one" value="one" defaultChecked={false} />
+			<RadioButton name="List7" label="One" value="one" checked={false} />
 		);
 
 		expect(radioButtonComponentTrue.find('[type="radio"]').prop('checked')).toEqual(true);
@@ -53,9 +53,7 @@ describe('<RadioButton />', () => {
 	});
 
 	it('Should have a default value of false for the checked-state', () => {
-		const radioButtonComponent = shallow(
-			<RadioButton name="List9" label="One" id="one" value="one" />
-		);
+		const radioButtonComponent = shallow(<RadioButton name="List8" label="One" value="one" />);
 
 		expect(radioButtonComponent.find('[type="radio"]').prop('checked')).toEqual(false);
 	});
@@ -64,7 +62,7 @@ describe('<RadioButton />', () => {
 		const onChangeHandler = jest.fn();
 
 		const radioButtonComponent = shallow(
-			<RadioButton name="List10" label="One" id="one" value="one" onChange={onChangeHandler} />
+			<RadioButton name="List9" label="One" value="one" onChange={onChangeHandler} />
 		);
 
 		const radioButtonElement = radioButtonComponent.find('[type="radio"]');

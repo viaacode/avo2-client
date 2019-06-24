@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent, useState } from 'react';
+import React, { ChangeEvent, FunctionComponent } from 'react';
 
 import { Icon } from '../Icon/Icon';
 
@@ -6,7 +6,7 @@ export interface DatePickerProps {
 	id?: string;
 	disabled?: boolean;
 	placeholder?: string;
-	defaultValue?: Date | null;
+	value?: Date | null;
 	onChange?: (date: Date | null) => void;
 }
 
@@ -14,23 +14,15 @@ export const DatePicker: FunctionComponent<DatePickerProps> = ({
 	id,
 	disabled = false,
 	placeholder = 'dd/mm/yyyy',
-	defaultValue,
+	value,
 	onChange = () => {},
 }: DatePickerProps) => {
-	const [value, setValue] = useState(defaultValue);
-
 	function onValueChange(event: ChangeEvent<HTMLInputElement>) {
-		const { value: val } = event.target;
+		const val = event.target.value;
 
 		if (val) {
-			const date = new Date(val);
-
-			if (!value || date.valueOf() !== value.valueOf()) {
-				setValue(date);
-				onChange(date);
-			}
+			onChange(new Date(val));
 		} else {
-			setValue(null);
 			onChange(null);
 		}
 	}

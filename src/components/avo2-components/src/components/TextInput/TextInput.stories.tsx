@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, ReactElement, useState } from 'react';
 
 import { storiesOf } from '@storybook/react';
 
@@ -6,37 +6,75 @@ import { action } from '../../helpers/action';
 
 import { TextInput } from './TextInput';
 
+const TextInputStoryComponent = ({
+	children,
+	defaultValue = '',
+}: {
+	children: ReactElement;
+	defaultValue?: string;
+}) => {
+	const [value, setValue] = useState(defaultValue);
+
+	return React.cloneElement(children, {
+		value,
+		onChange: (value: string) => {
+			action('Input changed')(value);
+			setValue(value);
+		},
+	});
+};
+
 storiesOf('TextInput', module)
 	.addParameters({ jest: ['TextInput'] })
 	.add('TextInput', () => (
 		<Fragment>
-			<TextInput placeholder="Type something here..." onChange={action('onChange')} />
+			<TextInputStoryComponent>
+				<TextInput placeholder="Type something here..." onChange={action('onChange')} />
+			</TextInputStoryComponent>
 			<div className="u-spacer-bottom" />
-			<TextInput disabled placeholder="No typing here..." />
+			<TextInputStoryComponent>
+				<TextInput disabled placeholder="No typing here..." />
+			</TextInputStoryComponent>
 		</Fragment>
 	))
 	.add('TextInput without placeholder', () => (
 		<Fragment>
-			<TextInput onChange={action('onChange')} />
+			<TextInputStoryComponent>
+				<TextInput onChange={action('onChange')} />
+			</TextInputStoryComponent>
 			<div className="u-spacer-bottom" />
-			<TextInput disabled />
+			<TextInputStoryComponent>
+				<TextInput disabled />
+			</TextInputStoryComponent>
 		</Fragment>
 	))
 	.add('TextInput with default value', () => (
 		<Fragment>
-			<TextInput
-				placeholder="And this is the placeholder"
-				defaultValue="This is the default value"
-				onChange={action('onChange')}
-			/>
+			<TextInputStoryComponent>
+				<TextInput
+					placeholder="And this is the placeholder"
+					value="This is the default value"
+					onChange={action('onChange')}
+				/>
+			</TextInputStoryComponent>
 			<div className="u-spacer-bottom" />
-			<TextInput disabled defaultValue="This is the default value" />
+			<TextInputStoryComponent defaultValue="This is the default value">
+				<TextInput disabled />
+			</TextInputStoryComponent>
 		</Fragment>
 	))
 	.add('TextInput with icon', () => (
 		<Fragment>
-			<TextInput icon="search" placeholder="Type something here..." onChange={action('onChange')} />
+			<TextInputStoryComponent>
+				<TextInput
+					icon="search"
+					placeholder="Type something here..."
+					onChange={action('onChange')}
+				/>
+			</TextInputStoryComponent>
 			<div className="u-spacer-bottom" />
-			<TextInput icon="x" disabled placeholder="No typing here..." />
+			<TextInputStoryComponent>
+				<TextInput icon="x" disabled placeholder="No typing here..." />
+			</TextInputStoryComponent>
 		</Fragment>
 	));

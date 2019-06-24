@@ -47,13 +47,13 @@ describe('<TextInput />', () => {
 	});
 
 	it('Should be able to set an initial value', () => {
-		const defaultValue = 'default test value';
+		const value = 'default test value';
 
-		const inputComponent = shallow(<TextInput defaultValue={defaultValue} />);
+		const inputComponent = shallow(<TextInput value={value} />);
 
 		const inputElement = inputComponent.find('input');
 
-		expect(inputElement.prop('value')).toEqual(defaultValue);
+		expect(inputElement.prop('value')).toEqual(value);
 	});
 
 	it('Should be able to render with an icon', () => {

@@ -8,7 +8,7 @@ export interface RadioButtonProps {
 	value: string;
 	id?: string;
 	disabled?: boolean;
-	defaultChecked?: boolean;
+	checked?: boolean;
 	onChange?: (checked: boolean) => void;
 }
 
@@ -18,26 +18,23 @@ export const RadioButton: FunctionComponent<RadioButtonProps> = ({
 	value,
 	id,
 	disabled = false,
-	defaultChecked = false,
+	checked = false,
 	onChange = () => {},
 }: RadioButtonProps) => {
-	const [checked, setChecked] = useState(defaultChecked);
 	const [dispatchDeselectEvent] = useDeselectEvent(name, value, onDeselect);
 
 	function onDeselect() {
 		if (checked) {
-			setChecked(false);
 			onChange(false);
 		}
 	}
 
 	function onValueChange(event: ChangeEvent<HTMLInputElement>) {
-		const { checked: checkedValue } = event.target;
+		const checkedValue = event.target.checked;
 
 		dispatchDeselectEvent();
 
 		if (checkedValue !== checked) {
-			setChecked(checkedValue);
 			onChange(checkedValue);
 		}
 	}

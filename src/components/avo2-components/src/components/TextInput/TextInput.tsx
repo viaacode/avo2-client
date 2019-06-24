@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent, useState } from 'react';
+import React, { ChangeEvent, FunctionComponent } from 'react';
 
 import { Icon } from '../Icon/Icon';
 
@@ -6,7 +6,7 @@ export interface TextInputProps {
 	id?: string;
 	disabled?: boolean;
 	placeholder?: string;
-	defaultValue?: string;
+	value?: string;
 	icon?: string;
 	onChange?: (value: string) => void;
 }
@@ -15,19 +15,12 @@ export const TextInput: FunctionComponent<TextInputProps> = ({
 	id,
 	disabled = false,
 	placeholder,
-	defaultValue = '',
+	value = '',
 	icon,
 	onChange = () => {},
 }: TextInputProps) => {
-	const [value, setValue] = useState(defaultValue);
-
 	function onValueChange(event: ChangeEvent<HTMLInputElement>) {
-		const { value: val } = event.target;
-
-		if (val !== value) {
-			setValue(val);
-			onChange(val);
-		}
+		onChange(event.target.value);
 	}
 
 	return icon ? (
