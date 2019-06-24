@@ -5,7 +5,7 @@ import {
 	SearchOrderProperty,
 	SearchRequest,
 	SearchResponse,
-} from '../../types';
+} from '../../types/searchTypes';
 
 export async function doSearch(
 	filters?: Partial<Filters>,
@@ -15,7 +15,7 @@ export async function doSearch(
 	from: number = 0,
 	size: number = 30
 ): Promise<SearchResponse> {
-	const url = `${process.env.REACT_APP_PROXY_URL}/search/search`;
+	const url = `${process.env.REACT_APP_PROXY_URL}/search`;
 	const body: SearchRequest = {
 		filters,
 		filterOptionSearch,

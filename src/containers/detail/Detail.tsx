@@ -26,7 +26,9 @@ import { ExpandableContainer } from '../../components/ExpandableContainer/Expand
 import { formatDate, formatDuration } from '../../helpers/formatting';
 import { generateSearchLink, generateSearchLinks } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
-import { SearchResultItem } from '../../types';
+import { getDetail } from '../../redux/detail/detailActions';
+import { DetailResponse } from '../../types/detailTypes';
+import { SearchResultItem } from '../../types/searchTypes';
 
 type DetailProps = {};
 
@@ -38,47 +40,17 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 	constructor(props: RouteComponentProps) {
 		super(props);
 		this.state = {
-			item: {
-				id: '8911n96442',
-				table_name: 'shared.items',
-				dc_title: 'De Canvasconnectie: Jean-Hervé Peron',
-				dc_titles_serie: 'De Canvasconnectie',
-				thumbnail_path:
-					'https://archief-media.viaa.be/viaa/TESTBEELD/292aa9ef099f47da9062542f5fa73c361fb8734976f246689b58eeca78d6eba1/keyframes/keyframes_1_1/keyframe15.jpg',
-				original_cp: 'VRT',
-				original_cp_id: 'OR-rf5kf25',
-				lom_context: ['DKO', 'Secundair onderwijs'],
-				lom_keywords: [
-					'beeldende kunst',
-					'Duitsland',
-					'Faust',
-					'Frank Zappa',
-					'Henri de Toulouse-Lautrec',
-					'Louis Armstrong',
-					'Miles Davis',
-					'muziek',
-				],
-				lom_languages: ['de', 'en', 'fr', 'nl'],
-				dcterms_issued: '2015-11-10',
-				dcterms_abstract:
-					"Elke week gaat de Canvasconnectie op bezoek bij één kunstenaar. We zien hem of haar in volle voorbereiding van nieuw werk. Tegelijk maakt de kunstenaar een keuze uit een album met werk van collega's en geeft daar commentaar bij. \n\nDeze aflevering: Jean-Hervé Peron\n\nJean-Hervé Peron is de frontman van de legendarische Duitse groep Faust. \u2028Samen met andere krautrockbands als Kraftwerk, Can en Neu! verlegden ze in de jaren 1970 de grenzen van de rockmuziek. \u2028Met hun inventieve en onconventionele albums effenden ze het pad voor groepen als Radiohead, Sonic Youth en The Flaming Lips, die het pionierswerk van Faust een inspiratie noemen. \u2028Onlangs verscheen hun album 'jUSt' waarmee ze op 19 november in Utrecht optraden. \u2028De Canvasconnectie zoekt Jean-Hervé Peron op in het Duitse Schiphorst, waar hij teruggetrokken op zijn hoeve leeft.\n\n00:00:00 Generiek.\n\n00:01:22 Beelden van Jean-Hervé Peron thuis in Schiphorst\n\n00:01:50 Peron vertelt over hoe hij opgevoed werd met muziek. Hij moest verplicht naar de muziekschool.\n\n00:02:24 Hij vertelt over zijn eerste instrument: de kornet. Zijn idool was Louis Armstrong.\n\n00:02:48 Archiefbeeld van Louis Armstrong die ‘C'est si bon’ speelt.\n\n00:03:56 Beelden van Miles Davis die ‘Bitches Brew’ speelt. \n\n00:04:30 Peron speelt een deuntje op zijn eerste trompet.\n\n00:05:40 Peron spreekt over waarom hij Frank Zappa zo goed vindt.\n\n00:06:03 Clip van Frank Zappa & The Mothers of Invention die ‘Call Any Vegetable’ speelt.\n\n00:06:29 Peron verteld dat Zappa de eerste band uit de VS was die anders was en taboes doorbrak.\n\n00:06:36 Clip van Frank Zappa die ‘Bobby Brown’ speelt.\n\n00:07:39 Peron vertelt dat hij één jaar in de VS gewoond heeft en terug naar Europa is getrokken na mei '68.\n\n00:08:37 Archiefbeelden tonen de betogingen van mei '68.\n\n00:09:55 Peron praat over de Duitse expressionistische regisseur F.W. Murnau. Er worden beelden getoond van de film 'Sunrise'.\n\n00:10:31 Fragment uit de film ‘Nosferatu’ van Murnau.\n\n00:12:11 Peron vertelt over Toulouse-Lautrec.\n\n00:13:17 Er worden diverse schilderijen van Toulouse-Lautrec getoond.\n\n00:14:45 Archiefbeelden tonen het Toulouse-Lautrec Institut in Hamburg.\n\n00:14:52 Peron verteld over Uwe Nettelbeck, Duitse schlagers en over het dorpje Wümme waar zijn groep voor het eerst muziek maakte. \n\n00:18:43 Archiefbeelden van Rudolf Sosna.\n\n00:19:20 Beelden van Faust die ‘Flashback Caruso’ spelen.\n\n00:20:36 Peron praat over de Amerikaanse fotograaf George S. Zimbel.\n\n00:21:38 Er worden diverse foto's van Zimbel getoond.\n\n00:22:39 Peron heeft het over de Japanse muzikant Keiji Haino.\n\n00:22:49 Er wordt een fragment getoond van een performance van Keiji Haino.\n\n00:23:18 Peron vertelt over Haino die wacht tot het publiek volledig stil is alvorens te beginnen.\n\n00:27:03 Peron zegt dat \"alles kunst is en kunst overal is\". Hij praat ook over Fluxus.\n\n00:28:02 Peron praat over de avant-garde kunstenaar Tony Conrad.\n\n00:28:54 Peron vertelt over hoe Faust in het voorprogramma van Conrad mocht spelen.\n\n00:29:41 Er wordt een fragment getoond van Tony Conrad die samen met Faust optrad in Berlijn.",
-				lom_classification: [
-					'beeldende kunsten - schilderkunst, beeldhouwkunst, bouwkunst',
-					'fotografie - video - film',
-					'gedrags- en cultuurwetenschappen',
-					'muzikale opvoeding - muziek',
-					'PAV - MAVO - GASV - ASPV',
-				],
-				lom_typical_age_range: ['Secundair 2de graad', 'Secundair 3de graad'],
-				lom_intended_enduser_role: ['Docent', 'Student'],
-				duration_time: '00:08:32',
-				duration_seconds: 512,
-				administrative_type: 'video',
-				administrative_external_id: '8911n96442',
-			},
+			item: {},
 		};
 		// TODO: get item from store by id
-		// const itemId: string = (props.match.params as any)['id'];
+		const itemId: string = (props.match.params as any)['id'];
+		getDetail(itemId)
+			.then((detailResponse: DetailResponse) => {
+				this.setState({ item: detailResponse });
+			})
+			.catch(err => {
+				console.error('Failed to get detail frop the server', err, { id: itemId });
+			});
 	}
 
 	/**

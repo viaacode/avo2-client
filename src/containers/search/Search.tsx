@@ -29,7 +29,7 @@ import {
 	SearchOrderProperty,
 	SearchResponse,
 	SearchResultItem,
-} from '../../types';
+} from '../../types/searchTypes';
 
 import {
 	Button,
