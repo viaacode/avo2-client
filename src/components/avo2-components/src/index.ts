@@ -29,15 +29,20 @@ import { Navbar } from './components/Navbar/Navbar';
 import { Pagination } from './components/Pagination/Pagination';
 import { RadioButton } from './components/RadioButton/RadioButton';
 import { RadioButtonGroup } from './components/RadioButtonGroup/RadioButtonGroup';
+import { SearchResult } from './components/SearchResult/SearchResult';
+import {
+	SearchResultSubtitle,
+	SearchResultThumbnail,
+	SearchResultTitle,
+} from './components/SearchResult/SearchResult.slots';
 import { Select } from './components/Select/Select';
 import { Spinner } from './components/Spinner/Spinner';
-import { Swatch } from './components/Swatch/Swatch';
 import { TagList } from './components/TagList/TagList';
 import { TextInput } from './components/TextInput/TextInput';
 import { Thumbnail } from './components/Thumbnail/Thumbnail';
 import { ToggleButton } from './components/ToggleButton/ToggleButton';
 import { Toolbar } from './components/Toolbar/Toolbar';
-import { ToolbarLeft, ToolbarRight } from './components/Toolbar/Toolbar.slots';
+import { ToolbarCenter, ToolbarLeft, ToolbarRight } from './components/Toolbar/Toolbar.slots';
 import { ToolbarItem } from './components/Toolbar/ToolbarItem';
 import { ToolbarTitle } from './components/Toolbar/ToolbarTitle';
 
@@ -74,15 +79,19 @@ export {
 	RadioButton,
 	RadioButtonGroup,
 	Select,
+	SearchResult,
+	SearchResultTitle,
+	SearchResultSubtitle,
+	SearchResultThumbnail,
 	Spinner,
-	Swatch,
 	TagList,
 	TextInput,
 	Thumbnail,
 	ToggleButton,
 	Toolbar,
-	ToolbarItem,
 	ToolbarLeft,
+	ToolbarCenter,
 	ToolbarRight,
+	ToolbarItem,
 	ToolbarTitle,
 };

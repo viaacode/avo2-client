@@ -1,26 +1,45 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { Thumbnail } from '../..';
 import { SearchResult } from './SearchResult';
+import {
+	SearchResultSubtitle,
+	SearchResultThumbnail,
+	SearchResultTitle,
+} from './SearchResult.slots';
 import { fakeSearchResult } from './SearchResult.stories';
 
 const searchResult = (
 	<Router>
 		<SearchResult
 			type={fakeSearchResult.administrative_type as 'collection' | 'video' | 'audio'}
-			originalCp={fakeSearchResult.original_cp}
 			date={fakeSearchResult.dcterms_issued}
-			pid={fakeSearchResult.pid}
-			title={fakeSearchResult.dc_title}
-			link={`detail/${fakeSearchResult.pid}`}
+			id={fakeSearchResult.pid}
 			description={fakeSearchResult.dcterms_abstract}
-			duration={fakeSearchResult.fragment_duration_time || 0}
+			duration={fakeSearchResult.fragment_duration_time}
 			numberOfItems={25}
 			tags={['Redactiekeuze', 'Partner']}
-			thumbnailPath={fakeSearchResult.thumbnail_path}
-			originalCpLink={`search?filters={"provider":["${fakeSearchResult.original_cp}"]}`}
-		/>
+		>
+			<SearchResultTitle>
+				<Link to={`detail/${fakeSearchResult.pid}`}>{fakeSearchResult.dc_title}</Link>
+			</SearchResultTitle>
+			<SearchResultSubtitle>
+				<Link to={`search?filters={'provider':['${fakeSearchResult.original_cp}']}`}>
+					{fakeSearchResult.original_cp}
+				</Link>
+			</SearchResultSubtitle>
+			<SearchResultThumbnail>
+				<Link to={`detail/${fakeSearchResult.pid}`}>
+					<Thumbnail
+						category={fakeSearchResult.administrative_type as any}
+						src={fakeSearchResult.thumbnail_path}
+						label={fakeSearchResult.administrative_type}
+					/>
+				</Link>
+			</SearchResultThumbnail>
+		</SearchResult>
 	</Router>
 );
 
