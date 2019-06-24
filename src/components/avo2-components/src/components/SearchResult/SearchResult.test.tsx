@@ -16,7 +16,6 @@ const searchResult = (
 		<SearchResult
 			type={fakeSearchResult.administrative_type as 'collection' | 'video' | 'audio'}
 			date={fakeSearchResult.dcterms_issued}
-			id={fakeSearchResult.pid}
 			description={fakeSearchResult.dcterms_abstract}
 			duration={fakeSearchResult.fragment_duration_time}
 			numberOfItems={25}
