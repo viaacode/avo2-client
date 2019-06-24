@@ -1,6 +1,7 @@
-import React, { Component, Fragment, ReactNode } from 'react';
+import { History, Location } from 'history';
+import queryString from 'query-string';
+import React, { Component, createRef, Fragment, ReactNode, RefObject } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
-import { Link } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 import {
 	Button,
@@ -8,7 +9,6 @@ import {
 	Container,
 	Grid,
 	Icon,
-	Image,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -23,9 +23,10 @@ import {
 	ToolbarRight,
 } from '../../components/avo2-components/src';
 import { ExpandableContainer } from '../../components/ExpandableContainer/ExpandableContainer';
-import { formatDate, formatDuration } from '../../helpers/formatting';
+import { formatDate, formatDuration, parseDuration } from '../../helpers/formatting';
 import { generateSearchLink, generateSearchLinks } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
+import { setState } from '../../helpers/setState';
 import { getDetail } from '../../redux/detail/detailActions';
 import { DetailResponse } from '../../types/detailTypes';
 import { SearchResultItem } from '../../types/searchTypes';
@@ -34,24 +35,59 @@ type DetailProps = {};
 
 interface DetailState extends StaticContext {
 	item: Partial<SearchResultItem>;
+	id: string;
+	time: number;
 }
 
 export class Detail extends Component<RouteComponentProps<DetailProps>, DetailState> {
+	history: History;
+	location: Location;
+	videoRef: RefObject<HTMLVideoElement> = createRef();
+
 	constructor(props: RouteComponentProps) {
 		super(props);
+		this.history = props.history;
+		this.location = props.location;
+
 		this.state = {
 			item: {},
+			id: (props.match.params as any)['id'],
+			time: this.getSeekerTimeFromQueryParams(),
 		};
 		// TODO: get item from store by id
-		const itemId: string = (props.match.params as any)['id'];
-		getDetail(itemId)
+		getDetail(this.state.id)
 			.then((detailResponse: DetailResponse) => {
 				this.setState({ item: detailResponse });
 			})
 			.catch(err => {
-				console.error('Failed to get detail frop the server', err, { id: itemId });
+				console.error('Failed to get detail frop the server', err, { id: this.state.id });
 			});
 	}
+
+	private getSeekerTimeFromQueryParams(): number {
+		const queryParams = queryString.parse(this.location.search);
+		return parseInt((queryParams.time as string) || '0', 10);
+	}
+
+	private setSeekerTimeInQueryParams(): void {
+		this.history.push({
+			pathname: `/detail/${this.state.id}`,
+			search: this.state.time ? `?time=${this.state.time}` : '',
+		});
+	}
+
+	private handleTimeLinkClicked = async (timestamp: string) => {
+		const seconds = parseDuration(timestamp);
+		await setState(this, { time: seconds });
+		this.setSeekerTimeInQueryParams();
+		this.setSeekerTime();
+	};
+
+	private setSeekerTime = () => {
+		if (this.videoRef.current) {
+			this.videoRef.current.currentTime = this.state.time;
+		}
+	};
 
 	/**
 	 * Split string by time markers and adds links to those times into the output jsx code
@@ -61,12 +97,19 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 		const parts: string[] = description.split(timestampRegex);
 		return parts.map((part: string, index: number) => {
 			if (part === '\n') {
-				return <br />;
+				return <br key={`description-new-line-${index}`} />;
 			}
 			if (timestampRegex.test(part)) {
-				return <Link to={`detail/8911n96442?time=${part}`}>{part}</Link>;
+				return (
+					<Button
+						key={`description-link-${index}`}
+						label={part}
+						type="link"
+						onClick={() => this.handleTimeLinkClicked(part)}
+					/>
+				);
 			}
-			return <span key={`part-${index}`}>{part}</span>;
+			return <span key={`description-part-${index}`}>{part}</span>;
 		});
 	}
 
@@ -133,7 +176,17 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
 										<div className="c-video-player t-player-skin--dark">
-											{item.thumbnail_path && <Image src={item.thumbnail_path} />}
+											{/*{item.thumbnail_path && <Image src={item.thumbnail_path} />}*/}
+											{item.thumbnail_path && (
+												<video
+													src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
+													placeholder={item.thumbnail_path}
+													style={{ width: '100%' }}
+													controls={true}
+													ref={this.videoRef}
+													onLoadedMetadata={this.setSeekerTime}
+												/>
+											)}
 										</div>
 										<div className="u-spacer-top-l">
 											<div className="o-flex o-flex--justify-between o-flex--wrap">
