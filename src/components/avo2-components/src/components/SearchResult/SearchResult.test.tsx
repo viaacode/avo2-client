@@ -13,13 +13,13 @@ const searchResult = (
 			date={fakeSearchResult.dcterms_issued}
 			pid={fakeSearchResult.pid}
 			title={fakeSearchResult.dc_title}
-			link={`detail/${fakeSearchResult.pid}`}
+			link={`/detail/${fakeSearchResult.pid}`}
 			description={fakeSearchResult.dcterms_abstract}
 			duration={fakeSearchResult.fragment_duration_time || 0}
 			numberOfItems={25}
 			tags={['Redactiekeuze', 'Partner']}
 			thumbnailPath={fakeSearchResult.thumbnail_path}
-			originalCpLink={`search?filters={"provider":["${fakeSearchResult.original_cp}"]}`}
+			originalCpLink={`/search?filters={"provider":["${fakeSearchResult.original_cp}"]}`}
 		/>
 	</Router>
 );
