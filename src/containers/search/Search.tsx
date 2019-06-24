@@ -19,6 +19,7 @@ import {
 import queryString from 'query-string';
 import React, { Component, Fragment, ReactNode } from 'react';
 import { RouteComponentProps, StaticContext } from 'react-router';
+import { Link } from 'react-router-dom';
 import { setDeepState, setState, unsetDeepState } from '../../helpers/setState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
@@ -39,25 +40,25 @@ import {
 	FormGroup,
 	Navbar,
 	Pagination,
+	SearchResult,
+	SearchResultSubtitle,
+	SearchResultThumbnail,
+	SearchResultTitle,
 	Select,
 	TagList,
 	TextInput,
+	Thumbnail,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
 	ToolbarTitle,
 } from '../../components/avo2-components/src';
-
-import { SearchResult } from '../../components/avo2-components/src/components/SearchResult/SearchResult';
-import {
-	CheckboxDropdown,
-	CheckboxOption,
-} from '../../components/CheckboxDropdown/CheckboxDropdown';
-import { CheckboxModal } from '../../components/CheckboxModal/CheckboxModal';
+import { CheckboxDropdown } from '../../components/CheckboxDropdown/CheckboxDropdown';
+import { CheckboxModal, CheckboxOption } from '../../components/CheckboxModal/CheckboxModal';
 import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
 import { formatDate, formatDuration } from '../../helpers/formatting';
-import { generateSearchLinkString } from '../../helpers/generateLink';
+import { generateSearchLink } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
 
 type SearchProps = {};
@@ -516,21 +517,32 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		return (
 			<SearchResult
 				key={result.id}
-				pid={result.id}
 				type={result.administrative_type}
-				title={result.dc_title}
-				link={contentLink}
-				originalCp={result.original_cp}
-				originalCpLink={generateSearchLinkString('provider', result.original_cp)}
-				date={result.dcterms_issued}
-				thumbnailPath={result.thumbnail_path}
+				date={formatDate(result.dcterms_issued)}
 				tags={['Redactiekeuze', 'Partner']}
 				numberOfItems={25}
-				duration={result.duration_seconds || 0}
+				duration={formatDuration(result.duration_seconds || 0)}
 				description={result.dcterms_abstract}
-				onToggleBookmark={this.handleBookmarkToggle}
-				onOriginalCpLinkClicked={this.handleOriginalCpLinkClicked}
-			/>
+				onToggleBookmark={(active: boolean) => this.handleBookmarkToggle(result.id, active)}
+			>
+				<SearchResultTitle>
+					<Link to={contentLink}>{result.dc_title}</Link>
+				</SearchResultTitle>
+				<SearchResultSubtitle>
+					{generateSearchLink('provider', result.original_cp, 'c-body-2', () =>
+						this.handleOriginalCpLinkClicked(result.id, result.original_cp)
+					)}
+				</SearchResultSubtitle>
+				<SearchResultThumbnail>
+					<Link to={contentLink}>
+						<Thumbnail
+							category={result.administrative_type as any}
+							src={result.thumbnail_path}
+							label={result.administrative_type}
+						/>
+					</Link>
+				</SearchResultThumbnail>
+			</SearchResult>
 		);
 	};
 

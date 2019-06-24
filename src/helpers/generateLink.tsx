@@ -1,4 +1,4 @@
-import { isArray } from 'lodash-es';
+import { isArray, noop } from 'lodash-es';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Filters } from '../types/searchTypes';
@@ -25,14 +25,22 @@ export function generateSearchLinks(
 export function generateSearchLink(
 	filterProp: keyof Filters,
 	filterValue: string | undefined,
-	className: string = ''
+	className: string = '',
+	onClick: () => void = noop
 ) {
 	return (
-		filterValue && (
-			<Link className={className} to={generateSearchLinkString(filterProp, filterValue)}>
-				{filterValue}
-			</Link>
-		)
+		<Fragment>
+			{filterValue && (
+				<Link
+					className={className}
+					to={generateSearchLinkString(filterProp, filterValue)}
+					onClick={onClick}
+				>
+					{filterValue}
+				</Link>
+			)}
+			{!filterValue && <Fragment />}
+		</Fragment>
 	);
 }
 
