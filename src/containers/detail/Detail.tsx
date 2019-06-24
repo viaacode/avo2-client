@@ -211,7 +211,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
@@ -231,7 +231,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
@@ -251,7 +251,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
@@ -271,7 +271,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
@@ -291,7 +291,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>

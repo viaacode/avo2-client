@@ -67,7 +67,7 @@ storiesOf('SearchResult', module)
 				tags={['Redactiekeuze', 'Partner']}
 			>
 				<SearchResultTitle>
-					<Link to={`detail/${fakeSearchResult.pid}`}>{fakeSearchResult.dc_title}</Link>
+					<Link to={`/detail/${fakeSearchResult.pid}`}>{fakeSearchResult.dc_title}</Link>
 				</SearchResultTitle>
 				<SearchResultSubtitle>
 					<Link to={`search?filters={'provider':['${fakeSearchResult.original_cp}']}`}>
@@ -75,7 +75,7 @@ storiesOf('SearchResult', module)
 					</Link>
 				</SearchResultSubtitle>
 				<SearchResultThumbnail>
-					<Link to={`detail/${fakeSearchResult.pid}`}>
+					<Link to={`/detail/${fakeSearchResult.pid}`}>
 						<Thumbnail
 							category={fakeSearchResult.administrative_type as any}
 							src={fakeSearchResult.thumbnail_path}

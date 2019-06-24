@@ -23,10 +23,10 @@ const searchResult = (
 			tags={['Redactiekeuze', 'Partner']}
 		>
 			<SearchResultTitle>
-				<Link to={`detail/${fakeSearchResult.pid}`}>{fakeSearchResult.dc_title}</Link>
+				<Link to={`/detail/${fakeSearchResult.pid}`}>{fakeSearchResult.dc_title}</Link>
 			</SearchResultTitle>
 			<SearchResultSubtitle>
-				<Link to={`search?filters={'provider':['${fakeSearchResult.original_cp}']}`}>
+				<Link to={`/search?filters={'provider':['${fakeSearchResult.original_cp}']}`}>
 					{fakeSearchResult.original_cp}
 				</Link>
 			</SearchResultSubtitle>
