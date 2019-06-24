@@ -505,7 +505,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				label: thumbnailMeta,
 			});
 		}
-		const contentLink = `detail/${result.id}`;
+		const contentLink = `/detail/${result.id}`;
 
 		return (
 			<SearchResult

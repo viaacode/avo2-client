@@ -92,7 +92,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 				return <br />;
 			}
 			if (timestampRegex.test(part)) {
-				return <Link to={`detail/8911n96442?time=${part}`}>{part}</Link>;
+				return <Link to={`/detail/8911n96442?time=${part}`}>{part}</Link>;
 			}
 			return <span key={`part-${index}`}>{part}</span>;
 		});
@@ -186,7 +186,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
@@ -206,7 +206,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
@@ -226,7 +226,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
@@ -246,7 +246,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
@@ -266,7 +266,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 										<li style={relatedItemStyle}>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
-												href={`detail/${item.id}`}
+												href={`/detail/${item.id}`}
 												category={item.administrative_type || 'video'}
 												orientation="vertical"
 											>
