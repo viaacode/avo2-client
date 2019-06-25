@@ -49,9 +49,6 @@ pipeline {
                             if (openshift.selector("buildconfig", "avo2-client-s2i").exists()) {
                             sh'''#!/bin/bash
                             echo starting a build
-                            echo REACT_APP_PROXY_URL is --${REACT_APP_PROXY_URL}--.
-                            echo env variables available in pod:
-                            oc set env pod/avo2-client-s2i-18-build --list
                             oc project sc-avo2
                             npm install npx
                             npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
@@ -60,7 +57,7 @@ pipeline {
 			                          sh '''#!/bin/bash
           				                  echo 'app exists apply changes to template and roll out qas'
                                     oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
-                                    oc process -l app=avo2-client -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                                    oc process -l app=avo2-client -p ENV=qas REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
           				                   '''
                             } else {sh'''#!/bin/bash
                                       echo "install tmpl"
@@ -71,7 +68,7 @@ pipeline {
                                       npm install npx
                                       npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
                                       echo " roll out QAS"
-                                      oc process -l app=avo2-client -p ENV=qas -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                                      oc process -l app=avo2-client -p ENV=qas REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                                     '''
                               }
                         }
