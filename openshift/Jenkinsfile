@@ -49,7 +49,7 @@ pipeline {
                             if (openshift.selector("buildconfig", "avo2-client-s2i").exists()) {
                             sh'''#!/bin/bash
                             echo starting a build
-                            echo REACT_APP_PROXY_URL is "${REACT_APP_PROXY_URL}"
+                            echo REACT_APP_PROXY_URL is (${REACT_APP_PROXY_URL}).
                             oc project sc-avo2
                             npm install npx
                             npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env YARN_ENABLED=true --expose build
