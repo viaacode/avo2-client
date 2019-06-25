@@ -72,7 +72,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 	private setSeekerTimeInQueryParams(): void {
 		this.history.push({
 			pathname: `/detail/${this.state.id}`,
-			search: this.state.time ? `?time=${this.state.time}` : '',
+			search: this.state.time ? `?${queryString.stringify({ time: this.state.time })}` : '',
 		});
 	}
 
