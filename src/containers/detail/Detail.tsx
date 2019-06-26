@@ -7,9 +7,10 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { RouteComponentProps } from 'react-router';
 
+import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
+import { RouteComponentProps } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
@@ -36,7 +37,6 @@ import { formatDate, formatDuration, parseDuration } from '../../helpers/formatt
 import { generateSearchLink, generateSearchLinks } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
 import { getDetail } from '../../redux/detail/detailActions';
-import { DetailResponse } from '../../types/detailTypes';
 
 interface DetailProps extends RouteComponentProps {}
 
@@ -47,7 +47,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 }: DetailProps) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [item, setItem] = useState({} as DetailResponse);
+	const [item, setItem] = useState({} as Avo.Detail.Response);
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
 
