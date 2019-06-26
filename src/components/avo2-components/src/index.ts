@@ -16,6 +16,7 @@ import { CheckboxGroup } from './components/CheckboxGroup/CheckboxGroup';
 import { Container } from './components/Container/Container';
 import { DatePicker } from './components/DatePicker/DatePicker';
 import { Dropdown } from './components/Dropdown/Dropdown';
+import { DropdownButton, DropdownContent } from './components/Dropdown/Dropdown.slots';
 import { Form } from './components/Form/Form';
 import { FormGroup } from './components/Form/FormGroup';
 import { Column } from './components/Grid/Column';
@@ -63,6 +64,8 @@ export {
 	Container,
 	DatePicker,
 	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Form,
 	FormGroup,
 	Grid,
