@@ -46,6 +46,9 @@ export function generateSearchLink(
 	);
 }
 
-export function generateSearchLinkString(filterProp: keyof Filters, filterValue: string) {
+export function generateSearchLinkString(
+	filterProp: keyof Avo.Search.Filters,
+	filterValue: string
+) {
 	return `/search?filters={"${filterProp}":["${filterValue}"]}`;
 }
