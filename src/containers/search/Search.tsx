@@ -346,7 +346,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 				<CheckboxModal
 					label={label}
 					id={propertyName}
-					initialOptions={checkboxMultiOptions}
+					options={checkboxMultiOptions}
 					onChange={async (values: string[]) => {
 						await handleFilterFieldChange(values, propertyName);
 					}}
