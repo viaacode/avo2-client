@@ -115,7 +115,7 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 
 	render() {
 		const item = this.state.item;
-		const relatedItemStyle: any = { width: '18%', float: 'left', marginRight: '2%' };
+		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
 		return (
 			<Fragment>
@@ -156,14 +156,16 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 							</ToolbarLeft>
 							<ToolbarRight>
 								<ToolbarItem>
-									<MetaData category={item.administrative_type || 'video'}>
-										{/* TODO link meta data to actual data */}
-										<MetaDataItem label={String(188)} icon="eye" />
-										<MetaDataItem label={String(370)} icon="bookmark" />
-										{item.administrative_type === 'collection' && (
-											<MetaDataItem label={String(12)} icon="collection" />
-										)}
-									</MetaData>
+									<div className="u-mq-switch-main-nav-authentication">
+										<MetaData category={item.administrative_type || 'video'}>
+											{/* TODO link meta data to actual data */}
+											<MetaDataItem label={String(188)} icon="eye" />
+											<MetaDataItem label={String(370)} icon="bookmark" />
+											{item.administrative_type === 'collection' && (
+												<MetaDataItem label={String(12)} icon="collection" />
+											)}
+										</MetaData>
+									</div>
 								</ToolbarItem>
 							</ToolbarRight>
 						</Toolbar>
@@ -172,12 +174,13 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 				<Container mode="vertical">
 					<Container mode="horizontal">
 						<Grid>
-							<Column size="2-8">
+							<Column size="2-7">
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
 										<div className="c-video-player t-player-skin--dark">
 											{/*{item.thumbnail_path && <Image src={item.thumbnail_path} />}*/}
 											{item.thumbnail_path && (
+												// TODO replace with flow player
 												<video
 													src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
 													placeholder={item.thumbnail_path}
@@ -206,185 +209,9 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 											</div>
 										</div>
 									</div>
-									<h3 className="c-h3">Bekijk ook</h3>
-									<ul className="c-media-card-list">
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/detail/${item.id}`}
-												category={item.administrative_type || 'video'}
-												orientation="vertical"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.administrative_type || 'video'}
-														src={item.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={item.administrative_type || 'video'}>
-														<MetaDataItem label={item.original_cp || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/detail/${item.id}`}
-												category={item.administrative_type || 'video'}
-												orientation="vertical"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.administrative_type || 'video'}
-														src={item.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={item.administrative_type || 'video'}>
-														<MetaDataItem label={item.original_cp || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/detail/${item.id}`}
-												category={item.administrative_type || 'video'}
-												orientation="vertical"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.administrative_type || 'video'}
-														src={item.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={item.administrative_type || 'video'}>
-														<MetaDataItem label={item.original_cp || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/detail/${item.id}`}
-												category={item.administrative_type || 'video'}
-												orientation="vertical"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.administrative_type || 'video'}
-														src={item.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={item.administrative_type || 'video'}>
-														<MetaDataItem label={item.original_cp || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/detail/${item.id}`}
-												category={item.administrative_type || 'video'}
-												orientation="vertical"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.administrative_type || 'video'}
-														src={item.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={item.administrative_type || 'video'}>
-														<MetaDataItem label={item.original_cp || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-									</ul>
-									<div className="o-container-vertical o-container-vertical--padding-small">
-										<table className="c-table c-table--horizontal c-table--untable">
-											<tbody>
-												<tr>
-													<th scope="row">Publicatiedatum</th>
-													<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
-													<th scope="row">Toegevoegd op</th>
-													{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
-													<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
-												</tr>
-												<tr>
-													<th scope="row">Aanbieder</th>
-													<td>{generateSearchLink('provider', item.original_cp)}</td>
-													<th scope="row">Speelduur</th>
-													<td>{formatDuration(item.duration_seconds)}</td>
-												</tr>
-												<tr>
-													<th scope="row">Reeks</th>
-													<td>{generateSearchLink('serie', item.dc_titles_serie)}</td>
-													<th scope="row">Taal</th>
-													<td>
-														{(item.lom_languages || [])
-															.map(languageCode => LANGUAGES.nl[languageCode])
-															.join(', ')}
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										<div className="c-hr" />
-										<table className="c-table c-table--horizontal c-table--untable">
-											<tbody>
-												<tr>
-													<th scope="row">Geschikt voor</th>
-													<td>
-														{generateSearchLinks(
-															item.id as string,
-															'educationLevel',
-															item.lom_typical_age_range
-														)}
-													</td>
-												</tr>
-												<tr>
-													<th scope="row">Vakken</th>
-													<td>
-														{generateSearchLinks(
-															item.id as string,
-															'subject',
-															item.lom_classification
-														)}
-													</td>
-												</tr>
-											</tbody>
-										</table>
-										<div className="c-hr" />
-										<table className="c-table c-table--horizontal c-table--untable">
-											<tbody>
-												<tr>
-													<th scope="row">Onderwerpen</th>
-													<td>
-														<TagList tags={item.lom_keywords || []} swatches={false} />
-													</td>
-												</tr>
-												<tr>
-													<th scope="row">Klascement</th>
-													<td>
-														<a href={'http://www.klascement.be/link_item'}>
-															www.klascement.be/link_item
-														</a>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
 								</div>
 							</Column>
-							<Column size="2-4">
+							<Column size="2-5">
 								<Container mode="vertical">
 									<Scrollbar
 										style={{
@@ -400,6 +227,190 @@ export class Detail extends Component<RouteComponentProps<DetailProps>, DetailSt
 											</p>
 										</ExpandableContainer>
 									</Scrollbar>
+								</Container>
+							</Column>
+						</Grid>
+						<Grid>
+							<Column size="2-7">
+								<div className="o-container-vertical o-container-vertical--padding-small">
+									<table className="c-table c-table--horizontal c-table--untable">
+										<tbody>
+											<tr>
+												<th scope="row">Publicatiedatum</th>
+												<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
+												<th scope="row">Toegevoegd op</th>
+												{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
+												<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
+											</tr>
+											<tr>
+												<th scope="row">Aanbieder</th>
+												<td>{generateSearchLink('provider', item.original_cp)}</td>
+												<th scope="row">Speelduur</th>
+												<td>{formatDuration(item.duration_seconds)}</td>
+											</tr>
+											<tr>
+												<th scope="row">Reeks</th>
+												<td>{generateSearchLink('serie', item.dc_titles_serie)}</td>
+												<th scope="row">Taal</th>
+												<td>
+													{(item.lom_languages || [])
+														.map(languageCode => LANGUAGES.nl[languageCode])
+														.join(', ')}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div className="c-hr" />
+									<table className="c-table c-table--horizontal c-table--untable">
+										<tbody>
+											<tr>
+												<th scope="row">Geschikt voor</th>
+												<td>
+													{generateSearchLinks(
+														item.id as string,
+														'educationLevel',
+														item.lom_typical_age_range
+													)}
+												</td>
+											</tr>
+											<tr>
+												<th scope="row">Vakken</th>
+												<td>
+													{generateSearchLinks(
+														item.id as string,
+														'subject',
+														item.lom_classification
+													)}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div className="c-hr" />
+									<table className="c-table c-table--horizontal c-table--untable">
+										<tbody>
+											<tr>
+												<th scope="row">Onderwerpen</th>
+												<td>
+													<TagList tags={item.lom_keywords || []} swatches={false} />
+												</td>
+											</tr>
+											<tr>
+												<th scope="row">Klascement</th>
+												<td>
+													<a href={'http://www.klascement.be/link_item'}>
+														www.klascement.be/link_item
+													</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</Column>
+							<Column size="2-5">
+								<Container size="small" mode="vertical">
+									<h3 className="c-h3">Bekijk ook</h3>
+									<ul className="c-media-card-list">
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/detail/${item.id}`}
+												category={item.administrative_type || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/detail/${item.id}`}
+												category={item.administrative_type || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/detail/${item.id}`}
+												category={item.administrative_type || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/detail/${item.id}`}
+												category={item.administrative_type || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/detail/${item.id}`}
+												category={item.administrative_type || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.administrative_type || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.administrative_type || 'video'}>
+														<MetaDataItem label={item.original_cp || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+									</ul>
 								</Container>
 							</Column>
 						</Grid>
