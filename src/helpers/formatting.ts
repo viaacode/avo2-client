@@ -10,8 +10,8 @@ export function formatDuration(numSeconds: number | null | undefined) {
 /**
  * Converts a date from format 2000-12-31 to 31/12/2000
  */
-export function formatDate(dateString: string, separator: string = '/'): string {
-	return reverse(dateString.split('-')).join(separator);
+export function formatDate(dateString: string | undefined, separator: string = '/'): string {
+	return reverse((dateString || '').split('-')).join(separator);
 }
 
 /**
