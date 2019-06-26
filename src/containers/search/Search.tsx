@@ -35,6 +35,7 @@ import {
 	SearchResultThumbnail,
 	SearchResultTitle,
 	Select,
+	Spinner,
 	TagList,
 	TextInput,
 	Thumbnail,
@@ -117,6 +118,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	const [searchResults, setSearchResults] = useState({ items: [], count: 0 } as SearchResults);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
+	const [loadingSearchResults, setLoadingSearchResults] = useState(true);
 
 	/**
 	 * Update the search results when the formState, sortOrder or the currentPage changes
@@ -124,6 +126,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	useEffect(() => {
 		const updateSearchResults = async () => {
 			try {
+				setLoadingSearchResults(true);
 				// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
 				const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
 					cloneDeep(formState)
@@ -173,6 +176,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 				// Scroll to the first search result
 				window.scrollTo(0, 0);
+				setLoadingSearchResults(false);
 			} catch (err) {
 				console.error('Failed to get search results from the server', err);
 			}
@@ -548,7 +552,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
-					{searchResults.count !== 0 && (
+					{!loadingSearchResults && searchResults.count !== 0 && (
 						<Fragment>
 							<ul className="c-search-result-list">
 								{searchResults.items.map(renderSearchResult)}
@@ -562,12 +566,17 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 							</div>
 						</Fragment>
 					)}
-					{searchResults.count === 0 && (
+					{!loadingSearchResults && searchResults.count === 0 && (
 						<Blankslate
 							body=""
 							icon="search"
 							title="Er zijn geen zoekresultaten die voldoen aan uw filters."
 						/>
+					)}
+					{loadingSearchResults && (
+						<div className="o-flex o-flex--horizontal-center">
+							<Spinner size="large" />
+						</div>
 					)}
 				</Container>
 			</Container>
