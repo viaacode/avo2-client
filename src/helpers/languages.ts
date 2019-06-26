@@ -172,7 +172,7 @@ export const LANGUAGES: { [language: string]: { [languageCode: string]: string }
 		tw: 'Twi',
 		ty: 'Tahitiaans',
 		ug: 'Oeigoers',
-		uk: 'Oekra‹ens',
+		uk: 'Oekraïens',
 		ur: 'Urdu',
 		uz: 'Oezbeeks',
 		ve: 'Venda',
