@@ -31,6 +31,7 @@ import {
 } from '../../types/searchTypes';
 
 import {
+	Blankslate,
 	Button,
 	Container,
 	Form,
@@ -545,7 +546,33 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	};
 
 	const renderSearchResults = () => {
-		return <ul className="c-search-result-list">{searchResults.items.map(renderSearchResult)}</ul>;
+		return (
+			<Container mode="vertical">
+				<Container mode="horizontal">
+					{searchResults.count !== 0 && (
+						<Fragment>
+							<ul className="c-search-result-list">
+								{searchResults.items.map(renderSearchResult)}
+							</ul>
+							<div className="u-spacer-l">
+								<Pagination
+									pageCount={pageCount}
+									currentPage={currentPage}
+									onPageChange={setPage}
+								/>
+							</div>
+						</Fragment>
+					)}
+					{searchResults.count === 0 && (
+						<Blankslate
+							body=""
+							icon="search"
+							title="Er zijn geen zoekresultaten die voldoen aan uw filters."
+						/>
+					)}
+				</Container>
+			</Container>
+		);
 	};
 
 	const setPage = async (pageIndex: number): Promise<void> => {
@@ -652,14 +679,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 					</div>
 				</Container>
 			</Navbar>
-			<Container mode="vertical">
-				<Container mode="horizontal">
-					{renderSearchResults()}
-					<div className="u-spacer-l">
-						<Pagination pageCount={pageCount} currentPage={currentPage} onPageChange={setPage} />
-					</div>
-				</Container>
-			</Container>
+			{renderSearchResults()}
 		</Container>
 	);
 };
