@@ -57,7 +57,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 	useEffect(() => {
 		// TODO: get item from store by id
 		getDetail(id)
-			.then((detailResponse: DetailResponse) => {
+			.then((detailResponse: Avo.Detail.Response) => {
 				setItem(detailResponse);
 			})
 			.catch(err => {
