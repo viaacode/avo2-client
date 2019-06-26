@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FunctionComponent, useState } from 'react';
+import React, { ChangeEvent, FunctionComponent } from 'react';
 
 import { useDeselectEvent } from '../../hooks/useDeselectEvent';
 
