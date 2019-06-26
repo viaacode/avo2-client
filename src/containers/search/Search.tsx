@@ -1,3 +1,6 @@
+import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
+
+import { Avo } from '@viaa/avo2-types';
 import {
 	capitalize,
 	cloneDeep,
@@ -15,22 +18,12 @@ import {
 	remove,
 } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { doSearch } from '../../redux/search/searchActions';
-import {
-	DateRange,
-	// FilterOptionSearch,
-	Filters,
-	OptionProp,
-	SearchOrderDirection,
-	SearchOrderProperty,
-	SearchResponse,
-	SearchResultItem,
-} from '../../types/searchTypes';
 
 import {
+	Blankslate,
 	Button,
 	Container,
 	Dropdown,
@@ -45,6 +38,7 @@ import {
 	SearchResultThumbnail,
 	SearchResultTitle,
 	Select,
+	Spinner,
 	TagList,
 	TextInput,
 	Thumbnail,
@@ -68,35 +62,35 @@ interface SearchProps extends RouteComponentProps {}
 const ITEMS_PER_PAGE = 10;
 
 // interface SearchState extends StaticContext {
-// 	formState: Filters;
+// 	formState: Avo.Search.Filters;
 // 	// filterOptionSearch: FilterOptionSearch;
-// 	orderProperty: SearchOrderProperty;
-// 	orderDirection: SearchOrderDirection;
-// 	multiOptions: { [key: string]: OptionProp[] };
+// 	orderProperty: Avo.Search.OrderProperty;
+// 	orderDirection: Avo.Search.OrderDirection;
+// 	multiOptions: { [key: string]: Avo.Search.OptionProp[] };
 // 	results: {
-// 		items: SearchResultItem[];
+// 		items: Avo.Search.ResultItem[];
 // 		count: number;
 // 	};
 // 	currentPage: number;
 // }
 
 interface SortOrder {
-	orderProperty: SearchOrderProperty;
-	orderDirection: SearchOrderDirection;
+	orderProperty: Avo.Search.OrderProperty;
+	orderDirection: Avo.Search.OrderDirection;
 }
 
 interface SearchResults {
 	count: number;
-	items: SearchResultItem[];
+	items: Avo.Search.ResultItem[];
 }
 
 interface TagInfo {
 	label: string;
-	prop: keyof Filters;
+	prop: keyof Avo.Search.Filters;
 	value: any;
 }
 
-const DEFAULT_FORM_STATE: Filters = {
+const DEFAULT_FORM_STATE: Avo.Search.Filters = {
 	query: '',
 	type: [],
 	educationLevel: [],
@@ -122,11 +116,14 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	const [sortOrder, setSortOrder]: [SortOrder, (sortOrder: SortOrder) => void] = useState(
 		DEFAULT_SORT_ORDER
 	);
-	const [multiOptions, setMultiOptions] = useState({} as { [key: string]: OptionProp[] });
+	const [multiOptions, setMultiOptions] = useState({} as {
+		[key: string]: Avo.Search.OptionProp[];
+	});
 	const [searchResults, setSearchResults] = useState({ items: [], count: 0 } as SearchResults);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
+	const [loadingSearchResults, setLoadingSearchResults] = useState(true);
 
 	/**
 	 * Update the search results when the formState, sortOrder or the currentPage changes
@@ -134,8 +131,11 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	useEffect(() => {
 		const updateSearchResults = async () => {
 			try {
+				setLoadingSearchResults(true);
 				// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-				const filterOptions: Partial<Filters> = cleanupFilterObject(cloneDeep(formState));
+				const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
+					cloneDeep(formState)
+				);
 
 				// // Parse values from formState into a parsed object that we'll send to the proxy search endpoint
 				// const filterOptionSearch: Partial<FilterOptionSearch> = cleanupFilterObject(
@@ -143,7 +143,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 				// );
 
 				// TODO do the search by dispatching a redux action
-				const searchResponse: SearchResponse = await doSearch(
+				const searchResponse: Avo.Search.Response = await doSearch(
 					filterOptions,
 					{},
 					sortOrder.orderProperty,
@@ -181,6 +181,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 				// Scroll to the first search result
 				window.scrollTo(0, 0);
+				setLoadingSearchResults(false);
 			} catch (err) {
 				console.error('Failed to get search results from the server', err);
 			}
@@ -189,8 +190,8 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	}, [formState, sortOrder, currentPage, history]);
 
 	// TODO add search in checkbox modal components
-	// private getFilterOptions(searchTerm: string, propertyName: string): Promise<OptionProp[]> {
-	// 	const searchResponse: SearchResponse = await executeSearch();
+	// private getFilterOptions(searchTerm: string, propertyName: string): Promise<Avo.Search.OptionProp[]> {
+	// 	const searchResponse: Avo.Search.Response = await executeSearch();
 	// 	return searchResponse.aggregations[propertyName];
 	// }
 
@@ -198,7 +199,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		// Check if current url already has a query param set
 		const queryParams = queryString.parse(location.search);
 		try {
-			let newFormState: Filters = cloneDeep(formState);
+			let newFormState: Avo.Search.Filters = cloneDeep(formState);
 			let newSortOrder: SortOrder = cloneDeep(sortOrder);
 			let newCurrentPage: number = currentPage;
 			if (
@@ -212,9 +213,9 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 					newFormState = JSON.parse(queryParams.filters as string);
 				}
 				newSortOrder.orderProperty = (queryParams.orderProperty ||
-					'relevance') as SearchOrderProperty;
+					'relevance') as Avo.Search.OrderProperty;
 				newSortOrder.orderDirection = (queryParams.orderDirection ||
-					'desc') as SearchOrderDirection;
+					'desc') as Avo.Search.OrderDirection;
 				newCurrentPage = parseInt((queryParams.page as string) || '1', 10) - 1;
 			} else {
 				// No filter query params present => reset state
@@ -251,8 +252,8 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	// };
 
 	const handleFilterFieldChange = async (
-		value: string | string[] | DateRange | null,
-		id: keyof Filters
+		value: string | string[] | Avo.Search.DateRange | null,
+		id: keyof Avo.Search.Filters
 	) => {
 		if (value) {
 			setFormState({
@@ -269,11 +270,11 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 	const handleOrderChanged = async (value: string = 'relevance_desc') => {
 		const valueParts: string[] = value.split('_');
-		const orderProperty: SearchOrderProperty = valueParts[0] as SearchOrderProperty;
-		const orderDirection: SearchOrderDirection = valueParts[1] as SearchOrderDirection;
+		const orderProperty: Avo.Search.OrderProperty = valueParts[0] as Avo.Search.OrderProperty;
+		const orderDirection: Avo.Search.OrderDirection = valueParts[1] as Avo.Search.OrderDirection;
 		setSortOrder({
-			orderProperty: orderProperty as SearchOrderProperty,
-			orderDirection: orderDirection as SearchOrderDirection,
+			orderProperty: orderProperty as Avo.Search.OrderProperty,
+			orderDirection: orderDirection as Avo.Search.OrderDirection,
 		});
 	};
 
@@ -297,12 +298,12 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 	const renderCheckboxDropdown = (
 		label: string,
-		propertyName: keyof Filters,
+		propertyName: keyof Avo.Search.Filters,
 		disabled: boolean = false,
 		style: any = {}
 	): ReactNode => {
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
-			(option: OptionProp): CheckboxOption => {
+			(option: Avo.Search.OptionProp): CheckboxOption => {
 				let label = capitalize(option.option_name);
 				if (propertyName === 'language') {
 					label = languageCodeToLabel(option.option_name);
@@ -334,9 +335,9 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		return capitalize(LANGUAGES.nl[code]) || code;
 	};
 
-	const renderCheckboxModal = (label: string, propertyName: keyof Filters) => {
+	const renderCheckboxModal = (label: string, propertyName: keyof Avo.Search.Filters) => {
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
-			(option: OptionProp): CheckboxOption => {
+			(option: Avo.Search.OptionProp): CheckboxOption => {
 				const label = capitalize(option.option_name);
 				return {
 					label: `${label} (${option.option_count})`,
@@ -360,8 +361,11 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		);
 	};
 
-	const renderDateRangeDropdown = (label: string, propertyName: keyof Filters): ReactNode => {
-		const range: DateRange = get(formState, 'broadcastDate') || { gte: '', lte: '' };
+	const renderDateRangeDropdown = (
+		label: string,
+		propertyName: keyof Avo.Search.Filters
+	): ReactNode => {
+		const range: Avo.Search.DateRange = get(formState, 'broadcastDate') || { gte: '', lte: '' };
 		range.gte = range.gte || '';
 		range.lte = range.lte || '';
 
@@ -371,7 +375,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 					label={label}
 					id={propertyName}
 					range={range as { gte: string; lte: string }}
-					onChange={async (range: DateRange) => {
+					onChange={async (range: Avo.Search.DateRange) => {
 						await handleFilterFieldChange(range, propertyName);
 					}}
 				/>
@@ -395,7 +399,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		);
 	};
 
-	const getTagInfos = (filterProp: keyof Filters, filterValue: any): TagInfo[] => {
+	const getTagInfos = (filterProp: keyof Avo.Search.Filters, filterValue: any): TagInfo[] => {
 		// Do not render query filter or empty filters
 		if (
 			filterProp === 'query' ||
@@ -459,8 +463,8 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 	const renderSelectedFilters = () => {
 		const tagInfos: TagInfo[] = flatten(
-			(Object.keys(formState) as (keyof Filters)[]).map((filterProp: keyof Filters) =>
-				getTagInfos(filterProp, formState[filterProp])
+			(Object.keys(formState) as (keyof Avo.Search.Filters)[]).map(
+				(filterProp: keyof Avo.Search.Filters) => getTagInfos(filterProp, formState[filterProp])
 			)
 		);
 		const tagLabels = tagInfos.map((tagInfo: TagInfo) => tagInfo.label);
@@ -514,7 +518,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		});
 	};
 
-	const renderSearchResult = (result: SearchResultItem) => {
+	const renderSearchResult = (result: Avo.Search.ResultItem) => {
 		const metaData = [];
 		let thumbnailMeta = '';
 		if (result.administrative_type === 'audio' || result.administrative_type === 'video') {
@@ -564,7 +568,38 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	};
 
 	const renderSearchResults = () => {
-		return <ul className="c-search-result-list">{searchResults.items.map(renderSearchResult)}</ul>;
+		return (
+			<Container mode="vertical">
+				<Container mode="horizontal">
+					{!loadingSearchResults && searchResults.count !== 0 && (
+						<Fragment>
+							<ul className="c-search-result-list">
+								{searchResults.items.map(renderSearchResult)}
+							</ul>
+							<div className="u-spacer-l">
+								<Pagination
+									pageCount={pageCount}
+									currentPage={currentPage}
+									onPageChange={setPage}
+								/>
+							</div>
+						</Fragment>
+					)}
+					{!loadingSearchResults && searchResults.count === 0 && (
+						<Blankslate
+							body=""
+							icon="search"
+							title="Er zijn geen zoekresultaten die voldoen aan uw filters."
+						/>
+					)}
+					{loadingSearchResults && (
+						<div className="o-flex o-flex--horizontal-center">
+							<Spinner size="large" />
+						</div>
+					)}
+				</Container>
+			</Container>
+		);
 	};
 
 	const setPage = async (pageIndex: number): Promise<void> => {
@@ -714,14 +749,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 					</div>
 				</Container>
 			</Navbar>
-			<Container mode="vertical">
-				<Container mode="horizontal">
-					{renderSearchResults()}
-					<div className="u-spacer-l">
-						<Pagination pageCount={pageCount} currentPage={currentPage} onPageChange={setPage} />
-					</div>
-				</Container>
-			</Container>
+			{renderSearchResults()}
 		</Container>
 	);
 };
