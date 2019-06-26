@@ -346,7 +346,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 				<CheckboxModal
 					label={label}
 					id={propertyName}
-					initialOptions={checkboxMultiOptions}
+					options={checkboxMultiOptions}
 					onChange={async (values: string[]) => {
 						await handleFilterFieldChange(values, propertyName);
 					}}
@@ -514,7 +514,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 		return (
 			<SearchResult
-				key={result.id}
+				key={`search-result-${result.id}`}
 				type={result.administrative_type}
 				date={formatDate(result.dcterms_issued)}
 				tags={['Redactiekeuze', 'Partner']}

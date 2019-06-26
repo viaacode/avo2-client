@@ -1,6 +1,5 @@
 import { compact, fromPairs } from 'lodash-es';
-import React, { Component } from 'react';
-import { setDeepState, setState } from '../../helpers/setState';
+import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
@@ -28,7 +27,7 @@ export interface CheckboxOption {
 export interface CheckboxModalProps {
 	label: string;
 	id: string;
-	initialOptions: CheckboxOption[];
+	options: CheckboxOption[];
 	// optionsCallback: (query: string) => CheckboxOption[];
 	disabled?: boolean;
 	onChange: (checkedOptions: string[], id: string) => void;
@@ -40,62 +39,54 @@ export interface CheckboxModalState {
 	searchTerm: string;
 }
 
-export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalState> {
-	constructor(props: CheckboxModalProps) {
-		super(props);
-		this.state = {
-			checkedStates: fromPairs(
-				props.initialOptions.map((option: CheckboxOption) => [option.id, option.checked])
-			),
-			isModalOpen: false,
-			searchTerm: '',
-		};
-	}
+export const CheckboxModal: FunctionComponent<CheckboxModalProps> = ({
+	label,
+	id,
+	options,
+	disabled,
+	onChange,
+}: CheckboxModalProps) => {
+	const [checkedStates, setCheckedStates] = useState(fromPairs(
+		options.map((option: CheckboxOption) => [option.id, option.checked])
+	) as { [checkboxId: string]: boolean });
+	const [isModalOpen, setIsModalOpen] = useState(false as boolean);
+	// TODO add support for searching checkbox options
+	// const [searchTerm, setSearchTerm] = useState('' as string);
 
 	/**
 	 * Use the state from the parent page before showing the checkboxes to the user
 	 */
-	resetCheckboxStates = async (): Promise<void> => {
-		await setState(this, {
-			checkedStates: fromPairs(
-				this.props.initialOptions.map((option: CheckboxOption) => [option.id, option.checked])
-			),
-		});
+	const resetCheckboxStates = async (): Promise<void> => {
+		setCheckedStates(
+			fromPairs(options.map((option: CheckboxOption) => [option.id, option.checked]))
+		);
 	};
 
 	/**
 	 * State is only passed from the component to the parent when the user clicks the "Apply" button
 	 */
-	applyFilter = async (): Promise<void> => {
-		this.props.onChange(
-			compact(
-				Object.keys(this.state.checkedStates).map(key =>
-					this.state.checkedStates[key] ? key : null
-				)
-			),
-			this.props.id
-		);
-		await this.closeModal();
+	const applyFilter = async (): Promise<void> => {
+		onChange(compact(Object.keys(checkedStates).map(key => (checkedStates[key] ? key : null))), id);
+		await closeModal();
 	};
 
-	handleCheckboxToggled = async (checked: boolean, id: string) => {
-		await setDeepState(this, `checkedStates.${id}`, checked);
-	};
-
-	private openModal = async (): Promise<void> => {
-		await this.resetCheckboxStates();
-		await setState(this, {
-			isModalOpen: true,
+	const handleCheckboxToggled = async (checked: boolean, id: string) => {
+		setCheckedStates({
+			...checkedStates,
+			[id]: checked,
 		});
 	};
 
-	private closeModal = async (): Promise<void> => {
-		await setState(this, {
-			isModalOpen: false,
-		});
+	const openModal = async (): Promise<void> => {
+		await resetCheckboxStates();
+		setIsModalOpen(true);
 	};
 
-	private renderCheckboxGroup(options: CheckboxOption[]) {
+	const closeModal = async (): Promise<void> => {
+		setIsModalOpen(false);
+	};
+
+	const renderCheckboxGroup = (options: CheckboxOption[]) => {
 		return (
 			<FormGroup>
 				<CheckboxGroup>
@@ -104,67 +95,62 @@ export class CheckboxModal extends Component<CheckboxModalProps, CheckboxModalSt
 							key={option.id}
 							id={option.id}
 							label={option.label}
-							checked={this.state.checkedStates[option.id]}
-							onChange={(checked: boolean) => this.handleCheckboxToggled(checked, option.id)}
+							checked={checkedStates[option.id]}
+							onChange={(checked: boolean) => handleCheckboxToggled(checked, option.id)}
 						/>
 					))}
 				</CheckboxGroup>
 			</FormGroup>
 		);
-	}
+	};
 
-	render() {
-		const { initialOptions, label, disabled } = this.props;
-		const { isModalOpen } = this.state;
+	const oneThird = Math.ceil(options.length / 3);
+	const firstColumnOptions = options.slice(0, oneThird);
+	const secondColumnOptions = options.slice(oneThird, oneThird * 2);
+	const thirdColumnOptions = options.slice(oneThird * 2);
 
-		const oneThird = Math.ceil(initialOptions.length / 3);
-		const firstColumnOptions = initialOptions.slice(0, oneThird);
-		const secondColumnOptions = initialOptions.slice(oneThird, oneThird * 2);
-		const thirdColumnOptions = initialOptions.slice(oneThird * 2);
-
-		return (
-			<div style={{ opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
-				<button className="c-button c-button--secondary" onClick={this.openModal}>
-					<div className="c-button__content">
-						<div className="c-button__label">{label}</div>
-						<Icon name={isModalOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
+	return (
+		<div style={{ opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
+			<button className="c-button c-button--secondary" onClick={openModal}>
+				<div className="c-button__content">
+					<div className="c-button__label">{label}</div>
+					<Icon name={isModalOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
+				</div>
+			</button>
+			<Modal isOpen={isModalOpen} title={label} size="large" onClose={closeModal}>
+				<ModalHeaderRight>
+					<TextInput placeholder="Zoeken..." icon="search" />
+				</ModalHeaderRight>
+				<ModalBody>
+					<div className="u-spacer">
+						<Form>
+							<Grid>
+								<Column size="2-4">{renderCheckboxGroup(firstColumnOptions)}</Column>
+								<Column size="2-4">{renderCheckboxGroup(secondColumnOptions)}</Column>
+								<Column size="2-4">{renderCheckboxGroup(thirdColumnOptions)}</Column>
+							</Grid>
+						</Form>
 					</div>
-				</button>
-				<Modal isOpen={isModalOpen} title={label} size="large" onClose={this.closeModal}>
-					<ModalHeaderRight>
-						<TextInput placeholder="Zoeken..." icon="search" />
-					</ModalHeaderRight>
-					<ModalBody>
-						<div className="u-spacer">
-							<Form>
-								<Grid>
-									<Column size="2-4">{this.renderCheckboxGroup(firstColumnOptions)}</Column>
-									<Column size="2-4">{this.renderCheckboxGroup(secondColumnOptions)}</Column>
-									<Column size="2-4">{this.renderCheckboxGroup(thirdColumnOptions)}</Column>
-								</Grid>
-							</Form>
-						</div>
-					</ModalBody>
-					<ModalFooterLeft>
-						<FormGroup>
-							<Button label="Annuleren" type="secondary" block={true} onClick={this.closeModal} />
-						</FormGroup>
-					</ModalFooterLeft>
-					<ModalFooterRight>
-						<FormGroup>
-							<Button
-								label="Toepassen"
-								type="primary"
-								block={true}
-								onClick={() => {
-									this.applyFilter();
-									this.closeModal();
-								}}
-							/>
-						</FormGroup>
-					</ModalFooterRight>
-				</Modal>
-			</div>
-		);
-	}
-}
+				</ModalBody>
+				<ModalFooterLeft>
+					<FormGroup>
+						<Button label="Annuleren" type="secondary" block={true} onClick={closeModal} />
+					</FormGroup>
+				</ModalFooterLeft>
+				<ModalFooterRight>
+					<FormGroup>
+						<Button
+							label="Toepassen"
+							type="primary"
+							block={true}
+							onClick={() => {
+								applyFilter();
+								closeModal();
+							}}
+						/>
+					</FormGroup>
+				</ModalFooterRight>
+			</Modal>
+		</div>
+	);
+};

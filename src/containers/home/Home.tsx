@@ -1,19 +1,11 @@
-import React, { Component } from 'react'; // let's also import Component
+import React, { FunctionComponent } from 'react'; // let's also import Component
 
-type HomeState = {};
+type HomeProps = {};
 
-export class Home extends Component<{}, HomeState> {
-	// componentWillMount() {
-	// }
-	//
-	// componentDidMount() {
-	// }
-
-	render() {
-		return (
-			<div>
-				<h2>Home page</h2>
-			</div>
-		);
-	}
-}
+export const Home: FunctionComponent<HomeProps> = (props: HomeProps) => {
+	return (
+		<div>
+			<h2>Home page</h2>
+		</div>
+	);
+};
