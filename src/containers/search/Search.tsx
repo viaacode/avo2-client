@@ -1,4 +1,3 @@
-import { History, Location } from 'history';
 import {
 	capitalize,
 	cloneDeep,
@@ -12,15 +11,13 @@ import {
 	isEqual,
 	isNil,
 	isPlainObject,
-	noop,
 	pickBy,
 	remove,
 } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Component, Fragment, ReactNode } from 'react';
-import { RouteComponentProps, StaticContext } from 'react-router';
+import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-import { setDeepState, setState, unsetDeepState } from '../../helpers/setState';
 import { doSearch } from '../../redux/search/searchActions';
 import {
 	DateRange,
@@ -53,6 +50,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 	ToolbarTitle,
+	useKeyPress,
 } from '../../components/avo2-components/src';
 import { CheckboxDropdown } from '../../components/CheckboxDropdown/CheckboxDropdown';
 import { CheckboxModal, CheckboxOption } from '../../components/CheckboxModal/CheckboxModal';
@@ -61,21 +59,31 @@ import { formatDate, formatDuration } from '../../helpers/formatting';
 import { generateSearchLink } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
 
-type SearchProps = {};
+interface SearchProps extends RouteComponentProps {}
 
 const ITEMS_PER_PAGE = 10;
 
-interface SearchState extends StaticContext {
-	formState: Filters;
-	// filterOptionSearch: FilterOptionSearch;
+// interface SearchState extends StaticContext {
+// 	formState: Filters;
+// 	// filterOptionSearch: FilterOptionSearch;
+// 	orderProperty: SearchOrderProperty;
+// 	orderDirection: SearchOrderDirection;
+// 	multiOptions: { [key: string]: OptionProp[] };
+// 	results: {
+// 		items: SearchResultItem[];
+// 		count: number;
+// 	};
+// 	currentPage: number;
+// }
+
+interface SortOrder {
 	orderProperty: SearchOrderProperty;
 	orderDirection: SearchOrderDirection;
-	multiOptions: { [key: string]: OptionProp[] };
-	results: {
-		items: SearchResultItem[];
-		count: number;
-	};
-	currentPage: number;
+}
+
+interface SearchResults {
+	count: number;
+	items: SearchResultItem[];
 }
 
 interface TagInfo {
@@ -84,7 +92,7 @@ interface TagInfo {
 	value: any;
 }
 
-const DEFAULT_FORM_STATE = {
+const DEFAULT_FORM_STATE: Filters = {
 	query: '',
 	type: [],
 	educationLevel: [],
@@ -100,51 +108,94 @@ const DEFAULT_FORM_STATE = {
 	provider: [],
 };
 
-export class Search extends Component<RouteComponentProps<SearchProps>, SearchState> {
-	history: History;
-	location: Location;
+const DEFAULT_SORT_ORDER: SortOrder = {
+	orderProperty: 'relevance',
+	orderDirection: 'desc',
+} as SortOrder;
 
-	constructor(props: RouteComponentProps) {
-		super(props);
-		this.history = props.history;
-		this.location = props.location;
-		this.state = {
-			formState: DEFAULT_FORM_STATE,
-			// filterOptionSearch: {
-			// 	type: '',
-			// 	educationLevel: '',
-			// 	domain: '',
-			// 	language: '',
-			// 	keyword: '',
-			// 	subject: '',
-			// 	serie: '',
-			// 	provider: '',
-			// },
-			orderProperty: 'relevance',
-			orderDirection: 'desc',
-			multiOptions: {},
-			results: {
-				items: [],
-				count: 0,
-			},
-			currentPage: 0,
+export const Search: FunctionComponent<SearchProps> = ({ history, location }: SearchProps) => {
+	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
+	const [sortOrder, setSortOrder]: [SortOrder, (sortOrder: SortOrder) => void] = useState(
+		DEFAULT_SORT_ORDER
+	);
+	const [multiOptions, setMultiOptions] = useState({} as { [key: string]: OptionProp[] });
+	const [searchResults, setSearchResults] = useState({ items: [], count: 0 } as SearchResults);
+	const [currentPage, setCurrentPage] = useState(0);
+	const [searchTerms, setSearchTerms] = useState('');
+
+	/**
+	 * Update the search results when the formState, sortOrder or the currentPage changes
+	 */
+	useEffect(() => {
+		const updateSearchResults = async () => {
+			try {
+				// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+				const filterOptions: Partial<Filters> = cleanupFilterObject(cloneDeep(formState));
+
+				// // Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+				// const filterOptionSearch: Partial<FilterOptionSearch> = cleanupFilterObject(
+				// 	cloneDeep(state.filterOptionSearch)
+				// );
+
+				// TODO do the search by dispatching a redux action
+				const searchResponse: SearchResponse = await doSearch(
+					filterOptions,
+					{},
+					sortOrder.orderProperty,
+					sortOrder.orderDirection,
+					currentPage * ITEMS_PER_PAGE,
+					ITEMS_PER_PAGE
+				);
+
+				// Update the checkbox items and counts
+				setMultiOptions(searchResponse.aggregations);
+
+				// Set the search results into the state
+				setSearchResults({
+					items: searchResponse.results,
+					count: searchResponse.count,
+				});
+
+				// Remember this search by adding it to the query params in the url
+				const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
+				const orderProperty =
+					sortOrder.orderProperty === 'relevance'
+						? null
+						: `orderProperty=${sortOrder.orderProperty}`;
+				const orderDirection =
+					sortOrder.orderDirection === 'desc' ? null : `orderDirection=${sortOrder.orderDirection}`;
+				const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
+
+				const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join(
+					'&'
+				);
+				history.push({
+					pathname: '/search',
+					search: queryParams.length ? `?${queryParams}` : '',
+				});
+
+				// Scroll to the first search result
+				window.scrollTo(0, 0);
+			} catch (err) {
+				console.error('Failed to get search results from the server', err);
+			}
 		};
-	}
+		updateSearchResults();
+	}, [formState, sortOrder, currentPage, history]);
 
-	componentDidMount() {
-		this.getFiltersFromQueryParams(true)
-			.then(noop)
-			.catch(err => {
-				// TODO show error toast
-				console.error(err);
-			});
-	}
+	// TODO add search in checkbox modal components
+	// private getFilterOptions(searchTerm: string, propertyName: string): Promise<OptionProp[]> {
+	// 	const searchResponse: SearchResponse = await executeSearch();
+	// 	return searchResponse.aggregations[propertyName];
+	// }
 
-	async getFiltersFromQueryParams(initialSearch: boolean = false): Promise<void> {
+	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
-		const queryParams = queryString.parse(this.location.search);
+		const queryParams = queryString.parse(location.search);
 		try {
-			const newState: SearchState = cloneDeep(this.state);
+			let newFormState: Filters = cloneDeep(formState);
+			let newSortOrder: SortOrder = cloneDeep(sortOrder);
+			let newCurrentPage: number = currentPage;
 			if (
 				queryParams.filters ||
 				queryParams.orderProperty ||
@@ -153,51 +204,38 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			) {
 				// Extract info from filter query params
 				if (queryParams.filters) {
-					newState.formState = JSON.parse(queryParams.filters as string);
+					newFormState = JSON.parse(queryParams.filters as string);
 				}
-				newState.orderProperty = (queryParams.orderProperty || 'relevance') as SearchOrderProperty;
-				newState.orderDirection = (queryParams.orderDirection || 'desc') as SearchOrderDirection;
-				newState.currentPage = parseInt((queryParams.page as string) || '1', 10) - 1;
+				newSortOrder.orderProperty = (queryParams.orderProperty ||
+					'relevance') as SearchOrderProperty;
+				newSortOrder.orderDirection = (queryParams.orderDirection ||
+					'desc') as SearchOrderDirection;
+				newCurrentPage = parseInt((queryParams.page as string) || '1', 10) - 1;
 			} else {
 				// No filter query params present => reset state
-				newState.formState = DEFAULT_FORM_STATE;
-				newState.orderProperty = 'relevance';
-				newState.orderDirection = 'desc';
-				newState.currentPage = 0;
+				newFormState = DEFAULT_FORM_STATE;
+				newSortOrder = DEFAULT_SORT_ORDER;
+				newCurrentPage = 0;
 			}
 
-			if (!isEqual(newState, this.state)) {
+			if (
+				!isEqual(newFormState, formState) ||
+				!isEqual(newSortOrder, sortOrder) ||
+				!isEqual(newCurrentPage, currentPage)
+			) {
 				// Only rerender if query params actually changed
-				await setState(this, newState);
-				await this.submitSearchForm();
-			} else if (initialSearch) {
-				await this.submitSearchForm();
+				setFormState(newFormState);
+				setSortOrder(newSortOrder);
+				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
 			// TODO show toast error: Ongeldige zoek query
 			console.error(err);
 		}
-	}
+	};
 
-	private setFiltersInQueryParams(): void {
-		const filterOptions: Partial<Filters> = this.cleanupFilterObject(
-			cloneDeep(this.state.formState)
-		);
-
-		// Remember this search by adding it to the query params in the url
-		const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
-		const orderProperty =
-			this.state.orderProperty === 'relevance' ? null : `orderProperty=${this.state.orderProperty}`;
-		const orderDirection =
-			this.state.orderDirection === 'desc' ? null : `orderDirection=${this.state.orderDirection}`;
-		const page = this.state.currentPage === 0 ? null : `page=${this.state.currentPage + 1}`;
-
-		const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
-		this.history.push({
-			pathname: '/search',
-			search: queryParams.length ? `?${queryParams}` : '',
-		});
-	}
+	// Only execute this effect once after the first render (componentDidMount)
+	useEffect(getFiltersFromQueryParams, []);
 
 	// handleFilterOptionSearchChange = (event: ChangeEvent) => {
 	// 	const target = event.target as HTMLInputElement;
@@ -207,26 +245,34 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 	// 	}
 	// };
 
-	handleFilterFieldChange = async (value: string | string[] | DateRange | null, id: string) => {
+	const handleFilterFieldChange = async (
+		value: string | string[] | DateRange | null,
+		id: keyof Filters
+	) => {
 		if (value) {
-			await setDeepState(this, `formState.${id}`, value);
+			setFormState({
+				...formState,
+				[id]: value,
+			});
 		} else {
-			await unsetDeepState(this, `formState.${id}`);
+			setFormState({
+				...formState,
+				[id]: DEFAULT_FORM_STATE[id],
+			});
 		}
 	};
 
-	handleOrderChanged = async (value: string = 'relevance_desc') => {
+	const handleOrderChanged = async (value: string = 'relevance_desc') => {
 		const valueParts: string[] = value.split('_');
 		const orderProperty: SearchOrderProperty = valueParts[0] as SearchOrderProperty;
 		const orderDirection: SearchOrderDirection = valueParts[1] as SearchOrderDirection;
-		await setState(this, {
+		setSortOrder({
 			orderProperty: orderProperty as SearchOrderProperty,
 			orderDirection: orderDirection as SearchOrderDirection,
 		});
-		await this.submitSearchForm();
 	};
 
-	private cleanupFilterObject(obj: any): any {
+	const cleanupFilterObject = (obj: any): any => {
 		return pickBy(obj, (value: any) => {
 			const isEmptyString = value === '';
 			const isUndefinedOrNull = isNil(value);
@@ -242,73 +288,24 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				!isEmptyRangeObject
 			);
 		});
-	}
-
-	async executeSearch(): Promise<SearchResponse> {
-		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-		const filterOptions: Partial<Filters> = this.cleanupFilterObject(
-			cloneDeep(this.state.formState)
-		);
-
-		// // Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-		// const filterOptionSearch: Partial<FilterOptionSearch> = this.cleanupFilterObject(
-		// 	cloneDeep(this.state.filterOptionSearch)
-		// );
-
-		// TODO do the search by dispatching a redux action
-		return await doSearch(
-			filterOptions,
-			{},
-			this.state.orderProperty,
-			this.state.orderDirection,
-			this.state.currentPage * ITEMS_PER_PAGE,
-			ITEMS_PER_PAGE
-		);
-	}
-
-	// private getFilterOptions(searchTerm: string, propertyName: string): Promise<OptionProp[]> {
-	// 	const searchResponse: SearchResponse = await this.executeSearch();
-	// 	return searchResponse.aggregations[propertyName];
-	// }
-
-	submitSearchForm = async () => {
-		try {
-			const searchResponse: SearchResponse = await this.executeSearch();
-
-			this.setState({
-				...this.state,
-				multiOptions: searchResponse.aggregations,
-				results: {
-					items: searchResponse.results,
-					count: searchResponse.count,
-				},
-			});
-
-			this.setFiltersInQueryParams();
-			window.scrollTo(0, 0);
-		} catch (err) {
-			// TODO show error toast
-		}
 	};
 
-	private renderCheckboxDropdown(
+	const renderCheckboxDropdown = (
 		label: string,
 		propertyName: keyof Filters,
 		disabled: boolean = false,
 		style: any = {}
-	): ReactNode {
-		const multiOptions = (this.state.multiOptions[propertyName] || []).map(
+	): ReactNode => {
+		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
 			(option: OptionProp): CheckboxOption => {
 				let label = capitalize(option.option_name);
 				if (propertyName === 'language') {
-					label = this.languageCodeToLabel(option.option_name);
+					label = languageCodeToLabel(option.option_name);
 				}
 				return {
 					label: `${label} (${option.option_count})`,
 					id: option.option_name,
-					checked: ((this.state.formState[propertyName] as string[]) || []).includes(
-						option.option_name
-					),
+					checked: ((formState[propertyName] as string[]) || []).includes(option.option_name),
 				};
 			}
 		);
@@ -318,31 +315,28 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				<CheckboxDropdown
 					label={label}
 					id={propertyName}
-					options={multiOptions} // TODO reset state of CheckboxModal when closed, but not applied. confirmed by leen
+					options={checkboxMultiOptions}
 					disabled={disabled}
 					onChange={async (values: string[]) => {
-						await this.handleFilterFieldChange(values, propertyName);
-						await this.submitSearchForm();
+						await handleFilterFieldChange(values, propertyName);
 					}}
 				/>
 			</li>
 		);
-	}
+	};
 
-	private languageCodeToLabel(code: string): string {
+	const languageCodeToLabel = (code: string): string => {
 		return capitalize(LANGUAGES.nl[code]) || code;
-	}
+	};
 
-	private renderCheckboxModal(label: string, propertyName: keyof Filters) {
-		const multiOptions = (this.state.multiOptions[propertyName] || []).map(
+	const renderCheckboxModal = (label: string, propertyName: keyof Filters) => {
+		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
 			(option: OptionProp): CheckboxOption => {
 				const label = capitalize(option.option_name);
 				return {
 					label: `${label} (${option.option_count})`,
 					id: option.option_name,
-					checked: ((this.state.formState[propertyName] as string[]) || []).includes(
-						option.option_name
-					),
+					checked: ((formState[propertyName] as string[]) || []).includes(option.option_name),
 				};
 			}
 		);
@@ -352,49 +346,51 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				<CheckboxModal
 					label={label}
 					id={propertyName}
-					initialOptions={multiOptions} // TODO reset state of CheckboxModal when closed, but not applied. confirmed by leen
+					initialOptions={checkboxMultiOptions}
 					onChange={async (values: string[]) => {
-						await this.handleFilterFieldChange(values, propertyName);
-						await this.submitSearchForm();
+						await handleFilterFieldChange(values, propertyName);
 					}}
 				/>
 			</li>
 		);
-	}
+	};
 
-	private renderDateRangeDropdown(label: string, propertyName: keyof Filters): ReactNode {
+	const renderDateRangeDropdown = (label: string, propertyName: keyof Filters): ReactNode => {
+		const range: DateRange = get(formState, 'broadcastDate') || { gte: '', lte: '' };
+		range.gte = range.gte || '';
+		range.lte = range.lte || '';
+
 		return (
 			<li style={{ display: 'flex' }}>
 				<DateRangeDropdown
 					label={label}
 					id={propertyName}
-					range={get(this, 'state.formState.broadcastDate') || { gte: '', lte: '' }}
+					range={range as { gte: string; lte: string }}
 					onChange={async (range: DateRange) => {
-						await this.handleFilterFieldChange(range, propertyName); // TODO reset state of CheckboxModal when closed, but not applied. confirmed by leen
-						await this.submitSearchForm();
+						await handleFilterFieldChange(range, propertyName);
 					}}
 				/>
 			</li>
 		);
-	}
+	};
 
-	renderFilterControls() {
+	const renderFilterControls = () => {
 		return (
 			<div className="c-filter-dropdown-list">
-				{this.renderCheckboxDropdown('Type', 'type')}
-				{this.renderCheckboxDropdown('Onderwijsniveau', 'educationLevel')}
-				{this.renderCheckboxDropdown('Domein', 'domain', true)}
-				{this.renderCheckboxModal('Vak', 'subject')}
-				{this.renderCheckboxModal('Onderwerp', 'keyword')}
-				{this.renderCheckboxModal('Serie', 'serie')}
-				{this.renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
-				{this.renderCheckboxDropdown('Taal', 'language')}
-				{this.renderCheckboxDropdown('Aanbieder', 'provider', false, { marginRight: 0 })}
+				{renderCheckboxDropdown('Type', 'type')}
+				{renderCheckboxDropdown('Onderwijsniveau', 'educationLevel')}
+				{renderCheckboxDropdown('Domein', 'domain', true)}
+				{renderCheckboxModal('Vak', 'subject')}
+				{renderCheckboxModal('Onderwerp', 'keyword')}
+				{renderCheckboxModal('Serie', 'serie')}
+				{renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
+				{renderCheckboxDropdown('Taal', 'language')}
+				{renderCheckboxDropdown('Aanbieder', 'provider', false, { marginRight: 0 })}
 			</div>
 		);
-	}
+	};
 
-	private getTagInfos(filterProp: keyof Filters, filterValue: any): TagInfo[] {
+	const getTagInfos = (filterProp: keyof Filters, filterValue: any): TagInfo[] => {
 		// Do not render query filter or empty filters
 		if (
 			filterProp === 'query' ||
@@ -442,7 +438,7 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 			return filterValue.map((filterVal: string) => {
 				let label = filterVal;
 				if (filterProp === 'language') {
-					label = this.languageCodeToLabel(filterVal);
+					label = languageCodeToLabel(filterVal);
 				}
 				return {
 					label,
@@ -454,12 +450,12 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 
 		console.error('Failed to render selected filter: ', filterProp, filterValue);
 		return [];
-	}
+	};
 
-	renderSelectedFilters() {
+	const renderSelectedFilters = () => {
 		const tagInfos: TagInfo[] = flatten(
-			(Object.keys(this.state.formState) as (keyof Filters)[]).map((filterProp: keyof Filters) =>
-				this.getTagInfos(filterProp, this.state.formState[filterProp])
+			(Object.keys(formState) as (keyof Filters)[]).map((filterProp: keyof Filters) =>
+				getTagInfos(filterProp, formState[filterProp])
 			)
 		);
 		return (
@@ -470,41 +466,43 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 					onTagClosed={async (tagLabel: string) => {
 						const tagInfo = find(tagInfos, (tagInfo: TagInfo) => tagInfo.label === tagLabel);
 						if (tagInfo) {
-							await this.deleteFilter(tagInfo);
+							await deleteFilter(tagInfo);
 						}
 					}}
 					tags={tagInfos.map((tagInfo: TagInfo) => tagInfo.label)}
 				/>
 			</div>
 		);
-	}
+	};
 
-	async deleteFilter(tagInfo: TagInfo) {
+	const deleteFilter = async (tagInfo: TagInfo) => {
 		if (isPlainObject(tagInfo.value) && (tagInfo.value.gte || tagInfo.value.lte)) {
-			await unsetDeepState(this, `formState.${tagInfo.prop}`);
+			setFormState({
+				...formState,
+				[tagInfo.prop]: DEFAULT_FORM_STATE[tagInfo.prop],
+			});
 			return;
 		}
-		if (isArray(this.state.formState[tagInfo.prop])) {
-			const filterArray: string[] = this.state.formState[tagInfo.prop] as string[];
+		if (isArray(formState[tagInfo.prop])) {
+			const filterArray: string[] = formState[tagInfo.prop] as string[];
 			remove(filterArray, filterItem => filterItem === tagInfo.value);
-			await setDeepState(this, `formState.${tagInfo.prop}`, filterArray);
-			await this.submitSearchForm();
+			setFormState({
+				...formState,
+				[tagInfo.prop]: filterArray,
+			});
 		} else {
 			console.error('Failed to remove selected filter: ', tagInfo.prop, tagInfo.value);
 		}
-	}
+	};
 
-	private renderSearchResult = (result: SearchResultItem) => {
+	const renderSearchResult = (result: SearchResultItem) => {
 		const metaData = [];
 		let thumbnailMeta = '';
 		if (result.administrative_type === 'audio' || result.administrative_type === 'video') {
-			// TODO investigate why all durations return 0
-			if (result.duration_seconds) {
-				thumbnailMeta = formatDuration(result.duration_seconds || 0);
-				metaData.push({
-					label: thumbnailMeta,
-				});
-			}
+			thumbnailMeta = formatDuration(result.duration_seconds || 0);
+			metaData.push({
+				label: thumbnailMeta,
+			});
 		} else {
 			// TODO get number of items from result item after bart updates the elasticsearch index
 			thumbnailMeta = `${25} items`;
@@ -523,14 +521,14 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 				numberOfItems={25}
 				duration={formatDuration(result.duration_seconds || 0)}
 				description={result.dcterms_abstract}
-				onToggleBookmark={(active: boolean) => this.handleBookmarkToggle(result.id, active)}
+				onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.id, active)}
 			>
 				<SearchResultTitle>
 					<Link to={contentLink}>{result.dc_title}</Link>
 				</SearchResultTitle>
 				<SearchResultSubtitle>
 					{generateSearchLink('provider', result.original_cp, 'c-body-2', () =>
-						this.handleOriginalCpLinkClicked(result.id, result.original_cp)
+						handleOriginalCpLinkClicked(result.id, result.original_cp)
 					)}
 				</SearchResultSubtitle>
 				<SearchResultThumbnail>
@@ -546,127 +544,122 @@ export class Search extends Component<RouteComponentProps<SearchProps>, SearchSt
 		);
 	};
 
-	private renderSearchResults() {
-		return (
-			<ul className="c-search-result-list">
-				{this.state.results.items.map(this.renderSearchResult)}
-			</ul>
-		);
-	}
-
-	private setPage = async (pageIndex: number): Promise<void> => {
-		await setDeepState(this, 'currentPage', pageIndex);
-		this.setFiltersInQueryParams();
-		await this.submitSearchForm();
+	const renderSearchResults = () => {
+		return <ul className="c-search-result-list">{searchResults.items.map(renderSearchResult)}</ul>;
 	};
 
-	private handleBookmarkToggle(id: string, active: boolean) {
-		console.log('TODO handle search result bookmark button toggle', active, id);
-	}
+	const setPage = async (pageIndex: number): Promise<void> => {
+		setCurrentPage(pageIndex);
+	};
 
-	private handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
+	const handleBookmarkToggle = (id: string, active: boolean) => {
+		console.log('TODO handle search result bookmark button toggle', active, id);
+	};
+
+	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {
-			await setDeepState(this, 'formState', {
+			setFormState({
 				...DEFAULT_FORM_STATE,
 				provider: [originalCp],
 			});
-			this.setFiltersInQueryParams();
-			await this.submitSearchForm();
 		}
 	};
 
-	render() {
-		const orderOptions = [
-			{ label: 'Meest relevant', value: 'relevance_desc' },
-			{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
-			{ label: 'Uitzenddatum aflopend', value: 'broadcastDate_desc' },
-			{ label: 'Uitzenddatum oplopend', value: 'broadcastDate_asc' },
-			{ label: 'Laatst toegevoegd', value: 'addedDate_desc', disabled: true },
-			{ label: 'Laatst gewijzigd', value: 'editDate_desc', disabled: true },
-		];
-		const defaultOrder = `${this.state.orderProperty || 'relevance'}_${this.state.orderDirection ||
-			'desc'}`;
-		const resultsCount = this.state.results.count;
-		// elasticsearch can only handle 10000 results efficiently
-		const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
-		const resultStart = this.state.currentPage * ITEMS_PER_PAGE + 1;
-		const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
+	/**
+	 * Only copy search terms when the user clicks the search button or when enter is pressed
+	 * Otherwise we would trigger a search for every letter that is typed
+	 */
+	const copySearchTermsToFormState = async () => {
+		setFormState({
+			...formState,
+			query: searchTerms,
+		});
+	};
+	useKeyPress('Enter', copySearchTermsToFormState);
 
-		return (
-			<Container mode="horizontal">
-				<Navbar>
-					<Container mode="horizontal">
-						<Toolbar>
-							<ToolbarLeft>
-								<Fragment>
-									<ToolbarItem>
-										<ToolbarTitle>Zoekresultaten</ToolbarTitle>
-									</ToolbarItem>
-									<ToolbarItem>
-										<p className="c-body-1 u-text-muted">
-											{resultStart}-{resultEnd} van {resultsCount} resultaten
-										</p>
-									</ToolbarItem>
-								</Fragment>
-							</ToolbarLeft>
-							<ToolbarRight>
+	const orderOptions = [
+		{ label: 'Meest relevant', value: 'relevance_desc' },
+		{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
+		{ label: 'Uitzenddatum aflopend', value: 'broadcastDate_desc' },
+		{ label: 'Uitzenddatum oplopend', value: 'broadcastDate_asc' },
+		{ label: 'Laatst toegevoegd', value: 'addedDate_desc', disabled: true },
+		{ label: 'Laatst gewijzigd', value: 'editDate_desc', disabled: true },
+	];
+	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
+		'desc'}`;
+	const resultsCount = searchResults.count;
+	// elasticsearch can only handle 10000 results efficiently
+	const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
+	const resultStart = currentPage * ITEMS_PER_PAGE + 1;
+	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
+	return (
+		<Container mode="horizontal">
+			<Navbar>
+				<Container mode="horizontal">
+					<Toolbar>
+						<ToolbarLeft>
+							<Fragment>
+								<ToolbarItem>
+									<ToolbarTitle>Zoekresultaten</ToolbarTitle>
+								</ToolbarItem>
+								<ToolbarItem>
+									<p className="c-body-1 u-text-muted">
+										{resultStart}-{resultEnd} van {resultsCount} resultaten
+									</p>
+								</ToolbarItem>
+							</Fragment>
+						</ToolbarLeft>
+						<ToolbarRight>
+							<Form type="inline">
+								<FormGroup label="Sorteer op" labelFor="sortBy">
+									<Select
+										id="sortBy"
+										options={orderOptions}
+										value={defaultOrder}
+										onChange={value => handleOrderChanged(value)}
+									/>
+								</FormGroup>
+							</Form>
+						</ToolbarRight>
+					</Toolbar>
+				</Container>
+			</Navbar>
+			<Navbar autoHeight={true}>
+				<Container mode="horizontal">
+					{/*TODO replace with spacer component when it is built*/}
+					<div className="u-spacer-top-l">
+						{/*TODO replace with spacer component when it is built*/}
+						<div className="u-spacer-bottom-l">
+							<div className="u-limit-width-bp3">
 								<Form type="inline">
-									<FormGroup label="Sorteer op" labelFor="sortBy">
-										<Select
-											id="sortBy"
-											options={orderOptions}
-											value={defaultOrder}
-											onChange={value => this.handleOrderChanged(value)}
+									<FormGroup inlineMode="grow">
+										<TextInput
+											id="query"
+											placeholder="Vul uw zoekterm in..."
+											value={formState.query}
+											icon="search"
+											onChange={setSearchTerms}
 										/>
 									</FormGroup>
+									<FormGroup inlineMode="shrink">
+										<Button label="Zoeken" type="primary" onClick={copySearchTermsToFormState} />
+									</FormGroup>
 								</Form>
-							</ToolbarRight>
-						</Toolbar>
-					</Container>
-				</Navbar>
-				<Navbar autoHeight={true}>
-					<Container mode="horizontal">
-						{/*TODO replace with spacer component when it is built*/}
-						<div className="u-spacer-top-l">
-							{/*TODO replace with spacer component when it is built*/}
-							<div className="u-spacer-bottom-l">
-								<div className="u-limit-width-bp3">
-									<Form type="inline">
-										<FormGroup inlineMode="grow">
-											<TextInput
-												id="query"
-												placeholder="Vul uw zoekterm in..."
-												value={this.state.formState.query}
-												icon="search"
-												onChange={(searchTerm: string) =>
-													this.handleFilterFieldChange(searchTerm, 'query')
-												}
-											/>
-										</FormGroup>
-										<FormGroup inlineMode="shrink">
-											<Button label="Zoeken" type="primary" onClick={this.submitSearchForm} />
-										</FormGroup>
-									</Form>
-								</div>
 							</div>
-							{this.renderSelectedFilters()}
-							{this.renderFilterControls()}
 						</div>
-					</Container>
-				</Navbar>
-				<Container mode="vertical">
-					<Container mode="horizontal">
-						{this.renderSearchResults()}
-						<div className="u-spacer-l">
-							<Pagination
-								pageCount={pageCount}
-								currentPage={this.state.currentPage}
-								onPageChange={this.setPage}
-							/>
-						</div>
-					</Container>
+						{renderSelectedFilters()}
+						{renderFilterControls()}
+					</div>
+				</Container>
+			</Navbar>
+			<Container mode="vertical">
+				<Container mode="horizontal">
+					{renderSearchResults()}
+					<div className="u-spacer-l">
+						<Pagination pageCount={pageCount} currentPage={currentPage} onPageChange={setPage} />
+					</div>
 				</Container>
 			</Container>
-		);
-	}
-}
+		</Container>
+	);
+};
