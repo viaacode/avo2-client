@@ -86,7 +86,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 			setSeekerTimeInQueryParams();
 			setSeekerTime();
 		}
-	}, [time]);
+	}, [time, history, videoRef, id]);
 
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
