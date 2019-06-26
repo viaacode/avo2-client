@@ -1,11 +1,13 @@
-import { isArray, noop } from 'lodash-es';
 import React, { Fragment } from 'react';
+
+import { Avo } from '@viaa/avo2-types';
+
+import { isArray, noop } from 'lodash-es';
 import { Link } from 'react-router-dom';
-import { Filters } from '../types/searchTypes';
 
 export function generateSearchLinks(
 	key: string,
-	filterProp: keyof Filters,
+	filterProp: keyof Avo.Search.Filters,
 	filterValue: string | string[] | undefined,
 	className: string = ''
 ) {
@@ -23,7 +25,7 @@ export function generateSearchLinks(
 }
 
 export function generateSearchLink(
-	filterProp: keyof Filters,
+	filterProp: keyof Avo.Search.Filters,
 	filterValue: string | undefined,
 	className: string = '',
 	onClick: () => void = noop

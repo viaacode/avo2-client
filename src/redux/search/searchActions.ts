@@ -1,22 +1,15 @@
-import {
-	FilterOptionSearch,
-	Filters,
-	SearchOrderDirection,
-	SearchOrderProperty,
-	SearchRequest,
-	SearchResponse,
-} from '../../types/searchTypes';
+import { Avo } from '@viaa/avo2-types';
 
 export async function doSearch(
-	filters?: Partial<Filters>,
-	filterOptionSearch?: Partial<FilterOptionSearch>,
-	orderProperty: SearchOrderProperty = 'relevance',
-	orderDirection: SearchOrderDirection = 'desc',
+	filters?: Partial<Avo.Search.Filters>,
+	filterOptionSearch?: Partial<Avo.Search.FilterOption>,
+	orderProperty: Avo.Search.OrderProperty = 'relevance',
+	orderDirection: Avo.Search.OrderDirection = 'desc',
 	from: number = 0,
 	size: number = 30
-): Promise<SearchResponse> {
+): Promise<Avo.Search.Response> {
 	const url = `${process.env.REACT_APP_PROXY_URL}/search`;
-	const body: SearchRequest = {
+	const body: Avo.Search.Request = {
 		filters,
 		filterOptionSearch,
 		orderProperty,
@@ -30,5 +23,5 @@ export async function doSearch(
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify(body),
-	}).then(response => response.json()) as Promise<SearchResponse>;
+	}).then(response => response.json()) as Promise<Avo.Search.Response>;
 }

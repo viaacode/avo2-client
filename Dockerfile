@@ -6,7 +6,7 @@ ENV NODE_ENV $NODE_ENV
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json .npmrc ./
 
 RUN npm ci --production=false
 
