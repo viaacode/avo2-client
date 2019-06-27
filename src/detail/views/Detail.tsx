@@ -34,9 +34,11 @@ import { RouteComponentProps } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
-import { formatDate, formatDuration, parseDuration } from '../../shared/helpers/formatting';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import { formatDuration } from '../../shared/helpers/formatters/duration';
 import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
+import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { getDetail } from '../../shared/store/detail/detailActions';
 
 interface DetailProps extends RouteComponentProps {}
