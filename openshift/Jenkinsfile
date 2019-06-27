@@ -51,7 +51,7 @@ pipeline {
                             echo starting a build
                             oc project sc-avo2
                             npm install npx
-                            npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be --build.env YARN_ENABLED=false --expose build
+                            npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be --build.env --expose build
                             '''
 
 			                          sh '''#!/bin/bash
@@ -66,7 +66,7 @@ pipeline {
                                       oc project sc-avo2
 
                                       npm install npx
-                                      npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be --build.env YARN_ENABLED=false --expose build
+                                      npx nodeshift --namespace.name=sc-avo2 --strictSSL=false --dockerImage=nodeshift/centos7-s2i-web-app --imageTag=10.x --build.env REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be --build.env --expose build
                                       echo " roll out QAS"
                                       oc process -l app=avo2-client -p ENV=qas REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                                     '''
