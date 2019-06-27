@@ -44,13 +44,14 @@ import {
 import queryString from 'query-string';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
-import { CheckboxDropdown } from '../../components/CheckboxDropdown/CheckboxDropdown';
-import { CheckboxModal, CheckboxOption } from '../../components/CheckboxModal/CheckboxModal';
-import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
-import { formatDate, formatDuration } from '../../helpers/formatting';
-import { generateSearchLink } from '../../helpers/generateLink';
-import { LANGUAGES } from '../../helpers/languages';
-import { doSearch } from '../../redux/search/searchActions';
+
+import { CheckboxDropdown } from '../../shared/components/CheckboxDropdown/CheckboxDropdown';
+import { CheckboxModal, CheckboxOption } from '../../shared/components/CheckboxModal/CheckboxModal';
+import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { formatDate, formatDuration } from '../../shared/helpers/formatting';
+import { generateSearchLink } from '../../shared/helpers/generateLink';
+import { LANGUAGES } from '../../shared/helpers/languages';
+import { doSearch } from '../../shared/store/search/searchActions';
 
 interface SearchProps extends RouteComponentProps {}
 
@@ -535,8 +536,9 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 				type={result.administrative_type}
 				date={formatDate(result.dcterms_issued)}
 				tags={['Redactiekeuze', 'Partner']}
-				numberOfItems={25}
-				duration={formatDuration(result.duration_seconds || 0)}
+				viewCount={412}
+				bookmarkCount={85}
+				// duration={formatDuration(result.duration_seconds || 0)}
 				description={result.dcterms_abstract}
 				onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.id, active)}
 			>
