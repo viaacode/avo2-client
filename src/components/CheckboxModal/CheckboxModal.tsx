@@ -1,4 +1,3 @@
-import { compact, fromPairs } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
 import {
@@ -14,9 +13,10 @@ import {
 	ModalBody,
 	ModalFooterLeft,
 	ModalFooterRight,
+	ModalHeaderRight,
 	TextInput,
-} from '../avo2-components/src';
-import { ModalHeaderRight } from '../avo2-components/src/components/Modal/Modal.slots';
+} from '@viaa/avo2-components';
+import { compact, fromPairs } from 'lodash-es';
 
 export interface CheckboxOption {
 	label: string;

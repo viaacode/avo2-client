@@ -8,11 +8,6 @@ import React, {
 	useState,
 } from 'react';
 
-import { Avo } from '@viaa/avo2-types';
-import queryString from 'query-string';
-import { RouteComponentProps } from 'react-router';
-import { Scrollbar } from 'react-scrollbars-custom';
-
 import {
 	Button,
 	Column,
@@ -31,7 +26,12 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
-} from '../../components/avo2-components/src';
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import queryString from 'query-string';
+import { RouteComponentProps } from 'react-router';
+import { Scrollbar } from 'react-scrollbars-custom';
+
 import { ExpandableContainer } from '../../components/ExpandableContainer/ExpandableContainer';
 import { formatDate, formatDuration, parseDuration } from '../../helpers/formatting';
 import { generateSearchLink, generateSearchLinks } from '../../helpers/generateLink';

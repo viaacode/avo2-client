@@ -1,27 +1,5 @@
 import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
 
-import { Avo } from '@viaa/avo2-types';
-import {
-	capitalize,
-	cloneDeep,
-	compact,
-	every,
-	find,
-	flatten,
-	get,
-	isArray,
-	isEmpty,
-	isEqual,
-	isNil,
-	isPlainObject,
-	pickBy,
-	remove,
-} from 'lodash-es';
-import queryString from 'query-string';
-import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
-import { doSearch } from '../../redux/search/searchActions';
-
 import {
 	Blankslate,
 	Button,
@@ -45,13 +23,34 @@ import {
 	ToolbarRight,
 	ToolbarTitle,
 	useKeyPress,
-} from '../../components/avo2-components/src';
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import {
+	capitalize,
+	cloneDeep,
+	compact,
+	every,
+	find,
+	flatten,
+	get,
+	isArray,
+	isEmpty,
+	isEqual,
+	isNil,
+	isPlainObject,
+	pickBy,
+	remove,
+} from 'lodash-es';
+import queryString from 'query-string';
+import { RouteComponentProps } from 'react-router';
+import { Link } from 'react-router-dom';
 import { CheckboxDropdown } from '../../components/CheckboxDropdown/CheckboxDropdown';
 import { CheckboxModal, CheckboxOption } from '../../components/CheckboxModal/CheckboxModal';
 import { DateRangeDropdown } from '../../components/DateRangeDropdown/DateRangeDropdown';
 import { formatDate, formatDuration } from '../../helpers/formatting';
 import { generateSearchLink } from '../../helpers/generateLink';
 import { LANGUAGES } from '../../helpers/languages';
+import { doSearch } from '../../redux/search/searchActions';
 
 interface SearchProps extends RouteComponentProps {}
 

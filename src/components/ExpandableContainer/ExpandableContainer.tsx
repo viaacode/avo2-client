@@ -1,6 +1,7 @@
 import React, { Fragment, FunctionComponent, ReactNode } from 'react';
 
-import { Button } from '../avo2-components/src';
+import { Button } from '@viaa/avo2-components';
+
 const useCollapse = require('../../hooks/react-collapsed/react-collapsed').default;
 
 export interface ExpandableContainerProps {

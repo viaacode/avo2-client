@@ -1,7 +1,7 @@
-import { compact, fromPairs } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import { Button, Checkbox, CheckboxGroup, Dropdown, Form, FormGroup } from '../avo2-components/src';
+import { Button, Checkbox, CheckboxGroup, Dropdown, Form, FormGroup } from '@viaa/avo2-components';
+import { compact, fromPairs } from 'lodash-es';
 
 export interface CheckboxOption {
 	label: string;
@@ -108,13 +108,7 @@ export const CheckboxDropdown: FunctionComponent<CheckboxDropdownProps> = ({
 							</CheckboxGroup>
 						</FormGroup>
 						<FormGroup>
-							<Button
-								label="Toepassen"
-								type="primary"
-								block={true}
-								className="c-dropdown-menu__close"
-								onClick={() => applyFilter()}
-							/>
+							<Button label="Toepassen" type="primary" block={true} onClick={() => applyFilter()} />
 						</FormGroup>
 					</Form>
 				</div>

@@ -11,7 +11,7 @@ import {
 	RadioButton,
 	RadioButtonGroup,
 	TextInput,
-} from '../avo2-components/src';
+} from '@viaa/avo2-components';
 
 export interface DateRangeDropdownProps {
 	label: string;
@@ -218,13 +218,7 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 						)}
 					</FormGroup>
 					<FormGroup>
-						<Button
-							label="Toepassen"
-							type="primary"
-							block={true}
-							className="c-dropdown-menu__close"
-							onClick={applyFilter}
-						/>
+						<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
 					</FormGroup>
 				</Form>
 			</div>
