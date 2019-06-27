@@ -462,18 +462,26 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 				(filterProp: keyof Avo.Search.Filters) => getTagInfos(filterProp, formState[filterProp])
 			)
 		);
+		const tagLabels = tagInfos.map((tagInfo: TagInfo) => tagInfo.label);
+		if (tagLabels.length > 1) {
+			tagLabels.push('Alle filters wissen');
+		}
 		return (
 			<div className="u-spacer-bottom-l">
 				<TagList
 					closable={true}
 					swatches={false}
 					onTagClosed={async (tagLabel: string) => {
-						const tagInfo = find(tagInfos, (tagInfo: TagInfo) => tagInfo.label === tagLabel);
-						if (tagInfo) {
-							await deleteFilter(tagInfo);
+						if (tagLabel === 'Alle filters wissen') {
+							deleteAllFilters();
+						} else {
+							const tagInfo = find(tagInfos, (tagInfo: TagInfo) => tagInfo.label === tagLabel);
+							if (tagInfo) {
+								await deleteFilter(tagInfo);
+							}
 						}
 					}}
-					tags={tagInfos.map((tagInfo: TagInfo) => tagInfo.label)}
+					tags={tagLabels}
 				/>
 			</div>
 		);
@@ -497,6 +505,12 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		} else {
 			console.error('Failed to remove selected filter: ', tagInfo.prop, tagInfo.value);
 		}
+	};
+
+	const deleteAllFilters = () => {
+		setFormState({
+			...DEFAULT_FORM_STATE,
+		});
 	};
 
 	const renderSearchResult = (result: Avo.Search.ResultItem) => {
