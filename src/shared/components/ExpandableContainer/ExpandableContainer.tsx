@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, ReactNode } from 'react';
 
-import { Button } from '@viaa/avo2-components';
+import { Button, Spacer } from '@viaa/avo2-components';
 
 const useCollapse = require('../../../hooks/react-collapsed/react-collapsed').default;
 
@@ -27,11 +27,11 @@ export const ExpandableContainer: FunctionComponent<ExpandableContainerProps> = 
 	return (
 		<Fragment>
 			<div {...getCollapseProps()}>{children}</div>
-			<div className="u-spacer-top-s">
+			<Spacer margin="top-small">
 				<div className="u-text-center" {...getToggleProps()}>
 					<Button type="secondary" label={isOpen ? collapseLabel : expandLabel} />
 				</div>
-			</div>
+			</Spacer>
 		</Fragment>
 	);
 };

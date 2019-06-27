@@ -13,6 +13,7 @@ import {
 	SearchResultThumbnail,
 	SearchResultTitle,
 	Select,
+	Spacer,
 	Spinner,
 	TagList,
 	TextInput,
@@ -56,19 +57,6 @@ import { doSearch } from '../../shared/store/search/searchActions';
 interface SearchProps extends RouteComponentProps {}
 
 const ITEMS_PER_PAGE = 10;
-
-// interface SearchState extends StaticContext {
-// 	formState: Avo.Search.Filters;
-// 	// filterOptionSearch: FilterOptionSearch;
-// 	orderProperty: Avo.Search.OrderProperty;
-// 	orderDirection: Avo.Search.OrderDirection;
-// 	multiOptions: { [key: string]: Avo.Search.OptionProp[] };
-// 	results: {
-// 		items: Avo.Search.ResultItem[];
-// 		count: number;
-// 	};
-// 	currentPage: number;
-// }
 
 interface SortOrder {
 	orderProperty: Avo.Search.OrderProperty;
@@ -467,7 +455,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 			tagLabels.push('Alle filters wissen');
 		}
 		return (
-			<div className="u-spacer-bottom-l">
+			<Spacer margin="bottom-large">
 				<TagList
 					closable={true}
 					swatches={false}
@@ -483,7 +471,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 					}}
 					tags={tagLabels}
 				/>
-			</div>
+			</Spacer>
 		);
 	};
 
@@ -572,13 +560,13 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 							<ul className="c-search-result-list">
 								{searchResults.items.map(renderSearchResult)}
 							</ul>
-							<div className="u-spacer-l">
+							<Spacer margin="large">
 								<Pagination
 									pageCount={pageCount}
 									currentPage={currentPage}
 									onPageChange={setPage}
 								/>
-							</div>
+							</Spacer>
 						</Fragment>
 					)}
 					{!loadingSearchResults && searchResults.count === 0 && (
@@ -676,10 +664,8 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 			</Navbar>
 			<Navbar autoHeight={true}>
 				<Container mode="horizontal">
-					{/*TODO replace with spacer component when it is built*/}
-					<div className="u-spacer-top-l">
-						{/*TODO replace with spacer component when it is built*/}
-						<div className="u-spacer-bottom-l">
+					<Spacer margin="top-large">
+						<Spacer margin="bottom-large">
 							<div className="u-limit-width-bp3">
 								<Form type="inline">
 									<FormGroup inlineMode="grow">
@@ -696,10 +682,10 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 									</FormGroup>
 								</Form>
 							</div>
-						</div>
+						</Spacer>
 						{renderSelectedFilters()}
 						{renderFilterControls()}
-					</div>
+					</Spacer>
 				</Container>
 			</Navbar>
 			{renderSearchResults()}

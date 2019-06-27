@@ -19,6 +19,7 @@ import {
 	MediaCardThumbnail,
 	MetaData,
 	MetaDataItem,
+	Spacer,
 	TagList,
 	Thumbnail,
 	ToggleButton,
@@ -135,7 +136,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 					<Toolbar>
 						<ToolbarLeft>
 							<ToolbarItem>
-								<div className="u-spacer-bottom">
+								<Spacer margin="bottom">
 									<div className="c-content-type c-content-type--video">
 										{item.administrative_type && (
 											<Icon
@@ -148,7 +149,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 										)}
 										<p>Video</p>
 									</div>
-								</div>
+								</Spacer>
 								<h1 className="c-h2 u-m-b-0">{item.dc_title}</h1>
 								<MetaData spaced={true} category={item.administrative_type || 'video'}>
 									<MetaDataItem>{generateSearchLink('provider', item.original_cp)}</MetaDataItem>
@@ -202,7 +203,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 											/>
 										)}
 									</div>
-									<div className="u-spacer-top-l">
+									<Spacer margin="top-large">
 										<div className="o-flex o-flex--justify-between o-flex--wrap">
 											<div className="c-button-toolbar u-spacer-right">
 												<Button
@@ -218,7 +219,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 												<Button type="tertiary" icon="flag" />
 											</div>
 										</div>
-									</div>
+									</Spacer>
 								</div>
 							</div>
 						</Column>
