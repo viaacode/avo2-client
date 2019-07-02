@@ -34,7 +34,7 @@ pipeline {
                             echo "We 're about to build and tag dev and qas images for the avo2-client This is a plain docker build"
                         }
                     }
-                }
+                }//end script
             }
         }
         stage('Template update') {
@@ -53,6 +53,7 @@ pipeline {
                     }
                 } // script
             } // step
+        } // end stage
         stage('Docker build') {
             steps {
                 script {
@@ -64,7 +65,7 @@ pipeline {
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-                            
+
                             docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
                             '''
@@ -84,27 +85,27 @@ pipeline {
                              docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
                              echo "pushing image avo2-client with tag dev"
                              docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-			
+
                              '''
 
                         }
                     }
-                }
+                }// end script
             }
-        }
+        }//end stage
         stage('Deploy production') {
-     steps {
-     // input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
+         steps {
+         // input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
 
-         script {
-             openshift.withCluster() {
-                 openshift.withProject("sc-avo2") {
-                    echo "this is not enabled yet"
+             script {
+                 openshift.withCluster() {
+                     openshift.withProject("sc-avo2") {
+                        echo "this is not enabled yet"
+                     }
                  }
-             }
-         } // script
-     } // steps
- } // stage
+             } // script
+         } // steps
+     } // stage
 
     } // stages
     post {
