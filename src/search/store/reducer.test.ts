@@ -1,5 +1,3 @@
-import configureStore from 'redux-mock-store';
-
 import { SetSearchResultsError, SetSearchResultsLoading, SetSearchResultsSuccess } from './actions';
 import initialState from './initial-state';
 import { SearchActionTypes } from './types';
@@ -7,8 +5,6 @@ import { SearchActionTypes } from './types';
 import searchReducer from './reducer';
 
 describe('search > store > reducer', () => {
-	const mockStore = configureStore();
-
 	it(`Correctly handle ${SearchActionTypes.SET_RESULTS_ERROR}`, () => {
 		const state = searchReducer(initialState, SetSearchResultsError());
 
