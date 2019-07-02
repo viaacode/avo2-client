@@ -3,9 +3,9 @@ import { createReducer } from './../../shared/helpers/redux/create-reducer';
 import initialState from './initial-state';
 import {
 	SearchActionTypes,
-	SetSearchResultsAction,
 	SetSearchResultsErrorAction,
 	SetSearchResultsLoadingAction,
+	SetSearchResultsSuccessAction,
 } from './types';
 
 const searchReducer = createReducer(initialState, {
@@ -15,7 +15,7 @@ const searchReducer = createReducer(initialState, {
 		loading: action.loading,
 		error: false,
 	}),
-	[SearchActionTypes.SET_RESULTS_SUCCESS]: (state, action: SetSearchResultsAction) => ({
+	[SearchActionTypes.SET_RESULTS_SUCCESS]: (state, action: SetSearchResultsSuccessAction) => ({
 		...state,
 		results: action.results,
 		loading: false,

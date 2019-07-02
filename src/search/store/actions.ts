@@ -1,26 +1,25 @@
 import { Avo } from '@viaa/avo2-types';
-import { ActionCreator } from 'redux';
 
 import {
 	SearchActionTypes,
-	SetSearchResultsAction,
 	SetSearchResultsErrorAction,
 	SetSearchResultsLoadingAction,
+	SetSearchResultsSuccessAction,
 } from './types';
 
-const SetSearchResults: ActionCreator<SetSearchResultsAction> = (results: Avo.Search.Response) => ({
+const SetSearchResultsSuccess = (results: Avo.Search.Response): SetSearchResultsSuccessAction => ({
 	results,
 	type: SearchActionTypes.SET_RESULTS_SUCCESS,
 });
 
-const SetSearchResultsError: ActionCreator<SetSearchResultsErrorAction> = () => ({
+const SetSearchResultsError = (): SetSearchResultsErrorAction => ({
 	type: SearchActionTypes.SET_RESULTS_ERROR,
 	error: true,
 });
 
-const SetSearchResultsLoading: ActionCreator<SetSearchResultsLoadingAction> = () => ({
+const SetSearchResultsLoading = (): SetSearchResultsLoadingAction => ({
 	type: SearchActionTypes.SET_RESULTS_LOADING,
 	loading: true,
 });
 
-export { SetSearchResults, SetSearchResultsError, SetSearchResultsLoading };
+export { SetSearchResultsSuccess, SetSearchResultsError, SetSearchResultsLoading };

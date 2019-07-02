@@ -7,7 +7,7 @@ export enum SearchActionTypes {
 	SET_RESULTS_ERROR = '@@search/SET_RESULTS_ERROR',
 }
 
-export interface SetSearchResultsAction extends Action {
+export interface SetSearchResultsSuccessAction extends Action {
 	results: Avo.Search.Response;
 }
 
@@ -20,7 +20,7 @@ export interface SetSearchResultsErrorAction extends Action {
 }
 
 export type SearchAction =
-	| SetSearchResultsAction
+	| SetSearchResultsSuccessAction
 	| SetSearchResultsLoadingAction
 	| SetSearchResultsErrorAction;
 
