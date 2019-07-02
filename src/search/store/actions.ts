@@ -7,8 +7,8 @@ import {
 	SetSearchResultsSuccessAction,
 } from './types';
 
-const SetSearchResultsSuccess = (results: Avo.Search.Response): SetSearchResultsSuccessAction => ({
-	results,
+const SetSearchResultsSuccess = (data: Avo.Search.Response): SetSearchResultsSuccessAction => ({
+	data,
 	type: SearchActionTypes.SET_RESULTS_SUCCESS,
 });
 

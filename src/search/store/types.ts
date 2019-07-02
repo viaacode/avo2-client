@@ -8,7 +8,7 @@ export enum SearchActionTypes {
 }
 
 export interface SetSearchResultsSuccessAction extends Action {
-	results: Avo.Search.Response;
+	data: Avo.Search.Response;
 }
 
 export interface SetSearchResultsLoadingAction extends Action {
@@ -25,7 +25,7 @@ export type SearchAction =
 	| SetSearchResultsErrorAction;
 
 export interface SearchState {
-	readonly results: Avo.Search.Response | null;
+	readonly data: Avo.Search.Response | null;
 	readonly loading: boolean;
 	readonly error: boolean;
 }

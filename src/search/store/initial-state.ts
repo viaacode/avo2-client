@@ -1,7 +1,7 @@
 import { SearchState } from './types';
 
 const initialState: SearchState = Object.freeze({
-	results: null,
+	data: null,
 	loading: false,
 	error: false,
 });

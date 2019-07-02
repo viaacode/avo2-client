@@ -7,7 +7,7 @@ const getSearch = ({ search }: { search: SearchState }) => {
 };
 
 const getSearchResults = ({ search }: { search: SearchState }) => {
-	return get(search, ['result']);
+	return get(search, ['data', 'results']);
 };
 
 const getSearchLoading = ({ search }: { search: SearchState }) => {

@@ -11,19 +11,19 @@ import {
 const searchReducer = createReducer(initialState, {
 	[SearchActionTypes.SET_RESULTS_LOADING]: (state, action: SetSearchResultsLoadingAction) => ({
 		...state,
-		results: null,
+		data: null,
 		loading: action.loading,
 		error: false,
 	}),
 	[SearchActionTypes.SET_RESULTS_SUCCESS]: (state, action: SetSearchResultsSuccessAction) => ({
 		...state,
-		results: action.results,
+		data: action.data,
 		loading: false,
 		error: false,
 	}),
 	[SearchActionTypes.SET_RESULTS_ERROR]: (state, action: SetSearchResultsErrorAction) => ({
 		...state,
-		results: null,
+		data: null,
 		loading: false,
 		error: action.error,
 	}),

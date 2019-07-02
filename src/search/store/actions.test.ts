@@ -8,10 +8,10 @@ describe('search > store > actions', () => {
 
 		const expectedAction = {
 			type: SearchActionTypes.SET_RESULTS_SUCCESS,
-			results: searchResults,
+			data: searchResults,
 		};
 
-		expect(SetSearchResultsSuccess(searchResults)).toEqual(expectedAction);
+		expect(SetSearchResultsSuccess(searchResults)).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set an error', () => {
@@ -20,7 +20,7 @@ describe('search > store > actions', () => {
 			error: true,
 		};
 
-		expect(SetSearchResultsError()).toEqual(expectedAction);
+		expect(SetSearchResultsError()).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set the loading state', () => {
@@ -29,6 +29,6 @@ describe('search > store > actions', () => {
 			loading: true,
 		};
 
-		expect(SetSearchResultsLoading()).toEqual(expectedAction);
+		expect(SetSearchResultsLoading()).toMatchObject(expectedAction);
 	});
 });
