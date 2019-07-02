@@ -25,7 +25,7 @@ describe('search > store > actions', () => {
 
 	it('Should create an action to set the loading state', () => {
 		const expectedAction = {
-			type: SearchActionTypes.SET_RESULTS_ERROR,
+			type: SearchActionTypes.SET_RESULTS_LOADING,
 			loading: true,
 		};
 
