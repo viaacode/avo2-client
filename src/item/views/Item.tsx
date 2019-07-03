@@ -39,32 +39,28 @@ import { formatDuration } from '../../shared/helpers/formatters/duration';
 import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { getDetail } from '../../shared/store/detail/detailActions';
+import { getItem } from '../../shared/store/item/itemActions';
 
-interface DetailProps extends RouteComponentProps {}
+interface ItemProps extends RouteComponentProps {}
 
-export const Detail: FunctionComponent<DetailProps> = ({
-	history,
-	location,
-	match,
-}: DetailProps) => {
+export const Item: FunctionComponent<ItemProps> = ({ history, location, match }: ItemProps) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [item, setItem] = useState({} as Avo.Detail.Response);
+	const [item, setItem] = useState({} as Avo.Item.Response);
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
 
 	/**
-	 * Get detail item from api when id changes
+	 * Get item from api when id changes
 	 */
 	useEffect(() => {
 		// TODO: get item from store by id
-		getDetail(id)
-			.then((detailResponse: Avo.Detail.Response) => {
-				setItem(detailResponse);
+		getItem(id)
+			.then((itemResponse: Avo.Item.Response) => {
+				setItem(itemResponse);
 			})
-			.catch(err => {
-				console.error('Failed to get detail from the server', err, { id });
+			.catch((err: any) => {
+				console.error('Failed to get item from the server', err, { id });
 			});
 	}, [id]);
 
@@ -74,7 +70,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 	useEffect(() => {
 		const setSeekerTimeInQueryParams = (): void => {
 			history.push({
-				pathname: `/detail/${id}`,
+				pathname: `/item/${id}`,
 				search: time ? `?${queryString.stringify({ time })}` : '',
 			});
 		};
@@ -299,7 +295,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 								<table className="c-table c-table--horizontal c-table--untable">
 									<tbody>
 										<tr>
-											<th scope="row">Onderwerpen</th>
+											<th scope="row">Trefwoorden</th>
 											<td>
 												<TagList tags={item.lom_keywords || []} swatches={false} />
 											</td>
@@ -323,7 +319,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -343,7 +339,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -363,7 +359,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -383,7 +379,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -403,7 +399,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
