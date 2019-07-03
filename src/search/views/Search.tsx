@@ -693,7 +693,6 @@ const Search: FunctionComponent<SearchProps> = ({
 	);
 };
 
-// TODO: fix any
 const mapStateToProps = (state: any) => ({
 	searchResults: selectSearchResults(state),
 	searchResultsLoading: selectSearchLoading(state),
@@ -701,7 +700,6 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		// TODO: fix any
 		search: (
 			orderProperty: Avo.Search.OrderProperty,
 			orderDirection: Avo.Search.OrderDirection,

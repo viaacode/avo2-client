@@ -30,8 +30,10 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
+import { Dispatch } from 'redux';
 
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
@@ -39,18 +41,24 @@ import { formatDuration } from '../../shared/helpers/formatters/duration';
 import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { getDetail } from '../../shared/store/detail/detailActions';
 
-interface DetailProps extends RouteComponentProps {}
+import { getDetail } from '../store/actions';
+import { selectDetail } from '../store/selectors';
 
-export const Detail: FunctionComponent<DetailProps> = ({
+interface DetailProps extends RouteComponentProps {
+	item: Avo.Detail.Response;
+	getItem: (id: string) => Dispatch;
+}
+
+const Detail: FunctionComponent<DetailProps> = ({
+	item,
+	getItem,
 	history,
 	location,
 	match,
 }: DetailProps) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [item, setItem] = useState({} as Avo.Detail.Response);
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
 
@@ -58,14 +66,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 	 * Get detail item from api when id changes
 	 */
 	useEffect(() => {
-		// TODO: get item from store by id
-		getDetail(id)
-			.then((detailResponse: Avo.Detail.Response) => {
-				setItem(detailResponse);
-			})
-			.catch(err => {
-				console.error('Failed to get detail from the server', err, { id });
-			});
+		getItem(id);
 	}, [id]);
 
 	/**
@@ -131,7 +132,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
-	return (
+	return item ? (
 		<Fragment>
 			<Container mode="vertical" size="small" background="alt">
 				<Container mode="horizontal">
@@ -427,5 +428,20 @@ export const Detail: FunctionComponent<DetailProps> = ({
 				</Container>
 			</Container>
 		</Fragment>
-	);
+	) : null;
 };
+
+const mapStateToProps = (state: any, { match }: DetailProps) => ({
+	item: selectDetail(state, (match.params as any).id),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getItem: (id: string) => dispatch(getDetail(id) as any),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Detail);
