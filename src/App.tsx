@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import store from './store';
 
 import { Detail } from './detail/views/Detail';
-import { Search } from './search/views/Search';
+import Search from './search/views/Search';
 
 const App: FunctionComponent = () => {
 	return (
