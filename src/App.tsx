@@ -9,7 +9,8 @@ const App: FunctionComponent = () => {
 		<Fragment>
 			<h1>Archief voor Onderwijs Homepage</h1>
 			<Router>
-				<Link to="/search">Search</Link>
+				<Link to="/search">Search</Link>&nbsp;
+				<Link to="/collection/1725151">Collection</Link>
 				{renderRoutes(ROUTES)}
 			</Router>
 		</Fragment>
