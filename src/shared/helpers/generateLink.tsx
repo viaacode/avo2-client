@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 export function generateSearchLinks(
 	key: string,
-	filterProp: Avo.Search.FilterProp,
+	filterProp: keyof Avo.Search.Filters,
 	filterValue: string | string[] | undefined,
 	className: string = ''
 ) {
@@ -25,7 +25,7 @@ export function generateSearchLinks(
 }
 
 export function generateSearchLink(
-	filterProp: Avo.Search.FilterProp,
+	filterProp: keyof Avo.Search.Filters,
 	filterValue: string | undefined,
 	className: string = '',
 	onClick: () => void = noop
@@ -46,6 +46,9 @@ export function generateSearchLink(
 	);
 }
 
-export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filterValue: string) {
+export function generateSearchLinkString(
+	filterProp: keyof Avo.Search.Filters,
+	filterValue: string
+) {
 	return `/search?filters={"${filterProp}":["${filterValue}"]}`;
 }

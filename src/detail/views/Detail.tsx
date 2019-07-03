@@ -39,28 +39,32 @@ import { formatDuration } from '../../shared/helpers/formatters/duration';
 import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { getItem } from '../../shared/store/item/itemActions';
+import { getDetail } from '../../shared/store/detail/detailActions';
 
-interface ItemProps extends RouteComponentProps {}
+interface DetailProps extends RouteComponentProps {}
 
-export const Item: FunctionComponent<ItemProps> = ({ history, location, match }: ItemProps) => {
+export const Detail: FunctionComponent<DetailProps> = ({
+	history,
+	location,
+	match,
+}: DetailProps) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [item, setItem] = useState({} as Avo.Item.Response);
+	const [item, setItem] = useState({} as Avo.Detail.Response);
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
 
 	/**
-	 * Get item from api when id changes
+	 * Get detail item from api when id changes
 	 */
 	useEffect(() => {
 		// TODO: get item from store by id
-		getItem(id)
-			.then((itemResponse: Avo.Item.Response) => {
-				setItem(itemResponse);
+		getDetail(id)
+			.then((detailResponse: Avo.Detail.Response) => {
+				setItem(detailResponse);
 			})
-			.catch((err: any) => {
-				console.error('Failed to get item from the server', err, { id });
+			.catch(err => {
+				console.error('Failed to get detail from the server', err, { id });
 			});
 	}, [id]);
 
@@ -70,7 +74,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 	useEffect(() => {
 		const setSeekerTimeInQueryParams = (): void => {
 			history.push({
-				pathname: `/item/${id}`,
+				pathname: `/detail/${id}`,
 				search: time ? `?${queryString.stringify({ time })}` : '',
 			});
 		};
@@ -295,7 +299,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 								<table className="c-table c-table--horizontal c-table--untable">
 									<tbody>
 										<tr>
-											<th scope="row">Trefwoorden</th>
+											<th scope="row">Onderwerpen</th>
 											<td>
 												<TagList tags={item.lom_keywords || []} swatches={false} />
 											</td>
@@ -319,7 +323,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/detail/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -339,7 +343,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/detail/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -359,7 +363,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/detail/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -379,7 +383,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/detail/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -399,7 +403,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/detail/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
