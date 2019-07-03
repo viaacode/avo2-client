@@ -7,19 +7,19 @@ import {
 	SetSearchResultsSuccessAction,
 } from './types';
 
-const SetSearchResultsSuccess = (data: Avo.Search.Response): SetSearchResultsSuccessAction => ({
+const setSearchResultsSuccess = (data: Avo.Search.Response): SetSearchResultsSuccessAction => ({
 	data,
 	type: SearchActionTypes.SET_RESULTS_SUCCESS,
 });
 
-const SetSearchResultsError = (): SetSearchResultsErrorAction => ({
+const setSearchResultsError = (): SetSearchResultsErrorAction => ({
 	type: SearchActionTypes.SET_RESULTS_ERROR,
 	error: true,
 });
 
-const SetSearchResultsLoading = (): SetSearchResultsLoadingAction => ({
+const setSearchResultsLoading = (): SetSearchResultsLoadingAction => ({
 	type: SearchActionTypes.SET_RESULTS_LOADING,
 	loading: true,
 });
 
-export { SetSearchResultsSuccess, SetSearchResultsError, SetSearchResultsLoading };
+export { setSearchResultsSuccess, setSearchResultsError, setSearchResultsLoading };

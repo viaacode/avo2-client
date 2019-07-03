@@ -1,6 +1,6 @@
 import { SearchActionTypes } from './types';
 
-import { SetSearchResultsError, SetSearchResultsLoading, SetSearchResultsSuccess } from './actions';
+import { setSearchResultsError, setSearchResultsLoading, setSearchResultsSuccess } from './actions';
 
 describe('search > store > actions', () => {
 	it('Should create an action to set the search results', () => {
@@ -11,7 +11,7 @@ describe('search > store > actions', () => {
 			data: searchResults,
 		};
 
-		expect(SetSearchResultsSuccess(searchResults)).toMatchObject(expectedAction);
+		expect(setSearchResultsSuccess(searchResults)).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set an error', () => {
@@ -20,7 +20,7 @@ describe('search > store > actions', () => {
 			error: true,
 		};
 
-		expect(SetSearchResultsError()).toMatchObject(expectedAction);
+		expect(setSearchResultsError()).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set the loading state', () => {
@@ -29,6 +29,6 @@ describe('search > store > actions', () => {
 			loading: true,
 		};
 
-		expect(SetSearchResultsLoading()).toMatchObject(expectedAction);
+		expect(setSearchResultsLoading()).toMatchObject(expectedAction);
 	});
 });
