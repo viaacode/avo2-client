@@ -85,7 +85,7 @@ interface SearchResults {
 
 interface TagInfo {
 	label: string;
-	prop: keyof Avo.Search.Filters;
+	prop: Avo.Search.FilterProp;
 	value: any;
 }
 
@@ -235,7 +235,7 @@ const Search: FunctionComponent<SearchProps> = ({
 
 	const handleFilterFieldChange = async (
 		value: string | string[] | Avo.Search.DateRange | null,
-		id: keyof Avo.Search.Filters
+		id: Avo.Search.FilterProp
 	) => {
 		if (value) {
 			setFormState({
@@ -280,7 +280,7 @@ const Search: FunctionComponent<SearchProps> = ({
 
 	const renderCheckboxDropdown = (
 		label: string,
-		propertyName: keyof Avo.Search.Filters,
+		propertyName: Avo.Search.FilterProp,
 		disabled: boolean = false,
 		style: any = {}
 	): ReactNode => {
@@ -302,7 +302,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			<li style={{ display: 'flex', ...style }}>
 				<CheckboxDropdown
 					label={label}
-					id={propertyName}
+					id={propertyName as string}
 					options={checkboxMultiOptions}
 					disabled={disabled}
 					onChange={async (values: string[]) => {
@@ -317,7 +317,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		return capitalize(LANGUAGES.nl[code]) || code;
 	};
 
-	const renderCheckboxModal = (label: string, propertyName: keyof Avo.Search.Filters) => {
+	const renderCheckboxModal = (label: string, propertyName: Avo.Search.FilterProp) => {
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
 			(option: Avo.Search.OptionProp): CheckboxOption => {
 				const label = capitalize(option.option_name);
@@ -345,7 +345,7 @@ const Search: FunctionComponent<SearchProps> = ({
 
 	const renderDateRangeDropdown = (
 		label: string,
-		propertyName: keyof Avo.Search.Filters
+		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
 		const range: Avo.Search.DateRange = get(formState, 'broadcastDate') || { gte: '', lte: '' };
 		range.gte = range.gte || '';
@@ -372,7 +372,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				{renderCheckboxDropdown('Onderwijsniveau', 'educationLevel')}
 				{renderCheckboxDropdown('Domein', 'domain', true)}
 				{renderCheckboxModal('Vak', 'subject')}
-				{renderCheckboxModal('Onderwerp', 'keyword')}
+				{renderCheckboxModal('Trefwoord', 'keyword')}
 				{renderCheckboxModal('Serie', 'serie')}
 				{renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
 				{renderCheckboxDropdown('Taal', 'language')}
@@ -381,7 +381,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		);
 	};
 
-	const getTagInfos = (filterProp: keyof Avo.Search.Filters, filterValue: any): TagInfo[] => {
+	const getTagInfos = (filterProp: Avo.Search.FilterProp, filterValue: any): TagInfo[] => {
 		// Do not render query filter or empty filters
 		if (
 			filterProp === 'query' ||
@@ -445,8 +445,8 @@ const Search: FunctionComponent<SearchProps> = ({
 
 	const renderSelectedFilters = () => {
 		const tagInfos: TagInfo[] = flatten(
-			(Object.keys(formState) as (keyof Avo.Search.Filters)[]).map(
-				(filterProp: keyof Avo.Search.Filters) => getTagInfos(filterProp, formState[filterProp])
+			(Object.keys(formState) as Avo.Search.FilterProp[]).map((filterProp: Avo.Search.FilterProp) =>
+				getTagInfos(filterProp, formState[filterProp])
 			)
 		);
 		const tagLabels = tagInfos.map((tagInfo: TagInfo) => tagInfo.label);
@@ -515,7 +515,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				label: thumbnailMeta,
 			});
 		}
-		const contentLink = `/detail/${result.id}`;
+		const contentLink = `/item/${result.id}`;
 
 		return (
 			<SearchResult

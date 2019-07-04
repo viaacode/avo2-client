@@ -1,10 +1,10 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { selectDetail, selectDetailError, selectDetailLoading } from './selectors';
+import { selectItem, selectItemError, selectItemLoading } from './selectors';
 
-describe('detail > store > selectors', () => {
+describe('item > store > selectors', () => {
 	const store = {
-		detail: {
+		item: {
 			test_id: {
 				data: {
 					id: 'test_id',
@@ -33,15 +33,15 @@ describe('detail > store > selectors', () => {
 		},
 	};
 
-	it('Should get the detail error-state from the store', () => {
-		expect(selectDetailError(store, 'test_id')).toEqual(false);
+	it('Should get the item error-state from the store', () => {
+		expect(selectItemError(store, 'test_id')).toEqual(false);
 	});
 
-	it('Should get the detail loading-state from the store', () => {
-		expect(selectDetailLoading(store, 'test_id')).toEqual(false);
+	it('Should get the item loading-state from the store', () => {
+		expect(selectItemLoading(store, 'test_id')).toEqual(false);
 	});
 
-	it('Should get the detail data from the store', () => {
-		expect(selectDetail(store, 'test_id')).toMatchObject(store.detail.test_id.data);
+	it('Should get the item data from the store', () => {
+		expect(selectItem(store, 'test_id')).toMatchObject(store.item.test_id.data);
 	});
 });

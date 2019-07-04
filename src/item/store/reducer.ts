@@ -2,14 +2,14 @@ import { createReducer } from './../../shared/helpers/redux/create-reducer';
 
 import initialState from './initial-state';
 import {
-	DetailActionTypes,
-	SetDetailErrorAction,
-	SetDetailLoadingAction,
-	SetDetailSuccessAction,
+	ItemActionTypes,
+	SetItemErrorAction,
+	SetItemLoadingAction,
+	SetItemSuccessAction,
 } from './types';
 
-const detailReducer = createReducer(initialState, {
-	[DetailActionTypes.SET_DETAIL_LOADING]: (state, action: SetDetailLoadingAction) => ({
+const itemReducer = createReducer(initialState, {
+	[ItemActionTypes.SET_DETAIL_LOADING]: (state, action: SetItemLoadingAction) => ({
 		...state,
 		[action.id]: {
 			data: null,
@@ -17,7 +17,7 @@ const detailReducer = createReducer(initialState, {
 			error: false,
 		},
 	}),
-	[DetailActionTypes.SET_DETAIL_SUCCESS]: (state, action: SetDetailSuccessAction) => ({
+	[ItemActionTypes.SET_DETAIL_SUCCESS]: (state, action: SetItemSuccessAction) => ({
 		...state,
 		[action.id]: {
 			data: action.data,
@@ -25,7 +25,7 @@ const detailReducer = createReducer(initialState, {
 			error: false,
 		},
 	}),
-	[DetailActionTypes.SET_DETAIL_ERROR]: (state, action: SetDetailErrorAction) => ({
+	[ItemActionTypes.SET_DETAIL_ERROR]: (state, action: SetItemErrorAction) => ({
 		...state,
 		[action.id]: {
 			data: null,
@@ -35,4 +35,4 @@ const detailReducer = createReducer(initialState, {
 	}),
 });
 
-export default detailReducer;
+export default itemReducer;

@@ -1,27 +1,27 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { setDetailError, setDetailLoading, setDetailSuccess } from './actions';
+import { setItemError, setItemLoading, setItemSuccess } from './actions';
 import initialState from './initial-state';
-import { DetailActionTypes } from './types';
+import { ItemActionTypes } from './types';
 
-import detailReducer from './reducer';
+import itemReducer from './reducer';
 
-describe('detail > store > reducer', () => {
-	it(`Correctly handle ${DetailActionTypes.SET_DETAIL_ERROR}`, () => {
+describe('item > store > reducer', () => {
+	it(`Correctly handle ${ItemActionTypes.SET_DETAIL_ERROR}`, () => {
 		const id = 'test_id';
-		const state = detailReducer(initialState, setDetailError(id));
+		const state = itemReducer(initialState, setItemError(id));
 
 		expect(state[id].error).toEqual(true);
 	});
 
-	it(`Correctly handle ${DetailActionTypes.SET_DETAIL_LOADING}`, () => {
+	it(`Correctly handle ${ItemActionTypes.SET_DETAIL_LOADING}`, () => {
 		const id = 'test_id';
-		const state = detailReducer(initialState, setDetailLoading(id));
+		const state = itemReducer(initialState, setItemLoading(id));
 
 		expect(state[id].loading).toEqual(true);
 	});
 
-	it(`Correctly handle ${DetailActionTypes.SET_DETAIL_SUCCESS}`, () => {
+	it(`Correctly handle ${ItemActionTypes.SET_DETAIL_SUCCESS}`, () => {
 		const id = 'test_id';
 		const payload = {
 			id,
@@ -45,7 +45,7 @@ describe('detail > store > reducer', () => {
 			administrative_type: 'video' as Avo.Core.ContentType,
 		};
 
-		const state = detailReducer(initialState, setDetailSuccess(id, payload));
+		const state = itemReducer(initialState, setItemSuccess(id, payload));
 
 		expect(state[id].data).toEqual(payload);
 	});

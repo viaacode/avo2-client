@@ -42,28 +42,28 @@ import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/ge
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 
-import { getDetail } from '../store/actions';
-import { selectDetail } from '../store/selectors';
+import { getItem } from '../store/actions';
+import { selectItem } from '../store/selectors';
 
-interface DetailProps extends RouteComponentProps {
-	item: Avo.Detail.Response;
+interface ItemProps extends RouteComponentProps {
+	item: Avo.Item.Response;
 	getItem: (id: string) => Dispatch;
 }
 
-const Detail: FunctionComponent<DetailProps> = ({
+const Item: FunctionComponent<ItemProps> = ({
 	item,
 	getItem,
 	history,
 	location,
 	match,
-}: DetailProps) => {
+}: ItemProps) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
 
 	/**
-	 * Get detail item from api when id changes
+	 * Get item from api when id changes
 	 */
 	useEffect(() => {
 		getItem(id);
@@ -75,7 +75,7 @@ const Detail: FunctionComponent<DetailProps> = ({
 	useEffect(() => {
 		const setSeekerTimeInQueryParams = (): void => {
 			history.push({
-				pathname: `/detail/${id}`,
+				pathname: `/item/${id}`,
 				search: time ? `?${queryString.stringify({ time })}` : '',
 			});
 		};
@@ -300,7 +300,7 @@ const Detail: FunctionComponent<DetailProps> = ({
 								<table className="c-table c-table--horizontal c-table--untable">
 									<tbody>
 										<tr>
-											<th scope="row">Onderwerpen</th>
+											<th scope="row">Trefwoorden</th>
 											<td>
 												<TagList tags={item.lom_keywords || []} swatches={false} />
 											</td>
@@ -324,7 +324,7 @@ const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -344,7 +344,7 @@ const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -364,7 +364,7 @@ const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -384,7 +384,7 @@ const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -404,7 +404,7 @@ const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -431,17 +431,17 @@ const Detail: FunctionComponent<DetailProps> = ({
 	) : null;
 };
 
-const mapStateToProps = (state: any, { match }: DetailProps) => ({
-	item: selectDetail(state, (match.params as any).id),
+const mapStateToProps = (state: any, { match }: ItemProps) => ({
+	item: selectItem(state, (match.params as any).id),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getItem: (id: string) => dispatch(getDetail(id) as any),
+		getItem: (id: string) => dispatch(getItem(id) as any),
 	};
 };
 
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(Detail);
+)(Item);

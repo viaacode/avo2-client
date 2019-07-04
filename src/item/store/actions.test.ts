@@ -1,13 +1,13 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { DetailActionTypes } from './types';
+import { ItemActionTypes } from './types';
 
-import { setDetailError, setDetailLoading, setDetailSuccess } from './actions';
+import { setItemError, setItemLoading, setItemSuccess } from './actions';
 
-describe('detail > store > actions', () => {
-	it('Should create an action to set the detail results', () => {
+describe('item > store > actions', () => {
+	it('Should create an action to set the item results', () => {
 		const id = '123';
-		const detailResults = {
+		const itemResults = {
 			id,
 			table_name: 'test',
 			dc_title: 'test',
@@ -31,11 +31,11 @@ describe('detail > store > actions', () => {
 
 		const expectedAction = {
 			id,
-			type: DetailActionTypes.SET_DETAIL_SUCCESS,
-			data: detailResults,
+			type: ItemActionTypes.SET_DETAIL_SUCCESS,
+			data: itemResults,
 		};
 
-		expect(setDetailSuccess(id, detailResults)).toMatchObject(expectedAction);
+		expect(setItemSuccess(id, itemResults)).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set an error', () => {
@@ -43,11 +43,11 @@ describe('detail > store > actions', () => {
 
 		const expectedAction = {
 			id,
-			type: DetailActionTypes.SET_DETAIL_ERROR,
+			type: ItemActionTypes.SET_DETAIL_ERROR,
 			error: true,
 		};
 
-		expect(setDetailError(id)).toMatchObject(expectedAction);
+		expect(setItemError(id)).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set the loading state', () => {
@@ -55,10 +55,10 @@ describe('detail > store > actions', () => {
 
 		const expectedAction = {
 			id,
-			type: DetailActionTypes.SET_DETAIL_LOADING,
+			type: ItemActionTypes.SET_DETAIL_LOADING,
 			loading: true,
 		};
 
-		expect(setDetailLoading(id)).toMatchObject(expectedAction);
+		expect(setItemLoading(id)).toMatchObject(expectedAction);
 	});
 });
