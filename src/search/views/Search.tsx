@@ -383,119 +383,6 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		);
 	};
 
-	const getTagInfos = (filterProp: Avo.Search.FilterProp, filterValue: any): TagInfo[] => {
-		// Do not render query filter or empty filters
-		if (
-			filterProp === 'query' ||
-			filterValue === '' ||
-			filterValue === [] ||
-			(isArray(filterValue) && every(filterValue, filter => !filter)) // Array of empty strings
-		) {
-			return [];
-		}
-
-		// Render date range option filters
-		if (isPlainObject(filterValue)) {
-			if (filterValue.gte && filterValue.lte) {
-				return [
-					{
-						label: `${formatDate(filterValue.gte)} - ${formatDate(filterValue.lte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			if (filterValue.gte) {
-				return [
-					{
-						label: `na ${formatDate(filterValue.gte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			if (filterValue.lte) {
-				return [
-					{
-						label: `voor ${formatDate(filterValue.lte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			return []; // Do not render a filter if date object is empty: {gte: "", lte: ""}
-		}
-
-		// Render multi option filters
-		if (isArray(filterValue)) {
-			return filterValue.map((filterVal: string) => {
-				let label = filterVal;
-				if (filterProp === 'language') {
-					label = languageCodeToLabel(filterVal);
-				}
-				return {
-					label,
-					prop: filterProp,
-					value: filterVal,
-				};
-			});
-		}
-
-		console.error('Failed to render selected filter: ', filterProp, filterValue);
-		return [];
-	};
-
-	const renderSelectedFilters = () => {
-		const tagInfos: TagInfo[] = flatten(
-			(Object.keys(formState) as Avo.Search.FilterProp[]).map((filterProp: Avo.Search.FilterProp) =>
-				getTagInfos(filterProp, formState[filterProp])
-			)
-		);
-		const tagLabels = tagInfos.map((tagInfo: TagInfo) => tagInfo.label);
-		if (tagLabels.length > 1) {
-			tagLabels.push('Alle filters wissen');
-		}
-		return (
-			<Spacer margin="bottom-large">
-				<TagList
-					closable={true}
-					swatches={false}
-					onTagClosed={async (tagLabel: string) => {
-						if (tagLabel === 'Alle filters wissen') {
-							deleteAllFilters();
-						} else {
-							const tagInfo = find(tagInfos, (tagInfo: TagInfo) => tagInfo.label === tagLabel);
-							if (tagInfo) {
-								await deleteFilter(tagInfo);
-							}
-						}
-					}}
-					tags={tagLabels}
-				/>
-			</Spacer>
-		);
-	};
-
-	const deleteFilter = async (tagInfo: TagInfo) => {
-		if (isPlainObject(tagInfo.value) && (tagInfo.value.gte || tagInfo.value.lte)) {
-			setFormState({
-				...formState,
-				[tagInfo.prop]: DEFAULT_FORM_STATE[tagInfo.prop],
-			});
-			return;
-		}
-		if (isArray(formState[tagInfo.prop])) {
-			const filterArray: string[] = formState[tagInfo.prop] as string[];
-			remove(filterArray, filterItem => filterItem === tagInfo.value);
-			setFormState({
-				...formState,
-				[tagInfo.prop]: filterArray,
-			});
-		} else {
-			console.error('Failed to remove selected filter: ', tagInfo.prop, tagInfo.value);
-		}
-	};
-
 	const deleteAllFilters = () => {
 		setFormState({
 			...DEFAULT_FORM_STATE,
@@ -524,7 +411,10 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 				key={`search-result-${result.id}`}
 				type={result.administrative_type}
 				date={formatDate(result.dcterms_issued)}
-				tags={['Redactiekeuze', 'Partner']}
+				tags={[
+					{ label: 'Redactiekeuze', id: 'redactiekeuze' },
+					{ label: 'Partner', id: 'partner' },
+				]}
 				viewCount={412}
 				bookmarkCount={85}
 				// duration={formatDuration(result.duration_seconds || 0)}
@@ -684,7 +574,6 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 								</Form>
 							</div>
 						</Spacer>
-						{renderSelectedFilters()}
 						{renderFilterControls()}
 					</Spacer>
 				</Container>

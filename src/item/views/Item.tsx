@@ -8,6 +8,8 @@ import React, {
 	useState,
 } from 'react';
 
+import { capitalize } from 'lodash-es';
+
 import {
 	Button,
 	Column,
@@ -36,7 +38,11 @@ import { Scrollbar } from 'react-scrollbars-custom';
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
-import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/generateLink';
+import {
+	generateSearchLink,
+	generateSearchLinks,
+	generateSearchLinkString,
+} from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { getItem } from '../../shared/store/item/itemActions';
@@ -123,6 +129,10 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 			}
 			return <span key={`description-part-${index}`}>{part}</span>;
 		});
+	};
+
+	const gotoSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
+		window.open(generateSearchLinkString(prop, value));
 	};
 
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
@@ -297,7 +307,14 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 										<tr>
 											<th scope="row">Trefwoorden</th>
 											<td>
-												<TagList tags={item.lom_keywords || []} swatches={false} />
+												<TagList
+													tags={(item.lom_keywords || []).map(keyword => ({
+														label: capitalize(keyword),
+														id: keyword,
+													}))}
+													swatches={false}
+													onTagClicked={(tag: string) => gotoSearchPage('keyword', tag)}
+												/>
 											</td>
 										</tr>
 										<tr>
