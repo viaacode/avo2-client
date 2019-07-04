@@ -14,20 +14,17 @@ import {
 	ModalFooterLeft,
 	ModalFooterRight,
 	ModalHeaderRight,
+	TagList,
 	TextInput,
 } from '@viaa/avo2-components';
 import { compact, fromPairs } from 'lodash-es';
-
-export interface CheckboxOption {
-	label: string;
-	id: string;
-	checked: boolean;
-}
+import { CheckboxOption } from '../CheckboxSwitcher';
 
 export interface CheckboxModalProps {
 	label: string;
 	id: string;
 	options: CheckboxOption[];
+	// TODO implement search field
 	// optionsCallback: (query: string) => CheckboxOption[];
 	disabled?: boolean;
 	onChange: (checkedOptions: string[], id: string) => void;
@@ -53,6 +50,20 @@ export const CheckboxModal: FunctionComponent<CheckboxModalProps> = ({
 	// TODO add support for searching checkbox options
 	// const [searchTerm, setSearchTerm] = useState('' as string);
 
+	const getSelectedFilterIds = () =>
+		compact(Object.keys(checkedStates).map(key => (checkedStates[key] ? key : null)));
+
+	const getSelectedTags = (): { label: string; id: string }[] => {
+		return compact(
+			options.map((option: CheckboxOption) => {
+				if (!checkedStates[option.id]) {
+					return null;
+				}
+				return { label: option.label, id: option.id };
+			})
+		);
+	};
+
 	/**
 	 * Use the state from the parent page before showing the checkboxes to the user
 	 */
@@ -66,7 +77,7 @@ export const CheckboxModal: FunctionComponent<CheckboxModalProps> = ({
 	 * State is only passed from the component to the parent when the user clicks the "Apply" button
 	 */
 	const applyFilter = async (): Promise<void> => {
-		onChange(compact(Object.keys(checkedStates).map(key => (checkedStates[key] ? key : null))), id);
+		onChange(getSelectedFilterIds(), id);
 		await closeModal();
 	};
 
@@ -94,7 +105,7 @@ export const CheckboxModal: FunctionComponent<CheckboxModalProps> = ({
 						<Checkbox
 							key={option.id}
 							id={option.id}
-							label={option.label}
+							label={option.optionCount ? `${option.label} (${option.optionCount})` : option.label}
 							checked={checkedStates[option.id]}
 							onChange={(checked: boolean) => handleCheckboxToggled(checked, option.id)}
 						/>
@@ -114,6 +125,7 @@ export const CheckboxModal: FunctionComponent<CheckboxModalProps> = ({
 			<button className="c-button c-button--secondary" onClick={openModal}>
 				<div className="c-button__content">
 					<div className="c-button__label">{label}</div>
+					<TagList tags={getSelectedTags()} />
 					<Icon name={isModalOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
 				</div>
 			</button>
@@ -139,15 +151,7 @@ export const CheckboxModal: FunctionComponent<CheckboxModalProps> = ({
 				</ModalFooterLeft>
 				<ModalFooterRight>
 					<FormGroup>
-						<Button
-							label="Toepassen"
-							type="primary"
-							block={true}
-							onClick={() => {
-								applyFilter();
-								closeModal();
-							}}
-						/>
+						<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
 					</FormGroup>
 				</ModalFooterRight>
 			</Modal>

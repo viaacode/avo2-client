@@ -297,7 +297,13 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 										<tr>
 											<th scope="row">Trefwoorden</th>
 											<td>
-												<TagList tags={item.lom_keywords || []} swatches={false} />
+												<TagList
+													tags={(item.lom_keywords || []).map(keyword => ({
+														label: keyword,
+														id: keyword,
+													}))}
+													swatches={false}
+												/>
 											</td>
 										</tr>
 										<tr>
