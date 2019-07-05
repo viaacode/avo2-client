@@ -8,8 +8,6 @@ import React, {
 	useState,
 } from 'react';
 
-import { capitalize } from 'lodash-es';
-
 import {
 	Button,
 	Column,
@@ -132,7 +130,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 	};
 
 	const gotoSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
-		window.open(generateSearchLinkString(prop, value));
+		history.push(generateSearchLinkString(prop, value));
 	};
 
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
@@ -204,7 +202,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 											<video
 												src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
 												placeholder={item.thumbnail_path}
-												style={{ width: '100%' }}
+												style={{ width: '100%', display: 'block' }}
 												controls={true}
 												ref={videoRef}
 												onLoadedMetadata={getSeekerTimeFromQueryParams}
@@ -309,7 +307,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 											<td>
 												<TagList
 													tags={(item.lom_keywords || []).map(keyword => ({
-														label: capitalize(keyword),
+														label: keyword,
 														id: keyword,
 													}))}
 													swatches={false}

@@ -15,7 +15,6 @@ import {
 	Select,
 	Spacer,
 	Spinner,
-	TagList,
 	TextInput,
 	Thumbnail,
 	Toolbar,
@@ -31,8 +30,6 @@ import {
 	cloneDeep,
 	compact,
 	every,
-	find,
-	flatten,
 	get,
 	isArray,
 	isEmpty,
@@ -40,7 +37,6 @@ import {
 	isNil,
 	isPlainObject,
 	pickBy,
-	remove,
 } from 'lodash-es';
 import queryString from 'query-string';
 import { RouteComponentProps } from 'react-router';
