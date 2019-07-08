@@ -8,6 +8,8 @@ import React, {
 	useState,
 } from 'react';
 
+import marked from 'marked';
+
 import {
 	Button,
 	Column,
@@ -113,15 +115,16 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 			}
 			if (timestampRegex.test(part)) {
 				return (
-					<Button
+					<a
 						key={`description-link-${index}`}
-						label={part}
-						type="link"
 						onClick={() => handleTimeLinkClicked(part)}
-					/>
+						style={{ cursor: 'pointer' }}
+					>
+						{part}
+					</a>
 				);
 			}
-			return <span key={`description-part-${index}`}>{part}</span>;
+			return <span key={`description-part-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
 		});
 	};
 
@@ -233,7 +236,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 									<h4 className="c-h4">Beschrijving</h4>
 									<ExpandableContainer collapsedHeight={387}>
 										<p style={{ paddingRight: '1rem' }}>
-											{formatTimestamps(item.dcterms_abstract)}
+											{formatTimestamps(marked(item.dcterms_abstract || ''))}
 										</p>
 									</ExpandableContainer>
 								</Scrollbar>
