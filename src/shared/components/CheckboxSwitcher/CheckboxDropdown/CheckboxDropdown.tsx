@@ -9,10 +9,10 @@ import {
 	DropdownContent,
 	Form,
 	FormGroup,
+	Icon,
 	Spacer,
 	TagList,
 } from '@viaa/avo2-components';
-import { Icon } from '@viaa/avo2-components/src/components/Icon/Icon';
 import { compact, fromPairs } from 'lodash-es';
 import { CheckboxOption } from '../CheckboxSwitcher';
 

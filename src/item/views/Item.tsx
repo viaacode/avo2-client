@@ -212,9 +212,14 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 												<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
 											</div>
 											<div className="c-button-toolbar">
-												<ToggleButton type="tertiary" icon="bookmark" active={false} />
-												<Button type="tertiary" icon="share-2" />
-												<Button type="tertiary" icon="flag" />
+												<ToggleButton
+													type="tertiary"
+													icon="bookmark"
+													active={false}
+													ariaLabel="toggle bladwijzer"
+												/>
+												<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+												<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
 											</div>
 										</div>
 									</Spacer>
