@@ -5,6 +5,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "preinstall": "rm -rf node_modules/@viaa/avo2-types/.git",
     "test": "jest --verbose",
     "lint": "tslint -p .",
     "format": "npm run lint -- --fix"
@@ -15,6 +16,7 @@
     "classnames": "^2.2.6",
     "lodash-es": "^4.17.11",
     "marked": "^0.6.3",
+    "node-sass": "^4.12.0",
     "query-string": "^6.8.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

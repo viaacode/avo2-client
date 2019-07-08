@@ -2,7 +2,7 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 
 import { action } from '@storybook/addon-actions';
-import { CheckboxDropdown, CheckboxDropdownState } from './CheckboxDropdown';
+import { CheckboxDropdownModal } from './CheckboxDropdownModal';
 
 export const countOptions = [
 	{
@@ -70,7 +70,7 @@ export const countOptions = [
 describe('<Checkbox />', () => {
 	it('Should be able to render', () => {
 		shallow(
-			<CheckboxDropdown
+			<CheckboxDropdownModal
 				label="Counting"
 				id="counting"
 				options={countOptions}
@@ -81,7 +81,7 @@ describe('<Checkbox />', () => {
 
 	it('Should be able to render with less than 10 items', () => {
 		const checkboxDropdownComponent = shallow(
-			<CheckboxDropdown
+			<CheckboxDropdownModal
 				label="Counting"
 				id="counting"
 				options={countOptions.slice(0, 5)}
@@ -95,7 +95,7 @@ describe('<Checkbox />', () => {
 		const onChangeHandler = jest.fn();
 
 		const checkboxDropdownComponent = mount(
-			<CheckboxDropdown
+			<CheckboxDropdownModal
 				label="Counting"
 				id="counting"
 				options={countOptions}
@@ -122,18 +122,14 @@ describe('<Checkbox />', () => {
 
 		checkboxes.at(2).simulate('change', { target: { checked: true } });
 
-		expect(
-			(checkboxDropdownComponent.state() as CheckboxDropdownState).checkedStates
-		).toMatchObject({
+		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
 			...defaultState,
 			three: true,
 		});
 
 		checkboxes.at(3).simulate('change', { target: { checked: true } });
 
-		expect(
-			(checkboxDropdownComponent.state() as CheckboxDropdownState).checkedStates
-		).toMatchObject({
+		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
 			...defaultState,
 			three: true,
 			four: true,
@@ -141,9 +137,7 @@ describe('<Checkbox />', () => {
 
 		checkboxes.at(2).simulate('change', { target: { checked: false } });
 
-		expect(
-			(checkboxDropdownComponent.state() as CheckboxDropdownState).checkedStates
-		).toMatchObject({
+		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
 			...defaultState,
 			four: true,
 		});

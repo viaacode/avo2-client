@@ -46,9 +46,10 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { copyToClipboard } from '../../helpers/clipboard';
-import { CheckboxDropdown } from '../../shared/components/CheckboxSwitcher/CheckboxDropdown/CheckboxDropdown';
-import { CheckboxModal } from '../../shared/components/CheckboxSwitcher/CheckboxModal/CheckboxModal';
-import { CheckboxOption } from '../../shared/components/CheckboxSwitcher/CheckboxSwitcher';
+import {
+	CheckboxDropdownModal,
+	CheckboxOption,
+} from '../../shared/components/CheckboxDropdown/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
@@ -117,11 +118,6 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 					cloneDeep(formState)
 				);
 
-				// // Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-				// const filterOptionSearch: Partial<FilterOptionSearch> = cleanupFilterObject(
-				// 	cloneDeep(state.filterOptionSearch)
-				// );
-
 				// TODO do the search by dispatching a redux action
 				const searchResponse: Avo.Search.Response = await doSearch(
 					filterOptions,
@@ -131,6 +127,9 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 					currentPage * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE
 				);
+
+				// Copy the searchterm to the search input field
+				setSearchTerms(formState.query);
 
 				// Update the checkbox items and counts
 				setMultiOptions(searchResponse.aggregations);
@@ -168,12 +167,6 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		};
 		updateSearchResults();
 	}, [formState, sortOrder, currentPage, history]);
-
-	// TODO add search in checkbox modal components
-	// private getFilterOptions(searchTerm: string, propertyName: string): Promise<Avo.Search.OptionProp[]> {
-	// 	const searchResponse: Avo.Search.Response = await executeSearch();
-	// 	return searchResponse.aggregations[propertyName];
-	// }
 
 	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
@@ -276,7 +269,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		});
 	};
 
-	const renderCheckboxDropdown = (
+	const renderCheckboxDropdownModal = (
 		label: string,
 		propertyName: Avo.Search.FilterProp,
 		disabled: boolean = false,
@@ -299,7 +292,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 		return (
 			<li style={{ display: 'flex', ...style }}>
-				<CheckboxDropdown
+				<CheckboxDropdownModal
 					label={label}
 					id={propertyName as string}
 					options={checkboxMultiOptions}
@@ -314,33 +307,6 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 	const languageCodeToLabel = (code: string): string => {
 		return capitalize(LANGUAGES.nl[code]) || code;
-	};
-
-	const renderCheckboxModal = (label: string, propertyName: Avo.Search.FilterProp) => {
-		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
-			(option: Avo.Search.OptionProp): CheckboxOption => {
-				const label = capitalize(option.option_name);
-				return {
-					label,
-					optionCount: option.option_count,
-					id: option.option_name,
-					checked: ((formState[propertyName] as string[]) || []).includes(option.option_name),
-				};
-			}
-		);
-
-		return (
-			<li style={{ display: 'flex' }}>
-				<CheckboxModal
-					label={label}
-					id={propertyName}
-					options={checkboxMultiOptions}
-					onChange={async (values: string[]) => {
-						await handleFilterFieldChange(values, propertyName);
-					}}
-				/>
-			</li>
-		);
 	};
 
 	const renderDateRangeDropdown = (
@@ -368,80 +334,22 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	const renderFilterControls = () => {
 		return (
 			<div className="c-filter-dropdown-list">
-				{renderCheckboxDropdown('Type', 'type')}
-				{renderCheckboxDropdown('Onderwijsniveau', 'educationLevel')}
-				{renderCheckboxDropdown('Domein', 'domain', true)}
-				{renderCheckboxModal('Vak', 'subject')}
-				{renderCheckboxModal('Trefwoord', 'keyword')}
-				{renderCheckboxModal('Serie', 'serie')}
+				{renderCheckboxDropdownModal('Type', 'type')}
+				{renderCheckboxDropdownModal('Onderwijsniveau', 'educationLevel')}
+				{renderCheckboxDropdownModal('Domein', 'domain', true)}
+				{renderCheckboxDropdownModal('Vak', 'subject')}
+				{renderCheckboxDropdownModal('Trefwoord', 'keyword')}
+				{renderCheckboxDropdownModal('Serie', 'serie')}
 				{renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
-				{renderCheckboxDropdown('Taal', 'language')}
-				{renderCheckboxDropdown('Aanbieder', 'provider', false, { marginRight: 0 })}
+				{renderCheckboxDropdownModal('Taal', 'language')}
+				{renderCheckboxDropdownModal('Aanbieder', 'provider', false, { marginRight: 0 })}
 			</div>
 		);
 	};
-	//
-	// const getTagInfos = (filterProp: Avo.Search.FilterProp, filterValue: any): TagInfo[] => {
-	// 	// Do not render query filter or empty filters
-	// 	if (
-	// 		filterProp === 'query' ||
-	// 		filterValue === '' ||
-	// 		filterValue === [] ||
-	// 		(isArray(filterValue) && every(filterValue, filter => !filter)) // Array of empty strings
-	// 	) {
-	// 		return [];
-	// 	}
-	//
-	// 	// Render date range option filters
-	// 	if (isPlainObject(filterValue)) {
-	// 		if (filterValue.gte && filterValue.lte) {
-	// 			return [
-	// 				{
-	// 					label: `${formatDate(filterValue.gte)} - ${formatDate(filterValue.lte)}`,
-	// 					prop: filterProp,
-	// 					id: filterValue,
-	// 				},
-	// 			];
-	// 		}
-	// 		if (filterValue.gte) {
-	// 			return [
-	// 				{
-	// 					label: `na ${formatDate(filterValue.gte)}`,
-	// 					prop: filterProp,
-	// 					id: filterValue,
-	// 				},
-	// 			];
-	// 		}
-	// 		if (filterValue.lte) {
-	// 			return [
-	// 				{
-	// 					label: `voor ${formatDate(filterValue.lte)}`,
-	// 					prop: filterProp,
-	// 					id: filterValue,
-	// 				},
-	// 			];
-	// 		}
-	// 		return []; // Do not render a filter if date object is empty: {gte: "", lte: ""}
-	// 	}
-	//
-	// 	// Render multi option filters
-	// 	if (isArray(filterValue)) {
-	// 		return filterValue.map((filterVal: string) => {
-	// 			let label = filterVal;
-	// 			if (filterProp === 'language') {
-	// 				label = languageCodeToLabel(filterVal);
-	// 			}
-	// 			return {
-	// 				label,
-	// 				prop: filterProp,
-	// 				id: filterVal,
-	// 			};
-	// 		});
-	// 	}
-	//
-	// 	console.error('Failed to render selected filter: ', filterProp, filterValue);
-	// 	return [];
-	// };
+
+	const hasFilters = () => {
+		return !isEqual(formState, DEFAULT_FORM_STATE);
+	};
 
 	const deleteAllFilters = () => {
 		setFormState({
@@ -666,7 +574,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 										<TextInput
 											id="query"
 											placeholder="Vul uw zoekterm in..."
-											value={formState.query}
+											value={searchTerms}
 											icon="search"
 											onChange={setSearchTerms}
 										/>
@@ -675,7 +583,13 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 										<Button label="Zoeken" type="primary" onClick={copySearchTermsToFormState} />
 									</FormGroup>
 									<FormGroup inlineMode="shrink">
-										<Button label="Verwijder alle filters" type="link" onClick={deleteAllFilters} />
+										{hasFilters() && (
+											<Button
+												label="Verwijder alle filters"
+												type="link"
+												onClick={deleteAllFilters}
+											/>
+										)}
 									</FormGroup>
 								</Form>
 							</div>

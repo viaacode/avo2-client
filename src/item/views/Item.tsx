@@ -319,7 +319,9 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 														id: keyword,
 													}))}
 													swatches={false}
-													onTagClicked={(tag: string) => gotoSearchPage('keyword', tag)}
+													onTagClicked={(tagId: string | number) =>
+														gotoSearchPage('keyword', tagId as string)
+													}
 												/>
 											</td>
 										</tr>
