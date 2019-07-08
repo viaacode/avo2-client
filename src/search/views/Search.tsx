@@ -4,6 +4,9 @@ import {
 	Blankslate,
 	Button,
 	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Form,
 	FormGroup,
 	Navbar,
@@ -42,6 +45,7 @@ import queryString from 'query-string';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
+import { copyToClipboard } from '../../helpers/clipboard';
 import { CheckboxDropdown } from '../../shared/components/CheckboxSwitcher/CheckboxDropdown/CheckboxDropdown';
 import { CheckboxModal } from '../../shared/components/CheckboxSwitcher/CheckboxModal/CheckboxModal';
 import { CheckboxOption } from '../../shared/components/CheckboxSwitcher/CheckboxSwitcher';
@@ -98,6 +102,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	const [searchResults, setSearchResults] = useState({ items: [], count: 0 } as SearchResults);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const [loadingSearchResults, setLoadingSearchResults] = useState(true);
 
 	/**
@@ -612,6 +617,10 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	};
 	useKeyPress('Enter', copySearchTermsToFormState);
 
+	const copySearchLink = () => {
+		copyToClipboard(window.location.href);
+	};
+
 	const orderOptions = [
 		{ label: 'Meest relevant', value: 'relevance_desc' },
 		{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
@@ -645,16 +654,55 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 							</Fragment>
 						</ToolbarLeft>
 						<ToolbarRight>
-							<Form type="inline">
-								<FormGroup label="Sorteer op" labelFor="sortBy">
-									<Select
-										id="sortBy"
-										options={orderOptions}
-										value={defaultOrder}
-										onChange={value => handleOrderChanged(value)}
-									/>
-								</FormGroup>
-							</Form>
+							<div className="o-flex o-flex--spaced">
+								<Form type="inline">
+									<FormGroup label="Sorteer op" labelFor="sortBy">
+										<Select
+											id="sortBy"
+											options={orderOptions}
+											value={defaultOrder}
+											onChange={value => handleOrderChanged(value)}
+										/>
+									</FormGroup>
+								</Form>
+								<Dropdown
+									isOpen={isOptionsMenuOpen}
+									onOpen={() => setIsOptionsMenuOpen(true)}
+									onClose={() => setIsOptionsMenuOpen(false)}
+									autoSize={true}
+									placement="bottom-end"
+								>
+									<DropdownButton>
+										<Button type="tertiary" icon="more-horizontal" />
+									</DropdownButton>
+									<DropdownContent>
+										<Fragment>
+											<a
+												className="c-menu__item"
+												onClick={() => {
+													copySearchLink();
+													setIsOptionsMenuOpen(false);
+													// TODO show toast with "successfully copied" message
+												}}
+											>
+												<div className="c-menu__label">
+													Kopieer vaste link naar deze zoekopdracht
+												</div>
+											</a>
+											<a
+												className="c-menu__item"
+												onClick={() => {
+													setIsOptionsMenuOpen(false);
+													// TODO show toast with "not yet implemented" message
+												}}
+											>
+												{/* TODO Create link to create search assignment task */}
+												<div className="c-menu__label">Maak van deze zoekopdracht een opdracht</div>
+											</a>
+										</Fragment>
+									</DropdownContent>
+								</Dropdown>
+							</div>
 						</ToolbarRight>
 					</Toolbar>
 				</Container>
