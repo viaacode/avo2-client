@@ -43,18 +43,18 @@ const getItem = (id: string) => {
 const setItemSuccess = (id: string, data: Avo.Item.Response): SetItemSuccessAction => ({
 	id,
 	data,
-	type: ItemActionTypes.SET_DETAIL_SUCCESS,
+	type: ItemActionTypes.SET_ITEM_SUCCESS,
 });
 
 const setItemError = (id: string): SetItemErrorAction => ({
 	id,
-	type: ItemActionTypes.SET_DETAIL_ERROR,
+	type: ItemActionTypes.SET_ITEM_ERROR,
 	error: true,
 });
 
 const setItemLoading = (id: string): SetItemLoadingAction => ({
 	id,
-	type: ItemActionTypes.SET_DETAIL_LOADING,
+	type: ItemActionTypes.SET_ITEM_LOADING,
 	loading: true,
 });
 

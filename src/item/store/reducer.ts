@@ -9,7 +9,7 @@ import {
 } from './types';
 
 const itemReducer = createReducer(initialState, {
-	[ItemActionTypes.SET_DETAIL_LOADING]: (state, action: SetItemLoadingAction) => ({
+	[ItemActionTypes.SET_ITEM_LOADING]: (state, action: SetItemLoadingAction) => ({
 		...state,
 		[action.id]: {
 			data: null,
@@ -17,7 +17,7 @@ const itemReducer = createReducer(initialState, {
 			error: false,
 		},
 	}),
-	[ItemActionTypes.SET_DETAIL_SUCCESS]: (state, action: SetItemSuccessAction) => ({
+	[ItemActionTypes.SET_ITEM_SUCCESS]: (state, action: SetItemSuccessAction) => ({
 		...state,
 		[action.id]: {
 			data: action.data,
@@ -25,7 +25,7 @@ const itemReducer = createReducer(initialState, {
 			error: false,
 		},
 	}),
-	[ItemActionTypes.SET_DETAIL_ERROR]: (state, action: SetItemErrorAction) => ({
+	[ItemActionTypes.SET_ITEM_ERROR]: (state, action: SetItemErrorAction) => ({
 		...state,
 		[action.id]: {
 			data: null,

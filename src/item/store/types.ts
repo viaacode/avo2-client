@@ -2,9 +2,9 @@ import { Avo } from '@viaa/avo2-types';
 import { Action } from 'redux';
 
 export enum ItemActionTypes {
-	SET_DETAIL_LOADING = '@@item/SET_DETAIL_LOADING',
-	SET_DETAIL_SUCCESS = '@@item/SET_DETAIL_SUCCESS',
-	SET_DETAIL_ERROR = '@@item/SET_DETAIL_ERROR',
+	SET_ITEM_LOADING = '@@item/SET_ITEM_LOADING',
+	SET_ITEM_SUCCESS = '@@item/SET_ITEM_SUCCESS',
+	SET_ITEM_ERROR = '@@item/SET_ITEM_ERROR',
 }
 
 export interface SetItemSuccessAction extends Action {

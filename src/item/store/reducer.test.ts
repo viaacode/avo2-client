@@ -7,21 +7,21 @@ import { ItemActionTypes } from './types';
 import itemReducer from './reducer';
 
 describe('item > store > reducer', () => {
-	it(`Correctly handle ${ItemActionTypes.SET_DETAIL_ERROR}`, () => {
+	it(`Correctly handle ${ItemActionTypes.SET_ITEM_ERROR}`, () => {
 		const id = 'test_id';
 		const state = itemReducer(initialState, setItemError(id));
 
 		expect(state[id].error).toEqual(true);
 	});
 
-	it(`Correctly handle ${ItemActionTypes.SET_DETAIL_LOADING}`, () => {
+	it(`Correctly handle ${ItemActionTypes.SET_ITEM_LOADING}`, () => {
 		const id = 'test_id';
 		const state = itemReducer(initialState, setItemLoading(id));
 
 		expect(state[id].loading).toEqual(true);
 	});
 
-	it(`Correctly handle ${ItemActionTypes.SET_DETAIL_SUCCESS}`, () => {
+	it(`Correctly handle ${ItemActionTypes.SET_ITEM_SUCCESS}`, () => {
 		const id = 'test_id';
 		const payload = {
 			id,

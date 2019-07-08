@@ -31,7 +31,7 @@ describe('item > store > actions', () => {
 
 		const expectedAction = {
 			id,
-			type: ItemActionTypes.SET_DETAIL_SUCCESS,
+			type: ItemActionTypes.SET_ITEM_SUCCESS,
 			data: itemResults,
 		};
 
@@ -43,7 +43,7 @@ describe('item > store > actions', () => {
 
 		const expectedAction = {
 			id,
-			type: ItemActionTypes.SET_DETAIL_ERROR,
+			type: ItemActionTypes.SET_ITEM_ERROR,
 			error: true,
 		};
 
@@ -55,7 +55,7 @@ describe('item > store > actions', () => {
 
 		const expectedAction = {
 			id,
-			type: ItemActionTypes.SET_DETAIL_LOADING,
+			type: ItemActionTypes.SET_ITEM_LOADING,
 			loading: true,
 		};
 
