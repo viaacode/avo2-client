@@ -38,7 +38,11 @@ import { Scrollbar } from 'react-scrollbars-custom';
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
-import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/generateLink';
+import {
+	generateSearchLink,
+	generateSearchLinks,
+	generateSearchLinkString,
+} from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { getItem } from '../../shared/store/item/itemActions';
@@ -128,6 +132,10 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 		});
 	};
 
+	const gotoSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
+		history.push(generateSearchLinkString(prop, value));
+	};
+
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
 	return (
@@ -197,7 +205,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 											<video
 												src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
 												placeholder={item.thumbnail_path}
-												style={{ width: '100%' }}
+												style={{ width: '100%', display: 'block' }}
 												controls={true}
 												ref={videoRef}
 												onLoadedMetadata={getSeekerTimeFromQueryParams}
@@ -300,7 +308,14 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 										<tr>
 											<th scope="row">Trefwoorden</th>
 											<td>
-												<TagList tags={item.lom_keywords || []} swatches={false} />
+												<TagList
+													tags={(item.lom_keywords || []).map(keyword => ({
+														label: keyword,
+														id: keyword,
+													}))}
+													swatches={false}
+													onTagClicked={(tag: string) => gotoSearchPage('keyword', tag)}
+												/>
 											</td>
 										</tr>
 										<tr>
