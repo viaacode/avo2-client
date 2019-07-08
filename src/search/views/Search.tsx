@@ -443,57 +443,6 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	// 	return [];
 	// };
 
-	// const renderSelectedFilters = () => {
-	// 	const tagInfos: TagInfo[] = flatten(
-	// 		(Object.keys(formState) as Avo.Search.FilterProp[]).map((filterProp: Avo.Search.FilterProp) =>
-	// 			getTagInfos(filterProp, formState[filterProp])
-	// 		)
-	// 	);
-	// 	const tags = tagInfos.map((tagInfo: TagInfo) => ({ label: tagInfo.label, id: tagInfo.id }));
-	// 	// if (tags.length > 1) {
-	// 	// 	tags.push('Alle filters wissen');
-	// 	// }
-	// 	return (
-	// 		<Spacer margin="bottom-large">
-	// 			<TagList
-	// 				closable={true}
-	// 				swatches={false}
-	// 				onTagClosed={async (tagLabel: string) => {
-	// 					if (tagLabel === 'Alle filters wissen') {
-	// 						deleteAllFilters();
-	// 					} else {
-	// 						const tagInfo = find(tagInfos, (tagInfo: TagInfo) => tagInfo.label === tagLabel);
-	// 						if (tagInfo) {
-	// 							await deleteFilter(tagInfo);
-	// 						}
-	// 					}
-	// 				}}
-	// 				tags={tags}
-	// 			/>
-	// 		</Spacer>
-	// 	);
-	// };
-	//
-	// const deleteFilter = async (tagInfo: TagInfo) => {
-	// 	if (isPlainObject(tagInfo.id) && (tagInfo.id.gte || tagInfo.id.lte)) {
-	// 		setFormState({
-	// 			...formState,
-	// 			[tagInfo.prop]: DEFAULT_FORM_STATE[tagInfo.prop],
-	// 		});
-	// 		return;
-	// 	}
-	// 	if (isArray(formState[tagInfo.prop])) {
-	// 		const filterArray: string[] = formState[tagInfo.prop] as string[];
-	// 		remove(filterArray, filterItem => filterItem === tagInfo.id);
-	// 		setFormState({
-	// 			...formState,
-	// 			[tagInfo.prop]: filterArray,
-	// 		});
-	// 	} else {
-	// 		console.error('Failed to remove selected filter: ', tagInfo.prop, tagInfo.id);
-	// 	}
-	// };
-
 	const deleteAllFilters = () => {
 		setFormState({
 			...DEFAULT_FORM_STATE,
