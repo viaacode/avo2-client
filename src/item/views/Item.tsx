@@ -8,6 +8,8 @@ import React, {
 	useState,
 } from 'react';
 
+import marked from 'marked';
+
 import {
 	Button,
 	Column,
@@ -38,7 +40,11 @@ import { Dispatch } from 'redux';
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
-import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/generateLink';
+import {
+	generateSearchLink,
+	generateSearchLinks,
+	generateSearchLinkString,
+} from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 
@@ -118,16 +124,21 @@ const Item: FunctionComponent<ItemProps> = ({
 			}
 			if (timestampRegex.test(part)) {
 				return (
-					<Button
+					<a
 						key={`description-link-${index}`}
-						label={part}
-						type="link"
 						onClick={() => handleTimeLinkClicked(part)}
-					/>
+						style={{ cursor: 'pointer' }}
+					>
+						{part}
+					</a>
 				);
 			}
-			return <span key={`description-part-${index}`}>{part}</span>;
+			return <span key={`description-part-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
 		});
+	};
+
+	const gotoSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
+		history.push(generateSearchLinkString(prop, value));
 	};
 
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
@@ -199,7 +210,7 @@ const Item: FunctionComponent<ItemProps> = ({
 											<video
 												src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
 												placeholder={item.thumbnail_path}
-												style={{ width: '100%' }}
+												style={{ width: '100%', display: 'block' }}
 												controls={true}
 												ref={videoRef}
 												onLoadedMetadata={getSeekerTimeFromQueryParams}
@@ -217,7 +228,12 @@ const Item: FunctionComponent<ItemProps> = ({
 												<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
 											</div>
 											<div className="c-button-toolbar">
-												<ToggleButton type="tertiary" icon="bookmark" active={false} />
+												<ToggleButton
+													type="tertiary"
+													icon="bookmark"
+													active={false}
+													ariaLabel="toggel bladwijzer"
+												/>
 												<Button type="tertiary" icon="share-2" />
 												<Button type="tertiary" icon="flag" />
 											</div>
@@ -238,7 +254,7 @@ const Item: FunctionComponent<ItemProps> = ({
 									<h4 className="c-h4">Beschrijving</h4>
 									<ExpandableContainer collapsedHeight={387}>
 										<p style={{ paddingRight: '1rem' }}>
-											{formatTimestamps(item.dcterms_abstract)}
+											{formatTimestamps(marked(item.dcterms_abstract || ''))}
 										</p>
 									</ExpandableContainer>
 								</Scrollbar>
@@ -302,7 +318,14 @@ const Item: FunctionComponent<ItemProps> = ({
 										<tr>
 											<th scope="row">Trefwoorden</th>
 											<td>
-												<TagList tags={item.lom_keywords || []} swatches={false} />
+												<TagList
+													tags={(item.lom_keywords || []).map(keyword => ({
+														label: keyword,
+														id: keyword,
+													}))}
+													swatches={false}
+													onTagClicked={(tag: string) => gotoSearchPage('keyword', tag)}
+												/>
 											</td>
 										</tr>
 										<tr>

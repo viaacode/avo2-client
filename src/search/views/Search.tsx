@@ -2,6 +2,9 @@ import {
 	Blankslate,
 	Button,
 	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Form,
 	FormGroup,
 	Navbar,
@@ -13,7 +16,6 @@ import {
 	Select,
 	Spacer,
 	Spinner,
-	TagList,
 	TextInput,
 	Thumbnail,
 	Toolbar,
@@ -29,8 +31,6 @@ import {
 	cloneDeep,
 	compact,
 	every,
-	find,
-	flatten,
 	get,
 	isArray,
 	isEmpty,
@@ -38,7 +38,6 @@ import {
 	isNil,
 	isPlainObject,
 	pickBy,
-	remove,
 } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
@@ -50,6 +49,7 @@ import { Dispatch } from 'redux';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
+import { copyToClipboard } from '../../helpers/clipboard';
 import { CheckboxDropdown } from '../../shared/components/CheckboxDropdown/CheckboxDropdown';
 import { CheckboxModal, CheckboxOption } from '../../shared/components/CheckboxModal/CheckboxModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
@@ -126,6 +126,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	});
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 
 	/**
 	 * Update the search results when the formState, sortOrder or the currentPage changes
@@ -381,119 +382,6 @@ const Search: FunctionComponent<SearchProps> = ({
 		);
 	};
 
-	const getTagInfos = (filterProp: Avo.Search.FilterProp, filterValue: any): TagInfo[] => {
-		// Do not render query filter or empty filters
-		if (
-			filterProp === 'query' ||
-			filterValue === '' ||
-			filterValue === [] ||
-			(isArray(filterValue) && every(filterValue, filter => !filter)) // Array of empty strings
-		) {
-			return [];
-		}
-
-		// Render date range option filters
-		if (isPlainObject(filterValue)) {
-			if (filterValue.gte && filterValue.lte) {
-				return [
-					{
-						label: `${formatDate(filterValue.gte)} - ${formatDate(filterValue.lte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			if (filterValue.gte) {
-				return [
-					{
-						label: `na ${formatDate(filterValue.gte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			if (filterValue.lte) {
-				return [
-					{
-						label: `voor ${formatDate(filterValue.lte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			return []; // Do not render a filter if date object is empty: {gte: "", lte: ""}
-		}
-
-		// Render multi option filters
-		if (isArray(filterValue)) {
-			return filterValue.map((filterVal: string) => {
-				let label = filterVal;
-				if (filterProp === 'language') {
-					label = languageCodeToLabel(filterVal);
-				}
-				return {
-					label,
-					prop: filterProp,
-					value: filterVal,
-				};
-			});
-		}
-
-		console.error('Failed to render selected filter: ', filterProp, filterValue);
-		return [];
-	};
-
-	const renderSelectedFilters = () => {
-		const tagInfos: TagInfo[] = flatten(
-			(Object.keys(formState) as Avo.Search.FilterProp[]).map((filterProp: Avo.Search.FilterProp) =>
-				getTagInfos(filterProp, formState[filterProp])
-			)
-		);
-		const tagLabels = tagInfos.map((tagInfo: TagInfo) => tagInfo.label);
-		if (tagLabels.length > 1) {
-			tagLabels.push('Alle filters wissen');
-		}
-		return (
-			<Spacer margin="bottom-large">
-				<TagList
-					closable={true}
-					swatches={false}
-					onTagClosed={async (tagLabel: string) => {
-						if (tagLabel === 'Alle filters wissen') {
-							deleteAllFilters();
-						} else {
-							const tagInfo = find(tagInfos, (tagInfo: TagInfo) => tagInfo.label === tagLabel);
-							if (tagInfo) {
-								await deleteFilter(tagInfo);
-							}
-						}
-					}}
-					tags={tagLabels}
-				/>
-			</Spacer>
-		);
-	};
-
-	const deleteFilter = async (tagInfo: TagInfo) => {
-		if (isPlainObject(tagInfo.value) && (tagInfo.value.gte || tagInfo.value.lte)) {
-			setFormState({
-				...formState,
-				[tagInfo.prop]: DEFAULT_FORM_STATE[tagInfo.prop],
-			});
-			return;
-		}
-		if (isArray(formState[tagInfo.prop])) {
-			const filterArray: string[] = formState[tagInfo.prop] as string[];
-			remove(filterArray, filterItem => filterItem === tagInfo.value);
-			setFormState({
-				...formState,
-				[tagInfo.prop]: filterArray,
-			});
-		} else {
-			console.error('Failed to remove selected filter: ', tagInfo.prop, tagInfo.value);
-		}
-	};
-
 	const deleteAllFilters = () => {
 		setFormState({
 			...DEFAULT_FORM_STATE,
@@ -522,7 +410,10 @@ const Search: FunctionComponent<SearchProps> = ({
 				key={`search-result-${result.id}`}
 				type={result.administrative_type}
 				date={formatDate(result.dcterms_issued)}
-				tags={['Redactiekeuze', 'Partner']}
+				tags={[
+					{ label: 'Redactiekeuze', id: 'redactiekeuze' },
+					{ label: 'Partner', id: 'partner' },
+				]}
 				viewCount={412}
 				bookmarkCount={85}
 				// duration={formatDuration(result.duration_seconds || 0)}
@@ -614,6 +505,10 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 	useKeyPress('Enter', copySearchTermsToFormState);
 
+	const copySearchLink = () => {
+		copyToClipboard(window.location.href);
+	};
+
 	const orderOptions = [
 		{ label: 'Meest relevant', value: 'relevance_desc' },
 		{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
@@ -648,16 +543,55 @@ const Search: FunctionComponent<SearchProps> = ({
 							</Fragment>
 						</ToolbarLeft>
 						<ToolbarRight>
-							<Form type="inline">
-								<FormGroup label="Sorteer op" labelFor="sortBy">
-									<Select
-										id="sortBy"
-										options={orderOptions}
-										value={defaultOrder}
-										onChange={value => handleOrderChanged(value)}
-									/>
-								</FormGroup>
-							</Form>
+							<div className="o-flex o-flex--spaced">
+								<Form type="inline">
+									<FormGroup label="Sorteer op" labelFor="sortBy">
+										<Select
+											id="sortBy"
+											options={orderOptions}
+											value={defaultOrder}
+											onChange={value => handleOrderChanged(value)}
+										/>
+									</FormGroup>
+								</Form>
+								<Dropdown
+									isOpen={isOptionsMenuOpen}
+									onOpen={() => setIsOptionsMenuOpen(true)}
+									onClose={() => setIsOptionsMenuOpen(false)}
+									autoSize={true}
+									placement="bottom-end"
+								>
+									<DropdownButton>
+										<Button type="tertiary" icon="more-horizontal" />
+									</DropdownButton>
+									<DropdownContent>
+										<Fragment>
+											<a
+												className="c-menu__item"
+												onClick={() => {
+													copySearchLink();
+													setIsOptionsMenuOpen(false);
+													// TODO show toast with "successfully copied" message
+												}}
+											>
+												<div className="c-menu__label">
+													Kopieer vaste link naar deze zoekopdracht
+												</div>
+											</a>
+											<a
+												className="c-menu__item"
+												onClick={() => {
+													setIsOptionsMenuOpen(false);
+													// TODO show toast with "not yet implemented" message
+												}}
+											>
+												{/* TODO Create link to create search assignment task */}
+												<div className="c-menu__label">Maak van deze zoekopdracht een opdracht</div>
+											</a>
+										</Fragment>
+									</DropdownContent>
+								</Dropdown>
+							</div>
 						</ToolbarRight>
 					</Toolbar>
 				</Container>
@@ -683,7 +617,6 @@ const Search: FunctionComponent<SearchProps> = ({
 								</Form>
 							</div>
 						</Spacer>
-						{renderSelectedFilters()}
 						{renderFilterControls()}
 					</Spacer>
 				</Container>
