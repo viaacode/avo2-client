@@ -2,7 +2,7 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 
 import { action } from '@storybook/addon-actions';
-import { CheckboxModal, CheckboxModalState } from './CheckboxModal';
+import { CheckboxDropdownModal } from './CheckboxDropdownModal';
 
 export const countOptions = [
 	{
@@ -70,72 +70,32 @@ export const countOptions = [
 describe('<Checkbox />', () => {
 	it('Should be able to render', () => {
 		shallow(
-			<CheckboxModal
+			<CheckboxDropdownModal
 				label="Counting"
 				id="counting"
 				options={countOptions}
-				onChange={action('CheckboxModal changed')}
+				onChange={action('CheckboxDropdown changed')}
 			/>
 		);
 	});
 
 	it('Should be able to render with less than 10 items', () => {
-		const CheckboxModalComponent = shallow(
-			<CheckboxModal
+		const checkboxDropdownComponent = shallow(
+			<CheckboxDropdownModal
 				label="Counting"
 				id="counting"
 				options={countOptions.slice(0, 5)}
-				onChange={action('CheckboxModal changed')}
+				onChange={action('CheckboxDropdown changed')}
 			/>
 		);
-		expect(CheckboxModalComponent.find('Checkbox')).toHaveLength(5);
-	});
-
-	it('Should be able to render with default collapsedItemCount of 10', () => {
-		const CheckboxModalComponent = shallow(
-			<CheckboxModal
-				label="Counting"
-				id="counting"
-				options={countOptions}
-				onChange={action('CheckboxModal changed')}
-			/>
-		);
-		expect(CheckboxModalComponent.find('Checkbox')).toHaveLength(10);
-
-		CheckboxModalComponent.find('.c-link-toggle').simulate('click');
-
-		expect(CheckboxModalComponent.find('Checkbox')).toHaveLength(12);
-
-		CheckboxModalComponent.find('.c-link-toggle').simulate('click');
-
-		expect(CheckboxModalComponent.find('Checkbox')).toHaveLength(10);
-	});
-
-	it('Should be able to render with custom collapsedItemCount of 6', () => {
-		const CheckboxModalComponent = shallow(
-			<CheckboxModal
-				label="Counting"
-				id="counting"
-				options={countOptions}
-				onChange={action('CheckboxModal changed')}
-			/>
-		);
-		expect(CheckboxModalComponent.find('Checkbox')).toHaveLength(6);
-
-		CheckboxModalComponent.find('.c-link-toggle').simulate('click');
-
-		expect(CheckboxModalComponent.find('Checkbox')).toHaveLength(12);
-
-		CheckboxModalComponent.find('.c-link-toggle').simulate('click');
-
-		expect(CheckboxModalComponent.find('Checkbox')).toHaveLength(6);
+		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(5);
 	});
 
 	it('Should call `onChange` when toggling checkbox', () => {
 		const onChangeHandler = jest.fn();
 
-		const CheckboxModalComponent = mount(
-			<CheckboxModal
+		const checkboxDropdownComponent = mount(
+			<CheckboxDropdownModal
 				label="Counting"
 				id="counting"
 				options={countOptions}
@@ -158,18 +118,18 @@ describe('<Checkbox />', () => {
 			twelve: false,
 		};
 
-		const checkboxes = CheckboxModalComponent.find('[type="checkbox"]');
+		const checkboxes = checkboxDropdownComponent.find('[type="checkbox"]');
 
 		checkboxes.at(2).simulate('change', { target: { checked: true } });
 
-		expect((CheckboxModalComponent.state() as CheckboxModalState).checkedStates).toMatchObject({
+		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
 			...defaultState,
 			three: true,
 		});
 
 		checkboxes.at(3).simulate('change', { target: { checked: true } });
 
-		expect((CheckboxModalComponent.state() as CheckboxModalState).checkedStates).toMatchObject({
+		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
 			...defaultState,
 			three: true,
 			four: true,
@@ -177,7 +137,7 @@ describe('<Checkbox />', () => {
 
 		checkboxes.at(2).simulate('change', { target: { checked: false } });
 
-		expect((CheckboxModalComponent.state() as CheckboxModalState).checkedStates).toMatchObject({
+		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
 			...defaultState,
 			four: true,
 		});

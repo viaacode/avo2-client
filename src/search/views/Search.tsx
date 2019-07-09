@@ -1,9 +1,10 @@
-import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
-
 import {
 	Blankslate,
 	Button,
 	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Form,
 	FormGroup,
 	Navbar,
@@ -15,7 +16,6 @@ import {
 	Select,
 	Spacer,
 	Spinner,
-	TagList,
 	TextInput,
 	Thumbnail,
 	Toolbar,
@@ -31,8 +31,6 @@ import {
 	cloneDeep,
 	compact,
 	every,
-	find,
-	flatten,
 	get,
 	isArray,
 	isEmpty,
@@ -40,22 +38,40 @@ import {
 	isNil,
 	isPlainObject,
 	pickBy,
-	remove,
 } from 'lodash-es';
 import queryString from 'query-string';
+import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
+import { Dispatch } from 'redux';
 
-import { CheckboxDropdown } from '../../shared/components/CheckboxDropdown/CheckboxDropdown';
-import { CheckboxModal, CheckboxOption } from '../../shared/components/CheckboxModal/CheckboxModal';
+import { getSearchResults } from '../store/actions';
+import { selectSearchLoading, selectSearchResults } from '../store/selectors';
+
+import { copyToClipboard } from '../../helpers/clipboard';
+import {
+	CheckboxDropdownModal,
+	CheckboxOption,
+} from '../../shared/components/CheckboxDropdown/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
 import { generateSearchLink } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
-import { doSearch } from '../../shared/store/search/searchActions';
 
-interface SearchProps extends RouteComponentProps {}
+interface SearchProps extends RouteComponentProps {
+	searchResults: Avo.Search.Response | null;
+	searchResultsLoading: boolean;
+	search: (
+		orderProperty: Avo.Search.OrderProperty,
+		orderDirection: Avo.Search.OrderDirection,
+		from: number,
+		size: number,
+		filters?: Partial<Avo.Search.Filters>,
+		filterOptionSearch?: Partial<Avo.Search.FilterOption>
+	) => Dispatch;
+}
 
 const ITEMS_PER_PAGE = 10;
 
@@ -67,12 +83,6 @@ interface SortOrder {
 interface SearchResults {
 	count: number;
 	items: Avo.Search.ResultItem[];
-}
-
-interface TagInfo {
-	label: string;
-	prop: keyof Avo.Search.Filters;
-	value: any;
 }
 
 const DEFAULT_FORM_STATE: Avo.Search.Filters = {
@@ -96,7 +106,13 @@ const DEFAULT_SORT_ORDER: SortOrder = {
 	orderDirection: 'desc',
 } as SortOrder;
 
-export const Search: FunctionComponent<SearchProps> = ({ history, location }: SearchProps) => {
+const Search: FunctionComponent<SearchProps> = ({
+	searchResults,
+	searchResultsLoading,
+	search,
+	history,
+	location,
+}: SearchProps) => {
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
 	const [sortOrder, setSortOrder]: [SortOrder, (sortOrder: SortOrder) => void] = useState(
 		DEFAULT_SORT_ORDER
@@ -104,80 +120,59 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	const [multiOptions, setMultiOptions] = useState({} as {
 		[key: string]: Avo.Search.OptionProp[];
 	});
-	const [searchResults, setSearchResults] = useState({ items: [], count: 0 } as SearchResults);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
-	const [loadingSearchResults, setLoadingSearchResults] = useState(true);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 
 	/**
 	 * Update the search results when the formState, sortOrder or the currentPage changes
 	 */
 	useEffect(() => {
-		const updateSearchResults = async () => {
-			try {
-				setLoadingSearchResults(true);
-				// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-				const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
-					cloneDeep(formState)
-				);
+		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+		const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
 
-				// // Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-				// const filterOptionSearch: Partial<FilterOptionSearch> = cleanupFilterObject(
-				// 	cloneDeep(state.filterOptionSearch)
-				// );
-
-				// TODO do the search by dispatching a redux action
-				const searchResponse: Avo.Search.Response = await doSearch(
-					filterOptions,
-					{},
-					sortOrder.orderProperty,
-					sortOrder.orderDirection,
-					currentPage * ITEMS_PER_PAGE,
-					ITEMS_PER_PAGE
-				);
-
-				// Update the checkbox items and counts
-				setMultiOptions(searchResponse.aggregations);
-
-				// Set the search results into the state
-				setSearchResults({
-					items: searchResponse.results,
-					count: searchResponse.count,
-				});
-
-				// Remember this search by adding it to the query params in the url
-				const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
-				const orderProperty =
-					sortOrder.orderProperty === 'relevance'
-						? null
-						: `orderProperty=${sortOrder.orderProperty}`;
-				const orderDirection =
-					sortOrder.orderDirection === 'desc' ? null : `orderDirection=${sortOrder.orderDirection}`;
-				const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
-
-				const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join(
-					'&'
-				);
-				history.push({
-					pathname: '/search',
-					search: queryParams.length ? `?${queryParams}` : '',
-				});
-
-				// Scroll to the first search result
-				window.scrollTo(0, 0);
-				setLoadingSearchResults(false);
-			} catch (err) {
-				console.error('Failed to get search results from the server', err);
-			}
-		};
-		updateSearchResults();
+		// TODO do the search by dispatching a redux action
+		search(
+			sortOrder.orderProperty,
+			sortOrder.orderDirection,
+			currentPage * ITEMS_PER_PAGE,
+			ITEMS_PER_PAGE,
+			filterOptions,
+			{}
+		);
 	}, [formState, sortOrder, currentPage, history]);
 
-	// TODO add search in checkbox modal components
-	// private getFilterOptions(searchTerm: string, propertyName: string): Promise<Avo.Search.OptionProp[]> {
-	// 	const searchResponse: Avo.Search.Response = await executeSearch();
-	// 	return searchResponse.aggregations[propertyName];
-	// }
+	/**
+	 * display the search results on the page and in the url when the results change
+	 */
+	useEffect(() => {
+		if (searchResults) {
+			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
+
+			// Copy the searchterm to the search input field
+			setSearchTerms(formState.query);
+
+			// Update the checkbox items and counts
+			setMultiOptions(searchResults.aggregations);
+
+			// Remember this search by adding it to the query params in the url
+			const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
+			const orderProperty =
+				sortOrder.orderProperty === 'relevance' ? null : `orderProperty=${sortOrder.orderProperty}`;
+			const orderDirection =
+				sortOrder.orderDirection === 'desc' ? null : `orderDirection=${sortOrder.orderDirection}`;
+			const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
+
+			const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
+			history.push({
+				pathname: '/search',
+				search: queryParams.length ? `?${queryParams}` : '',
+			});
+
+			//  Scroll to the first search result
+			window.scrollTo(0, 0);
+		}
+	}, [searchResults]);
 
 	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
@@ -237,7 +232,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 	const handleFilterFieldChange = async (
 		value: string | string[] | Avo.Search.DateRange | null,
-		id: keyof Avo.Search.Filters
+		id: Avo.Search.FilterProp
 	) => {
 		if (value) {
 			setFormState({
@@ -280,9 +275,9 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		});
 	};
 
-	const renderCheckboxDropdown = (
+	const renderCheckboxDropdownModal = (
 		label: string,
-		propertyName: keyof Avo.Search.Filters,
+		propertyName: Avo.Search.FilterProp,
 		disabled: boolean = false,
 		style: any = {}
 	): ReactNode => {
@@ -293,7 +288,8 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 					label = languageCodeToLabel(option.option_name);
 				}
 				return {
-					label: `${label} (${option.option_count})`,
+					label,
+					optionCount: option.option_count,
 					id: option.option_name,
 					checked: ((formState[propertyName] as string[]) || []).includes(option.option_name),
 				};
@@ -302,9 +298,9 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 
 		return (
 			<li style={{ display: 'flex', ...style }}>
-				<CheckboxDropdown
+				<CheckboxDropdownModal
 					label={label}
-					id={propertyName}
+					id={propertyName as string}
 					options={checkboxMultiOptions}
 					disabled={disabled}
 					onChange={async (values: string[]) => {
@@ -319,35 +315,9 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		return capitalize(LANGUAGES.nl[code]) || code;
 	};
 
-	const renderCheckboxModal = (label: string, propertyName: keyof Avo.Search.Filters) => {
-		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
-			(option: Avo.Search.OptionProp): CheckboxOption => {
-				const label = capitalize(option.option_name);
-				return {
-					label: `${label} (${option.option_count})`,
-					id: option.option_name,
-					checked: ((formState[propertyName] as string[]) || []).includes(option.option_name),
-				};
-			}
-		);
-
-		return (
-			<li style={{ display: 'flex' }}>
-				<CheckboxModal
-					label={label}
-					id={propertyName}
-					options={checkboxMultiOptions}
-					onChange={async (values: string[]) => {
-						await handleFilterFieldChange(values, propertyName);
-					}}
-				/>
-			</li>
-		);
-	};
-
 	const renderDateRangeDropdown = (
 		label: string,
-		propertyName: keyof Avo.Search.Filters
+		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
 		const range: Avo.Search.DateRange = get(formState, 'broadcastDate') || { gte: '', lte: '' };
 		range.gte = range.gte || '';
@@ -370,130 +340,21 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	const renderFilterControls = () => {
 		return (
 			<div className="c-filter-dropdown-list">
-				{renderCheckboxDropdown('Type', 'type')}
-				{renderCheckboxDropdown('Onderwijsniveau', 'educationLevel')}
-				{renderCheckboxDropdown('Domein', 'domain', true)}
-				{renderCheckboxModal('Vak', 'subject')}
-				{renderCheckboxModal('Onderwerp', 'keyword')}
-				{renderCheckboxModal('Serie', 'serie')}
+				{renderCheckboxDropdownModal('Type', 'type')}
+				{renderCheckboxDropdownModal('Onderwijsniveau', 'educationLevel')}
+				{renderCheckboxDropdownModal('Domein', 'domain', true)}
+				{renderCheckboxDropdownModal('Vak', 'subject')}
+				{renderCheckboxDropdownModal('Trefwoord', 'keyword')}
+				{renderCheckboxDropdownModal('Serie', 'serie')}
 				{renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
-				{renderCheckboxDropdown('Taal', 'language')}
-				{renderCheckboxDropdown('Aanbieder', 'provider', false, { marginRight: 0 })}
+				{renderCheckboxDropdownModal('Taal', 'language')}
+				{renderCheckboxDropdownModal('Aanbieder', 'provider', false, { marginRight: 0 })}
 			</div>
 		);
 	};
 
-	const getTagInfos = (filterProp: keyof Avo.Search.Filters, filterValue: any): TagInfo[] => {
-		// Do not render query filter or empty filters
-		if (
-			filterProp === 'query' ||
-			filterValue === '' ||
-			filterValue === [] ||
-			(isArray(filterValue) && every(filterValue, filter => !filter)) // Array of empty strings
-		) {
-			return [];
-		}
-
-		// Render date range option filters
-		if (isPlainObject(filterValue)) {
-			if (filterValue.gte && filterValue.lte) {
-				return [
-					{
-						label: `${formatDate(filterValue.gte)} - ${formatDate(filterValue.lte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			if (filterValue.gte) {
-				return [
-					{
-						label: `na ${formatDate(filterValue.gte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			if (filterValue.lte) {
-				return [
-					{
-						label: `voor ${formatDate(filterValue.lte)}`,
-						prop: filterProp,
-						value: filterValue,
-					},
-				];
-			}
-			return []; // Do not render a filter if date object is empty: {gte: "", lte: ""}
-		}
-
-		// Render multi option filters
-		if (isArray(filterValue)) {
-			return filterValue.map((filterVal: string) => {
-				let label = filterVal;
-				if (filterProp === 'language') {
-					label = languageCodeToLabel(filterVal);
-				}
-				return {
-					label,
-					prop: filterProp,
-					value: filterVal,
-				};
-			});
-		}
-
-		console.error('Failed to render selected filter: ', filterProp, filterValue);
-		return [];
-	};
-
-	const renderSelectedFilters = () => {
-		const tagInfos: TagInfo[] = flatten(
-			(Object.keys(formState) as (keyof Avo.Search.Filters)[]).map(
-				(filterProp: keyof Avo.Search.Filters) => getTagInfos(filterProp, formState[filterProp])
-			)
-		);
-		const tagLabels = tagInfos.map((tagInfo: TagInfo) => tagInfo.label);
-		if (tagLabels.length > 1) {
-			tagLabels.push('Alle filters wissen');
-		}
-		return (
-			<Spacer margin="bottom-large">
-				<TagList
-					closable={true}
-					swatches={false}
-					onTagClosed={async (tagLabel: string) => {
-						if (tagLabel === 'Alle filters wissen') {
-							deleteAllFilters();
-						} else {
-							const tagInfo = find(tagInfos, (tagInfo: TagInfo) => tagInfo.label === tagLabel);
-							if (tagInfo) {
-								await deleteFilter(tagInfo);
-							}
-						}
-					}}
-					tags={tagLabels}
-				/>
-			</Spacer>
-		);
-	};
-
-	const deleteFilter = async (tagInfo: TagInfo) => {
-		if (isPlainObject(tagInfo.value) && (tagInfo.value.gte || tagInfo.value.lte)) {
-			setFormState({
-				...formState,
-				[tagInfo.prop]: DEFAULT_FORM_STATE[tagInfo.prop],
-			});
-			return;
-		}
-		if (isArray(formState[tagInfo.prop])) {
-			const filterArray: string[] = formState[tagInfo.prop] as string[];
-			remove(filterArray, filterItem => filterItem === tagInfo.value);
-			setFormState({
-				...formState,
-				[tagInfo.prop]: filterArray,
-			});
-		} else {
-			console.error('Failed to remove selected filter: ', tagInfo.prop, tagInfo.value);
-		}
+	const hasFilters = () => {
+		return !isEqual(formState, DEFAULT_FORM_STATE);
 	};
 
 	const deleteAllFilters = () => {
@@ -517,14 +378,17 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 				label: thumbnailMeta,
 			});
 		}
-		const contentLink = `/detail/${result.id}`;
+		const contentLink = `/item/${result.id}`;
 
 		return (
 			<SearchResult
 				key={`search-result-${result.id}`}
 				type={result.administrative_type}
 				date={formatDate(result.dcterms_issued)}
-				tags={['Redactiekeuze', 'Partner']}
+				tags={[
+					{ label: 'Redactiekeuze', id: 'redactiekeuze' },
+					{ label: 'Partner', id: 'partner' },
+				]}
 				viewCount={412}
 				bookmarkCount={85}
 				// duration={formatDuration(result.duration_seconds || 0)}
@@ -556,10 +420,10 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
-					{!loadingSearchResults && searchResults.count !== 0 && (
+					{!searchResultsLoading && searchResults && searchResults.count !== 0 && (
 						<Fragment>
 							<ul className="c-search-result-list">
-								{searchResults.items.map(renderSearchResult)}
+								{searchResults.results.map(renderSearchResult)}
 							</ul>
 							<Spacer margin="large">
 								<Pagination
@@ -570,14 +434,14 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 							</Spacer>
 						</Fragment>
 					)}
-					{!loadingSearchResults && searchResults.count === 0 && (
+					{!searchResultsLoading && searchResults && searchResults.count === 0 && (
 						<Blankslate
 							body=""
 							icon="search"
 							title="Er zijn geen zoekresultaten die voldoen aan uw filters."
 						/>
 					)}
-					{loadingSearchResults && (
+					{searchResultsLoading && (
 						<div className="o-flex o-flex--horizontal-center">
 							<Spinner size="large" />
 						</div>
@@ -616,6 +480,10 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	};
 	useKeyPress('Enter', copySearchTermsToFormState);
 
+	const copySearchLink = () => {
+		copyToClipboard(window.location.href);
+	};
+
 	const orderOptions = [
 		{ label: 'Meest relevant', value: 'relevance_desc' },
 		{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
@@ -626,11 +494,12 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	];
 	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
 		'desc'}`;
-	const resultsCount = searchResults.count;
+	const resultsCount = get(searchResults, 'count', 0);
 	// elasticsearch can only handle 10000 results efficiently
 	const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
 	const resultStart = currentPage * ITEMS_PER_PAGE + 1;
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
+
 	return (
 		<Container mode="horizontal">
 			<Navbar>
@@ -649,16 +518,55 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 							</Fragment>
 						</ToolbarLeft>
 						<ToolbarRight>
-							<Form type="inline">
-								<FormGroup label="Sorteer op" labelFor="sortBy">
-									<Select
-										id="sortBy"
-										options={orderOptions}
-										value={defaultOrder}
-										onChange={value => handleOrderChanged(value)}
-									/>
-								</FormGroup>
-							</Form>
+							<div className="o-flex o-flex--spaced">
+								<Form type="inline">
+									<FormGroup label="Sorteer op" labelFor="sortBy">
+										<Select
+											id="sortBy"
+											options={orderOptions}
+											value={defaultOrder}
+											onChange={value => handleOrderChanged(value)}
+										/>
+									</FormGroup>
+								</Form>
+								<Dropdown
+									isOpen={isOptionsMenuOpen}
+									onOpen={() => setIsOptionsMenuOpen(true)}
+									onClose={() => setIsOptionsMenuOpen(false)}
+									autoSize={true}
+									placement="bottom-end"
+								>
+									<DropdownButton>
+										<Button type="tertiary" icon="more-horizontal" />
+									</DropdownButton>
+									<DropdownContent>
+										<Fragment>
+											<a
+												className="c-menu__item"
+												onClick={() => {
+													copySearchLink();
+													setIsOptionsMenuOpen(false);
+													// TODO show toast with "successfully copied" message
+												}}
+											>
+												<div className="c-menu__label">
+													Kopieer vaste link naar deze zoekopdracht
+												</div>
+											</a>
+											<a
+												className="c-menu__item"
+												onClick={() => {
+													setIsOptionsMenuOpen(false);
+													// TODO show toast with "not yet implemented" message
+												}}
+											>
+												{/* TODO Create link to create search assignment task */}
+												<div className="c-menu__label">Maak van deze zoekopdracht een opdracht</div>
+											</a>
+										</Fragment>
+									</DropdownContent>
+								</Dropdown>
+							</div>
 						</ToolbarRight>
 					</Toolbar>
 				</Container>
@@ -673,7 +581,7 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 										<TextInput
 											id="query"
 											placeholder="Vul uw zoekterm in..."
-											value={formState.query}
+											value={searchTerms}
 											icon="search"
 											onChange={setSearchTerms}
 										/>
@@ -681,10 +589,18 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 									<FormGroup inlineMode="shrink">
 										<Button label="Zoeken" type="primary" onClick={copySearchTermsToFormState} />
 									</FormGroup>
+									{hasFilters() && (
+										<FormGroup inlineMode="shrink">
+											<Button
+												label="Verwijder alle filters"
+												type="link"
+												onClick={deleteAllFilters}
+											/>
+										</FormGroup>
+									)}
 								</Form>
 							</div>
 						</Spacer>
-						{renderSelectedFilters()}
 						{renderFilterControls()}
 					</Spacer>
 				</Container>
@@ -693,3 +609,34 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		</Container>
 	);
 };
+
+const mapStateToProps = (state: any) => ({
+	searchResults: selectSearchResults(state),
+	searchResultsLoading: selectSearchLoading(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		search: (
+			orderProperty: Avo.Search.OrderProperty,
+			orderDirection: Avo.Search.OrderDirection,
+			from: number,
+			size: number,
+			filters?: Partial<Avo.Search.Filters>,
+			filterOptionSearch?: Partial<Avo.Search.FilterOption>
+		) =>
+			dispatch(getSearchResults(
+				orderProperty,
+				orderDirection,
+				from,
+				size,
+				filters,
+				filterOptionSearch
+			) as any),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Search);

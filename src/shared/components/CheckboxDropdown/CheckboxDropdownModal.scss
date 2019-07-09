@@ -1,0 +1,8 @@
+.c-button:not(.c-button--icon) {
+	.c-tag-list {
+		.o-svg-icon:first-child,
+		.o-svg-icon:last-child {
+			margin: 0;
+		}
+	}
+}

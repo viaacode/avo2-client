@@ -8,6 +8,8 @@ import React, {
 	useState,
 } from 'react';
 
+import marked from 'marked';
+
 import {
 	Button,
 	Column,
@@ -30,42 +32,49 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
+import { Dispatch } from 'redux';
 
+import { debounce } from 'lodash-es';
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
-import { generateSearchLink, generateSearchLinks } from '../../shared/helpers/generateLink';
+import {
+	generateSearchLink,
+	generateSearchLinks,
+	generateSearchLinkString,
+} from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { getDetail } from '../../shared/store/detail/detailActions';
 
-interface DetailProps extends RouteComponentProps {}
+import { getItem } from '../store/actions';
+import { selectItem } from '../store/selectors';
 
-export const Detail: FunctionComponent<DetailProps> = ({
+interface ItemProps extends RouteComponentProps {
+	item: Avo.Item.Response;
+	getItem: (id: string) => Dispatch;
+}
+
+const Item: FunctionComponent<ItemProps> = ({
+	item,
+	getItem,
 	history,
 	location,
 	match,
-}: DetailProps) => {
+}: ItemProps) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [item, setItem] = useState({} as Avo.Detail.Response);
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
+	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
 
 	/**
-	 * Get detail item from api when id changes
+	 * Get item from api when id changes
 	 */
 	useEffect(() => {
-		// TODO: get item from store by id
-		getDetail(id)
-			.then((detailResponse: Avo.Detail.Response) => {
-				setItem(detailResponse);
-			})
-			.catch(err => {
-				console.error('Failed to get detail from the server', err, { id });
-			});
+		getItem(id);
 	}, [id]);
 
 	/**
@@ -74,7 +83,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 	useEffect(() => {
 		const setSeekerTimeInQueryParams = (): void => {
 			history.push({
-				pathname: `/detail/${id}`,
+				pathname: `/item/${id}`,
 				search: time ? `?${queryString.stringify({ time })}` : '',
 			});
 		};
@@ -90,6 +99,28 @@ export const Detail: FunctionComponent<DetailProps> = ({
 			setSeekerTime();
 		}
 	}, [time, history, videoRef, id]);
+
+	useEffect(() => {
+		// Register window listener when the component mounts
+		const onResizeHandler = debounce(
+			() => {
+				if (videoRef.current) {
+					const vidHeight = videoRef.current.getBoundingClientRect().height;
+					setVideoHeight(vidHeight);
+				} else {
+					setVideoHeight(387);
+				}
+			},
+			300,
+			{ leading: false, trailing: true }
+		);
+		window.addEventListener('resize', onResizeHandler);
+		onResizeHandler();
+
+		return () => {
+			window.removeEventListener('resize', onResizeHandler);
+		};
+	}, [videoRef]);
 
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
@@ -117,21 +148,26 @@ export const Detail: FunctionComponent<DetailProps> = ({
 			}
 			if (timestampRegex.test(part)) {
 				return (
-					<Button
+					<a
 						key={`description-link-${index}`}
-						label={part}
-						type="link"
 						onClick={() => handleTimeLinkClicked(part)}
-					/>
+						style={{ cursor: 'pointer' }}
+					>
+						{part}
+					</a>
 				);
 			}
-			return <span key={`description-part-${index}`}>{part}</span>;
+			return <span key={`description-part-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
 		});
+	};
+
+	const gotoSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
+		history.push(generateSearchLinkString(prop, value));
 	};
 
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
-	return (
+	return item ? (
 		<Fragment>
 			<Container mode="vertical" size="small" background="alt">
 				<Container mode="horizontal">
@@ -198,7 +234,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 											<video
 												src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
 												placeholder={item.thumbnail_path}
-												style={{ width: '100%' }}
+												style={{ width: '100%', display: 'block' }}
 												controls={true}
 												ref={videoRef}
 												onLoadedMetadata={getSeekerTimeFromQueryParams}
@@ -216,9 +252,14 @@ export const Detail: FunctionComponent<DetailProps> = ({
 												<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
 											</div>
 											<div className="c-button-toolbar">
-												<ToggleButton type="tertiary" icon="bookmark" active={false} />
-												<Button type="tertiary" icon="share-2" />
-												<Button type="tertiary" icon="flag" />
+												<ToggleButton
+													type="tertiary"
+													icon="bookmark"
+													active={false}
+													ariaLabel="toggle bladwijzer"
+												/>
+												<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+												<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
 											</div>
 										</div>
 									</Spacer>
@@ -230,14 +271,15 @@ export const Detail: FunctionComponent<DetailProps> = ({
 								<Scrollbar
 									style={{
 										width: '100%',
-										height: '471px',
+										height: `${84 + videoHeight}px`, // Height of button
 										overflowY: 'auto',
 									}}
 								>
 									<h4 className="c-h4">Beschrijving</h4>
-									<ExpandableContainer collapsedHeight={387}>
+									{/* "description" label height (20) + padding (14) */}
+									<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
 										<p style={{ paddingRight: '1rem' }}>
-											{formatTimestamps(item.dcterms_abstract)}
+											{formatTimestamps(marked(item.dcterms_abstract || ''))}
 										</p>
 									</ExpandableContainer>
 								</Scrollbar>
@@ -299,9 +341,18 @@ export const Detail: FunctionComponent<DetailProps> = ({
 								<table className="c-table c-table--horizontal c-table--untable">
 									<tbody>
 										<tr>
-											<th scope="row">Onderwerpen</th>
+											<th scope="row">Trefwoorden</th>
 											<td>
-												<TagList tags={item.lom_keywords || []} swatches={false} />
+												<TagList
+													tags={(item.lom_keywords || []).map(keyword => ({
+														label: keyword,
+														id: keyword,
+													}))}
+													swatches={false}
+													onTagClicked={(tagId: string | number) =>
+														gotoSearchPage('keyword', tagId as string)
+													}
+												/>
 											</td>
 										</tr>
 										<tr>
@@ -323,7 +374,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -343,7 +394,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -363,7 +414,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -383,7 +434,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -403,7 +454,7 @@ export const Detail: FunctionComponent<DetailProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/detail/${item.id}`}
+											href={`/item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -427,5 +478,20 @@ export const Detail: FunctionComponent<DetailProps> = ({
 				</Container>
 			</Container>
 		</Fragment>
-	);
+	) : null;
 };
+
+const mapStateToProps = (state: any, { match }: ItemProps) => ({
+	item: selectItem(state, (match.params as any).id),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getItem: (id: string) => dispatch(getItem(id) as any),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Item);
