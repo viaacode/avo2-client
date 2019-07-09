@@ -32,8 +32,10 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
+import { Dispatch } from 'redux';
 
 import { debounce } from 'lodash-es';
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
@@ -46,14 +48,24 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { getItem } from '../../shared/store/item/itemActions';
 
-interface ItemProps extends RouteComponentProps {}
+import { getItem } from '../store/actions';
+import { selectItem } from '../store/selectors';
 
-export const Item: FunctionComponent<ItemProps> = ({ history, location, match }: ItemProps) => {
+interface ItemProps extends RouteComponentProps {
+	item: Avo.Item.Response;
+	getItem: (id: string) => Dispatch;
+}
+
+const Item: FunctionComponent<ItemProps> = ({
+	item,
+	getItem,
+	history,
+	location,
+	match,
+}: ItemProps) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [item, setItem] = useState({} as Avo.Item.Response);
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
 	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
@@ -62,14 +74,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 	 * Get item from api when id changes
 	 */
 	useEffect(() => {
-		// TODO: get item from store by id
-		getItem(id)
-			.then((itemResponse: Avo.Item.Response) => {
-				setItem(itemResponse);
-			})
-			.catch((err: any) => {
-				console.error('Failed to get item from the server', err, { id });
-			});
+		getItem(id);
 	}, [id]);
 
 	/**
@@ -162,7 +167,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
-	return (
+	return item ? (
 		<Fragment>
 			<Container mode="vertical" size="small" background="alt">
 				<Container mode="horizontal">
@@ -473,5 +478,20 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 				</Container>
 			</Container>
 		</Fragment>
-	);
+	) : null;
 };
+
+const mapStateToProps = (state: any, { match }: ItemProps) => ({
+	item: selectItem(state, (match.params as any).id),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getItem: (id: string) => dispatch(getItem(id) as any),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Item);

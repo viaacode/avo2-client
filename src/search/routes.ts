@@ -1,4 +1,4 @@
-import { Search } from './views/Search';
+import Search from './views/Search';
 
 export const SEARCH_ROUTES = [
 	{

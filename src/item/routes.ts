@@ -1,4 +1,4 @@
-import { Item } from './views/Item';
+import Item from './views/Item';
 
 export const ITEM_ROUTES = [
 	{

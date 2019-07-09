@@ -1,5 +1,3 @@
-import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
-
 import {
 	Blankslate,
 	Button,
@@ -42,8 +40,14 @@ import {
 	pickBy,
 } from 'lodash-es';
 import queryString from 'query-string';
+import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
+import { Dispatch } from 'redux';
+
+import { getSearchResults } from '../store/actions';
+import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
 import { copyToClipboard } from '../../helpers/clipboard';
 import {
@@ -55,9 +59,19 @@ import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
 import { generateSearchLink } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
-import { doSearch } from '../../shared/store/search/searchActions';
 
-interface SearchProps extends RouteComponentProps {}
+interface SearchProps extends RouteComponentProps {
+	searchResults: Avo.Search.Response | null;
+	searchResultsLoading: boolean;
+	search: (
+		orderProperty: Avo.Search.OrderProperty,
+		orderDirection: Avo.Search.OrderDirection,
+		from: number,
+		size: number,
+		filters?: Partial<Avo.Search.Filters>,
+		filterOptionSearch?: Partial<Avo.Search.FilterOption>
+	) => Dispatch;
+}
 
 const ITEMS_PER_PAGE = 10;
 
@@ -92,7 +106,13 @@ const DEFAULT_SORT_ORDER: SortOrder = {
 	orderDirection: 'desc',
 } as SortOrder;
 
-export const Search: FunctionComponent<SearchProps> = ({ history, location }: SearchProps) => {
+const Search: FunctionComponent<SearchProps> = ({
+	searchResults,
+	searchResultsLoading,
+	search,
+	history,
+	location,
+}: SearchProps) => {
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
 	const [sortOrder, setSortOrder]: [SortOrder, (sortOrder: SortOrder) => void] = useState(
 		DEFAULT_SORT_ORDER
@@ -100,73 +120,59 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	const [multiOptions, setMultiOptions] = useState({} as {
 		[key: string]: Avo.Search.OptionProp[];
 	});
-	const [searchResults, setSearchResults] = useState({ items: [], count: 0 } as SearchResults);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
-	const [loadingSearchResults, setLoadingSearchResults] = useState(true);
 
 	/**
 	 * Update the search results when the formState, sortOrder or the currentPage changes
 	 */
 	useEffect(() => {
-		const updateSearchResults = async () => {
-			try {
-				setLoadingSearchResults(true);
-				// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-				const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
-					cloneDeep(formState)
-				);
+		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+		const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
 
-				// TODO do the search by dispatching a redux action
-				const searchResponse: Avo.Search.Response = await doSearch(
-					filterOptions,
-					{},
-					sortOrder.orderProperty,
-					sortOrder.orderDirection,
-					currentPage * ITEMS_PER_PAGE,
-					ITEMS_PER_PAGE
-				);
-
-				// Copy the searchterm to the search input field
-				setSearchTerms(formState.query);
-
-				// Update the checkbox items and counts
-				setMultiOptions(searchResponse.aggregations);
-
-				// Set the search results into the state
-				setSearchResults({
-					items: searchResponse.results,
-					count: searchResponse.count,
-				});
-
-				// Remember this search by adding it to the query params in the url
-				const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
-				const orderProperty =
-					sortOrder.orderProperty === 'relevance'
-						? null
-						: `orderProperty=${sortOrder.orderProperty}`;
-				const orderDirection =
-					sortOrder.orderDirection === 'desc' ? null : `orderDirection=${sortOrder.orderDirection}`;
-				const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
-
-				const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join(
-					'&'
-				);
-				history.push({
-					pathname: '/search',
-					search: queryParams.length ? `?${queryParams}` : '',
-				});
-
-				// Scroll to the first search result
-				window.scrollTo(0, 0);
-				setLoadingSearchResults(false);
-			} catch (err) {
-				console.error('Failed to get search results from the server', err);
-			}
-		};
-		updateSearchResults();
+		// TODO do the search by dispatching a redux action
+		search(
+			sortOrder.orderProperty,
+			sortOrder.orderDirection,
+			currentPage * ITEMS_PER_PAGE,
+			ITEMS_PER_PAGE,
+			filterOptions,
+			{}
+		);
 	}, [formState, sortOrder, currentPage, history]);
+
+	/**
+	 * display the search results on the page and in the url when the results change
+	 */
+	useEffect(() => {
+		if (searchResults) {
+			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
+
+			// Copy the searchterm to the search input field
+			setSearchTerms(formState.query);
+
+			// Update the checkbox items and counts
+			setMultiOptions(searchResults.aggregations);
+
+			// Remember this search by adding it to the query params in the url
+			const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
+			const orderProperty =
+				sortOrder.orderProperty === 'relevance' ? null : `orderProperty=${sortOrder.orderProperty}`;
+			const orderDirection =
+				sortOrder.orderDirection === 'desc' ? null : `orderDirection=${sortOrder.orderDirection}`;
+			const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
+
+			const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
+			history.push({
+				pathname: '/search',
+				search: queryParams.length ? `?${queryParams}` : '',
+			});
+
+			//  Scroll to the first search result
+			window.scrollTo(0, 0);
+		}
+	}, [searchResults]);
 
 	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
@@ -414,10 +420,10 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
-					{!loadingSearchResults && searchResults.count !== 0 && (
+					{!searchResultsLoading && searchResults && searchResults.count !== 0 && (
 						<Fragment>
 							<ul className="c-search-result-list">
-								{searchResults.items.map(renderSearchResult)}
+								{searchResults.results.map(renderSearchResult)}
 							</ul>
 							<Spacer margin="large">
 								<Pagination
@@ -428,14 +434,14 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 							</Spacer>
 						</Fragment>
 					)}
-					{!loadingSearchResults && searchResults.count === 0 && (
+					{!searchResultsLoading && searchResults && searchResults.count === 0 && (
 						<Blankslate
 							body=""
 							icon="search"
 							title="Er zijn geen zoekresultaten die voldoen aan uw filters."
 						/>
 					)}
-					{loadingSearchResults && (
+					{searchResultsLoading && (
 						<div className="o-flex o-flex--horizontal-center">
 							<Spinner size="large" />
 						</div>
@@ -488,11 +494,12 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 	];
 	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
 		'desc'}`;
-	const resultsCount = searchResults.count;
+	const resultsCount = get(searchResults, 'count', 0);
 	// elasticsearch can only handle 10000 results efficiently
 	const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
 	const resultStart = currentPage * ITEMS_PER_PAGE + 1;
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
+
 	return (
 		<Container mode="horizontal">
 			<Navbar>
@@ -602,3 +609,34 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 		</Container>
 	);
 };
+
+const mapStateToProps = (state: any) => ({
+	searchResults: selectSearchResults(state),
+	searchResultsLoading: selectSearchLoading(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		search: (
+			orderProperty: Avo.Search.OrderProperty,
+			orderDirection: Avo.Search.OrderDirection,
+			from: number,
+			size: number,
+			filters?: Partial<Avo.Search.Filters>,
+			filterOptionSearch?: Partial<Avo.Search.FilterOption>
+		) =>
+			dispatch(getSearchResults(
+				orderProperty,
+				orderDirection,
+				from,
+				size,
+				filters,
+				filterOptionSearch
+			) as any),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Search);
