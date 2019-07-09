@@ -111,7 +111,7 @@ export const Collection: FunctionComponent<CollectionProps> = ({
 			text: collection.description,
 		} as BlockIntroProps,
 	});
-	(collection.collection_fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
+	(collection.fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
 		contentBlockInfos.push({
 			blockType: 'VideoTitleTextButton',
 			content: {
