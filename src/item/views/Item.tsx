@@ -35,6 +35,7 @@ import queryString from 'query-string';
 import { RouteComponentProps } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
 
+import { debounce } from 'lodash-es';
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
@@ -55,6 +56,7 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 	const [item, setItem] = useState({} as Avo.Item.Response);
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
+	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
 
 	/**
 	 * Get item from api when id changes
@@ -92,6 +94,28 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 			setSeekerTime();
 		}
 	}, [time, history, videoRef, id]);
+
+	useEffect(() => {
+		// Register window listener when the component mounts
+		const onResizeHandler = debounce(
+			() => {
+				if (videoRef.current) {
+					const vidHeight = videoRef.current.getBoundingClientRect().height;
+					setVideoHeight(vidHeight);
+				} else {
+					setVideoHeight(387);
+				}
+			},
+			300,
+			{ leading: false, trailing: true }
+		);
+		window.addEventListener('resize', onResizeHandler);
+		onResizeHandler();
+
+		return () => {
+			window.removeEventListener('resize', onResizeHandler);
+		};
+	}, [videoRef]);
 
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
@@ -242,12 +266,13 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 								<Scrollbar
 									style={{
 										width: '100%',
-										height: '471px',
+										height: `${84 + videoHeight}px`, // Height of button
 										overflowY: 'auto',
 									}}
 								>
 									<h4 className="c-h4">Beschrijving</h4>
-									<ExpandableContainer collapsedHeight={387}>
+									{/* "description" label height (20) + padding (14) */}
+									<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
 										<p style={{ paddingRight: '1rem' }}>
 											{formatTimestamps(marked(item.dcterms_abstract || ''))}
 										</p>
