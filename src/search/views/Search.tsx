@@ -146,6 +146,9 @@ const Search: FunctionComponent<SearchProps> = ({
 		);
 	}, [formState, sortOrder, currentPage, history]);
 
+	/**
+	 * display the search results on the page and in the url when the results change
+	 */
 	useEffect(() => {
 		if (searchResults) {
 			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
