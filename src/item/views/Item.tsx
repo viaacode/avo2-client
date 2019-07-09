@@ -229,8 +229,8 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 													active={false}
 													ariaLabel="toggle bladwijzer"
 												/>
-												<Button type="tertiary" icon="share-2" />
-												<Button type="tertiary" icon="flag" />
+												<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+												<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
 											</div>
 										</div>
 									</Spacer>
@@ -319,7 +319,9 @@ export const Item: FunctionComponent<ItemProps> = ({ history, location, match }:
 														id: keyword,
 													}))}
 													swatches={false}
-													onTagClicked={(tag: string) => gotoSearchPage('keyword', tag)}
+													onTagClicked={(tagId: string | number) =>
+														gotoSearchPage('keyword', tagId as string)
+													}
 												/>
 											</td>
 										</tr>

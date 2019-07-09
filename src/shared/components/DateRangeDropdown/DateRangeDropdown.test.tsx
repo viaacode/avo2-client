@@ -27,44 +27,6 @@ describe('<Checkbox />', () => {
 		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(5);
 	});
 
-	it('Should be able to render with default collapsedItemCount of 10', () => {
-		const checkboxDropdownComponent = shallow(
-			<DateRangeDropdown
-				label="Counting"
-				id="counting"
-				onChange={action('CheckboxDropdown changed')}
-			/>
-		);
-		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(10);
-
-		checkboxDropdownComponent.find('.c-link-toggle').simulate('click');
-
-		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(12);
-
-		checkboxDropdownComponent.find('.c-link-toggle').simulate('click');
-
-		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(10);
-	});
-
-	it('Should be able to render with custom collapsedItemCount of 6', () => {
-		const checkboxDropdownComponent = shallow(
-			<DateRangeDropdown
-				label="Counting"
-				id="counting"
-				onChange={action('CheckboxDropdown changed')}
-			/>
-		);
-		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(6);
-
-		checkboxDropdownComponent.find('.c-link-toggle').simulate('click');
-
-		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(12);
-
-		checkboxDropdownComponent.find('.c-link-toggle').simulate('click');
-
-		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(6);
-	});
-
 	it('Should call `onChange` when toggling checkbox', () => {
 		const onChangeHandler = jest.fn();
 
