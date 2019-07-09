@@ -232,7 +232,7 @@ const Item: FunctionComponent<ItemProps> = ({
 													type="tertiary"
 													icon="bookmark"
 													active={false}
-													ariaLabel="toggel bladwijzer"
+													ariaLabel="toggle bladwijzer"
 												/>
 												<Button type="tertiary" icon="share-2" />
 												<Button type="tertiary" icon="flag" />
