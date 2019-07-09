@@ -582,15 +582,15 @@ export const Search: FunctionComponent<SearchProps> = ({ history, location }: Se
 									<FormGroup inlineMode="shrink">
 										<Button label="Zoeken" type="primary" onClick={copySearchTermsToFormState} />
 									</FormGroup>
-									<FormGroup inlineMode="shrink">
-										{hasFilters() && (
+									{hasFilters() && (
+										<FormGroup inlineMode="shrink">
 											<Button
 												label="Verwijder alle filters"
 												type="link"
 												onClick={deleteAllFilters}
 											/>
-										)}
-									</FormGroup>
+										</FormGroup>
+									)}
 								</Form>
 							</div>
 						</Spacer>
