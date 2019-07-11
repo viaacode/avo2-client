@@ -477,6 +477,9 @@ const Search: FunctionComponent<SearchProps> = ({
 			...formState,
 			query: searchTerms,
 		});
+
+		// Reset to page 1 when search is triggered
+		setCurrentPage(0);
 	};
 	useKeyPress('Enter', copySearchTermsToFormState);
 
