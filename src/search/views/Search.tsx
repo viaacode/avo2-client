@@ -176,7 +176,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
 		}
-	}, [searchResults]);
+	}, [searchResults, currentPage, formState, history, sortOrder]);
 
 	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
