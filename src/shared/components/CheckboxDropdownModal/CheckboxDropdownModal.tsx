@@ -60,7 +60,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		});
 	};
 
-	const resetCheckboxStates = () => {
+	const resetInternalCheckboxStates = () => {
 		setCheckedStates(
 			fromPairs(options.map((option: CheckboxOption) => [option.id, option.checked]))
 		);
@@ -89,7 +89,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	};
 
 	const openDropdownOrModal = async () => {
-		await resetCheckboxStates();
+		await resetInternalCheckboxStates();
 		setIsOpen(true);
 	};
 
@@ -123,31 +123,6 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		);
 	};
 
-	const renderButton = () => {
-		const selectedTags = getSelectedTags();
-		return (
-			<button
-				className="c-button c-button--secondary"
-				style={{ padding: '0 2rem', height: '49px' }}
-			>
-				<div className="c-button__content">
-					<div className="c-button__label">{label}</div>
-					{!!selectedTags.length && (
-						<div style={{ marginLeft: '6px' }}>
-							<TagList
-								tags={selectedTags}
-								swatches={false}
-								closable={true}
-								onTagClosed={removeFilter}
-							/>
-						</div>
-					)}
-					<Icon name={isOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
-				</div>
-			</button>
-		);
-	};
-
 	const renderCheckboxControl = () => {
 		return (
 			<Dropdown
@@ -157,7 +132,9 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 				onOpen={openDropdownOrModal}
 				onClose={closeDropdownOrModal}
 			>
-				<DropdownButton>{renderButton()}</DropdownButton>
+				<DropdownButton>
+					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
+				</DropdownButton>
 				<DropdownContent>
 					<Spacer>
 						<Form>
@@ -207,7 +184,9 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 
 		return (
 			<Fragment>
-				<div onClick={openDropdownOrModal}>{renderButton()}</div>
+				<div onClick={openDropdownOrModal}>
+					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
+				</div>
 				<Modal
 					isOpen={isOpen}
 					title={label}
@@ -254,5 +233,34 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 			{options.length <= 7 && renderCheckboxControl()}
 			{options.length > 7 && renderModalControl()}
 		</div>
+	);
+};
+
+export const renderDropdownButton = (
+	label: string,
+	isOpen: boolean,
+	selectedTags: { label: string; id: string | number }[],
+	removeFilter: (tagId: string | number, clickEvent: MouseEvent) => void
+) => {
+	return (
+		<button
+			className="c-button c-button--secondary"
+			style={{ padding: '0 2rem', height: 'auto', maxHeight: 'none', minHeight: '36px' }}
+		>
+			<div className="c-button__content">
+				<div className="c-button__label">{label}</div>
+				{!!selectedTags.length && (
+					<div style={{ marginLeft: '6px', width: 'calc(100% - 20px)' }}>
+						<TagList
+							tags={selectedTags}
+							swatches={false}
+							closable={true}
+							onTagClosed={removeFilter}
+						/>
+					</div>
+				)}
+				<Icon name={isOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
+			</div>
+		</button>
 	);
 };
