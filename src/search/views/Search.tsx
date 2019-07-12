@@ -140,7 +140,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			filterOptions,
 			{}
 		);
-	}, [formState, sortOrder, currentPage, history]);
+	}, [search, formState, sortOrder, currentPage, history]);
 
 	/**
 	 * display the search results on the page and in the url when the results change
@@ -172,7 +172,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
 		}
-	}, [searchResults]);
+	}, [searchResults, currentPage, formState, history, sortOrder]);
 
 	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
