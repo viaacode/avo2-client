@@ -13,15 +13,17 @@ export const SignIn: FunctionComponent<SignInProps> = ({}) => {
 				<h3 className="c-h2">Aanmelden</h3>
 				<Form>
 					<Spacer margin="bottom-large">
-						<FormGroup label="E-mail" labelFor="emailId">
-							<TextInput id="emailId" />
-						</FormGroup>
-						<FormGroup label="Wachtwoord" labelFor="passwordId">
-							<TextInput id="passwordId" /> {/* TODO: type="password" */}
-						</FormGroup>
-						<FormGroup>
-							<Button label="Aanmelden" type="primary" />
-						</FormGroup>
+						<div className="o-form-group-layout o-form-group-layout--standard">
+							<FormGroup label="E-mailadres" labelFor="emailId">
+								<TextInput id="emailId" />
+							</FormGroup>
+							<FormGroup label="Wachtwoord" labelFor="passwordId">
+								<TextInput id="passwordId" />
+							</FormGroup>
+							<FormGroup>
+								<Button label="Aanmelden" type="primary" />
+							</FormGroup>
+						</div>
 					</Spacer>
 				</Form>
 				<hr className="c-hr" />
