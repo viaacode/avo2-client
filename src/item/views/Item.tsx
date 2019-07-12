@@ -77,7 +77,7 @@ const Item: FunctionComponent<ItemProps> = ({
 	 */
 	useEffect(() => {
 		getItem(id);
-	}, [id]);
+	}, [id, getItem]);
 
 	/**
 	 * Update video and query param time when time changes in the state
