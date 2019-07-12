@@ -123,24 +123,28 @@ const Search: FunctionComponent<SearchProps> = ({
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
+	const [queryParamsAnalysed, setQueryParamsAnalysed] = useState(false);
 
 	/**
 	 * Update the search results when the formState, sortOrder or the currentPage changes
 	 */
 	useEffect(() => {
-		// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-		const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
+		// Only do initial search after query params have been analysed and have been added to the state
+		if (queryParamsAnalysed) {
+			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
+			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
 
-		// TODO do the search by dispatching a redux action
-		search(
-			sortOrder.orderProperty,
-			sortOrder.orderDirection,
-			currentPage * ITEMS_PER_PAGE,
-			ITEMS_PER_PAGE,
-			filterOptions,
-			{}
-		);
-	}, [formState, sortOrder, currentPage, history]);
+			// TODO do the search by dispatching a redux action
+			search(
+				sortOrder.orderProperty,
+				sortOrder.orderDirection,
+				currentPage * ITEMS_PER_PAGE,
+				ITEMS_PER_PAGE,
+				filterOptions,
+				{}
+			);
+		}
+	}, [formState, sortOrder, currentPage, history, search, queryParamsAnalysed]);
 
 	/**
 	 * display the search results on the page and in the url when the results change
@@ -172,15 +176,15 @@ const Search: FunctionComponent<SearchProps> = ({
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
 		}
-	}, [searchResults]);
+	}, [searchResults, currentPage, formState, history, sortOrder]);
 
 	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
 		const queryParams = queryString.parse(location.search);
+		let newFormState: Avo.Search.Filters = cloneDeep(formState);
+		let newSortOrder: SortOrder = cloneDeep(sortOrder);
+		let newCurrentPage: number = currentPage;
 		try {
-			let newFormState: Avo.Search.Filters = cloneDeep(formState);
-			let newSortOrder: SortOrder = cloneDeep(sortOrder);
-			let newCurrentPage: number = currentPage;
 			if (
 				queryParams.filters ||
 				queryParams.orderProperty ||
@@ -217,6 +221,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			// TODO show toast error: Ongeldige zoek query
 			console.error(err);
 		}
+		setQueryParamsAnalysed(true);
 	};
 
 	// Only execute this effect once after the first render (componentDidMount)

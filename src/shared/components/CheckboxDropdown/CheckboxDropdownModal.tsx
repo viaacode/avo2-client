@@ -124,6 +124,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	};
 
 	const renderButton = () => {
+		const selectedTags = getSelectedTags();
 		return (
 			<button
 				className="c-button c-button--secondary"
@@ -131,14 +132,16 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 			>
 				<div className="c-button__content">
 					<div className="c-button__label">{label}</div>
-					<div style={{ marginLeft: '6px' }}>
-						<TagList
-							tags={getSelectedTags()}
-							swatches={false}
-							closable={true}
-							onTagClosed={removeFilter}
-						/>
-					</div>
+					{!!selectedTags.length && (
+						<div style={{ marginLeft: '6px' }}>
+							<TagList
+								tags={selectedTags}
+								swatches={false}
+								closable={true}
+								onTagClosed={removeFilter}
+							/>
+						</div>
+					)}
 					<Icon name={isOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
 				</div>
 			</button>
