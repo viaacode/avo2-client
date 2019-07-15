@@ -250,6 +250,9 @@ const Search: FunctionComponent<SearchProps> = ({
 				[id]: DEFAULT_FORM_STATE[id],
 			});
 		}
+
+		// Reset to page 1 when search is triggered
+		setCurrentPage(0);
 	};
 
 	const handleOrderChanged = async (value: string = 'relevance_desc') => {
@@ -260,6 +263,9 @@ const Search: FunctionComponent<SearchProps> = ({
 			orderProperty: orderProperty as Avo.Search.OrderProperty,
 			orderDirection: orderDirection as Avo.Search.OrderDirection,
 		});
+
+		// Reset to page 1 when search is triggered
+		setCurrentPage(0);
 	};
 
 	const cleanupFilterObject = (obj: any): any => {
@@ -482,6 +488,9 @@ const Search: FunctionComponent<SearchProps> = ({
 			...formState,
 			query: searchTerms,
 		});
+
+		// Reset to page 1 when search is triggered
+		setCurrentPage(0);
 	};
 	useKeyPress('Enter', copySearchTermsToFormState);
 
