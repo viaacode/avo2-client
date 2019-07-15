@@ -36,7 +36,9 @@ export const SignIn: FunctionComponent<SignInProps> = ({}) => {
 				</div>
 				<hr className="c-hr" />
 				<div className="c-content">
-					<p className="u-text-muted">Forgot password?</p>
+					<a href="/authentication/forgot-password" className="u-text-muted">
+						Wachtwoord vergeten?
+					</a>
 				</div>
 			</Container>
 		</Container>

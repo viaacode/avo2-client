@@ -14,6 +14,8 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
+import './Register.scss';
+
 const mockSelectRoles = [
 	{ label: 'Kies een type', value: '', disabled: true },
 	{ label: 'Leerkracht', value: 'leerkracht' },
