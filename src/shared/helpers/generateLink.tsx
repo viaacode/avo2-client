@@ -47,5 +47,8 @@ export function generateSearchLink(
 }
 
 export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filterValue: string) {
+	if (filterProp === 'query') {
+		return `/search?filters={"query":"${filterValue}"}`;
+	}
 	return `/search?filters={"${filterProp}":["${filterValue}"]}`;
 }
