@@ -294,47 +294,39 @@ const Item: FunctionComponent<ItemProps> = ({
 						<Column size="2-7">
 							<div className="o-container-vertical o-container-vertical--padding-small">
 								<table className="c-table c-table--horizontal c-table--untable">
-									<tbody>
-										<tr>
-											<Grid>
-												<Column size="2-5">
-													<th scope="row">Publicatiedatum</th>
-													<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
-												</Column>
-												<Column size="2-5">
-													<th scope="row">Toegevoegd op</th>
-													{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
-													<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
-												</Column>
-											</Grid>
+									<tbody className="o-grid">
+										<tr className="o-grid-col-bp2-5">
+											<th scope="row">Publicatiedatum</th>
+											<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
 										</tr>
-										<tr>
-											<Grid>
-												<Column size="2-5">
-													<th scope="row">Aanbieder</th>
-													<td>{generateSearchLink('provider', item.original_cp)}</td>
-												</Column>
-												<Column size="2-5">
-													<th scope="row">Speelduur</th>
-													<td>{formatDuration(item.duration_seconds)}</td>
-												</Column>
-											</Grid>
+										<tr className="o-grid-col-bp2-5">
+											<th scope="row">Toegevoegd op</th>
+											{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
+											<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
 										</tr>
-										<tr>
-											<Grid>
-												<Column size="2-5">
-													<th scope="row">Reeks</th>
-													<td>{generateSearchLink('serie', item.dc_titles_serie)}</td>
-												</Column>
-												<Column size="2-5">
-													<th scope="row">Taal</th>
-													<td>
-														{(item.lom_languages || [])
-															.map(languageCode => LANGUAGES.nl[languageCode])
-															.join(', ')}
-													</td>
-												</Column>
-											</Grid>
+									</tbody>
+									<tbody className="o-grid">
+										<tr className="o-grid-col-bp2-5">
+											<th scope="row">Aanbieder</th>
+											<td>{generateSearchLink('provider', item.original_cp)}</td>
+										</tr>
+										<tr className="o-grid-col-bp2-5">
+											<th scope="row">Speelduur</th>
+											<td>{formatDuration(item.duration_seconds)}</td>
+										</tr>
+									</tbody>
+									<tbody className="o-grid">
+										<tr className="o-grid-col-bp2-5">
+											<th scope="row">Reeks</th>
+											<td>{generateSearchLink('serie', item.dc_titles_serie)}</td>
+										</tr>
+										<tr className="o-grid-col-bp2-5">
+											<th scope="row">Taal</th>
+											<td>
+												{(item.lom_languages || [])
+													.map(languageCode => LANGUAGES.nl[languageCode])
+													.join(', ')}
+											</td>
 										</tr>
 									</tbody>
 								</table>
