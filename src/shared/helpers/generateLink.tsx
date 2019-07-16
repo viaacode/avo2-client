@@ -5,6 +5,13 @@ import { Avo } from '@viaa/avo2-types';
 import { isArray, noop } from 'lodash-es';
 import { Link } from 'react-router-dom';
 
+const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
+	video: 'item',
+	audio: 'item',
+	collection: 'collection',
+	bundle: 'collection',
+};
+
 export function generateSearchLinks(
 	key: string,
 	filterProp: Avo.Search.FilterProp,
@@ -47,8 +54,12 @@ export function generateSearchLink(
 }
 
 export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filterValue: string) {
-	if (filterProp === 'query') {
+	if (String(filterProp) === 'query') {
 		return `/search?filters={"query":"${filterValue}"}`;
 	}
 	return `/search?filters={"${filterProp}":["${filterValue}"]}`;
+}
+
+export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
+	return `/${CONTENT_TYPE_TO_ROUTE[contentType]}/${id}`;
 }

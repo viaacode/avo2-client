@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
-import { get } from 'lodash-es';
+import { find, get } from 'lodash-es';
 
 import './Home.scss';
 
@@ -23,7 +23,10 @@ import { MenuSearchResultItemInfo } from '@viaa/avo2-components/dist/components/
 import { Avo } from '@viaa/avo2-types';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
-import { generateSearchLinkString } from '../../shared/helpers/generateLink';
+import {
+	generateContentLinkString,
+	generateSearchLinkString,
+} from '../../shared/helpers/generateLink';
 import { useDebounce } from '../../shared/helpers/useDebounce';
 
 interface HomeProps extends RouteComponentProps {
@@ -45,6 +48,7 @@ const Home: FunctionComponent<HomeProps> = ({
 	searchResults,
 	searchResultsLoading,
 	search,
+	history,
 }: HomeProps) => {
 	const [searchTerms, setSearchTerms] = useState('');
 	const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] = useState(false);
@@ -67,8 +71,22 @@ const Home: FunctionComponent<HomeProps> = ({
 		);
 	}, [debouncedSearchTerms]);
 
-	const gotoSearchResult = (itemId: string | number | undefined) => {
-		if (itemId) {
+	const gotoSearchResult = (searchResultId: string | number | undefined) => {
+		if (searchResultId) {
+			const searchResultItem: Avo.Search.ResultItem | undefined = find(
+				get(searchResults, 'results', []),
+				{
+					id: searchResultId,
+				}
+			) as Avo.Search.ResultItem | undefined;
+			if (searchResultItem) {
+				history.push(
+					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
+				);
+			} else {
+				// TODO show error toast
+				console.error('Failed to find search result with id: ', searchResultId);
+			}
 		}
 	};
 
@@ -79,6 +97,11 @@ const Home: FunctionComponent<HomeProps> = ({
 			type: searchResult.administrative_type,
 		})
 	);
+
+	const handleSearchTermChanged = (searchTerm: string) => {
+		setSearchTerms(searchTerm);
+		setAutocompleteSearchOpen(true);
+	};
 
 	return (
 		<div className="m-home-page">
@@ -100,7 +123,7 @@ const Home: FunctionComponent<HomeProps> = ({
 											placeholder="Vul een zoekterm in"
 											icon="search"
 											value={searchTerms}
-											onChange={setSearchTerms}
+											onChange={searchTerm => handleSearchTermChanged(searchTerm)}
 										/>
 									</DropdownButton>
 									<DropdownContent>
