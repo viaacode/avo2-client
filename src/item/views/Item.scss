@@ -3,13 +3,20 @@
 }
 
 .c-button-toolbar .c-button {
-	margin-right: 0.8rem;
 	margin-bottom: 0.8rem;
+
+	&:not(:last-child) {
+		margin-right: 0.8rem;
+	}
 }
 
-.c-video-player {
-	margin-left: -1.2rem;
-	width: calc(100% + 2.4rem);
+
+
+@media (max-width: 600px) {
+	.c-video-player {
+		margin-left: -1.2rem;
+		width: calc(100% + 2.4rem);
+	}
 }
 
 @media (min-width: 300px) {
