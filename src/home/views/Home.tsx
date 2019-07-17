@@ -15,11 +15,11 @@ import {
 	DropdownButton,
 	DropdownContent,
 	MenuSearchResultContent,
+	MenuSearchResultItemInfo,
 	Spacer,
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
-import { MenuSearchResultItemInfo } from '@viaa/avo2-components/dist/components/MenuSearchResult/MenuSearchResultContent';
 import { Avo } from '@viaa/avo2-types';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
