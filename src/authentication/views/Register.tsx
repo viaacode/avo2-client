@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import {
 	Button,
+	Checkbox,
 	Column,
 	Container,
 	Form,
@@ -71,6 +72,9 @@ export const Register: FunctionComponent<RegisterProps> = ({}) => {
 										label="Nee, ik heb geen stamboeknummer"
 									/>
 								</RadioButtonGroup>
+							</FormGroup>
+							<FormGroup>
+								<Checkbox label="Ik aanvaard de gebruiksvoorwaarden en privacyverklaring." />
 							</FormGroup>
 							<FormGroup>
 								<Button label="Account aanmaken" type="primary" />
