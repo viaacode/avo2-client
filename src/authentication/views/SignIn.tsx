@@ -1,48 +1,27 @@
-import React, { FunctionComponent } from 'react';
+import React, { Fragment, FunctionComponent } from 'react';
 
-import { Button, Container, Form, FormGroup, Spacer, TextInput } from '@viaa/avo2-components';
+import { get } from 'lodash-es';
+import queryString from 'query-string';
+import { RouteComponentProps } from 'react-router';
 
 export interface SignInProps {}
 
-export const SignIn: FunctionComponent<SignInProps> = ({}) => {
-	return (
-		<Container mode="vertical">
-			<Container mode="horizontal" size="small">
-				<Spacer margin="bottom-large" />
-				<hr className="c-hr" />
-				<h3 className="c-h2">Aanmelden</h3>
-				<Form>
-					<Spacer margin="bottom-large">
-						<div className="o-form-group-layout o-form-group-layout--standard">
-							<FormGroup label="E-mailadres" labelFor="emailId">
-								<TextInput id="emailId" />
-							</FormGroup>
-							<FormGroup label="Wachtwoord" labelFor="passwordId">
-								<TextInput id="passwordId" />
-							</FormGroup>
-							<FormGroup>
-								<Button label="Aanmelden" type="primary" />
-							</FormGroup>
-						</div>
-					</Spacer>
-				</Form>
-				<hr className="c-hr" />
-				<div className="c-content">
-					<p>Aanmelden met:</p>
-				</div>
-				<div className="c-btn-toolbar">
-					<Button icon="klascement" label="KlasCement" type="secondary" />
-					<Button icon="smartschool" label="SmartSchool" type="secondary" />
-				</div>
-				<hr className="c-hr" />
-				<div className="c-content">
-					<a href="/authentication/forgot-password" className="u-text-muted">
-						Wachtwoord vergeten?
-					</a>
-				</div>
-			</Container>
-		</Container>
-	);
+export const SignIn: FunctionComponent<SignInProps & RouteComponentProps> = (
+	props: SignInProps & RouteComponentProps
+) => {
+	const base = window.location.href.split('/aanmelden')[0];
+
+	// Url to call with authentication response
+	const callbackUrl = `${base}/callback`;
+	// Url to return to after authentication is completed and server stored auth object in session
+	const returnToUrl = base + get(props, 'location.state.from.pathname', '/');
+
+	const url = `${process.env.REACT_APP_PROXY_URL}/auth/login?${queryString.stringify({
+		callbackUrl,
+		returnToUrl,
+	})}`;
+	window.location.href = url;
+	return <Fragment />;
 };
 
 export default SignIn;

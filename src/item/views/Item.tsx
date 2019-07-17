@@ -33,7 +33,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { Dispatch } from 'redux';
 
@@ -54,18 +54,18 @@ import { selectItem } from '../store/selectors';
 
 import './Item.scss';
 
-interface ItemProps extends RouteComponentProps {
+interface ItemProps {
 	item: Avo.Item.Response;
 	getItem: (id: string) => Dispatch;
 }
 
-const Item: FunctionComponent<ItemProps> = ({
+const Item: FunctionComponent<ItemProps & RouteComponentProps> = ({
 	item,
 	getItem,
 	history,
 	location,
 	match,
-}: ItemProps) => {
+}: ItemProps & RouteComponentProps) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [id] = useState((match.params as any)['id'] as string);
@@ -495,7 +495,7 @@ const Item: FunctionComponent<ItemProps> = ({
 	) : null;
 };
 
-const mapStateToProps = (state: any, { match }: ItemProps) => ({
+const mapStateToProps = (state: any, { match }: ItemProps & RouteComponentProps) => ({
 	item: selectItem(state, (match.params as any).id),
 });
 
@@ -505,7 +505,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Item);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Item)
+);
