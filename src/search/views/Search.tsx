@@ -52,7 +52,7 @@ import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 import {
 	CheckboxDropdownModal,
 	CheckboxOption,
-} from '../../shared/components/CheckboxDropdown/CheckboxDropdownModal';
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { formatDate } from '../../shared/helpers/formatters/date';
