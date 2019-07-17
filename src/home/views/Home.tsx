@@ -49,7 +49,7 @@ const Home: FunctionComponent<HomeProps> = ({
 	searchResultsLoading,
 	search,
 	history,
-}: HomeProps) => {
+}) => {
 	const [searchTerms, setSearchTerms] = useState('');
 	const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] = useState(false);
 	const debouncedSearchTerms = useDebounce(searchTerms, 200);

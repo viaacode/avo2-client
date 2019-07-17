@@ -49,12 +49,12 @@ import { Dispatch } from 'redux';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
-import { copyToClipboard } from '../../helpers/clipboard';
 import {
 	CheckboxDropdownModal,
 	CheckboxOption,
 } from '../../shared/components/CheckboxDropdown/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
 import { generateSearchLink } from '../../shared/helpers/generateLink';
