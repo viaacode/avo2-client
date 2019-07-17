@@ -71,7 +71,7 @@ const Home: FunctionComponent<HomeProps> = ({
 		);
 	}, [debouncedSearchTerms]);
 
-	const gotoSearchResult = (searchResultId: string | number | undefined) => {
+	const goToSearchResult = (searchResultId: string | number | undefined) => {
 		if (searchResultId) {
 			const searchResultItem: Avo.Search.ResultItem | undefined = find(
 				get(searchResults, 'results', []),
@@ -132,7 +132,7 @@ const Home: FunctionComponent<HomeProps> = ({
 												<MenuSearchResultContent
 													menuItems={autocompleteMenuItems}
 													noResultsLabel="Geen resultaten"
-													onClick={id => gotoSearchResult(id as string | number)}
+													onClick={id => goToSearchResult(id as string | number)}
 												/>
 											)}
 											{searchResultsLoading && <Spinner size="large" />}
