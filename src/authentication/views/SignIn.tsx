@@ -9,8 +9,8 @@ export const SignIn: FunctionComponent<SignInProps> = ({}) => {
 		<Container mode="vertical">
 			<Container mode="horizontal" size="small">
 				<Spacer margin="bottom-large" />
-				<hr className="c-hr" />
 				<h3 className="c-h2">Aanmelden</h3>
+				<hr className="c-hr" />
 				<Form>
 					<Spacer margin="bottom-large">
 						<div className="o-form-group-layout o-form-group-layout--standard">

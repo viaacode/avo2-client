@@ -29,20 +29,20 @@ export const Register: FunctionComponent<RegisterProps> = ({}) => {
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal" size="small">
-				<hr className="c-hr" />
 				<h3 className="c-h2">Registreren</h3>
+				<hr className="c-hr" />
 				<Form>
 					<Spacer margin="bottom-large">
 						<div className="o-form-group-layout o-form-group-layout--standard">
 							<Grid>
 								<Column size="2-6">
-									<FormGroup label="Voornaam">
-										<TextInput />
+									<FormGroup labelFor="firstNameId" label="Voornaam">
+										<TextInput id="firstNameId" />
 									</FormGroup>
 								</Column>
 								<Column size="2-6">
-									<FormGroup label="Achternaam">
-										<TextInput />
+									<FormGroup labelFor="lastNameId" label="Achternaam">
+										<TextInput id="lastNameId" />
 									</FormGroup>
 								</Column>
 							</Grid>
