@@ -6,6 +6,6 @@ import { RouteComponentProps } from 'react-router';
 
 interface BookmarksProps extends RouteComponentProps {}
 
-export const Bookmarks: FunctionComponent<BookmarksProps> = ({  }: BookmarksProps) => {
+export const Bookmarks: FunctionComponent<BookmarksProps> = ({}) => {
 	return <Fragment />;
 };
