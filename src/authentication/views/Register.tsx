@@ -81,10 +81,12 @@ export const Register: FunctionComponent<RegisterProps> = ({}) => {
 				<hr className="c-hr" />
 				<div className="u-text-center">
 					<p>Of gebruik je account op:</p>
-				</div>
-				<div className="c-btn-toolbar">
-					<Button icon="klascement" label="KlasCement" type="secondary" />
-					<Button icon="smartschool" label="SmartSchool" type="secondary" />
+					<Spacer margin="top">
+						<div className="c-btn-toolbar">
+							<Button icon="klascement" label="KlasCement" type="secondary" />
+							<Button icon="smartschool" label="SmartSchool" type="secondary" />
+						</div>
+					</Spacer>
 				</div>
 			</Container>
 		</Container>
