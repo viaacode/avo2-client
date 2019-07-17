@@ -3,25 +3,15 @@ import { Collections } from './views/Collections';
 import { Favourites } from './views/Favourites';
 import { Folders } from './views/Folders';
 
-export const MY_ARCHIVE_ROUTES = [
+export const MY_WORKSPACE_ROUTES = [
 	{
-		path: '/my-archive/collections',
+		path: '/mijn-werkruimte/collecties',
 		exact: true,
 		component: Collections,
 	},
 	{
-		path: '/my-archive/folder',
-		exact: true,
-		component: Folders,
-	},
-	{
-		path: '/my-archive/bookmarks',
+		path: '/mijn-werkruimte/bladwijzers',
 		exact: true,
 		component: Bookmarks,
-	},
-	{
-		path: '/my-archive/favourites',
-		exact: true,
-		component: Favourites,
 	},
 ];

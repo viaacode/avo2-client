@@ -14,6 +14,7 @@ const App: FunctionComponent = () => {
 			<Router>
 				<Link to="/search">Search</Link>&nbsp;
 				<Link to="/collection/1725151">Collection</Link>
+				<Link to="/mijn-werkruimte/collecties">Mijn Werkruimte</Link>
 				{renderRoutes(ROUTES)}
 			</Router>
 		</Provider>
