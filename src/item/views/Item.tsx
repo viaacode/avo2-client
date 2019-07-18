@@ -53,6 +53,7 @@ import { getItem } from '../store/actions';
 import { selectItem } from '../store/selectors';
 
 import './Item.scss';
+import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
 interface ItemProps extends RouteComponentProps {
 	item: Avo.Item.Response;
@@ -491,17 +492,18 @@ const Item: FunctionComponent<ItemProps> = ({
 					</Grid>
 				</Container>
 			</Container>
+			<AddFragmentToCollection itemInfo={item} externalId={id} />
 		</Fragment>
 	) : null;
 };
 
-const mapStateToProps = (state: any, { match }: ItemProps) => ({
-	item: selectItem(state, (match.params as any).id),
+const mapStateToProps = (state: any) => ({
+	collections: selectCollections(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getItem: (id: string) => dispatch(getItem(id) as any),
+		getCollections: () => dispatch(getCollections() as any),
 	};
 };
 
