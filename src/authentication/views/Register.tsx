@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import {
 	Button,
+	Checkbox,
 	Column,
 	Container,
 	Form,
@@ -29,20 +30,20 @@ export const Register: FunctionComponent<RegisterProps> = ({}) => {
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal" size="small">
-				<hr className="c-hr" />
 				<h3 className="c-h2">Registreren</h3>
+				<hr className="c-hr" />
 				<Form>
 					<Spacer margin="bottom-large">
 						<div className="o-form-group-layout o-form-group-layout--standard">
 							<Grid>
 								<Column size="2-6">
-									<FormGroup label="Voornaam">
-										<TextInput />
+									<FormGroup labelFor="firstNameId" label="Voornaam">
+										<TextInput id="firstNameId" />
 									</FormGroup>
 								</Column>
 								<Column size="2-6">
-									<FormGroup label="Achternaam">
-										<TextInput />
+									<FormGroup labelFor="lastNameId" label="Achternaam">
+										<TextInput id="lastNameId" />
 									</FormGroup>
 								</Column>
 							</Grid>
@@ -73,6 +74,9 @@ export const Register: FunctionComponent<RegisterProps> = ({}) => {
 								</RadioButtonGroup>
 							</FormGroup>
 							<FormGroup>
+								<Checkbox label="Ik aanvaard de gebruiksvoorwaarden en privacyverklaring." />
+							</FormGroup>
+							<FormGroup>
 								<Button label="Account aanmaken" type="primary" />
 							</FormGroup>
 						</div>
@@ -81,10 +85,12 @@ export const Register: FunctionComponent<RegisterProps> = ({}) => {
 				<hr className="c-hr" />
 				<div className="u-text-center">
 					<p>Of gebruik je account op:</p>
-				</div>
-				<div className="c-btn-toolbar">
-					<Button icon="klascement" label="KlasCement" type="secondary" />
-					<Button icon="smartschool" label="SmartSchool" type="secondary" />
+					<Spacer margin="top">
+						<div className="c-btn-toolbar">
+							<Button icon="klascement" label="KlasCement" type="secondary" />
+							<Button icon="smartschool" label="SmartSchool" type="secondary" />
+						</div>
+					</Spacer>
 				</div>
 			</Container>
 		</Container>
