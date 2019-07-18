@@ -13,6 +13,7 @@ const App: FunctionComponent = () => {
 			<Router>
 				<Link to="/search">Zoeken</Link>&nbsp;
 				<Link to="/collection/1725151">Collectie</Link>&nbsp;
+				<Link to="/mijn-werkruimte/collecties">Mijn Werkruimte</Link>
 				<Link to="/registreren">Registreren</Link>&nbsp;
 				<Link to="/aanmelden">Aanmelden</Link>&nbsp;
 				{renderRoutes()}
