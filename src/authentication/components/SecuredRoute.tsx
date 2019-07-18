@@ -1,38 +1,104 @@
-import React, { ComponentType, FunctionComponent } from 'react';
-import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router-dom';
-import authClient from '../Auth';
+import React, { ComponentType, FunctionComponent, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
-interface SecuredRouteProps {
+import { Spinner } from '@viaa/avo2-components';
+import { RouteParts } from '../../routes';
+import { checkLoginState } from '../store/actions';
+import {
+	selectCheckLoginState,
+	selectCheckLoginStateError,
+	selectCheckLoginStateLoading,
+} from '../store/selectors';
+import { CheckLoginStateResponse } from '../store/types';
+
+export interface SecuredRouteProps {
 	component: ComponentType<any>;
 	path: string;
 	exact?: boolean;
+	loginState: CheckLoginStateResponse | null;
+	loginStateLoading: boolean;
+	loginStateError: boolean;
+	checkLoginState: () => Dispatch;
 }
 
-const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = ({
-	component: Component,
-	path,
-	exact = false,
-	location,
-}: SecuredRouteProps & RouteComponentProps) => {
-	console.log(location);
+const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = props => {
+	const {
+		component,
+		path,
+		exact,
+		loginState,
+		loginStateLoading,
+		loginStateError,
+		checkLoginState,
+	} = props;
+	useEffect(() => {
+		if (!loginState && !loginStateLoading) {
+			checkLoginState();
+		}
+	}, [checkLoginState, loginState, loginStateLoading]);
+
 	return (
 		<Route
 			path={path}
 			exact={exact}
-			render={props =>
-				authClient.isAuthenticated() ? (
-					<Component />
-				) : (
-					<Redirect
-						to={{
-							pathname: '/aanmelden',
-							state: { from: props.location },
-						}}
-					/>
-				)
-			}
+			render={props => {
+				if (loginState && !loginStateLoading && !loginStateError) {
+					// Already logged in
+					if (loginState && loginState.message === 'LOGGED_IN') {
+						const Component = component;
+						return <Component />;
+					}
+					return (
+						<Redirect
+							to={{
+								pathname: `/${RouteParts.Login}`,
+								state: { from: props.location },
+							}}
+						/>
+					);
+				}
+
+				// If error show toast and redirect to home page
+				if (loginStateError) {
+					console.error('Failed to login');
+					return (
+						<Redirect
+							to={{
+								pathname: `/`,
+							}}
+						/>
+					);
+				}
+
+				// Show spinner while we check login state with proxy
+				return (
+					<div>
+						{path}
+						<Spinner size="large" />
+					</div>
+				);
+			}}
 		/>
 	);
 };
 
-export default withRouter(SecuredRoute);
+const mapStateToProps = (state: any) => ({
+	loginState: selectCheckLoginState(state),
+	loginStateLoading: selectCheckLoginStateLoading(state),
+	loginStateError: selectCheckLoginStateError(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		checkLoginState: () => dispatch(checkLoginState() as any),
+	};
+};
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(SecuredRoute)
+);

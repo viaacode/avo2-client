@@ -1,12 +1,13 @@
 import React, { Fragment } from 'react';
 import { Route } from 'react-router';
 
-import Callback from './views/Callback';
-import SignIn from './views/SignIn';
+import { RouteParts } from '../routes';
+import { Login } from './views/Login';
+import Logout from './views/Logout';
 
 export const renderAuthenticationRoutes = () => (
 	<Fragment>
-		<Route path="/aanmelden" component={SignIn} exact />
-		<Route path="/callback" component={Callback} exact />
+		<Route path={`/${RouteParts.Login}`} component={Login} exact />
+		<Route path={`/${RouteParts.Logout}`} component={Logout} exact />
 	</Fragment>
 );

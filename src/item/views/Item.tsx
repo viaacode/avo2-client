@@ -38,6 +38,7 @@ import { Scrollbar } from 'react-scrollbars-custom';
 import { Dispatch } from 'redux';
 
 import { debounce } from 'lodash-es';
+import { RouteParts } from '../../routes';
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
@@ -388,7 +389,7 @@ const Item: FunctionComponent<ItemProps & RouteComponentProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/${RouteParts.Item}/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -408,7 +409,7 @@ const Item: FunctionComponent<ItemProps & RouteComponentProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/RouteParts.Item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -428,7 +429,7 @@ const Item: FunctionComponent<ItemProps & RouteComponentProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/RouteParts.Item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -448,7 +449,7 @@ const Item: FunctionComponent<ItemProps & RouteComponentProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/RouteParts.Item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>
@@ -468,7 +469,7 @@ const Item: FunctionComponent<ItemProps & RouteComponentProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/RouteParts.Item/${item.id}`}
 											category={item.administrative_type || 'video'}
 											orientation="horizontal"
 										>

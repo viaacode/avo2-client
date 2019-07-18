@@ -4,6 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { isArray, noop } from 'lodash-es';
 import { Link } from 'react-router-dom';
+import { RouteParts } from '../../routes';
 
 export function generateSearchLinks(
 	key: string,
@@ -47,5 +48,5 @@ export function generateSearchLink(
 }
 
 export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filterValue: string) {
-	return `/search?filters={"${filterProp}":["${filterValue}"]}`;
+	return `/${RouteParts.Search}?filters={"${filterProp}":["${filterValue}"]}`;
 }

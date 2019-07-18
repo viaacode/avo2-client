@@ -50,6 +50,7 @@ import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
 import { copyToClipboard } from '../../helpers/clipboard';
+import { RouteParts } from '../../routes';
 import {
 	CheckboxDropdownModal,
 	CheckboxOption,
@@ -169,7 +170,7 @@ const Search: FunctionComponent<SearchProps> = ({
 
 			const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
 			history.push({
-				pathname: '/search',
+				pathname: `/${RouteParts.Search}`,
 				search: queryParams.length ? `?${queryParams}` : '',
 			});
 
@@ -389,7 +390,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				label: thumbnailMeta,
 			});
 		}
-		const contentLink = `/item/${result.id}`;
+		const contentLink = `/${RouteParts.Item}/${result.id}`;
 
 		return (
 			<SearchResult
