@@ -13,7 +13,8 @@ const App: FunctionComponent = () => {
 			<h1>Archief voor Onderwijs Homepage</h1>
 			<Router>
 				<Link to="/search">Search</Link>&nbsp;
-				<Link to="/collection/1725151">Collection</Link>
+				<Link to="/collection/1725151">Collection</Link>&nbsp;
+				<Link to="/mijn-werkruimte/collecties">Mijn Werkruimte</Link>
 				{renderRoutes(ROUTES)}
 			</Router>
 		</Provider>

@@ -53,7 +53,7 @@ import { copyToClipboard } from '../../helpers/clipboard';
 import {
 	CheckboxDropdownModal,
 	CheckboxOption,
-} from '../../shared/components/CheckboxDropdown/CheckboxDropdownModal';
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
