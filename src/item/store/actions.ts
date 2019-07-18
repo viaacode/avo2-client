@@ -25,6 +25,7 @@ const getItem = (id: string) => {
 				`${process.env.REACT_APP_PROXY_URL}/item?${queryString.stringify({ id })}`,
 				{
 					method: 'GET',
+					mode: 'cors',
 					headers: {
 						'Content-Type': 'application/json',
 					},

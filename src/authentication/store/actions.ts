@@ -23,6 +23,7 @@ const checkLoginState = () => {
 			const url = `${process.env.REACT_APP_PROXY_URL}/auth/check-login`;
 			const response = await fetch(url, {
 				method: 'GET',
+				mode: 'cors',
 				headers: {
 					'Content-Type': 'application/json',
 				},

@@ -5,6 +5,7 @@ export async function getCollection(id: string): Promise<Avo.Collection.Response
 	const url = `${process.env.REACT_APP_PROXY_URL}/collection`;
 	return fetch(`${url}?${queryString.stringify({ id })}`, {
 		method: 'GET',
+		mode: 'cors',
 		headers: {
 			'Content-Type': 'application/json',
 		},
