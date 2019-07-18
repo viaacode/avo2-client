@@ -13,6 +13,7 @@ import {
 	ModalFooterRight,
 	RadioButton,
 	Select,
+	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -20,25 +21,34 @@ import { Avo } from '@viaa/avo2-types';
 interface AddFragmentToCollectionProps {
 	externalId: string;
 	itemInfo: Avo.Item.Response;
+	isOpen: boolean;
+	onClose: () => void;
 }
 
 export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionProps> = ({
 	externalId,
 	itemInfo,
+	isOpen,
+	onClose = () => {},
 }: AddFragmentToCollectionProps) => {
-	const [isOpen, setIsOpen] = useState(false);
 	// TODO create endpoint for existing collections + call and put in store
 	const [existingCollections, setExistingCollections] = useState([]);
 	const [createNewCollection, setCreateNewCollection] = useState(false);
 	const [newCollectionName, setNewCollectionName] = useState('');
+	const [selectedCollection, setSelectedCollection] = useState('');
 
 	const addItemToCollection = () => {
-		// TODO contact api
-		setIsOpen(false);
+		onClose();
 	};
 
 	return (
-		<Modal isOpen={isOpen} title="Voeg fragment toe aan collectie" size="large" scrollable={true}>
+		<Modal
+			title="Voeg fragment toe aan collectie"
+			size="large"
+			scrollable={true}
+			isOpen={isOpen}
+			onClose={onClose}
+		>
 			<ModalBody>
 				<div className="u-spacer">
 					<Form>
@@ -62,35 +72,41 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 									<textarea id="description" value={itemInfo.dcterms_abstract} />
 								</FormGroup>
 								<FormGroup label="Collectie">
-									<RadioButton
-										label="Voeg toe aan bestaande collectie"
-										checked={!createNewCollection}
-										value="existing"
-										name="collection"
-										onChange={checked => setCreateNewCollection(!checked)}
-									/>
-									{!createNewCollection && (
-										<Select
-											id="existingCollection"
-											options={[
-												{ label: 'Kies collectie', value: '', disabled: true },
-												...existingCollections,
-											]}
+									<Spacer margin="bottom">
+										<RadioButton
+											label="Voeg toe aan bestaande collectie"
+											checked={!createNewCollection}
+											value="existing"
+											name="collection"
+											onChange={checked => setCreateNewCollection(!checked)}
 										/>
-									)}
-									<RadioButton
-										label="Voeg toe aan bestaande collectie"
-										checked={createNewCollection}
-										value="new"
-										name="collection"
-									/>
-									{createNewCollection && (
-										<TextInput
-											placeholder="Type de naam van de nieuwe collectie"
-											value={newCollectionName}
-											onChange={setNewCollectionName}
+										{!createNewCollection && (
+											<Select
+												id="existingCollection"
+												options={[
+													{ label: 'Kies collectie', value: '', disabled: true },
+													...existingCollections,
+												]}
+												value={selectedCollection}
+												onChange={setSelectedCollection}
+											/>
+										)}
+									</Spacer>
+									<Spacer margin="bottom">
+										<RadioButton
+											label="Voeg toe aan bestaande collectie"
+											checked={createNewCollection}
+											value="new"
+											name="collection"
 										/>
-									)}
+										{createNewCollection && (
+											<TextInput
+												placeholder="Type de naam van de nieuwe collectie"
+												value={newCollectionName}
+												onChange={setNewCollectionName}
+											/>
+										)}
+									</Spacer>
 								</FormGroup>
 							</Column>
 						</Grid>
@@ -99,12 +115,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 			</ModalBody>
 			<ModalFooterLeft>
 				<FormGroup>
-					<Button
-						label="Annuleren"
-						type="secondary"
-						block={true}
-						onClick={() => setIsOpen(false)}
-					/>
+					<Button label="Annuleren" type="secondary" block={true} onClick={onClose} />
 				</FormGroup>
 			</ModalFooterLeft>
 			<ModalFooterRight>

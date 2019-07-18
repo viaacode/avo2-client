@@ -72,6 +72,9 @@ const Item: FunctionComponent<ItemProps> = ({
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
 	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
+	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
+		false
+	);
 
 	/**
 	 * Get item from api when id changes
@@ -252,6 +255,7 @@ const Item: FunctionComponent<ItemProps> = ({
 														type="tertiary"
 														icon="add"
 														label="Voeg fragment toe aan collectie"
+														onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
 													/>
 													<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
 												</div>
@@ -492,18 +496,23 @@ const Item: FunctionComponent<ItemProps> = ({
 					</Grid>
 				</Container>
 			</Container>
-			<AddFragmentToCollection itemInfo={item} externalId={id} />
+			<AddFragmentToCollection
+				itemInfo={item}
+				externalId={id}
+				isOpen={isOpenAddFragmentToCollectionModal}
+				onClose={() => setIsOpenAddFragmentToCollectionModal(false)}
+			/>
 		</Fragment>
 	) : null;
 };
 
-const mapStateToProps = (state: any) => ({
-	collections: selectCollections(state),
+const mapStateToProps = (state: any, { match }: ItemProps) => ({
+	item: selectItem(state, (match.params as any).id),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getCollections: () => dispatch(getCollections() as any),
+		getItem: (id: string) => dispatch(getItem(id) as any),
 	};
 };
 
