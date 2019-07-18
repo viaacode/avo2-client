@@ -374,14 +374,14 @@ const Item: FunctionComponent<ItemProps> = ({
 												/>
 											</td>
 										</tr>
-										<tr>
-											<th scope="row">Klascement</th>
-											<td>
-												<a href={'http://www.klascement.be/link_item'}>
-													www.klascement.be/link_item
-												</a>
-											</td>
-										</tr>
+										{/*<tr>*/}
+										{/*<th scope="row">Klascement</th>*/}
+										{/*<td>*/}
+										{/*<a href={'http://www.klascement.be/link_item'}>*/}
+										{/*www.klascement.be/link_item*/}
+										{/*</a>*/}
+										{/*</td>*/}
+										{/*</tr>*/}
 									</tbody>
 								</table>
 							</div>
