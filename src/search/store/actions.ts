@@ -22,7 +22,6 @@ const getSearchResults = (
 		try {
 			const response = await fetch(`${process.env.REACT_APP_PROXY_URL}/search`, {
 				method: 'POST',
-				mode: 'cors',
 				headers: {
 					'Content-Type': 'application/json',
 				},
