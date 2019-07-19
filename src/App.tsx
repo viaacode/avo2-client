@@ -2,9 +2,8 @@ import React, { FunctionComponent } from 'react';
 import { Provider } from 'react-redux';
 
 import { renderRoutes } from 'react-router-config';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-import MyWorkspace from './my-workspace/views/MyWorkspace';
 import { ROUTES } from './routes';
 import store from './store';
 

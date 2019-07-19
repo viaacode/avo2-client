@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
-import { Route, RouteComponentProps, Switch } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
 import { Tabs } from '@viaa/avo2-components';
 import Collections from '../../collection/views/Collections';
