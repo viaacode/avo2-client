@@ -183,13 +183,11 @@ const Item: FunctionComponent<ItemProps> = ({
 								</Spacer>
 								<h1 className="c-h2 u-m-b-0">{item.title}</h1>
 								<MetaData spaced={true} category={item.type || 'video'}>
-									<MetaDataItem>
-										{generateSearchLink('provider', 'CP_MISSING_FROM_GQL')}
-									</MetaDataItem>
+									<MetaDataItem>{generateSearchLink('provider', item.org_name || '')}</MetaDataItem>
 									{item.publish_at && (
 										<MetaDataItem>
 											<p className="c-body-2 u-text-muted">
-												Gepubliceerd op {formatDate(item.issued || undefined, '/')}
+												Gepubliceerd op {formatDate(item.issued || null, '/')}
 											</p>
 										</MetaDataItem>
 									)}
@@ -288,18 +286,18 @@ const Item: FunctionComponent<ItemProps> = ({
 									<tbody className="o-grid">
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Publicatiedatum</th>
-											<td>{formatDate(item.publish_at || undefined, '/')}</td>
+											<td>{formatDate(item.publish_at || null, '/')}</td>
 										</tr>
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Toegevoegd op</th>
 											{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
-											<td>{formatDate(item.issued || undefined, '/')}</td>
+											<td>{formatDate(item.issued || null, '/')}</td>
 										</tr>
 									</tbody>
 									<tbody className="o-grid">
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Aanbieder</th>
-											<td>{generateSearchLink('provider', 'CP_MISSING_FROM_GQL')}</td>
+											<td>{generateSearchLink('provider', item.org_name || '')}</td>
 										</tr>
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Speelduur</th>
@@ -388,7 +386,7 @@ const Item: FunctionComponent<ItemProps> = ({
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
 												<MetaData category={item.type || 'video'}>
-													<MetaDataItem label={'CP_MISSING_FROM_GQL' || ''} />
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
@@ -405,7 +403,7 @@ const Item: FunctionComponent<ItemProps> = ({
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
 												<MetaData category={item.type || 'video'}>
-													<MetaDataItem label={'CP_MISSING_FROM_GQL' || ''} />
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
@@ -422,7 +420,7 @@ const Item: FunctionComponent<ItemProps> = ({
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
 												<MetaData category={item.type || 'video'}>
-													<MetaDataItem label={'CP_MISSING_FROM_GQL' || ''} />
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
@@ -439,7 +437,7 @@ const Item: FunctionComponent<ItemProps> = ({
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
 												<MetaData category={item.type || 'video'}>
-													<MetaDataItem label={'CP_MISSING_FROM_GQL' || ''} />
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
@@ -456,7 +454,7 @@ const Item: FunctionComponent<ItemProps> = ({
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
 												<MetaData category={item.type || 'video'}>
-													<MetaDataItem label={'CP_MISSING_FROM_GQL' || ''} />
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
