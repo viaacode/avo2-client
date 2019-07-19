@@ -1,10 +1,12 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, ReactText, useState } from 'react';
 
 import {
 	Button,
 	Column,
 	DatePicker,
 	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Form,
 	FormGroup,
 	Grid,
@@ -12,6 +14,8 @@ import {
 	RadioButtonGroup,
 	TextInput,
 } from '@viaa/avo2-components';
+import { formatDate } from '../../helpers/formatters/date';
+import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface DateRangeDropdownProps {
 	label: string;
@@ -32,24 +36,24 @@ export interface DateRangeDropdownState {
 	yearInputLte: string;
 }
 
+const DEFAULT_DATE_RANGE = { gte: '', lte: '' };
+
 export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	label,
 	id,
-	range = { gte: '', lte: '' },
+	range = DEFAULT_DATE_RANGE,
 	onChange,
 }: DateRangeDropdownProps) => {
 	// Internal range state (copied to external range state when the user clicks on the apply button
-	const [rangeState, setRange] = useState(range);
+	const [rangeState, setRangeState] = useState(range);
 	const [showYearControls, setShowYearControls] = useState(true);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [yearInputGte, setYearInputGte] = useState('');
 	const [yearInputLte, setYearInputLte] = useState('');
 
-	/**
-	 * Use the state from the parent page before showing the checkboxes to the user
-	 */
-	const resetCheckboxStates = async (): Promise<void> => {
-		setRange(range);
+	const resetInternalRangeState = async (tagId?: ReactText, evt?: MouseEvent): Promise<void> => {
+		evt && evt.stopPropagation();
+		setRangeState(range);
 	};
 
 	/**
@@ -60,14 +64,22 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		await closeDropdown();
 	};
 
+	const removeFilter = (tagId: ReactText, evt: MouseEvent) => {
+		evt.stopPropagation();
+		setRangeState(DEFAULT_DATE_RANGE);
+		setYearInputGte('');
+		setYearInputLte('');
+		onChange(DEFAULT_DATE_RANGE, id);
+	};
+
 	const handleDateChange = async (date: string | null, id: string) => {
 		if (date) {
-			setRange({
+			setRangeState({
 				...rangeState,
 				[id]: date,
 			});
 		} else {
-			setRange({
+			setRangeState({
 				...rangeState,
 				[id]: '',
 			});
@@ -82,7 +94,7 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		setShowYearControls(type === 'year');
 		if (type === 'year') {
 			// Round selected dates to the larger year
-			setRange({
+			setRangeState({
 				gte: `${rangeState.gte.split('-')[0]}-01-01`,
 				lte: `${rangeState.lte.split('-')[0]}-12-31`,
 			});
@@ -90,12 +102,44 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	};
 
 	const openDropdown = async () => {
-		await resetCheckboxStates();
+		await resetInternalRangeState();
 		setIsDropdownOpen(true);
 	};
 
 	const closeDropdown = async () => {
 		setIsDropdownOpen(false);
+	};
+
+	const getTag = () => {
+		const isGteStartOfYear = range.gte.includes('-01-01');
+		const isLteEndOfYear = range.lte.includes('-12-31');
+		const gteFormattedDate = formatDate(range.gte);
+		const lteFormattedDate = formatDate(range.lte);
+		const gteYear = range.gte.split('-')[0];
+		const lteYear = range.lte.split('-')[0];
+		let label: string | null = null;
+		if (range.gte && range.lte) {
+			if (isGteStartOfYear && isLteEndOfYear) {
+				// only show years
+				label = `${gteYear} - ${lteYear}`;
+			} else {
+				// show full dates
+				label = `${formatDate(range.gte)} - ${formatDate(range.lte)}`;
+			}
+		} else if (range.gte) {
+			label = `na ${isGteStartOfYear ? gteYear : gteFormattedDate}`;
+		} else if (range.lte) {
+			label = `voor ${isLteEndOfYear ? lteYear : lteFormattedDate}`;
+		}
+		if (label) {
+			return [
+				{
+					label,
+					id: 'date',
+				},
+			];
+		}
+		return []; // Do not render a filter if date object is empty: {gte: "", lte: ""}
 	};
 
 	const from = rangeState.gte;
@@ -123,105 +167,110 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 			onOpen={openDropdown}
 			onClose={closeDropdown}
 		>
-			<div className="u-spacer">
-				<Form>
-					<FormGroup label="Hoe specifiek?">
-						<RadioButtonGroup inline={true}>
-							<RadioButton
-								label="Op jaartal"
-								name="year"
-								value="year"
-								checked={showYearControls}
-								onChange={async (checked: boolean) => {
-									if (checked) {
-										await dateTypeChanged('year');
-									}
-								}}
-							/>
-							<RadioButton
-								label="Specifieke datums"
-								name="year"
-								value="date"
-								checked={!showYearControls}
-								onChange={async (checked: boolean) => {
-									if (checked) {
-										await dateTypeChanged('date');
-									}
-								}}
-							/>
-						</RadioButtonGroup>
-						{showYearControls && (
-							<Grid>
-								<Column size="6">
-									<FormGroup label="Van">
-										<TextInput
-											id="gte"
-											placeholder="JJJJ"
-											value={fromYear}
-											onChange={async (value: string) => {
-												setYearInputGte(value);
-												if (value.length === 4) {
-													await handleDateChange(`${value}-01-01`, 'gte');
+			<DropdownButton>
+				{renderDropdownButton(label, isDropdownOpen, getTag(), removeFilter)}
+			</DropdownButton>
+			<DropdownContent>
+				<div className="u-spacer">
+					<Form>
+						<FormGroup label="Hoe specifiek?">
+							<RadioButtonGroup inline={true}>
+								<RadioButton
+									label="Op jaartal"
+									name="year"
+									value="year"
+									checked={showYearControls}
+									onChange={async (checked: boolean) => {
+										if (checked) {
+											await dateTypeChanged('year');
+										}
+									}}
+								/>
+								<RadioButton
+									label="Specifieke datums"
+									name="year"
+									value="date"
+									checked={!showYearControls}
+									onChange={async (checked: boolean) => {
+										if (checked) {
+											await dateTypeChanged('date');
+										}
+									}}
+								/>
+							</RadioButtonGroup>
+							{showYearControls && (
+								<Grid>
+									<Column size="6">
+										<FormGroup label="Van">
+											<TextInput
+												id="gte"
+												placeholder="JJJJ"
+												value={fromYear}
+												onChange={async (value: string) => {
+													setYearInputGte(value);
+													if (value.length === 4) {
+														await handleDateChange(`${value}-01-01`, 'gte');
+													}
+												}}
+											/>
+										</FormGroup>
+									</Column>
+									<Column size="6">
+										<FormGroup label="Tot">
+											<TextInput
+												id="lte"
+												placeholder="JJJJ"
+												value={tillYear}
+												onChange={async (value: string) => {
+													setYearInputLte(value);
+													if (value.length === 4) {
+														await handleDateChange(`${value}-12-31`, 'lte');
+													}
+												}}
+											/>
+										</FormGroup>
+									</Column>
+								</Grid>
+							)}
+							{!showYearControls && (
+								<Grid>
+									<Column size="6">
+										<FormGroup label="Van">
+											<DatePicker
+												id="gte"
+												value={fromDate}
+												onChange={value =>
+													handleDateChange(
+														value && value.toISOString().substring(0, '2000-01-01'.length),
+														'gte'
+													)
 												}
-											}}
-										/>
-									</FormGroup>
-								</Column>
-								<Column size="6">
-									<FormGroup label="Tot">
-										<TextInput
-											id="lte"
-											placeholder="JJJJ"
-											value={tillYear}
-											onChange={async (value: string) => {
-												setYearInputLte(value);
-												if (value.length === 4) {
-													await handleDateChange(`${value}-12-31`, 'lte');
+											/>
+										</FormGroup>
+									</Column>
+									<Column size="6">
+										<FormGroup label="Tot">
+											<DatePicker
+												id="lte"
+												value={tillDate}
+												onChange={value =>
+													handleDateChange(
+														value && value.toISOString().substring(0, '2000-01-01'.length),
+														'lte'
+													)
 												}
-											}}
-										/>
-									</FormGroup>
-								</Column>
-							</Grid>
-						)}
-						{!showYearControls && (
-							<Grid>
-								<Column size="6">
-									<FormGroup label="Van">
-										<DatePicker
-											id="gte"
-											value={fromDate}
-											onChange={value =>
-												handleDateChange(
-													value && value.toISOString().substring(0, '2000-01-01'.length),
-													'gte'
-												)
-											}
-										/>
-									</FormGroup>
-								</Column>
-								<Column size="6">
-									<FormGroup label="Tot">
-										<DatePicker
-											id="lte"
-											value={tillDate}
-											onChange={value =>
-												handleDateChange(
-													value && value.toISOString().substring(0, '2000-01-01'.length),
-													'lte'
-												)
-											}
-										/>
-									</FormGroup>
-								</Column>
-							</Grid>
-						)}
-					</FormGroup>
-					<FormGroup>
-						<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
-					</FormGroup>
-				</Form>
-			</div>
+											/>
+										</FormGroup>
+									</Column>
+								</Grid>
+							)}
+						</FormGroup>
+						<FormGroup>
+							<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
+						</FormGroup>
+					</Form>
+				</div>
+			</DropdownContent>
 		</Dropdown>
 	);
 };

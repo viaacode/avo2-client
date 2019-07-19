@@ -51,6 +51,8 @@ import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { getItem } from '../store/actions';
 import { selectItem } from '../store/selectors';
 
+import './Item.scss';
+
 interface ItemProps extends RouteComponentProps {
 	item: Avo.Item.Response;
 	getItem: (id: string) => Dispatch;
@@ -234,13 +236,15 @@ const Item: FunctionComponent<ItemProps> = ({
 									</div>
 									<Spacer margin="top-large">
 										<div className="o-flex o-flex--justify-between o-flex--wrap">
-											<div className="c-button-toolbar u-spacer-right">
-												<Button
-													type="tertiary"
-													icon="add"
-													label="Voeg fragment toe aan collectie"
-												/>
-												<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
+											<div className="c-button-toolbar">
+												<div className="o-flex o-flex--justify-between o-flex--wrap">
+													<Button
+														type="tertiary"
+														icon="add"
+														label="Voeg fragment toe aan collectie"
+													/>
+													<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
+												</div>
 											</div>
 											<div className="c-button-toolbar">
 												<ToggleButton
@@ -281,23 +285,33 @@ const Item: FunctionComponent<ItemProps> = ({
 						<Column size="2-7">
 							<div className="o-container-vertical o-container-vertical--padding-small">
 								<table className="c-table c-table--horizontal c-table--untable">
-									<tbody>
-										<tr>
+									<tbody className="o-grid">
+										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Publicatiedatum</th>
 											<td>{formatDate(item.publish_at || undefined, '/')}</td>
+										</tr>
+										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Toegevoegd op</th>
 											{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
 											<td>{formatDate(item.issued || undefined, '/')}</td>
 										</tr>
-										<tr>
+									</tbody>
+									<tbody className="o-grid">
+										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Aanbieder</th>
 											<td>{generateSearchLink('provider', 'CP_MISSING_FROM_GQL')}</td>
+										</tr>
+										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Speelduur</th>
 											<td>{item.duration}</td>
 										</tr>
-										<tr>
+									</tbody>
+									<tbody className="o-grid">
+										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Reeks</th>
 											<td>{generateSearchLink('serie', item.series)}</td>
+										</tr>
+										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Taal</th>
 											<td>
 												{(item.lom_languages || [])
