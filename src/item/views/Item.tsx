@@ -40,7 +40,6 @@ import { Dispatch } from 'redux';
 import { debounce } from 'lodash-es';
 import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
-import { formatDuration } from '../../shared/helpers/formatters/duration';
 import {
 	generateSearchLink,
 	generateSearchLinks,
@@ -167,7 +166,7 @@ const Item: FunctionComponent<ItemProps> = ({
 		});
 	};
 
-	const gotoSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
+	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
 		history.push(generateSearchLinkString(prop, value));
 	};
 
@@ -182,42 +181,32 @@ const Item: FunctionComponent<ItemProps> = ({
 							<ToolbarItem>
 								<Spacer margin="bottom">
 									<div className="c-content-type c-content-type--video">
-										{item.administrative_type && (
-											<Icon
-												name={
-													item.administrative_type === 'audio'
-														? 'headphone'
-														: item.administrative_type
-												}
-											/>
-										)}
+										{item.type && <Icon name={item.type === 'audio' ? 'headphone' : item.type} />}
 										<p>Video</p>
 									</div>
 								</Spacer>
-								<h1 className="c-h2 u-m-b-0">{item.dc_title}</h1>
-								<MetaData spaced={true} category={item.administrative_type || 'video'}>
-									<MetaDataItem>{generateSearchLink('provider', item.original_cp)}</MetaDataItem>
-									{item.dcterms_issued && (
+								<h1 className="c-h2 u-m-b-0">{item.title}</h1>
+								<MetaData spaced={true} category={item.type || 'video'}>
+									<MetaDataItem>{generateSearchLink('provider', item.org_name || '')}</MetaDataItem>
+									{item.publish_at && (
 										<MetaDataItem>
 											<p className="c-body-2 u-text-muted">
-												Gepubliceerd op {formatDate(item.dcterms_issued, '/')}
+												Gepubliceerd op {formatDate(item.issued || null, '/')}
 											</p>
 										</MetaDataItem>
 									)}
-									<MetaDataItem>
-										Uit reeks: {generateSearchLink('serie', item.dc_titles_serie)}
-									</MetaDataItem>
+									<MetaDataItem>Uit reeks: {generateSearchLink('serie', item.series)}</MetaDataItem>
 								</MetaData>
 							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-authentication">
-									<MetaData category={item.administrative_type || 'video'}>
+									<MetaData category={item.type || 'video'}>
 										{/* TODO link meta data to actual data */}
 										<MetaDataItem label={String(188)} icon="eye" />
 										<MetaDataItem label={String(370)} icon="bookmark" />
-										{item.administrative_type === 'collection' && (
+										{item.type === 'collection' && (
 											<MetaDataItem label={String(12)} icon="collection" />
 										)}
 									</MetaData>
@@ -288,7 +277,7 @@ const Item: FunctionComponent<ItemProps> = ({
 									{/* "description" label height (20) + padding (14) */}
 									<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
 										<p style={{ paddingRight: '1rem' }}>
-											{formatTimestamps(marked(item.dcterms_abstract || ''))}
+											{formatTimestamps(marked(item.description || ''))}
 										</p>
 									</ExpandableContainer>
 								</Scrollbar>
@@ -302,28 +291,28 @@ const Item: FunctionComponent<ItemProps> = ({
 									<tbody className="o-grid">
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Publicatiedatum</th>
-											<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
+											<td>{formatDate(item.publish_at || null, '/')}</td>
 										</tr>
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Toegevoegd op</th>
 											{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
-											<td>{item.dcterms_issued && formatDate(item.dcterms_issued, '/')}</td>
+											<td>{formatDate(item.issued || null, '/')}</td>
 										</tr>
 									</tbody>
 									<tbody className="o-grid">
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Aanbieder</th>
-											<td>{generateSearchLink('provider', item.original_cp)}</td>
+											<td>{generateSearchLink('provider', item.org_name || '')}</td>
 										</tr>
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Speelduur</th>
-											<td>{formatDuration(item.duration_seconds)}</td>
+											<td>{item.duration}</td>
 										</tr>
 									</tbody>
 									<tbody className="o-grid">
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Reeks</th>
-											<td>{generateSearchLink('serie', item.dc_titles_serie)}</td>
+											<td>{generateSearchLink('serie', item.series)}</td>
 										</tr>
 										<tr className="o-grid-col-bp2-5">
 											<th scope="row">Taal</th>
@@ -342,16 +331,16 @@ const Item: FunctionComponent<ItemProps> = ({
 											<th scope="row">Geschikt voor</th>
 											<td>
 												{generateSearchLinks(
-													item.id as string,
+													item.external_id,
 													'educationLevel',
-													item.lom_typical_age_range
+													item.lom_typicalagerange
 												)}
 											</td>
 										</tr>
 										<tr>
 											<th scope="row">Vakken</th>
 											<td>
-												{generateSearchLinks(item.id as string, 'subject', item.lom_classification)}
+												{generateSearchLinks(item.external_id, 'subject', item.lom_classification)}
 											</td>
 										</tr>
 									</tbody>
@@ -369,7 +358,7 @@ const Item: FunctionComponent<ItemProps> = ({
 													}))}
 													swatches={false}
 													onTagClicked={(tagId: string | number) =>
-														gotoSearchPage('keyword', tagId as string)
+														goToSearchPage('keyword', tagId as string)
 													}
 												/>
 											</td>
@@ -394,18 +383,15 @@ const Item: FunctionComponent<ItemProps> = ({
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
 											href={`/item/${item.id}`}
-											category={item.administrative_type || 'video'}
+											category={item.type || 'video'}
 											orientation="horizontal"
 										>
 											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
+												<Thumbnail category={item.type || 'video'} src={item.thumbnail_path} />
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
+												<MetaData category={item.type || 'video'}>
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
@@ -414,18 +400,15 @@ const Item: FunctionComponent<ItemProps> = ({
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
 											href={`/item/${item.id}`}
-											category={item.administrative_type || 'video'}
+											category={item.type || 'video'}
 											orientation="horizontal"
 										>
 											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
+												<Thumbnail category={item.type || 'video'} src={item.thumbnail_path} />
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
+												<MetaData category={item.type || 'video'}>
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
@@ -434,18 +417,15 @@ const Item: FunctionComponent<ItemProps> = ({
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
 											href={`/item/${item.id}`}
-											category={item.administrative_type || 'video'}
+											category={item.type || 'video'}
 											orientation="horizontal"
 										>
 											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
+												<Thumbnail category={item.type || 'video'} src={item.thumbnail_path} />
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
+												<MetaData category={item.type || 'video'}>
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
@@ -454,18 +434,15 @@ const Item: FunctionComponent<ItemProps> = ({
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
 											href={`/item/${item.id}`}
-											category={item.administrative_type || 'video'}
+											category={item.type || 'video'}
 											orientation="horizontal"
 										>
 											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
+												<Thumbnail category={item.type || 'video'} src={item.thumbnail_path} />
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
+												<MetaData category={item.type || 'video'}>
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
@@ -474,18 +451,15 @@ const Item: FunctionComponent<ItemProps> = ({
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
 											href={`/item/${item.id}`}
-											category={item.administrative_type || 'video'}
+											category={item.type || 'video'}
 											orientation="horizontal"
 										>
 											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.administrative_type || 'video'}
-													src={item.thumbnail_path}
-												/>
+												<Thumbnail category={item.type || 'video'} src={item.thumbnail_path} />
 											</MediaCardThumbnail>
 											<MediaCardMetaData>
-												<MetaData category={item.administrative_type || 'video'}>
-													<MetaDataItem label={item.original_cp || ''} />
+												<MetaData category={item.type || 'video'}>
+													<MetaDataItem label={item.org_name || ''} />
 												</MetaData>
 											</MediaCardMetaData>
 										</MediaCard>
