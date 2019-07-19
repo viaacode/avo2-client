@@ -1,14 +1,18 @@
 import { createReducer } from '../../shared/helpers/redux/create-reducer';
 
-import initialState from './initial-state';
+import { initialCollectionsState, initialCollectionState } from './initial-state';
 import {
 	CollectionActionTypes,
+	CollectionsActionTypes,
 	SetCollectionErrorAction,
 	SetCollectionLoadingAction,
+	SetCollectionsErrorAction,
+	SetCollectionsLoadingAction,
+	SetCollectionsSuccessAction,
 	SetCollectionSuccessAction,
 } from './types';
 
-const collectionReducer = createReducer(initialState, {
+const collectionReducer = createReducer(initialCollectionState, {
 	[CollectionActionTypes.SET_COLLECTION_LOADING]: (state, action: SetCollectionLoadingAction) => ({
 		...state,
 		[action.id]: {
@@ -35,4 +39,31 @@ const collectionReducer = createReducer(initialState, {
 	}),
 });
 
-export default collectionReducer;
+const collectionsReducer = createReducer(initialCollectionsState, {
+	[CollectionsActionTypes.SET_COLLECTIONS_LOADING]: (
+		state,
+		action: SetCollectionsLoadingAction
+	) => ({
+		...state,
+		data: null,
+		loading: action.loading,
+		error: false,
+	}),
+	[CollectionsActionTypes.SET_COLLECTIONS_SUCCESS]: (
+		state,
+		action: SetCollectionsSuccessAction
+	) => ({
+		...state,
+		data: action.data,
+		loading: false,
+		error: false,
+	}),
+	[CollectionsActionTypes.SET_COLLECTIONS_ERROR]: (state, action: SetCollectionsErrorAction) => ({
+		...state,
+		data: null,
+		loading: false,
+		error: action.error,
+	}),
+});
+
+export { collectionReducer, collectionsReducer };

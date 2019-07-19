@@ -7,7 +7,7 @@ import { setCollectionError, setCollectionLoading, setCollectionSuccess } from '
 describe('collection > store > actions', () => {
 	it('Should create an action to set the collection results', () => {
 		const id = '123';
-		const collectionResults = {
+		const collectionResult: Avo.Collection.Response = {
 			description: 'Een test collectie als het ware',
 			title: 'Mijn collectie',
 			is_public: false,
@@ -19,25 +19,17 @@ describe('collection > store > actions', () => {
 			updated_at: '2017-02-08',
 			organisation_id: '0',
 			mediamosa_id: 'YEpRdLOmUcAUXQWuCWTJXwMk',
-			owner_id: '',
 			owner: {} as Avo.User.Response,
-			lom_context_id: 1,
-			lom_classification_id: 1,
-			publish_at: '',
-			depublish_at: '',
-			lom_keyword_id: 1,
-			lom_intendedenduserrole_id: 1,
-			external_id: id,
-			collection_fragments: [],
+			fragments: [],
 		};
 
 		const expectedAction = {
 			id,
 			type: CollectionActionTypes.SET_COLLECTION_SUCCESS,
-			data: collectionResults,
+			data: collectionResult,
 		};
 
-		expect(setCollectionSuccess(id, collectionResults)).toMatchObject(expectedAction);
+		expect(setCollectionSuccess(id, collectionResult)).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set an error', () => {

@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 
-import { CollectionState } from './types';
+import { CollectionsState, CollectionState } from './types';
 
 const selectCollection = ({ collection }: { collection: CollectionState }, id: string) => {
 	return get(collection, [id, 'data']);
@@ -14,4 +14,23 @@ const selectCollectionError = ({ collection }: { collection: CollectionState }, 
 	return get(collection, [id, 'error']);
 };
 
-export { selectCollection, selectCollectionLoading, selectCollectionError };
+const selectCollections = ({ collections }: { collections: CollectionsState }) => {
+	return get(collections, ['data']);
+};
+
+const selectCollectionsLoading = ({ collections }: { collections: CollectionsState }) => {
+	return get(collections, ['loading']);
+};
+
+const selectCollectionsError = ({ collections }: { collections: CollectionsState }) => {
+	return get(collections, ['error']);
+};
+
+export {
+	selectCollection,
+	selectCollectionLoading,
+	selectCollectionError,
+	selectCollections,
+	selectCollectionsLoading,
+	selectCollectionsError,
+};

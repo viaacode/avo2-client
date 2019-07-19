@@ -63,11 +63,11 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 								</Column>
 								<Column size="2-5">
 									<FormGroup label="Title">
-										<TextInput id="title" value={itemInfo.dc_title} />
+										<TextInput id="title" value={itemInfo.title} />
 									</FormGroup>
 									<FormGroup label="Beschrijving">
 										{/* TODO replace with component TextArea once built */}
-										<textarea id="description" value={itemInfo.dcterms_abstract} />
+										<textarea id="description" value={itemInfo.description} />
 									</FormGroup>
 									<FormGroup label="Collectie">
 										<Spacer margin="bottom">
