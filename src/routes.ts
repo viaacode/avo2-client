@@ -11,4 +11,5 @@ export const ROUTES: RouteProps[] = [
 	...ITEM_ROUTES,
 	...COLLECTION_ROUTES,
 	...MY_WORKSPACE_ROUTES,
+	...SEARCH_ROUTES,
 ];
