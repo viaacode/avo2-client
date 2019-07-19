@@ -163,7 +163,7 @@ const Item: FunctionComponent<ItemProps> = ({
 		});
 	};
 
-	const gotoSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
+	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
 		history.push(generateSearchLinkString(prop, value));
 	};
 
@@ -364,7 +364,7 @@ const Item: FunctionComponent<ItemProps> = ({
 													}))}
 													swatches={false}
 													onTagClicked={(tagId: string | number) =>
-														gotoSearchPage('keyword', tagId as string)
+														goToSearchPage('keyword', tagId as string)
 													}
 												/>
 											</td>
