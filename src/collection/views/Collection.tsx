@@ -36,6 +36,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get, isEmpty } from 'lodash-es';
 import { RouteComponentProps } from 'react-router';
 import { getCollection } from '../../shared/store/collection/collectionActions';
 
@@ -111,7 +112,7 @@ export const Collection: FunctionComponent<CollectionProps> = ({
 			text: collection.description,
 		} as BlockIntroProps,
 	});
-	(collection.collection_fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
+	(collection.fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
 		contentBlockInfos.push({
 			blockType: 'VideoTitleTextButton',
 			content: {
@@ -188,13 +189,17 @@ export const Collection: FunctionComponent<CollectionProps> = ({
 								<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
 								{collection.owner && (
 									<div className="o-flex o-flex--spaced">
-										<Avatar
-											image={collection.owner.avatar || undefined}
-											name={`${collection.owner.fn} ${collection.owner.sn} (${
-												USER_GROUPS[collection.owner.group_id]
-											})`}
-											initials={collection.owner.fn[0] + collection.owner.sn[0]}
-										/>
+										{!isEmpty(collection.owner) && (
+											<Avatar
+												image={collection.owner.avatar || undefined}
+												name={`${collection.owner.fn} ${collection.owner.sn} (${
+													USER_GROUPS[collection.owner.group_id]
+												})`}
+												initials={
+													get(collection, 'owner.fn[0]', '') + get(collection, 'owner.sn[0]', '')
+												}
+											/>
+										)}
 									</div>
 								)}
 							</ToolbarItem>
