@@ -69,7 +69,7 @@ const Home: FunctionComponent<HomeProps> = ({
 			},
 			{}
 		);
-	}, [debouncedSearchTerms]);
+	}, [debouncedSearchTerms, search]);
 
 	const goToSearchResult = (searchResultId: string | number | undefined) => {
 		if (searchResultId) {

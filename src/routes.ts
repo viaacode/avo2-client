@@ -10,8 +10,8 @@ import { SEARCH_ROUTES } from './search/routes';
 export const ROUTES: RouteProps[] = [
 	...HOME_ROUTES,
 	...ITEM_ROUTES,
+	...SEARCH_ROUTES,
 	...COLLECTION_ROUTES,
 	...MY_WORKSPACE_ROUTES,
 	...NOT_FOUND_ROUTES,
-	...SEARCH_ROUTES,
 ];
