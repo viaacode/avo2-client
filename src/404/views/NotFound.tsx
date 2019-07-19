@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 
 interface NotFoundProps {}
 
-export const NotFound: FunctionComponent<NotFoundProps> = ({  }: NotFoundProps) => {
+export const NotFound: FunctionComponent<NotFoundProps> = ({}) => {
 	return (
 		<div className="o-container-vertical o-container-vertical-title o-container-vertical--bg-alt">
 			{/* TODO use Container component with custom class param after merging: https://github.com/viaacode/avo2-components/pull/67 */}
