@@ -51,7 +51,7 @@ export const Register: FunctionComponent<RegisterProps> = ({}) => {
 								<TextInput id="emailId" />
 							</FormGroup>
 							<FormGroup label="Wachtwoord *" labelFor="passwordId">
-								<TextInput id="passwordId" />
+								<TextInput id="passwordId" type="password" />
 							</FormGroup>
 							<FormGroup label="Type gebruiker">
 								<Select options={mockSelectRoles} value="" />
