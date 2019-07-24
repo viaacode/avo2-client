@@ -49,7 +49,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 			onClose={onClose}
 		>
 			<ModalBody>
-				<div id="addFragmentToCollection">
+				<div className="c-modal__body-add-fragment">
 					<Spacer>
 						<Form>
 							<Grid>
