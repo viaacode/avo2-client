@@ -29,7 +29,7 @@ const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
 			<Navigation
 				primaryItems={[
 					{ label: 'Home', location: '/' },
-					{ label: 'Zoeken', location: 'search' },
+					{ label: 'Zoeken', location: '/search' },
 					{ label: 'Ontdek', location: '/' },
 					{ label: 'Mijn Archief', location: '/mijn-werkruimte/collecties' },
 					{ label: 'Projecten', location: '/' },
