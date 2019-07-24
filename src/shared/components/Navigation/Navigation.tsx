@@ -20,12 +20,14 @@ export interface NavigationProps {
 	primaryItems: NavigationItem[];
 	secondaryItems: NavigationItem[];
 	isOpen: boolean;
+	handleMenuClick?: () => void;
 }
 
 export const Navigation: FunctionComponent<NavigationProps> = ({
 	primaryItems,
 	secondaryItems,
 	isOpen,
+	handleMenuClick = () => {},
 }: NavigationProps) => {
 	return (
 		<Fragment>
@@ -73,7 +75,12 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								</ToolbarItem>
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-very-little-space">
-										<Button icon="menu" type="borderless-i" ariaLabel="menu" />
+										<Button
+											icon="menu"
+											type="borderless-i"
+											ariaLabel="menu"
+											onClick={handleMenuClick}
+										/>
 									</div>
 								</ToolbarItem>
 							</Fragment>
