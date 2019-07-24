@@ -51,7 +51,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 									<div className="u-mq-switch-main-nav-has-space">
 										<ul className="c-nav">
 											{primaryItems.map(item => (
-												<li className="c-nav__item c-nav__item--i">
+												<li
+													className="c-nav__item c-nav__item--i"
+													key={`${item.location}-${item.label}`}
+												>
 													<Link to={item.location}>{item.label}</Link>
 												</li>
 											))}
@@ -66,7 +69,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 									<div className="u-mq-switch-main-nav-authentication">
 										<ul className="c-nav">
 											{secondaryItems.map(item => (
-												<li className="c-nav__item c-nav__item--i">
+												<li
+													className="c-nav__item c-nav__item--i"
+													key={`${item.location}-${item.label}`}
+												>
 													<Link to={item.location}>{item.label}</Link>
 												</li>
 											))}
@@ -97,7 +103,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 									<div className="c-toolbar__item">
 										<ul className="c-nav">
 											{primaryItems.map(item => (
-												<li className="c-nav__item c-nav__item--i">
+												<li
+													className="c-nav__item c-nav__item--i"
+													key={`${item.location}-${item.label}`}
+												>
 													<Link to={item.location}>{item.label}</Link>
 												</li>
 											))}
@@ -114,14 +123,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
 							{primaryItems.map(item => (
-								<li className="c-nav-mobile__item">
+								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
 									<Link to={item.location}>{item.label}</Link>
 								</li>
 							))}
 						</ul>
 						<ul className="c-nav-mobile">
 							{secondaryItems.map(item => (
-								<li className="c-nav-mobile__item">
+								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
 									<Link to={item.location}>{item.label}</Link>
 								</li>
 							))}
