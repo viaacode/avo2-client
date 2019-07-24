@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { Provider } from 'react-redux';
 
 import { renderRoutes } from 'react-router-config';
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import { Navigation } from './shared/components/Navigation/Navigation';
 
