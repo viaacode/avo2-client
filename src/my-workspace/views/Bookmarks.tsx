@@ -4,6 +4,12 @@ import { RouteComponentProps } from 'react-router';
 
 interface BookmarksProps extends RouteComponentProps {}
 
-export const Bookmarks: FunctionComponent<BookmarksProps> = () => {
-	return <Fragment />;
+const Bookmarks: FunctionComponent<BookmarksProps> = () => {
+	return (
+		<Fragment>
+			<span>TODO bookmarks</span>
+		</Fragment>
+	);
 };
+
+export default Bookmarks;

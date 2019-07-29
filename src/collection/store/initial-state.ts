@@ -1,5 +1,6 @@
-import { CollectionState } from './types';
+import { CollectionsState, CollectionState } from './types';
 
-const initialState: CollectionState = Object.freeze({});
+const initialCollectionState: CollectionState = Object.freeze({});
+const initialCollectionsState: CollectionsState | null = null;
 
-export default initialState;
+export { initialCollectionState, initialCollectionsState };
