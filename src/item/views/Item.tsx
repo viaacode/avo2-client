@@ -52,6 +52,7 @@ import { getItem } from '../store/actions';
 import { selectItem } from '../store/selectors';
 
 import './Item.scss';
+import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
 interface ItemProps extends RouteComponentProps {
 	item: Avo.Item.Response;
@@ -70,6 +71,9 @@ const Item: FunctionComponent<ItemProps> = ({
 	const [id] = useState((match.params as any)['id'] as string);
 	const [time, setTime] = useState(0);
 	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
+	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
+		false
+	);
 
 	/**
 	 * Get item from api when id changes
@@ -240,6 +244,7 @@ const Item: FunctionComponent<ItemProps> = ({
 														type="tertiary"
 														icon="add"
 														label="Voeg fragment toe aan collectie"
+														onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
 													/>
 													<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
 												</div>
@@ -358,14 +363,14 @@ const Item: FunctionComponent<ItemProps> = ({
 												/>
 											</td>
 										</tr>
-										<tr>
-											<th scope="row">Klascement</th>
-											<td>
-												<a href={'http://www.klascement.be/link_item'}>
-													www.klascement.be/link_item
-												</a>
-											</td>
-										</tr>
+										{/*<tr>*/}
+										{/*<th scope="row">Klascement</th>*/}
+										{/*<td>*/}
+										{/*<a href={'http://www.klascement.be/link_item'}>*/}
+										{/*www.klascement.be/link_item*/}
+										{/*</a>*/}
+										{/*</td>*/}
+										{/*</tr>*/}
 									</tbody>
 								</table>
 							</div>
@@ -465,6 +470,12 @@ const Item: FunctionComponent<ItemProps> = ({
 					</Grid>
 				</Container>
 			</Container>
+			<AddFragmentToCollection
+				itemInfo={item}
+				externalId={id}
+				isOpen={isOpenAddFragmentToCollectionModal}
+				onClose={() => setIsOpenAddFragmentToCollectionModal(false)}
+			/>
 		</Fragment>
 	) : null;
 };

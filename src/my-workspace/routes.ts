@@ -1,15 +1,9 @@
-import { Bookmarks } from './views/Bookmarks';
-import { Collections } from './views/Collections';
+import MyWorkspace from './views/MyWorkspace';
 
 export const MY_WORKSPACE_ROUTES = [
 	{
-		path: '/mijn-werkruimte/collecties',
-		exact: true,
-		component: Collections,
-	},
-	{
-		path: '/mijn-werkruimte/bladwijzers',
-		exact: true,
-		component: Bookmarks,
+		path: '/mijn-werkruimte',
+		exact: false,
+		component: MyWorkspace,
 	},
 ];
