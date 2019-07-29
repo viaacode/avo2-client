@@ -17,7 +17,7 @@ const checkLoginState = () => {
 			return null;
 		}
 
-		dispatch(setCheckLoginStateLoading());
+		dispatch(setCheckLoginStateLoading(true));
 
 		try {
 			const url = `${process.env.REACT_APP_PROXY_URL}/auth/check-login`;
@@ -26,12 +26,17 @@ const checkLoginState = () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 			});
 
 			const data = await response.json();
 
+			console.error('check login state success', data);
+			dispatch(setCheckLoginStateLoading(false));
 			return dispatch(setCheckLoginStateSuccess(data as CheckLoginStateResponse));
-		} catch (e) {
+		} catch (err) {
+			console.error('failed to check login state', err);
+			dispatch(setCheckLoginStateLoading(false));
 			return dispatch(setCheckLoginStateError());
 		}
 	};
@@ -49,10 +54,13 @@ const setCheckLoginStateError = (): SetCheckLoginStateErrorAction => ({
 	error: true,
 });
 
-const setCheckLoginStateLoading = (): SetCheckLoginStateLoadingAction => ({
-	type: CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_LOADING,
-	loading: true,
-});
+const setCheckLoginStateLoading = (isLoading: boolean): SetCheckLoginStateLoadingAction => {
+	console.log('set login state loading: ', true);
+	return {
+		type: CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_LOADING,
+		loading: isLoading,
+	};
+};
 
 export {
 	setCheckLoginStateSuccess,

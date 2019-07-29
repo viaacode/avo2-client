@@ -49,7 +49,6 @@ import { Dispatch } from 'redux';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
-import { copyToClipboard } from '../../helpers/clipboard';
 import { RouteParts } from '../../routes';
 import {
 	CheckboxDropdownModal,
