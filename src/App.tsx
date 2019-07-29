@@ -11,6 +11,7 @@ const App: FunctionComponent = () => {
 		<Provider store={store}>
 			<h1>Archief voor Onderwijs Homepage</h1>
 			<Router>
+				<Link to="/">Home</Link>&nbsp;
 				<Link to={`/${RouteParts.Search}`}>Zoeken</Link>&nbsp;
 				<Link to={`/${RouteParts.Collection}/1725151`}>Collectie</Link>&nbsp;
 				<Link to={`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`}>Mijn Werkruimte</Link>

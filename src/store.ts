@@ -3,6 +3,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
 import checkLoginStateReducer from './authentication/store/reducer';
+import { collectionReducer, collectionsReducer } from './collection/store/reducer';
 import itemReducer from './item/store/reducer';
 import searchReducer from './search/store/reducer';
 
@@ -12,6 +13,8 @@ export default createStore(
 	combineReducers<Reducer>({
 		search: searchReducer,
 		item: itemReducer,
+		collection: collectionReducer,
+		collections: collectionsReducer,
 		loginState: checkLoginStateReducer,
 	}),
 	composeWithDevTools(applyMiddleware(...middleware))
