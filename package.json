@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@types/react-redux": "^6.0.14",
-    "@viaa/avo2-components": "^1.5.3",
+    "@viaa/avo2-components": "^1.6.0",
     "@viaa/avo2-types": "^1.4.0",
     "classnames": "^2.2.6",
     "lodash-es": "^4.17.11",
