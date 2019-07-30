@@ -94,7 +94,26 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					</Toolbar>
 				</Container>
 			</Navbar>
-			{!isOpen && (
+			{isOpen ? (
+				<Container mode="horizontal">
+					<Container mode="vertical">
+						<ul className="c-nav-mobile">
+							{primaryItems.map(item => (
+								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
+									<Link to={item.location}>{item.label}</Link>
+								</li>
+							))}
+						</ul>
+						<ul className="c-nav-mobile">
+							{secondaryItems.map(item => (
+								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
+									<Link to={item.location}>{item.label}</Link>
+								</li>
+							))}
+						</ul>
+					</Container>
+				</Container>
+			) : (
 				<Navbar background="inverse" placement="top">
 					<div className="u-mq-switch-main-nav-little-space">
 						<Container mode="horizontal">
@@ -117,26 +136,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 						</Container>
 					</div>
 				</Navbar>
-			)}
-			{isOpen && (
-				<Container mode="horizontal">
-					<Container mode="vertical">
-						<ul className="c-nav-mobile">
-							{primaryItems.map(item => (
-								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
-									<Link to={item.location}>{item.label}</Link>
-								</li>
-							))}
-						</ul>
-						<ul className="c-nav-mobile">
-							{secondaryItems.map(item => (
-								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
-									<Link to={item.location}>{item.label}</Link>
-								</li>
-							))}
-						</ul>
-					</Container>
-				</Container>
 			)}
 		</Fragment>
 	);
