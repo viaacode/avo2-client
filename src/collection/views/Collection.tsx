@@ -1,4 +1,7 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
+import { Dispatch } from 'redux';
 
 import {
 	Avatar,
@@ -37,10 +40,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isEmpty } from 'lodash-es';
-import { RouteComponentProps } from 'react-router';
-import { getCollection } from '../../shared/store/collection/collectionActions';
+import { getCollection } from '../store/actions';
+import { selectCollection } from '../store/selectors';
 
-interface CollectionProps extends RouteComponentProps {}
+interface CollectionProps extends RouteComponentProps {
+	collection: Avo.Collection.Response;
+	getCollection: (id: string) => Dispatch;
+}
 
 export type BlockType =
 	| 'Image'
@@ -76,53 +82,21 @@ interface ContentBlockInfo {
 // TODO get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
-export const Collection: FunctionComponent<CollectionProps> = ({
+const Collection: FunctionComponent<CollectionProps> = ({
+	collection,
+	getCollection,
 	history,
 	location,
 	match,
 }: CollectionProps) => {
-	const [collection, setCollection] = useState({
-		title: 'Collection title',
-	} as Avo.Collection.Response);
 	const [id] = useState((match.params as any)['id'] as string);
 
 	/**
 	 * Get collection from api when id changes
 	 */
 	useEffect(() => {
-		// TODO: get collection from store by id
-		getCollection(id)
-			.then((collectionResponse: Avo.Collection.Response) => {
-				if (collectionResponse) {
-					setCollection(collectionResponse);
-				} else {
-					// TODO show toast with error message: collection with id was not found
-				}
-			})
-			.catch((err: any) => {
-				console.error('Failed to get collection from the server', err, { id });
-			});
-	}, [id]);
-
-	const contentBlockInfos: ContentBlockInfo[] = [];
-	contentBlockInfos.push({
-		blockType: 'Intro',
-		content: {
-			subtitle: 'Introductie',
-			text: collection.description,
-		} as BlockIntroProps,
-	});
-	(collection.fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
-		contentBlockInfos.push({
-			blockType: 'VideoTitleTextButton',
-			content: {
-				title: collectionFragment.custom_title,
-				text: collectionFragment.custom_description,
-				videoSource: '',
-				buttonLabel: 'Meer lezen',
-			} as BlockVideoTitleTextButtonProps,
-		});
-	});
+		getCollection(id);
+	}, [id, getCollection]);
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
 		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
@@ -164,7 +138,29 @@ export const Collection: FunctionComponent<CollectionProps> = ({
 		}
 	};
 
-	return (
+	const contentBlockInfos: ContentBlockInfo[] = [];
+	if (collection) {
+		contentBlockInfos.push({
+			blockType: 'Intro',
+			content: {
+				subtitle: 'Introductie',
+				text: collection.description,
+			} as BlockIntroProps,
+		});
+		(collection.fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
+			contentBlockInfos.push({
+				blockType: 'VideoTitleTextButton',
+				content: {
+					title: collectionFragment.custom_title,
+					text: collectionFragment.custom_description,
+					videoSource: '',
+					buttonLabel: 'Meer lezen',
+				} as BlockVideoTitleTextButtonProps,
+			});
+		});
+	}
+
+	return collection ? (
 		<Fragment>
 			<Container mode="vertical" size="small" background="alt">
 				<Container mode="horizontal">
@@ -222,5 +218,20 @@ export const Collection: FunctionComponent<CollectionProps> = ({
 				<Container mode="horizontal">{renderContentBlocks(contentBlockInfos)}</Container>
 			</Container>
 		</Fragment>
-	);
+	) : null;
 };
+
+const mapStateToProps = (state: any, { match }: CollectionProps) => ({
+	collection: selectCollection(state, (match.params as any).id),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getCollection: (id: string) => dispatch(getCollection(id) as any),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Collection);
