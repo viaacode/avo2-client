@@ -1,28 +1,24 @@
-import {
-	selectCheckLoginState,
-	selectCheckLoginStateError,
-	selectCheckLoginStateLoading,
-} from './selectors';
-import { CheckLoginStateResponse } from './types';
+import { selectLogin, selectLoginError, selectLoginLoading } from './selectors';
+import { LoginResponse, LoginState } from './types';
 
-describe('checkLoginState > store > selectors', () => {
+describe('login > store > selectors', () => {
 	const store = {
-		checkLoginState: {
-			data: { message: 'LOGGED_IN' } as CheckLoginStateResponse,
+		loginState: {
+			data: { message: 'LOGGED_IN' } as LoginResponse,
 			loading: false,
 			error: false,
 		},
 	};
 
-	it('Should get the checkLoginState error-state from the store', () => {
-		expect(selectCheckLoginStateError(store)).toEqual(false);
+	it('Should get the login error-state from the store', () => {
+		expect(selectLoginError(store)).toEqual(false);
 	});
 
-	it('Should get the checkLoginState loading-state from the store', () => {
-		expect(selectCheckLoginStateLoading(store)).toEqual(false);
+	it('Should get the login loading-state from the store', () => {
+		expect(selectLoginLoading(store)).toEqual(false);
 	});
 
-	it('Should get the checkLoginState data from the store', () => {
-		expect(selectCheckLoginState(store)).toMatchObject(store.checkLoginState.data);
+	it('Should get the login data from the store', () => {
+		expect(selectLogin(store)).toMatchObject(store.loginState.data);
 	});
 });

@@ -1,38 +1,22 @@
 import React, { ComponentType, FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
 
-import { Spinner } from '@viaa/avo2-components';
 import { RouteParts } from '../../routes';
-import { checkLoginState } from '../store/actions';
-import {
-	selectCheckLoginState,
-	selectCheckLoginStateError,
-	selectCheckLoginStateLoading,
-} from '../store/selectors';
-import { CheckLoginStateResponse } from '../store/types';
+import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
+import { LoginResponse } from '../store/types';
 
 export interface SecuredRouteProps {
 	component: ComponentType<any>;
 	path: string;
 	exact?: boolean;
-	loginState: CheckLoginStateResponse | null;
+	loginState: LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;
-	checkLoginState: () => Dispatch;
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = props => {
-	const {
-		component,
-		path,
-		exact,
-		loginState,
-		loginStateLoading,
-		loginStateError,
-		checkLoginState,
-	} = props;
+	const { component, path, exact, loginState, loginStateLoading, loginStateError } = props;
 
 	console.log('loading secure route');
 
@@ -104,20 +88,9 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 };
 
 const mapStateToProps = (state: any) => ({
-	loginState: selectCheckLoginState(state),
-	loginStateLoading: selectCheckLoginStateLoading(state),
-	loginStateError: selectCheckLoginStateError(state),
+	loginState: selectLogin(state),
+	loginStateLoading: selectLoginLoading(state),
+	loginStateError: selectLoginError(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		checkLoginState: () => dispatch(checkLoginState() as any),
-	};
-};
-
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(SecuredRoute)
-);
+export default withRouter(connect(mapStateToProps)(SecuredRoute));

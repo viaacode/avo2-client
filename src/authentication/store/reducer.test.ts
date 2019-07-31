@@ -1,30 +1,26 @@
-import {
-	setCheckLoginStateError,
-	setCheckLoginStateLoading,
-	setCheckLoginStateSuccess,
-} from './actions';
+import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
 import initialState from './initial-state';
-import { CheckLoginStateActionTypes, CheckLoginStateResponse } from './types';
+import { LoginActionTypes, LoginResponse } from './types';
 
-import checkLoginStateReducer from './reducer';
+import loginReducer from './reducer';
 
-describe('checkLoginState > store > reducer', () => {
-	it(`Correctly handle ${CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_ERROR}`, () => {
-		const state = checkLoginStateReducer(initialState, setCheckLoginStateError());
+describe('login > store > reducer', () => {
+	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_ERROR}`, () => {
+		const state = loginReducer(initialState, setLoginError());
 
 		expect(state.error).toEqual(true);
 	});
 
-	it(`Correctly handle ${CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_LOADING}`, () => {
-		const state = checkLoginStateReducer(initialState, setCheckLoginStateLoading());
+	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_LOADING}`, () => {
+		const state = loginReducer(initialState, setLoginLoading());
 
 		expect(state.loading).toEqual(true);
 	});
 
-	it(`Correctly handle ${CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_SUCCESS}`, () => {
-		const payload: CheckLoginStateResponse = { message: 'LOGGED_IN' };
+	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_SUCCESS}`, () => {
+		const payload: LoginResponse = { message: 'LOGGED_IN' };
 
-		const state = checkLoginStateReducer(initialState, setCheckLoginStateSuccess(payload));
+		const state = loginReducer(initialState, setLoginSuccess(payload));
 
 		expect(state.data).toEqual(payload);
 	});

@@ -1,40 +1,36 @@
-import { CheckLoginStateActionTypes, CheckLoginStateResponse } from './types';
+import { LoginActionTypes, LoginResponse } from './types';
 
-import {
-	setCheckLoginStateError,
-	setCheckLoginStateLoading,
-	setCheckLoginStateSuccess,
-} from './actions';
+import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
 
-describe('checkLoginState > store > actions', () => {
+describe('login > store > actions', () => {
 	it('Should create an action to set the loginState', () => {
-		const checkLoginStateResult: CheckLoginStateResponse = {
+		const loginResult: LoginResponse = {
 			message: 'LOGGED_IN',
 		};
 
 		const expectedAction = {
-			type: CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_SUCCESS,
-			data: checkLoginStateResult,
+			type: LoginActionTypes.SET_LOGIN_SUCCESS,
+			data: loginResult,
 		};
 
-		expect(setCheckLoginStateSuccess(checkLoginStateResult)).toMatchObject(expectedAction);
+		expect(setLoginSuccess(loginResult)).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set an error', () => {
 		const expectedAction = {
-			type: CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_ERROR,
+			type: LoginActionTypes.SET_LOGIN_ERROR,
 			error: true,
 		};
 
-		expect(setCheckLoginStateError()).toMatchObject(expectedAction);
+		expect(setLoginError()).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set the loading state', () => {
 		const expectedAction = {
-			type: CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_LOADING,
+			type: LoginActionTypes.SET_LOGIN_LOADING,
 			loading: true,
 		};
 
-		expect(setCheckLoginStateLoading()).toMatchObject(expectedAction);
+		expect(setLoginLoading()).toMatchObject(expectedAction);
 	});
 });

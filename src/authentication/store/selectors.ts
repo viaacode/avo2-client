@@ -1,21 +1,20 @@
 import { get } from 'lodash-es';
 
-import { CheckLoginState } from './types';
+import { LoginState } from './types';
 
-const selectCheckLoginState = ({ checkLoginState }: { checkLoginState: CheckLoginState }) => {
-	return get(checkLoginState, ['data']);
+const selectLogin = (store: any) => {
+	console.log('selector loginState triggered: ', store);
+	return get(store.loginState, ['data']);
 };
 
-const selectCheckLoginStateLoading = ({
-	checkLoginState,
-}: {
-	checkLoginState: CheckLoginState;
-}) => {
-	return get(checkLoginState, ['loading']);
+const selectLoginLoading = ({ loginState }: { loginState: LoginState }) => {
+	console.log('selector loginStateLoading triggered: ', loginState);
+	return get(loginState, ['loading']);
 };
 
-const selectCheckLoginStateError = ({ checkLoginState }: { checkLoginState: CheckLoginState }) => {
-	return get(checkLoginState, ['error']);
+const selectLoginError = ({ loginState }: { loginState: LoginState }) => {
+	console.log('selector loginStateError triggered: ', loginState);
+	return get(loginState, ['error']);
 };
 
-export { selectCheckLoginState, selectCheckLoginStateLoading, selectCheckLoginStateError };
+export { selectLogin, selectLoginLoading, selectLoginError };

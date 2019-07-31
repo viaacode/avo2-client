@@ -1,6 +1,6 @@
-import { CheckLoginState } from './types';
+import { LoginState } from './types';
 
-const initialState: CheckLoginState = Object.freeze({
+const initialState: LoginState = Object.freeze({
 	data: null,
 	loading: false,
 	error: false,

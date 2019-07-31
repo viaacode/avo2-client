@@ -1,34 +1,31 @@
 import { Action } from 'redux';
 
-export interface CheckLoginStateResponse {
+export interface LoginResponse {
 	message: 'LOGGED_IN' | 'LOGGED_OUT';
 }
 
-export enum CheckLoginStateActionTypes {
-	SET_CHECK_LOGIN_STATE_LOADING = '@@checkLoginState/SET_CHECK_LOGIN_STATE_LOADING',
-	SET_CHECK_LOGIN_STATE_SUCCESS = '@@checkLoginState/SET_CHECK_LOGIN_STATE_SUCCESS',
-	SET_CHECK_LOGIN_STATE_ERROR = '@@checkLoginState/SET_CHECK_LOGIN_STATE_ERROR',
+export enum LoginActionTypes {
+	SET_LOGIN_LOADING = '@@login/SET_LOGIN_LOADING',
+	SET_LOGIN_SUCCESS = '@@login/SET_LOGIN_SUCCESS',
+	SET_LOGIN_ERROR = '@@login/SET_LOGIN_ERROR',
 }
 
-export interface SetCheckLoginStateSuccessAction extends Action {
-	data: CheckLoginStateResponse;
+export interface SetLoginSuccessAction extends Action {
+	data: LoginResponse;
 }
 
-export interface SetCheckLoginStateLoadingAction extends Action {
+export interface SetLoginLoadingAction extends Action {
 	loading: boolean;
 }
 
-export interface SetCheckLoginStateErrorAction extends Action {
+export interface SetLoginErrorAction extends Action {
 	error: boolean;
 }
 
-export type CheckLoginStateAction =
-	| SetCheckLoginStateSuccessAction
-	| SetCheckLoginStateLoadingAction
-	| SetCheckLoginStateErrorAction;
+export type LoginAction = SetLoginSuccessAction | SetLoginLoadingAction | SetLoginErrorAction;
 
-export interface CheckLoginState {
-	readonly data: CheckLoginStateResponse | null; // TODO move to types: Avo.Authentication.Response
+export interface LoginState {
+	readonly data: LoginResponse | null; // TODO move to types: Avo.Authentication.Response
 	readonly loading: boolean;
 	readonly error: boolean;
 }

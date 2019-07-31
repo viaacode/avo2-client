@@ -8,6 +8,10 @@ export function redirectToLoginPage(returnToUrl: string) {
 	window.location.href = url;
 }
 
+export function redirectToPage(returnToUrl: string) {
+	window.location.href = returnToUrl;
+}
+
 export function redirectToLogoutPage(returnToUrl: string) {
 	const url = `${process.env.REACT_APP_PROXY_URL}/auth/logout?${queryString.stringify({
 		returnToUrl,

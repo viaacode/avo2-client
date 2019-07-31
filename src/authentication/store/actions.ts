@@ -1,14 +1,15 @@
 import { Action, Dispatch } from 'redux';
 
 import {
-	CheckLoginStateActionTypes,
-	CheckLoginStateResponse,
-	SetCheckLoginStateErrorAction,
-	SetCheckLoginStateLoadingAction,
-	SetCheckLoginStateSuccessAction,
+	LoginActionTypes,
+	LoginResponse,
+	LoginState,
+	SetLoginErrorAction,
+	SetLoginLoadingAction,
+	SetLoginSuccessAction,
 } from './types';
 
-const checkLoginState = () => {
+const getLoginState = () => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
 		const { loginMessage } = getState();
 
@@ -17,7 +18,7 @@ const checkLoginState = () => {
 			return null;
 		}
 
-		dispatch(setCheckLoginStateLoading(true));
+		dispatch(setLoginLoading());
 
 		try {
 			const url = `${process.env.REACT_APP_PROXY_URL}/auth/check-login`;
@@ -31,40 +32,31 @@ const checkLoginState = () => {
 
 			const data = await response.json();
 
-			console.error('check login state success', data);
-			dispatch(setCheckLoginStateLoading(false));
-			return dispatch(setCheckLoginStateSuccess(data as CheckLoginStateResponse));
+			console.log('check login state success', data);
+			return dispatch(setLoginSuccess(data as LoginResponse));
 		} catch (err) {
 			console.error('failed to check login state', err);
-			dispatch(setCheckLoginStateLoading(false));
-			return dispatch(setCheckLoginStateError());
+			return dispatch(setLoginError());
 		}
 	};
 };
 
-const setCheckLoginStateSuccess = (
-	data: CheckLoginStateResponse
-): SetCheckLoginStateSuccessAction => ({
+const setLoginSuccess = (data: LoginResponse): SetLoginSuccessAction => ({
 	data,
-	type: CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_SUCCESS,
+	type: LoginActionTypes.SET_LOGIN_SUCCESS,
 });
 
-const setCheckLoginStateError = (): SetCheckLoginStateErrorAction => ({
-	type: CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_ERROR,
+const setLoginError = (): SetLoginErrorAction => ({
+	type: LoginActionTypes.SET_LOGIN_ERROR,
 	error: true,
 });
 
-const setCheckLoginStateLoading = (isLoading: boolean): SetCheckLoginStateLoadingAction => {
+const setLoginLoading = (): SetLoginLoadingAction => {
 	console.log('set login state loading: ', true);
 	return {
-		type: CheckLoginStateActionTypes.SET_CHECK_LOGIN_STATE_LOADING,
-		loading: isLoading,
+		type: LoginActionTypes.SET_LOGIN_LOADING,
+		loading: true,
 	};
 };
 
-export {
-	setCheckLoginStateSuccess,
-	setCheckLoginStateError,
-	setCheckLoginStateLoading,
-	checkLoginState,
-};
+export { setLoginSuccess, setLoginError, setLoginLoading, getLoginState };
