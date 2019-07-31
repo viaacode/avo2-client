@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
 
 import { RouteParts } from '../../routes';
-import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
+import { selectLogin } from '../store/selectors';
 import { LoginResponse } from '../store/types';
 
 export interface SecuredRouteProps {
@@ -11,8 +11,6 @@ export interface SecuredRouteProps {
 	path: string;
 	exact?: boolean;
 	loginState: LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = props => {
@@ -43,8 +41,6 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 
 const mapStateToProps = (state: any) => ({
 	loginState: selectLogin(state),
-	loginStateLoading: selectLoginLoading(state),
-	loginStateError: selectLoginError(state),
 });
 
 export default withRouter(connect(mapStateToProps)(SecuredRoute));

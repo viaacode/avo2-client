@@ -36,7 +36,9 @@ const Login: FunctionComponent<LoginProps & RouteComponentProps> = ({
 	if (!loginState || loginStateLoading) {
 		// Wait for login check
 		return (
-			<div>
+			<div
+				style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '400px' }}
+			>
 				<Spinner size="large" />
 			</div>
 		);
@@ -51,7 +53,7 @@ const Login: FunctionComponent<LoginProps & RouteComponentProps> = ({
 	// Redirect to login form
 	const base = window.location.href.split(`/${RouteParts.Login}`)[0];
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = base + get(location, 'state.from.pathname', '/');
+	const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
 	redirectToLoginPage(returnToUrl);
 	return null;
 };

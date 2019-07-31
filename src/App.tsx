@@ -1,13 +1,19 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
-import { Provider } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 
+import { selectLogin } from './authentication/store/selectors';
+import { LoginResponse } from './authentication/store/types';
 import { renderRoutes, RouteParts } from './routes';
 import { Navigation } from './shared/components/Navigation/Navigation';
 import store from './store';
 
-const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
+interface AppProps {
+	loginState: LoginResponse | null;
+}
+
+const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, loginState }) => {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	useEffect(() => {
@@ -36,10 +42,14 @@ const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
 					{ label: 'Projecten', location: `/${RouteParts.Projects}` },
 					{ label: 'Nieuws', location: `/${RouteParts.News}` },
 				]}
-				secondaryItems={[
-					{ label: 'Registreren', location: `/${RouteParts.Register}` },
-					{ label: 'Aanmelden', location: `/${RouteParts.Login}` },
-				]}
+				secondaryItems={
+					loginState && loginState.message === 'LOGGED_IN'
+						? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
+						: [
+								{ label: 'Registreren', location: `/${RouteParts.Register}` },
+								{ label: 'Aanmelden', location: `/${RouteParts.Login}` },
+						  ]
+				}
 				isOpen={menuOpen}
 				handleMenuClick={toggleMenu}
 			/>
@@ -48,7 +58,11 @@ const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
 	);
 };
 
-const AppWithRouter = withRouter(App);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+const AppWithRouter = withRouter(connect(mapStateToProps)(App));
 
 const Root: FunctionComponent = () => {
 	return (
