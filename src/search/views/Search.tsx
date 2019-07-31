@@ -42,7 +42,7 @@ import {
 import queryString from 'query-string';
 import React, { Fragment, FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
@@ -107,13 +107,13 @@ const DEFAULT_SORT_ORDER: SortOrder = {
 	orderDirection: 'desc',
 } as SortOrder;
 
-const Search: FunctionComponent<SearchProps> = ({
+const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	searchResults,
 	searchResultsLoading,
 	search,
 	history,
 	location,
-}: SearchProps) => {
+}) => {
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
 	const [sortOrder, setSortOrder]: [SortOrder, (sortOrder: SortOrder) => void] = useState(
 		DEFAULT_SORT_ORDER
@@ -651,7 +651,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Search);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Search)
+);

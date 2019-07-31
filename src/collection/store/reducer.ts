@@ -13,39 +13,30 @@ import {
 } from './types';
 
 const collectionReducer = createReducer(initialCollectionState, {
-	[CollectionActionTypes.SET_COLLECTION_LOADING]: (state, action: SetCollectionLoadingAction) => {
-		console.log('collection loading reducer triggered');
-		return {
-			...state,
-			[action.id]: {
-				data: null,
-				loading: action.loading,
-				error: false,
-			},
-		};
-	},
-	[CollectionActionTypes.SET_COLLECTION_SUCCESS]: (state, action: SetCollectionSuccessAction) => {
-		console.log('collection success reducer triggered');
-		return {
-			...state,
-			[action.id]: {
-				data: action.data,
-				loading: false,
-				error: false,
-			},
-		};
-	},
-	[CollectionActionTypes.SET_COLLECTION_ERROR]: (state, action: SetCollectionErrorAction) => {
-		console.log('collection error reducer triggered');
-		return {
-			...state,
-			[action.id]: {
-				data: null,
-				loading: false,
-				error: action.error,
-			},
-		};
-	},
+	[CollectionActionTypes.SET_COLLECTION_LOADING]: (state, action: SetCollectionLoadingAction) => ({
+		...state,
+		[action.id]: {
+			data: null,
+			loading: action.loading,
+			error: false,
+		},
+	}),
+	[CollectionActionTypes.SET_COLLECTION_SUCCESS]: (state, action: SetCollectionSuccessAction) => ({
+		...state,
+		[action.id]: {
+			data: action.data,
+			loading: false,
+			error: false,
+		},
+	}),
+	[CollectionActionTypes.SET_COLLECTION_ERROR]: (state, action: SetCollectionErrorAction) => ({
+		...state,
+		[action.id]: {
+			data: null,
+			loading: false,
+			error: action.error,
+		},
+	}),
 });
 
 const collectionsReducer = createReducer(initialCollectionsState, {

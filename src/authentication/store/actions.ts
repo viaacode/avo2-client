@@ -32,7 +32,6 @@ const getLoginState = () => {
 
 			const data = await response.json();
 
-			console.log('check login state success', data);
 			return dispatch(setLoginSuccess(data as LoginResponse));
 		} catch (err) {
 			console.error('failed to check login state', err);
@@ -52,7 +51,6 @@ const setLoginError = (): SetLoginErrorAction => ({
 });
 
 const setLoginLoading = (): SetLoginLoadingAction => {
-	console.log('set login state loading: ', true);
 	return {
 		type: LoginActionTypes.SET_LOGIN_LOADING,
 		loading: true,
