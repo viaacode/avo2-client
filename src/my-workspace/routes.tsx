@@ -4,16 +4,17 @@ import SecuredRoute from '../authentication/components/SecuredRoute';
 import Collections from '../collection/views/Collections';
 import { RouteParts } from '../routes';
 import Bookmarks from './views/Bookmarks';
+import MyWorkspace from './views/MyWorkspace';
 
 export const renderMyWorkspaceRoutes = () => (
 	<Fragment>
 		<SecuredRoute
-			component={Collections}
+			component={MyWorkspace}
 			path={`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`}
 			exact
 		/>
 		<SecuredRoute
-			component={Bookmarks}
+			component={MyWorkspace}
 			path={`/${RouteParts.MyWorkspace}/${RouteParts.Bookmarks}`}
 			exact
 		/>
