@@ -1,8 +1,9 @@
 import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Tabs } from '@viaa/avo2-components';
 import Collections from '../../collection/views/Collections';
+import { RouteParts } from '../../routes';
 import Bookmarks from './Bookmarks';
 
 interface MyWorkspaceProps extends RouteComponentProps {}
@@ -15,7 +16,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps & RouteComponentProps> = (
 	const [tabId, setTabId] = useState((match.params as any)['tabId'] as string);
 
 	const goToTab = (id: ReactText) => {
-		history.push(`/mijn-werkruimte/${id}`);
+		history.push(`/${RouteParts.MyWorkspace}/${id}`);
 		setTabId(String(id));
 	};
 
@@ -49,4 +50,4 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps & RouteComponentProps> = (
 	);
 };
 
-export default MyWorkspace;
+export default withRouter(MyWorkspace);
