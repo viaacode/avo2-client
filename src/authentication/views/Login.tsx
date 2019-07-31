@@ -1,17 +1,16 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Action, Dispatch } from 'redux';
+import { Dispatch } from 'redux';
 
 import { get } from 'lodash-es';
 
 import { Spinner } from '@viaa/avo2-components';
 import { RouteParts } from '../../routes';
-import { redirectToLoginPage, redirectToPage } from '../helpers/redirect-to-idp';
+import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginAction, LoginResponse, LoginState } from '../store/types';
-import { LogoutProps } from './Logout';
+import { LoginResponse } from '../store/types';
 
 export interface LoginProps {
 	loginState: LoginResponse | null;

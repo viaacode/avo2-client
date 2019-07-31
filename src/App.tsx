@@ -1,28 +1,60 @@
-import React, { FunctionComponent } from 'react';
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { renderRoutes, RouteParts } from './routes';
+import { renderRoutes } from './routes';
+import { Navigation } from './shared/components/Navigation/Navigation';
 import store from './store';
 
-const App: FunctionComponent = () => {
+const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
+	const [menuOpen, setMenuOpen] = useState(false);
+
+	useEffect(() => {
+		return history.listen(closeMenu);
+	});
+
+	const toggleMenu = () => {
+		setMenuOpen(!menuOpen);
+	};
+
+	const closeMenu = () => {
+		setMenuOpen(false);
+	};
+
+	return (
+		<Fragment>
+			<Navigation
+				primaryItems={[
+					{ label: 'Home', location: '/' },
+					{ label: 'Zoeken', location: '/search' },
+					{ label: 'Ontdek', location: '/' },
+					{ label: 'Mijn Archief', location: '/mijn-werkruimte/collecties' },
+					{ label: 'Projecten', location: '/' },
+					{ label: 'Nieuws', location: '/' },
+				]}
+				secondaryItems={[
+					{ label: 'Registreren', location: '/' },
+					{ label: 'Aanmelden', location: '/' },
+				]}
+				isOpen={menuOpen}
+				handleMenuClick={toggleMenu}
+			/>
+			{renderRoutes()}
+		</Fragment>
+	);
+};
+
+const AppWithRouter = withRouter(App);
+
+const Root: FunctionComponent = () => {
 	return (
 		<Provider store={store}>
-			<h1>Archief voor Onderwijs Homepage</h1>
 			<Router>
-				<Link to="/">Home</Link>&nbsp;
-				<Link to={`/${RouteParts.Search}`}>Zoeken</Link>&nbsp;
-				<Link to={`/${RouteParts.Collection}/1725151`}>Collectie</Link>&nbsp;
-				<Link to={`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`}>Mijn Werkruimte</Link>
-				&nbsp;
-				<Link to={`/${RouteParts.Register}`}>Registreren</Link>&nbsp;
-				<Link to={`/${RouteParts.Login}`}>Aanmelden</Link>&nbsp;
-				<Link to={`/${RouteParts.Logout}`}>Afmelden</Link>&nbsp;
-				{renderRoutes()}
+				<AppWithRouter />
 			</Router>
 		</Provider>
 	);
 };
 
-export default App;
+export default Root;

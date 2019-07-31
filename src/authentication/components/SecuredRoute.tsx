@@ -16,7 +16,7 @@ export interface SecuredRouteProps {
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = props => {
-	const { component, path, exact, loginState, loginStateLoading, loginStateError } = props;
+	const { component, path, exact, loginState } = props;
 
 	return (
 		<Route

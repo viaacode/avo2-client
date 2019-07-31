@@ -3,7 +3,6 @@ import { Action, Dispatch } from 'redux';
 import {
 	LoginActionTypes,
 	LoginResponse,
-	LoginState,
 	SetLoginErrorAction,
 	SetLoginLoadingAction,
 	SetLoginSuccessAction,

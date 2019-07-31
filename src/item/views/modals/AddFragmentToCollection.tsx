@@ -32,7 +32,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	onClose = () => {},
 }: AddFragmentToCollectionProps) => {
 	// TODO create endpoint for existing collections + call and put in store
-	const [existingCollections, setExistingCollections] = useState([]);
+	const [existingCollections] = useState([]);
 	const [createNewCollection, setCreateNewCollection] = useState(false);
 	const [selectedCollection, setSelectedCollection] = useState('');
 
@@ -49,7 +49,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 			onClose={onClose}
 		>
 			<ModalBody>
-				<div id="addFragmentToCollection">
+				<div className="c-modal__body-add-fragment">
 					<Spacer>
 						<Form>
 							<Grid>
