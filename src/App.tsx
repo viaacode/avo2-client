@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { renderRoutes } from './routes';
+import { renderRoutes, RouteParts } from './routes';
 import { Navigation } from './shared/components/Navigation/Navigation';
 import store from './store';
 
@@ -27,15 +27,18 @@ const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
 			<Navigation
 				primaryItems={[
 					{ label: 'Home', location: '/' },
-					{ label: 'Zoeken', location: '/search' },
-					{ label: 'Ontdek', location: '/' },
-					{ label: 'Mijn Archief', location: '/mijn-werkruimte/collecties' },
-					{ label: 'Projecten', location: '/' },
-					{ label: 'Nieuws', location: '/' },
+					{ label: 'Zoeken', location: `/${RouteParts.Search}` },
+					{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
+					{
+						label: 'Mijn Archief',
+						location: `/${RouteParts.MyWorkspace}/${RouteParts.Collections}`,
+					},
+					{ label: 'Projecten', location: `/${RouteParts.Projects}` },
+					{ label: 'Nieuws', location: `/${RouteParts.News}` },
 				]}
 				secondaryItems={[
-					{ label: 'Registreren', location: '/' },
-					{ label: 'Aanmelden', location: '/' },
+					{ label: 'Registreren', location: `/${RouteParts.Register}` },
+					{ label: 'Aanmelden', location: `/${RouteParts.Login}` },
 				]}
 				isOpen={menuOpen}
 				handleMenuClick={toggleMenu}

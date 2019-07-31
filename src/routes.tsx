@@ -17,6 +17,9 @@ export enum RouteParts {
 	Login = 'aanmelden',
 	Logout = 'afmelden',
 	Register = 'registreren',
+	Discover = 'ontdek',
+	Projects = 'projecten',
+	News = 'nieuws',
 }
 
 export const renderRoutes = () => (
