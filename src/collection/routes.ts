@@ -1,4 +1,4 @@
-import { Collection } from './views/Collection';
+import Collection from './views/Collection';
 
 export const COLLECTION_ROUTES = [
 	{

@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "0.2.1",
+  "version": "0.3.2",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@types/react-redux": "^6.0.14",
-    "@viaa/avo2-components": "^1.4.0",
-    "@viaa/avo2-types": "^1.3.0",
+    "@viaa/avo2-components": "^1.6.0",
+    "@viaa/avo2-types": "^1.4.0",
     "classnames": "^2.2.6",
     "lodash-es": "^4.17.11",
     "marked": "^0.6.3",
@@ -26,7 +26,7 @@
     "react-router-config": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
-    "react-scrollbars-custom": "^4.0.5",
+    "react-scrollbars-custom": "^4.0.15",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0"

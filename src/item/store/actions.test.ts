@@ -4,61 +4,74 @@ import { ItemActionTypes } from './types';
 
 import { setItemError, setItemLoading, setItemSuccess } from './actions';
 
+export const DUMMY_ITEM = {
+	bookmarks: null,
+	browse_path: 'test',
+	created_at: 'test',
+	depublish_at: null,
+	description: 'test',
+	duration: 'test',
+	expiry_date: null,
+	external_id: '123',
+	id: 123,
+	is_deleted: false,
+	is_orphaned: false,
+	is_published: true,
+	issued: 'test',
+	issued_edtf: 'test',
+	lom_classification: [],
+	lom_context: [],
+	lom_intendedenduserrole: [],
+	lom_keywords: [],
+	lom_languages: [],
+	lom_typicalagerange: [],
+	org_id: '123',
+	org_name: 'test',
+	publish_at: null,
+	series: 'test',
+	thumbnail_path: 'test',
+	title: 'test',
+	type: 'video' as Avo.Core.ContentType,
+	type_id: 2,
+	updated_at: 'test',
+	views: null,
+};
+
 describe('item > store > actions', () => {
 	it('Should create an action to set the item results', () => {
-		const id = '123';
-		const itemResults = {
-			id,
-			table_name: 'test',
-			dc_title: 'test',
-			dc_titles_serie: 'test',
-			thumbnail_path: 'test',
-			original_cp: 'test',
-			original_cp_id: 'test',
-			lom_context: [],
-			lom_keywords: [],
-			lom_languages: [],
-			dcterms_issued: 'test',
-			dcterms_abstract: 'test',
-			lom_classification: [],
-			lom_typical_age_range: [],
-			lom_intended_enduser_role: [],
-			briefing_id: [],
-			duration_time: '10',
-			duration_seconds: 10,
-			administrative_type: 'video' as Avo.Core.ContentType,
-		};
+		const externalId = DUMMY_ITEM.external_id;
+		const itemResults = DUMMY_ITEM;
 
 		const expectedAction = {
-			id,
+			id: externalId,
 			type: ItemActionTypes.SET_ITEM_SUCCESS,
 			data: itemResults,
 		};
 
-		expect(setItemSuccess(id, itemResults)).toMatchObject(expectedAction);
+		expect(setItemSuccess(externalId, itemResults)).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set an error', () => {
-		const id = '123';
+		const externalId = DUMMY_ITEM.external_id;
 
 		const expectedAction = {
-			id,
+			id: externalId,
 			type: ItemActionTypes.SET_ITEM_ERROR,
 			error: true,
 		};
 
-		expect(setItemError(id)).toMatchObject(expectedAction);
+		expect(setItemError(externalId)).toMatchObject(expectedAction);
 	});
 
 	it('Should create an action to set the loading state', () => {
-		const id = '123';
+		const externalId = DUMMY_ITEM.external_id;
 
 		const expectedAction = {
-			id,
+			id: externalId,
 			type: ItemActionTypes.SET_ITEM_LOADING,
 			loading: true,
 		};
 
-		expect(setItemLoading(id)).toMatchObject(expectedAction);
+		expect(setItemLoading(externalId)).toMatchObject(expectedAction);
 	});
 });
