@@ -12,7 +12,7 @@ export const Footer: FunctionComponent = () => {
 						Een realisatie van <a href="https://viaa.be">VIAA.be</a>
 					</li>
 					<li>
-						<Link to="/terms-and-conditions">Gebruiksvoorwaarden</Link>
+						<Link to="/gebruiksvoorwaarden">Gebruiksvoorwaarden</Link>
 					</li>
 					<li>
 						<Link to="/privacy">Privacyverklaring</Link>

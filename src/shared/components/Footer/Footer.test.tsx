@@ -39,7 +39,7 @@ describe('<Footer />', () => {
 		const link = listItem.find(Link);
 
 		expect(link.text()).toEqual('Gebruiksvoorwaarden');
-		expect(link.prop('to')).toEqual('/terms-and-conditions');
+		expect(link.prop('to')).toEqual('/gebruiksvoorwaarden');
 	});
 
 	it('Should correctly render the privacy-policy-link', () => {
