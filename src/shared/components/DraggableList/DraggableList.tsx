@@ -1,4 +1,4 @@
-import React, { Component, FunctionComponent, useState } from 'react';
+import React, { Component } from 'react';
 
 import { Icon } from '@viaa/avo2-components';
 import classNames from 'classnames';
