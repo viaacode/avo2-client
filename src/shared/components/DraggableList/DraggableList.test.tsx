@@ -27,4 +27,43 @@ describe('<DraggableList />', () => {
 
 		expect(draggableListItems).toHaveLength(mockElements.length);
 	});
+
+	it('Should initialize with null as currentlyBeingDragged state', () => {
+		const draggableListComponent = mount(
+			<DraggableList elements={mockElements} onListChange={mockElements => {}} />
+		);
+
+		expect(draggableListComponent.state('currentlyBeingDragged')).toEqual(null);
+	});
+
+	it('Should initialize with null as currentlyBeingDragged state', () => {
+		const draggableListComponent = mount(
+			<DraggableList elements={mockElements} onListChange={mockElements => {}} />
+		);
+
+		expect(draggableListComponent.state('currentlyBeingDragged')).toEqual(null);
+	});
+
+	it('Should set currentlyBeingDragged state on onDragStart', () => {
+		const draggableListComponent = mount(
+			<DraggableList elements={mockElements} onListChange={mockElements => {}} />
+		);
+
+		const draggableListItems = draggableListComponent.find('.c-table-view__item');
+		draggableListItems.at(1).simulate('dragstart');
+
+		expect(draggableListComponent.state('currentlyBeingDragged')).toEqual(mockElements[1]);
+	});
+
+	it('Should clear currentlyBeingDragged state on onDragEnd', () => {
+		const draggableListComponent = mount(
+			<DraggableList elements={mockElements} onListChange={mockElements => {}} />
+		);
+
+		const draggableListItems = draggableListComponent.find('.c-table-view__item');
+		draggableListItems.at(1).simulate('dragstart');
+		draggableListItems.at(1).simulate('dragend');
+
+		expect(draggableListComponent.state('currentlyBeingDragged')).toEqual(null);
+	});
 });

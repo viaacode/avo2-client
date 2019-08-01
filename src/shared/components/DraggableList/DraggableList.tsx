@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { Component, FunctionComponent, useState } from 'react';
 
 import { Icon } from '@viaa/avo2-components';
 import classNames from 'classnames';
@@ -8,14 +8,25 @@ export interface DraggableListProps {
 	onListChange: (updatedList: JSX.Element[]) => void;
 }
 
-export const DraggableList: FunctionComponent<DraggableListProps> = ({
-	elements,
-	onListChange,
-}) => {
-	const [currentlyBeingDragged, setCurrentlyBeingDragged] = useState();
+export interface DraggableListState {
+	currentlyBeingDragged: JSX.Element | null;
+}
 
-	const onDragStart = (e: any, index: number) => {
-		setCurrentlyBeingDragged(elements[index]);
+export class DraggableList extends Component<DraggableListProps, DraggableListState> {
+	constructor(props: DraggableListProps) {
+		super(props);
+
+		this.state = {
+			currentlyBeingDragged: null,
+		};
+	}
+
+	onDragStart = (e: any, index: number) => {
+		const { elements } = this.props;
+
+		this.setState({
+			currentlyBeingDragged: elements[index],
+		});
 
 		// Drag animation/metadata
 		if (e.dataTransfer && e.target) {
@@ -25,12 +36,17 @@ export const DraggableList: FunctionComponent<DraggableListProps> = ({
 		}
 	};
 
-	const onDragOver = (index: number) => {
+	onDragOver = (index: number) => {
+		const { elements, onListChange } = this.props;
+		const { currentlyBeingDragged } = this.state;
+
 		const draggedOverItem = elements[index];
 
 		// Update currentlyBeingDragged if list was updated
 		if (!currentlyBeingDragged) {
-			setCurrentlyBeingDragged(elements[index]);
+			this.setState({
+				currentlyBeingDragged: elements[index],
+			});
 		}
 
 		if (currentlyBeingDragged && currentlyBeingDragged !== elements[index]) {
@@ -43,39 +59,47 @@ export const DraggableList: FunctionComponent<DraggableListProps> = ({
 		}
 	};
 
-	const onDragEnd = () => setCurrentlyBeingDragged(null);
+	onDragEnd = () =>
+		this.setState({
+			currentlyBeingDragged: null,
+		});
 
-	return (
-		<div
-			className={classNames(
-				'c-table-view',
-				{ 'draggable-container--is-dragging': currentlyBeingDragged },
-				{ 'draggable-container--over': currentlyBeingDragged }
-			)}
-		>
-			{elements.map((renderElement, index) => (
-				<div
-					className={classNames(
-						'c-table-view__item',
-						'c-table-view__item--type-action',
-						{ 'draggable-source--is-dragging': renderElement === currentlyBeingDragged },
-						{ 'draggable--over': renderElement === currentlyBeingDragged }
-					)}
-					onDragOver={() => onDragOver(index)}
-					onDragEnd={onDragEnd}
-					onDragStart={e => onDragStart(e, index)}
-					draggable
-				>
-					<div className="o-grid-col-flex">
-						<div className="o-flex">{renderElement}</div>
-					</div>
-					<div className="o-grid-col-static">
-						<div className="u-opacity-50">
-							<Icon name="menu" />
+	render() {
+		const { elements } = this.props;
+		const { currentlyBeingDragged } = this.state;
+
+		return (
+			<div
+				className={classNames(
+					'c-table-view',
+					{ 'draggable-container--is-dragging': currentlyBeingDragged },
+					{ 'draggable-container--over': currentlyBeingDragged }
+				)}
+			>
+				{elements.map((renderElement, index) => (
+					<div
+						className={classNames(
+							'c-table-view__item',
+							'c-table-view__item--type-action',
+							{ 'draggable-source--is-dragging': renderElement === currentlyBeingDragged },
+							{ 'draggable--over': renderElement === currentlyBeingDragged }
+						)}
+						onDragOver={() => this.onDragOver(index)}
+						onDragEnd={this.onDragEnd}
+						onDragStart={e => this.onDragStart(e, index)}
+						draggable
+					>
+						<div className="o-grid-col-flex">
+							<div className="o-flex">{renderElement}</div>
+						</div>
+						<div className="o-grid-col-static">
+							<div className="u-opacity-50">
+								<Icon name="menu" />
+							</div>
 						</div>
 					</div>
-				</div>
-			))}
-		</div>
-	);
-};
+				))}
+			</div>
+		);
+	}
+}
