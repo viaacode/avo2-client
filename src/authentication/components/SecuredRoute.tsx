@@ -21,7 +21,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 			path={path}
 			exact={exact}
 			render={props => {
-				// 	// Already logged in
+				// Already logged in
 				if (loginState && loginState.message === 'LOGGED_IN') {
 					const Component = component;
 					return <Component />;
