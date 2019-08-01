@@ -1,11 +1,16 @@
-import React, { Fragment, FunctionComponent } from 'react';
+import React, { Fragment, FunctionComponent, useState } from 'react';
 
-import {} from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { RouteComponentProps } from 'react-router';
+import { DraggableList } from '../../shared/components/DraggableList/DraggableList';
 
 interface CollectionsProps extends RouteComponentProps {}
 
 export const Collections: FunctionComponent<CollectionsProps> = ({}) => {
-	return <Fragment />;
+	const [elements, setElements] = useState([<div>Element 1</div>, <div>Element 2</div>]);
+
+	return (
+		<Fragment>
+			<DraggableList elements={elements} onListChange={elements => setElements(elements)} />
+		</Fragment>
+	);
 };
