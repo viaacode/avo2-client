@@ -6,7 +6,9 @@ import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-
 
 import { Navigation } from './shared/components/Navigation/Navigation';
 
+import { ApolloProvider } from 'react-apollo';
 import { ROUTES } from './routes';
+import { dataService } from './shared/services/data-service';
 import store from './store';
 
 const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
@@ -51,11 +53,13 @@ const AppWithRouter = withRouter(App);
 
 const Root: FunctionComponent = () => {
 	return (
-		<Provider store={store}>
-			<Router>
-				<AppWithRouter />
-			</Router>
-		</Provider>
+		<ApolloProvider client={dataService}>
+			<Provider store={store}>
+				<Router>
+					<AppWithRouter />
+				</Router>
+			</Provider>
+		</ApolloProvider>
 	);
 };
 
