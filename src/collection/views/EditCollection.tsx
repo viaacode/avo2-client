@@ -1,161 +1,36 @@
 import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+
+import { get, isEmpty } from 'lodash-es';
 import { Dispatch } from 'redux';
 
 import {
 	Avatar,
 	Button,
-	Column,
 	Container,
-	Form,
-	FormGroup,
-	Grid,
 	Icon,
 	MetaData,
 	MetaDataItem,
 	Spacer,
 	Tabs,
-	TextArea,
-	TextInput,
-	Thumbnail,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get, isEmpty } from 'lodash-es';
+
 import { getCollection } from '../store/actions';
 import { selectCollection } from '../store/selectors';
 
-const mockCollection = {
-	fragments: [
-		{
-			id: 0,
-			created_at: '2017-04-10T10:29:56Z',
-			updated_at: '2017-04-10T10:29:56Z',
-			type: 'Intro',
-			fields: [
-				{
-					name: 'title',
-					label: 'Titel',
-					editorType: 'string',
-					value: 'INLEIDING',
-					required: false,
-				},
-				{
-					name: 'text',
-					label: 'Beschrijving',
-					editorType: 'textarea',
-					value:
-						'Deze collectie is gemaakt voor lessen binnen het vak economie en bedrijfsbeheer in de tweede en de derde graad van het secundair onderwijs.',
-					required: true,
-				},
-			],
-		},
-		{
-			id: 1,
-			created_at: '2017-04-10T10:29:56Z',
-			updated_at: '2017-04-10T10:29:56Z',
-			type: 'VideoTitleTextButton',
-			fields: [
-				{
-					name: 'external_id',
-					label: 'Media id',
-					editorType: 'none',
-					value: 'xg9f48884b',
-					required: true,
-				},
-				{
-					name: 'custom_title',
-					label: 'Eigen titel',
-					editorType: 'string',
-					value: '1. Verzekeringen: voorbeelden',
-					required: false,
-				},
-				{
-					name: 'custom_description',
-					label: 'Eigen beschrijving',
-					editorType: 'textarea',
-					value:
-						'Begingeneriek van Schooltelevisie met een aaneenschakeling van cartoons in verband met verzekeringen en situaties waarbij een verzekering handig of nodig kan zijn.',
-					required: false,
-				},
-				{
-					name: 'start_oc',
-					label: 'Begin fragment',
-					editorType: 'none',
-					value: 0,
-					required: false,
-				},
-				{
-					name: 'end_oc',
-					label: 'Einde fragment',
-					editorType: 'none',
-					value: 99,
-					required: false,
-				},
-			],
-		},
-		{
-			id: 2,
-			created_at: '2017-04-10T10:29:56Z',
-			updated_at: '2017-04-10T10:29:56Z',
-			type: 'VideoTitleTextButton',
-			fields: [
-				{
-					name: 'external_id',
-					label: 'Media id',
-					editorType: 'none',
-					value: '319s189f0v',
-					required: true,
-				},
-				{
-					name: 'custom_title',
-					label: 'Eigen titel',
-					editorType: 'string',
-					value: '2. Verzekeringen: soorten en nuttigheid',
-					required: false,
-				},
-				{
-					name: 'custom_description',
-					label: 'Eigen beschrijving',
-					editorType: 'textarea',
-					value:
-						'Een animatiefilm uit Voor hetzelfde geld in verband met verzekeringen. Het verschil tussen verplichte en niet-verplichte verzekeringen wordt aangehaald. Enkele voorbeelden van absurde verzekeringen worden opgesomd.',
-					required: false,
-				},
-				{
-					name: 'start_oc',
-					label: 'Begin fragment',
-					editorType: 'none',
-					value: 2220,
-					required: false,
-				},
-				{
-					name: 'end_oc',
-					label: 'Einde fragment',
-					editorType: 'none',
-					value: 2293,
-					required: false,
-				},
-			],
-		},
-	],
-	title: 'Verzekeringen',
-	is_public: false,
-	id: 1316041,
-	lom_references: [],
-	type_id: 3,
-	d_ownerid: 1,
-	created_at: '2017-11-21',
-	updated_at: '2017-11-21',
-	organisation_id: '0',
-	mediamosa_id: 'R6XgdX5QYCNJMcnpJt5tWD4v',
-	owner: {},
-};
+import EditCollectionContent from './EditCollectionContent';
+import EditCollectionMetadata from './EditCollectionMetadata';
 
+// TODO: Remove when added to avo2-client
+import 'react-trumbowyg/dist/trumbowyg.min.css';
+// TODO: Remove when possible
+import mockCollection from './mockCollections';
 // TODO get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
@@ -170,48 +45,34 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 	match,
 }) => {
 	const [id] = useState((match.params as any)['id'] as string);
-	const [tabId, setTabId] = useState('inhoud');
+	const [currentTab, setCurrentTab] = useState('inhoud');
 
-	/**
-	Get collection from api when id changes
-	 */
+	// Get collection from API when id changes
 	useEffect(() => {
 		getCollection(id);
 	}, [id, getCollection]);
 
-	const goToTab = (tabId: ReactText) => {
-		setTabId(String(tabId));
+	// Tab navigation
+	const tabs = [
+		{
+			id: 'inhoud',
+			label: 'Inhoud',
+			active: currentTab === 'inhoud',
+		},
+		{
+			id: 'metadata',
+			label: 'Metadata',
+			active: currentTab === 'metadata',
+		},
+	];
+
+	// Change page on tab selection
+	const selectTab = (selectedTab: ReactText) => {
+		setCurrentTab(String(selectedTab));
 	};
 
-	// TODO: set type
-	const renderFields = (fields: any) => {
-		const titleField = fields.find((field: any) => field.name === 'custom_title');
-		const textField = fields.find((field: any) => field.name === 'custom_description');
-
-		return (
-			<Form>
-				{titleField && (
-					<FormGroup label="Tekstblok titel" labelFor="titel">
-						<TextInput
-							id="titel"
-							type="text"
-							value={titleField.value}
-							placeholder="Geef hier de titel van je tekstblok in..."
-						/>
-					</FormGroup>
-				)}
-				{textField && (
-					<FormGroup label="Tekstblok inhoud" labelFor="inhoud">
-						<TextArea
-							id="inhoud"
-							value={textField.value}
-							placeholder="Geef hier de inhoud van je tekstblok in..."
-						/>
-					</FormGroup>
-				)}
-			</Form>
-		);
-	};
+	// Save collection
+	const saveCollection = () => {};
 
 	return collection ? (
 		<Fragment>
@@ -264,7 +125,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 										<Button type="secondary" label="Bekijk" />
 										<Button type="secondary" label="Herschik alle items" />
 										<Button type="secondary" icon="more-horizontal" />
-										<Button type="primary" label="Opslaan" />
+										<Button type="primary" label="Opslaan" onClick={saveCollection} />
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>
@@ -272,62 +133,11 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 					</Container>
 				</Container>
 				<Container mode="horizontal" background="alt">
-					<Tabs
-						tabs={[
-							{
-								id: 'inhoud',
-								label: 'Inhoud',
-								active: true,
-							},
-							{
-								id: 'metadata',
-								label: 'Metadata',
-							},
-						]}
-						onClick={goToTab}
-					/>
+					<Tabs tabs={tabs} onClick={selectTab} />
 				</Container>
 			</Container>
-			{tabId === 'inhoud' && (
-				<Container mode="vertical">
-					{mockCollection.fragments.map(fragment => (
-						<Container mode="horizontal" key={fragment.id}>
-							<div className="c-card">
-								<div className="c-card__header">
-									<Toolbar>
-										<ToolbarLeft>
-											<ToolbarItem>
-												<div className="c-button-toolbar">
-													<Button type="secondary" icon="chevron-up" />
-													<Button type="secondary" icon="chevron-down" />
-												</div>
-											</ToolbarItem>
-										</ToolbarLeft>
-										<ToolbarRight>
-											<ToolbarItem>
-												<Button type="secondary" icon="more-horizontal" />
-											</ToolbarItem>
-										</ToolbarRight>
-									</Toolbar>
-								</div>
-								<div className="c-card__body">
-									{!!fragment.fields.filter(field => field.name === 'external_id').length ? (
-										<Grid>
-											<Column size="3-6">
-												<Thumbnail category="collection" label="collectie" />
-											</Column>
-											<Column size="3-6">{renderFields(fragment.fields)}</Column>
-										</Grid>
-									) : (
-										renderFields(fragment.fields)
-									)}
-								</div>
-							</div>
-						</Container>
-					))}
-				</Container>
-			)}
-			{tabId === 'metadata' && <Fragment>Meta Data</Fragment>}
+			{currentTab === 'inhoud' && <EditCollectionContent collection={mockCollection} />}
+			{currentTab === 'metadata' && <EditCollectionMetadata collection={collection} />}
 		</Fragment>
 	) : null;
 };

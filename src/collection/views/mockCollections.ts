@@ -1,0 +1,126 @@
+export default {
+	fragments: [
+		{
+			id: 0,
+			created_at: '2017-04-10T10:29:56Z',
+			updated_at: '2017-04-10T10:29:56Z',
+			type: 'Intro',
+			fields: [
+				{
+					name: 'title',
+					label: 'Titel',
+					editorType: 'string',
+					value: 'INLEIDING',
+					required: false,
+				},
+				{
+					name: 'text',
+					label: 'Beschrijving',
+					editorType: 'textarea',
+					value:
+						'Deze collectie is gemaakt voor lessen binnen het vak economie en bedrijfsbeheer in de tweede en de derde graad van het secundair onderwijs.',
+					required: true,
+				},
+			],
+		},
+		{
+			id: 1,
+			created_at: '2017-04-10T10:29:56Z',
+			updated_at: '2017-04-10T10:29:56Z',
+			type: 'VideoTitleTextButton',
+			fields: [
+				{
+					name: 'external_id',
+					label: 'Media id',
+					editorType: 'none',
+					value: 'xg9f48884b',
+					required: true,
+				},
+				{
+					name: 'custom_title',
+					label: 'Eigen titel',
+					editorType: 'string',
+					value: '1. Verzekeringen: voorbeelden',
+					required: false,
+				},
+				{
+					name: 'custom_description',
+					label: 'Eigen beschrijving',
+					editorType: 'textarea',
+					value:
+						'Begingeneriek van Schooltelevisie met een aaneenschakeling van cartoons in verband met verzekeringen en situaties waarbij een verzekering handig of nodig kan zijn.',
+					required: false,
+				},
+				{
+					name: 'start_oc',
+					label: 'Begin fragment',
+					editorType: 'none',
+					value: 0,
+					required: false,
+				},
+				{
+					name: 'end_oc',
+					label: 'Einde fragment',
+					editorType: 'none',
+					value: 99,
+					required: false,
+				},
+			],
+		},
+		{
+			id: 2,
+			created_at: '2017-04-10T10:29:56Z',
+			updated_at: '2017-04-10T10:29:56Z',
+			type: 'VideoTitleTextButton',
+			fields: [
+				{
+					name: 'external_id',
+					label: 'Media id',
+					editorType: 'none',
+					value: '319s189f0v',
+					required: true,
+				},
+				{
+					name: 'custom_title',
+					label: 'Eigen titel',
+					editorType: 'string',
+					value: '2. Verzekeringen: soorten en nuttigheid',
+					required: false,
+				},
+				{
+					name: 'custom_description',
+					label: 'Eigen beschrijving',
+					editorType: 'textarea',
+					value:
+						'Een animatiefilm uit Voor hetzelfde geld in verband met verzekeringen. Het verschil tussen verplichte en niet-verplichte verzekeringen wordt aangehaald. Enkele voorbeelden van absurde verzekeringen worden opgesomd.',
+					required: false,
+				},
+				{
+					name: 'start_oc',
+					label: 'Begin fragment',
+					editorType: 'none',
+					value: 2220,
+					required: false,
+				},
+				{
+					name: 'end_oc',
+					label: 'Einde fragment',
+					editorType: 'none',
+					value: 2293,
+					required: false,
+				},
+			],
+		},
+	],
+	title: 'Verzekeringen',
+	is_public: false,
+	id: 1316041,
+	lom_references: [],
+	type_id: 3,
+	d_ownerid: 1,
+	created_at: '2017-11-21',
+	updated_at: '2017-11-21',
+	organisation_id: '0',
+	mediamosa_id: 'R6XgdX5QYCNJMcnpJt5tWD4v',
+	owner: {},
+};
