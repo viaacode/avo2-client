@@ -1,10 +1,11 @@
 import React, { Fragment, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import { Dispatch } from 'redux';
+import { Link, withRouter } from 'react-router-dom';
 
 import { Avo } from '@viaa/avo2-types';
-import { Link } from 'react-router-dom';
+import { compose, Dispatch } from 'redux';
+
 import { getCollections } from '../store/actions';
 import { selectCollections } from '../store/selectors';
 
@@ -13,10 +14,7 @@ interface CollectionsProps extends RouteComponentProps {
 	getCollections: () => Dispatch;
 }
 
-const Collections: FunctionComponent<CollectionsProps & RouteComponentProps> = ({
-	collections,
-	getCollections,
-}) => {
+const Collections: FunctionComponent<CollectionsProps> = ({ collections, getCollections }) => {
 	useEffect(() => {
 		getCollections();
 	}, [getCollections]);
@@ -46,7 +44,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
+export default compose<FunctionComponent>(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	),
+	withRouter
 )(Collections);
