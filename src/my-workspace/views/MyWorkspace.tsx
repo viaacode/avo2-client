@@ -1,6 +1,5 @@
-import React, { Fragment, FunctionComponent, ReactElement, ReactText, useState } from 'react';
+import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
 
 import {
 	Button,
@@ -11,7 +10,6 @@ import {
 	FormGroup,
 	Icon,
 	MenuContent,
-	MenuItemInfo,
 	Navbar,
 	Tabs,
 	Toolbar,
@@ -21,55 +19,11 @@ import {
 } from '@viaa/avo2-components';
 import Collections from '../../collection/views/Collections';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
+import { BOOKMARKS_ID, COLLECTIONS_ID, FAVORITES_ID, MAPS_ID, TABS } from '../constants';
+import { MyWorkspaceProps, TabViewMap } from '../types';
 import Bookmarks from './Bookmarks';
 
 import { selectCollections } from '../../collection/store/selectors';
-
-type TabView = {
-	addHandler?: () => void;
-	amount: string;
-	component: ReactElement;
-	filter?: {
-		label: string;
-		options: MenuItemInfo[];
-	};
-};
-
-type TabViewMap = {
-	[key: string]: TabView;
-};
-
-interface MyWorkspaceProps extends RouteComponentProps<{ tabId: string }> {
-	collections: any[] | null;
-}
-
-const COLLECTIONS_ID = 'collecties';
-const MAPS_ID = 'mappen';
-const BOOKMARKS_ID = 'bladwijzers';
-const FAVORITES_ID = 'favorieten';
-
-const tabs = [
-	{
-		label: 'Collecties',
-		icon: 'collection',
-		id: COLLECTIONS_ID,
-	},
-	{
-		label: 'Mappen',
-		icon: 'folder',
-		id: MAPS_ID,
-	},
-	{
-		label: 'Bladwijzers',
-		icon: 'bookmark',
-		id: BOOKMARKS_ID,
-	},
-	{
-		label: 'Favorieten',
-		icon: 'heart',
-		id: FAVORITES_ID,
-	},
-];
 
 const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history, match }) => {
 	// State
@@ -86,6 +40,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 	};
 
 	// Computed
+	// Make map for available tab views
 	const TAB_MAP: TabViewMap = {
 		[COLLECTIONS_ID]: {
 			addHandler: () => {},
@@ -103,7 +58,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 		},
 		[MAPS_ID]: {
 			amount: getAmount([]),
-			component: <span>TODO Maps</span>,
+			component: <span>TODO Mappen</span>,
 			filter: {
 				label: 'Filter op label',
 				options: [{ id: 'all', label: 'Alle' }],
@@ -116,12 +71,12 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 		},
 		[FAVORITES_ID]: {
 			amount: getAmount([]),
-			component: <span>TODO Maps</span>,
+			component: <span>TODO Favorieten</span>,
 		},
 	};
-
+	// Set active tab based on above map with tabId
 	const activeTab = TAB_MAP[tabId];
-	const navTabs = tabs.map(t => ({
+	const navTabs = TABS.map(t => ({
 		...t,
 		active: tabId === t.id,
 		label: t.label + TAB_MAP[t.id].amount,
@@ -132,8 +87,6 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 		if (activeTab.addHandler) {
 			return <Button icon="add" label="Aanmaken" onClick={activeTab.addHandler} type="secondary" />;
 		}
-		// Must return something because the toolbar slots can't be empty
-		return <span />;
 	};
 
 	const renderFilter = () => {
@@ -173,8 +126,6 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 				</Form>
 			);
 		}
-		// Must return something because the toolbar slots can't be empty
-		return <span />;
 	};
 
 	return (
@@ -187,7 +138,9 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 								<h2 className="c-h2 u-m-0">Mijn Archief</h2>
 							</ToolbarItem>
 						</ToolbarLeft>
-						<ToolbarRight>{renderAddButton()}</ToolbarRight>
+						<ToolbarRight>
+							<span>{renderAddButton()}</span>
+						</ToolbarRight>
 					</Toolbar>
 				</Container>
 			</Container>
@@ -198,7 +151,9 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 						<ToolbarLeft>
 							<Tabs tabs={navTabs} onClick={goToTab} />
 						</ToolbarLeft>
-						<ToolbarRight>{renderFilter()}</ToolbarRight>
+						<ToolbarRight>
+							<span>{renderFilter()}</span>
+						</ToolbarRight>
 					</Toolbar>
 				</Container>
 			</Navbar>

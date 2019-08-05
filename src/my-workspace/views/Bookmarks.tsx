@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent } from 'react';
 
-interface BookmarksProps {}
+import { BookmarksProps } from '../types';
 
 const Bookmarks: FunctionComponent<BookmarksProps> = () => {
 	return (
