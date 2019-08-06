@@ -1,11 +1,13 @@
 import React, { Fragment, FunctionComponent } from 'react';
 
-import {} from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { RouteComponentProps } from 'react-router';
+import { BookmarksProps } from '../types';
 
-interface BookmarksProps extends RouteComponentProps {}
-
-export const Bookmarks: FunctionComponent<BookmarksProps> = ({}) => {
-	return <Fragment />;
+const Bookmarks: FunctionComponent<BookmarksProps> = () => {
+	return (
+		<Fragment>
+			<span>TODO Bladwijzers</span>
+		</Fragment>
+	);
 };
+
+export default Bookmarks;
