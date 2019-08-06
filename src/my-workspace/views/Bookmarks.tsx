@@ -5,7 +5,7 @@ import { BookmarksProps } from '../types';
 const Bookmarks: FunctionComponent<BookmarksProps> = () => {
 	return (
 		<Fragment>
-			<span>TODO bookmarks</span>
+			<span>TODO Bladwijzers</span>
 		</Fragment>
 	);
 };

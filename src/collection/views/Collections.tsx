@@ -64,7 +64,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 				return {
 					createdAt: formatDate(c.created_at),
 					id: c.id,
-					thumb: null,
+					thumbnail: null,
 					title: c.title,
 					updatedAt: formatDate(c.updated_at),
 					inFolder: true,
@@ -75,13 +75,13 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 		: [];
 
 	// Render
-	const renderCell = (r: any, c: any) => {
-		const cellData = r[c];
+	const renderCell = (rowData: any, colKey: any) => {
+		const cellData = rowData[colKey];
 
-		switch (c) {
-			case 'thumb':
+		switch (colKey) {
+			case 'thumbnail':
 				return (
-					<Link to={`/collection/${r.id}`} title={r.title}>
+					<Link to={`/collection/${rowData.id}`} title={rowData.title}>
 						<div className="c-thumbnail">
 							<div className="c-thumbnail-placeholder">
 								<Icon name="image" />
@@ -96,13 +96,14 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 				return (
 					<div className="c-content-header">
 						<h3 className="c-content-header__header">
-							<Link to={`/collection/${r.id}`} title={r.title}>
+							<Link to={`/collection/${rowData.id}`} title={rowData.title}>
 								{cellData}
 							</Link>
 						</h3>
 						<div className="c-content-header__meta u-text-muted">
 							<MetaData category="collection">
-								<MetaDataItem>{r.createdAt}</MetaDataItem>
+								<MetaDataItem>{rowData.createdAt}</MetaDataItem>
+								{/* TODO link view count from db */}
 								<MetaDataItem icon="eye" label={(Math.random() * (200 - 1) + 1).toFixed()} />
 							</MetaData>
 						</div>
@@ -129,7 +130,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 									onClick={itemId => {
 										switch (itemId) {
 											case 'edit':
-												history.push(`/collection/${r.id}/edit`);
+												history.push(`/collection/${rowData.id}/edit`);
 												break;
 											default:
 												return null;
@@ -141,7 +142,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 
 						<Button
 							icon="chevron-right"
-							onClick={() => history.push(`/collection/${r.id}`)}
+							onClick={() => history.push(`/collection/${rowData.id}`)}
 							type="borderless"
 							active
 						/>
@@ -155,7 +156,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 	return (
 		<Table
 			columns={[
-				{ id: 'thumb', label: '' },
+				{ id: 'thumbnail', label: '' },
 				{ id: 'title', label: 'Titel', sortable: true },
 				{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
 				{ id: 'inFolder', label: 'In map' },

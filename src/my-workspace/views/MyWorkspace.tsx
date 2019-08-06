@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import Collections from '../../collection/views/Collections';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { BOOKMARKS_ID, COLLECTIONS_ID, MAPS_ID, TABS } from '../constants';
+import { BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
 import { MyWorkspaceProps, TabViewMap } from '../types';
 import Bookmarks from './Bookmarks';
 
@@ -58,7 +58,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 				],
 			},
 		},
-		[MAPS_ID]: {
+		[FOLDERS_ID]: {
 			amount: getAmount([]),
 			component: <span>TODO Mappen</span>,
 			filter: {
@@ -133,7 +133,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 					<Toolbar autoHeight>
 						<ToolbarLeft>
 							<ToolbarItem>
-								<h2 className="c-h2 u-m-0">Mijn Archief</h2>
+								<h2 className="c-h2 u-m-0">Mijn Werkruimte</h2>
 							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>

@@ -1,5 +1,5 @@
 export const COLLECTIONS_ID = 'collecties';
-export const MAPS_ID = 'mappen';
+export const FOLDERS_ID = 'mappen';
 export const BOOKMARKS_ID = 'bladwijzers';
 
 export const TABS = [
@@ -11,7 +11,7 @@ export const TABS = [
 	{
 		label: 'Mappen',
 		icon: 'folder',
-		id: MAPS_ID,
+		id: FOLDERS_ID,
 	},
 	{
 		label: 'Bladwijzers',
