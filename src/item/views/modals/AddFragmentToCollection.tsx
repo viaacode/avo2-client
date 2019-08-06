@@ -13,6 +13,7 @@ import {
 	RadioButton,
 	Select,
 	Spacer,
+	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -67,7 +68,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 									</FormGroup>
 									<FormGroup label="Beschrijving">
 										{/* TODO replace with component TextArea once built */}
-										<textarea id="description" value={itemInfo.description} />
+										<TextArea id="description" value={itemInfo.description} />
 									</FormGroup>
 									<FormGroup label="Collectie">
 										<Spacer margin="bottom">
