@@ -9,6 +9,9 @@ import {
 	Avatar,
 	Button,
 	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Icon,
 	MetaData,
 	MetaDataItem,
@@ -46,6 +49,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 }) => {
 	const [id] = useState((match.params as any)['id'] as string);
 	const [currentTab, setCurrentTab] = useState('inhoud');
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 
 	// Get collection from API when id changes
 	useEffect(() => {
@@ -71,8 +75,15 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 		setCurrentTab(String(selectedTab));
 	};
 
-	// Save collection
-	const saveCollection = () => {};
+	const onShareCollection = () => {};
+
+	const onPreviewCollection = () => {};
+
+	const onReorderCollection = () => {};
+
+	const onSaveCollection = () => {};
+
+	console.log(collection);
 
 	return collection ? (
 		<Fragment>
@@ -121,11 +132,49 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 							<ToolbarRight>
 								<ToolbarItem>
 									<div className="c-button-toolbar">
-										<Button type="secondary" label="Delen" />
-										<Button type="secondary" label="Bekijk" />
-										<Button type="secondary" label="Herschik alle items" />
-										<Button type="secondary" icon="more-horizontal" />
-										<Button type="primary" label="Opslaan" onClick={saveCollection} />
+										<Button type="secondary" label="Delen" onClick={onShareCollection} />
+										<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} />
+										<Button
+											type="secondary"
+											label="Herschik alle items"
+											onClick={onReorderCollection}
+										/>
+										<Dropdown
+											isOpen={isOptionsMenuOpen}
+											onOpen={() => setIsOptionsMenuOpen(true)}
+											onClose={() => setIsOptionsMenuOpen(false)}
+											placement="bottom-end"
+											autoSize
+										>
+											<DropdownButton>
+												<Button type="secondary" icon="more-horizontal" />
+											</DropdownButton>
+											<DropdownContent>
+												<Fragment>
+													<a
+														className="c-menu__item"
+														onClick={() => {
+															// TODO add cursor pointer to menu items under dropdown
+															setIsOptionsMenuOpen(false);
+															// TODO show toast
+														}}
+													>
+														<div className="c-menu__label">Collectie hernoemen</div>
+													</a>
+													<a
+														className="c-menu__item"
+														onClick={() => {
+															setIsOptionsMenuOpen(false);
+															// TODO show toast
+														}}
+													>
+														{/* TODO Create link to create search assignment task */}
+														<div className="c-menu__label">Verwijder</div>
+													</a>
+												</Fragment>
+											</DropdownContent>
+										</Dropdown>
+										<Button type="primary" label="Opslaan" onClick={onSaveCollection} />
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>

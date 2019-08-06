@@ -1,9 +1,12 @@
-import React, { FunctionComponent } from 'react';
+import React, { Fragment, FunctionComponent, useState } from 'react';
 
 import {
 	Button,
 	Column,
 	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Form,
 	FormGroup,
 	Grid,
@@ -22,6 +25,8 @@ interface EditCollectionContentProps {
 }
 
 const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ collection }) => {
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(null);
+
 	// Render field according to "renderType" attribute
 	const renderField = (field: any, index: number) => {
 		const { editorType, name, label, value, required } = field;
@@ -66,7 +71,66 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ 
 								</ToolbarLeft>
 								<ToolbarRight>
 									<ToolbarItem>
-										<Button type="secondary" icon="more-horizontal" />
+										<Dropdown
+											isOpen={isOptionsMenuOpen === fragment.id}
+											onOpen={() => setIsOptionsMenuOpen(fragment.id)}
+											onClose={() => setIsOptionsMenuOpen(null)}
+											placement="bottom-end"
+											autoSize
+										>
+											<DropdownButton>
+												<Button type="secondary" icon="more-horizontal" />
+											</DropdownButton>
+											<DropdownContent>
+												<Fragment>
+													<a
+														className="c-menu__item"
+														onClick={() => {
+															setIsOptionsMenuOpen(null);
+															// TODO show toast
+														}}
+													>
+														<div className="c-menu__label">Dupliceren</div>
+													</a>
+													<a
+														className="c-menu__item"
+														onClick={() => {
+															setIsOptionsMenuOpen(null);
+															// TODO show toast
+														}}
+													>
+														<div className="c-menu__label">Verplaatsen</div>
+													</a>
+													<a
+														className="c-menu__item"
+														onClick={() => {
+															setIsOptionsMenuOpen(null);
+															// TODO show toast
+														}}
+													>
+														<div className="c-menu__label">Verwijderen</div>
+													</a>
+													<a
+														className="c-menu__item"
+														onClick={() => {
+															setIsOptionsMenuOpen(null);
+															// TODO show toast
+														}}
+													>
+														<div className="c-menu__label">Kopiëren naar andere collectie</div>
+													</a>
+													<a
+														className="c-menu__item"
+														onClick={() => {
+															setIsOptionsMenuOpen(null);
+															// TODO show toast
+														}}
+													>
+														<div className="c-menu__label">Verplaatsen naar andere collectie</div>
+													</a>
+												</Fragment>
+											</DropdownContent>
+										</Dropdown>
 									</ToolbarItem>
 								</ToolbarRight>
 							</Toolbar>
