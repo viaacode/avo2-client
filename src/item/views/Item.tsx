@@ -66,7 +66,7 @@ const Item: FunctionComponent<ItemProps & RouteComponentProps> = ({
 	history,
 	location,
 	match,
-}: ItemProps & RouteComponentProps) => {
+}) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [id] = useState((match.params as any)['id'] as string);
