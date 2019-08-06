@@ -116,7 +116,7 @@ const GET_COLLECTION_BY_ID = gql`
 // TODO get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
-const Collection: FunctionComponent<CollectionProps> = ({ match }: CollectionProps) => {
+const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {

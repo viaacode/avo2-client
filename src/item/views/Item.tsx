@@ -19,6 +19,7 @@ import {
 	Button,
 	Column,
 	Container,
+	ExpandableContainer,
 	Grid,
 	Icon,
 	MediaCard,
@@ -37,7 +38,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import {
 	generateSearchLink,
@@ -94,7 +94,7 @@ const GET_ITEM_BY_ID = gql`
 
 interface ItemProps extends RouteComponentProps {}
 
-const Item: FunctionComponent<ItemProps> = ({ history, location, match }: ItemProps) => {
+const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState((match.params as any)['id'] as string);

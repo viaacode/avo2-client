@@ -30,7 +30,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	itemInfo,
 	isOpen,
 	onClose = () => {},
-}: AddFragmentToCollectionProps) => {
+}) => {
 	// TODO create endpoint for existing collections + call and put in store
 	const [existingCollections] = useState([]);
 	const [createNewCollection, setCreateNewCollection] = useState(false);
