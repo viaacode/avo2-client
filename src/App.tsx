@@ -6,6 +6,7 @@ import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
 import { renderRoutes, RouteParts } from './routes';
+import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
 import store from './store';
 
@@ -54,6 +55,7 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 				handleMenuClick={toggleMenu}
 			/>
 			{renderRoutes()}
+			<Footer />
 		</Fragment>
 	);
 };
