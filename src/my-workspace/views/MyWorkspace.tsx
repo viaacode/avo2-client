@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { withRouter } from 'react-router';
 
 import {
 	Button,
