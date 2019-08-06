@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 
+import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
 
 import { ApolloProvider } from 'react-apollo';
@@ -45,6 +46,7 @@ const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
 				handleMenuClick={toggleMenu}
 			/>
 			{renderRoutes(ROUTES)}
+			<Footer />
 		</Fragment>
 	);
 };
