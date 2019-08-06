@@ -83,8 +83,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 
 	const onSaveCollection = () => {};
 
-	console.log(collection);
-
 	return collection ? (
 		<Fragment>
 			<Container background="alt">
@@ -168,7 +166,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 															// TODO show toast
 														}}
 													>
-														{/* TODO Create link to create search assignment task */}
 														<div className="c-menu__label">Verwijder</div>
 													</a>
 												</Fragment>
