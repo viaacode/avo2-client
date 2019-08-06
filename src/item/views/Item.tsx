@@ -14,6 +14,7 @@ import {
 	Button,
 	Column,
 	Container,
+	ExpandableContainer,
 	Grid,
 	Icon,
 	MediaCard,
@@ -39,7 +40,6 @@ import { Dispatch } from 'redux';
 
 import { debounce } from 'lodash-es';
 import { RouteParts } from '../../routes';
-import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import {
 	generateSearchLink,

@@ -10,13 +10,8 @@ export const renderMyWorkspaceRoutes = () => (
 	<Fragment>
 		<SecuredRoute
 			component={MyWorkspace}
-			path={`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`}
-			exact
-		/>
-		<SecuredRoute
-			component={MyWorkspace}
-			path={`/${RouteParts.MyWorkspace}/${RouteParts.Bookmarks}`}
-			exact
+			path={`/${RouteParts.MyWorkspace}/:tabId`}
+			exact={false}
 		/>
 	</Fragment>
 );

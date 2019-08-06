@@ -20,6 +20,7 @@ export enum RouteParts {
 	Discover = 'ontdek',
 	Projects = 'projecten',
 	News = 'nieuws',
+	Edit = 'bewerk',
 }
 
 export const renderRoutes = () => (
