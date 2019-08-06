@@ -1,19 +1,18 @@
 {
   "name": "avo2-client",
-  "version": "0.2.1",
+  "version": "0.3.2",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "preinstall": "rm -rf node_modules/@viaa/avo2-types/.git",
     "test": "jest --verbose",
     "lint": "tslint -p .",
     "format": "npm run lint -- --fix"
   },
   "dependencies": {
     "@types/react-redux": "^6.0.14",
-    "@viaa/avo2-components": "^1.5.3",
-    "@viaa/avo2-types": "^1.4.0",
+    "@viaa/avo2-components": "^1.6.0",
+    "@viaa/avo2-types": "^1.4.2",
     "classnames": "^2.2.6",
     "lodash-es": "^4.17.11",
     "marked": "^0.6.3",
