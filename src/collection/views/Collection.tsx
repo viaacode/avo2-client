@@ -1,6 +1,6 @@
 import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import {
@@ -231,7 +231,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Collection);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Collection)
+);

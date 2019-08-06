@@ -28,6 +28,7 @@ const getItem = (id: string) => {
 					headers: {
 						'Content-Type': 'application/json',
 					},
+					credentials: 'include',
 				}
 			);
 

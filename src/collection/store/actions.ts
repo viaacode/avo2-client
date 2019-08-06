@@ -31,6 +31,7 @@ const getCollection = (id: string) => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 			});
 
 			const data = await response.json();
@@ -61,6 +62,7 @@ const getCollections = () => {
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 			});
 
 			const data = await response.json();

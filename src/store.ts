@@ -2,6 +2,7 @@ import { applyMiddleware, combineReducers, createStore, Reducer } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
+import loginReducer from './authentication/store/reducer';
 import { collectionReducer, collectionsReducer } from './collection/store/reducer';
 import { CollectionsState, CollectionState } from './collection/store/types';
 import itemReducer from './item/store/reducer';
@@ -24,6 +25,7 @@ export default createStore(
 		item: itemReducer,
 		collection: collectionReducer,
 		collections: collectionsReducer,
+		loginState: loginReducer,
 	}),
 	composeWithDevTools(applyMiddleware(...middleware))
 );

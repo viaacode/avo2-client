@@ -21,6 +21,7 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { formatDate } from '../../shared/helpers/formatters/date';
 import withLoading from '../../shared/hocs/withLoading';
 
+import { RouteParts } from '../../routes';
 import { getCollections } from '../store/actions';
 import { selectCollections, selectCollectionsLoading } from '../store/selectors';
 
@@ -81,7 +82,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 		switch (colKey) {
 			case 'thumbnail':
 				return (
-					<Link to={`/collection/${rowData.id}`} title={rowData.title}>
+					<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
 						<div className="c-thumbnail">
 							<div className="c-thumbnail-placeholder">
 								<Icon name="image" />
@@ -96,7 +97,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 				return (
 					<div className="c-content-header">
 						<h3 className="c-content-header__header">
-							<Link to={`/collection/${rowData.id}`} title={rowData.title}>
+							<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
 								{cellData}
 							</Link>
 						</h3>
@@ -130,7 +131,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 									onClick={itemId => {
 										switch (itemId) {
 											case 'edit':
-												history.push(`/collection/${rowData.id}/edit`);
+												history.push(`/${RouteParts.Collection}/${rowData.id}/${RouteParts.Edit}`);
 												break;
 											default:
 												return null;
@@ -142,7 +143,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 
 						<Button
 							icon="chevron-right"
-							onClick={() => history.push(`/collection/${rowData.id}`)}
+							onClick={() => history.push(`/${RouteParts.Collection}/${rowData.id}`)}
 							type="borderless"
 							active
 						/>

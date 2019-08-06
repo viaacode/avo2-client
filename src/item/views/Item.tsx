@@ -34,11 +34,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { Dispatch } from 'redux';
 
 import { debounce } from 'lodash-es';
+import { RouteParts } from '../../routes';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import {
 	generateSearchLink,
@@ -54,18 +55,18 @@ import { selectItem } from '../store/selectors';
 import './Item.scss';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
-interface ItemProps extends RouteComponentProps {
+interface ItemProps {
 	item: Avo.Item.Response;
 	getItem: (id: string) => Dispatch;
 }
 
-const Item: FunctionComponent<ItemProps> = ({
+const Item: FunctionComponent<ItemProps & RouteComponentProps> = ({
 	item,
 	getItem,
 	history,
 	location,
 	match,
-}: ItemProps) => {
+}) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [id] = useState((match.params as any)['id'] as string);
@@ -382,7 +383,7 @@ const Item: FunctionComponent<ItemProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/${RouteParts.Item}/${item.id}`}
 											category={item.type || 'video'}
 											orientation="horizontal"
 										>
@@ -399,7 +400,7 @@ const Item: FunctionComponent<ItemProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/${RouteParts.Item}/${item.id}`}
 											category={item.type || 'video'}
 											orientation="horizontal"
 										>
@@ -416,7 +417,7 @@ const Item: FunctionComponent<ItemProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/${RouteParts.Item}/${item.id}`}
 											category={item.type || 'video'}
 											orientation="horizontal"
 										>
@@ -433,7 +434,7 @@ const Item: FunctionComponent<ItemProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/${RouteParts.Item}/${item.id}`}
 											category={item.type || 'video'}
 											orientation="horizontal"
 										>
@@ -450,7 +451,7 @@ const Item: FunctionComponent<ItemProps> = ({
 									<li style={relatedItemStyle}>
 										<MediaCard
 											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
+											href={`/${RouteParts.Item}/${item.id}`}
 											category={item.type || 'video'}
 											orientation="horizontal"
 										>
@@ -480,7 +481,7 @@ const Item: FunctionComponent<ItemProps> = ({
 	) : null;
 };
 
-const mapStateToProps = (state: any, { match }: ItemProps) => ({
+const mapStateToProps = (state: any, { match }: ItemProps & RouteComponentProps) => ({
 	item: selectItem(state, (match.params as any).id),
 });
 
@@ -490,7 +491,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Item);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Item)
+);
