@@ -19,11 +19,13 @@ import {
 } from '@viaa/avo2-components';
 import Collections from '../../collection/views/Collections';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { BOOKMARKS_ID, COLLECTIONS_ID, FAVORITES_ID, MAPS_ID, TABS } from '../constants';
+import { BOOKMARKS_ID, COLLECTIONS_ID, MAPS_ID, TABS } from '../constants';
 import { MyWorkspaceProps, TabViewMap } from '../types';
 import Bookmarks from './Bookmarks';
 
 import { selectCollections } from '../../collection/store/selectors';
+
+import './MyWorkspace.scss';
 
 const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history, match }) => {
 	// State
@@ -68,10 +70,6 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 			addHandler: () => {},
 			amount: getAmount([]),
 			component: <Bookmarks />,
-		},
-		[FAVORITES_ID]: {
-			amount: getAmount([]),
-			component: <span>TODO Favorieten</span>,
 		},
 	};
 	// Set active tab based on above map with tabId
@@ -139,7 +137,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
-							<span>{renderAddButton()}</span>
+							<span className="p-my-workspace__action-placeholder">{renderAddButton()}</span>
 						</ToolbarRight>
 					</Toolbar>
 				</Container>
