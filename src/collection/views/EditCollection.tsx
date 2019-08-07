@@ -15,6 +15,8 @@ import {
 	Icon,
 	MetaData,
 	MetaDataItem,
+	Modal,
+	ModalBody,
 	Spacer,
 	Tabs,
 	Toolbar,
@@ -50,6 +52,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 	const [id] = useState((match.params as any)['id'] as string);
 	const [currentTab, setCurrentTab] = useState('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
+	const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
 
 	// Get collection from API when id changes
 	useEffect(() => {
@@ -135,7 +138,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 										<Button
 											type="secondary"
 											label="Herschik alle items"
-											onClick={onReorderCollection}
+											onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 										/>
 										<Dropdown
 											isOpen={isOptionsMenuOpen}
@@ -182,6 +185,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 					<Tabs tabs={tabs} onClick={selectTab} />
 				</Container>
 			</Container>
+			<Modal
+				isOpen={isReorderModalOpen}
+				title="Herschik items in collectie"
+				size="large"
+				onClose={() => setIsReorderModalOpen(!isReorderModalOpen)}
+				scrollable={true}
+			>
+				<ModalBody>
+					<p>DRAGGABLE LIST</p>
+				</ModalBody>
+			</Modal>
 			{currentTab === 'inhoud' && <EditCollectionContent collection={mockCollection} />}
 			{currentTab === 'metadata' && <EditCollectionMetadata collection={collection} />}
 		</Fragment>
