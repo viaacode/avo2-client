@@ -82,8 +82,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 
 	const onPreviewCollection = () => {};
 
-	const onReorderCollection = () => {};
-
 	const onSaveCollection = () => {};
 
 	return collection ? (
@@ -117,7 +115,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 										<div className="o-flex o-flex--spaced">
 											{!isEmpty(collection.owner) && (
 												<Avatar
-													image={collection.owner.avatar || undefined}
+													image={get(collection, 'owner.avatar')}
 													name={`${collection.owner.fn} ${collection.owner.sn} (${
 														USER_GROUPS[collection.owner.group_id]
 													})`}
