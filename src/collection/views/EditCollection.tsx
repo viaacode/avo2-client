@@ -54,6 +54,11 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
 
+	console.log({ ...collection }); // {} object met waarden in
+	const [currentCollection, setCurrentCollection] = useState({ ...collection });
+
+	console.log('T', currentCollection); // undefined
+
 	// Get collection from API when id changes
 	useEffect(() => {
 		getCollection(id);
