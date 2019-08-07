@@ -14,6 +14,7 @@ import {
 	Button,
 	Column,
 	Container,
+	ExpandableContainer,
 	Grid,
 	Icon,
 	MediaCard,
@@ -38,7 +39,6 @@ import { Scrollbar } from 'react-scrollbars-custom';
 import { Dispatch } from 'redux';
 
 import { debounce } from 'lodash-es';
-import { ExpandableContainer } from '../../shared/components/ExpandableContainer/ExpandableContainer';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import {
 	generateSearchLink,
