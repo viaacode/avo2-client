@@ -54,6 +54,9 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ 
 		}
 	};
 
+	const isNotFirst = (index: number) => index !== 0;
+	const isNotLast = (index: number) => index !== collection.fragments.length - 1;
+
 	return (
 		<Container mode="vertical">
 			{collection.fragments.map((fragment: any, index: number) => (
@@ -64,8 +67,8 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ 
 								<ToolbarLeft>
 									<ToolbarItem>
 										<div className="c-button-toolbar">
-											<Button type="secondary" icon="chevron-up" />
-											<Button type="secondary" icon="chevron-down" />
+											{isNotFirst(index) && <Button type="secondary" icon="chevron-up" />}
+											{isNotLast(index) && <Button type="secondary" icon="chevron-down" />}
 										</div>
 									</ToolbarItem>
 								</ToolbarLeft>
