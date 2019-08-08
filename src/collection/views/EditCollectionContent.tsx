@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
+import React, { Fragment, FunctionComponent, useState } from 'react';
 
 import { orderBy } from 'lodash-es';
 
@@ -86,27 +86,27 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 
 	const onDuplicateFragment = () => {
 		setIsOptionsMenuOpen(null);
-		// TODO show toast
+		// TODO: Show toast
 	};
 
 	const onMoveFragment = () => {
 		setIsOptionsMenuOpen(null);
-		// TODO show toast
+		// TODO: Show toast
 	};
 
 	const onDeleteFragment = () => {
 		setIsOptionsMenuOpen(null);
-		// TODO show toast
+		// TODO: Show toast
 	};
 
 	const onCopyFragmentToCollection = () => {
 		setIsOptionsMenuOpen(null);
-		// TODO show toast
+		// TODO: Show toast
 	};
 
 	const onMoveFragmentToCollection = () => {
 		setIsOptionsMenuOpen(null);
-		// TODO show toast
+		// TODO: Show toast
 	};
 
 	return (

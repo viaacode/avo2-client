@@ -36,7 +36,7 @@ import EditCollectionMetadata from './EditCollectionMetadata';
 import 'react-trumbowyg/dist/trumbowyg.min.css';
 // TODO: Remove when possible
 import mockCollection from './mockCollections';
-// TODO get these from the api once the database is filled up
+// TODO: Get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
 interface EditCollectionProps extends RouteComponentProps {
@@ -86,12 +86,22 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 		setCurrentTab(String(selectedTab));
 	};
 
+	const onRenameCollection = () => {
+		// TODO: Add cursor pointer to menu items under dropdown
+		setIsOptionsMenuOpen(false);
+		// TODO: Show toast
+	};
+
+	const onDeleteCollection = () => {
+		setIsOptionsMenuOpen(false);
+	};
+
 	const onShareCollection = () => {};
 
 	const onPreviewCollection = () => {};
 
 	const onSaveCollection = () => {
-		// TODO: Update collection in database,
+		// TODO: Update collection in database, currently in "currentCollection" state
 	};
 
 	const swapFragments = (fragments: any[], currentId: number, direction: 'up' | 'down') => {
@@ -109,7 +119,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 	};
 
 	const onChangeFieldValue = (fragmentId: number, fieldName: string, fieldValue: string) => {
-		const temp = currentCollection;
+		const temp = { ...currentCollection };
 
 		const fieldToUpdate = currentCollection.fragments[fragmentId].fields.findIndex(
 			field => field.name === fieldName
@@ -188,23 +198,10 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 											</DropdownButton>
 											<DropdownContent>
 												<Fragment>
-													<a
-														className="c-menu__item"
-														onClick={() => {
-															// TODO add cursor pointer to menu items under dropdown
-															setIsOptionsMenuOpen(false);
-															// TODO show toast
-														}}
-													>
+													<a className="c-menu__item" onClick={onRenameCollection}>
 														<div className="c-menu__label">Collectie hernoemen</div>
 													</a>
-													<a
-														className="c-menu__item"
-														onClick={() => {
-															setIsOptionsMenuOpen(false);
-															// TODO show toast
-														}}
-													>
+													<a className="c-menu__item" onClick={onDeleteCollection}>
 														<div className="c-menu__label">Verwijder</div>
 													</a>
 												</Fragment>
