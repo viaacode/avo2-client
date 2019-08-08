@@ -208,6 +208,11 @@ const Collection: FunctionComponent<CollectionProps> = ({
 									<Button type="secondary" icon="share-2" />
 									<Button type="secondary" icon="file-plus" />
 									<Button type="secondary" label="Alle items afspelen" />
+									<Button
+										type="secondary"
+										icon="edit"
+										onClick={() => history.push(`/collection/${collection.id}/edit`)}
+									/>
 								</div>
 							</ToolbarItem>
 						</ToolbarRight>
