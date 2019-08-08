@@ -53,16 +53,19 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 	const [currentTab, setCurrentTab] = useState('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
-
-	console.log({ ...collection }); // {} object met waarden in
-	const [currentCollection, setCurrentCollection] = useState({ ...collection });
-
-	console.log('T', currentCollection); // undefined
+	// TODO: Replace mockCollection by collection
+	const [currentCollection, setCurrentCollection] = useState(mockCollection);
 
 	// Get collection from API when id changes
 	useEffect(() => {
 		getCollection(id);
 	}, [id, getCollection]);
+
+	// Update collection in page state when redux state changes.
+	// TODO: Replace mockCollection by collection
+	useEffect(() => {
+		setCurrentCollection(mockCollection);
+	}, [mockCollection]);
 
 	// Tab navigation
 	const tabs = [
@@ -87,9 +90,37 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 
 	const onPreviewCollection = () => {};
 
-	const onSaveCollection = () => {};
+	const onSaveCollection = () => {
+		// TODO: Update collection in database,
+	};
 
-	return collection ? (
+	const swapFragments = (fragments: any[], currentId: number, direction: 'up' | 'down') => {
+		const changeFragmentsPositions = (sign: number) => {
+			fragments.find(fragment => fragment.id === currentId).id -= sign;
+			fragments.find(fragment => fragment.id === currentId - sign).id += sign;
+		};
+
+		direction === 'up' ? changeFragmentsPositions(1) : changeFragmentsPositions(-1);
+
+		setCurrentCollection({
+			...currentCollection,
+			fragments,
+		});
+	};
+
+	const onChangeFieldValue = (fragmentId: number, fieldName: string, fieldValue: string) => {
+		const temp = currentCollection;
+
+		const fieldToUpdate = currentCollection.fragments[fragmentId].fields.findIndex(
+			field => field.name === fieldName
+		);
+
+		temp.fragments[fragmentId].fields[fieldToUpdate].value = fieldValue;
+
+		setCurrentCollection(temp);
+	};
+
+	return currentCollection ? (
 		<Fragment>
 			<Container background="alt">
 				<Container mode="vertical" size="small" background="alt">
@@ -107,25 +138,27 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 											</MetaDataItem>
 											<MetaDataItem
 												icon="eye"
-												label={String(188) /* TODO collection.view_count */}
+												label={String(188) /* TODO currentCollection.view_count */}
 											/>
 											<MetaDataItem
 												icon="bookmark"
-												label={String(12) /* TODO collection.bookInhoud_count */}
+												label={String(12) /* TODO currentCollection.bookInhoud_count */}
 											/>
 										</MetaData>
 									</Spacer>
-									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
-									{collection.owner && (
+									<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
+									{currentCollection.owner && (
 										<div className="o-flex o-flex--spaced">
-											{!isEmpty(collection.owner) && (
+											{!isEmpty(currentCollection.owner) && (
 												<Avatar
-													image={get(collection, 'owner.avatar')}
-													name={`${collection.owner.fn} ${collection.owner.sn} (${
-														USER_GROUPS[collection.owner.group_id]
-													})`}
+													image={get(currentCollection, 'owner.avatar')}
+													name={`${get(currentCollection, 'owner.fn')} ${get(
+														currentCollection,
+														'owner.sn'
+													)} (${USER_GROUPS[get(currentCollection, 'owner.group_id')]})`}
 													initials={
-														get(collection, 'owner.fn[0]', '') + get(collection, 'owner.sn[0]', '')
+														get(currentCollection, 'owner.fn[0]', '') +
+														get(currentCollection, 'owner.sn[0]', '')
 													}
 												/>
 											)}
@@ -199,8 +232,14 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 					<p>DRAGGABLE LIST</p>
 				</ModalBody>
 			</Modal>
-			{currentTab === 'inhoud' && <EditCollectionContent collection={mockCollection} />}
-			{currentTab === 'metadata' && <EditCollectionMetadata collection={collection} />}
+			{currentTab === 'inhoud' && (
+				<EditCollectionContent
+					collection={currentCollection}
+					swapFragments={swapFragments}
+					onChangeFieldValue={onChangeFieldValue}
+				/>
+			)}
+			{currentTab === 'metadata' && <EditCollectionMetadata collection={currentCollection} />}
 		</Fragment>
 	) : null;
 };

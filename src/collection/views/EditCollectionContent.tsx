@@ -1,4 +1,6 @@
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
+
+import { orderBy } from 'lodash-es';
 
 import {
 	Button,
@@ -22,20 +24,35 @@ import {
 
 interface EditCollectionContentProps {
 	collection: any;
+	swapFragments: (fragments: any[], currentId: number, direction: 'up' | 'down') => void;
+	onChangeFieldValue: (fragmentId: number, fieldName: string, fieldValue: string) => void;
 }
 
-const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ collection }) => {
+const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
+	collection,
+	swapFragments,
+	onChangeFieldValue,
+}) => {
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(null);
 
+	const isNotFirst = (index: number) => index !== 0;
+	const isNotLast = (index: number) => index !== collection.fragments.length - 1;
+
 	// Render field according to "renderType" attribute
-	const renderField = (field: any, index: number) => {
+	const renderField = (fragmentId: number, field: any, index: number) => {
 		const { editorType, name, label, value, required } = field;
 
 		switch (editorType) {
 			case 'string':
 				return (
 					<FormGroup label={`Tekstblok ${label}`} labelFor={name} key={name}>
-						<TextInput id={name} type="text" value={value} placeholder={label} />
+						<TextInput
+							id={name}
+							type="text"
+							value={value}
+							placeholder={label}
+							onChange={value => onChangeFieldValue(fragmentId, name, value)}
+						/>
 					</FormGroup>
 				);
 			case 'textarea':
@@ -46,7 +63,11 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ 
 						labelFor={`${name}_${index}`}
 						key={`${name}_${index}`}
 					>
-						<WYSIWYG id={`${name}_${index}`} data={value} />
+						<WYSIWYG
+							id={`${name}_${index}`}
+							data={value}
+							// onChange={value => onChangeFieldValue(fragmentId, name, value)}
+						/>
 					</FormGroup>
 				);
 			default:
@@ -54,12 +75,43 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ 
 		}
 	};
 
-	const isNotFirst = (index: number) => index !== 0;
-	const isNotLast = (index: number) => index !== collection.fragments.length - 1;
+	// Render reorder button according to direction.
+	const renderReorderButton = (fragmentId: number, direction: 'up' | 'down') => (
+		<Button
+			type="secondary"
+			icon={`chevron-${direction}`}
+			onClick={() => swapFragments(collection.fragments, fragmentId, direction)}
+		/>
+	);
+
+	const onDuplicateFragment = () => {
+		setIsOptionsMenuOpen(null);
+		// TODO show toast
+	};
+
+	const onMoveFragment = () => {
+		setIsOptionsMenuOpen(null);
+		// TODO show toast
+	};
+
+	const onDeleteFragment = () => {
+		setIsOptionsMenuOpen(null);
+		// TODO show toast
+	};
+
+	const onCopyFragmentToCollection = () => {
+		setIsOptionsMenuOpen(null);
+		// TODO show toast
+	};
+
+	const onMoveFragmentToCollection = () => {
+		setIsOptionsMenuOpen(null);
+		// TODO show toast
+	};
 
 	return (
 		<Container mode="vertical">
-			{collection.fragments.map((fragment: any, index: number) => (
+			{orderBy(collection.fragments, ['id'], ['asc']).map((fragment: any, index: number) => (
 				<Container mode="horizontal" key={fragment.id}>
 					<div className="c-card">
 						<div className="c-card__header">
@@ -67,8 +119,8 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ 
 								<ToolbarLeft>
 									<ToolbarItem>
 										<div className="c-button-toolbar">
-											{isNotFirst(index) && <Button type="secondary" icon="chevron-up" />}
-											{isNotLast(index) && <Button type="secondary" icon="chevron-down" />}
+											{isNotFirst(index) && renderReorderButton(fragment.id, 'up')}
+											{isNotLast(index) && renderReorderButton(fragment.id, 'down')}
 										</div>
 									</ToolbarItem>
 								</ToolbarLeft>
@@ -86,49 +138,19 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ 
 											</DropdownButton>
 											<DropdownContent>
 												<Fragment>
-													<a
-														className="c-menu__item"
-														onClick={() => {
-															setIsOptionsMenuOpen(null);
-															// TODO show toast
-														}}
-													>
+													<a className="c-menu__item" onClick={onDuplicateFragment}>
 														<div className="c-menu__label">Dupliceren</div>
 													</a>
-													<a
-														className="c-menu__item"
-														onClick={() => {
-															setIsOptionsMenuOpen(null);
-															// TODO show toast
-														}}
-													>
+													<a className="c-menu__item" onClick={onMoveFragment}>
 														<div className="c-menu__label">Verplaatsen</div>
 													</a>
-													<a
-														className="c-menu__item"
-														onClick={() => {
-															setIsOptionsMenuOpen(null);
-															// TODO show toast
-														}}
-													>
+													<a className="c-menu__item" onClick={onDeleteFragment}>
 														<div className="c-menu__label">Verwijderen</div>
 													</a>
-													<a
-														className="c-menu__item"
-														onClick={() => {
-															setIsOptionsMenuOpen(null);
-															// TODO show toast
-														}}
-													>
+													<a className="c-menu__item" onClick={onCopyFragmentToCollection}>
 														<div className="c-menu__label">Kopiëren naar andere collectie</div>
 													</a>
-													<a
-														className="c-menu__item"
-														onClick={() => {
-															setIsOptionsMenuOpen(null);
-															// TODO show toast
-														}}
-													>
+													<a className="c-menu__item" onClick={onMoveFragmentToCollection}>
 														<div className="c-menu__label">Verplaatsen naar andere collectie</div>
 													</a>
 												</Fragment>
@@ -145,11 +167,15 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({ 
 										<Thumbnail category="collection" label="collectie" />
 									</Column>
 									<Column size="3-6">
-										<Form>{fragment.fields.map((field: any) => renderField(field, index))}</Form>
+										<Form>
+											{fragment.fields.map((field: any) => renderField(fragment.id, field, index))}
+										</Form>
 									</Column>
 								</Grid>
 							) : (
-								<Form>{fragment.fields.map((field: any) => renderField(field, index))}</Form>
+								<Form>
+									{fragment.fields.map((field: any) => renderField(fragment.id, field, index))}
+								</Form>
 							)}
 						</div>
 					</div>
