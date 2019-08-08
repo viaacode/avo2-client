@@ -123,11 +123,16 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 	const onChangeFieldValue = (fragmentId: number, fieldName: string, fieldValue: string) => {
 		const temp = { ...currentCollection };
 
-		const fieldToUpdate = currentCollection.fragments[fragmentId].fields.findIndex(
-			field => field.name === fieldName
-		);
+		const fragmentToUpdate = temp.fragments.find(fragment => fragment.id === fragmentId);
 
-		temp.fragments[fragmentId].fields[fieldToUpdate].value = fieldValue;
+		// TODO: Remove if-statements when types are updated
+		if (fragmentToUpdate) {
+			const fieldToUpdate = fragmentToUpdate.fields.find((field: any) => field.name === fieldName);
+
+			if (fieldToUpdate) {
+				fieldToUpdate.value = fieldValue;
+			}
+		}
 
 		setCurrentCollection(temp);
 	};
