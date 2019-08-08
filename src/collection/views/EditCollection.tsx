@@ -53,6 +53,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 	const [currentTab, setCurrentTab] = useState('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 	// TODO: Replace mockCollection by collection
 	const [currentCollection, setCurrentCollection] = useState(mockCollection);
 
@@ -96,9 +97,9 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 		setIsOptionsMenuOpen(false);
 	};
 
-	const onShareCollection = () => {};
-
-	const onPreviewCollection = () => {};
+	const onPreviewCollection = () => {
+		// TODO: Open preview in new tab
+	};
 
 	const onSaveCollection = () => {
 		// TODO: Update collection in database, currently in "currentCollection" state
@@ -106,8 +107,9 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 
 	const swapFragments = (fragments: any[], currentId: number, direction: 'up' | 'down') => {
 		const changeFragmentsPositions = (sign: number) => {
+			const otherFragment = fragments.find(fragment => fragment.id === currentId - sign);
 			fragments.find(fragment => fragment.id === currentId).id -= sign;
-			fragments.find(fragment => fragment.id === currentId - sign).id += sign;
+			otherFragment.id += sign;
 		};
 
 		direction === 'up' ? changeFragmentsPositions(1) : changeFragmentsPositions(-1);
@@ -179,7 +181,11 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 							<ToolbarRight>
 								<ToolbarItem>
 									<div className="c-button-toolbar">
-										<Button type="secondary" label="Delen" onClick={onShareCollection} />
+										<Button
+											type="secondary"
+											label="Delen"
+											onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+										/>
 										<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} />
 										<Button
 											type="secondary"
@@ -218,6 +224,14 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 					<Tabs tabs={tabs} onClick={selectTab} />
 				</Container>
 			</Container>
+			{currentTab === 'inhoud' && (
+				<EditCollectionContent
+					collection={currentCollection}
+					swapFragments={swapFragments}
+					onChangeFieldValue={onChangeFieldValue}
+				/>
+			)}
+			{currentTab === 'metadata' && <EditCollectionMetadata collection={currentCollection} />}
 			<Modal
 				isOpen={isReorderModalOpen}
 				title="Herschik items in collectie"
@@ -229,14 +243,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 					<p>DRAGGABLE LIST</p>
 				</ModalBody>
 			</Modal>
-			{currentTab === 'inhoud' && (
-				<EditCollectionContent
-					collection={currentCollection}
-					swapFragments={swapFragments}
-					onChangeFieldValue={onChangeFieldValue}
-				/>
-			)}
-			{currentTab === 'metadata' && <EditCollectionMetadata collection={currentCollection} />}
+			<Modal
+				isOpen={isShareModalOpen}
+				title="Deel deze collectie"
+				size="large"
+				onClose={() => setIsShareModalOpen(!isShareModalOpen)}
+				scrollable={true}
+			>
+				<ModalBody>
+					<p>SHARE</p>
+				</ModalBody>
+			</Modal>
 		</Fragment>
 	) : null;
 };
