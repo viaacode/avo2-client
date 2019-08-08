@@ -11,4 +11,9 @@ ENV PATH /opt/react-app/node_modules/.bin:$PATH
 WORKDIR /opt/react-app/app
 COPY . .
 
+# Add bash
+RUN apk add --no-cache bash
+
+RUN chmod +x ./scripts/env.sh
+
 CMD npm start

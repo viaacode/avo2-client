@@ -2,9 +2,7 @@ FROM node:12-alpine AS build
 
 # set our node environment, defaults to production
 ARG NODE_ENV=production
-ARG REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be
 ENV NODE_ENV $NODE_ENV
-ENV REACT_APP_PROXY_URL $REACT_APP_PROXY_URL
 
 WORKDIR /app
 
@@ -19,4 +17,12 @@ FROM nginxinc/nginx-unprivileged AS run
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/build /usr/share/nginx/html
+
+WORKDIR /usr/share/nginx/html
+COPY .env scripts/env.sh ./
+
+# Run script which initializes env vars to fs
+RUN chmod +x env.sh
+RUN ./env.sh
+
 USER nginx

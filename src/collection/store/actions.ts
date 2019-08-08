@@ -2,6 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 import { Action, Dispatch } from 'redux';
 
+import { CustomWindow } from '../../shared/types/CustomWindow';
 import {
 	CollectionActionTypes,
 	CollectionsActionTypes,
@@ -25,7 +26,7 @@ const getCollection = (id: string) => {
 		dispatch(setCollectionLoading(id));
 
 		try {
-			const url = `${process.env.REACT_APP_PROXY_URL}/collection`;
+			const url = `${(window as CustomWindow)._ENV_.PROXY_URL}/collection`;
 			const response = await fetch(`${url}?${queryString.stringify({ id })}`, {
 				method: 'GET',
 				headers: {
@@ -55,7 +56,7 @@ const getCollections = () => {
 		dispatch(setCollectionsLoading());
 
 		try {
-			const url = `${process.env.REACT_APP_PROXY_URL}/collection`;
+			const url = `${(window as CustomWindow)._ENV_.PROXY_URL}/collection`;
 			const ownerId = 1; // TODO replace with actual ownerId from the store once we have SAML authentication
 			const response = await fetch(`${url}?${queryString.stringify({ ownerId })}`, {
 				method: 'GET',

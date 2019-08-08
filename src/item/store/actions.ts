@@ -2,6 +2,8 @@ import { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 import { Action, Dispatch } from 'redux';
 
+import { CustomWindow } from './../../shared/types/CustomWindow';
+
 import {
 	ItemActionTypes,
 	SetItemErrorAction,
@@ -22,7 +24,9 @@ const getItem = (id: string) => {
 
 		try {
 			const response = await fetch(
-				`${process.env.REACT_APP_PROXY_URL}/item?${queryString.stringify({ id })}`,
+				`${(window as CustomWindow)._ENV_.PROXY_URL}/item?${queryString.stringify({
+					id,
+				})}`,
 				{
 					method: 'GET',
 					headers: {

@@ -52,8 +52,8 @@ objects:
           imagePullPolicy: Always
           name: avo2-client-${ENV}
           env:
-            - name: REACT_APP_PROXY_URL
-              value: ${REACT_APP_PROXY_URL}
+            - name: PROXY_URL
+              value: ${PROXY_URL}
             - name: NODE_ENV
               value: production
             - name: PORT
@@ -123,5 +123,5 @@ parameters:
     value: dev
   - name: NODE_ENV
     value: production
-  - name: REACT_APP_PROXY_URL
+  - name: PROXY_URL
     value: http://avo2-proxy-qas:3000

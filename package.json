@@ -3,7 +3,9 @@
   "version": "0.3.2",
   "private": true,
   "scripts": {
+    "prestart": "npm run env",
     "start": "react-scripts start",
+    "env": "./scripts/env.sh && cp env-config.js ./public",
     "build": "react-scripts build",
     "test": "jest --verbose",
     "lint": "tslint -p .",
