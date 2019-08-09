@@ -25,57 +25,81 @@ import {
 interface EditCollectionContentProps {
 	collection: any;
 	swapFragments: (fragments: any[], currentId: number, direction: 'up' | 'down') => void;
-	onChangeFieldValue: (fragmentId: number, fieldName: string, fieldValue: string) => void;
+	updateCollection: (collection: any) => void;
 }
 
 const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 	collection,
 	swapFragments,
-	onChangeFieldValue,
+	updateCollection,
 }) => {
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(null);
 
+	// Check whether the current fragment is the first and/or last fragment in collection
 	const isNotFirst = (index: number) => index !== 0;
 	const isNotLast = (index: number) => index !== collection.fragments.length - 1;
 
-	// Render field according to "renderType" attribute
-	const renderField = (fragmentId: number, field: any, index: number) => {
-		const { editorType, name, label, value, required } = field;
+	// Update individual property of fragment
+	const updateFragmentProperty = (value: string, fieldName: string, fragmentId: number) => {
+		const temp = { ...collection };
 
-		switch (editorType) {
-			case 'string':
-				return (
-					<FormGroup label={`Tekstblok ${label}`} labelFor={name} key={name}>
-						<TextInput
-							id={name}
-							type="text"
-							value={value}
-							placeholder={label}
-							onChange={value => onChangeFieldValue(fragmentId, name, value)}
-						/>
-					</FormGroup>
-				);
-			case 'textarea':
-				// TODO: Add required to WYSIWYG
-				return (
-					<FormGroup
-						label={`Tekstblok ${label}`}
-						labelFor={`${name}_${index}`}
-						key={`${name}_${index}`}
-					>
-						<WYSIWYG
-							id={`${name}_${index}`}
-							data={value}
-							// onChange={value => onChangeFieldValue(fragmentId, name, value)}
-						/>
-					</FormGroup>
-				);
-			default:
-				return null;
-		}
+		const fragmentToUpdate = temp.fragments.find((item: any) => item.id === fragmentId);
+
+		fragmentToUpdate[fieldName] = value;
+
+		updateCollection(temp);
 	};
 
-	// Render reorder button according to direction.
+	// Delete fragment from collection
+	const onDeleteFragment = (fragmentId: number) => {
+		setIsOptionsMenuOpen(null);
+
+		// Sort fragments by position
+		const orderedFragments = orderBy(
+			collection.fragments.filter((fragment: any) => fragment.id !== fragmentId),
+			['position'],
+			['asc']
+		);
+
+		// Reposition fragments
+		const positionedFragments = orderedFragments.map((fragment: any, index: number) => ({
+			...fragment,
+			position: index + 1,
+		}));
+
+		updateCollection({
+			...collection,
+			fragments: positionedFragments,
+		});
+
+		// TODO: Show toast
+	};
+
+	const onDuplicateFragment = (fragmentId: number) => {
+		setIsOptionsMenuOpen(null);
+
+		// TODO: Show toast
+	};
+
+	const onMoveFragment = () => {
+		setIsOptionsMenuOpen(null);
+
+		// TODO: Show toast
+	};
+
+	const onCopyFragmentToCollection = () => {
+		setIsOptionsMenuOpen(null);
+
+		// TODO: Show toast
+	};
+
+	const onMoveFragmentToCollection = () => {
+		setIsOptionsMenuOpen(null);
+
+		// TODO: Show toast
+	};
+
+	// Render methods
 	const renderReorderButton = (fragmentId: number, direction: 'up' | 'down') => (
 		<Button
 			type="secondary"
@@ -84,34 +108,26 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 		/>
 	);
 
-	const onDuplicateFragment = () => {
-		setIsOptionsMenuOpen(null);
-		// TODO: Show toast
-	};
-
-	const onMoveFragment = () => {
-		setIsOptionsMenuOpen(null);
-		// TODO: Show toast
-	};
-
-	const onDeleteFragment = () => {
-		setIsOptionsMenuOpen(null);
-		// TODO: Show toast
-	};
-
-	const onCopyFragmentToCollection = () => {
-		setIsOptionsMenuOpen(null);
-		// TODO: Show toast
-	};
-
-	const onMoveFragmentToCollection = () => {
-		setIsOptionsMenuOpen(null);
-		// TODO: Show toast
-	};
+	const renderForm = (fragment: any, index: number) => (
+		<Form>
+			<FormGroup label={`Tekstblok titel`} labelFor="title">
+				<TextInput
+					id="title"
+					type="text"
+					value={fragment.custom_title}
+					placeholder="Titel"
+					onChange={(value: string) => updateFragmentProperty(value, 'custom_title', fragment.id)}
+				/>
+			</FormGroup>
+			<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
+				<WYSIWYG id={`beschrijving_${index}`} data={fragment.custom_description} />
+			</FormGroup>
+		</Form>
+	);
 
 	return (
 		<Container mode="vertical">
-			{orderBy(collection.fragments, ['id'], ['asc']).map((fragment: any, index: number) => (
+			{orderBy(collection.fragments, ['position'], ['asc']).map((fragment: any, index: number) => (
 				<Container mode="horizontal" key={fragment.id}>
 					<div className="c-card">
 						<div className="c-card__header">
@@ -119,8 +135,8 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 								<ToolbarLeft>
 									<ToolbarItem>
 										<div className="c-button-toolbar">
-											{isNotFirst(index) && renderReorderButton(fragment.id, 'up')}
-											{isNotLast(index) && renderReorderButton(fragment.id, 'down')}
+											{isNotFirst(index) && renderReorderButton(fragment.position, 'up')}
+											{isNotLast(index) && renderReorderButton(fragment.position, 'down')}
 										</div>
 									</ToolbarItem>
 								</ToolbarLeft>
@@ -138,19 +154,22 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 											</DropdownButton>
 											<DropdownContent>
 												<Fragment>
-													<a className="c-menu__item" onClick={onDuplicateFragment}>
+													<a
+														className="c-menu__item"
+														onClick={() => onDuplicateFragment(fragment.id)}
+													>
 														<div className="c-menu__label">Dupliceren</div>
 													</a>
-													<a className="c-menu__item" onClick={onMoveFragment}>
+													<a className="c-menu__item" onClick={() => onMoveFragment()}>
 														<div className="c-menu__label">Verplaatsen</div>
 													</a>
-													<a className="c-menu__item" onClick={onDeleteFragment}>
+													<a className="c-menu__item" onClick={() => onDeleteFragment(fragment.id)}>
 														<div className="c-menu__label">Verwijderen</div>
 													</a>
-													<a className="c-menu__item" onClick={onCopyFragmentToCollection}>
+													<a className="c-menu__item" onClick={() => onCopyFragmentToCollection()}>
 														<div className="c-menu__label">Kopiëren naar andere collectie</div>
 													</a>
-													<a className="c-menu__item" onClick={onMoveFragmentToCollection}>
+													<a className="c-menu__item" onClick={() => onMoveFragmentToCollection()}>
 														<div className="c-menu__label">Verplaatsen naar andere collectie</div>
 													</a>
 												</Fragment>
@@ -161,21 +180,15 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 							</Toolbar>
 						</div>
 						<div className="c-card__body">
-							{!!fragment.fields.filter((field: any) => field.name === 'external_id').length ? (
+							{!!fragment.external_id ? (
 								<Grid>
 									<Column size="3-6">
 										<Thumbnail category="collection" label="collectie" />
 									</Column>
-									<Column size="3-6">
-										<Form>
-											{fragment.fields.map((field: any) => renderField(fragment.id, field, index))}
-										</Form>
-									</Column>
+									<Column size="3-6">{renderForm(fragment, index)}</Column>
 								</Grid>
 							) : (
-								<Form>
-									{fragment.fields.map((field: any) => renderField(fragment.id, field, index))}
-								</Form>
+								<Form>{renderForm(fragment, index)}</Form>
 							)}
 						</div>
 					</div>

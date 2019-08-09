@@ -105,11 +105,12 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 		// TODO: Update collection in database, currently in "currentCollection" state
 	};
 
+	// Swap position of two fragments within a collection
 	const swapFragments = (fragments: any[], currentId: number, direction: 'up' | 'down') => {
 		const changeFragmentsPositions = (sign: number) => {
-			const otherFragment = fragments.find(fragment => fragment.id === currentId - sign);
-			fragments.find(fragment => fragment.id === currentId).id -= sign;
-			otherFragment.id += sign;
+			const otherFragment = fragments.find(fragment => fragment.position === currentId - sign);
+			fragments.find(fragment => fragment.position === currentId).position -= sign;
+			otherFragment.position += sign;
 		};
 
 		direction === 'up' ? changeFragmentsPositions(1) : changeFragmentsPositions(-1);
@@ -120,22 +121,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 		});
 	};
 
-	const onChangeFieldValue = (fragmentId: number, fieldName: string, fieldValue: string) => {
-		const temp = { ...currentCollection };
-
-		const fragmentToUpdate = temp.fragments.find(fragment => fragment.id === fragmentId);
-
-		// TODO: Remove if-statements when types are updated
-		if (fragmentToUpdate) {
-			const fieldToUpdate = fragmentToUpdate.fields.find((field: any) => field.name === fieldName);
-
-			if (fieldToUpdate) {
-				fieldToUpdate.value = fieldValue;
-			}
-		}
-
-		setCurrentCollection(temp);
-	};
+	const updateCollection = (collection: any) => setCurrentCollection(collection);
 
 	return currentCollection ? (
 		<Fragment>
@@ -164,18 +150,18 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 										</MetaData>
 									</Spacer>
 									<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
-									{currentCollection.owner && (
+									{currentCollection.owner_id && (
 										<div className="o-flex o-flex--spaced">
-											{!isEmpty(currentCollection.owner) && (
+											{!isEmpty(currentCollection.owner_id) && (
 												<Avatar
-													image={get(currentCollection, 'owner.avatar')}
-													name={`${get(currentCollection, 'owner.fn')} ${get(
+													image={get(currentCollection, 'owner_id.avatar')}
+													name={`${get(currentCollection, 'owner_id.fn')} ${get(
 														currentCollection,
 														'owner.sn'
-													)} (${USER_GROUPS[get(currentCollection, 'owner.group_id')]})`}
+													)} (${USER_GROUPS[get(currentCollection, 'owner_id.group_id')]})`}
 													initials={
-														get(currentCollection, 'owner.fn[0]', '') +
-														get(currentCollection, 'owner.sn[0]', '')
+														get(currentCollection, 'owner_id.fn[0]', '') +
+														get(currentCollection, 'owner_id.sn[0]', '')
 													}
 												/>
 											)}
@@ -233,7 +219,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 				<EditCollectionContent
 					collection={currentCollection}
 					swapFragments={swapFragments}
-					onChangeFieldValue={onChangeFieldValue}
+					updateCollection={updateCollection}
 				/>
 			)}
 			{currentTab === 'metadata' && <EditCollectionMetadata collection={currentCollection} />}
