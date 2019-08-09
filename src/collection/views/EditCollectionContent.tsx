@@ -21,10 +21,11 @@ import {
 	ToolbarRight,
 	WYSIWYG,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 interface EditCollectionContentProps {
-	collection: any;
-	swapFragments: (fragments: any[], currentId: number, direction: 'up' | 'down') => void;
+	collection: Avo.Collection.Response;
+	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateCollection: (collection: any) => void;
 	updateFragmentProperty: (value: string, fieldName: string, fragmentId: number) => void;
 }
@@ -47,7 +48,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 
 		// Sort fragments by position
 		const orderedFragments = orderBy(
-			collection.fragments.filter((fragment: any) => fragment.id !== fragmentId),
+			collection.fragments.filter(fragment => fragment.id !== fragmentId),
 			['position'],
 			['asc']
 		);
@@ -95,7 +96,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 		<Button
 			type="secondary"
 			icon={`chevron-${direction}`}
-			onClick={() => swapFragments(collection.fragments, fragmentId, direction)}
+			onClick={() => swapFragments(fragmentId, direction)}
 		/>
 	);
 

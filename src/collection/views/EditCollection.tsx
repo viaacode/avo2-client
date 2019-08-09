@@ -1,8 +1,8 @@
 import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
-import { gql } from 'apollo-boost';
 import { get, isEmpty } from 'lodash-es';
+import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
 import {
 	Avatar,
@@ -30,42 +30,6 @@ import EditCollectionContent from './EditCollectionContent';
 import EditCollectionMetadata from './EditCollectionMetadata';
 
 interface EditCollectionProps extends RouteComponentProps {}
-
-const GET_COLLECTION_BY_ID = gql`
-	query getMigrateCollectionById($id: Int!) {
-		migrate_collections(where: { id: { _eq: $id } }) {
-			fragments {
-				id
-				custom_title
-				custom_description
-				start_oc
-				end_oc
-				external_id {
-					external_id
-					mediamosa_id
-					type_label
-				}
-				updated_at
-				position
-				created_at
-			}
-			description
-			title
-			is_public
-			id
-			lom_references {
-				lom_value
-				id
-			}
-			type_id
-			d_ownerid
-			created_at
-			updated_at
-			organisation_id
-			mediamosa_id
-		}
-	}
-`;
 
 // TODO: Get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
@@ -122,7 +86,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({ match }) => {
 
 		const fragmentToUpdate: any = temp.fragments.find((item: any) => item.id === fragmentId);
 
-		fragmentToUpdate[fieldName] = value;
+		(fragmentToUpdate as any)[fieldName] = value;
 
 		updateCollection(temp);
 	};
@@ -135,10 +99,14 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({ match }) => {
 		});
 
 	// Swap position of two fragments within a collection
-	const swapFragments = (fragments: any[], currentId: number, direction: 'up' | 'down') => {
+	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
+		const fragments = currentCollection.fragments;
+
 		const changeFragmentsPositions = (sign: number) => {
-			const otherFragment = fragments.find(fragment => fragment.position === currentId - sign);
-			fragments.find(fragment => fragment.position === currentId).position -= sign;
+			const otherFragment = currentCollection.fragments.find(
+				(fragment: any) => fragment.position === currentId - sign
+			);
+			fragments.find((fragment: any) => fragment.position === currentId).position -= sign;
 			otherFragment.position += sign;
 		};
 
@@ -150,7 +118,8 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({ match }) => {
 		});
 	};
 
-	const updateCollection = (collection: any) => setCurrentCollection(collection);
+	const updateCollection = (collection: Avo.Collection.Response) =>
+		setCurrentCollection(collection);
 
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
 		if (!isFirstRender) {
