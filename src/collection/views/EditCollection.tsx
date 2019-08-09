@@ -1,9 +1,8 @@
 import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 
+import { gql } from 'apollo-boost';
 import { get, isEmpty } from 'lodash-es';
-import { Dispatch } from 'redux';
 
 import {
 	Avatar,
@@ -26,47 +25,59 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getCollection } from '../store/actions';
-import { selectCollection } from '../store/selectors';
-
+import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import EditCollectionContent from './EditCollectionContent';
 import EditCollectionMetadata from './EditCollectionMetadata';
 
-// TODO: Remove when added to avo2-client
-import 'react-trumbowyg/dist/trumbowyg.min.css';
-// TODO: Remove when possible
-import mockCollection from './mockCollections';
+interface EditCollectionProps extends RouteComponentProps {}
+
+const GET_COLLECTION_BY_ID = gql`
+	query getMigrateCollectionById($id: Int!) {
+		migrate_collections(where: { id: { _eq: $id } }) {
+			fragments {
+				id
+				custom_title
+				custom_description
+				start_oc
+				end_oc
+				external_id {
+					external_id
+					mediamosa_id
+					type_label
+				}
+				updated_at
+				position
+				created_at
+			}
+			description
+			title
+			is_public
+			id
+			lom_references {
+				lom_value
+				id
+			}
+			type_id
+			d_ownerid
+			created_at
+			updated_at
+			organisation_id
+			mediamosa_id
+		}
+	}
+`;
+
 // TODO: Get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
-interface EditCollectionProps extends RouteComponentProps {
-	collection: Avo.Collection.Response;
-	getCollection: (id: string) => Dispatch;
-}
-
-const EditCollection: FunctionComponent<EditCollectionProps> = ({
-	collection,
-	getCollection,
-	match,
-}) => {
-	const [id] = useState((match.params as any)['id'] as string);
+const EditCollection: FunctionComponent<EditCollectionProps> = ({ match }) => {
+	const [collectionId] = useState((match.params as any)['id'] as string);
 	const [currentTab, setCurrentTab] = useState('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-	// TODO: Replace mockCollection by collection
-	const [currentCollection, setCurrentCollection] = useState(mockCollection);
-
-	// Get collection from API when id changes
-	useEffect(() => {
-		getCollection(id);
-	}, [id, getCollection]);
-
-	// Update collection in page state when redux state changes.
-	// TODO: Replace mockCollection by collection
-	useEffect(() => {
-		setCurrentCollection(mockCollection);
-	}, [mockCollection]);
+	const [currentCollection, setCurrentCollection] = useState();
+	const [isFirstRender, setIsFirstRender] = useState(false);
 
 	// Tab navigation
 	const tabs = [
@@ -141,149 +152,153 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 
 	const updateCollection = (collection: any) => setCurrentCollection(collection);
 
-	return currentCollection ? (
-		<Fragment>
-			<Container background="alt">
-				<Container mode="vertical" size="small" background="alt">
-					<Container mode="horizontal">
-						<Toolbar>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<Spacer margin="bottom">
-										<MetaData spaced={true} category="collection">
-											<MetaDataItem>
-												<div className="c-content-type c-content-type--collection">
-													<Icon name="collection" />
-													<p>COLLECTION</p>
-												</div>
-											</MetaDataItem>
-											<MetaDataItem
-												icon="eye"
-												label={String(188) /* TODO currentCollection.view_count */}
-											/>
-											<MetaDataItem
-												icon="bookmark"
-												label={String(12) /* TODO currentCollection.bookInhoud_count */}
-											/>
-										</MetaData>
-									</Spacer>
-									<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
-									{currentCollection.owner_id && (
-										<div className="o-flex o-flex--spaced">
-											{!isEmpty(currentCollection.owner_id) && (
-												<Avatar
-													image={get(currentCollection, 'owner_id.avatar')}
-													name={`${get(currentCollection, 'owner_id.fn')} ${get(
-														currentCollection,
-														'owner.sn'
-													)} (${USER_GROUPS[get(currentCollection, 'owner_id.group_id')]})`}
-													initials={
-														get(currentCollection, 'owner_id.fn[0]', '') +
-														get(currentCollection, 'owner_id.sn[0]', '')
-													}
+	const renderEditCollection = (collection: Avo.Collection.Response) => {
+		if (!isFirstRender) {
+			setCurrentCollection(collection);
+			setIsFirstRender(true);
+		}
+
+		return currentCollection ? (
+			<Fragment>
+				<Container background="alt">
+					<Container mode="vertical" size="small" background="alt">
+						<Container mode="horizontal">
+							<Toolbar>
+								<ToolbarLeft>
+									<ToolbarItem>
+										<Spacer margin="bottom">
+											<MetaData spaced={true} category="collection">
+												<MetaDataItem>
+													<div className="c-content-type c-content-type--collection">
+														<Icon name="collection" />
+														<p>COLLECTION</p>
+													</div>
+												</MetaDataItem>
+												<MetaDataItem
+													icon="eye"
+													label={String(188) /* TODO currentCollection.view_count */}
 												/>
-											)}
+												<MetaDataItem
+													icon="bookmark"
+													label={String(12) /* TODO currentCollection.bookInhoud_count */}
+												/>
+											</MetaData>
+										</Spacer>
+										<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
+										{currentCollection.owner_id && (
+											<div className="o-flex o-flex--spaced">
+												{!isEmpty(currentCollection.owner_id) && (
+													<Avatar
+														image={get(currentCollection, 'owner_id.avatar')}
+														name={`${get(currentCollection, 'owner_id.fn')} ${get(
+															currentCollection,
+															'owner.sn'
+														)} (${USER_GROUPS[get(currentCollection, 'owner_id.group_id')]})`}
+														initials={
+															get(currentCollection, 'owner_id.fn[0]', '') +
+															get(currentCollection, 'owner_id.sn[0]', '')
+														}
+													/>
+												)}
+											</div>
+										)}
+									</ToolbarItem>
+								</ToolbarLeft>
+								<ToolbarRight>
+									<ToolbarItem>
+										<div className="c-button-toolbar">
+											<Button
+												type="secondary"
+												label="Delen"
+												onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+											/>
+											<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} />
+											<Button
+												type="secondary"
+												label="Herschik alle items"
+												onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
+											/>
+											<Dropdown
+												isOpen={isOptionsMenuOpen}
+												onOpen={() => setIsOptionsMenuOpen(true)}
+												onClose={() => setIsOptionsMenuOpen(false)}
+												placement="bottom-end"
+												autoSize
+											>
+												<DropdownButton>
+													<Button type="secondary" icon="more-horizontal" />
+												</DropdownButton>
+												<DropdownContent>
+													<Fragment>
+														<a className="c-menu__item" onClick={onRenameCollection}>
+															<div className="c-menu__label">Collectie hernoemen</div>
+														</a>
+														<a className="c-menu__item" onClick={onDeleteCollection}>
+															<div className="c-menu__label">Verwijder</div>
+														</a>
+													</Fragment>
+												</DropdownContent>
+											</Dropdown>
+											<Button type="primary" label="Opslaan" onClick={onSaveCollection} />
 										</div>
-									)}
-								</ToolbarItem>
-							</ToolbarLeft>
-							<ToolbarRight>
-								<ToolbarItem>
-									<div className="c-button-toolbar">
-										<Button
-											type="secondary"
-											label="Delen"
-											onClick={() => setIsShareModalOpen(!isShareModalOpen)}
-										/>
-										<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} />
-										<Button
-											type="secondary"
-											label="Herschik alle items"
-											onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
-										/>
-										<Dropdown
-											isOpen={isOptionsMenuOpen}
-											onOpen={() => setIsOptionsMenuOpen(true)}
-											onClose={() => setIsOptionsMenuOpen(false)}
-											placement="bottom-end"
-											autoSize
-										>
-											<DropdownButton>
-												<Button type="secondary" icon="more-horizontal" />
-											</DropdownButton>
-											<DropdownContent>
-												<Fragment>
-													<a className="c-menu__item" onClick={onRenameCollection}>
-														<div className="c-menu__label">Collectie hernoemen</div>
-													</a>
-													<a className="c-menu__item" onClick={onDeleteCollection}>
-														<div className="c-menu__label">Verwijder</div>
-													</a>
-												</Fragment>
-											</DropdownContent>
-										</Dropdown>
-										<Button type="primary" label="Opslaan" onClick={onSaveCollection} />
-									</div>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
+									</ToolbarItem>
+								</ToolbarRight>
+							</Toolbar>
+						</Container>
+					</Container>
+					<Container mode="horizontal" background="alt">
+						<Tabs tabs={tabs} onClick={selectTab} />
 					</Container>
 				</Container>
-				<Container mode="horizontal" background="alt">
-					<Tabs tabs={tabs} onClick={selectTab} />
-				</Container>
-			</Container>
-			{currentTab === 'inhoud' && (
-				<EditCollectionContent
-					collection={currentCollection}
-					swapFragments={swapFragments}
-					updateCollection={updateCollection}
-					updateFragmentProperty={updateFragmentProperty}
-				/>
-			)}
-			{currentTab === 'metadata' && (
-				<EditCollectionMetadata
-					collection={currentCollection}
-					updateCollectionProperty={updateCollectionProperty}
-				/>
-			)}
-			<Modal
-				isOpen={isReorderModalOpen}
-				title="Herschik items in collectie"
-				size="large"
-				onClose={() => setIsReorderModalOpen(!isReorderModalOpen)}
-				scrollable={true}
-			>
-				<ModalBody>
-					<p>DRAGGABLE LIST</p>
-				</ModalBody>
-			</Modal>
-			<Modal
-				isOpen={isShareModalOpen}
-				title="Deel deze collectie"
-				size="large"
-				onClose={() => setIsShareModalOpen(!isShareModalOpen)}
-				scrollable={true}
-			>
-				<ModalBody>
-					<p>SHARE</p>
-				</ModalBody>
-			</Modal>
-		</Fragment>
-	) : null;
-};
-
-const mapStateToProps = (state: any, { match }: EditCollectionProps) => ({
-	collection: selectCollection(state, (match.params as any).id),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getCollection: (id: string) => dispatch(getCollection(id) as any),
+				{currentTab === 'inhoud' && (
+					<EditCollectionContent
+						collection={currentCollection}
+						swapFragments={swapFragments}
+						updateCollection={updateCollection}
+						updateFragmentProperty={updateFragmentProperty}
+					/>
+				)}
+				{currentTab === 'metadata' && (
+					<EditCollectionMetadata
+						collection={currentCollection}
+						updateCollectionProperty={updateCollectionProperty}
+					/>
+				)}
+				<Modal
+					isOpen={isReorderModalOpen}
+					title="Herschik items in collectie"
+					size="large"
+					onClose={() => setIsReorderModalOpen(!isReorderModalOpen)}
+					scrollable={true}
+				>
+					<ModalBody>
+						<p>DRAGGABLE LIST</p>
+					</ModalBody>
+				</Modal>
+				<Modal
+					isOpen={isShareModalOpen}
+					title="Deel deze collectie"
+					size="large"
+					onClose={() => setIsShareModalOpen(!isShareModalOpen)}
+					scrollable={true}
+				>
+					<ModalBody>
+						<p>SHARE</p>
+					</ModalBody>
+				</Modal>
+			</Fragment>
+		) : null;
 	};
+
+	return (
+		<DataQueryComponent
+			query={GET_COLLECTION_BY_ID}
+			variables={{ id: collectionId }}
+			resultPath="migrate_collections[0]"
+			renderData={renderEditCollection}
+			notFoundMessage="Deze collectie werd niet gevonden"
+		/>
+	);
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(EditCollection);
+export default EditCollection;

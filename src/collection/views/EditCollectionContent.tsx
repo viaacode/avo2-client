@@ -105,13 +105,13 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 				<TextInput
 					id="title"
 					type="text"
-					value={fragment.custom_title}
+					value={fragment.custom_title || ''}
 					placeholder="Titel"
 					onChange={(value: string) => updateFragmentProperty(value, 'custom_title', fragment.id)}
 				/>
 			</FormGroup>
 			<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
-				<WYSIWYG id={`beschrijving_${index}`} data={fragment.custom_description} />
+				<WYSIWYG id={`beschrijving_${index}`} data={fragment.custom_description || ''} />
 			</FormGroup>
 		</Form>
 	);

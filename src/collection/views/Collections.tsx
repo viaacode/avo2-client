@@ -1,7 +1,8 @@
-import React, { FunctionComponent, useEffect } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
-import { Link, withRouter } from 'react-router-dom';
+import React, { FunctionComponent } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
+
+import { gql } from 'apollo-boost';
 
 import {
 	AvatarList,
@@ -15,14 +16,35 @@ import {
 	Table,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { compose, Dispatch } from 'redux';
+import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { formatDate } from '../../shared/helpers/formatters/date';
-import withLoading from '../../shared/hocs/withLoading';
 
-import { getCollections } from '../store/actions';
-import { selectCollections, selectCollectionsLoading } from '../store/selectors';
+interface CollectionsProps extends RouteComponentProps {}
+
+// Owner will be enforced by permissions inside the graphql server
+// TODO reduce number of properties to only the ones we use
+const GET_COLLECTIONS_BY_OWNER = gql`
+	query getMigrateCollectionById($ownerId: Int!) {
+		migrate_collections(where: { d_ownerid: { _eq: $ownerId } }) {
+			description
+			title
+			is_public
+			id
+			lom_references {
+				lom_value
+				id
+			}
+			type_id
+			d_ownerid
+			created_at
+			updated_at
+			organisation_id
+			mediamosa_id
+		}
+	}
+`;
 
 const dummyAvatars = [
 	{
@@ -42,38 +64,9 @@ const dummyAvatars = [
 	},
 ];
 
-interface CollectionsProps extends RouteComponentProps {
-	collections: Avo.Collection.Response[] | null;
-	getCollections: () => Dispatch;
-	loading: boolean;
-}
+interface CollectionsProps extends RouteComponentProps {}
 
-const Collections: FunctionComponent<CollectionsProps> = ({
-	collections,
-	getCollections,
-	history,
-}) => {
-	// Lifecycle
-	useEffect(() => {
-		getCollections();
-	}, [getCollections]);
-
-	// Computed
-	const mappedCollections = !!collections
-		? collections.map(c => {
-				return {
-					createdAt: formatDate(c.created_at),
-					id: c.id,
-					thumbnail: null,
-					title: c.title,
-					updatedAt: formatDate(c.updated_at),
-					inFolder: true,
-					access: dummyAvatars,
-					actions: true,
-				};
-		  })
-		: [];
-
+const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 	// Render
 	const renderCell = (rowData: any, colKey: any) => {
 		const cellData = rowData[colKey];
@@ -153,41 +146,51 @@ const Collections: FunctionComponent<CollectionsProps> = ({
 		}
 	};
 
+	const renderCollections = (collections: Avo.Collection.Response[]) => {
+		const mappedCollections = !!collections
+			? collections.map(c => {
+					return {
+						createdAt: formatDate(c.created_at),
+						id: c.id,
+						thumbnail: null,
+						title: c.title,
+						updatedAt: formatDate(c.updated_at),
+						inFolder: true,
+						access: dummyAvatars,
+						actions: true,
+					};
+			  })
+			: [];
+
+		return (
+			<Table
+				columns={[
+					{ id: 'thumbnail', label: '' },
+					{ id: 'title', label: 'Titel', sortable: true },
+					{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
+					{ id: 'inFolder', label: 'In map' },
+					{ id: 'access', label: 'Toegang' },
+					{ id: 'actions', label: '' },
+				]}
+				data={mappedCollections}
+				emptyStateMessage="Geen resultaten gevonden"
+				renderCell={renderCell}
+				rowKey="id"
+				styled
+			/>
+		);
+	};
+
+	// TODO get actual owner id from ldap user + map to old drupal userid
 	return (
-		<Table
-			columns={[
-				{ id: 'thumbnail', label: '' },
-				{ id: 'title', label: 'Titel', sortable: true },
-				{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
-				{ id: 'inFolder', label: 'In map' },
-				{ id: 'access', label: 'Toegang' },
-				{ id: 'actions', label: '' },
-			]}
-			data={mappedCollections}
-			emptyStateMessage="Geen resultaten gevonden"
-			renderCell={renderCell}
-			rowKey="id"
-			styled
+		<DataQueryComponent
+			query={GET_COLLECTIONS_BY_OWNER}
+			variables={{ ownerId: 1 }}
+			resultPath="migrate_collections"
+			renderData={renderCollections}
+			notFoundMessage="Er konden geen collecties worden gevonden"
 		/>
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	collections: selectCollections(state),
-	loading: selectCollectionsLoading(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getCollections: () => dispatch(getCollections() as any),
-	};
-};
-
-export default compose<FunctionComponent>(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	),
-	withLoading,
-	withRouter
-)(Collections);
+export default withRouter(Collections);

@@ -3,11 +3,14 @@ import { Provider } from 'react-redux';
 
 import { renderRoutes } from 'react-router-config';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
+import 'react-trumbowyg/dist/trumbowyg.min.css';
 
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
 
+import { ApolloProvider } from 'react-apollo';
 import { ROUTES } from './routes';
+import { dataService } from './shared/services/data-service';
 import store from './store';
 
 const App: FunctionComponent<RouteComponentProps> = ({ history }) => {
@@ -53,11 +56,13 @@ const AppWithRouter = withRouter(App);
 
 const Root: FunctionComponent = () => {
 	return (
-		<Provider store={store}>
-			<Router>
-				<AppWithRouter />
-			</Router>
-		</Provider>
+		<ApolloProvider client={dataService}>
+			<Provider store={store}>
+				<Router>
+					<AppWithRouter />
+				</Router>
+			</Provider>
+		</ApolloProvider>
 	);
 };
 
