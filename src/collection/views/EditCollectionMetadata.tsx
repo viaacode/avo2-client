@@ -4,9 +4,13 @@ import { Column, Container, Form, FormGroup, Grid, Spacer, TextArea } from '@via
 
 interface EditCollectionMetadataProps {
 	collection: any;
+	updateCollectionProperty: (value: string, fieldName: string) => void;
 }
 
-const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = ({ collection }) => {
+const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = ({
+	collection,
+	updateCollectionProperty,
+}) => {
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal">
@@ -17,8 +21,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 								<FormGroup label="Korte omschrijving" labelFor="shortDescriptionId">
 									<TextArea
 										name="shortDescriptionId"
-										value={collection.description || ''}
+										value={collection.description}
 										id="shortDescriptionId"
+										onChange={(value: string) => updateCollectionProperty(value, 'description')}
 									/>
 								</FormGroup>
 								<FormGroup label="Persoonlijke opmerkingen/notities" labelFor="personalRemarkId">

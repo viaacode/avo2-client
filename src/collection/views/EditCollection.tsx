@@ -105,6 +105,24 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 		// TODO: Update collection in database, currently in "currentCollection" state
 	};
 
+	// Update individual property of fragment
+	const updateFragmentProperty = (value: string, fieldName: string, fragmentId: number) => {
+		const temp = { ...currentCollection };
+
+		const fragmentToUpdate: any = temp.fragments.find((item: any) => item.id === fragmentId);
+
+		fragmentToUpdate[fieldName] = value;
+
+		updateCollection(temp);
+	};
+
+	// Update individual property of collection
+	const updateCollectionProperty = (value: string, fieldName: string) =>
+		setCurrentCollection({
+			...currentCollection,
+			[fieldName]: value,
+		});
+
 	// Swap position of two fragments within a collection
 	const swapFragments = (fragments: any[], currentId: number, direction: 'up' | 'down') => {
 		const changeFragmentsPositions = (sign: number) => {
@@ -220,9 +238,15 @@ const EditCollection: FunctionComponent<EditCollectionProps> = ({
 					collection={currentCollection}
 					swapFragments={swapFragments}
 					updateCollection={updateCollection}
+					updateFragmentProperty={updateFragmentProperty}
 				/>
 			)}
-			{currentTab === 'metadata' && <EditCollectionMetadata collection={currentCollection} />}
+			{currentTab === 'metadata' && (
+				<EditCollectionMetadata
+					collection={currentCollection}
+					updateCollectionProperty={updateCollectionProperty}
+				/>
+			)}
 			<Modal
 				isOpen={isReorderModalOpen}
 				title="Herschik items in collectie"

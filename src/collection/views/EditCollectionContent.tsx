@@ -26,29 +26,20 @@ interface EditCollectionContentProps {
 	collection: any;
 	swapFragments: (fragments: any[], currentId: number, direction: 'up' | 'down') => void;
 	updateCollection: (collection: any) => void;
+	updateFragmentProperty: (value: string, fieldName: string, fragmentId: number) => void;
 }
 
 const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 	collection,
 	swapFragments,
 	updateCollection,
+	updateFragmentProperty,
 }) => {
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(null);
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isNotFirst = (index: number) => index !== 0;
 	const isNotLast = (index: number) => index !== collection.fragments.length - 1;
-
-	// Update individual property of fragment
-	const updateFragmentProperty = (value: string, fieldName: string, fragmentId: number) => {
-		const temp = { ...collection };
-
-		const fragmentToUpdate = temp.fragments.find((item: any) => item.id === fragmentId);
-
-		fragmentToUpdate[fieldName] = value;
-
-		updateCollection(temp);
-	};
 
 	// Delete fragment from collection
 	const onDeleteFragment = (fragmentId: number) => {
@@ -128,7 +119,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 	return (
 		<Container mode="vertical">
 			{orderBy(collection.fragments, ['position'], ['asc']).map((fragment: any, index: number) => (
-				<Container mode="horizontal" key={fragment.id}>
+				<Container mode="horizontal" key={`fragment_${index}`}>
 					<div className="c-card">
 						<div className="c-card__header">
 							<Toolbar>
