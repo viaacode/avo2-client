@@ -27,7 +27,8 @@ pipeline {
     }
 	
 	environment {
-       // VERSION = sh(returnStdout: true, script: 'git describe --tags')
+        VERSION = 'test'
+		//sh(returnStdout: true, script: 'git describe --tags')
     }
     stages {
         stage('preamble') {
