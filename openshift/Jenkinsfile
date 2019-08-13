@@ -27,7 +27,9 @@ pipeline {
     }
 	
 	environment {
-        VERSION = 'test'
+		VERSION = sh(returnStdout: true, script: "git describe --tags").trim()
+		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+		
 		//sh(returnStdout: true, script: 'git describe --tags')
     }
     stages {
@@ -51,6 +53,7 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
 				echo shortCommit
+				echo VERSION
 				//when { VERSION "v*.*" }
 				
                             sh'''#!/bin/bash
