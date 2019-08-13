@@ -65,7 +65,7 @@ pipeline {
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-							docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
+			    docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
                             docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
 							
@@ -103,12 +103,21 @@ pipeline {
 
              script {
                  openshift.withCluster() {
+			 @echo off
+			echo GIT_COMMIT %GIT_COMMIT% 
+			echo GIT_BRANCH %GIT_BRANCH%
+			echo GIT_LOCAL_BRANCH %GIT_LOCAL_BRANCH%
+			echo GIT_PREVIOUS_COMMIT %GIT_PREVIOUS_COMMIT%
+			echo GIT_PREVIOUS_SUCCESSFUL_COMMIT %GIT_PREVIOUS_SUCCESSFUL_COMMIT%
+			echo GIT_URL %GIT_URL%
+			echo GIT_URL_N - %GIT_URL_N%
+			echo GIT_AUTHOR_NAME %GIT_AUTHOR_NAME%
+			echo GIT_COMMITTER_EMAIL %GIT_COMMITTER_EMAIL%
                      openshift.withProject("sc-avo2") {
 						 sh '''#!/bin/bash
-						 VERSION=`git describe --tags`
-						 BRANCH=`git rev-parse --abbrev-ref HEAD`
-						 echo "### using ${BRANCH} Branch ###"
-						 oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
+						 echo GIT_COMMIT %GIT_COMMIT% 
+						 echo "### using ${GIT_COMMIT} commit ###"
+						 oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${BRANCH}
 						 
 						 '''
                         echo "Taged production"
