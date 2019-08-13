@@ -103,24 +103,19 @@ pipeline {
 
              script {
                  openshift.withCluster() {
-			 @echo off
-			echo GIT_COMMIT %GIT_COMMIT% 
-			echo GIT_BRANCH %GIT_BRANCH%
-			echo GIT_LOCAL_BRANCH %GIT_LOCAL_BRANCH%
-			echo GIT_PREVIOUS_COMMIT %GIT_PREVIOUS_COMMIT%
-			echo GIT_PREVIOUS_SUCCESSFUL_COMMIT %GIT_PREVIOUS_SUCCESSFUL_COMMIT%
-			echo GIT_URL %GIT_URL%
-			echo GIT_URL_N - %GIT_URL_N%
-			echo GIT_AUTHOR_NAME %GIT_AUTHOR_NAME%
-			echo GIT_COMMITTER_EMAIL %GIT_COMMITTER_EMAIL%
+		
                      openshift.withProject("sc-avo2") {
 						 sh '''#!/bin/bash
 						 echo GIT_COMMIT %GIT_COMMIT% 
 						 echo "### using ${GIT_COMMIT} commit ###"
-						 oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${BRANCH}
+						 oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${GIT_COMMIT}
 						 
 						 '''
-                        echo "Taged production"
+			    sh '''#!/bin/bash 
+			    pwd
+			    git describe --always
+			    echo "Taged production"
+			    '''
                      }
                  }
              } // script
