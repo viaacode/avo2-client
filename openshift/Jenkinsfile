@@ -27,7 +27,7 @@ pipeline {
     }
 	
 	environment {
-		VERSION = sh(returnStdout: true, script: "git describe --tags").trim()
+		VERSION = sh(returnStdout: true, script: "git describe || echo noTagFound").trim()
 		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 		
 		//sh(returnStdout: true, script: 'git describe --tags')
