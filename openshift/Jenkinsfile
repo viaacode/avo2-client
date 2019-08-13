@@ -6,7 +6,8 @@ def TEMPLATENAME = 'avo2-client'
 def TARGET_NS = 'sc-avo2'
 def templateSelector = openshift.selector( "template", "avo2-client")
 
-
+def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+def tag= sh( returnStdout: true, script: "git describe --tags").tril() 
 
 
 // NOTE, the "pipeline" directive/closure from the declarative pipeline syntax needs to include, or be nested outside,
@@ -38,11 +39,13 @@ pipeline {
             }
         }
         stage('Template update') {
+		when {tag : "v*.*"}
             steps {
                 script {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             sh'''#!/bin/bash
+			    
                             echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
                             oc project sc-avo2
                             oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
@@ -55,19 +58,19 @@ pipeline {
             } // step
         } // end stage
         stage('Docker build') {
-		when { tag "v*-rc"}//end when
+		when { tag "v*"}//end when
             steps {
                 script {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             sh'''#!/bin/bash
+			    git describe --tags 
                             echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
                             oc project sc-avo2
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-			    docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
-                            docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
+			    docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
 							
                             '''
