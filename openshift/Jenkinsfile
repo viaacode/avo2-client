@@ -57,12 +57,13 @@ pipeline {
 				//when { VERSION "v*.*" }
 				
                             sh'''#!/bin/bash
-			    echo version:  ${shortCommit}
+			    echo commitRef:  ${shortCommit}
                             echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
                             oc project sc-avo2
                             oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
                             oc process -l app=avo2-client -p ENV=dev REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                             oc process -l app=avo2-client -p ENV=qas REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+			    oc process -l app=avo2-client -p ENV=prd REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                             '''
                         }
                     }
@@ -70,7 +71,7 @@ pipeline {
             } // step
         } // end stage
         stage('Docker build') {
-		 when { tag "v*" }
+		
             steps {
                 script {
 			
@@ -84,8 +85,7 @@ pipeline {
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
 			    docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
-                            docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
-							
+			    docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}			
                             '''
                         }
                     }
@@ -94,7 +94,7 @@ pipeline {
         } // stage
 
         stage('Push Image') {
-			
+		 when { VERSION "v*rc*" }	
             steps {
 				
 					script {
@@ -130,7 +130,6 @@ pipeline {
 						 '''
 			    sh '''#!/bin/bash 
 			    pwd
-			    git describe --always
 			    echo "Taged production"
 			    '''
                      }
