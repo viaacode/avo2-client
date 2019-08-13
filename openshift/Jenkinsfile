@@ -63,7 +63,7 @@ pipeline {
                             oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
                             oc process -l app=avo2-client -p ENV=dev REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                             oc process -l app=avo2-client -p ENV=qas REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
-			    oc process -l app=avo2-client -p ENV=prd REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+			    #oc process -l app=avo2-client -p ENV=prd REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                             '''
                         }
                     }
@@ -84,8 +84,8 @@ pipeline {
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-			    docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
-			    docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}			
+			  #  docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
+			  #  docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}			
                             '''
                         }
                     }
@@ -112,18 +112,22 @@ pipeline {
          steps {
           input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"				
              script {
-		     echo GIT_BRANCH 
 		     sh '''#!/bin/bash
 		     echo current branch: ${GIT_BRANCH#*/} '''
-		     if (env.BRANCH_NAME == 'master') {
+		     if (GIT_BRANCH  == 'master') {
 			     echo 'I only execute on the master branch'
 			     openshift.withCluster() {
 				     openshift.withProject("sc-avo2") {
 					     sh '''#!/bin/bash
-					     echo GIT_COMMIT %GIT_COMMIT%
+					     
 					     echo "### using ${GIT_COMMIT} commit ###"
-					     oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
-					     echo "Taged production"'''
+					     oc project sc-avo2
+					     #oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
+					     echo "### Building and tagging production ###"
+					     docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}
+					     echo "pushing image avo2-client with tag prd based on ${VERSION} from  ${GIT_BRANCH#*/}"
+					     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}
+					     '''
 				     }  
 			     }			     
 			     
