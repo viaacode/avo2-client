@@ -71,7 +71,7 @@ pipeline {
             } // step
         } // end stage
         stage('Docker build') {
-		
+		when { tag "v*" }	
             steps {
                 script {
 			
@@ -96,7 +96,7 @@ pipeline {
         stage('Push Image') {
 		 	
             steps {
-			when { VERSION "v*" }	
+			
 					script {
 						openshift.withCluster() {
 							openshift.withProject("sc-avo2") {
