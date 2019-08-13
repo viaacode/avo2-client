@@ -113,7 +113,8 @@ pipeline {
           input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"				
              script {
 		     echo env.BRANCH
-		     sh (echo current branch: ${BRANCH})
+		     sh '''#!/bin/bash
+		     echo current branch: ${BRANCH}'''
 		     if (env.BRANCH_NAME == 'master') {
 			     echo 'I only execute on the master branch'
 			     openshift.withCluster() {
