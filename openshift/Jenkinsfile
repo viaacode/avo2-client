@@ -95,56 +95,40 @@ pipeline {
 
         stage('Push Image') {
 		 	
-            steps {
-			
-					script {
-						openshift.withCluster() {
-							openshift.withProject("sc-avo2") {
-								 sh'''#!/bin/bash
-								 echo "pushing image avo2-client with tag qas"
-								 docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
-								 echo "pushing image avo2-client with tag dev"
-								 docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-							     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
-								 '''
+            steps {		
+		script {sh'''#!/bin/bash
+			     echo "pushing image avo2-client with tag qas"
+			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
+			     echo "pushing image avo2-client with tag dev"
+			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
+			     echo "pushing image avo2-client with tag prd based on ${VERSION} from ${GIT_BRANCH}"
+			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
+			     '''
 
-							}
-						}
-					}// end script
-				
+		}// end script				
             }
         }//end stage
         stage('Deploy production') {
          steps {
-          input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
-				
+          input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"				
              script {
 		     if (env.BRANCH_NAME == 'master') {
-                      	  echo 'I only execute on the master branch'
-   			  openshift.withCluster() {
-              		       openshift.withProject("sc-avo2") {
-					 sh '''#!/bin/bash
-					 echo GIT_COMMIT %GIT_COMMIT% 
-					 echo "### using ${GIT_COMMIT} commit ###"
-					 oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
-					 '''
-			    sh '''#!/bin/bash 
-			    pwd
-			    echo "Taged production"
-			    '''
-                     }
-                 }			     
-			     
-		    
+			     echo 'I only execute on the master branch'
+			     openshift.withCluster() {
+				     openshift.withProject("sc-avo2") {
+					     sh '''#!/bin/bash
+					     echo GIT_COMMIT %GIT_COMMIT%
+					     echo "### using ${GIT_COMMIT} commit ###"
+					     oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
+					     echo "Taged production"'''
+				     }  
+			     }			     
 			     
 			     
-			     
-			     
-                    } else {
+                      } else {
                         echo 'I execute elsewhere'
-                    }
-                 
-             } // script
+                    	}                
+                    } // script
          } // steps
      } // stage
 
