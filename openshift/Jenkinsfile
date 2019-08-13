@@ -39,7 +39,7 @@ pipeline {
             }
         }
         stage('Template update') {
-		when {tag : "v*.*"}
+		when {tag "v*.*"}
             steps {
                 script {
                     openshift.withCluster() {
