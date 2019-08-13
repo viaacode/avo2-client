@@ -29,7 +29,7 @@ pipeline {
 	environment {
 		VERSION = sh(returnStdout: true, script: "git describe || echo noTagFound").trim()
 		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-		
+		commitChangeset = sh(returnStdout: true, script: 'git diff-tree --no-commit-id --name-status -r HEAD').trim()
 		//sh(returnStdout: true, script: 'git describe --tags')
     }
     stages {
