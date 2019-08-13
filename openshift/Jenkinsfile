@@ -70,10 +70,10 @@ pipeline {
             } // step
         } // end stage
         stage('Docker build') {
-		
+		 when { tag "v*" }
             steps {
                 script {
-			when { tag "v*" }
+			
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             sh'''#!/bin/bash
