@@ -94,9 +94,9 @@ pipeline {
         } // stage
 
         stage('Push Image') {
-		 when { VERSION "v*rc*" }	
+		 	
             steps {
-				
+			when { VERSION "v*" }	
 					script {
 						openshift.withCluster() {
 							openshift.withProject("sc-avo2") {
