@@ -73,7 +73,7 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             sh'''#!/bin/bash
-			    git describe --tags 
+			    
                             echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
                             oc project sc-avo2
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
