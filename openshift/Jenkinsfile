@@ -29,7 +29,7 @@ pipeline {
 	environment {
 		VERSION = sh(returnStdout: true, script: "git describe || echo noTagFound").trim()
 		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-		BRANCH = sh(returnStdout: true, script: 'git branch | grep \* | cut -d ' ' -f2').trim()
+		BRANCH = sh(returnStdout: true, script: "git branch | grep \* | cut -d ' ' -f2").trim()
 		//sh(returnStdout: true, script: 'git describe --tags')
     }
     stages {
