@@ -22,8 +22,8 @@ pipeline {
       }
     }
     options {
-        // set a timeout of 10 minutes for this pipeline
-        timeout(time: 10, unit: 'MINUTES')
+        // set a timeout of 8h for this pipeline
+        timeout(time: 480, unit: 'MINUTES')
     }
 	
 	environment {
