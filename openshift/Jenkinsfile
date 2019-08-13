@@ -71,7 +71,7 @@ pipeline {
             } // step
         } // end stage
         stage('Docker build') {
-		when { tag "v*" }	
+	
             steps {
                 script {
 			
@@ -117,7 +117,7 @@ pipeline {
         stage('Deploy production') {
          steps {
           input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
-
+			when { VERSION "v*rc*" }	
              script {
                  openshift.withCluster() {
 		
