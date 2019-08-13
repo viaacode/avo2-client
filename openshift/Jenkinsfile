@@ -112,7 +112,7 @@ pipeline {
          steps {
           input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"				
              script {
-		     echo ${GIT_BRANCH#*/} 
+		     echo GIT_BRANCH 
 		     sh '''#!/bin/bash
 		     echo current branch: ${GIT_BRANCH#*/} '''
 		     if (env.BRANCH_NAME == 'master') {
