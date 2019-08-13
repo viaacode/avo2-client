@@ -65,9 +65,10 @@ pipeline {
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
                             docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-
+							docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
                             docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
+							
                             '''
                         }
                     }
@@ -76,31 +77,41 @@ pipeline {
         } // stage
 
         stage('Push Image') {
+			when { tag "release/*"}//end when
             steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject("sc-avo2") {
-                             sh'''#!/bin/bash
-                             echo "pushing image avo2-client with tag qas"
-                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
-                             echo "pushing image avo2-client with tag dev"
-                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
+				
+					script {
+						openshift.withCluster() {
+							openshift.withProject("sc-avo2") {
+								 sh'''#!/bin/bash
+								 echo "pushing image avo2-client with tag qas"
+								 docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
+								 echo "pushing image avo2-client with tag dev"
+								 docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
+							     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
+								 '''
 
-                             '''
-
-                        }
-                    }
-                }// end script
+							}
+						}
+					}// end script
+				
             }
         }//end stage
         stage('Deploy production') {
          steps {
-         // input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
+          input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
 
              script {
                  openshift.withCluster() {
                      openshift.withProject("sc-avo2") {
-                        echo "this is not enabled yet"
+						 sh '''#!/bin/bash
+						 VERSION=`git describe --tags`
+						 BRANCH=`git rev-parse --abbrev-ref HEAD`
+						 echo "### using ${BRANCH} Branch ###"
+						 oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
+						 
+						 '''
+                        echo "Taged production"
                      }
                  }
              } // script
