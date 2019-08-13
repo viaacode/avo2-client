@@ -29,7 +29,7 @@ pipeline {
 	environment {
 		VERSION = sh(returnStdout: true, script: "git describe || echo noTagFound").trim()
 		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-		commitChangeset = sh(returnStdout: true, script: 'git diff-tree --no-commit-id --name-status -r HEAD').trim()
+		BRANCH = sh(returnStdout: true, script: 'git branch | grep \* | cut -d ' ' -f2').trim()
 		//sh(returnStdout: true, script: 'git describe --tags')
     }
     stages {
@@ -54,7 +54,7 @@ pipeline {
                         openshift.withProject("sc-avo2") {
 				echo shortCommit
 				echo VERSION
-				//when { VERSION "v*.*" }
+				
 				
                             sh'''#!/bin/bash
 			    echo commitRef:  ${shortCommit}
@@ -112,6 +112,8 @@ pipeline {
          steps {
           input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"				
              script {
+		     echo env.BRANCH
+		     sh (echo current branch: ${BRANCH})
 		     if (env.BRANCH_NAME == 'master') {
 			     echo 'I only execute on the master branch'
 			     openshift.withCluster() {
