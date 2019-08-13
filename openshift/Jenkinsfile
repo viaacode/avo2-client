@@ -55,6 +55,7 @@ pipeline {
             } // step
         } // end stage
         stage('Docker build') {
+		when { tag "release/*"}//end when
             steps {
                 script {
                     openshift.withCluster() {
@@ -77,7 +78,7 @@ pipeline {
         } // stage
 
         stage('Push Image') {
-			when { tag "release/*"}//end when
+			
             steps {
 				
 					script {
