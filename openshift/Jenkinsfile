@@ -6,8 +6,8 @@ def TEMPLATENAME = 'avo2-client'
 def TARGET_NS = 'sc-avo2'
 def templateSelector = openshift.selector( "template", "avo2-client")
 
-def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
-def tag= sh( returnStdout: true, script: "git describe --tags").tril() 
+//def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+//def tag= sh( returnStdout: true, script: "git describe --tags").tril() 
 
 
 // NOTE, the "pipeline" directive/closure from the declarative pipeline syntax needs to include, or be nested outside,
@@ -24,6 +24,10 @@ pipeline {
     options {
         // set a timeout of 10 minutes for this pipeline
         timeout(time: 10, unit: 'MINUTES')
+    }
+	
+	environment {
+        VERSION = sh(returnStdout: true, script: 'git describe --tags')
     }
     stages {
         stage('preamble') {
@@ -44,9 +48,11 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
-				when {tag "v*.*"}
+				echo "version ${VERSION}"
+				when { VERSION "v*.*" }
+				
                             sh'''#!/bin/bash
-			    
+			    echo version:  ${VERSION}
                             echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
                             oc project sc-avo2
                             oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
@@ -62,7 +68,7 @@ pipeline {
 		
             steps {
                 script {
-			when { tag "v*"}//end when
+			
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             sh'''#!/bin/bash
