@@ -117,23 +117,33 @@ pipeline {
         stage('Deploy production') {
          steps {
           input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
-			when { VERSION "v*rc*" }	
+				
              script {
-                 openshift.withCluster() {
-		
-                     openshift.withProject("sc-avo2") {
-						 sh '''#!/bin/bash
-						 echo GIT_COMMIT %GIT_COMMIT% 
-						 echo "### using ${GIT_COMMIT} commit ###"
-						 oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${GIT_COMMIT}
-						 
-						 '''
+		     if (env.BRANCH_NAME == 'master') {
+                      	  echo 'I only execute on the master branch'
+   			  openshift.withCluster() {
+              		       openshift.withProject("sc-avo2") {
+					 sh '''#!/bin/bash
+					 echo GIT_COMMIT %GIT_COMMIT% 
+					 echo "### using ${GIT_COMMIT} commit ###"
+					 oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
+					 '''
 			    sh '''#!/bin/bash 
 			    pwd
 			    echo "Taged production"
 			    '''
                      }
-                 }
+                 }			     
+			     
+		    
+			     
+			     
+			     
+			     
+                    } else {
+                        echo 'I execute elsewhere'
+                    }
+                 
              } // script
          } // steps
      } // stage
