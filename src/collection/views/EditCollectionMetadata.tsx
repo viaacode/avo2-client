@@ -1,9 +1,10 @@
 import React, { FunctionComponent } from 'react';
 
 import { Column, Container, Form, FormGroup, Grid, Spacer, TextArea } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 interface EditCollectionMetadataProps {
-	collection: any;
+	collection: Avo.Collection.Response;
 	updateCollectionProperty: (value: string, fieldName: string) => void;
 }
 
@@ -22,7 +23,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 								<FormGroup label="Korte omschrijving" labelFor="shortDescriptionId">
 									<TextArea
 										name="shortDescriptionId"
-										value={collection.description}
+										value={collection.description || ''}
 										id="shortDescriptionId"
 										onChange={(value: string) => updateCollectionProperty(value, 'description')}
 									/>

@@ -8,6 +8,7 @@ import 'react-trumbowyg/dist/trumbowyg.min.css';
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
 
+import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import { ApolloProvider } from 'react-apollo';
 import { ROUTES } from './routes';
 import { dataService } from './shared/services/data-service';
@@ -57,11 +58,13 @@ const AppWithRouter = withRouter(App);
 const Root: FunctionComponent = () => {
 	return (
 		<ApolloProvider client={dataService}>
-			<Provider store={store}>
-				<Router>
-					<AppWithRouter />
-				</Router>
-			</Provider>
+			<ApolloHooksProvider client={dataService}>
+				<Provider store={store}>
+					<Router>
+						<AppWithRouter />
+					</Router>
+				</Provider>
+			</ApolloHooksProvider>
 		</ApolloProvider>
 	);
 };

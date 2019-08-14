@@ -26,7 +26,7 @@ import { Avo } from '@viaa/avo2-types';
 interface EditCollectionContentProps {
 	collection: Avo.Collection.Response;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	updateCollection: (collection: any) => void;
+	updateCollection: (collection: Avo.Collection.Response) => void;
 	updateFragmentProperty: (value: string, fieldName: string, fragmentId: number) => void;
 }
 
@@ -40,7 +40,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isNotFirst = (index: number) => index !== 0;
-	const isNotLast = (index: number) => index !== collection.fragments.length - 1;
+	const isNotLast = (index: number) => index !== collection.collection_fragments.length - 1;
 
 	// Delete fragment from collection
 	const onDeleteFragment = (fragmentId: number) => {
@@ -48,20 +48,24 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 
 		// Sort fragments by position
 		const orderedFragments = orderBy(
-			collection.fragments.filter(fragment => fragment.id !== fragmentId),
+			collection.collection_fragments.filter(
+				(fragment: Avo.Collection.Fragment) => fragment.id !== fragmentId
+			),
 			['position'],
 			['asc']
 		);
 
 		// Reposition fragments
-		const positionedFragments = orderedFragments.map((fragment: any, index: number) => ({
-			...fragment,
-			position: index + 1,
-		}));
+		const positionedFragments = orderedFragments.map(
+			(fragment: Avo.Collection.Fragment, index: number) => ({
+				...fragment,
+				position: index + 1,
+			})
+		);
 
 		updateCollection({
 			...collection,
-			fragments: positionedFragments,
+			collection_fragments: positionedFragments,
 		});
 
 		// TODO: Show toast
@@ -119,83 +123,94 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 
 	return (
 		<Container mode="vertical">
-			{orderBy(collection.fragments, ['position'], ['asc']).map((fragment: any, index: number) => (
-				<Container mode="horizontal" key={`fragment_${index}`}>
-					<div className="c-card">
-						<div className="c-card__header">
+			{orderBy(collection.collection_fragments, ['position'], ['asc']).map(
+				(fragment: any, index: number) => (
+					<Container mode="horizontal" key={`fragment_${index}`}>
+						<div className="c-card">
+							<div className="c-card__header">
+								<Toolbar>
+									<ToolbarLeft>
+										<ToolbarItem>
+											<div className="c-button-toolbar">
+												{isNotFirst(index) && renderReorderButton(fragment.position, 'up')}
+												{isNotLast(index) && renderReorderButton(fragment.position, 'down')}
+											</div>
+										</ToolbarItem>
+									</ToolbarLeft>
+									<ToolbarRight>
+										<ToolbarItem>
+											<Dropdown
+												isOpen={isOptionsMenuOpen === fragment.id}
+												onOpen={() => setIsOptionsMenuOpen(fragment.id)}
+												onClose={() => setIsOptionsMenuOpen(null)}
+												placement="bottom-end"
+												autoSize
+											>
+												<DropdownButton>
+													<Button type="secondary" icon="more-horizontal" />
+												</DropdownButton>
+												<DropdownContent>
+													<Fragment>
+														<a
+															className="c-menu__item"
+															onClick={() => onDuplicateFragment(fragment.id)}
+														>
+															<div className="c-menu__label">Dupliceren</div>
+														</a>
+														<a className="c-menu__item" onClick={() => onMoveFragment()}>
+															<div className="c-menu__label">Verplaatsen</div>
+														</a>
+														<a
+															className="c-menu__item"
+															onClick={() => onDeleteFragment(fragment.id)}
+														>
+															<div className="c-menu__label">Verwijderen</div>
+														</a>
+														<a
+															className="c-menu__item"
+															onClick={() => onCopyFragmentToCollection()}
+														>
+															<div className="c-menu__label">Kopiëren naar andere collectie</div>
+														</a>
+														<a
+															className="c-menu__item"
+															onClick={() => onMoveFragmentToCollection()}
+														>
+															<div className="c-menu__label">Verplaatsen naar andere collectie</div>
+														</a>
+													</Fragment>
+												</DropdownContent>
+											</Dropdown>
+										</ToolbarItem>
+									</ToolbarRight>
+								</Toolbar>
+							</div>
+							<div className="c-card__body">
+								{!!fragment.external_id ? (
+									<Grid>
+										<Column size="3-6">
+											<Thumbnail category="collection" label="collectie" />
+										</Column>
+										<Column size="3-6">{renderForm(fragment, index)}</Column>
+									</Grid>
+								) : (
+									<Form>{renderForm(fragment, index)}</Form>
+								)}
+							</div>
+						</div>
+						<Container>
 							<Toolbar>
-								<ToolbarLeft>
+								<ToolbarCenter>
 									<ToolbarItem>
-										<div className="c-button-toolbar">
-											{isNotFirst(index) && renderReorderButton(fragment.position, 'up')}
-											{isNotLast(index) && renderReorderButton(fragment.position, 'down')}
-										</div>
+										<Button type="secondary" icon="add" />
+										<div className="u-sr-accessible">Sectie toevoegen</div>
 									</ToolbarItem>
-								</ToolbarLeft>
-								<ToolbarRight>
-									<ToolbarItem>
-										<Dropdown
-											isOpen={isOptionsMenuOpen === fragment.id}
-											onOpen={() => setIsOptionsMenuOpen(fragment.id)}
-											onClose={() => setIsOptionsMenuOpen(null)}
-											placement="bottom-end"
-											autoSize
-										>
-											<DropdownButton>
-												<Button type="secondary" icon="more-horizontal" />
-											</DropdownButton>
-											<DropdownContent>
-												<Fragment>
-													<a
-														className="c-menu__item"
-														onClick={() => onDuplicateFragment(fragment.id)}
-													>
-														<div className="c-menu__label">Dupliceren</div>
-													</a>
-													<a className="c-menu__item" onClick={() => onMoveFragment()}>
-														<div className="c-menu__label">Verplaatsen</div>
-													</a>
-													<a className="c-menu__item" onClick={() => onDeleteFragment(fragment.id)}>
-														<div className="c-menu__label">Verwijderen</div>
-													</a>
-													<a className="c-menu__item" onClick={() => onCopyFragmentToCollection()}>
-														<div className="c-menu__label">Kopiëren naar andere collectie</div>
-													</a>
-													<a className="c-menu__item" onClick={() => onMoveFragmentToCollection()}>
-														<div className="c-menu__label">Verplaatsen naar andere collectie</div>
-													</a>
-												</Fragment>
-											</DropdownContent>
-										</Dropdown>
-									</ToolbarItem>
-								</ToolbarRight>
+								</ToolbarCenter>
 							</Toolbar>
-						</div>
-						<div className="c-card__body">
-							{!!fragment.external_id ? (
-								<Grid>
-									<Column size="3-6">
-										<Thumbnail category="collection" label="collectie" />
-									</Column>
-									<Column size="3-6">{renderForm(fragment, index)}</Column>
-								</Grid>
-							) : (
-								<Form>{renderForm(fragment, index)}</Form>
-							)}
-						</div>
-					</div>
-					<Container>
-						<Toolbar>
-							<ToolbarCenter>
-								<ToolbarItem>
-									<Button type="secondary" icon="add" />
-									<div className="u-sr-accessible">Sectie toevoegen</div>
-								</ToolbarItem>
-							</ToolbarCenter>
-						</Toolbar>
+						</Container>
 					</Container>
-				</Container>
-			))}
+				)
+			)}
 		</Container>
 	);
 };

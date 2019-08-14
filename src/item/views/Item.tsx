@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import { RouteComponentProps } from 'react-router';
 
-import { gql } from 'apollo-boost';
 import { debounce } from 'lodash-es';
 import marked from 'marked';
 import queryString from 'query-string';
@@ -49,48 +48,7 @@ import { parseDuration } from '../../shared/helpers/parsers/duration';
 import './Item.scss';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
-const GET_ITEM_BY_ID = gql`
-	query getItemById($id: bpchar!) {
-		app_item_meta(where: { external_id: { _eq: $id } }) {
-			bookmarks {
-				count
-			}
-			browse_path
-			created_at
-			depublish_at
-			description
-			duration
-			expiry_date
-			external_id
-			id
-			is_deleted
-			is_orphaned
-			is_published
-			issued
-			issued_edtf
-			lom_classification
-			lom_context
-			lom_intendedenduserrole
-			lom_keywords
-			lom_languages
-			lom_typicalagerange
-			org_id
-			publish_at
-			series
-			thumbnail_path
-			title
-			type {
-				id
-				label
-			}
-			type_id
-			updated_at
-			views {
-				count
-			}
-		}
-	}
-`;
+import { GET_ITEM_BY_ID } from '../item.gql';
 
 interface ItemProps extends RouteComponentProps {}
 

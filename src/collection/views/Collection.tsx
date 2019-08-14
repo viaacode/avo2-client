@@ -131,18 +131,22 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					text: collection.description,
 				} as BlockIntroProps,
 			});
-			(collection.fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
-				contentBlockInfos.push({
-					blockType: 'VideoTitleTextButton',
-					content: {
-						title: collectionFragment.custom_title,
-						text: collectionFragment.custom_description,
-						videoSource: '',
-						buttonLabel: 'Meer lezen',
-					} as BlockVideoTitleTextButtonProps,
-				});
-			});
+			(collection.collection_fragments || []).forEach(
+				(collectionFragment: Avo.Collection.Fragment) => {
+					contentBlockInfos.push({
+						blockType: 'VideoTitleTextButton',
+						content: {
+							title: collectionFragment.custom_title,
+							text: collectionFragment.custom_description,
+							videoSource: '',
+							buttonLabel: 'Meer lezen',
+						} as BlockVideoTitleTextButtonProps,
+					});
+				}
+			);
 		}
+
+		console.log(collection);
 
 		return (
 			<Fragment>
@@ -172,14 +176,17 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
 									{collection.owner && (
 										<div className="o-flex o-flex--spaced">
-											{!isEmpty(collection.owner) && (
+											{!isEmpty(collection.owner_id) && (
 												<Avatar
-													image={collection.owner.avatar || undefined}
-													name={`${collection.owner.fn} ${collection.owner.sn} (${
-														USER_GROUPS[collection.owner.group_id]
-													})`}
+													image={get(collection, 'owner.avatar')}
+													name={`${get(collection, 'owner.first_name')} ${get(
+														collection,
+														'owner.last_name'
+													)} (
+														${USER_GROUPS[get(collection, 'owner.role.id')]})`}
 													initials={
-														get(collection, 'owner.fn[0]', '') + get(collection, 'owner.sn[0]', '')
+														get(collection, 'owner.first_name[0]', '') +
+														get(collection, 'owner.last_name[0]', '')
 													}
 												/>
 											)}
@@ -217,7 +224,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		<DataQueryComponent
 			query={GET_COLLECTION_BY_ID}
 			variables={{ id: collectionId }}
-			resultPath="migrate_collections[0]"
+			resultPath="app_collections[0]"
 			renderData={renderCollection}
 			notFoundMessage="Deze collectie werd niet gevonden"
 		/>
