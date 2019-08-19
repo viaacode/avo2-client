@@ -55,6 +55,10 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 			['asc']
 		);
 
+		const updatedFragmentIds = (collection.collection_fragment_ids || []).filter((id: number) => {
+			return id !== fragmentId;
+		});
+
 		// Reposition fragments
 		const positionedFragments = orderedFragments.map(
 			(fragment: Avo.Collection.Fragment, index: number) => ({
@@ -66,9 +70,29 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
+			collection_fragment_ids: updatedFragmentIds,
 		});
 
 		// TODO: Show toast
+	};
+
+	const addFragment = () => {
+		updateCollection({
+			...collection,
+			collection_fragments: [
+				...collection.collection_fragments,
+				{
+					id: -1 - collection.collection_fragments.length,
+					position: collection.collection_fragments.length + 1,
+					collection_id: collection.id,
+					external_id: '',
+				},
+			],
+			collection_fragment_ids: [
+				...collection.collection_fragment_ids,
+				-1 - collection.collection_fragments.length,
+			],
+		});
 	};
 
 	const onDuplicateFragment = (fragmentId: number) => {
@@ -202,7 +226,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 							<Toolbar>
 								<ToolbarCenter>
 									<ToolbarItem>
-										<Button type="secondary" icon="add" />
+										<Button type="secondary" icon="add" onClick={addFragment} />
 										<div className="u-sr-accessible">Sectie toevoegen</div>
 									</ToolbarItem>
 								</ToolbarCenter>
@@ -210,6 +234,18 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 						</Container>
 					</Container>
 				)
+			)}
+			{!collection.collection_fragments.length && (
+				<Container>
+					<Toolbar>
+						<ToolbarCenter>
+							<ToolbarItem>
+								<Button type="secondary" icon="add" onClick={addFragment} />
+								<div className="u-sr-accessible">Sectie toevoegen</div>
+							</ToolbarItem>
+						</ToolbarCenter>
+					</Toolbar>
+				</Container>
 			)}
 		</Container>
 	);

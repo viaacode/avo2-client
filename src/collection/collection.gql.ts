@@ -37,24 +37,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				last_name
 				id
 				first_name
-				email
 				created_at
-				profile {
-					alias
-					alternative_email
-					avatar
-					created_at
-					fn
-					group_id
-					id
-					org_id
-					sn
-					updated_at
-					user_id
-					usersByuserId {
-						id
-					}
-				}
 				role {
 					id
 					label
@@ -96,20 +79,34 @@ export const GET_COLLECTION_BY_ID = gql`
 `;
 
 export const UPDATE_COLLECTION = gql`
-	mutation updateCollectionById($id: Int!, $title: String!) {
-		update_app_collections(where: { id: { _eq: $id } }, _set: { title: $title }) {
+	mutation updateCollectionById($id: Int!, $collection: app_collections_set_input!) {
+		update_app_collections(where: { id: { _eq: $id } }, _set: $collection) {
 			affected_rows
 		}
 	}
 `;
 
-export const GET_COLLECTIONS_BY_OWNER = gql`
-	query getMigrateCollectionById($ownerId: uuid) {
-		app_collections(where: { owner_id: { _eq: $ownerId } }) {
-			id
-			collection_fragment_ids
-			description
-			collection_fragments {
+export const UPDATE_COLLECTION_FRAGMENT = gql`
+	mutation updateCollectionById($id: Int!, $fragment: app_collection_fragments_set_input!) {
+		update_app_collection_fragments(where: { id: { _eq: $id } }, _set: $fragment) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_COLLECTION_FRAGMENT = gql`
+	mutation deleteCollectionFragmentById($id: Int!) {
+		delete_app_collection_fragments(where: { id: { _eq: $id } }) {
+			affected_rows
+		}
+	}
+`;
+
+export const INSERT_COLLECTION_FRAGMENT = gql`
+	mutation insertCollectionFragment($id: Int!, $fragment: app_collection_fragments_insert_input!) {
+		insert_app_collection_fragments(objects: [$fragment]) {
+			affected_rows
+			returning {
 				use_custom_fields
 				updated_at
 				start_oc
@@ -122,6 +119,14 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				created_at
 				collection_id
 			}
+		}
+	}
+`;
+
+export const GET_COLLECTIONS_BY_OWNER = gql`
+	query getMigrateCollectionById($ownerId: uuid) {
+		app_collections(where: { owner_id: { _eq: $ownerId } }) {
+			id
 			updated_at
 			type_id
 			type {
@@ -129,7 +134,6 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				id
 			}
 			title
-			thumbnail_path
 			publish_at
 			owner_id
 			owner {
@@ -139,21 +143,27 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				last_name
 				id
 				first_name
-				email
 				created_at
+				role {
+					id
+					label
+					name
+					users {
+						id
+					}
+				}
 			}
-			organisation_id
 			is_public
 			external_id
 			depublish_at
 			created_at
-			label_redactie_id
-			label_redactie {
-				updated_at
-				label
-				id
+			collection_permissions {
+				collection_id
 				created_at
-				alt_label
+				id
+				permission_type
+				updated_at
+				user_id
 			}
 		}
 	}

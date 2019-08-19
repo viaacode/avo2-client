@@ -14,7 +14,7 @@
     "@types/graphql": "^14.2.3",
     "@types/react-redux": "^6.0.14",
     "@viaa/avo2-components": "^1.6.0",
-    "@viaa/avo2-types": "^1.4.3",
+    "@viaa/avo2-types": "^1.5.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
     "graphql": "^14.4.2",

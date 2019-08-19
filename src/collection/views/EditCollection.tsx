@@ -1,9 +1,15 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
+import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
-import { get, isEmpty } from 'lodash-es';
-import { GET_COLLECTION_BY_ID, UPDATE_COLLECTION } from '../collection.gql';
+import { get, isEmpty, without } from 'lodash-es';
+import {
+	DELETE_COLLECTION_FRAGMENT,
+	GET_COLLECTION_BY_ID,
+	INSERT_COLLECTION_FRAGMENT,
+	UPDATE_COLLECTION,
+	UPDATE_COLLECTION_FRAGMENT,
+} from '../collection.gql';
 
 import {
 	Avatar,
@@ -37,7 +43,10 @@ interface EditCollectionProps extends RouteComponentProps {}
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
-	const [triggerCollectionUpdate, { data, error: mutationError }] = useMutation(UPDATE_COLLECTION);
+	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
+	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
+	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
+	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
 	const [collectionId] = useState((props.match.params as any)['id'] as string);
 	const [currentTab, setCurrentTab] = useState('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
@@ -79,18 +88,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		// TODO: Open preview in new tab
 	};
 
-	function onSaveCollection() {
-		triggerCollectionUpdate({
-			variables: {
-				id: currentCollection.id,
-				title: 'Test',
-			},
-		});
-
-		console.log(data);
-		console.log(mutationError);
-	}
-
 	// Update individual property of fragment
 	const updateFragmentProperty = (value: string, propertyName: string, fragmentId: number) => {
 		const temp: Avo.Collection.Response = { ...currentCollection };
@@ -113,10 +110,10 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	// Swap position of two fragments within a collection
 	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
-		const fragments = currentCollection.fragments;
+		const fragments = currentCollection.collection_fragments;
 
 		const changeFragmentsPositions = (sign: number) => {
-			const otherFragment = currentCollection.fragments.find(
+			const otherFragment = currentCollection.collection_fragments.find(
 				(fragment: any) => fragment.position === currentId - sign
 			);
 			fragments.find((fragment: any) => fragment.position === currentId).position -= sign;
@@ -127,14 +124,154 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 		setCurrentCollection({
 			...currentCollection,
-			fragments,
+			collection_fragments: fragments,
 		});
 	};
 
-	const updateCollection = (collection: Avo.Collection.Response) =>
+	const updateCollection = (collection: Avo.Collection.Response) => {
 		setCurrentCollection(collection);
+	};
 
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
+		async function onSaveCollection() {
+			let newCollection: Avo.Collection.Response = { ...currentCollection };
+
+			// Insert fragments that added to collection
+			const insertFragmentIds = without(
+				newCollection.collection_fragment_ids || [],
+				...(collection.collection_fragment_ids || [])
+			);
+
+			// Delete fragments that were removed from collection
+			const deleteFragmentIds = without(
+				collection.collection_fragment_ids || [],
+				...(newCollection.collection_fragment_ids || [])
+			);
+
+			// Update fragments that are neither inserted nor deleted
+			const updateFragmentIds = without(currentCollection.collection_fragment_ids, [
+				...insertFragmentIds,
+				...deleteFragmentIds,
+			]);
+
+			const insertFragment = async (id: number) => {
+				const fragmentToAdd = {
+					...currentCollection.collection_fragments.find(
+						(fragment: Avo.Collection.Fragment) => fragment.id === id
+					),
+				};
+
+				const tempId = fragmentToAdd.id;
+				delete fragmentToAdd.id;
+				delete fragmentToAdd.__typename;
+
+				const response = await triggerCollectionFragmentInsert({
+					variables: {
+						id: currentCollection.id,
+						fragment: fragmentToAdd,
+					},
+				});
+
+				const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
+
+				return {
+					newFragment,
+					oldId: tempId,
+				};
+			};
+
+			const promises: any = [];
+
+			insertFragmentIds.forEach(id => {
+				promises.push(insertFragment(id));
+			});
+
+			const newFragmentData = await Promise.all(promises);
+
+			newFragmentData.forEach((data: any) => {
+				newCollection = {
+					...currentCollection,
+					collection_fragment_ids: [
+						...currentCollection.collection_fragment_ids.filter(
+							(fragmentId: number) => fragmentId !== data.oldId
+						),
+						data.newFragment.id,
+					],
+					collection_fragments: [
+						...currentCollection.collection_fragments.filter(
+							(fragment: Avo.Collection.Fragment) => fragment.id !== data.oldId
+						),
+						data.newFragment,
+					],
+				};
+			});
+
+			deleteFragmentIds.forEach(id => {
+				triggerCollectionFragmentDelete({ variables: { id } });
+
+				newCollection = {
+					...newCollection,
+					collection_fragment_ids: [
+						...(newCollection.collection_fragment_ids || []).filter(
+							(fragmentId: number) => fragmentId !== id
+						),
+					],
+					collection_fragments: [
+						...newCollection.collection_fragments.filter(
+							(fragment: Avo.Collection.Fragment) => fragment.id !== id
+						),
+					],
+				};
+			});
+
+			updateFragmentIds.forEach(id => {
+				const fragment: any = {
+					...newCollection.collection_fragments.find((fragment: Avo.Collection.Fragment) => {
+						return Number(id) === fragment.id;
+					}),
+				};
+
+				delete fragment.__typename;
+
+				triggerCollectionFragmentUpdate({
+					variables: {
+						id,
+						fragment,
+					},
+				});
+			});
+
+			setCurrentCollection(newCollection);
+
+			const readyToStore = { ...newCollection };
+
+			// Trigger collection update
+			const propertiesToDelete = [
+				'collection_fragments',
+				'label_redactie',
+				'owner',
+				'collection_permissions',
+				'__typename',
+				'type',
+			];
+
+			const otherTables: any = {};
+
+			propertiesToDelete.forEach((property: any) => {
+				otherTables[property] = (readyToStore as any)[property];
+				delete (readyToStore as any)[property];
+			});
+
+			triggerCollectionUpdate({
+				variables: {
+					id: currentCollection.id,
+					collection: {
+						...readyToStore,
+					},
+				},
+			});
+		}
+
 		if (!isFirstRender) {
 			setCurrentCollection(collection);
 			setIsFirstRender(true);

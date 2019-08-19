@@ -12,7 +12,6 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	collection,
 	updateCollectionProperty,
 }) => {
-	console.log(collection);
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal">

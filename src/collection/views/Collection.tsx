@@ -146,8 +146,6 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			);
 		}
 
-		console.log(collection);
-
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background="alt">
