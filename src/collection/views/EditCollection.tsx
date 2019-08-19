@@ -1,10 +1,9 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import { get, isEmpty, without } from 'lodash-es';
 import {
-	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION_FRAGMENT,
@@ -22,6 +21,7 @@ import {
 	MenuContent,
 	MetaData,
 	MetaDataItem,
+	Navbar,
 	Spacer,
 	Tabs,
 	Toolbar,
@@ -36,6 +36,7 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteCollectionModal from '../components/DeleteCollectionModal';
 import RenameCollectionModal from '../components/RenameCollectionModal';
+import ReorderCollectionModal from '../components/ReorderCollectionModal';
 import ShareCollectionModal from '../components/ShareCollectionModal';
 import EditCollectionContent from './EditCollectionContent';
 import EditCollectionMetadata from './EditCollectionMetadata';
@@ -47,7 +48,6 @@ export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'U
 
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
@@ -93,6 +93,15 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	const onPreviewCollection = () => {};
 
+	const updateCollection = (collection: Avo.Collection.Response) => {
+		setCurrentCollection(collection);
+	};
+
+	const deleteCollection = () => {
+		// TODO: Delete collection from database.
+		props.history.push(`/mijn-werkruimte/collecties`);
+	};
+
 	// Update individual property of fragment
 	const updateFragmentProperty = (value: string, propertyName: string, fragmentId: number) => {
 		const temp: Avo.Collection.Response = { ...currentCollection };
@@ -131,15 +140,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			...currentCollection,
 			collection_fragments: fragments,
 		});
-	};
-
-	const updateCollection = (collection: Avo.Collection.Response) => {
-		setCurrentCollection(collection);
-	};
-
-	const deleteCollection = () => {
-		// TODO: Delete collection from database.
-		props.history.push(`/mijn-werkruimte/collecties`);
 	};
 
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
@@ -275,110 +275,109 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 		return currentCollection ? (
 			<Fragment>
-				<Container background="alt">
-					<Container mode="vertical" size="small" background="alt">
-						<Container mode="horizontal">
-							<Toolbar>
-								<ToolbarLeft>
-									<ToolbarItem>
-										<Spacer margin="bottom">
-											<MetaData spaced={true} category="collection">
-												<MetaDataItem>
-													<div className="c-content-type c-content-type--collection">
-														<Icon name="collection" />
-														<p>COLLECTION</p>
-													</div>
-												</MetaDataItem>
-												<MetaDataItem
-													icon="eye"
-													label={String(188) /* TODO currentCollection.view_count */}
-												/>
-												<MetaDataItem
-													icon="bookmark"
-													label={String(12) /* TODO currentCollection.bookInhoud_count */}
-												/>
-											</MetaData>
-										</Spacer>
-										<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
-										{currentCollection.owner && (
-											<div className="o-flex o-flex--spaced">
-												{!isEmpty(currentCollection.owner_id) && (
-													<Avatar
-														image={get(currentCollection, 'owner.avatar')}
-														name={`${get(currentCollection, 'owner.first_name')} ${get(
-															currentCollection,
-															'owner.last_name'
-														)} (
+				<Container background="alt" mode="vertical" size="small">
+					<Container mode="horizontal">
+						<Toolbar>
+							<ToolbarLeft>
+								<ToolbarItem>
+									<Spacer margin="bottom">
+										<MetaData spaced={true} category="collection">
+											<MetaDataItem>
+												<div className="c-content-type c-content-type--collection">
+													<Icon name="collection" />
+													<p>COLLECTION</p>
+												</div>
+											</MetaDataItem>
+											<MetaDataItem
+												icon="eye"
+												label={String(188) /* TODO currentCollection.view_count */}
+											/>
+											<MetaDataItem
+												icon="bookmark"
+												label={String(12) /* TODO currentCollection.bookInhoud_count */}
+											/>
+										</MetaData>
+									</Spacer>
+									<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
+									{currentCollection.owner && (
+										<div className="o-flex o-flex--spaced">
+											{!isEmpty(currentCollection.owner_id) && (
+												<Avatar
+													image={get(currentCollection, 'owner.avatar')}
+													name={`${get(currentCollection, 'owner.first_name')} ${get(
+														currentCollection,
+														'owner.last_name'
+													)} (
 														${USER_GROUPS[get(currentCollection, 'owner.role.id')]})`}
-														initials={
-															get(currentCollection, 'owner.first_name[0]', '') +
-															get(currentCollection, 'owner.last_name[0]', '')
-														}
-													/>
-												)}
-											</div>
-										)}
-									</ToolbarItem>
-								</ToolbarLeft>
-								<ToolbarRight>
-									<ToolbarItem>
-										<div className="c-button-toolbar">
-											<Button
-												type="secondary"
-												label="Delen"
-												onClick={() => setIsShareModalOpen(!isShareModalOpen)}
-											/>
-											<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} />
-											<Button
-												type="secondary"
-												label="Herschik alle items"
-												onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
-											/>
-
-											<ControlledDropdown
-												isOpen={isOptionsMenuOpen}
-												onOpen={() => setIsOptionsMenuOpen(true)}
-												onClose={() => setIsOptionsMenuOpen(false)}
-												placement="bottom-end"
-												autoSize
-											>
-												<DropdownButton>
-													<Button type="secondary" icon="more-horizontal" />
-												</DropdownButton>
-												<DropdownContent>
-													<MenuContent
-														menuItems={[
-															{ icon: 'folder', id: 'rename', label: 'Collectie hernoemen' },
-															{ icon: 'delete', id: 'delete', label: 'Verwijder' },
-														]}
-														onClick={itemId => {
-															switch (itemId) {
-																case 'rename':
-																	onRenameCollection();
-																	break;
-																case 'delete':
-																	onDeleteCollection();
-																	break;
-																default:
-																	return null;
-															}
-														}}
-													/>
-												</DropdownContent>
-											</ControlledDropdown>
-											<Spacer margin="left-small">
-												<Button type="primary" label="Opslaan" onClick={onSaveCollection} />
-											</Spacer>
+													initials={
+														get(currentCollection, 'owner.first_name[0]', '') +
+														get(currentCollection, 'owner.last_name[0]', '')
+													}
+												/>
+											)}
 										</div>
-									</ToolbarItem>
-								</ToolbarRight>
-							</Toolbar>
-						</Container>
-					</Container>
-					<Container mode="horizontal" background="alt">
-						<Tabs tabs={tabs} onClick={selectTab} />
+									)}
+								</ToolbarItem>
+							</ToolbarLeft>
+							<ToolbarRight>
+								<ToolbarItem>
+									<div className="c-button-toolbar">
+										<Button
+											type="secondary"
+											label="Delen"
+											onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+										/>
+										<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} />
+										<Button
+											type="secondary"
+											label="Herschik alle items"
+											onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
+										/>
+										<ControlledDropdown
+											isOpen={isOptionsMenuOpen}
+											onOpen={() => setIsOptionsMenuOpen(true)}
+											onClose={() => setIsOptionsMenuOpen(false)}
+											placement="bottom-end"
+											autoSize
+										>
+											<DropdownButton>
+												<Button type="secondary" icon="more-horizontal" />
+											</DropdownButton>
+											<DropdownContent>
+												<MenuContent
+													menuItems={[
+														{ icon: 'folder', id: 'rename', label: 'Collectie hernoemen' },
+														{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+													]}
+													onClick={itemId => {
+														switch (itemId) {
+															case 'rename':
+																onRenameCollection();
+																break;
+															case 'delete':
+																onDeleteCollection();
+																break;
+															default:
+																return null;
+														}
+													}}
+												/>
+											</DropdownContent>
+										</ControlledDropdown>
+										<Spacer margin="left-small">
+											<Button type="primary" label="Opslaan" onClick={onSaveCollection} />
+										</Spacer>
+									</div>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
 					</Container>
 				</Container>
+				<Navbar background="alt" placement="top" autoHeight>
+					<Container mode="horizontal">
+						<Tabs tabs={tabs} onClick={selectTab} />
+					</Container>
+				</Navbar>
 				{currentTab === 'inhoud' && (
 					<EditCollectionContent
 						collection={currentCollection}
@@ -393,6 +392,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 						updateCollectionProperty={updateCollectionProperty}
 					/>
 				)}
+				<ReorderCollectionModal isOpen={isReorderModalOpen} setIsOpen={setIsReorderModalOpen} />
 				<ShareCollectionModal isOpen={isShareModalOpen} setIsOpen={setIsShareModalOpen} />
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
