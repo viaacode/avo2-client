@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 
 import { get, isEmpty, without } from 'lodash-es';
 import {
+	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION_FRAGMENT,
@@ -15,14 +16,12 @@ import {
 	Avatar,
 	Button,
 	Container,
-	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Icon,
+	MenuContent,
 	MetaData,
 	MetaDataItem,
-	Modal,
-	ModalBody,
 	Spacer,
 	Tabs,
 	Toolbar,
@@ -33,7 +32,11 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { withApollo } from 'react-apollo';
 
+import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import DeleteCollectionModal from '../components/DeleteCollectionModal';
+import RenameCollectionModal from '../components/RenameCollectionModal';
+import ShareCollectionModal from '../components/ShareCollectionModal';
 import EditCollectionContent from './EditCollectionContent';
 import EditCollectionMetadata from './EditCollectionMetadata';
 
@@ -44,6 +47,7 @@ export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'U
 
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
+	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
@@ -52,8 +56,10 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-	const [currentCollection, setCurrentCollection] = useState();
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState(false);
+	const [currentCollection, setCurrentCollection] = useState();
+	const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
 
 	// Tab navigation
 	const tabs = [
@@ -74,19 +80,18 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		setCurrentTab(String(selectedTab));
 	};
 
+	// Collection methods
 	const onRenameCollection = () => {
-		// TODO: Add cursor pointer to menu items under dropdown
 		setIsOptionsMenuOpen(false);
-		// TODO: Show toast
+		setIsRenameModalOpen(true);
 	};
 
 	const onDeleteCollection = () => {
 		setIsOptionsMenuOpen(false);
+		setIsDeleteModalOpen(true);
 	};
 
-	const onPreviewCollection = () => {
-		// TODO: Open preview in new tab
-	};
+	const onPreviewCollection = () => {};
 
 	// Update individual property of fragment
 	const updateFragmentProperty = (value: string, propertyName: string, fragmentId: number) => {
@@ -130,6 +135,11 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	const updateCollection = (collection: Avo.Collection.Response) => {
 		setCurrentCollection(collection);
+	};
+
+	const deleteCollection = () => {
+		// TODO: Delete collection from database.
+		props.history.push(`/mijn-werkruimte/collecties`);
 	};
 
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
@@ -324,7 +334,8 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 												label="Herschik alle items"
 												onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 											/>
-											<Dropdown
+
+											<ControlledDropdown
 												isOpen={isOptionsMenuOpen}
 												onOpen={() => setIsOptionsMenuOpen(true)}
 												onClose={() => setIsOptionsMenuOpen(false)}
@@ -335,17 +346,29 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 													<Button type="secondary" icon="more-horizontal" />
 												</DropdownButton>
 												<DropdownContent>
-													<Fragment>
-														<a className="c-menu__item" onClick={onRenameCollection}>
-															<div className="c-menu__label">Collectie hernoemen</div>
-														</a>
-														<a className="c-menu__item" onClick={onDeleteCollection}>
-															<div className="c-menu__label">Verwijder</div>
-														</a>
-													</Fragment>
+													<MenuContent
+														menuItems={[
+															{ icon: 'folder', id: 'rename', label: 'Collectie hernoemen' },
+															{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+														]}
+														onClick={itemId => {
+															switch (itemId) {
+																case 'rename':
+																	onRenameCollection();
+																	break;
+																case 'delete':
+																	onDeleteCollection();
+																	break;
+																default:
+																	return null;
+															}
+														}}
+													/>
 												</DropdownContent>
-											</Dropdown>
-											<Button type="primary" label="Opslaan" onClick={onSaveCollection} />
+											</ControlledDropdown>
+											<Spacer margin="left-small">
+												<Button type="primary" label="Opslaan" onClick={onSaveCollection} />
+											</Spacer>
 										</div>
 									</ToolbarItem>
 								</ToolbarRight>
@@ -370,28 +393,18 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 						updateCollectionProperty={updateCollectionProperty}
 					/>
 				)}
-				<Modal
-					isOpen={isReorderModalOpen}
-					title="Herschik items in collectie"
-					size="large"
-					onClose={() => setIsReorderModalOpen(!isReorderModalOpen)}
-					scrollable={true}
-				>
-					<ModalBody>
-						<p>DRAGGABLE LIST</p>
-					</ModalBody>
-				</Modal>
-				<Modal
-					isOpen={isShareModalOpen}
-					title="Deel deze collectie"
-					size="large"
-					onClose={() => setIsShareModalOpen(!isShareModalOpen)}
-					scrollable={true}
-				>
-					<ModalBody>
-						<p>SHARE</p>
-					</ModalBody>
-				</Modal>
+				<ShareCollectionModal isOpen={isShareModalOpen} setIsOpen={setIsShareModalOpen} />
+				<DeleteCollectionModal
+					isOpen={isDeleteModalOpen}
+					setIsOpen={setIsDeleteModalOpen}
+					deleteCollection={deleteCollection}
+				/>
+				<RenameCollectionModal
+					isOpen={isRenameModalOpen}
+					setIsOpen={setIsRenameModalOpen}
+					initialCollectionName={collection.title}
+					updateCollectionProperty={updateCollectionProperty}
+				/>
 			</Fragment>
 		) : null;
 	};

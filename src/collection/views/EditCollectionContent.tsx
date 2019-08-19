@@ -6,12 +6,12 @@ import {
 	Button,
 	Column,
 	Container,
-	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Form,
 	FormGroup,
 	Grid,
+	MenuContent,
 	TextInput,
 	Thumbnail,
 	Toolbar,
@@ -22,6 +22,8 @@ import {
 	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
+import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 
 interface EditCollectionContentProps {
 	collection: Avo.Collection.Response;
@@ -141,7 +143,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 			<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
 				<WYSIWYG
 					id={`beschrijving_${index}`}
-					data={fragment.custom_description}
+					data={fragment.custom_description || ''}
 					onChange={(e: any) =>
 						updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id)
 					}
@@ -168,7 +170,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 									</ToolbarLeft>
 									<ToolbarRight>
 										<ToolbarItem>
-											<Dropdown
+											<ControlledDropdown
 												isOpen={isOptionsMenuOpen === fragment.id}
 												onOpen={() => setIsOptionsMenuOpen(fragment.id)}
 												onClose={() => setIsOptionsMenuOpen(null)}
@@ -179,37 +181,43 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 													<Button type="secondary" icon="more-horizontal" />
 												</DropdownButton>
 												<DropdownContent>
-													<Fragment>
-														<a
-															className="c-menu__item"
-															onClick={() => onDuplicateFragment(fragment.id)}
-														>
-															<div className="c-menu__label">Dupliceren</div>
-														</a>
-														<a className="c-menu__item" onClick={() => onMoveFragment()}>
-															<div className="c-menu__label">Verplaatsen</div>
-														</a>
-														<a
-															className="c-menu__item"
-															onClick={() => onDeleteFragment(fragment.id)}
-														>
-															<div className="c-menu__label">Verwijderen</div>
-														</a>
-														<a
-															className="c-menu__item"
-															onClick={() => onCopyFragmentToCollection()}
-														>
-															<div className="c-menu__label">Kopiëren naar andere collectie</div>
-														</a>
-														<a
-															className="c-menu__item"
-															onClick={() => onMoveFragmentToCollection()}
-														>
-															<div className="c-menu__label">Verplaatsen naar andere collectie</div>
-														</a>
-													</Fragment>
+													<MenuContent
+														menuItems={[
+															{ icon: 'copy', id: 'duplicate', label: 'Dupliceren' },
+															{ icon: 'arrow-right', id: 'move', label: 'Verplaatsen' },
+															{ icon: 'delete', id: 'delete', label: 'Verwijderen' },
+															{
+																icon: 'copy',
+																id: 'copyToCollection',
+																label: 'Kopiëren naar andere collectie',
+															},
+															{
+																icon: 'arrow-right',
+																id: 'moveToCollection',
+																label: 'Verplaatsen naar andere collectie',
+															},
+														]}
+														onClick={itemId => {
+															switch (itemId) {
+																case 'duplicate':
+																	onDuplicateFragment(fragment.id);
+																	break;
+																case 'move':
+																	onMoveFragment();
+																	break;
+																case 'delete':
+																	onDeleteFragment(fragment.id);
+																case 'copyToCollection':
+																	onCopyFragmentToCollection();
+																case 'moveToCollection':
+																	onMoveFragmentToCollection();
+																default:
+																	return null;
+															}
+														}}
+													/>
 												</DropdownContent>
-											</Dropdown>
+											</ControlledDropdown>
 										</ToolbarItem>
 									</ToolbarRight>
 								</Toolbar>
