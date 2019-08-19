@@ -77,20 +77,19 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 	};
 
 	const addFragment = () => {
+		const TEXT_BLOCK_FRAGMENT = {
+			id: -1 - collection.collection_fragments.length,
+			position: collection.collection_fragments.length + 1,
+			collection_id: collection.id,
+			external_id: '',
+		};
+
 		updateCollection({
 			...collection,
-			collection_fragments: [
-				...collection.collection_fragments,
-				{
-					id: -1 - collection.collection_fragments.length,
-					position: collection.collection_fragments.length + 1,
-					collection_id: collection.id,
-					external_id: '',
-				},
-			],
+			collection_fragments: [...collection.collection_fragments, TEXT_BLOCK_FRAGMENT],
 			collection_fragment_ids: [
-				...collection.collection_fragment_ids,
-				-1 - collection.collection_fragments.length,
+				...(collection.collection_fragment_ids || []),
+				TEXT_BLOCK_FRAGMENT.id,
 			],
 		});
 	};
@@ -140,7 +139,13 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 				/>
 			</FormGroup>
 			<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
-				<WYSIWYG id={`beschrijving_${index}`} data={fragment.custom_description || ''} />
+				<WYSIWYG
+					id={`beschrijving_${index}`}
+					data={fragment.custom_description}
+					onChange={(e: any) =>
+						updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id)
+					}
+				/>
 			</FormGroup>
 		</Form>
 	);

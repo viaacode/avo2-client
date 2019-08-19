@@ -208,20 +208,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 			deleteFragmentIds.forEach(id => {
 				triggerCollectionFragmentDelete({ variables: { id } });
-
-				newCollection = {
-					...newCollection,
-					collection_fragment_ids: [
-						...(newCollection.collection_fragment_ids || []).filter(
-							(fragmentId: number) => fragmentId !== id
-						),
-					],
-					collection_fragments: [
-						...newCollection.collection_fragments.filter(
-							(fragment: Avo.Collection.Fragment) => fragment.id !== id
-						),
-					],
-				};
 			});
 
 			updateFragmentIds.forEach(id => {
