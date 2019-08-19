@@ -236,28 +236,42 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 							</div>
 						</div>
 						<Container>
-							<Toolbar>
-								<ToolbarCenter>
+							<div className="c-toolbar">
+								<div className="c-toolbar__justified">
+									<div className="c-toolbar__item c-toolbar__item--stretch">
+										<div className="c-hr" />
+									</div>
 									<ToolbarItem>
 										<Button type="secondary" icon="add" onClick={addFragment} />
 										<div className="u-sr-accessible">Sectie toevoegen</div>
 									</ToolbarItem>
-								</ToolbarCenter>
-							</Toolbar>
+									<div className="c-toolbar__item c-toolbar__item--stretch">
+										<div className="c-hr" />
+									</div>
+								</div>
+							</div>
 						</Container>
 					</Container>
 				)
 			)}
 			{!collection.collection_fragments.length && (
 				<Container>
-					<Toolbar>
-						<ToolbarCenter>
-							<ToolbarItem>
-								<Button type="secondary" icon="add" onClick={addFragment} />
-								<div className="u-sr-accessible">Sectie toevoegen</div>
-							</ToolbarItem>
-						</ToolbarCenter>
-					</Toolbar>
+					<Container>
+						<div className="c-toolbar">
+							<div className="c-toolbar__justified">
+								<div className="c-toolbar__item c-toolbar__item--stretch">
+									<div className="c-hr" />
+								</div>
+								<ToolbarItem>
+									<Button type="secondary" icon="add" onClick={addFragment} />
+									<div className="u-sr-accessible">Sectie toevoegen</div>
+								</ToolbarItem>
+								<div className="c-toolbar__item c-toolbar__item--stretch">
+									<div className="c-hr" />
+								</div>
+							</div>
+						</div>
+					</Container>
 				</Container>
 			)}
 		</Container>
