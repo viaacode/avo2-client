@@ -12,6 +12,8 @@ RUN npm ci --production=false
 
 COPY . .
 RUN npm run build
+# set permissions for openshift
+RUN chgrp -R 0 /app/build && chmod -R g+rwX /app/build 
 
 FROM nginxinc/nginx-unprivileged AS run
 
