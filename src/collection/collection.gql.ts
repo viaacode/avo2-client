@@ -86,6 +86,14 @@ export const UPDATE_COLLECTION = gql`
 	}
 `;
 
+export const UPDATE_COLLECTION_NAME = gql`
+	mutation updateCollectionNameById($id: Int!, $name: String!) {
+		update_app_collections(where: { id: { _eq: $id } }, _set: { title: $name }) {
+			affected_rows
+		}
+	}
+`;
+
 export const DELETE_COLLECTION = gql`
 	mutation deleteCollectionById($id: Int!) {
 		delete_app_collections(where: { id: { _eq: $id } }) {

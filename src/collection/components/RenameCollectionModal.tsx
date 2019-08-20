@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/react-hooks';
 import React, { FunctionComponent, useState } from 'react';
 
 import {
@@ -11,12 +12,14 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { UPDATE_COLLECTION_NAME } from '../collection.gql';
 
 interface RenameCollectionModalProps {
 	initialCollectionName: string;
 	updateCollectionProperty: (value: string, fieldName: string) => void;
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
+	collectionId: number;
 }
 
 const RenameCollectionModal: FunctionComponent<RenameCollectionModalProps> = ({
@@ -24,12 +27,20 @@ const RenameCollectionModal: FunctionComponent<RenameCollectionModalProps> = ({
 	updateCollectionProperty,
 	setIsOpen,
 	isOpen,
+	collectionId,
 }) => {
+	const [triggerCollectionNameUpdate] = useMutation(UPDATE_COLLECTION_NAME);
 	const [collectionName, setCollectionName] = useState(initialCollectionName);
 
 	const onSave = () => {
 		setIsOpen(false);
 		updateCollectionProperty(collectionName, 'title');
+		triggerCollectionNameUpdate({
+			variables: {
+				id: collectionId,
+				name: collectionName,
+			},
+		});
 	};
 
 	return (

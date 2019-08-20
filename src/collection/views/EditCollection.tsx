@@ -415,6 +415,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					deleteCollection={deleteCollection}
 				/>
 				<RenameCollectionModal
+					collectionId={collection.id}
 					isOpen={isRenameModalOpen}
 					setIsOpen={setIsRenameModalOpen}
 					initialCollectionName={collection.title}
