@@ -146,13 +146,15 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 				/>
 			</FormGroup>
 			<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
-				<WYSIWYG
-					id={`beschrijving_${index}`}
-					data={fragment.custom_description || ''}
-					onChange={(e: any) =>
-						updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id)
-					}
-				/>
+				<Fragment>
+					<WYSIWYG
+						id={`beschrijving_${index}`}
+						data={fragment.custom_description || ''}
+						onChange={(e: any) =>
+							updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id)
+						}
+					/>
+				</Fragment>
 			</FormGroup>
 		</Form>
 	);
@@ -260,7 +262,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 				)
 			)}
 			{!collection.collection_fragments.length && (
-				<Container>
+				<Container mode="horizontal">
 					<Container>
 						<div className="c-toolbar">
 							<div className="c-toolbar__justified">

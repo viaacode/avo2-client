@@ -59,6 +59,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState(false);
 	const [currentCollection, setCurrentCollection] = useState();
+	const [initialCollection, setInitialCollection] = useState();
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
 
 	// Tab navigation
@@ -151,20 +152,26 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			// Insert fragments that added to collection
 			const insertFragmentIds = without(
 				newCollection.collection_fragment_ids || [],
-				...(collection.collection_fragment_ids || [])
+				...(initialCollection.collection_fragment_ids || [])
 			);
+
+			console.log('INSERT', insertFragmentIds);
 
 			// Delete fragments that were removed from collection
 			const deleteFragmentIds = without(
-				collection.collection_fragment_ids || [],
+				initialCollection.collection_fragment_ids || [],
 				...(newCollection.collection_fragment_ids || [])
 			);
 
+			console.log('DELETE', deleteFragmentIds);
+
 			// Update fragments that are neither inserted nor deleted
-			const updateFragmentIds = without(currentCollection.collection_fragment_ids, [
-				...insertFragmentIds,
-				...deleteFragmentIds,
-			]);
+			const updateFragmentIds = (currentCollection.collection_fragment_ids || []).filter(
+				(fragmentId: number) =>
+					(initialCollection.collection_fragment_ids || []).includes(fragmentId)
+			);
+
+			console.log('UPDATE', updateFragmentIds);
 
 			const insertFragment = async (id: number) => {
 				const fragmentToAdd = {
@@ -192,7 +199,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				};
 			};
 
-			const promises: Promise<any>[] = [];
+			const promises: any = [];
 
 			insertFragmentIds.forEach(id => {
 				promises.push(insertFragment(id));
@@ -218,11 +225,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				};
 			});
 
-			deleteFragmentIds.forEach(id => {
+			setCurrentCollection(newCollection);
+			setInitialCollection({
+				...collection,
+				collection_fragment_ids: newCollection.collection_fragment_ids,
+			});
+
+			deleteFragmentIds.forEach((id: number) => {
 				triggerCollectionFragmentDelete({ variables: { id } });
 			});
 
-			updateFragmentIds.forEach(id => {
+			updateFragmentIds.forEach((id: number) => {
 				const fragment: any = {
 					...newCollection.collection_fragments.find((fragment: Avo.Collection.Fragment) => {
 						return Number(id) === fragment.id;
@@ -238,8 +251,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					},
 				});
 			});
-
-			setCurrentCollection(newCollection);
 
 			const readyToStore = { ...newCollection };
 
@@ -265,6 +276,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					id: currentCollection.id,
 					collection: {
 						...readyToStore,
+						// collection_fragment_ids: [],
 					},
 				},
 			});
@@ -272,6 +284,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 		if (!isFirstRender) {
 			setCurrentCollection(collection);
+			setInitialCollection(collection);
 			setIsFirstRender(true);
 		}
 
