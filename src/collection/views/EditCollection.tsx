@@ -128,9 +128,11 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 		const changeFragmentsPositions = (sign: number) => {
 			const otherFragment = currentCollection.collection_fragments.find(
-				(fragment: any) => fragment.position === currentId - sign
+				(fragment: Avo.Collection.Fragment) => fragment.position === currentId - sign
 			);
-			fragments.find((fragment: any) => fragment.position === currentId).position -= sign;
+			fragments.find(
+				(fragment: Avo.Collection.Fragment) => fragment.position === currentId
+			).position -= sign;
 			otherFragment.position += sign;
 		};
 
@@ -190,7 +192,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				};
 			};
 
-			const promises: any = [];
+			const promises: Promise<any>[] = [];
 
 			insertFragmentIds.forEach(id => {
 				promises.push(insertFragment(id));

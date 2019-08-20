@@ -15,7 +15,6 @@ import {
 	TextInput,
 	Thumbnail,
 	Toolbar,
-	ToolbarCenter,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
@@ -44,6 +43,13 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 	const isNotFirst = (index: number) => index !== 0;
 	const isNotLast = (index: number) => index !== collection.collection_fragments.length - 1;
 
+	const reorderFragments = (fragments: Avo.Collection.Fragment[]) => {
+		return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
+			...fragment,
+			position: index + 1,
+		}));
+	};
+
 	// Delete fragment from collection
 	const onDeleteFragment = (fragmentId: number) => {
 		setIsOptionsMenuOpen(null);
@@ -61,13 +67,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 			return id !== fragmentId;
 		});
 
-		// Reposition fragments
-		const positionedFragments = orderedFragments.map(
-			(fragment: Avo.Collection.Fragment, index: number) => ({
-				...fragment,
-				position: index + 1,
-			})
-		);
+		const positionedFragments = reorderFragments(orderedFragments);
 
 		updateCollection({
 			...collection,
@@ -78,17 +78,22 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 		// TODO: Show toast
 	};
 
-	const addFragment = () => {
+	const addFragment = (index: number) => {
 		const TEXT_BLOCK_FRAGMENT = {
 			id: -1 - collection.collection_fragments.length,
-			position: collection.collection_fragments.length + 1,
+			position: 1,
 			collection_id: collection.id,
 			external_id: '',
 		};
 
+		const newFragments = orderBy([...collection.collection_fragments], 'position', 'asc');
+		newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
+
+		const positionedFragments = reorderFragments(newFragments);
+
 		updateCollection({
 			...collection,
-			collection_fragments: [...collection.collection_fragments, TEXT_BLOCK_FRAGMENT],
+			collection_fragments: positionedFragments,
 			collection_fragment_ids: [
 				...(collection.collection_fragment_ids || []),
 				TEXT_BLOCK_FRAGMENT.id,
@@ -242,7 +247,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 										<div className="c-hr" />
 									</div>
 									<ToolbarItem>
-										<Button type="secondary" icon="add" onClick={addFragment} />
+										<Button type="secondary" icon="add" onClick={() => addFragment(index)} />
 										<div className="u-sr-accessible">Sectie toevoegen</div>
 									</ToolbarItem>
 									<div className="c-toolbar__item c-toolbar__item--stretch">
@@ -263,7 +268,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 									<div className="c-hr" />
 								</div>
 								<ToolbarItem>
-									<Button type="secondary" icon="add" onClick={addFragment} />
+									<Button type="secondary" icon="add" onClick={() => addFragment(0)} />
 									<div className="u-sr-accessible">Sectie toevoegen</div>
 								</ToolbarItem>
 								<div className="c-toolbar__item c-toolbar__item--stretch">
