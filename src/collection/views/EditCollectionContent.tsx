@@ -183,7 +183,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 												autoSize
 											>
 												<DropdownButton>
-													<Button type="secondary" icon="more-horizontal" />
+													<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
 												</DropdownButton>
 												<DropdownContent>
 													<MenuContent
