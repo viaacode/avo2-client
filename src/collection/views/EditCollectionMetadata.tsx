@@ -1,6 +1,16 @@
 import React, { FunctionComponent } from 'react';
 
-import { Column, Container, Form, FormGroup, Grid, Spacer, TextArea } from '@viaa/avo2-components';
+import {
+	Button,
+	Column,
+	Container,
+	Form,
+	FormGroup,
+	Grid,
+	Spacer,
+	TextArea,
+	TextInput,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 interface EditCollectionMetadataProps {
@@ -19,6 +29,12 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 					<Spacer margin="bottom">
 						<Grid>
 							<Column size="3-7">
+								<FormGroup label="Onderwijsniveau" labelFor="classificationId">
+									<TextInput value={''} id="classificationId" />
+								</FormGroup>
+								<FormGroup label="Vakken" labelFor="subjectsId">
+									<TextInput value={''} id="subjectsId" />
+								</FormGroup>
 								<FormGroup label="Korte omschrijving" labelFor="shortDescriptionId">
 									<TextArea
 										name="shortDescriptionId"
@@ -28,7 +44,20 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 									/>
 								</FormGroup>
 								<FormGroup label="Persoonlijke opmerkingen/notities" labelFor="personalRemarkId">
-									<TextArea name="personalRemarkId" value={''} id="personalRemarkId" />
+									<TextArea
+										name="personalRemarkId"
+										value={''}
+										id="personalRemarkId"
+										placeholder="Geef hier je persoonlijke opmerkingen/notities in..."
+									/>
+								</FormGroup>
+							</Column>
+							<Column size="3-5">
+								<FormGroup label="Cover afbeelding" labelFor="coverImageId">
+									<Button type="secondary" label="Stel een afbeelding in..." />
+								</FormGroup>
+								<FormGroup label="Map" labelFor="mapId">
+									<Button type="secondary" icon="add" label="Voeg toe aan een map" />
 								</FormGroup>
 							</Column>
 						</Grid>
