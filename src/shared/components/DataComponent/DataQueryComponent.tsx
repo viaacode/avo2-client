@@ -21,7 +21,7 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	resultPath,
 	renderData,
 	notFoundMessage = 'Het opgevraagde object werd niet gevonden',
-}: DataQueryComponentProps) => {
+}) => {
 	return (
 		<Query query={query} variables={variables}>
 			{(result: QueryResult) => {
