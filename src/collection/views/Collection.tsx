@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent, useState } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { gql } from 'apollo-boost';
 import { get, isEmpty } from 'lodash-es';
@@ -34,14 +34,12 @@ import {
 	MetaData,
 	MetaDataItem,
 	Spacer,
-	Spinner,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import NotFound from '../../404/views/NotFound';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
 interface CollectionProps extends RouteComponentProps {}
@@ -257,4 +255,4 @@ const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
 	);
 };
 
-export default Collection;
+export default withRouter(Collection);

@@ -21,6 +21,7 @@ import { DataQueryComponent } from '../../shared/components/DataComponent/DataQu
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { formatDate } from '../../shared/helpers/formatters/date';
 
+import { RouteParts } from '../../routes';
 interface CollectionsProps extends RouteComponentProps {}
 
 // Owner will be enforced by permissions inside the graphql server
@@ -74,7 +75,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 		switch (colKey) {
 			case 'thumbnail':
 				return (
-					<Link to={`/collection/${rowData.id}`} title={rowData.title}>
+					<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
 						<div className="c-thumbnail">
 							<div className="c-thumbnail-placeholder">
 								<Icon name="image" />
@@ -89,7 +90,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 				return (
 					<div className="c-content-header">
 						<h3 className="c-content-header__header">
-							<Link to={`/collection/${rowData.id}`} title={rowData.title}>
+							<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
 								{cellData}
 							</Link>
 						</h3>
@@ -123,7 +124,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 									onClick={itemId => {
 										switch (itemId) {
 											case 'edit':
-												history.push(`/collection/${rowData.id}/edit`);
+												history.push(`/${RouteParts.Collection}/${rowData.id}/${RouteParts.Edit}`);
 												break;
 											default:
 												return null;
@@ -135,7 +136,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 
 						<Button
 							icon="chevron-right"
-							onClick={() => history.push(`/collection/${rowData.id}`)}
+							onClick={() => history.push(`/${RouteParts.Collection}/${rowData.id}`)}
 							type="borderless"
 							active
 						/>

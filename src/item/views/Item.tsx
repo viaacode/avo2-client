@@ -7,7 +7,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { gql } from 'apollo-boost';
 import { debounce } from 'lodash-es';
@@ -542,4 +542,4 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	);
 };
 
-export default Item;
+export default withRouter(Item);
