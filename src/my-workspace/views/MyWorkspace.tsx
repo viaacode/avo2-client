@@ -18,6 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import Collections from '../../collection/views/Collections';
+import { RouteParts } from '../../routes';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
 import { MyWorkspaceProps, TabViewMap } from '../types';
@@ -35,7 +36,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 		arr && arr.length > 0 ? ` (${arr.length})` : '';
 
 	const goToTab = (id: ReactText) => {
-		history.push(`/mijn-werkruimte/${id}`);
+		history.push(`/${RouteParts.MyWorkspace}/${id}`);
 		setTabId(String(id));
 	};
 

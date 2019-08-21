@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent, useState } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { get, isEmpty } from 'lodash-es';
 import { GET_COLLECTION_BY_ID } from '../collection.gql';
@@ -229,4 +229,4 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	);
 };
 
-export default Collection;
+export default withRouter(Collection);
