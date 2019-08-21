@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 
 import { get, isEmpty, without } from 'lodash-es';
 import {
+	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION_FRAGMENT,
@@ -48,6 +49,7 @@ export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'U
 
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
+	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
@@ -98,8 +100,13 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		setCurrentCollection(collection);
 	};
 
-	const deleteCollection = () => {
-		// TODO: Delete collection from database.
+	const deleteCollection = (collectionId: number) => {
+		// TODO: Cascade deletion adaption
+		// triggerCollectionDelete({
+		// 	variables: {
+		// 		id: collectionId,
+		// 	},
+		// });
 		props.history.push(`/mijn-werkruimte/collecties`);
 	};
 
@@ -412,7 +419,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={deleteCollection}
+					deleteCollection={() => deleteCollection(collection.id)}
 				/>
 				<RenameCollectionModal
 					collectionId={collection.id}
