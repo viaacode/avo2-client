@@ -1,5 +1,4 @@
 import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 
 import {
@@ -24,8 +23,6 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
 import { MyWorkspaceProps, TabViewMap } from '../types';
 import Bookmarks from './Bookmarks';
-
-import { selectCollections } from '../../collection/store/selectors';
 
 import './MyWorkspace.scss';
 
@@ -165,8 +162,4 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	collections: selectCollections(state),
-});
-
-export default withRouter(connect(mapStateToProps)(MyWorkspace));
+export default withRouter(MyWorkspace);
