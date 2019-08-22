@@ -195,7 +195,6 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
 	const renderItem = (item: Avo.Item.Response) => {
-		console.log('item: ', item);
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background="alt">
@@ -365,7 +364,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 													{generateSearchLinks(
 														item.external_id,
 														'educationLevel',
-														item.lom_typicalagerange
+														item.lom_context
 													)}
 												</td>
 											</tr>
