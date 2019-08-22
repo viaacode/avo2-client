@@ -167,17 +167,19 @@ const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
 					text: collection.description,
 				} as BlockIntroProps,
 			});
-			(collection.fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
-				contentBlockInfos.push({
-					blockType: 'VideoTitleTextButton',
-					content: {
-						title: collectionFragment.custom_title,
-						text: collectionFragment.custom_description,
-						videoSource: '',
-						buttonLabel: 'Meer lezen',
-					} as BlockVideoTitleTextButtonProps,
-				});
-			});
+			(collection.collection_fragments || []).forEach(
+				(collectionFragment: Avo.Collection.Fragment) => {
+					contentBlockInfos.push({
+						blockType: 'VideoTitleTextButton',
+						content: {
+							title: collectionFragment.custom_title,
+							text: collectionFragment.custom_description,
+							videoSource: '',
+							buttonLabel: 'Meer lezen',
+						} as BlockVideoTitleTextButtonProps,
+					});
+				}
+			);
 		}
 
 		return (
@@ -208,17 +210,17 @@ const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
 									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
 									{collection.owner && (
 										<div className="o-flex o-flex--spaced">
-											{!isEmpty(collection.owner) && (
-												<Avatar
-													image={collection.owner.avatar || undefined}
-													name={`${collection.owner.fn} ${collection.owner.sn} (${
-														USER_GROUPS[collection.owner.group_id]
-													})`}
-													initials={
-														get(collection, 'owner.fn[0]', '') + get(collection, 'owner.sn[0]', '')
-													}
-												/>
-											)}
+											{/*{!isEmpty(collection.owner) && (*/}
+											{/*<Avatar*/}
+											{/*	image={collection.owner.pofile.avatar || undefined}*/}
+											{/*	name={`${collection.owner.fn} ${collection.owner.sn} (${*/}
+											{/*		USER_GROUPS[collection.owner.group_id]*/}
+											{/*	})`}*/}
+											{/*	initials={*/}
+											{/*		get(collection, 'owner.fn[0]', '') + get(collection, 'owner.sn[0]', '')*/}
+											{/*	}*/}
+											{/*/>*/}
+											{/*)}*/}
 										</div>
 									)}
 								</ToolbarItem>
