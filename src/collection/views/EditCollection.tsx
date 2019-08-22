@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { get, isEmpty, without } from 'lodash-es';
 import {
@@ -443,4 +443,4 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	);
 };
 
-export default withApollo(EditCollection);
+export default withRouter(withApollo(EditCollection));
