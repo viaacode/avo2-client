@@ -18,11 +18,9 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
+import { RouteParts } from '../../my-workspace/constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { formatDate } from '../../shared/helpers/formatters/date';
-
-import { RouteParts } from '../../routes';
-interface CollectionsProps extends RouteComponentProps {}
 
 // Owner will be enforced by permissions inside the graphql server
 // TODO reduce number of properties to only the ones we use

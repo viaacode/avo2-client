@@ -2,10 +2,8 @@ import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { gql } from 'apollo-boost';
-import { get, isEmpty } from 'lodash-es';
 
 import {
-	Avatar,
 	BlockImage,
 	BlockImageProps,
 	BlockImageTitleTextButton,

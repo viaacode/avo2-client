@@ -5,7 +5,14 @@ import queryString from 'query-string';
 
 import { isArray, noop } from 'lodash-es';
 import { Link } from 'react-router-dom';
-import { CONTENT_TYPE_TO_ROUTE, RouteParts } from '../../routes';
+import { RouteParts } from '../../my-workspace/constants';
+
+export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
+	video: RouteParts.Item,
+	audio: RouteParts.Item,
+	collection: RouteParts.Collection,
+	bundle: RouteParts.Folder,
+};
 
 export function generateSearchLinks(
 	key: string,

@@ -5,11 +5,12 @@ import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-
 
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
-import { renderRoutes, RouteParts } from './routes';
+import { renderRoutes } from './routes';
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
 
 import { ApolloProvider } from 'react-apollo';
+import { RouteParts } from './my-workspace/constants';
 import { dataService } from './shared/services/data-service';
 import store from './store';
 
