@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
-import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import {
 	Button,
@@ -18,12 +18,11 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import Collections from '../../collection/views/Collections';
+import { RouteParts } from '../../routes';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
 import { MyWorkspaceProps, TabViewMap } from '../types';
 import Bookmarks from './Bookmarks';
-
-import { selectCollections } from '../../collection/store/selectors';
 
 import './MyWorkspace.scss';
 
@@ -37,7 +36,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 		arr && arr.length > 0 ? ` (${arr.length})` : '';
 
 	const goToTab = (id: ReactText) => {
-		history.push(`/mijn-werkruimte/${id}`);
+		history.push(`/${RouteParts.MyWorkspace}/${id}`);
 		setTabId(String(id));
 	};
 
@@ -163,8 +162,4 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	collections: selectCollections(state),
-});
-
-export default connect(mapStateToProps)(MyWorkspace);
+export default withRouter(MyWorkspace);

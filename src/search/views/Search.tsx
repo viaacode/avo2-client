@@ -1,3 +1,8 @@
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Dispatch } from 'redux';
+
 import {
 	Button,
 	Container,
@@ -31,15 +36,12 @@ import {
 	pickBy,
 } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 
-import { getSearchResults } from '../store/actions';
-import { selectSearchLoading, selectSearchResults } from '../store/selectors';
-
+import { RouteParts } from '../../routes';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { SearchFilterControls, SearchResults } from '../components';
+import { getSearchResults } from '../store/actions';
+import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 import { SearchFilterFieldValues, SearchFilterMultiOptions, SearchProps, SortOrder } from './types';
 
 const ITEMS_PER_PAGE = 10;
@@ -65,13 +67,13 @@ const DEFAULT_SORT_ORDER: SortOrder = {
 	orderDirection: 'desc',
 };
 
-const Search: FunctionComponent<SearchProps> = ({
+const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	searchResults,
 	searchResultsLoading,
 	search,
 	history,
 	location,
-}: SearchProps) => {
+}) => {
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
 	const [sortOrder, setSortOrder]: [SortOrder, (sortOrder: SortOrder) => void] = useState(
 		DEFAULT_SORT_ORDER
@@ -126,7 +128,7 @@ const Search: FunctionComponent<SearchProps> = ({
 
 			const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
 			history.push({
-				pathname: '/search',
+				pathname: `/${RouteParts.Search}`,
 				search: queryParams.length ? `?${queryParams}` : '',
 			});
 
@@ -439,7 +441,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Search);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Search)
+);
