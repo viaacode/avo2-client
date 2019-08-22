@@ -1,13 +1,11 @@
 import React, { Fragment, FunctionComponent } from 'react';
 
-import { RouteComponentProps } from 'react-router';
-
-interface BookmarksProps extends RouteComponentProps {}
+import { BookmarksProps } from '../types';
 
 const Bookmarks: FunctionComponent<BookmarksProps> = () => {
 	return (
 		<Fragment>
-			<span>TODO bookmarks</span>
+			<span>TODO Bladwijzers</span>
 		</Fragment>
 	);
 };

@@ -13,6 +13,5 @@
 		],
 		"import-name": false,
 		"prettier": true
-	},
-	"jsRules": true
+	}
 }

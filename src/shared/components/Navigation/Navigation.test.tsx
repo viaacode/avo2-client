@@ -3,18 +3,22 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
+import { RouteParts } from '../../../routes';
 import { Navigation } from './Navigation';
 
 const pItems = [
 	{ label: 'Home', location: '/' },
-	{ label: 'Zoeken', location: 'search' },
-	{ label: 'Ontdek', location: '/discover' },
-	{ label: 'Mijn Archief', location: '/mijn-werkruimte/collecties' },
-	{ label: 'Projecten', location: '/projects' },
-	{ label: 'Nieuws', location: '/news' },
+	{ label: 'Zoeken', location: `/${RouteParts.Search}` },
+	{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
+	{ label: 'Mijn Archief', location: `/${RouteParts.MyWorkspace}/${RouteParts.Collections}` },
+	{ label: 'Projecten', location: `/${RouteParts.Projects}` },
+	{ label: 'Nieuws', location: `/${RouteParts.News}` },
 ];
 
-const sItems = [{ label: 'Registreren', location: '/' }, { label: 'Aanmelden', location: '/' }];
+const sItems = [
+	{ label: 'Registreren', location: `/${RouteParts.Register}` },
+	{ label: 'Aanmelden', location: `/${RouteParts.Login}` },
+];
 
 describe('<Navigation />', () => {
 	it('Should be able to render', () => {
