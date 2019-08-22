@@ -47,7 +47,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	options,
 	disabled,
 	onChange,
-}: CheckboxDropdownModalProps) => {
+}) => {
 	const [checkedStates, setCheckedStates] = useState(
 		fromPairs(options.map((option: CheckboxOption) => [option.id, option.checked]))
 	);

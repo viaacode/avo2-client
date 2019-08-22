@@ -58,6 +58,7 @@ import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/Dat
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
+import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { generateSearchLink } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 
@@ -404,7 +405,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				viewCount={412}
 				bookmarkCount={85}
 				// duration={formatDuration(result.duration_seconds || 0)}
-				description={result.dcterms_abstract}
+				description={stripHtml(result.dcterms_abstract)}
 				onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.id, active)}
 			>
 				<SearchResultTitle>
