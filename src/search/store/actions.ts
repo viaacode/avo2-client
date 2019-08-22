@@ -25,6 +25,7 @@ const getSearchResults = (
 				headers: {
 					'Content-Type': 'application/json',
 				},
+				credentials: 'include',
 				body: JSON.stringify({
 					filters,
 					filterOptionSearch,

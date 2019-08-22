@@ -1,7 +1,9 @@
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
-import { Dispatch } from 'redux';
+import React, { Fragment, FunctionComponent, useState } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+
+import { gql } from 'apollo-boost';
+import { get, isEmpty } from 'lodash-es';
+import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
 import {
 	Avatar,
@@ -39,14 +41,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get, isEmpty } from 'lodash-es';
-import { getCollection } from '../store/actions';
-import { selectCollection } from '../store/selectors';
+import { RouteParts } from '../../constants';
+import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
-interface CollectionProps extends RouteComponentProps {
-	collection: Avo.Collection.Response;
-	getCollection: (id: string) => Dispatch;
-}
+interface CollectionProps extends RouteComponentProps {}
 
 export type BlockType =
 	| 'Image'
@@ -82,21 +80,8 @@ interface ContentBlockInfo {
 // TODO get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
-const Collection: FunctionComponent<CollectionProps> = ({
-	collection,
-	getCollection,
-	history,
-	location,
-	match,
-}: CollectionProps) => {
-	const [id] = useState((match.params as any)['id'] as string);
-
-	/**
-	 * Get collection from api when id changes
-	 */
-	useEffect(() => {
-		getCollection(id);
-	}, [id, getCollection]);
+const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
+	const [collectionId] = useState((match.params as any)['id'] as string);
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
 		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
@@ -138,100 +123,116 @@ const Collection: FunctionComponent<CollectionProps> = ({
 		}
 	};
 
-	const contentBlockInfos: ContentBlockInfo[] = [];
-	if (collection) {
-		contentBlockInfos.push({
-			blockType: 'Intro',
-			content: {
-				subtitle: 'Introductie',
-				text: collection.description,
-			} as BlockIntroProps,
-		});
-		(collection.fragments || []).forEach((collectionFragment: Avo.Collection.Fragment) => {
+	const renderCollection = (collection: Avo.Collection.Response) => {
+		const contentBlockInfos: ContentBlockInfo[] = [];
+		if (collection) {
 			contentBlockInfos.push({
-				blockType: 'VideoTitleTextButton',
+				blockType: 'Intro',
 				content: {
-					title: collectionFragment.custom_title,
-					text: collectionFragment.custom_description,
-					videoSource: '',
-					buttonLabel: 'Meer lezen',
-				} as BlockVideoTitleTextButtonProps,
+					subtitle: 'Introductie',
+					text: collection.description,
+				} as BlockIntroProps,
 			});
-		});
-	}
+			(collection.collection_fragments || []).forEach(
+				(collectionFragment: Avo.Collection.Fragment) => {
+					contentBlockInfos.push({
+						blockType: 'VideoTitleTextButton',
+						content: {
+							title: collectionFragment.custom_title,
+							text: collectionFragment.custom_description,
+							videoSource: '',
+							buttonLabel: 'Meer lezen',
+						} as BlockVideoTitleTextButtonProps,
+					});
+				}
+			);
+		}
 
-	return collection ? (
-		<Fragment>
-			<Container mode="vertical" size="small" background="alt">
-				<Container mode="horizontal">
-					<Toolbar>
-						<ToolbarLeft>
-							<ToolbarItem>
-								<Spacer margin="bottom">
-									<MetaData spaced={true} category="collection">
-										<MetaDataItem>
-											<div className="c-content-type c-content-type--collection">
-												<Icon name="collection" />
-												<p>COLLECTION</p>
-											</div>
-										</MetaDataItem>
-										<MetaDataItem icon="eye" label={String(188) /* TODO collection.view_count */} />
-										<MetaDataItem
-											icon="bookmark"
-											label={String(12) /* TODO collection.bookmark_count */}
-										/>
-									</MetaData>
-								</Spacer>
-								<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
-								{collection.owner && (
-									<div className="o-flex o-flex--spaced">
-										{!isEmpty(collection.owner) && (
-											<Avatar
-												image={collection.owner.avatar || undefined}
-												name={`${collection.owner.fn} ${collection.owner.sn} (${
-													USER_GROUPS[collection.owner.group_id]
-												})`}
-												initials={
-													get(collection, 'owner.fn[0]', '') + get(collection, 'owner.sn[0]', '')
-												}
+		return (
+			<Fragment>
+				<Container mode="vertical" size="small" background="alt">
+					<Container mode="horizontal">
+						<Toolbar>
+							<ToolbarLeft>
+								<ToolbarItem>
+									<Spacer margin="bottom">
+										<MetaData spaced={true} category="collection">
+											<MetaDataItem>
+												<div className="c-content-type c-content-type--collection">
+													<Icon name="collection" />
+													<p>COLLECTION</p>
+												</div>
+											</MetaDataItem>
+											<MetaDataItem
+												icon="eye"
+												label={String(188) /* TODO collection.view_count */}
 											/>
-										)}
+											<MetaDataItem
+												icon="bookmark"
+												label={String(12) /* TODO collection.bookmark_count */}
+											/>
+										</MetaData>
+									</Spacer>
+									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
+									{collection.owner && (
+										<div className="o-flex o-flex--spaced">
+											{!isEmpty(collection.owner_id) && (
+												<Avatar
+													image={get(collection, 'owner.avatar')}
+													name={`${get(collection, 'owner.first_name')} ${get(
+														collection,
+														'owner.last_name'
+													)} (
+														${USER_GROUPS[get(collection, 'owner.role.id')]})`}
+													initials={
+														get(collection, 'owner.first_name[0]', '') +
+														get(collection, 'owner.last_name[0]', '')
+													}
+												/>
+											)}
+										</div>
+									)}
+								</ToolbarItem>
+							</ToolbarLeft>
+							<ToolbarRight>
+								<ToolbarItem>
+									<div className="c-button-toolbar">
+										{/* TODO add aria label once merged in components repo */}
+										<Button type="secondary" icon="bookmark" />
+										<Button type="secondary" icon="share-2" />
+										<Button type="secondary" icon="file-plus" />
+										<Button type="secondary" label="Alle items afspelen" />
+										<Button
+											type="secondary"
+											icon="edit"
+											onClick={() =>
+												history.push(
+													`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+												)
+											}
+										/>
 									</div>
-								)}
-							</ToolbarItem>
-						</ToolbarLeft>
-						<ToolbarRight>
-							<ToolbarItem>
-								<div className="c-button-toolbar">
-									{/* TODO add aria label once merged in components repo */}
-									<Button type="secondary" icon="bookmark" />
-									<Button type="secondary" icon="share-2" />
-									<Button type="secondary" icon="file-plus" />
-									<Button type="secondary" label="Alle items afspelen" />
-								</div>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
 				</Container>
-			</Container>
-			<Container mode="vertical">
-				<Container mode="horizontal">{renderContentBlocks(contentBlockInfos)}</Container>
-			</Container>
-		</Fragment>
-	) : null;
-};
-
-const mapStateToProps = (state: any, { match }: CollectionProps) => ({
-	collection: selectCollection(state, (match.params as any).id),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getCollection: (id: string) => dispatch(getCollection(id) as any),
+				<Container mode="vertical">
+					<Container mode="horizontal">{renderContentBlocks(contentBlockInfos)}</Container>
+				</Container>
+			</Fragment>
+		);
 	};
+
+	return (
+		<DataQueryComponent
+			query={GET_COLLECTION_BY_ID}
+			variables={{ id: collectionId }}
+			resultPath="app_collections[0]"
+			renderData={renderCollection}
+			notFoundMessage="Deze collectie werd niet gevonden"
+		/>
+	);
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Collection);
+export default withRouter(Collection);
