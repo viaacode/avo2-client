@@ -20,7 +20,6 @@ import { DataQueryComponent } from '../../shared/components/DataComponent/DataQu
 import { formatDate } from '../../shared/helpers/formatters/date';
 
 import { RouteParts } from '../../routes';
-interface CollectionsProps extends RouteComponentProps {}
 
 // Owner will be enforced by permissions inside the graphql server
 // TODO reduce number of properties to only the ones we use
@@ -165,6 +164,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 	return (
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}
+			// TODO: replace with actual owner id from ldap object
 			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
 			resultPath="app_collections"
 			renderData={renderCollections}

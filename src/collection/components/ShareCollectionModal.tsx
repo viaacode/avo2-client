@@ -16,7 +16,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			isOpen={isOpen}
 			title="Deel deze collectie"
 			size="large"
-			onClose={() => setIsOpen(!isOpen)}
+			onClose={() => setIsOpen(false)}
 			scrollable={true}
 		>
 			<ModalBody>

@@ -40,6 +40,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { RouteParts } from '../../routes';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
 interface CollectionProps extends RouteComponentProps {}
@@ -203,7 +204,11 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 										<Button
 											type="secondary"
 											icon="edit"
-											onClick={() => history.push(`/collection/${collection.id}/edit`)}
+											onClick={() =>
+												history.push(
+													`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+												)
+											}
 										/>
 									</div>
 								</ToolbarItem>

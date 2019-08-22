@@ -19,6 +19,7 @@ const ReorderCollectionModal: FunctionComponent<ReorderCollectionModalProps> = (
 			onClose={() => setIsOpen(!isOpen)}
 			scrollable={true}
 		>
+			{/* TODO: Add draggable list component */}
 			<ModalBody>
 				<p>REORDER</p>
 			</ModalBody>
