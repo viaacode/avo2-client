@@ -39,7 +39,7 @@ import queryString from 'query-string';
 
 import { RouteParts } from '../../routes';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
-import toastService from '../../shared/services/toast-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { SearchFilterControls, SearchResults } from '../components';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
@@ -178,7 +178,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
-			toastService('Ongeldige zoek query', 'danger');
+			toastService('Ongeldige zoek query', TOAST_TYPE.DANGER);
 			console.error(err);
 		}
 		setQueryParamsAnalysed(true);
@@ -340,7 +340,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												onClick={() => {
 													copySearchLink();
 													setIsOptionsMenuOpen(false);
-													toastService('De link is succesvol gekopieerd', 'success');
+													toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
 												}}
 											>
 												<div className="c-menu__label">

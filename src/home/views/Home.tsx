@@ -28,7 +28,7 @@ import {
 	generateSearchLinkString,
 } from '../../shared/helpers/generateLink';
 import { useDebounce } from '../../shared/helpers/useDebounce';
-import toastService from '../../shared/services/toast-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 interface HomeProps extends RouteComponentProps {
 	searchResults: Avo.Search.Response | null;
@@ -85,7 +85,7 @@ const Home: FunctionComponent<HomeProps> = ({
 					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
 				);
 			} else {
-				toastService(`Geen zoekresultaten gevonden met id: ${searchResultId}`, 'danger');
+				toastService(`Geen zoekresultaten gevonden met id: ${searchResultId}`, TOAST_TYPE.DANGER);
 				console.error('Failed to find search result with id: ', searchResultId);
 			}
 		}
