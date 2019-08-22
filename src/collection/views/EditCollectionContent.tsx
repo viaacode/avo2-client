@@ -40,8 +40,8 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(null);
 
 	// Check whether the current fragment is the first and/or last fragment in collection
-	const isNotFirst = (index: number) => index !== 0;
-	const isNotLast = (index: number) => index !== collection.collection_fragments.length - 1;
+	const isFirst = (index: number) => index === 0;
+	const isLast = (index: number) => index === collection.collection_fragments.length - 1;
 
 	const reorderFragments = (fragments: Avo.Collection.Fragment[]) => {
 		return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
@@ -80,7 +80,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 
 	const addFragment = (index: number) => {
 		const TEXT_BLOCK_FRAGMENT: Avo.Collection.Fragment = {
-			id: -1 - collection.collection_fragments.length,
+			id: -collection.collection_fragments.length,
 			position: 1,
 			collection_id: collection.id,
 			external_id: '',
@@ -177,8 +177,8 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 									<ToolbarLeft>
 										<ToolbarItem>
 											<div className="c-button-toolbar">
-												{isNotFirst(index) && renderReorderButton(fragment.position, 'up')}
-												{isNotLast(index) && renderReorderButton(fragment.position, 'down')}
+												{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
+												{!isLast(index) && renderReorderButton(fragment.position, 'down')}
 											</div>
 										</ToolbarItem>
 									</ToolbarLeft>
