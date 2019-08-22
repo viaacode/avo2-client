@@ -1,6 +1,8 @@
-export const COLLECTIONS_ID = 'collecties';
-export const FOLDERS_ID = 'mappen';
-export const BOOKMARKS_ID = 'bladwijzers';
+import { RouteParts } from '../routes';
+
+export const COLLECTIONS_ID = RouteParts.Collections;
+export const FOLDERS_ID = RouteParts.Folders;
+export const BOOKMARKS_ID = RouteParts.Bookmarks;
 
 export const TABS = [
 	{
