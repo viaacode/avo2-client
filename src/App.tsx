@@ -14,6 +14,8 @@ import { ApolloProvider } from 'react-apollo';
 import { dataService } from './shared/services/data-service';
 import store from './store';
 
+import './App.scss';
+
 interface AppProps {
 	loginState: LoginResponse | null;
 }
