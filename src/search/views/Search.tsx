@@ -49,7 +49,7 @@ import { Dispatch } from 'redux';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
-import { RouteParts } from '../../my-workspace/constants';
+import { RouteParts } from '../../constants';
 import {
 	CheckboxDropdownModal,
 	CheckboxOption,

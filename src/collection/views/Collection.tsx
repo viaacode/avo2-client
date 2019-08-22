@@ -41,7 +41,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { RouteParts } from '../../my-workspace/constants';
+import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
 interface CollectionProps extends RouteComponentProps {}

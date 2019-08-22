@@ -12,7 +12,7 @@ import { Navigation } from './shared/components/Navigation/Navigation';
 
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import { ApolloProvider } from 'react-apollo';
-import { RouteParts } from './my-workspace/constants';
+import { RouteParts } from './constants';
 import { dataService } from './shared/services/data-service';
 import store from './store';
 

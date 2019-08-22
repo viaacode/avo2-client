@@ -6,7 +6,7 @@ import { Dispatch } from 'redux';
 import { get } from 'lodash-es';
 
 import { Spinner } from '@viaa/avo2-components';
-import { RouteParts } from '../../my-workspace/constants';
+import { RouteParts } from '../../constants';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
