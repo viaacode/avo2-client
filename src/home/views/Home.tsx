@@ -77,7 +77,7 @@ const Home: FunctionComponent<HomeProps> = ({
 			const searchResultItem: Avo.Search.ResultItem | undefined = find(
 				get(searchResults, 'results', []),
 				{
-					id: searchResultId as string,
+					id: searchResultId.toString(),
 				}
 			) as Avo.Search.ResultItem | undefined;
 			if (searchResultItem) {
