@@ -18,7 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import Collections from '../../collection/views/Collections';
-import { RouteParts } from '../../routes';
+import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
 import { MyWorkspaceProps, TabViewMap } from '../types';

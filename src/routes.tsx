@@ -8,23 +8,6 @@ import { renderItemRoutes } from './item/routes';
 import { renderMyWorkspaceRoutes } from './my-workspace/routes';
 import { renderSearchRoutes } from './search/routes';
 
-export enum RouteParts {
-	Search = 'zoeken',
-	Item = 'item',
-	Collection = 'collectie',
-	Collections = 'collecties',
-	MyWorkspace = 'mijn-werkruimte',
-	Bookmarks = 'bladwijzers',
-	Folders = 'mappen',
-	Login = 'aanmelden',
-	Logout = 'afmelden',
-	Register = 'registreren',
-	Discover = 'ontdek',
-	Projects = 'projecten',
-	News = 'nieuws',
-	Edit = 'bewerk',
-}
-
 export const renderRoutes = () => (
 	<Fragment>
 		{renderHomeRoutes()}
@@ -33,6 +16,6 @@ export const renderRoutes = () => (
 		{renderCollectionRoutes()}
 		{renderMyWorkspaceRoutes()}
 		{renderAuthenticationRoutes()}
-		{renderNotFoundRoutes()}
+		{/*{renderNotFoundRoutes()}*/}
 	</Fragment>
 );

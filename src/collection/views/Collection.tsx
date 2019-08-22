@@ -1,6 +1,7 @@
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import { gql } from 'apollo-boost';
 import { get, isEmpty } from 'lodash-es';
 import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
@@ -40,7 +41,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { RouteParts } from '../../routes';
+import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
 interface CollectionProps extends RouteComponentProps {}
