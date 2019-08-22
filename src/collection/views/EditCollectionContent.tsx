@@ -157,8 +157,13 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 					<WYSIWYG
 						id={`beschrijving_${index}`}
 						data={fragment.custom_description || ''}
-						onChange={(e: any) =>
-							updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id)
+						onChange={
+							((e: any) =>
+								updateFragmentProperty(
+									e.target.innerHTML,
+									'custom_description',
+									fragment.id
+								)) as any // TODO remove any type once components deploy is working again
 						}
 					/>
 				</Fragment>
