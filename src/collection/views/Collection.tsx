@@ -41,6 +41,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import toastService from '../../shared/services/toast-service';
 
 interface CollectionProps extends RouteComponentProps {}
 
@@ -152,7 +153,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
 					<BlockVideoTitleTextButton {...contentBlock.content as BlockVideoTitleTextButtonProps} />
 				);
 			default:
-				console.error('Failed to find contentBlock type: contentBlock.blockType');
+				toastService(`Failed to find contentBlock type: ${contentBlock.blockType}`, 'danger');
 				return null;
 		}
 	};

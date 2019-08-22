@@ -28,6 +28,7 @@ import {
 	generateSearchLinkString,
 } from '../../shared/helpers/generateLink';
 import { useDebounce } from '../../shared/helpers/useDebounce';
+import toastService from '../../shared/services/toast-service';
 
 interface HomeProps extends RouteComponentProps {
 	searchResults: Avo.Search.Response | null;
@@ -76,7 +77,7 @@ const Home: FunctionComponent<HomeProps> = ({
 			const searchResultItem: Avo.Search.ResultItem | undefined = find(
 				get(searchResults, 'results', []),
 				{
-					id: searchResultId,
+					id: searchResultId as string,
 				}
 			) as Avo.Search.ResultItem | undefined;
 			if (searchResultItem) {
@@ -84,7 +85,7 @@ const Home: FunctionComponent<HomeProps> = ({
 					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
 				);
 			} else {
-				// TODO show error toast
+				toastService(`Geen zoekresultaten gevonden met id: ${searchResultId}`, 'danger');
 				console.error('Failed to find search result with id: ', searchResultId);
 			}
 		}
@@ -132,7 +133,7 @@ const Home: FunctionComponent<HomeProps> = ({
 												<MenuSearchResultContent
 													menuItems={autocompleteMenuItems}
 													noResultsLabel="Geen resultaten"
-													onClick={id => goToSearchResult(id as string | number)}
+													onClick={id => goToSearchResult(id)}
 												/>
 											)}
 											{searchResultsLoading && <Spinner size="large" />}

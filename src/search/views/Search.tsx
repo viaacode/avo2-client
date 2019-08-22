@@ -39,6 +39,7 @@ import queryString from 'query-string';
 
 import { RouteParts } from '../../routes';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
+import toastService from '../../shared/services/toast-service';
 import { SearchFilterControls, SearchResults } from '../components';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
@@ -177,7 +178,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
-			// TODO show toast error: Ongeldige zoek query
+			toastService('Ongeldige zoek query', 'danger');
 			console.error(err);
 		}
 		setQueryParamsAnalysed(true);
@@ -339,7 +340,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												onClick={() => {
 													copySearchLink();
 													setIsOptionsMenuOpen(false);
-													// TODO show toast with "successfully copied" message
+													toastService('De link is succesvol gekopieerd', 'success');
 												}}
 											>
 												<div className="c-menu__label">
@@ -350,7 +351,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												className="c-menu__item"
 												onClick={() => {
 													setIsOptionsMenuOpen(false);
-													// TODO show toast with "not yet implemented" message
+													toastService('Nog niet geïmplementeerd');
 												}}
 											>
 												{/* TODO Create link to create search assignment task */}
