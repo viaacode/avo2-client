@@ -2,6 +2,7 @@ import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
 import { connect, Provider } from 'react-redux';
 
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
+import 'react-trumbowyg/dist/trumbowyg.min.css';
 
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
@@ -9,6 +10,7 @@ import { renderRoutes } from './routes';
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
 
+import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import { ApolloProvider } from 'react-apollo';
 import { RouteParts } from './my-workspace/constants';
 import { dataService } from './shared/services/data-service';
@@ -73,11 +75,13 @@ const AppWithRouter = withRouter(connect(mapStateToProps)(App));
 const Root: FunctionComponent = () => {
 	return (
 		<ApolloProvider client={dataService}>
-			<Provider store={store}>
-				<Router>
-					<AppWithRouter />
-				</Router>
-			</Provider>
+			<ApolloHooksProvider client={dataService}>
+				<Provider store={store}>
+					<Router>
+						<AppWithRouter />
+					</Router>
+				</Provider>
+			</ApolloHooksProvider>
 		</ApolloProvider>
 	);
 };

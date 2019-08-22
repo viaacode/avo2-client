@@ -44,7 +44,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 	const TAB_MAP: TabViewMap = {
 		[COLLECTIONS_ID]: {
 			addHandler: () => {},
-			amount: getAmount(collections),
+			amount: getAmount([collections]),
 			component: <Collections />,
 			filter: {
 				label: 'Auteur',

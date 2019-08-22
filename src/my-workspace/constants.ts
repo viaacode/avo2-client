@@ -16,9 +16,9 @@ export const RouteParts = {
 	Edit: 'bewerk',
 };
 
-export const COLLECTIONS_ID = 'collecties';
-export const FOLDERS_ID = 'mappen';
-export const BOOKMARKS_ID = 'bladwijzers';
+export const COLLECTIONS_ID = RouteParts.Collections;
+export const FOLDERS_ID = RouteParts.Folders;
+export const BOOKMARKS_ID = RouteParts.Bookmarks;
 
 export const TABS = [
 	{

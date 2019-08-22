@@ -2,8 +2,11 @@ import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { gql } from 'apollo-boost';
+import { get, isEmpty } from 'lodash-es';
+import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
 import {
+	Avatar,
 	BlockImage,
 	BlockImageProps,
 	BlockImageTitleTextButton,
@@ -38,6 +41,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { RouteParts } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
 interface CollectionProps extends RouteComponentProps {}
@@ -73,46 +77,10 @@ interface ContentBlockInfo {
 	content: BlockInfo;
 }
 
-const GET_COLLECTION_BY_ID = gql`
-	query getMigrateCollectionById($id: Int!) {
-		migrate_collections(where: { id: { _eq: $id } }) {
-			fragments {
-				id
-				custom_title
-				custom_description
-				start_oc
-				end_oc
-				external_id {
-					external_id
-					mediamosa_id
-					type_label
-				}
-				updated_at
-				position
-				created_at
-			}
-			description
-			title
-			is_public
-			id
-			lom_references {
-				lom_value
-				id
-			}
-			type_id
-			d_ownerid
-			created_at
-			updated_at
-			organisation_id
-			mediamosa_id
-		}
-	}
-`;
-
 // TODO get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
-const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
+const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
@@ -208,17 +176,20 @@ const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
 									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
 									{collection.owner && (
 										<div className="o-flex o-flex--spaced">
-											{/*{!isEmpty(collection.owner) && (*/}
-											{/*<Avatar*/}
-											{/*	image={collection.owner.pofile.avatar || undefined}*/}
-											{/*	name={`${collection.owner.fn} ${collection.owner.sn} (${*/}
-											{/*		USER_GROUPS[collection.owner.group_id]*/}
-											{/*	})`}*/}
-											{/*	initials={*/}
-											{/*		get(collection, 'owner.fn[0]', '') + get(collection, 'owner.sn[0]', '')*/}
-											{/*	}*/}
-											{/*/>*/}
-											{/*)}*/}
+											{!isEmpty(collection.owner_id) && (
+												<Avatar
+													image={get(collection, 'owner.avatar')}
+													name={`${get(collection, 'owner.first_name')} ${get(
+														collection,
+														'owner.last_name'
+													)} (
+														${USER_GROUPS[get(collection, 'owner.role.id')]})`}
+													initials={
+														get(collection, 'owner.first_name[0]', '') +
+														get(collection, 'owner.last_name[0]', '')
+													}
+												/>
+											)}
 										</div>
 									)}
 								</ToolbarItem>
@@ -231,6 +202,15 @@ const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
 										<Button type="secondary" icon="share-2" />
 										<Button type="secondary" icon="file-plus" />
 										<Button type="secondary" label="Alle items afspelen" />
+										<Button
+											type="secondary"
+											icon="edit"
+											onClick={() =>
+												history.push(
+													`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+												)
+											}
+										/>
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>
@@ -248,7 +228,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match }) => {
 		<DataQueryComponent
 			query={GET_COLLECTION_BY_ID}
 			variables={{ id: collectionId }}
-			resultPath="migrate_collections[0]"
+			resultPath="app_collections[0]"
 			renderData={renderCollection}
 			notFoundMessage="Deze collectie werd niet gevonden"
 		/>
