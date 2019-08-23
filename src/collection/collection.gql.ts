@@ -29,7 +29,6 @@ export const GET_COLLECTION_BY_ID = gql`
 			title
 			thumbnail_path
 			publish_at
-			owner_id
 			owner {
 				updated_at
 				uid
@@ -151,7 +150,6 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			}
 			title
 			publish_at
-			owner_id
 			owner {
 				updated_at
 				uid
