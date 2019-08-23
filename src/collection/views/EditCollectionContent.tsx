@@ -226,10 +226,13 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 																	break;
 																case 'delete':
 																	onDeleteFragment(fragment.id);
+																	break;
 																case 'copyToCollection':
 																	onCopyFragmentToCollection();
+																	break;
 																case 'moveToCollection':
 																	onMoveFragmentToCollection();
+																	break;
 																default:
 																	return null;
 															}

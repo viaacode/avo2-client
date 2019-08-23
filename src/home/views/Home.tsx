@@ -1,10 +1,10 @@
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
-import { find, get, isNil, isNumber, isString } from 'lodash-es';
+import { find, get, isNil } from 'lodash-es';
 
 import './Home.scss';
 

@@ -38,11 +38,6 @@ import {
 import queryString from 'query-string';
 
 import { RouteParts } from '../../constants';
-import {
-	CheckboxDropdownModal,
-	CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { SearchFilterControls, SearchResults } from '../components';
