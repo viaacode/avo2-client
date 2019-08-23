@@ -119,8 +119,9 @@ pipeline {
              script {
 		     sh '''#!/bin/bash
 		     echo current branch: ${GIT_BRANCH#*/} '''
-		     if (GIT_BRANCH  == 'master') {
-			     echo 'I only execute on the master branch'
+		     
+		     if (BRANCH  == 'master') {
+			     echo 'I will tag a production image which will roll out !!'
 			     openshift.withCluster() {
 				     openshift.withProject("sc-avo2") {
 					     sh '''#!/bin/bash
