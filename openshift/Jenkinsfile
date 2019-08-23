@@ -103,7 +103,7 @@ pipeline {
 	stage('TAG Image') {
 
             steps {
-		script {sh''''#!/bin/bash
+		script {sh'''#!/bin/bash
 			echo "tagging dev, qas"
 			oc project sc-avo2
 		        oc tag sc-avo2/avo2-client:$VERSION sc-avo2/avo2-client:dev 
