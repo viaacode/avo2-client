@@ -1,3 +1,9 @@
+// We only include the minimal styling from react-toastify
+// this way we don't have to override all unwanted styles
+// Below we only include the parts we need
+@import '~react-toastify/scss/variables';
+@import '~react-toastify/scss/animations/slide';
+
 .c-alert-stack {
-	z-index: 1;
+	z-index: 100; // TODO: This should be set in the styleguide via variables
 }

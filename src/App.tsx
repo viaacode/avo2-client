@@ -2,7 +2,8 @@ import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
 import { connect, Provider } from 'react-redux';
 
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { Slide, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.minimal.css';
 import 'react-trumbowyg/dist/trumbowyg.min.css';
 
 import { selectLogin } from './authentication/store/selectors';
@@ -40,7 +41,15 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 
 	return (
 		<Fragment>
-			<ToastContainer />
+			<ToastContainer
+				autoClose={4000}
+				className="c-alert-stack"
+				closeButton={false}
+				closeOnClick={false}
+				draggable={false}
+				position="bottom-left"
+				transition={Slide}
+			/>
 			<Navigation
 				primaryItems={[
 					{ label: 'Home', location: '/' },
