@@ -23,6 +23,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 interface EditCollectionContentProps {
 	collection: Avo.Collection.Response;
@@ -75,7 +76,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 			collection_fragment_ids: updatedFragmentIds,
 		});
 
-		// TODO: Show toast
+		toastService({ m: 'Fragment is succesvol verwijderd', t: TOAST_TYPE.SUCCESS });
 	};
 
 	const addFragment = (index: number) => {
@@ -110,26 +111,22 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 
 	const onDuplicateFragment = (fragmentId: number) => {
 		setIsOptionsMenuOpen(null);
-
-		// TODO: Show toast
+		toastService({ m: 'Fragment is succesvol gedupliceerd', t: TOAST_TYPE.SUCCESS });
 	};
 
 	const onMoveFragment = () => {
 		setIsOptionsMenuOpen(null);
-
-		// TODO: Show toast
+		toastService({ m: 'Fragment is succesvol verplaatst', t: TOAST_TYPE.SUCCESS });
 	};
 
 	const onCopyFragmentToCollection = () => {
 		setIsOptionsMenuOpen(null);
-
-		// TODO: Show toast
+		toastService({ m: 'Fragment is succesvol gekopiëerd naar collectie', t: TOAST_TYPE.SUCCESS });
 	};
 
 	const onMoveFragmentToCollection = () => {
 		setIsOptionsMenuOpen(null);
-
-		// TODO: Show toast
+		toastService({ m: 'Fragment is succesvol verplaatst naar collectie', t: TOAST_TYPE.SUCCESS });
 	};
 
 	// Render methods

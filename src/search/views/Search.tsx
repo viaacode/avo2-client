@@ -178,7 +178,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
-			toastService('Ongeldige zoek query', TOAST_TYPE.DANGER);
+			toastService({ m: 'Ongeldige zoek query', t: TOAST_TYPE.DANGER });
 			console.error(err);
 		}
 		setQueryParamsAnalysed(true);
@@ -340,7 +340,10 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												onClick={() => {
 													copySearchLink();
 													setIsOptionsMenuOpen(false);
-													toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
+													toastService({
+														m: 'De link is succesvol gekopieerd',
+														t: TOAST_TYPE.SUCCESS,
+													});
 												}}
 											>
 												<div className="c-menu__label">

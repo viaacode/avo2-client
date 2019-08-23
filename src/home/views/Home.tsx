@@ -86,8 +86,10 @@ const Home: FunctionComponent<HomeProps> = ({
 					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
 				);
 			} else {
-				toastService(`Geen zoekresultaten gevonden met id: ${searchResultId}`, TOAST_TYPE.DANGER);
-				console.error('Failed to find search result with id: ', searchResultId);
+				toastService({
+					m: `Geen zoekresultaten gevonden met id: ${searchResultId}`,
+					t: TOAST_TYPE.DANGER,
+				});
 			}
 		}
 	};
