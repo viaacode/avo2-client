@@ -39,7 +39,7 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
-                            echo "We 're about to build and tag dev and qas images for the avo2-client This is a plain docker build"
+                            echo "We 're about to build abnd image and tag dev and qas images for the avo2-client This is a plain docker build"
                         }
                     }
                 }//end script
@@ -81,11 +81,7 @@ pipeline {
                             echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
                             oc project sc-avo2
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
-                            docker build --build-arg PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
-                            docker build --build-arg PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-
-                            docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
-                            docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
+                            docker build --build-arg PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:$VERSION
                             '''
                         }
                     }
@@ -97,17 +93,26 @@ pipeline {
 
             steps {
 		script {sh'''#!/bin/bash
-			     echo "pushing image avo2-client with tag qas"
-			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
-			     echo "pushing image avo2-client with tag dev"
-			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-			     echo "pushing image avo2-client with tag prd based on ${VERSION} from ${GIT_BRANCH}"
-			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
+			     echo "pushing image version $VERSION"
+			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:$VERSION
 			     '''
 
 		}// end script
             }
         }//end stage
+	stage('TAG Image') {
+
+            steps {
+		script {sh''''#!/bin/bash
+			echo "tagging dev, qas"
+			oc project sc-avo2
+		        oc tag sc-avo2/avo2-client:$VERSION sc-avo2/avo2-client:dev 
+			oc tag sc-avo2/avo2-client:$VERSION sc-avo2/avo2-client:qas
+			'''
+
+		}// end script
+            }
+        }//end stage	 			    		     
         stage('Deploy production') {
          steps {
           input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
@@ -119,21 +124,15 @@ pipeline {
 			     openshift.withCluster() {
 				     openshift.withProject("sc-avo2") {
 					     sh '''#!/bin/bash
-
-					     echo "### using ${GIT_COMMIT} commit ###"
-					     oc project sc-avo2
-					     #oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
 					     echo "### Building and tagging production ###"
-					     docker build --build-arg PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}
-					     echo "pushing image avo2-client with tag prd based on ${VERSION} from  ${GIT_BRANCH#*/}"
-					     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}
+					     echo "### Using ${GIT_COMMIT} commit ###"
+					     oc project sc-avo2
+					     oc tag sc-avo2/avo2-client:${VERSION} sc-avo2/avo2-client:prd 
 					     '''
 				     }
 			     }
-
-
                       } else {
-                        echo 'I execute elsewhere'
+                        echo 'Not a master build'
                     	}
                     } // script
          } // steps
