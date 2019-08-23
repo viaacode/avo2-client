@@ -30,9 +30,9 @@ Cypress.Commands.add("login", (email, password) => {
 	cy.get('#emailId').type(email, { timeout: 3000 });
 	cy.get('#passwordId').type(password, { log: false });
 	cy.get('#wp-submit').click();
-	cy.location('host').should('equal', 'localhost:8080');
+	cy.location('host').should('equal', Cypress.env('CLIENT_BASE_URL').split('/').pop());
 });
 
 Cypress.Commands.add("logout", () => {
-	return cy.visit('localhost:8080/afmelden');
+	return cy.visit(`${Cypress.env('CLIENT_BASE_URL')}/afmelden`);
 });

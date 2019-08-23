@@ -1,9 +1,9 @@
-/// <reference path="../../support/index.d.ts" />
+/// <reference path="../support/index.d.ts" />
 
 context('Home', () => {
 	beforeEach(() => {
 		cy.viewport(1920, 937);
-		cy.visit('http://localhost:8080/');
+		cy.visit(Cypress.env('CLIENT_BASE_URL'));
 	});
 
 	it('Homepage should load correctly', () => {
@@ -51,9 +51,9 @@ context('Home', () => {
 		cy.login(Cypress.env('SHD_TEST_ACCOUNT_EMAIL'), Cypress.env('SHD_TEST_ACCOUNT_PASSWORD'));
 
 		// double encoded version of one of the content urls:
-		// * http://localhost:8080/zoeken/item
-		// * http://localhost:8080/zoeken/collectie
-		// * http://localhost:8080/zoeken/bundle
+		// * /zoeken/item
+		// * /zoeken/collectie
+		// * /zoeken/bundle
 		cy.location('pathname').then(pathname => {
 			expect(pathname).to.match(/\/(item|collectie|bundel)\/.*/g);
 		});
