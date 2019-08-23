@@ -15,7 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { RouteParts } from '../../my-workspace/constants';
+import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate } from '../../shared/helpers/formatters/date';

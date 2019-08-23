@@ -5,7 +5,7 @@ import queryString from 'query-string';
 
 import { isArray, noop } from 'lodash-es';
 import { Link } from 'react-router-dom';
-import { RouteParts } from '../../my-workspace/constants';
+import { RouteParts } from '../../constants';
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
 	video: RouteParts.Item,
