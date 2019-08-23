@@ -6,7 +6,8 @@ def TEMPLATENAME = 'avo2-client'
 def TARGET_NS = 'sc-avo2'
 def templateSelector = openshift.selector( "template", "avo2-client")
 
-
+// def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+//def tag= sh( returnStdout: true, script: "git describe --tags").tril() 
 
 
 // NOTE, the "pipeline" directive/closure from the declarative pipeline syntax needs to include, or be nested outside,
@@ -21,8 +22,15 @@ pipeline {
       }
     }
     options {
-        // set a timeout of 10 minutes for this pipeline
-        timeout(time: 10, unit: 'MINUTES')
+        // set a timeout of 8h for this pipeline
+        timeout(time: 480, unit: 'MINUTES')
+    }
+	
+	environment {
+		VERSION = sh(returnStdout: true, script: "git describe || echo noTagFound").trim()
+		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+		BRANCH = sh(returnStdout: true, script: "git branch | grep '*' | cut -d ' ' -f2").trim()
+		//sh(returnStdout: true, script: 'git describe --tags')
     }
     stages {
         stage('preamble') {
@@ -38,11 +46,18 @@ pipeline {
             }
         }
         stage('Template update') {
+		
             steps {
                 script {
+			shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
+				echo shortCommit
+				echo VERSION
+				
+				
                             sh'''#!/bin/bash
+			    echo commitRef:  ${shortCommit}
                             echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
                             oc project sc-avo2
                             oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
@@ -55,11 +70,14 @@ pipeline {
             } // step
         } // end stage
         stage('Docker build') {
+	
             steps {
                 script {
+			
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             sh'''#!/bin/bash
+			    
                             echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
                             oc project sc-avo2
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
@@ -76,34 +94,48 @@ pipeline {
         } // stage
 
         stage('Push Image') {
-            steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject("sc-avo2") {
-                             sh'''#!/bin/bash
-                             echo "pushing image avo2-client with tag qas"
-                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
-                             echo "pushing image avo2-client with tag dev"
-                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
+		 	
+            steps {		
+		script {sh'''#!/bin/bash
+			     echo "pushing image avo2-client with tag qas"
+			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
+			     echo "pushing image avo2-client with tag dev"
+			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
+			     echo "pushing image avo2-client with tag prd based on ${VERSION} from ${GIT_BRANCH}"
+			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:prd
+			     '''
 
-                             '''
-
-                        }
-                    }
-                }// end script
+		}// end script				
             }
         }//end stage
         stage('Deploy production') {
          steps {
-         // input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
-
+          input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"				
              script {
-                 openshift.withCluster() {
-                     openshift.withProject("sc-avo2") {
-                        echo "this is not enabled yet"
-                     }
-                 }
-             } // script
+		     sh '''#!/bin/bash
+		     echo current branch: ${GIT_BRANCH#*/} '''
+		     if (GIT_BRANCH  == 'master') {
+			     echo 'I only execute on the master branch'
+			     openshift.withCluster() {
+				     openshift.withProject("sc-avo2") {
+					     sh '''#!/bin/bash
+					     
+					     echo "### using ${GIT_COMMIT} commit ###"
+					     oc project sc-avo2
+					     #oc tag sc-avo2/avo2-client:prd sc-avo2/avo2-client:${VERSION}
+					     echo "### Building and tagging production ###"
+					     docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-prd-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}
+					     echo "pushing image avo2-client with tag prd based on ${VERSION} from  ${GIT_BRANCH#*/}"
+					     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${VERSION}
+					     '''
+				     }  
+			     }			     
+			     
+			     
+                      } else {
+                        echo 'I execute elsewhere'
+                    	}                
+                    } // script
          } // steps
      } // stage
 

@@ -1,16 +1,17 @@
 import React, { Fragment } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
+import queryString from 'query-string';
 
 import { isArray, noop } from 'lodash-es';
 import { Link } from 'react-router-dom';
-import { RouteParts } from '../../routes';
+import { RouteParts } from '../../constants';
 
-const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
-	video: 'item',
-	audio: 'item',
-	collection: 'collection',
-	bundle: 'collection',
+export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
+	video: RouteParts.Item,
+	audio: RouteParts.Item,
+	collection: RouteParts.Collection,
+	bundle: RouteParts.Folder,
 };
 
 export function generateSearchLinks(
@@ -56,9 +57,12 @@ export function generateSearchLink(
 
 export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filterValue: string) {
 	if (String(filterProp) === 'query') {
-		return `/${RouteParts.Search}?filters={"query":"${filterValue}"}`;
+		const queryParams = queryString.stringify({ filters: JSON.stringify({ query: filterValue }) });
+		return `/${RouteParts.Search}?${queryParams}`;
 	}
-	return `/${RouteParts.Search}?filters={"${filterProp}":["${filterValue}"]}`;
+
+	const queryParams = queryString.stringify({ filters: `{"${filterProp}":["${filterValue}"]}` });
+	return `/${RouteParts.Search}?${queryParams}`;
 }
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {

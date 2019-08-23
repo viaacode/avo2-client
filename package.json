@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "prestart": "npm run env",
@@ -12,10 +12,11 @@
     "format": "npm run lint -- --fix"
   },
   "dependencies": {
+    "@apollo/react-hooks": "^3.0.0",
     "@types/graphql": "^14.2.3",
     "@types/react-redux": "^6.0.14",
     "@viaa/avo2-components": "^1.6.0",
-    "@viaa/avo2-types": "^1.4.3",
+    "@viaa/avo2-types": "^1.5.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
     "graphql": "^14.4.2",
@@ -62,7 +63,7 @@
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "3.4.5"
+    "typescript": "3.5.3"
   },
   "browserslist": {
     "production": [
