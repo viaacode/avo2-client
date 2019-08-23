@@ -23,3 +23,16 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+
+Cypress.Commands.add("login", (email, password) => {
+	cy.location('pathname').should('equal', '/module.php/core/loginuserpass.php');
+	cy.get('#emailId').type(email, { timeout: 3000 });
+	cy.get('#passwordId').type(password, { log: false });
+	cy.get('#wp-submit').click();
+	cy.location('host').should('equal', 'localhost:8080');
+});
+
+Cypress.Commands.add("logout", () => {
+	return cy.visit('localhost:8080/afmelden');
+});

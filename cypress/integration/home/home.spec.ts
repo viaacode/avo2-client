@@ -1,3 +1,5 @@
+/// <reference path="../../support/index.d.ts" />
+
 context('Home', () => {
 	beforeEach(() => {
 		cy.viewport(1920, 937);
@@ -27,6 +29,37 @@ context('Home', () => {
 		const searchField = cy.get('[placeholder="Vul een zoekterm in"]');
 		searchField.click();
 
-		// Worki
+		const searchResultMenu = cy.get('.c-menu--search-result');
+		const allSearchResultsButton = searchResultMenu.find('.c-menu__footer .c-button');
+		allSearchResultsButton.click();
+
+		cy.login(Cypress.env('SHD_TEST_ACCOUNT_EMAIL'), Cypress.env('SHD_TEST_ACCOUNT_PASSWORD'));
+
+		cy.location('pathname').should('equal', '/zoeken');
+	});
+
+	it('Search field menu should link to results', () => {
+		const searchField = cy.get('[placeholder="Vul een zoekterm in"]');
+		searchField.click();
+
+		const searchResultMenu = cy.get('.c-menu--search-result');
+		searchResultMenu
+			.find('.c-menu__item')
+			.first()
+			.click();
+
+		cy.login(Cypress.env('SHD_TEST_ACCOUNT_EMAIL'), Cypress.env('SHD_TEST_ACCOUNT_PASSWORD'));
+
+		// double encoded version of one of the content urls:
+		// * http://localhost:8080/zoeken/item
+		// * http://localhost:8080/zoeken/collectie
+		// * http://localhost:8080/zoeken/bundle
+		cy.location('pathname').then(pathname => {
+			expect(pathname).to.match(/\/(item|collectie|bundel)\/.*/g);
+		});
+	});
+
+	afterEach(() => {
+		cy.logout();
 	});
 });

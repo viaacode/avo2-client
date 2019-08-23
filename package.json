@@ -8,7 +8,8 @@
     "test": "jest --verbose",
     "lint": "tslint -p .",
     "format": "npm run lint -- --fix",
-    "cypress": "npx cypress open"
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
@@ -57,9 +58,11 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "husky": "^2.3.0",
     "lint-staged": "^8.1.7",
+    "lodash": "^4.17.15",
     "lorem-ipsum": "^2.0.3",
     "prettier": "^1.17.1",
     "ts-jest": "^24.0.2",
+    "ts-loader": "^6.0.4",
     "tslint": "^5.16.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
