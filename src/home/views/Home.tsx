@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
-import { find, get } from 'lodash-es';
+import { find, get, isNil, isNumber, isString } from 'lodash-es';
 
 import './Home.scss';
 
@@ -72,8 +72,9 @@ const Home: FunctionComponent<HomeProps> = ({
 		);
 	}, [debouncedSearchTerms, search]);
 
-	const goToSearchResult = (searchResultId: string | number | undefined) => {
-		if (searchResultId) {
+	const goToSearchResult = (searchResultId: string | undefined) => {
+		if (!isNil(searchResultId)) {
+			// Collection ids are numbers and item ids are strings
 			const searchResultItem: Avo.Search.ResultItem | undefined = find(
 				get(searchResults, 'results', []),
 				{
@@ -133,7 +134,7 @@ const Home: FunctionComponent<HomeProps> = ({
 												<MenuSearchResultContent
 													menuItems={autocompleteMenuItems}
 													noResultsLabel="Geen resultaten"
-													onClick={id => goToSearchResult(id)}
+													onClick={id => goToSearchResult(id.toString())}
 												/>
 											)}
 											{searchResultsLoading && <Spinner size="large" />}

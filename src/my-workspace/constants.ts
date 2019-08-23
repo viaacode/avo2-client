@@ -1,4 +1,4 @@
-import { RouteParts } from '../routes';
+import { RouteParts } from '../constants';
 
 export const COLLECTIONS_ID = RouteParts.Collections;
 export const FOLDERS_ID = RouteParts.Folders;

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 
 import SecuredRoute from '../authentication/components/SecuredRoute';
-import { RouteParts } from '../routes';
+import { RouteParts } from '../constants';
 import Collection from './views/Collection';
 import EditCollection from './views/EditCollection';
 

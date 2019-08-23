@@ -3,7 +3,7 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-import { RouteParts } from '../../../routes';
+import { RouteParts } from '../../../constants';
 import { Navigation } from './Navigation';
 
 const pItems = [

@@ -15,11 +15,10 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate } from '../../shared/helpers/formatters/date';
-
-import { RouteParts } from '../../routes';
 
 // Owner will be enforced by permissions inside the graphql server
 // TODO reduce number of properties to only the ones we use
