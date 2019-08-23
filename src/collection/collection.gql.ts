@@ -140,7 +140,7 @@ export const INSERT_COLLECTION_FRAGMENT = gql`
 
 export const GET_COLLECTIONS_BY_OWNER = gql`
 	query getMigrateCollectionById($ownerId: uuid) {
-		app_collections(where: { owner_id: { _eq: $ownerId } }) {
+		app_collections(where: { owner: { uid: { _eq: $ownerId } } }) {
 			id
 			updated_at
 			type_id
