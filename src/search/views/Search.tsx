@@ -56,7 +56,7 @@ import {
 } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
-import { formatDate } from '../../shared/helpers/formatters/date';
+import { reorderDate } from '../../shared/helpers/formatters/date';
 import { formatDuration } from '../../shared/helpers/formatters/duration';
 import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { generateSearchLink } from '../../shared/helpers/generateLink';
@@ -397,7 +397,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			<SearchResult
 				key={`search-result-${result.id}`}
 				type={result.administrative_type}
-				date={formatDate(result.dcterms_issued)}
+				date={reorderDate(result.dcterms_issued)}
 				tags={[
 					{ label: 'Redactiekeuze', id: 'redactiekeuze' },
 					{ label: 'Partner', id: 'partner' },
