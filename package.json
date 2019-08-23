@@ -6,6 +6,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest --verbose",
+    "integration-tests": "cypress run",
     "lint": "tslint -p .",
     "format": "npm run lint -- --fix",
     "cypress:open": "cypress open",
