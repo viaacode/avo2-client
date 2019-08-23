@@ -6,6 +6,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest --verbose",
+    "unit-tests": "react-scripts test --transformIgnorePatterns \\\"node_modules/(?!(react-redux))/\\\"\"",
     "lint": "tslint -p .",
     "format": "npm run lint -- --fix"
   },
