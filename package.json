@@ -1,9 +1,11 @@
 {
   "name": "avo2-client",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "scripts": {
+    "prestart": "npm run env",
     "start": "react-scripts start",
+    "env": "./scripts/env.sh && cp env-config.js ./public",
     "build": "react-scripts build",
     "test": "jest --verbose",
     "lint": "tslint -p .",
