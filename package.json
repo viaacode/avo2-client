@@ -1,11 +1,11 @@
 {
   "name": "avo2-client",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": true,
   "scripts": {
     "prestart": "npm run env",
     "start": "react-scripts start",
-    "env": "./scripts/env.sh && cp env-config.js ./public",
+    "env": "bash ./scripts/env.sh && cp env-config.js ./public",
     "build": "react-scripts build",
     "test": "jest --verbose",
     "lint": "tslint -p .",
@@ -15,7 +15,7 @@
     "@apollo/react-hooks": "^3.0.0",
     "@types/graphql": "^14.2.3",
     "@types/react-redux": "^6.0.14",
-    "@viaa/avo2-components": "^1.6.0",
+    "@viaa/avo2-components": "^1.7.1",
     "@viaa/avo2-types": "^1.5.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",

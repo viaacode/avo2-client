@@ -58,7 +58,7 @@ pipeline {
 
                             sh'''#!/bin/bash
 			    echo commitRef:  ${shortCommit}
-                            echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
+                            echo "Configure template, you can use add to project if you want to install the app in an other env eg debug dev etc"
                             oc project sc-avo2
                             oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
                             oc process -l app=avo2-client -p ENV=dev PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
@@ -78,7 +78,7 @@ pipeline {
                         openshift.withProject("sc-avo2") {
                             sh'''#!/bin/bash
 
-                            echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
+                            echo starting a build, due multistage build we need a build / env , this is far from sane, one can not promote images with this
                             oc project sc-avo2
                             docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
                             docker build --build-arg PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
@@ -110,7 +110,7 @@ pipeline {
         }//end stage
         stage('Deploy production') {
          steps {
-          input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
+          input message: "tag image for pod prd?: avo2-client-prd. Approve?", id: "approval"
              script {
 		     sh '''#!/bin/bash
 		     echo current branch: ${GIT_BRANCH#*/} '''
