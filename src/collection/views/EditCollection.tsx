@@ -323,7 +323,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 									<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
 									{currentCollection.owner && (
 										<div className="o-flex o-flex--spaced">
-											{!isEmpty(currentCollection.owner_id) && (
+											{!isEmpty(get(currentCollection, 'owner.id')) && (
 												<Avatar
 													image={get(currentCollection, 'owner.avatar')}
 													name={`${get(currentCollection, 'owner.first_name')} ${get(

@@ -1,5 +1,7 @@
 import { Action, Dispatch } from 'redux';
 
+import { CustomWindow } from '../../shared/types/CustomWindow';
+
 import {
 	LoginActionTypes,
 	LoginResponse,
@@ -20,7 +22,7 @@ const getLoginState = () => {
 		dispatch(setLoginLoading());
 
 		try {
-			const url = `${process.env.REACT_APP_PROXY_URL}/auth/check-login`;
+			const url = `${(window as CustomWindow)._ENV_.PROXY_URL}/auth/check-login`;
 			const response = await fetch(url, {
 				method: 'GET',
 				headers: {
