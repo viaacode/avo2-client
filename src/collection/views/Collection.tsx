@@ -148,14 +148,11 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			);
 		}
 
-		let ownerNameAndRole = `${get(collection, 'owner.first_name')} ${get(
-			collection,
-			'owner.last_name'
-		)}`;
-		const role = get(collection, 'owner.role.name');
-		if (role) {
-			ownerNameAndRole += `(${role})`;
-		}
+		const ownerNameAndRole = [
+			get(collection, 'owner.first_name', ''),
+			get(collection, 'owner.last_name', ''),
+			get(collection, 'owner.role.name', ''),
+		].join(' ');
 
 		return (
 			<Fragment>

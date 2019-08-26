@@ -8,7 +8,7 @@
     "env": "bash ./scripts/env.sh && cp env-config.js ./public",
     "build": "react-scripts build",
     "test": "jest --verbose",
-    "unit-tests": "react-scripts test --transformIgnorePatterns \\\"node_modules/(?!(lodash-es|moment))/\\\"\"",
+    "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
     "lint": "tslint -p .",
     "format": "npm run lint -- --fix"
   },
