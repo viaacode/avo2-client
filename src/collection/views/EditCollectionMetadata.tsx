@@ -35,17 +35,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 								<FormGroup label="Vakken" labelFor="subjectsId">
 									<TextInput value={''} id="subjectsId" />
 								</FormGroup>
-								<FormGroup
-									label="Korte omschrijving"
-									labelFor="shortDescriptionId"
-									error={
-										(collection.description || '').length > 200
-											? `De beschrijving mag niet langer zijn dan 200 karakters (${
-													(collection.description || '').length
-											  })`
-											: undefined
-									}
-								>
+								<FormGroup label="Korte omschrijving" labelFor="shortDescriptionId">
 									<TextArea
 										name="shortDescriptionId"
 										value={collection.description || ''}
