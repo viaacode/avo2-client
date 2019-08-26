@@ -22,18 +22,18 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 			exact={exact}
 			render={props => {
 				// Already logged in
-				if (loginState && loginState.message === 'LOGGED_IN') {
-					const Component = component;
-					return <Component />;
-				}
-				return (
-					<Redirect
-						to={{
-							pathname: `/${RouteParts.Login}`,
-							state: { from: props.location },
-						}}
-					/>
-				);
+				// if (loginState && loginState.message === 'LOGGED_IN') {
+				const Component = component;
+				return <Component />;
+				// }
+				// return (
+				// 	<Redirect
+				// 		to={{
+				// 			pathname: `/${RouteParts.Login}`,
+				// 			state: { from: props.location },
+				// 		}}
+				// 	/>
+				// );
 			}}
 		/>
 	);
