@@ -4,4 +4,4 @@ cd $WD
 echo "setting env"
 sh ./env.sh
 running nginx
-nginx -g 'daemon off';
+nginx -g 'daemon off;'
