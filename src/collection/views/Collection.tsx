@@ -179,7 +179,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
 									{collection.owner && (
 										<div className="o-flex o-flex--spaced">
-											{!isEmpty(collection.owner_id) && (
+											{!isEmpty(get(collection, 'owner.id')) && (
 												<Avatar
 													image={get(collection, 'owner.avatar')}
 													name={`${get(collection, 'owner.first_name')} ${get(
