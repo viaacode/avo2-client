@@ -6,7 +6,8 @@ def TEMPLATENAME = 'avo2-client'
 def TARGET_NS = 'sc-avo2'
 def templateSelector = openshift.selector( "template", "avo2-client")
 
-
+// def shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+//def tag= sh( returnStdout: true, script: "git describe --tags").tril()
 
 
 // NOTE, the "pipeline" directive/closure from the declarative pipeline syntax needs to include, or be nested outside,
@@ -15,14 +16,20 @@ def templateSelector = openshift.selector( "template", "avo2-client")
 pipeline {
     agent {
       node {
-
         // spin up a pod to run this build on
         label 'docker'
       }
     }
     options {
-        // set a timeout of 10 minutes for this pipeline
-        timeout(time: 10, unit: 'MINUTES')
+        // set a timeout of 8h for this pipeline
+        timeout(time: 480, unit: 'MINUTES')
+    }
+
+	environment {
+		VERSION = sh(returnStdout: true, script: "git describe || echo noTagFound").trim()
+		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+		BRANCH = sh(returnStdout: true, script: "git branch | grep '*' | cut -d ' ' -f2").trim()
+		//sh(returnStdout: true, script: 'git describe --tags')
     }
     stages {
         stage('preamble') {
@@ -31,7 +38,11 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
-                            echo "We 're about to build and tag dev and qas images for the avo2-client This is a plain docker build"
+                            echo "We 're about to build the docker image and tag dev and qas images for the avo2-client This is a plain docker build"
+			    echo "Running login script for the external docker agent"
+			    sh '''#!/bin/bash
+			    /usr/local/bin/agent-login.sh
+			    '''
                         }
                     }
                 }//end script
@@ -39,71 +50,65 @@ pipeline {
         }
         stage('Template update') {
             steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject("sc-avo2") {
-                            sh'''#!/bin/bash
-                            echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
-                            oc project sc-avo2
-                            oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
-                            oc process -l app=avo2-client -p ENV=dev REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
-                            oc process -l app=avo2-client -p ENV=qas REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
-                            '''
-                        }
-                    }
+                script {echo shortCommit
+			echo VERSION
+                        sh'''#!/bin/bash
+			  echo commitRef:  ${shortCommit}
+                          echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
+                          oc project sc-avo2
+                          oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
+                          oc process -l app=avo2-client -p ENV=dev PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                          oc process -l app=avo2-client -p ENV=qas PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                          '''
                 } // script
             } // step
         } // end stage
         stage('Docker build') {
-            steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject("sc-avo2") {
-                            sh'''#!/bin/bash
-                            echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
-                            oc project sc-avo2
-                            docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
-                            docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
-                            docker build --build-arg REACT_APP_PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
 
-                            docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
-                            docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:latest
-                            '''
-                        }
-                    }
+            steps {
+                script {                   
+		    sh'''#!/bin/bash
+		    echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
+		    oc project sc-avo2
+		    docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
+		    docker build --build-arg PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:$VERSION
+		    '''        
                 } // script
             } // steps
         } // stage
-
         stage('Push Image') {
             steps {
-                script {
-                    openshift.withCluster() {
-                        openshift.withProject("sc-avo2") {
-                             sh'''#!/bin/bash
-                             echo "pushing image avo2-client with tag qas"
-                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:qas
-                             echo "pushing image avo2-client with tag dev"
-                             docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:dev
-
-                             '''
-
-                        }
-                    }
-                }// end script
+		script {sh'''#!/bin/bash
+			     echo "pushing image version $VERSION"
+			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:$VERSION
+			     '''
+		}// end script
             }
         }//end stage
+	stage('TAG Image') {
+            steps {
+		script {sh'''#!/bin/bash
+			echo "tagging dev, qas"
+			oc project sc-avo2
+		        oc tag sc-avo2/avo2-client:$VERSION sc-avo2/avo2-client:dev 
+			oc tag sc-avo2/avo2-client:$VERSION sc-avo2/avo2-client:qas
+			'''
+		}// end script
+            }
+        }//end stage	 			    		     
         stage('Deploy production') {
          steps {
-         // input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
-
+          input message: "tag image for pod prd?: avo2-client-prd. Approve?", id: "approval"
              script {
-                 openshift.withCluster() {
-                     openshift.withProject("sc-avo2") {
-                        echo "this is not enabled yet"
-                     }
-                 }
-             } // script
+		     sh '''#!/bin/bash
+		     echo current branch: ${GIT_BRANCH#*/} '''
+		     echo 'I will tag a production image which will roll out !!'
+		     sh '''#!/bin/bash
+		     echo "### Using ${GIT_COMMIT} commit ###"
+		     oc project sc-avo2
+		     oc tag sc-avo2/avo2-client:${VERSION} sc-avo2/avo2-client:prd
+		     '''
+                    } // script
          } // steps
      } // stage
 

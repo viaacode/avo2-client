@@ -2,6 +2,7 @@ import { ReactElement } from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import { MenuItemInfo } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 // My Workspace
 type TabView = {
@@ -19,7 +20,7 @@ export type TabViewMap = {
 };
 
 export interface MyWorkspaceProps extends RouteComponentProps<{ tabId: string }> {
-	collections: any[] | null;
+	collections: Avo.Collection.Response | null;
 }
 
 // Bookmarks

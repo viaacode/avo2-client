@@ -2,13 +2,13 @@ import React, { ComponentType, FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
 
-import { RouteParts } from '../../routes';
+import { RouteParts } from '../../constants';
 import { selectLogin } from '../store/selectors';
 import { LoginResponse } from '../store/types';
 
 export interface SecuredRouteProps {
 	component: ComponentType<any>;
-	path: string;
+	path?: string;
 	exact?: boolean;
 	loginState: LoginResponse | null;
 }
@@ -18,22 +18,22 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 
 	return (
 		<Route
-			path={path}
+			{...(path ? { path } : {})}
 			exact={exact}
 			render={props => {
 				// Already logged in
-				if (loginState && loginState.message === 'LOGGED_IN') {
-					const Component = component;
-					return <Component />;
-				}
-				return (
-					<Redirect
-						to={{
-							pathname: `/${RouteParts.Login}`,
-							state: { from: props.location },
-						}}
-					/>
-				);
+				// if (loginState && loginState.message === 'LOGGED_IN') {
+				const Component = component;
+				return <Component />;
+				// }
+				// return (
+				// 	<Redirect
+				// 		to={{
+				// 			pathname: `/${RouteParts.Login}`,
+				// 			state: { from: props.location },
+				// 		}}
+				// 	/>
+				// );
 			}}
 		/>
 	);

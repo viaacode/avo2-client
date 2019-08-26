@@ -8,7 +8,12 @@ RUN npm install
 ENV PATH /opt/react-app/node_modules/.bin:$PATH
 
 # copy in our source code last, as it changes the most
-WORKDIR /opt/react-app/app
+WORKDIR /opt/react-app
 COPY . .
+
+# Add bash
+RUN apk add --no-cache bash
+
+RUN chmod +x ./scripts/env.sh
 
 CMD npm start

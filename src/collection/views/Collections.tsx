@@ -2,8 +2,6 @@ import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { gql } from 'apollo-boost';
-
 import {
 	AvatarList,
 	Button,
@@ -16,36 +14,17 @@ import {
 	Table,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 
+import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
+import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate } from '../../shared/helpers/formatters/date';
-
-import { RouteParts } from '../../routes';
-interface CollectionsProps extends RouteComponentProps {}
 
 // Owner will be enforced by permissions inside the graphql server
 // TODO reduce number of properties to only the ones we use
-const GET_COLLECTIONS_BY_OWNER = gql`
-	query getMigrateCollectionById($ownerId: Int!) {
-		migrate_collections(where: { d_ownerid: { _eq: $ownerId } }) {
-			description
-			title
-			is_public
-			id
-			lom_references {
-				lom_value
-				id
-			}
-			type_id
-			d_ownerid
-			created_at
-			updated_at
-			organisation_id
-			mediamosa_id
-		}
-	}
-`;
+import { GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
+
+interface CollectionsProps extends RouteComponentProps {}
 
 const dummyAvatars = [
 	{
@@ -64,8 +43,6 @@ const dummyAvatars = [
 		subtitle: 'Mag Bewerken',
 	},
 ];
-
-interface CollectionsProps extends RouteComponentProps {}
 
 const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 	// Render
@@ -149,13 +126,13 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 
 	const renderCollections = (collections: Avo.Collection.Response[]) => {
 		const mappedCollections = !!collections
-			? collections.map(c => {
+			? collections.map(collection => {
 					return {
-						createdAt: formatDate(c.created_at),
-						id: c.id,
+						createdAt: formatDate(collection.created_at),
+						id: collection.id,
 						thumbnail: null,
-						title: c.title,
-						updatedAt: formatDate(c.updated_at),
+						title: collection.title,
+						updatedAt: formatDate(collection.updated_at),
 						inFolder: true,
 						access: dummyAvatars,
 						actions: true,
@@ -186,8 +163,9 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 	return (
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}
-			variables={{ ownerId: 1 }}
-			resultPath="migrate_collections"
+			// TODO: replace with actual owner id from ldap object
+			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
+			resultPath="app_collections"
 			renderData={renderCollections}
 			notFoundMessage="Er konden geen collecties worden gevonden"
 		/>

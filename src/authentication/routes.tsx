@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Route } from 'react-router';
 
-import { RouteParts } from '../routes';
+import { RouteParts } from '../constants';
 import Login from './views/Login';
 import Logout from './views/Logout';
 
