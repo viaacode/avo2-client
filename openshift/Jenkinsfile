@@ -38,7 +38,11 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
-                            echo "We 're about to build abnd image and tag dev and qas images for the avo2-client This is a plain docker build"
+                            echo "We 're about to build the docker image and tag dev and qas images for the avo2-client This is a plain docker build"
+			    echo "Running login script for the external docker agent"
+			    sh '''#!/bin/bash
+			    /usr/local/bin/agent-login.sh
+			    '''
                         }
                     }
                 }//end script
