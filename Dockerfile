@@ -34,5 +34,5 @@ RUN chgrp -R 101 /usr/share/nginx/html && chmod -R g+rwx /usr/share/nginx/html
 # Run script which initializes env vars to fs
 RUN chmod +x env.sh
 USER nginx
-RUN ./env.sh
-
+#RUN ./env.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
