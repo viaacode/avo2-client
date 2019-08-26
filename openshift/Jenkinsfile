@@ -94,7 +94,7 @@ pipeline {
         }//end stage	 			    		     
         stage('Deploy production') {
          steps {
-          input message: "tag image for pod prd?: avo2-cient-prd. Approve?", id: "approval"
+          input message: "tag image for pod prd?: avo2-client-prd. Approve?", id: "approval"
              script {
 		     sh '''#!/bin/bash
 		     echo current branch: ${GIT_BRANCH#*/} '''
