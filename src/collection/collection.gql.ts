@@ -29,7 +29,6 @@ export const GET_COLLECTION_BY_ID = gql`
 			title
 			thumbnail_path
 			publish_at
-			owner_id
 			owner {
 				id
 				last_name
@@ -150,7 +149,7 @@ export const INSERT_COLLECTION_FRAGMENT = gql`
 
 export const GET_COLLECTIONS_BY_OWNER = gql`
 	query getMigrateCollectionById($ownerId: uuid) {
-		app_collections(where: { owner_id: { _eq: $ownerId } }) {
+		app_collections(where: { owner: { uid: { _eq: $ownerId } } }) {
 			id
 			updated_at
 			type_id
@@ -160,7 +159,6 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			}
 			title
 			publish_at
-			owner_id
 			owner {
 				updated_at
 				uid
