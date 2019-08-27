@@ -1,10 +1,10 @@
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
-import { find, get, isNil, isNumber, isString } from 'lodash-es';
+import { find, get, isNil } from 'lodash-es';
 
 import './Home.scss';
 
@@ -28,6 +28,7 @@ import {
 	generateSearchLinkString,
 } from '../../shared/helpers/generateLink';
 import { useDebounce } from '../../shared/helpers/useDebounce';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 interface HomeProps extends RouteComponentProps {
 	searchResults: Avo.Search.Response | null;
@@ -85,8 +86,7 @@ const Home: FunctionComponent<HomeProps> = ({
 					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
 				);
 			} else {
-				// TODO show error toast
-				console.error('Failed to find search result with id: ', searchResultId);
+				toastService(`Geen zoekresultaten gevonden met id: ${searchResultId}`, TOAST_TYPE.DANGER);
 			}
 		}
 	};
