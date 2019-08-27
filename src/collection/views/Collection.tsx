@@ -1,7 +1,6 @@
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { gql } from 'apollo-boost';
 import { get, isEmpty } from 'lodash-es';
 import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
@@ -43,6 +42,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 interface CollectionProps extends RouteComponentProps {}
 
@@ -118,7 +118,10 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					<BlockVideoTitleTextButton {...contentBlock.content as BlockVideoTitleTextButtonProps} />
 				);
 			default:
-				console.error('Failed to find contentBlock type: contentBlock.blockType');
+				toastService(
+					`Failed to find contentBlock type: ${contentBlock.blockType}`,
+					TOAST_TYPE.DANGER
+				);
 				return null;
 		}
 	};
