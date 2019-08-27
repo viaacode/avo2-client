@@ -248,4 +248,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+
+# App specific
 env-config.js
+cypress/videos
+cypress/screenshots
