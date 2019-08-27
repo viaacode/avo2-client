@@ -12,8 +12,15 @@ export enum TOAST_TYPE {
 }
 
 interface ToastService {
-	m: string;
-	t?: TOAST_TYPE;
+	message: string;
+	type?: TOAST_TYPE;
+	dark?: boolean;
+	options?: ToastOptions;
+}
+
+interface ToastService {
+	message: string;
+	type?: TOAST_TYPE;
 	dark?: boolean;
 	options?: ToastOptions;
 }
@@ -22,18 +29,19 @@ const Toast: FunctionComponent<any> = ({ closeToast, ...rest }) => (
 	<Alert {...rest} className="u-spacer-top" close={closeToast} />
 );
 
-export default function toastService(message: ToastService | string) {
-	const defaultType = TOAST_TYPE.INFO;
-
-	if (isNil(message)) {
+export default function toastService(
+	alert: ToastService | string,
+	alertType: TOAST_TYPE = TOAST_TYPE.INFO
+) {
+	if (isNil(alert)) {
 		return null;
 	}
 
-	if (isString(message)) {
-		return toast(<Toast message={message} type={defaultType} />);
+	if (isString(alert)) {
+		return toast(<Toast message={alert} type={alertType} />);
 	}
 
-	const { dark, m, options = {}, t = defaultType } = message;
+	const { options = {}, type = alertType, ...rest } = alert;
 
-	return toast(<Toast dark={dark} message={m} type={t} />, options);
+	return toast(<Toast {...rest} type={type} />, options);
 }

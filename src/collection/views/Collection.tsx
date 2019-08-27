@@ -118,10 +118,10 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					<BlockVideoTitleTextButton {...contentBlock.content as BlockVideoTitleTextButtonProps} />
 				);
 			default:
-				toastService({
-					m: `Failed to find contentBlock type: ${contentBlock.blockType}`,
-					t: TOAST_TYPE.DANGER,
-				});
+				toastService(
+					`Failed to find contentBlock type: ${contentBlock.blockType}`,
+					TOAST_TYPE.DANGER
+				);
 				return null;
 		}
 	};

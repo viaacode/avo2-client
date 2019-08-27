@@ -76,7 +76,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 			collection_fragment_ids: updatedFragmentIds,
 		});
 
-		toastService({ m: 'Fragment is succesvol verwijderd', t: TOAST_TYPE.SUCCESS });
+		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
 	};
 
 	const addFragment = (index: number) => {
@@ -111,22 +111,22 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 
 	const onDuplicateFragment = (fragmentId: number) => {
 		setIsOptionsMenuOpen(null);
-		toastService({ m: 'Fragment is succesvol gedupliceerd', t: TOAST_TYPE.SUCCESS });
+		toastService('Fragment is succesvol gedupliceerd', TOAST_TYPE.SUCCESS);
 	};
 
 	const onMoveFragment = () => {
 		setIsOptionsMenuOpen(null);
-		toastService({ m: 'Fragment is succesvol verplaatst', t: TOAST_TYPE.SUCCESS });
+		toastService('Fragment is succesvol verplaatst', TOAST_TYPE.SUCCESS);
 	};
 
 	const onCopyFragmentToCollection = () => {
 		setIsOptionsMenuOpen(null);
-		toastService({ m: 'Fragment is succesvol gekopiëerd naar collectie', t: TOAST_TYPE.SUCCESS });
+		toastService('Fragment is succesvol gekopiëerd naar collectie', TOAST_TYPE.SUCCESS);
 	};
 
 	const onMoveFragmentToCollection = () => {
 		setIsOptionsMenuOpen(null);
-		toastService({ m: 'Fragment is succesvol verplaatst naar collectie', t: TOAST_TYPE.SUCCESS });
+		toastService('Fragment is succesvol verplaatst naar collectie', TOAST_TYPE.SUCCESS);
 	};
 
 	// Render methods
