@@ -36,6 +36,7 @@ import { withApollo } from 'react-apollo';
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import DeleteCollectionModal from '../components/DeleteCollectionModal';
 import RenameCollectionModal from '../components/RenameCollectionModal';
 import ReorderCollectionModal from '../components/ReorderCollectionModal';
@@ -155,7 +156,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	function getValidationErrorForCollection(collection: Avo.Collection.Response): string {
 		if ((collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH) {
-			return `De korte beschrijving is te lang (max ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters)`;
+			return `De korte omschrijving is te lang (max ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters)`;
 		}
 		return '';
 	}
@@ -165,8 +166,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			// Validate collection before save
 			const validationError = getValidationErrorForCollection(currentCollection);
 			if (validationError) {
-				// TODO show error toast
-				console.error('Cannot save collection because some fields are invalid', validationError);
+				toastService(validationError, TOAST_TYPE.DANGER);
 				return;
 			}
 
