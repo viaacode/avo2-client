@@ -16,61 +16,27 @@ describe('<Checkbox />', () => {
 		);
 	});
 
-	it('Should be able to render with less than 10 items', () => {
-		const checkboxDropdownComponent = shallow(
-			<DateRangeDropdown
-				label="Counting"
-				id="counting"
-				onChange={action('CheckboxDropdown changed')}
-			/>
-		);
-		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(5);
-	});
-
-	it('Should call `onChange` when toggling checkbox', () => {
+	it('Should call `onChange` when changing a datetime', () => {
 		const onChangeHandler = jest.fn();
 
-		const checkboxDropdownComponent = mount(
-			<DateRangeDropdown label="Counting" id="counting" onChange={onChangeHandler} />
+		const dateTimePickerComponent = mount(
+			<DateRangeDropdown label="releaseDate" id="releaseDate" onChange={onChangeHandler} />
 		);
 
-		const defaultState = {
-			one: false,
-			two: false,
-			three: false,
-			four: false,
-			five: false,
-			six: false,
-			seven: false,
-			eight: false,
-			nine: false,
-			ten: false,
-			elven: false,
-			twelve: false,
-		};
+		const yearInputs = dateTimePickerComponent.find('[placeholder="JJJJ"]');
 
-		const checkboxes = checkboxDropdownComponent.find('[type="checkbox"]');
+		yearInputs.at(1).simulate('change', { target: { value: '2018' } });
+		yearInputs.at(2).simulate('change', { target: { value: '2019' } });
 
-		checkboxes.at(2).simulate('change', { target: { checked: true } });
+		dateTimePickerComponent.find('.c-button.c-button--block.c-button--primary').simulate('click');
 
-		expect((checkboxDropdownComponent.state() as DateRangeDropdownState).range).toMatchObject({
-			...defaultState,
-			three: true,
-		});
-
-		checkboxes.at(3).simulate('change', { target: { checked: true } });
-
-		expect((checkboxDropdownComponent.state() as DateRangeDropdownState).range).toMatchObject({
-			...defaultState,
-			three: true,
-			four: true,
-		});
-
-		checkboxes.at(2).simulate('change', { target: { checked: false } });
-
-		expect((checkboxDropdownComponent.state() as DateRangeDropdownState).range).toMatchObject({
-			...defaultState,
-			four: true,
-		});
+		expect(onChangeHandler).toBeCalled();
+		expect(onChangeHandler).toBeCalledWith(
+			{
+				gte: '2018-01-01',
+				lte: '2019-12-31',
+			},
+			'releaseDate'
+		);
 	});
 });

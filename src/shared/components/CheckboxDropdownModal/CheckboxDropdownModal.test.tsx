@@ -119,27 +119,23 @@ describe('<Checkbox />', () => {
 		};
 
 		const checkboxes = checkboxDropdownComponent.find('[type="checkbox"]');
+		const button = checkboxDropdownComponent
+			.find('.c-button.c-button--block.c-button--primary')
+			.at(0);
 
 		checkboxes.at(2).simulate('change', { target: { checked: true } });
+		button.simulate('click');
 
-		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
-			...defaultState,
-			three: true,
-		});
+		expect(onChangeHandler).toBeCalledWith(['three'], 'counting');
 
 		checkboxes.at(3).simulate('change', { target: { checked: true } });
+		button.simulate('click');
 
-		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
-			...defaultState,
-			three: true,
-			four: true,
-		});
+		expect(onChangeHandler).toBeCalledWith(['three', 'four'], 'counting');
 
 		checkboxes.at(2).simulate('change', { target: { checked: false } });
+		button.simulate('click');
 
-		expect((checkboxDropdownComponent.state() as any).checkedStates).toMatchObject({
-			...defaultState,
-			four: true,
-		});
+		expect(onChangeHandler).toBeCalledWith(['four'], 'counting');
 	});
 });
