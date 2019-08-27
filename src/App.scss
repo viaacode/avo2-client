@@ -1,0 +1,16 @@
+// Vendors
+// ------------------------------------------------------------------------ /
+@import '~react-toastify/dist/ReactToastify.minimal.css';
+// We only include the minimal styling from react-toastify
+// this way we don't have to override all unwanted styles
+// Below we only include the parts we need
+@import '~react-toastify/scss/variables';
+@import '~react-toastify/scss/animations/slide';
+
+@import '~react-trumbowyg/dist/trumbowyg.min.css';
+
+// Styleguide overrides / fixes
+// ------------------------------------------------------------------------ /
+.c-alert-stack {
+	z-index: 100; // TODO: This should be set in the styleguide via variables
+}
