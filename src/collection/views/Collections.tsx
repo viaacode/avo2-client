@@ -18,7 +18,7 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { formatDate } from '../../shared/helpers/formatters/date';
+import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 
 // Owner will be enforced by permissions inside the graphql server
 // TODO reduce number of properties to only the ones we use
@@ -73,7 +73,11 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 						</h3>
 						<div className="c-content-header__meta u-text-muted">
 							<MetaData category="collection">
-								<MetaDataItem>{rowData.createdAt}</MetaDataItem>
+								<MetaDataItem>
+									<span title={`Aangemaakt: ${formatDate(rowData.createdAt)}`}>
+										{fromNow(rowData.createdAt)}
+									</span>
+								</MetaDataItem>
 								{/* TODO link view count from db */}
 								<MetaDataItem icon="eye" label={(Math.random() * (200 - 1) + 1).toFixed()} />
 							</MetaData>
@@ -119,6 +123,9 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 						/>
 					</div>
 				);
+			case 'createdAt':
+			case 'updatedAt':
+				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
 			default:
 				return cellData;
 		}
@@ -128,11 +135,11 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 		const mappedCollections = !!collections
 			? collections.map(collection => {
 					return {
-						createdAt: formatDate(collection.created_at),
+						createdAt: collection.created_at,
 						id: collection.id,
 						thumbnail: null,
 						title: collection.title,
-						updatedAt: formatDate(collection.updated_at),
+						updatedAt: collection.updated_at,
 						inFolder: true,
 						access: dummyAvatars,
 						actions: true,

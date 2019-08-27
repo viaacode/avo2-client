@@ -151,6 +151,12 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			);
 		}
 
+		const ownerNameAndRole = [
+			get(collection, 'owner.first_name', ''),
+			get(collection, 'owner.last_name', ''),
+			get(collection, 'owner.role.name', ''),
+		].join(' ');
+
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background="alt">
@@ -182,11 +188,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 											{!isEmpty(get(collection, 'owner.id')) && (
 												<Avatar
 													image={get(collection, 'owner.avatar')}
-													name={`${get(collection, 'owner.first_name')} ${get(
-														collection,
-														'owner.last_name'
-													)} (
-														${USER_GROUPS[get(collection, 'owner.role.id')]})`}
+													name={ownerNameAndRole || ' '}
 													initials={
 														get(collection, 'owner.first_name[0]', '') +
 														get(collection, 'owner.last_name[0]', '')

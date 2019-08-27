@@ -14,7 +14,7 @@ import {
 	RadioButtonGroup,
 	TextInput,
 } from '@viaa/avo2-components';
-import { formatDate } from '../../helpers/formatters/date';
+import { reorderDate } from '../../helpers/formatters/date';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface DateRangeDropdownProps {
@@ -113,8 +113,8 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	const getTag = () => {
 		const isGteStartOfYear = range.gte.includes('-01-01');
 		const isLteEndOfYear = range.lte.includes('-12-31');
-		const gteFormattedDate = formatDate(range.gte);
-		const lteFormattedDate = formatDate(range.lte);
+		const gteFormattedDate = reorderDate(range.gte);
+		const lteFormattedDate = reorderDate(range.lte);
 		const gteYear = range.gte.split('-')[0];
 		const lteYear = range.lte.split('-')[0];
 		let label: string | null = null;
@@ -124,7 +124,7 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 				label = `${gteYear} - ${lteYear}`;
 			} else {
 				// show full dates
-				label = `${formatDate(range.gte)} - ${formatDate(range.lte)}`;
+				label = `${reorderDate(range.gte)} - ${reorderDate(range.lte)}`;
 			}
 		} else if (range.gte) {
 			label = `na ${isGteStartOfYear ? gteYear : gteFormattedDate}`;
