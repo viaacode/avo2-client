@@ -3,8 +3,6 @@ import { connect, Provider } from 'react-redux';
 
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.minimal.css';
-import 'react-trumbowyg/dist/trumbowyg.min.css';
 
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
