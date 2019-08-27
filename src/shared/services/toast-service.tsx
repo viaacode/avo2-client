@@ -7,7 +7,7 @@ import { isNil, isString } from 'lodash-es';
 export enum TOAST_TYPE {
 	DANGER = 'danger',
 	INFO = 'info',
-	Spinner = 'spinner',
+	SPINNER = 'spinner',
 	SUCCESS = 'success',
 }
 
