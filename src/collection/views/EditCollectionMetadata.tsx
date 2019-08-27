@@ -13,6 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
+import { getValidationErrorForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {
 	collection: Avo.Collection.Response;
@@ -39,13 +40,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 								<FormGroup
 									label="Korte omschrijving"
 									labelFor="shortDescriptionId"
-									error={
-										(collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH
-											? `De beschrijving mag niet langer zijn dan ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters (${
-													(collection.description || '').length
-											  })`
-											: undefined
-									}
+									error={getValidationErrorForShortDescription(collection)}
 								>
 									<TextArea
 										name="shortDescriptionId"

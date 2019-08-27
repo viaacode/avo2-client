@@ -155,10 +155,8 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	};
 
 	function getValidationErrorForCollection(collection: Avo.Collection.Response): string {
-		if ((collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH) {
-			return `De korte omschrijving is te lang (max ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters)`;
-		}
-		return '';
+		// List of validator functions, so we can use the functions separately as well
+		return getValidationErrorForShortDescription(collection) || '';
 	}
 
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
@@ -458,5 +456,12 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		/>
 	);
 };
+
+export function getValidationErrorForShortDescription(collection: Avo.Collection.Response): string {
+	if ((collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH) {
+		return `De korte omschrijving is te lang (max ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters)`;
+	}
+	return '';
+}
 
 export default withRouter(withApollo(EditCollection));
