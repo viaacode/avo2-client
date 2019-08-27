@@ -12,6 +12,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
 
 interface EditCollectionMetadataProps {
 	collection: Avo.Collection.Response;
@@ -35,11 +36,22 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 								<FormGroup label="Vakken" labelFor="subjectsId">
 									<TextInput value={''} id="subjectsId" />
 								</FormGroup>
-								<FormGroup label="Korte omschrijving" labelFor="shortDescriptionId">
+								<FormGroup
+									label="Korte omschrijving"
+									labelFor="shortDescriptionId"
+									error={
+										(collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH
+											? `De beschrijving mag niet langer zijn dan ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters (${
+													(collection.description || '').length
+											  })`
+											: undefined
+									}
+								>
 									<TextArea
 										name="shortDescriptionId"
 										value={collection.description || ''}
 										id="shortDescriptionId"
+										height="medium"
 										onChange={(value: string) => updateCollectionProperty(value, 'description')}
 									/>
 								</FormGroup>
@@ -48,6 +60,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 										name="personalRemarkId"
 										value={''}
 										id="personalRemarkId"
+										height="medium"
 										placeholder="Geef hier je persoonlijke opmerkingen/notities in..."
 									/>
 								</FormGroup>

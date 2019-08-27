@@ -33,6 +33,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { withApollo } from 'react-apollo';
 
+import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteCollectionModal from '../components/DeleteCollectionModal';
@@ -152,8 +153,23 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		});
 	};
 
+	function getValidationErrorForCollection(collection: Avo.Collection.Response): string {
+		if ((collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH) {
+			return `De korte beschrijving is te lang (max ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters)`;
+		}
+		return '';
+	}
+
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
 		async function onSaveCollection() {
+			// Validate collection before save
+			const validationError = getValidationErrorForCollection(currentCollection);
+			if (validationError) {
+				// TODO show error toast
+				console.error('Cannot save collection because some fields are invalid', validationError);
+				return;
+			}
+
 			let newCollection: Avo.Collection.Response = { ...currentCollection };
 
 			// Insert fragments that added to collection
