@@ -156,7 +156,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	function getValidationErrorForCollection(collection: Avo.Collection.Response): string {
 		// List of validator functions, so we can use the functions separately as well
-		return getValidationErrorForShortDescription(collection) || '';
+		return getValidationFeedbackForShortDescription(collection, true) || '';
 	}
 
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
@@ -289,10 +289,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			triggerCollectionUpdate({
 				variables: {
 					id: currentCollection.id,
-					collection: {
-						...readyToStore,
-						// collection_fragment_ids: [],
-					},
+					collection: readyToStore,
 				},
 			});
 		}
@@ -451,12 +448,24 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	);
 };
 
-export function getValidationErrorForShortDescription(collection: Avo.Collection.Response): string {
-	if ((collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH) {
-		return `De korte omschrijving is te lang (max ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters)`;
+export function getValidationFeedbackForShortDescription(
+	collection: Avo.Collection.Response,
+	isError?: boolean | null
+): string {
+	const count = `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+
+	const exceedsSize: boolean =
+		(collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH;
+
+	if (!isError && !exceedsSize) {
+		return `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
 	}
 
-	return ``;
+	if (isError) {
+		return exceedsSize ? `De korte omschrijving is te lang. ${count}` : '';
+	}
+
+	return '';
 }
 
 export default withRouter(withApollo(EditCollection));

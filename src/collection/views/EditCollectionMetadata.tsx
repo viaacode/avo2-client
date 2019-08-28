@@ -13,7 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
+import { getValidationFeedbackForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {
 	collection: Avo.Collection.Response;
@@ -36,7 +36,11 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 							<FormGroup label="Vakken" labelFor="subjectsId">
 								<TextInput value={''} id="subjectsId" />
 							</FormGroup>
-							<FormGroup label="Korte omschrijving" labelFor="shortDescriptionId">
+							<FormGroup
+								label="Korte omschrijving"
+								labelFor="shortDescriptionId"
+								error={getValidationFeedbackForShortDescription(collection, true)}
+							>
 								<TextArea
 									name="shortDescriptionId"
 									value={collection.description || ''}
@@ -44,9 +48,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 									height="medium"
 									onChange={(value: string) => updateCollectionProperty(value, 'description')}
 								/>
-								<label>
-									{`${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`}
-								</label>
+								<label>{getValidationFeedbackForShortDescription(collection)}</label>
 							</FormGroup>
 							<FormGroup label="Persoonlijke opmerkingen/notities" labelFor="personalRemarkId">
 								<TextArea
