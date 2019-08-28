@@ -30,21 +30,30 @@ export const GET_COLLECTION_BY_ID = gql`
 			thumbnail_path
 			publish_at
 			owner {
-				updated_at
-				uid
-				role_id
-				last_name
 				id
-				first_name
-				created_at
-				role {
+				last_name
+				mail
+				organisation_id
+				profile {
+					alias
+					alternative_email
+					avatar
+					created_at
 					id
-					label
-					name
-					users {
-						id
-					}
+					location
+					stamboek
+					updated_at
+					user_id
 				}
+				role {
+					name
+					label
+				}
+				type
+				uid
+				updated_at
+				role_id
+				first_name
 			}
 			organisation_id
 			is_public
