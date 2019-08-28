@@ -321,9 +321,8 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 										</MetaData>
 									</Spacer>
 									<h1
-										className="c-h2 u-m-b-0"
+										className="c-h2 u-m-b-0 u-clickable"
 										onClick={() => setIsRenameModalOpen(true)}
-										style={{ cursor: 'pointer' }}
 									>
 										{currentCollection.title}
 									</h1>
