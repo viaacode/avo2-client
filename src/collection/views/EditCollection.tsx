@@ -176,23 +176,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				...(initialCollection.collection_fragment_ids || [])
 			);
 
-			console.log('INSERT', insertFragmentIds);
-
 			// Delete fragments that were removed from collection
 			const deleteFragmentIds = without(
 				initialCollection.collection_fragment_ids || [],
 				...(newCollection.collection_fragment_ids || [])
 			);
 
-			console.log('DELETE', deleteFragmentIds);
-
 			// Update fragments that are neither inserted nor deleted
 			const updateFragmentIds = (currentCollection.collection_fragment_ids || []).filter(
 				(fragmentId: number) =>
 					(initialCollection.collection_fragment_ids || []).includes(fragmentId)
 			);
-
-			console.log('UPDATE', updateFragmentIds);
 
 			const insertFragment = async (id: number) => {
 				const fragmentToAdd = {
@@ -461,7 +455,8 @@ export function getValidationErrorForShortDescription(collection: Avo.Collection
 	if ((collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH) {
 		return `De korte omschrijving is te lang (max ${MAX_SEARCH_DESCRIPTION_LENGTH} karakters)`;
 	}
-	return '';
+
+	return ``;
 }
 
 export default withRouter(withApollo(EditCollection));
