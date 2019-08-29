@@ -135,8 +135,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 				return (
 					<a
 						key={`description-link-${index}`}
+						className="u-clickable"
 						onClick={() => handleTimeLinkClicked(part)}
-						style={{ cursor: 'pointer' }}
 					>
 						{part}
 					</a>

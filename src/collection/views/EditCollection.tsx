@@ -33,8 +33,10 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { withApollo } from 'react-apollo';
 
+import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import DeleteCollectionModal from '../components/DeleteCollectionModal';
 import RenameCollectionModal from '../components/RenameCollectionModal';
 import ReorderCollectionModal from '../components/ReorderCollectionModal';
@@ -152,8 +154,20 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		});
 	};
 
+	function getValidationErrorForCollection(collection: Avo.Collection.Response): string {
+		// List of validator functions, so we can use the functions separately as well
+		return getValidationFeedbackForShortDescription(collection, true) || '';
+	}
+
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
 		async function onSaveCollection() {
+			// Validate collection before save
+			const validationError = getValidationErrorForCollection(currentCollection);
+			if (validationError) {
+				toastService(validationError, TOAST_TYPE.DANGER);
+				return;
+			}
+
 			let newCollection: Avo.Collection.Response = { ...currentCollection };
 
 			// Insert fragments that added to collection
@@ -162,23 +176,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				...(initialCollection.collection_fragment_ids || [])
 			);
 
-			console.log('INSERT', insertFragmentIds);
-
 			// Delete fragments that were removed from collection
 			const deleteFragmentIds = without(
 				initialCollection.collection_fragment_ids || [],
 				...(newCollection.collection_fragment_ids || [])
 			);
 
-			console.log('DELETE', deleteFragmentIds);
-
 			// Update fragments that are neither inserted nor deleted
 			const updateFragmentIds = (currentCollection.collection_fragment_ids || []).filter(
 				(fragmentId: number) =>
 					(initialCollection.collection_fragment_ids || []).includes(fragmentId)
 			);
-
-			console.log('UPDATE', updateFragmentIds);
 
 			const insertFragment = async (id: number) => {
 				const fragmentToAdd = {
@@ -281,10 +289,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			triggerCollectionUpdate({
 				variables: {
 					id: currentCollection.id,
-					collection: {
-						...readyToStore,
-						// collection_fragment_ids: [],
-					},
+					collection: readyToStore,
 				},
 			});
 		}
@@ -320,7 +325,12 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 											/>
 										</MetaData>
 									</Spacer>
-									<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
+									<h1
+										className="c-h2 u-m-b-0 u-clickable"
+										onClick={() => setIsRenameModalOpen(true)}
+									>
+										{currentCollection.title}
+									</h1>
 									{currentCollection.owner && (
 										<div className="o-flex o-flex--spaced">
 											{!isEmpty(get(currentCollection, 'owner.id')) && (
@@ -448,5 +458,23 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		/>
 	);
 };
+
+export function getValidationFeedbackForShortDescription(
+	collection: Avo.Collection.Response,
+	isError?: boolean | null
+): string {
+	const count = `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+
+	const exceedsSize: boolean =
+		(collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH;
+
+	if (isError) {
+		return exceedsSize ? `De korte omschrijving is te lang. ${count}` : '';
+	}
+
+	return exceedsSize
+		? ''
+		: `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+}
 
 export default withRouter(withApollo(EditCollection));
