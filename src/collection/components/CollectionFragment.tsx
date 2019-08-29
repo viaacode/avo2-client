@@ -143,100 +143,97 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
 	};
 
-	const renderCollectionFragment = (itemMeta: any) => {
-		console.log(itemMeta);
-		return (
-			<>
-				<div className="c-card">
-					<div className="c-card__header">
-						<Toolbar>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<div className="c-button-toolbar">
-										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
-										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
-									</div>
-								</ToolbarItem>
-							</ToolbarLeft>
-							<ToolbarRight>
-								<ToolbarItem>
-									<ControlledDropdown
-										isOpen={isOptionsMenuOpen === fragment.id}
-										onOpen={() => setIsOptionsMenuOpen(fragment.id)}
-										onClose={() => setIsOptionsMenuOpen(null)}
-										placement="bottom-end"
-										autoSize
-									>
-										<DropdownButton>
-											<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
-										</DropdownButton>
-										<DropdownContent>
-											<MenuContent
-												menuItems={[
-													{ icon: 'copy', id: 'duplicate', label: 'Dupliceren' },
-													{ icon: 'arrow-right', id: 'move', label: 'Verplaatsen' },
-													{ icon: 'delete', id: 'delete', label: 'Verwijderen' },
-													{
-														icon: 'copy',
-														id: 'copyToCollection',
-														label: 'Kopiëren naar andere collectie',
-													},
-													{
-														icon: 'arrow-right',
-														id: 'moveToCollection',
-														label: 'Verplaatsen naar andere collectie',
-													},
-												]}
-												onClick={itemId => {
-													switch (itemId) {
-														case 'duplicate':
-															onDuplicateFragment(fragment.id);
-															break;
-														case 'move':
-															onMoveFragment();
-															break;
-														case 'delete':
-															onDeleteFragment(fragment.id);
-															break;
-														case 'copyToCollection':
-															onCopyFragmentToCollection();
-															break;
-														case 'moveToCollection':
-															onMoveFragmentToCollection();
-															break;
-														default:
-															return null;
-													}
-												}}
-											/>
-										</DropdownContent>
-									</ControlledDropdown>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
-					</div>
-					<div className="c-card__body">
-						{!!fragment.external_id ? (
-							<Grid>
-								<Column size="3-6">
-									<Thumbnail category="collection" label="collectie" />
-								</Column>
-								<Column size="3-6">{renderForm(fragment, index)}</Column>
-							</Grid>
-						) : (
-							<Form>{renderForm(fragment, index)}</Form>
-						)}
-					</div>
+	const renderCollectionFragment = (itemMeta: any) => (
+		<>
+			<div className="c-card">
+				<div className="c-card__header">
+					<Toolbar>
+						<ToolbarLeft>
+							<ToolbarItem>
+								<div className="c-button-toolbar">
+									{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
+									{!isLast(index) && renderReorderButton(fragment.position, 'down')}
+								</div>
+							</ToolbarItem>
+						</ToolbarLeft>
+						<ToolbarRight>
+							<ToolbarItem>
+								<ControlledDropdown
+									isOpen={isOptionsMenuOpen === fragment.id}
+									onOpen={() => setIsOptionsMenuOpen(fragment.id)}
+									onClose={() => setIsOptionsMenuOpen(null)}
+									placement="bottom-end"
+									autoSize
+								>
+									<DropdownButton>
+										<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
+									</DropdownButton>
+									<DropdownContent>
+										<MenuContent
+											menuItems={[
+												{ icon: 'copy', id: 'duplicate', label: 'Dupliceren' },
+												{ icon: 'arrow-right', id: 'move', label: 'Verplaatsen' },
+												{ icon: 'delete', id: 'delete', label: 'Verwijderen' },
+												{
+													icon: 'copy',
+													id: 'copyToCollection',
+													label: 'Kopiëren naar andere collectie',
+												},
+												{
+													icon: 'arrow-right',
+													id: 'moveToCollection',
+													label: 'Verplaatsen naar andere collectie',
+												},
+											]}
+											onClick={itemId => {
+												switch (itemId) {
+													case 'duplicate':
+														onDuplicateFragment(fragment.id);
+														break;
+													case 'move':
+														onMoveFragment();
+														break;
+													case 'delete':
+														onDeleteFragment(fragment.id);
+														break;
+													case 'copyToCollection':
+														onCopyFragmentToCollection();
+														break;
+													case 'moveToCollection':
+														onMoveFragmentToCollection();
+														break;
+													default:
+														return null;
+												}
+											}}
+										/>
+									</DropdownContent>
+								</ControlledDropdown>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
 				</div>
-				<AddFragment
-					index={index}
-					collection={collection}
-					updateCollection={updateCollection}
-					reorderFragments={reorderFragments}
-				/>
-			</>
-		);
-	};
+				<div className="c-card__body">
+					{!!fragment.external_id ? (
+						<Grid>
+							<Column size="3-6">
+								<Thumbnail category="collection" label="collectie" />
+							</Column>
+							<Column size="3-6">{renderForm(fragment, index)}</Column>
+						</Grid>
+					) : (
+						<Form>{renderForm(fragment, index)}</Form>
+					)}
+				</div>
+			</div>
+			<AddFragment
+				index={index}
+				collection={collection}
+				updateCollection={updateCollection}
+				reorderFragments={reorderFragments}
+			/>
+		</>
+	);
 
 	return (
 		<DataQueryComponent
