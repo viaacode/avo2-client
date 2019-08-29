@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import {
 	AvatarList,
 	Button,
+	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Icon,
@@ -17,13 +18,13 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { RouteParts } from '../../constants';
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 
 // Owner will be enforced by permissions inside the graphql server
 // TODO reduce number of properties to only the ones we use
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
+import { DeleteCollectionModal } from '../components';
 
 interface CollectionsProps extends RouteComponentProps {}
 
@@ -46,16 +47,25 @@ const dummyAvatars = [
 ];
 
 const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
+	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
+	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
-	const deleteCollection = (collectionId: number) => {
+	const openDeleteModal = (collectionId: number) => {
+		setDropdownOpen({ [collectionId]: false });
+		setIdToDelete(collectionId);
+		setIsDeleteModalOpen(true);
+	};
+
+	const deleteCollection = () => {
 		triggerCollectionDelete({
 			variables: {
-				id: collectionId,
+				id: idToDelete,
 			},
 		});
 
-		// TODO: Close options menu.
+		setIdToDelete(null);
 	};
 
 	// Render
@@ -104,7 +114,13 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 			case 'actions':
 				return (
 					<div className="c-button-toolbar">
-						<ControlledDropdown isOpen={false} placement="bottom-end">
+						<Dropdown
+							autoSize
+							isOpen={dropdownOpen[rowData.id] || false}
+							onClose={() => setDropdownOpen({ [rowData.id]: false })}
+							onOpen={() => setDropdownOpen({ [rowData.id]: true })}
+							placement="bottom-end"
+						>
 							<DropdownButton>
 								<Button icon="more-horizontal" type="borderless" active />
 							</DropdownButton>
@@ -121,7 +137,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 												history.push(`/${RouteParts.Collection}/${rowData.id}/${RouteParts.Edit}`);
 												break;
 											case 'delete':
-												deleteCollection(rowData.id);
+												openDeleteModal(rowData.id);
 												break;
 											default:
 												return null;
@@ -129,7 +145,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 									}}
 								/>
 							</DropdownContent>
-						</ControlledDropdown>
+						</Dropdown>
 
 						<Button
 							icon="chevron-right"
@@ -164,21 +180,29 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 			: [];
 
 		return (
-			<Table
-				columns={[
-					{ id: 'thumbnail', label: '' },
-					{ id: 'title', label: 'Titel', sortable: true },
-					{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
-					{ id: 'inFolder', label: 'In map' },
-					{ id: 'access', label: 'Toegang' },
-					{ id: 'actions', label: '' },
-				]}
-				data={mappedCollections}
-				emptyStateMessage="Geen resultaten gevonden"
-				renderCell={renderCell}
-				rowKey="id"
-				styled
-			/>
+			<>
+				<Table
+					columns={[
+						{ id: 'thumbnail', label: '' },
+						{ id: 'title', label: 'Titel', sortable: true },
+						{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
+						{ id: 'inFolder', label: 'In map' },
+						{ id: 'access', label: 'Toegang' },
+						{ id: 'actions', label: '' },
+					]}
+					data={mappedCollections}
+					emptyStateMessage="Geen resultaten gevonden"
+					renderCell={renderCell}
+					rowKey="id"
+					styled
+				/>
+
+				<DeleteCollectionModal
+					isOpen={isDeleteModalOpen}
+					setIsOpen={setIsDeleteModalOpen}
+					deleteCollection={() => deleteCollection()}
+				/>
+			</>
 		);
 	};
 
