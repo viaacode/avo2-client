@@ -50,15 +50,33 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const [isCollectionPublic, setIsCollectionPublic] = useState(isPublic);
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION_PROPERTY);
 
+	const validateFragments = (fragments: Avo.Collection.Fragment[]) => {
+		if (!fragments || !fragments.length) {
+			return false;
+		}
+
+		let isValid: Boolean = true;
+
+		// Check if fragment has custom_title and custom_description if necessary.
+		fragments.forEach(fragment => {
+			if (fragment.use_custom_fields && (!fragment.custom_title || !fragment.custom_description)) {
+				isValid = false;
+			}
+		});
+
+		return isValid;
+	};
+
 	const validateBeforeSave = () => {
 		const {
 			title,
 			description,
 			lom_classification,
 			lom_context,
-			collection_fragment_ids,
+			collection_fragments,
 		} = collection;
 
+		// Validation ruleset
 		const validationObject = {
 			hasTitle: {
 				error: 'Uw collectie heeft geen titel.',
@@ -73,21 +91,27 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				result: !!(lom_context && lom_context.length),
 			},
 			hasClassification: {
-				error: "Uw collectie heeft geen onderwijsniveau's",
+				error: "Uw collectie heeft geen onderwijsniveau's.",
 				result: !!(lom_classification && lom_classification.length),
 			},
 			hasAtleastOneFragment: {
 				error: 'Uw collectie heeft geen items.',
-				result: !!(collection_fragment_ids && collection_fragment_ids.length),
+				result: !!(collection_fragments && collection_fragments.length),
+			},
+			hasFullFragments: {
+				error: 'Uw items moeten een titel en beschrijving bevatten.',
+				result: validateFragments(collection_fragments),
 			},
 		};
 
 		if (Object.values(validationObject).every(rule => rule.result === true)) {
+			// If all validations are valid, publish collection
 			onSave();
 			setValidationError(undefined);
 			toastService('Opslaan volbracht.', TOAST_TYPE.SUCCESS);
 		} else {
-			const failedRules = Object.entries(validationObject).filter(rule => get(rule[1], 'result'));
+			// Strip failed rules from ruleset
+			const failedRules = Object.entries(validationObject).filter(rule => !get(rule[1], 'result'));
 
 			setValidationError(failedRules.map(rule => `${get(rule[1], 'error')}\n`));
 			toastService(
