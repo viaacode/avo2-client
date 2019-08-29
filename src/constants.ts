@@ -15,3 +15,5 @@ export const RouteParts = {
 	News: 'nieuws',
 	Edit: 'bewerk',
 };
+
+export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;

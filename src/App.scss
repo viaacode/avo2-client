@@ -14,3 +14,9 @@
 .c-alert-stack {
 	z-index: 100; // TODO: This should be set in the styleguide via variables
 }
+
+// Utilities
+// ------------------------------------------------------------------------ /
+.u-clickable {
+	cursor: pointer;
+}
