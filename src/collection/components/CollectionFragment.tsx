@@ -4,7 +4,6 @@ import React, { FunctionComponent } from 'react';
 import {
 	Button,
 	Column,
-	Container,
 	DropdownButton,
 	DropdownContent,
 	Form,
@@ -23,6 +22,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import AddFragment from './AddFragment';
 
 interface CollectionFragmentProps {
 	index: number;
@@ -34,7 +34,6 @@ interface CollectionFragmentProps {
 	fragment: any;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 	updateCollection: (collection: Avo.Collection.Response) => void;
-	addFragment: (indeX: number) => void;
 }
 
 const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
@@ -47,7 +46,6 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	fragment,
 	reorderFragments,
 	updateCollection,
-	addFragment,
 }) => {
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (index: number) => index === 0;
@@ -223,22 +221,12 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					)}
 				</div>
 			</div>
-			<Container>
-				<div className="c-toolbar">
-					<div className="c-toolbar__justified">
-						<div className="c-toolbar__item c-toolbar__item--stretch">
-							<div className="c-hr" />
-						</div>
-						<ToolbarItem>
-							<Button type="secondary" icon="add" onClick={() => addFragment(index)} />
-							<div className="u-sr-accessible">Sectie toevoegen</div>
-						</ToolbarItem>
-						<div className="c-toolbar__item c-toolbar__item--stretch">
-							<div className="c-hr" />
-						</div>
-					</div>
-				</div>
-			</Container>
+			<AddFragment
+				index={index}
+				collection={collection}
+				updateCollection={updateCollection}
+				reorderFragments={reorderFragments}
+			/>
 		</>
 	);
 };
