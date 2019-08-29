@@ -106,6 +106,8 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				id: collectionId,
 			},
 		});
+
+		// TODO: Refresh data on Collections page.
 		props.history.push(`/mijn-werkruimte/collecties`);
 	};
 

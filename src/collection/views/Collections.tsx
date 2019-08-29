@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -22,7 +23,7 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 
 // Owner will be enforced by permissions inside the graphql server
 // TODO reduce number of properties to only the ones we use
-import { GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
+import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 
 interface CollectionsProps extends RouteComponentProps {}
 
@@ -45,6 +46,18 @@ const dummyAvatars = [
 ];
 
 const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
+	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+
+	const deleteCollection = (collectionId: number) => {
+		triggerCollectionDelete({
+			variables: {
+				id: collectionId,
+			},
+		});
+
+		// TODO: Close options menu.
+	};
+
 	// Render
 	const renderCell = (rowData: any, colKey: any) => {
 		const cellData = rowData[colKey];
@@ -106,6 +119,9 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 										switch (itemId) {
 											case 'edit':
 												history.push(`/${RouteParts.Collection}/${rowData.id}/${RouteParts.Edit}`);
+												break;
+											case 'delete':
+												deleteCollection(rowData.id);
 												break;
 											default:
 												return null;
