@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
+import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { get, isEmpty, without } from 'lodash-es';
@@ -31,7 +32,6 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { withApollo } from 'react-apollo';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
