@@ -1,7 +1,7 @@
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { get, isEmpty } from 'lodash-es';
+import { get } from 'lodash-es';
 import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
 import {

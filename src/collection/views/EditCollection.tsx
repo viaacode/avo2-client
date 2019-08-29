@@ -35,10 +35,12 @@ import { withApollo } from 'react-apollo';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import DeleteCollectionModal from '../components/DeleteCollectionModal';
-import RenameCollectionModal from '../components/RenameCollectionModal';
-import ReorderCollectionModal from '../components/ReorderCollectionModal';
-import ShareCollectionModal from '../components/ShareCollectionModal';
+import {
+	DeleteCollectionModal,
+	RenameCollectionModal,
+	ReorderCollectionModal,
+	ShareCollectionModal,
+} from '../components';
 import EditCollectionContent from './EditCollectionContent';
 import EditCollectionMetadata from './EditCollectionMetadata';
 
