@@ -320,7 +320,12 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 											/>
 										</MetaData>
 									</Spacer>
-									<h1 className="c-h2 u-m-b-0">{currentCollection.title}</h1>
+									<h1
+										className="c-h2 u-m-b-0 u-clickable"
+										onClick={() => setIsRenameModalOpen(true)}
+									>
+										{currentCollection.title}
+									</h1>
 									{currentCollection.owner && (
 										<div className="o-flex o-flex--spaced">
 											{!isEmpty(get(currentCollection, 'owner.id')) && (
