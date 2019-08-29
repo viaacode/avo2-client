@@ -457,15 +457,13 @@ export function getValidationFeedbackForShortDescription(
 	const exceedsSize: boolean =
 		(collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH;
 
-	if (!isError && !exceedsSize) {
-		return `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
-	}
-
 	if (isError) {
 		return exceedsSize ? `De korte omschrijving is te lang. ${count}` : '';
 	}
 
-	return '';
+	return exceedsSize
+		? ''
+		: `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
 }
 
 export default withRouter(withApollo(EditCollection));
