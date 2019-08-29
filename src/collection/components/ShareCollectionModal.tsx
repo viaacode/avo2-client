@@ -102,6 +102,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				error: 'Uw items moeten een titel en beschrijving bevatten.',
 				result: validateFragments(collection_fragments),
 			},
+			// TODO: Add check if owner or write-rights.
 		};
 
 		if (Object.values(validationObject).every(rule => rule.result === true)) {
