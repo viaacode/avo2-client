@@ -416,7 +416,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				)}
 				<ReorderCollectionModal isOpen={isReorderModalOpen} setIsOpen={setIsReorderModalOpen} />
 				<ShareCollectionModal
-					collectionId={collection.id}
+					collection={collection}
 					isOpen={isShareModalOpen}
 					setIsOpen={setIsShareModalOpen}
 					isPublic={collection.is_public}
