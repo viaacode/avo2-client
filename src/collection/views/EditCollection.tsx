@@ -4,7 +4,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import { get, isEmpty, without } from 'lodash-es';
 import {
-	// DELETE_COLLECTION,
+	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION_FRAGMENT,
@@ -37,10 +37,12 @@ import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import DeleteCollectionModal from '../components/DeleteCollectionModal';
-import RenameCollectionModal from '../components/RenameCollectionModal';
-import ReorderCollectionModal from '../components/ReorderCollectionModal';
-import ShareCollectionModal from '../components/ShareCollectionModal';
+import {
+	DeleteCollectionModal,
+	RenameCollectionModal,
+	ReorderCollectionModal,
+	ShareCollectionModal,
+} from '../components';
 import EditCollectionContent from './EditCollectionContent';
 import EditCollectionMetadata from './EditCollectionMetadata';
 
@@ -51,7 +53,7 @@ export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'U
 
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
-	// const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
@@ -103,12 +105,13 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	};
 
 	const deleteCollection = (collectionId: number) => {
-		// TODO: Cascade deletion adaption
-		// triggerCollectionDelete({
-		// 	variables: {
-		// 		id: collectionId,
-		// 	},
-		// });
+		triggerCollectionDelete({
+			variables: {
+				id: collectionId,
+			},
+		});
+
+		// TODO: Refresh data on Collections page.
 		props.history.push(`/mijn-werkruimte/collecties`);
 	};
 
