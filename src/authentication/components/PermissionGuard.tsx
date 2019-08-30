@@ -1,6 +1,8 @@
 import React, { Fragment, FunctionComponent, ReactNode } from 'react';
 
-import { Permissions, PermissionService } from '../helpers/PermissionService';
+import { useSlot } from '../../shared/hooks/useSlot'; // TODO replace this with avo2-components useSlot once exported
+import { Permissions, PermissionService } from '../helpers/permission-service';
+import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
 
 export interface PermissionGuardProps {
 	children: ReactNode;
@@ -8,7 +10,15 @@ export interface PermissionGuardProps {
 }
 
 const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({ children, permissions }) => {
-	return PermissionService.hasPermissions(permissions) ? <Fragment>{children}</Fragment> : null;
+	const childrenIfPassed = useSlot(PermissionGuardPass, children);
+	const childrenIfFailed = useSlot(PermissionGuardFail, children);
+
+	const hasPermission = PermissionService.hasPermissions(permissions);
+	return hasPermission ? (
+		<Fragment>{!!childrenIfPassed ? childrenIfPassed : children}</Fragment>
+	) : (
+		<Fragment>{childrenIfFailed}</Fragment>
+	);
 };
 
 export default PermissionGuard;

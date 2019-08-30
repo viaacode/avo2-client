@@ -1,5 +1,5 @@
 class Auth {
-	private profile: { id: string; role: string } | null = null;
+	private profile: { id: number; role: string } | null = null;
 	private expiresAt: number | null = null;
 
 	public getProfile() {
@@ -11,7 +11,7 @@ class Auth {
 	}
 
 	signIn() {
-		this.profile = { id: '1', role: 'Teacher' };
+		this.profile = { id: 1, role: 'Teacher' }; // 87811
 	}
 
 	signOut() {
@@ -22,5 +22,6 @@ class Auth {
 }
 
 const authClient = new Auth();
+authClient.signIn(); // TODO replace with actual dispatch action to backend to get user info
 
 export default authClient;

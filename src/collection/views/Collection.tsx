@@ -41,6 +41,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import PermissionGuard from '../../authentication/components/PermissionGuard';
+import {
+	PermissionGuardFail,
+	PermissionGuardPass,
+} from '../../authentication/components/PermissionGuard.slots';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -214,15 +218,20 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 												{ permissionName: 'canEditAllCollections' },
 											]}
 										>
-											<Button
-												type="secondary"
-												icon="edit"
-												onClick={() =>
-													history.push(
-														`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
-													)
-												}
-											/>
+											<PermissionGuardPass>
+												<Button
+													type="secondary"
+													icon="edit"
+													onClick={() =>
+														history.push(
+															`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+														)
+													}
+												/>
+											</PermissionGuardPass>
+											<PermissionGuardFail>
+												<Button type="secondary" icon="edit" disabled />
+											</PermissionGuardFail>
 										</PermissionGuard>
 									</div>
 								</ToolbarItem>
