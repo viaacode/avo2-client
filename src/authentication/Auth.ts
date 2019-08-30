@@ -1,8 +1,6 @@
 class Auth {
-	private profile = null;
+	private profile: { id: string; role: string } | null = null;
 	private expiresAt: number | null = null;
-
-	constructor() {}
 
 	public getProfile() {
 		return this.profile;
@@ -12,9 +10,9 @@ class Auth {
 		return new Date().getTime() < (this.expiresAt || 0);
 	}
 
-	signIn() {}
-
-	handleAuthentication() {}
+	signIn() {
+		this.profile = { id: '1', role: 'Teacher' };
+	}
 
 	signOut() {
 		// clear profile, and expiration

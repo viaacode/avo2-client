@@ -40,6 +40,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import PermissionGuard from '../../authentication/components/PermissionGuard';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -207,15 +208,22 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 										<Button type="secondary" icon="share-2" />
 										<Button type="secondary" icon="file-plus" />
 										<Button type="secondary" label="Alle items afspelen" />
-										<Button
-											type="secondary"
-											icon="edit"
-											onClick={() =>
-												history.push(
-													`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
-												)
-											}
-										/>
+										<PermissionGuard
+											permissions={[
+												{ permissionName: 'canEditOwnCollections', obj: collection },
+												{ permissionName: 'canEditAllCollections' },
+											]}
+										>
+											<Button
+												type="secondary"
+												icon="edit"
+												onClick={() =>
+													history.push(
+														`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+													)
+												}
+											/>
+										</PermissionGuard>
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>
