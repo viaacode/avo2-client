@@ -229,9 +229,6 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 													}
 												/>
 											</PermissionGuardPass>
-											<PermissionGuardFail>
-												<Button type="secondary" icon="edit" disabled />
-											</PermissionGuardFail>
 										</PermissionGuard>
 									</div>
 								</ToolbarItem>
