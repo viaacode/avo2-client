@@ -191,3 +191,5 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 		}
 	}
 `;
+
+export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql``;
