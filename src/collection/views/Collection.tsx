@@ -214,7 +214,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 										<Button type="secondary" label="Alle items afspelen" />
 										<PermissionGuard
 											permissions={[
-												{ permissionName: 'canEditOwnCollections', obj: collection },
+												// { permissionName: 'canEditOwnCollections', obj: collection },
 												{ permissionName: 'canEditAllCollections' },
 											]}
 										>

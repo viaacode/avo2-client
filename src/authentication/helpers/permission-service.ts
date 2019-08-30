@@ -5,7 +5,10 @@ type PermissionInfo = { permissionName: string; obj?: any | null };
 export type Permissions = string | PermissionInfo | (string | PermissionInfo)[];
 
 export class PermissionService {
-	private static currentUserPermissions: string[] = ['canEditOwnCollections'];
+	private static currentUserPermissions: string[] = [
+		'canEditOwnCollections',
+		'canEditAllCollections',
+	];
 
 	public static hasPermissions(permissions: Permissions) {
 		// Reformat all permissions to format: PermissionInfo[]
