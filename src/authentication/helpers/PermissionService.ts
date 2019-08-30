@@ -48,7 +48,7 @@ export class PermissionService {
 			// TODO replace example permissions
 			case 'canEditOwnCollections':
 				const profile = authClient.getProfile();
-				if (profile && obj.owner.id === profile.id) {
+				if (profile && profile.id === obj.owner.id) {
 					return true;
 				}
 				break;

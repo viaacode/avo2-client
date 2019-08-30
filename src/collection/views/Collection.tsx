@@ -1,6 +1,7 @@
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
@@ -39,7 +40,6 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import PermissionGuard from '../../authentication/components/PermissionGuard';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
