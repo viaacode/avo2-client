@@ -5,8 +5,8 @@ import {
 	Modal,
 	ModalBody,
 	Toolbar,
-	ToolbarCenter,
 	ToolbarItem,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 
 interface DeleteCollectionModalProps {
@@ -35,14 +35,14 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 		>
 			<ModalBody>
 				<Toolbar spaced>
-					<ToolbarCenter>
+					<ToolbarRight>
 						<ToolbarItem>
 							<div className="c-button-toolbar">
 								<Button type="secondary" label="Annuleren" onClick={() => setIsOpen(false)} />
-								<Button type="primary" label="Verwijderen" onClick={onDelete} />
+								<Button type="danger" label="Verwijderen" onClick={onDelete} />
 							</div>
 						</ToolbarItem>
-					</ToolbarCenter>
+					</ToolbarRight>
 				</Toolbar>
 			</ModalBody>
 		</Modal>
