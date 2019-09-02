@@ -195,65 +195,13 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
 	query getMetaItemByExternalId($externalId: bpchar!) {
 		app_item_meta(where: { external_id: { _eq: $externalId } }) {
-			external_id
-			bookmarks {
-				count
-				created_at
-				id
-				reference_id
-				updated_at
-			}
-			browse_path
-			created_at
-			depublish_at
 			description
-			duration
-			expiry_date
-			id
-			is_deleted
-			is_orphaned
-			is_published
-			issued
-			issued_edtf
-			item {
-				created_at
-				external_id
-				id
-				json
-				pid
-				updated_at
-			}
-			lom_classification
-			lom_context
-			lom_intendedenduserrole
-			lom_keywords
-			lom_languages
-			lom_typicalagerange
-			org_id
-			plays {
-				count
-				created_at
-				id
-				reference_id
-				updated_at
-			}
-			publish_at
-			series
 			thumbnail_path
 			title
 			type {
 				label
 				id
 			}
-			type_id
-			views {
-				count
-				created_at
-				id
-				reference_id
-				updated_at
-			}
-			updated_at
 		}
 	}
 `;
