@@ -44,7 +44,6 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 	// Make map for available tab views
 	const TAB_MAP: TabViewMap = {
 		[COLLECTIONS_ID]: {
-			addHandler: () => {},
 			amount: getAmount([collections]),
 			component: <Collections />,
 			filter: {
@@ -66,7 +65,6 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 			},
 		},
 		[BOOKMARKS_ID]: {
-			addHandler: () => {},
 			amount: getAmount([]),
 			component: <Bookmarks />,
 		},
@@ -78,13 +76,6 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 		active: tabId === t.id,
 		label: t.label + TAB_MAP[t.id].amount,
 	}));
-
-	// Render
-	const renderAddButton = () => {
-		if (activeTab.addHandler) {
-			return <Button icon="add" label="Aanmaken" onClick={activeTab.addHandler} type="secondary" />;
-		}
-	};
 
 	const renderFilter = () => {
 		const filter = activeTab.filter;
@@ -129,16 +120,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ collections, history
 		<Fragment>
 			<Container background="alt" mode="vertical" size="small">
 				<Container mode="horizontal">
-					<Toolbar autoHeight>
-						<ToolbarLeft>
-							<ToolbarItem>
-								<h2 className="c-h2 u-m-0">Mijn Werkruimte</h2>
-							</ToolbarItem>
-						</ToolbarLeft>
-						<ToolbarRight>
-							<span className="p-my-workspace__action-placeholder">{renderAddButton()}</span>
-						</ToolbarRight>
-					</Toolbar>
+					<h2 className="c-h2 u-m-0">Mijn Werkruimte</h2>
 				</Container>
 			</Container>
 

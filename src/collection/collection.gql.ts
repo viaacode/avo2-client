@@ -30,21 +30,30 @@ export const GET_COLLECTION_BY_ID = gql`
 			thumbnail_path
 			publish_at
 			owner {
-				updated_at
-				uid
-				role_id
-				last_name
 				id
-				first_name
-				created_at
-				role {
+				last_name
+				mail
+				organisation_id
+				profile {
+					alias
+					alternative_email
+					avatar
+					created_at
 					id
-					label
-					name
-					users {
-						id
-					}
+					location
+					stamboek
+					updated_at
+					user_id
 				}
+				role {
+					name
+					label
+				}
+				type
+				uid
+				updated_at
+				role_id
+				first_name
 			}
 			organisation_id
 			is_public
@@ -85,9 +94,9 @@ export const UPDATE_COLLECTION = gql`
 	}
 `;
 
-export const UPDATE_COLLECTION_NAME = gql`
-	mutation updateCollectionNameById($id: Int!, $name: String!) {
-		update_app_collections(where: { id: { _eq: $id } }, _set: { title: $name }) {
+export const UPDATE_COLLECTION_PROPERTY = gql`
+	mutation updateCollectionNameById($id: Int!, $collectionChanges: app_collections_set_input!) {
+		update_app_collections(where: { id: { _eq: $id } }, _set: $collectionChanges) {
 			affected_rows
 		}
 	}
@@ -179,6 +188,29 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				updated_at
 				user_id
 			}
+		}
+	}
+`;
+
+export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
+	query getMetaItemByExternalId($externalId: bpchar!) {
+		app_item_meta(where: { external_id: { _eq: $externalId } }) {
+			description
+			thumbnail_path
+			title
+			type {
+				label
+				id
+			}
+		}
+	}
+`;
+
+export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
+	{
+		vocabularies_lom_contexts {
+			id
+			label
 		}
 	}
 `;

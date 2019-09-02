@@ -114,27 +114,25 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					</Container>
 				</Container>
 			) : (
-				<Navbar background="inverse" placement="top">
-					<div className="u-mq-switch-main-nav-little-space">
-						<Container mode="horizontal">
-							<Toolbar>
-								<ToolbarLeft>
-									<div className="c-toolbar__item">
-										<ul className="c-nav">
-											{primaryItems.map(item => (
-												<li
-													className="c-nav__item c-nav__item--i"
-													key={`${item.location}-${item.label}`}
-												>
-													<Link to={item.location}>{item.label}</Link>
-												</li>
-											))}
-										</ul>
-									</div>
-								</ToolbarLeft>
-							</Toolbar>
-						</Container>
-					</div>
+				<Navbar className="u-mq-switch-main-nav-little-space" background="inverse" placement="top">
+					<Container mode="horizontal">
+						<Toolbar>
+							<ToolbarLeft>
+								<div className="c-toolbar__item">
+									<ul className="c-nav">
+										{primaryItems.map(item => (
+											<li
+												className="c-nav__item c-nav__item--i"
+												key={`${item.location}-${item.label}`}
+											>
+												<Link to={item.location}>{item.label}</Link>
+											</li>
+										))}
+									</ul>
+								</div>
+							</ToolbarLeft>
+						</Toolbar>
+					</Container>
 				</Navbar>
 			)}
 		</Fragment>

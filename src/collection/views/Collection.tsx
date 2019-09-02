@@ -1,8 +1,8 @@
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { gql } from 'apollo-boost';
-import { get, isEmpty } from 'lodash-es';
+import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
 import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
 import {
@@ -40,9 +40,14 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import PermissionGuard from '../../authentication/components/PermissionGuard';
+import {
+	PermissionGuardFail,
+	PermissionGuardPass,
+} from '../../authentication/components/PermissionGuard.slots';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 interface CollectionProps extends RouteComponentProps {}
 
@@ -118,7 +123,10 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					<BlockVideoTitleTextButton {...contentBlock.content as BlockVideoTitleTextButtonProps} />
 				);
 			default:
-				console.error('Failed to find contentBlock type: contentBlock.blockType');
+				toastService(
+					`Failed to find contentBlock type: ${contentBlock.blockType}`,
+					TOAST_TYPE.DANGER
+				);
 				return null;
 		}
 	};
@@ -148,6 +156,12 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			);
 		}
 
+		const ownerNameAndRole = [
+			get(collection, 'owner.first_name', ''),
+			get(collection, 'owner.last_name', ''),
+			get(collection, 'owner.role.name', ''),
+		].join(' ');
+
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background="alt">
@@ -176,14 +190,10 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
 									{collection.owner && (
 										<div className="o-flex o-flex--spaced">
-											{!isEmpty(get(collection, 'owner.id')) && (
+											{!!get(collection, 'owner.id') && (
 												<Avatar
-													image={get(collection, 'owner.avatar')}
-													name={`${get(collection, 'owner.first_name')} ${get(
-														collection,
-														'owner.last_name'
-													)} (
-														${USER_GROUPS[get(collection, 'owner.role.id')]})`}
+													image={get(collection, 'owner.profile.avatar')}
+													name={ownerNameAndRole || ' '}
 													initials={
 														get(collection, 'owner.first_name[0]', '') +
 														get(collection, 'owner.last_name[0]', '')
@@ -202,15 +212,24 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 										<Button type="secondary" icon="share-2" />
 										<Button type="secondary" icon="file-plus" />
 										<Button type="secondary" label="Alle items afspelen" />
-										<Button
-											type="secondary"
-											icon="edit"
-											onClick={() =>
-												history.push(
-													`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
-												)
-											}
-										/>
+										<PermissionGuard
+											permissions={[
+												// { permissionName: 'canEditOwnCollections', obj: collection },
+												{ permissionName: 'canEditAllCollections' },
+											]}
+										>
+											<PermissionGuardPass>
+												<Button
+													type="secondary"
+													icon="edit"
+													onClick={() =>
+														history.push(
+															`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+														)
+													}
+												/>
+											</PermissionGuardPass>
+										</PermissionGuard>
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>

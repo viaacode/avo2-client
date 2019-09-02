@@ -37,7 +37,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { formatDate } from '../../shared/helpers/formatters/date';
+import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
 	generateSearchLink,
 	generateSearchLinks,
@@ -135,8 +135,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 				return (
 					<a
 						key={`description-link-${index}`}
+						className="u-clickable"
 						onClick={() => handleTimeLinkClicked(part)}
-						style={{ cursor: 'pointer' }}
 					>
 						{part}
 					</a>
@@ -176,7 +176,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 										{item.publish_at && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													Gepubliceerd op {formatDate(item.issued || null, '/')}
+													Gepubliceerd op {reorderDate(item.issued || null, '/')}
 												</p>
 											</MetaDataItem>
 										)}
@@ -278,12 +278,12 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 										<tbody className="o-grid">
 											<tr className="o-grid-col-bp2-5">
 												<th scope="row">Publicatiedatum</th>
-												<td>{formatDate(item.publish_at || null, '/')}</td>
+												<td>{reorderDate(item.publish_at || null, '/')}</td>
 											</tr>
 											<tr className="o-grid-col-bp2-5">
 												<th scope="row">Toegevoegd op</th>
 												{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
-												<td>{formatDate(item.issued || null, '/')}</td>
+												<td>{reorderDate(item.issued || null, '/')}</td>
 											</tr>
 										</tbody>
 										<tbody className="o-grid">
