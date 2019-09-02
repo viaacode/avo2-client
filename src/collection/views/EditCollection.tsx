@@ -67,6 +67,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [currentCollection, setCurrentCollection] = useState();
 	const [initialCollection, setInitialCollection] = useState();
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+	const [isSavingCollection, setIsSavingCollection] = useState(false);
 
 	// Tab navigation
 	const tabs = [
@@ -164,137 +165,146 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
 		async function onSaveCollection() {
-			// Validate collection before save
-			const validationError = getValidationErrorForCollection(currentCollection);
-			if (validationError) {
-				toastService(validationError, TOAST_TYPE.DANGER);
-				return;
-			}
+			try {
+				setIsSavingCollection(true);
+				// Validate collection before save
+				const validationError = getValidationErrorForCollection(currentCollection);
+				if (validationError) {
+					toastService(validationError, TOAST_TYPE.DANGER);
+					setIsSavingCollection(false);
+					return;
+				}
 
-			let newCollection: Avo.Collection.Response = { ...currentCollection };
+				let newCollection: Avo.Collection.Response = { ...currentCollection };
 
-			// Insert fragments that added to collection
-			const insertFragmentIds = without(
-				newCollection.collection_fragment_ids || [],
-				...(initialCollection.collection_fragment_ids || [])
-			);
+				// Insert fragments that added to collection
+				const insertFragmentIds = without(
+					newCollection.collection_fragment_ids || [],
+					...(initialCollection.collection_fragment_ids || [])
+				);
 
-			// Delete fragments that were removed from collection
-			const deleteFragmentIds = without(
-				initialCollection.collection_fragment_ids || [],
-				...(newCollection.collection_fragment_ids || [])
-			);
+				// Delete fragments that were removed from collection
+				const deleteFragmentIds = without(
+					initialCollection.collection_fragment_ids || [],
+					...(newCollection.collection_fragment_ids || [])
+				);
 
-			// Update fragments that are neither inserted nor deleted
-			const updateFragmentIds = (currentCollection.collection_fragment_ids || []).filter(
-				(fragmentId: number) =>
-					(initialCollection.collection_fragment_ids || []).includes(fragmentId)
-			);
+				// Update fragments that are neither inserted nor deleted
+				const updateFragmentIds = (currentCollection.collection_fragment_ids || []).filter(
+					(fragmentId: number) =>
+						(initialCollection.collection_fragment_ids || []).includes(fragmentId)
+				);
 
-			const insertFragment = async (id: number) => {
-				const fragmentToAdd = {
-					...currentCollection.collection_fragments.find(
-						(fragment: Avo.Collection.Fragment) => fragment.id === id
-					),
+				const insertFragment = async (id: number) => {
+					const fragmentToAdd = {
+						...currentCollection.collection_fragments.find(
+							(fragment: Avo.Collection.Fragment) => fragment.id === id
+						),
+					};
+
+					const tempId = fragmentToAdd.id;
+					delete fragmentToAdd.id;
+					delete fragmentToAdd.__typename;
+
+					const response = await triggerCollectionFragmentInsert({
+						variables: {
+							id: currentCollection.id,
+							fragment: fragmentToAdd,
+						},
+					});
+
+					const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
+
+					return {
+						newFragment,
+						oldId: tempId,
+					};
 				};
 
-				const tempId = fragmentToAdd.id;
-				delete fragmentToAdd.id;
-				delete fragmentToAdd.__typename;
+				const promises: any = [];
 
-				const response = await triggerCollectionFragmentInsert({
+				insertFragmentIds.forEach(id => {
+					promises.push(insertFragment(id));
+				});
+
+				const newFragmentData = await Promise.all(promises);
+
+				newFragmentData.forEach((data: any) => {
+					newCollection = {
+						...currentCollection,
+						collection_fragment_ids: [
+							...currentCollection.collection_fragment_ids.filter(
+								(fragmentId: number) => fragmentId !== data.oldId
+							),
+							data.newFragment.id,
+						],
+						collection_fragments: [
+							...currentCollection.collection_fragments.filter(
+								(fragment: Avo.Collection.Fragment) => fragment.id !== data.oldId
+							),
+							data.newFragment,
+						],
+					};
+				});
+
+				setCurrentCollection(newCollection);
+				setInitialCollection({
+					...collection,
+					collection_fragment_ids: newCollection.collection_fragment_ids,
+				});
+
+				deleteFragmentIds.forEach((id: number) => {
+					triggerCollectionFragmentDelete({ variables: { id } });
+				});
+
+				updateFragmentIds.forEach((id: number) => {
+					const fragment: any = {
+						...newCollection.collection_fragments.find((fragment: Avo.Collection.Fragment) => {
+							return Number(id) === fragment.id;
+						}),
+					};
+
+					delete fragment.__typename;
+
+					triggerCollectionFragmentUpdate({
+						variables: {
+							id,
+							fragment,
+						},
+					});
+				});
+
+				const readyToStore = { ...newCollection };
+
+				// Trigger collection update
+				const propertiesToDelete = [
+					'collection_fragments',
+					'label_redactie',
+					'owner',
+					'collection_permissions',
+					'__typename',
+					'type',
+				];
+
+				const otherTables: any = {};
+
+				propertiesToDelete.forEach((property: any) => {
+					otherTables[property] = (readyToStore as any)[property];
+					delete (readyToStore as any)[property];
+				});
+
+				await triggerCollectionUpdate({
 					variables: {
 						id: currentCollection.id,
-						fragment: fragmentToAdd,
+						collection: readyToStore,
 					},
 				});
-
-				const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
-
-				return {
-					newFragment,
-					oldId: tempId,
-				};
-			};
-
-			const promises: any = [];
-
-			insertFragmentIds.forEach(id => {
-				promises.push(insertFragment(id));
-			});
-
-			const newFragmentData = await Promise.all(promises);
-
-			newFragmentData.forEach((data: any) => {
-				newCollection = {
-					...currentCollection,
-					collection_fragment_ids: [
-						...currentCollection.collection_fragment_ids.filter(
-							(fragmentId: number) => fragmentId !== data.oldId
-						),
-						data.newFragment.id,
-					],
-					collection_fragments: [
-						...currentCollection.collection_fragments.filter(
-							(fragment: Avo.Collection.Fragment) => fragment.id !== data.oldId
-						),
-						data.newFragment,
-					],
-				};
-			});
-
-			setCurrentCollection(newCollection);
-			setInitialCollection({
-				...collection,
-				collection_fragment_ids: newCollection.collection_fragment_ids,
-			});
-
-			deleteFragmentIds.forEach((id: number) => {
-				triggerCollectionFragmentDelete({ variables: { id } });
-			});
-
-			updateFragmentIds.forEach((id: number) => {
-				const fragment: any = {
-					...newCollection.collection_fragments.find((fragment: Avo.Collection.Fragment) => {
-						return Number(id) === fragment.id;
-					}),
-				};
-
-				delete fragment.__typename;
-
-				triggerCollectionFragmentUpdate({
-					variables: {
-						id,
-						fragment,
-					},
-				});
-			});
-
-			const readyToStore = { ...newCollection };
-
-			// Trigger collection update
-			const propertiesToDelete = [
-				'collection_fragments',
-				'label_redactie',
-				'owner',
-				'collection_permissions',
-				'__typename',
-				'type',
-			];
-
-			const otherTables: any = {};
-
-			propertiesToDelete.forEach((property: any) => {
-				otherTables[property] = (readyToStore as any)[property];
-				delete (readyToStore as any)[property];
-			});
-
-			triggerCollectionUpdate({
-				variables: {
-					id: currentCollection.id,
-					collection: readyToStore,
-				},
-			});
+				setIsSavingCollection(false);
+				toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
+			} catch (err) {
+				console.error(err);
+				toastService('Opslaan mislukt', TOAST_TYPE.DANGER);
+			}
 		}
 
 		if (!isFirstRender) {
@@ -400,7 +410,12 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 											</DropdownContent>
 										</ControlledDropdown>
 										<Spacer margin="left-small">
-											<Button type="primary" label="Opslaan" onClick={onSaveCollection} />
+											<Button
+												type="primary"
+												label="Opslaan"
+												onClick={onSaveCollection}
+												disabled={isSavingCollection}
+											/>
 										</Spacer>
 									</div>
 								</ToolbarItem>
