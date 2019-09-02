@@ -129,7 +129,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	};
 
 	// Update individual property of collection
-	const updateCollectionProperty = (value: string, fieldName: string) =>
+	const updateCollectionProperty = (value: string | string[], fieldName: string) =>
 		setCurrentCollection({
 			...currentCollection,
 			[fieldName]: value,

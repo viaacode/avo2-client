@@ -9,7 +9,7 @@ import NotFound from '../../../404/views/NotFound';
 
 export interface DataQueryComponentProps {
 	query: DocumentNode;
-	resultPath: string;
+	resultPath?: string;
 	renderData: (data: any) => ReactNode;
 	variables?: any;
 	notFoundMessage?: string;
@@ -36,7 +36,7 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 					return <span>Error: {result.error.message}</span>;
 				}
 
-				const data = get(result, `data.${resultPath}`);
+				const data = get(result, resultPath ? `data.${resultPath}` : 'data');
 				if (data) {
 					return renderData(data);
 				}

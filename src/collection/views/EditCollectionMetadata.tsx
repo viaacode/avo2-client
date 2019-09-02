@@ -16,7 +16,7 @@ import {
 } from '@viaa/avo2-components';
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { GET_COLLECTION_BY_ID } from '../collection.gql';
+import { GET_CLASSIFICATIONS_AND_SUBJECTS, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {
@@ -32,7 +32,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		updateCollectionProperty(selectedTagOptions.map(tag => tag.value as string), fieldName);
 	};
 
-	const renderCollectionMetaData = () => {
+	const renderCollectionMetaData = (data: { vocabularies_lom_contexts: { label: string }[] }) => {
 		return (
 			<Container mode="vertical">
 				<Container mode="horizontal">
@@ -41,21 +41,27 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 							<Grid>
 								<Column size="3-7">
 									<FormGroup label="Onderwijsniveau" labelFor="classificationId">
-										<TextInput value={''} id="classificationId" />
 										<TagsInput
-											options={}
+											options={data.vocabularies_lom_contexts.map(item => ({
+												value: item.label,
+												label: item.label,
+											}))}
+											value={(collection.lom_context || []).map((item: string) => ({
+												value: item,
+												label: item,
+											}))}
 											onChange={(values: TagInfo[]) =>
-												updateCollectionMultiProperty(values, 'classification')
+												updateCollectionMultiProperty(values, 'lom_context')
 											}
 										/>
 									</FormGroup>
 									<FormGroup label="Vakken" labelFor="subjectsId">
-										<TextInput value={''} id="subjectsId" />
+										{/* TODO get subjects from the database once the table is filled in */}
 										<TagsInput
-											options={}
-											onChange={(values: TagInfo[]) =>
-												updateCollectionMultiProperty(values, 'subjects')
-											}
+											options={[]}
+											// onChange={(values: TagInfo[]) =>
+											// 	updateCollectionMultiProperty(values, 'subjects')
+											// }
 										/>
 									</FormGroup>
 									<FormGroup
