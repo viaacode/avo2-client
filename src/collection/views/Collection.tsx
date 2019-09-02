@@ -1,6 +1,7 @@
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
@@ -39,7 +40,11 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import PermissionGuard from '../../authentication/components/PermissionGuard';
+import {
+	PermissionGuardFail,
+	PermissionGuardPass,
+} from '../../authentication/components/PermissionGuard.slots';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -207,15 +212,24 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 										<Button type="secondary" icon="share-2" />
 										<Button type="secondary" icon="file-plus" />
 										<Button type="secondary" label="Alle items afspelen" />
-										<Button
-											type="secondary"
-											icon="edit"
-											onClick={() =>
-												history.push(
-													`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
-												)
-											}
-										/>
+										<PermissionGuard
+											permissions={[
+												// { permissionName: 'canEditOwnCollections', obj: collection },
+												{ permissionName: 'canEditAllCollections' },
+											]}
+										>
+											<PermissionGuardPass>
+												<Button
+													type="secondary"
+													icon="edit"
+													onClick={() =>
+														history.push(
+															`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+														)
+													}
+												/>
+											</PermissionGuardPass>
+										</PermissionGuard>
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>
