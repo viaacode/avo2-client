@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash-es';
+import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -90,6 +90,18 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			return updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id);
 		};
 
+		const getFragmentProperty = (
+			itemMeta: any,
+			fragment: any,
+			useCustomFields: Boolean,
+			prop: 'title' | 'description'
+		) => {
+			if (useCustomFields) {
+				return get(fragment, `custom_${prop}`) || get(itemMeta, prop, '');
+			}
+			return get(itemMeta, prop, '');
+		};
+
 		return (
 			<Form>
 				{itemMeta && <Toggle checked={useCustomFields} onChange={onChangeToggle} />}
@@ -97,13 +109,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					<TextInput
 						id="title"
 						type="text"
-						value={
-							(itemMeta
-								? useCustomFields
-									? fragment.custom_title || itemMeta.title
-									: itemMeta.title
-								: fragment.custom_title) || ''
-						}
+						value={getFragmentProperty(itemMeta, fragment, useCustomFields, 'title')}
 						placeholder="Titel"
 						onChange={onChangeTitle}
 						disabled={!useCustomFields}
@@ -112,13 +118,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 				<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
 					<WYSIWYG
 						id={`beschrijving_${index}`}
-						data={
-							(itemMeta
-								? useCustomFields
-									? fragment.custom_description || itemMeta.description
-									: itemMeta.description
-								: fragment.custom_description) || ''
-						}
+						data={getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')}
 						onChange={onChangeDescription}
 						disabled={!useCustomFields}
 					/>
