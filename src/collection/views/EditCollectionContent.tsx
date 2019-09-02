@@ -3,8 +3,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import AddFragment from '../components/AddFragment';
-import CollectionFragment from '../components/CollectionFragment';
+import { AddFragment, CollectionFragment } from '../components';
 
 interface EditCollectionContentProps {
 	collection: Avo.Collection.Response;

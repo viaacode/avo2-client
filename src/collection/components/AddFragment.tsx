@@ -18,15 +18,13 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 	reorderFragments,
 }) => {
 	const addFragment = (index: number) => {
-		const TEXT_BLOCK_FRAGMENT: Avo.Collection.Fragment = {
+		const TEXT_BLOCK_FRAGMENT: any = {
 			id: -collection.collection_fragments.length,
 			position: 1,
 			collection_id: collection.id,
 			external_id: '',
 			custom_description: '',
 			custom_title: '',
-			updated_at: '',
-			created_at: '',
 			end_oc: 0,
 			start_oc: 0,
 			use_custom_fields: false,
