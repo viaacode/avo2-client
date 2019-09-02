@@ -236,6 +236,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	);
 
 	return fragment.external_id ? (
+		// TODO: Change when relationship between item_meta and collection exists
 		<DataQueryComponent
 			query={GET_ITEM_META_BY_EXTERNAL_ID}
 			variables={{ externalId: fragment.external_id }}
