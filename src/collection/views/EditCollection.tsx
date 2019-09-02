@@ -129,7 +129,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	};
 
 	// Update individual property of collection
-	const updateCollectionProperty = (value: string, fieldName: string) =>
+	const updateCollectionProperty = (value: any, fieldName: string) =>
 		setCurrentCollection({
 			...currentCollection,
 			[fieldName]: value,
@@ -428,7 +428,13 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					/>
 				)}
 				<ReorderCollectionModal isOpen={isReorderModalOpen} setIsOpen={setIsReorderModalOpen} />
-				<ShareCollectionModal isOpen={isShareModalOpen} setIsOpen={setIsShareModalOpen} />
+				<ShareCollectionModal
+					collection={collection}
+					isOpen={isShareModalOpen}
+					setIsOpen={setIsShareModalOpen}
+					initialIsPublic={collection.is_public}
+					updateCollectionProperty={updateCollectionProperty}
+				/>
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					setIsOpen={setIsDeleteModalOpen}
