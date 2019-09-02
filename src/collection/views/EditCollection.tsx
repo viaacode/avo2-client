@@ -117,7 +117,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	};
 
 	// Update individual property of fragment
-	const updateFragmentProperty = (value: string, propertyName: string, fragmentId: number) => {
+	const updateFragmentProperty = (value: any, propertyName: string, fragmentId: number) => {
 		const temp: Avo.Collection.Response = { ...currentCollection };
 
 		const fragmentToUpdate = temp.collection_fragments.find(
@@ -275,6 +275,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				});
 
 				const readyToStore = { ...newCollection };
+
+				await readyToStore.collection_fragments.forEach((fragment: any) => {
+					delete fragment.__typename;
+
+					triggerCollectionFragmentUpdate({
+						variables: {
+							fragment,
+							id: fragment.id,
+						},
+					});
+				});
 
 				// Trigger collection update
 				const propertiesToDelete = [
