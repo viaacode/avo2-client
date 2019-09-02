@@ -205,3 +205,12 @@ export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
 		}
 	}
 `;
+
+export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
+	{
+		vocabularies_lom_contexts {
+			id
+			label
+		}
+	}
+`;

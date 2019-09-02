@@ -1,8 +1,6 @@
 class Auth {
-	private profile = null;
+	private profile: { id: number; role: string } | null = null;
 	private expiresAt: number | null = null;
-
-	constructor() {}
 
 	public getProfile() {
 		return this.profile;
@@ -12,9 +10,9 @@ class Auth {
 		return new Date().getTime() < (this.expiresAt || 0);
 	}
 
-	signIn() {}
-
-	handleAuthentication() {}
+	signIn() {
+		this.profile = { id: 1, role: 'Teacher' }; // 87811
+	}
 
 	signOut() {
 		// clear profile, and expiration
@@ -24,5 +22,6 @@ class Auth {
 }
 
 const authClient = new Auth();
+authClient.signIn(); // TODO replace with actual dispatch action to backend to get user info
 
 export default authClient;
