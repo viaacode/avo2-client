@@ -429,7 +429,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					collection={collection}
 					isOpen={isShareModalOpen}
 					setIsOpen={setIsShareModalOpen}
-					isPublic={collection.is_public}
+					initialIsPublic={collection.is_public}
 					updateCollectionProperty={updateCollectionProperty}
 				/>
 				<DeleteCollectionModal

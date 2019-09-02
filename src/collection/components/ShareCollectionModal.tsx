@@ -21,33 +21,33 @@ import { UPDATE_COLLECTION_PROPERTY } from '../collection.gql';
 interface ShareCollectionModalProps {
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
-	isPublic: boolean;
+	initialIsPublic: boolean;
 	updateCollectionProperty: (value: boolean, fieldName: string) => void;
 	collection: Avo.Collection.Response;
 }
 
 const shareOptions = [
 	{
-		name: 'private',
+		value: 'private',
 		label: 'Niet openbaar',
-		isPublicized: false,
+		isPublic: false,
 	},
 	{
-		name: 'public',
+		value: 'public',
 		label: 'Openbaar',
-		isPublicized: true,
+		isPublic: true,
 	},
 ];
 
 const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	setIsOpen,
 	isOpen,
-	isPublic,
+	initialIsPublic,
 	collection,
 	updateCollectionProperty,
 }) => {
 	const [validationError, setValidationError] = useState();
-	const [isCollectionPublic, setIsCollectionPublic] = useState(isPublic);
+	const [isCollectionPublic, setIsCollectionPublic] = useState(initialIsPublic);
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION_PROPERTY);
 
 	const validateFragments = (fragments: Avo.Collection.Fragment[]) => {
@@ -151,14 +151,14 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 							<h4 className="c-h4 u-m-0">Zichtbaarheid</h4>
 						</Spacer>
 						<RadioButtonGroup>
-							{shareOptions.map(({ name, label, isPublicized }, index) => (
+							{shareOptions.map((shareOption, index) => (
 								<RadioButton
 									key={index}
-									name={name}
-									label={label}
-									value={name}
-									onChange={() => setIsCollectionPublic(isPublicized)}
-									checked={isCollectionPublic === isPublicized}
+									name={shareOption.value}
+									label={shareOption.label}
+									value={shareOption.value}
+									onChange={() => setIsCollectionPublic(shareOption.isPublic)}
+									checked={isCollectionPublic === shareOption.isPublic}
 								/>
 							))}
 						</RadioButtonGroup>
