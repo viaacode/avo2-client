@@ -32,14 +32,17 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 						</div>
 					);
 				}
+
 				if (result.error) {
 					return <span>Error: {result.error.message}</span>;
 				}
 
 				const data = get(result, `data.${resultPath}`);
+
 				if (data) {
 					return renderData(data);
 				}
+
 				return <NotFound message={notFoundMessage} />;
 			}}
 		</Query>

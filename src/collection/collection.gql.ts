@@ -191,3 +191,17 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 		}
 	}
 `;
+
+export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
+	query getMetaItemByExternalId($externalId: bpchar!) {
+		app_item_meta(where: { external_id: { _eq: $externalId } }) {
+			description
+			thumbnail_path
+			title
+			type {
+				label
+				id
+			}
+		}
+	}
+`;
