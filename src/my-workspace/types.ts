@@ -6,7 +6,6 @@ import { Avo } from '@viaa/avo2-types';
 
 // My Workspace
 type TabView = {
-	addHandler?: () => void;
 	amount: string;
 	component: ReactElement;
 	filter?: {
