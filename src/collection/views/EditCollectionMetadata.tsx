@@ -12,11 +12,10 @@ import {
 	Spacer,
 	TagsInput,
 	TextArea,
-	TextInput,
 } from '@viaa/avo2-components';
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { GET_CLASSIFICATIONS_AND_SUBJECTS, GET_COLLECTION_BY_ID } from '../collection.gql';
+import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../collection.gql';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {
@@ -29,7 +28,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	updateCollectionProperty,
 }) => {
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
-		updateCollectionProperty(selectedTagOptions.map(tag => tag.value as string), fieldName);
+		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
 	};
 
 	const renderCollectionMetaData = (data: { vocabularies_lom_contexts: { label: string }[] }) => {
@@ -42,7 +41,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 								<Column size="3-7">
 									<FormGroup label="Onderwijsniveau" labelFor="classificationId">
 										<TagsInput
-											options={data.vocabularies_lom_contexts.map(item => ({
+											options={(data.vocabularies_lom_contexts || []).map(item => ({
 												value: item.label,
 												label: item.label,
 											}))}
