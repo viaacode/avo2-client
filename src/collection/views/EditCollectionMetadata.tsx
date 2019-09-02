@@ -18,6 +18,9 @@ import {
 	Spacer,
 	TagsInput,
 	TextArea,
+	Toolbar,
+	ToolbarItem,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -159,25 +162,27 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 							</Form>
 						</div>
 					</ModalBody>
-					<ModalFooterLeft>
-						<FormGroup>
-							<Button
-								label="Annuleren"
-								type="secondary"
-								block={true}
-								onClick={() => setShowCoverImageModal(false)}
-							/>
-						</FormGroup>
-					</ModalFooterLeft>
 					<ModalFooterRight>
-						<FormGroup>
-							<Button
-								label="Opslaan"
-								type="primary"
-								block={true}
-								onClick={() => saveCoverImage()}
-							/>
-						</FormGroup>
+						<Toolbar spaced>
+							<ToolbarRight>
+								<ToolbarItem>
+									<div className="c-button-toolbar">
+										<Button
+											label="Annuleren"
+											type="secondary"
+											block={true}
+											onClick={() => setShowCoverImageModal(false)}
+										/>
+										<Button
+											label="Opslaan"
+											type="primary"
+											block={true}
+											onClick={() => saveCoverImage()}
+										/>
+									</div>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
 					</ModalFooterRight>
 				</Modal>
 			</Fragment>
