@@ -73,21 +73,39 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		setUseCustomFields(!useCustomFields);
 	};
 
-	const renderForm = (fragment: any, itemMeta: any, index: number) =>
-		itemMeta ? (
+	const renderForm = (fragment: any, itemMeta: any, index: number) => {
+		const onChangeTitle = (value: string) => {
+			if (itemMeta && !useCustomFields) {
+				return null;
+			}
+
+			return updateFragmentProperty(value, 'custom_title', fragment.id);
+		};
+
+		const onChangeDescription = (e: any) => {
+			if (itemMeta && !useCustomFields) {
+				return null;
+			}
+
+			return updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id);
+		};
+
+		return (
 			<Form>
-				<Toggle checked={useCustomFields} onChange={onChangeToggle} />
+				{itemMeta && <Toggle checked={useCustomFields} onChange={onChangeToggle} />}
 				<FormGroup label={`Tekstblok titel`} labelFor="title">
 					<TextInput
 						id="title"
 						type="text"
 						value={
-							(useCustomFields ? fragment.custom_title || itemMeta.title : itemMeta.title) || ''
+							(itemMeta
+								? useCustomFields
+									? fragment.custom_title || itemMeta.title
+									: itemMeta.title
+								: fragment.custom_title) || ''
 						}
 						placeholder="Titel"
-						onChange={(value: string) =>
-							useCustomFields && updateFragmentProperty(value, 'custom_title', fragment.id)
-						}
+						onChange={onChangeTitle}
 						disabled={!useCustomFields}
 					/>
 				</FormGroup>
@@ -95,47 +113,19 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					<WYSIWYG
 						id={`beschrijving_${index}`}
 						data={
-							(useCustomFields
-								? fragment.custom_description || itemMeta.description
-								: itemMeta.description) || ''
+							(itemMeta
+								? useCustomFields
+									? fragment.custom_description || itemMeta.description
+									: itemMeta.description
+								: fragment.custom_description) || ''
 						}
-						onChange={(e: any) =>
-							useCustomFields &&
-							updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id)
-						}
+						onChange={onChangeDescription}
 						disabled={!useCustomFields}
 					/>
 				</FormGroup>
 			</Form>
-		) : (
-			<Form>
-				<FormGroup label={`Tekstblok titel`} labelFor="title">
-					<TextInput
-						id="title"
-						type="text"
-						value={fragment.custom_title || ''}
-						placeholder="Titel"
-						onChange={(value: string) => updateFragmentProperty(value, 'custom_title', fragment.id)}
-					/>
-				</FormGroup>
-				<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
-					<>
-						<WYSIWYG
-							id={`beschrijving_${index}`}
-							data={fragment.custom_description || ''}
-							onChange={
-								((e: any) =>
-									updateFragmentProperty(
-										e.target.innerHTML,
-										'custom_description',
-										fragment.id
-									)) as any // TODO remove any type once components deploy is working again
-							}
-						/>
-					</>
-				</FormGroup>
-			</Form>
 		);
+	};
 
 	const onDuplicateFragment = (fragmentId: number) => {
 		setIsOptionsMenuOpen(null);
