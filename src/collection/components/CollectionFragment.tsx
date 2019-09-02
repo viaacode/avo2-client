@@ -235,7 +235,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		</>
 	);
 
-	return (
+	return fragment.external_id ? (
 		<DataQueryComponent
 			query={GET_ITEM_META_BY_EXTERNAL_ID}
 			variables={{ externalId: fragment.external_id }}
@@ -243,6 +243,8 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			renderData={renderCollectionFragment}
 			notFoundMessage="De meta item van deze collectie werd niet gevonden"
 		/>
+	) : (
+		renderCollectionFragment(null)
 	);
 };
 
