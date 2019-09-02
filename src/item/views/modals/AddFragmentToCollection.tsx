@@ -15,6 +15,9 @@ import {
 	Spacer,
 	TextArea,
 	TextInput,
+	Toolbar,
+	ToolbarItem,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import './AddFragmentToCollection.scss';
@@ -106,15 +109,22 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 					</Spacer>
 				</div>
 			</ModalBody>
-			<ModalFooterLeft>
-				<FormGroup>
-					<Button label="Annuleren" type="link" block={true} onClick={onClose} />
-				</FormGroup>
-			</ModalFooterLeft>
 			<ModalFooterRight>
-				<FormGroup>
-					<Button label="Toepassen" type="primary" block={true} onClick={addItemToCollection} />
-				</FormGroup>
+				<Toolbar spaced>
+					<ToolbarRight>
+						<ToolbarItem>
+							<div className="c-button-toolbar">
+								<Button label="Annuleren" type="link" block={true} onClick={onClose} />
+								<Button
+									label="Toepassen"
+									type="primary"
+									block={true}
+									onClick={addItemToCollection}
+								/>
+							</div>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
 			</ModalFooterRight>
 		</Modal>
 	);
