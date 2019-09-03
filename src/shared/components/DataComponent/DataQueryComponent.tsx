@@ -34,7 +34,18 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 				}
 
 				if (result.error) {
-					return <span>Error: {result.error.message}</span>;
+					const firstGraphQlError = get(result, 'error.graphQLErrors[0].message');
+					if (firstGraphQlError === 'DELETED') {
+						// TODO show different message if a list of items was returned but only some were deleted
+						return <NotFound message="Dit item is verwijderd" icon="delete" />;
+					}
+					if (firstGraphQlError === 'ORPHANED') {
+						return <NotFound message="Dit item is een wees" icon="user-x" />; // TODO improve error message
+					}
+					console.error(result.error);
+					return (
+						<NotFound message={'Er ging iets mis tijdens het ophalen'} icon="alert-triangle" />
+					);
 				}
 
 				const data = get(result, resultPath ? `data.${resultPath}` : 'data');

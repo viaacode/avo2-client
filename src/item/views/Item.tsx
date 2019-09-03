@@ -48,6 +48,7 @@ import { parseDuration } from '../../shared/helpers/parsers/duration';
 import './Item.scss';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
+import NotFound from '../../404/views/NotFound';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
 interface ItemProps extends RouteComponentProps {}
