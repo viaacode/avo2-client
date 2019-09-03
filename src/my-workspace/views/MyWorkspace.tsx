@@ -39,35 +39,36 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		setTabId(String(id));
 	};
 
-	// Computed
 	// Make map for available tab views
-	const TAB_MAP: TabViewMap = {
-		[COLLECTIONS_ID]: {
-			component: <Collections />,
-			filter: {
-				label: 'Auteur',
-				options: [
-					{ id: 'all', label: 'Alles' },
-					{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
-					{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
-					{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
-				],
+	const getTabs = (counts: { [tabId: string]: number }): TabViewMap => {
+		return {
+			[COLLECTIONS_ID]: {
+				component: <Collections numberOfCollections={counts[COLLECTIONS_ID]} />,
+				filter: {
+					label: 'Auteur',
+					options: [
+						{ id: 'all', label: 'Alles' },
+						{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
+						{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
+						{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
+					],
+				},
 			},
-		},
-		[FOLDERS_ID]: {
-			component: <span>TODO Mappen</span>,
-			filter: {
-				label: 'Filter op label',
-				options: [{ id: 'all', label: 'Alle' }],
+			[FOLDERS_ID]: {
+				component: <span>TODO Mappen</span>,
+				filter: {
+					label: 'Filter op label',
+					options: [{ id: 'all', label: 'Alle' }],
+				},
 			},
-		},
-		[BOOKMARKS_ID]: {
-			component: <Bookmarks />,
-		},
+			[BOOKMARKS_ID]: {
+				component: <Bookmarks />,
+			},
+		};
 	};
-	// Set active tab based on above map with tabId
-	const activeTab = TAB_MAP[tabId];
-	const getNavTabs = (counts: { [id: string]: number }) => {
+	// Get active tab based on above map with tabId
+	const getActiveTab = (counts: { [tabId: string]: number }) => getTabs(counts)[tabId];
+	const getNavTabs = (counts: { [tabId: string]: number }) => {
 		return TABS.map(t => ({
 			...t,
 			active: tabId === t.id,
@@ -75,8 +76,8 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		}));
 	};
 
-	const renderFilter = () => {
-		const filter = activeTab.filter;
+	const renderFilter = (counts: { [tabId: string]: number }) => {
+		const filter = getActiveTab(counts).filter;
 
 		if (filter) {
 			if (!activeFilter) {
@@ -117,6 +118,11 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 	const renderTabsAndContent = (data: {
 		app_collections_aggregate: { aggregate: { count: number } };
 	}) => {
+		const counts = {
+			[COLLECTIONS_ID]: get(data, 'app_collections_aggregate.aggregate.count'),
+			[FOLDERS_ID]: 0, // TODO get from database once the table exists
+			[BOOKMARKS_ID]: 0, // TODO get from database once the table exists
+		};
 		return (
 			<Fragment>
 				<Container background="alt" mode="vertical" size="small">
@@ -129,24 +135,17 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarLeft>
-								<Tabs
-									tabs={getNavTabs({
-										[COLLECTIONS_ID]: get(data, 'app_collections_aggregate.aggregate.count'),
-										[FOLDERS_ID]: 0, // TODO get from database once the table exists
-										[BOOKMARKS_ID]: 0, // TODO get from database once the table exists
-									})}
-									onClick={goToTab}
-								/>
+								<Tabs tabs={getNavTabs(counts)} onClick={goToTab} />
 							</ToolbarLeft>
 							<ToolbarRight>
-								<span>{renderFilter()}</span>
+								<span>{renderFilter(counts)}</span>
 							</ToolbarRight>
 						</Toolbar>
 					</Container>
 				</Navbar>
 
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{activeTab.component}</Container>
+					<Container mode="horizontal">{getActiveTab(counts).component}</Container>
 				</Container>
 			</Fragment>
 		);

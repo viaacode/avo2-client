@@ -1,4 +1,5 @@
 import { gql } from 'apollo-boost';
+import { ITEMS_PER_PAGE } from '../my-workspace/constants';
 
 // TODO: Reduce to only what we need.
 export const GET_COLLECTION_BY_ID = gql`
@@ -148,8 +149,8 @@ export const INSERT_COLLECTION_FRAGMENT = gql`
 `;
 
 export const GET_COLLECTIONS_BY_OWNER = gql`
-	query getMigrateCollectionById($ownerId: uuid) {
-		app_collections(where: { owner: { uid: { _eq: $ownerId } } }) {
+	query getMigrateCollectionById($ownerId: uuid, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}) {
+		app_collections(where: { owner: { uid: { _eq: $ownerId } } }, offset: $offset, limit: $limit) {
 			id
 			updated_at
 			type_id
