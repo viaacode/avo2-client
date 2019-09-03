@@ -166,7 +166,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											{item.type && (
 												<Icon name={item.type.label === 'audio' ? 'headphone' : item.type.label} />
 											)}
-											<p>Video</p>
+											<p>{item.type.label}</p>
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-b-0">{item.title}</h1>
