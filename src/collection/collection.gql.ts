@@ -94,14 +94,6 @@ export const UPDATE_COLLECTION = gql`
 	}
 `;
 
-export const UPDATE_COLLECTION_PROPERTY = gql`
-	mutation updateCollectionNameById($id: Int!, $collectionChanges: app_collections_set_input!) {
-		update_app_collections(where: { id: { _eq: $id } }, _set: $collectionChanges) {
-			affected_rows
-		}
-	}
-`;
-
 export const DELETE_COLLECTION = gql`
 	mutation deleteCollectionById($id: Int!) {
 		delete_app_collections(where: { id: { _eq: $id } }) {
