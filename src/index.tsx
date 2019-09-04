@@ -11,7 +11,7 @@ import '@viaa/avo2-components/dist/styles/main.css';
 
 import App from './App';
 
-const localization = require('moment/locale/nl-be');
+import 'moment/locale/nl-be';
 
 // Expose app info through the window object
 (window as CustomWindow).APP_INFO = {
@@ -20,6 +20,6 @@ const localization = require('moment/locale/nl-be');
 };
 
 // Set moment language to dutch
-moment.locale('nl');
+moment.locale('nl-be');
 
 ReactDOM.render(<App />, document.getElementById('root'));
