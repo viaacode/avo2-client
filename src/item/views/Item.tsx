@@ -48,7 +48,6 @@ import { parseDuration } from '../../shared/helpers/parsers/duration';
 import './Item.scss';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
-import NotFound from '../../404/views/NotFound';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
 interface ItemProps extends RouteComponentProps {}
@@ -154,6 +153,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
 	const renderItem = (item: Avo.Item.Response) => {
+		console.log(item);
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background="alt">
@@ -192,8 +192,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 									<div className="u-mq-switch-main-nav-authentication">
 										<MetaData category={item.type.label || 'video'}>
 											{/* TODO link meta data to actual data */}
-											<MetaDataItem label={String(188)} icon="eye" />
-											<MetaDataItem label={String(370)} icon="bookmark" />
+											<MetaDataItem label={String(item.views || 0)} icon="eye" />
+											<MetaDataItem label={String(item.bookmarks || 0)} icon="bookmark" />
 											{item.type.label === 'collection' && (
 												<MetaDataItem label={String(12)} icon="collection" />
 											)}
