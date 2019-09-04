@@ -1,9 +1,7 @@
+import { useMutation } from '@apollo/react-hooks';
+import { get } from 'lodash-es';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-
-import { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
-import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
 import {
 	Avatar,
@@ -31,7 +29,10 @@ import {
 	BlockVideoTitleTextButtonProps,
 	Button,
 	Container,
+	DropdownButton,
+	DropdownContent,
 	Icon,
+	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
@@ -40,11 +41,14 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import PermissionGuard from '../../authentication/components/PermissionGuard';
-import { PermissionGuardPass } from '../../authentication/components/PermissionGuard.slots';
+import { Avo } from '@viaa/avo2-types';
+
 import { RouteParts } from '../../constants';
+import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
+import { DeleteCollectionModal } from '../components';
 
 interface CollectionProps extends RouteComponentProps {}
 
@@ -84,6 +88,25 @@ export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'U
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
+	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+
+	const openDeleteModal = (collectionId: number) => {
+		setIdToDelete(collectionId);
+		setIsDeleteModalOpen(true);
+	};
+
+	const deleteCollection = () => {
+		triggerCollectionDelete({
+			variables: {
+				id: idToDelete,
+			},
+		});
+
+		setIdToDelete(null);
+	};
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
 		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
@@ -191,10 +214,11 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 												<Avatar
 													image={get(collection, 'owner.profile.avatar')}
 													name={ownerNameAndRole || ' '}
-													initials={
-														get(collection, 'owner.first_name[0]', '') +
-														get(collection, 'owner.last_name[0]', '')
-													}
+													initials={`${get(collection, 'owner.first_name[0]', '')}${get(
+														collection,
+														'owner.last_name[0]',
+														''
+													)}`}
 												/>
 											)}
 										</div>
@@ -204,29 +228,49 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 							<ToolbarRight>
 								<ToolbarItem>
 									<div className="c-button-toolbar">
-										{/* TODO add aria label once merged in components repo */}
-										<Button type="secondary" icon="bookmark" />
-										<Button type="secondary" icon="share-2" />
-										<Button type="secondary" icon="file-plus" />
-										<Button type="secondary" label="Alle items afspelen" />
-										<PermissionGuard
-											permissions={[
-												// { permissionName: 'canEditOwnCollections', obj: collection },
-												{ permissionName: 'canEditAllCollections' },
-											]}
+										<Button
+											title="Bladwijzer"
+											type="secondary"
+											icon="bookmark"
+											ariaLabel="Bladwijzer"
+										/>
+										<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
+										<ControlledDropdown
+											isOpen={isOptionsMenuOpen}
+											onOpen={() => setIsOptionsMenuOpen(true)}
+											onClose={() => setIsOptionsMenuOpen(false)}
+											placement="bottom-end"
+											autoSize
 										>
-											<PermissionGuardPass>
-												<Button
-													type="secondary"
-													icon="edit"
-													onClick={() =>
-														history.push(
-															`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
-														)
-													}
+											<DropdownButton>
+												<Button type="secondary" icon="more-horizontal" />
+											</DropdownButton>
+											<DropdownContent>
+												<MenuContent
+													menuItems={[
+														{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
+														{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
+														{ icon: 'clipboard', id: 'createExercise', label: 'Maak opdracht' },
+														{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+														{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
+													]}
+													onClick={itemId => {
+														switch (itemId) {
+															case 'edit':
+																history.push(
+																	`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+																);
+																break;
+															case 'delete':
+																openDeleteModal(collection.id);
+																break;
+															default:
+																return null;
+														}
+													}}
 												/>
-											</PermissionGuardPass>
-										</PermissionGuard>
+											</DropdownContent>
+										</ControlledDropdown>
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>
@@ -236,6 +280,11 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 				<Container mode="vertical">
 					<Container mode="horizontal">{renderContentBlocks(contentBlockInfos)}</Container>
 				</Container>
+				<DeleteCollectionModal
+					isOpen={isDeleteModalOpen}
+					setIsOpen={setIsDeleteModalOpen}
+					deleteCollection={() => deleteCollection()}
+				/>
 			</Fragment>
 		);
 	};
