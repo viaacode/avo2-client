@@ -13,6 +13,7 @@ export interface DataQueryComponentProps {
 	renderData: (data: any) => ReactNode;
 	variables?: any;
 	notFoundMessage?: string;
+	hasSpinner?: Boolean;
 }
 
 export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
@@ -21,16 +22,17 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	resultPath,
 	renderData,
 	notFoundMessage = 'Het opgevraagde object werd niet gevonden',
+	hasSpinner = true,
 }) => {
 	return (
 		<Query query={query} variables={variables}>
 			{(result: QueryResult) => {
 				if (result.loading) {
-					return (
+					return hasSpinner ? (
 						<div className="o-flex o-flex--horizontal-center">
 							<Spinner size="large" />
 						</div>
-					);
+					) : null;
 				}
 
 				if (result.error) {
