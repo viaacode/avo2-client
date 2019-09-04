@@ -113,13 +113,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					<TextInput
 						id="title"
 						type="text"
-						value={
-							(itemMeta
-								? useCustomFields
-									? fragment.custom_title || itemMeta.title
-									: itemMeta.title
-								: fragment.custom_title) || ''
-						}
+						value={getFragmentProperty(itemMeta, fragment, useCustomFields, 'title')}
 						placeholder="Titel"
 						onChange={onChangeTitle}
 						disabled={!useCustomFields && itemMeta}
