@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
 declare const flowplayer: any;
 
 interface FlowPlayerProps {
@@ -6,25 +6,22 @@ interface FlowPlayerProps {
 	poster: string;
 }
 
-export class FlowPlayer extends React.Component<FlowPlayerProps> {
-	player: any;
+export const FlowPlayer: FunctionComponent<FlowPlayerProps> = props => {
+	const videoPlayerRef = useRef(null);
+	let player: any = null;
 
-	constructor(props: any) {
-		super(props);
-	}
-
-	componentDidMount() {
-		this.player = flowplayer(this.refs.container, this.props);
-	}
-
-	render() {
-		return <div className="c-video-player" ref="container" />;
-	}
-
-	componentWillUnmount() {
-		if (this.player) {
-			this.player.destroy();
-			this.player = 0;
+	useEffect(() => {
+		if (videoPlayerRef.current) {
+			player = flowplayer(videoPlayerRef.current, props);
 		}
-	}
-}
+
+		return () => {
+			if (player) {
+				player.destroy();
+				player = 0;
+			}
+		};
+	}, [videoPlayerRef]);
+
+	return <div className="c-video-player" ref={videoPlayerRef} />;
+};
