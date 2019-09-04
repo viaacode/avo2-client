@@ -75,11 +75,13 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			id: 'inhoud',
 			label: 'Inhoud',
 			active: currentTab === 'inhoud',
+			icon: 'collection',
 		},
 		{
 			id: 'metadata',
 			label: 'Metadata',
 			active: currentTab === 'metadata',
+			icon: 'file-text',
 		},
 	];
 

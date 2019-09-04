@@ -74,8 +74,10 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	};
 
 	const renderForm = (fragment: any, itemMeta: any, index: number) => {
+		const isVideoBlock = !useCustomFields && itemMeta;
+
 		const onChangeTitle = (value: string) => {
-			if (itemMeta && !useCustomFields) {
+			if (isVideoBlock) {
 				return null;
 			}
 
@@ -83,7 +85,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		};
 
 		const onChangeDescription = (e: any) => {
-			if (itemMeta && !useCustomFields) {
+			if (isVideoBlock) {
 				return null;
 			}
 
@@ -116,7 +118,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						value={getFragmentProperty(itemMeta, fragment, useCustomFields, 'title')}
 						placeholder="Titel"
 						onChange={onChangeTitle}
-						disabled={!useCustomFields && itemMeta}
+						disabled={isVideoBlock}
 					/>
 				</FormGroup>
 				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
@@ -124,7 +126,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						id={`beschrijving_${index}`}
 						data={getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')}
 						onChange={onChangeDescription}
-						disabled={!useCustomFields && itemMeta}
+						disabled={isVideoBlock}
 					/>
 				</FormGroup>
 			</Form>
