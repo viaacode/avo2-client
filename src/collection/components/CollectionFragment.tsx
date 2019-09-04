@@ -104,7 +104,11 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 
 		return (
 			<Form>
-				{itemMeta && <Toggle checked={useCustomFields} onChange={onChangeToggle} />}
+				<FormGroup label="Alternatieve Tekst" labelFor="customFields">
+					{itemMeta && (
+						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
+					)}
+				</FormGroup>
 				<FormGroup label={`Tekstblok titel`} labelFor="title">
 					<TextInput
 						id="title"
@@ -115,7 +119,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						disabled={!useCustomFields}
 					/>
 				</FormGroup>
-				<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
+				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
 					<WYSIWYG
 						id={`beschrijving_${index}`}
 						data={getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')}
