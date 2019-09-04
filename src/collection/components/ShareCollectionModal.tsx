@@ -87,11 +87,11 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				result: !!description,
 			},
 			hasContext: {
-				error: 'Uw collectie heeft geen vakken.',
+				error: "Uw collectie heeft geen onderwijsniveau's.",
 				result: !!(lom_context && lom_context.length),
 			},
 			hasClassification: {
-				error: "Uw collectie heeft geen onderwijsniveau's.",
+				error: 'Uw collectie heeft geen vakken.',
 				result: !!(lom_classification && lom_classification.length),
 			},
 			hasAtleastOneFragment: {
