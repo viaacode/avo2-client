@@ -243,7 +243,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			resultPath="app_item_meta[0]"
 			renderData={renderCollectionFragment}
 			notFoundMessage="De meta item van deze collectie werd niet gevonden"
-			hasSpinner={false}
+			showSpinner={false}
 		/>
 	) : (
 		renderCollectionFragment(null)
