@@ -130,7 +130,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 												className="c-nav__item c-nav__item--i"
 												key={`${item.location}-${item.label}`}
 											>
-												<Link to={item.location}>{item.label}</Link>
+												<Link to={item.location}>
+													{item.icon && <Icon name={item.icon} />}
+													{item.label}
+												</Link>
 											</li>
 										))}
 									</ul>
