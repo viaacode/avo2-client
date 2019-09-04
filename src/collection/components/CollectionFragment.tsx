@@ -104,19 +104,25 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 
 		return (
 			<Form>
-				<FormGroup label="Alternatieve Tekst" labelFor="customFields">
-					{itemMeta && (
+				{itemMeta && (
+					<FormGroup label="Alternatieve Tekst" labelFor="customFields">
 						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
-					)}
-				</FormGroup>
+					</FormGroup>
+				)}
 				<FormGroup label={`Tekstblok titel`} labelFor="title">
 					<TextInput
 						id="title"
 						type="text"
-						value={getFragmentProperty(itemMeta, fragment, useCustomFields, 'title')}
+						value={
+							(itemMeta
+								? useCustomFields
+									? fragment.custom_title || itemMeta.title
+									: itemMeta.title
+								: fragment.custom_title) || ''
+						}
 						placeholder="Titel"
 						onChange={onChangeTitle}
-						disabled={!useCustomFields}
+						disabled={!useCustomFields && itemMeta}
 					/>
 				</FormGroup>
 				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
@@ -124,7 +130,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						id={`beschrijving_${index}`}
 						data={getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')}
 						onChange={onChangeDescription}
-						disabled={!useCustomFields}
+						disabled={!useCustomFields && itemMeta}
 					/>
 				</FormGroup>
 			</Form>
@@ -190,6 +196,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 									<div className="c-button-toolbar">
 										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
 										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
+										{itemMeta && <Button icon="scissors" label="Knippen" type="secondary" />}
 									</div>
 								</ToolbarItem>
 							</ToolbarLeft>
