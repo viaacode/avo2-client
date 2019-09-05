@@ -40,6 +40,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+
 import PermissionGuard from '../../authentication/components/PermissionGuard';
 import {
 	PermissionGuardFail,
@@ -48,39 +49,9 @@ import {
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { ContentBlockInfo } from '../types';
 
 interface CollectionProps extends RouteComponentProps {}
-
-export type BlockType =
-	| 'Image'
-	| 'ImageTitleTextButton'
-	| 'Intro'
-	| 'Links'
-	| 'Quote'
-	| 'RichText'
-	| 'Subtitle'
-	| 'Title'
-	| 'TitleImageText'
-	| 'Video'
-	| 'VideoTitleTextButton';
-
-export type BlockInfo =
-	| BlockImageProps
-	| BlockImageTitleTextButtonProps
-	| BlockIntroProps
-	| BlockLinksProps
-	| BlockQuoteProps
-	| BlockTextProps
-	| BlockSubtitleProps
-	| BlockTitleProps
-	| BlockTitleImageTextProps
-	| BlockVideoProps
-	| BlockVideoTitleTextButtonProps;
-
-interface ContentBlockInfo {
-	blockType: BlockType;
-	content: BlockInfo;
-}
 
 // TODO get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
