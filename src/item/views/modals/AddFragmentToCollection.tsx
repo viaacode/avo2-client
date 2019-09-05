@@ -8,7 +8,6 @@ import {
 	Grid,
 	Modal,
 	ModalBody,
-	ModalFooterLeft,
 	ModalFooterRight,
 	RadioButton,
 	Select,

@@ -41,10 +41,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import PermissionGuard from '../../authentication/components/PermissionGuard';
-import {
-	PermissionGuardFail,
-	PermissionGuardPass,
-} from '../../authentication/components/PermissionGuard.slots';
+import { PermissionGuardPass } from '../../authentication/components/PermissionGuard.slots';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';

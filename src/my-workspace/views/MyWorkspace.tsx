@@ -2,7 +2,6 @@ import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
 import { withRouter } from 'react-router';
 
 import {
-	Button,
 	Container,
 	DropdownButton,
 	DropdownContent,
@@ -13,7 +12,6 @@ import {
 	Navbar,
 	Tabs,
 	Toolbar,
-	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
