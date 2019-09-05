@@ -54,7 +54,6 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	updateCollection,
 }) => {
 	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
-	const [hasChanges, setHasChanges] = useState();
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (index: number) => index === 0;
@@ -78,7 +77,6 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		const isVideoBlock = !useCustomFields && itemMeta;
 
 		const onChangeTitle = (value: string) => {
-			setHasChanges('title');
 			if (isVideoBlock) {
 				return null;
 			}
@@ -87,7 +85,6 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		};
 
 		const onChangeDescription = (e: any) => {
-			setHasChanges('description');
 			if (isVideoBlock) {
 				return null;
 			}
@@ -102,9 +99,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			prop: 'title' | 'description'
 		) => {
 			if (useCustomFields) {
-				return (
-					get(fragment, `custom_${prop}`) || (hasChanges === prop ? '' : get(itemMeta, prop, ''))
-				);
+				return get(fragment, `custom_${prop}`) || '';
 			}
 			return get(itemMeta, prop, '');
 		};
@@ -131,7 +126,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						id={`beschrijving_${index}`}
 						data={getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')}
 						onChange={onChangeDescription}
-						disabled={isVideoBlock}
+						disabled={!!isVideoBlock}
 					/>
 				</FormGroup>
 			</Form>
