@@ -2,7 +2,7 @@ import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+import { get, orderBy } from 'lodash-es';
 import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
 import {
@@ -141,19 +141,22 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					text: collection.description,
 				} as BlockIntroProps,
 			});
-			(collection.collection_fragments || []).forEach(
-				(collectionFragment: Avo.Collection.Fragment) => {
-					contentBlockInfos.push({
-						blockType: 'VideoTitleTextButton',
-						content: {
-							title: collectionFragment.custom_title,
-							text: collectionFragment.custom_description,
-							videoSource: '',
-							buttonLabel: 'Meer lezen',
-						} as BlockVideoTitleTextButtonProps,
-					});
-				}
-			);
+
+			const fragments = orderBy([...collection.collection_fragments], 'position', 'asc') || [];
+
+			fragments.forEach((collectionFragment: Avo.Collection.Fragment) => {
+				console.log(collectionFragment);
+				contentBlockInfos.push({
+					blockType: collectionFragment.external_id ? 'VideoTitleTextButton' : 'RichText',
+					content: {
+						title: collectionFragment.custom_title,
+						text: collectionFragment.custom_description,
+						titleLink: `/${RouteParts.Item}/${collectionFragment.external_id}`,
+						videoSource: '',
+						buttonLabel: 'Meer lezen',
+					} as BlockVideoTitleTextButtonProps,
+				});
+			});
 		}
 
 		const ownerNameAndRole = [
