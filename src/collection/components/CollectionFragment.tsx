@@ -98,7 +98,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			useCustomFields: Boolean,
 			prop: 'title' | 'description'
 		) => {
-			if (useCustomFields) {
+			if (useCustomFields || !itemMeta) {
 				return get(fragment, `custom_${prop}`) || '';
 			}
 			return get(itemMeta, prop, '');
