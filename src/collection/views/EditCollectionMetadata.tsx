@@ -1,7 +1,5 @@
-import React, { Fragment, FunctionComponent, useState } from 'react';
-
-import { Avo } from '@viaa/avo2-types';
 import { uniq } from 'lodash-es';
+import React, { Fragment, FunctionComponent, useState } from 'react';
 
 import {
 	Button,
@@ -13,7 +11,6 @@ import {
 	ImageGrid,
 	Modal,
 	ModalBody,
-	ModalFooterLeft,
 	ModalFooterRight,
 	Spacer,
 	TagsInput,
@@ -23,9 +20,11 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
+import { Avo } from '@viaa/avo2-types';
+
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../collection.gql';
+import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {

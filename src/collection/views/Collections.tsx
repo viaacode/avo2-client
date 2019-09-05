@@ -20,11 +20,8 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
-
-// Owner will be enforced by permissions inside the graphql server
-// TODO reduce number of properties to only the ones we use
-import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { DeleteCollectionModal } from '../components';
+import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
 interface CollectionsProps extends RouteComponentProps {}
 

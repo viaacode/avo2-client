@@ -1,9 +1,6 @@
+import { get, orderBy } from 'lodash-es';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-
-import { Avo } from '@viaa/avo2-types';
-import { get, orderBy } from 'lodash-es';
-import { GET_COLLECTION_BY_ID } from '../collection.gql';
 
 import {
 	Avatar,
@@ -40,21 +37,17 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import PermissionGuard from '../../authentication/components/PermissionGuard';
-import {
-	PermissionGuardFail,
-	PermissionGuardPass,
-} from '../../authentication/components/PermissionGuard.slots';
+import { PermissionGuardPass } from '../../authentication/components/PermissionGuard.slots';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentBlockInfo } from '../types';
 
 interface CollectionProps extends RouteComponentProps {}
-
-// TODO get these from the api once the database is filled up
-export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);

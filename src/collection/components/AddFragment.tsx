@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { orderBy } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
 
 import { Button, Container, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
