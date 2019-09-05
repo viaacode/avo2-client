@@ -18,7 +18,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = props => {
 		return () => {
 			if (player) {
 				player.destroy();
-				player = 0;
+				player = null;
 			}
 		};
 	}, [videoPlayerRef]);
