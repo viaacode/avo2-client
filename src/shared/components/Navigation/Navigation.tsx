@@ -105,7 +105,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 						<ul className="c-nav-mobile">
 							{primaryItems.map(item => (
 								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
-									<Link to={item.location}>{item.label}</Link>
+									<Link to={item.location}>
+										{item.label}
+										{item.icon && <Icon name={item.icon} />}
+									</Link>
 								</li>
 							))}
 						</ul>
