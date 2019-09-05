@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect, Provider } from 'react-redux';
 
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
@@ -38,7 +38,7 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 	};
 
 	return (
-		<Fragment>
+		<div className="o-app">
 			<ToastContainer
 				autoClose={4000}
 				className="c-alert-stack"
@@ -73,7 +73,7 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 			/>
 			{renderRoutes()}
 			<Footer />
-		</Fragment>
+		</div>
 	);
 };
 
