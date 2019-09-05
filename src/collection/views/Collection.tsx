@@ -168,6 +168,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 						content: {
 							title: collectionFragment.custom_title,
 							text: collectionFragment.custom_description,
+							titleLink: `/${RouteParts.Item}/${collectionFragment.external_id}`,
 							videoSource: '',
 							buttonLabel: 'Meer lezen',
 						} as BlockVideoTitleTextButtonProps,
