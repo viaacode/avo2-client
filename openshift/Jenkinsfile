@@ -68,7 +68,7 @@ pipeline {
             steps {
                 script {                   
 		    sh'''#!/bin/bash
-		    echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
+		    echo starting a build 
 		    make -f ./openshift/Makefile build
 		    '''        
                 } // script
@@ -78,58 +78,58 @@ pipeline {
             steps {
 		script {sh'''#!/bin/bash
 			     echo "pushing image version $VERSION"
-                  make -f ./openshift/Makefile push 
+                 make -f ./openshift/Makefile push 
 			     '''
 		}// end script
             }
         }//end stage
-	stage('Tag INT Image AND rollout INT') {
-            steps {
-                script {sh'''#!/bin/bash
-                    echo "tagging int "
-                    make -f ./openshift/Makefile tag_int 
-                    '''
-                }// end script
-                 script {sh'''#!/bin/bash
-                    echo "Waiting deploymentconfig to rollout"
-                    make -f ./openshift/Makefile rollout_int
-                    '''
-                }// end script               
-            }
-        }//end stage	
- 	stage('Run INT Tests') {
-            steps {
-                script {sh'''#!/bin/bash
-                    echo "Running make test"
-                    make -f ./openshift/Makefile int_test
-                    '''
-                }// end script
-            }
-        }//end stage
-  	stage('Rollout Staging') {
-            steps {
-                script {sh'''#!/bin/bash
-                    echo "Running make staging"
-                    make -f ./openshift/Makefile staging 
-                    '''
-                }// end script
-            }
-        }//end stage       	        			    		     
+        stage('Tag INT Image AND rollout INT') {
+                steps {
+                    script {sh'''#!/bin/bash
+                        echo "tagging int "
+                        make -f ./openshift/Makefile tag_int 
+                        '''
+                    }// end script
+                    script {sh'''#!/bin/bash
+                        echo "Waiting deploymentconfig to rollout"
+                        make -f ./openshift/Makefile rollout_int
+                        '''
+                    }// end script               
+                }
+            }//end stage	
+        stage('Run INT Tests') {
+                steps {
+                    script {sh'''#!/bin/bash
+                        echo "Running make test"
+                        make -f ./openshift/Makefile int_test
+                        '''
+                    }// end script
+                }
+            }//end stage
+        stage('Rollout Staging') {
+                steps {
+                    script {sh'''#!/bin/bash
+                        echo "Running make staging"
+                        make -f ./openshift/Makefile staging 
+                        '''
+                    }// end script
+                }
+            }//end stage       	        			    		     
         stage('Deploy production') {
-         steps {
-          input message: "tag image for pod prd?: avo2-client-prd. Approve?", id: "approval"
-             script {
-		     sh '''#!/bin/bash
-		     echo current branch: ${GIT_BRANCH#*/} '''
-		     echo 'I will tag a production image which will roll out !!'
-		     sh '''#!/bin/bash
-		     echo "### Using ${GIT_COMMIT} commit ###"
-		     oc project sc-avo2
-		     oc tag sc-avo2/avo2-client:${VERSION} sc-avo2/avo2-client:prd
-		     '''
-                    } // script
-         } // steps
-     } // stage
+            steps {
+            input message: "tag image for pod prd?: avo2-client-prd. Approve?", id: "approval"
+                script {
+                sh '''#!/bin/bash
+                echo current branch: ${GIT_BRANCH#*/} '''
+                echo 'I will tag a production image which will roll out !!'
+                sh '''#!/bin/bash
+                echo "### Using ${GIT_COMMIT} commit ###"
+                oc project sc-avo2
+                oc tag sc-avo2/avo2-client:${VERSION} sc-avo2/avo2-client:prd
+                '''
+                        } // script
+            } // steps
+        } // stage
 
     } // stages
     post {
@@ -139,6 +139,4 @@ pipeline {
             }
         }
     }
-
-
 } // pipeline
