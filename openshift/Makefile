@@ -46,11 +46,10 @@ versions_qas:
 versions_prd:	
 	sh ./openshift/versions.sh prd	
 int_test:
-	echo *** building for test run *** 
-	npm -ci --production=false 1>/dev/null
-	npm run build 1>/dev/null
-	echo *** running test ***
+	npm ci --production=false 1>/dev/null 
+	npm run build 1>/dev/null 
 	npm run integration-tests
+
 
 anno_qas:	login versions_qas
 anno_prd:	login versions_prd
