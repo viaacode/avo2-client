@@ -27,17 +27,15 @@ login:	check-env
 	#oc login ${openshiftserver}
 	oc project "${OC_PROJECT}" 
 	docker login -p $(TOKEN) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
-	echo current_dir: `pwd`
-	echo oc user `oc whoami`
-	echo ${current_qas_version}
+
 build:	login
-	docker build --build-arg PROXY_URL=http://avo2-proxy-int-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
+	docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
 
 push:	login
 	docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
 tag_int: login
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int 
-rollout_int:
+rollout_int:	login
 	./openshift/wait4rollout.sh int
 tag_staging: login
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:qas 

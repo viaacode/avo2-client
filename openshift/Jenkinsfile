@@ -26,7 +26,7 @@ pipeline {
     }
 
 	environment {
-		VERSION = sh(returnStdout: true, script: "git describe || echo noTagFound").trim()
+		VERSION = sh(returnStdout: true, script: "git describe --tags|| echo noTagFound").trim()
 		shortCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 		BRANCH = sh(returnStdout: true, script: "git branch | grep '*' | cut -d ' ' -f2").trim()
 		//sh(returnStdout: true, script: 'git describe --tags')
@@ -78,7 +78,7 @@ pipeline {
             steps {
 		script {sh'''#!/bin/bash
 			     echo "pushing image version $VERSION"
-                  make -f ./openshift/Makefile  push 
+                  make -f ./openshift/Makefile push 
 			     '''
 		}// end script
             }
@@ -86,11 +86,15 @@ pipeline {
 	stage('Tag INT Image AND rollout INT') {
             steps {
                 script {sh'''#!/bin/bash
-                    echo "tagging int , deploymentconfig will rolout"
+                    echo "tagging int "
                     make -f ./openshift/Makefile tag_int 
-                    ./openshift/wait4rollout.sh int
                     '''
                 }// end script
+                 script {sh'''#!/bin/bash
+                    echo "Waiting deploymentconfig to rollout"
+                    make -f ./openshift/Makefile rollout_int
+                    '''
+                }// end script               
             }
         }//end stage	
  	stage('Run INT Tests') {
