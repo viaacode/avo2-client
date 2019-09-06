@@ -14,7 +14,7 @@ SHELL = /bin/bash
 .PHONY:	all
 check-env:
 ifndef ENV
-  ENV=qas
+  ENV=int
 endif
 OC_PROJECT=sc-avo2
 ifndef BRANCH
@@ -26,24 +26,24 @@ current_qas_version=`oc rollout status deploymentconfig avo2-client-qas| awk '{p
 login:	check-env
 	#oc login ${openshiftserver}
 	oc project "${OC_PROJECT}" 
-	docker login -p $(TOKEN) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
+	docker login -p $(TOKEN) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be 2>/dev/null
 
 build:	login
 	docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
 
 push:	login
 	docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
-tag_int: login
+tag_int: 
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int 
 rollout_int:	login
 	./openshift/wait4rollout.sh int
-tag_staging: login
+tag_staging:	login
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:qas 
-versions_int:
+versions_int:	
 	sh ./openshift/versions.sh int
-versions_qas:
+versions_qas:	
 	sh ./openshift/versions.sh qas
-versions_prd:
+versions_prd:	
 	sh ./openshift/versions.sh prd	
 int_test:
 	npm --no-progress --no-color --no-spin ci --production=false && npm --no-color --no-progress --no-spin run build &&  \
