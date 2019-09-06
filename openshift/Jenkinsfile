@@ -97,7 +97,7 @@ pipeline {
             steps {
                 script {sh'''#!/bin/bash
                     echo "Running make test"
-                    make -f ./openshift/Makefile test_int
+                    make -f ./openshift/Makefile int_test
                     '''
                 }// end script
             }

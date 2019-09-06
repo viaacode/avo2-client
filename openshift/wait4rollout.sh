@@ -5,13 +5,16 @@ set +x
 declare -i cur_ver
 declare -i new_ver
 cur_ver=`oc rollout status deploymentconfig avo2-client-$1| awk '{print $3}'| sed 's/"//g'|rev|cut -d'-' -f1 |rev`
-#new_ver=`(( $cur_ver + 1 ))`
-new_ver=$cur_ver+1
-echo "xxxxxxxxx ${new_ver}"
+new_ver="$((cur_ver + 1))"
+echo "${1} version to compare ${cur_ver}, new version ${new_ver}"
 
-while [ $cur_ver -ne $new_ver ]; do
-   #echo wait
-   sleep 2
-   if  [ $cur_ver -eq $new_ver ] || exit 0;then echo;fi
-   cur_ver=$(oc rollout status deploymentconfig avo2-client-$1| awk '{print $3}'| sed 's/"//g'|rev|cut -d'-' -f1 |rev) 1>/dev/null
+
+while true ; do
+   sleep 10
+   [ -n "$cur_ver" ] && [ "${cur_ver}" -eq "${new_ver}" ]  2>/dev/null
+   if [ $? -ne 0 ]; then
+    echo version is not changed
+    cur_ver=`oc rollout status deploymentconfig avo2-client-$1 |tail -n1 | awk '{print $3}'| sed 's/"//g'|rev|cut -d'-' -f1 |rev` 2>/dev/null
+    else echo "$1" ROLLED OUT && exit 0
+   fi
 done

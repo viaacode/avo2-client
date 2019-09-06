@@ -38,7 +38,7 @@ push:	login
 tag_int: login
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int 
 rollout_int:
-	.openshift/wait4rollout.sh int
+	./openshift/wait4rollout.sh int
 tag_staging: login
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:qas 
 versions_int:
@@ -51,9 +51,10 @@ int_test:
 	npm run integration-tests
 current_qas_version:
 	oc 
-test_int:	login int_test push versions_int
 anno_qas:	login versions_qas
 anno_prd:	login versions_prd
 staging:	tag_staging
+    sh ./openshift/wait4rollout.sh qas
+
 
 	
