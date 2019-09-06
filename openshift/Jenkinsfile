@@ -21,7 +21,7 @@ pipeline {
       }
     }
     options {
-        // set a timeout of 8h for this pipeline
+        // set a timeout of 480m for this pipeline
         timeout(time: 480, unit: 'MINUTES')
     }
 
@@ -39,10 +39,10 @@ pipeline {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
                             echo "We 're about to build the docker image and tag dev and qas images for the avo2-client This is a plain docker build"
-			    echo "Running login script for the external docker agent"
-			    sh '''#!/bin/bash
-			    /usr/local/bin/agent-login.sh
-			    '''
+			                echo "Running login script for the external docker agent"
+			                sh '''#!/bin/bash
+			                 /usr/local/bin/agent-login.sh
+			                '''
                         }
                     }
                 }//end script
@@ -53,12 +53,12 @@ pipeline {
                 script {echo shortCommit
 			echo VERSION
                         sh'''#!/bin/bash
-			  echo commitRef:  ${shortCommit}
+			              echo commitRef:  ${shortCommit}
                           echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
                           oc project sc-avo2
                           oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
-                          oc process -l app=avo2-client -p ENV=dev PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
-                          oc process -l app=avo2-client -p ENV=qas PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                          oc process -l app=avo2-client -p ENV=int PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                          #oc process -l app=avo2-client -p ENV=qas PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                           '''
                 } // script
             } // step
@@ -69,9 +69,7 @@ pipeline {
                 script {                   
 		    sh'''#!/bin/bash
 		    echo starting a build, due miltistage build we need a build / env , this is far from sane, one can not promote images with this
-		    oc project sc-avo2
-		    docker login -p $(oc whoami -t) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be
-		    docker build --build-arg PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:$VERSION
+		    make -f ./openshift/Makefile build
 		    '''        
                 } // script
             } // steps
@@ -80,22 +78,39 @@ pipeline {
             steps {
 		script {sh'''#!/bin/bash
 			     echo "pushing image version $VERSION"
-			     docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:$VERSION
+                  make -f ./openshift/Makefile  push 
 			     '''
 		}// end script
             }
         }//end stage
-	stage('TAG Image') {
+	stage('TAG INT Image') {
             steps {
-		script {sh'''#!/bin/bash
-			echo "tagging dev, qas"
-			oc project sc-avo2
-		        oc tag sc-avo2/avo2-client:$VERSION sc-avo2/avo2-client:dev 
-			oc tag sc-avo2/avo2-client:$VERSION sc-avo2/avo2-client:qas
-			'''
-		}// end script
+                script {sh'''#!/bin/bash
+                    echo "tagging int , deploymentconfig will rolout"
+                    make -f ./openshift/Makefile tag_int 
+                    ./openshift/wait4rollout int
+                    '''
+                }// end script
             }
-        }//end stage	 			    		     
+        }//end stage	
+ 	stage('Run INT Tests') {
+            steps {
+                script {sh'''#!/bin/bash
+                    echo "Running make test"
+                    make -f ./openshift/Makefile test_int
+                    '''
+                }// end script
+            }
+        }//end stage
+  	stage('Rollout Staging') {
+            steps {
+                script {sh'''#!/bin/bash
+                    echo "Running make staging"
+                    make -f ./openshift/Makefile staging 
+                    '''
+                }// end script
+            }
+        }//end stage       	        			    		     
         stage('Deploy production') {
          steps {
           input message: "tag image for pod prd?: avo2-client-prd. Approve?", id: "approval"
