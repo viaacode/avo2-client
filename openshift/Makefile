@@ -49,12 +49,11 @@ versions_prd:
 	sh ./openshift/versions.sh prd	
 int_test:
 	npm run integration-tests
-current_qas_version:
-	oc 
+
 anno_qas:	login versions_qas
 anno_prd:	login versions_prd
 staging:	tag_staging
-    sh ./openshift/wait4rollout.sh qas
+	sh ./openshift/wait4rollout.sh qas
 
 
 	
