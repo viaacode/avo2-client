@@ -46,8 +46,11 @@ versions_qas:
 versions_prd:	
 	sh ./openshift/versions.sh prd	
 int_test:
-	npm --no-progress --no-color --no-spin ci --production=false && npm --no-color --no-progress --no-spin run build &&  \
-	npm --no-color --no-progress --no-spin run integration-tests
+	echo *** building for test run *** 
+	npm -ci --production=false 1>/dev/null
+	npm run build 1>/dev/null
+	echo *** running test ***
+	npm run integration-tests
 
 anno_qas:	login versions_qas
 anno_prd:	login versions_prd
