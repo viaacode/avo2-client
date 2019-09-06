@@ -83,12 +83,12 @@ pipeline {
 		}// end script
             }
         }//end stage
-	stage('TAG INT Image') {
+	stage('Tag INT Image AND rollout INT') {
             steps {
                 script {sh'''#!/bin/bash
                     echo "tagging int , deploymentconfig will rolout"
                     make -f ./openshift/Makefile tag_int 
-                    ./openshift/wait4rollout int
+                    ./openshift/wait4rollout.sh int
                     '''
                 }// end script
             }
