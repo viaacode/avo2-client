@@ -1,6 +1,7 @@
 #!/bin/bash
 docker run -i \
   -v $PWD:/e2e \
+  -e NO_COLOR=1\
   -w /e2e \
   --entrypoint cypress \
   cypress/included:3.4.0 run --project . \

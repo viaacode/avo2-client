@@ -135,6 +135,9 @@ pipeline {
     post {
         always {
             junit 'results/cypress-report.xml'
+            archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
+            archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
+
             script {
                slackNotifier(currentBuild.currentResult)
             }
