@@ -11,7 +11,7 @@ echo "${1} version to compare ${cur_ver}, new version ${new_ver}"
 
 
 while true ; do
-   sleep 10
+   sleep 3
    [ -n "$cur_ver" ] && [ "${cur_ver}" -eq "${new_ver}" ]  2>/dev/null
    if [ $? -ne 0 ]; then
     echo version is not changed
