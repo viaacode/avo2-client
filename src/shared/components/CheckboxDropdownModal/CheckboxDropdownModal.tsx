@@ -20,6 +20,9 @@ import {
 	Spacer,
 	TagList,
 	TextInput,
+	Toolbar,
+	ToolbarItem,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { clone, compact, fromPairs } from 'lodash-es';
 import './CheckboxDropdownModal.scss';
@@ -208,20 +211,22 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 							</Form>
 						</div>
 					</ModalBody>
-					<ModalFooterLeft>
-						<FormGroup>
-							<Button
-								label="Annuleren"
-								type="secondary"
-								block={true}
-								onClick={closeDropdownOrModal}
-							/>
-						</FormGroup>
-					</ModalFooterLeft>
 					<ModalFooterRight>
-						<FormGroup>
-							<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
-						</FormGroup>
+						<Toolbar spaced>
+							<ToolbarRight>
+								<ToolbarItem>
+									<div className="c-button-toolbar">
+										<Button
+											label="Annuleren"
+											type="secondary"
+											block={true}
+											onClick={closeDropdownOrModal}
+										/>
+										<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
+									</div>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
 					</ModalFooterRight>
 				</Modal>
 			</Fragment>
