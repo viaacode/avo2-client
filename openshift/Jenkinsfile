@@ -76,11 +76,11 @@ pipeline {
         } // stage
         stage('Push Image') {
             steps {
-		script {sh'''#!/bin/bash
-			     echo "pushing image version $VERSION"
-                 make -f ./openshift/Makefile push 
-			     '''
-		}// end script
+                script {sh'''#!/bin/bash
+                        echo "pushing image version $VERSION"
+                        make -f ./openshift/Makefile push 
+                        '''
+		        }// end script
             }
         }//end stage
         stage('Tag INT Image AND rollout INT') {
@@ -93,15 +93,32 @@ pipeline {
                     script {sh'''#!/bin/bash
                         echo "Waiting deploymentconfig to rollout"
                         make -f ./openshift/Makefile rollout_int
+                        #oc rollout latest avo2-client-int
                         '''
                     }// end script               
                 }
             }//end stage	
+        stage('Run UNIT Tests') {
+                steps {
+                    script {sh'''#!/bin/bash
+                        echo "Running make unit_test"
+                        
+                        make -f ./openshift/Makefile unit_test
+                        '''
+                    }// end script
+                }
+            }//end stage            
         stage('Run INT Tests') {
                 steps {
                     script {sh'''#!/bin/bash
                         echo "Running make int_test"
+                        
                         make -f ./openshift/Makefile int_test
+                        '''
+                        sh'''#!/bin/bash
+                        echo "Annotate int "
+                        
+                        make -f ./openshift/Makefile versions_int 
                         '''
                     }// end script
                 }

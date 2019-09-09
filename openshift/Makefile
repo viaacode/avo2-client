@@ -50,7 +50,7 @@ versions_prd:
 int_test: login
 	sh ./openshift/cy-openshift.sh
 unit_test:
-	docker run -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION} ${CMD_UNIT_TEST}
+	sh ./openshift/unittest-openshift.sh
 
 
 

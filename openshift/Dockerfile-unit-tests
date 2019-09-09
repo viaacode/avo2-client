@@ -1,7 +1,0 @@
-FROM cypress/base:10
-COPY . .
-RUN npm install --save-dev cypress
-ENV CLIENT_BASE_URL /
-#RUN $(npm bin)/cypress run
-RUN npm run unit-tests
-#RUN npm run unit-tests
