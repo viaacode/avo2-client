@@ -152,7 +152,7 @@ pipeline {
     post {
         always {
 
-            dir('./ci-results/')
+            dir('ci-results/')
             {
                 junit '**/cypress-report-*.xml'
             }
