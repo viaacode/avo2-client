@@ -1,3 +1,6 @@
+import { debounce } from 'lodash-es';
+import marked from 'marked';
+import queryString from 'query-string';
 import React, {
 	createRef,
 	Fragment,
@@ -7,12 +10,10 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
-
-import { debounce } from 'lodash-es';
-import marked from 'marked';
-import queryString from 'query-string';
 import { Scrollbar } from 'react-scrollbars-custom';
+import { Dispatch } from 'redux';
 
 import {
 	Button,
@@ -36,6 +37,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
@@ -46,14 +48,34 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import './Item.scss';
+import { getPlayerTokenState } from '../../shared/store/actions';
+import {
+	selectPlayerToken,
+	selectPlayerTokenError,
+	selectPlayerTokenLoading,
+} from '../../shared/store/selectors';
+import { PlayerTokenResponse } from '../../shared/store/types';
+import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
-import { GET_ITEM_BY_ID } from '../item.gql';
+import './Item.scss';
 
-interface ItemProps extends RouteComponentProps {}
+interface ItemProps extends RouteComponentProps {
+	playerTokenState: PlayerTokenResponse | null;
+	playerTokenStateLoading: boolean;
+	playerTokenStateError: boolean;
+	getPlayerTokenState: (externalId: string) => Dispatch;
+}
 
-const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
+const Item: FunctionComponent<ItemProps> = ({
+	history,
+	location,
+	match,
+	playerTokenState,
+	playerTokenStateLoading,
+	playerTokenStateError,
+	getPlayerTokenState,
+}) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState((match.params as any)['id'] as string);
@@ -154,6 +176,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
 	const renderItem = (item: Avo.Item.Response) => {
+		if (!playerTokenState && !playerTokenStateLoading) {
+			getPlayerTokenState(item.external_id);
+		}
+
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background="alt">
@@ -211,9 +237,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
 										<div className="c-video-player t-player-skin--dark">
-											{item.thumbnail_path && (
+											{playerTokenState && item.thumbnail_path && (
 												<FlowPlayer
-													src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
+													src={playerTokenState.toString()}
 													poster={item.thumbnail_path}
 												/>
 											)}
@@ -494,4 +520,21 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	);
 };
 
-export default withRouter(Item);
+const mapStateToProps = (state: any) => ({
+	playerTokenState: selectPlayerToken(state),
+	playerTokenStateLoading: selectPlayerTokenLoading(state),
+	playerTokenStateError: selectPlayerTokenError(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getPlayerTokenState: (externalId: string) => dispatch(getPlayerTokenState(externalId) as any),
+	};
+};
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Item)
+);

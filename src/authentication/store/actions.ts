@@ -10,7 +10,7 @@ import {
 	SetLoginSuccessAction,
 } from './types';
 
-const getLoginState = () => {
+export const getLoginState = () => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
 		const { loginMessage } = getState();
 
@@ -41,21 +41,19 @@ const getLoginState = () => {
 	};
 };
 
-const setLoginSuccess = (data: LoginResponse): SetLoginSuccessAction => ({
+export const setLoginSuccess = (data: LoginResponse): SetLoginSuccessAction => ({
 	data,
 	type: LoginActionTypes.SET_LOGIN_SUCCESS,
 });
 
-const setLoginError = (): SetLoginErrorAction => ({
+export const setLoginError = (): SetLoginErrorAction => ({
 	type: LoginActionTypes.SET_LOGIN_ERROR,
 	error: true,
 });
 
-const setLoginLoading = (): SetLoginLoadingAction => {
+export const setLoginLoading = (): SetLoginLoadingAction => {
 	return {
 		type: LoginActionTypes.SET_LOGIN_LOADING,
 		loading: true,
 	};
 };
-
-export { setLoginSuccess, setLoginError, setLoginLoading, getLoginState };

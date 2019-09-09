@@ -7,10 +7,12 @@ This repository contains the React AVO Client app front-end for the end user.
 ## Technical
 
 |Role              | Handle / username|
-| -------------    |--------------| 
-|Principal/Owner   | Bart Debunne <bart.debunne@viaa.be>  | 
+| -------------    |--------------|
+|Principal/Owner   | Bart Debunne <bart.debunne@viaa.be>  |
 |Lead Developer    | Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be> |
 |Lead Developer    | Bert Verhelst <bert.verhelst@studiohyperdrive.be> |
+|Developer         | Benjamin Naesen <benjamin.naesen@studiohyperdrive.be> |
+|Developer         | Andry Charlier <andry.charlier@studiohyperdrive.be> |
 
 **Code Review:**
 
