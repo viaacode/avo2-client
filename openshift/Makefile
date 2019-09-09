@@ -38,7 +38,7 @@ push:	login
 tag_int: 
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int 
 rollout_int:	login
-	sh -c "./openshift/wait4rollout.sh int"
+	sh ./openshift/wait4rollout.sh int
 tag_staging:	login
 	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:qas 
 versions_int:	
