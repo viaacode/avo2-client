@@ -134,6 +134,7 @@ pipeline {
     } // stages
     post {
         always {
+            junit 'results/cypress-report.xml'
             script {
                slackNotifier(currentBuild.currentResult)
             }

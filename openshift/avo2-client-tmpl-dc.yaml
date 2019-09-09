@@ -97,8 +97,7 @@ objects:
   kind: Service
   metadata:
     annotations:
-      nodeshift/git-branch: master
-      nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
+
     creationTimestamp: null
     labels:
       app: avo2-client

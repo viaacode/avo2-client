@@ -22,6 +22,8 @@ ifndef BRANCH
 endif
 TAG=${ENV}
 current_qas_version=`oc rollout status deploymentconfig avo2-client-qas| awk '{print $3}'| sed 's/"//g'`
+CMD_INT_TEST="npm run integration-tests"
+CMD_UNIT_TEST="npm run integration-tests"
 
 login:	check-env
 	#oc login ${openshiftserver}
@@ -46,9 +48,10 @@ versions_qas:
 versions_prd:	
 	sh ./openshift/versions.sh prd	
 int_test:
-	npm ci --production=false 1>/dev/null 
-	npm run build 1>/dev/null 
-	npm run integration-tests
+	docker run -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION} ${CMD_INT_TEST}
+unit_test:
+	docker run -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION} ${CMD_UNIT_TEST}
+
 
 
 anno_qas:	login versions_qas
