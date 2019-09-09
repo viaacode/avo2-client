@@ -101,8 +101,7 @@ pipeline {
         stage('Run UNIT Tests') {
                 steps {
                     script {sh'''#!/bin/bash
-                        echo "Running make unit_test"
-                        
+                        echo "Running make unit_test"                        
                         make -f ./openshift/Makefile unit_test
                         '''
                     }// end script
@@ -111,13 +110,9 @@ pipeline {
         stage('Run INT Tests') {
                 steps {
                     script {sh'''#!/bin/bash
-                        echo "Running make int_test"
-                        
+                        echo "Running make int_test"                      
                         make -f ./openshift/Makefile int_test
-                        '''
-                        sh'''#!/bin/bash
-                        echo "Annotate int "
-                        
+                        echo "Annotate int "    
                         make -f ./openshift/Makefile versions_int 
                         '''
                     }// end script
@@ -151,15 +146,10 @@ pipeline {
     } // stages
     post {
         always {
-
-        //    dir('ci-results/')
-        //    {
-        //        junit '**/cypress-report.xml'
-        //    }
-
-          
+            junit '**/cypress-report.xml'
             archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
             archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
+            archiveArtifacts artifacts: 'ci-reports/*.xml', fingerprint: true
 
             script {
                slackNotifier(currentBuild.currentResult)
