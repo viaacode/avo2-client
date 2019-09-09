@@ -146,11 +146,11 @@ pipeline {
     } // stages
     post {
         always {
-            archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
-            archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
-            //archiveArtifacts artifacts: 'ci-reports/**/*.xml', fingerprint: true
+            
 
             script {
+                archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
+            archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
                slackNotifier(currentBuild.currentResult)
             }
         }
