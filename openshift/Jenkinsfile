@@ -100,7 +100,7 @@ pipeline {
         stage('Run INT Tests') {
                 steps {
                     script {sh'''#!/bin/bash
-                        echo "Running make test"
+                        echo "Running make int_test"
                         make -f ./openshift/Makefile int_test
                         '''
                     }// end script
