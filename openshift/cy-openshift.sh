@@ -1,5 +1,5 @@
 #!/bin/bash
-docker run -it \
+docker run -i \
   -v $PWD:/e2e \
   -w /e2e \
   --entrypoint cypress \
