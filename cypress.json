@@ -1,7 +1,7 @@
 {
   "reporter": "junit",
   "reporterOptions": {
-    "mochaFile": "results/cypress-report-[hash].xml",
+    "mochaFile": "ci-results/cypress-report-[hash].xml",
     "toConsole": true
   },
  "chromeWebSecurity": false

@@ -253,4 +253,4 @@ yarn-error.log*
 env-config.js
 cypress/videos
 cypress/screenshots
-results/*
+cypress-report*xml
