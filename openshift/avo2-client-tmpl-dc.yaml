@@ -76,16 +76,7 @@ objects:
     test: false
     triggers:
     - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - avo2-client-${ENV}
-        from:
-          kind: ImageStreamTag
-          name: avo2-client:${ENV}
-          namespace: sc-avo2
-        lastTriggeredImage: docker-registry.default.svc:5000/sc-avo2/avo2-client@sha256:aeaa45767dc73f4d8c4d802b57252d799e737b4e54bbd68119f9ef689ea491dc
-      type: ImageChange
+
   status:
     availableReplicas: 0
     latestVersion: 0
