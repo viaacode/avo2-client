@@ -46,6 +46,7 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { DeleteCollectionModal } from '../components';
@@ -168,7 +169,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 						content: {
 							title: collectionFragment.custom_title,
 							text: collectionFragment.custom_description,
-							titleLink: `/${RouteParts.Item}/${collectionFragment.external_id}`,
+							titleLink: generateContentLinkString('video', collectionFragment.external_id),
 							videoSource: '',
 							buttonLabel: 'Meer lezen',
 						} as BlockVideoTitleTextButtonProps,
@@ -244,7 +245,12 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 											autoSize
 										>
 											<DropdownButton>
-												<Button type="secondary" icon="more-horizontal" />
+												<Button
+													type="secondary"
+													icon="more-horizontal"
+													ariaLabel="Meer opties"
+													title="Meer opties"
+												/>
 											</DropdownButton>
 											<DropdownContent>
 												<MenuContent
@@ -259,7 +265,10 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 														switch (itemId) {
 															case 'edit':
 																history.push(
-																	`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+																	`${generateContentLinkString(
+																		'collection',
+																		collection.id.toString()
+																	)}/${RouteParts.Edit}`
 																);
 																break;
 															case 'delete':
