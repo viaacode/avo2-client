@@ -88,6 +88,9 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		event.returnValue = '';
 	};
 
+	// Destroy event listener on unmount
+	useEffect(() => window.removeEventListener('beforeunload', onUnload));
+
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
 		setCurrentTab(String(selectedTab));
