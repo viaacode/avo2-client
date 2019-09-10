@@ -23,32 +23,12 @@ import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-// Owner will be enforced by permissions inside the graphql server
-// TODO reduce number of properties to only the ones we use
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { DeleteCollectionModal } from '../components';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
 }
-
-const dummyAvatars = [
-	{
-		initials: 'ES',
-		name: 'Ethan Sanders',
-		subtitle: 'Mag Bewerken',
-	},
-	{
-		initials: 'JC',
-		name: 'Jerry Cooper',
-		subtitle: 'Mag Bewerken',
-	},
-	{
-		initials: 'JD',
-		name: 'John Doe',
-		subtitle: 'Mag Bewerken',
-	},
-];
 
 const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections, history }) => {
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
@@ -174,6 +154,18 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	const renderCollections = (collections: Avo.Collection.Response[]) => {
 		const mappedCollections = !!collections
 			? collections.map(collection => {
+					const users = [collection.owner];
+
+					const avatars = users.map(user => {
+						const { first_name, last_name } = user;
+
+						return {
+							initials: `${first_name.charAt(0)}${last_name.charAt(0)}`,
+							name: `${first_name} ${last_name}`,
+							subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
+						};
+					});
+
 					return {
 						createdAt: collection.created_at,
 						id: collection.id,
@@ -181,7 +173,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 						title: collection.title,
 						updatedAt: collection.updated_at,
 						inFolder: true,
-						access: dummyAvatars,
+						access: avatars,
 						actions: true,
 					};
 			  })

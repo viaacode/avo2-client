@@ -37,6 +37,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
 	generateSearchLink,
@@ -48,7 +49,6 @@ import { parseDuration } from '../../shared/helpers/parsers/duration';
 import './Item.scss';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
-import NotFound from '../../404/views/NotFound';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
 interface ItemProps extends RouteComponentProps {}
@@ -211,16 +211,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
 										<div className="c-video-player t-player-skin--dark">
-											{/*{item.thumbnail_path && <Image src={item.thumbnail_path} />}*/}
 											{item.thumbnail_path && (
-												// TODO replace with flow player
-												<video
+												<FlowPlayer
 													src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
-													placeholder={item.thumbnail_path}
-													style={{ width: '100%', display: 'block' }}
-													controls={true}
-													ref={videoRef}
-													onLoadedMetadata={getSeekerTimeFromQueryParams}
+													poster={item.thumbnail_path}
 												/>
 											)}
 										</div>

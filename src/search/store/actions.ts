@@ -1,7 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 import { Action, Dispatch } from 'redux';
 
-import { CustomWindow } from '../../shared/types/CustomWindow';
 import {
 	SearchActionTypes,
 	SetSearchResultsErrorAction,
@@ -21,7 +20,7 @@ const getSearchResults = (
 		dispatch(setSearchResultsLoading());
 
 		try {
-			const response = await fetch(`${(window as CustomWindow)._ENV_.PROXY_URL}/search`, {
+			const response = await fetch(`${window._ENV_.PROXY_URL}/search`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
