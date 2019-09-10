@@ -16,6 +16,10 @@ check-env:
 ifndef ENV
   ENV=int
 endif
+check-prxyurl:
+ifndef PROXY_URL
+  PROXY_URL=http://avo2-proxy-${ENV}-sc-avo2.apps.do-prd-okp-m0.do.viaa.be
+endif
 OC_PROJECT=sc-avo2
 ifndef BRANCH
   BRANCH=master
@@ -47,7 +51,7 @@ versions_qas:
 	sh ./openshift/versions.sh qas
 versions_prd:	
 	sh ./openshift/versions.sh prd	
-int_test: login
+int_test: 
 	sh ./openshift/cy-openshift.sh
 unit_test:
 	sh ./openshift/unittest-openshift.sh
