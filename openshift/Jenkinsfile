@@ -34,6 +34,7 @@ pipeline {
     stages {
         stage('preamble') {
             steps {
+                
                 script {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
@@ -147,7 +148,7 @@ pipeline {
     post {
         always {
            // junit '**/cypress-report.*xml'
-
+            cleanWs()
             archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
             archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
             archiveArtifacts artifacts: 'ci-reports/*.xml', fingerprint: true
