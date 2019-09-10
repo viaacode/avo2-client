@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/react-hooks';
 import { get, orderBy } from 'lodash-es';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -28,7 +29,10 @@ import {
 	BlockVideoTitleTextButtonProps,
 	Button,
 	Container,
+	DropdownButton,
+	DropdownContent,
 	Icon,
+	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
@@ -39,18 +43,38 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import PermissionGuard from '../../authentication/components/PermissionGuard';
-import { PermissionGuardPass } from '../../authentication/components/PermissionGuard.slots';
 import { RouteParts } from '../../constants';
+import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { GET_COLLECTION_BY_ID } from '../graphql';
+import { DeleteCollectionModal } from '../components';
+import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentBlockInfo } from '../types';
 
 interface CollectionProps extends RouteComponentProps {}
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
+	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+
+	const openDeleteModal = (collectionId: number) => {
+		setIdToDelete(collectionId);
+		setIsDeleteModalOpen(true);
+	};
+
+	const deleteCollection = () => {
+		triggerCollectionDelete({
+			variables: {
+				id: idToDelete,
+			},
+		});
+
+		setIdToDelete(null);
+	};
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
 		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
@@ -115,7 +139,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					content: {
 						title: collectionFragment.custom_title,
 						text: collectionFragment.custom_description,
-						titleLink: `/${RouteParts.Item}/${collectionFragment.external_id}`,
+						titleLink: generateContentLinkString('video', collectionFragment.external_id),
 						videoSource: '',
 						buttonLabel: 'Meer lezen',
 					} as BlockVideoTitleTextButtonProps,
@@ -161,10 +185,11 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 												<Avatar
 													image={get(collection, 'owner.profile.avatar')}
 													name={ownerNameAndRole || ' '}
-													initials={
-														get(collection, 'owner.first_name[0]', '') +
-														get(collection, 'owner.last_name[0]', '')
-													}
+													initials={`${get(collection, 'owner.first_name[0]', '')}${get(
+														collection,
+														'owner.last_name[0]',
+														''
+													)}`}
 												/>
 											)}
 										</div>
@@ -174,29 +199,57 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 							<ToolbarRight>
 								<ToolbarItem>
 									<div className="c-button-toolbar">
-										{/* TODO add aria label once merged in components repo */}
-										<Button type="secondary" icon="bookmark" />
-										<Button type="secondary" icon="share-2" />
-										<Button type="secondary" icon="file-plus" />
-										<Button type="secondary" label="Alle items afspelen" />
-										<PermissionGuard
-											permissions={[
-												// { permissionName: 'canEditOwnCollections', obj: collection },
-												{ permissionName: 'canEditAllCollections' },
-											]}
+										<Button
+											title="Bladwijzer"
+											type="secondary"
+											icon="bookmark"
+											ariaLabel="Bladwijzer"
+										/>
+										<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
+										<ControlledDropdown
+											isOpen={isOptionsMenuOpen}
+											onOpen={() => setIsOptionsMenuOpen(true)}
+											onClose={() => setIsOptionsMenuOpen(false)}
+											placement="bottom-end"
+											autoSize
 										>
-											<PermissionGuardPass>
+											<DropdownButton>
 												<Button
 													type="secondary"
-													icon="edit"
-													onClick={() =>
-														history.push(
-															`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
-														)
-													}
+													icon="more-horizontal"
+													ariaLabel="Meer opties"
+													title="Meer opties"
 												/>
-											</PermissionGuardPass>
-										</PermissionGuard>
+											</DropdownButton>
+											<DropdownContent>
+												<MenuContent
+													menuItems={[
+														{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
+														{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
+														{ icon: 'clipboard', id: 'createExercise', label: 'Maak opdracht' },
+														{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+														{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
+													]}
+													onClick={itemId => {
+														switch (itemId) {
+															case 'edit':
+																history.push(
+																	`${generateContentLinkString(
+																		'collection',
+																		collection.id.toString()
+																	)}/${RouteParts.Edit}`
+																);
+																break;
+															case 'delete':
+																openDeleteModal(collection.id);
+																break;
+															default:
+																return null;
+														}
+													}}
+												/>
+											</DropdownContent>
+										</ControlledDropdown>
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>
@@ -206,6 +259,11 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 				<Container mode="vertical">
 					<Container mode="horizontal">{renderContentBlocks(contentBlockInfos)}</Container>
 				</Container>
+				<DeleteCollectionModal
+					isOpen={isDeleteModalOpen}
+					setIsOpen={setIsDeleteModalOpen}
+					deleteCollection={deleteCollection}
+				/>
 			</Fragment>
 		);
 	};

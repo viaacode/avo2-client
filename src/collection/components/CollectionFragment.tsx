@@ -3,6 +3,8 @@ import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import marked from 'marked';
+
 import {
 	Button,
 	Column,
@@ -73,8 +75,10 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	};
 
 	const renderForm = (fragment: any, itemMeta: any, index: number) => {
+		const isVideoBlock = !useCustomFields && itemMeta;
+
 		const onChangeTitle = (value: string) => {
-			if (itemMeta && !useCustomFields) {
+			if (isVideoBlock) {
 				return null;
 			}
 
@@ -82,7 +86,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		};
 
 		const onChangeDescription = (e: any) => {
-			if (itemMeta && !useCustomFields) {
+			if (isVideoBlock) {
 				return null;
 			}
 
@@ -95,19 +99,19 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			useCustomFields: Boolean,
 			prop: 'title' | 'description'
 		) => {
-			if (useCustomFields) {
-				return get(fragment, `custom_${prop}`) || get(itemMeta, prop, '');
+			if (useCustomFields || !itemMeta) {
+				return get(fragment, `custom_${prop}`) || '';
 			}
 			return get(itemMeta, prop, '');
 		};
 
 		return (
 			<Form>
-				<FormGroup label="Alternatieve Tekst" labelFor="customFields">
-					{itemMeta && (
+				{itemMeta && (
+					<FormGroup label="Alternatieve Tekst" labelFor="customFields">
 						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
-					)}
-				</FormGroup>
+					</FormGroup>
+				)}
 				<FormGroup label={`Tekstblok titel`} labelFor="title">
 					<TextInput
 						id="title"
@@ -115,15 +119,15 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						value={getFragmentProperty(itemMeta, fragment, useCustomFields, 'title')}
 						placeholder="Titel"
 						onChange={onChangeTitle}
-						disabled={!useCustomFields}
+						disabled={isVideoBlock}
 					/>
 				</FormGroup>
 				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
 					<WYSIWYG
 						id={`beschrijving_${index}`}
-						data={getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')}
+						data={marked(getFragmentProperty(itemMeta, fragment, useCustomFields, 'description'))}
 						onChange={onChangeDescription}
-						disabled={!useCustomFields}
+						disabled={!!isVideoBlock}
 					/>
 				</FormGroup>
 			</Form>
@@ -189,6 +193,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 									<div className="c-button-toolbar">
 										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
 										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
+										{itemMeta && <Button icon="scissors" label="Knippen" type="secondary" />}
 									</div>
 								</ToolbarItem>
 							</ToolbarLeft>
