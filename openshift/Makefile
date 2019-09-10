@@ -35,7 +35,7 @@ login:	check-env
 	docker login -p $(TOKEN) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be 2>/dev/null
 
 build:	login
-	docker build . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
+	docker  build --build-arg NODE_ENV=int . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
 
 push:	login
 	docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}

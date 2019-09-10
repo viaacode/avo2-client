@@ -12,7 +12,7 @@ sleep 4
 oc rollout latest dc/avo2-client-${1} 
 
 while true ; do
-   if [[ $cur_ver -eq 0 ]];then
+   if [ $cur_ver -eq 0 ];then
    sleep 4 
    cur_ver=`oc rollout status deploymentconfig avo2-client-${1}| awk '{print $3}'| sed 's/"//g'|rev|cut -d'-' -f1 |rev` 
    fi
