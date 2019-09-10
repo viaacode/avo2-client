@@ -233,13 +233,19 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											</div>
 											<div className="c-button-toolbar">
 												<ToggleButton
+													title="Voeg toe als bladwijzer"
 													type="tertiary"
 													icon="bookmark"
 													active={false}
-													ariaLabel="toggle bladwijzer"
+													ariaLabel="Voeg toe als bladwijzer"
 												/>
-												<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-												<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+												<Button title="Deel" type="tertiary" icon="share-2" ariaLabel="Deel" />
+												<Button
+													title="Rapporteer"
+													type="tertiary"
+													icon="flag"
+													ariaLabel="Rapporteer"
+												/>
 											</div>
 										</div>
 									</Spacer>
