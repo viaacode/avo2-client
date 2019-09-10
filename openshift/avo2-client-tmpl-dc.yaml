@@ -48,7 +48,7 @@ objects:
           component: frontend
       spec:
         containers:
-        - image: docker-registry.default.svc:5000/sc-avo2/avo2-client@sha256:aeaa45767dc73f4d8c4d802b57252d799e737b4e54bbd68119f9ef689ea491dc
+        - image: ' '
           imagePullPolicy: Always
           name: avo2-client-${ENV}
           env:
@@ -76,16 +76,7 @@ objects:
     test: false
     triggers:
     - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - avo2-client-${ENV}
-        from:
-          kind: ImageStreamTag
-          name: avo2-client:${ENV}
-          namespace: sc-avo2
-        lastTriggeredImage: docker-registry.default.svc:5000/sc-avo2/avo2-client@sha256:aeaa45767dc73f4d8c4d802b57252d799e737b4e54bbd68119f9ef689ea491dc
-      type: ImageChange
+
   status:
     availableReplicas: 0
     latestVersion: 0
@@ -97,8 +88,7 @@ objects:
   kind: Service
   metadata:
     annotations:
-      nodeshift/git-branch: master
-      nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
+
     creationTimestamp: null
     labels:
       app: avo2-client
