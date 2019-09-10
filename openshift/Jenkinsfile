@@ -146,7 +146,7 @@ pipeline {
     } // stages
     post {
         always {
-            junit '**/cypress-report.*xml'
+           // junit '**/cypress-report.*xml'
 
             archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
             archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
