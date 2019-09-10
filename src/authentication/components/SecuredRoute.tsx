@@ -1,8 +1,7 @@
 import React, { ComponentType, FunctionComponent } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
+import { Route, RouteComponentProps, withRouter } from 'react-router';
 
-import { RouteParts } from '../../constants';
 import { selectLogin } from '../store/selectors';
 import { LoginResponse } from '../store/types';
 
