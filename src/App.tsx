@@ -51,11 +51,16 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 			<Navigation
 				primaryItems={[
 					{ label: 'Home', location: '/' },
-					{ label: 'Zoeken', location: `/${RouteParts.Search}` },
+					{
+						label: 'Zoeken',
+						location: `/${RouteParts.Search}`,
+						icon: 'search',
+					},
 					{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
 					{
 						label: 'Mijn Werkruimte',
 						location: `/${RouteParts.MyWorkspace}/${RouteParts.Collections}`,
+						icon: 'briefcase',
 					},
 					{ label: 'Projecten', location: `/${RouteParts.Projects}` },
 					{ label: 'Nieuws', location: `/${RouteParts.News}` },
