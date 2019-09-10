@@ -57,8 +57,8 @@ pipeline {
 			              echo commitRef:  ${shortCommit}
                           echo "Configure template, you can use add to project if you want to install the app in an oteher env eg debug dev etc"
                           oc project sc-avo2
-                          oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
-                          oc process -l app=avo2-client -p ENV=int PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
+                          #oc -n sc-avo2 apply -f openshift/avo2-client-tmpl-dc.yaml
+                          #oc process -l app=avo2-client -p ENV=int PROXY_URL=http://avo2-proxy-dev-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                           #oc process -l app=avo2-client -p ENV=qas PROXY_URL=http://avo2-proxy-qas-sc-avo2.apps.do-prd-okp-m0.do.viaa.be -f openshift/avo2-client-tmpl-dc.yaml | oc apply -f -
                           '''
                 } // script
@@ -147,8 +147,8 @@ pipeline {
     } // stages
     post {
         always {
-           // junit '**/cypress-report.*xml'
-            cleanWs()
+            junit '**/cypress-report.*xml'
+            
             archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
             archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
             archiveArtifacts artifacts: 'ci-reports/*.xml', fingerprint: true
@@ -156,6 +156,7 @@ pipeline {
             script {
                slackNotifier(currentBuild.currentResult)
             }
+            cleanWs()
         }
     }
 } // pipeline
