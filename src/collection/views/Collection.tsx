@@ -284,7 +284,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={() => deleteCollection()}
+					deleteCollection={deleteCollection}
 				/>
 			</Fragment>
 		);

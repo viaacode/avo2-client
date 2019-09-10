@@ -37,6 +37,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
 	generateSearchLink,
@@ -205,21 +206,15 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 							<div className="o-container-vertical-list">
 								<div className="o-container-vertical o-container-vertical--padding-small">
 									<div className="c-video-player t-player-skin--dark">
-										{/*{item.thumbnail_path && <Image src={item.thumbnail_path} />}*/}
 										{item.thumbnail_path && (
-											// TODO replace with flow player
-											<video
+											<FlowPlayer
 												src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
-												placeholder={item.thumbnail_path}
-												style={{ width: '100%', display: 'block' }}
-												controls={true}
-												ref={videoRef}
-												onLoadedMetadata={getSeekerTimeFromQueryParams}
+												poster={item.thumbnail_path}
 											/>
 										)}
 									</div>
-									<Spacer margin="top-large">
-										<div className="o-flex o-flex--justify-between o-flex--wrap">
+									<Toolbar>
+										<ToolbarLeft>
 											<div className="c-button-toolbar">
 												<div className="o-flex o-flex--justify-between o-flex--wrap">
 													<Button
@@ -231,6 +226,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 													<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
 												</div>
 											</div>
+										</ToolbarLeft>
+										<ToolbarRight>
 											<div className="c-button-toolbar">
 												<ToggleButton
 													title="Voeg toe als bladwijzer"
@@ -247,8 +244,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 													ariaLabel="Rapporteer"
 												/>
 											</div>
-										</div>
-									</Spacer>
+										</ToolbarRight>
+									</Toolbar>
 								</div>
 							</div>
 						</Column>

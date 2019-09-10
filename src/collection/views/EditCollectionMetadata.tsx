@@ -153,7 +153,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 									allowSelect={true}
 									value={selectedCoverImages}
 									onChange={setSelectedCoverImages}
-									width={100}
+									width={177}
 									height={100}
 								/>
 							</Form>
