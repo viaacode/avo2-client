@@ -3,6 +3,8 @@ import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import marked from 'marked';
+
 import {
 	Button,
 	Column,
@@ -122,7 +124,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
 					<WYSIWYG
 						id={`beschrijving_${index}`}
-						data={getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')}
+						data={marked(getFragmentProperty(itemMeta, fragment, useCustomFields, 'description'))}
 						onChange={onChangeDescription}
 						disabled={!useCustomFields}
 					/>

@@ -13,7 +13,6 @@ import {
 	ImageGrid,
 	Modal,
 	ModalBody,
-	ModalFooterLeft,
 	ModalFooterRight,
 	Spacer,
 	TagsInput,
