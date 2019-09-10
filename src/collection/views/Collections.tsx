@@ -64,7 +64,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	};
 
 	const deleteCollection = () => {
-		// TODO add try catch if collection delete fails => show alert
 		triggerCollectionDelete({
 			variables: {
 				id: idToDelete,
