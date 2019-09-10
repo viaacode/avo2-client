@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {
 	Button,
 	Container,
+	Icon,
 	Navbar,
 	Toolbar,
 	ToolbarItem,
@@ -14,6 +15,7 @@ import {
 type NavigationItem = {
 	label: string;
 	location: string;
+	icon?: string;
 };
 
 export interface NavigationProps {
@@ -55,7 +57,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 													className="c-nav__item c-nav__item--i"
 													key={`${item.location}-${item.label}`}
 												>
-													<Link to={item.location}>{item.label}</Link>
+													<Link to={item.location}>
+														{item.icon && <Icon name={item.icon} />}
+														{item.label}
+													</Link>
 												</li>
 											))}
 										</ul>
@@ -100,7 +105,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 						<ul className="c-nav-mobile">
 							{primaryItems.map(item => (
 								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
-									<Link to={item.location}>{item.label}</Link>
+									<Link to={item.location}>
+										{item.label}
+										{item.icon && <Icon name={item.icon} />}
+									</Link>
 								</li>
 							))}
 						</ul>
@@ -125,7 +133,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 												className="c-nav__item c-nav__item--i"
 												key={`${item.location}-${item.label}`}
 											>
-												<Link to={item.location}>{item.label}</Link>
+												<Link to={item.location}>
+													{item.icon && <Icon name={item.icon} />}
+													{item.label}
+												</Link>
 											</li>
 										))}
 									</ul>

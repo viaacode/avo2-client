@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -20,28 +21,12 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
+
+import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
 interface CollectionsProps extends RouteComponentProps {}
-
-const dummyAvatars = [
-	{
-		initials: 'ES',
-		name: 'Ethan Sanders',
-		subtitle: 'Mag Bewerken',
-	},
-	{
-		initials: 'JC',
-		name: 'Jerry Cooper',
-		subtitle: 'Mag Bewerken',
-	},
-	{
-		initials: 'JD',
-		name: 'John Doe',
-		subtitle: 'Mag Bewerken',
-	},
-];
 
 const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
@@ -163,6 +148,18 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 	const renderCollections = (collections: Avo.Collection.Response[]) => {
 		const mappedCollections = !!collections
 			? collections.map(collection => {
+					const users = [collection.owner];
+
+					const avatars = users.map(user => {
+						const { first_name, last_name } = user;
+
+						return {
+							initials: `${first_name.charAt(0)}${last_name.charAt(0)}`,
+							name: `${first_name} ${last_name}`,
+							subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
+						};
+					});
+
 					return {
 						createdAt: collection.created_at,
 						id: collection.id,
@@ -170,7 +167,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 						title: collection.title,
 						updatedAt: collection.updated_at,
 						inFolder: true,
-						access: dummyAvatars,
+						access: avatars,
 						actions: true,
 					};
 			  })
