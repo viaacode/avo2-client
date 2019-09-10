@@ -254,3 +254,4 @@ env-config.js
 cypress/videos
 cypress/screenshots
 cypress-report*xml
+ci-results

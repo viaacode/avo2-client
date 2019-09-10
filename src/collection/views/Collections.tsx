@@ -1,5 +1,4 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -14,24 +13,29 @@ import {
 	MenuContent,
 	MetaData,
 	MetaDataItem,
+	Pagination,
 	Table,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { RouteParts } from '../../constants';
+import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
-
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { DeleteCollectionModal } from '../components';
 
-interface CollectionsProps extends RouteComponentProps {}
+interface CollectionsProps extends RouteComponentProps {
+	numberOfCollections: number;
+}
 
-const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
+const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections, history }) => {
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [page, setPage] = useState<number>(0);
 
 	const openDeleteModal = (collectionId: number) => {
 		setDropdownOpen({ [collectionId]: false });
@@ -44,6 +48,9 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 			variables: {
 				id: idToDelete,
 			},
+		}).catch(err => {
+			console.error(err);
+			toastService('Collectie kon niet verwijdert worden', TOAST_TYPE.DANGER);
 		});
 
 		setIdToDelete(null);
@@ -189,6 +196,11 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 					rowKey="id"
 					styled
 				/>
+				<Pagination
+					pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
+					currentPage={page}
+					onPageChange={setPage}
+				/>
 
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
@@ -204,7 +216,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ history }) => {
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}
 			// TODO: replace with actual owner id from ldap object
-			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
+			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e', offset: page }}
 			resultPath="app_collections"
 			renderData={renderCollections}
 			notFoundMessage="Er konden geen collecties worden gevonden"
