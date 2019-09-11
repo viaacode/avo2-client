@@ -71,6 +71,15 @@ pipeline {
                 } // script
             } // steps
         } // stage
+        stage('Run UNIT Tests') {
+                steps {
+                    script {sh'''#!/bin/bash
+                        echo "Running make unit_test"                        
+                        make -f ./openshift/Makefile unit_test
+                        '''
+                    }// end script
+                }
+            }//end stage   
         stage('Push Image') {
             steps {
                 script {
@@ -83,15 +92,7 @@ pipeline {
 		        }// end script
             }
         }//end stage
-        stage('Run UNIT Tests') {
-                steps {
-                    script {sh'''#!/bin/bash
-                        echo "Running make unit_test"                        
-                        make -f ./openshift/Makefile unit_test || exit 0
-                        '''
-                    }// end script
-                }
-            }//end stage    
+ 
         stage('Tag INT Image AND rollout INT') {
                 steps {
                     script {
