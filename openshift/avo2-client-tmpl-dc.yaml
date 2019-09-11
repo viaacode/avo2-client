@@ -59,7 +59,30 @@ objects:
           - containerPort: 8080
             name: http
             protocol: TCP
-          resources: {}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 66
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1                       
+          resources: 
+            limits:
+              cpu: 800m
+              memory: 768Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi          
           securityContext:
             privileged: false
             runAsUser: 101
@@ -75,7 +98,7 @@ objects:
     - type: ConfigChange
     - type: "ImageChange" 
       imageChangeParams:
-        automatic: true
+        automatic: false
         containerNames:
           - "avo2-client-${ENV}"
         from:

@@ -39,7 +39,7 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
-                            echo "We 're about to build the docker image and tag dev and qas images for the avo2-client This is a plain docker build"
+                            echo "Building docker image the avo2-client This is a plain docker build"
 			                echo "Running login script for the external docker agent"
 			                sh '''#!/bin/bash
 			                 /usr/local/bin/agent-login.sh
@@ -83,6 +83,15 @@ pipeline {
 		        }// end script
             }
         }//end stage
+        stage('Run UNIT Tests') {
+                steps {
+                    script {sh'''#!/bin/bash
+                        echo "Running make unit_test"                        
+                        make -f ./openshift/Makefile unit_test || exit 0
+                        '''
+                    }// end script
+                }
+            }//end stage    
         stage('Tag INT Image AND rollout INT') {
                 steps {
                     script {
@@ -102,15 +111,7 @@ pipeline {
                     }// end script               
                 }
             }//end stage	
-        stage('Run UNIT Tests') {
-                steps {
-                    script {sh'''#!/bin/bash
-                        echo "Running make unit_test"                        
-                        make -f ./openshift/Makefile unit_test
-                        '''
-                    }// end script
-                }
-            }//end stage            
+        
         stage('Run INT Tests') {
                 steps {
                     script {sh'''#!/bin/bash
