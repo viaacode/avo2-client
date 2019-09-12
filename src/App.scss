@@ -11,8 +11,23 @@
 
 // Styleguide overrides / fixes
 // ------------------------------------------------------------------------ /
+// TODO: These styles should be set in the styleguide
+
 .c-alert-stack {
-	z-index: 100; // TODO: This should be set in the styleguide via variables
+	z-index: 100;
+}
+
+.c-global-footer {
+	margin-top: auto;
+}
+
+// App
+// ------------------------------------------------------------------------ /
+.o-app {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	padding-top: 6.4rem;
 }
 
 // Utilities

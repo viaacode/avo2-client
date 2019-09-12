@@ -1,4 +1,4 @@
-import { CustomWindow } from '../types/CustomWindow';
+import { CustomWindow } from '../types/global';
 
 export function getEnv(name: keyof CustomWindow['_ENV_']): string | undefined {
 	if ((window as CustomWindow)._ENV_) {

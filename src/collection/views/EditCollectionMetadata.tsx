@@ -13,7 +13,6 @@ import {
 	ImageGrid,
 	Modal,
 	ModalBody,
-	ModalFooterLeft,
 	ModalFooterRight,
 	Spacer,
 	TagsInput,
@@ -48,9 +47,8 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
-	const getCollectionStills = (): string[] => {
-		console.log(collection.collection_fragments);
-		return uniq([
+	const getCollectionStills = (): string[] =>
+		uniq([
 			...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
 			'/images/100x100.svg?id=0', // TODO replace these by stills from the videos once graphql relationship is created
 			'/images/100x100.svg?id=1',
@@ -58,7 +56,6 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 			'/images/100x100.svg?id=3',
 			'/images/100x100.svg?id=4',
 		]);
-	};
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);

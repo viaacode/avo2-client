@@ -24,6 +24,6 @@ anno pod $pod version_components=$VERSION_avo2components
 anno deploymentconfig avo2-client-${ENV} version_components=$VERSION_avo2components 
 
 echo setting git_tag
-anno pod $pod git_tag=$gti_tag
+anno pod $pod git_tag=$git_tag
 anno deploymentconfig avo2-client-${ENV} git_tag=$git_tag
 
