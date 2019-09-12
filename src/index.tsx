@@ -10,9 +10,10 @@ import '@viaa/avo2-components/dist/styles/main.css';
 import App from './App';
 
 import 'moment/locale/nl-be';
+import { CustomWindow } from './shared/types/global';
 
 // Expose app info through the window object
-window.APP_INFO = {
+(window as CustomWindow).APP_INFO = {
 	mode: process.env.NODE_ENV,
 	version: pkg.version,
 };
