@@ -1,5 +1,6 @@
 import ApolloClient from 'apollo-boost';
+import { getEnv } from '../helpers/env';
 
 export const dataService = new ApolloClient({
-	uri: `${window._ENV_.PROXY_URL}/data`,
+	uri: `${getEnv('PROXY_URL')}/data`,
 });
