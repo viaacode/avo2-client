@@ -51,12 +51,6 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
-	useEffect(() => {
-		if (showCoverImageModal) {
-			fetchThumbnailImages().then(() => {});
-		}
-	}, [collection, showCoverImageModal]);
-
 	const fetchThumbnailImages = async () => {
 		// Only update thumbnails when modal is opened, not when closed
 		try {
@@ -73,6 +67,12 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 			console.error(err);
 		}
 	};
+
+	useEffect(() => {
+		if (showCoverImageModal) {
+			fetchThumbnailImages().then(() => {});
+		}
+	}, [collection, showCoverImageModal, fetchThumbnailImages]);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
