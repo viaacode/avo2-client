@@ -13,6 +13,7 @@ export interface DataQueryComponentProps {
 	renderData: (data: any) => ReactNode;
 	variables?: any;
 	notFoundMessage?: string;
+	showSpinner?: Boolean;
 }
 
 export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
@@ -21,16 +22,17 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	resultPath,
 	renderData,
 	notFoundMessage = 'Het opgevraagde object werd niet gevonden',
+	showSpinner = true,
 }) => {
 	return (
 		<Query query={query} variables={variables}>
 			{(result: QueryResult) => {
 				if (result.loading) {
-					return (
+					return showSpinner ? (
 						<div className="o-flex o-flex--horizontal-center">
 							<Spinner size="large" />
 						</div>
-					);
+					) : null;
 				}
 
 				if (result.error) {
@@ -38,9 +40,6 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 					if (firstGraphQlError === 'DELETED') {
 						// TODO show different message if a list of items was returned but only some were deleted
 						return <NotFound message="Dit item is verwijderd" icon="delete" />;
-					}
-					if (firstGraphQlError === 'ORPHANED') {
-						return <NotFound message="Dit item is een wees" icon="user-x" />; // TODO improve error message
 					}
 					console.error(result.error);
 					return (

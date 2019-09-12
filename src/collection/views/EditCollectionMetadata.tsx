@@ -13,7 +13,6 @@ import {
 	ImageGrid,
 	Modal,
 	ModalBody,
-	ModalFooterLeft,
 	ModalFooterRight,
 	Spacer,
 	TagsInput,
@@ -48,9 +47,8 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
-	const getCollectionStills = (): string[] => {
-		console.log(collection.collection_fragments);
-		return uniq([
+	const getCollectionStills = (): string[] =>
+		uniq([
 			...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
 			'/images/100x100.svg?id=0', // TODO replace these by stills from the videos once graphql relationship is created
 			'/images/100x100.svg?id=1',
@@ -58,13 +56,15 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 			'/images/100x100.svg?id=3',
 			'/images/100x100.svg?id=4',
 		]);
-	};
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
 	};
 
-	const renderCollectionMetaData = (data: { vocabularies_lom_contexts: { label: string }[] }) => {
+	const renderCollectionMetaData = (data: {
+		vocabularies_lom_contexts: { label: string }[];
+		vocabularies_lom_classifications: { label: string }[];
+	}) => {
 		return (
 			<Fragment>
 				<Container mode="vertical">
@@ -89,12 +89,18 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 											/>
 										</FormGroup>
 										<FormGroup label="Vakken" labelFor="subjectsId">
-											{/* TODO get subjects from the database once the table is filled in */}
 											<TagsInput
-												options={[]}
-												// onChange={(values: TagInfo[]) =>
-												// 	updateCollectionMultiProperty(values, 'subjects')
-												// }
+												options={(data.vocabularies_lom_classifications || []).map(item => ({
+													value: item.label,
+													label: item.label,
+												}))}
+												value={(collection.lom_classification || []).map((item: string) => ({
+													value: item,
+													label: item,
+												}))}
+												onChange={(values: TagInfo[]) =>
+													updateCollectionMultiProperty(values, 'lom_classification')
+												}
 											/>
 										</FormGroup>
 										<FormGroup
@@ -156,7 +162,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 									allowSelect={true}
 									value={selectedCoverImages}
 									onChange={setSelectedCoverImages}
-									width={100}
+									width={177}
 									height={100}
 								/>
 							</Form>

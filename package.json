@@ -1,13 +1,12 @@
 {
   "name": "avo2-client",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "scripts": {
     "prestart": "npm run env",
     "start": "react-scripts start",
     "env": "bash ./scripts/env.sh && cp env-config.js ./public",
     "build": "react-scripts build",
-    "test": "jest --verbose",
     "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
     "integration-tests": "cypress run",
     "lint": "tslint -p .",
@@ -17,7 +16,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@viaa/avo2-components": "^1.8.0",
+    "@viaa/avo2-components": "^1.9.0",
     "@viaa/avo2-types": "^1.6.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",

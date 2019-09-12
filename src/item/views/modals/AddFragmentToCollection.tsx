@@ -8,7 +8,6 @@ import {
 	Grid,
 	Modal,
 	ModalBody,
-	ModalFooterLeft,
 	ModalFooterRight,
 	RadioButton,
 	Select,
@@ -70,7 +69,6 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 										<TextInput id="title" value={itemInfo.title} />
 									</FormGroup>
 									<FormGroup label="Beschrijving">
-										{/* TODO replace with component TextArea once built */}
 										<TextArea id="description" value={itemInfo.description} />
 									</FormGroup>
 									<FormGroup label="Collectie">
