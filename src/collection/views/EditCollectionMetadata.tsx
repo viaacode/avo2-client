@@ -78,7 +78,10 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
 	};
 
-	const renderCollectionMetaData = (data: { vocabularies_lom_contexts: { label: string }[] }) => {
+	const renderCollectionMetaData = (data: {
+		vocabularies_lom_contexts: { label: string }[];
+		vocabularies_lom_classifications: { label: string }[];
+	}) => {
 		return (
 			<Fragment>
 				<Container mode="vertical">
@@ -103,12 +106,18 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 											/>
 										</FormGroup>
 										<FormGroup label="Vakken" labelFor="subjectsId">
-											{/* TODO get subjects from the database once the table is filled in */}
 											<TagsInput
-												options={[]}
-												// onChange={(values: TagInfo[]) =>
-												// 	updateCollectionMultiProperty(values, 'subjects')
-												// }
+												options={(data.vocabularies_lom_classifications || []).map(item => ({
+													value: item.label,
+													label: item.label,
+												}))}
+												value={(collection.lom_classification || []).map((item: string) => ({
+													value: item,
+													label: item,
+												}))}
+												onChange={(values: TagInfo[]) =>
+													updateCollectionMultiProperty(values, 'lom_classification')
+												}
 											/>
 										</FormGroup>
 										<FormGroup
