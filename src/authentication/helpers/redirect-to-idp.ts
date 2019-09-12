@@ -1,11 +1,11 @@
 import queryString from 'query-string';
+import { getEnv } from '../../shared/helpers/env';
 
 export function redirectToLoginPage(returnToUrl: string) {
 	// Not logged in, we need to redirect the user to the SAML identity server login page
-	const url = `${window._ENV_.PROXY_URL}/auth/login?${queryString.stringify({
+	window.location.href = `${getEnv('PROXY_URL')}/auth/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
-	window.location.href = url;
 }
 
 export function redirectToPage(returnToUrl: string) {
@@ -13,8 +13,7 @@ export function redirectToPage(returnToUrl: string) {
 }
 
 export function redirectToLogoutPage(returnToUrl: string) {
-	const url = `${window._ENV_.PROXY_URL}/auth/logout?${queryString.stringify({
+	window.location.href = `${getEnv('PROXY_URL')}/auth/logout?${queryString.stringify({
 		returnToUrl,
 	})}`;
-	window.location.href = url;
 }

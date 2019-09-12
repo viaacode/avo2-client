@@ -1,5 +1,6 @@
 import { Action, Dispatch } from 'redux';
 
+import { getEnv } from '../../shared/helpers/env';
 import {
 	LoginActionTypes,
 	LoginResponse,
@@ -20,7 +21,7 @@ const getLoginState = () => {
 		dispatch(setLoginLoading());
 
 		try {
-			const url = `${window._ENV_.PROXY_URL}/auth/check-login`;
+			const url = `${getEnv('PROXY_URL')}/auth/check-login`;
 			const response = await fetch(url, {
 				method: 'GET',
 				headers: {
