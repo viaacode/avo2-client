@@ -1,4 +1,5 @@
 import queryString from 'query-string';
+import { getEnv } from '../shared/helpers/env';
 
 // TODO replace with interface from avo2-types when we release v1.7.0
 export interface VideoStill {
@@ -17,7 +18,7 @@ export async function getVideoStills(
 			numberOfStills,
 			externalIds: externalIds.join(','),
 		});
-		const response = await fetch(`${window._ENV_.PROXY_URL}/video-stills?${query}`, {
+		const response = await fetch(`${getEnv('PROXY_URL')}/video-stills?${query}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
