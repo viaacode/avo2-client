@@ -1,0 +1,86 @@
+.flowplayer {
+	width: 100%;
+    height: 100%;
+	vertical-align: bottom;
+
+	.fp-title {
+		text-transform: none;
+	}
+
+	.is-fullscreen .fp-footer {
+		display: inline-block;
+	}
+
+	.fp-footer {
+		display: none;
+		max-width: calc(100% - 3.2rem);
+		top: 1em;
+		left: 1em;
+		right: 1em;
+		bottom: auto;
+
+		padding: 0.8rem 1.2rem;
+		margin: 0 0 1rem;
+
+		font-size: 1.8rem;
+		font-weight: 500;
+		text-overflow: ellipsis;
+		background-color: rgba(15, 23, 29, 0.75);
+
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	.is-playing .fp-footer {
+		display: none;
+	}
+
+	.logo-on-right {
+		.fp-header {
+			position: absolute;
+		}
+
+		.fp-secondary {
+			left: auto;
+		}
+	}
+
+	.fp-secondary .fp-togglable  {
+		position:relative;
+		right: 0.7em;
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+	}
+
+	.fp-header {
+		background: rgba(15, 23, 29, 0.8);
+		color: rgba(255, 255, 255, 0.67);
+		width: 20%;
+		position: absolute;
+		top: auto;
+		left: auto;
+		bottom: 0;
+		right: 0;
+		z-index: 1;
+	}
+
+	.fp-controls {
+		background: rgba(15, 23, 29, 0.8);
+		color: rgba(255, 255, 255, 0.67);
+		width: 80%;
+		z-index: 0;
+	}
+
+	.fp-timeline {
+		width: 40%;
+	}
+
+	.fp-color {
+		background-color: #25A4CF;
+	}
+}
+
+.c-video-player.t-player-skin--dark {
+	background: none;
+}

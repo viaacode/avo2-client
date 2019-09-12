@@ -1,4 +1,4 @@
-import { debounce } from 'lodash-es';
+import { debounce, get } from 'lodash-es';
 import marked from 'marked';
 import queryString from 'query-string';
 import React, {
@@ -48,37 +48,20 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { getPlayerTokenState } from '../../shared/store/actions';
-import {
-	selectPlayerToken,
-	selectPlayerTokenError,
-	selectPlayerTokenLoading,
-} from '../../shared/store/selectors';
-import { PlayerTokenResponse } from '../../shared/store/types';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
+import { fetchPlayerToken } from '../../shared/services/player-service';
+
 import './Item.scss';
 
-interface ItemProps extends RouteComponentProps {
-	playerTokenState: PlayerTokenResponse | null;
-	playerTokenStateLoading: boolean;
-	playerTokenStateError: boolean;
-	getPlayerTokenState: (externalId: string) => Dispatch;
-}
+interface ItemProps extends RouteComponentProps {}
 
-const Item: FunctionComponent<ItemProps> = ({
-	history,
-	location,
-	match,
-	playerTokenState,
-	playerTokenStateLoading,
-	playerTokenStateError,
-	getPlayerTokenState,
-}) => {
+const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState((match.params as any)['id'] as string);
+	const [playerToken, setPlayerToken] = useState();
 	const [time, setTime] = useState(0);
 	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
 	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
@@ -176,9 +159,8 @@ const Item: FunctionComponent<ItemProps> = ({
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
 	const renderItem = (item: Avo.Item.Response) => {
-		if (!playerTokenState && !playerTokenStateLoading) {
-			getPlayerTokenState(item.external_id);
-		}
+		const initFlowPlayer = () =>
+			!playerToken && fetchPlayerToken(item.external_id).then(data => setPlayerToken(data));
 
 		return (
 			<Fragment>
@@ -237,10 +219,12 @@ const Item: FunctionComponent<ItemProps> = ({
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
 										<div className="c-video-player t-player-skin--dark">
-											{playerTokenState && item.thumbnail_path && (
+											{item.thumbnail_path && (
 												<FlowPlayer
-													src={playerTokenState.toString()}
+													src={playerToken ? playerToken.toString() : null}
 													poster={item.thumbnail_path}
+													title={item.title}
+													onInit={initFlowPlayer}
 												/>
 											)}
 										</div>
@@ -520,21 +504,4 @@ const Item: FunctionComponent<ItemProps> = ({
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	playerTokenState: selectPlayerToken(state),
-	playerTokenStateLoading: selectPlayerTokenLoading(state),
-	playerTokenStateError: selectPlayerTokenError(state),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getPlayerTokenState: (externalId: string) => dispatch(getPlayerTokenState(externalId) as any),
-	};
-};
-
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(Item)
-);
+export default withRouter(Item);
