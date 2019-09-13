@@ -214,7 +214,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 										</Container>
 									</Column>
 									<Column size="2-5">
-										<FormGroup label="Title">
+										<FormGroup label="Titel">
 											<span>{itemInfo.title}</span>
 										</FormGroup>
 										<FormGroup label="Beschrijving">
