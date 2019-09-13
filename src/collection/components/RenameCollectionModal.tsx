@@ -12,7 +12,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { UPDATE_COLLECTION_PROPERTY } from '../collection.gql';
+import { UPDATE_COLLECTION } from '../graphql';
 
 interface RenameCollectionModalProps {
 	initialCollectionName: string;
@@ -29,7 +29,7 @@ const RenameCollectionModal: FunctionComponent<RenameCollectionModalProps> = ({
 	isOpen,
 	collectionId,
 }) => {
-	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION_PROPERTY);
+	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
 	const [collectionName, setCollectionName] = useState(initialCollectionName);
 
 	const onSave = () => {
@@ -38,7 +38,7 @@ const RenameCollectionModal: FunctionComponent<RenameCollectionModalProps> = ({
 		triggerCollectionPropertyUpdate({
 			variables: {
 				id: collectionId,
-				collectionChanges: {
+				collection: {
 					title: collectionName,
 				},
 			},

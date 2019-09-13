@@ -174,11 +174,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											{item.type && (
 												<Icon name={item.type.label === 'audio' ? 'headphone' : item.type.label} />
 											)}
-											<p>Video</p>
+											<p>{item.type.label}</p>
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-b-0">{item.title}</h1>
-									<MetaData spaced={true} category={item.type.label || 'video'}>
+									<MetaData spaced={true} category={item.type.label}>
 										<MetaDataItem>
 											{generateSearchLink('provider', item.org_name || '')}
 										</MetaDataItem>

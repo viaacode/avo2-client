@@ -21,3 +21,5 @@ export const TABS = [
 		id: BOOKMARKS_ID,
 	},
 ];
+
+export const ITEMS_PER_PAGE = 20;
