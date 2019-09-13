@@ -1,7 +1,7 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import React, { FunctionComponent, useEffect, useRef } from 'react';
 
 import { Icon } from '@viaa/avo2-components';
-import { CustomWindow } from '../../../shared/types/CustomWindow';
+import { CustomWindow } from '../../../shared/types/global';
 
 import './FlowPlayer.scss';
 
@@ -53,7 +53,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 	) : (
 		<div className="c-video-player">
 			<div className="c-video-player__item">
-				<img src={poster} />
+				<img src={poster} alt={`Thumbnail voor video over ${title}.`} />
 			</div>
 			<div className="c-play-overlay" onClick={onInit}>
 				<div className="c-play-overlay__inner">

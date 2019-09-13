@@ -1,4 +1,4 @@
-import { CustomWindow } from '../../shared/types/CustomWindow';
+import { CustomWindow } from '../../shared/types/global';
 
 export type PlayerTokenResponse = {
 	url: string;
