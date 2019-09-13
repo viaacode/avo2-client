@@ -30,6 +30,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 				poster,
 
 				// CONFIGURATION
+				token: (window as CustomWindow)._ENV_.FLOW_PLAYER_TOKEN,
 				autoplay: true,
 				ui: flowplayer.ui.LOGO_ON_RIGHT | flowplayer.ui.USE_DRAG_HANDLE,
 			});
@@ -44,7 +45,11 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 	}, [videoPlayerRef, src]);
 
 	return src && poster ? (
-		<div className="c-video-player" ref={videoPlayerRef} />
+		<div
+			className="c-video-player"
+			data-player-id={(window as CustomWindow)._ENV_.FLOW_PLAYER_ID}
+			ref={videoPlayerRef}
+		/>
 	) : (
 		<div className="c-video-player">
 			<div className="c-video-player__item">
