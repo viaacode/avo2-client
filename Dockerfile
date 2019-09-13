@@ -2,23 +2,26 @@ FROM node:12-alpine AS build
 
 # set our node environment, defaults to production
 ARG NODE_ENV=production
+ARG CI=false
 ENV NODE_ENV $NODE_ENV
-
+ENV CI $CI
 WORKDIR /app
 
 COPY package.json package-lock.json .npmrc ./
 RUN chown -R node:node /app
 
 USER node
-RUN npm ci --production=false 1&>/dev/null
+RUN npm ci --production=false
 
 COPY . .
-RUN npm run build 1&>/dev/null
+RUN npm run build 
 # set permissions for openshift
 USER root
 #RUN chmod -R g+rwx /app && chown 101:101 /app
 
 FROM nginxinc/nginx-unprivileged AS run
+ENV NODE_ENV $NODE_ENV
+ENV CI true
 USER root
 
 

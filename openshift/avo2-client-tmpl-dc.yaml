@@ -8,16 +8,14 @@ objects:
   kind: DeploymentConfig
   metadata:
     annotations:
-      nodeshift/git-branch: master
-      nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
+      git-branch: master
+      
     creationTimestamp: null
-    generation: 3
+    generation: 4
     labels:
       app: avo2-client
       ENV: ${ENV}
-
       component: frontend
-      version: 0.1.0
     name: avo2-client-${ENV}
   spec:
     replicas: 1
@@ -39,8 +37,7 @@ objects:
     template:
       metadata:
         annotations:
-          nodeshift/git-branch: master
-          nodeshift/git-commit: 4c365fc3dd3057331b775476a41135a5580d8368
+          git-branch: master
         creationTimestamp: null
         labels:
           app: avo2-client
@@ -48,7 +45,7 @@ objects:
           component: frontend
       spec:
         containers:
-        - image: ' '
+        - image: 'avo2-client:int'
           imagePullPolicy: Always
           name: avo2-client-${ENV}
           env:
@@ -62,7 +59,30 @@ objects:
           - containerPort: 8080
             name: http
             protocol: TCP
-          resources: {}
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 66
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1                       
+          resources: 
+            limits:
+              cpu: 800m
+              memory: 768Mi
+            requests:
+              cpu: 200m
+              memory: 512Mi          
           securityContext:
             privileged: false
             runAsUser: 101
@@ -76,6 +96,15 @@ objects:
     test: false
     triggers:
     - type: ConfigChange
+    - type: "ImageChange" 
+      imageChangeParams:
+        automatic: false
+        containerNames:
+          - "avo2-client-${ENV}"
+        from:
+          kind: "ImageStreamTag"
+          name: "avo2-client:int"
+
 
   status:
     availableReplicas: 0
@@ -88,7 +117,6 @@ objects:
   kind: Service
   metadata:
     annotations:
-
     creationTimestamp: null
     labels:
       app: avo2-client
@@ -111,8 +139,8 @@ objects:
     loadBalancer: {}
 parameters:
   - name: ENV
-    value: dev
+    value: int
   - name: NODE_ENV
     value: production
   - name: PROXY_URL
-    value: http://avo2-proxy-qas:3000
+    value: http://avo2-proxy-int.sc-avo2.svc:8080
