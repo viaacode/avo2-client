@@ -1,17 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
+import { get, isEmpty, without } from 'lodash-es';
 import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
-
-import { get, isEmpty, without } from 'lodash-es';
-import {
-	DELETE_COLLECTION,
-	DELETE_COLLECTION_FRAGMENT,
-	GET_COLLECTION_BY_ID,
-	INSERT_COLLECTION_FRAGMENT,
-	UPDATE_COLLECTION,
-	UPDATE_COLLECTION_FRAGMENT,
-} from '../collection.gql';
 
 import {
 	Avatar,
@@ -37,19 +28,26 @@ import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+
 import {
 	DeleteCollectionModal,
 	RenameCollectionModal,
 	ReorderCollectionModal,
 	ShareCollectionModal,
 } from '../components';
+import { USER_GROUPS } from '../constants';
+import {
+	DELETE_COLLECTION,
+	DELETE_COLLECTION_FRAGMENT,
+	GET_COLLECTION_BY_ID,
+	INSERT_COLLECTION_FRAGMENT,
+	UPDATE_COLLECTION,
+	UPDATE_COLLECTION_FRAGMENT,
+} from '../graphql';
 import EditCollectionContent from './EditCollectionContent';
 import EditCollectionMetadata from './EditCollectionMetadata';
 
 interface EditCollectionProps extends RouteComponentProps {}
-
-// TODO: Get these from the api once the database is filled up
-export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);

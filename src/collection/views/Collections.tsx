@@ -23,8 +23,8 @@ import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { DeleteCollectionModal } from '../components';
+import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;

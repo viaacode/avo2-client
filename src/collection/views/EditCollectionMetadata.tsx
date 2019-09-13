@@ -24,9 +24,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
+
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../collection.gql';
+import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
 import { getVideoStills, VideoStill } from '../service';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 

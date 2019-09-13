@@ -12,7 +12,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { UPDATE_COLLECTION } from '../collection.gql';
+import { UPDATE_COLLECTION } from '../graphql';
 
 interface RenameCollectionModalProps {
 	initialCollectionName: string;

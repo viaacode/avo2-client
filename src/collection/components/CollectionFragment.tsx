@@ -26,10 +26,9 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { GET_ITEM_META_BY_EXTERNAL_ID } from '../collection.gql';
+import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
 import AddFragment from './AddFragment';
 
 interface CollectionFragmentProps extends RouteComponentProps {
