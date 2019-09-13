@@ -1,3 +1,6 @@
+import { debounce } from 'lodash-es';
+import marked from 'marked';
+import queryString from 'query-string';
 import React, {
 	createRef,
 	Fragment,
@@ -7,12 +10,10 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
-
-import { debounce } from 'lodash-es';
-import marked from 'marked';
-import queryString from 'query-string';
 import { Scrollbar } from 'react-scrollbars-custom';
+import { Dispatch } from 'redux';
 
 import {
 	Button,
@@ -36,6 +37,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
@@ -46,14 +48,34 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import './Item.scss';
+import { getPlayerTokenState } from '../../shared/store/actions';
+import {
+	selectPlayerToken,
+	selectPlayerTokenError,
+	selectPlayerTokenLoading,
+} from '../../shared/store/selectors';
+import { PlayerTokenResponse } from '../../shared/store/types';
+import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
-import { GET_ITEM_BY_ID } from '../item.gql';
+import './Item.scss';
 
-interface ItemProps extends RouteComponentProps {}
+interface ItemProps extends RouteComponentProps {
+	playerTokenState: PlayerTokenResponse | null;
+	playerTokenStateLoading: boolean;
+	playerTokenStateError: boolean;
+	getPlayerTokenState: (externalId: string) => Dispatch;
+}
 
-const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
+const Item: FunctionComponent<ItemProps> = ({
+	history,
+	location,
+	match,
+	playerTokenState,
+	playerTokenStateLoading,
+	playerTokenStateError,
+	getPlayerTokenState,
+}) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState((match.params as any)['id'] as string);
@@ -153,329 +175,339 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
-	const renderItem = (item: Avo.Item.Response) => (
-		<Fragment>
-			<Container mode="vertical" size="small" background="alt">
-				<Container mode="horizontal">
-					<Toolbar>
-						<ToolbarLeft>
-							<ToolbarItem>
-								<Spacer margin="bottom">
-									<div className="c-content-type c-content-type--video">
-										{item.type && (
-											<Icon name={item.type.label === 'audio' ? 'headphone' : item.type.label} />
-										)}
-										<p>{item.type.label}</p>
-									</div>
-								</Spacer>
-								<h1 className="c-h2 u-m-b-0">{item.title}</h1>
-								<MetaData spaced={true} category={item.type.label || 'video'}>
-									<MetaDataItem>{generateSearchLink('provider', item.org_name || '')}</MetaDataItem>
-									{item.publish_at && (
+	const renderItem = (item: Avo.Item.Response) => {
+		if (!playerTokenState && !playerTokenStateLoading) {
+			getPlayerTokenState(item.external_id);
+		}
+
+		return (
+			<Fragment>
+				<Container mode="vertical" size="small" background="alt">
+					<Container mode="horizontal">
+						<Toolbar>
+							<ToolbarLeft>
+								<ToolbarItem>
+									<Spacer margin="bottom">
+										<div className="c-content-type c-content-type--video">
+											{item.type && (
+												<Icon name={item.type.label === 'audio' ? 'headphone' : item.type.label} />
+											)}
+											<p>{item.type.label}</p>
+										</div>
+									</Spacer>
+									<h1 className="c-h2 u-m-b-0">{item.title}</h1>
+									<MetaData spaced={true} category={item.type.label}>
 										<MetaDataItem>
-											<p className="c-body-2 u-text-muted">
-												Gepubliceerd op {reorderDate(item.issued || null, '/')}
-											</p>
+											{generateSearchLink('provider', item.org_name || '')}
 										</MetaDataItem>
-									)}
-									<MetaDataItem>Uit reeks: {generateSearchLink('serie', item.series)}</MetaDataItem>
-								</MetaData>
-							</ToolbarItem>
-						</ToolbarLeft>
-						<ToolbarRight>
-							<ToolbarItem>
-								<div className="u-mq-switch-main-nav-authentication">
-									<MetaData category={item.type.label || 'video'}>
-										{/* TODO link meta data to actual data */}
-										<MetaDataItem label={String(item.views || 0)} icon="eye" />
-										<MetaDataItem label={String(item.bookmarks || 0)} icon="bookmark" />
-										{item.type.label === 'collection' && (
-											<MetaDataItem label={String(12)} icon="collection" />
+										{item.publish_at && (
+											<MetaDataItem>
+												<p className="c-body-2 u-text-muted">
+													Gepubliceerd op {reorderDate(item.issued || null, '/')}
+												</p>
+											</MetaDataItem>
 										)}
+										<MetaDataItem>
+											Uit reeks: {generateSearchLink('serie', item.series)}
+										</MetaDataItem>
 									</MetaData>
-								</div>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</Container>
-			</Container>
-			<Container mode="vertical">
-				<Container mode="horizontal">
-					<Grid>
-						<Column size="2-7">
-							<div className="o-container-vertical-list">
-								<div className="o-container-vertical o-container-vertical--padding-small">
-									<div className="c-video-player t-player-skin--dark">
-										{item.thumbnail_path && (
-											<FlowPlayer
-												src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
-												poster={item.thumbnail_path}
-											/>
-										)}
+								</ToolbarItem>
+							</ToolbarLeft>
+							<ToolbarRight>
+								<ToolbarItem>
+									<div className="u-mq-switch-main-nav-authentication">
+										<MetaData category={item.type.label || 'video'}>
+											{/* TODO link meta data to actual data */}
+											<MetaDataItem label={String(188)} icon="eye" />
+											<MetaDataItem label={String(370)} icon="bookmark" />
+											{item.type.label === 'collection' && (
+												<MetaDataItem label={String(12)} icon="collection" />
+											)}
+										</MetaData>
 									</div>
-									<Toolbar>
-										<ToolbarLeft>
-											<div className="c-button-toolbar">
-												<div className="o-flex o-flex--justify-between o-flex--wrap">
-													<Button
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
+				</Container>
+				<Container mode="vertical">
+					<Container mode="horizontal">
+						<Grid>
+							<Column size="2-7">
+								<div className="o-container-vertical-list">
+									<div className="o-container-vertical o-container-vertical--padding-small">
+										<div className="c-video-player t-player-skin--dark">
+											{playerTokenState && item.thumbnail_path && (
+												<FlowPlayer
+													src={playerTokenState.toString()}
+													poster={item.thumbnail_path}
+												/>
+											)}
+										</div>
+										<Spacer margin="top-large">
+											<div className="o-flex o-flex--justify-between o-flex--wrap">
+												<div className="c-button-toolbar">
+													<div className="o-flex o-flex--justify-between o-flex--wrap">
+														<Button
+															type="tertiary"
+															icon="add"
+															label="Voeg fragment toe aan collectie"
+															onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
+														/>
+														<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
+													</div>
+												</div>
+												<div className="c-button-toolbar">
+													<ToggleButton
 														type="tertiary"
-														icon="add"
-														label="Voeg fragment toe aan collectie"
-														onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
+														icon="bookmark"
+														active={false}
+														ariaLabel="toggle bladwijzer"
 													/>
-													<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
+													<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+													<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
 												</div>
 											</div>
-										</ToolbarLeft>
-										<ToolbarRight>
-											<div className="c-button-toolbar">
-												<ToggleButton
-													title="Voeg toe als bladwijzer"
-													type="tertiary"
-													icon="bookmark"
-													active={false}
-													ariaLabel="Voeg toe als bladwijzer"
-												/>
-												<Button title="Deel" type="tertiary" icon="share-2" ariaLabel="Deel" />
-												<Button
-													title="Rapporteer"
-													type="tertiary"
-													icon="flag"
-													ariaLabel="Rapporteer"
-												/>
-											</div>
-										</ToolbarRight>
-									</Toolbar>
+										</Spacer>
+									</div>
 								</div>
-							</div>
-						</Column>
-						<Column size="2-5">
-							<Container mode="vertical">
-								<Scrollbar
-									style={{
-										width: '100%',
-										height: `${84 + videoHeight}px`, // Height of button
-										overflowY: 'auto',
-									}}
-								>
-									<h4 className="c-h4">Beschrijving</h4>
-									{/* "description" label height (20) + padding (14) */}
-									<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
-										<p style={{ paddingRight: '1rem' }}>
-											{formatTimestamps(marked(item.description || ''))}
-										</p>
-									</ExpandableContainer>
-								</Scrollbar>
-							</Container>
-						</Column>
-					</Grid>
-					<Grid>
-						<Column size="2-7">
-							<div className="o-container-vertical o-container-vertical--padding-small">
-								<table className="c-table c-table--horizontal c-table--untable">
-									<tbody className="o-grid">
-										<tr className="o-grid-col-bp2-5">
-											<th scope="row">Publicatiedatum</th>
-											<td>{reorderDate(item.publish_at || null, '/')}</td>
-										</tr>
-										<tr className="o-grid-col-bp2-5">
-											<th scope="row">Toegevoegd op</th>
-											{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
-											<td>{reorderDate(item.issued || null, '/')}</td>
-										</tr>
-									</tbody>
-									<tbody className="o-grid">
-										<tr className="o-grid-col-bp2-5">
-											<th scope="row">Aanbieder</th>
-											{item.org_name && (
-												<td>{generateSearchLink('provider', item.org_name || '')}</td>
-											)}
-										</tr>
-										<tr className="o-grid-col-bp2-5">
-											<th scope="row">Speelduur</th>
-											<td>{item.duration}</td>
-										</tr>
-									</tbody>
-									<tbody className="o-grid">
-										<tr className="o-grid-col-bp2-5">
-											<th scope="row">Reeks</th>
-											<td>{generateSearchLink('serie', item.series)}</td>
-										</tr>
-										<tr className="o-grid-col-bp2-5">
-											<th scope="row">Taal</th>
-											<td>
-												{(item.lom_languages || [])
-													.map(languageCode => LANGUAGES.nl[languageCode])
-													.join(', ')}
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<div className="c-hr" />
-								<table className="c-table c-table--horizontal c-table--untable">
-									<tbody>
-										<tr>
-											<th scope="row">Geschikt voor</th>
-											<td>
-												{generateSearchLinks(item.external_id, 'educationLevel', item.lom_context)}
-											</td>
-										</tr>
-										<tr>
-											<th scope="row">Vakken</th>
-											<td>
-												{generateSearchLinks(item.external_id, 'subject', item.lom_classification)}
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<div className="c-hr" />
-								<table className="c-table c-table--horizontal c-table--untable">
-									<tbody>
-										<tr>
-											<th scope="row">Trefwoorden</th>
-											<td>
-												<TagList
-													tags={(item.lom_keywords || []).map(keyword => ({
-														label: keyword,
-														id: keyword,
-													}))}
-													swatches={false}
-													onTagClicked={(tagId: string | number) =>
-														goToSearchPage('keyword', tagId as string)
-													}
-												/>
-											</td>
-										</tr>
-										{/*<tr>*/}
-										{/*<th scope="row">Klascement</th>*/}
-										{/*<td>*/}
-										{/*<a href={'http://www.klascement.be/link_item'}>*/}
-										{/*www.klascement.be/link_item*/}
-										{/*</a>*/}
-										{/*</td>*/}
-										{/*</tr>*/}
-									</tbody>
-								</table>
-							</div>
-						</Column>
-						<Column size="2-5">
-							<Container size="small" mode="vertical">
-								<h3 className="c-h3">Bekijk ook</h3>
-								<ul className="c-media-card-list">
-									<li style={relatedItemStyle}>
-										<MediaCard
-											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
-											category={item.type.label || 'video'}
-											orientation="horizontal"
-										>
-											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.type.label || 'video'}
-													src={item.thumbnail_path}
-												/>
-											</MediaCardThumbnail>
-											<MediaCardMetaData>
-												<MetaData category={item.type.label || 'video'}>
-													<MetaDataItem label={item.org_name || ''} />
-												</MetaData>
-											</MediaCardMetaData>
-										</MediaCard>
-									</li>
-									<li style={relatedItemStyle}>
-										<MediaCard
-											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
-											category={item.type.label || 'video'}
-											orientation="horizontal"
-										>
-											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.type.label || 'video'}
-													src={item.thumbnail_path}
-												/>
-											</MediaCardThumbnail>
-											<MediaCardMetaData>
-												<MetaData category={item.type.label || 'video'}>
-													<MetaDataItem label={item.org_name || ''} />
-												</MetaData>
-											</MediaCardMetaData>
-										</MediaCard>
-									</li>
-									<li style={relatedItemStyle}>
-										<MediaCard
-											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
-											category={item.type.label || 'video'}
-											orientation="horizontal"
-										>
-											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.type.label || 'video'}
-													src={item.thumbnail_path}
-												/>
-											</MediaCardThumbnail>
-											<MediaCardMetaData>
-												<MetaData category={item.type.label || 'video'}>
-													<MetaDataItem label={item.org_name || ''} />
-												</MetaData>
-											</MediaCardMetaData>
-										</MediaCard>
-									</li>
-									<li style={relatedItemStyle}>
-										<MediaCard
-											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
-											category={item.type.label || 'video'}
-											orientation="horizontal"
-										>
-											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.type.label || 'video'}
-													src={item.thumbnail_path}
-												/>
-											</MediaCardThumbnail>
-											<MediaCardMetaData>
-												<MetaData category={item.type.label || 'video'}>
-													<MetaDataItem label={item.org_name || ''} />
-												</MetaData>
-											</MediaCardMetaData>
-										</MediaCard>
-									</li>
-									<li style={relatedItemStyle}>
-										<MediaCard
-											title="Organisatie van het politieke veld: Europa"
-											href={`/item/${item.id}`}
-											category={item.type.label || 'video'}
-											orientation="horizontal"
-										>
-											<MediaCardThumbnail>
-												<Thumbnail
-													category={item.type.label || 'video'}
-													src={item.thumbnail_path}
-												/>
-											</MediaCardThumbnail>
-											<MediaCardMetaData>
-												<MetaData category={item.type.label || 'video'}>
-													<MetaDataItem label={item.org_name || ''} />
-												</MetaData>
-											</MediaCardMetaData>
-										</MediaCard>
-									</li>
-								</ul>
-							</Container>
-						</Column>
-					</Grid>
+							</Column>
+							<Column size="2-5">
+								<Container mode="vertical">
+									<Scrollbar
+										style={{
+											width: '100%',
+											height: `${84 + videoHeight}px`, // Height of button
+											overflowY: 'auto',
+										}}
+									>
+										<h4 className="c-h4">Beschrijving</h4>
+										{/* "description" label height (20) + padding (14) */}
+										<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
+											<p style={{ paddingRight: '1rem' }}>
+												{formatTimestamps(marked(item.description || ''))}
+											</p>
+										</ExpandableContainer>
+									</Scrollbar>
+								</Container>
+							</Column>
+						</Grid>
+						<Grid>
+							<Column size="2-7">
+								<div className="o-container-vertical o-container-vertical--padding-small">
+									<table className="c-table c-table--horizontal c-table--untable">
+										<tbody className="o-grid">
+											<tr className="o-grid-col-bp2-5">
+												<th scope="row">Publicatiedatum</th>
+												<td>{reorderDate(item.publish_at || null, '/')}</td>
+											</tr>
+											<tr className="o-grid-col-bp2-5">
+												<th scope="row">Toegevoegd op</th>
+												{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
+												<td>{reorderDate(item.issued || null, '/')}</td>
+											</tr>
+										</tbody>
+										<tbody className="o-grid">
+											<tr className="o-grid-col-bp2-5">
+												<th scope="row">Aanbieder</th>
+												{item.org_name && (
+													<td>{generateSearchLink('provider', item.org_name || '')}</td>
+												)}
+											</tr>
+											<tr className="o-grid-col-bp2-5">
+												<th scope="row">Speelduur</th>
+												<td>{item.duration}</td>
+											</tr>
+										</tbody>
+										<tbody className="o-grid">
+											<tr className="o-grid-col-bp2-5">
+												<th scope="row">Reeks</th>
+												<td>{generateSearchLink('serie', item.series)}</td>
+											</tr>
+											<tr className="o-grid-col-bp2-5">
+												<th scope="row">Taal</th>
+												<td>
+													{(item.lom_languages || [])
+														.map(languageCode => LANGUAGES.nl[languageCode])
+														.join(', ')}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div className="c-hr" />
+									<table className="c-table c-table--horizontal c-table--untable">
+										<tbody>
+											<tr>
+												<th scope="row">Geschikt voor</th>
+												<td>
+													{generateSearchLinks(
+														item.external_id,
+														'educationLevel',
+														item.lom_context
+													)}
+												</td>
+											</tr>
+											<tr>
+												<th scope="row">Vakken</th>
+												<td>
+													{generateSearchLinks(
+														item.external_id,
+														'subject',
+														item.lom_classification
+													)}
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									<div className="c-hr" />
+									<table className="c-table c-table--horizontal c-table--untable">
+										<tbody>
+											<tr>
+												<th scope="row">Trefwoorden</th>
+												<td>
+													<TagList
+														tags={(item.lom_keywords || []).map(keyword => ({
+															label: keyword,
+															id: keyword,
+														}))}
+														swatches={false}
+														onTagClicked={(tagId: string | number) =>
+															goToSearchPage('keyword', tagId as string)
+														}
+													/>
+												</td>
+											</tr>
+											{/*<tr>*/}
+											{/*<th scope="row">Klascement</th>*/}
+											{/*<td>*/}
+											{/*<a href={'http://www.klascement.be/link_item'}>*/}
+											{/*www.klascement.be/link_item*/}
+											{/*</a>*/}
+											{/*</td>*/}
+											{/*</tr>*/}
+										</tbody>
+									</table>
+								</div>
+							</Column>
+							<Column size="2-5">
+								<Container size="small" mode="vertical">
+									<h3 className="c-h3">Bekijk ook</h3>
+									<ul className="c-media-card-list">
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/item/${item.id}`}
+												category={item.type.label || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.type.label || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.type.label || 'video'}>
+														<MetaDataItem label={item.org_name || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/item/${item.id}`}
+												category={item.type.label || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.type.label || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.type.label || 'video'}>
+														<MetaDataItem label={item.org_name || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/item/${item.id}`}
+												category={item.type.label || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.type.label || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.type.label || 'video'}>
+														<MetaDataItem label={item.org_name || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/item/${item.id}`}
+												category={item.type.label || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.type.label || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.type.label || 'video'}>
+														<MetaDataItem label={item.org_name || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/item/${item.id}`}
+												category={item.type.label || 'video'}
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category={item.type.label || 'video'}
+														src={item.thumbnail_path}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category={item.type.label || 'video'}>
+														<MetaDataItem label={item.org_name || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+									</ul>
+								</Container>
+							</Column>
+						</Grid>
+					</Container>
 				</Container>
-			</Container>
-			<AddFragmentToCollection
-				itemInfo={item}
-				externalId={itemId}
-				isOpen={isOpenAddFragmentToCollectionModal}
-				onClose={() => setIsOpenAddFragmentToCollectionModal(false)}
-			/>
-		</Fragment>
-	);
+				<AddFragmentToCollection
+					itemInfo={item}
+					externalId={itemId}
+					isOpen={isOpenAddFragmentToCollectionModal}
+					onClose={() => setIsOpenAddFragmentToCollectionModal(false)}
+				/>
+			</Fragment>
+		);
+	};
 
 	return (
 		<DataQueryComponent
@@ -488,4 +520,21 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	);
 };
 
-export default withRouter(Item);
+const mapStateToProps = (state: any) => ({
+	playerTokenState: selectPlayerToken(state),
+	playerTokenStateLoading: selectPlayerTokenLoading(state),
+	playerTokenStateError: selectPlayerTokenError(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getPlayerTokenState: (externalId: string) => dispatch(getPlayerTokenState(externalId) as any),
+	};
+};
+
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Item)
+);
