@@ -33,6 +33,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 				token: (window as CustomWindow)._ENV_.FLOW_PLAYER_TOKEN,
 				autoplay: true,
 				ui: flowplayer.ui.LOGO_ON_RIGHT | flowplayer.ui.USE_DRAG_HANDLE,
+				plugins: ['subtitles', 'chromecast'],
 			});
 		}
 
