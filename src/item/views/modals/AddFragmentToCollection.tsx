@@ -5,12 +5,14 @@ import { useMutation } from '@apollo/react-hooks';
 import {
 	Button,
 	Column,
+	Container,
 	Form,
 	FormGroup,
 	Grid,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
+	MultiRange,
 	RadioButton,
 	Select,
 	Spacer,
@@ -29,7 +31,10 @@ import {
 	INSERT_COLLECTION_FRAGMENT,
 } from '../../../collection/collection.gql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import { toSeconds } from '../../../shared/helpers/formatters/duration';
+import {
+	formatDurationHoursMinutesSeconds,
+	toSeconds,
+} from '../../../shared/helpers/formatters/duration';
 import { dataService } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
@@ -53,6 +58,8 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 		undefined
 	);
 	const [newCollectionTitle, setNewCollectionTitle] = useState('');
+	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
+	const [fragmentEndTime, setFragmentEndTime] = useState<number>(toSeconds(itemInfo.duration) || 0);
 	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
 	const [triggerInsertCollection] = useMutation(INSERT_COLLECTION);
 
@@ -84,10 +91,10 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 					id: collection.id,
 					fragment: {
 						use_custom_fields: false,
-						start_oc: 0, // TODO allow crop video
+						start_oc: fragmentStartTime,
 						position: (collection.collection_fragments || []).length,
 						external_id: externalId,
-						end_oc: toSeconds(itemInfo.duration), // TODO allow crop video
+						end_oc: fragmentEndTime,
 						custom_title: null,
 						custom_description: null,
 						collection_id: collection.id,
@@ -144,6 +151,27 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 		}
 	};
 
+	/**
+	 * Converts a duration of the format "00:03:36" to number of seconds and stores it under the appropriate state
+	 * @param timeString
+	 * @param startOrEnd
+	 */
+	const setFragmentTime = (timeString: string, startOrEnd: 'start' | 'end') => {
+		const setFunctions = {
+			start: setFragmentStartTime,
+			end: setFragmentEndTime,
+		};
+		const seconds = toSeconds(timeString);
+		if (seconds !== null) {
+			setFunctions[startOrEnd](seconds);
+		}
+	};
+
+	const onUpdateMultiRangeValues = (values: number[]) => {
+		setFragmentStartTime(values[0]);
+		setFragmentEndTime(values[1]);
+	};
+
 	const renderAddFRagmentToCollectionModal = (collections: { id: number; title: string }[]) => {
 		return (
 			<Modal
@@ -165,6 +193,25 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 											style={{ width: '100%', display: 'block' }}
 											controls={true}
 										/>
+										<Container mode="vertical" className="m-time-crop-controls">
+											<TextInput
+												value={formatDurationHoursMinutesSeconds(fragmentStartTime)}
+												onChange={timeString => setFragmentTime(timeString, 'start')}
+											/>
+											<div className="m-multi-range-wrapper">
+												<MultiRange
+													values={[fragmentStartTime, fragmentEndTime]}
+													onChange={onUpdateMultiRangeValues}
+													min={0}
+													max={toSeconds(itemInfo.duration) || 0}
+													step={1}
+												/>
+											</div>
+											<TextInput
+												value={formatDurationHoursMinutesSeconds(fragmentEndTime)}
+												onChange={timeString => setFragmentTime(timeString, 'end')}
+											/>
+										</Container>
 									</Column>
 									<Column size="2-5">
 										<FormGroup label="Title">

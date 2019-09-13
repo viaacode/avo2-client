@@ -1,9 +1,20 @@
-export function formatDuration(numSeconds: number | null | undefined) {
+export function formatDurationMinutesSeconds(numSeconds: number | null | undefined) {
 	const seconds: number = Math.abs(numSeconds || 0);
-	const min = Math.floor(seconds / 60);
-	const sec = seconds % 60;
+	const mins = Math.floor(seconds / 60);
+	const secs = seconds % 60;
 
-	return `${min}:${sec.toString().padStart(2, '0')}`;
+	return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+export function formatDurationHoursMinutesSeconds(numSeconds: number | null | undefined) {
+	const seconds: number = Math.abs(numSeconds || 0);
+	const hours = Math.floor(seconds / 3600);
+	const mins = Math.floor(seconds / 60);
+	const secs = seconds % 60;
+
+	return `${hours.toString().padStart(2, '0')}:${mins
+		.toString()
+		.padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
 /**
@@ -11,8 +22,12 @@ export function formatDuration(numSeconds: number | null | undefined) {
  * 00:03:36 =>
  *
  * @param duration
+ * @param silent if this function should throw an error or instead return null if the format of the duration is invalid
  */
-export function toSeconds(duration: number | string | undefined | null) {
+export function toSeconds(
+	duration: number | string | undefined | null,
+	silent: boolean = false
+): number | null {
 	if (!duration) {
 		return 0;
 	}
@@ -33,6 +48,9 @@ export function toSeconds(duration: number | string | undefined | null) {
 			parseFloat(durationParts[0])
 		);
 	} catch (err) {
+		if (silent) {
+			return null;
+		}
 		throw new Error(
 			`Kon het tijdsinterval niet analyseren: "${duration}". Verwacht formaat: uu:mm:ss`
 		);
