@@ -15,8 +15,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { UPDATE_COLLECTION_PROPERTY } from '../collection.gql';
+import { UPDATE_COLLECTION } from '../graphql';
 
 interface ShareCollectionModalProps {
 	isOpen: boolean;
@@ -48,7 +49,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 }) => {
 	const [validationError, setValidationError] = useState();
 	const [isCollectionPublic, setIsCollectionPublic] = useState(initialIsPublic);
-	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION_PROPERTY);
+	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
 
 	const validateFragments = (fragments: Avo.Collection.Fragment[]) => {
 		if (!fragments || !fragments.length) {
@@ -59,7 +60,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 		// Check if fragment has custom_title and custom_description if necessary.
 		fragments.forEach(fragment => {
-			if (fragment.use_custom_fields && (!fragment.custom_title || !fragment.custom_description)) {
+			if (fragment.use_custom_fields && !fragment.custom_title && !fragment.custom_description) {
 				isValid = false;
 			}
 		});
@@ -87,11 +88,11 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				result: !!description,
 			},
 			hasContext: {
-				error: 'Uw collectie heeft geen vakken.',
+				error: "Uw collectie heeft geen onderwijsniveau's.",
 				result: !!(lom_context && lom_context.length),
 			},
 			hasClassification: {
-				error: "Uw collectie heeft geen onderwijsniveau's.",
+				error: 'Uw collectie heeft geen vakken.',
 				result: !!(lom_classification && lom_classification.length),
 			},
 			hasAtleastOneFragment: {
@@ -114,7 +115,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			// Strip failed rules from ruleset
 			const failedRules = Object.entries(validationObject).filter(rule => !get(rule[1], 'result'));
 
-			setValidationError(failedRules.map(rule => `${get(rule[1], 'error')}\n`));
+			setValidationError(failedRules.map(rule => get(rule[1], 'error')));
 			toastService(
 				'Opslaan mislukt. Gelieve all verplichte velden in te vullen.',
 				TOAST_TYPE.DANGER
@@ -128,7 +129,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		triggerCollectionPropertyUpdate({
 			variables: {
 				id: collection.id,
-				collectionChanges: {
+				collection: {
 					is_public: isCollectionPublic,
 				},
 			},

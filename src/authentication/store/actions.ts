@@ -1,7 +1,6 @@
 import { Action, Dispatch } from 'redux';
 
-import { CustomWindow } from '../../shared/types/CustomWindow';
-
+import { getEnv } from '../../shared/helpers/env';
 import {
 	LoginActionTypes,
 	LoginResponse,
@@ -10,7 +9,7 @@ import {
 	SetLoginSuccessAction,
 } from './types';
 
-const getLoginState = () => {
+export const getLoginState = () => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
 		const { loginMessage } = getState();
 
@@ -22,7 +21,7 @@ const getLoginState = () => {
 		dispatch(setLoginLoading());
 
 		try {
-			const url = `${(window as CustomWindow)._ENV_.PROXY_URL}/auth/check-login`;
+			const url = `${getEnv('PROXY_URL')}/auth/check-login`;
 			const response = await fetch(url, {
 				method: 'GET',
 				headers: {
@@ -41,21 +40,19 @@ const getLoginState = () => {
 	};
 };
 
-const setLoginSuccess = (data: LoginResponse): SetLoginSuccessAction => ({
+export const setLoginSuccess = (data: LoginResponse): SetLoginSuccessAction => ({
 	data,
 	type: LoginActionTypes.SET_LOGIN_SUCCESS,
 });
 
-const setLoginError = (): SetLoginErrorAction => ({
+export const setLoginError = (): SetLoginErrorAction => ({
 	type: LoginActionTypes.SET_LOGIN_ERROR,
 	error: true,
 });
 
-const setLoginLoading = (): SetLoginLoadingAction => {
+export const setLoginLoading = (): SetLoginLoadingAction => {
 	return {
 		type: LoginActionTypes.SET_LOGIN_LOADING,
 		loading: true,
 	};
 };
-
-export { setLoginSuccess, setLoginError, setLoginLoading, getLoginState };
