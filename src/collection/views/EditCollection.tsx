@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
+import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -75,13 +75,23 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			id: 'inhoud',
 			label: 'Inhoud',
 			active: currentTab === 'inhoud',
+			icon: 'collection',
 		},
 		{
 			id: 'metadata',
 			label: 'Metadata',
 			active: currentTab === 'metadata',
+			icon: 'file-text',
 		},
 	];
+
+	const onUnload = (event: any) => {
+		event.preventDefault();
+		event.returnValue = '';
+	};
+
+	// Destroy event listener on unmount
+	useEffect(() => window.removeEventListener('beforeunload', onUnload));
 
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
@@ -117,8 +127,10 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	};
 
 	// Update individual property of fragment
-	const updateFragmentProperty = (value: string, propertyName: string, fragmentId: number) => {
+	const updateFragmentProperty = (value: any, propertyName: string, fragmentId: number) => {
 		const temp: Avo.Collection.Response = { ...currentCollection };
+
+		window.addEventListener('beforeunload', onUnload);
 
 		const fragmentToUpdate = temp.collection_fragments.find(
 			(item: Avo.Collection.Fragment) => item.id === fragmentId
@@ -130,11 +142,14 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	};
 
 	// Update individual property of collection
-	const updateCollectionProperty = (value: any, fieldName: string) =>
+	const updateCollectionProperty = (value: any, fieldName: string) => {
+		window.addEventListener('beforeunload', onUnload);
+
 		setCurrentCollection({
 			...currentCollection,
 			[fieldName]: value,
 		});
+	};
 
 	// Swap position of two fragments within a collection
 	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
@@ -275,6 +290,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				});
 
 				const readyToStore = { ...newCollection };
+
+				await readyToStore.collection_fragments.forEach((fragment: any) => {
+					delete fragment.__typename;
+
+					triggerCollectionFragmentUpdate({
+						variables: {
+							fragment,
+							id: fragment.id,
+						},
+					});
+				});
 
 				// Trigger collection update
 				const propertiesToDelete = [

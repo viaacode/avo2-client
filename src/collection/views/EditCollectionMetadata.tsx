@@ -1,9 +1,10 @@
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
-import { uniq } from 'lodash-es';
+import { compact, uniq } from 'lodash-es';
 
 import {
+	Blankslate,
 	Button,
 	Column,
 	Container,
@@ -13,9 +14,9 @@ import {
 	ImageGrid,
 	Modal,
 	ModalBody,
-	ModalFooterLeft,
 	ModalFooterRight,
 	Spacer,
+	Spinner,
 	TagsInput,
 	TextArea,
 	Toolbar,
@@ -26,6 +27,7 @@ import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInp
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../collection.gql';
+import { getVideoStills, VideoStill } from '../service';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {
@@ -38,6 +40,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	updateCollectionProperty,
 }) => {
 	const [showCoverImageModal, setShowCoverImageModal] = useState(false);
+	const [videoStills, setVideoStills] = useState<string[] | null>(null);
 	const [selectedCoverImages, setSelectedCoverImages] = useState(
 		collection.thumbnail_path ? [collection.thumbnail_path] : []
 	);
@@ -48,23 +51,37 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
-	const getCollectionStills = (): string[] => {
-		console.log(collection.collection_fragments);
-		return uniq([
-			...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
-			'/images/100x100.svg?id=0', // TODO replace these by stills from the videos once graphql relationship is created
-			'/images/100x100.svg?id=1',
-			'/images/100x100.svg?id=2',
-			'/images/100x100.svg?id=3',
-			'/images/100x100.svg?id=4',
-		]);
+	const fetchThumbnailImages = async () => {
+		// Only update thumbnails when modal is opened, not when closed
+		try {
+			const externalIds = compact(collection.collection_fragments.map(cf => cf.external_id));
+			const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
+			setVideoStills(
+				uniq([
+					...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
+					...videoStills.map(videoStill => videoStill.thumbnailImagePath),
+				])
+			);
+		} catch (err) {
+			toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
+			console.error(err);
+		}
 	};
+
+	useEffect(() => {
+		if (showCoverImageModal) {
+			fetchThumbnailImages().then(() => {});
+		}
+	}, [collection, showCoverImageModal, fetchThumbnailImages]);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
 	};
 
-	const renderCollectionMetaData = (data: { vocabularies_lom_contexts: { label: string }[] }) => {
+	const renderCollectionMetaData = (data: {
+		vocabularies_lom_contexts: { label: string }[];
+		vocabularies_lom_classifications: { label: string }[];
+	}) => {
 		return (
 			<Fragment>
 				<Container mode="vertical">
@@ -89,12 +106,18 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 											/>
 										</FormGroup>
 										<FormGroup label="Vakken" labelFor="subjectsId">
-											{/* TODO get subjects from the database once the table is filled in */}
 											<TagsInput
-												options={[]}
-												// onChange={(values: TagInfo[]) =>
-												// 	updateCollectionMultiProperty(values, 'subjects')
-												// }
+												options={(data.vocabularies_lom_classifications || []).map(item => ({
+													value: item.label,
+													label: item.label,
+												}))}
+												value={(collection.lom_classification || []).map((item: string) => ({
+													value: item,
+													label: item,
+												}))}
+												onChange={(values: TagInfo[]) =>
+													updateCollectionMultiProperty(values, 'lom_classification')
+												}
 											/>
 										</FormGroup>
 										<FormGroup
@@ -151,14 +174,26 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 					<ModalBody>
 						<div className="u-spacer">
 							<Form>
-								<ImageGrid
-									images={getCollectionStills()}
-									allowSelect={true}
-									value={selectedCoverImages}
-									onChange={setSelectedCoverImages}
-									width={100}
-									height={100}
-								/>
+								{videoStills === null ? (
+									<div className="o-flex o-flex--horizontal-center">
+										<Spinner size="large" />
+									</div>
+								) : videoStills.length === 0 ? (
+									<Blankslate
+										body=""
+										icon="search"
+										title="Er zijn geen thumbnails beschikbaar voor de fragmenten in de collectie"
+									/>
+								) : (
+									<ImageGrid
+										images={videoStills}
+										allowSelect={true}
+										value={selectedCoverImages}
+										onChange={setSelectedCoverImages}
+										width={177}
+										height={100}
+									/>
+								)}
 							</Form>
 						</div>
 					</ModalBody>

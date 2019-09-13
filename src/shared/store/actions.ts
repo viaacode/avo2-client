@@ -1,6 +1,6 @@
 import { Action, Dispatch } from 'redux';
 
-import { CustomWindow } from '../../shared/types/CustomWindow';
+import { CustomWindow } from '../../shared/types/global';
 
 import {
 	PlayerTokenActionTypes,
