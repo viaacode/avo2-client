@@ -1,4 +1,4 @@
-import { debounce, get } from 'lodash-es';
+import { debounce } from 'lodash-es';
 import marked from 'marked';
 import queryString from 'query-string';
 import React, {
@@ -10,10 +10,8 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
-import { Dispatch } from 'redux';
 
 import {
 	Button,

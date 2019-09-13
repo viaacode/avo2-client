@@ -1,7 +1,10 @@
 import { orderBy } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
+
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { fetchPlayerToken } from '../../shared/services/player-service';
 
 import {
 	Button,
@@ -13,7 +16,6 @@ import {
 	Grid,
 	MenuContent,
 	TextInput,
-	Thumbnail,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -52,6 +54,8 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	reorderFragments,
 	updateCollection,
 }) => {
+	const [playerToken, setPlayerToken] = useState();
+
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (index: number) => index === 0;
 	const isLast = (index: number) => index === collection.collection_fragments.length - 1;
@@ -143,97 +147,107 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
 	};
 
-	const renderCollectionFragment = (itemMeta: any) => (
-		<>
-			<div className="c-card">
-				<div className="c-card__header">
-					<Toolbar>
-						<ToolbarLeft>
-							<ToolbarItem>
-								<div className="c-button-toolbar">
-									{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
-									{!isLast(index) && renderReorderButton(fragment.position, 'down')}
-								</div>
-							</ToolbarItem>
-						</ToolbarLeft>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ControlledDropdown
-									isOpen={isOptionsMenuOpen === fragment.id}
-									onOpen={() => setIsOptionsMenuOpen(fragment.id)}
-									onClose={() => setIsOptionsMenuOpen(null)}
-									placement="bottom-end"
-									autoSize
-								>
-									<DropdownButton>
-										<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
-									</DropdownButton>
-									<DropdownContent>
-										<MenuContent
-											menuItems={[
-												{ icon: 'copy', id: 'duplicate', label: 'Dupliceren' },
-												{ icon: 'arrow-right', id: 'move', label: 'Verplaatsen' },
-												{ icon: 'delete', id: 'delete', label: 'Verwijderen' },
-												{
-													icon: 'copy',
-													id: 'copyToCollection',
-													label: 'Kopiëren naar andere collectie',
-												},
-												{
-													icon: 'arrow-right',
-													id: 'moveToCollection',
-													label: 'Verplaatsen naar andere collectie',
-												},
-											]}
-											onClick={itemId => {
-												switch (itemId) {
-													case 'duplicate':
-														onDuplicateFragment(fragment.id);
-														break;
-													case 'move':
-														onMoveFragment();
-														break;
-													case 'delete':
-														onDeleteFragment(fragment.id);
-														break;
-													case 'copyToCollection':
-														onCopyFragmentToCollection();
-														break;
-													case 'moveToCollection':
-														onMoveFragmentToCollection();
-														break;
-													default:
-														return null;
-												}
-											}}
-										/>
-									</DropdownContent>
-								</ControlledDropdown>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
+	const renderCollectionFragment = (itemMeta: any) => {
+		const initFlowPlayer = () =>
+			!playerToken && fetchPlayerToken(fragment.external_id).then(data => setPlayerToken(data));
+
+		return (
+			<>
+				<div className="c-card">
+					<div className="c-card__header">
+						<Toolbar>
+							<ToolbarLeft>
+								<ToolbarItem>
+									<div className="c-button-toolbar">
+										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
+										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
+									</div>
+								</ToolbarItem>
+							</ToolbarLeft>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ControlledDropdown
+										isOpen={isOptionsMenuOpen === fragment.id}
+										onOpen={() => setIsOptionsMenuOpen(fragment.id)}
+										onClose={() => setIsOptionsMenuOpen(null)}
+										placement="bottom-end"
+										autoSize
+									>
+										<DropdownButton>
+											<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
+										</DropdownButton>
+										<DropdownContent>
+											<MenuContent
+												menuItems={[
+													{ icon: 'copy', id: 'duplicate', label: 'Dupliceren' },
+													{ icon: 'arrow-right', id: 'move', label: 'Verplaatsen' },
+													{ icon: 'delete', id: 'delete', label: 'Verwijderen' },
+													{
+														icon: 'copy',
+														id: 'copyToCollection',
+														label: 'Kopiëren naar andere collectie',
+													},
+													{
+														icon: 'arrow-right',
+														id: 'moveToCollection',
+														label: 'Verplaatsen naar andere collectie',
+													},
+												]}
+												onClick={itemId => {
+													switch (itemId) {
+														case 'duplicate':
+															onDuplicateFragment(fragment.id);
+															break;
+														case 'move':
+															onMoveFragment();
+															break;
+														case 'delete':
+															onDeleteFragment(fragment.id);
+															break;
+														case 'copyToCollection':
+															onCopyFragmentToCollection();
+															break;
+														case 'moveToCollection':
+															onMoveFragmentToCollection();
+															break;
+														default:
+															return null;
+													}
+												}}
+											/>
+										</DropdownContent>
+									</ControlledDropdown>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</div>
+					<div className="c-card__body">
+						{!!fragment.external_id ? (
+							<Grid>
+								<Column size="3-6">
+									<FlowPlayer
+										src={playerToken ? playerToken.toString() : null}
+										poster={itemMeta.thumbnail_path}
+										title={itemMeta.title}
+										onInit={initFlowPlayer}
+									/>
+								</Column>
+								<Column size="3-6">{renderForm(fragment, index)}</Column>
+							</Grid>
+						) : (
+							<Form>{renderForm(fragment, index)}</Form>
+						)}
+					</div>
 				</div>
-				<div className="c-card__body">
-					{!!fragment.external_id ? (
-						<Grid>
-							<Column size="3-6">
-								<Thumbnail category="collection" label="collectie" />
-							</Column>
-							<Column size="3-6">{renderForm(fragment, index)}</Column>
-						</Grid>
-					) : (
-						<Form>{renderForm(fragment, index)}</Form>
-					)}
-				</div>
-			</div>
-			<AddFragment
-				index={index}
-				collection={collection}
-				updateCollection={updateCollection}
-				reorderFragments={reorderFragments}
-			/>
-		</>
-	);
+				<AddFragment
+					index={index}
+					collection={collection}
+					updateCollection={updateCollection}
+					reorderFragments={reorderFragments}
+				/>
+			</>
+		);
+	};
 
 	return fragment.external_id ? (
 		// TODO: Change when relationship between item_meta and collection exists
