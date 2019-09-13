@@ -172,7 +172,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 		setFragmentEndTime(values[1]);
 	};
 
-	const renderAddFRagmentToCollectionModal = (collections: { id: number; title: string }[]) => {
+	const renderAddFragmentToCollectionModal = (collections: { id: number; title: string }[]) => {
 		return (
 			<Modal
 				title="Voeg fragment toe aan collectie"
@@ -313,7 +313,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 			// TODO: replace with actual owner id from ldap object
 			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
 			resultPath="app_collections"
-			renderData={renderAddFRagmentToCollectionModal}
+			renderData={renderAddFragmentToCollectionModal}
 			notFoundMessage="Er konden geen collecties worden opgehaald"
 		/>
 	);
