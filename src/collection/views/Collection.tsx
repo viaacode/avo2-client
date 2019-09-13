@@ -50,7 +50,7 @@ import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
-import { ContentBlockInfo } from '../types';
+import { ContentBlockInfo, ContentBlockType } from '../types';
 
 interface CollectionProps extends RouteComponentProps {}
 
@@ -84,29 +84,29 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 	const renderContentBlock = (contentBlock: ContentBlockInfo) => {
 		switch (contentBlock.blockType) {
-			case 'Image':
+			case ContentBlockType.Image:
 				return <BlockImage {...contentBlock.content as BlockImageProps} />;
-			case 'ImageTitleTextButton':
+			case ContentBlockType.ImageTitleTextButton:
 				return (
 					<BlockImageTitleTextButton {...contentBlock.content as BlockImageTitleTextButtonProps} />
 				);
-			case 'Intro':
+			case ContentBlockType.Intro:
 				return <BlockIntro {...contentBlock.content as BlockIntroProps} />;
-			case 'Links':
+			case ContentBlockType.Links:
 				return <BlockLinks {...contentBlock.content as BlockLinksProps} />;
-			case 'Quote':
+			case ContentBlockType.Quote:
 				return <BlockQuote {...contentBlock.content as BlockQuoteProps} />;
-			case 'RichText':
+			case ContentBlockType.RichText:
 				return <BlockText {...contentBlock.content as BlockTextProps} />;
-			case 'Subtitle':
+			case ContentBlockType.Subtitle:
 				return <BlockSubtitle {...contentBlock.content as BlockSubtitleProps} />;
-			case 'Title':
+			case ContentBlockType.Title:
 				return <BlockTitle {...contentBlock.content as BlockTitleProps} />;
-			case 'TitleImageText':
+			case ContentBlockType.TitleImageText:
 				return <BlockTitleImageText {...contentBlock.content as BlockTitleImageTextProps} />;
-			case 'Video':
+			case ContentBlockType.Video:
 				return <BlockVideo {...contentBlock.content as BlockVideoProps} />;
-			case 'VideoTitleTextButton':
+			case ContentBlockType.VideoTitleTextButton:
 				return (
 					<BlockVideoTitleTextButton {...contentBlock.content as BlockVideoTitleTextButtonProps} />
 				);
@@ -123,7 +123,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		const contentBlockInfos: ContentBlockInfo[] = [];
 		if (collection) {
 			contentBlockInfos.push({
-				blockType: 'Intro',
+				blockType: ContentBlockType.Intro,
 				content: {
 					subtitle: 'Introductie',
 					text: collection.description,
@@ -135,7 +135,9 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			fragments.forEach((collectionFragment: Avo.Collection.Fragment) => {
 				console.log(collectionFragment);
 				contentBlockInfos.push({
-					blockType: collectionFragment.external_id ? 'VideoTitleTextButton' : 'RichText',
+					blockType: collectionFragment.external_id
+						? ContentBlockType.VideoTitleTextButton
+						: ContentBlockType.RichText,
 					content: {
 						title: collectionFragment.custom_title,
 						text: collectionFragment.custom_description,

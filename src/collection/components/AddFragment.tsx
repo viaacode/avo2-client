@@ -45,7 +45,7 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 		const newFragments = orderBy([...collection.collection_fragments], 'position', 'asc');
 
 		switch (contentBlockType) {
-			case 'RichText':
+			case ContentBlockType.RichText:
 				newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
 				break;
 			default:
@@ -74,7 +74,11 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 					</div>
 					<ToolbarItem>
 						{COLLECTION_CONTENT_BLOCKS.length > 1 ? null /* TODO: Dropdown */ : (
-							<Button type="secondary" icon="add" onClick={() => addFragment(index, 'RichText')} />
+							<Button
+								type="secondary"
+								icon="add"
+								onClick={() => addFragment(index, ContentBlockType.RichText)}
+							/>
 						)}
 						<div className="u-sr-accessible">Sectie toevoegen</div>
 					</ToolbarItem>

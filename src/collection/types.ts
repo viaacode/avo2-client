@@ -12,18 +12,19 @@ import {
 	BlockVideoTitleTextButtonProps,
 } from '@viaa/avo2-components';
 
-export type ContentBlockType =
-	| 'Image'
-	| 'ImageTitleTextButton'
-	| 'Intro'
-	| 'Links'
-	| 'Quote'
-	| 'RichText'
-	| 'Subtitle'
-	| 'Title'
-	| 'TitleImageText'
-	| 'Video'
-	| 'VideoTitleTextButton';
+export enum ContentBlockType {
+	'Image',
+	'ImageTitleTextButton',
+	'Intro',
+	'Links',
+	'Quote',
+	'RichText',
+	'Subtitle',
+	'Title',
+	'TitleImageText',
+	'Video',
+	'VideoTitleTextButton',
+}
 
 export type ContentBlockMetaData =
 	| BlockImageProps
