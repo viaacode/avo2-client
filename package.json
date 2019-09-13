@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@viaa/avo2-components": "^1.9.0",
+    "@viaa/avo2-components": "^1.9.2",
     "@viaa/avo2-types": "^1.6.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
