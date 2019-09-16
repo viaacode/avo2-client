@@ -1,4 +1,4 @@
-import { formatDuration } from './duration';
+import { formatDurationMinutesSeconds } from './duration';
 import { stripHtml } from './strip-html';
 
 describe('Formatters - duration', () => {

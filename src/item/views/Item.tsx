@@ -1,5 +1,4 @@
 import { debounce } from 'lodash-es';
-import marked from 'marked';
 import queryString from 'query-string';
 import React, {
 	createRef,
@@ -17,7 +16,7 @@ import {
 	Button,
 	Column,
 	Container,
-	// convertToHtml,
+	convertToHtml,
 	ExpandableContainer,
 	Grid,
 	Icon,
@@ -47,10 +46,9 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
+import { fetchPlayerToken } from '../../shared/services/player-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
-
-import { fetchPlayerToken } from '../../shared/services/player-service';
 
 import './Item.scss';
 
@@ -268,7 +266,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 										{/* "description" label height (20) + padding (14) */}
 										<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
 											<p style={{ paddingRight: '1rem' }}>
-												{formatTimestamps(marked(item.description || ''))}
+												{formatTimestamps(convertToHtml(item.description))}
 											</p>
 										</ExpandableContainer>
 									</Scrollbar>
