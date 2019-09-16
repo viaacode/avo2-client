@@ -1,5 +1,7 @@
 import React, { FunctionComponent, useState } from 'react';
 
+import { ExecutionResult } from '@apollo/react-common';
+import { useMutation } from '@apollo/react-hooks';
 import {
 	Button,
 	Column,
@@ -12,13 +14,24 @@ import {
 	RadioButton,
 	Select,
 	Spacer,
-	TextArea,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ApolloQueryResult } from 'apollo-client';
+import { get } from 'lodash-es';
+import {
+	GET_COLLECTION_BY_ID,
+	GET_COLLECTION_TITLES_BY_OWNER,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENT,
+} from '../../../collection/collection.gql';
+import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+import { toSeconds } from '../../../shared/helpers/formatters/duration';
+import { dataService } from '../../../shared/services/data-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
 
 interface AddFragmentToCollectionProps {
@@ -34,96 +47,227 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	isOpen,
 	onClose = () => {},
 }) => {
-	// TODO create endpoint for existing collections + call and put in store
-	const [existingCollections] = useState([]);
 	const [createNewCollection, setCreateNewCollection] = useState(false);
-	const [selectedCollection, setSelectedCollection] = useState('');
+	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
+	const [selectedCollection, setSelectedCollection] = useState<Avo.Collection.Response | undefined>(
+		undefined
+	);
+	const [newCollectionTitle, setNewCollectionTitle] = useState('');
+	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
+	const [triggerInsertCollection] = useMutation(INSERT_COLLECTION);
 
-	const addItemToCollection = () => {
-		onClose();
+	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
+		try {
+			setSelectedCollection(undefined);
+			setSelectedCollectionId(id);
+			const response: ApolloQueryResult<Avo.Collection.Response> = await dataService.query({
+				query: GET_COLLECTION_BY_ID,
+				variables: { id },
+			});
+			const collection = get(response, 'data.app_collections[0]');
+			if (collection) {
+				setSelectedCollection(collection);
+			} else {
+				toastService('Het ophalen van de collectie details is mislukt', TOAST_TYPE.DANGER);
+			}
+		} catch (err) {
+			toastService('Het ophalen van de collectie details is mislukt', TOAST_TYPE.DANGER);
+		}
+	};
+
+	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Response>) => {
+		try {
+			const response: void | ExecutionResult<
+				Avo.Collection.Fragment
+			> = await triggerCollectionFragmentInsert({
+				variables: {
+					id: collection.id,
+					fragment: {
+						use_custom_fields: false,
+						start_oc: 0, // TODO allow crop video
+						position: (collection.collection_fragments || []).length,
+						external_id: externalId,
+						end_oc: toSeconds(itemInfo.duration), // TODO allow crop video
+						custom_title: null,
+						custom_description: null,
+						collection_id: collection.id,
+					},
+				},
+			});
+			if (!response || response.errors) {
+				console.error(get(response, 'errors'));
+				toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
+			} else {
+				toastService('Het fragment is toegevoegd aan de collectie', TOAST_TYPE.SUCCESS);
+				onClose();
+			}
+		} catch (err) {
+			console.error(err);
+			toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
+		}
+	};
+
+	const addItemToNewCollection = async () => {
+		try {
+			// Create new collection with one fragment in it
+			const response: void | ExecutionResult<
+				Avo.Collection.Response
+			> = await triggerInsertCollection({
+				variables: {
+					collection: {
+						title: newCollectionTitle,
+						thumbnail_path: '/images/100x100.svg', // TODO get video stills of fragment and set first frame as cover
+						is_public: false,
+						owner_uid: '54859c98-d5d3-1038-8d91-6dfda901a78e',
+						type_id: 3,
+					} as Partial<Avo.Collection.Response>,
+				},
+			});
+			const insertedCollection: Partial<Avo.Collection.Response> = get(
+				response,
+				'data.insert_app_collections.returning[0]'
+			);
+			if (!response || response.errors) {
+				console.error(get(response, 'errors'));
+				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+			} else if (!insertedCollection) {
+				console.error(response);
+				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
+			} else {
+				// Add fragment to collection
+				await addItemToExistingCollection(insertedCollection);
+				onClose();
+			}
+		} catch (err) {
+			console.error(err);
+			toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+		}
+	};
+
+	const renderAddFRagmentToCollectionModal = (collections: { id: number; title: string }[]) => {
+		return (
+			<Modal
+				title="Voeg fragment toe aan collectie"
+				size="auto"
+				scrollable={true}
+				isOpen={isOpen}
+				onClose={onClose}
+			>
+				<ModalBody>
+					<div className="c-modal__body-add-fragment">
+						<Spacer>
+							<Form>
+								<Grid>
+									<Column size="2-7">
+										<video
+											src={`${itemInfo.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
+											placeholder={itemInfo.thumbnail_path}
+											style={{ width: '100%', display: 'block' }}
+											controls={true}
+										/>
+									</Column>
+									<Column size="2-5">
+										<FormGroup label="Titel">
+											<span>{itemInfo.title}</span>
+										</FormGroup>
+										<FormGroup label="Beschrijving">
+											<span>{itemInfo.description}</span>
+										</FormGroup>
+										<FormGroup label="Collectie">
+											<Spacer margin="bottom">
+												<RadioButton
+													label="Voeg toe aan bestaande collectie"
+													checked={!createNewCollection}
+													value="existing"
+													name="collection"
+													onChange={checked => setCreateNewCollection(!checked)}
+												/>
+												<div>
+													<Select
+														id="existingCollection"
+														options={[
+															{ label: 'Kies collectie', value: '', disabled: true },
+															...collections.map((collection: { id: number; title: string }) => ({
+																label: collection.title,
+																value: String(collection.id),
+															})),
+														]}
+														value={selectedCollectionId}
+														onChange={setSelectedCollectionIdAndGetCollectionInfo}
+														disabled={createNewCollection}
+													/>
+												</div>
+											</Spacer>
+											<Spacer margin="bottom">
+												<RadioButton
+													label="Voeg toe aan een nieuwe collectie"
+													checked={createNewCollection}
+													value="new"
+													name="collection"
+												/>
+												<div>
+													<TextInput
+														placeholder="Collectie titel"
+														disabled={!createNewCollection}
+														value={newCollectionTitle}
+														onChange={setNewCollectionTitle}
+													/>
+												</div>
+											</Spacer>
+										</FormGroup>
+									</Column>
+								</Grid>
+							</Form>
+						</Spacer>
+					</div>
+				</ModalBody>
+				<ModalFooterRight>
+					<Toolbar spaced>
+						<ToolbarRight>
+							<ToolbarItem>
+								<div className="c-button-toolbar">
+									<Button label="Annuleren" type="link" block={true} onClick={onClose} />
+									<Button
+										label="Toepassen"
+										type="primary"
+										block={true}
+										title={
+											createNewCollection && !newCollectionTitle
+												? 'U moet een collectie titel opgeven'
+												: !createNewCollection && !selectedCollection
+												? 'bezig met collectie detail op te halen'
+												: ''
+										}
+										disabled={
+											(createNewCollection && !newCollectionTitle) ||
+											(!createNewCollection && !selectedCollection)
+										}
+										onClick={
+											createNewCollection
+												? addItemToNewCollection
+												: () =>
+														addItemToExistingCollection(selectedCollection as Partial<
+															Avo.Collection.Response
+														>)
+										}
+									/>
+								</div>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
+				</ModalFooterRight>
+			</Modal>
+		);
 	};
 
 	return (
-		<Modal
-			title="Voeg fragment toe aan collectie"
-			size="auto"
-			scrollable={true}
-			isOpen={isOpen}
-			onClose={onClose}
-		>
-			<ModalBody>
-				<div className="c-modal__body-add-fragment">
-					<Spacer>
-						<Form>
-							<Grid>
-								<Column size="2-7">
-									<video
-										src={`${itemInfo.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
-										placeholder={itemInfo.thumbnail_path}
-										style={{ width: '100%', display: 'block' }}
-										controls={true}
-									/>
-								</Column>
-								<Column size="2-5">
-									<FormGroup label="Title">
-										<TextInput id="title" value={itemInfo.title} />
-									</FormGroup>
-									<FormGroup label="Beschrijving">
-										<TextArea id="description" value={itemInfo.description} />
-									</FormGroup>
-									<FormGroup label="Collectie">
-										<Spacer margin="bottom">
-											<RadioButton
-												label="Voeg toe aan bestaande collectie"
-												checked={!createNewCollection}
-												value="existing"
-												name="collection"
-												onChange={checked => setCreateNewCollection(!checked)}
-											/>
-											{!createNewCollection && (
-												<Select
-													id="existingCollection"
-													options={[
-														{ label: 'Kies collectie', value: '', disabled: true },
-														...existingCollections,
-													]}
-													value={selectedCollection}
-													onChange={setSelectedCollection}
-												/>
-											)}
-										</Spacer>
-										<Spacer margin="bottom">
-											<RadioButton
-												label="Voeg toe aan bestaande collectie"
-												checked={createNewCollection}
-												value="new"
-												name="collection"
-											/>
-										</Spacer>
-									</FormGroup>
-								</Column>
-							</Grid>
-						</Form>
-					</Spacer>
-				</div>
-			</ModalBody>
-			<ModalFooterRight>
-				<Toolbar spaced>
-					<ToolbarRight>
-						<ToolbarItem>
-							<div className="c-button-toolbar">
-								<Button label="Annuleren" type="link" block={true} onClick={onClose} />
-								<Button
-									label="Toepassen"
-									type="primary"
-									block={true}
-									onClick={addItemToCollection}
-								/>
-							</div>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
-			</ModalFooterRight>
-		</Modal>
+		<DataQueryComponent
+			query={GET_COLLECTION_TITLES_BY_OWNER}
+			// TODO: replace with actual owner id from ldap object
+			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
+			resultPath="app_collections"
+			renderData={renderAddFRagmentToCollectionModal}
+			notFoundMessage="Er konden geen collecties worden opgehaald"
+		/>
 	);
 };

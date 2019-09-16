@@ -3,11 +3,10 @@ import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import marked from 'marked';
-
 import {
 	Button,
 	Column,
+	convertToHtml,
 	DropdownButton,
 	DropdownContent,
 	Form,
@@ -125,7 +124,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
 					<WYSIWYG
 						id={`beschrijving_${index}`}
-						data={marked(getFragmentProperty(itemMeta, fragment, useCustomFields, 'description'))}
+						data={convertToHtml(
+							getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')
+						)}
 						onChange={onChangeDescription}
 						disabled={!!isVideoBlock}
 					/>
