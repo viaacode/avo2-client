@@ -1,4 +1,5 @@
 import { gql } from 'apollo-boost';
+import { ITEMS_PER_PAGE } from '../my-workspace/constants';
 
 // TODO: Reduce to only what we need.
 export const GET_COLLECTION_BY_ID = gql`
@@ -94,10 +95,17 @@ export const UPDATE_COLLECTION = gql`
 	}
 `;
 
-export const UPDATE_COLLECTION_PROPERTY = gql`
-	mutation updateCollectionNameById($id: Int!, $collectionChanges: app_collections_set_input!) {
-		update_app_collections(where: { id: { _eq: $id } }, _set: $collectionChanges) {
+export const INSERT_COLLECTION = gql`
+	mutation insertCollection($collection: app_collections_insert_input!) {
+		insert_app_collections(objects: [$collection]) {
 			affected_rows
+			returning {
+				id
+				title
+				collection_fragments {
+					id
+				}
+			}
 		}
 	}
 `;
@@ -148,8 +156,8 @@ export const INSERT_COLLECTION_FRAGMENT = gql`
 `;
 
 export const GET_COLLECTIONS_BY_OWNER = gql`
-	query getMigrateCollectionById($ownerId: uuid) {
-		app_collections(where: { owner: { uid: { _eq: $ownerId } } }) {
+	query getCollectionsByOwner($ownerId: uuid, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}) {
+		app_collections(where: { owner: { uid: { _eq: $ownerId } } }, offset: $offset, limit: $limit) {
 			id
 			updated_at
 			type_id
@@ -192,6 +200,15 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 	}
 `;
 
+export const GET_COLLECTION_TITLES_BY_OWNER = gql`
+	query getCollectionNamesByOwner($ownerId: uuid) {
+		app_collections(where: { owner: { uid: { _eq: $ownerId } } }) {
+			id
+			title
+		}
+	}
+`;
+
 export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
 	query getMetaItemByExternalId($externalId: bpchar!) {
 		app_item_meta(where: { external_id: { _eq: $externalId } }) {
@@ -209,7 +226,9 @@ export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
 export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
 	{
 		vocabularies_lom_contexts {
-			id
+			label
+		}
+		vocabularies_lom_classifications {
 			label
 		}
 	}

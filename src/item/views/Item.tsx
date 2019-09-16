@@ -1,3 +1,5 @@
+import { debounce } from 'lodash-es';
+import queryString from 'query-string';
 import React, {
 	createRef,
 	Fragment,
@@ -8,16 +10,13 @@ import React, {
 	useState,
 } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-
-import { debounce } from 'lodash-es';
-import marked from 'marked';
-import queryString from 'query-string';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
 	Button,
 	Column,
 	Container,
+	convertToHtml,
 	ExpandableContainer,
 	Grid,
 	Icon,
@@ -36,7 +35,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
 	generateSearchLink,
@@ -45,10 +46,11 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import './Item.scss';
+import { fetchPlayerToken } from '../../shared/services/player-service';
+import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
-import { GET_ITEM_BY_ID } from '../item.gql';
+import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
 
@@ -56,6 +58,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState((match.params as any)['id'] as string);
+	const [playerToken, setPlayerToken] = useState();
 	const [time, setTime] = useState(0);
 	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
 	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
@@ -153,6 +156,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
 	const renderItem = (item: Avo.Item.Response) => {
+		const initFlowPlayer = () =>
+			!playerToken && fetchPlayerToken(item.external_id).then(data => setPlayerToken(data));
+
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background="alt">
@@ -165,11 +171,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											{item.type && (
 												<Icon name={item.type.label === 'audio' ? 'headphone' : item.type.label} />
 											)}
-											<p>Video</p>
+											<p>{item.type.label}</p>
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-b-0">{item.title}</h1>
-									<MetaData spaced={true} category={item.type.label || 'video'}>
+									<MetaData spaced={true} category={item.type.label}>
 										<MetaDataItem>
 											{generateSearchLink('provider', item.org_name || '')}
 										</MetaDataItem>
@@ -210,16 +216,12 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
 										<div className="c-video-player t-player-skin--dark">
-											{/*{item.thumbnail_path && <Image src={item.thumbnail_path} />}*/}
 											{item.thumbnail_path && (
-												// TODO replace with flow player
-												<video
-													src={`${item.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
-													placeholder={item.thumbnail_path}
-													style={{ width: '100%', display: 'block' }}
-													controls={true}
-													ref={videoRef}
-													onLoadedMetadata={getSeekerTimeFromQueryParams}
+												<FlowPlayer
+													src={playerToken ? playerToken.toString() : null}
+													poster={item.thumbnail_path}
+													title={item.title}
+													onInit={initFlowPlayer}
 												/>
 											)}
 										</div>
@@ -264,7 +266,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 										{/* "description" label height (20) + padding (14) */}
 										<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
 											<p style={{ paddingRight: '1rem' }}>
-												{formatTimestamps(marked(item.description || ''))}
+												{formatTimestamps(convertToHtml(item.description))}
 											</p>
 										</ExpandableContainer>
 									</Scrollbar>
