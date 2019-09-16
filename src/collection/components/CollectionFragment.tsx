@@ -77,8 +77,12 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		setUseCustomFields(!useCustomFields);
 	};
 
-	const renderForm = (fragment: any, itemMeta: any, index: number) => {
-		const isVideoBlock = !useCustomFields && itemMeta;
+	const renderForm = (
+		fragment: Avo.Collection.Fragment,
+		itemMetaData: Avo.Item.Response,
+		index: number
+	) => {
+		const isVideoBlock = !useCustomFields && itemMetaData;
 
 		const onChangeTitle = (value: string) => {
 			if (isVideoBlock) {
@@ -97,20 +101,20 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		};
 
 		const getFragmentProperty = (
-			itemMeta: any,
-			fragment: any,
+			itemMetaData: Avo.Item.Response,
+			fragment: Avo.Collection.Fragment,
 			useCustomFields: Boolean,
 			prop: 'title' | 'description'
 		) => {
-			if (useCustomFields || !itemMeta) {
+			if (useCustomFields || !itemMetaData) {
 				return get(fragment, `custom_${prop}`) || '';
 			}
-			return get(itemMeta, prop, '');
+			return get(itemMetaData, prop, '');
 		};
 
 		return (
 			<Form>
-				{itemMeta && (
+				{itemMetaData && (
 					<FormGroup label="Alternatieve Tekst" labelFor="customFields">
 						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
 					</FormGroup>
@@ -119,17 +123,17 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					<TextInput
 						id="title"
 						type="text"
-						value={getFragmentProperty(itemMeta, fragment, useCustomFields, 'title')}
+						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
 						placeholder="Titel"
 						onChange={onChangeTitle}
-						disabled={isVideoBlock}
+						disabled={!!isVideoBlock}
 					/>
 				</FormGroup>
 				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
 					<WYSIWYG
 						id={`beschrijving_${index}`}
 						data={convertToHtml(
-							getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')
+							getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
 						)}
 						onChange={onChangeDescription}
 						disabled={!!isVideoBlock}
@@ -187,7 +191,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
 	};
 
-	const renderCollectionFragment = (itemMeta: any) => {
+	const renderCollectionFragment = (itemMetaData: any) => {
 		const initFlowPlayer = () =>
 			!playerToken && fetchPlayerToken(fragment.external_id).then(data => setPlayerToken(data));
 
@@ -201,7 +205,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 									<div className="c-button-toolbar">
 										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
 										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
-										{itemMeta && (
+										{itemMetaData && (
 											<Button
 												icon="scissors"
 												label="Knippen"
@@ -275,15 +279,15 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 								<Column size="3-6">
 									<FlowPlayer
 										src={playerToken ? playerToken.toString() : null}
-										poster={itemMeta.thumbnail_path}
-										title={itemMeta.title}
+										poster={itemMetaData.thumbnail_path}
+										title={itemMetaData.title}
 										onInit={initFlowPlayer}
 									/>
 								</Column>
-								<Column size="3-6">{renderForm(fragment, itemMeta, index)}</Column>
+								<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
 							</Grid>
 						) : (
-							<Form>{renderForm(fragment, itemMeta, index)}</Form>
+							<Form>{renderForm(fragment, itemMetaData, index)}</Form>
 						)}
 					</div>
 				</div>
@@ -293,12 +297,14 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					updateCollection={updateCollection}
 					reorderFragments={reorderFragments}
 				/>
-				<CutFragmentModal
-					isOpen={isCutModalOpen}
-					setIsOpen={setIsCutModalOpen}
-					item={itemMeta}
-					externalId={fragment.external_id}
-				/>
+				{itemMetaData && (
+					<CutFragmentModal
+						isOpen={isCutModalOpen}
+						setIsOpen={setIsCutModalOpen}
+						itemMetaData={itemMetaData}
+						externalId={fragment.external_id}
+					/>
+				)}
 			</>
 		);
 	};

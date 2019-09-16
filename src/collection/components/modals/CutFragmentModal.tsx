@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
+	Container,
 	Modal,
 	ModalBody,
 	MultiRange,
@@ -10,26 +11,56 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import {
+	formatDurationHoursMinutesSeconds,
+	toSeconds,
+} from '../../../shared/helpers/formatters/duration';
 import { fetchPlayerToken } from '../../../shared/services/player-service';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
-	item: any;
+	itemMetaData: Avo.Item.Response;
 	externalId: string;
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	setIsOpen,
 	isOpen,
-	item,
+	itemMetaData,
 	externalId,
 }) => {
 	const [playerToken, setPlayerToken] = useState();
+	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
+	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
+		toSeconds(itemMetaData.duration) || 0
+	);
 
 	const onSaveCut = () => {};
+
+	/**
+	 * Converts a duration of the format "00:03:36" to number of seconds and stores it under the appropriate state
+	 * @param timeString
+	 * @param startOrEnd
+	 */
+	const setFragmentTime = (timeString: string, startOrEnd: 'start' | 'end') => {
+		const setFunctions = {
+			start: setFragmentStartTime,
+			end: setFragmentEndTime,
+		};
+		const seconds = toSeconds(timeString);
+		if (seconds !== null) {
+			setFunctions[startOrEnd](seconds);
+		}
+	};
+
+	const onUpdateMultiRangeValues = (values: number[]) => {
+		setFragmentStartTime(values[0]);
+		setFragmentEndTime(values[1]);
+	};
 
 	const initFlowPlayer = () =>
 		!playerToken && fetchPlayerToken(externalId).then(data => setPlayerToken(data));
@@ -44,14 +75,33 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		>
 			<ModalBody>
 				<>
-					{item && (
-						<FlowPlayer
-							src={playerToken ? playerToken.toString() : null}
-							poster={item.thumbnail_path}
-							title={item.title}
-							onInit={initFlowPlayer}
+					<FlowPlayer
+						src={playerToken ? playerToken.toString() : null}
+						poster={itemMetaData.thumbnail_path}
+						title={itemMetaData.title}
+						onInit={initFlowPlayer}
+					/>
+					<Container mode="vertical" className="m-time-crop-controls">
+						<TextInput
+							value={formatDurationHoursMinutesSeconds(fragmentStartTime)}
+							onChange={timeString => setFragmentTime(timeString, 'start')}
 						/>
-					)}
+						<div className="m-multi-range-wrapper">
+							{!!fragmentStartTime && !!fragmentEndTime && (
+								<MultiRange
+									values={[fragmentStartTime, fragmentEndTime]}
+									onChange={onUpdateMultiRangeValues}
+									min={0}
+									max={toSeconds(itemMetaData.duration) || 0}
+									step={1}
+								/>
+							)}
+						</div>
+						<TextInput
+							value={formatDurationHoursMinutesSeconds(fragmentEndTime)}
+							onChange={timeString => setFragmentTime(timeString, 'end')}
+						/>
+					</Container>
 					<Toolbar spaced>
 						<ToolbarRight>
 							<ToolbarItem>
