@@ -6,7 +6,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import {
 	Button,
 	Column,
-	// convertToHtml,
+	convertToHtml,
 	DropdownButton,
 	DropdownContent,
 	Form,

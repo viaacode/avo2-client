@@ -133,7 +133,6 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			const fragments = orderBy([...collection.collection_fragments], 'position', 'asc') || [];
 
 			fragments.forEach((collectionFragment: Avo.Collection.Fragment) => {
-				console.log(collectionFragment);
 				contentBlockInfos.push({
 					blockType: collectionFragment.external_id
 						? ContentBlockType.VideoTitleTextButton
