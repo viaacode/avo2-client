@@ -2,21 +2,22 @@ FROM node:12-alpine AS build
 
 # set our node environment, defaults to production
 ARG NODE_ENV=production
-ARG PRODUCTION=true
+ARG PRODUCTION=$PRODUCTION
 ARG CI=true
 ENV NODE_ENV $NODE_ENV
 ENV CI $CI
-ENV TZ=Europe/Brussels 
+ENV TZ=Europe/Brussels
 WORKDIR /app
 
 COPY package.json package-lock.json .npmrc ./
 RUN chown -R node:node /app
-RUN apk add --no-cache tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone 
+RUN apk add --no-cache tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 USER node
-RUN npm ci --production=$PRODUCTION
+# This has to be false, otherwise dev dependencies are not correctly installed and we need those for the build
+RUN npm ci --production=false
 
 COPY . .
-RUN CI=false npm run build 
+RUN CI=false npm run build
 # set permissions for openshift
 USER root
 #RUN chmod -R g+rwx /app && chown 101:101 /app
