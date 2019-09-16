@@ -15,8 +15,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { UPDATE_COLLECTION } from '../collection.gql';
+import { UPDATE_COLLECTION } from '../graphql';
 
 interface ShareCollectionModalProps {
 	isOpen: boolean;
@@ -114,7 +115,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			// Strip failed rules from ruleset
 			const failedRules = Object.entries(validationObject).filter(rule => !get(rule[1], 'result'));
 
-			setValidationError(failedRules.map(rule => `${get(rule[1], 'error')}\n`));
+			setValidationError(failedRules.map(rule => get(rule[1], 'error')));
 			toastService(
 				'Opslaan mislukt. Gelieve all verplichte velden in te vullen.',
 				TOAST_TYPE.DANGER

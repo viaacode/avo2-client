@@ -12,14 +12,14 @@ import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginResponse } from '../store/types';
 
-export interface LoginProps {
+export interface LoginProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;
 	getLoginState: () => Dispatch;
 }
 
-const Login: FunctionComponent<LoginProps & RouteComponentProps> = ({
+const Login: FunctionComponent<LoginProps> = ({
 	history,
 	location,
 	loginState,

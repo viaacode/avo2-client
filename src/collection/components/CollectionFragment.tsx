@@ -6,7 +6,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import {
 	Button,
 	Column,
-	// convertToHtml,
+	convertToHtml,
 	DropdownButton,
 	DropdownContent,
 	Form,
@@ -24,12 +24,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import marked from 'marked';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { convertToHtml } from '../../shared/helpers/convertToHtml';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { GET_ITEM_META_BY_EXTERNAL_ID } from '../collection.gql';
+import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
 import AddFragment from './AddFragment';
 
 interface CollectionFragmentProps extends RouteComponentProps {
