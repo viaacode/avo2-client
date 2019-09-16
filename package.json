@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "prestart": "npm run env",
@@ -14,9 +14,15 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
+  "contributors": [
+    "Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
+    "Benjamin Naesen <benjamin.naesen@studiohyperdrive.be>",
+    "Andry Charlier <andry.charlier@studiohyperdrive.be>",
+    "Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be>"
+  ],
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@viaa/avo2-components": "^1.9.0",
+    "@viaa/avo2-components": "^1.9.2",
     "@viaa/avo2-types": "^1.6.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
