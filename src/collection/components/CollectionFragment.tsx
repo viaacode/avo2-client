@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash-es';
+import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -9,6 +9,7 @@ import { fetchPlayerToken } from '../../shared/services/player-service';
 import {
 	Button,
 	Column,
+	convertToHtml,
 	DropdownButton,
 	DropdownContent,
 	Form,
@@ -16,6 +17,8 @@ import {
 	Grid,
 	MenuContent,
 	TextInput,
+	Thumbnail,
+	Toggle,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -24,8 +27,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import marked from 'marked';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
@@ -36,7 +39,7 @@ interface CollectionFragmentProps extends RouteComponentProps {
 	index: number;
 	collection: Avo.Collection.Response;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	updateFragmentProperty: (value: string, fieldName: string, fragmentId: number) => void;
+	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
 	isOptionsMenuOpen: string | null;
 	setIsOptionsMenuOpen: React.Dispatch<React.SetStateAction<null>>;
 	fragment: any;
@@ -72,35 +75,72 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		/>
 	);
 
-	const renderForm = (fragment: any, index: number) => (
-		<Form>
-			<FormGroup label={`Tekstblok titel`} labelFor="title">
-				<TextInput
-					id="title"
-					type="text"
-					value={fragment.custom_title || ''}
-					placeholder="Titel"
-					onChange={(value: string) => updateFragmentProperty(value, 'custom_title', fragment.id)}
-				/>
-			</FormGroup>
-			<FormGroup label={`Tekstblok beschrijving`} labelFor={`beschrijving_${index}`}>
-				<>
+	const onChangeToggle = () => {
+		updateFragmentProperty(!useCustomFields, 'use_custom_fields', fragment.id);
+		setUseCustomFields(!useCustomFields);
+	};
+
+	const renderForm = (fragment: any, itemMeta: any, index: number) => {
+		const isVideoBlock = !useCustomFields && itemMeta;
+
+		const onChangeTitle = (value: string) => {
+			if (isVideoBlock) {
+				return null;
+			}
+
+			return updateFragmentProperty(value, 'custom_title', fragment.id);
+		};
+
+		const onChangeDescription = (e: any) => {
+			if (isVideoBlock) {
+				return null;
+			}
+
+			return updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id);
+		};
+
+		const getFragmentProperty = (
+			itemMeta: any,
+			fragment: any,
+			useCustomFields: Boolean,
+			prop: 'title' | 'description'
+		) => {
+			if (useCustomFields || !itemMeta) {
+				return get(fragment, `custom_${prop}`) || '';
+			}
+			return get(itemMeta, prop, '');
+		};
+
+		return (
+			<Form>
+				{itemMeta && (
+					<FormGroup label="Alternatieve Tekst" labelFor="customFields">
+						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
+					</FormGroup>
+				)}
+				<FormGroup label={`Tekstblok titel`} labelFor="title">
+					<TextInput
+						id="title"
+						type="text"
+						value={getFragmentProperty(itemMeta, fragment, useCustomFields, 'title')}
+						placeholder="Titel"
+						onChange={onChangeTitle}
+						disabled={isVideoBlock}
+					/>
+				</FormGroup>
+				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
 					<WYSIWYG
 						id={`beschrijving_${index}`}
-						data={fragment.custom_description || ''}
-						onChange={
-							((e: any) =>
-								updateFragmentProperty(
-									e.target.innerHTML,
-									'custom_description',
-									fragment.id
-								)) as any // TODO remove any type once components deploy is working again
-						}
+						data={convertToHtml(
+							getFragmentProperty(itemMeta, fragment, useCustomFields, 'description')
+						)}
+						onChange={onChangeDescription}
+						disabled={!!isVideoBlock}
 					/>
-				</>
-			</FormGroup>
-		</Form>
-	);
+				</FormGroup>
+			</Form>
+		);
+	};
 
 	const onDuplicateFragment = (fragmentId: number) => {
 		setIsOptionsMenuOpen(null);
@@ -164,6 +204,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 									<div className="c-button-toolbar">
 										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
 										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
+										{itemMeta && <Button icon="scissors" label="Knippen" type="secondary" />}
 									</div>
 								</ToolbarItem>
 							</ToolbarLeft>
@@ -235,10 +276,10 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 										onInit={initFlowPlayer}
 									/>
 								</Column>
-								<Column size="3-6">{renderForm(fragment, index)}</Column>
+								<Column size="3-6">{renderForm(fragment, itemMeta, index)}</Column>
 							</Grid>
 						) : (
-							<Form>{renderForm(fragment, index)}</Form>
+							<Form>{renderForm(fragment, itemMeta, index)}</Form>
 						)}
 					</div>
 				</div>
@@ -261,6 +302,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			resultPath="app_item_meta[0]"
 			renderData={renderCollectionFragment}
 			notFoundMessage="De meta item van deze collectie werd niet gevonden"
+			showSpinner={false}
 		/>
 	) : (
 		renderCollectionFragment(null)

@@ -14,7 +14,6 @@ import {
 	Icon,
 	Modal,
 	ModalBody,
-	ModalFooterLeft,
 	ModalFooterRight,
 	ModalHeaderRight,
 	Spacer,

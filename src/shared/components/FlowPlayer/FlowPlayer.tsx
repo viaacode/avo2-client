@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useRef } from 'react';
 
 import { Icon } from '@viaa/avo2-components';
-import { CustomWindow } from '../../../shared/types/CustomWindow';
+import { CustomWindow } from '../../../shared/types/global';
 
 import './FlowPlayer.scss';
 
@@ -18,16 +18,16 @@ interface FlowPlayerProps {
 }
 
 export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, title, onInit }) => {
+	const videoContainerRef = useRef(null);
 	const videoPlayerRef = useRef(null);
-	let player: any = null;
 
 	useEffect(() => {
-		if (videoPlayerRef.current) {
-			player = flowplayer(videoPlayerRef.current, {
+		if (videoContainerRef.current) {
+			videoPlayerRef.current = flowplayer(videoContainerRef.current, {
 				// DATA
-				src,
 				title,
 				poster,
+				src,
 
 				// CONFIGURATION
 				token: (window as CustomWindow)._ENV_.FLOW_PLAYER_TOKEN,
@@ -38,23 +38,23 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 		}
 
 		return () => {
-			if (player) {
-				player.destroy();
-				player = null;
+			if (videoPlayerRef.current) {
+				(videoPlayerRef.current as any).destroy();
+				videoPlayerRef.current = null;
 			}
 		};
-	}, [videoPlayerRef, src]);
+	}, [videoContainerRef, src]);
 
 	return src && poster ? (
 		<div
 			className="c-video-player"
 			data-player-id={(window as CustomWindow)._ENV_.FLOW_PLAYER_ID}
-			ref={videoPlayerRef}
+			ref={videoContainerRef}
 		/>
 	) : (
 		<div className="c-video-player">
 			<div className="c-video-player__item">
-				<img src={poster} />
+				<img src={poster} alt={`Thumbnail voor video over ${title}.`} />
 			</div>
 			<div className="c-play-overlay" onClick={onInit}>
 				<div className="c-play-overlay__inner">

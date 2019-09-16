@@ -3,6 +3,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import { AddFragment, CollectionFragment } from '../components';
 
 interface EditCollectionContentProps {

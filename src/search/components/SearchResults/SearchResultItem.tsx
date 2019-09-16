@@ -10,7 +10,10 @@ import {
 } from '@viaa/avo2-components';
 
 import { formatDate } from '../../../shared/helpers/formatters/date';
-import { generateSearchLink } from '../../../shared/helpers/generateLink';
+import {
+	generateContentLinkString,
+	generateSearchLink,
+} from '../../../shared/helpers/generateLink';
 import { SearchResultItemProps } from './types';
 
 const SearchResultItem = ({
@@ -18,7 +21,7 @@ const SearchResultItem = ({
 	handleOriginalCpLinkClicked,
 	result,
 }: SearchResultItemProps) => {
-	const contentLink = `/item/${result.id}`;
+	const contentLink = generateContentLinkString(result.administrative_type, result.id);
 
 	return (
 		<SearchResult
