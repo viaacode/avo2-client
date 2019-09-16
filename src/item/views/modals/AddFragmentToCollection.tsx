@@ -27,7 +27,7 @@ import {
 	GET_COLLECTION_TITLES_BY_OWNER,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENT,
-} from '../../../collection/collection.gql';
+} from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { toSeconds } from '../../../shared/helpers/formatters/duration';
 import { dataService } from '../../../shared/services/data-service';
