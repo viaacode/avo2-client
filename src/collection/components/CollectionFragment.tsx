@@ -30,8 +30,7 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
-import { CutFragmentModal } from './';
-import AddFragment from './AddFragment';
+import { AddFragment, CutFragmentModal } from './';
 
 interface CollectionFragmentProps extends RouteComponentProps {
 	index: number;

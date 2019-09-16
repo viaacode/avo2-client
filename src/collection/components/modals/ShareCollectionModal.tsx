@@ -16,8 +16,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { UPDATE_COLLECTION } from '../graphql';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { UPDATE_COLLECTION } from '../../graphql';
 
 interface ShareCollectionModalProps {
 	isOpen: boolean;

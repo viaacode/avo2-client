@@ -11,8 +11,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
-import { fetchPlayerToken } from '../../shared/services/player-service';
+import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import { fetchPlayerToken } from '../../../shared/services/player-service';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
