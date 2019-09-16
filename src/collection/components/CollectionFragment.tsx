@@ -31,10 +31,6 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
 import AddFragment from './AddFragment';
 
-function convertToHtml(text: string | undefined | null) {
-	return marked(text || '');
-}
-
 interface CollectionFragmentProps extends RouteComponentProps {
 	index: number;
 	collection: Avo.Collection.Response;
