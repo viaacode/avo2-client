@@ -1,13 +1,12 @@
 {
   "name": "avo2-client",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "prestart": "npm run env",
     "start": "react-scripts start",
-    "env": "bash ./scripts/env.sh && cp env-config.js ./public",
+    "env": "PROXY_URL=http://localhost:3000 FLOW_PLAYER_TOKEN=eyJraWQiOiJsY1U5UVdRaWdiZWkiLCJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJjIjoie1wiYWNsXCI6NixcImlkXCI6XCJsY1U5UVdRaWdiZWlcIn0iLCJpc3MiOiJGbG93cGxheWVyIn0.hQiTQfTX5WjsJeoNKnu5BxQDyBlMVwLaoXmN-ytdFDay5lP4X8eX5WMwNdSkXHPhMUOEWb6_mepO-u2LjNgGKQ FLOW_PLAYER_ID=a4d809cb-9427-4945-80c0-a8456a4089bd bash ./scripts/env.sh && cp env-config.js ./public",
     "build": "react-scripts build",
-    "test": "jest --verbose",
     "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
     "integration-tests": "cypress run",
     "lint": "tslint -p .",
@@ -23,7 +22,7 @@
   ],
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@viaa/avo2-components": "^1.8.0",
+    "@viaa/avo2-components": "^1.9.2",
     "@viaa/avo2-types": "^1.6.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",

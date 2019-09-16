@@ -1,0 +1,2 @@
+- add resource limits as parms , modify it with oc apply during rollout
+$
