@@ -112,7 +112,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 
 		return (
 			<Form>
-				{itemMeta && (
+				{!!itemMeta && (
 					<FormGroup label="Alternatieve Tekst" labelFor="customFields">
 						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
 					</FormGroup>

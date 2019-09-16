@@ -17,7 +17,6 @@ interface CutFragmentModalProps {
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({ setIsOpen, isOpen }) => {
 	const onSaveCut = () => {};
-	console.log('test');
 
 	return (
 		<Modal
