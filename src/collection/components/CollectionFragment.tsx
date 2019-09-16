@@ -204,7 +204,14 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 									<div className="c-button-toolbar">
 										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
 										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
-										{itemMeta && <Button icon="scissors" label="Knippen" type="secondary" />}
+										{itemMeta && (
+											<Button
+												icon="scissors"
+												label="Knippen"
+												type="secondary"
+												onClick={() => setIsCutModalOpen(true)}
+											/>
+										)}
 									</div>
 								</ToolbarItem>
 							</ToolbarLeft>
@@ -289,7 +296,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					updateCollection={updateCollection}
 					reorderFragments={reorderFragments}
 				/>
-				<CutFragmentModal isOpen={isCutModalOpen} setIsOpen={() => setIsCutModalOpen(true)} />
+				<CutFragmentModal isOpen={isCutModalOpen} setIsOpen={setIsCutModalOpen} />
 			</>
 		);
 	};
