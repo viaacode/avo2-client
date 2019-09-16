@@ -17,7 +17,6 @@ import {
 	Grid,
 	MenuContent,
 	TextInput,
-	Thumbnail,
 	Toggle,
 	Toolbar,
 	ToolbarItem,
@@ -27,7 +26,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import marked from 'marked';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -296,7 +294,12 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					updateCollection={updateCollection}
 					reorderFragments={reorderFragments}
 				/>
-				<CutFragmentModal isOpen={isCutModalOpen} setIsOpen={setIsCutModalOpen} />
+				<CutFragmentModal
+					isOpen={isCutModalOpen}
+					setIsOpen={setIsCutModalOpen}
+					item={itemMeta}
+					externalId={fragment.external_id}
+				/>
 			</>
 		);
 	};
