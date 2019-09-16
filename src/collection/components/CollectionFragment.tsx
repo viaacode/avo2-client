@@ -27,11 +27,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import marked from 'marked';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
+import { CutFragmentModal } from './';
 import AddFragment from './AddFragment';
 
 interface CollectionFragmentProps extends RouteComponentProps {
@@ -59,6 +59,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 }) => {
 	const [playerToken, setPlayerToken] = useState();
 	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
+	const [isCutModalOpen, setIsCutModalOpen] = useState(false);
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (index: number) => index === 0;
@@ -287,6 +288,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					updateCollection={updateCollection}
 					reorderFragments={reorderFragments}
 				/>
+				<CutFragmentModal isOpen={isCutModalOpen} setIsOpen={() => setIsCutModalOpen(true)} />
 			</>
 		);
 	};
