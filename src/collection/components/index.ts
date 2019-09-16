@@ -1,5 +1,6 @@
 import AddFragment from './AddFragment';
 import CollectionFragment from './CollectionFragment';
+import CutFragmentModal from './CutFragmentModal';
 import DeleteCollectionModal from './DeleteCollectionModal';
 import RenameCollectionModal from './RenameCollectionModal';
 import ReorderCollectionModal from './ReorderCollectionModal';
@@ -12,4 +13,5 @@ export {
 	ShareCollectionModal,
 	CollectionFragment,
 	AddFragment,
+	CutFragmentModal,
 };

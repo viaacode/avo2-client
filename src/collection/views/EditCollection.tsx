@@ -372,11 +372,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 											label="Delen"
 											onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 										/>
-										<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} />
+										<Button
+											type="secondary"
+											label="Bekijk"
+											onClick={onPreviewCollection}
+											disabled
+										/>
 										<Button
 											type="secondary"
 											label="Herschik alle items"
 											onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
+											disabled
 										/>
 										<ControlledDropdown
 											isOpen={isOptionsMenuOpen}
