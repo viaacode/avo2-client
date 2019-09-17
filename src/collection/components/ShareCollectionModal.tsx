@@ -60,8 +60,25 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 		// Check if fragment has custom_title and custom_description if necessary.
 		fragments.forEach(fragment => {
-			if (fragment.use_custom_fields && (!fragment.custom_title || !fragment.custom_description)) {
-				isValid = false;
+			if (fragment.use_custom_fields) {
+				if (fragment.external_id) {
+					if (
+						fragment.use_custom_fields &&
+						(!fragment.custom_title || !fragment.custom_description)
+					) {
+						console.log('Video field');
+						isValid = false;
+					}
+				} else {
+					if (
+						fragment.use_custom_fields &&
+						!fragment.custom_title &&
+						!fragment.custom_description
+					) {
+						console.log('Tekst field');
+						isValid = false;
+					}
+				}
 			}
 		});
 
