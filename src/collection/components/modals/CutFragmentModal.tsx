@@ -105,7 +105,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							<ToolbarItem>
 								<div className="c-button-toolbar">
 									<Button type="secondary" label="Annuleren" onClick={() => setIsOpen(false)} />
-									<Button type="primary" label="Knippen" onClick={onSaveCut} />
+									<Button type="primary" label="Knippen" onClick={onSaveCut} disabled />
 								</div>
 							</ToolbarItem>
 						</ToolbarRight>
