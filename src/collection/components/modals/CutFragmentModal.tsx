@@ -87,15 +87,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							onChange={timeString => setFragmentTime(timeString, 'start')}
 						/>
 						<div className="m-multi-range-wrapper">
-							{!!fragmentStartTime && !!fragmentEndTime && (
-								<MultiRange
-									values={[fragmentStartTime, fragmentEndTime]}
-									onChange={onUpdateMultiRangeValues}
-									min={0}
-									max={toSeconds(itemMetaData.duration) || 0}
-									step={1}
-								/>
-							)}
+							<MultiRange
+								values={[fragmentStartTime, fragmentEndTime]}
+								onChange={onUpdateMultiRangeValues}
+								min={0}
+								max={toSeconds(itemMetaData.duration) || 0}
+								step={1}
+							/>
 						</div>
 						<TextInput
 							value={formatDurationHoursMinutesSeconds(fragmentEndTime)}
