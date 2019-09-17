@@ -51,28 +51,37 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const [isCollectionPublic, setIsCollectionPublic] = useState(initialIsPublic);
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
 
-	const validateFragments = (fragments: Avo.Collection.Fragment[]) => {
+	const validateFragments = (fragments: Avo.Collection.Fragment[], type: string) => {
 		if (!fragments || !fragments.length) {
 			return false;
 		}
 
 		let isValid: Boolean = true;
 
-		// Check if fragment has custom_title and custom_description if necessary.
-		fragments.forEach(fragment => {
-			if (fragment.external_id) {
-				if (
-					fragment.use_custom_fields &&
-					(!fragment.custom_title || !fragment.custom_description)
-				) {
-					isValid = false;
-				}
-			} else {
-				if (!fragment.custom_title && !fragment.custom_description) {
-					isValid = false;
-				}
-			}
-		});
+		switch (type) {
+			case 'video':
+				// Check if video fragment has custom_title and custom_description if necessary.
+				fragments.forEach(fragment => {
+					if (
+						fragment.external_id &&
+						fragment.use_custom_fields &&
+						(!fragment.custom_title || !fragment.custom_description)
+					) {
+						isValid = false;
+					}
+				});
+				break;
+			case 'text':
+				// Check if text fragment has custom_title or custom_description.
+				fragments.forEach(fragment => {
+					if (!fragment.external_id && !fragment.custom_title && !fragment.custom_description) {
+						isValid = false;
+					}
+				});
+				break;
+			default:
+				break;
+		}
 
 		return isValid;
 	};
@@ -86,8 +95,8 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			collection_fragments,
 		} = collection;
 
-		// Validation ruleset
-		const validationObject = {
+		// Collection validation ruleset
+		const collectionValidation = {
 			hasTitle: {
 				error: 'Uw collectie heeft geen titel.',
 				result: !!title,
@@ -108,21 +117,27 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				error: 'Uw collectie heeft geen items.',
 				result: !!(collection_fragments && collection_fragments.length),
 			},
-			hasFullFragments: {
-				error: 'Uw items moeten een titel en beschrijving bevatten.',
-				result: validateFragments(collection_fragments),
+			hasFullVideoFragments: {
+				error: 'Uw video-items moeten een titel en beschrijving bevatten.',
+				result: validateFragments(collection_fragments, 'video'),
+			},
+			hasFullTextFragments: {
+				error: 'Uw tekst-items moeten een titel of beschrijving bevatten.',
+				result: validateFragments(collection_fragments, 'text'),
 			},
 			// TODO: Add check if owner or write-rights.
 		};
 
-		if (Object.values(validationObject).every(rule => rule.result === true)) {
+		if (Object.values(collectionValidation).every(rule => rule.result === true)) {
 			// If all validations are valid, publish collection
 			onSave();
 			setValidationError(undefined);
 			toastService('Opslaan volbracht.', TOAST_TYPE.SUCCESS);
 		} else {
 			// Strip failed rules from ruleset
-			const failedRules = Object.entries(validationObject).filter(rule => !get(rule[1], 'result'));
+			const failedRules = Object.entries(collectionValidation).filter(
+				rule => !get(rule[1], 'result')
+			);
 
 			setValidationError(failedRules.map(rule => get(rule[1], 'error')));
 			toastService(
