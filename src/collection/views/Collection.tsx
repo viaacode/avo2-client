@@ -50,7 +50,7 @@ import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
-import { ContentBlockInfo, ContentBlockType } from '../types';
+import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
 
 interface CollectionProps extends RouteComponentProps {}
 
@@ -140,7 +140,10 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					content: {
 						title: collectionFragment.custom_title,
 						text: collectionFragment.custom_description,
-						titleLink: generateContentLinkString('video', collectionFragment.external_id),
+						titleLink: generateContentLinkString(
+							ContentTypeString.video,
+							collectionFragment.external_id
+						),
 						videoSource: '',
 						buttonLabel: 'Meer lezen',
 					} as BlockVideoTitleTextButtonProps,
@@ -236,7 +239,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 															case 'edit':
 																history.push(
 																	`${generateContentLinkString(
-																		'collection',
+																		ContentTypeString.collection,
 																		collection.id.toString()
 																	)}/${RouteParts.Edit}`
 																);
