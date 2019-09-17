@@ -66,7 +66,6 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 						fragment.use_custom_fields &&
 						(!fragment.custom_title || !fragment.custom_description)
 					) {
-						console.log('Video field');
 						isValid = false;
 					}
 				} else {
@@ -75,7 +74,6 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 						!fragment.custom_title &&
 						!fragment.custom_description
 					) {
-						console.log('Tekst field');
 						isValid = false;
 					}
 				}
