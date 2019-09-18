@@ -1,11 +1,9 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import { Route } from 'react-router';
+import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';
 import MyWorkspace from './views/MyWorkspace';
 
 export const renderMyWorkspaceRoutes = () => (
-	<Fragment>
-		<Route component={MyWorkspace} path={`/${RouteParts.MyWorkspace}/:tabId`} exact={false} />
-	</Fragment>
+	<SecuredRoute component={MyWorkspace} path={`/${RouteParts.MyWorkspace}/:tabId`} exact={false} />
 );
