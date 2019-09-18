@@ -52,28 +52,28 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
-	const fetchThumbnailImages = async () => {
-		// Only update thumbnails when modal is opened, not when closed
-		try {
-			const externalIds = compact(collection.collection_fragments.map(cf => cf.external_id));
-			const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
-			setVideoStills(
-				uniq([
-					...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
-					...videoStills.map(videoStill => videoStill.thumbnailImagePath),
-				])
-			);
-		} catch (err) {
-			toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
-			console.error(err);
-		}
-	};
-
 	useEffect(() => {
+		const fetchThumbnailImages = async () => {
+			// Only update thumbnails when modal is opened, not when closed
+			try {
+				const externalIds = compact(collection.collection_fragments.map(cf => cf.external_id));
+				const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
+				setVideoStills(
+					uniq([
+						...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
+						...videoStills.map(videoStill => videoStill.thumbnailImagePath),
+					])
+				);
+			} catch (err) {
+				toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
+				console.error(err);
+			}
+		};
+
 		if (showCoverImageModal) {
 			fetchThumbnailImages().then(() => {});
 		}
-	}, [collection, showCoverImageModal, fetchThumbnailImages]);
+	}, [collection, showCoverImageModal]);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
