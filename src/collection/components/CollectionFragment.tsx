@@ -29,6 +29,7 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
+import { isVideoFragment } from '../helpers';
 import AddFragment from './AddFragment';
 
 interface CollectionFragmentProps extends RouteComponentProps {
@@ -257,7 +258,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						</Toolbar>
 					</div>
 					<div className="c-card__body">
-						{!!fragment.external_id ? (
+						{isVideoFragment(fragment) ? (
 							<Grid>
 								<Column size="3-6">
 									<Thumbnail category="collection" label="collectie" />
@@ -279,7 +280,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		);
 	};
 
-	return fragment.external_id ? (
+	return isVideoFragment(fragment) ? (
 		// TODO: Change when relationship between item_meta and collection exists
 		<DataQueryComponent
 			query={GET_ITEM_META_BY_EXTERNAL_ID}

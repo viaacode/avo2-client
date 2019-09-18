@@ -28,6 +28,7 @@ import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInp
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
+import { isVideoFragment } from '../helpers';
 import { getVideoStills, VideoStill } from '../service';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
@@ -55,7 +56,11 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	const fetchThumbnailImages = async () => {
 		// Only update thumbnails when modal is opened, not when closed
 		try {
-			const externalIds = compact(collection.collection_fragments.map(cf => cf.external_id));
+			const externalIds = compact(
+				collection.collection_fragments.map(fragment =>
+					isVideoFragment(fragment) ? fragment.external_id : undefined
+				)
+			);
 			const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
 			setVideoStills(
 				uniq([
