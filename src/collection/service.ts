@@ -3,23 +3,20 @@ import { getEnv } from '../shared/helpers/env';
 
 // TODO replace with interface from avo2-types when we release v1.7.0
 export interface VideoStill {
-	absoluteTimecode: string;
-	relativeTimecode: string;
 	previewImagePath: string;
 	thumbnailImagePath: string;
 }
 
-export async function getVideoStills(
-	externalIds: string[],
-	numberOfStills: number
-): Promise<VideoStill[]> {
+export interface StillRequest {
+	externalId: string;
+	startTime: number; // milliseconds
+}
+
+export async function getVideoStills(stillRequests: StillRequest[]): Promise<VideoStill[]> {
 	try {
-		const query: string = queryString.stringify({
-			numberOfStills,
-			externalIds: externalIds.join(','),
-		});
-		const response = await fetch(`${getEnv('PROXY_URL')}/video-stills?${query}`, {
-			method: 'GET',
+		const response = await fetch(`${getEnv('PROXY_URL')}/video-stills`, {
+			method: 'POST',
+			body: JSON.stringify(stillRequests),
 			headers: {
 				'Content-Type': 'application/json',
 			},
