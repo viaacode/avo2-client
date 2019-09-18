@@ -80,7 +80,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	};
 
 	const renderCollectionMetaData = (data: {
-		vocabularies_lom_contexts: { label: string }[];
+		vocabularies_enum_lom_context: { description: string }[];
 		vocabularies_lom_classifications: { label: string }[];
 	}) => {
 		return (
@@ -93,9 +93,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 									<Column size="3-7">
 										<FormGroup label="Onderwijsniveau" labelFor="classificationId">
 											<TagsInput
-												options={(data.vocabularies_lom_contexts || []).map(item => ({
-													value: item.label,
-													label: item.label,
+												options={(data.vocabularies_enum_lom_context || []).map(item => ({
+													value: item.description,
+													label: item.description,
 												}))}
 												value={(collection.lom_context || []).map((item: string) => ({
 													value: item,
