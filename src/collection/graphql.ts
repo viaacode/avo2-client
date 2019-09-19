@@ -228,8 +228,8 @@ export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
 		vocabularies_enum_lom_context {
 			description
 		}
-		vocabularies_lom_classifications {
-			label
+		vocabularies_enum_lom_classification {
+			description
 		}
 	}
 `;

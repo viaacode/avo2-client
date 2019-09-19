@@ -81,7 +81,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 
 	const renderCollectionMetaData = (data: {
 		vocabularies_enum_lom_context: { description: string }[];
-		vocabularies_lom_classifications: { label: string }[];
+		vocabularies_enum_lom_classification: { description: string }[];
 	}) => {
 		return (
 			<Fragment>
@@ -108,9 +108,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 										</FormGroup>
 										<FormGroup label="Vakken" labelFor="subjectsId">
 											<TagsInput
-												options={(data.vocabularies_lom_classifications || []).map(item => ({
-													value: item.label,
-													label: item.label,
+												options={(data.vocabularies_enum_lom_classification || []).map(item => ({
+													value: item.description,
+													label: item.description,
 												}))}
 												value={(collection.lom_classification || []).map((item: string) => ({
 													value: item,
