@@ -36,6 +36,7 @@ import {
 	toSeconds,
 } from '../../../shared/helpers/formatters/duration';
 import { dataService } from '../../../shared/services/data-service';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
 
@@ -141,6 +142,15 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 				console.error(response);
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 			} else {
+				trackEvents({
+					activity: `User ??? has created a new collection ${insertedCollection.id}`, // TODO fill in user id
+					message: {
+						object: {
+							identifier: String(insertedCollection.id),
+							type: 'collection',
+						},
+					},
+				});
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
 				onClose();
