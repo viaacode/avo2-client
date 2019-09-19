@@ -121,6 +121,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	 * If this happens sooner, the time will be ignored by the video player
 	 */
 	const getSeekerTimeFromQueryParams = () => {
+		// TODO trigger this function when flowplayer is loaded
 		const queryParams = queryString.parse(location.search);
 		setTime(parseInt((queryParams.time as string) || '0', 10));
 	};
