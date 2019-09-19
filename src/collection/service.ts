@@ -24,8 +24,6 @@ export async function getVideoStills(stillRequests: StillRequest[]): Promise<Vid
 
 		return await response.json();
 	} catch (err) {
-		throw {
-			message: 'Failed to get video stills',
-		};
+		throw new Error('Failed to get video stills');
 	}
 }
