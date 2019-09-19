@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Route } from 'react-router';
+import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';
 import Search from './views/Search';
 
 export const renderSearchRoutes = () => (
-	<Route component={Search} path={`/${RouteParts.Search}`} exact={true} />
+	<SecuredRoute component={Search} path={`/${RouteParts.Search}`} exact={true} />
 );
