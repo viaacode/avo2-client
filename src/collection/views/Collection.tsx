@@ -50,6 +50,7 @@ import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
+import { isVideoFragment } from '../helpers';
 import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
 
 interface CollectionProps extends RouteComponentProps {}
@@ -134,7 +135,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 			fragments.forEach((collectionFragment: Avo.Collection.Fragment) => {
 				contentBlockInfos.push({
-					blockType: collectionFragment.external_id
+					blockType: isVideoFragment(collectionFragment)
 						? ContentBlockType.VideoTitleTextButton
 						: ContentBlockType.RichText,
 					content: {
