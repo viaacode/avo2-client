@@ -43,3 +43,29 @@ export interface ContentBlockInfo {
 	blockType: ContentBlockType;
 	content: ContentBlockMetaData;
 }
+
+export enum ContentTypeNumber {
+	audio = 1,
+	video = 2,
+	collection = 3,
+	bundle = 4,
+}
+
+export enum ContentTypeString {
+	audio = 'audio',
+	video = 'video',
+	collection = 'collectie',
+	bundle = 'bundel',
+}
+
+export type DutchContentType = 'audio' | 'video' | 'collectie' | 'bundel';
+export type EnglishContentType = 'audio' | 'video' | 'collection' | 'bundle';
+
+export function dutchContentLabelToEnglishLabel(label: DutchContentType): EnglishContentType {
+	return {
+		audio: 'audio',
+		video: 'video',
+		collectie: 'collection',
+		bundel: 'bundle',
+	}[label] as EnglishContentType;
+}

@@ -27,8 +27,6 @@ export async function getVideoStills(
 
 		return await response.json();
 	} catch (err) {
-		throw {
-			message: 'Failed to get video stills',
-		};
+		throw new Error('Failed to get video stills');
 	}
 }
