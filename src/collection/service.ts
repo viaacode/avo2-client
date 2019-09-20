@@ -1,22 +1,18 @@
 import queryString from 'query-string';
+
+import { Avo } from '@viaa/avo2-types';
+
 import { getEnv } from '../shared/helpers/env';
 
-// TODO replace with interface from avo2-types when we release v1.7.0
-export interface VideoStill {
-	absoluteTimecode: string;
-	relativeTimecode: string;
-	previewImagePath: string;
-	thumbnailImagePath: string;
-}
-
 export async function getVideoStills(
-	externalIds: string[],
+	externalIds: string[] | string,
 	numberOfStills: number
-): Promise<VideoStill[]> {
+): Promise<Avo.Stills.StillInfo[]> {
 	try {
 		const query: string = queryString.stringify({
 			numberOfStills,
-			externalIds: externalIds.join(','),
+			externalIds:
+				typeof externalIds === 'string' ? [externalIds].join(',') : externalIds.join(','),
 		});
 		const response = await fetch(`${getEnv('PROXY_URL')}/video-stills?${query}`, {
 			method: 'GET',

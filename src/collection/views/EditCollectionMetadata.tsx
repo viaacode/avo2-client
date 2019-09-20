@@ -29,7 +29,7 @@ import { DataQueryComponent } from '../../shared/components/DataComponent/DataQu
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
 import { isVideoFragment } from '../helpers';
-import { getVideoStills, VideoStill } from '../service';
+import { getVideoStills } from '../service';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {
@@ -53,33 +53,17 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
-	const fetchThumbnailImages = async () => {
-		// Only update thumbnails when modal is opened, not when closed
-		try {
-			const externalIds = compact(
-				collection.collection_fragments.map(fragment =>
-					isVideoFragment(fragment) ? fragment.external_id : undefined
-				)
-			);
-			const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
-			setVideoStills(
-				uniq([
-					...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
-					...videoStills.map(videoStill => videoStill.thumbnailImagePath),
-				])
-			);
-		} catch (err) {
-			toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
-			console.error(err);
-		}
-	};
-
 	useEffect(() => {
 		const fetchThumbnailImages = async () => {
 			// Only update thumbnails when modal is opened, not when closed
 			try {
-				const externalIds = compact(collection.collection_fragments.map(cf => cf.external_id));
-				const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
+				const externalIds = compact(
+					collection.collection_fragments.map(fragment =>
+						isVideoFragment(fragment) ? fragment.external_id : undefined
+					)
+				);
+				const videoStills: Avo.Stills.StillInfo[] = await getVideoStills(externalIds, 20);
+
 				setVideoStills(
 					uniq([
 						...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
