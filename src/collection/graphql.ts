@@ -35,7 +35,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				last_name
 				mail
 				organisation_id
-				profile {
+				profiles {
 					alias
 					alternative_email
 					avatar
