@@ -80,6 +80,16 @@
 	}
 }
 
-.c-video-player.t-player-skin--dark {
-	background: none;
+.c-video-player {
+	.t-player-skin--dark {
+		background: none;
+	}
+
+	&__thumbnail {
+		cursor: pointer;
+	}
+}
+
+.c-play-overlay__button {
+	margin-right: -4px;
 }
