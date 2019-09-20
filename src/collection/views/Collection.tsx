@@ -188,7 +188,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 										<div className="o-flex o-flex--spaced">
 											{!!get(collection, 'owner.id') && (
 												<Avatar
-													image={get(collection, 'owner.profile.avatar')}
+													image={get(collection, 'owner.profiles[0].avatar')}
 													name={ownerNameAndRole || ' '}
 													initials={`${get(collection, 'owner.first_name[0]', '')}${get(
 														collection,
