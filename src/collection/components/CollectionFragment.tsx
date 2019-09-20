@@ -94,12 +94,12 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			return updateFragmentProperty(value, 'custom_title', fragment.id);
 		};
 
-		const onChangeDescription = (e: any) => {
+		const onChangeDescription = (html: string) => {
 			if (disableVideoFields) {
 				return null;
 			}
 
-			return updateFragmentProperty(e.target.innerHTML, 'custom_description', fragment.id);
+			return updateFragmentProperty(html, 'custom_description', fragment.id);
 		};
 
 		const getFragmentProperty = (
