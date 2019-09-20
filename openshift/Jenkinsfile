@@ -85,7 +85,7 @@ pipeline {
                 script {
                     sh'''#!/bin/bash
                     echo *** PAUSING ROLLOUT  INT***
-                    oc rollout pause dc/avo2-client-int 2>/dev/null || echo warn: was paused already
+                    #oc rollout pause dc/avo2-client-int 2>/dev/null || echo warn: was paused already
                     echo "pushing image version $VERSION"
                     make -f ./openshift/Makefile push 
                     '''

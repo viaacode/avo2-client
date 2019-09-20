@@ -21,6 +21,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { dutchContentLabelToEnglishLabel } from '../../collection/types';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import {
@@ -95,7 +96,7 @@ const Home: FunctionComponent<HomeProps> = ({
 		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
 			label: searchResult.dc_title,
 			id: searchResult.external_id as string,
-			type: searchResult.administrative_type,
+			type: dutchContentLabelToEnglishLabel(searchResult.administrative_type),
 		})
 	);
 

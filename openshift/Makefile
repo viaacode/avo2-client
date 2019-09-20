@@ -61,7 +61,7 @@ unit_test:
 anno_qas:	login versions_qas
 anno_prd:	login versions_prd
 staging:	tag_staging
-	sh ./openshift/wait4rollout.sh qas
+	sh ./openshift/wait4rollout.sh qas && sh ./openshift/versions.sh qas
 
 
 	

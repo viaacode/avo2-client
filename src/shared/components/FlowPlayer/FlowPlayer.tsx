@@ -43,7 +43,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 				videoPlayerRef.current = null;
 			}
 		};
-	}, [videoContainerRef, src]);
+	}, [videoContainerRef, src, poster, title]);
 
 	return src && poster ? (
 		<div
