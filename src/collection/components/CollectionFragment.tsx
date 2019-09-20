@@ -84,7 +84,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		itemMetaData: Avo.Item.Response,
 		index: number
 	) => {
-		const isVideoBlock = !useCustomFields && itemMetaData;
+		const isVideoBlock: boolean = !useCustomFields && !!isVideoFragment(fragment);
 
 		const onChangeTitle = (value: string) => {
 			if (isVideoBlock) {
@@ -128,7 +128,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
 						placeholder="Titel"
 						onChange={onChangeTitle}
-						disabled={!!isVideoBlock}
+						disabled={isVideoBlock}
 					/>
 				</FormGroup>
 				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
@@ -138,7 +138,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 							getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
 						)}
 						onChange={onChangeDescription}
-						disabled={!!isVideoBlock}
+						disabled={isVideoBlock}
 					/>
 				</FormGroup>
 			</Form>
