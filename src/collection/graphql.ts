@@ -35,7 +35,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				last_name
 				mail
 				organisation_id
-				profile {
+				profiles {
 					alias
 					alternative_email
 					avatar
@@ -225,11 +225,11 @@ export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
 
 export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
 	{
-		vocabularies_lom_contexts {
-			label
+		vocabularies_enum_lom_context {
+			description
 		}
-		vocabularies_lom_classifications {
-			label
+		vocabularies_enum_lom_classification {
+			description
 		}
 	}
 `;

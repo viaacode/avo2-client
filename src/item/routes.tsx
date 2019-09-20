@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Route } from 'react-router';
+import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';
 import Item from './views/Item';
 
 export const renderItemRoutes = () => (
-	<Route component={Item} exact path={`/${RouteParts.Item}/:id`} />
+	<SecuredRoute component={Item} exact path={`/${RouteParts.Item}/:id`} />
 );

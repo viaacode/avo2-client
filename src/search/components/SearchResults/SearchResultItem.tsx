@@ -9,6 +9,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 
+import { dutchContentLabelToEnglishLabel } from '../../../collection/types';
 import { formatDate } from '../../../shared/helpers/formatters/date';
 import {
 	generateContentLinkString,
@@ -26,7 +27,7 @@ const SearchResultItem = ({
 	return (
 		<SearchResult
 			key={`search-result-${result.id}`}
-			type={result.administrative_type}
+			type={dutchContentLabelToEnglishLabel(result.administrative_type)}
 			date={formatDate(result.dcterms_issued)}
 			tags={[{ label: 'Redactiekeuze', id: 'redactiekeuze' }, { label: 'Partner', id: 'partner' }]}
 			viewCount={412}
@@ -45,7 +46,7 @@ const SearchResultItem = ({
 			<SearchResultThumbnail>
 				<Link to={contentLink}>
 					<Thumbnail
-						category={result.administrative_type as any}
+						category={dutchContentLabelToEnglishLabel(result.administrative_type)}
 						src={result.thumbnail_path}
 						label={result.administrative_type}
 					/>

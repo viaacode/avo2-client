@@ -36,6 +36,12 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import {
+	ContentTypeNumber,
+	ContentTypeString,
+	dutchContentLabelToEnglishLabel,
+	EnglishContentType,
+} from '../../collection/types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
@@ -115,6 +121,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	 * If this happens sooner, the time will be ignored by the video player
 	 */
 	const getSeekerTimeFromQueryParams = () => {
+		// TODO trigger this function when flowplayer is loaded
 		const queryParams = queryString.parse(location.search);
 		setTime(parseInt((queryParams.time as string) || '0', 10));
 	};
@@ -158,6 +165,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const renderItem = (item: Avo.Item.Response) => {
 		const initFlowPlayer = () =>
 			!playerToken && fetchPlayerToken(item.external_id).then(data => setPlayerToken(data));
+		const englishContentType: EnglishContentType =
+			dutchContentLabelToEnglishLabel(item.type.label) || ContentTypeString.video;
 
 		return (
 			<Fragment>
@@ -169,13 +178,20 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 									<Spacer margin="bottom">
 										<div className="c-content-type c-content-type--video">
 											{item.type && (
-												<Icon name={item.type.label === 'audio' ? 'headphone' : item.type.label} />
+												<Icon
+													name={
+														item.type.id === ContentTypeNumber.audio ? 'headphone' : item.type.label
+													}
+												/>
 											)}
 											<p>{item.type.label}</p>
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-b-0">{item.title}</h1>
-									<MetaData spaced={true} category={item.type.label}>
+									<MetaData
+										spaced={true}
+										category={dutchContentLabelToEnglishLabel(item.type.label)}
+									>
 										<MetaDataItem>
 											{generateSearchLink('provider', item.org_name || '')}
 										</MetaDataItem>
@@ -195,11 +211,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 							<ToolbarRight>
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-authentication">
-										<MetaData category={item.type.label || 'video'}>
+										<MetaData category={englishContentType}>
 											{/* TODO link meta data to actual data */}
 											<MetaDataItem label={String(188)} icon="eye" />
 											<MetaDataItem label={String(370)} icon="bookmark" />
-											{item.type.label === 'collection' && (
+											{item.type.id === ContentTypeNumber.collection && (
 												<MetaDataItem label={String(12)} icon="collection" />
 											)}
 										</MetaData>
@@ -378,17 +394,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${item.id}`}
-												category={item.type.label || 'video'}
+												category={englishContentType}
 												orientation="horizontal"
 											>
 												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.type.label || 'video'}
-														src={item.thumbnail_path}
-													/>
+													<Thumbnail category={englishContentType} src={item.thumbnail_path} />
 												</MediaCardThumbnail>
 												<MediaCardMetaData>
-													<MetaData category={item.type.label || 'video'}>
+													<MetaData category={englishContentType}>
 														<MetaDataItem label={item.org_name || ''} />
 													</MetaData>
 												</MediaCardMetaData>
@@ -398,17 +411,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${item.id}`}
-												category={item.type.label || 'video'}
+												category={englishContentType}
 												orientation="horizontal"
 											>
 												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.type.label || 'video'}
-														src={item.thumbnail_path}
-													/>
+													<Thumbnail category={englishContentType} src={item.thumbnail_path} />
 												</MediaCardThumbnail>
 												<MediaCardMetaData>
-													<MetaData category={item.type.label || 'video'}>
+													<MetaData category={englishContentType}>
 														<MetaDataItem label={item.org_name || ''} />
 													</MetaData>
 												</MediaCardMetaData>
@@ -418,17 +428,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${item.id}`}
-												category={item.type.label || 'video'}
+												category={englishContentType}
 												orientation="horizontal"
 											>
 												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.type.label || 'video'}
-														src={item.thumbnail_path}
-													/>
+													<Thumbnail category={englishContentType} src={item.thumbnail_path} />
 												</MediaCardThumbnail>
 												<MediaCardMetaData>
-													<MetaData category={item.type.label || 'video'}>
+													<MetaData category={englishContentType}>
 														<MetaDataItem label={item.org_name || ''} />
 													</MetaData>
 												</MediaCardMetaData>
@@ -438,17 +445,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${item.id}`}
-												category={item.type.label || 'video'}
+												category={englishContentType}
 												orientation="horizontal"
 											>
 												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.type.label || 'video'}
-														src={item.thumbnail_path}
-													/>
+													<Thumbnail category={englishContentType} src={item.thumbnail_path} />
 												</MediaCardThumbnail>
 												<MediaCardMetaData>
-													<MetaData category={item.type.label || 'video'}>
+													<MetaData category={englishContentType}>
 														<MetaDataItem label={item.org_name || ''} />
 													</MetaData>
 												</MediaCardMetaData>
@@ -458,17 +462,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${item.id}`}
-												category={item.type.label || 'video'}
+												category={englishContentType}
 												orientation="horizontal"
 											>
 												<MediaCardThumbnail>
-													<Thumbnail
-														category={item.type.label || 'video'}
-														src={item.thumbnail_path}
-													/>
+													<Thumbnail category={englishContentType} src={item.thumbnail_path} />
 												</MediaCardThumbnail>
 												<MediaCardMetaData>
-													<MetaData category={item.type.label || 'video'}>
+													<MetaData category={englishContentType}>
 														<MetaDataItem label={item.org_name || ''} />
 													</MetaData>
 												</MediaCardMetaData>
