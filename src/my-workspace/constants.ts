@@ -2,6 +2,7 @@ import { RouteParts } from '../constants';
 
 export const COLLECTIONS_ID = RouteParts.Collections;
 export const FOLDERS_ID = RouteParts.Folders;
+export const ASSIGNMENTS_ID = RouteParts.Assignments;
 export const BOOKMARKS_ID = RouteParts.Bookmarks;
 
 export const TABS = [
@@ -14,6 +15,11 @@ export const TABS = [
 		label: 'Mappen',
 		icon: 'folder',
 		id: FOLDERS_ID,
+	},
+	{
+		label: 'Opdrachten',
+		icon: 'clipboard',
+		id: ASSIGNMENTS_ID,
 	},
 	{
 		label: 'Bladwijzers',

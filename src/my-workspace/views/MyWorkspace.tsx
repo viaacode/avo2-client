@@ -17,14 +17,15 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import Assignments from '../../assignment/views/Assignments';
 import Collections from '../../collection/views/Collections';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
+import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
 import { MyWorkspaceProps, TabViewMap } from '../types';
 import Bookmarks from './Bookmarks';
 
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import './MyWorkspace.scss';
 
@@ -60,6 +61,9 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 					label: 'Filter op label',
 					options: [{ id: 'all', label: 'Alle' }],
 				},
+			},
+			[ASSIGNMENTS_ID]: {
+				component: <Assignments />,
 			},
 			[BOOKMARKS_ID]: {
 				component: <Bookmarks />,
@@ -151,7 +155,8 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		);
 	};
 
-	return (
+	console.log(tabId);
+	return tabId.includes('/') ? null : (
 		<DataQueryComponent
 			query={GET_WORKSPACE_TAB_COUNTS}
 			// TODO: replace with actual owner id from ldap object
