@@ -1,12 +1,13 @@
 const fs = require("fs");
 
 const CI_ENV_VARIABLES = {
+	PORT: process.env.PORT,
 	PROXY_URL: process.env.PROXY_URL,
 	FLOW_PLAYER_TOKEN: process.env.FLOW_PLAYER_TOKEN,
 	FLOW_PLAYER_ID: process.env.FLOW_PLAYER_ID,
-}
+};
 
-const envVariables = {};
+let envVariables = {};
 
 if (fs.existsSync(".env")) {
 	const envFile = fs.readFileSync(".env").toString();
@@ -21,13 +22,15 @@ if (fs.existsSync(".env")) {
 			envVariables[lineParts[0]] = CI_ENV_VARIABLES[lineParts[0]];
 		}
 	})
+} else {
+	envVariables = CI_ENV_VARIABLES;
 }
 
 let outputString = "window._ENV_ = {\n";
 
 Object.keys(envVariables).forEach((envName) => {
 	if (envName) {
-		outputString += `\"${envName}\": \"${envVariables[envName]}\",\n`;
+		outputString += `\t\"${envName}\": \"${envVariables[envName]}\",\n`;
 	}
 });
 
