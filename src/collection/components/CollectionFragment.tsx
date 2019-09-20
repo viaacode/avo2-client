@@ -304,7 +304,6 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						isOpen={isCutModalOpen}
 						setIsOpen={setIsCutModalOpen}
 						itemMetaData={itemMetaData}
-						externalId={fragment.external_id}
 					/>
 				)}
 			</>

@@ -24,14 +24,12 @@ interface CutFragmentModalProps {
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
 	itemMetaData: Avo.Item.Response;
-	externalId: string;
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	setIsOpen,
 	isOpen,
 	itemMetaData,
-	externalId,
 }) => {
 	const [playerToken, setPlayerToken] = useState();
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
@@ -63,7 +61,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const initFlowPlayer = () =>
-		!playerToken && fetchPlayerToken(externalId).then(data => setPlayerToken(data));
+		!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
 
 	return (
 		<Modal
