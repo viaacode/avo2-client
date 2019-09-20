@@ -195,7 +195,10 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 
 	const renderCollectionFragment = (itemMetaData: any) => {
 		const initFlowPlayer = () =>
-			!playerToken && fetchPlayerToken(fragment.external_id).then(data => setPlayerToken(data));
+			!playerToken &&
+			fetchPlayerToken(fragment.external_id)
+				.then(data => setPlayerToken(data))
+				.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
 		return (
 			<>
