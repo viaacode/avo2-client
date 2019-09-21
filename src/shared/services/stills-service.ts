@@ -2,12 +2,12 @@ import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { getEnv } from '../shared/helpers/env';
+import { getEnv } from '../helpers/env';
 
-export async function getVideoStills(
+export const getVideoStills = async (
 	externalIds: string[] | string,
 	numberOfStills: number
-): Promise<Avo.Stills.StillInfo[]> {
+): Promise<Avo.Stills.StillInfo[]> => {
 	try {
 		const query: string = queryString.stringify({
 			numberOfStills,
@@ -25,4 +25,4 @@ export async function getVideoStills(
 	} catch (err) {
 		throw new Error('Failed to get video stills');
 	}
-}
+};

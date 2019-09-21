@@ -16,9 +16,9 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getVideoStills } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { isVideoFragment } from '../../helpers';
-import { getVideoStills } from '../../service';
 
 interface CollectionStillsModalProps {
 	isOpen: boolean;

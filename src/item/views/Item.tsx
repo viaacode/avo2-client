@@ -53,6 +53,7 @@ import {
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { fetchPlayerToken } from '../../shared/services/player-service';
+import { getVideoStills } from '../../shared/services/stills-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
@@ -65,6 +66,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 
 	const [itemId] = useState((match.params as any)['id'] as string);
 	const [playerToken, setPlayerToken] = useState();
+	const [itemState, setItemState] = useState();
+	const [videoStill, setVideoStill] = useState<string | null>(null);
 	const [time, setTime] = useState(0);
 	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
 	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
@@ -162,7 +165,20 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 
 	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
+	useEffect(() => {
+		if (itemState) {
+			getStill();
+		}
+	}, itemState);
+
+	const getStill = async () => {
+		const videoStills: Avo.Stills.StillInfo[] = await getVideoStills(itemState.external_id, 1);
+		setVideoStill(videoStills[0].thumbnailImagePath);
+	};
+
 	const renderItem = (itemMetaData: Avo.Item.Response) => {
+		setItemState(itemMetaData);
+
 		const initFlowPlayer = () =>
 			!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
 		const englishContentType: EnglishContentType =
@@ -234,10 +250,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
 										<div className="c-video-player t-player-skin--dark">
-											{itemMetaData.thumbnail_path && (
+											{videoStill && (
 												<FlowPlayer
 													src={playerToken ? playerToken.toString() : null}
-													poster={itemMetaData.thumbnail_path}
+													poster={videoStill}
 													title={itemMetaData.title}
 													onInit={initFlowPlayer}
 												/>
