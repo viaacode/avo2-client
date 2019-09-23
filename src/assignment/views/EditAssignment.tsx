@@ -264,7 +264,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			query: GET_COLLECTION_BY_ID,
 			resultPath: 'app_collections[0]',
 		},
-		item: {
+		audio: {
+			query: GET_ITEM_BY_ID,
+			resultPath: 'app_item_meta[0]',
+		},
+		video: {
 			query: GET_ITEM_BY_ID,
 			resultPath: 'app_item_meta[0]',
 		},
