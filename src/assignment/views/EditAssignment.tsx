@@ -4,12 +4,19 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import {
 	Button,
 	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Flex,
+	FlexItem,
 	Form,
 	FormGroup,
 	Icon,
+	Menu,
 	RadioButton,
 	RadioButtonGroup,
+	Spacer,
+	TextInput,
 	Thumbnail,
 	Toolbar,
 	ToolbarItem,
@@ -42,6 +49,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 	const [assignment, setAssignment] = useState<Partial<Assignment>>({});
 	const [contentId, setContentId] = useState<string>();
 	const [contentType, setContentType] = useState<string>();
+	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 
 	const setAssignmentProp = (property: keyof Assignment, value: any) => {
 		setAssignment({
@@ -119,36 +127,30 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 								</div>
 							</FormGroup>
 							{assignment.content_id && assignment.content_type && (
-								<div className="o-form-group">
+								<FormGroup>
 									<label className="o-form-group__label">Inhoud</label>
 									<div className="c-box c-box--padding-small">
 										<Flex orientation="vertical" center>
-											<div className="u-spacer-right">
-												<div className="c-thumbnail-16-9-small">
-													<div className="c-thumbnail">
-														<div className="c-thumbnail-placeholder">
-															<Thumbnail
-																category={
-																	CONTENT_TYPE_TO_ICON_NAME[assignment.content_type] as ContentType
-																}
-																src={contentObject.thumbnail_path || undefined}
-															/>
-														</div>
-													</div>
-												</div>
-											</div>
-											<div className="o-flex__item">
+											<Spacer margin="right">
+												<Thumbnail
+													category={
+														CONTENT_TYPE_TO_ICON_NAME[assignment.content_type] as ContentType
+													}
+													src={contentObject.thumbnail_path || undefined}
+												/>
+											</Spacer>
+											<FlexItem>
 												<div className="c-overline-plus-p">
 													<p className="c-overline">{assignment.content_type}</p>
 													<p>{contentObject.title || contentObject.description}</p>
 												</div>
-											</div>
+											</FlexItem>
 											<Link to={`/${RouteParts.Collection}/${assignment.content_id}`}>
 												<Button type="secondary" ariaLabel="Bekijk opdracht content" icon="eye" />
 											</Link>
 										</Flex>
 									</div>
-								</div>
+								</FormGroup>
 							)}
 							<FormGroup label="Weergave" labelFor="only_player">
 								<RadioButtonGroup>
@@ -171,27 +173,27 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 									/>
 								</RadioButtonGroup>
 							</FormGroup>
-							<div className="o-form-group">
-								<label className="o-form-group__label" htmlFor="assignmentTitle">
-									Vak of project
-								</label>
-								<div className="o-form-group__controls">
-									<div className="c-filter-dropdown c-filter-dropdown--no-bg">
-										<a
-											className="c-filter-dropdown__link"
-											data-dropdown="labelDropdownMenu"
-											data-dropdown-autosize="true"
-										>
-											<div className="c-filter-dropdown__label">Geen</div>
-											<div className="c-filter-dropdown__options">
-												<Icon name="caret-down" type="arrows" size="small" />
-												<div className="u-sr-accessible">Open opties</div>
-											</div>
-										</a>
-									</div>
-								</div>
-							</div>
-							<div className="o-form-group">
+							<FormGroup label="Vak of project">
+								<Dropdown
+									isOpen={tagsDropdownOpen}
+									onOpen={() => setTagsDropdownOpen(true)}
+									onClose={() => setTagsDropdownOpen(false)}
+								>
+									<DropdownButton>
+										<Fragment>Tags</Fragment>
+									</DropdownButton>
+									<DropdownContent>
+										<Menu
+											menuItems={[
+												{ id: 'geen', label: 'geen' },
+												{ id: 'manage_options', label: 'options' },
+											]}
+										/>
+									</DropdownContent>
+								</Dropdown>
+							</FormGroup>
+							<FormGroup label="Antwoorden op" labelFor="answer_url">
+								<TextInput id="answer_url" type="text" placeholder="http://..." />
 								<label className="o-form-group__label" htmlFor="assignmentAvailableFromDate">
 									Antwoorden op
 								</label>
@@ -202,8 +204,8 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 										platform toe.
 									</p>
 								</div>
-							</div>
-							<div className="o-form-group">
+							</FormGroup>
+							<FormGroup>
 								<label className="o-form-group__label" htmlFor="assignmentAvailableFromDate">
 									Beschikbaar vanaf
 								</label>
@@ -220,8 +222,8 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 										/>
 									</div>
 								</div>
-							</div>
-							<div className="o-form-group">
+							</FormGroup>
+							<FormGroup>
 								<label className="o-form-group__label" htmlFor="assignmentDeadlineDate">
 									Deadline
 								</label>
@@ -241,7 +243,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 										Na deze datum kan de leerling de opdracht niet meer invullen.
 									</p>
 								</div>
-							</div>
+							</FormGroup>
 							<hr className="c-hr" />
 							<div className="c-alert c-alert--info">
 								<div className="c-alert__body">
@@ -250,7 +252,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 									</div>
 									<div className="c-content c-content--no-m">
 										<p>
-											Hulp nodig bij het maken van opdrachten? Bekijk onze
+											Hulp nodig bij het maken van opdrachten? Bekijk onze{' '}
 											<a href="#">screencast</a>.
 										</p>
 									</div>

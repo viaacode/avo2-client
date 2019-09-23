@@ -155,7 +155,6 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		);
 	};
 
-	console.log(tabId);
 	return tabId.includes('/') ? null : (
 		<DataQueryComponent
 			query={GET_WORKSPACE_TAB_COUNTS}
