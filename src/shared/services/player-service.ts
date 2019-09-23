@@ -1,11 +1,11 @@
-import { CustomWindow } from '../../shared/types/global';
+import { getEnv } from '../../shared/helpers/env';
 
 export type PlayerTokenResponse = {
 	url: string;
 };
 
 export const fetchPlayerToken = async (externalId: string) => {
-	const url = `${(window as CustomWindow)._ENV_.PROXY_URL}/player-ticket?externalId=${externalId}`;
+	const url = `${getEnv('PROXY_URL')}/player-ticket?externalId=${externalId}`;
 
 	const response = await fetch(url, {
 		method: 'GET',
