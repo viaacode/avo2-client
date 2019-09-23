@@ -167,7 +167,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 		const initFlowPlayer = () =>
 			!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
 		const englishContentType: ContentType =
-			dutchContentLabelToEnglishLabel(item.type.label) || ContentTypeString.video;
+			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
 
 		return (
 			<Fragment>
@@ -262,7 +262,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 																history.push(
 																	`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
 																		RouteParts.Create
-																	}?content_id=${item.external_id}&content_type=${item.type.label}`
+																	}?content_id=${itemMetaData.external_id}&content_type=${
+																		itemMetaData.type.label
+																	}`
 																)
 															}
 														/>
