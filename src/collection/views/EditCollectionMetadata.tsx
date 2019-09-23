@@ -56,12 +56,18 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	const fetchThumbnailImages = async () => {
 		// Only update thumbnails when modal is opened, not when closed
 		try {
-			const externalIds = compact(
-				collection.collection_fragments.map(fragment =>
-					isVideoFragment(fragment) ? fragment.external_id : undefined
-				)
+			const stillRequests = compact(
+				collection.collection_fragments.map(cf => {
+					if (!isVideoFragment(cf)) {
+						return null;
+					}
+					return {
+						externalId: cf.external_id,
+						startTime: (cf.start_oc || 0) * 1000,
+					};
+				})
 			);
-			const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
+			const videoStills: VideoStill[] = await getVideoStills(stillRequests);
 			setVideoStills(
 				uniq([
 					...(collection.thumbnail_path ? [collection.thumbnail_path] : []),

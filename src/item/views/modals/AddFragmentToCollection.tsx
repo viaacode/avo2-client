@@ -31,10 +31,8 @@ import {
 	INSERT_COLLECTION_FRAGMENT,
 } from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import {
-	formatDurationHoursMinutesSeconds,
-	toSeconds,
-} from '../../../shared/helpers/formatters/duration';
+import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { dataService } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
