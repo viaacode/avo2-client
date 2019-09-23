@@ -11,6 +11,7 @@ import {
 	BlockVideoProps,
 	BlockVideoTitleTextButtonProps,
 } from '@viaa/avo2-components';
+import { ContentType } from '@viaa/avo2-components/dist/types';
 
 export enum ContentBlockType {
 	'Image',
@@ -58,14 +59,14 @@ export enum ContentTypeString {
 	bundle = 'bundel',
 }
 
-export type DutchContentType = 'audio' | 'video' | 'collectie' | 'bundel';
-export type EnglishContentType = 'audio' | 'video' | 'collection' | 'bundle';
+export type DutchContentType = 'audio' | 'video' | 'collectie' | 'bundel' | 'zoek';
 
-export function dutchContentLabelToEnglishLabel(label: DutchContentType): EnglishContentType {
+export function dutchContentLabelToEnglishLabel(label: DutchContentType): ContentType {
 	return {
 		audio: 'audio',
 		video: 'video',
 		collectie: 'collection',
 		bundel: 'bundle',
-	}[label] as EnglishContentType;
+		zoek: 'search',
+	}[label] as ContentType;
 }

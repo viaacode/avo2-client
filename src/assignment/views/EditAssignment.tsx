@@ -31,24 +31,18 @@ import { DocumentNode } from 'graphql';
 import queryString from 'query-string';
 import { Link } from 'react-router-dom';
 import { GET_COLLECTION_BY_ID } from '../../collection/graphql';
+import { dutchContentLabelToEnglishLabel } from '../../collection/types';
 import { RouteParts } from '../../constants';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { Assignment, AssignmentLayout } from '../types';
+import { Assignment, AssignmentContentType, AssignmentLayout } from '../types';
 
 interface EditAssignmentProps extends RouteComponentProps {}
-
-const CONTENT_TYPE_TO_ICON_NAME: { [contentType: string]: string } = {
-	video: 'video',
-	audio: 'headphones',
-	collectie: 'collection',
-	zoek: 'search',
-};
 
 const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, location }) => {
 	const [assignment, setAssignment] = useState<Partial<Assignment>>({});
 	const [contentId, setContentId] = useState<string>();
-	const [contentType, setContentType] = useState<string>();
+	const [contentType, setContentType] = useState<AssignmentContentType | undefined>();
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 
 	const setAssignmentProp = (property: keyof Assignment, value: any) => {
@@ -126,22 +120,20 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 									/>
 								</div>
 							</FormGroup>
-							{assignment.content_id && assignment.content_type && (
+							{contentType && (
 								<FormGroup>
 									<label className="o-form-group__label">Inhoud</label>
 									<div className="c-box c-box--padding-small">
 										<Flex orientation="vertical" center>
 											<Spacer margin="right">
 												<Thumbnail
-													category={
-														CONTENT_TYPE_TO_ICON_NAME[assignment.content_type] as ContentType
-													}
+													category={dutchContentLabelToEnglishLabel(contentType) as ContentType}
 													src={contentObject.thumbnail_path || undefined}
 												/>
 											</Spacer>
 											<FlexItem>
 												<div className="c-overline-plus-p">
-													<p className="c-overline">{assignment.content_type}</p>
+													<p className="c-overline">{assignment.content_label}</p>
 													<p>{contentObject.title || contentObject.description}</p>
 												</div>
 											</FlexItem>
@@ -284,7 +276,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			setContentId(queryParams.content_id);
 		}
 		if (typeof queryParams.content_type === 'string') {
-			setContentType(queryParams.content_type);
+			setContentType(queryParams.content_type as AssignmentContentType);
 		}
 	});
 

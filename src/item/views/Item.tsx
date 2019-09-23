@@ -40,7 +40,6 @@ import {
 	ContentTypeNumber,
 	ContentTypeString,
 	dutchContentLabelToEnglishLabel,
-	EnglishContentType,
 } from '../../collection/types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
@@ -56,6 +55,7 @@ import { fetchPlayerToken } from '../../shared/services/player-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
+import { ContentType } from '@viaa/avo2-components/dist/types';
 import { RouteParts } from '../../constants';
 import './Item.scss';
 
@@ -166,7 +166,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const renderItem = (item: Avo.Item.Response) => {
 		const initFlowPlayer = () =>
 			!playerToken && fetchPlayerToken(item.external_id).then(data => setPlayerToken(data));
-		const englishContentType: EnglishContentType =
+		const englishContentType: ContentType =
 			dutchContentLabelToEnglishLabel(item.type.label) || ContentTypeString.video;
 
 		return (
@@ -260,7 +260,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 																history.push(
 																	`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
 																		RouteParts.Create
-																	}?content_id=${item.external_id}&content_type=item`
+																	}?content_id=${item.external_id}&content_type=${item.type.label}`
 																)
 															}
 														/>

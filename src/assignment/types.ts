@@ -5,29 +5,54 @@ export interface Assignment {
 	id: number;
 	title: string;
 	description: string;
-	type: AssignmentType;
-	content_id?: string;
-	content_type?: AssignmentContentType;
-	content_layout?: AssignmentLayout;
-	answerUrl?: string;
-	available_at?: Date;
-	deadline?: Date;
-	owner_id: string;
+	assignment_type: AssignmentType;
+	content_id?: string | null;
+	content_label?: AssignmentContentLabel | null;
+	content_layout: AssignmentLayout;
+	answerUrl?: string | null;
+	available_at?: string | null; // ISO date string
+	deadline_at?: string | null; // ISO date string
+	owner_uid: string;
 	is_archived: boolean;
 	is_deleted: boolean;
-	class_room?: string;
-	allow_group_work: boolean;
+	class_room?: string | null;
+	is_collaborative: boolean;
+	created_at: string; // ISO date string
+	updated_at: string; // ISO date string
+	assignment_assignment_tags: {
+		assignment_tag: AssignmentTag[];
+	};
+	assignment_responses: AssignmentResponse[];
 }
 
-export enum AssignmentType {
-	View = 0,
-	Search = 1,
-	Build = 2,
+export interface AssignmentResponse {
+	id: number;
+	assignment_id: number;
+	collection_id?: string | null;
+	finished_at?: string | null; // ISO date string
+	owner_uids: number[];
+	started_at?: Date | null;
+	collection?: Avo.Collection.Response | null;
 }
+
+export type AssignmentType = 'zoek' | 'kijk' | 'bouw';
 
 export enum AssignmentLayout {
 	OnlyPlayer = 0,
 	PlayerAndText = 1,
 }
 
+export type AssignmentContentLabel = 'item' | 'collectie' | 'zoekopdracht';
+export type AssignmentContent = Avo.Item.Response | Avo.Collection.Response; // | Avo.SearchQuery.response;
 export type AssignmentContentType = 'audio' | 'video' | 'collectie' | 'zoek';
+
+export interface AssignmentTag {
+	id: number;
+	label: string;
+	enum_color: {
+		label: string; // #FF0000
+		value: string; // BRIGHT_RED
+	};
+	color_override?: string | null; // #FF0000
+	user: Avo.User.Response;
+}
