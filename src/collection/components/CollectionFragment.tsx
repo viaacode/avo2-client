@@ -3,6 +3,9 @@ import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { fetchPlayerToken } from '../../shared/services/player-service';
+
 import {
 	Button,
 	Column,
@@ -29,6 +32,7 @@ import { DataQueryComponent } from '../../shared/components/DataComponent/DataQu
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
 import { isVideoFragment } from '../helpers';
+import { CutFragmentModal } from './';
 import AddFragment from './AddFragment';
 
 interface CollectionFragmentProps extends RouteComponentProps {
@@ -54,7 +58,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	reorderFragments,
 	updateCollection,
 }) => {
+	const [playerToken, setPlayerToken] = useState();
 	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
+	const [isCutModalOpen, setIsCutModalOpen] = useState(false);
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (index: number) => index === 0;
@@ -185,6 +191,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	};
 
 	const renderCollectionFragment = (itemMeta: any) => {
+		const initFlowPlayer = () =>
+			!playerToken && fetchPlayerToken(fragment.external_id).then(data => setPlayerToken(data));
+
 		return (
 			<>
 				<div className="c-card">
@@ -195,7 +204,14 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 									<div className="c-button-toolbar">
 										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
 										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
-										{itemMeta && <Button icon="scissors" label="Knippen" type="secondary" />}
+										{itemMeta && (
+											<Button
+												icon="scissors"
+												label="Knippen"
+												type="secondary"
+												onClick={() => setIsCutModalOpen(true)}
+											/>
+										)}
 									</div>
 								</ToolbarItem>
 							</ToolbarLeft>
@@ -260,7 +276,12 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						{isVideoFragment(fragment) ? (
 							<Grid>
 								<Column size="3-6">
-									<Thumbnail category="collection" label="collectie" />
+									<FlowPlayer
+										src={playerToken ? playerToken.toString() : null}
+										poster={itemMeta.thumbnail_path}
+										title={itemMeta.title}
+										onInit={initFlowPlayer}
+									/>
 								</Column>
 								<Column size="3-6">{renderForm(fragment, itemMeta, index)}</Column>
 							</Grid>
@@ -275,6 +296,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					updateCollection={updateCollection}
 					reorderFragments={reorderFragments}
 				/>
+				<CutFragmentModal isOpen={isCutModalOpen} setIsOpen={setIsCutModalOpen} />
 			</>
 		);
 	};
