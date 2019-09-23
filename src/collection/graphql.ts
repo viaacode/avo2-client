@@ -219,6 +219,8 @@ export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
 				label
 				id
 			}
+			duration
+			external_id
 		}
 	}
 `;
