@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
+import moment from 'moment';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 
 import {
@@ -23,7 +24,7 @@ interface ShareCollectionModalProps {
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
 	initialIsPublic: boolean;
-	updateCollectionProperty: (value: boolean, fieldName: string) => void;
+	updateCollectionProperty: (value: any, fieldName: string) => void;
 	collection: Avo.Collection.Response;
 }
 
@@ -150,11 +151,13 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const onSave = () => {
 		setIsOpen(false);
 		updateCollectionProperty(isCollectionPublic, 'is_public');
+		updateCollectionProperty(moment().toISOString(), 'publish_at');
 		triggerCollectionPropertyUpdate({
 			variables: {
 				id: collection.id,
 				collection: {
 					is_public: isCollectionPublic,
+					publish_at: moment().toISOString(),
 				},
 			},
 		});
