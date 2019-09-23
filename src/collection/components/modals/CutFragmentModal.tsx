@@ -24,20 +24,28 @@ interface CutFragmentModalProps {
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
 	itemMetaData: Avo.Item.Response;
+	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
+	fragment: Avo.Collection.Fragment;
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	setIsOpen,
 	isOpen,
 	itemMetaData,
+	updateFragmentProperty,
+	fragment,
 }) => {
 	const [playerToken, setPlayerToken] = useState();
-	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
+	const [fragmentStartTime, setFragmentStartTime] = useState<number>(fragment.start_oc || 0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
-		toSeconds(itemMetaData.duration) || 0
+		fragment.end_oc || toSeconds(itemMetaData.duration) || 0
 	);
 
-	const onSaveCut = () => {};
+	const onSaveCut = () => {
+		updateFragmentProperty(fragmentStartTime, 'start_oc', fragment.id);
+		updateFragmentProperty(fragmentEndTime, 'end_oc', fragment.id);
+		setIsOpen(false);
+	};
 
 	/**
 	 * Converts a duration of the format "00:03:36" to number of seconds and stores it under the appropriate state
@@ -103,7 +111,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							<ToolbarItem>
 								<div className="c-button-toolbar">
 									<Button type="secondary" label="Annuleren" onClick={() => setIsOpen(false)} />
-									<Button type="primary" label="Knippen" onClick={onSaveCut} disabled />
+									<Button type="primary" label="Knippen" onClick={onSaveCut} />
 								</div>
 							</ToolbarItem>
 						</ToolbarRight>
