@@ -1,0 +1,22 @@
+/* ==========================================================================
+   Component: Project list
+   ========================================================================== */
+
+.c-project-list__item {
+	margin-bottom: 3.2rem;
+}
+
+.c-project-list__item header h2 {
+	margin-top: 0;
+	margin-bottom: 1.6rem;
+}
+
+.c-project-list__item {
+	article header a {
+		text-decoration: none;
+
+		&:hover {
+			border-bottom: 1px solid $color-primary;
+		}
+	}
+}
