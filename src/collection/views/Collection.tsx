@@ -120,8 +120,14 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		}
 	};
 
+	const getFragmentField = (fragment: Avo.Collection.Fragment, field: string) =>
+		fragment.use_custom_fields
+			? (fragment as any)[`custom_${field}`]
+			: (fragment as any).item_meta[field];
+
 	const renderCollection = (collection: Avo.Collection.Response) => {
 		const contentBlockInfos: ContentBlockInfo[] = [];
+
 		if (collection) {
 			contentBlockInfos.push({
 				blockType: ContentBlockType.Intro,
@@ -133,18 +139,15 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 			const fragments = orderBy([...collection.collection_fragments], 'position', 'asc') || [];
 
-			fragments.forEach((collectionFragment: Avo.Collection.Fragment) => {
+			fragments.forEach((fragment: Avo.Collection.Fragment) => {
 				contentBlockInfos.push({
-					blockType: isVideoFragment(collectionFragment)
+					blockType: isVideoFragment(fragment)
 						? ContentBlockType.VideoTitleTextButton
 						: ContentBlockType.RichText,
 					content: {
-						title: collectionFragment.custom_title,
-						text: collectionFragment.custom_description,
-						titleLink: generateContentLinkString(
-							ContentTypeString.video,
-							collectionFragment.external_id
-						),
+						title: getFragmentField(fragment, 'title'),
+						text: getFragmentField(fragment, 'description'),
+						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
 						videoSource: '',
 						buttonLabel: 'Meer lezen',
 					} as BlockVideoTitleTextButtonProps,
