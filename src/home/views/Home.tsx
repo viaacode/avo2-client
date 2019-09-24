@@ -157,7 +157,7 @@ const Home: FunctionComponent<HomeProps> = ({
 							</Spacer>
 							<Spacer margin="large">
 								<p className="c-body-1">Vind inspiratie voor specifieke vakken en domeinen:</p>
-								<Flex orientation="horizontal" center>
+								<Flex className="c-button-toolbar" orientation="horizontal" center>
 									{/* TODO discover/overview-basic.html */}
 									<Button label="Basisonderwijs" type="secondary" />
 									{/* TODO discover/overview-secondary.html */}
