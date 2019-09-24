@@ -48,12 +48,12 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 
 	return src && poster ? (
 		<div
-			className="c-video-player"
+			className="c-video-player t-player-skin--dark"
 			data-player-id={getEnv('FLOW_PLAYER_ID')}
 			ref={videoContainerRef}
 		/>
 	) : (
-		<div className="c-video-player" onClick={onInit}>
+		<div className="c-video-player t-player-skin--dark" onClick={onInit}>
 			<div className="c-video-player__item c-video-player__thumbnail">
 				<img src={poster} alt={`Thumbnail voor video over ${title}.`} />
 			</div>

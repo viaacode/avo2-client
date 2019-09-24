@@ -233,16 +233,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 							<Column size="2-7">
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
-										<div className="c-video-player t-player-skin--dark">
-											{itemMetaData.thumbnail_path && (
-												<FlowPlayer
-													src={playerToken ? playerToken.toString() : null}
-													poster={itemMetaData.thumbnail_path}
-													title={itemMetaData.title}
-													onInit={initFlowPlayer}
-												/>
-											)}
-										</div>
+										{itemMetaData.thumbnail_path && (
+											<FlowPlayer
+												src={playerToken ? playerToken.toString() : null}
+												poster={itemMetaData.thumbnail_path}
+												title={itemMetaData.title}
+												onInit={initFlowPlayer}
+											/>
+										)}
 										<Spacer margin="top-large">
 											<div className="o-flex o-flex--justify-between o-flex--wrap">
 												<div className="c-button-toolbar">

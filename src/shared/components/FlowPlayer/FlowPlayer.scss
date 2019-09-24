@@ -1,47 +1,31 @@
+
+
+.c-video-player {
+	&.t-player-skin--dark {
+		background: none;
+	}
+
+	&__thumbnail {
+		cursor: pointer;
+	}
+
+	&__item {
+		line-height: 0;
+	}
+}
+
+.c-play-overlay__button {
+	margin-right: -4px;
+}
+
 .flowplayer {
 	width: 100%;
 	vertical-align: bottom;
 
 	.fp-title {
-		text-transform: none;
-	}
-
-	.is-fullscreen .fp-footer {
-		display: inline-block;
-	}
-
-	.fp-footer {
-		display: inline-block;
-		max-width: calc(100% - 3.2rem);
-		top: 1rem;
-		left: 1rem;
-		right: 1rem;
-		bottom: auto;
-
-		padding: 0.8rem 1.2rem;
-		margin: 0 0 1rem;
-
-		font-size: 1.8rem;
-		font-weight: 500;
-		text-overflow: ellipsis;
-		background-color: rgba(15, 23, 29, 0.75);
-
-		white-space: nowrap;
-		overflow: hidden;
-	}
-
-	.is-playing .fp-footer {
 		display: none;
-	}
-
-	.logo-on-right {
-		.fp-header {
-			position: absolute;
-		}
-
-		.fp-secondary {
-			left: auto;
-		}
+		background-color: rgba(15, 23, 29, 0.75);
+		text-transform: none;
 	}
 
 	.fp-secondary .fp-togglable  {
@@ -53,15 +37,19 @@
 	}
 
 	.fp-header {
+		display: none;
 		background: rgba(15, 23, 29, 0.8);
-		color: rgba(255, 255, 255, 0.67);
+		justify-content: flex-end;
+
 		width: 20%;
+		color: rgba(255, 255, 255, 0.67);
 		position: absolute;
 		top: auto;
 		left: auto;
 		bottom: 0;
 		right: 0;
 		z-index: 1;
+		padding: 0;
 	}
 
 	.fp-controls {
@@ -78,18 +66,64 @@
 	.fp-color {
 		background-color: #25A4CF;
 	}
-}
 
-.c-video-player {
-	.t-player-skin--dark {
-		background: none;
+	.fp-footer {
+		display: none;
+		max-width: calc(100% - 3.2rem);
+		top: 1rem;
+		left: 1rem;
+		right: 1rem;
+		bottom: auto;
+
+		padding: 0.8rem 1.2rem;
+		margin: 0 0 1rem;
+
+		font-size: 1.8rem;
+		font-weight: 500;
+		text-overflow: ellipsis;
+
+		white-space: nowrap;
+		overflow: hidden;
 	}
 
-	&__thumbnail {
-		cursor: pointer;
-	}
-}
+	.fp-secondary {
+		left: 0;
+		top: 0;
+		display: flex;
+		flex-direction: row;
+		height: 100%;
+		width: 100%;
+		justify-content: flex-end;
+		align-items: center;
 
-.c-play-overlay__button {
-	margin-right: -4px;
+		.fp-cast-button, .fp-fullscreen, .fp-fullscreen-exit {
+			height: 50%;
+			margin: 0;
+			padding: 0;
+			width: auto;
+			padding-left: 10px;
+			padding-right: 10px;
+
+		}
+	}
+
+	&.is-playing {
+		.fp-footer {
+			display: none;
+		}
+	}
+
+	&.is-hovered, &.is-paused {
+		.fp-header, .fp-footer {
+			display: block;
+		}
+	}
+
+	&.is-fullscreen {
+		&.is-hovered, &.is-paused {
+			.fp-title {
+				display: block;
+			}
+		}
+	}
 }
