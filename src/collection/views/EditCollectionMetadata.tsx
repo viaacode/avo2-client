@@ -28,6 +28,7 @@ import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInp
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
+import { isVideoFragment } from '../helpers';
 import { getVideoStills, VideoStill } from '../service';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
@@ -50,6 +51,27 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		collection.thumbnail_path = selectedCoverImages[0];
 		setShowCoverImageModal(false);
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
+	};
+
+	const fetchThumbnailImages = async () => {
+		// Only update thumbnails when modal is opened, not when closed
+		try {
+			const externalIds = compact(
+				collection.collection_fragments.map(fragment =>
+					isVideoFragment(fragment) ? fragment.external_id : undefined
+				)
+			);
+			const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
+			setVideoStills(
+				uniq([
+					...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
+					...videoStills.map(videoStill => videoStill.thumbnailImagePath),
+				])
+			);
+		} catch (err) {
+			toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
+			console.error(err);
+		}
 	};
 
 	useEffect(() => {
@@ -80,8 +102,8 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	};
 
 	const renderCollectionMetaData = (data: {
-		vocabularies_lom_contexts: { label: string }[];
-		vocabularies_lom_classifications: { label: string }[];
+		lookup_enum_lom_context: { description: string }[];
+		lookup_enum_lom_classification: { description: string }[];
 	}) => {
 		return (
 			<Fragment>
@@ -93,9 +115,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 									<Column size="3-7">
 										<FormGroup label="Onderwijsniveau" labelFor="classificationId">
 											<TagsInput
-												options={(data.vocabularies_lom_contexts || []).map(item => ({
-													value: item.label,
-													label: item.label,
+												options={(data.lookup_enum_lom_context || []).map(item => ({
+													value: item.description,
+													label: item.description,
 												}))}
 												value={(collection.lom_context || []).map((item: string) => ({
 													value: item,
@@ -108,9 +130,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 										</FormGroup>
 										<FormGroup label="Vakken" labelFor="subjectsId">
 											<TagsInput
-												options={(data.vocabularies_lom_classifications || []).map(item => ({
-													value: item.label,
-													label: item.label,
+												options={(data.lookup_enum_lom_classification || []).map(item => ({
+													value: item.description,
+													label: item.description,
 												}))}
 												value={(collection.lom_classification || []).map((item: string) => ({
 													value: item,
