@@ -46,7 +46,9 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
+import { fetchPlayerToken } from '../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
@@ -61,6 +63,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [playerToken, setPlayerToken] = useState();
 
 	const openDeleteModal = (collectionId: number) => {
 		setIdToDelete(collectionId);
@@ -140,6 +143,16 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			const fragments = orderBy([...collection.collection_fragments], 'position', 'asc') || [];
 
 			fragments.forEach((fragment: Avo.Collection.Fragment) => {
+				const initFlowPlayer = () =>
+					!playerToken &&
+					fetchPlayerToken(fragment.external_id)
+						.then(data => setPlayerToken(data))
+						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
+
+				if (isVideoFragment(fragment)) {
+					initFlowPlayer();
+				}
+
 				contentBlockInfos.push({
 					blockType: isVideoFragment(fragment)
 						? ContentBlockType.VideoTitleTextButton
@@ -148,7 +161,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 						title: getFragmentField(fragment, 'title'),
 						text: getFragmentField(fragment, 'description'),
 						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
-						videoSource: '',
+						videoSource: playerToken,
 						buttonLabel: 'Meer lezen',
 					} as BlockVideoTitleTextButtonProps,
 				});
