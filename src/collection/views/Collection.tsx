@@ -154,7 +154,12 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					initFlowPlayer();
 				}
 
-				const contentBlocks = {
+				const contentBlocks: {
+					[contentBlockName: string]: {
+						type: ContentBlockType;
+						content: BlockVideoTitleTextButtonProps | BlockIntroProps;
+					};
+				} = {
 					videoTitleText: {
 						type: ContentBlockType.VideoTitleTextButton,
 						content: {
@@ -162,14 +167,14 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 							text: getFragmentField(fragment, 'description'),
 							titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
 							videoSource: playerToken,
-						} as BlockVideoTitleTextButtonProps,
+						},
 					},
 					titleText: {
 						type: ContentBlockType.Intro,
 						content: {
 							subtitle: getFragmentField(fragment, 'title'),
 							text: getFragmentField(fragment, 'description'),
-						} as BlockIntroProps,
+						},
 					},
 				};
 
