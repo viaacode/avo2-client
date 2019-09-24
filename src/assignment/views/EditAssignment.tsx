@@ -42,14 +42,46 @@ interface EditAssignmentProps extends RouteComponentProps {}
 const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, location }) => {
 	const [assignment, setAssignment] = useState<Partial<Assignment>>({});
 	const [contentId, setContentId] = useState<string>();
+	const [pageType, setPageType] = useState<'create' | 'edit' | undefined>();
 	const [contentType, setContentType] = useState<AssignmentContentType | undefined>();
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
+
+	useEffect(() => {
+		const queryParams = queryString.parse(location.search);
+		if (typeof queryParams.content_id === 'string') {
+			setContentId(queryParams.content_id);
+		}
+		if (typeof queryParams.content_type === 'string') {
+			setContentType(queryParams.content_type as AssignmentContentType);
+		}
+		console.log('location object: ', location);
+		if (location.pathname.includes(RouteParts.Create)) {
+			setPageType('create');
+		} else {
+			setPageType('edit');
+		}
+	});
 
 	const setAssignmentProp = (property: keyof Assignment, value: any) => {
 		setAssignment({
 			...assignment,
 			[property]: value,
 		});
+	};
+
+	const saveAssignment = () => {
+		if (pageType === 'create') {
+			// create => insert into graphql
+		} else {
+			// edit => update graphql
+		}
+	};
+
+	const CONTENT_TYPE_TO_ROUTE_PARTS: { [contentType in AssignmentContentType]: string } = {
+		audio: RouteParts.Item,
+		video: RouteParts.Item,
+		collectie: RouteParts.Collection,
+		zoek: RouteParts.SearchQuery,
 	};
 
 	const renderEditAssignmentForm = (contentObject: Avo.Collection.Response | Avo.Item.Response) => (
@@ -75,7 +107,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 								<ToolbarItem>
 									<div className="c-button-toolbar">
 										<Button type="secondary" onClick={() => history.goBack()} label="Annuleren" />
-										<Button type="primary" label="Opslaan" />
+										<Button type="primary" label="Opslaan" onClick={saveAssignment} />
 									</div>
 								</ToolbarItem>
 							</ToolbarRight>
@@ -121,28 +153,28 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 								</div>
 							</FormGroup>
 							{contentType && (
-								<FormGroup>
-									<label className="o-form-group__label">Inhoud</label>
-									<div className="c-box c-box--padding-small">
-										<Flex orientation="vertical" center>
-											<Spacer margin="right">
-												<Thumbnail
-													category={dutchContentLabelToEnglishLabel(contentType) as ContentType}
-													src={contentObject.thumbnail_path || undefined}
-												/>
-											</Spacer>
-											<FlexItem>
-												<div className="c-overline-plus-p">
-													<p className="c-overline">{assignment.content_label}</p>
-													<p>{contentObject.title || contentObject.description}</p>
-												</div>
-											</FlexItem>
-											<Link to={`/${RouteParts.Collection}/${assignment.content_id}`}>
-												<Button type="secondary" ariaLabel="Bekijk opdracht content" icon="eye" />
-											</Link>
-										</Flex>
-									</div>
-								</FormGroup>
+								<Link to={`/${CONTENT_TYPE_TO_ROUTE_PARTS[contentType]}/${assignment.content_id}`}>
+									<FormGroup>
+										<label className="o-form-group__label">Inhoud</label>
+										<div className="c-box c-box--padding-small">
+											<Flex orientation="vertical" center>
+												<Spacer margin="right">
+													<Thumbnail
+														category={dutchContentLabelToEnglishLabel(contentType) as ContentType}
+														src={contentObject.thumbnail_path || undefined}
+													/>
+													{/*TODO use stills api to get thumbnail*/}
+												</Spacer>
+												<FlexItem>
+													<div className="c-overline-plus-p">
+														<p className="c-overline">{assignment.content_label}</p>
+														<p>{contentObject.title || contentObject.description}</p>
+													</div>
+												</FlexItem>
+											</Flex>
+										</div>
+									</FormGroup>
+								</Link>
 							)}
 							<FormGroup label="Weergave" labelFor="only_player">
 								<RadioButtonGroup>
@@ -236,20 +268,20 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 									</p>
 								</div>
 							</FormGroup>
-							<hr className="c-hr" />
-							<div className="c-alert c-alert--info">
-								<div className="c-alert__body">
-									<div className="u-spacer-right-s">
-										<Icon name="circle-info" type="multicolor" size="small" />
-									</div>
-									<div className="c-content c-content--no-m">
-										<p>
-											Hulp nodig bij het maken van opdrachten? Bekijk onze{' '}
-											<a href="#">screencast</a>.
-										</p>
-									</div>
-								</div>
-							</div>
+							{/*<hr className="c-hr" />*/}
+							{/*<div className="c-alert c-alert--info">*/}
+							{/*	<div className="c-alert__body">*/}
+							{/*		<div className="u-spacer-right-s">*/}
+							{/*			<Icon name="circle-info" type="multicolor" size="small" />*/}
+							{/*		</div>*/}
+							{/*		<div className="c-content c-content--no-m">*/}
+							{/*			<p>*/}
+							{/*				Hulp nodig bij het maken van opdrachten? Bekijk onze{' '}*/}
+							{/*				<a href="#">screencast</a>.*/}
+							{/*			</p>*/}
+							{/*		</div>*/}
+							{/*	</div>*/}
+							{/*</div>*/}
 						</div>
 					</Form>
 				</Container>
@@ -273,16 +305,6 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			resultPath: 'app_item_meta[0]',
 		},
 	};
-
-	useEffect(() => {
-		const queryParams = queryString.parse(location.search);
-		if (typeof queryParams.content_id === 'string') {
-			setContentId(queryParams.content_id);
-		}
-		if (typeof queryParams.content_type === 'string') {
-			setContentType(queryParams.content_type as AssignmentContentType);
-		}
-	});
 
 	return !!contentType ? (
 		<DataQueryComponent

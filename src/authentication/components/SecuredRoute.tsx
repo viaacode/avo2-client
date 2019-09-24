@@ -23,9 +23,11 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 			render={props => {
 				// Already logged in
 				if (loginState && loginState.message === 'LOGGED_IN') {
+					console.log('rendering component for route: ', path, component);
 					const Component = component;
 					return <Component />;
 				}
+				console.log('redirect to login for route: ', path, component);
 				return (
 					<Redirect
 						to={{

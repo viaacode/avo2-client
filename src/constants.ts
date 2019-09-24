@@ -15,9 +15,11 @@ export const RouteParts = {
 	News: 'nieuws',
 	Edit: 'bewerk',
 	Create: 'maak',
+	Detail: 'detail',
 	Assignments: 'opdrachten',
 	Assignment: 'opdracht',
 	Responses: 'indieningen',
+	SearchQuery: 'zoekopdracht',
 };
 
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
