@@ -1,0 +1,33 @@
+/* ==========================================================================
+  c-content-type
+   ========================================================================== */
+
+.c-content-type {
+	display: flex;
+	align-items: center;
+	margin: 0.4rem 0;
+
+	p {
+		font-size: 1.3rem;
+		color: $color-gray-500;
+		text-transform: uppercase;
+	}
+
+	.o-svg-icon {
+		margin-right: .4rem;
+		width: 1.8rem;
+		height: 1.8rem;
+	}
+}
+
+.c-content-type--collection .o-svg-icon {
+	color: $color-ocean-green;
+}
+
+.c-content-type--audio .o-svg-icon {
+	color: $color-teal-bright;
+}
+
+.c-content-type--video .o-svg-icon {
+	color: $color-yellow;
+}

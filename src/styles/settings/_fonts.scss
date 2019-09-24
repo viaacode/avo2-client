@@ -1,0 +1,59 @@
+@font-face {
+	font-family: "Montserrat";
+	font-weight: 400;
+	font-style: normal;
+	src: url("/fonts/montserrat-regular.eot");
+	src: url("/fonts/montserrat-regular.eot?#iefix") format("embedded-opentype"),
+		 url("/fonts/montserrat-regular.woff2") format("woff2"),
+		 url("/fonts/montserrat-regular.woff") format("woff");
+}
+
+@font-face {
+	font-family: "Montserrat";
+	font-weight: 400;
+	font-style: italic;
+	src: url("/fonts/montserrat-italic.eot");
+	src: url("/fonts/montserrat-italic.eot?#iefix") format("embedded-opentype"),
+		 url("/fonts/montserrat-italic.woff2") format("woff2"),
+		 url("/fonts/montserrat-italic.woff") format("woff");
+}
+
+@font-face {
+	font-family: "Montserrat";
+	font-weight: 500;
+	font-style: normal;
+	src: url("/fonts/montserrat-medium.eot");
+	src: url("/fonts/montserrat-medium.eot?#iefix") format("embedded-opentype"),
+		 url("/fonts/montserrat-medium.woff2") format("woff2"),
+		 url("/fonts/montserrat-medium.woff") format("woff");
+}
+
+@font-face {
+	font-family: "Montserrat";
+	font-weight: 700;
+	font-style: normal;
+	src: url("/fonts/montserrat-bold.eot");
+	src: url("/fonts/montserrat-bold.eot?#iefix") format("embedded-opentype"),
+		 url("/fonts/montserrat-bold.woff2") format("woff2"),
+		 url("/fonts/montserrat-bold.woff") format("woff");
+}
+
+@font-face {
+	font-family: "Avenir LT Std";
+	font-weight: 600;
+	src: url("/fonts/avenir-lt-std-heavy.eot");
+	src: url("/fonts/avenir-lt-std-heavy.eot?#iefix") format("embedded-opentype"),
+		 url("/fonts/avenir-lt-std-heavy.woff2") format("woff2"),
+		 url("/fonts/avenir-lt-std-heavy.woff") format("woff"),
+		 url("/fonts/avenir-lt-std-heavy.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "Avenir LT Std";
+	font-weight: 500;
+	src: url("/fonts/avenir-lt-std-medium.eot");
+	src: url("/fonts/avenir-lt-std-medium.eot?#iefix") format("embedded-opentype"),
+		 url("/fonts/avenir-lt-std-medium.woff2") format("woff2"),
+		 url("/fonts/avenir-lt-std-medium.woff") format("woff"),
+		 url("/fonts/avenir-lt-std-medium.ttf") format("truetype");
+}

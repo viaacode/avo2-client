@@ -1,0 +1,56 @@
+/* ==========================================================================
+   Stylesheet for VIAA
+   ITCSS + BEM
+   ---
+   This SCSS code is inspired by BEM (Block Element Modifier) and ITCSS (Inverted Triangle CSS) methodologies.
+   For BEM Please refer to http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
+   For ITCSS Please refer to https://speakerdeck.com/dafed/managing-css-projects-with-itcss
+   ========================================================================== */
+
+/* Settings: preprocessor variables, colors, global settings
+   ========================================================================== */
+
+@import './settings/index';
+
+/* Generic: CSS reset, box-sizing, global CSS tweaks
+   ========================================================================== */
+
+@import './generic/reset';
+
+/* Elements: element selectors, CMS-generated content
+   ========================================================================== */
+
+@import './elements/base';
+
+/* Objects: layout-related CSS, grid, SVG icons frame, flexbox classes
+   ========================================================================== */
+
+@import './objects/app';
+
+/* Components: separately styled components (buttons, form inputs, toolbars...)
+   ========================================================================== */
+
+@import './components/index';
+
+/* Vendor
+   3rd party code
+   ========================================================================== */
+
+@import '~react-toastify/dist/ReactToastify.minimal.css';
+// We only include the minimal styling from react-toastify
+// this way we don't have to override all unwanted styles
+// Below we only include the parts we need
+@import '~react-toastify/scss/variables';
+@import '~react-toastify/scss/animations/slide';
+
+@import '~react-trumbowyg/dist/trumbowyg.min.css';
+
+/* Utilities: specific helper classes, overrides
+   ========================================================================== */
+
+@import './utilities/index';
+
+/* Trumps
+   ========================================================================== */
+
+@import './trumps/mq-debug';
