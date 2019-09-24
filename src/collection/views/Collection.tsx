@@ -123,6 +123,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		}
 	};
 
+	// TODO: Replace types when available
 	const getFragmentField = (fragment: Avo.Collection.Fragment, field: string) =>
 		fragment.use_custom_fields
 			? (fragment as any)[`custom_${field}`]
