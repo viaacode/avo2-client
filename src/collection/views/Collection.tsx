@@ -153,17 +153,32 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					initFlowPlayer();
 				}
 
+				const contentBlocks = {
+					videoTitleText: {
+						type: ContentBlockType.VideoTitleTextButton,
+						content: {
+							title: getFragmentField(fragment, 'title'),
+							text: getFragmentField(fragment, 'description'),
+							titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
+							videoSource: playerToken,
+						} as BlockVideoTitleTextButtonProps,
+					},
+					titleText: {
+						type: ContentBlockType.Intro,
+						content: {
+							subtitle: getFragmentField(fragment, 'title'),
+							text: getFragmentField(fragment, 'description'),
+						} as BlockIntroProps,
+					},
+				};
+
+				const currentContentBlock = isVideoFragment(fragment)
+					? contentBlocks.videoTitleText
+					: contentBlocks.titleText;
+
 				contentBlockInfos.push({
-					blockType: isVideoFragment(fragment)
-						? ContentBlockType.VideoTitleTextButton
-						: ContentBlockType.RichText,
-					content: {
-						title: getFragmentField(fragment, 'title'),
-						text: getFragmentField(fragment, 'description'),
-						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
-						videoSource: playerToken,
-						buttonLabel: 'Meer lezen',
-					} as BlockVideoTitleTextButtonProps,
+					blockType: currentContentBlock.type,
+					content: currentContentBlock.content,
 				});
 			});
 		}
