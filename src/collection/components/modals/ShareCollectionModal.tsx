@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import moment from 'moment';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 
 import {
@@ -151,13 +150,13 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const onSave = () => {
 		setIsOpen(false);
 		updateCollectionProperty(isCollectionPublic, 'is_public');
-		updateCollectionProperty(moment().toISOString(), 'publish_at');
+		updateCollectionProperty(new Date().toISOString(), 'publish_at');
 		triggerCollectionPropertyUpdate({
 			variables: {
 				id: collection.id,
 				collection: {
 					is_public: isCollectionPublic,
-					publish_at: moment().toISOString(),
+					publish_at: new Date().toISOString(),
 				},
 			},
 		});
