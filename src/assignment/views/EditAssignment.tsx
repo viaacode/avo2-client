@@ -4,6 +4,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import {
 	Button,
 	Container,
+	DatePicker,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -127,10 +128,8 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 									</abbr>
 								</label>
 								<div className="o-form-group__controls">
-									<input
-										className="c-input"
-										id="assignmentTitle"
-										type="text"
+									<TextInput
+										id="title"
 										value={assignment.title}
 										onChange={title => setAssignmentProp('title', title)}
 									/>
@@ -234,51 +233,42 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 									Beschikbaar vanaf
 								</label>
 								<div className="o-form-group__controls">
-									<div className="o-flex">
-										<div className="u-spacer-right-s">
-											<input className="c-input" id="assignmentAvailableFromDate" type="date" />
-										</div>
-										<input
-											className="c-input c-input--w-small"
-											id="assignmentAvailableFromTime"
-											type="text"
-											placeholder="hh:mm"
+									<Flex>
+										{/*TODO Replace with DateTimePicker from components*/}
+										<DatePicker
+											value={assignment.available_at ? new Date(assignment.available_at) : null}
+											onChange={(value: Date | null) =>
+												setAssignmentProp('available_at', value ? value.toISOString() : null)
+											}
+											id="available_at"
 										/>
-									</div>
+									</Flex>
 								</div>
 							</FormGroup>
-							<FormGroup>
-								<label className="o-form-group__label" htmlFor="assignmentDeadlineDate">
-									Deadline
-								</label>
-								<div className="o-form-group__controls">
-									<div className="o-flex">
-										<div className="u-spacer-right-s">
-											<input className="c-input" id="assignmentDeadlineDate" type="date" />
-										</div>
-										<input
-											className="c-input c-input--w-small"
-											id="assignmentDeadlineTime"
-											type="text"
-											placeholder="hh:mm"
+							<FormGroup label="Deadline">
+								<Flex>
+									<Spacer margin="right-small">
+										{/*TODO Replace with DateTimePicker from components*/}
+										<DatePicker
+											value={assignment.deadline_at ? new Date(assignment.deadline_at) : null}
+											onChange={value => setAssignmentProp('deadline_at', value)}
+											id="deadline_at"
 										/>
-									</div>
-									<p className="c-form-help-text">
-										Na deze datum kan de leerling de opdracht niet meer invullen.
-									</p>
-								</div>
+									</Spacer>
+								</Flex>
+								<p className="c-form-help-text">
+									Na deze datum kan de leerling de opdracht niet meer invullen.
+								</p>
 							</FormGroup>
 							{/*<hr className="c-hr" />*/}
+							{/*TODO convert to Alert once Alert supports custom content*/}
 							{/*<div className="c-alert c-alert--info">*/}
 							{/*	<div className="c-alert__body">*/}
 							{/*		<div className="u-spacer-right-s">*/}
 							{/*			<Icon name="circle-info" type="multicolor" size="small" />*/}
 							{/*		</div>*/}
 							{/*		<div className="c-content c-content--no-m">*/}
-							{/*			<p>*/}
-							{/*				Hulp nodig bij het maken van opdrachten? Bekijk onze{' '}*/}
-							{/*				<a href="#">screencast</a>.*/}
-							{/*			</p>*/}
+							{/*			<p />*/}
 							{/*		</div>*/}
 							{/*	</div>*/}
 							{/*</div>*/}
