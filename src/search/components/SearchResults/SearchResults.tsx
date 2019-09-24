@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 
-import { Blankslate, Container, Pagination, Spacer, Spinner } from '@viaa/avo2-components';
+import { Blankslate, Container, Flex, Pagination, Spacer, Spinner } from '@viaa/avo2-components';
 
 import SearchResultItem from './SearchResultItem';
 import { SearchResultsProps } from './types';
@@ -17,9 +17,9 @@ const SearchResults = ({
 		<Container mode="vertical">
 			<Container mode="horizontal">
 				{loading ? (
-					<div className="o-flex o-flex--horizontal-center">
+					<Flex orientation="horizontal" center>
 						<Spinner size="large" />
-					</div>
+					</Flex>
 				) : data && data.count !== 0 ? (
 					<Fragment>
 						<ul className="c-search-result-list">

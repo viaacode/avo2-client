@@ -219,16 +219,18 @@ export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
 				label
 				id
 			}
+			duration
+			external_id
 		}
 	}
 `;
 
 export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
 	{
-		vocabularies_enum_lom_context {
+		lookup_enum_lom_context {
 			description
 		}
-		vocabularies_enum_lom_classification {
+		lookup_enum_lom_classification {
 			description
 		}
 	}

@@ -8,6 +8,7 @@ import {
 	Button,
 	Column,
 	Container,
+	Flex,
 	Form,
 	FormGroup,
 	Grid,
@@ -102,8 +103,8 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	};
 
 	const renderCollectionMetaData = (data: {
-		vocabularies_enum_lom_context: { description: string }[];
-		vocabularies_enum_lom_classification: { description: string }[];
+		lookup_enum_lom_context: { description: string }[];
+		lookup_enum_lom_classification: { description: string }[];
 	}) => {
 		return (
 			<Fragment>
@@ -115,7 +116,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 									<Column size="3-7">
 										<FormGroup label="Onderwijsniveau" labelFor="classificationId">
 											<TagsInput
-												options={(data.vocabularies_enum_lom_context || []).map(item => ({
+												options={(data.lookup_enum_lom_context || []).map(item => ({
 													value: item.description,
 													label: item.description,
 												}))}
@@ -130,7 +131,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 										</FormGroup>
 										<FormGroup label="Vakken" labelFor="subjectsId">
 											<TagsInput
-												options={(data.vocabularies_enum_lom_classification || []).map(item => ({
+												options={(data.lookup_enum_lom_classification || []).map(item => ({
 													value: item.description,
 													label: item.description,
 												}))}
@@ -198,9 +199,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 						<div className="u-spacer">
 							<Form>
 								{videoStills === null ? (
-									<div className="o-flex o-flex--horizontal-center">
+									<Flex orientation="horizontal" center>
 										<Spinner size="large" />
-									</div>
+									</Flex>
 								) : videoStills.length === 0 ? (
 									<Blankslate
 										body=""

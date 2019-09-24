@@ -10,6 +10,7 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Icon,
 	MenuContent,
 	MetaData,
@@ -369,7 +370,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 										{currentCollection.title}
 									</h1>
 									{currentCollection.owner && (
-										<div className="o-flex o-flex--spaced">
+										<Flex spaced="regular">
 											{!isEmpty(get(currentCollection, 'owner.id')) && (
 												<Avatar
 													image={get(currentCollection, 'owner.avatar')}
@@ -384,7 +385,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 													}
 												/>
 											)}
-										</div>
+										</Flex>
 									)}
 								</ToolbarItem>
 							</ToolbarLeft>
@@ -396,11 +397,17 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 											label="Delen"
 											onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 										/>
-										<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} />
+										<Button
+											type="secondary"
+											label="Bekijk"
+											onClick={onPreviewCollection}
+											disabled
+										/>
 										<Button
 											type="secondary"
 											label="Herschik alle items"
 											onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
+											disabled
 										/>
 										<ControlledDropdown
 											isOpen={isOptionsMenuOpen}
