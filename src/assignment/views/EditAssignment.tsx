@@ -61,7 +61,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		} else {
 			setPageType('edit');
 		}
-	});
+	}, [setContentId, location]);
 
 	const setAssignmentProp = (property: keyof Assignment, value: any) => {
 		setAssignment({
