@@ -23,7 +23,7 @@ interface ShareCollectionModalProps {
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
 	initialIsPublic: boolean;
-	updateCollectionProperty: (value: boolean, fieldName: string) => void;
+	updateCollectionProperty: (value: any, fieldName: string) => void;
 	collection: Avo.Collection.Response;
 }
 
@@ -150,11 +150,13 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const onSave = () => {
 		setIsOpen(false);
 		updateCollectionProperty(isCollectionPublic, 'is_public');
+		updateCollectionProperty(new Date().toISOString(), 'publish_at');
 		triggerCollectionPropertyUpdate({
 			variables: {
 				id: collection.id,
 				collection: {
 					is_public: isCollectionPublic,
+					publish_at: new Date().toISOString(),
 				},
 			},
 		});
