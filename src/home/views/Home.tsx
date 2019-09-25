@@ -14,6 +14,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	MenuSearchResultContent,
 	MenuSearchResultItemInfo,
 	Spacer,
@@ -156,12 +157,12 @@ const Home: FunctionComponent<HomeProps> = ({
 							</Spacer>
 							<Spacer margin="large">
 								<p className="c-body-1">Vind inspiratie voor specifieke vakken en domeinen:</p>
-								<div className="c-button-toolbar o-flex--horizontal-center">
+								<Flex className="c-button-toolbar" orientation="horizontal" center>
 									{/* TODO discover/overview-basic.html */}
 									<Button label="Basisonderwijs" type="secondary" />
 									{/* TODO discover/overview-secondary.html */}
 									<Button label="Secundair onderwijs" type="secondary" />
-								</div>
+								</Flex>
 							</Spacer>
 						</div>
 					</Spacer>

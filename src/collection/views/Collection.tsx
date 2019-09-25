@@ -31,6 +31,7 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Icon,
 	MenuContent,
 	MetaData,
@@ -185,7 +186,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 									</Spacer>
 									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
 									{collection.owner && (
-										<div className="o-flex o-flex--spaced">
+										<Flex spaced="regular">
 											{!!get(collection, 'owner.id') && (
 												<Avatar
 													image={get(collection, 'owner.profiles[0].avatar')}
@@ -197,7 +198,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 													)}`}
 												/>
 											)}
-										</div>
+										</Flex>
 									)}
 								</ToolbarItem>
 							</ToolbarLeft>
