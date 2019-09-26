@@ -8,6 +8,7 @@ import {
 	Button,
 	Column,
 	Container,
+	Flex,
 	Form,
 	FormGroup,
 	Grid,
@@ -198,9 +199,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 						<div className="u-spacer">
 							<Form>
 								{videoStills === null ? (
-									<div className="o-flex o-flex--horizontal-center">
+									<Flex orientation="horizontal" center>
 										<Spinner size="large" />
-									</div>
+									</Flex>
 								) : videoStills.length === 0 ? (
 									<Blankslate
 										body=""

@@ -307,6 +307,8 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						isOpen={isCutModalOpen}
 						setIsOpen={setIsCutModalOpen}
 						itemMetaData={itemMetaData}
+						updateFragmentProperty={updateFragmentProperty}
+						fragment={fragment}
 					/>
 				)}
 			</>

@@ -1,10 +1,10 @@
-import React, { FunctionComponent, ReactNode } from 'react';
-
 import { DocumentNode } from 'graphql';
 import { get } from 'lodash-es';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { Query, QueryResult } from 'react-apollo';
 
-import { Spinner } from '@viaa/avo2-components';
+import { Flex, Spinner } from '@viaa/avo2-components';
+
 import NotFound from '../../../404/views/NotFound';
 
 export interface DataQueryComponentProps {
@@ -12,6 +12,7 @@ export interface DataQueryComponentProps {
 	resultPath?: string;
 	renderData: (data: any) => ReactNode;
 	variables?: any;
+	ignoreNotFound?: boolean;
 	notFoundMessage?: string;
 	showSpinner?: Boolean;
 }
@@ -21,6 +22,7 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	variables,
 	resultPath,
 	renderData,
+	ignoreNotFound = false,
 	notFoundMessage = 'Het opgevraagde object werd niet gevonden',
 	showSpinner = true,
 }) => {
@@ -29,9 +31,9 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			{(result: QueryResult) => {
 				if (result.loading) {
 					return showSpinner ? (
-						<div className="o-flex o-flex--horizontal-center">
+						<Flex orientation="horizontal" center>
 							<Spinner size="large" />
-						</div>
+						</Flex>
 					) : null;
 				}
 
@@ -48,7 +50,7 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 				}
 
 				const data = get(result, resultPath ? `data.${resultPath}` : 'data');
-				if (data) {
+				if (data || ignoreNotFound) {
 					return renderData(data);
 				}
 

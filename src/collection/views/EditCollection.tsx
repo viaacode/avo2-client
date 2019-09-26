@@ -10,6 +10,7 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Icon,
 	MenuContent,
 	MetaData,
@@ -218,6 +219,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					const tempId = fragmentToAdd.id;
 					delete fragmentToAdd.id;
 					delete fragmentToAdd.__typename;
+					delete fragmentToAdd.item_meta;
 
 					const response = await triggerCollectionFragmentInsert({
 						variables: {
@@ -278,6 +280,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					};
 
 					delete fragment.__typename;
+					delete fragment.item_meta;
 
 					triggerCollectionFragmentUpdate({
 						variables: {
@@ -291,6 +294,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 				await readyToStore.collection_fragments.forEach((fragment: any) => {
 					delete fragment.__typename;
+					delete fragment.item_meta;
 
 					triggerCollectionFragmentUpdate({
 						variables: {
@@ -369,7 +373,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 										{currentCollection.title}
 									</h1>
 									{currentCollection.owner && (
-										<div className="o-flex o-flex--spaced">
+										<Flex spaced="regular">
 											{!isEmpty(get(currentCollection, 'owner.id')) && (
 												<Avatar
 													image={get(currentCollection, 'owner.avatar')}
@@ -384,7 +388,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 													}
 												/>
 											)}
-										</div>
+										</Flex>
 									)}
 								</ToolbarItem>
 							</ToolbarLeft>
