@@ -262,7 +262,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 																history.push(
 																	`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
 																		RouteParts.Create
-																	}?content_id=${item.external_id}&content_type=item`
+																	}?content_id=${itemMetaData.external_id}&content_type=item`
 																)
 															}
 														/>
