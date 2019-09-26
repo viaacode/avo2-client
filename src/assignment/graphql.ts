@@ -38,7 +38,7 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 `;
 
 export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
-  query getAssignmentsByOwner($ownerId: uuid, $archived: false, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}) {
+  query getAssignmentsByOwner($ownerId: uuid, $archived: Boolean = false, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}) {
     app_assignments(where: { owner_uid: { _eq: $ownerId }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}}, offset: $offset, limit: $limit) {
       assignment_assignment_tags {
         assignment_tag {
