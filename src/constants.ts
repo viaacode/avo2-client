@@ -14,6 +14,9 @@ export const RouteParts = {
 	Projects: 'projecten',
 	News: 'nieuws',
 	Edit: 'bewerk',
+	Create: 'maak',
+	Assignments: 'opdrachten',
+	Assignment: 'opdracht',
 };
 
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
