@@ -33,11 +33,13 @@ COPY --from=build /app/build /usr/share/nginx/html
 
 WORKDIR /usr/share/nginx/html
 COPY .env scripts/env.js ./
+COPY .env scripts/env.sh ./
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh && chown 101:101 /docker-entrypoint.sh
 RUN chgrp -R 101 /usr/share/nginx/html && chmod -R g+rwx /usr/share/nginx/html
 
 # Run script which initializes env vars to fs
 RUN chmod +x env.js
+RUN chmod +x env.sh
 USER nginx
 ENTRYPOINT ["/docker-entrypoint.sh"]
