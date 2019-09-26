@@ -50,6 +50,9 @@ import EditCollectionMetadata from './EditCollectionMetadata';
 
 interface EditCollectionProps extends RouteComponentProps {}
 
+let currentCollection: any;
+let setCurrentCollection: (collection: Avo.Collection.Response) => void;
+
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -63,7 +66,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState(false);
-	const [currentCollection, setCurrentCollection] = useState();
+	[currentCollection, setCurrentCollection] = useState();
 	const [initialCollection, setInitialCollection] = useState();
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
 	const [isSavingCollection, setIsSavingCollection] = useState(false);
@@ -219,6 +222,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					const tempId = fragmentToAdd.id;
 					delete fragmentToAdd.id;
 					delete fragmentToAdd.__typename;
+					delete fragmentToAdd.item_meta;
 
 					const response = await triggerCollectionFragmentInsert({
 						variables: {
@@ -279,6 +283,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					};
 
 					delete fragment.__typename;
+					delete fragment.item_meta;
 
 					triggerCollectionFragmentUpdate({
 						variables: {
@@ -292,6 +297,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 				await readyToStore.collection_fragments.forEach((fragment: any) => {
 					delete fragment.__typename;
+					delete fragment.item_meta;
 
 					triggerCollectionFragmentUpdate({
 						variables: {
