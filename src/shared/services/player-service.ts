@@ -15,7 +15,7 @@ export const fetchPlayerToken = async (externalId: string) => {
 		credentials: 'include',
 	});
 
-	const data = await response.json();
+	const data: PlayerTokenResponse = await response.json();
 
-	return data.url as PlayerTokenResponse;
+	return data.url;
 };

@@ -47,7 +47,6 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import { fetchPlayerToken } from '../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -60,11 +59,11 @@ interface CollectionProps extends RouteComponentProps {}
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
-	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
+	const [playerToken, setPlayerToken] = useState<string | undefined>();
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
-	const [playerToken, setPlayerToken] = useState();
 
 	const openDeleteModal = (collectionId: number) => {
 		setIdToDelete(collectionId);
@@ -92,38 +91,46 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	};
 
 	const renderContentBlock = (contentBlock: ContentBlockInfo) => {
-		switch (contentBlock.blockType) {
-			case ContentBlockType.Image:
-				return <BlockImage {...contentBlock.content as BlockImageProps} />;
-			case ContentBlockType.ImageTitleTextButton:
-				return (
-					<BlockImageTitleTextButton {...contentBlock.content as BlockImageTitleTextButtonProps} />
-				);
-			case ContentBlockType.Intro:
-				return <BlockIntro {...contentBlock.content as BlockIntroProps} />;
-			case ContentBlockType.Links:
-				return <BlockLinks {...contentBlock.content as BlockLinksProps} />;
-			case ContentBlockType.Quote:
-				return <BlockQuote {...contentBlock.content as BlockQuoteProps} />;
-			case ContentBlockType.RichText:
-				return <BlockText {...contentBlock.content as BlockTextProps} />;
-			case ContentBlockType.Subtitle:
-				return <BlockSubtitle {...contentBlock.content as BlockSubtitleProps} />;
-			case ContentBlockType.Title:
-				return <BlockTitle {...contentBlock.content as BlockTitleProps} />;
-			case ContentBlockType.TitleImageText:
-				return <BlockTitleImageText {...contentBlock.content as BlockTitleImageTextProps} />;
-			case ContentBlockType.Video:
-				return <BlockVideo {...contentBlock.content as BlockVideoProps} />;
-			case ContentBlockType.VideoTitleTextButton:
-				return (
-					<BlockVideoTitleTextButton {...contentBlock.content as BlockVideoTitleTextButtonProps} />
-				);
+		const {
+			Image,
+			ImageTitleTextButton,
+			Intro,
+			Links,
+			Quote,
+			RichText,
+			Subtitle,
+			Title,
+			Video,
+			TitleImageText,
+			VideoTitleTextButton,
+		} = ContentBlockType;
+		const { content, blockType } = contentBlock;
+
+		switch (blockType) {
+			case Image:
+				return <BlockImage {...content as BlockImageProps} />;
+			case ImageTitleTextButton:
+				return <BlockImageTitleTextButton {...content as BlockImageTitleTextButtonProps} />;
+			case Intro:
+				return <BlockIntro {...content as BlockIntroProps} />;
+			case Links:
+				return <BlockLinks {...content as BlockLinksProps} />;
+			case Quote:
+				return <BlockQuote {...content as BlockQuoteProps} />;
+			case RichText:
+				return <BlockText {...content as BlockTextProps} />;
+			case Subtitle:
+				return <BlockSubtitle {...content as BlockSubtitleProps} />;
+			case Title:
+				return <BlockTitle {...content as BlockTitleProps} />;
+			case TitleImageText:
+				return <BlockTitleImageText {...content as BlockTitleImageTextProps} />;
+			case Video:
+				return <BlockVideo {...content as BlockVideoProps} />;
+			case VideoTitleTextButton:
+				return <BlockVideoTitleTextButton {...content as BlockVideoTitleTextButtonProps} />;
 			default:
-				toastService(
-					`Failed to find contentBlock type: ${contentBlock.blockType}`,
-					TOAST_TYPE.DANGER
-				);
+				toastService(`Failed to find contentBlock type: ${blockType}`, TOAST_TYPE.DANGER);
 				return null;
 		}
 	};
