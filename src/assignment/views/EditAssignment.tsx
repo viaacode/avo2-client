@@ -475,24 +475,19 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 									platform toe.
 								</p>
 							</FormGroup>
-							<FormGroup>
-								<label className="o-form-group__label" htmlFor="assignmentAvailableFromDate">
-									Beschikbaar vanaf
-								</label>
-								<div className="o-form-group__controls">
-									<Flex>
-										{/*TODO Replace with DateTimePicker from components*/}
-										<DatePicker
-											value={assignment.available_at ? new Date(assignment.available_at) : null}
-											onChange={(value: Date | null) =>
-												setAssignmentProp('available_at', value ? value.toISOString() : null)
-											}
-											id="available_at"
-										/>
-									</Flex>
-								</div>
+							<FormGroup label="Beschikbaar vanaf">
+								<Flex>
+									{/*TODO Replace with DateTimePicker from components*/}
+									<DatePicker
+										value={assignment.available_at ? new Date(assignment.available_at) : null}
+										onChange={(value: Date | null) =>
+											setAssignmentProp('available_at', value ? value.toISOString() : null)
+										}
+										id="available_at"
+									/>
+								</Flex>
 							</FormGroup>
-							<FormGroup label="Deadline">
+							<FormGroup label="Deadline" required>
 								<Flex>
 									<Spacer margin="right-small">
 										{/*TODO Replace with DateTimePicker from components*/}
