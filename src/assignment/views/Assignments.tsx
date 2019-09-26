@@ -196,7 +196,10 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	return (
 		<DataQueryComponent
 			query={GET_ASSIGNMENTS_BY_OWNER_ID}
-			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
+			variables={{
+				ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e',
+				archived: activeView === 'archived_assignments',
+			}}
 			renderData={renderAssignmentsView}
 			resultPath="app_assignments"
 			ignoreNotFound
