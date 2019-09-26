@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useEffect, useRef } from 'react';
 
 import { Icon } from '@viaa/avo2-components';
-import { CustomWindow } from '../../../shared/types/global';
+
+import { getEnv } from '../../../shared/helpers/env';
 
 import './FlowPlayer.scss';
 
@@ -30,7 +31,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 				src,
 
 				// CONFIGURATION
-				token: (window as CustomWindow)._ENV_.FLOW_PLAYER_TOKEN,
+				token: getEnv('FLOW_PLAYER_TOKEN'),
 				autoplay: true,
 				ui: flowplayer.ui.LOGO_ON_RIGHT | flowplayer.ui.USE_DRAG_HANDLE,
 				plugins: ['subtitles', 'chromecast'],
@@ -48,7 +49,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 	return src && poster ? (
 		<div
 			className="c-video-player"
-			data-player-id={(window as CustomWindow)._ENV_.FLOW_PLAYER_ID}
+			data-player-id={getEnv('FLOW_PLAYER_ID')}
 			ref={videoContainerRef}
 		/>
 	) : (

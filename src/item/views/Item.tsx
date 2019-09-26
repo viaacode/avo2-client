@@ -57,6 +57,7 @@ import { getVideoStills } from '../../shared/services/stills-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
+import { RouteParts } from '../../constants';
 import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
@@ -269,7 +270,18 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 															label="Voeg fragment toe aan collectie"
 															onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
 														/>
-														<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
+														<Button
+															type="tertiary"
+															icon="clipboard"
+															label="Maak opdracht"
+															onClick={() =>
+																history.push(
+																	`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
+																		RouteParts.Create
+																	}?content_id=${itemMetaData.external_id}&content_type=item`
+																)
+															}
+														/>
 													</div>
 												</div>
 												<div className="c-button-toolbar">

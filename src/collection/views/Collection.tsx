@@ -31,6 +31,7 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Icon,
 	MenuContent,
 	MetaData,
@@ -46,7 +47,9 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
+import { fetchPlayerToken } from '../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
@@ -61,6 +64,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [playerToken, setPlayerToken] = useState();
 
 	const openDeleteModal = (collectionId: number) => {
 		setIdToDelete(collectionId);
@@ -120,8 +124,15 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		}
 	};
 
+	// TODO: Replace types when available
+	const getFragmentField = (fragment: Avo.Collection.Fragment, field: string) =>
+		fragment.use_custom_fields
+			? (fragment as any)[`custom_${field}`]
+			: (fragment as any).item_meta[field];
+
 	const renderCollection = (collection: Avo.Collection.Response) => {
 		const contentBlockInfos: ContentBlockInfo[] = [];
+
 		if (collection) {
 			contentBlockInfos.push({
 				blockType: ContentBlockType.Intro,
@@ -133,21 +144,48 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 			const fragments = orderBy([...collection.collection_fragments], 'position', 'asc') || [];
 
-			fragments.forEach((collectionFragment: Avo.Collection.Fragment) => {
+			fragments.forEach((fragment: Avo.Collection.Fragment) => {
+				const initFlowPlayer = () =>
+					!playerToken &&
+					fetchPlayerToken(fragment.external_id)
+						.then(data => setPlayerToken(data))
+						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
+
+				if (isVideoFragment(fragment)) {
+					initFlowPlayer();
+				}
+
+				const contentBlocks: {
+					[contentBlockName: string]: {
+						type: ContentBlockType;
+						content: BlockVideoTitleTextButtonProps | BlockIntroProps;
+					};
+				} = {
+					videoTitleText: {
+						type: ContentBlockType.VideoTitleTextButton,
+						content: {
+							title: getFragmentField(fragment, 'title'),
+							text: getFragmentField(fragment, 'description'),
+							titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
+							videoSource: playerToken,
+						},
+					},
+					titleText: {
+						type: ContentBlockType.Intro,
+						content: {
+							subtitle: getFragmentField(fragment, 'title'),
+							text: getFragmentField(fragment, 'description'),
+						},
+					},
+				};
+
+				const currentContentBlock = isVideoFragment(fragment)
+					? contentBlocks.videoTitleText
+					: contentBlocks.titleText;
+
 				contentBlockInfos.push({
-					blockType: isVideoFragment(collectionFragment)
-						? ContentBlockType.VideoTitleTextButton
-						: ContentBlockType.RichText,
-					content: {
-						title: collectionFragment.custom_title,
-						text: collectionFragment.custom_description,
-						titleLink: generateContentLinkString(
-							ContentTypeString.video,
-							collectionFragment.external_id
-						),
-						videoSource: '',
-						buttonLabel: 'Meer lezen',
-					} as BlockVideoTitleTextButtonProps,
+					blockType: currentContentBlock.type,
+					content: currentContentBlock.content,
 				});
 			});
 		}
@@ -185,7 +223,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 									</Spacer>
 									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
 									{collection.owner && (
-										<div className="o-flex o-flex--spaced">
+										<Flex spaced="regular">
 											{!!get(collection, 'owner.id') && (
 												<Avatar
 													image={get(collection, 'owner.profiles[0].avatar')}
@@ -197,7 +235,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 													)}`}
 												/>
 											)}
-										</div>
+										</Flex>
 									)}
 								</ToolbarItem>
 							</ToolbarLeft>

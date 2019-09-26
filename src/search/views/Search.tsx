@@ -9,6 +9,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Form,
 	FormGroup,
 	Navbar,
@@ -312,7 +313,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 							</Fragment>
 						</ToolbarLeft>
 						<ToolbarRight>
-							<div className="o-flex o-flex--spaced">
+							<Flex spaced="regular">
 								<Form type="inline">
 									<FormGroup label="Sorteer op" labelFor="sortBy">
 										<Select
@@ -360,7 +361,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 										</Fragment>
 									</DropdownContent>
 								</Dropdown>
-							</div>
+							</Flex>
 						</ToolbarRight>
 					</Toolbar>
 				</Container>

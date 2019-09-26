@@ -4,6 +4,7 @@ export interface CustomWindow extends Window {
 		FLOW_PLAYER_TOKEN: string;
 		FLOW_PLAYER_ID: string;
 		PORT: string;
+		NODE_ENV: string;
 	};
 	APP_INFO: {
 		version: string;
