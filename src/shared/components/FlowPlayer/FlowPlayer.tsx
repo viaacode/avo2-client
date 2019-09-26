@@ -18,12 +18,20 @@ interface FlowPlayerProps {
 	onInit?: () => void;
 }
 
-export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, title, onInit }) => {
+export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
+	src,
+	poster,
+	title,
+	onInit,
+	start,
+	end,
+}) => {
 	const videoContainerRef = useRef(null);
-	const videoPlayerRef = useRef(null);
+	const videoPlayerRef: any = useRef();
 
 	useEffect(() => {
 		if (videoContainerRef.current) {
+			// Initialize FlowPlayer
 			videoPlayerRef.current = flowplayer(videoContainerRef.current, {
 				// DATA
 				title,
@@ -34,8 +42,24 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 				token: getEnv('FLOW_PLAYER_TOKEN'),
 				autoplay: true,
 				ui: flowplayer.ui.LOGO_ON_RIGHT | flowplayer.ui.USE_DRAG_HANDLE,
-				plugins: ['subtitles', 'chromecast'],
+				plugins: ['subtitles', 'chromecast', 'cuepoints'],
+
+				// CUEPOINTS
+				cuepoints: [{ start, end }],
+				draw_cuepoints: true,
 			});
+
+			// Start video at start cuepoint
+			if (start) {
+				videoPlayerRef.current.currentTime = start;
+			}
+
+			// Pause video at end cuepoint
+			if (end) {
+				videoPlayerRef.current.on('cuepointend', () => {
+					videoPlayerRef.current.pause();
+				});
+			}
 		}
 
 		return () => {
@@ -45,6 +69,13 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({ src, poster, ti
 			}
 		};
 	}, [videoContainerRef, src, poster, title]);
+
+	// Re-render start/end cuepoints when cropping video
+	useEffect(() => {
+		if (videoContainerRef.current) {
+			videoPlayerRef.current.emit(flowplayer.events.CUEPOINTS, { cuepoints: [{ start, end }] });
+		}
+	}, [start, end]);
 
 	return src && poster ? (
 		<div

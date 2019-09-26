@@ -25,6 +25,7 @@ interface CutFragmentModalProps {
 	setIsOpen: (isOpen: boolean) => void;
 	itemMetaData: Avo.Item.Response;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
+	updateCuePoints: (cuepoints: any) => void;
 	fragment: Avo.Collection.Fragment;
 }
 
@@ -34,6 +35,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	itemMetaData,
 	updateFragmentProperty,
 	fragment,
+	updateCuePoints,
 }) => {
 	const [playerToken, setPlayerToken] = useState();
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(fragment.start_oc || 0);
@@ -44,6 +46,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const onSaveCut = () => {
 		updateFragmentProperty(fragmentStartTime, 'start_oc', fragment.id);
 		updateFragmentProperty(fragmentEndTime, 'end_oc', fragment.id);
+		updateCuePoints({
+			start: fragmentStartTime,
+			end: fragmentEndTime,
+		});
 		setIsOpen(false);
 	};
 
