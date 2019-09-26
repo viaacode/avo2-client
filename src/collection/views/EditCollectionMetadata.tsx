@@ -29,7 +29,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	collection,
 	updateCollectionProperty,
 }) => {
-	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState(false);
+	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);

@@ -31,7 +31,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	collection,
 }) => {
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);
-	const [selectedCoverImages, setSelectedCoverImages] = useState(
+	const [selectedCoverImages, setSelectedCoverImages] = useState<string[]>(
 		collection.thumbnail_path ? [collection.thumbnail_path] : []
 	);
 
