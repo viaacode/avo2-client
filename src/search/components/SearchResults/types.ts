@@ -2,7 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 
 interface SearchResultItemHandlers {
 	handleBookmarkToggle: (id: string, active: boolean) => void;
-	handleOriginalCpLinkClicked: (id: string, cp: string) => void;
+	handleOriginalCpLinkClicked: (cp: string) => void;
 }
 
 export interface SearchResultItemProps extends SearchResultItemHandlers {

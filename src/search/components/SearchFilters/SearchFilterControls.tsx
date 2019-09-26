@@ -29,9 +29,11 @@ const SearchFilterControls = ({
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
 			(option: Avo.Search.OptionProp): CheckboxOption => {
 				let label = capitalize(option.option_name);
+
 				if (propertyName === 'language') {
 					label = languageCodeToLabel(option.option_name);
 				}
+
 				return {
 					label,
 					optionCount: option.option_count,

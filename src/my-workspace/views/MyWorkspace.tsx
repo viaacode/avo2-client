@@ -31,8 +31,8 @@ import './MyWorkspace.scss';
 
 const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) => {
 	// State
-	const [activeFilter, setActiveFilter] = useState();
-	const [tabId, setTabId] = useState(match.params.tabId || COLLECTIONS_ID);
+	const [activeFilter, setActiveFilter] = useState<ReactText>();
+	const [tabId, setTabId] = useState<string>(match.params.tabId || COLLECTIONS_ID);
 
 	// Methods
 	const goToTab = (id: ReactText) => {

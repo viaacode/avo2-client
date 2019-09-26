@@ -58,15 +58,15 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
 	const [collectionId] = useState((props.match.params as any)['id'] as string);
 	const [currentTab, setCurrentTab] = useState('inhoud');
-	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
-	const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-	const [isFirstRender, setIsFirstRender] = useState(false);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [currentCollection, setCurrentCollection] = useState();
 	const [initialCollection, setInitialCollection] = useState();
-	const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
-	const [isSavingCollection, setIsSavingCollection] = useState(false);
+	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
+	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 
 	// Tab navigation
 	const tabs = [

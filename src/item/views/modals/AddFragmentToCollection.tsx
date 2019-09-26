@@ -56,13 +56,13 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	isOpen,
 	onClose = () => {},
 }) => {
-	const [playerToken, setPlayerToken] = useState();
-	const [createNewCollection, setCreateNewCollection] = useState(false);
+	const [playerToken, setPlayerToken] = useState<string>();
+	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
 	const [selectedCollection, setSelectedCollection] = useState<Avo.Collection.Response | undefined>(
 		undefined
 	);
-	const [newCollectionTitle, setNewCollectionTitle] = useState('');
+	const [newCollectionTitle, setNewCollectionTitle] = useState<string>('');
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0
@@ -79,6 +79,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 				variables: { id },
 			});
 			const collection = get(response, 'data.app_collections[0]');
+
 			if (collection) {
 				setSelectedCollection(collection);
 			} else {
@@ -141,11 +142,10 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 				response,
 				'data.insert_app_collections.returning[0]'
 			);
+
 			if (!response || response.errors) {
-				console.error(get(response, 'errors'));
 				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
 			} else if (!insertedCollection) {
-				console.error(response);
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 			} else {
 				trackEvents({
@@ -157,12 +157,12 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 						},
 					},
 				});
+
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
 				onClose();
 			}
 		} catch (err) {
-			console.error(err);
 			toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
 		}
 	};
@@ -178,6 +178,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 			end: setFragmentEndTime,
 		};
 		const seconds = toSeconds(timeString);
+
 		if (seconds !== null) {
 			setFunctions[startOrEnd](seconds);
 		}

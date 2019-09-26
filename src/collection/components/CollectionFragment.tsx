@@ -39,9 +39,9 @@ interface CollectionFragmentProps extends RouteComponentProps {
 	collection: Avo.Collection.Response;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
-	isOptionsMenuOpen: string | null;
-	setIsOptionsMenuOpen: React.Dispatch<React.SetStateAction<null>>;
-	fragment: any;
+	isOptionsMenuOpen: number | null;
+	setIsOptionsMenuOpen: React.Dispatch<React.SetStateAction<number | null>>;
+	fragment: Avo.Collection.Fragment;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 	updateCollection: (collection: Avo.Collection.Response) => void;
 }
@@ -57,9 +57,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	reorderFragments,
 	updateCollection,
 }) => {
-	const [playerToken, setPlayerToken] = useState();
-	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
-	const [isCutModalOpen, setIsCutModalOpen] = useState(false);
+	const [playerToken, setPlayerToken] = useState<string>();
+	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
+	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (index: number) => index === 0;

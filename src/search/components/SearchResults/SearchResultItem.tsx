@@ -22,7 +22,7 @@ const SearchResultItem = ({
 	handleOriginalCpLinkClicked,
 	result,
 }: SearchResultItemProps) => {
-	const contentLink = generateContentLinkString(result.administrative_type, result.id);
+	const contentLink: string = generateContentLinkString(result.administrative_type, result.id);
 
 	return (
 		<SearchResult
@@ -40,7 +40,7 @@ const SearchResultItem = ({
 			</SearchResultTitle>
 			<SearchResultSubtitle>
 				{generateSearchLink('provider', result.original_cp, 'c-body-2', () =>
-					handleOriginalCpLinkClicked(result.id, result.original_cp)
+					handleOriginalCpLinkClicked(result.original_cp)
 				)}
 			</SearchResultSubtitle>
 			<SearchResultThumbnail>

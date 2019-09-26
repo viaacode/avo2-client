@@ -35,7 +35,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	updateFragmentProperty,
 	fragment,
 }) => {
-	const [playerToken, setPlayerToken] = useState();
+	const [playerToken, setPlayerToken] = useState<string>();
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(fragment.start_oc || 0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		fragment.end_oc || toSeconds(itemMetaData.duration) || 0
@@ -58,6 +58,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			end: setFragmentEndTime,
 		};
 		const seconds = toSeconds(timeString);
+
 		if (seconds !== null) {
 			setFunctions[startOrEnd](seconds);
 		}

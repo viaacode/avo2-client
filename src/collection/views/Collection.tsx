@@ -61,8 +61,8 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
 	const [playerToken, setPlayerToken] = useState<string | undefined>();
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
 	const openDeleteModal = (collectionId: number) => {

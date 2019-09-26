@@ -42,9 +42,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	collection,
 	updateCollectionProperty,
 }) => {
-	const [showCoverImageModal, setShowCoverImageModal] = useState(false);
+	const [showCoverImageModal, setShowCoverImageModal] = useState<boolean>(false);
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);
-	const [selectedCoverImages, setSelectedCoverImages] = useState(
+	const [selectedCoverImages, setSelectedCoverImages] = useState<string[]>(
 		collection.thumbnail_path ? [collection.thumbnail_path] : []
 	);
 

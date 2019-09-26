@@ -65,12 +65,12 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState((match.params as any)['id'] as string);
-	const [playerToken, setPlayerToken] = useState();
-	const [time, setTime] = useState(0);
-	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
-	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
-		false
-	);
+	const [playerToken, setPlayerToken] = useState<string>();
+	const [time, setTime] = useState<number>(0);
+	const [videoHeight, setVideoHeight] = useState<number>(387); // correct height for desktop screens
+	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState<
+		boolean
+	>(false);
 
 	/**
 	 * Update video and query param time when time changes in the state
@@ -142,6 +142,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 			if (part === '\n') {
 				return <br key={`description-new-line-${index}`} />;
 			}
+
 			if (timestampRegex.test(part)) {
 				return (
 					<a
@@ -153,6 +154,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 					</a>
 				);
 			}
+
 			return <span key={`description-part-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
 		});
 	};
