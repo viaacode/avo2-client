@@ -29,6 +29,12 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 	const videoContainerRef = useRef(null);
 	const videoPlayerRef: any = useRef();
 
+	const cuePointEndListener = () => {
+		if (videoContainerRef.current) {
+			videoPlayerRef.current.pause();
+		}
+	};
+
 	useEffect(() => {
 		if (videoContainerRef.current) {
 			// Initialize FlowPlayer
@@ -56,9 +62,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 
 			// Pause video at end cuepoint
 			if (end) {
-				videoPlayerRef.current.on('cuepointend', () => {
-					videoPlayerRef.current.pause();
-				});
+				videoPlayerRef.current.on('cuepointend', cuePointEndListener);
 			}
 		}
 
