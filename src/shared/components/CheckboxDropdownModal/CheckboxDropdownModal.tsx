@@ -53,7 +53,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	const [checkedStates, setCheckedStates] = useState(
 		fromPairs(options.map((option: CheckboxOption) => [option.id, option.checked]))
 	);
-	const [isOpen, setIsOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState<boolean>(false);
 
 	const handleCheckboxToggled = async (checked: boolean, id: string) => {
 		setCheckedStates({
@@ -80,6 +80,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 				if (!option.checked) {
 					return null;
 				}
+
 				return { label: option.label, id: option.id };
 			})
 		);

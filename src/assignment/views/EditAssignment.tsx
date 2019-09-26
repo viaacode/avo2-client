@@ -280,9 +280,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 
 	useEffect(() => {
 		const queryParams = queryString.parse(location.search);
+
 		if (typeof queryParams.content_id === 'string') {
 			setContentId(queryParams.content_id);
 		}
+
 		if (typeof queryParams.content_type === 'string') {
 			setContentType(queryParams.content_type);
 		}

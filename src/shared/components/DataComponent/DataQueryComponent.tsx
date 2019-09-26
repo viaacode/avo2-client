@@ -14,7 +14,7 @@ export interface DataQueryComponentProps {
 	variables?: any;
 	ignoreNotFound?: boolean;
 	notFoundMessage?: string;
-	showSpinner?: Boolean;
+	showSpinner?: boolean;
 }
 
 export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
