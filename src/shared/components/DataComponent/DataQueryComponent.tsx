@@ -1,10 +1,10 @@
-import React, { FunctionComponent, ReactNode } from 'react';
-
 import { DocumentNode } from 'graphql';
 import { get } from 'lodash-es';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { Query, QueryResult } from 'react-apollo';
 
-import { Spinner } from '@viaa/avo2-components';
+import { Flex, Spinner } from '@viaa/avo2-components';
+
 import NotFound from '../../../404/views/NotFound';
 
 export interface DataQueryComponentProps {
@@ -29,9 +29,9 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			{(result: QueryResult) => {
 				if (result.loading) {
 					return showSpinner ? (
-						<div className="o-flex o-flex--horizontal-center">
+						<Flex orientation="horizontal" center>
 							<Spinner size="large" />
-						</div>
+						</Flex>
 					) : null;
 				}
 
