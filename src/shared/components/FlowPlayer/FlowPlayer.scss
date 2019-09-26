@@ -22,7 +22,7 @@
 		display: none;
 		background: rgba(15, 23, 29, 0.8);
 		justify-content: flex-end;
-		width: 15%;
+		width: 60px;
 		color: rgba(255, 255, 255, 0.67);
 		position: absolute;
 		top: auto;
@@ -38,7 +38,7 @@
 			display: none;
 			background: rgba(15, 23, 29, 0.8);
 			justify-content: flex-end;
-			width: 30%;
+			width: 110px;
 			color: rgba(255, 255, 255, 0.67);
 			position: absolute;
 			top: auto;
@@ -53,8 +53,14 @@
 	.fp-controls {
 		background: rgba(15, 23, 29, 0.8);
 		color: rgba(255, 255, 255, 0.67);
-		width: 70%;
+		width: calc(100% - 60px);
 		z-index: 0;
+	}
+
+	&.is-cast-available {
+		.fp-controls {
+			width: calc(100% - 110px);
+		}
 	}
 
 	&.use-drag-handle .fp-controls:hover .fp-timeline {
@@ -99,15 +105,14 @@
 		justify-content: flex-end;
 		align-items: center;
 		padding: 0.72rem;
-		padding-left: 0.36rem;
+		padding-left: 5px;
+		padding-right: 5px;
 
 		.fp-cast-button, .fp-fullscreen, .fp-fullscreen-exit {
-			height: 80%;
+			height: 60%;
+			width: 50px;
 			margin: 0;
 			padding: 0;
-			width: auto;
-			padding-left: 10px;
-			padding-right: 10px;
 		}
 	}
 
