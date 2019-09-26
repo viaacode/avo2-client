@@ -54,7 +54,7 @@ import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { fetchPlayerToken } from '../../shared/services/player-service';
 import { getVideoStills } from '../../shared/services/stills-service';
-import toastService from '../../shared/services/toast-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
@@ -178,7 +178,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 				})
 				.catch((err: any) => {
 					console.error(err);
-					toastService('Ophalen van de thumbnail van de video is mislukt');
+					toastService('Ophalen van de thumbnail van de video is mislukt', TOAST_TYPE.DANGER);
 				});
 		}
 	}, [itemState]);
@@ -192,7 +192,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 				.then(data => setPlayerToken(data))
 				.catch((err: any) => {
 					console.error(err);
-					toastService('Het ophalen van de mediaplayer ticket is mislukt');
+					toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);
 				});
 		const englishContentType: EnglishContentType =
 			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
