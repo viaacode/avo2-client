@@ -343,7 +343,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 		return currentCollection ? (
 			<Fragment>
-				<Container background="alt" mode="vertical" size="small">
+				<Container background={'alt'} mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>

@@ -5,17 +5,12 @@ import { Avo } from '@viaa/avo2-types';
 import { getEnv } from '../helpers/env';
 
 export const getVideoStills = async (
-	externalIds: string[] | string,
-	numberOfStills: number
+	stillRequests: Avo.Stills.StillRequest[]
 ): Promise<Avo.Stills.StillInfo[]> => {
 	try {
-		const query: string = queryString.stringify({
-			numberOfStills,
-			externalIds:
-				typeof externalIds === 'string' ? [externalIds].join(',') : externalIds.join(','),
-		});
-		const response = await fetch(`${getEnv('PROXY_URL')}/video-stills?${query}`, {
-			method: 'GET',
+		const response = await fetch(`${getEnv('PROXY_URL')}/video-stills`, {
+			method: 'POST',
+			body: queryString.stringify(stillRequests),
 			headers: {
 				'Content-Type': 'application/json',
 			},

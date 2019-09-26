@@ -15,7 +15,6 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-
 import { getVideoStills } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { isVideoFragment } from '../../helpers';
@@ -40,12 +39,14 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 		const fetchThumbnailImages = async () => {
 			// Only update thumbnails when modal is opened, not when closed
 			try {
-				const externalIds = compact(
+				const stillRequests: Avo.Stills.StillRequest[] = compact(
 					collection.collection_fragments.map(fragment =>
-						isVideoFragment(fragment) ? fragment.external_id : undefined
+						isVideoFragment(fragment)
+							? { externalId: fragment.external_id, startTime: (fragment.start_oc || 0) * 1000 }
+							: undefined
 					)
 				);
-				const videoStills: Avo.Stills.StillInfo[] = await getVideoStills(externalIds, 20);
+				const videoStills: Avo.Stills.StillInfo[] = await getVideoStills(stillRequests);
 
 				setVideoStills(
 					uniq([
