@@ -45,7 +45,7 @@ export function toSeconds(
 		return (
 			parseInt(durationParts[0], 10) * 3600 +
 			parseInt(durationParts[1], 10) * 60 +
-			parseFloat(durationParts[0])
+			parseFloat(durationParts[2])
 		);
 	} catch (err) {
 		if (silent) {

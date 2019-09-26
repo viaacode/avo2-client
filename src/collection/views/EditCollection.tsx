@@ -219,6 +219,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					const tempId = fragmentToAdd.id;
 					delete fragmentToAdd.id;
 					delete fragmentToAdd.__typename;
+					delete fragmentToAdd.item_meta;
 
 					const response = await triggerCollectionFragmentInsert({
 						variables: {
@@ -279,6 +280,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					};
 
 					delete fragment.__typename;
+					delete fragment.item_meta;
 
 					triggerCollectionFragmentUpdate({
 						variables: {
@@ -292,6 +294,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 				await readyToStore.collection_fragments.forEach((fragment: any) => {
 					delete fragment.__typename;
+					delete fragment.item_meta;
 
 					triggerCollectionFragmentUpdate({
 						variables: {
