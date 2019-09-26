@@ -83,7 +83,11 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
 		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
-			return <div key={`content-block-${index}`}>{renderContentBlock(contentBlock)}</div>;
+			return (
+				<li className="c-collection-list__item u-text-center" key={`content-block-${index}`}>
+					{renderContentBlock(contentBlock)}
+				</li>
+			);
 		});
 	};
 
@@ -300,7 +304,9 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					</Container>
 				</Container>
 				<Container mode="vertical">
-					<Container mode="horizontal">{renderContentBlocks(contentBlockInfos)}</Container>
+					<Container mode="horizontal">
+						<ul className="c-collection-list">{renderContentBlocks(contentBlockInfos)}</ul>
+					</Container>
 				</Container>
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
