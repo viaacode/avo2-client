@@ -10,6 +10,7 @@ import {
 	MenuContent,
 	Pagination,
 	Spacer,
+	Table,
 	TagList,
 	TextInput,
 	Toolbar,
@@ -22,9 +23,10 @@ import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { RouteParts } from '../../constants';
+import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
-import { Table } from '../Table/Table'; // TODO remove once components new version is released
-import { Assignment, AssignmentLayout, AssignmentTag, AssignmentType } from '../types';
+import { GET_ASSIGNMENTS_BY_OWNER_ID } from '../graphql';
+import { Assignment, AssignmentTag } from '../types';
 
 interface AssignmentsProps extends RouteComponentProps {}
 
@@ -191,140 +193,15 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		</Container>
 	);
 
-	return renderAssignmentsView([
-		{
-			id: 0,
-			title: 'Een opdracht met een iets landere naam',
-			description: '',
-			content_layout: AssignmentLayout.PlayerAndText,
-			assignment_type: 'kijk' as AssignmentType,
-			assignment_assignment_tags: {
-				assignment_tag: [
-					{
-						id: 0,
-						label: 'Aarderijkskunde',
-						enum_color: { label: '#FF0000', value: 'BRIGHT_RED' },
-						color_override: null,
-						user: {} as any,
-					},
-				],
-			},
-			class_room: '3A',
-			available_at: null,
-			deadline_at: new Date().toISOString(),
-			created_at: new Date().toISOString(),
-			updated_at: new Date().toISOString(),
-			is_deleted: false,
-			is_collaborative: false,
-			is_archived: false,
-			owner_uid: '',
-			assignment_responses: [
-				{
-					id: 0,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-				{
-					id: 1,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-				{
-					id: 2,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-			],
-		},
-		{
-			id: 1,
-			title: 'Een opdracht',
-			description: '',
-			content_layout: AssignmentLayout.PlayerAndText,
-			assignment_type: 'zoek' as AssignmentType,
-			assignment_assignment_tags: {
-				assignment_tag: [
-					{
-						id: 0,
-						label: 'Aarderijkskunde',
-						enum_color: { label: '#FF0000', value: 'BRIGHT_RED' },
-						color_override: null,
-						user: {} as any,
-					},
-				],
-			},
-			class_room: '3A',
-			available_at: null,
-			deadline_at: new Date().toISOString(),
-			created_at: new Date().toISOString(),
-			updated_at: new Date().toISOString(),
-			is_deleted: false,
-			is_collaborative: false,
-			is_archived: false,
-			owner_uid: '',
-			assignment_responses: [
-				{
-					id: 0,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-				{
-					id: 1,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-				{
-					id: 2,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-			],
-		},
-		{
-			id: 2,
-			title: 'Een opdracht2',
-			description: '',
-			content_layout: AssignmentLayout.PlayerAndText,
-			assignment_type: 'bouw' as AssignmentType,
-			assignment_assignment_tags: {
-				assignment_tag: [
-					{
-						id: 0,
-						label: 'Biologie',
-						enum_color: { label: '#FF0000', value: 'BRIGHT_RED' },
-						color_override: null,
-						user: {} as any,
-					},
-				],
-			},
-			class_room: '3A',
-			available_at: null,
-			deadline_at: new Date().toISOString(),
-			created_at: new Date().toISOString(),
-			updated_at: new Date().toISOString(),
-			is_deleted: false,
-			is_collaborative: false,
-			is_archived: false,
-			owner_uid: '',
-			assignment_responses: [
-				{
-					id: 0,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-				{
-					id: 1,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-				{
-					id: 2,
-					assignment_id: 0,
-					owner_uids: [],
-				},
-			],
-		},
-	]); // TODO get assignments from graphql
+	return (
+		<DataQueryComponent
+			query={GET_ASSIGNMENTS_BY_OWNER_ID}
+			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
+			renderData={renderAssignmentsView}
+			resultPath="app_assignments"
+			ignoreNotFound
+		/>
+	);
 };
 
 export default withRouter(Assignments);

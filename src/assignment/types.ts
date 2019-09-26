@@ -9,7 +9,7 @@ export interface Assignment {
 	content_id?: string | null;
 	content_label?: AssignmentContentLabel | null;
 	content_layout: AssignmentLayout;
-	answerUrl?: string | null;
+	answer_url?: string | null;
 	available_at?: string | null; // ISO date string
 	deadline_at?: string | null; // ISO date string
 	owner_uid: string;
@@ -35,16 +35,15 @@ export interface AssignmentResponse {
 	collection?: Avo.Collection.Response | null;
 }
 
-export type AssignmentType = 'zoek' | 'kijk' | 'bouw';
+export type AssignmentType = 'ZOEK' | 'KIJK' | 'BOUW';
 
 export enum AssignmentLayout {
 	OnlyPlayer = 0,
 	PlayerAndText = 1,
 }
 
-export type AssignmentContentLabel = 'item' | 'collectie' | 'zoekopdracht';
+export type AssignmentContentLabel = 'ITEM' | 'COLLECTIE' | 'ZOEKOPDRACHT';
 export type AssignmentContent = Avo.Item.Response | Avo.Collection.Response; // | Avo.SearchQuery.response;
-export type AssignmentContentType = 'audio' | 'video' | 'collectie' | 'zoek';
 
 export interface AssignmentTag {
 	id: number;

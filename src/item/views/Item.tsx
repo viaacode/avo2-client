@@ -45,6 +45,7 @@ import { DataQueryComponent } from '../../shared/components/DataComponent/DataQu
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
+	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
 	generateSearchLinkString,
@@ -56,7 +57,6 @@ import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
 import { ContentType } from '@viaa/avo2-components/dist/types';
-import { RouteParts } from '../../constants';
 import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
@@ -171,7 +171,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 
 		return (
 			<Fragment>
-				<Container mode="vertical" size="small" background="alt">
+				<Container mode="vertical" size="small" background={'alt'}>
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
@@ -260,11 +260,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 															label="Maak opdracht"
 															onClick={() =>
 																history.push(
-																	`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
-																		RouteParts.Create
-																	}?content_id=${itemMetaData.external_id}&content_type=${
-																		itemMetaData.type.label
-																	}`
+																	generateAssignmentCreateLink(
+																		'KIJK',
+																		itemMetaData.external_id,
+																		'ITEM'
+																	)
 																)
 															}
 														/>
