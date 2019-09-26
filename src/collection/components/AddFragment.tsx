@@ -23,8 +23,8 @@ const fragmentsDefaults = {
 		external_id: '',
 		custom_description: '',
 		custom_title: '',
-		end_oc: 0,
-		start_oc: 0,
+		end_oc: null,
+		start_oc: null,
 		use_custom_fields: true,
 	},
 };
