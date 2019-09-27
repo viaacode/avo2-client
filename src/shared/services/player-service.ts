@@ -4,7 +4,7 @@ export type PlayerTokenResponse = {
 	url: string;
 };
 
-export const fetchPlayerToken = async (externalId: string) => {
+export const fetchPlayerToken = async (externalId: string): Promise<string> => {
 	const url = `${getEnv('PROXY_URL')}/player-ticket?externalId=${externalId}`;
 
 	const response = await fetch(url, {
@@ -15,7 +15,7 @@ export const fetchPlayerToken = async (externalId: string) => {
 		credentials: 'include',
 	});
 
-	const data = await response.json();
+	const data: PlayerTokenResponse = await response.json();
 
-	return data.url as PlayerTokenResponse;
+	return data.url;
 };
