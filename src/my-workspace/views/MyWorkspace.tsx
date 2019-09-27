@@ -45,15 +45,15 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		return {
 			[COLLECTIONS_ID]: {
 				component: <Collections numberOfCollections={counts[COLLECTIONS_ID]} />,
-				filter: {
-					label: 'Auteur',
-					options: [
-						{ id: 'all', label: 'Alles' },
-						{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
-						{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
-						{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
-					],
-				},
+				// filter: {
+				// 	label: 'Auteur',
+				// 	options: [
+				// 		{ id: 'all', label: 'Alles' },
+				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
+				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
+				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
+				// 	],
+				// },
 			},
 			[FOLDERS_ID]: {
 				component: <span>TODO Mappen</span>,
