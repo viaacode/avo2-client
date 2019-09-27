@@ -20,6 +20,10 @@ export const GET_COLLECTION_BY_ID = gql`
 				custom_description
 				created_at
 				collection_id
+				item_meta {
+					title
+					description
+				}
 			}
 			updated_at
 			type_id
@@ -28,6 +32,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				id
 			}
 			title
+			note
 			thumbnail_path
 			publish_at
 			owner {
@@ -35,7 +40,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				last_name
 				mail
 				organisation_id
-				profile {
+				profiles {
 					alias
 					alternative_email
 					avatar
@@ -219,17 +224,19 @@ export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
 				label
 				id
 			}
+			duration
+			external_id
 		}
 	}
 `;
 
 export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
 	{
-		vocabularies_lom_contexts {
-			label
+		lookup_enum_lom_context {
+			description
 		}
-		vocabularies_lom_classifications {
-			label
+		lookup_enum_lom_classification {
+			description
 		}
 	}
 `;

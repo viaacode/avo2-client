@@ -1,7 +1,9 @@
-import React, { FunctionComponent, useState } from 'react';
-
 import { ExecutionResult } from '@apollo/react-common';
 import { useMutation } from '@apollo/react-hooks';
+import { ApolloQueryResult } from 'apollo-client';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
+
 import {
 	Button,
 	Column,
@@ -22,8 +24,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { ApolloQueryResult } from 'apollo-client';
-import { get } from 'lodash-es';
+
 import {
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
@@ -31,25 +32,31 @@ import {
 	INSERT_COLLECTION_FRAGMENT,
 } from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import {
+	formatDurationHoursMinutesSeconds,
+	toSeconds,
+} from '../../../shared/helpers/formatters/duration';
 import { dataService } from '../../../shared/services/data-service';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { fetchPlayerToken } from '../../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
 
 interface AddFragmentToCollectionProps {
 	externalId: string;
-	itemInfo: Avo.Item.Response;
+	itemMetaData: Avo.Item.Response;
 	isOpen: boolean;
 	onClose: () => void;
 }
 
 export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionProps> = ({
 	externalId,
-	itemInfo,
+	itemMetaData,
 	isOpen,
 	onClose = () => {},
 }) => {
+	const [playerToken, setPlayerToken] = useState();
 	const [createNewCollection, setCreateNewCollection] = useState(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
 	const [selectedCollection, setSelectedCollection] = useState<Avo.Collection.Response | undefined>(
@@ -57,7 +64,9 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	);
 	const [newCollectionTitle, setNewCollectionTitle] = useState('');
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
-	const [fragmentEndTime, setFragmentEndTime] = useState<number>(toSeconds(itemInfo.duration) || 0);
+	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
+		toSeconds(itemMetaData.duration) || 0
+	);
 	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
 	const [triggerInsertCollection] = useMutation(INSERT_COLLECTION);
 
@@ -139,6 +148,15 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 				console.error(response);
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 			} else {
+				trackEvents({
+					activity: `User ??? has created a new collection ${insertedCollection.id}`, // TODO fill in user id
+					message: {
+						object: {
+							identifier: String(insertedCollection.id),
+							type: 'collection',
+						},
+					},
+				});
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
 				onClose();
@@ -171,6 +189,9 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	};
 
 	const renderAddFragmentToCollectionModal = (collections: { id: number; title: string }[]) => {
+		const initFlowPlayer = () =>
+			!playerToken && fetchPlayerToken(externalId).then(data => setPlayerToken(data));
+
 		return (
 			<Modal
 				title="Voeg fragment toe aan collectie"
@@ -185,12 +206,14 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 							<Form>
 								<Grid>
 									<Column size="2-7">
-										<video
-											src={`${itemInfo.thumbnail_path.split('/keyframes')[0]}/browse.mp4`}
-											placeholder={itemInfo.thumbnail_path}
-											style={{ width: '100%', display: 'block' }}
-											controls={true}
-										/>
+										{itemMetaData && (
+											<FlowPlayer
+												src={playerToken ? playerToken.toString() : null}
+												poster={itemMetaData.thumbnail_path}
+												title={itemMetaData.title}
+												onInit={initFlowPlayer}
+											/>
+										)}
 										<Container mode="vertical" className="m-time-crop-controls">
 											<TextInput
 												value={formatDurationHoursMinutesSeconds(fragmentStartTime)}
@@ -201,7 +224,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 													values={[fragmentStartTime, fragmentEndTime]}
 													onChange={onUpdateMultiRangeValues}
 													min={0}
-													max={toSeconds(itemInfo.duration) || 0}
+													max={toSeconds(itemMetaData.duration) || 0}
 													step={1}
 												/>
 											</div>
@@ -213,10 +236,10 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 									</Column>
 									<Column size="2-5">
 										<FormGroup label="Titel">
-											<span>{itemInfo.title}</span>
+											<span>{itemMetaData.title}</span>
 										</FormGroup>
 										<FormGroup label="Beschrijving">
-											<span>{itemInfo.description}</span>
+											<span>{itemMetaData.description}</span>
 										</FormGroup>
 										<FormGroup label="Collectie">
 											<Spacer margin="bottom">

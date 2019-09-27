@@ -8,6 +8,7 @@ import {
 	Button,
 	Column,
 	Container,
+	Flex,
 	Form,
 	FormGroup,
 	Grid,
@@ -108,8 +109,8 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	};
 
 	const renderCollectionMetaData = (data: {
-		vocabularies_lom_contexts: { label: string }[];
-		vocabularies_lom_classifications: { label: string }[];
+		lookup_enum_lom_context: { description: string }[];
+		lookup_enum_lom_classification: { description: string }[];
 	}) => {
 		return (
 			<Fragment>
@@ -121,9 +122,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 									<Column size="3-7">
 										<FormGroup label="Onderwijsniveau" labelFor="classificationId">
 											<TagsInput
-												options={(data.vocabularies_lom_contexts || []).map(item => ({
-													value: item.label,
-													label: item.label,
+												options={(data.lookup_enum_lom_context || []).map(item => ({
+													value: item.description,
+													label: item.description,
 												}))}
 												value={(collection.lom_context || []).map((item: string) => ({
 													value: item,
@@ -136,9 +137,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 										</FormGroup>
 										<FormGroup label="Vakken" labelFor="subjectsId">
 											<TagsInput
-												options={(data.vocabularies_lom_classifications || []).map(item => ({
-													value: item.label,
-													label: item.label,
+												options={(data.lookup_enum_lom_classification || []).map(item => ({
+													value: item.description,
+													label: item.description,
 												}))}
 												value={(collection.lom_classification || []).map((item: string) => ({
 													value: item,
@@ -169,10 +170,11 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 										>
 											<TextArea
 												name="personalRemarkId"
-												value={''}
+												value={(collection as any).note} // TODO cleanup when note is available from types repo
 												id="personalRemarkId"
 												height="medium"
 												placeholder="Geef hier je persoonlijke opmerkingen/notities in..."
+												onChange={(value: string) => updateCollectionProperty(value, 'note')}
 											/>
 										</FormGroup>
 									</Column>
@@ -204,9 +206,9 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 						<div className="u-spacer">
 							<Form>
 								{videoStills === null ? (
-									<div className="o-flex o-flex--horizontal-center">
+									<Flex orientation="horizontal" center>
 										<Spinner size="large" />
-									</div>
+									</Flex>
 								) : videoStills.length === 0 ? (
 									<Blankslate
 										body=""

@@ -1,15 +1,12 @@
+import moment from 'moment';
+import 'moment/locale/nl-be';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import moment from 'moment';
-
-import pkg from '../package.json';
-
 import '@viaa/avo2-components/dist/styles/main.css';
 
+import pkg from '../package.json';
 import App from './App';
-
-import 'moment/locale/nl-be';
 import { CustomWindow } from './shared/types/global';
 
 // Expose app info through the window object
