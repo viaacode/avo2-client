@@ -14,10 +14,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
-import {
-	formatDurationHoursMinutesSeconds,
-	toSeconds,
-} from '../../../shared/helpers/formatters/duration';
+import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { fetchPlayerToken } from '../../../shared/services/player-service';
 
 interface CutFragmentModalProps {

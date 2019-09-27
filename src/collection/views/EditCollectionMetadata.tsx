@@ -25,11 +25,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
-
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
-import { isVideoFragment } from '../helpers';
 import { getVideoStills, VideoStill } from '../service';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
@@ -54,39 +52,17 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
-	const fetchThumbnailImages = async () => {
-		// Only update thumbnails when modal is opened, not when closed
-		try {
-			const stillRequests = compact(
-				collection.collection_fragments.map(cf => {
-					if (!isVideoFragment(cf)) {
-						return null;
-					}
-					return {
-						externalId: cf.external_id,
-						startTime: (cf.start_oc || 0) * 1000,
-					};
-				})
-			);
-			const videoStills: VideoStill[] = await getVideoStills(stillRequests);
-			setVideoStills(
-				uniq([
-					...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
-					...videoStills.map(videoStill => videoStill.thumbnailImagePath),
-				])
-			);
-		} catch (err) {
-			toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
-			console.error(err);
-		}
-	};
-
 	useEffect(() => {
 		const fetchThumbnailImages = async () => {
 			// Only update thumbnails when modal is opened, not when closed
 			try {
-				const externalIds = compact(collection.collection_fragments.map(cf => cf.external_id));
-				const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
+				const stillRequest: Avo.Stills.StillRequest[] = compact(
+					collection.collection_fragments.map(cf => ({
+						externalId: cf.external_id,
+						startTime: (cf.start_oc || 0) * 1000,
+					}))
+				);
+				const videoStills: VideoStill[] = await getVideoStills(stillRequest);
 				setVideoStills(
 					uniq([
 						...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
