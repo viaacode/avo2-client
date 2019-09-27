@@ -284,7 +284,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						</Toolbar>
 					</div>
 					<div className="c-card__body">
-						{isVideoFragment(fragment) ? (
+						{isVideoFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
 							<Grid>
 								<Column size="3-6">
 									<FlowPlayer
@@ -294,6 +294,8 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 										onInit={initFlowPlayer}
 										start={cuePoints.start}
 										end={cuePoints.end}
+										publishedAt={'30-12-2011'}
+										publisher={'VRT'}
 									/>
 								</Column>
 								<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>

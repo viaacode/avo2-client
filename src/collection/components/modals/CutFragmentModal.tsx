@@ -77,6 +77,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const initFlowPlayer = () =>
 		!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
 
+	// TODO: Replace publisher, published_at by real publisher
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -92,6 +93,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						poster={itemMetaData.thumbnail_path}
 						title={itemMetaData.title}
 						onInit={initFlowPlayer}
+						publishedAt={'30-12-2011'}
+						publisher={'VRT'}
 					/>
 					<Container mode="vertical" className="m-time-crop-controls">
 						<TextInput
