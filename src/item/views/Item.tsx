@@ -2,6 +2,7 @@ import { debounce } from 'lodash-es';
 import queryString from 'query-string';
 import React, {
 	createRef,
+	CSSProperties,
 	Fragment,
 	FunctionComponent,
 	ReactNode,
@@ -71,7 +72,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const [itemState, setItemState] = useState<Avo.Item.Response | undefined>();
 	const [videoStill, setVideoStill] = useState<string | null>(null);
 	const [time, setTime] = useState<number>(0);
-	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
+	const [videoHeight, setVideoHeight] = useState<number>(387); // correct height for desktop screens
 	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
 		false
 	);
@@ -165,7 +166,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 		history.push(generateSearchLinkString(prop, value));
 	};
 
-	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
+	const relatedItemStyle: CSSProperties = { width: '100%', float: 'left', marginRight: '2%' };
 
 	/**
 	 * Get the video thumbnail when the item changes
