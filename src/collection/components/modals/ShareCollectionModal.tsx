@@ -64,6 +64,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				fragments.forEach(fragment => {
 					if (
 						fragment.external_id &&
+						fragment.external_id !== '-1' &&
 						fragment.use_custom_fields &&
 						(!fragment.custom_title || !fragment.custom_description)
 					) {
@@ -99,44 +100,47 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		const collectionValidation = {
 			hasTitle: {
 				error: 'Uw collectie heeft geen titel.',
-				result: !!title,
+				isValid: !!title,
 			},
 			hasDescription: {
 				error: 'Uw collectie heeft geen beschrijving.',
-				result: !!description,
+				isValid: !!description,
 			},
 			hasContext: {
 				error: "Uw collectie heeft geen onderwijsniveau's.",
-				result: !!(lom_context && lom_context.length),
+				isValid: !!(lom_context && lom_context.length),
 			},
 			hasClassification: {
 				error: 'Uw collectie heeft geen vakken.',
-				result: !!(lom_classification && lom_classification.length),
+				isValid: !!(lom_classification && lom_classification.length),
 			},
 			hasAtleastOneFragment: {
 				error: 'Uw collectie heeft geen items.',
-				result: !!(collection_fragments && collection_fragments.length),
+				isValid: !!(collection_fragments && collection_fragments.length),
 			},
 			hasFullVideoFragments: {
 				error: 'Uw video-items moeten een titel en beschrijving bevatten.',
-				result: validateFragments(collection_fragments, 'video'),
+				isValid: validateFragments(collection_fragments, 'video'),
 			},
 			hasFullTextFragments: {
 				error: 'Uw tekst-items moeten een titel of beschrijving bevatten.',
-				result: validateFragments(collection_fragments, 'text'),
+				isValid: validateFragments(collection_fragments, 'text'),
 			},
 			// TODO: Add check if owner or write-rights.
 		};
 
-		if (Object.values(collectionValidation).every(rule => rule.result === true)) {
+		if (Object.values(collectionValidation).every(rule => rule.isValid === true)) {
 			// If all validations are valid, publish collection
 			onSave();
 			setValidationError(undefined);
-			toastService('Opslaan volbracht.', TOAST_TYPE.SUCCESS);
+			toastService(
+				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`,
+				TOAST_TYPE.SUCCESS
+			);
 		} else {
 			// Strip failed rules from ruleset
 			const failedRules = Object.entries(collectionValidation).filter(
-				rule => !get(rule[1], 'result')
+				rule => !get(rule[1], 'isValid')
 			);
 
 			setValidationError(failedRules.map(rule => get(rule[1], 'error')));
@@ -147,19 +151,28 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		}
 	};
 
-	const onSave = () => {
-		setIsOpen(false);
-		updateCollectionProperty(isCollectionPublic, 'is_public');
-		updateCollectionProperty(new Date().toISOString(), 'publish_at');
-		triggerCollectionPropertyUpdate({
-			variables: {
-				id: collection.id,
-				collection: {
-					is_public: isCollectionPublic,
-					publish_at: new Date().toISOString(),
+	const onSave = async () => {
+		try {
+			updateCollectionProperty(isCollectionPublic, 'is_public');
+			updateCollectionProperty(new Date().toISOString(), 'publish_at');
+			await triggerCollectionPropertyUpdate({
+				variables: {
+					id: collection.id,
+					collection: {
+						is_public: isCollectionPublic,
+						publish_at: new Date().toISOString(),
+					},
 				},
-			},
-		});
+			});
+			closeModal();
+		} catch (err) {
+			toastService('De aanpassingen kunnen niet worden opgeslagen', TOAST_TYPE.DANGER);
+		}
+	};
+
+	const closeModal = () => {
+		setValidationError([]);
+		setIsOpen(false);
 	};
 
 	return (
@@ -194,7 +207,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 						<ToolbarRight>
 							<ToolbarItem>
 								<div className="c-button-toolbar">
-									<Button type="secondary" label="Annuleren" onClick={() => setIsOpen(false)} />
+									<Button type="secondary" label="Annuleren" onClick={closeModal} />
 									<Button type="primary" label="Opslaan" onClick={validateBeforeSave} />
 								</div>
 							</ToolbarItem>
