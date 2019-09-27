@@ -63,6 +63,26 @@ See postman collection (TODO add link)
 
 ### Troubleshooting
 
+## Deploy
+
+Steps to deploy:
+* update package.json version to match release branch version
+* merge release branch into master
+* add tag on master + push the tag (format: v1.1.1)
+* goto jenkins to start a build or wait up to 20 minutes for an automatic build
+    * only available on the viaa vpn
+    * https://jenkins-ci-cd.apps.do-prd-okp-m0.do.viaa.be/securityRealm/commenceLogin?from=%2Fjob%2Fci-cd%2F
+    * password in 1password (VIAA jenkins login)
+    * go to ci-cd
+    * click on ci-cd/avo2-client-dev
+    * click build now
+    * click console output to follow the build
+* This deploys to `int` if the unit tests succeed
+* This deploys to `qas` if the integration tests succeed
+* Deploy to production has to happen manually by selecting the desired build image in openshift:
+    * https://do-prd-okp-m0.do.viaa.be:8443/console/project/ci-cd/browse/pipelines
+    * same login as jenkins
+
 ## Process Flow
 
 #### Flow
