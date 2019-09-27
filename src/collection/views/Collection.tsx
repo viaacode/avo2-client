@@ -48,7 +48,7 @@ import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
-import { fetchPlayerToken } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
@@ -59,7 +59,7 @@ interface CollectionProps extends RouteComponentProps {}
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
-	const [playerToken, setPlayerToken] = useState<string | undefined>();
+	const [playerTicket, setPlayerTicket] = useState<string | undefined>();
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -157,9 +157,9 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 			fragments.forEach((fragment: Avo.Collection.Fragment) => {
 				const initFlowPlayer = () =>
-					!playerToken &&
-					fetchPlayerToken(fragment.external_id)
-						.then(data => setPlayerToken(data))
+					!playerTicket &&
+					fetchPlayerTicket(fragment.external_id)
+						.then(data => setPlayerTicket(data))
 						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
 				if (isVideoFragment(fragment)) {
@@ -178,7 +178,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 							title: getFragmentField(fragment, 'title'),
 							text: getFragmentField(fragment, 'description'),
 							titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
-							videoSource: playerToken,
+							videoSource: playerTicket,
 						},
 					},
 					titleText: {

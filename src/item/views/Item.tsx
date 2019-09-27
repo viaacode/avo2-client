@@ -52,7 +52,7 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { fetchPlayerToken } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
@@ -65,7 +65,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState((match.params as any)['id'] as string);
-	const [playerToken, setPlayerToken] = useState<string>();
+	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [time, setTime] = useState<number>(0);
 	const [videoHeight, setVideoHeight] = useState<number>(387); // correct height for desktop screens
 	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState<
@@ -167,7 +167,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 
 	const renderItem = (itemMetaData: Avo.Item.Response) => {
 		const initFlowPlayer = () =>
-			!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
+			!playerTicket &&
+			fetchPlayerTicket(itemMetaData.external_id).then(data => setPlayerTicket(data));
 		const englishContentType: EnglishContentType =
 			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
 
@@ -239,7 +240,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 										<div className="c-video-player t-player-skin--dark">
 											{itemMetaData.thumbnail_path && (
 												<FlowPlayer
-													src={playerToken ? playerToken.toString() : null}
+													src={playerTicket ? playerTicket.toString() : null}
 													poster={itemMetaData.thumbnail_path}
 													title={itemMetaData.title}
 													onInit={initFlowPlayer}

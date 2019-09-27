@@ -18,7 +18,7 @@ import {
 	formatDurationHoursMinutesSeconds,
 	toSeconds,
 } from '../../../shared/helpers/formatters/duration';
-import { fetchPlayerToken } from '../../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../../shared/services/player-service';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
@@ -35,7 +35,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	updateFragmentProperty,
 	fragment,
 }) => {
-	const [playerToken, setPlayerToken] = useState<string>();
+	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(fragment.start_oc || 0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		fragment.end_oc || toSeconds(itemMetaData.duration) || 0
@@ -70,7 +70,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const initFlowPlayer = () =>
-		!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
+		!playerTicket &&
+		fetchPlayerTicket(itemMetaData.external_id).then(data => setPlayerTicket(data));
 
 	return (
 		<Modal
@@ -83,7 +84,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			<ModalBody>
 				<>
 					<FlowPlayer
-						src={playerToken ? playerToken.toString() : null}
+						src={playerTicket ? playerTicket.toString() : null}
 						poster={itemMetaData.thumbnail_path}
 						title={itemMetaData.title}
 						onInit={initFlowPlayer}

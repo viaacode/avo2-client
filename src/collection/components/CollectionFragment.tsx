@@ -4,7 +4,7 @@ import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
-import { fetchPlayerToken } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-service';
 
 import {
 	Button,
@@ -57,7 +57,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	reorderFragments,
 	updateCollection,
 }) => {
-	const [playerToken, setPlayerToken] = useState<string>();
+	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 
@@ -195,9 +195,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 
 	const renderCollectionFragment = (itemMetaData: any) => {
 		const initFlowPlayer = () =>
-			!playerToken &&
-			fetchPlayerToken(fragment.external_id)
-				.then(data => setPlayerToken(data))
+			!playerTicket &&
+			fetchPlayerTicket(fragment.external_id)
+				.then(data => setPlayerTicket(data))
 				.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
 		return (
@@ -283,7 +283,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 							<Grid>
 								<Column size="3-6">
 									<FlowPlayer
-										src={playerToken ? playerToken.toString() : null}
+										src={playerTicket ? playerTicket.toString() : null}
 										poster={itemMetaData.thumbnail_path}
 										title={itemMetaData.title}
 										onInit={initFlowPlayer}

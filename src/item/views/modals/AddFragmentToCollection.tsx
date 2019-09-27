@@ -39,7 +39,7 @@ import {
 } from '../../../shared/helpers/formatters/duration';
 import { dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { fetchPlayerToken } from '../../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
 
@@ -56,7 +56,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	isOpen,
 	onClose = () => {},
 }) => {
-	const [playerToken, setPlayerToken] = useState<string>();
+	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
 	const [selectedCollection, setSelectedCollection] = useState<Avo.Collection.Response | undefined>(
@@ -191,7 +191,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 
 	const renderAddFragmentToCollectionModal = (collections: { id: number; title: string }[]) => {
 		const initFlowPlayer = () =>
-			!playerToken && fetchPlayerToken(externalId).then(data => setPlayerToken(data));
+			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 
 		return (
 			<Modal
@@ -209,7 +209,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 									<Column size="2-7">
 										{itemMetaData && (
 											<FlowPlayer
-												src={playerToken ? playerToken.toString() : null}
+												src={playerTicket ? playerTicket.toString() : null}
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
