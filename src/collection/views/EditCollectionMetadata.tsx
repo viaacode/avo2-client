@@ -164,10 +164,11 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 										>
 											<TextArea
 												name="personalRemarkId"
-												value={''}
+												value={(collection as any).note} // TODO cleanup when note is available from types repo
 												id="personalRemarkId"
 												height="medium"
 												placeholder="Geef hier je persoonlijke opmerkingen/notities in..."
+												onChange={(value: string) => updateCollectionProperty(value, 'note')}
 											/>
 										</FormGroup>
 									</Column>
