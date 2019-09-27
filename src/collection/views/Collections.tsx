@@ -15,6 +15,7 @@ import {
 	MetaDataItem,
 	Pagination,
 	Table,
+	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -25,6 +26,8 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
+
+import './Collections.scss';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
@@ -64,14 +67,11 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 			case 'thumbnail':
 				return (
 					<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
-						<div className="c-thumbnail">
-							<div className="c-thumbnail-placeholder">
-								<Icon name="image" />
-							</div>
-							<div className="c-thumbnail-image">
-								<img src="https://via.placeholder.com/400x400" alt="thumbnail" />
-							</div>
-						</div>
+						<Thumbnail
+							category="video"
+							src="https://via.placeholder.com/1080x720"
+							className="m-collection-overview-thumbnail"
+						/>
 					</Link>
 				);
 			case 'title':
