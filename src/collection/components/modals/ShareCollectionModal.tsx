@@ -16,6 +16,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { stripHtml } from '../../../shared/helpers/formatters/strip-html';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { UPDATE_COLLECTION } from '../../graphql';
 
@@ -47,16 +48,16 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	collection,
 	updateCollectionProperty,
 }) => {
-	const [validationError, setValidationError] = useState();
+	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(initialIsPublic);
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
 
-	const validateFragments = (fragments: Avo.Collection.Fragment[], type: string) => {
+	const validateFragments = (fragments: Avo.Collection.Fragment[], type: string): boolean => {
 		if (!fragments || !fragments.length) {
 			return false;
 		}
 
-		let isValid: Boolean = true;
+		let isValid = true;
 
 		switch (type) {
 			case 'video':
@@ -75,7 +76,11 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			case 'text':
 				// Check if text fragment has custom_title or custom_description.
 				fragments.forEach(fragment => {
-					if (!fragment.external_id && !fragment.custom_title && !fragment.custom_description) {
+					if (
+						!fragment.external_id &&
+						!stripHtml(fragment.custom_title || '').trim() &&
+						!stripHtml(fragment.custom_description || '').trim()
+					) {
 						isValid = false;
 					}
 				});
@@ -87,7 +92,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		return isValid;
 	};
 
-	const validateBeforeSave = () => {
+	const getValidationErrorsForPublish = (): [string, { error: string; isValid: boolean }][] => {
 		const {
 			title,
 			description,
@@ -97,7 +102,9 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		} = collection;
 
 		// Collection validation ruleset
-		const collectionValidation = {
+		const collectionValidation: {
+			[validationName: string]: { error: string; isValid: boolean };
+		} = {
 			hasTitle: {
 				error: 'Uw collectie heeft geen titel.',
 				isValid: !!title,
@@ -129,30 +136,31 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			// TODO: Add check if owner or write-rights.
 		};
 
-		if (Object.values(collectionValidation).every(rule => rule.isValid === true)) {
-			// If all validations are valid, publish collection
-			onSave();
-			setValidationError(undefined);
-			toastService(
-				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`,
-				TOAST_TYPE.SUCCESS
-			);
-		} else {
-			// Strip failed rules from ruleset
-			const failedRules = Object.entries(collectionValidation).filter(
-				rule => !get(rule[1], 'isValid')
-			);
-
-			setValidationError(failedRules.map(rule => get(rule[1], 'error')));
-			toastService(
-				'Opslaan mislukt. Gelieve all verplichte velden in te vullen.',
-				TOAST_TYPE.DANGER
-			);
-		}
+		// Return errors
+		return Object.entries(collectionValidation).filter(rule => !get(rule[1], 'isValid'));
 	};
 
 	const onSave = async () => {
 		try {
+			if (isCollectionPublic) {
+				// We only need to check if you can publish if the user wants to publish
+				// If the user wants to de-publish, we don't need to check anything
+				const failedRules: [
+					string,
+					{ error: string; isValid: boolean }
+				][] = getValidationErrorsForPublish();
+				if (failedRules && failedRules.length) {
+					setValidationError(failedRules.map(rule => get(rule[1], 'error')));
+					toastService(
+						'Opslaan mislukt. Gelieve all verplichte velden in te vullen.',
+						TOAST_TYPE.DANGER
+					);
+					return;
+				}
+			}
+
+			setIsOpen(false);
+
 			updateCollectionProperty(isCollectionPublic, 'is_public');
 			updateCollectionProperty(new Date().toISOString(), 'publish_at');
 			await triggerCollectionPropertyUpdate({
@@ -164,6 +172,11 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 					},
 				},
 			});
+			setValidationError(undefined);
+			toastService(
+				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`,
+				TOAST_TYPE.SUCCESS
+			);
 			closeModal();
 		} catch (err) {
 			toastService('De aanpassingen kunnen niet worden opgeslagen', TOAST_TYPE.DANGER);
@@ -171,7 +184,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	};
 
 	const closeModal = () => {
-		setValidationError([]);
+		setValidationError(undefined);
 		setIsOpen(false);
 	};
 
@@ -208,7 +221,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 							<ToolbarItem>
 								<div className="c-button-toolbar">
 									<Button type="secondary" label="Annuleren" onClick={closeModal} />
-									<Button type="primary" label="Opslaan" onClick={validateBeforeSave} />
+									<Button type="primary" label="Opslaan" onClick={onSave} />
 								</div>
 							</ToolbarItem>
 						</ToolbarRight>
