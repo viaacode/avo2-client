@@ -64,6 +64,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				fragments.forEach(fragment => {
 					if (
 						fragment.external_id &&
+						fragment.external_id !== '-1' &&
 						fragment.use_custom_fields &&
 						(!fragment.custom_title || !fragment.custom_description)
 					) {
@@ -132,7 +133,10 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			// If all validations are valid, publish collection
 			onSave();
 			setValidationError(undefined);
-			toastService('Opslaan volbracht.', TOAST_TYPE.SUCCESS);
+			toastService(
+				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`,
+				TOAST_TYPE.SUCCESS
+			);
 		} else {
 			// Strip failed rules from ruleset
 			const failedRules = Object.entries(collectionValidation).filter(
