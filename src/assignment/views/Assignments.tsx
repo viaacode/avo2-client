@@ -92,7 +92,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 							placement="bottom-end"
 						>
 							<DropdownButton>
-								<Button icon="more-horizontal" type="borderless" active />
+								<Button icon="more-horizontal" type="borderless" />
 							</DropdownButton>
 							<DropdownContent>
 								<MenuContent
@@ -128,7 +128,6 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 								history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}`)
 							}
 							type="borderless"
-							active
 						/>
 					</div>
 				);
