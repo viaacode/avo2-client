@@ -20,6 +20,10 @@ export const GET_COLLECTION_BY_ID = gql`
 				custom_description
 				created_at
 				collection_id
+				item_meta {
+					title
+					description
+				}
 			}
 			updated_at
 			type_id
@@ -28,6 +32,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				id
 			}
 			title
+			note
 			thumbnail_path
 			publish_at
 			owner {
