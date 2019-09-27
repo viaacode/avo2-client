@@ -234,12 +234,13 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 							<Column size="2-7">
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
-										{itemMetaData.thumbnail_path && (
+										{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
 											<FlowPlayer
 												src={playerToken ? playerToken.toString() : null}
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
+												subtitles={['30-12-2011', 'VRT']}
 											/>
 										)}
 										<Spacer margin="top-large">

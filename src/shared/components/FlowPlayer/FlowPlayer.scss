@@ -4,10 +4,15 @@
 	width: 100%;
 	vertical-align: bottom;
 
-	.fp-title {
-		display: none;
-		background-color: rgba(15, 23, 29, 0.75);
-		text-transform: none;
+	.c-title-overlay {
+		width: calc(100% - 3.2rem);
+
+		&__meta {
+			background-color: rgba(15, 23, 29, 0.5);
+			padding: 0.4rem 1.2rem;
+			margin-right: 1.2rem;
+			font-size: 1.3rem;
+		}
 	}
 
 	.fp-secondary .fp-togglable  {
@@ -76,25 +81,6 @@
 		background-color: #25A4CF;
 	}
 
-	.fp-footer {
-		display: none;
-		max-width: calc(100% - 3.2rem);
-		top: 1rem;
-		left: 1rem;
-		right: 1rem;
-		bottom: auto;
-
-		padding: 0.8rem 1.2rem;
-		margin: 0 0 1rem;
-
-		font-size: 1.8rem;
-		font-weight: 500;
-		text-overflow: ellipsis;
-
-		white-space: nowrap;
-		overflow: hidden;
-	}
-
 	.fp-secondary {
 		left: 0;
 		top: 0;
@@ -116,21 +102,19 @@
 		}
 	}
 
-	&.is-playing {
-		.fp-footer {
-			display: none;
-		}
+	.c-title-overlay {
+		display: none;
 	}
 
 	&.is-hovered, &.is-paused {
-		.fp-header, .fp-footer {
+		.fp-header {
 			display: block;
 		}
 	}
 
 	&.is-fullscreen {
 		&.is-hovered, &.is-paused {
-			.fp-title {
+			.c-title-overlay {
 				display: block;
 			}
 		}

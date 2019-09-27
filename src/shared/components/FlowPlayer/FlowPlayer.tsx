@@ -13,6 +13,7 @@ interface FlowPlayerProps {
 	poster: string;
 	logo?: string;
 	title: string;
+	subtitles: string[];
 	start?: number;
 	end?: number;
 	onInit?: () => void;
@@ -25,9 +26,34 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 	onInit,
 	start,
 	end,
+	subtitles,
 }) => {
 	const videoContainerRef = useRef(null);
 	const videoPlayerRef: MutableRefObject<any | undefined> = useRef<any>();
+
+	const createTitleOverlay = () => {
+		const titleOverlay = document.createElement('div');
+		const titleHeader = document.createElement('h5');
+		const publishDiv = document.createElement('div');
+
+		titleOverlay.classList.add('c-title-overlay');
+		titleHeader.classList.add('c-title-overlay__title');
+		publishDiv.classList.add('o-flex');
+
+		titleHeader.innerText = title;
+
+		titleOverlay.appendChild(titleHeader);
+		titleOverlay.appendChild(publishDiv);
+
+		subtitles.forEach((subtitle: string) => {
+			const substitleDiv = document.createElement('div');
+			substitleDiv.innerText = subtitle;
+			substitleDiv.classList.add('c-title-overlay__meta');
+			publishDiv.appendChild(substitleDiv);
+		});
+
+		return titleOverlay;
+	};
 
 	const cuePointEndListener = () => {
 		if (videoContainerRef.current) {
@@ -40,7 +66,6 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 			// Initialize FlowPlayer
 			videoPlayerRef.current = flowplayer(videoContainerRef.current, {
 				// DATA
-				title,
 				poster,
 				src,
 
@@ -80,6 +105,15 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 			videoPlayerRef.current.emit(flowplayer.events.CUEPOINTS, { cuepoints: [{ start, end }] });
 		}
 	}, [start, end]);
+
+	// Draw custom elements
+	flowplayer((opts: any, root: any, api: any) => {
+		const mq = flowplayer.mq;
+
+		api.on('mount', () => {
+			mq('.fp-ui', root).prepend(createTitleOverlay());
+		});
+	});
 
 	return src && poster ? (
 		<div
