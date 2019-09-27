@@ -1,10 +1,6 @@
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
-
-import { Avo } from '@viaa/avo2-types';
-import { compact, uniq } from 'lodash-es';
+import React, { Fragment, FunctionComponent, useState } from 'react';
 
 import {
-	Blankslate,
 	Button,
 	Column,
 	Container,
@@ -12,25 +8,16 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	ImageGrid,
-	Modal,
-	ModalBody,
-	ModalFooterRight,
 	Spacer,
-	Spinner,
 	TagsInput,
 	TextArea,
-	Toolbar,
-	ToolbarItem,
-	ToolbarRight,
 } from '@viaa/avo2-components';
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
+import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import CollectionStillsModal from '../components/modals/CollectionStillsModal';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
-import { isVideoFragment } from '../helpers';
-import { getVideoStills, VideoStill } from '../service';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {
@@ -42,61 +29,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	collection,
 	updateCollectionProperty,
 }) => {
-	const [showCoverImageModal, setShowCoverImageModal] = useState(false);
-	const [videoStills, setVideoStills] = useState<string[] | null>(null);
-	const [selectedCoverImages, setSelectedCoverImages] = useState(
-		collection.thumbnail_path ? [collection.thumbnail_path] : []
-	);
-
-	const saveCoverImage = () => {
-		collection.thumbnail_path = selectedCoverImages[0];
-		setShowCoverImageModal(false);
-		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
-	};
-
-	const fetchThumbnailImages = async () => {
-		// Only update thumbnails when modal is opened, not when closed
-		try {
-			const externalIds = compact(
-				collection.collection_fragments.map(fragment =>
-					isVideoFragment(fragment) ? fragment.external_id : undefined
-				)
-			);
-			const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
-			setVideoStills(
-				uniq([
-					...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
-					...videoStills.map(videoStill => videoStill.thumbnailImagePath),
-				])
-			);
-		} catch (err) {
-			toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
-			console.error(err);
-		}
-	};
-
-	useEffect(() => {
-		const fetchThumbnailImages = async () => {
-			// Only update thumbnails when modal is opened, not when closed
-			try {
-				const externalIds = compact(collection.collection_fragments.map(cf => cf.external_id));
-				const videoStills: VideoStill[] = await getVideoStills(externalIds, 20);
-				setVideoStills(
-					uniq([
-						...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
-						...videoStills.map(videoStill => videoStill.thumbnailImagePath),
-					])
-				);
-			} catch (err) {
-				toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
-				console.error(err);
-			}
-		};
-
-		if (showCoverImageModal) {
-			fetchThumbnailImages().then(() => {});
-		}
-	}, [collection, showCoverImageModal]);
+	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
@@ -177,7 +110,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 											<Button
 												type="secondary"
 												label="Stel een afbeelding in..."
-												onClick={() => setShowCoverImageModal(true)}
+												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
 										</FormGroup>
 										<FormGroup label="Map" labelFor="mapId">
@@ -189,62 +122,11 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 						</Form>
 					</Container>
 				</Container>
-				<Modal
-					isOpen={showCoverImageModal}
-					title="Stel een cover afbeelding in"
-					size="large"
-					onClose={() => setShowCoverImageModal(false)}
-					scrollable={true}
-				>
-					<ModalBody>
-						<div className="u-spacer">
-							<Form>
-								{videoStills === null ? (
-									<Flex orientation="horizontal" center>
-										<Spinner size="large" />
-									</Flex>
-								) : videoStills.length === 0 ? (
-									<Blankslate
-										body=""
-										icon="search"
-										title="Er zijn geen thumbnails beschikbaar voor de fragmenten in de collectie"
-									/>
-								) : (
-									<ImageGrid
-										images={videoStills}
-										allowSelect={true}
-										value={selectedCoverImages}
-										onChange={setSelectedCoverImages}
-										width={177}
-										height={100}
-									/>
-								)}
-							</Form>
-						</div>
-					</ModalBody>
-					<ModalFooterRight>
-						<Toolbar spaced>
-							<ToolbarRight>
-								<ToolbarItem>
-									<div className="c-button-toolbar">
-										<Button
-											label="Annuleren"
-											type="secondary"
-											block={true}
-											onClick={() => setShowCoverImageModal(false)}
-										/>
-										<Button
-											label="Opslaan"
-											type="primary"
-											block={true}
-											onClick={() => saveCoverImage()}
-										/>
-									</div>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
-					</ModalFooterRight>
-				</Modal>
+				<CollectionStillsModal
+					isOpen={isCollectionsStillsModalOpen}
+					setIsOpen={setCollectionsStillsModalOpen}
+					collection={collection}
+				/>
 			</Fragment>
 		);
 	};
