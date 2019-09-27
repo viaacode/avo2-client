@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef } from 'react';
+import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from 'react';
 
 import { Icon } from '@viaa/avo2-components';
 
@@ -27,7 +27,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 	end,
 }) => {
 	const videoContainerRef = useRef(null);
-	const videoPlayerRef: any = useRef();
+	const videoPlayerRef: MutableRefObject<any | undefined> = useRef<any>();
 
 	const cuePointEndListener = () => {
 		if (videoContainerRef.current) {
