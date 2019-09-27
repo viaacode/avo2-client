@@ -51,12 +51,12 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const [isCollectionPublic, setIsCollectionPublic] = useState(initialIsPublic);
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
 
-	const validateFragments = (fragments: Avo.Collection.Fragment[], type: string) => {
+	const validateFragments = (fragments: Avo.Collection.Fragment[], type: string): boolean => {
 		if (!fragments || !fragments.length) {
 			return false;
 		}
 
-		let isValid: Boolean = true;
+		let isValid = true;
 
 		switch (type) {
 			case 'video':
@@ -86,7 +86,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		return isValid;
 	};
 
-	const validateBeforeSave = () => {
+	const getValidationErrorsForPublish = (): [string, { error: string; result: boolean }][] => {
 		const {
 			title,
 			description,
@@ -96,7 +96,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		} = collection;
 
 		// Collection validation ruleset
-		const collectionValidation = {
+		const collectionValidation: { [validationName: string]: { error: string; result: boolean } } = {
 			hasTitle: {
 				error: 'Uw collectie heeft geen titel.',
 				result: !!title,
@@ -128,38 +128,47 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			// TODO: Add check if owner or write-rights.
 		};
 
-		if (Object.values(collectionValidation).every(rule => rule.result === true)) {
-			// If all validations are valid, publish collection
-			onSave();
-			setValidationError(undefined);
-			toastService('Opslaan volbracht.', TOAST_TYPE.SUCCESS);
-		} else {
-			// Strip failed rules from ruleset
-			const failedRules = Object.entries(collectionValidation).filter(
-				rule => !get(rule[1], 'result')
-			);
-
-			setValidationError(failedRules.map(rule => get(rule[1], 'error')));
-			toastService(
-				'Opslaan mislukt. Gelieve all verplichte velden in te vullen.',
-				TOAST_TYPE.DANGER
-			);
-		}
+		// Return errors
+		return Object.entries(collectionValidation).filter(rule => !get(rule[1], 'result'));
 	};
 
-	const onSave = () => {
-		setIsOpen(false);
-		updateCollectionProperty(isCollectionPublic, 'is_public');
-		updateCollectionProperty(new Date().toISOString(), 'publish_at');
-		triggerCollectionPropertyUpdate({
-			variables: {
-				id: collection.id,
-				collection: {
-					is_public: isCollectionPublic,
-					publish_at: new Date().toISOString(),
+	const onSave = async () => {
+		try {
+			if (isCollectionPublic) {
+				// We only need to check if you can publish if the user wants to publish
+				// If the user wants to de-publish, we don't need to check anything
+				const failedRules: [
+					string,
+					{ error: string; result: boolean }
+				][] = getValidationErrorsForPublish();
+				if (failedRules && failedRules.length) {
+					setValidationError(failedRules.map(rule => get(rule[1], 'error')));
+					toastService(
+						'Opslaan mislukt. Gelieve all verplichte velden in te vullen.',
+						TOAST_TYPE.DANGER
+					);
+					return;
+				}
+			}
+
+			setIsOpen(false);
+			updateCollectionProperty(isCollectionPublic, 'is_public');
+			updateCollectionProperty(new Date().toISOString(), 'publish_at');
+			await triggerCollectionPropertyUpdate({
+				variables: {
+					id: collection.id,
+					collection: {
+						is_public: isCollectionPublic,
+						publish_at: new Date().toISOString(),
+					},
 				},
-			},
-		});
+			});
+			setValidationError(undefined);
+			toastService('Opslaan volbracht.', TOAST_TYPE.SUCCESS);
+		} catch (err) {
+			setValidationError(undefined);
+			toastService('Het publiceren van de collectie is mislukt', TOAST_TYPE.DANGER);
+		}
 	};
 
 	return (
