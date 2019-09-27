@@ -240,8 +240,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
-												publishedAt={'30-12-2011'}
-												publisher={'VRT'}
+												subtitles={['30-12-2011', 'VRT']}
 											/>
 										)}
 										<Spacer margin="top-large">

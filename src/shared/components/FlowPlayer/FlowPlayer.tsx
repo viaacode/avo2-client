@@ -13,8 +13,7 @@ interface FlowPlayerProps {
 	poster: string;
 	logo?: string;
 	title: string;
-	publishedAt?: string | null;
-	publisher?: string;
+	subtitles: string[];
 	start?: number;
 	end?: number;
 	onInit?: () => void;
@@ -27,8 +26,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 	onInit,
 	start,
 	end,
-	publisher,
-	publishedAt,
+	subtitles,
 }) => {
 	const videoContainerRef = useRef(null);
 	const videoPlayerRef: any = useRef();
@@ -37,29 +35,22 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 		const titleOverlay = document.createElement('div');
 		const titleHeader = document.createElement('h5');
 		const publishDiv = document.createElement('div');
-		const publishedAtDiv = document.createElement('div');
-		const publisherDiv = document.createElement('div');
 
 		titleOverlay.classList.add('c-title-overlay');
 		titleHeader.classList.add('c-title-overlay__title');
 		publishDiv.classList.add('o-flex');
-		publisherDiv.classList.add('c-title-overlay__source');
-		publishedAtDiv.classList.add('c-title-overlay__pub-date');
 
 		titleHeader.innerText = title;
 
 		titleOverlay.appendChild(titleHeader);
 		titleOverlay.appendChild(publishDiv);
 
-		if (publisher) {
-			publisherDiv.innerText = publisher;
-			publishDiv.appendChild(publisherDiv);
-		}
-
-		if (publishedAt) {
-			publishedAtDiv.innerText = publishedAt;
-			publishDiv.appendChild(publishedAtDiv);
-		}
+		subtitles.forEach((subtitle: string) => {
+			const substitleDiv = document.createElement('div');
+			substitleDiv.innerText = subtitle;
+			substitleDiv.classList.add('c-title-overlay__meta');
+			publishDiv.appendChild(substitleDiv);
+		});
 
 		return titleOverlay;
 	};

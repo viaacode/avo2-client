@@ -6,6 +6,13 @@
 
 	.c-title-overlay {
 		width: calc(100% - 3.2rem);
+
+		&__meta {
+			background-color: rgba(15, 23, 29, 0.5);
+			padding: 0.4rem 1.2rem;
+			margin-right: 1.2rem;
+			font-size: 1.3rem;
+		}
 	}
 
 	.fp-secondary .fp-togglable  {

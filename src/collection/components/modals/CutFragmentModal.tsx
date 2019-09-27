@@ -93,8 +93,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						poster={itemMetaData.thumbnail_path}
 						title={itemMetaData.title}
 						onInit={initFlowPlayer}
-						publishedAt={'30-12-2011'}
-						publisher={'VRT'}
+						subtitles={['30-12-2011', 'VRT']}
 					/>
 					<Container mode="vertical" className="m-time-crop-controls">
 						<TextInput

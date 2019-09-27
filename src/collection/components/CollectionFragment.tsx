@@ -294,8 +294,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 										onInit={initFlowPlayer}
 										start={cuePoints.start}
 										end={cuePoints.end}
-										publishedAt={'30-12-2011'}
-										publisher={'VRT'}
+										subtitles={['30-12-2011', 'VRT']}
 									/>
 								</Column>
 								<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
