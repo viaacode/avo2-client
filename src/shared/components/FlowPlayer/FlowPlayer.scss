@@ -8,12 +8,6 @@
 		width: calc(100% - 3.2rem);
 	}
 
-	.fp-title {
-		display: none;
-		background-color: rgba(15, 23, 29, 0.75);
-		text-transform: none;
-	}
-
 	.fp-secondary .fp-togglable  {
 		position:relative;
 		right: 0.7em;
@@ -113,7 +107,7 @@
 
 	&.is-fullscreen {
 		&.is-hovered, &.is-paused {
-			.c-title-overlay{
+			.c-title-overlay {
 				display: block;
 			}
 		}
