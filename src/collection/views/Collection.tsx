@@ -329,7 +329,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 												generateSearchLinks(String(collection.id), 'educationLevel', lomContext)
 											)
 										) : (
-											<div>-</div>
+											<span className="u-d-block">-</span>
 										)}
 									</p>
 								</Spacer>
@@ -354,7 +354,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 												generateSearchLinks(String(collection.id), 'domain', lomClassification)
 											)
 										) : (
-											<div>-</div>
+											<span className="u-d-block">-</span>
 										)}
 									</p>
 								</Spacer>
