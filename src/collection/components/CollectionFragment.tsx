@@ -60,6 +60,10 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
+	const [cuePoints, setCuePoints] = useState({
+		start: fragment.start_oc,
+		end: fragment.end_oc,
+	});
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (index: number) => index === 0;
@@ -84,10 +88,10 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		itemMetaData: Avo.Item.Response,
 		index: number
 	) => {
-		const isVideoBlock: boolean = !useCustomFields && !!isVideoFragment(fragment);
+		const disableVideoFields: boolean = !useCustomFields && !!isVideoFragment(fragment);
 
 		const onChangeTitle = (value: string) => {
-			if (isVideoBlock) {
+			if (disableVideoFields) {
 				return null;
 			}
 
@@ -95,7 +99,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		};
 
 		const onChangeDescription = (html: string) => {
-			if (isVideoBlock) {
+			if (disableVideoFields) {
 				return null;
 			}
 
@@ -128,7 +132,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
 						placeholder="Titel"
 						onChange={onChangeTitle}
-						disabled={isVideoBlock}
+						disabled={disableVideoFields}
 					/>
 				</FormGroup>
 				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
@@ -138,7 +142,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 							getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
 						)}
 						onChange={onChangeDescription}
-						disabled={isVideoBlock}
+						disabled={disableVideoFields}
 					/>
 				</FormGroup>
 			</Form>
@@ -279,7 +283,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						</Toolbar>
 					</div>
 					<div className="c-card__body">
-						{isVideoFragment(fragment) ? (
+						{isVideoFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
 							<Grid>
 								<Column size="3-6">
 									<FlowPlayer
@@ -287,6 +291,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 										poster={itemMetaData.thumbnail_path}
 										title={itemMetaData.title}
 										onInit={initFlowPlayer}
+										start={cuePoints.start}
+										end={cuePoints.end}
+										subtitles={['30-12-2011', 'VRT']}
 									/>
 								</Column>
 								<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
@@ -309,6 +316,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						itemMetaData={itemMetaData}
 						updateFragmentProperty={updateFragmentProperty}
 						fragment={fragment}
+						updateCuePoints={setCuePoints}
 					/>
 				)}
 			</>

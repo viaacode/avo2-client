@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { getEnv } from '../helpers/env';
 import { dataService } from './data-service';
 import { INSERT_EVENT_LOG_ENTRY } from './event-logging-service.gql';
