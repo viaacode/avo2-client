@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 
 import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';
-import Assignment from './views/Assignment';
 import EditAssignment from './views/EditAssignment';
 
 export const renderAssignmentRoutes = () => (
