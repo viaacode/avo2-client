@@ -9,7 +9,6 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
-	Icon,
 	MenuContent,
 	MetaData,
 	MetaDataItem,

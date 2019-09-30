@@ -1,4 +1,4 @@
-export function formatDurationMinutesSeconds(numSeconds: number | null | undefined) {
+export function formatDurationMinutesSeconds(numSeconds: number | null | undefined): string {
 	const seconds: number = Math.abs(numSeconds || 0);
 	const mins = Math.floor(seconds / 60);
 	const secs = seconds % 60;
