@@ -34,7 +34,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { ContentType } from '@viaa/avo2-components/dist/types';
 import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
-import { get, remove } from 'lodash-es';
+import { cloneDeep, get, remove } from 'lodash-es';
 import queryString from 'query-string';
 import { Link } from 'react-router-dom';
 import NotFound from '../../404/views/NotFound';
@@ -223,7 +223,8 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		setAssignment(newAssignment);
 	};
 
-	const validateAssignment = (assignmentToSave: Partial<Assignment>): [string[], Assignment] => {
+	const validateAssignment = (assignment: Partial<Assignment>): [string[], Assignment] => {
+		const assignmentToSave = cloneDeep(assignment);
 		const errors = [];
 		if (!assignmentToSave.title) {
 			errors.push('Een titel is verplicht');
@@ -245,10 +246,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		assignmentToSave.is_archived = assignmentToSave.is_archived || false;
 		assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
 		assignmentToSave.is_collaborative = assignmentToSave.is_collaborative || false;
-		// assignmentToSave.assignment_responses = assignmentToSave.assignment_responses || [];
-		// assignmentToSave.assignment_assignment_tags = assignmentToSave.assignment_assignment_tags || {
+		delete assignmentToSave.assignment_responses; // = assignmentToSave.assignment_responses || [];
+		delete assignmentToSave.assignment_assignment_tags; // = assignmentToSave.assignment_assignment_tags || {
 		// 	assignment_tag: [],
 		// };
+		delete (assignmentToSave as any).__typename;
 		return [errors, assignmentToSave as Assignment];
 	};
 
@@ -281,6 +283,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 				// edit => update graphql
 				const response: void | ExecutionResult<Assignment> = await triggerAssignmentUpdate({
 					variables: {
+						id: assignmentToSave.id,
 						assignment: assignmentToSave,
 					},
 				});
