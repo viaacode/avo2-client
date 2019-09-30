@@ -178,16 +178,12 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			['asc']
 		);
 
-		const updatedFragmentIds = (collection.collection_fragment_ids || []).filter((id: number) => {
-			return id !== fragmentId;
-		});
-
 		const positionedFragments = reorderFragments(orderedFragments);
 
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: updatedFragmentIds,
+			collection_fragment_ids: positionedFragments.map(fragment => fragment.id),
 		});
 
 		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
