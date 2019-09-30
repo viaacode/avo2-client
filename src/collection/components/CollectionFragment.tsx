@@ -60,6 +60,10 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	const [playerToken, setPlayerToken] = useState();
 	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
 	const [isCutModalOpen, setIsCutModalOpen] = useState(false);
+	const [cuePoints, setCuePoints] = useState({
+		start: fragment.start_oc,
+		end: fragment.end_oc,
+	});
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (index: number) => index === 0;
@@ -275,7 +279,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						</Toolbar>
 					</div>
 					<div className="c-card__body">
-						{isVideoFragment(fragment) ? (
+						{isVideoFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
 							<Grid>
 								<Column size="3-6">
 									<FlowPlayer
@@ -283,6 +287,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 										poster={itemMetaData.thumbnail_path}
 										title={itemMetaData.title}
 										onInit={initFlowPlayer}
+										start={cuePoints.start}
+										end={cuePoints.end}
+										subtitles={['30-12-2011', 'VRT']}
 									/>
 								</Column>
 								<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
@@ -305,6 +312,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 						itemMetaData={itemMetaData}
 						updateFragmentProperty={updateFragmentProperty}
 						fragment={fragment}
+						updateCuePoints={setCuePoints}
 					/>
 				)}
 			</>
