@@ -248,7 +248,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		return (get(collection, 'collection_fragments') || []).map(fragment => fragment.id);
 	};
 
-	async function onSaveCollection() {
+	async function onSaveCollection(refetchCollection: () => void) {
 		try {
 			if (!currentCollection) {
 				toastService(`De huidige collectie is niet gevonden`, TOAST_TYPE.DANGER);
@@ -380,6 +380,8 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			setInitialCollection(cloneDeep(newCollection));
 			setIsSavingCollection(false);
 			toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
+			// refetch collection:
+			refetchCollection();
 		} catch (err) {
 			console.error(err);
 			toastService('Opslaan mislukt', TOAST_TYPE.DANGER);
@@ -390,7 +392,10 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		return JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
 	};
 
-	const renderEditCollection = (collection: Avo.Collection.Response) => {
+	const renderEditCollection = (
+		collection: Avo.Collection.Response,
+		refetchCollection: () => void
+	) => {
 		if (!isFirstRender) {
 			setCurrentCollection(collection);
 			setInitialCollection(cloneDeep(collection)); // Clone so we can keep track of changes deep within the collection
@@ -513,7 +518,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 											<Button
 												type="primary"
 												label="Opslaan"
-												onClick={onSaveCollection}
+												onClick={() => onSaveCollection(refetchCollection)}
 												disabled={isSavingCollection}
 											/>
 										</Spacer>
