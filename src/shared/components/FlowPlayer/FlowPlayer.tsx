@@ -97,7 +97,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 				videoPlayerRef.current = null;
 			}
 		};
-	}, [videoContainerRef, src, poster, title]);
+	}, [videoContainerRef, src, poster, title, start, end]);
 
 	// Re-render start/end cuepoints when cropping video
 	useEffect(() => {
