@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isEmpty, without } from 'lodash-es';
+import { cloneDeep, eq, get, isEmpty, omit, without } from 'lodash-es';
 import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { Prompt, RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Avatar,
@@ -50,23 +50,26 @@ import EditCollectionMetadata from './EditCollectionMetadata';
 
 interface EditCollectionProps extends RouteComponentProps {}
 
+let currentCollection: any;
+let setCurrentCollection: (collection: Avo.Collection.Response) => void;
+
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
-	const [collectionId] = useState((props.match.params as any)['id'] as string);
+	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
 	const [currentTab, setCurrentTab] = useState('inhoud');
-	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
-	const [isReorderModalOpen, setIsReorderModalOpen] = useState(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-	const [isFirstRender, setIsFirstRender] = useState(false);
-	const [currentCollection, setCurrentCollection] = useState();
-	const [initialCollection, setInitialCollection] = useState();
-	const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
-	const [isSavingCollection, setIsSavingCollection] = useState(false);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
+	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Response>();
+	const [initialCollection, setInitialCollection] = useState<Avo.Collection.Response>();
+	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
+	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 
 	// Tab navigation
 	const tabs = [
@@ -85,12 +88,21 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	];
 
 	const onUnload = (event: any) => {
-		event.preventDefault();
-		event.returnValue = '';
+		if (hasUnsavedChanged()) {
+			// Cancel the event as stated by the standard.
+			event.preventDefault();
+			// Chrome requires returnValue to be set.
+			event.returnValue = '';
+		}
 	};
 
-	// Destroy event listener on unmount
-	useEffect(() => window.removeEventListener('beforeunload', onUnload));
+	useEffect(() => {
+		// Register listener once when the component loads
+		window.addEventListener('beforeunload', onUnload);
+
+		// Remove listener when the component unloads
+		return () => window.removeEventListener('beforeunload', onUnload);
+	});
 
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
@@ -110,10 +122,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	const onPreviewCollection = () => {};
 
-	const updateCollection = (collection: Avo.Collection.Response) => {
-		setCurrentCollection(collection);
-	};
-
 	const deleteCollection = (collectionId: number) => {
 		triggerCollectionDelete({
 			variables: {
@@ -127,44 +135,66 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	// Update individual property of fragment
 	const updateFragmentProperty = (value: any, propertyName: string, fragmentId: number) => {
-		const temp: Avo.Collection.Response = { ...currentCollection };
+		const tempCollection: Avo.Collection.Response | undefined = cloneDeep(currentCollection);
+		if (!tempCollection) {
+			toastService(
+				'De collectie updaten is mislukt, kon geen kopie maken van de bestaande collectie',
+				TOAST_TYPE.DANGER
+			);
+			return;
+		}
 
-		window.addEventListener('beforeunload', onUnload);
-
-		const fragmentToUpdate = temp.collection_fragments.find(
+		const fragmentToUpdate = tempCollection.collection_fragments.find(
 			(item: Avo.Collection.Fragment) => item.id === fragmentId
 		);
 
 		(fragmentToUpdate as any)[propertyName] = value;
 
-		updateCollection(temp);
+		setCurrentCollection(tempCollection);
 	};
 
 	// Update individual property of collection
 	const updateCollectionProperty = (value: any, fieldName: string) => {
-		window.addEventListener('beforeunload', onUnload);
-
 		setCurrentCollection({
 			...currentCollection,
 			[fieldName]: value,
-		});
+		} as Avo.Collection.Response);
 	};
 
 	// Swap position of two fragments within a collection
 	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
+		if (!currentCollection) {
+			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
+			return;
+		}
+		if (!currentCollection.collection_fragments || !currentCollection.collection_fragments.length) {
+			toastService('De collectie fragmenten zijn niet ingesteld', TOAST_TYPE.DANGER);
+			return;
+		}
 		const fragments = currentCollection.collection_fragments;
 
-		const changeFragmentsPositions = (sign: number) => {
+		const changeFragmentsPositions = (fragments: Avo.Collection.Fragment[], sign: number) => {
+			const fragment = fragments.find(
+				(fragment: Avo.Collection.Fragment) => fragment.position === currentId
+			);
 			const otherFragment = currentCollection.collection_fragments.find(
 				(fragment: Avo.Collection.Fragment) => fragment.position === currentId - sign
 			);
-			fragments.find(
-				(fragment: Avo.Collection.Fragment) => fragment.position === currentId
-			).position -= sign;
+			if (!fragment) {
+				toastService(`Het fragment met id ${currentId} is niet gevonden`, TOAST_TYPE.DANGER);
+				return;
+			}
+			if (!otherFragment) {
+				toastService(`Het fragment met id ${currentId - sign} is niet gevonden`, TOAST_TYPE.DANGER);
+				return;
+			}
+			fragment.position -= sign;
 			otherFragment.position += sign;
 		};
 
-		direction === 'up' ? changeFragmentsPositions(1) : changeFragmentsPositions(-1);
+		direction === 'up'
+			? changeFragmentsPositions(fragments, 1)
+			: changeFragmentsPositions(fragments, -1);
 
 		setCurrentCollection({
 			...currentCollection,
@@ -177,170 +207,208 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		return getValidationFeedbackForShortDescription(collection, true) || '';
 	}
 
-	const renderEditCollection = (collection: Avo.Collection.Response) => {
-		async function onSaveCollection() {
-			try {
-				setIsSavingCollection(true);
-				// Validate collection before save
-				const validationError = getValidationErrorForCollection(currentCollection);
-				if (validationError) {
-					toastService(validationError, TOAST_TYPE.DANGER);
-					setIsSavingCollection(false);
+	const insertFragment = async (tempId: number, currentFragments: Avo.Collection.Fragment[]) => {
+		if (!currentCollection) {
+			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
+			return;
+		}
+		const tempFragment = currentFragments.find(
+			(fragment: Avo.Collection.Fragment) => fragment.id === tempId
+		);
+		if (!tempFragment) {
+			toastService(`Fragment om toe te voegen is niet gevonden (id: ${tempId})`);
+			return;
+		}
+		const fragmentToAdd: Avo.Collection.Fragment = { ...tempFragment };
+
+		const oldId = fragmentToAdd.id;
+		delete fragmentToAdd.id;
+		delete (fragmentToAdd as any).__typename;
+		// TODO remove type cast when next typings repo version is released (1.8.0)
+		delete (fragmentToAdd as any).item_meta;
+
+		const response = await triggerCollectionFragmentInsert({
+			variables: {
+				id: currentCollection.id,
+				fragment: fragmentToAdd,
+			},
+		});
+
+		const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
+
+		return {
+			newFragment,
+			oldId,
+		};
+	};
+
+	const getFragmentIdsFromCollection = (
+		collection: Avo.Collection.Response | undefined
+	): number[] => {
+		return (get(collection, 'collection_fragments') || []).map(fragment => fragment.id);
+	};
+
+	async function onSaveCollection(refetchCollection: () => void) {
+		try {
+			if (!currentCollection) {
+				toastService(`De huidige collectie is niet gevonden`, TOAST_TYPE.DANGER);
+				return;
+			}
+			setIsSavingCollection(true);
+			// Validate collection before save
+			const validationError = getValidationErrorForCollection(currentCollection);
+			if (validationError) {
+				toastService(validationError, TOAST_TYPE.DANGER);
+				setIsSavingCollection(false);
+				return;
+			}
+
+			let newCollection: Avo.Collection.Response = cloneDeep(currentCollection);
+
+			// Not using lodash default value parameter since the value an be null and
+			// that doesn't default to the default value
+			// only undefined defaults to the default value
+			const initialFragmentIds: number[] = getFragmentIdsFromCollection(initialCollection);
+			const currentFragmentIds: number[] = getFragmentIdsFromCollection(currentCollection);
+			const newFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
+			const currentFragments: Avo.Collection.Fragment[] = get(
+				currentCollection,
+				'collection_fragments',
+				[]
+			);
+
+			// Insert fragments that added to collection
+			const insertFragmentIds = without(newFragmentIds, ...initialFragmentIds);
+
+			// Delete fragments that were removed from collection
+			const deleteFragmentIds = without(initialFragmentIds, ...newFragmentIds);
+
+			// Update fragments that are neither inserted nor deleted
+			const updateFragmentIds = currentFragmentIds.filter((fragmentId: number) =>
+				initialFragmentIds.includes(fragmentId)
+			);
+
+			// Insert fragments
+			const insertPromises: Promise<any>[] = [];
+
+			insertFragmentIds.forEach(tempId => {
+				insertPromises.push(insertFragment(tempId, currentFragments));
+			});
+
+			// Delete fragments
+			const deletePromises: Promise<any>[] = [];
+			deleteFragmentIds.forEach((id: number) => {
+				deletePromises.push(triggerCollectionFragmentDelete({ variables: { id } }));
+			});
+
+			// Update fragments
+			const updatePromises: Promise<any>[] = [];
+			updateFragmentIds.forEach((id: number) => {
+				let fragmentToUpdate:
+					| Avo.Collection.Fragment
+					| undefined = currentCollection.collection_fragments.find(
+					(fragment: Avo.Collection.Fragment) => {
+						return Number(id) === fragment.id;
+					}
+				);
+				if (!fragmentToUpdate) {
+					toastService(`Kan het te updaten fragment niet vinden (id: ${id})`);
 					return;
 				}
+				fragmentToUpdate = cloneDeep(fragmentToUpdate);
 
-				let newCollection: Avo.Collection.Response = { ...currentCollection };
+				delete (fragmentToUpdate as any).__typename;
+				delete (fragmentToUpdate as any).item_meta;
 
-				// Insert fragments that added to collection
-				const insertFragmentIds = without(
-					newCollection.collection_fragment_ids || [],
-					...(initialCollection.collection_fragment_ids || [])
-				);
-
-				// Delete fragments that were removed from collection
-				const deleteFragmentIds = without(
-					initialCollection.collection_fragment_ids || [],
-					...(newCollection.collection_fragment_ids || [])
-				);
-
-				// Update fragments that are neither inserted nor deleted
-				const updateFragmentIds = (currentCollection.collection_fragment_ids || []).filter(
-					(fragmentId: number) =>
-						(initialCollection.collection_fragment_ids || []).includes(fragmentId)
-				);
-
-				const insertFragment = async (id: number) => {
-					const fragmentToAdd = {
-						...currentCollection.collection_fragments.find(
-							(fragment: Avo.Collection.Fragment) => fragment.id === id
-						),
-					};
-
-					const tempId = fragmentToAdd.id;
-					delete fragmentToAdd.id;
-					delete fragmentToAdd.__typename;
-
-					const response = await triggerCollectionFragmentInsert({
-						variables: {
-							id: currentCollection.id,
-							fragment: fragmentToAdd,
-						},
-					});
-
-					const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
-
-					return {
-						newFragment,
-						oldId: tempId,
-					};
-				};
-
-				const promises: any = [];
-
-				insertFragmentIds.forEach(id => {
-					promises.push(insertFragment(id));
-				});
-
-				const newFragmentData = await Promise.all(promises);
-
-				newFragmentData.forEach((data: any) => {
-					newCollection = {
-						...currentCollection,
-						collection_fragment_ids: [
-							...currentCollection.collection_fragment_ids.filter(
-								(fragmentId: number) => fragmentId !== data.oldId
-							),
-							data.newFragment.id,
-						],
-						collection_fragments: [
-							...currentCollection.collection_fragments.filter(
-								(fragment: Avo.Collection.Fragment) => fragment.id !== data.oldId
-							),
-							data.newFragment,
-						],
-					};
-				});
-
-				setCurrentCollection(newCollection);
-				setInitialCollection({
-					...collection,
-					collection_fragment_ids: newCollection.collection_fragment_ids,
-				});
-
-				deleteFragmentIds.forEach((id: number) => {
-					triggerCollectionFragmentDelete({ variables: { id } });
-				});
-
-				updateFragmentIds.forEach((id: number) => {
-					const fragment: any = {
-						...newCollection.collection_fragments.find((fragment: Avo.Collection.Fragment) => {
-							return Number(id) === fragment.id;
-						}),
-					};
-
-					delete fragment.__typename;
-
+				updatePromises.push(
 					triggerCollectionFragmentUpdate({
 						variables: {
 							id,
-							fragment,
+							fragment: fragmentToUpdate,
 						},
-					});
-				});
+					})
+				);
+			});
 
-				const readyToStore = { ...newCollection };
+			// Make all crud requests in parallel
+			const crudPromises: Promise<any[]>[] = [
+				Promise.all(insertPromises),
+				Promise.all(deletePromises),
+				Promise.all(updatePromises),
+			];
+			const crudResponses = await Promise.all(crudPromises);
 
-				await readyToStore.collection_fragments.forEach((fragment: any) => {
-					delete fragment.__typename;
-
-					triggerCollectionFragmentUpdate({
-						variables: {
-							fragment,
-							id: fragment.id,
-						},
-					});
-				});
-
-				// Trigger collection update
-				const propertiesToDelete = [
-					'collection_fragments',
-					'label_redactie',
-					'owner',
-					'collection_permissions',
-					'__typename',
-					'type',
+			// Process new fragments responses
+			crudResponses[0].forEach((data: any) => {
+				const newFragments = [
+					...newCollection.collection_fragments.filter(
+						(fragment: Avo.Collection.Fragment) => fragment.id !== data.oldId
+					),
+					data.newFragment,
 				];
+				newCollection = {
+					...newCollection,
+					collection_fragment_ids: newFragments.map(fragment => fragment.id),
+					collection_fragments: newFragments,
+				};
+			});
 
-				const otherTables: any = {};
+			// Trigger collection update
 
-				propertiesToDelete.forEach((property: any) => {
-					otherTables[property] = (readyToStore as any)[property];
-					delete (readyToStore as any)[property];
-				});
+			// Clean the collection of properties from other tables, properties that can't be saved
+			const propertiesToDelete = [
+				'collection_fragments',
+				'label_redactie',
+				'owner',
+				'collection_permissions',
+				'__typename',
+				'type',
+			];
 
-				await triggerCollectionUpdate({
-					variables: {
-						id: currentCollection.id,
-						collection: readyToStore,
-					},
-				});
-				setIsSavingCollection(false);
-				toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
-			} catch (err) {
-				console.error(err);
-				toastService('Opslaan mislukt', TOAST_TYPE.DANGER);
-			}
+			const cleanedCollection: Partial<Avo.Collection.Response> = omit(
+				newCollection,
+				propertiesToDelete
+			);
+
+			await triggerCollectionUpdate({
+				variables: {
+					id: cleanedCollection.id,
+					collection: cleanedCollection,
+				},
+			});
+			setCurrentCollection(newCollection);
+			setInitialCollection(cloneDeep(newCollection));
+			setIsSavingCollection(false);
+			toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
+			// refetch collection:
+			refetchCollection();
+		} catch (err) {
+			console.error(err);
+			toastService('Opslaan mislukt', TOAST_TYPE.DANGER);
 		}
+	}
 
+	const hasUnsavedChanged = () => {
+		return JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
+	};
+
+	const renderEditCollection = (
+		collection: Avo.Collection.Response,
+		refetchCollection: () => void
+	) => {
 		if (!isFirstRender) {
 			setCurrentCollection(collection);
-			setInitialCollection(collection);
+			setInitialCollection(cloneDeep(collection)); // Clone so we can keep track of changes deep within the collection
 			setIsFirstRender(true);
 		}
 
 		return currentCollection ? (
 			<Fragment>
-				<Container background="alt" mode="vertical" size="small">
+				<Prompt
+					when={hasUnsavedChanged()}
+					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
+				/>
+				<Container background={'alt'} mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
@@ -395,6 +463,12 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 										<Button
 											type="secondary"
 											label="Delen"
+											disabled={hasUnsavedChanged()}
+											title={
+												!eq(currentCollection, initialCollection)
+													? 'U moet uw wijzigingen eerst opslaan'
+													: ''
+											}
 											onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 										/>
 										<Button
@@ -444,7 +518,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 											<Button
 												type="primary"
 												label="Opslaan"
-												onClick={onSaveCollection}
+												onClick={() => onSaveCollection(refetchCollection)}
 												disabled={isSavingCollection}
 											/>
 										</Spacer>
@@ -454,7 +528,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 						</Toolbar>
 					</Container>
 				</Container>
-				<Navbar background="alt" placement="top" autoHeight>
+				<Navbar background={'alt'} placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={selectTab} />
 					</Container>
@@ -463,7 +537,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					<EditCollectionContent
 						collection={currentCollection}
 						swapFragments={swapFragments}
-						updateCollection={updateCollection}
+						updateCollection={setCurrentCollection}
 						updateFragmentProperty={updateFragmentProperty}
 					/>
 				)}

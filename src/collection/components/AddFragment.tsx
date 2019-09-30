@@ -23,8 +23,8 @@ const fragmentsDefaults = {
 		external_id: '',
 		custom_description: '',
 		custom_title: '',
-		end_oc: 0,
-		start_oc: 0,
+		end_oc: null,
+		start_oc: null,
 		use_custom_fields: true,
 	},
 };
@@ -58,10 +58,7 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: [
-				...(collection.collection_fragment_ids || []),
-				TEXT_BLOCK_FRAGMENT.id,
-			],
+			collection_fragment_ids: positionedFragments.map(fragment => fragment.id),
 		});
 	};
 

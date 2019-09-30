@@ -2,6 +2,7 @@ import { debounce } from 'lodash-es';
 import queryString from 'query-string';
 import React, {
 	createRef,
+	CSSProperties,
 	Fragment,
 	FunctionComponent,
 	ReactNode,
@@ -53,9 +54,12 @@ import {
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { fetchPlayerToken } from '../../shared/services/player-service';
+import { getVideoStills } from '../../shared/services/stills-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
+import { RouteParts } from '../../constants';
 import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
@@ -63,10 +67,12 @@ interface ItemProps extends RouteComponentProps {}
 const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
-	const [itemId] = useState((match.params as any)['id'] as string);
-	const [playerToken, setPlayerToken] = useState();
-	const [time, setTime] = useState(0);
-	const [videoHeight, setVideoHeight] = useState(387); // correct height for desktop screens
+	const [itemId] = useState<string | undefined>((match.params as any)['id']);
+	const [playerToken, setPlayerToken] = useState<string>();
+	const [itemState, setItemState] = useState<Avo.Item.Response | undefined>();
+	const [videoStill, setVideoStill] = useState<string | null>(null);
+	const [time, setTime] = useState<number>(0);
+	const [videoHeight, setVideoHeight] = useState<number>(387); // correct height for desktop screens
 	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
 		false
 	);
@@ -160,17 +166,41 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 		history.push(generateSearchLinkString(prop, value));
 	};
 
-	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
+	const relatedItemStyle: CSSProperties = { width: '100%', float: 'left', marginRight: '2%' };
+
+	/**
+	 * Get the video thumbnail when the item changes
+	 */
+	useEffect(() => {
+		if (itemState && itemState.type.label === 'video') {
+			getVideoStills([{ externalId: itemState.external_id, startTime: 0 }])
+				.then((videoStills: Avo.Stills.StillInfo[]) => {
+					setVideoStill(videoStills[0].thumbnailImagePath);
+				})
+				.catch((err: any) => {
+					console.error(err);
+					toastService('Ophalen van de thumbnail van de video is mislukt', TOAST_TYPE.DANGER);
+				});
+		}
+	}, [itemState]);
 
 	const renderItem = (itemMetaData: Avo.Item.Response) => {
+		setItemState(itemMetaData);
+
 		const initFlowPlayer = () =>
-			!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
+			!playerToken &&
+			fetchPlayerToken(itemMetaData.external_id)
+				.then(data => setPlayerToken(data))
+				.catch((err: any) => {
+					console.error(err);
+					toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);
+				});
 		const englishContentType: EnglishContentType =
 			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
 
 		return (
 			<Fragment>
-				<Container mode="vertical" size="small" background="alt">
+				<Container mode="vertical" size="small" background={'alt'}>
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
@@ -234,12 +264,13 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 								<div className="o-container-vertical-list">
 									<div className="o-container-vertical o-container-vertical--padding-small">
 										<div className="c-video-player t-player-skin--dark">
-											{itemMetaData.thumbnail_path && (
+											{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
 												<FlowPlayer
 													src={playerToken ? playerToken.toString() : null}
 													poster={itemMetaData.thumbnail_path}
 													title={itemMetaData.title}
 													onInit={initFlowPlayer}
+													subtitles={['30-12-2011', 'VRT']}
 												/>
 											)}
 										</div>
@@ -253,7 +284,18 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 															label="Voeg fragment toe aan collectie"
 															onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
 														/>
-														<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
+														<Button
+															type="tertiary"
+															icon="clipboard"
+															label="Maak opdracht"
+															onClick={() =>
+																history.push(
+																	`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
+																		RouteParts.Create
+																	}?content_id=${itemMetaData.external_id}&content_type=item`
+																)
+															}
+														/>
 													</div>
 												</div>
 												<div className="c-button-toolbar">
@@ -498,12 +540,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 						</Grid>
 					</Container>
 				</Container>
-				<AddFragmentToCollection
-					itemMetaData={itemMetaData}
-					externalId={itemId}
-					isOpen={isOpenAddFragmentToCollectionModal}
-					onClose={() => setIsOpenAddFragmentToCollectionModal(false)}
-				/>
+				{typeof itemId !== undefined && (
+					<AddFragmentToCollection
+						itemMetaData={itemMetaData}
+						externalId={itemId as string}
+						isOpen={isOpenAddFragmentToCollectionModal}
+						onClose={() => setIsOpenAddFragmentToCollectionModal(false)}
+					/>
+				)}
 			</Fragment>
 		);
 	};

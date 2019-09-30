@@ -10,8 +10,9 @@ import NotFound from '../../../404/views/NotFound';
 export interface DataQueryComponentProps {
 	query: DocumentNode;
 	resultPath?: string;
-	renderData: (data: any) => ReactNode;
+	renderData: (data: any, refetch: () => void) => ReactNode;
 	variables?: any;
+	ignoreNotFound?: boolean;
 	notFoundMessage?: string;
 	showSpinner?: Boolean;
 }
@@ -21,6 +22,7 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	variables,
 	resultPath,
 	renderData,
+	ignoreNotFound = false,
 	notFoundMessage = 'Het opgevraagde object werd niet gevonden',
 	showSpinner = true,
 }) => {
@@ -48,8 +50,8 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 				}
 
 				const data = get(result, resultPath ? `data.${resultPath}` : 'data');
-				if (data) {
-					return renderData(data);
+				if (data || ignoreNotFound) {
+					return renderData(data, result.refetch);
 				}
 
 				return <NotFound message={notFoundMessage} />;
