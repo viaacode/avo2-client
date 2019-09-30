@@ -53,9 +53,12 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { formatDate } from '../../shared/helpers/formatters/date';
-import { generateContentLinkString, generateSearchLinks } from '../../shared/helpers/generateLink';
+import {
+	generateAssignmentCreateLink,
+	generateContentLinkString,
+	generateSearchLinks,
+} from '../../shared/helpers/generateLink';
 import { fetchPlayerToken } from '../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
@@ -283,7 +286,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 													menuItems={[
 														{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
 														{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
-														{ icon: 'clipboard', id: 'createExercise', label: 'Maak opdracht' },
+														{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
 														{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
 														{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
 													]}
@@ -297,6 +300,17 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 																	)}/${RouteParts.Edit}`
 																);
 																break;
+
+															case 'createAssignment':
+																history.push(
+																	generateAssignmentCreateLink(
+																		'KIJK',
+																		String(collection.id),
+																		'COLLECTIE'
+																	)
+																);
+																break;
+
 															case 'delete':
 																openDeleteModal(collection.id);
 																break;
