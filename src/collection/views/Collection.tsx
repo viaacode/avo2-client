@@ -28,15 +28,21 @@ import {
 	BlockVideoTitleTextButton,
 	BlockVideoTitleTextButtonProps,
 	Button,
+	Column,
 	Container,
 	DropdownButton,
 	DropdownContent,
 	Flex,
+	Grid,
 	Icon,
+	MediaCard,
+	MediaCardMetaData,
+	MediaCardThumbnail,
 	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Spacer,
+	Thumbnail,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -47,7 +53,12 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { generateContentLinkString } from '../../shared/helpers/generateLink';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import {
+	generateAssignmentCreateLink,
+	generateContentLinkString,
+	generateSearchLinks,
+} from '../../shared/helpers/generateLink';
 import { fetchPlayerToken } from '../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
@@ -70,14 +81,19 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		setIsDeleteModalOpen(true);
 	};
 
-	const deleteCollection = () => {
-		triggerCollectionDelete({
-			variables: {
-				id: idToDelete,
-			},
-		});
-
-		setIdToDelete(null);
+	const deleteCollection = async () => {
+		try {
+			await triggerCollectionDelete({
+				variables: {
+					id: idToDelete,
+				},
+			});
+			setIdToDelete(null);
+			toastService('Het verwijderen van de collectie is gelukt', TOAST_TYPE.SUCCESS);
+		} catch (err) {
+			console.error(err);
+			toastService('Het verwijderen van de collectie is mislukt', TOAST_TYPE.DANGER);
+		}
 	};
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
@@ -195,9 +211,11 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			get(collection, 'owner.role.name', ''),
 		].join(' ');
 
+		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
+
 		return (
 			<Fragment>
-				<Container mode="vertical" size="small" background="alt">
+				<Container mode="vertical" size="small" background={'alt'}>
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
@@ -268,7 +286,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 													menuItems={[
 														{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
 														{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
-														{ icon: 'clipboard', id: 'createExercise', label: 'Maak opdracht' },
+														{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
 														{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
 														{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
 													]}
@@ -282,6 +300,17 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 																	)}/${RouteParts.Edit}`
 																);
 																break;
+
+															case 'createAssignment':
+																history.push(
+																	generateAssignmentCreateLink(
+																		'KIJK',
+																		String(collection.id),
+																		'COLLECTIE'
+																	)
+																);
+																break;
+
 															case 'delete':
 																openDeleteModal(collection.id);
 																break;
@@ -300,6 +329,154 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 				</Container>
 				<Container mode="vertical">
 					<Container mode="horizontal">{renderContentBlocks(contentBlockInfos)}</Container>
+				</Container>
+				<Container mode="vertical">
+					<Container mode="horizontal">
+						<h3 className="c-h3">Info over deze collectie</h3>
+						<Grid>
+							<Column size="3-3">
+								<Spacer margin="top">
+									<p className="u-text-bold">Onderwijsniveau</p>
+									<p className="c-body-1">
+										{collection.lom_context && collection.lom_context.length ? (
+											(collection.lom_context || []).map((lomContext: string) =>
+												generateSearchLinks(String(collection.id), 'educationLevel', lomContext)
+											)
+										) : (
+											<span className="u-d-block">-</span>
+										)}
+									</p>
+								</Spacer>
+							</Column>
+							<Column size="3-3">
+								<Spacer margin="top">
+									<p className="u-text-bold">Laatst aangepast</p>
+									<p className="c-body-1">{formatDate(collection.updated_at)}</p>
+								</Spacer>
+							</Column>
+							<Column size="3-6">
+								<p className="u-text-bold">Ordering</p>
+								<p className="c-body-1">Deze collectie is een kopie van TODO add link</p>
+								<p className="c-body-1">Deze collectie is deel van een map: TODO add link</p>
+							</Column>
+							<Column size="3-3">
+								<Spacer margin="top">
+									<p className="u-text-bold">Vakken</p>
+									<p className="c-body-1">
+										{collection.lom_classification && collection.lom_classification.length ? (
+											(collection.lom_classification || []).map((lomClassification: string) =>
+												generateSearchLinks(String(collection.id), 'domain', lomClassification)
+											)
+										) : (
+											<span className="u-d-block">-</span>
+										)}
+									</p>
+								</Spacer>
+							</Column>
+						</Grid>
+						<hr className="c-hr" />
+						<h3 className="c-h3" style={{ width: '100%' }}>
+							Bekijk ook
+						</h3>
+						<Grid>
+							<Column size="3-6">
+								<Container size="small" mode="vertical">
+									<ul className="c-media-card-list">
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/${RouteParts.Collection}/${collection.id}`}
+												category="collection"
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category="collection"
+														src={collection.thumbnail_path || undefined}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category="collection">
+														{/*TODO resolve org id using graphql query*/}
+														<MetaDataItem label={collection.organisation_id || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/${RouteParts.Collection}/${collection.id}`}
+												category="collection"
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category="collection"
+														src={collection.thumbnail_path || undefined}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category="collection">
+														{/*TODO resolve org id using graphql query*/}
+														<MetaDataItem label={collection.organisation_id || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+									</ul>
+								</Container>
+							</Column>
+							<Column size="3-6">
+								<Container size="small" mode="vertical">
+									<ul className="c-media-card-list">
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/${RouteParts.Collection}/${collection.id}`}
+												category="collection"
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category="collection"
+														src={collection.thumbnail_path || undefined}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category="collection">
+														{/*TODO resolve org id using graphql query*/}
+														<MetaDataItem label={collection.organisation_id || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+										<li style={relatedItemStyle}>
+											<MediaCard
+												title="Organisatie van het politieke veld: Europa"
+												href={`/${RouteParts.Collection}/${collection.id}`}
+												category="collection"
+												orientation="horizontal"
+											>
+												<MediaCardThumbnail>
+													<Thumbnail
+														category="collection"
+														src={collection.thumbnail_path || undefined}
+													/>
+												</MediaCardThumbnail>
+												<MediaCardMetaData>
+													<MetaData category="collection">
+														{/*TODO resolve org id using graphql query*/}
+														<MetaDataItem label={collection.organisation_id || ''} />
+													</MetaData>
+												</MediaCardMetaData>
+											</MediaCard>
+										</li>
+									</ul>
+								</Container>
+							</Column>
+						</Grid>
+					</Container>
 				</Container>
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}

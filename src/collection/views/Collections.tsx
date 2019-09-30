@@ -45,16 +45,19 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		setIsDeleteModalOpen(true);
 	};
 
-	const deleteCollection = () => {
-		triggerCollectionDelete({
-			variables: {
-				id: idToDelete,
-			},
-		}).catch(err => {
+	const deleteCollection = async (refetchCollections: () => void) => {
+		try {
+			await triggerCollectionDelete({
+				variables: {
+					id: idToDelete,
+				},
+			});
+			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
+			setTimeout(refetchCollections, 0);
+		} catch (err) {
 			console.error(err);
 			toastService('Collectie kon niet verwijdert worden', TOAST_TYPE.DANGER);
-		});
-
+		}
 		setIdToDelete(null);
 	};
 
@@ -95,7 +98,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					</div>
 				);
 			case 'inFolder':
-				return cellData && <Button icon="folder" type="borderless" active />;
+				return cellData && <Button icon="folder" type="borderless" />;
 			case 'access':
 				return cellData && <AvatarList avatars={cellData} isOpen={false} />;
 			case 'actions':
@@ -109,7 +112,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							placement="bottom-end"
 						>
 							<DropdownButton>
-								<Button icon="more-horizontal" type="borderless" active />
+								<Button icon="more-horizontal" type="borderless" />
 							</DropdownButton>
 							<DropdownContent>
 								<MenuContent
@@ -138,7 +141,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							icon="chevron-right"
 							onClick={() => history.push(`/${RouteParts.Collection}/${rowData.id}`)}
 							type="borderless"
-							active
 						/>
 					</div>
 				);
@@ -150,7 +152,10 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		}
 	};
 
-	const renderCollections = (collections: Avo.Collection.Response[]) => {
+	const renderCollections = (
+		collections: Avo.Collection.Response[],
+		refetchCollections: () => void
+	) => {
 		const mappedCollections = !!collections
 			? collections.map(collection => {
 					const users = [collection.owner];
@@ -204,7 +209,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={() => deleteCollection()}
+					deleteCollection={() => deleteCollection(refetchCollections)}
 				/>
 			</>
 		);

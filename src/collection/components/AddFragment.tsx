@@ -58,10 +58,7 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: [
-				...(collection.collection_fragment_ids || []),
-				TEXT_BLOCK_FRAGMENT.id,
-			],
+			collection_fragment_ids: positionedFragments.map(fragment => fragment.id),
 		});
 	};
 

@@ -39,11 +39,14 @@ export function formatTimestamp(timestamp: string | undefined) {
 		.toLocaleString();
 }
 
-export function formatDate(timestamp: string | undefined) {
+export function formatDate(timestamp: string | undefined | Date) {
 	if (!timestamp) {
 		return '';
 	}
-	return normalizeTimestamp(timestamp)
+	if (typeof timestamp !== 'string' && timestamp.toLocaleDateString) {
+		return timestamp.toLocaleDateString();
+	}
+	return normalizeTimestamp(timestamp as string)
 		.toDate()
 		.toLocaleDateString();
 }

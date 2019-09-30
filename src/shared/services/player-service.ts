@@ -9,6 +9,7 @@ export const fetchPlayerToken = async (externalId: string): Promise<string> => {
 
 	const response = await fetch(url, {
 		method: 'GET',
+		mode: 'no-cors',
 		headers: {
 			'Content-Type': 'application/json',
 		},
