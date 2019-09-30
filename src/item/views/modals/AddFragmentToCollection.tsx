@@ -33,10 +33,8 @@ import {
 } from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
-import {
-	formatDurationHoursMinutesSeconds,
-	toSeconds,
-} from '../../../shared/helpers/formatters/duration';
+import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerToken } from '../../../shared/services/player-service';
@@ -206,12 +204,13 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 							<Form>
 								<Grid>
 									<Column size="2-7">
-										{itemMetaData && (
+										{itemMetaData && ( // TODO: Replace publisher, published_at by real publisher
 											<FlowPlayer
 												src={playerToken ? playerToken.toString() : null}
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
+												subtitles={['30-12-2011', 'VRT']}
 											/>
 										)}
 										<Container mode="vertical" className="m-time-crop-controls">
