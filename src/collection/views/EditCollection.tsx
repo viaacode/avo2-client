@@ -381,7 +381,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			setIsSavingCollection(false);
 			toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
 			// refetch collection:
-			refetchCollection();
+			setTimeout(refetchCollection, 0);
 		} catch (err) {
 			console.error(err);
 			toastService('Opslaan mislukt', TOAST_TYPE.DANGER);
