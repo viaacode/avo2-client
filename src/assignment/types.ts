@@ -1,5 +1,3 @@
-import { Avo } from '@viaa/avo2-types';
-
 // TODO move these types to Types repo
 export interface Assignment {
 	id: number;

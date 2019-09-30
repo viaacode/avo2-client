@@ -47,7 +47,6 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import { fetchPlayerToken } from '../../shared/services/player-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
