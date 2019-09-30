@@ -204,12 +204,13 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 							<Form>
 								<Grid>
 									<Column size="2-7">
-										{itemMetaData && (
+										{itemMetaData && ( // TODO: Replace publisher, published_at by real publisher
 											<FlowPlayer
 												src={playerToken ? playerToken.toString() : null}
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
+												subtitles={['30-12-2011', 'VRT']}
 											/>
 										)}
 										<Container mode="vertical" className="m-time-crop-controls">

@@ -50,6 +50,9 @@ import EditCollectionMetadata from './EditCollectionMetadata';
 
 interface EditCollectionProps extends RouteComponentProps {}
 
+let currentCollection: any;
+let setCurrentCollection: (collection: Avo.Collection.Response) => void;
+
 const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -63,7 +66,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
-	const [currentCollection, setCurrentCollection] = useState<Avo.Collection.Response>();
+	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Response>();
 	const [initialCollection, setInitialCollection] = useState<Avo.Collection.Response>();
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);

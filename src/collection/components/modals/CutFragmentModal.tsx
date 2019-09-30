@@ -23,6 +23,7 @@ interface CutFragmentModalProps {
 	setIsOpen: (isOpen: boolean) => void;
 	itemMetaData: Avo.Item.Response;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
+	updateCuePoints: (cuepoints: any) => void;
 	fragment: Avo.Collection.Fragment;
 }
 
@@ -32,6 +33,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	itemMetaData,
 	updateFragmentProperty,
 	fragment,
+	updateCuePoints,
 }) => {
 	const [playerToken, setPlayerToken] = useState();
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(fragment.start_oc || 0);
@@ -42,6 +44,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const onSaveCut = () => {
 		updateFragmentProperty(fragmentStartTime, 'start_oc', fragment.id);
 		updateFragmentProperty(fragmentEndTime, 'end_oc', fragment.id);
+		updateCuePoints({
+			start: fragmentStartTime,
+			end: fragmentEndTime,
+		});
 		setIsOpen(false);
 	};
 
@@ -69,6 +75,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const initFlowPlayer = () =>
 		!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
 
+	// TODO: Replace publisher, published_at by real publisher
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -84,6 +91,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						poster={itemMetaData.thumbnail_path}
 						title={itemMetaData.title}
 						onInit={initFlowPlayer}
+						subtitles={['30-12-2011', 'VRT']}
 					/>
 					<Container mode="vertical" className="m-time-crop-controls">
 						<TextInput
