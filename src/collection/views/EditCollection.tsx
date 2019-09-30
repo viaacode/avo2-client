@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, eq, get, isEmpty, omit, without } from 'lodash-es';
 import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { Prompt, RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Avatar,
@@ -85,12 +85,21 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	];
 
 	const onUnload = (event: any) => {
-		event.preventDefault();
-		event.returnValue = '';
+		if (hasUnsavedChanged()) {
+			// Cancel the event as stated by the standard.
+			event.preventDefault();
+			// Chrome requires returnValue to be set.
+			event.returnValue = '';
+		}
 	};
 
-	// Destroy event listener on unmount
-	useEffect(() => window.removeEventListener('beforeunload', onUnload));
+	useEffect(() => {
+		// Register listener once when the component loads
+		window.addEventListener('beforeunload', onUnload);
+
+		// Remove listener when the component unloads
+		return () => window.removeEventListener('beforeunload', onUnload);
+	});
 
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
@@ -143,8 +152,6 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	// Update individual property of collection
 	const updateCollectionProperty = (value: any, fieldName: string) => {
-		window.addEventListener('beforeunload', onUnload);
-
 		setCurrentCollection({
 			...currentCollection,
 			[fieldName]: value,
@@ -376,6 +383,10 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		}
 	}
 
+	const hasUnsavedChanged = () => {
+		return JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
+	};
+
 	const renderEditCollection = (collection: Avo.Collection.Response) => {
 		if (!isFirstRender) {
 			setCurrentCollection(collection);
@@ -385,6 +396,10 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 		return currentCollection ? (
 			<Fragment>
+				<Prompt
+					when={hasUnsavedChanged()}
+					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
+				/>
 				<Container background={'alt'} mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Toolbar>
@@ -440,9 +455,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 										<Button
 											type="secondary"
 											label="Delen"
-											disabled={
-												JSON.stringify(currentCollection) !== JSON.stringify(initialCollection)
-											}
+											disabled={hasUnsavedChanged()}
 											title={
 												!eq(currentCollection, initialCollection)
 													? 'U moet uw wijzigingen eerst opslaan'
