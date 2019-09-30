@@ -196,21 +196,21 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		return getValidationFeedbackForShortDescription(collection, true) || '';
 	}
 
-	const insertFragment = async (id: number, currentFragments: Avo.Collection.Fragment[]) => {
+	const insertFragment = async (tempId: number, currentFragments: Avo.Collection.Fragment[]) => {
 		if (!currentCollection) {
 			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
 			return;
 		}
 		const tempFragment = currentFragments.find(
-			(fragment: Avo.Collection.Fragment) => fragment.id === id
+			(fragment: Avo.Collection.Fragment) => fragment.id === tempId
 		);
 		if (!tempFragment) {
-			toastService(`Fragment om toe te voegen is niet gevonden (id: ${id})`);
+			toastService(`Fragment om toe te voegen is niet gevonden (id: ${tempId})`);
 			return;
 		}
 		const fragmentToAdd: Avo.Collection.Fragment = { ...tempFragment };
 
-		const tempId = fragmentToAdd.id;
+		const oldId = fragmentToAdd.id;
 		delete fragmentToAdd.id;
 		delete (fragmentToAdd as any).__typename;
 		// TODO remove type cast when next typings repo version is released (1.8.0)
@@ -227,7 +227,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 		return {
 			newFragment,
-			oldId: tempId,
+			oldId,
 		};
 	};
 
@@ -257,7 +257,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			const currentFragmentIds: number[] = get(currentCollection, 'collection_fragment_ids') || [];
 			const currentFragments: Avo.Collection.Fragment[] = get(
 				currentCollection,
-				'collection_fragment',
+				'collection_fragments',
 				[]
 			);
 			const newFragmentIds: number[] = get(newCollection, 'collection_fragment_ids') || [];
@@ -275,8 +275,8 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 			const promises: any = [];
 
-			insertFragmentIds.forEach(id => {
-				promises.push(insertFragment(id, currentFragments));
+			insertFragmentIds.forEach(tempId => {
+				promises.push(insertFragment(tempId, currentFragments));
 			});
 
 			const newFragmentData = await Promise.all(promises);
@@ -487,8 +487,16 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 											<Button
 												type="primary"
 												label="Opslaan"
+												title={
+													JSON.stringify(currentCollection) === JSON.stringify(initialCollection)
+														? 'Er zijn geen wijzigingen om op te slaan'
+														: ''
+												}
 												onClick={onSaveCollection}
-												disabled={isSavingCollection}
+												disabled={
+													isSavingCollection ||
+													JSON.stringify(currentCollection) === JSON.stringify(initialCollection)
+												}
 											/>
 										</Spacer>
 									</div>
