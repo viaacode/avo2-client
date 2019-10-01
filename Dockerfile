@@ -9,8 +9,8 @@ ENV CI $CI
 ENV TZ=Europe/Brussels
 WORKDIR /app
 
-COPY package.json package-lock.json .npmrc ./
-RUN chown -R node:node /app
+COPY prd_package.json package-lock.json .npmrc ./
+RUN cp prd_package.json package.json && chown -R node:node /app
 RUN apk add --no-cache tzdata && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 USER node
 # This has to be false, otherwise dev dependencies are not correctly installed and we need those for the build
