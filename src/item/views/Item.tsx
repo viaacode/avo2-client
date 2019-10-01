@@ -28,6 +28,7 @@ import {
 	MetaData,
 	MetaDataItem,
 	Spacer,
+	Table,
 	TagList,
 	Thumbnail,
 	ToggleButton,
@@ -219,9 +220,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 										spaced={true}
 										category={dutchContentLabelToEnglishLabel(itemMetaData.type.label)}
 									>
-										<MetaDataItem>
-											{generateSearchLink('provider', itemMetaData.org_name || '')}
-										</MetaDataItem>
+										{itemMetaData.org_name && (
+											<MetaDataItem>
+												{generateSearchLink('provider', itemMetaData.org_name || '')}
+											</MetaDataItem>
+										)}
 										{itemMetaData.publish_at && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
@@ -294,15 +297,6 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 													/>
 												</Flex>
 											</div>
-											<div className="c-button-toolbar">
-												<ToggleButton
-													type="tertiary"
-													icon="add"
-													label="Voeg fragment toe aan collectie"
-													onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
-												/>
-												<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
-											</div>
 										</Flex>
 										<div className="c-button-toolbar">
 											<ToggleButton
@@ -340,47 +334,49 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
-									<table className="c-table c-table--horizontal c-table--untable">
-										<tbody className="o-grid">
-											<tr className="o-grid-col-bp2-5">
+									{/* TODO: make columns, data and rowKey props optional */}
+									<Table columns={[]} data={[]} horizontal rowKey="" untable>
+										<Grid tag="tbody">
+											<Column size="2-5" tag="tr">
 												<th scope="row">Publicatiedatum</th>
 												<td>{reorderDate(itemMetaData.publish_at || null, '/')}</td>
-											</tr>
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+											<Column size="2-5" tag="tr">
 												<th scope="row">Toegevoegd op</th>
 												{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
 												<td>{reorderDate(itemMetaData.issued || null, '/')}</td>
-											</tr>
-										</tbody>
-										<tbody className="o-grid">
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+										</Grid>
+										<Grid tag="tbody">
+											<Column size="2-5" tag="tr">
 												<th scope="row">Aanbieder</th>
 												{itemMetaData.org_name && (
 													<td>{generateSearchLink('provider', itemMetaData.org_name || '')}</td>
 												)}
-											</tr>
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+											<Column size="2-5" tag="tr">
 												<th scope="row">Speelduur</th>
 												<td>{itemMetaData.duration}</td>
-											</tr>
-										</tbody>
-										<tbody className="o-grid">
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+										</Grid>
+										<Grid tag="tbody">
+											<Column size="2-5" tag="tr">
 												<th scope="row">Reeks</th>
 												<td>{generateSearchLink('serie', itemMetaData.series)}</td>
-											</tr>
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+											<Column size="2-5" tag="tr">
 												<th scope="row">Taal</th>
 												<td>
 													{(itemMetaData.lom_languages || [])
 														.map(languageCode => LANGUAGES.nl[languageCode])
 														.join(', ')}
 												</td>
-											</tr>
-										</tbody>
-									</table>
+											</Column>
+										</Grid>
+									</Table>
 									<div className="c-hr" />
-									<table className="c-table c-table--horizontal c-table--untable">
+									{/* TODO: make columns, data and rowKey props optional */}
+									<Table columns={[]} data={[]} horizontal rowKey="" untable>
 										<tbody>
 											<tr>
 												<th scope="row">Geschikt voor</th>
@@ -403,9 +399,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 												</td>
 											</tr>
 										</tbody>
-									</table>
+									</Table>
 									<div className="c-hr" />
-									<table className="c-table c-table--horizontal c-table--untable">
+									{/* TODO: make columns, data and rowKey props optional */}
+									<Table columns={[]} data={[]} horizontal rowKey="" untable>
 										<tbody>
 											<tr>
 												<th scope="row">Trefwoorden</th>
@@ -431,7 +428,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											{/*</td>*/}
 											{/*</tr>*/}
 										</tbody>
-									</table>
+									</Table>
 								</Container>
 							</Column>
 							<Column size="2-5">

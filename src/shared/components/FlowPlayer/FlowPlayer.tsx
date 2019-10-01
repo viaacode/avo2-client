@@ -38,7 +38,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 
 		titleOverlay.classList.add('c-title-overlay');
 		titleHeader.classList.add('c-title-overlay__title');
-		publishDiv.classList.add('o-flex');
+		publishDiv.classList.add('u-d-flex');
 
 		titleHeader.innerText = title;
 
