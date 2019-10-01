@@ -5,7 +5,7 @@
   "scripts": {
     "prestart": "npm run env",
     "start": "react-scripts start",
-    "env": "bash ./scripts/env.sh && cp env-config.js ./public",
+    "env": "PROXY_URL=http://localhost:3000 bash ./scripts/env.sh && cp env-config.js ./public",
     "build": "react-scripts build",
     "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
     "integration-tests": "cypress run",
@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@viaa/avo2-components": "1.10.1",
+    "@viaa/avo2-components": "1.11.0",
     "@viaa/avo2-types": "^1.7.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
