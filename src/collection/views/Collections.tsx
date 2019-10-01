@@ -70,9 +70,10 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				return (
 					<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
 						<Thumbnail
-							category="video"
-							src="https://via.placeholder.com/1080x720"
+							alt="thumbnail"
+							category="collection"
 							className="m-collection-overview-thumbnail"
+							src="https://via.placeholder.com/1080x720"
 						/>
 					</Link>
 				);

@@ -19,6 +19,7 @@ import {
 	Container,
 	convertToHtml,
 	ExpandableContainer,
+	Flex,
 	Grid,
 	Icon,
 	MediaCard,
@@ -126,11 +127,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	 * Set video current time from the query params once the video has loaded its meta data
 	 * If this happens sooner, the time will be ignored by the video player
 	 */
-	const getSeekerTimeFromQueryParams = () => {
-		// TODO trigger this function when flowplayer is loaded
-		const queryParams = queryString.parse(location.search);
-		setTime(parseInt((queryParams.time as string) || '0', 10));
-	};
+	// TODO trigger this function when flowplayer is loaded
+	// const getSeekerTimeFromQueryParams = () => {
+	// 	const queryParams = queryString.parse(location.search);
+	// 	setTime(parseInt((queryParams.time as string) || '0', 10));
+	// };
 
 	const handleTimeLinkClicked = async (timestamp: string) => {
 		const seconds = parseDuration(timestamp);
@@ -261,57 +262,44 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 					<Container mode="horizontal">
 						<Grid>
 							<Column size="2-7">
-								<div className="o-container-vertical-list">
-									<div className="o-container-vertical o-container-vertical--padding-small">
-										<div className="c-video-player t-player-skin--dark">
-											{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
-												<FlowPlayer
-													src={playerToken ? playerToken.toString() : null}
-													poster={itemMetaData.thumbnail_path}
-													title={itemMetaData.title}
-													onInit={initFlowPlayer}
-													subtitles={['30-12-2011', 'VRT']}
-												/>
-											)}
-										</div>
-										<Spacer margin="top-large">
-											<div className="o-flex o-flex--justify-between o-flex--wrap">
-												<div className="c-button-toolbar">
-													<div className="o-flex o-flex--justify-between o-flex--wrap">
-														<Button
-															type="tertiary"
-															icon="add"
-															label="Voeg fragment toe aan collectie"
-															onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
-														/>
-														<Button
-															type="tertiary"
-															icon="clipboard"
-															label="Maak opdracht"
-															onClick={() =>
-																history.push(
-																	`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
-																		RouteParts.Create
-																	}?content_id=${itemMetaData.external_id}&content_type=item`
-																)
-															}
-														/>
-													</div>
-												</div>
-												<div className="c-button-toolbar">
-													<ToggleButton
-														type="tertiary"
-														icon="bookmark"
-														active={false}
-														ariaLabel="toggle bladwijzer"
-													/>
-													<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-													<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
-												</div>
-											</div>
-										</Spacer>
+								<Container mode="vertical" size="small">
+									<div className="c-video-player t-player-skin--dark">
+										{itemMetaData.thumbnail_path && (
+											<FlowPlayer
+												src={playerToken ? playerToken.toString() : null}
+												poster={itemMetaData.thumbnail_path}
+												title={itemMetaData.title}
+												onInit={initFlowPlayer}
+												subtitles={[]}
+											/>
+										)}
 									</div>
-								</div>
+									<Spacer margin="top-large">
+										<Flex justify="between" wrap>
+											<div className="c-button-toolbar">
+												<Flex justify="between" wrap>
+													<Button
+														type="tertiary"
+														icon="add"
+														label="Voeg fragment toe aan collectie"
+														onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
+													/>
+													<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
+												</Flex>
+											</div>
+											<div className="c-button-toolbar">
+												<ToggleButton
+													type="tertiary"
+													icon="bookmark"
+													active={false}
+													ariaLabel="toggle bladwijzer"
+												/>
+												<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+												<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+											</div>
+										</Flex>
+									</Spacer>
+								</Container>
 							</Column>
 							<Column size="2-5">
 								<Container mode="vertical">
@@ -335,7 +323,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 						</Grid>
 						<Grid>
 							<Column size="2-7">
-								<div className="o-container-vertical o-container-vertical--padding-small">
+								<Container mode="vertical" size="small">
 									<table className="c-table c-table--horizontal c-table--untable">
 										<tbody className="o-grid">
 											<tr className="o-grid-col-bp2-5">
@@ -428,7 +416,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											{/*</tr>*/}
 										</tbody>
 									</table>
-								</div>
+								</Container>
 							</Column>
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
