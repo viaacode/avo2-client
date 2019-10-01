@@ -29,7 +29,6 @@ const Login: FunctionComponent<LoginProps> = ({
 	getLoginState,
 }) => {
 	useEffect(() => {
-		console.log('login state error', loginStateError);
 		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
 		}
