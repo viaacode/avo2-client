@@ -252,7 +252,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 		console.log('TODO handle search result bookmark button toggle', active, id);
 	};
 
-	const handleOriginalCpLinkClicked = async (originalCp: string | undefined) => {
+	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {
 			setFormState({
 				...DEFAULT_FORM_STATE,

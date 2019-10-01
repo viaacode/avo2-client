@@ -39,8 +39,8 @@ interface CollectionFragmentProps extends RouteComponentProps {
 	collection: Avo.Collection.Response;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
-	isOptionsMenuOpen: number | null;
-	setIsOptionsMenuOpen: React.Dispatch<React.SetStateAction<number | null>>;
+	openOptionsId: number | null;
+	setOpenOptionsId: React.Dispatch<React.SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 	updateCollection: (collection: Avo.Collection.Response) => void;
@@ -51,8 +51,8 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	collection,
 	swapFragments,
 	updateFragmentProperty,
-	isOptionsMenuOpen,
-	setIsOptionsMenuOpen,
+	openOptionsId,
+	setOpenOptionsId,
 	fragment,
 	reorderFragments,
 	updateCollection,
@@ -150,28 +150,28 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	};
 
 	const onDuplicateFragment = (fragmentId: number) => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol gedupliceerd', TOAST_TYPE.SUCCESS);
 	};
 
 	const onMoveFragment = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol verplaatst', TOAST_TYPE.SUCCESS);
 	};
 
 	const onCopyFragmentToCollection = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol gekopiëerd naar collectie', TOAST_TYPE.SUCCESS);
 	};
 
 	const onMoveFragmentToCollection = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol verplaatst naar collectie', TOAST_TYPE.SUCCESS);
 	};
 
 	// Delete fragment from collection
 	const onDeleteFragment = (fragmentId: number) => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 
 		// Sort fragments by position
 		const orderedFragments = orderBy(
@@ -228,9 +228,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 							<ToolbarRight>
 								<ToolbarItem>
 									<ControlledDropdown
-										isOpen={isOptionsMenuOpen === fragment.id}
-										onOpen={() => setIsOptionsMenuOpen(fragment.id)}
-										onClose={() => setIsOptionsMenuOpen(null)}
+										isOpen={openOptionsId === fragment.id}
+										onOpen={() => setOpenOptionsId(fragment.id)}
+										onClose={() => setOpenOptionsId(null)}
 										placement="bottom-end"
 										autoSize
 									>

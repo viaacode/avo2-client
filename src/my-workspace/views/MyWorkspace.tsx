@@ -45,6 +45,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		return {
 			[COLLECTIONS_ID]: {
 				component: <Collections numberOfCollections={counts[COLLECTIONS_ID]} />,
+				// TODO: Vergeet deze filter niet terug te plaatsen.
 				// filter: {
 				// 	label: 'Auteur',
 				// 	options: [
