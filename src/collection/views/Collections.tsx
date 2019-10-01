@@ -99,7 +99,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					</div>
 				);
 			case 'inFolder':
-				return cellData && <Button icon="folder" type="borderless" active />;
+				return cellData && <Button icon="folder" type="borderless" />;
 			case 'access':
 				return cellData && <AvatarList avatars={cellData} isOpen={false} />;
 			case 'actions':
@@ -113,7 +113,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							placement="bottom-end"
 						>
 							<DropdownButton>
-								<Button icon="more-horizontal" type="borderless" active />
+								<Button icon="more-horizontal" type="borderless" />
 							</DropdownButton>
 							<DropdownContent>
 								<MenuContent
@@ -142,7 +142,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							icon="chevron-right"
 							onClick={() => history.push(`/${RouteParts.Collection}/${rowData.id}`)}
 							type="borderless"
-							active
 						/>
 					</div>
 				);

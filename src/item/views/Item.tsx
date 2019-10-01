@@ -42,12 +42,12 @@ import {
 	ContentTypeNumber,
 	ContentTypeString,
 	dutchContentLabelToEnglishLabel,
-	EnglishContentType,
 } from '../../collection/types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
+	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
 	generateSearchLinkString,
@@ -60,7 +60,7 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
-import { RouteParts } from '../../constants';
+import { ContentType } from '@viaa/avo2-components/dist/types';
 import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
@@ -189,14 +189,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 		setItemState(itemMetaData);
 
 		const initFlowPlayer = () =>
-			!playerToken &&
-			fetchPlayerToken(itemMetaData.external_id)
-				.then(data => setPlayerToken(data))
-				.catch((err: any) => {
-					console.error(err);
-					toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);
-				});
-		const englishContentType: EnglishContentType =
+			!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
+		const englishContentType: ContentType =
 			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
 
 		return (
@@ -264,13 +258,13 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
 									<div className="c-video-player t-player-skin--dark">
-										{itemMetaData.thumbnail_path && (
+										{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
 											<FlowPlayer
 												src={playerToken ? playerToken.toString() : null}
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
-												subtitles={[]}
+												subtitles={['30-12-2011', 'VRT']}
 											/>
 										)}
 									</div>
@@ -284,20 +278,42 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 														label="Voeg fragment toe aan collectie"
 														onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
 													/>
-													<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
+													<Button
+														type="tertiary"
+														icon="clipboard"
+														label="Maak opdracht"
+														onClick={() =>
+															history.push(
+																generateAssignmentCreateLink(
+																	'KIJK',
+																	itemMetaData.external_id,
+																	'ITEM'
+																)
+															)
+														}
+													/>
 												</Flex>
 											</div>
 											<div className="c-button-toolbar">
 												<ToggleButton
 													type="tertiary"
-													icon="bookmark"
-													active={false}
-													ariaLabel="toggle bladwijzer"
+													icon="add"
+													label="Voeg fragment toe aan collectie"
+													onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
 												/>
-												<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-												<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+												<Button type="tertiary" icon="clipboard" label="Maak opdracht" />
 											</div>
 										</Flex>
+										<div className="c-button-toolbar">
+											<ToggleButton
+												type="tertiary"
+												icon="bookmark"
+												active={false}
+												ariaLabel="toggle bladwijzer"
+											/>
+											<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+											<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+										</div>
 									</Spacer>
 								</Container>
 							</Column>
