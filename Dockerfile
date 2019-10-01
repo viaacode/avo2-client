@@ -17,9 +17,12 @@ USER node
 RUN npm ci --production=false
 
 COPY . .
+USER root
+RUN chown -R node:node /app
+USER node
 RUN CI=false npm run build
 # set permissions for openshift
-USER root
+#USER root
 #RUN chmod -R g+rwx /app && chown 101:101 /app
 
 FROM nginxinc/nginx-unprivileged AS run

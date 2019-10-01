@@ -113,17 +113,17 @@ pipeline {
                 }
             }//end stage	
         
-        stage('Run INT Tests') {
-                steps {
-                    script {sh'''#!/bin/bash
-                        echo "Running make int_test"                      
-                        make -f ./openshift/Makefile int_test
-                        echo "Annotate int to set versions in pod and dc"    
-                        make -f ./openshift/Makefile versions_int 
-                        '''
-                    }// end script
-                }
-            }//end stage
+   //     stage('Run INT Tests') {
+     //           steps {
+       //             script {sh'''#!/bin/bash
+         //               echo "Running make int_test"                      
+           //             make -f ./openshift/Makefile int_test
+             //           echo "Annotate int to set versions in pod and dc"    
+               //         make -f ./openshift/Makefile versions_int 
+                 //       '''
+                   // }// end script
+              //  }
+          //  }//end stage
         stage('Rollout Staging') {
                 steps {
                     script {sh'''#!/bin/bash
