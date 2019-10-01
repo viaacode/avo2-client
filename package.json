@@ -5,7 +5,7 @@
   "scripts": {
     "prestart": "npm run env",
     "start": "react-scripts start",
-    "env": "PROXY_URL=http://localhost:3000 bash ./scripts/env.sh && cp env-config.js ./public",
+    "env": "bash ./scripts/env.sh && cp env-config.js ./public",
     "build": "react-scripts build",
     "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
     "integration-tests": "cypress run",
