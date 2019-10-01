@@ -101,6 +101,11 @@
 	cursor: pointer;
 }
 
+.u-disable-click {
+	cursor: default;
+	pointer-events: none;
+}
+
 
 // Sticky footer with flexbox
 // https://css-tricks.com/couple-takes-sticky-footer/#article-header-id-3
