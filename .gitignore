@@ -251,7 +251,7 @@ yarn-error.log*
 
 # App specific
 env-config.js
-cypress/videos
-cypress/screenshots
-cypress-report*xml
+tests/cypress/videos
+tests/cypress/screenshots
+tests/cypress-report*xml
 ci-results
