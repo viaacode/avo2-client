@@ -60,7 +60,7 @@ import {
 	generateContentLinkString,
 	generateSearchLinks,
 } from '../../shared/helpers/generateLink';
-import { fetchPlayerTicket } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';

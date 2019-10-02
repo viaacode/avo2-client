@@ -59,7 +59,7 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 					{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
 					{
 						label: 'Mijn Werkruimte',
-						location: `/${RouteParts.MyWorkspace}/${RouteParts.Collections}`,
+						location: `/${RouteParts.MyWorkspace}`,
 						icon: 'briefcase',
 					},
 					{ label: 'Projecten', location: `/${RouteParts.Projects}` },

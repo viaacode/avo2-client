@@ -1,0 +1,61 @@
+.c-nav ul {
+	margin: 0;
+	padding: 0;
+}
+
+.c-nav li {
+	display: inline-block;
+	margin-right: 0.4rem;
+}
+
+.c-nav__item {
+	display: block;
+	padding: 0.8rem 1.6rem;
+	color: #385265;
+	text-decoration: none;
+	border-radius: 0.3rem;
+}
+
+.c-nav__item:hover, .c-nav__item:focus {
+	background: #EDEFF2;
+	color: #2B414F;
+}
+
+.c-nav__item--i {
+	color: #FFF;
+}
+
+.c-nav__item--i:hover, .c-nav__item--i:focus {
+	background: #436580;
+	color: #FFF;
+}
+
+.c-nav__item--active {
+	background: #EDEFF2;
+	color: #2B414F;
+}
+
+.c-nav__item--active:hover, .c-nav__item--active:focus {
+	background: #D6DEE3;
+}
+
+.c-nav__item--i.c-nav__item--active {
+	background: #283d4e;
+	color: #FFF;
+}
+
+.c-nav__item--i.c-nav__item--active:hover, .c-nav__item--i.c-nav__item--active:focus {
+	background: #05080b;
+}
+
+.c-nav.c-nav .o-svg-icon {
+	width: 1.8rem;
+	height: 1.8rem;
+	position: relative;
+	bottom: 0.2rem;
+	margin-right: 0.75rem;
+}
+
+.c-nav.c-nav .o-svg-icon * {
+	fill: #557891;
+}
