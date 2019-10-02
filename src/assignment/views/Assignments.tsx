@@ -39,8 +39,6 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
 	const [actionsDropdownOpen, setActionsDropdownOpen] = useState<{ [key: string]: boolean }>({});
 
-	let myAge: number = '12';
-
 	// TODO: Replace colKey type by AssignmentColumnKey when typings 1.9.0 is published
 	const renderCell = (rowData: Assignment, colKey: keyof Assignment | 'actions') => {
 		const cellData: any = (rowData as any)[colKey];
