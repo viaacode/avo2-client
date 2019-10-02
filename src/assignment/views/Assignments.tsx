@@ -52,7 +52,11 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
-								<Link to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}`}>
+								<Link
+									to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
+										RouteParts.Edit
+									}`}
+								>
 									{rowData.title}
 								</Link>
 							</h3>

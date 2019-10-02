@@ -25,17 +25,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
+import { MAX_SEARCH_DESCRIPTION_LENGTH, RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
-import {
-	DeleteCollectionModal,
-	RenameCollectionModal,
-	ReorderCollectionModal,
-	ShareCollectionModal,
-} from '../components';
+import { RenameCollectionModal, ReorderCollectionModal, ShareCollectionModal } from '../components';
 import { USER_GROUPS } from '../constants';
 import {
 	DELETE_COLLECTION,
@@ -125,15 +121,20 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	const onPreviewCollection = () => {};
 
-	const deleteCollection = (collectionId: number) => {
-		triggerCollectionDelete({
-			variables: {
-				id: collectionId,
-			},
-		});
+	const deleteCollection = async () => {
+		try {
+			await triggerCollectionDelete({
+				variables: {
+					id: currentCollection.id,
+				},
+			});
 
-		// TODO: Refresh data on Collections page.
-		props.history.push(`/mijn-werkruimte/collecties`);
+			// TODO: Refresh data on Collections page.
+			props.history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`);
+		} catch (err) {
+			console.error(err);
+			toastService('Het verwijderen van de collectie is mislukt');
+		}
 	};
 
 	// Update individual property of fragment
@@ -573,10 +574,12 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					initialIsPublic={collection.is_public}
 					updateCollectionProperty={updateCollectionProperty}
 				/>
-				<DeleteCollectionModal
+				<DeleteObjectModal
+					title={`Ben je zeker dat de collectie \"${collection.title}\" wil verwijderen?`}
+					body="Deze actie kan niet ongedaan gemaakt worden"
 					isOpen={isDeleteModalOpen}
 					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={() => deleteCollection(collection.id)}
+					deleteObjectCallback={deleteCollection}
 				/>
 				<RenameCollectionModal
 					collectionId={collection.id}

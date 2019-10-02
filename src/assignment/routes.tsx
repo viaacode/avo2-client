@@ -17,10 +17,6 @@ export const renderAssignmentRoutes = () => (
 			component={EditAssignment}
 			exact={false}
 		/>
-		<SecuredRoute
-			path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/:id/${RouteParts.Detail}`}
-			component={Assignment}
-			exact
-		/>
+		<SecuredRoute path={`/${RouteParts.Assignment}/:id`} component={Assignment} exact />
 	</Fragment>
 );

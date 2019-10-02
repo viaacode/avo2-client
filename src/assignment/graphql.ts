@@ -82,3 +82,11 @@ export const INSERT_ASSIGNMENT = gql`
 		}
 	}
 `;
+
+export const DELETE_ASSIGNMENT = gql`
+	mutation deleteAssignmentById($id: Int!) {
+		delete_app_assignments(where: { id: { _eq: $id } }) {
+			affected_rows
+		}
+	}
+`;
