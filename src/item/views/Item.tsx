@@ -19,6 +19,7 @@ import {
 	Container,
 	convertToHtml,
 	ExpandableContainer,
+	Flex,
 	Grid,
 	Icon,
 	MediaCard,
@@ -27,6 +28,7 @@ import {
 	MetaData,
 	MetaDataItem,
 	Spacer,
+	Table,
 	TagList,
 	Thumbnail,
 	ToggleButton,
@@ -126,11 +128,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	 * Set video current time from the query params once the video has loaded its meta data
 	 * If this happens sooner, the time will be ignored by the video player
 	 */
-	const getSeekerTimeFromQueryParams = () => {
-		// TODO trigger this function when flowplayer is loaded
-		const queryParams = queryString.parse(location.search);
-		setTime(parseInt((queryParams.time as string) || '0', 10));
-	};
+	// TODO trigger this function when flowplayer is loaded
+	// const getSeekerTimeFromQueryParams = () => {
+	// 	const queryParams = queryString.parse(location.search);
+	// 	setTime(parseInt((queryParams.time as string) || '0', 10));
+	// };
 
 	const handleTimeLinkClicked = async (timestamp: string) => {
 		const seconds = parseDuration(timestamp);
@@ -226,9 +228,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 										spaced={true}
 										category={dutchContentLabelToEnglishLabel(itemMetaData.type.label)}
 									>
-										<MetaDataItem>
-											{generateSearchLink('provider', itemMetaData.org_name || '')}
-										</MetaDataItem>
+										{itemMetaData.org_name && (
+											<MetaDataItem>
+												{generateSearchLink('provider', itemMetaData.org_name || '')}
+											</MetaDataItem>
+										)}
 										{itemMetaData.publish_at && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
@@ -263,59 +267,57 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 					<Container mode="horizontal">
 						<Grid>
 							<Column size="2-7">
-								<div className="o-container-vertical-list">
-									<div className="o-container-vertical o-container-vertical--padding-small">
-										<div className="c-video-player t-player-skin--dark">
-											{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
-												<FlowPlayer
-													src={playerTicket ? playerTicket.toString() : null}
-													poster={itemMetaData.thumbnail_path}
-													title={itemMetaData.title}
-													onInit={initFlowPlayer}
-													subtitles={['30-12-2011', 'VRT']}
-												/>
-											)}
-										</div>
-										<Spacer margin="top-large">
-											<div className="o-flex o-flex--justify-between o-flex--wrap">
-												<div className="c-button-toolbar">
-													<div className="o-flex o-flex--justify-between o-flex--wrap">
-														<Button
-															type="tertiary"
-															icon="add"
-															label="Voeg fragment toe aan collectie"
-															onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
-														/>
-														<Button
-															type="tertiary"
-															icon="clipboard"
-															label="Maak opdracht"
-															onClick={() =>
-																history.push(
-																	generateAssignmentCreateLink(
-																		'KIJK',
-																		itemMetaData.external_id,
-																		'ITEM'
-																	)
-																)
-															}
-														/>
-													</div>
-												</div>
-												<div className="c-button-toolbar">
-													<ToggleButton
-														type="tertiary"
-														icon="bookmark"
-														active={false}
-														ariaLabel="toggle bladwijzer"
-													/>
-													<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-													<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
-												</div>
-											</div>
-										</Spacer>
+								<Container mode="vertical" size="small">
+									<div className="c-video-player t-player-skin--dark">
+										{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
+											<FlowPlayer
+												src={playerToken ? playerToken.toString() : null}
+												poster={itemMetaData.thumbnail_path}
+												title={itemMetaData.title}
+												onInit={initFlowPlayer}
+												subtitles={['30-12-2011', 'VRT']}
+											/>
+										)}
 									</div>
-								</div>
+									<Spacer margin="top-large">
+										<Flex justify="between" wrap>
+											<div className="c-button-toolbar">
+												<Flex justify="between" wrap>
+													<Button
+														type="tertiary"
+														icon="add"
+														label="Voeg fragment toe aan collectie"
+														onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
+													/>
+													<Button
+														type="tertiary"
+														icon="clipboard"
+														label="Maak opdracht"
+														onClick={() =>
+															history.push(
+																generateAssignmentCreateLink(
+																	'KIJK',
+																	itemMetaData.external_id,
+																	'ITEM'
+																)
+															)
+														}
+													/>
+												</Flex>
+											</div>
+										</Flex>
+										<div className="c-button-toolbar">
+											<ToggleButton
+												type="tertiary"
+												icon="bookmark"
+												active={false}
+												ariaLabel="toggle bladwijzer"
+											/>
+											<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+											<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+										</div>
+									</Spacer>
+								</Container>
 							</Column>
 							<Column size="2-5">
 								<Container mode="vertical">
@@ -339,48 +341,50 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 						</Grid>
 						<Grid>
 							<Column size="2-7">
-								<div className="o-container-vertical o-container-vertical--padding-small">
-									<table className="c-table c-table--horizontal c-table--untable">
-										<tbody className="o-grid">
-											<tr className="o-grid-col-bp2-5">
+								<Container mode="vertical" size="small">
+									{/* TODO: make columns, data and rowKey props optional */}
+									<Table columns={[]} data={[]} horizontal rowKey="" untable>
+										<Grid tag="tbody">
+											<Column size="2-5" tag="tr">
 												<th scope="row">Publicatiedatum</th>
 												<td>{reorderDate(itemMetaData.publish_at || null, '/')}</td>
-											</tr>
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+											<Column size="2-5" tag="tr">
 												<th scope="row">Toegevoegd op</th>
 												{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
 												<td>{reorderDate(itemMetaData.issued || null, '/')}</td>
-											</tr>
-										</tbody>
-										<tbody className="o-grid">
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+										</Grid>
+										<Grid tag="tbody">
+											<Column size="2-5" tag="tr">
 												<th scope="row">Aanbieder</th>
 												{itemMetaData.org_name && (
 													<td>{generateSearchLink('provider', itemMetaData.org_name || '')}</td>
 												)}
-											</tr>
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+											<Column size="2-5" tag="tr">
 												<th scope="row">Speelduur</th>
 												<td>{itemMetaData.duration}</td>
-											</tr>
-										</tbody>
-										<tbody className="o-grid">
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+										</Grid>
+										<Grid tag="tbody">
+											<Column size="2-5" tag="tr">
 												<th scope="row">Reeks</th>
 												<td>{generateSearchLink('serie', itemMetaData.series)}</td>
-											</tr>
-											<tr className="o-grid-col-bp2-5">
+											</Column>
+											<Column size="2-5" tag="tr">
 												<th scope="row">Taal</th>
 												<td>
 													{(itemMetaData.lom_languages || [])
 														.map(languageCode => LANGUAGES.nl[languageCode])
 														.join(', ')}
 												</td>
-											</tr>
-										</tbody>
-									</table>
+											</Column>
+										</Grid>
+									</Table>
 									<div className="c-hr" />
-									<table className="c-table c-table--horizontal c-table--untable">
+									{/* TODO: make columns, data and rowKey props optional */}
+									<Table columns={[]} data={[]} horizontal rowKey="" untable>
 										<tbody>
 											<tr>
 												<th scope="row">Geschikt voor</th>
@@ -403,9 +407,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 												</td>
 											</tr>
 										</tbody>
-									</table>
+									</Table>
 									<div className="c-hr" />
-									<table className="c-table c-table--horizontal c-table--untable">
+									{/* TODO: make columns, data and rowKey props optional */}
+									<Table columns={[]} data={[]} horizontal rowKey="" untable>
 										<tbody>
 											<tr>
 												<th scope="row">Trefwoorden</th>
@@ -431,8 +436,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 											{/*</td>*/}
 											{/*</tr>*/}
 										</tbody>
-									</table>
-								</div>
+									</Table>
+								</Container>
 							</Column>
 							<Column size="2-5">
 								<Container size="small" mode="vertical">

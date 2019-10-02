@@ -41,6 +41,7 @@ import {
 	MenuContent,
 	MetaData,
 	MetaDataItem,
+	Navbar,
 	Spacer,
 	Thumbnail,
 	Toolbar,
@@ -227,118 +228,120 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 		return (
 			<Fragment>
-				<Container mode="vertical" size="small" background={'alt'}>
-					<Container mode="horizontal">
-						<Toolbar>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<Spacer margin="bottom">
-										<MetaData spaced={true} category="collection">
-											<MetaDataItem>
-												<div className="c-content-type c-content-type--collection">
-													<Icon name="collection" />
-													<p>COLLECTION</p>
-												</div>
-											</MetaDataItem>
-											<MetaDataItem
-												icon="eye"
-												label={String(188) /* TODO collection.view_count */}
-											/>
-											<MetaDataItem
+				<Navbar autoHeight background="alt">
+					<Container mode="vertical" size="small" background={'alt'}>
+						<Container mode="horizontal">
+							<Toolbar autoHeight>
+								<ToolbarLeft>
+									<ToolbarItem>
+										<Spacer margin={['top-small', 'bottom-small']}>
+											<MetaData spaced={true} category="collection">
+												<MetaDataItem>
+													<div className="c-content-type c-content-type--collection">
+														<Icon name="collection" />
+														<p>COLLECTION</p>
+													</div>
+												</MetaDataItem>
+												<MetaDataItem
+													icon="eye"
+													label={String(188) /* TODO collection.view_count */}
+												/>
+												<MetaDataItem
+													icon="bookmark"
+													label={String(12) /* TODO collection.bookmark_count */}
+												/>
+											</MetaData>
+										</Spacer>
+										<h1 className="c-h2 u-m-0">{collection.title}</h1>
+										{collection.owner && (
+											<Flex spaced="regular">
+												{!!get(collection, 'owner.id') && (
+													<Avatar
+														image={get(collection, 'owner.profiles[0].avatar')}
+														name={ownerNameAndRole || ' '}
+														initials={`${get(collection, 'owner.first_name[0]', '')}${get(
+															collection,
+															'owner.last_name[0]',
+															''
+														)}`}
+													/>
+												)}
+											</Flex>
+										)}
+									</ToolbarItem>
+								</ToolbarLeft>
+								<ToolbarRight>
+									<ToolbarItem>
+										<div className="c-button-toolbar">
+											<Button
+												title="Bladwijzer"
+												type="secondary"
 												icon="bookmark"
-												label={String(12) /* TODO collection.bookmark_count */}
+												ariaLabel="Bladwijzer"
 											/>
-										</MetaData>
-									</Spacer>
-									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
-									{collection.owner && (
-										<Flex spaced="regular">
-											{!!get(collection, 'owner.id') && (
-												<Avatar
-													image={get(collection, 'owner.profiles[0].avatar')}
-													name={ownerNameAndRole || ' '}
-													initials={`${get(collection, 'owner.first_name[0]', '')}${get(
-														collection,
-														'owner.last_name[0]',
-														''
-													)}`}
-												/>
-											)}
-										</Flex>
-									)}
-								</ToolbarItem>
-							</ToolbarLeft>
-							<ToolbarRight>
-								<ToolbarItem>
-									<div className="c-button-toolbar">
-										<Button
-											title="Bladwijzer"
-											type="secondary"
-											icon="bookmark"
-											ariaLabel="Bladwijzer"
-										/>
-										<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
-										<ControlledDropdown
-											isOpen={isOptionsMenuOpen}
-											onOpen={() => setIsOptionsMenuOpen(true)}
-											onClose={() => setIsOptionsMenuOpen(false)}
-											placement="bottom-end"
-											autoSize
-										>
-											<DropdownButton>
-												<Button
-													type="secondary"
-													icon="more-horizontal"
-													ariaLabel="Meer opties"
-													title="Meer opties"
-												/>
-											</DropdownButton>
-											<DropdownContent>
-												<MenuContent
-													menuItems={[
-														{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
-														{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
-														{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
-														{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-														{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
-													]}
-													onClick={itemId => {
-														switch (itemId) {
-															case 'edit':
-																history.push(
-																	`${generateContentLinkString(
-																		ContentTypeString.collection,
-																		collection.id.toString()
-																	)}/${RouteParts.Edit}`
-																);
-																break;
+											<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
+											<ControlledDropdown
+												isOpen={isOptionsMenuOpen}
+												onOpen={() => setIsOptionsMenuOpen(true)}
+												onClose={() => setIsOptionsMenuOpen(false)}
+												placement="bottom-end"
+												autoSize
+											>
+												<DropdownButton>
+													<Button
+														type="secondary"
+														icon="more-horizontal"
+														ariaLabel="Meer opties"
+														title="Meer opties"
+													/>
+												</DropdownButton>
+												<DropdownContent>
+													<MenuContent
+														menuItems={[
+															{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
+															{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
+															{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
+															{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+															{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
+														]}
+														onClick={itemId => {
+															switch (itemId) {
+																case 'edit':
+																	history.push(
+																		`${generateContentLinkString(
+																			ContentTypeString.collection,
+																			collection.id.toString()
+																		)}/${RouteParts.Edit}`
+																	);
+																	break;
 
-															case 'createAssignment':
-																history.push(
-																	generateAssignmentCreateLink(
-																		'KIJK',
-																		String(collection.id),
-																		'COLLECTIE'
-																	)
-																);
-																break;
+																case 'createAssignment':
+																	history.push(
+																		generateAssignmentCreateLink(
+																			'KIJK',
+																			String(collection.id),
+																			'COLLECTIE'
+																		)
+																	);
+																	break;
 
-															case 'delete':
-																openDeleteModal(collection.id);
-																break;
-															default:
-																return null;
-														}
-													}}
-												/>
-											</DropdownContent>
-										</ControlledDropdown>
-									</div>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
+																case 'delete':
+																	openDeleteModal(collection.id);
+																	break;
+																default:
+																	return null;
+															}
+														}}
+													/>
+												</DropdownContent>
+											</ControlledDropdown>
+										</div>
+									</ToolbarItem>
+								</ToolbarRight>
+							</Toolbar>
+						</Container>
 					</Container>
-				</Container>
+				</Navbar>
 				<Container mode="vertical">
 					<Container mode="horizontal">
 						<ul className="c-collection-list">{renderContentBlocks(contentBlockInfos)}</ul>

@@ -23,8 +23,7 @@ const SearchFilterControls = ({
 	const renderCheckboxDropdownModal = (
 		label: string,
 		propertyName: Avo.Search.FilterProp,
-		disabled: boolean = false,
-		style: any = {}
+		disabled: boolean = false
 	): ReactNode => {
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
 			(option: Avo.Search.OptionProp): CheckboxOption => {
@@ -44,7 +43,7 @@ const SearchFilterControls = ({
 		);
 
 		return (
-			<li style={{ display: 'flex', ...style }}>
+			<li className="c-filter-dropdown">
 				<CheckboxDropdownModal
 					label={label}
 					id={propertyName as string}
@@ -67,7 +66,7 @@ const SearchFilterControls = ({
 		range.lte = range.lte || '';
 
 		return (
-			<li style={{ display: 'flex' }}>
+			<li className="c-filter-dropdown">
 				<DateRangeDropdown
 					label={label}
 					id={propertyName}
@@ -81,7 +80,7 @@ const SearchFilterControls = ({
 	};
 
 	return (
-		<div className="c-filter-dropdown-list">
+		<ul className="c-filter-dropdown-list">
 			{renderCheckboxDropdownModal('Type', 'type')}
 			{renderCheckboxDropdownModal('Onderwijsniveau', 'educationLevel')}
 			{renderCheckboxDropdownModal('Domein', 'domain', true)}
@@ -90,8 +89,8 @@ const SearchFilterControls = ({
 			{renderCheckboxDropdownModal('Serie', 'serie')}
 			{renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
 			{renderCheckboxDropdownModal('Taal', 'language')}
-			{renderCheckboxDropdownModal('Aanbieder', 'provider', false, { marginRight: 0 })}
-		</div>
+			{renderCheckboxDropdownModal('Aanbieder', 'provider', false)}
+		</ul>
 	);
 };
 

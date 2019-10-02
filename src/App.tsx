@@ -16,7 +16,7 @@ import { RouteParts } from './constants';
 import { dataService } from './shared/services/data-service';
 import store from './store';
 
-import './App.scss';
+import './styles/main.scss';
 
 interface AppProps {
 	loginState: LoginResponse | null;

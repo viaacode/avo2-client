@@ -1,10 +1,12 @@
 import {
 	Button,
+	ButtonGroup,
 	Container,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Flex,
+	Form,
 	FormGroup,
 	Icon,
 	MenuContent,
@@ -45,8 +47,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 				return (
 					<Flex>
 						<Spacer margin={'right-small'}>
-							{/*TODO use subtle option when it becomes available*/}
-							<Icon name="clipboard" className="o-svg-icon--subtle" />
+							<Icon name="clipboard" subtle />
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
@@ -152,8 +153,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 				<Toolbar>
 					<ToolbarLeft>
 						<ToolbarItem>
-							{/*TODO create ButtonGroup in the components library*/}
-							<div className="c-button-group">
+							<ButtonGroup>
 								<Button
 									type="secondary"
 									label="Opdrachten"
@@ -166,16 +166,16 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 									active={activeView === 'archived_assignments'}
 									onClick={() => setActiveView('archived_assignments')}
 								/>
-							</div>
+							</ButtonGroup>
 						</ToolbarItem>
 					</ToolbarLeft>
 					<ToolbarRight>
 						<ToolbarItem>
-							<div className="o-form-group-layout o-form-group-layout--inline">
+							<Form type="inline">
 								<FormGroup>
 									<TextInput icon="filter" value={filterString} onChange={setFilterString} />
 								</FormGroup>
-							</div>
+							</Form>
 						</ToolbarItem>
 					</ToolbarRight>
 				</Toolbar>

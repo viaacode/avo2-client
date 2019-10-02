@@ -11,7 +11,7 @@ export const NotFound: FunctionComponent<NotFoundProps> = ({
 	icon = 'search',
 }) => {
 	return (
-		<Container mode="vertical" background="alt" className="o-container-vertical-title">
+		<Container mode="vertical" background="alt">
 			<Container size="medium" mode="horizontal">
 				<Blankslate body="" icon={icon} title={message} />
 			</Container>
