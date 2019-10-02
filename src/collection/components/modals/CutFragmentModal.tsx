@@ -16,7 +16,7 @@ import { Avo } from '@viaa/avo2-types';
 import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { fetchPlayerTicket } from '../../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
