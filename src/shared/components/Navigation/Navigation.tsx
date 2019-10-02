@@ -55,12 +55,11 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 									<div className="u-mq-switch-main-nav-has-space">
 										<ul className="c-nav">
 											{primaryItems.map(item => (
-												<li>
+												<li key={`${item.location}-${item.label}`}>
 													<NavLink
 														to={item.location}
 														className="c-nav__item c-nav__item--i"
 														activeClassName="c-nav__item--active"
-														key={`${item.location}-${item.label}`}
 														exact={item.location === '/'}
 													>
 														{item.icon && <Icon name={item.icon} />}
@@ -79,12 +78,11 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 									<div className="u-mq-switch-main-nav-authentication">
 										<ul className="c-nav">
 											{secondaryItems.map(item => (
-												<li>
+												<li key={`${item.location}-${item.label}`}>
 													<NavLink
 														to={item.location}
 														className="c-nav__item c-nav__item--i"
 														activeClassName="c-nav__item--active"
-														key={`${item.location}-${item.label}`}
 														exact={false}
 													>
 														{item.label}
@@ -114,12 +112,11 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
 							{primaryItems.map(item => (
-								<li>
+								<li key={`${item.location}-${item.label}`}>
 									<NavLink
 										to={item.location}
 										className="c-nav-mobile__item"
 										activeClassName="c-nav__item--active"
-										key={`${item.location}-${item.label}`}
 										exact={false}
 									>
 										{item.label}
@@ -130,15 +127,16 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 						</ul>
 						<ul className="c-nav-mobile">
 							{secondaryItems.map(item => (
-								<NavLink
-									to={item.location}
-									className="c-nav-mobile__item"
-									activeClassName="c-nav__item--active"
-									key={`${item.location}-${item.label}`}
-									exact={false}
-								>
-									{item.label}
-								</NavLink>
+								<li key={`${item.location}-${item.label}`}>
+									<NavLink
+										to={item.location}
+										className="c-nav-mobile__item"
+										activeClassName="c-nav__item--active"
+										exact={false}
+									>
+										{item.label}
+									</NavLink>
+								</li>
 							))}
 						</ul>
 					</Container>
@@ -151,12 +149,11 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								<div className="c-toolbar__item">
 									<ul className="c-nav">
 										{primaryItems.map(item => (
-											<li>
+											<li key={`${item.location}-${item.label}`}>
 												<NavLink
 													to={item.location}
 													activeClassName="c-nav__item--active"
 													className="c-nav__item c-nav__item--i"
-													key={`${item.location}-${item.label}`}
 												>
 													{item.icon && <Icon name={item.icon} />}
 													{item.label}
