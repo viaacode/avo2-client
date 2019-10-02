@@ -38,8 +38,8 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 `;
 
 export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
-  query getAssignmentsByOwner($ownerId: uuid, $archived: Boolean = false, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}) {
-    app_assignments(where: { owner_uid: { _eq: $ownerId }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}}, offset: $offset, limit: $limit) {
+  query getAssignmentsByOwner($ownerId: uuid, $archived: Boolean = false, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}, $order: [app_assignments_order_by!] = {deadline_at: desc}, $filter: [app_assignments_bool_exp]) {
+    assignments: app_assignments(where: { owner_uid: { _eq: $ownerId }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}, offset: $offset, limit: $limit, order_by: $order) {
       assignment_assignment_tags {
         assignment_tag {
           color_enum_value
@@ -61,6 +61,11 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
       is_deleted
       title
     }
+		count: app_assignments_aggregate(where: { owner_uid: { _eq: $ownerId }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}) {
+			aggregate {
+				count
+			}
+		}
   }
 `;
 
