@@ -1,3 +1,8 @@
+import { capitalize, get } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
+
 import {
 	Button,
 	Container,
@@ -18,25 +23,21 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { capitalize, get } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
+
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import { GET_ASSIGNMENTS_BY_OWNER_ID } from '../graphql';
-import { Assignment, AssignmentTag } from '../types';
+import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../types';
 
 interface AssignmentsProps extends RouteComponentProps {}
 
 const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const [filterString, setFilterString] = useState<string>('');
-	const [activeView, setActiveView] = useState<'assignments' | 'archived_assignments'>(
-		'assignments'
-	);
+	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
 	const [actionsDropdownOpen, setActionsDropdownOpen] = useState<{ [key: string]: boolean }>({});
 
+	// TODO: Replace colKey type by AssignmentColumnKey when typings 1.9.0 is published
 	const renderCell = (rowData: Assignment, colKey: keyof Assignment | 'actions') => {
 		const cellData: any = (rowData as any)[colKey];
 
@@ -45,8 +46,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 				return (
 					<Flex>
 						<Spacer margin={'right-small'}>
-							{/*TODO use subtle option when it becomes available*/}
-							<Icon name="clipboard" className="o-svg-icon--subtle" />
+							<Icon name="clipboard" subtle={true} />
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
@@ -136,7 +136,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		}
 	};
 
-	const columns: { id: keyof Assignment | 'actions'; label: string; sortable?: boolean }[] = [
+	const columns: AssignmentColumn[] = [
 		{ id: 'title', label: 'Titel', sortable: true },
 		{ id: 'assignment_type', label: 'Type', sortable: true },
 		{ id: 'assignment_assignment_tags', label: 'Vak of project', sortable: true },
