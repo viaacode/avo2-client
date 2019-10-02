@@ -249,7 +249,7 @@ export const renderDropdownButton = (
 	removeFilter: (tagId: string | number, clickEvent: MouseEvent) => void
 ) => {
 	return (
-		<Button type="link">
+		<Button type="secondary">
 			<div className="c-button__content">
 				<div className="c-button__label">{label}</div>
 				{!!selectedTags.length && (
