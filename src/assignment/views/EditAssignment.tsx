@@ -1,5 +1,12 @@
+import { ExecutionResult } from '@apollo/react-common';
+import { useMutation } from '@apollo/react-hooks';
+import { ApolloQueryResult } from 'apollo-boost';
+import { DocumentNode } from 'graphql';
+import { cloneDeep, get, remove } from 'lodash-es';
+import queryString from 'query-string';
 import React, { Fragment, FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import {
 	Alert,
@@ -28,15 +35,8 @@ import {
 	ToolbarRight,
 	WYSIWYG,
 } from '@viaa/avo2-components';
-
-import { ExecutionResult } from '@apollo/react-common';
-import { useMutation } from '@apollo/react-hooks';
 import { ContentType } from '@viaa/avo2-components/dist/types';
-import { ApolloQueryResult } from 'apollo-boost';
-import { DocumentNode } from 'graphql';
-import { cloneDeep, get, remove } from 'lodash-es';
-import queryString from 'query-string';
-import { Link } from 'react-router-dom';
+
 import NotFound from '../../404/views/NotFound';
 import { GET_COLLECTION_BY_ID } from '../../collection/graphql';
 import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
@@ -54,7 +54,6 @@ import {
 	AssignmentTag,
 	AssignmentType,
 } from '../types';
-
 import './EditAssignment.scss';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in AssignmentContentLabel]: string } = {
