@@ -23,7 +23,9 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import classnames from 'classnames';
 import { clone, compact, fromPairs } from 'lodash-es';
+
 import './CheckboxDropdownModal.scss';
 
 export interface CheckboxOption {
@@ -53,7 +55,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	const [checkedStates, setCheckedStates] = useState(
 		fromPairs(options.map((option: CheckboxOption) => [option.id, option.checked]))
 	);
-	const [isOpen, setIsOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState<boolean>(false);
 
 	const handleCheckboxToggled = async (checked: boolean, id: string) => {
 		setCheckedStates({
@@ -80,6 +82,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 				if (!option.checked) {
 					return null;
 				}
+
 				return { label: option.label, id: option.id };
 			})
 		);
@@ -186,7 +189,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 
 		return (
 			<Fragment>
-				<div onClick={openDropdownOrModal}>
+				<div className="c-checkbox-dropdown__trigger" onClick={openDropdownOrModal}>
 					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
 				</div>
 				<Modal
@@ -233,9 +236,9 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	};
 
 	return (
-		<div style={{ opacity: disabled ? 0.5 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
-			{options.length <= 7 && renderCheckboxControl()}
-			{options.length > 7 && renderModalControl()}
+		<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
+			{options.length <= 7 ? renderCheckboxControl() : null}
+			{options.length > 7 ? renderModalControl() : null}
 		</div>
 	);
 };
@@ -247,10 +250,7 @@ export const renderDropdownButton = (
 	removeFilter: (tagId: string | number, clickEvent: MouseEvent) => void
 ) => {
 	return (
-		<button
-			className="c-button c-button--secondary"
-			style={{ padding: '0 2rem', height: 'auto', maxHeight: 'none', minHeight: '36px' }}
-		>
+		<Button type="secondary">
 			<div className="c-button__content">
 				<div className="c-button__label">{label}</div>
 				{!!selectedTags.length && (
@@ -265,6 +265,6 @@ export const renderDropdownButton = (
 				)}
 				<Icon name={isOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
 			</div>
-		</button>
+		</Button>
 	);
 };
