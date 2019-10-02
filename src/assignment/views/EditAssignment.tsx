@@ -163,7 +163,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 					setLoadingState('not-found');
 				});
 		}
-	}, [setAssignment, location]);
+	}, [location, match.params]);
 
 	/**
 	 * Load the content if the query params change
