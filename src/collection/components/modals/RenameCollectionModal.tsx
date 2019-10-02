@@ -30,7 +30,7 @@ const RenameCollectionModal: FunctionComponent<RenameCollectionModalProps> = ({
 	collectionId,
 }) => {
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
-	const [collectionName, setCollectionName] = useState(initialCollectionName);
+	const [collectionName, setCollectionName] = useState<string>(initialCollectionName);
 
 	const onSave = () => {
 		setIsOpen(false);

@@ -53,8 +53,8 @@ const Home: FunctionComponent<HomeProps> = ({
 	search,
 	history,
 }) => {
-	const [searchTerms, setSearchTerms] = useState('');
-	const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] = useState(false);
+	const [searchTerms, setSearchTerms] = useState<string>('');
+	const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] = useState<boolean>(false);
 	const debouncedSearchTerms = useDebounce(searchTerms, 200);
 
 	/**
@@ -83,6 +83,7 @@ const Home: FunctionComponent<HomeProps> = ({
 					id: searchResultId.toString(),
 				}
 			) as Avo.Search.ResultItem | undefined;
+
 			if (searchResultItem) {
 				history.push(
 					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)

@@ -31,8 +31,8 @@ import './MyWorkspace.scss';
 
 const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) => {
 	// State
-	const [activeFilter, setActiveFilter] = useState();
-	const [tabId, setTabId] = useState(match.params.tabId || COLLECTIONS_ID);
+	const [activeFilter, setActiveFilter] = useState<ReactText>();
+	const [tabId, setTabId] = useState<string>(match.params.tabId || COLLECTIONS_ID);
 
 	// Methods
 	const goToTab = (id: ReactText) => {
@@ -45,15 +45,16 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		return {
 			[COLLECTIONS_ID]: {
 				component: <Collections numberOfCollections={counts[COLLECTIONS_ID]} />,
-				filter: {
-					label: 'Auteur',
-					options: [
-						{ id: 'all', label: 'Alles' },
-						{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
-						{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
-						{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
-					],
-				},
+				// TODO: Vergeet deze filter niet terug te plaatsen.
+				// filter: {
+				// 	label: 'Auteur',
+				// 	options: [
+				// 		{ id: 'all', label: 'Alles' },
+				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
+				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
+				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
+				// 	],
+				// },
 			},
 			[FOLDERS_ID]: {
 				component: <span>TODO Mappen</span>,

@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Component: Title overlay
+   ========================================================================== */
+
+/* Variables
+   ========================================================================== */
+
+$c-title-overlay-padding: 1.6rem;
+
+/* Component
+   ========================================================================== */
+
+.c-title-overlay {
+	position: absolute;
+	top: $c-title-overlay-padding;
+	left: $c-title-overlay-padding;
+	color: #FFF;
+	max-width: 100%;
+}
+
+.c-title-overlay__title {
+	background-color: rgba($color-gray-900,.75);
+	font-weight: $g-headings-font-weight;
+	padding: 0.8rem 1.2rem;
+	margin: 0 0 1rem;
+	font-size: 1.8rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: inline-block;
+	max-width: calc(100% - #{$c-title-overlay-padding*2});
+}
+
+.c-title-overlay__source {
+	margin-right: 1rem;
+}
+
+.c-title-overlay__source,
+.c-title-overlay__pub-date {
+	background-color: rgba($color-gray-900,.5);
+	padding: 0.4rem 1.2rem;
+	font-size: 1.3rem;
+}

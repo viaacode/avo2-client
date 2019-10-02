@@ -219,12 +219,14 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	};
 
 	const cleanupFilterObject = (obj: any): any => {
-		return pickBy(obj, (value: any) => {
-			const isEmptyString = value === '';
-			const isUndefinedOrNull = isNil(value);
-			const isEmptyObjectOrArray = (isPlainObject(value) || isArray(value)) && isEmpty(value);
-			const isArrayWithEmptyValues = isArray(value) && every(value, value => value === '');
-			const isEmptyRangeObject = isPlainObject(value) && !(value as any).gte && !(value as any).lte;
+		return pickBy(obj, (value: string) => {
+			const isEmptyString: boolean = value === '';
+			const isUndefinedOrNull: boolean = isNil(value);
+			const isEmptyObjectOrArray: boolean =
+				(isPlainObject(value) || isArray(value)) && isEmpty(value);
+			const isArrayWithEmptyValues: boolean = isArray(value) && every(value, value => value === '');
+			const isEmptyRangeObject: boolean =
+				isPlainObject(value) && !(value as any).gte && !(value as any).lte;
 
 			return (
 				!isEmptyString &&

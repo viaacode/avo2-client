@@ -1,10 +1,17 @@
+import { capitalize, get } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
+
 import {
 	Button,
+	ButtonGroup,
 	Container,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Flex,
+	Form,
 	FormGroup,
 	Icon,
 	MenuContent,
@@ -18,25 +25,23 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { capitalize, get } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
+
 import { RouteParts } from '../../constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import { GET_ASSIGNMENTS_BY_OWNER_ID } from '../graphql';
-import { Assignment, AssignmentTag } from '../types';
+import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../types';
 
 interface AssignmentsProps extends RouteComponentProps {}
 
 const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const [filterString, setFilterString] = useState<string>('');
-	const [activeView, setActiveView] = useState<'assignments' | 'archived_assignments'>(
-		'assignments'
-	);
+	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
 	const [actionsDropdownOpen, setActionsDropdownOpen] = useState<{ [key: string]: boolean }>({});
 
+	let myAge: number = '12';
+
+	// TODO: Replace colKey type by AssignmentColumnKey when typings 1.9.0 is published
 	const renderCell = (rowData: Assignment, colKey: keyof Assignment | 'actions') => {
 		const cellData: any = (rowData as any)[colKey];
 
@@ -45,8 +50,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 				return (
 					<Flex>
 						<Spacer margin={'right-small'}>
-							{/*TODO use subtle option when it becomes available*/}
-							<Icon name="clipboard" className="o-svg-icon--subtle" />
+							<Icon name="clipboard" subtle />
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
@@ -136,7 +140,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		}
 	};
 
-	const columns: { id: keyof Assignment | 'actions'; label: string; sortable?: boolean }[] = [
+	const columns: AssignmentColumn[] = [
 		{ id: 'title', label: 'Titel', sortable: true },
 		{ id: 'assignment_type', label: 'Type', sortable: true },
 		{ id: 'assignment_assignment_tags', label: 'Vak of project', sortable: true },
@@ -152,8 +156,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 				<Toolbar>
 					<ToolbarLeft>
 						<ToolbarItem>
-							{/*TODO create ButtonGroup in the components library*/}
-							<div className="c-button-group">
+							<ButtonGroup>
 								<Button
 									type="secondary"
 									label="Opdrachten"
@@ -166,16 +169,16 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 									active={activeView === 'archived_assignments'}
 									onClick={() => setActiveView('archived_assignments')}
 								/>
-							</div>
+							</ButtonGroup>
 						</ToolbarItem>
 					</ToolbarLeft>
 					<ToolbarRight>
 						<ToolbarItem>
-							<div className="o-form-group-layout o-form-group-layout--inline">
+							<Form type="inline">
 								<FormGroup>
 									<TextInput icon="filter" value={filterString} onChange={setFilterString} />
 								</FormGroup>
-							</div>
+							</Form>
 						</ToolbarItem>
 					</ToolbarRight>
 				</Toolbar>

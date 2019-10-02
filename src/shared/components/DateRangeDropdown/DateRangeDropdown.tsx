@@ -24,16 +24,9 @@ export interface DateRangeDropdownProps {
 	onChange: (dateRange: { gte: string; lte: string }, id: string) => void;
 }
 
-export interface DateRangeDropdownState {
-	// External range state
-	range: {
-		gte: string;
-		lte: string;
-	};
-	showYearControls: boolean;
-	isDropdownOpen: boolean;
-	yearInputGte: string;
-	yearInputLte: string;
+export interface DateRange {
+	gte: string;
+	lte: string;
 }
 
 const DEFAULT_DATE_RANGE = { gte: '', lte: '' };
@@ -43,13 +36,13 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	id,
 	range = DEFAULT_DATE_RANGE,
 	onChange,
-}: DateRangeDropdownProps) => {
+}) => {
 	// Internal range state (copied to external range state when the user clicks on the apply button
-	const [rangeState, setRangeState] = useState(range);
-	const [showYearControls, setShowYearControls] = useState(true);
-	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-	const [yearInputGte, setYearInputGte] = useState('');
-	const [yearInputLte, setYearInputLte] = useState('');
+	const [rangeState, setRangeState] = useState<DateRange>(range);
+	const [showYearControls, setShowYearControls] = useState<boolean>(true);
+	const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+	const [yearInputGte, setYearInputGte] = useState<string>('');
+	const [yearInputLte, setYearInputLte] = useState<string>('');
 
 	const resetInternalRangeState = async (tagId?: ReactText, evt?: MouseEvent): Promise<void> => {
 		evt && evt.stopPropagation();

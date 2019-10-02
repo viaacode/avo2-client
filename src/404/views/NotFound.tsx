@@ -7,20 +7,18 @@ interface NotFoundProps {
 	children?: ReactNode;
 }
 
-export const NotFound: FunctionComponent<NotFoundProps> = ({
+const NotFound: FunctionComponent<NotFoundProps> = ({
 	message = 'De pagina werd niet gevonden',
 	icon = 'search',
 	children = null,
-}) => {
-	return (
-		<Container mode="vertical" background="alt" className="o-container-vertical-title">
-			<Container size="medium" mode="horizontal">
-				<Blankslate body="" icon={icon} title={message}>
-					{children}
-				</Blankslate>
-			</Container>
+}) => (
+	<Container mode="vertical" background={'alt'}>
+		<Container size="medium" mode="horizontal">
+			<Blankslate body="" icon={icon} title={message}>
+				{children}
+			</Blankslate>
 		</Container>
-	);
-};
+	</Container>
+);
 
 export default NotFound;

@@ -1,0 +1,73 @@
+/* ==========================================================================
+   Component: Table view
+   ---
+   Simulates iOS and Android table views i.e. a list of items typically used for navigation.
+   ========================================================================== */
+
+.c-table-view__item {
+	border-bottom: 0.1rem solid #E5E5E5;
+	border-radius: 0.3rem 0.3rem 0 0;
+	color: $color-gray-700;
+	display: flex;
+	align-items: center;
+	padding: 1.6rem 1.6rem;
+	background: #FFF;
+
+	&:focus {
+		box-shadow: inset 0 0 0 0.2rem $c-button-hover-border-color;
+		outline: 0;
+	}
+}
+
+.c-table-view__item--less-padded {
+	padding: 0.8rem 1.6rem;
+}
+
+.c-table-view__item--informational {
+	background: $color-gray-100;
+}
+
+.c-table-view__item--type-link {
+	justify-content: space-between;
+	text-decoration: none;
+
+	&:active {
+		opacity: 0.5;
+	}
+}
+
+.c-table-view__left-accessory {
+	flex: 1;
+}
+
+.c-table-view__item--type-action {
+	justify-content: space-between;
+
+	.c-action {
+		flex-basis: 100px;
+	}
+
+	.o-grid-col-static:first-child {
+		margin-left: 0;
+	}
+}
+
+.c-table-view__item__heading,
+.c-table-view__item h3 {
+	font-size: 1.6rem;
+	font-weight: $g-headings-font-weight;
+}
+
+// Improve drag & drop styles
+
+.c-table-view {
+	.draggable-mirror {
+		max-width: 834px;
+		width: 834px;
+		box-shadow: 0 0 2rem 0 rgba(#000,0.25);
+	}
+
+	.draggable--over {
+		background: $color-gray-50;
+	}
+}
