@@ -46,7 +46,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 				return (
 					<Flex>
 						<Spacer margin={'right-small'}>
-							<Icon name="clipboard" subtle={true} />
+							<Icon name="clipboard" subtle />
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
