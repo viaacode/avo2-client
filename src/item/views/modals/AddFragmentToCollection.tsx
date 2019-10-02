@@ -37,7 +37,7 @@ import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/forma
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { fetchPlayerTicket } from '../../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
 

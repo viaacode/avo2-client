@@ -4,7 +4,7 @@ import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
-import { fetchPlayerTicket } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 
 import {
 	Button,
