@@ -4,6 +4,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import {
 	Blankslate,
 	Button,
+	Flex,
 	Form,
 	ImageGrid,
 	Modal,
@@ -81,9 +82,9 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 				<div className="u-spacer">
 					<Form>
 						{videoStills === null ? (
-							<div className="o-flex o-flex--horizontal-center">
+							<Flex center orientation="horizontal">
 								<Spinner size="large" />
-							</div>
+							</Flex>
 						) : videoStills.length === 0 ? (
 							<Blankslate
 								body=""
