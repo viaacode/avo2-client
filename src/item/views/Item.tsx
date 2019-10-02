@@ -55,7 +55,7 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { fetchPlayerTicket } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_BY_ID } from '../item.gql';

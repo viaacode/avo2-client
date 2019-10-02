@@ -20,7 +20,7 @@ export const fetchPlayerTicket = async (externalId: string): Promise<string> => 
 
 		return data.url;
 	} catch (err) {
-		console.error('Failed to fetch player token', err, { externalId });
-		throw new Error('Failed to fetch player token');
+		console.error(err);
+		throw new Error('Failed to get player ticket');
 	}
 };
