@@ -271,7 +271,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 									<div className="c-video-player t-player-skin--dark">
 										{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
 											<FlowPlayer
-												src={playerToken ? playerToken.toString() : null}
+												src={playerTicket ? playerTicket.toString() : null}
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
