@@ -14,8 +14,8 @@ interface FlowPlayerProps {
 	logo?: string;
 	title: string;
 	subtitles: string[];
-	start?: number;
-	end?: number;
+	start?: number | null;
+	end?: number | null;
 	onInit?: () => void;
 }
 

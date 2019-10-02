@@ -19,7 +19,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 	updateCollection,
 	updateFragmentProperty,
 }) => {
-	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(null);
+	const [openOptionsId, setOpenOptionsId] = useState<number | null>(null);
 
 	const reorderFragments = (fragments: Avo.Collection.Fragment[]) => {
 		return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
@@ -39,8 +39,8 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 							collection={collection}
 							swapFragments={swapFragments}
 							updateFragmentProperty={updateFragmentProperty}
-							isOptionsMenuOpen={isOptionsMenuOpen}
-							setIsOptionsMenuOpen={setIsOptionsMenuOpen}
+							openOptionsId={openOptionsId}
+							setOpenOptionsId={setOpenOptionsId}
 							fragment={fragment}
 							reorderFragments={reorderFragments}
 							updateCollection={updateCollection}

@@ -35,7 +35,7 @@ interface CollectionsProps extends RouteComponentProps {
 const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections, history }) => {
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [page, setPage] = useState<number>(0);
 

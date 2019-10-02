@@ -55,7 +55,7 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { fetchPlayerToken } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-service';
 import { getVideoStills } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
@@ -70,7 +70,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
-	const [playerToken, setPlayerToken] = useState<string>();
+	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [itemState, setItemState] = useState<Avo.Item.Response | undefined>();
 	const [videoStill, setVideoStill] = useState<string | null>(null);
 	const [time, setTime] = useState<number>(0);
@@ -149,6 +149,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 			if (part === '\n') {
 				return <br key={`description-new-line-${index}`} />;
 			}
+
 			if (timestampRegex.test(part)) {
 				return (
 					<a
@@ -160,6 +161,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 					</a>
 				);
 			}
+
 			return <span key={`description-part-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
 		});
 	};
@@ -190,7 +192,13 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 		setItemState(itemMetaData);
 
 		const initFlowPlayer = () =>
-			!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
+			!playerTicket &&
+			fetchPlayerTicket(itemMetaData.external_id)
+				.then(data => setPlayerTicket(data))
+				.catch((err: any) => {
+					console.error(err);
+					toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);
+				});
 		const englishContentType: ContentType =
 			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
 
@@ -263,7 +271,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 									<div className="c-video-player t-player-skin--dark">
 										{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
 											<FlowPlayer
-												src={playerToken ? playerToken.toString() : null}
+												src={playerTicket ? playerTicket.toString() : null}
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}

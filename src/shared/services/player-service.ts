@@ -1,10 +1,10 @@
 import { getEnv } from '../../shared/helpers/env';
 
-export type PlayerTokenResponse = {
+export type PlayerTicketResponse = {
 	url: string;
 };
 
-export const fetchPlayerToken = async (externalId: string): Promise<string> => {
+export const fetchPlayerTicket = async (externalId: string): Promise<string> => {
 	const url = `${getEnv('PROXY_URL')}/player-ticket?externalId=${externalId}`;
 
 	const response = await fetch(url, {
@@ -16,7 +16,7 @@ export const fetchPlayerToken = async (externalId: string): Promise<string> => {
 		credentials: 'include',
 	});
 
-	const data: PlayerTokenResponse = await response.json();
+	const data: PlayerTicketResponse = await response.json();
 
 	return data.url;
 };

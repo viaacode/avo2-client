@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
 
 import {
 	Button,
@@ -14,7 +14,9 @@ import {
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { Avo } from '@viaa/avo2-types';
 
+import { compact } from 'lodash-es';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import CollectionStillsModal from '../components/modals/CollectionStillsModal';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
