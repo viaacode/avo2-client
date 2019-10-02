@@ -45,24 +45,24 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
 		const uppercaseFilter = filter && filter.toUpperCase();
-		if (filter) {
-			return [
-				{ title: { _like: `%${filter}%` } },
-				{ assignment_assignment_tags: { assignment_tag: { label: { _like: `%${filter}%` } } } },
-				{ class_room: { _like: `%${filter}%` } },
-				{ assignment_type: { _like: `%${filter}%` } },
-				{ title: { _like: `%${uppercaseFilter}%` } },
-				{
-					assignment_assignment_tags: {
-						assignment_tag: { label: { _like: `%${uppercaseFilter}%` } },
-					},
-				},
-				{ class_room: { _like: `%${uppercaseFilter}%` } },
-				{ assignment_type: { _like: `%${uppercaseFilter}%` } },
-			];
-		} else {
+		if (!filter) {
 			return {};
 		}
+
+		return [
+			{ title: { _like: `%${filter}%` } },
+			{ assignment_assignment_tags: { assignment_tag: { label: { _like: `%${filter}%` } } } },
+			{ class_room: { _like: `%${filter}%` } },
+			{ assignment_type: { _like: `%${filter}%` } },
+			{ title: { _like: `%${uppercaseFilter}%` } },
+			{
+				assignment_assignment_tags: {
+					assignment_tag: { label: { _like: `%${uppercaseFilter}%` } },
+				},
+			},
+			{ class_room: { _like: `%${uppercaseFilter}%` } },
+			{ assignment_type: { _like: `%${uppercaseFilter}%` } },
+		];
 	};
 
 	const handleColumnClick = (columnId: keyof Assignment) => {
