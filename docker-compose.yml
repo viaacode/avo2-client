@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   app:
@@ -9,9 +9,9 @@ services:
     container_name: avo2-client
     ports:
       - 8080:8080
-    env_file: .env.local
+    env_file: .env
     networks:
-    - avo2-client-network
+      - avo2-client-network
     volumes:
       - .:/opt/react-app/app:delegated
       # bind-mounting these two files in will let you add packages during development without rebuilding
