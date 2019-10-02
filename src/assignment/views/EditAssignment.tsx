@@ -208,7 +208,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 				setLoadingState('loaded');
 			}
 		}
-	}, [assignment.content_label, assignment.assignment_type, assignment.content_id]);
+	}, [setLoadingState]);
 
 	const getAssignment = () => {
 		return assignment;
