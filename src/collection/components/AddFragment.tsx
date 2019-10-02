@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import { Button, Container, ToolbarItem } from '@viaa/avo2-components';
+import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockType } from '../types';
@@ -23,8 +23,8 @@ const fragmentsDefaults = {
 		external_id: '',
 		custom_description: '',
 		custom_title: '',
-		end_oc: 0,
-		start_oc: 0,
+		end_oc: null,
+		start_oc: null,
 		use_custom_fields: true,
 	},
 };
@@ -58,20 +58,17 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: [
-				...(collection.collection_fragment_ids || []),
-				TEXT_BLOCK_FRAGMENT.id,
-			],
+			collection_fragment_ids: positionedFragments.map(fragment => fragment.id),
 		});
 	};
 
 	return (
 		<Container>
-			<div className="c-toolbar">
+			<Toolbar>
 				<div className="c-toolbar__justified">
-					<div className="c-toolbar__item c-toolbar__item--stretch">
+					<ToolbarItem grow>
 						<div className="c-hr" />
-					</div>
+					</ToolbarItem>
 					<ToolbarItem>
 						{COLLECTION_CONTENT_BLOCKS.length > 1 ? null /* TODO: Dropdown */ : (
 							<Button
@@ -82,11 +79,11 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 						)}
 						<div className="u-sr-accessible">Sectie toevoegen</div>
 					</ToolbarItem>
-					<div className="c-toolbar__item c-toolbar__item--stretch">
+					<ToolbarItem grow>
 						<div className="c-hr" />
-					</div>
+					</ToolbarItem>
 				</div>
-			</div>
+			</Toolbar>
 		</Container>
 	);
 };

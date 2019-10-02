@@ -13,14 +13,14 @@ export const renderAssignmentRoutes = () => (
 			exact
 		/>
 		<SecuredRoute
-			path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Create}*`}
+			path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Create}`}
 			component={EditAssignment}
+			exact={false}
+		/>
+		<SecuredRoute
+			path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/:id/${RouteParts.Detail}`}
+			component={Assignment}
 			exact
 		/>
-		{/*<SecuredRoute*/}
-		{/*	path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/:id`}*/}
-		{/*	component={Assignment}*/}
-		{/*	exact*/}
-		{/*/>*/}
 	</Fragment>
 );

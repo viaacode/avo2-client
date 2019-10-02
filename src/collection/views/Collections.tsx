@@ -9,12 +9,12 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
-	Icon,
 	MenuContent,
 	MetaData,
 	MetaDataItem,
 	Pagination,
 	Table,
+	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -25,6 +25,8 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
+
+import './Collections.scss';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
@@ -43,16 +45,19 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		setIsDeleteModalOpen(true);
 	};
 
-	const deleteCollection = () => {
-		triggerCollectionDelete({
-			variables: {
-				id: idToDelete,
-			},
-		}).catch(err => {
+	const deleteCollection = async (refetchCollections: () => void) => {
+		try {
+			await triggerCollectionDelete({
+				variables: {
+					id: idToDelete,
+				},
+			});
+			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
+			setTimeout(refetchCollections, 0);
+		} catch (err) {
 			console.error(err);
 			toastService('Collectie kon niet verwijdert worden', TOAST_TYPE.DANGER);
-		});
-
+		}
 		setIdToDelete(null);
 	};
 
@@ -64,14 +69,12 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 			case 'thumbnail':
 				return (
 					<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
-						<div className="c-thumbnail">
-							<div className="c-thumbnail-placeholder">
-								<Icon name="image" />
-							</div>
-							<div className="c-thumbnail-image">
-								<img src="https://via.placeholder.com/400x400" alt="thumbnail" />
-							</div>
-						</div>
+						<Thumbnail
+							alt="thumbnail"
+							category="collection"
+							className="m-collection-overview-thumbnail"
+							src="https://via.placeholder.com/1080x720"
+						/>
 					</Link>
 				);
 			case 'title':
@@ -96,7 +99,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					</div>
 				);
 			case 'inFolder':
-				return cellData && <Button icon="folder" type="borderless" active />;
+				return cellData && <Button icon="folder" type="borderless" />;
 			case 'access':
 				return cellData && <AvatarList avatars={cellData} isOpen={false} />;
 			case 'actions':
@@ -110,7 +113,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							placement="bottom-end"
 						>
 							<DropdownButton>
-								<Button icon="more-horizontal" type="borderless" active />
+								<Button icon="more-horizontal" type="borderless" />
 							</DropdownButton>
 							<DropdownContent>
 								<MenuContent
@@ -139,7 +142,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							icon="chevron-right"
 							onClick={() => history.push(`/${RouteParts.Collection}/${rowData.id}`)}
 							type="borderless"
-							active
 						/>
 					</div>
 				);
@@ -151,7 +153,10 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		}
 	};
 
-	const renderCollections = (collections: Avo.Collection.Response[]) => {
+	const renderCollections = (
+		collections: Avo.Collection.Response[],
+		refetchCollections: () => void
+	) => {
 		const mappedCollections = !!collections
 			? collections.map(collection => {
 					const users = [collection.owner];
@@ -205,7 +210,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={() => deleteCollection()}
+					deleteCollection={() => deleteCollection(refetchCollections)}
 				/>
 			</>
 		);

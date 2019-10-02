@@ -5,6 +5,7 @@ import queryString from 'query-string';
 
 import { isArray, noop } from 'lodash-es';
 import { Link } from 'react-router-dom';
+import { AssignmentContentLabel, AssignmentType } from '../../assignment/types';
 import { RouteParts } from '../../constants';
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
@@ -67,4 +68,14 @@ export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filt
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
 	return `/${CONTENT_TYPE_TO_ROUTE[contentType]}/${id}`;
+}
+
+export function generateAssignmentCreateLink(
+	assignmentType: AssignmentType,
+	contentId?: string,
+	contentLabel?: AssignmentContentLabel
+) {
+	return `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
+		RouteParts.Create
+	}?assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`;
 }

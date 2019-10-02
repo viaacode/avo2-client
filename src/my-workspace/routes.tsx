@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';

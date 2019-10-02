@@ -1,0 +1,43 @@
+/* ==========================================================================
+   Component: Tri
+   ---
+   Background logic for colored areas
+   ========================================================================== */
+
+.c-tri {
+	background: $color-night-blue;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.c-tri__half-split {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 50%;
+	height: 100%;
+	background: rgba(#000,0.05);
+}
+
+.c-tri__tr {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 54%;
+	height: 54%;
+	background: rgba(#000,0.15);
+	background-size: cover;
+	clip-path: polygon(100% 0, 100% 100%, 0 0);
+}
+
+.c-tri__bl {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 54%;
+	height: 54%;
+	background: rgba(#000,0.075);
+	background-size: cover;
+	clip-path: polygon(0 100%, 100% 100%, 0 0);
+}
