@@ -388,141 +388,138 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			<Container mode="horizontal" size="small">
 				<Container mode="vertical" size="large">
 					<Form>
-						<div className="o-form-group-layout o-form-group-layout--standard">
-							<FormGroup required label="Titel">
-								<TextInput
-									id="title"
-									value={assignment.title}
-									onChange={title => setAssignmentProp('title', title)}
+						<FormGroup required label="Titel">
+							<TextInput
+								id="title"
+								value={assignment.title}
+								onChange={title => setAssignmentProp('title', title)}
+							/>
+						</FormGroup>
+						<FormGroup label="Opdracht" required>
+							<WYSIWYG
+								id="assignmentDescription"
+								autogrow
+								data={assignment.description}
+								onChange={description => setAssignmentProp('description', description)}
+							/>
+						</FormGroup>
+						{assignmentContent && assignment.content_label && (
+							<FormGroup label="Inhoud">
+								<Link
+									to={`/${CONTENT_LABEL_TO_ROUTE_PARTS[assignment.content_label]}/${
+										assignment.content_id
+									}`}
+								>
+									<div className="c-box c-box--padding-small">
+										<Flex orientation="vertical" center>
+											<Spacer margin="right">
+												<Thumbnail
+													className="m-content-thumbnail"
+													category={
+														dutchContentLabelToEnglishLabel((assignment.content_label === 'ITEM'
+															? assignmentContent.type.label
+															: assignment.content_label) as DutchContentType) as ContentType
+													}
+													src={assignmentContent.thumbnail_path || undefined}
+												/>
+												{/*TODO use stills api to get thumbnail*/}
+											</Spacer>
+											<FlexItem>
+												<div className="c-overline-plus-p">
+													<p className="c-overline">
+														{assignment.content_label === 'ITEM'
+															? assignmentContent.type.label
+															: assignment.content_label}
+													</p>
+													<p>{assignmentContent.title || assignmentContent.description}</p>
+												</div>
+											</FlexItem>
+										</Flex>
+									</div>
+								</Link>
+							</FormGroup>
+						)}
+						<FormGroup label="Weergave" labelFor="only_player">
+							<RadioButtonGroup>
+								<RadioButton
+									label="Weergeven als mediaspeler met tekst"
+									name="content_layout"
+									value={String(AssignmentLayout.PlayerAndText)}
+									checked={assignment.content_layout === AssignmentLayout.PlayerAndText}
+									onChange={isChecked =>
+										isChecked && setAssignmentProp('content_layout', AssignmentLayout.PlayerAndText)
+									}
 								/>
-							</FormGroup>
-							<FormGroup label="Opdracht" required>
-								<WYSIWYG
-									id="assignmentDescription"
-									autogrow
-									data={assignment.description}
-									onChange={description => setAssignmentProp('description', description)}
+								<RadioButton
+									label="Weergeven als enkel mediaspeler"
+									name="content_layout"
+									value={String(AssignmentLayout.OnlyPlayer)}
+									checked={assignment.content_layout === AssignmentLayout.OnlyPlayer}
+									onChange={isChecked =>
+										isChecked && setAssignmentProp('content_layout', AssignmentLayout.OnlyPlayer)
+									}
 								/>
-							</FormGroup>
-							{assignmentContent && assignment.content_label && (
-								<FormGroup label="Inhoud">
-									<Link
-										to={`/${CONTENT_LABEL_TO_ROUTE_PARTS[assignment.content_label]}/${
-											assignment.content_id
-										}`}
-									>
-										<div className="c-box c-box--padding-small">
-											<Flex orientation="vertical" center>
-												<Spacer margin="right">
-													<Thumbnail
-														className="m-content-thumbnail"
-														category={
-															dutchContentLabelToEnglishLabel((assignment.content_label === 'ITEM'
-																? assignmentContent.type.label
-																: assignment.content_label) as DutchContentType) as ContentType
-														}
-														src={assignmentContent.thumbnail_path || undefined}
-													/>
-													{/*TODO use stills api to get thumbnail*/}
-												</Spacer>
-												<FlexItem>
-													<div className="c-overline-plus-p">
-														<p className="c-overline">
-															{assignment.content_label === 'ITEM'
-																? assignmentContent.type.label
-																: assignment.content_label}
-														</p>
-														<p>{assignmentContent.title || assignmentContent.description}</p>
-													</div>
-												</FlexItem>
-											</Flex>
-										</div>
-									</Link>
-								</FormGroup>
-							)}
-							<FormGroup label="Weergave" labelFor="only_player">
-								<RadioButtonGroup>
-									<RadioButton
-										label="Weergeven als mediaspeler met tekst"
-										name="content_layout"
-										value={String(AssignmentLayout.PlayerAndText)}
-										checked={assignment.content_layout === AssignmentLayout.PlayerAndText}
-										onChange={isChecked =>
-											isChecked &&
-											setAssignmentProp('content_layout', AssignmentLayout.PlayerAndText)
-										}
-									/>
-									<RadioButton
-										label="Weergeven als enkel mediaspeler"
-										name="content_layout"
-										value={String(AssignmentLayout.OnlyPlayer)}
-										checked={assignment.content_layout === AssignmentLayout.OnlyPlayer}
-										onChange={isChecked =>
-											isChecked && setAssignmentProp('content_layout', AssignmentLayout.OnlyPlayer)
-										}
-									/>
-								</RadioButtonGroup>
-							</FormGroup>
-							<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
-							<FormGroup label="Antwoorden op" labelFor="answer_url">
-								<TextInput
-									id="answer_url"
-									type="text"
-									placeholder="http://..."
-									value={assignment.answer_url || ''}
-									onChange={value => setAssignmentProp('answer_url', value)}
+							</RadioButtonGroup>
+						</FormGroup>
+						<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
+						<FormGroup label="Antwoorden op" labelFor="answer_url">
+							<TextInput
+								id="answer_url"
+								type="text"
+								placeholder="http://..."
+								value={assignment.answer_url || ''}
+								onChange={value => setAssignmentProp('answer_url', value)}
+							/>
+							<p className="c-form-help-text">
+								Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
+								platform toe.
+							</p>
+						</FormGroup>
+						<FormGroup label="Beschikbaar vanaf">
+							<Flex>
+								{/*TODO Replace with DateTimePicker from components*/}
+								<DatePicker
+									value={assignment.available_at ? new Date(assignment.available_at) : null}
+									onChange={(value: Date | null) =>
+										setAssignmentProp('available_at', value ? value.toISOString() : null)
+									}
+									id="available_at"
 								/>
-								<p className="c-form-help-text">
-									Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
-									platform toe.
-								</p>
-							</FormGroup>
-							<FormGroup label="Beschikbaar vanaf">
-								<Flex>
+							</Flex>
+						</FormGroup>
+						<FormGroup label="Deadline" required>
+							<Flex>
+								<Spacer margin="right-small">
 									{/*TODO Replace with DateTimePicker from components*/}
 									<DatePicker
-										value={assignment.available_at ? new Date(assignment.available_at) : null}
-										onChange={(value: Date | null) =>
-											setAssignmentProp('available_at', value ? value.toISOString() : null)
-										}
-										id="available_at"
+										value={assignment.deadline_at ? new Date(assignment.deadline_at) : null}
+										onChange={value => setAssignmentProp('deadline_at', value)}
+										id="deadline_at"
 									/>
-								</Flex>
+								</Spacer>
+							</Flex>
+							<p className="c-form-help-text">
+								Na deze datum kan de leerling de opdracht niet meer invullen.
+							</p>
+						</FormGroup>
+						{assignment.assignment_type === 'BOUW' && (
+							<FormGroup label="Groepswerk?" labelFor="only_player">
+								<Toggle
+									checked={assignment.is_collaborative}
+									onChange={checked => setAssignmentProp('is_collaborative', checked)}
+								/>
 							</FormGroup>
-							<FormGroup label="Deadline" required>
-								<Flex>
-									<Spacer margin="right-small">
-										{/*TODO Replace with DateTimePicker from components*/}
-										<DatePicker
-											value={assignment.deadline_at ? new Date(assignment.deadline_at) : null}
-											onChange={value => setAssignmentProp('deadline_at', value)}
-											id="deadline_at"
-										/>
-									</Spacer>
-								</Flex>
-								<p className="c-form-help-text">
-									Na deze datum kan de leerling de opdracht niet meer invullen.
+						)}
+						<hr className="c-hr" />
+						<Alert type="info">
+							<div className="c-content c-content--no-m">
+								<p>
+									Hulp nodig bij het maken van opdrachten?
+									<br />
+									Bekijk onze <a href="#">screencast</a>.
 								</p>
-							</FormGroup>
-							{assignment.assignment_type === 'BOUW' && (
-								<FormGroup label="Groepswerk?" labelFor="only_player">
-									<Toggle
-										checked={assignment.is_collaborative}
-										onChange={checked => setAssignmentProp('is_collaborative', checked)}
-									/>
-								</FormGroup>
-							)}
-							<hr className="c-hr" />
-							<Alert type="info">
-								<div className="c-content c-content--no-m">
-									<p>
-										Hulp nodig bij het maken van opdrachten?
-										<br />
-										Bekijk onze <a href="#">screencast</a>.
-									</p>
-								</div>
-							</Alert>
-						</div>
+							</div>
+						</Alert>
 					</Form>
 				</Container>
 			</Container>
@@ -532,9 +529,9 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 	switch (loadingState) {
 		case 'loading':
 			return (
-				<div className="o-flex o-flex--horizontal-center">
+				<Flex center orientation="horizontal">
 					<Spinner size="large" />
-				</div>
+				</Flex>
 			);
 
 		case 'loaded':
