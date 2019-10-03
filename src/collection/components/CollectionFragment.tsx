@@ -90,21 +90,11 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	) => {
 		const disableVideoFields: boolean = !useCustomFields && !!isVideoFragment(fragment);
 
-		const onChangeTitle = (value: string) => {
-			if (disableVideoFields) {
-				return null;
-			}
+		const onChangeTitle = (value: string) =>
+			updateFragmentProperty(value, 'custom_title', fragment.id);
 
-			return updateFragmentProperty(value, 'custom_title', fragment.id);
-		};
-
-		const onChangeDescription = (html: string) => {
-			if (disableVideoFields) {
-				return null;
-			}
-
-			return updateFragmentProperty(html, 'custom_description', fragment.id);
-		};
+		const onChangeDescription = (html: string) =>
+			updateFragmentProperty(html, 'custom_description', fragment.id);
 
 		const getFragmentProperty = (
 			itemMetaData: Avo.Item.Response,
