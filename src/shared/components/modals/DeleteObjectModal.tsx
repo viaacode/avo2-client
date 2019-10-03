@@ -15,7 +15,7 @@ interface DeleteObjectModalProps {
 	cancelLabel?: string;
 	confirmLabel?: string;
 	isOpen: boolean;
-	setIsOpen: (isOpen: boolean) => void;
+	onClose?: () => void;
 	deleteObjectCallback: () => void;
 }
 
@@ -24,23 +24,17 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 	body = '',
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Verwijder',
-	setIsOpen,
+	onClose = () => {},
 	isOpen,
 	deleteObjectCallback,
 }) => {
-	const onDelete = () => {
-		setIsOpen(false);
+	const handleDelete = () => {
+		onClose();
 		deleteObjectCallback();
 	};
 
 	return (
-		<Modal
-			isOpen={isOpen}
-			title={title}
-			size="small"
-			onClose={() => setIsOpen(!isOpen)}
-			scrollable={true}
-		>
+		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable={true}>
 			<ModalBody>
 				<Fragment>
 					{!!body && <p>{body}</p>}
@@ -48,8 +42,8 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 						<ToolbarRight>
 							<ToolbarItem>
 								<div className="c-button-toolbar">
-									<Button type="secondary" label={cancelLabel} onClick={() => setIsOpen(false)} />
-									<Button type="danger" label={confirmLabel} onClick={onDelete} />
+									<Button type="secondary" label={cancelLabel} onClick={onClose} />
+									<Button type="danger" label={confirmLabel} onClick={handleDelete} />
 								</div>
 							</ToolbarItem>
 						</ToolbarRight>

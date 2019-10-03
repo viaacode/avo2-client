@@ -1,4 +1,3 @@
-import { ExecutionResult } from '@apollo/react-common';
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
@@ -40,18 +39,12 @@ import { ContentType } from '@viaa/avo2-components/dist/types';
 
 import NotFound from '../../404/views/NotFound';
 import { GET_COLLECTION_BY_ID } from '../../collection/graphql';
-import {
-	ContentTypeString,
-	dutchContentLabelToEnglishLabel,
-	DutchContentType,
-} from '../../collection/types';
+import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
 import { RouteParts } from '../../constants';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
-import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import {
@@ -60,6 +53,7 @@ import {
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../graphql';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
 import {
 	Assignment,
 	AssignmentContent,
@@ -117,9 +111,9 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
-	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 
 	const setBothAssignments = (assignment: Partial<Assignment>) => {
 		setCurrentAssignment(assignment);
@@ -190,7 +184,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 					setLoadingState('not-found');
 				});
 		}
-	}, [setCurrentAssignment, setInitialAssignment, location]);
+	}, [location, match.params]);
 
 	/**
 	 * Load the content if the query params change
@@ -236,19 +230,15 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 				setLoadingState('loaded');
 			}
 		}
-	}, [
-		currentAssignment.content_label,
-		currentAssignment.assignment_type,
-		currentAssignment.content_id,
-	]);
+	}, []);
 
-	const deleteAssignment = async () => {
+	const deleteCurrentAssignment = async () => {
 		try {
-			await triggerAssignmentDelete({
-				variables: {
-					id: currentAssignment.id,
-				},
-			});
+			if (typeof currentAssignment.id === 'undefined') {
+				toastService('De huidige opdracht is nog nooit opgeslagen (geen id)', TOAST_TYPE.DANGER);
+				return;
+			}
+			await deleteAssignment(useMutation, currentAssignment.id);
 			history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`);
 			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
 		} catch (err) {
@@ -270,27 +260,33 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		window.open(getAssignmentUrl(), '_blank');
 	};
 
-	const archiveAssignment = async () => {
+	const archiveAssignment = async (shouldBeArchived: boolean) => {
 		try {
 			// Use initialAssignment to avoid saving changes the user made, but hasn't explicitly saved yet
 			const archivedAssigment: Partial<Assignment> = {
 				...initialAssignment,
-				is_archived: true,
+				is_archived: shouldBeArchived,
 			};
 			setInitialAssignment(archivedAssigment);
 
 			// Also set the currentAssignment to archived, so if the user saves, the assignment will stay archived
 			setCurrentAssignment({
 				...currentAssignment,
-				is_archived: true,
+				is_archived: shouldBeArchived,
 			});
-			if (await updateAssignment(archivedAssigment)) {
-				toastService('De opdracht is gearchiveerd');
+			if (await updateAssignment(useMutation, archivedAssigment)) {
+				toastService(
+					`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`,
+					TOAST_TYPE.SUCCESS
+				);
 			}
 			// else: assignment was not valid and could not be saved yet
 		} catch (err) {
 			console.error(err);
-			toastService('Het archiveren van de opdracht is mislukt');
+			toastService(
+				`Het ${shouldBeArchived ? '' : 'de'}archiveren van de opdracht is mislukt`,
+				TOAST_TYPE.DANGER
+			);
 		}
 	};
 
@@ -298,7 +294,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		try {
 			const duplicateAssignment = cloneDeep(initialAssignment);
 			delete duplicateAssignment.id;
-			const assigment = await insertAssignment(duplicateAssignment);
+			const assigment = await insertAssignment(useMutation, duplicateAssignment);
 			if (!assigment) {
 				return; // assignment was not valid
 			}
@@ -311,7 +307,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			);
 		} catch (err) {
 			console.error(err);
-			toastService('Het dupliceren van de opdracht is mislukt');
+			toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
 		}
 	};
 
@@ -319,14 +315,17 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		switch (itemId) {
 			case 'duplicate':
 				duplicateAssignment().then(() => {});
+				setExtraOptionsMenuOpen(false);
 				break;
 
 			case 'archive':
-				archiveAssignment().then(() => {});
+				archiveAssignment(!initialAssignment.is_archived).then(() => {});
+				setExtraOptionsMenuOpen(false);
 				break;
 
 			case 'delete':
 				setDeleteModalOpen(true);
+				setExtraOptionsMenuOpen(false);
 				break;
 			default:
 				return null;
@@ -341,100 +340,16 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		setCurrentAssignment(newAssignment);
 	};
 
-	const validateAssignment = (assignment: Partial<Assignment>): [string[], Assignment] => {
-		const assignmentToSave = cloneDeep(assignment);
-		const errors = [];
-		if (!assignmentToSave.title) {
-			errors.push('Een titel is verplicht');
-		}
-		if (!assignmentToSave.description) {
-			errors.push('Een beschrijving is verplicht');
-		}
-		assignmentToSave.content_layout =
-			assignmentToSave.content_layout || AssignmentLayout.PlayerAndText;
-		if (assignmentToSave.answer_url && /^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
-			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
-		}
-		if (!assignmentToSave.deadline_at) {
-			errors.push('Een deadline is verplicht');
-		}
-
-		assignmentToSave.owner_uid =
-			assignmentToSave.owner_uid || '54859c98-d5d3-1038-8d91-6dfda901a78e';
-		assignmentToSave.is_archived = assignmentToSave.is_archived || false;
-		assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
-		assignmentToSave.is_collaborative = assignmentToSave.is_collaborative || false;
-		delete assignmentToSave.assignment_responses; // = assignmentToSave.assignment_responses || [];
-		delete assignmentToSave.assignment_assignment_tags; // = assignmentToSave.assignment_assignment_tags || {
-		// 	assignment_tag: [],
-		// };
-		delete (assignmentToSave as any).__typename;
-		return [errors, assignmentToSave as Assignment];
-	};
-
-	const insertAssignment = async (assignment: Partial<Assignment>) => {
-		try {
-			const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
-			if (validationErrors.length) {
-				toastService(validationErrors.join('<br/>'), TOAST_TYPE.DANGER);
-				return;
-			}
-			const response: void | ExecutionResult<Assignment> = await triggerAssignmentInsert({
-				variables: {
-					assignment: assignmentToSave,
-				},
-			});
-			const id = get(response, 'data.insert_app_assignments.returning[0].id');
-			if (typeof id !== undefined) {
-				return {
-					...assignment, // Do not copy the auto modified fields from the validation back into the input controls
-					id,
-				};
-			} else {
-				console.error('assignment insert returned empty response', response);
-				throw 'Het opslaan van de opdracht is mislukt';
-			}
-		} catch (err) {
-			console.error(err);
-			throw err;
-		}
-	};
-
-	const updateAssignment = async (assignment: Partial<Assignment>) => {
-		try {
-			const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
-			if (validationErrors.length) {
-				toastService(validationErrors.join('<br/>'), TOAST_TYPE.DANGER);
-				return;
-			}
-			const response: void | ExecutionResult<Assignment> = await triggerAssignmentUpdate({
-				variables: {
-					id: assignment.id,
-					assignment: assignmentToSave,
-				},
-			});
-			if (!response || !response.data) {
-				console.error('assignment update returned empty response', response);
-				throw new Error('Het opslaan van de opdracht is mislukt');
-			} else {
-				return assignment;
-			}
-		} catch (err) {
-			console.error(err);
-			throw err;
-		}
-	};
-
 	const saveAssignment = async (assignment: Partial<Assignment>) => {
 		try {
 			if (pageType === 'create') {
 				// create => insert into graphql
-				await insertAssignment(assignment);
+				await insertAssignment(useMutation, assignment);
 				setBothAssignments(assignment);
 				toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
 			} else {
 				// edit => update graphql
-				await updateAssignment(assignment);
+				await updateAssignment(useMutation, assignment);
 				setBothAssignments(assignment);
 				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
 			}
@@ -546,7 +461,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 													onClick={viewAsStudent}
 													label="Bekijk als leerling"
 												/>
-												<ControlledDropdown
+												<Dropdown
 													isOpen={isExtraOptionsMenuOpen}
 													onOpen={() => setExtraOptionsMenuOpen(true)}
 													onClose={() => setExtraOptionsMenuOpen(false)}
@@ -565,13 +480,19 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 														<MenuContent
 															menuItems={[
 																{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-																{ icon: 'archive', id: 'archive', label: 'Archiveer' },
+																{
+																	icon: 'archive',
+																	id: 'archive',
+																	label: initialAssignment.is_archived
+																		? 'Dearchiveer'
+																		: 'Archiveer',
+																},
 																{ icon: 'delete', id: 'delete', label: 'Verwijder' },
 															]}
 															onClick={id => handleExtraOptionClicked(id.toString() as any)}
 														/>
 													</DropdownContent>
-												</ControlledDropdown>
+												</Dropdown>
 											</Spacer>
 										)}
 										<Button
@@ -722,7 +643,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 								<p>
 									Hulp nodig bij het maken van opdrachten?
 									<br />
-									Bekijk onze <a href="#">screencast</a>.
+									Bekijk onze{' '}
+									<a href="http://google.com" target="_blank" rel="noopener noreferrer">
+										screencast
+									</a>
+									.
 								</p>
 							</div>
 						</Alert>
@@ -731,11 +656,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			</Container>
 
 			<DeleteObjectModal
-				title={`Ben je zeker dat de opdracht \"${currentAssignment.title}\" wil verwijderen?`}
+				title={`Ben je zeker dat de opdracht "${currentAssignment.title}" wil verwijderen?`}
 				body="Deze actie kan niet ongedaan gemaakt worden"
 				isOpen={isDeleteModalOpen}
-				setIsOpen={setDeleteModalOpen}
-				deleteObjectCallback={deleteAssignment}
+				onClose={() => setDeleteModalOpen(false)}
+				deleteObjectCallback={deleteCurrentAssignment}
 			/>
 		</Fragment>
 	);

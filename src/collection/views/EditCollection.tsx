@@ -400,7 +400,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			setIsSavingCollection(false);
 			toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
 			// refetch collection:
-			setTimeout(refetchCollection, 0);
+			refetchCollection();
 		} catch (err) {
 			console.error(err);
 			toastService('Opslaan mislukt', TOAST_TYPE.DANGER);
@@ -575,10 +575,10 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					updateCollectionProperty={updateCollectionProperty}
 				/>
 				<DeleteObjectModal
-					title={`Ben je zeker dat de collectie \"${collection.title}\" wil verwijderen?`}
+					title={`Ben je zeker dat de collectie "${collection.title}" wil verwijderen?`}
 					body="Deze actie kan niet ongedaan gemaakt worden"
 					isOpen={isDeleteModalOpen}
-					setIsOpen={setIsDeleteModalOpen}
+					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCollection}
 				/>
 				<RenameCollectionModal

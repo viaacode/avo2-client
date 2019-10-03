@@ -254,5 +254,6 @@ yarn-error.log*
 env-config.js
 cypress/videos
 cypress/screenshots
+cypress/integration/*.js
 cypress-report*xml
 ci-results

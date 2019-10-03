@@ -497,10 +497,10 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 				</Container>
 
 				<DeleteObjectModal
-					title={`Ben je zeker dat de collectie \"${collection.title}\" wil verwijderen?`}
+					title={`Ben je zeker dat de collectie "${collection.title}" wil verwijderen?`}
 					body="Deze actie kan niet ongedaan gemaakt worden"
 					isOpen={isDeleteModalOpen}
-					setIsOpen={setIsDeleteModalOpen}
+					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCollection}
 				/>
 			</Fragment>

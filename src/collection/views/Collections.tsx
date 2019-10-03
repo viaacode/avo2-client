@@ -53,7 +53,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				},
 			});
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
-			setTimeout(refetchCollections, 0);
+			refetchCollections();
 		} catch (err) {
 			console.error(err);
 			toastService('Collectie kon niet verwijdert worden', TOAST_TYPE.DANGER);
@@ -211,7 +211,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					title="Verwijder collectie?"
 					body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
 					isOpen={isDeleteModalOpen}
-					setIsOpen={setIsDeleteModalOpen}
+					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => deleteCollection(refetchCollections)}
 				/>
 			</>
