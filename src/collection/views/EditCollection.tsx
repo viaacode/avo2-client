@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, eq, get, isEmpty, omit, without } from 'lodash-es';
+import { cloneDeep, eq, get, initial, isEmpty, omit, without } from 'lodash-es';
 import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { Prompt, RouteComponentProps, withRouter } from 'react-router';
@@ -31,7 +31,8 @@ import { DataQueryComponent } from '../../shared/components/DataComponent/DataQu
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
-import { RenameCollectionModal, ReorderCollectionModal, ShareCollectionModal } from '../components';
+import InputModal from '../../shared/components/modals/InputModal';
+import { ReorderCollectionModal, ShareCollectionModal } from '../components';
 import { USER_GROUPS } from '../constants';
 import {
 	DELETE_COLLECTION,
@@ -166,6 +167,36 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		} as Avo.Collection.Response);
 	};
 
+	const renameCollection = async (newTitle: string) => {
+		try {
+			if (!initialCollection) {
+				toastService('De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)');
+				return;
+			}
+			// Update the name in the current collection
+			updateCollectionProperty(newTitle, 'title');
+
+			const collectionWithNewName = {
+				...initialCollection,
+				title: newTitle,
+			};
+			// Update the name in the initial collection
+			setInitialCollection(collectionWithNewName);
+			const cleanedCollection = cleanCollectionBeforeSave(collectionWithNewName);
+
+			// Immediately store the new name, without the user having to click the save button twice
+			await triggerCollectionUpdate({
+				variables: {
+					id: cleanedCollection.id,
+					collection: cleanedCollection,
+				},
+			});
+		} catch (err) {
+			console.error(err);
+			toastService('Het hernoemen van de collectie is mislukt');
+		}
+	};
+
 	// Swap position of two fragments within a collection
 	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
 		if (!currentCollection) {
@@ -260,6 +291,24 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		collection: Avo.Collection.Response | undefined
 	): number[] => {
 		return (get(collection, 'collection_fragments') || []).map(fragment => fragment.id);
+	};
+
+	/**
+	 * Clean the collection of properties from other tables, properties that can't be saved
+	 */
+	const cleanCollectionBeforeSave = (
+		collection: Partial<Avo.Collection.Response>
+	): Partial<Avo.Collection.Response> => {
+		const propertiesToDelete = [
+			'collection_fragments',
+			'label_redactie',
+			'owner',
+			'collection_permissions',
+			'__typename',
+			'type',
+		];
+
+		return omit(collection, propertiesToDelete);
 	};
 
 	async function onSaveCollection(refetchCollection: () => void) {
@@ -373,22 +422,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			});
 
 			// Trigger collection update
-
-			// Clean the collection of properties from other tables, properties that can't be saved
-			const propertiesToDelete = [
-				'collection_fragments',
-				'label_redactie',
-				'owner',
-				'collection_permissions',
-				'__typename',
-				'type',
-			];
-
-			const cleanedCollection: Partial<Avo.Collection.Response> = omit(
-				newCollection,
-				propertiesToDelete
-			);
-
+			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 			await triggerCollectionUpdate({
 				variables: {
 					id: cleanedCollection.id,
@@ -581,12 +615,13 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCollection}
 				/>
-				<RenameCollectionModal
-					collectionId={collection.id}
+				<InputModal
+					title="Hernoem deze collectie"
+					inputLabel="Naam collectie:"
+					inputValue={collection.title}
 					isOpen={isRenameModalOpen}
-					setIsOpen={setIsRenameModalOpen}
-					initialCollectionName={collection.title}
-					updateCollectionProperty={updateCollectionProperty}
+					onClose={() => setIsRenameModalOpen(false)}
+					inputCallback={renameCollection}
 				/>
 			</Fragment>
 		) : null;

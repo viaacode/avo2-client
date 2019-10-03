@@ -44,6 +44,7 @@ import { RouteParts } from '../../constants';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
+import InputModal from '../../shared/components/modals/InputModal';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -71,7 +72,7 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in AssignmentContentLabel]: s
 };
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string }
+	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string };
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,
@@ -111,6 +112,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
@@ -200,10 +202,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 					.then((response: ApolloQueryResult<AssignmentContent>) => {
 						const assignmentContent = get(
 							response,
-							`data.${
-								CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel]
-									.resultPath
-							}`
+							`data.${CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel].resultPath}`
 						);
 						if (!assignmentContent) {
 							toastService(
@@ -238,7 +237,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 				toastService('De huidige opdracht is nog nooit opgeslagen (geen id)', TOAST_TYPE.DANGER);
 				return;
 			}
-			await deleteAssignment(useMutation, currentAssignment.id);
+			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
 			history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`);
 			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
 		} catch (err) {
@@ -274,7 +273,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 				...currentAssignment,
 				is_archived: shouldBeArchived,
 			});
-			if (await updateAssignment(useMutation, archivedAssigment)) {
+			if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 				toastService(
 					`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`,
 					TOAST_TYPE.SUCCESS
@@ -290,11 +289,12 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		}
 	};
 
-	const duplicateAssignment = async () => {
+	const duplicateAssignment = async (newTitle: string) => {
 		try {
 			const duplicateAssignment = cloneDeep(initialAssignment);
 			delete duplicateAssignment.id;
-			const assigment = await insertAssignment(useMutation, duplicateAssignment);
+			duplicateAssignment.title = newTitle;
+			const assigment = await insertAssignment(triggerAssignmentInsert, duplicateAssignment);
 			if (!assigment) {
 				return; // assignment was not valid
 			}
@@ -314,7 +314,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {
 		switch (itemId) {
 			case 'duplicate':
-				duplicateAssignment().then(() => {});
+				setDuplicateModalOpen(true);
 				setExtraOptionsMenuOpen(false);
 				break;
 
@@ -344,12 +344,12 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		try {
 			if (pageType === 'create') {
 				// create => insert into graphql
-				await insertAssignment(useMutation, assignment);
+				await insertAssignment(triggerAssignmentInsert, assignment);
 				setBothAssignments(assignment);
 				toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
 			} else {
 				// edit => update graphql
-				await updateAssignment(useMutation, assignment);
+				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
 				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
 			}
@@ -428,7 +428,9 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 										<Icon name="chevron-left" size="small" type="arrows" />
 										Mijn opdrachten
 									</Link>
-									<h2 className="c-h2 u-m-0">Nieuwe opdracht</h2>
+									<h2 className="c-h2 u-m-0">
+										{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
+									</h2>
 									{currentAssignment.id && (
 										<Spacer margin="top-small">
 											<Form type="inline">
@@ -661,6 +663,16 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 				isOpen={isDeleteModalOpen}
 				onClose={() => setDeleteModalOpen(false)}
 				deleteObjectCallback={deleteCurrentAssignment}
+			/>
+
+			<InputModal
+				title="Dupliceer taak"
+				inputLabel="Geef de nieuwe taak een naam:"
+				inputValue={currentAssignment.title}
+				inputPlaceholder="Titel van de nieuwe taak"
+				isOpen={isDuplicateModalOpen}
+				onClose={() => setDuplicateModalOpen(false)}
+				inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
 			/>
 		</Fragment>
 	);

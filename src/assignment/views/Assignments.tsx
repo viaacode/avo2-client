@@ -44,6 +44,7 @@ import {
 } from '../graphql';
 import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
 import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../types';
+import InputModal from '../../shared/components/modals/InputModal';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -55,10 +56,11 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
 		string | number | null
 	>(null);
-	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
-	const [assignmentIdToBeDeleted, setAssignmentIdToBeDeleted] = useState<null | number | string>(
-		null
+	const [isDuplicateAssignmentModalOpen, setDuplicateAssignmentModalOpen] = useState<boolean>(
+		false
 	);
+	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
+	const [markedAssignment, setMarkedAssignment] = useState<null | Partial<Assignment>>(null);
 	const [sortColumn, setSortColumn] = useState<keyof Assignment>('deadline_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 	const [page, setPage] = useState<number>(0);
@@ -115,11 +117,15 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		return assignment;
 	};
 
-	const duplicateAssignment = async (assignmentId: number, refetchAssignments: () => void) => {
+	const duplicateAssignment = async (
+		newTitle: string,
+		assignment: Partial<Assignment> | null,
+		refetchAssignments: () => void
+	) => {
 		try {
-			const assignment: Partial<Assignment> = await getAssigmentById(assignmentId);
 			if (assignment) {
 				delete assignment.id;
+				assignment.title = newTitle;
 				const duplicateAssignment = await insertAssignment(triggerAssignmentInsert, assignment);
 				if (!duplicateAssignment) {
 					return; // assignment was not valid => validation service already showed a toast
@@ -199,13 +205,19 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 				);
 				break;
 			case 'duplicate':
-				await duplicateAssignment(dataRow.id, refetchAssignments);
+				const assignment: Partial<Assignment> = await getAssigmentById(dataRow.id);
+				if (assignment) {
+					setMarkedAssignment(assignment);
+					setDuplicateAssignmentModalOpen(true);
+				} else {
+					toastService('Het ophalen van de details van de opdracht is mislukt', TOAST_TYPE.DANGER);
+				}
 				break;
 			case 'archive':
 				await archiveAssignment(dataRow.id, refetchAssignments);
 				break;
 			case 'delete':
-				setAssignmentIdToBeDeleted(dataRow.id);
+				setMarkedAssignment(dataRow);
 				setDeleteAssignmentModalOpen(true);
 				break;
 			default:
@@ -217,7 +229,12 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 
 	const handleDeleteModalClose = () => {
 		setDeleteAssignmentModalOpen(false);
-		setAssignmentIdToBeDeleted(null);
+		setMarkedAssignment(null);
+	};
+
+	const handleDuplicateModalClose = () => {
+		setDuplicateAssignmentModalOpen(false);
+		setMarkedAssignment(null);
 	};
 
 	const renderCell = (
@@ -239,9 +256,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
 								<Link
-									to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
-										RouteParts.Edit
-									}`}
+									to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${RouteParts.Edit}`}
 								>
 									{rowData.title}
 								</Link>
@@ -266,9 +281,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 			case 'assignment_responses':
 				return (
 					<Link
-						to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Assignments}/${
-							rowData.id
-						}/${RouteParts.Responses}`}
+						to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Assignments}/${rowData.id}/${RouteParts.Responses}`}
 					>
 						{(cellData || []).length}
 					</Link>
@@ -373,12 +386,24 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 				</Spacer>
 
 				<DeleteObjectModal
-					title={`Ben je zeker dat je deze opdracht wil verwijderen?`}
+					title="Ben je zeker dat je deze opdracht wil verwijderen?"
 					body="Deze actie kan niet ongedaan gemaakt worden"
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
 					deleteObjectCallback={() =>
-						deleteCurrentAssignment(assignmentIdToBeDeleted, refetchAssignments)
+						deleteCurrentAssignment(get(markedAssignment, 'id', null), refetchAssignments)
+					}
+				/>
+
+				<InputModal
+					title="Dupliceer taak"
+					inputLabel="Geef de nieuwe taak een naam:"
+					inputValue={get(markedAssignment, 'title', '')}
+					inputPlaceholder="Titel van de nieuwe taak"
+					isOpen={isDuplicateAssignmentModalOpen}
+					onClose={handleDuplicateModalClose}
+					inputCallback={(newTitle: string) =>
+						duplicateAssignment(newTitle, markedAssignment, refetchAssignments)
 					}
 				/>
 			</Fragment>
