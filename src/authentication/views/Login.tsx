@@ -32,7 +32,7 @@ const Login: FunctionComponent<LoginProps> = ({
 		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
 		}
-	}, [getLoginState, loginState, loginStateLoading]);
+	}, [getLoginState, loginState, loginStateLoading, loginStateError]);
 
 	if (loginStateError) {
 		return (
