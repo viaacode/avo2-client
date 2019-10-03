@@ -1,5 +1,7 @@
+import { useMutation } from '@apollo/react-hooks';
+import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useState } from 'react';
+import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -26,9 +28,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import { useMutation } from '@apollo/react-hooks';
-import { ApolloQueryResult } from 'apollo-client';
 import { RouteParts } from '../../constants';
+import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
@@ -58,9 +59,47 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const [assignmentIdToBeDeleted, setAssignmentIdToBeDeleted] = useState<null | number | string>(
 		null
 	);
+	const [sortColumn, setSortColumn] = useState<keyof Assignment>('deadline_at');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [page, setPage] = useState<number>(0);
+
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
+
+	const getFilterObject = () => {
+		const filter = filterString && filterString.trim();
+		const uppercaseFilter = filter && filter.toUpperCase();
+		if (!filter) {
+			return {};
+		}
+
+		return [
+			{ title: { _like: `%${filter}%` } },
+			{ assignment_assignment_tags: { assignment_tag: { label: { _like: `%${filter}%` } } } },
+			{ class_room: { _like: `%${filter}%` } },
+			{ assignment_type: { _like: `%${filter}%` } },
+			{ title: { _like: `%${uppercaseFilter}%` } },
+			{
+				assignment_assignment_tags: {
+					assignment_tag: { label: { _like: `%${uppercaseFilter}%` } },
+				},
+			},
+			{ class_room: { _like: `%${uppercaseFilter}%` } },
+			{ assignment_type: { _like: `%${uppercaseFilter}%` } },
+		];
+	};
+
+	const handleColumnClick = (columnId: keyof Assignment) => {
+		if (sortColumn === columnId) {
+			// Flip previous ordering
+			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+		} else {
+			// Set initial ordering for new column
+			setSortColumn(columnId);
+			setSortOrder('asc');
+		}
+	};
 
 	const getAssigmentById = async (assignmentId: number | string) => {
 		const response: ApolloQueryResult<Assignment> = await dataService.query({
@@ -181,7 +220,6 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		setAssignmentIdToBeDeleted(null);
 	};
 
-	// TODO: Replace colKey type by AssignmentColumnKey when typings 1.9.0 is published
 	const renderCell = (
 		rowData: Assignment,
 		colKey: keyof Assignment | 'actions',
@@ -212,7 +250,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 					</Flex>
 				);
 			case 'assignment_type':
-				return `${capitalize(cellData)}opdracht`;
+				return `${capitalize(cellData)}`;
 			case 'assignment_assignment_tags':
 				const assignmentTags: AssignmentTag[] = get(cellData, 'assignment_tag', []);
 				const tagOptions = assignmentTags.map((tag: AssignmentTag) => ({
@@ -288,14 +326,66 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const columns: AssignmentColumn[] = [
 		{ id: 'title', label: 'Titel', sortable: true },
 		{ id: 'assignment_type', label: 'Type', sortable: true },
-		{ id: 'assignment_assignment_tags', label: 'Vak of project', sortable: true },
+		{ id: 'assignment_assignment_tags', label: 'Vak of project' },
 		{ id: 'class_room', label: 'Klas', sortable: true },
 		{ id: 'deadline_at', label: 'Deadline', sortable: true },
-		{ id: 'assignment_responses', label: 'Indieningen', sortable: true },
+		{ id: 'assignment_responses', label: 'Indieningen' },
 		{ id: 'actions', label: '' },
 	];
 
-	const renderAssignmentsView = (assignments: Assignment[], refetchAssignments: () => void) => (
+	const renderAssignmentsTable = (
+		data: {
+			assignments: Assignment[];
+			count: { aggregate: { count: number } };
+		},
+		refetchAssignments: () => void
+	) => {
+		return (
+			<Fragment>
+				<Table
+					columns={columns}
+					data={data.assignments}
+					emptyStateMessage={
+						filterString
+							? 'Er zijn geen opdrachten die voldoen aan de zoekopdracht'
+							: activeView === 'archived_assignments'
+							? 'Er zijn nog geen opdrachten gearchiveerd'
+							: 'Er zijn nog geen opdrachten aangemaakt'
+					}
+					renderCell={(
+						rowData: Assignment,
+						colKey: keyof Assignment | 'actions',
+						rowIndex: number,
+						colIndex: number
+					) => renderCell(rowData, colKey, rowIndex, colIndex, refetchAssignments)}
+					rowKey="id"
+					styled
+					onColumnClick={handleColumnClick as any}
+					sortColumn={sortColumn}
+					sortOrder={sortOrder}
+				/>
+				<Spacer margin="top-large">
+					<Pagination
+						pageCount={Math.ceil(data.count.aggregate.count / ITEMS_PER_PAGE)}
+						currentPage={page}
+						onPageChange={setPage}
+					/>
+				</Spacer>
+
+				<DeleteObjectModal
+					title={`Ben je zeker dat je deze opdracht wil verwijderen?`}
+					body="Deze actie kan niet ongedaan gemaakt worden"
+					isOpen={isDeleteAssignmentModalOpen}
+					onClose={handleDeleteModalClose}
+					deleteObjectCallback={() =>
+						deleteCurrentAssignment(assignmentIdToBeDeleted, refetchAssignments)
+					}
+				/>
+			</Fragment>
+		);
+	};
+
+	return (
 		<Container mode="vertical" size="small">
 			<Container mode="horizontal">
 				<Toolbar>
@@ -327,45 +417,22 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						</ToolbarItem>
 					</ToolbarRight>
 				</Toolbar>
-				<Table
-					columns={columns}
-					data={assignments}
-					emptyStateMessage="U hebt nog geen opdrachten aangemaakt"
-					renderCell={(
-						rowData: Assignment,
-						colKey: keyof Assignment | 'actions',
-						rowIndex: number,
-						colIndex: number
-					) => renderCell(rowData, colKey, rowIndex, colIndex, refetchAssignments)}
-					rowKey="id"
-					styled
-				/>
-				<Pagination pageCount={0} />
 
-				<DeleteObjectModal
-					title={`Ben je zeker dat je deze opdracht wil verwijderen?`}
-					body="Deze actie kan niet ongedaan gemaakt worden"
-					isOpen={isDeleteAssignmentModalOpen}
-					onClose={handleDeleteModalClose}
-					deleteObjectCallback={() =>
-						deleteCurrentAssignment(assignmentIdToBeDeleted, refetchAssignments)
-					}
+				<DataQueryComponent
+					query={GET_ASSIGNMENTS_BY_OWNER_ID}
+					variables={{
+						ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e',
+						archived: activeView === 'archived_assignments',
+						order: { [sortColumn]: sortOrder },
+						offset: page * ITEMS_PER_PAGE,
+						filter: getFilterObject(),
+					}}
+					renderData={renderAssignmentsTable}
+					resultPath=""
+					ignoreNotFound
 				/>
 			</Container>
 		</Container>
-	);
-
-	return (
-		<DataQueryComponent
-			query={GET_ASSIGNMENTS_BY_OWNER_ID}
-			variables={{
-				ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e',
-				archived: activeView === 'archived_assignments',
-			}}
-			renderData={renderAssignmentsView}
-			resultPath="app_assignments"
-			ignoreNotFound
-		/>
 	);
 };
 
