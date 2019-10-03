@@ -16,7 +16,7 @@ import { RouteParts } from './constants';
 import { dataService } from './shared/services/data-service';
 import store from './store';
 
-import './App.scss';
+import './styles/main.scss';
 
 interface AppProps {
 	loginState: LoginResponse | null;
@@ -59,7 +59,7 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 					{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
 					{
 						label: 'Mijn Werkruimte',
-						location: `/${RouteParts.MyWorkspace}/${RouteParts.Collections}`,
+						location: `/${RouteParts.MyWorkspace}`,
 						icon: 'briefcase',
 					},
 					{ label: 'Projecten', location: `/${RouteParts.Projects}` },

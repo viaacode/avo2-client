@@ -16,7 +16,7 @@ import { Avo } from '@viaa/avo2-types';
 import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { fetchPlayerToken } from '../../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
@@ -35,7 +35,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	fragment,
 	updateCuePoints,
 }) => {
-	const [playerToken, setPlayerToken] = useState();
+	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(fragment.start_oc || 0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		fragment.end_oc || toSeconds(itemMetaData.duration) || 0
@@ -62,6 +62,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			end: setFragmentEndTime,
 		};
 		const seconds = toSeconds(timeString);
+
 		if (seconds !== null) {
 			setFunctions[startOrEnd](seconds);
 		}
@@ -73,7 +74,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const initFlowPlayer = () =>
-		!playerToken && fetchPlayerToken(itemMetaData.external_id).then(data => setPlayerToken(data));
+		!playerTicket &&
+		fetchPlayerTicket(itemMetaData.external_id).then(data => setPlayerTicket(data));
 
 	// TODO: Replace publisher, published_at by real publisher
 	return (
@@ -87,7 +89,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			<ModalBody>
 				<>
 					<FlowPlayer
-						src={playerToken ? playerToken.toString() : null}
+						src={playerTicket ? playerTicket.toString() : null}
 						poster={itemMetaData.thumbnail_path}
 						title={itemMetaData.title}
 						onInit={initFlowPlayer}

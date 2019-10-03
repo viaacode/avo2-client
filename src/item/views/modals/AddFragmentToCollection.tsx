@@ -37,7 +37,7 @@ import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/forma
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { fetchPlayerToken } from '../../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
 
@@ -54,13 +54,13 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	isOpen,
 	onClose = () => {},
 }) => {
-	const [playerToken, setPlayerToken] = useState();
-	const [createNewCollection, setCreateNewCollection] = useState(false);
+	const [playerTicket, setPlayerTicket] = useState<string>();
+	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
 	const [selectedCollection, setSelectedCollection] = useState<Avo.Collection.Response | undefined>(
 		undefined
 	);
-	const [newCollectionTitle, setNewCollectionTitle] = useState('');
+	const [newCollectionTitle, setNewCollectionTitle] = useState<string>('');
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0
@@ -77,6 +77,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 				variables: { id },
 			});
 			const collection = get(response, 'data.app_collections[0]');
+
 			if (collection) {
 				setSelectedCollection(collection);
 			} else {
@@ -139,11 +140,10 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 				response,
 				'data.insert_app_collections.returning[0]'
 			);
+
 			if (!response || response.errors) {
-				console.error(get(response, 'errors'));
 				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
 			} else if (!insertedCollection) {
-				console.error(response);
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 			} else {
 				trackEvents({
@@ -155,12 +155,12 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 						},
 					},
 				});
+
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
 				onClose();
 			}
 		} catch (err) {
-			console.error(err);
 			toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
 		}
 	};
@@ -176,6 +176,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 			end: setFragmentEndTime,
 		};
 		const seconds = toSeconds(timeString);
+
 		if (seconds !== null) {
 			setFunctions[startOrEnd](seconds);
 		}
@@ -188,7 +189,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 
 	const renderAddFragmentToCollectionModal = (collections: { id: number; title: string }[]) => {
 		const initFlowPlayer = () =>
-			!playerToken && fetchPlayerToken(externalId).then(data => setPlayerToken(data));
+			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 
 		return (
 			<Modal
@@ -206,7 +207,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 									<Column size="2-7">
 										{itemMetaData && ( // TODO: Replace publisher, published_at by real publisher
 											<FlowPlayer
-												src={playerToken ? playerToken.toString() : null}
+												src={playerTicket ? playerTicket.toString() : null}
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}

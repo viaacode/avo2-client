@@ -4,7 +4,7 @@ import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
-import { fetchPlayerToken } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 
 import {
 	Button,
@@ -39,9 +39,9 @@ interface CollectionFragmentProps extends RouteComponentProps {
 	collection: Avo.Collection.Response;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
-	isOptionsMenuOpen: string | null;
-	setIsOptionsMenuOpen: React.Dispatch<React.SetStateAction<null>>;
-	fragment: any;
+	openOptionsId: number | null;
+	setOpenOptionsId: React.Dispatch<React.SetStateAction<number | null>>;
+	fragment: Avo.Collection.Fragment;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 	updateCollection: (collection: Avo.Collection.Response) => void;
 }
@@ -51,15 +51,15 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	collection,
 	swapFragments,
 	updateFragmentProperty,
-	isOptionsMenuOpen,
-	setIsOptionsMenuOpen,
+	openOptionsId,
+	setOpenOptionsId,
 	fragment,
 	reorderFragments,
 	updateCollection,
 }) => {
-	const [playerToken, setPlayerToken] = useState();
-	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
-	const [isCutModalOpen, setIsCutModalOpen] = useState(false);
+	const [playerTicket, setPlayerTicket] = useState<string>();
+	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
+	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [cuePoints, setCuePoints] = useState({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
@@ -90,21 +90,11 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	) => {
 		const disableVideoFields: boolean = !useCustomFields && !!isVideoFragment(fragment);
 
-		const onChangeTitle = (value: string) => {
-			if (disableVideoFields) {
-				return null;
-			}
+		const onChangeTitle = (value: string) =>
+			updateFragmentProperty(value, 'custom_title', fragment.id);
 
-			return updateFragmentProperty(value, 'custom_title', fragment.id);
-		};
-
-		const onChangeDescription = (html: string) => {
-			if (disableVideoFields) {
-				return null;
-			}
-
-			return updateFragmentProperty(html, 'custom_description', fragment.id);
-		};
+		const onChangeDescription = (html: string) =>
+			updateFragmentProperty(html, 'custom_description', fragment.id);
 
 		const getFragmentProperty = (
 			itemMetaData: Avo.Item.Response,
@@ -150,28 +140,28 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	};
 
 	const onDuplicateFragment = (fragmentId: number) => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol gedupliceerd', TOAST_TYPE.SUCCESS);
 	};
 
 	const onMoveFragment = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol verplaatst', TOAST_TYPE.SUCCESS);
 	};
 
 	const onCopyFragmentToCollection = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol gekopiëerd naar collectie', TOAST_TYPE.SUCCESS);
 	};
 
 	const onMoveFragmentToCollection = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol verplaatst naar collectie', TOAST_TYPE.SUCCESS);
 	};
 
 	// Delete fragment from collection
 	const onDeleteFragment = (fragmentId: number) => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 
 		// Sort fragments by position
 		const orderedFragments = orderBy(
@@ -195,9 +185,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 
 	const renderCollectionFragment = (itemMetaData: any) => {
 		const initFlowPlayer = () =>
-			!playerToken &&
-			fetchPlayerToken(fragment.external_id)
-				.then(data => setPlayerToken(data))
+			!playerTicket &&
+			fetchPlayerTicket(fragment.external_id)
+				.then(data => setPlayerTicket(data))
 				.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
 		return (
@@ -224,9 +214,9 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 							<ToolbarRight>
 								<ToolbarItem>
 									<ControlledDropdown
-										isOpen={isOptionsMenuOpen === fragment.id}
-										onOpen={() => setIsOptionsMenuOpen(fragment.id)}
-										onClose={() => setIsOptionsMenuOpen(null)}
+										isOpen={openOptionsId === fragment.id}
+										onOpen={() => setOpenOptionsId(fragment.id)}
+										onClose={() => setOpenOptionsId(null)}
 										placement="bottom-end"
 										autoSize
 									>
@@ -283,7 +273,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 							<Grid>
 								<Column size="3-6">
 									<FlowPlayer
-										src={playerToken ? playerToken.toString() : null}
+										src={playerTicket ? playerTicket.toString() : null}
 										poster={itemMetaData.thumbnail_path}
 										title={itemMetaData.title}
 										onInit={initFlowPlayer}

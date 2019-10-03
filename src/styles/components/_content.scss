@@ -1,0 +1,224 @@
+/* ==========================================================================
+   Component: Content
+   ---
+   Usage: wrap a .c-content class around content to turn it into rich text.
+
+   .c-h1, .c-h2, .c-body-1, c-body 2
+   ---
+   Usage: use these classes to style individual components like their rich text equivalent
+   ========================================================================== */
+
+.c-h1-display,
+.c-content .c-h1-display {
+	font-size: 4.8rem;
+	margin: 2.4rem 0;
+	line-height: 1.25;
+	font-family: $g-headings-font-family;
+	font-weight: $g-headings-font-weight;
+}
+
+.c-h1,
+.c-content h1 {
+	font-family: $g-headings-font-family;
+	font-weight: $g-headings-font-weight;
+	font-size: 3.2rem;
+	margin: 3.2rem 0;
+	line-height: 1.25;
+}
+
+.c-h2,
+.c-content h2 {
+	font-family: $g-headings-font-family;
+	font-weight: $g-headings-font-weight;
+	font-size: 2.4rem;
+	margin: 2.4rem 0;
+	line-height: 1.25;
+}
+
+.c-h3,
+.c-content h3 {
+	font-family: $g-headings-font-family;
+	font-weight: $g-headings-font-weight;
+	font-size: 2.1rem;
+	margin: 2.1rem 0 1.2rem;
+	line-height: 1.25;
+}
+
+.c-h4,
+.c-content h4 {
+	font-family: $g-base-font-family;
+	font-size: $g-base-font-size;
+	font-weight: $g-headings-font-weight;
+	margin: 1.5rem 0;
+	font-weight: 500;
+}
+
+.c-body-1 {
+	font-size: $g-base-font-size;
+	margin: 1.5rem 0;
+}
+
+.c-body-1--spaced {
+	line-height: 1.75;
+}
+
+.c-body-2 {
+	font-size: 1.3rem;
+	margin: 1.3rem 0;
+}
+
+.c-intro {
+	font-size: 1.7rem;
+}
+
+.c-overline {
+	font-weight: $g-headings-font-weight;
+	font-size: 1.4rem;
+	line-height: 1;
+	text-transform: uppercase;
+	letter-spacing: 0.05rem;
+	margin: 1.5rem 0;
+}
+
+// Overline plus paragraph
+.c-overline-plus-p {
+	margin: 1.5rem 0;
+
+	.c-overline {
+		margin: 0 0 0.4rem;
+	}
+
+	p:last-child {
+		margin: 0;
+	}
+}
+
+// Provide a generic method to remove the margin top on the first item in .c-content
+.c-content--no-mt {
+	> *:first-child {
+	margin-top: 0;
+	}
+}
+
+// Provide a generic method to remove the margin on any single item in .c-content
+.c-content--no-m {
+	> *:first-child,
+	> *:only-child {
+		margin: 0;
+	}
+}
+
+.c-content {
+
+	p {
+		margin: 1.5rem 0;
+	}
+
+	a {
+		text-decoration: underline;
+	}
+
+	dl {
+		border: 1px solid $color-gray-100;
+		border-radius: .3rem;
+		overflow: hidden;
+		padding: 1.2rem;
+		margin: 1.5rem 0;
+
+		dt {
+			float: left;
+			width: 30%;
+			clear: left;
+			font-weight: $g-headings-font-weight;
+		}
+
+		dd {
+			float: left;
+			width: 70%;
+		}
+	}
+
+	ul, ol {
+		padding-left: 3rem;
+		margin: 1.5rem 0;
+
+		ul, ol {
+			margin: 0;
+		}
+	}
+
+	ul {
+		list-style: disc;
+	}
+
+	li {
+		padding-left: 0.5rem;
+	}
+
+	ol {
+		list-style: decimal;
+	}
+
+	blockquote {
+		font-style: italic;
+		padding-left: 1.5rem;
+		margin-left: 0.2rem;
+		border-left: .4rem solid $color-night-blue;
+	}
+
+	table {
+		width: 100%;
+		margin: 1.5rem 0;
+	}
+
+	table td,
+	table th {
+		padding: 0.8rem;
+	}
+
+	table th {
+		border-bottom: 0.2rem solid $color-gray-200;
+		font-weight: $g-headings-font-weight;
+		text-align: left;
+	}
+
+	table td {
+		border-bottom: 1px solid $color-gray-100;
+	}
+
+	strong {
+		font-weight: $g-headings-font-weight;
+	}
+
+	a {
+		text-decoration: underline;
+	}
+
+	.c-button {
+		text-decoration: none;
+	}
+
+	pre {
+		background: $color-gray-50;
+		padding: 1.5rem;
+		margin: 0 0 1rem;
+		font-size: 85%;
+		white-space: pre-wrap;
+	}
+
+	pre, code {
+		font-family: $g-code-font-family;
+	}
+
+	code {
+		font-size: 85%;
+		background: $color-gray-50;
+		padding: 0.2rem;
+		border-radius: 0.2rem;
+		color: $color-error;
+	}
+}
+
+.c-content--inverse {
+	color: $color-gray-100;
+}

@@ -41,6 +41,7 @@ import {
 	MenuContent,
 	MetaData,
 	MetaDataItem,
+	Navbar,
 	Spacer,
 	Thumbnail,
 	Toolbar,
@@ -59,22 +60,24 @@ import {
 	generateContentLinkString,
 	generateSearchLinks,
 } from '../../shared/helpers/generateLink';
-import { fetchPlayerToken } from '../../shared/services/player-service';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { isVideoFragment } from '../helpers';
 import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
 
+import './Collection.scss';
+
 interface CollectionProps extends RouteComponentProps {}
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
-	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
+	const [playerTicket, setPlayerTicket] = useState<string | undefined>();
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
-	const [playerToken, setPlayerToken] = useState();
 
 	const openDeleteModal = (collectionId: number) => {
 		setIdToDelete(collectionId);
@@ -98,43 +101,55 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
 		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
-			return <div key={`content-block-${index}`}>{renderContentBlock(contentBlock)}</div>;
+			return (
+				<li className="c-collection-list__item" key={`content-block-${index}`}>
+					{renderContentBlock(contentBlock)}
+				</li>
+			);
 		});
 	};
 
 	const renderContentBlock = (contentBlock: ContentBlockInfo) => {
-		switch (contentBlock.blockType) {
-			case ContentBlockType.Image:
-				return <BlockImage {...contentBlock.content as BlockImageProps} />;
-			case ContentBlockType.ImageTitleTextButton:
-				return (
-					<BlockImageTitleTextButton {...contentBlock.content as BlockImageTitleTextButtonProps} />
-				);
-			case ContentBlockType.Intro:
-				return <BlockIntro {...contentBlock.content as BlockIntroProps} />;
-			case ContentBlockType.Links:
-				return <BlockLinks {...contentBlock.content as BlockLinksProps} />;
-			case ContentBlockType.Quote:
-				return <BlockQuote {...contentBlock.content as BlockQuoteProps} />;
-			case ContentBlockType.RichText:
-				return <BlockText {...contentBlock.content as BlockTextProps} />;
-			case ContentBlockType.Subtitle:
-				return <BlockSubtitle {...contentBlock.content as BlockSubtitleProps} />;
-			case ContentBlockType.Title:
-				return <BlockTitle {...contentBlock.content as BlockTitleProps} />;
-			case ContentBlockType.TitleImageText:
-				return <BlockTitleImageText {...contentBlock.content as BlockTitleImageTextProps} />;
-			case ContentBlockType.Video:
-				return <BlockVideo {...contentBlock.content as BlockVideoProps} />;
-			case ContentBlockType.VideoTitleTextButton:
-				return (
-					<BlockVideoTitleTextButton {...contentBlock.content as BlockVideoTitleTextButtonProps} />
-				);
+		const {
+			Image,
+			ImageTitleTextButton,
+			Intro,
+			Links,
+			Quote,
+			RichText,
+			Subtitle,
+			Title,
+			Video,
+			TitleImageText,
+			VideoTitleTextButton,
+		} = ContentBlockType;
+		const { content, blockType } = contentBlock;
+
+		switch (blockType) {
+			case Image:
+				return <BlockImage {...content as BlockImageProps} />;
+			case ImageTitleTextButton:
+				return <BlockImageTitleTextButton {...content as BlockImageTitleTextButtonProps} />;
+			case Intro:
+				return <BlockIntro {...content as BlockIntroProps} />;
+			case Links:
+				return <BlockLinks {...content as BlockLinksProps} />;
+			case Quote:
+				return <BlockQuote {...content as BlockQuoteProps} />;
+			case RichText:
+				return <BlockText {...content as BlockTextProps} />;
+			case Subtitle:
+				return <BlockSubtitle {...content as BlockSubtitleProps} />;
+			case Title:
+				return <BlockTitle {...content as BlockTitleProps} />;
+			case TitleImageText:
+				return <BlockTitleImageText {...content as BlockTitleImageTextProps} />;
+			case Video:
+				return <BlockVideo {...content as BlockVideoProps} />;
+			case VideoTitleTextButton:
+				return <BlockVideoTitleTextButton {...content as BlockVideoTitleTextButtonProps} />;
 			default:
-				toastService(
-					`Failed to find contentBlock type: ${contentBlock.blockType}`,
-					TOAST_TYPE.DANGER
-				);
+				toastService(`Failed to find contentBlock type: ${blockType}`, TOAST_TYPE.DANGER);
 				return null;
 		}
 	};
@@ -161,9 +176,9 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 			fragments.forEach((fragment: Avo.Collection.Fragment) => {
 				const initFlowPlayer = () =>
-					!playerToken &&
-					fetchPlayerToken(fragment.external_id)
-						.then(data => setPlayerToken(data))
+					!playerTicket &&
+					fetchPlayerTicket(fragment.external_id)
+						.then(data => setPlayerTicket(data))
 						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
 				if (isVideoFragment(fragment)) {
@@ -182,7 +197,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 							title: getFragmentField(fragment, 'title'),
 							text: getFragmentField(fragment, 'description'),
 							titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
-							videoSource: playerToken,
+							videoSource: playerTicket,
 						},
 					},
 					titleText: {
@@ -215,120 +230,124 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 		return (
 			<Fragment>
-				<Container mode="vertical" size="small" background={'alt'}>
-					<Container mode="horizontal">
-						<Toolbar>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<Spacer margin="bottom">
-										<MetaData spaced={true} category="collection">
-											<MetaDataItem>
-												<div className="c-content-type c-content-type--collection">
-													<Icon name="collection" />
-													<p>COLLECTION</p>
-												</div>
-											</MetaDataItem>
-											<MetaDataItem
-												icon="eye"
-												label={String(188) /* TODO collection.view_count */}
-											/>
-											<MetaDataItem
+				<Navbar autoHeight background="alt">
+					<Container mode="vertical" size="small" background={'alt'}>
+						<Container mode="horizontal">
+							<Toolbar autoHeight>
+								<ToolbarLeft>
+									<ToolbarItem>
+										<Spacer margin={['top-small', 'bottom-small']}>
+											<MetaData spaced={true} category="collection">
+												<MetaDataItem>
+													<div className="c-content-type c-content-type--collection">
+														<Icon name="collection" />
+														<p>COLLECTION</p>
+													</div>
+												</MetaDataItem>
+												<MetaDataItem
+													icon="eye"
+													label={String(188) /* TODO collection.view_count */}
+												/>
+												<MetaDataItem
+													icon="bookmark"
+													label={String(12) /* TODO collection.bookmark_count */}
+												/>
+											</MetaData>
+										</Spacer>
+										<h1 className="c-h2 u-m-0">{collection.title}</h1>
+										{collection.owner && (
+											<Flex spaced="regular">
+												{!!get(collection, 'owner.id') && (
+													<Avatar
+														image={get(collection, 'owner.profiles[0].avatar')}
+														name={ownerNameAndRole || ' '}
+														initials={`${get(collection, 'owner.first_name[0]', '')}${get(
+															collection,
+															'owner.last_name[0]',
+															''
+														)}`}
+													/>
+												)}
+											</Flex>
+										)}
+									</ToolbarItem>
+								</ToolbarLeft>
+								<ToolbarRight>
+									<ToolbarItem>
+										<div className="c-button-toolbar">
+											<Button
+												title="Bladwijzer"
+												type="secondary"
 												icon="bookmark"
-												label={String(12) /* TODO collection.bookmark_count */}
+												ariaLabel="Bladwijzer"
 											/>
-										</MetaData>
-									</Spacer>
-									<h1 className="c-h2 u-m-b-0">{collection.title}</h1>
-									{collection.owner && (
-										<Flex spaced="regular">
-											{!!get(collection, 'owner.id') && (
-												<Avatar
-													image={get(collection, 'owner.profiles[0].avatar')}
-													name={ownerNameAndRole || ' '}
-													initials={`${get(collection, 'owner.first_name[0]', '')}${get(
-														collection,
-														'owner.last_name[0]',
-														''
-													)}`}
-												/>
-											)}
-										</Flex>
-									)}
-								</ToolbarItem>
-							</ToolbarLeft>
-							<ToolbarRight>
-								<ToolbarItem>
-									<div className="c-button-toolbar">
-										<Button
-											title="Bladwijzer"
-											type="secondary"
-											icon="bookmark"
-											ariaLabel="Bladwijzer"
-										/>
-										<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
-										<ControlledDropdown
-											isOpen={isOptionsMenuOpen}
-											onOpen={() => setIsOptionsMenuOpen(true)}
-											onClose={() => setIsOptionsMenuOpen(false)}
-											placement="bottom-end"
-											autoSize
-										>
-											<DropdownButton>
-												<Button
-													type="secondary"
-													icon="more-horizontal"
-													ariaLabel="Meer opties"
-													title="Meer opties"
-												/>
-											</DropdownButton>
-											<DropdownContent>
-												<MenuContent
-													menuItems={[
-														{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
-														{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
-														{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
-														{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-														{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
-													]}
-													onClick={itemId => {
-														switch (itemId) {
-															case 'edit':
-																history.push(
-																	`${generateContentLinkString(
-																		ContentTypeString.collection,
-																		collection.id.toString()
-																	)}/${RouteParts.Edit}`
-																);
-																break;
+											<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
+											<ControlledDropdown
+												isOpen={isOptionsMenuOpen}
+												onOpen={() => setIsOptionsMenuOpen(true)}
+												onClose={() => setIsOptionsMenuOpen(false)}
+												placement="bottom-end"
+												autoSize
+											>
+												<DropdownButton>
+													<Button
+														type="secondary"
+														icon="more-horizontal"
+														ariaLabel="Meer opties"
+														title="Meer opties"
+													/>
+												</DropdownButton>
+												<DropdownContent>
+													<MenuContent
+														menuItems={[
+															{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
+															{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
+															{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
+															{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+															{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
+														]}
+														onClick={itemId => {
+															switch (itemId) {
+																case 'edit':
+																	history.push(
+																		`${generateContentLinkString(
+																			ContentTypeString.collection,
+																			collection.id.toString()
+																		)}/${RouteParts.Edit}`
+																	);
+																	break;
 
-															case 'createAssignment':
-																history.push(
-																	generateAssignmentCreateLink(
-																		'KIJK',
-																		String(collection.id),
-																		'COLLECTIE'
-																	)
-																);
-																break;
+																case 'createAssignment':
+																	history.push(
+																		generateAssignmentCreateLink(
+																			'KIJK',
+																			String(collection.id),
+																			'COLLECTIE'
+																		)
+																	);
+																	break;
 
-															case 'delete':
-																openDeleteModal(collection.id);
-																break;
-															default:
-																return null;
-														}
-													}}
-												/>
-											</DropdownContent>
-										</ControlledDropdown>
-									</div>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
+																case 'delete':
+																	openDeleteModal(collection.id);
+																	break;
+																default:
+																	return null;
+															}
+														}}
+													/>
+												</DropdownContent>
+											</ControlledDropdown>
+										</div>
+									</ToolbarItem>
+								</ToolbarRight>
+							</Toolbar>
+						</Container>
 					</Container>
-				</Container>
+				</Navbar>
 				<Container mode="vertical">
-					<Container mode="horizontal">{renderContentBlocks(contentBlockInfos)}</Container>
+					<Container mode="horizontal">
+						<ul className="c-collection-list">{renderContentBlocks(contentBlockInfos)}</ul>
+					</Container>
 				</Container>
 				<Container mode="vertical">
 					<Container mode="horizontal">

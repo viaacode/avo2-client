@@ -1,11 +1,12 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { Fragment, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { get } from 'lodash-es';
 
-import { Spinner } from '@viaa/avo2-components';
+import { Button, Spinner } from '@viaa/avo2-components';
+import NotFound from '../../404/views/NotFound';
 import { RouteParts } from '../../constants';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
@@ -28,10 +29,20 @@ const Login: FunctionComponent<LoginProps> = ({
 	getLoginState,
 }) => {
 	useEffect(() => {
-		if (!loginState && !loginStateLoading) {
+		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
 		}
-	}, [getLoginState, loginState, loginStateLoading]);
+	}, [getLoginState, loginState, loginStateLoading, loginStateError]);
+
+	if (loginStateError) {
+		return (
+			<Fragment>
+				<NotFound message="Het inloggen is mislukt" icon="lock">
+					<Button type="link" onClick={getLoginState} label="Probeer opnieuw" />
+				</NotFound>
+			</Fragment>
+		);
+	}
 
 	if (!loginState || loginStateLoading) {
 		// Wait for login check

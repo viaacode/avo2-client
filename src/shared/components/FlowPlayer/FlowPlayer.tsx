@@ -14,8 +14,8 @@ interface FlowPlayerProps {
 	logo?: string;
 	title: string;
 	subtitles: string[];
-	start?: number;
-	end?: number;
+	start?: number | null;
+	end?: number | null;
 	onInit?: () => void;
 }
 
@@ -24,8 +24,8 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 	poster,
 	title,
 	onInit,
-	start,
-	end,
+	start = 0,
+	end = undefined,
 	subtitles,
 }) => {
 	const videoContainerRef = useRef(null);
@@ -38,7 +38,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 
 		titleOverlay.classList.add('c-title-overlay');
 		titleHeader.classList.add('c-title-overlay__title');
-		publishDiv.classList.add('o-flex');
+		publishDiv.classList.add('u-d-flex');
 
 		titleHeader.innerText = title;
 
@@ -76,7 +76,7 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 				plugins: ['subtitles', 'chromecast', 'cuepoints'],
 
 				// CUEPOINTS
-				cuepoints: [{ start, end }],
+				...(end ? { cuepoints: [{ start, end }] } : {}), // Only set cuepoints if end is passed
 				draw_cuepoints: true,
 			});
 
