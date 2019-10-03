@@ -1,5 +1,5 @@
 import { capitalize, get } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -25,8 +25,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-
 import { RouteParts } from '../../constants';
+import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import { GET_ASSIGNMENTS_BY_OWNER_ID } from '../graphql';
@@ -38,8 +38,44 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
 	const [actionsDropdownOpen, setActionsDropdownOpen] = useState<{ [key: string]: boolean }>({});
+	const [sortColumn, setSortColumn] = useState<keyof Assignment>('deadline_at');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [page, setPage] = useState<number>(0);
 
-	// TODO: Replace colKey type by AssignmentColumnKey when typings 1.9.0 is published
+	const getFilterObject = () => {
+		const filter = filterString && filterString.trim();
+		const uppercaseFilter = filter && filter.toUpperCase();
+		if (!filter) {
+			return {};
+		}
+
+		return [
+			{ title: { _like: `%${filter}%` } },
+			{ assignment_assignment_tags: { assignment_tag: { label: { _like: `%${filter}%` } } } },
+			{ class_room: { _like: `%${filter}%` } },
+			{ assignment_type: { _like: `%${filter}%` } },
+			{ title: { _like: `%${uppercaseFilter}%` } },
+			{
+				assignment_assignment_tags: {
+					assignment_tag: { label: { _like: `%${uppercaseFilter}%` } },
+				},
+			},
+			{ class_room: { _like: `%${uppercaseFilter}%` } },
+			{ assignment_type: { _like: `%${uppercaseFilter}%` } },
+		];
+	};
+
+	const handleColumnClick = (columnId: keyof Assignment) => {
+		if (sortColumn === columnId) {
+			// Flip previous ordering
+			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+		} else {
+			// Set initial ordering for new column
+			setSortColumn(columnId);
+			setSortOrder('asc');
+		}
+	};
+
 	const renderCell = (rowData: Assignment, colKey: keyof Assignment | 'actions') => {
 		const cellData: any = (rowData as any)[colKey];
 
@@ -60,7 +96,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 					</Flex>
 				);
 			case 'assignment_type':
-				return `${capitalize(cellData)}opdracht`;
+				return `${capitalize(cellData)}`;
 			case 'assignment_assignment_tags':
 				const assignmentTags: AssignmentTag[] = get(cellData, 'assignment_tag', []);
 				const tagOptions = assignmentTags.map((tag: AssignmentTag) => ({
@@ -141,14 +177,48 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const columns: AssignmentColumn[] = [
 		{ id: 'title', label: 'Titel', sortable: true },
 		{ id: 'assignment_type', label: 'Type', sortable: true },
-		{ id: 'assignment_assignment_tags', label: 'Vak of project', sortable: true },
+		{ id: 'assignment_assignment_tags', label: 'Vak of project' },
 		{ id: 'class_room', label: 'Klas', sortable: true },
 		{ id: 'deadline_at', label: 'Deadline', sortable: true },
-		{ id: 'assignment_responses', label: 'Indieningen', sortable: true },
+		{ id: 'assignment_responses', label: 'Indieningen' },
 		{ id: 'actions', label: '' },
 	];
 
-	const renderAssignmentsView = (assignments: Assignment[]) => (
+	const renderAssignmentsTable = (data: {
+		assignments: Assignment[];
+		count: { aggregate: { count: number } };
+	}) => {
+		return (
+			<Fragment>
+				<Table
+					columns={columns}
+					data={data.assignments}
+					emptyStateMessage={
+						filterString
+							? 'Er zijn geen opdrachten die voldoen aan de zoekopdracht'
+							: activeView === 'archived_assignments'
+							? 'Er zijn nog geen opdrachten gearchiveerd'
+							: 'Er zijn nog geen opdrachten aangemaakt'
+					}
+					renderCell={renderCell}
+					rowKey="id"
+					styled
+					onColumnClick={handleColumnClick as any}
+					sortColumn={sortColumn}
+					sortOrder={sortOrder}
+				/>
+				<Spacer margin="top-large">
+					<Pagination
+						pageCount={Math.ceil(data.count.aggregate.count / ITEMS_PER_PAGE)}
+						currentPage={page}
+						onPageChange={setPage}
+					/>
+				</Spacer>
+			</Fragment>
+		);
+	};
+
+	return (
 		<Container mode="vertical" size="small">
 			<Container mode="horizontal">
 				<Toolbar>
@@ -180,30 +250,21 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						</ToolbarItem>
 					</ToolbarRight>
 				</Toolbar>
-				<Table
-					columns={columns}
-					data={assignments}
-					emptyStateMessage="U hebt nog geen opdrachten aangemaakt"
-					renderCell={renderCell}
-					rowKey="id"
-					styled
+				<DataQueryComponent
+					query={GET_ASSIGNMENTS_BY_OWNER_ID}
+					variables={{
+						ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e',
+						archived: activeView === 'archived_assignments',
+						order: { [sortColumn]: sortOrder },
+						offset: page * ITEMS_PER_PAGE,
+						filter: getFilterObject(),
+					}}
+					renderData={renderAssignmentsTable}
+					resultPath=""
+					ignoreNotFound
 				/>
-				<Pagination pageCount={0} />
 			</Container>
 		</Container>
-	);
-
-	return (
-		<DataQueryComponent
-			query={GET_ASSIGNMENTS_BY_OWNER_ID}
-			variables={{
-				ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e',
-				archived: activeView === 'archived_assignments',
-			}}
-			renderData={renderAssignmentsView}
-			resultPath="app_assignments"
-			ignoreNotFound
-		/>
 	);
 };
 
