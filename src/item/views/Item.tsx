@@ -56,7 +56,6 @@ import {
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import { getVideoStills } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
@@ -66,13 +65,11 @@ import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
 
-const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
+const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
 	const [playerTicket, setPlayerTicket] = useState<string>();
-	const [itemState, setItemState] = useState<Avo.Item.Response | undefined>();
-	const [videoStill, setVideoStill] = useState<string | null>(null);
 	const [time, setTime] = useState<number>(0);
 	const [videoHeight, setVideoHeight] = useState<number>(387); // correct height for desktop screens
 	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
@@ -172,25 +169,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 
 	const relatedItemStyle: CSSProperties = { width: '100%', float: 'left', marginRight: '2%' };
 
-	/**
-	 * Get the video thumbnail when the item changes
-	 */
-	useEffect(() => {
-		if (itemState && itemState.type.label === 'video') {
-			getVideoStills([{ externalId: itemState.external_id, startTime: 0 }])
-				.then((videoStills: Avo.Stills.StillInfo[]) => {
-					setVideoStill(videoStills[0].thumbnailImagePath);
-				})
-				.catch((err: any) => {
-					console.error(err);
-					toastService('Ophalen van de thumbnail van de video is mislukt', TOAST_TYPE.DANGER);
-				});
-		}
-	}, [itemState]);
-
 	const renderItem = (itemMetaData: Avo.Item.Response) => {
-		setItemState(itemMetaData);
-
 		const initFlowPlayer = () =>
 			!playerTicket &&
 			fetchPlayerTicket(itemMetaData.external_id)
@@ -275,7 +254,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, location, match }) => {
 												poster={itemMetaData.thumbnail_path}
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
-												subtitles={['30-12-2011', 'VRT']}
+												subtitles={['Publicatiedatum', 'Aanbieder']}
 											/>
 										)}
 									</div>

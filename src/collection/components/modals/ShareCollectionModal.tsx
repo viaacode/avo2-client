@@ -162,6 +162,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			setIsOpen(false);
 
 			updateCollectionProperty(isCollectionPublic, 'is_public');
+			// TODO: Change when published_at is added in GraphQL
 			updateCollectionProperty(new Date().toISOString(), 'publish_at');
 			await triggerCollectionPropertyUpdate({
 				variables: {

@@ -230,7 +230,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 				setLoadingState('loaded');
 			}
 		}
-	}, []);
+	}, [setLoadingState]);
 
 	const deleteCurrentAssignment = async () => {
 		try {

@@ -67,6 +67,8 @@ import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { isVideoFragment } from '../helpers';
 import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
 
+import './Collection.scss';
+
 interface CollectionProps extends RouteComponentProps {}
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
@@ -100,7 +102,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
 		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
 			return (
-				<li className="c-collection-list__item u-text-center" key={`content-block-${index}`}>
+				<li className="c-collection-list__item" key={`content-block-${index}`}>
 					{renderContentBlock(contentBlock)}
 				</li>
 			);
