@@ -141,8 +141,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			})
 		);
 
-		console.log('navbar height: ', navBarHeight);
-		console.log('description collapsed: ', isDescriptionCollapsed);
 		return (
 			<div className="c-assigment-detail">
 				{/* Do not switch to a NavBar component since we need to be able to set a ref to get the height dynamically */}
