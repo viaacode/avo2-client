@@ -1,0 +1,10 @@
+/* ==========================================================================
+   Component: Link type button inside a menu
+   ---
+   Make button full width and color black
+   ========================================================================== */
+
+.c-button.c-button--link.c-menu__item {
+	width: 100%;
+	color: black;
+}

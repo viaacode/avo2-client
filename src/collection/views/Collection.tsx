@@ -55,6 +55,7 @@ import { PERMISSIONS, PermissionService } from '../../authentication/helpers/per
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import {
 	generateAssignmentCreateLink,
@@ -63,7 +64,6 @@ import {
 } from '../../shared/helpers/generateLink';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { isVideoFragment } from '../helpers';
 import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
@@ -240,7 +240,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		return (
 			<Fragment>
 				<Navbar autoHeight background="alt">
-					<Container mode="vertical" size="small" background={'alt'}>
+					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
 							<Toolbar autoHeight>
 								<ToolbarLeft>
@@ -510,10 +510,13 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 						</Grid>
 					</Container>
 				</Container>
-				<DeleteCollectionModal
+
+				<DeleteObjectModal
+					title={`Ben je zeker dat de collectie "${collection.title}" wil verwijderen?`}
+					body="Deze actie kan niet ongedaan gemaakt worden"
 					isOpen={isDeleteModalOpen}
-					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={deleteCollection}
+					onClose={() => setIsDeleteModalOpen(false)}
+					deleteObjectCallback={deleteCollection}
 				/>
 			</Fragment>
 		);

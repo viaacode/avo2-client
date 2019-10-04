@@ -23,10 +23,10 @@ import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { DeleteCollectionModal } from '../components';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
 import './Collections.scss';
+import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
@@ -53,7 +53,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				},
 			});
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
-			setTimeout(refetchCollections, 0);
+			refetchCollections();
 		} catch (err) {
 			console.error(err);
 			toastService('Collectie kon niet verwijdert worden', TOAST_TYPE.DANGER);
@@ -207,10 +207,12 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					onPageChange={setPage}
 				/>
 
-				<DeleteCollectionModal
+				<DeleteObjectModal
+					title="Verwijder collectie?"
+					body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
 					isOpen={isDeleteModalOpen}
-					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={() => deleteCollection(refetchCollections)}
+					onClose={() => setIsDeleteModalOpen(false)}
+					deleteObjectCallback={() => deleteCollection(refetchCollections)}
 				/>
 			</>
 		);
