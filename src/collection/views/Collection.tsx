@@ -86,8 +86,8 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 
 		return (
 			<Fragment>
-				<Navbar autoHeight background={'alt'}>
-					<Container mode="vertical" size="small" background={'alt'}>
+				<Navbar autoHeight background="alt">
+					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
 							<Toolbar autoHeight>
 								<ToolbarLeft>
