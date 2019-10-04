@@ -3,7 +3,7 @@ import { ITEMS_PER_PAGE } from '../my-workspace/constants';
 
 // TODO: Reduce to only what we need.
 export const GET_COLLECTION_BY_ID = gql`
-	query getMigrateCollectionById($id: Int!) {
+	query getCollectionById($id: Int!) {
 		app_collections(where: { id: { _eq: $id } }) {
 			id
 			collection_fragment_ids
@@ -16,17 +16,16 @@ export const GET_COLLECTION_BY_ID = gql`
 				id
 				external_id
 				item_meta {
+					id
 					duration
+					title
+					description
 				}
 				end_oc
 				custom_title
 				custom_description
 				created_at
 				collection_id
-				item_meta {
-					title
-					description
-				}
 			}
 			updated_at
 			type_id
