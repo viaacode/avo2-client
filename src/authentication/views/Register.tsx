@@ -26,7 +26,7 @@ const mockSelectRoles = [
 
 export interface RegisterProps {}
 
-export const Register: FunctionComponent<RegisterProps> = ({}) => {
+const Register: FunctionComponent<RegisterProps> = ({}) => {
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal" size="small">

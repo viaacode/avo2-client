@@ -70,7 +70,7 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 						? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
 						: [
 								{ label: 'Registreren', location: `/${RouteParts.Register}` },
-								{ label: 'Aanmelden', location: `/${RouteParts.Login}` },
+								{ label: 'Aanmelden', location: `/${RouteParts.RegisterOrLogin}` },
 						  ]
 				}
 				isOpen={menuOpen}

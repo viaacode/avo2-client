@@ -73,7 +73,7 @@ const Login: FunctionComponent<LoginProps> = ({
 		) {
 			addLoginAttempt();
 			// Redirect to login form
-			const base = window.location.href.split(`/${RouteParts.Login}`)[0];
+			const base = window.location.href.split(`/${RouteParts.LoginAvo}`)[0];
 			// Url to return to after authentication is completed and server stored auth object in session
 			const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
 			redirectToLoginPage(returnToUrl);

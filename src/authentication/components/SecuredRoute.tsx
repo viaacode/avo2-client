@@ -29,7 +29,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 				return (
 					<Redirect
 						to={{
-							pathname: `/${RouteParts.Login}`,
+							pathname: `/${RouteParts.RegisterOrLogin}`,
 							state: { from: props.location },
 						}}
 					/>
