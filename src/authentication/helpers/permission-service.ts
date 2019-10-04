@@ -1,21 +1,28 @@
 import authClient from '../Auth';
 
-type PermissionInfo = { permissionName: string; obj?: any | null };
+type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
 
-export type Permissions = string | PermissionInfo | (string | PermissionInfo)[];
+export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
+
+type PermissionName = keyof typeof PERMISSIONS;
+
+export const PERMISSIONS: { [permissionName: string]: string } = {
+	EDIT_OWN_COLLECTION: 'EDIT_OWN_COLLECTION',
+	EDIT_ALL_COLLECTIONS: 'EDIT_ALL_COLLECTIONS',
+	DELETE_OWN_COLLECTION: 'DELETE_OWN_COLLECTION',
+	DELETE_ALL_COLLECTIONS: 'DELETE_ALL_COLLECTIONS',
+};
 
 export class PermissionService {
-	private static currentUserPermissions: string[] = [
-		'canEditOwnCollections',
-		'canEditAllCollections',
-	];
+	// TODO replace with userInfo.permissions
+	private static currentUserPermissions: PermissionName[] = Object.values(PERMISSIONS);
 
 	public static hasPermissions(permissions: Permissions) {
 		// Reformat all permissions to format: PermissionInfo[]
 		let permissionList: PermissionInfo[];
 		if (typeof permissions === 'string') {
 			// Single permission by name
-			permissionList = [{ permissionName: permissions as string }];
+			permissionList = [{ permissionName: permissions as PermissionName }];
 		} else if ((permissions as PermissionInfo).permissionName) {
 			// Single permission by name and object
 			permissionList = [permissions as PermissionInfo];
@@ -25,7 +32,7 @@ export class PermissionService {
 				(permission: string | PermissionInfo): PermissionInfo => {
 					if (typeof permission === 'string') {
 						// Single permission by name
-						return { permissionName: permission as string };
+						return { permissionName: permission as PermissionName };
 					}
 					// Single permission by name and object
 					return permission as PermissionInfo;
@@ -41,7 +48,7 @@ export class PermissionService {
 		return false;
 	}
 
-	private static hasPermission(permissionName: string, obj: any | null | undefined) {
+	private static hasPermission(permissionName: PermissionName, obj: any | null | undefined) {
 		// Check if user has the requested permission
 		if (!this.currentUserPermissions.includes(permissionName)) {
 			return false;
@@ -49,7 +56,7 @@ export class PermissionService {
 		// Special checks on top of permissionName being in the permission list
 		switch (permissionName) {
 			// TODO replace example permissions
-			case 'canEditOwnCollections':
+			case PERMISSIONS.EDIT_OWN_COLLECTION:
 				const profile = authClient.getProfile();
 				if (profile && profile.id === obj.owner.id) {
 					return true;
