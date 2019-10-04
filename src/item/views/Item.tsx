@@ -62,6 +62,7 @@ import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
 
 import { ContentType } from '@viaa/avo2-components/dist/types';
 import './Item.scss';
+import ItemVideoDescription from './components/ItemVideoDescription';
 
 interface ItemProps extends RouteComponentProps {}
 
@@ -244,78 +245,46 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 				</Container>
 				<Container mode="vertical">
 					<Container mode="horizontal">
+						<ItemVideoDescription itemMetaData={itemMetaData} />
 						<Grid>
 							<Column size="2-7">
-								<Container mode="vertical" size="small">
-									<div className="c-video-player t-player-skin--dark">
-										{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
-											<FlowPlayer
-												src={playerTicket ? playerTicket.toString() : null}
-												poster={itemMetaData.thumbnail_path}
-												title={itemMetaData.title}
-												onInit={initFlowPlayer}
-												subtitles={['Publicatiedatum', 'Aanbieder']}
-											/>
-										)}
-									</div>
-									<Spacer margin="top-large">
-										<Flex justify="between" wrap>
-											<div className="c-button-toolbar">
-												<Flex justify="between" wrap>
-													<Button
-														type="tertiary"
-														icon="add"
-														label="Voeg fragment toe aan collectie"
-														onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
-													/>
-													<Button
-														type="tertiary"
-														icon="clipboard"
-														label="Maak opdracht"
-														onClick={() =>
-															history.push(
-																generateAssignmentCreateLink(
-																	'KIJK',
-																	itemMetaData.external_id,
-																	'ITEM'
-																)
-															)
-														}
-													/>
-												</Flex>
-											</div>
-										</Flex>
+								<Spacer margin="top-large">
+									<Flex justify="between" wrap>
 										<div className="c-button-toolbar">
-											<ToggleButton
-												type="tertiary"
-												icon="bookmark"
-												active={false}
-												ariaLabel="toggle bladwijzer"
-											/>
-											<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-											<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+											<Flex justify="between" wrap>
+												<Button
+													type="tertiary"
+													icon="add"
+													label="Voeg fragment toe aan collectie"
+													onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
+												/>
+												<Button
+													type="tertiary"
+													icon="clipboard"
+													label="Maak opdracht"
+													onClick={() =>
+														history.push(
+															generateAssignmentCreateLink('KIJK', itemMetaData.external_id, 'ITEM')
+														)
+													}
+												/>
+											</Flex>
 										</div>
-									</Spacer>
-								</Container>
+									</Flex>
+									<div className="c-button-toolbar">
+										<ToggleButton
+											type="tertiary"
+											icon="bookmark"
+											active={false}
+											ariaLabel="toggle bladwijzer"
+										/>
+										<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+										<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+									</div>
+								</Spacer>
 							</Column>
 							<Column size="2-5">
-								<Container mode="vertical">
-									<Scrollbar
-										style={{
-											width: '100%',
-											height: `${84 + videoHeight}px`, // Height of button
-											overflowY: 'auto',
-										}}
-									>
-										<h4 className="c-h4">Beschrijving</h4>
-										{/* "description" label height (20) + padding (14) */}
-										<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
-											<p style={{ paddingRight: '1rem' }}>
-												{formatTimestamps(convertToHtml(itemMetaData.description))}
-											</p>
-										</ExpandableContainer>
-									</Scrollbar>
-								</Container>
+								<Fragment />
 							</Column>
 						</Grid>
 						<Grid>

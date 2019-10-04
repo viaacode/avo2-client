@@ -5,28 +5,6 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Avatar,
-	BlockImage,
-	BlockImageProps,
-	BlockImageTitleTextButton,
-	BlockImageTitleTextButtonProps,
-	BlockIntro,
-	BlockIntroProps,
-	BlockLinks,
-	BlockLinksProps,
-	BlockQuote,
-	BlockQuoteProps,
-	BlockSubtitle,
-	BlockSubtitleProps,
-	BlockText,
-	BlockTextProps,
-	BlockTitle,
-	BlockTitleImageText,
-	BlockTitleImageTextProps,
-	BlockTitleProps,
-	BlockVideo,
-	BlockVideoProps,
-	BlockVideoTitleTextButton,
-	BlockVideoTitleTextButtonProps,
 	Button,
 	Column,
 	Container,
@@ -61,11 +39,10 @@ import {
 	generateContentLinkString,
 	generateSearchLinks,
 } from '../../shared/helpers/generateLink';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import CollectionFragmentsDetail from '../components/CollectionFragmentsDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
-import { isVideoFragment } from '../helpers';
-import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
+import { ContentTypeString } from '../types';
 
 import './Collection.scss';
 
@@ -73,7 +50,6 @@ interface CollectionProps extends RouteComponentProps {}
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
-	const [playerTicket, setPlayerTicket] = useState<string | undefined>();
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -99,127 +75,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		}
 	};
 
-	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
-		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
-			return (
-				<li className="c-collection-list__item" key={`content-block-${index}`}>
-					{renderContentBlock(contentBlock)}
-				</li>
-			);
-		});
-	};
-
-	const renderContentBlock = (contentBlock: ContentBlockInfo) => {
-		const {
-			Image,
-			ImageTitleTextButton,
-			Intro,
-			Links,
-			Quote,
-			RichText,
-			Subtitle,
-			Title,
-			Video,
-			TitleImageText,
-			VideoTitleTextButton,
-		} = ContentBlockType;
-		const { content, blockType } = contentBlock;
-
-		switch (blockType) {
-			case Image:
-				return <BlockImage {...content as BlockImageProps} />;
-			case ImageTitleTextButton:
-				return <BlockImageTitleTextButton {...content as BlockImageTitleTextButtonProps} />;
-			case Intro:
-				return <BlockIntro {...content as BlockIntroProps} />;
-			case Links:
-				return <BlockLinks {...content as BlockLinksProps} />;
-			case Quote:
-				return <BlockQuote {...content as BlockQuoteProps} />;
-			case RichText:
-				return <BlockText {...content as BlockTextProps} />;
-			case Subtitle:
-				return <BlockSubtitle {...content as BlockSubtitleProps} />;
-			case Title:
-				return <BlockTitle {...content as BlockTitleProps} />;
-			case TitleImageText:
-				return <BlockTitleImageText {...content as BlockTitleImageTextProps} />;
-			case Video:
-				return <BlockVideo {...content as BlockVideoProps} />;
-			case VideoTitleTextButton:
-				return <BlockVideoTitleTextButton {...content as BlockVideoTitleTextButtonProps} />;
-			default:
-				toastService(`Failed to find contentBlock type: ${blockType}`, TOAST_TYPE.DANGER);
-				return null;
-		}
-	};
-
-	// TODO: Replace types when available
-	const getFragmentField = (fragment: Avo.Collection.Fragment, field: string) =>
-		fragment.use_custom_fields
-			? (fragment as any)[`custom_${field}`]
-			: (fragment as any).item_meta[field];
-
 	const renderCollection = (collection: Avo.Collection.Response) => {
-		const contentBlockInfos: ContentBlockInfo[] = [];
-
-		if (collection) {
-			contentBlockInfos.push({
-				blockType: ContentBlockType.Intro,
-				content: {
-					subtitle: 'Introductie',
-					text: collection.description,
-				} as BlockIntroProps,
-			});
-
-			const fragments = orderBy([...collection.collection_fragments], 'position', 'asc') || [];
-
-			fragments.forEach((fragment: Avo.Collection.Fragment) => {
-				const initFlowPlayer = () =>
-					!playerTicket &&
-					fetchPlayerTicket(fragment.external_id)
-						.then(data => setPlayerTicket(data))
-						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
-
-				if (isVideoFragment(fragment)) {
-					initFlowPlayer();
-				}
-
-				const contentBlocks: {
-					[contentBlockName: string]: {
-						type: ContentBlockType;
-						content: BlockVideoTitleTextButtonProps | BlockIntroProps;
-					};
-				} = {
-					videoTitleText: {
-						type: ContentBlockType.VideoTitleTextButton,
-						content: {
-							title: getFragmentField(fragment, 'title'),
-							text: getFragmentField(fragment, 'description'),
-							titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
-							videoSource: playerTicket,
-						},
-					},
-					titleText: {
-						type: ContentBlockType.Intro,
-						content: {
-							subtitle: getFragmentField(fragment, 'title'),
-							text: getFragmentField(fragment, 'description'),
-						},
-					},
-				};
-
-				const currentContentBlock = isVideoFragment(fragment)
-					? contentBlocks.videoTitleText
-					: contentBlocks.titleText;
-
-				contentBlockInfos.push({
-					blockType: currentContentBlock.type,
-					content: currentContentBlock.content,
-				});
-			});
-		}
-
 		const ownerNameAndRole = [
 			get(collection, 'owner.first_name', ''),
 			get(collection, 'owner.last_name', ''),
@@ -346,7 +202,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 				</Navbar>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<ul className="c-collection-list">{renderContentBlocks(contentBlockInfos)}</ul>
+						<CollectionFragmentsDetail collectionFragments={collection.collection_fragments} />
 					</Container>
 				</Container>
 				<Container mode="vertical">
