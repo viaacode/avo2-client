@@ -20,6 +20,8 @@ export interface LoginProps extends RouteComponentProps {
 	getLoginState: () => Dispatch;
 }
 
+const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
+
 const Login: FunctionComponent<LoginProps> = ({
 	history,
 	location,
@@ -28,17 +30,66 @@ const Login: FunctionComponent<LoginProps> = ({
 	loginStateError,
 	getLoginState,
 }) => {
+	const getLastLoginAttempt = (): null | Date => {
+		try {
+			const lastLoginAttempt = localStorage.getItem(LOGIN_ATTEMPT_KEY) || '';
+			if (!lastLoginAttempt || lastLoginAttempt.trim().length < 3) {
+				return null;
+			}
+			return new Date(lastLoginAttempt);
+		} catch (err) {
+			console.error('Failed to check recent login attempts');
+			return null;
+		}
+	};
+
+	const addLoginAttempt = () => {
+		localStorage.setItem(LOGIN_ATTEMPT_KEY, new Date().toISOString());
+	};
+
+	const hasRecentLoginAttempt = () => {
+		const lastAttempt = getLastLoginAttempt();
+		return lastAttempt && lastAttempt.getTime() > new Date().getTime() - 5 * 1000;
+	};
+
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
+			return;
+		}
+
+		// Redirect to previous requested path or home page
+		if (loginState && loginState.message === 'LOGGED_IN' && !loginStateLoading) {
+			history.push(get(location, 'state.from.pathname', '/'));
+			return;
+		}
+
+		if (
+			loginState &&
+			loginState.message === 'LOGGED_OUT' &&
+			!loginStateLoading &&
+			!loginStateError &&
+			!hasRecentLoginAttempt()
+		) {
+			addLoginAttempt();
+			// Redirect to login form
+			const base = window.location.href.split(`/${RouteParts.Login}`)[0];
+			// Url to return to after authentication is completed and server stored auth object in session
+			const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
+			redirectToLoginPage(returnToUrl);
 		}
 	}, [getLoginState, loginState, loginStateLoading, loginStateError]);
 
-	if (loginStateError) {
+	const tryLoginAgainManually = () => {
+		localStorage.removeItem(LOGIN_ATTEMPT_KEY);
+		getLoginState();
+	};
+
+	if (loginStateError || hasRecentLoginAttempt()) {
 		return (
 			<Fragment>
 				<NotFound message="Het inloggen is mislukt" icon="lock">
-					<Button type="link" onClick={getLoginState} label="Probeer opnieuw" />
+					<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
 				</NotFound>
 			</Fragment>
 		);
@@ -55,17 +106,6 @@ const Login: FunctionComponent<LoginProps> = ({
 		);
 	}
 
-	if (loginState && loginState.message === 'LOGGED_IN' && !loginStateLoading) {
-		// Redirect to previous requested path or home page
-		history.push(get(location, 'state.from.pathname', '/'));
-		return null;
-	}
-
-	// Redirect to login form
-	const base = window.location.href.split(`/${RouteParts.Login}`)[0];
-	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
-	redirectToLoginPage(returnToUrl);
 	return null;
 };
 
