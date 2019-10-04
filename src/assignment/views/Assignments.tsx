@@ -159,6 +159,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 					);
 				}
 				// else: assignment was not valid and could not be saved yet
+				// the update assignment function will have already notified the user of the validation errors
 			}
 		} catch (err) {
 			console.error(err);
@@ -195,7 +196,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		refetchAssignments: () => void
 	) => {
 		if (!dataRow.id) {
-			toastService('Hey opdracht id van de geselecteerde rij is niet ingesteld', TOAST_TYPE.DANGER);
+			toastService('Het opdracht id van de geselecteerde rij is niet ingesteld', TOAST_TYPE.DANGER);
 			return;
 		}
 		switch (actionId) {
@@ -256,7 +257,9 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
 								<Link
-									to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${RouteParts.Edit}`}
+									to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
+										RouteParts.Edit
+									}`}
 								>
 									{rowData.title}
 								</Link>
@@ -281,7 +284,9 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 			case 'assignment_responses':
 				return (
 					<Link
-						to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Assignments}/${rowData.id}/${RouteParts.Responses}`}
+						to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Assignments}/${
+							rowData.id
+						}/${RouteParts.Responses}`}
 					>
 						{(cellData || []).length}
 					</Link>

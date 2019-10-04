@@ -63,11 +63,11 @@ export const updateAssignment = async (triggerAssignmentUpdate: any, assignment:
 				assignment: assignmentToSave,
 			},
 		});
-		if (!response || !response.data) {
+		if (response && response.data) {
+			return assignment;
+		} else {
 			console.error('assignment update returned empty response', response);
 			throw new Error('Het opslaan van de opdracht is mislukt');
-		} else {
-			return assignment;
 		}
 	} catch (err) {
 		console.error(err);
