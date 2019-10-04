@@ -51,6 +51,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -227,6 +228,14 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		].join(' ');
 
 		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
+		const canEditCollection = PermissionService.hasPermissions([
+			{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
+			{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
+		]);
+		const canDeleteCollection = PermissionService.hasPermissions([
+			{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
+			{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
+		]);
 
 		return (
 			<Fragment>
@@ -300,11 +309,15 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 												<DropdownContent>
 													<MenuContent
 														menuItems={[
-															{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
+															...(canEditCollection
+																? [{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }]
+																: []),
 															{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
 															{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
 															{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-															{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
+															...(canDeleteCollection
+																? [{ icon: 'delete', id: 'delete', label: 'Verwijder' }]
+																: []),
 														]}
 														onClick={itemId => {
 															switch (itemId) {
