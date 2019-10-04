@@ -96,28 +96,6 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 		}
 	}, [time, history, videoRef, itemId]);
 
-	useEffect(() => {
-		// Register window listener when the component mounts
-		const onResizeHandler = debounce(
-			() => {
-				if (videoRef.current) {
-					const vidHeight = videoRef.current.getBoundingClientRect().height;
-					setVideoHeight(vidHeight);
-				} else {
-					setVideoHeight(387);
-				}
-			},
-			300,
-			{ leading: false, trailing: true }
-		);
-		window.addEventListener('resize', onResizeHandler);
-		onResizeHandler();
-
-		return () => {
-			window.removeEventListener('resize', onResizeHandler);
-		};
-	}, [videoRef]);
-
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
 	 * If this happens sooner, the time will be ignored by the video player
