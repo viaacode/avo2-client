@@ -64,7 +64,7 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 
 	return (
 		<Container>
-			<Toolbar justified>
+			<Toolbar justify>
 				<ToolbarItem grow>
 					<div className="c-hr" />
 				</ToolbarItem>
