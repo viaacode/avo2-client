@@ -169,7 +169,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 	const relatedItemStyle: CSSProperties = { width: '100%', float: 'left', marginRight: '2%' };
 
-	const renderItem = (itemMetaData: Avo.Item.Response) => {
+	const renderItem = (itemMetaData: Avo.Item.Item) => {
 		const initFlowPlayer = () =>
 			!playerTicket &&
 			fetchPlayerTicket(itemMetaData.external_id)

@@ -7,9 +7,9 @@ import { Avo } from '@viaa/avo2-types';
 import { AddFragment, CollectionFragment } from '../components';
 
 interface EditCollectionContentProps {
-	collection: Avo.Collection.Response;
+	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	updateCollection: (collection: Avo.Collection.Response) => void;
+	updateCollection: (collection: Avo.Collection.Collection) => void;
 	updateFragmentProperty: (value: string, fieldName: string, fragmentId: number) => void;
 }
 

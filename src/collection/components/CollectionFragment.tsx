@@ -36,14 +36,14 @@ import CutFragmentModal from './modals/CutFragmentModal';
 
 interface CollectionFragmentProps extends RouteComponentProps {
 	index: number;
-	collection: Avo.Collection.Response;
+	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<React.SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
-	updateCollection: (collection: Avo.Collection.Response) => void;
+	updateCollection: (collection: Avo.Collection.Collection) => void;
 }
 
 const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
@@ -85,7 +85,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 
 	const renderForm = (
 		fragment: Avo.Collection.Fragment,
-		itemMetaData: Avo.Item.Response,
+		itemMetaData: Avo.Item.Item,
 		index: number
 	) => {
 		const disableVideoFields: boolean = !useCustomFields && !!isVideoFragment(fragment);
@@ -97,7 +97,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			updateFragmentProperty(html, 'custom_description', fragment.id);
 
 		const getFragmentProperty = (
-			itemMetaData: Avo.Item.Response,
+			itemMetaData: Avo.Item.Item,
 			fragment: Avo.Collection.Fragment,
 			useCustomFields: Boolean,
 			prop: 'title' | 'description'

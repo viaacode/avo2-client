@@ -161,7 +161,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 			? (fragment as any)[`custom_${field}`]
 			: (fragment as any).item_meta[field];
 
-	const renderCollection = (collection: Avo.Collection.Response) => {
+	const renderCollection = (collection: Avo.Collection.Collection) => {
 		const contentBlockInfos: ContentBlockInfo[] = [];
 
 		if (collection) {

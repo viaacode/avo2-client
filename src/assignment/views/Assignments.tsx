@@ -32,6 +32,7 @@ import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
+import InputModal from '../../shared/components/modals/InputModal';
 import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -44,7 +45,6 @@ import {
 } from '../graphql';
 import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
 import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../types';
-import InputModal from '../../shared/components/modals/InputModal';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 

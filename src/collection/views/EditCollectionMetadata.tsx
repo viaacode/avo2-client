@@ -20,7 +20,7 @@ import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
 import { getValidationFeedbackForShortDescription } from './EditCollection';
 
 interface EditCollectionMetadataProps {
-	collection: Avo.Collection.Response;
+	collection: Avo.Collection.Collection;
 	updateCollectionProperty: (value: string | string[], fieldName: string) => void;
 }
 

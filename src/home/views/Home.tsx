@@ -33,7 +33,7 @@ import { useDebounce } from '../../shared/helpers/useDebounce';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 interface HomeProps extends RouteComponentProps {
-	searchResults: Avo.Search.Response | null;
+	searchResults: Avo.Search.Search | null;
 	searchResultsLoading: boolean;
 	search: (
 		orderProperty: Avo.Search.OrderProperty,

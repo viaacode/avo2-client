@@ -10,8 +10,8 @@ const COLLECTION_CONTENT_BLOCKS = ['RichText'];
 
 interface AddFragmentProps {
 	index: number;
-	collection: Avo.Collection.Response;
-	updateCollection: (collection: Avo.Collection.Response) => void;
+	collection: Avo.Collection.Collection;
+	updateCollection: (collection: Avo.Collection.Collection) => void;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 }
 

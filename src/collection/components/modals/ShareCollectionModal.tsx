@@ -25,7 +25,7 @@ interface ShareCollectionModalProps {
 	setIsOpen: (isOpen: boolean) => void;
 	initialIsPublic: boolean;
 	updateCollectionProperty: (value: any, fieldName: string) => void;
-	collection: Avo.Collection.Response;
+	collection: Avo.Collection.Collection;
 }
 
 const shareOptions = [

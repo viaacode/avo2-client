@@ -72,7 +72,7 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in AssignmentContentLabel]: s
 };
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string };
+	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string }
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,
@@ -202,7 +202,10 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 					.then((response: ApolloQueryResult<AssignmentContent>) => {
 						const assignmentContent = get(
 							response,
-							`data.${CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel].resultPath}`
+							`data.${
+								CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel]
+									.resultPath
+							}`
 						);
 						if (!assignmentContent) {
 							toastService(
