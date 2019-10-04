@@ -22,7 +22,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import NotFound from '../../404/views/NotFound';
 import CollectionFragmentsDetail from '../../collection/components/CollectionFragmentsDetail';
 import { RouteParts } from '../../constants';
-import ItemVideoDescription from '../../item/views/components/ItemVideoDescription';
+import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import { dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { GET_ASSIGNMENT_WITH_RESPONSE } from '../graphql';

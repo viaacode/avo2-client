@@ -16,10 +16,10 @@ import { Scrollbar } from 'react-scrollbars-custom';
 import { Column, Container, convertToHtml, ExpandableContainer, Grid } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
-import { parseDuration } from '../../../shared/helpers/parsers/duration';
-import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { parseDuration } from '../../shared/helpers/parsers/duration';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 import './ItemVideoDescription.scss';
 
@@ -27,12 +27,14 @@ interface ItemVideoDescriptionProps extends RouteComponentProps {
 	itemMetaData: Avo.Item.Response;
 }
 
+const DEFAULT_VIDEO_HEIGHT = 421;
+
 const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({ itemMetaData }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [time, setTime] = useState<number>(0);
-	const [videoHeight, setVideoHeight] = useState<number>(421); // correct height for desktop screens
+	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
 	useEffect(() => {
 		// Register window listener when the component mounts
@@ -42,7 +44,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({ it
 					const vidHeight = videoRef.current.getBoundingClientRect().height;
 					setVideoHeight(vidHeight);
 				} else {
-					setVideoHeight(421);
+					setVideoHeight(DEFAULT_VIDEO_HEIGHT);
 				}
 			},
 			300,
@@ -131,8 +133,8 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({ it
 					}}
 				>
 					<h4 className="c-h4">Beschrijving</h4>
-					{/* "description" label height (20) + padding (14) */}
-					<ExpandableContainer collapsedHeight={videoHeight - 20 - 14}>
+					{/* "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
+					<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
 						<p style={{ paddingRight: '1rem' }}>
 							{formatTimestamps(convertToHtml(itemMetaData.description))}
 						</p>

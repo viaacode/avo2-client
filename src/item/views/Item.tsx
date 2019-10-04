@@ -11,14 +11,11 @@ import React, {
 	useState,
 } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
 	Button,
 	Column,
 	Container,
-	convertToHtml,
-	ExpandableContainer,
 	Flex,
 	Grid,
 	Icon,
@@ -39,13 +36,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { ContentType } from '@viaa/avo2-components/dist/types';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
 	dutchContentLabelToEnglishLabel,
 } from '../../collection/types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
 	generateAssignmentCreateLink,
@@ -57,12 +54,11 @@ import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import ItemVideoDescription from '../components/ItemVideoDescription';
 import { GET_ITEM_BY_ID } from '../item.gql';
-import { AddFragmentToCollection } from './modals/AddFragmentToCollection';
+import { AddFragmentToCollection } from '../modals/AddFragmentToCollection';
 
-import { ContentType } from '@viaa/avo2-components/dist/types';
 import './Item.scss';
-import ItemVideoDescription from './components/ItemVideoDescription';
 
 interface ItemProps extends RouteComponentProps {}
 
