@@ -42,7 +42,7 @@ import {
 } from '../../shared/helpers/generateLink';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-import CollectionFragmentsDetail from '../components/CollectionFragmentsDetail';
+import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
 
@@ -230,7 +230,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 				</Navbar>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<CollectionFragmentsDetail collectionFragments={collection.collection_fragments} />
+						<FragmentDetail collectionFragments={collection.collection_fragments} />
 					</Container>
 				</Container>
 				<Container mode="vertical">

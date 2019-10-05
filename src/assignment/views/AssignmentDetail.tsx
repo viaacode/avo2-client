@@ -24,7 +24,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { ApolloQueryResult } from 'apollo-client';
 import NotFound from '../../404/views/NotFound';
-import CollectionFragmentsDetail from '../../collection/components/CollectionFragmentsDetail';
+import FragmentDetail from '../../collection/components/FragmentDetail';
 import { RouteParts } from '../../constants';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import { dataService } from '../../shared/services/data-service';
@@ -186,7 +186,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				<Container mode="vertical">
 					<Container mode="horizontal">
 						{assignment.content_label === 'COLLECTIE' && (
-							<CollectionFragmentsDetail
+							<FragmentDetail
 								collectionFragments={
 									(assigmentContent as Avo.Collection.Collection).collection_fragments
 								}
