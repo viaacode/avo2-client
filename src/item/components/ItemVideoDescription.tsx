@@ -1,9 +1,6 @@
 import { debounce } from 'lodash-es';
-import queryString from 'query-string';
 import React, {
 	createRef,
-	CSSProperties,
-	Fragment,
 	FunctionComponent,
 	ReactNode,
 	RefObject,
@@ -13,7 +10,7 @@ import React, {
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
 
-import { Column, Container, convertToHtml, ExpandableContainer, Grid } from '@viaa/avo2-components';
+import { Column, convertToHtml, ExpandableContainer, Grid } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';

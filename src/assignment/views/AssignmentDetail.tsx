@@ -10,11 +10,16 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Icon,
 	MenuContent,
+	Navbar,
 	Spinner,
 	TagList,
 	TagOption,
+	Toolbar,
+	ToolbarItem,
+	ToolbarLeft,
 } from '@viaa/avo2-components';
 
 import { Avo } from '@viaa/avo2-types';
@@ -25,6 +30,7 @@ import { RouteParts } from '../../constants';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import { dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 import { GET_ASSIGNMENT_WITH_RESPONSE } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
 import { Assignment, AssignmentContent, AssignmentTag } from '../types';
@@ -37,7 +43,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const [assignment, setAssignment] = useState<Assignment | undefined>();
 	const [assigmentContent, setAssigmentContent] = useState<AssignmentContent | null | undefined>();
 	const [loadingState, setLoadingState] = useState<LoadingState>('loading');
-	const [loadingError, setLoadingError] = useState<{ error: string; icon: string } | null>(null);
+	const [loadingError, setLoadingError] = useState<{ error: string; icon: IconName } | null>(null);
 
 	/**
 	 * Load the content (collection, item or searchquery) after we've loaded the assignment
@@ -102,11 +108,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		return (
 			<Fragment>
 				<Container mode="vertical" size="small" background={'alt'}>
-					<nav className="c-navbar c-navbar--auto c-navbar--bg-alt">
-						<div className="o-container">
-							<div className="c-toolbar c-toolbar--huge c-toolbar--drop-columns-low-mq">
-								<div className="c-toolbar__left">
-									<div className="c-toolbar__item">
+					<Navbar background="alt" autoHeight>
+						<Container mode="horizontal">
+							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq">
+								<ToolbarLeft>
+									<ToolbarItem>
 										<Link
 											className="c-return"
 											to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
@@ -115,14 +121,15 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 											<span>Mijn opdrachten</span>
 										</Link>
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
-									</div>
-								</div>
+									</ToolbarItem>
+								</ToolbarLeft>
 								<div className="c-toolbar__right">
-									<div className="c-toolbar__item">
+									{/* TODO: Fix ToolbarRight slot to allow multiple ToolbarItem's */}
+									<ToolbarItem>
 										<TagList tags={tags} closable={false} swatches bordered />
-									</div>
+									</ToolbarItem>
 									{!!assignment.user && (
-										<div className="c-toolbar__item">
+										<ToolbarItem>
 											<Avatar
 												size="small"
 												initials={assignment.user.first_name[0] + assignment.user.last_name[0]}
@@ -133,9 +140,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 													(assignment.user.profile && assignment.user.profile.avatar) || undefined
 												}
 											/>
-										</div>
+										</ToolbarItem>
 									)}
-									<div className="c-toolbar__item">
+									<ToolbarItem>
 										<Dropdown
 											autoSize
 											isOpen={isActionsDropdownOpen}
@@ -153,10 +160,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 												/>
 											</DropdownContent>
 										</Dropdown>
-									</div>
+									</ToolbarItem>
 								</div>
-							</div>
-						</div>
+							</Toolbar>
+						</Container>
 						<Container mode="horizontal">
 							<div
 								className="c-content"
@@ -171,7 +178,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 								</div>
 							)}
 						</Container>
-					</nav>
+					</Navbar>
 				</Container>
 
 				<Container mode="vertical">
@@ -194,20 +201,22 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 
 	if (loadingState === 'loading') {
 		return (
-			<div className="o-flex o-flex--horizontal-center">
+			<Flex orientation="horizontal" center>
 				<Spinner size="large" />
-			</div>
-		);
-	} else if (loadingState === 'loaded' && assignment) {
-		return renderAssignment(assignment);
-	} else {
-		return (
-			<NotFound
-				message={loadingError ? loadingError.error : 'Het ophalen van de opdracht is mislukt'}
-				icon={loadingError ? loadingError.icon : 'alert-triangle'}
-			/>
+			</Flex>
 		);
 	}
+
+	if (loadingState === 'loaded' && assignment) {
+		return renderAssignment(assignment);
+	}
+
+	return (
+		<NotFound
+			message={loadingError ? loadingError.error : 'Het ophalen van de opdracht is mislukt'}
+			icon={loadingError ? loadingError.icon : 'alert-triangle'}
+		/>
+	);
 };
 
 export default withRouter(AssignmentDetail);

@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, eq, get, initial, isEmpty, omit, without } from 'lodash-es';
+import { cloneDeep, eq, get, isEmpty, omit, without } from 'lodash-es';
 import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { Prompt, RouteComponentProps, withRouter } from 'react-router';
@@ -29,9 +29,9 @@ import { MAX_SEARCH_DESCRIPTION_LENGTH, RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-
 import InputModal from '../../shared/components/modals/InputModal';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 import { ReorderCollectionModal, ShareCollectionModal } from '../components';
 import { USER_GROUPS } from '../constants';
 import {
@@ -76,13 +76,13 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			id: 'inhoud',
 			label: 'Inhoud',
 			active: currentTab === 'inhoud',
-			icon: 'collection',
+			icon: 'collection' as IconName,
 		},
 		{
 			id: 'metadata',
 			label: 'Metadata',
 			active: currentTab === 'metadata',
-			icon: 'file-text',
+			icon: 'file-text' as IconName,
 		},
 	];
 
