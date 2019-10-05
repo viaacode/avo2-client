@@ -7,7 +7,7 @@ import { dataService } from '../shared/services/data-service';
 import { Assignment, AssignmentContent, AssignmentContentLabel } from './types';
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string };
+	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string }
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,
@@ -42,13 +42,15 @@ export const getAssignmentContent = async (
 					CONTENT_LABEL_TO_QUERY[assignment.content_label as AssignmentContentLabel].resultPath
 				}`
 			);
+
 			if (!newAssignmentContent) {
 				return 'De opdracht werdt niet gevonden';
 			}
+
 			return newAssignmentContent;
-		} else {
-			return null;
 		}
+
+		return null;
 	} catch (err) {
 		console.error(err);
 		return 'Het ophalen van de opdracht inhoud is mislukt';
