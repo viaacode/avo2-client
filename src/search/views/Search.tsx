@@ -280,6 +280,12 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 		copyToClipboard(window.location.href);
 	};
 
+	const onCopySearchLinkClicked = () => {
+		copySearchLink();
+		setIsOptionsMenuOpen(false);
+		toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
+	};
+
 	const orderOptions = [
 		{ label: 'Meest relevant', value: 'relevance_desc' },
 		{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
@@ -342,11 +348,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												type="link"
 												className="c-menu__item"
 												label="Kopieer vaste link naar deze zoekopdracht"
-												onClick={() => {
-													copySearchLink();
-													setIsOptionsMenuOpen(false);
-													toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
-												}}
+												onClick={onCopySearchLinkClicked}
 											/>
 											{/* TODO Create link to create search assignment task */}
 											<Button

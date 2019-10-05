@@ -32,9 +32,11 @@ import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
+import InputModal from '../../shared/components/modals/InputModal';
 import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
@@ -44,7 +46,6 @@ import {
 } from '../graphql';
 import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
 import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../types';
-import InputModal from '../../shared/components/modals/InputModal';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -77,18 +78,10 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		}
 
 		return [
-			{ title: { _like: `%${filter}%` } },
-			{ assignment_assignment_tags: { assignment_tag: { label: { _like: `%${filter}%` } } } },
-			{ class_room: { _like: `%${filter}%` } },
-			{ assignment_type: { _like: `%${filter}%` } },
-			{ title: { _like: `%${uppercaseFilter}%` } },
-			{
-				assignment_assignment_tags: {
-					assignment_tag: { label: { _like: `%${uppercaseFilter}%` } },
-				},
-			},
-			{ class_room: { _like: `%${uppercaseFilter}%` } },
-			{ assignment_type: { _like: `%${uppercaseFilter}%` } },
+			{ title: { _ilike: `%${filter}%` } },
+			{ assignment_assignment_tags: { assignment_tag: { label: { _ilike: `%${filter}%` } } } },
+			{ class_room: { _ilike: `%${filter}%` } },
+			{ assignment_type: { _ilike: `%${filter}%` } },
 		];
 	};
 
@@ -307,14 +300,14 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 							<DropdownContent>
 								<MenuContent
 									menuItems={[
-										{ icon: 'edit2', id: 'edit', label: 'Bewerk' },
+										{ icon: 'edit2' as IconName, id: 'edit', label: 'Bewerk' },
 										{
-											icon: 'archive',
+											icon: 'archive' as IconName,
 											id: 'archive',
 											label: activeView === 'archived_assignments' ? 'Dearchiveer' : 'Archiveer',
 										},
-										{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-										{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+										{ icon: 'copy' as IconName, id: 'duplicate', label: 'Dupliceer' },
+										{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' },
 									]}
 									onClick={(actionId: ReactText) =>
 										handleExtraOptionsItemClicked(

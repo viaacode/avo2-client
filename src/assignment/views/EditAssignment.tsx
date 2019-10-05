@@ -21,6 +21,7 @@ import {
 	FormGroup,
 	Icon,
 	MenuContent,
+	Navbar,
 	RadioButton,
 	RadioButtonGroup,
 	Spacer,
@@ -72,7 +73,7 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in AssignmentContentLabel]: s
 };
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string };
+	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string }
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,
@@ -202,7 +203,10 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 					.then((response: ApolloQueryResult<AssignmentContent>) => {
 						const assignmentContent = get(
 							response,
-							`data.${CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel].resultPath}`
+							`data.${
+								CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel]
+									.resultPath
+							}`
 						);
 						if (!assignmentContent) {
 							toastService(
@@ -415,12 +419,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 	const renderEditAssignmentForm = () => (
 		<Fragment>
 			<Container mode="vertical" background={'alt'}>
-				<nav className="c-navbar c-navbar--auto">
+				<Navbar autoHeight>
 					<Container mode="horizontal">
 						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
 							<ToolbarLeft>
-								<ToolbarItem className="c-toolbar__item--grow">
-									{/* TODO use grow option from component */}
+								<ToolbarItem grow>
 									<Link
 										className="c-return"
 										to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
@@ -507,7 +510,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 							</ToolbarRight>
 						</Toolbar>
 					</Container>
-				</nav>
+				</Navbar>
 			</Container>
 			<Container mode="horizontal" size="small">
 				<Container mode="vertical" size="large">

@@ -1,0 +1,11 @@
+.c-button-toolbar .c-button + .c-button {
+	margin-left: 0;
+}
+
+.c-button-toolbar .c-button {
+	margin-bottom: 0.8rem;
+
+	&:not(:last-child) {
+		margin-right: 0.8rem;
+	}
+}
