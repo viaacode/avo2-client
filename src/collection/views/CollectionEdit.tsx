@@ -42,15 +42,15 @@ import {
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../graphql';
-import EditCollectionContent from './EditCollectionContent';
-import EditCollectionMetadata from './EditCollectionMetadata';
+import CollectionEditContent from './CollectionEditContent';
+import CollectionEditMetaData from './CollectionEditMetaData';
 
-interface EditCollectionProps extends RouteComponentProps {}
+interface CollectionEditProps extends RouteComponentProps {}
 
 let currentCollection: any;
 let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
 
-const EditCollection: FunctionComponent<EditCollectionProps> = props => {
+const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -447,7 +447,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		return JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
 	};
 
-	const renderEditCollection = (
+	const renderCollectionEdit = (
 		collection: Avo.Collection.Collection,
 		refetchCollection: () => void
 	) => {
@@ -589,7 +589,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					</Container>
 				</Navbar>
 				{currentTab === 'inhoud' && (
-					<EditCollectionContent
+					<CollectionEditContent
 						collection={currentCollection}
 						swapFragments={swapFragments}
 						updateCollection={setCurrentCollection}
@@ -597,7 +597,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					/>
 				)}
 				{currentTab === 'metadata' && (
-					<EditCollectionMetadata
+					<CollectionEditMetaData
 						collection={currentCollection}
 						updateCollectionProperty={updateCollectionProperty}
 					/>
@@ -634,7 +634,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			query={GET_COLLECTION_BY_ID}
 			variables={{ id: collectionId }}
 			resultPath="app_collections[0]"
-			renderData={renderEditCollection}
+			renderData={renderCollectionEdit}
 			notFoundMessage="Deze collectie werd niet gevonden"
 		/>
 	);
@@ -658,4 +658,4 @@ export function getValidationFeedbackForShortDescription(
 		: `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
 }
 
-export default withRouter(withApollo(EditCollection));
+export default withRouter(withApollo(CollectionEdit));

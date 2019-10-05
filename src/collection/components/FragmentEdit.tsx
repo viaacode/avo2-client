@@ -34,7 +34,7 @@ import { isVideoFragment } from '../helpers';
 import AddFragment from './AddFragment';
 import CutFragmentModal from './modals/CutFragmentModal';
 
-interface CollectionFragmentProps extends RouteComponentProps {
+interface FragmentEditProps extends RouteComponentProps {
 	index: number;
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
@@ -46,7 +46,7 @@ interface CollectionFragmentProps extends RouteComponentProps {
 	updateCollection: (collection: Avo.Collection.Collection) => void;
 }
 
-const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
+const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	index,
 	collection,
 	swapFragments,
@@ -324,4 +324,4 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	);
 };
 
-export default withRouter(withApollo(CollectionFragment));
+export default withRouter(withApollo(FragmentEdit));

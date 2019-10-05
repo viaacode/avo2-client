@@ -26,7 +26,7 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import './Collections.scss';
+import './CollectionOverview.scss';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;

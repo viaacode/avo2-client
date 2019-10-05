@@ -68,11 +68,11 @@ import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { isVideoFragment } from '../helpers';
 import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
 
-import './Collection.scss';
+import './CollectionDetail.scss';
 
-interface CollectionProps extends RouteComponentProps {}
+interface CollectionDetailProps extends RouteComponentProps {}
 
-const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
+const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
 	const [playerTicket, setPlayerTicket] = useState<string | undefined>();
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
@@ -533,4 +533,4 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	);
 };
 
-export default withRouter(Collection);
+export default withRouter(CollectionDetail);

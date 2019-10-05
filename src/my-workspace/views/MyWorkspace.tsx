@@ -18,7 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import Assignments from '../../assignment/views/Assignments';
-import Collections from '../../collection/views/Collections';
+import CollectionOverview from '../../collection/views/CollectionOverview';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -44,7 +44,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 	const getTabs = (counts: { [tabId: string]: number }): TabViewMap => {
 		return {
 			[COLLECTIONS_ID]: {
-				component: <Collections numberOfCollections={counts[COLLECTIONS_ID]} />,
+				component: <CollectionOverview numberOfCollections={counts[COLLECTIONS_ID]} />,
 				// TODO: Vergeet deze filter niet terug te plaatsen.
 				// filter: {
 				// 	label: 'Auteur',
