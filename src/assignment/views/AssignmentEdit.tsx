@@ -64,7 +64,7 @@ import {
 	AssignmentTag,
 	AssignmentType,
 } from '../types';
-import './EditAssignment.scss';
+import './AssignmentEdit.scss';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in AssignmentContentLabel]: string } = {
 	ITEM: RouteParts.Item,
@@ -90,7 +90,7 @@ const CONTENT_LABEL_TO_QUERY: {
 	} as any,
 };
 
-interface EditAssignmentProps extends RouteComponentProps {}
+interface AssignmentEditProps extends RouteComponentProps {}
 
 // https://medium.com/@divyabiyani26/react-hooks-with-closures-usestate-v-s-usereducer-9e0c20e81051
 let currentAssignment: Partial<Assignment>;
@@ -98,7 +98,7 @@ let setCurrentAssignment: (newAssignment: any) => void;
 let initialAssignment: Partial<Assignment>;
 let setInitialAssignment: (newAssignment: any) => void;
 
-const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, location, match }) => {
+const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, location, match }) => {
 	[currentAssignment, setCurrentAssignment] = useState<Partial<Assignment>>({
 		content_layout: AssignmentLayout.PlayerAndText,
 	});
@@ -416,7 +416,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		);
 	};
 
-	const renderEditAssignmentForm = () => (
+	const renderAssignmentEditForm = () => (
 		<Fragment>
 			<Container mode="vertical" background={'alt'}>
 				<Navbar autoHeight>
@@ -689,11 +689,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			);
 
 		case 'loaded':
-			return renderEditAssignmentForm();
+			return renderAssignmentEditForm();
 
 		case 'not-found':
 			return <NotFound message="De inhoud voor deze opdracht is niet gevonden" icon="search" />;
 	}
 };
 
-export default withRouter(EditAssignment);
+export default withRouter(AssignmentEdit);

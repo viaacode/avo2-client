@@ -5,7 +5,7 @@ import { Assignment, AssignmentLayout } from './types';
 
 /**
  * Helper functions for inserting, updating, validating and deleting assigment
- * This will be used by the Assignments view and the EditAssignment view
+ * This will be used by the Assignments view and the AssignmentEdit view
  * @param assignment
  */
 const validateAssignment = (assignment: Partial<Assignment>): [string[], Assignment] => {

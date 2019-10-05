@@ -17,7 +17,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import Assignments from '../../assignment/views/Assignments';
+import AssignmentOverview from '../../assignment/views/AssignmentOverview';
 import CollectionOverview from '../../collection/views/CollectionOverview';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
@@ -64,7 +64,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 				},
 			},
 			[ASSIGNMENTS_ID]: {
-				component: <Assignments />,
+				component: <AssignmentOverview />,
 			},
 			[BOOKMARKS_ID]: {
 				component: <Bookmarks />,

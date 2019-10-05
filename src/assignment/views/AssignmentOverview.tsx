@@ -49,9 +49,9 @@ import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
-interface AssignmentsProps extends RouteComponentProps {}
+interface AssignmentOverviewProps extends RouteComponentProps {}
 
-const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
+const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ history }) => {
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
@@ -73,6 +73,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
 		const uppercaseFilter = filter && filter.toUpperCase();
+
 		if (!filter) {
 			return {};
 		}
@@ -459,4 +460,4 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	);
 };
 
-export default withRouter(Assignments);
+export default withRouter(AssignmentOverview);
