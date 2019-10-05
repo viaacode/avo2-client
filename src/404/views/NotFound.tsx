@@ -1,9 +1,10 @@
 import { Blankslate, Container } from '@viaa/avo2-components';
 import React, { FunctionComponent, ReactNode } from 'react';
+import { IconName } from '../../shared/types/types';
 
 interface NotFoundProps {
 	message?: string;
-	icon?: string;
+	icon?: IconName;
 	children?: ReactNode;
 }
 

@@ -3,9 +3,6 @@ import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-
 import {
 	Button,
 	Column,
@@ -28,7 +25,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
 import { isVideoFragment } from '../helpers';
 import AddFragment from './AddFragment';
@@ -73,7 +73,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const renderReorderButton = (fragmentId: number, direction: 'up' | 'down') => (
 		<Button
 			type="secondary"
-			icon={`chevron-${direction}`}
+			icon={`chevron-${direction}` as IconName}
 			onClick={() => swapFragments(fragmentId, direction)}
 		/>
 	);

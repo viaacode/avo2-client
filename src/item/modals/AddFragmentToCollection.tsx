@@ -30,15 +30,15 @@ import {
 	GET_COLLECTION_TITLES_BY_OWNER,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENT,
-} from '../../../collection/graphql';
-import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
-import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { dataService } from '../../../shared/services/data-service';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+} from '../../collection/graphql';
+import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { formatDurationHoursMinutesSeconds } from '../../shared/helpers/formatters/duration';
+import { toSeconds } from '../../shared/helpers/parsers/duration';
+import { dataService } from '../../shared/services/data-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import './AddFragmentToCollection.scss';
 
 interface AddFragmentToCollectionProps {

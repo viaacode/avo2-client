@@ -21,6 +21,7 @@ import {
 	FormGroup,
 	Icon,
 	MenuContent,
+	Navbar,
 	RadioButton,
 	RadioButtonGroup,
 	Spacer,
@@ -418,12 +419,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 	const renderEditAssignmentForm = () => (
 		<Fragment>
 			<Container mode="vertical" background={'alt'}>
-				<nav className="c-navbar c-navbar--auto">
+				<Navbar autoHeight>
 					<Container mode="horizontal">
 						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
 							<ToolbarLeft>
-								<ToolbarItem className="c-toolbar__item--grow">
-									{/* TODO use grow option from component */}
+								<ToolbarItem grow>
 									<Link
 										className="c-return"
 										to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
@@ -510,7 +510,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 							</ToolbarRight>
 						</Toolbar>
 					</Container>
-				</nav>
+				</Navbar>
 			</Container>
 			<Container mode="horizontal" size="small">
 				<Container mode="vertical" size="large">

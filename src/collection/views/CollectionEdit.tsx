@@ -29,9 +29,9 @@ import { MAX_SEARCH_DESCRIPTION_LENGTH, RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-
 import InputModal from '../../shared/components/modals/InputModal';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 import { ReorderCollectionModal, ShareCollectionModal } from '../components';
 import { USER_GROUPS } from '../constants';
 import {
@@ -76,13 +76,13 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			id: 'inhoud',
 			label: 'Inhoud',
 			active: currentTab === 'inhoud',
-			icon: 'collection',
+			icon: 'collection' as IconName,
 		},
 		{
 			id: 'metadata',
 			label: 'Metadata',
 			active: currentTab === 'metadata',
-			icon: 'file-text',
+			icon: 'file-text' as IconName,
 		},
 	];
 
