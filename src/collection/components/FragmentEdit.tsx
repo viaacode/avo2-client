@@ -31,7 +31,7 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
 import { isVideoFragment } from '../helpers';
-import AddFragment from './AddFragment';
+import FragmentAdd from './FragmentAdd';
 import CutFragmentModal from './modals/CutFragmentModal';
 
 interface FragmentEditProps extends RouteComponentProps {
@@ -289,7 +289,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						)}
 					</div>
 				</div>
-				<AddFragment
+				<FragmentAdd
 					index={index}
 					collection={collection}
 					updateCollection={updateCollection}

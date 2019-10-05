@@ -4,7 +4,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { AddFragment, FragmentEdit } from '../components';
+import { FragmentAdd, FragmentEdit } from '../components';
 
 interface CollectionEditContentProps {
 	collection: Avo.Collection.Collection;
@@ -49,7 +49,7 @@ const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 				)}
 			</Container>
 			{!collection.collection_fragments.length && (
-				<AddFragment
+				<FragmentAdd
 					index={0}
 					collection={collection}
 					updateCollection={updateCollection}

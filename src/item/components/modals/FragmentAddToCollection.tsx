@@ -30,25 +30,25 @@ import {
 	GET_COLLECTION_TITLES_BY_OWNER,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENT,
-} from '../../collection/graphql';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
-import { formatDurationHoursMinutesSeconds } from '../../shared/helpers/formatters/duration';
-import { toSeconds } from '../../shared/helpers/parsers/duration';
-import { dataService } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import './AddFragmentToCollection.scss';
+} from '../../../collection/graphql';
+import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { dataService } from '../../../shared/services/data-service';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import './FragmentAddToCollection.scss';
 
-interface AddFragmentToCollectionProps {
+interface FragmentAddToCollectionProps {
 	externalId: string;
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
 }
 
-export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionProps> = ({
+export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
@@ -187,7 +187,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 		setFragmentEndTime(values[1]);
 	};
 
-	const renderAddFragmentToCollectionModal = (collections: { id: number; title: string }[]) => {
+	const renderFragmentAddToCollectionModal = (collections: { id: number; title: string }[]) => {
 		const initFlowPlayer = () =>
 			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 
@@ -334,7 +334,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 			// TODO: replace with actual owner id from ldap object
 			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
 			resultPath="app_collections"
-			renderData={renderAddFragmentToCollectionModal}
+			renderData={renderFragmentAddToCollectionModal}
 			notFoundMessage="Er konden geen collecties worden opgehaald"
 		/>
 	);

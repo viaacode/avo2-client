@@ -56,8 +56,8 @@ import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import ItemVideoDescription from '../components/ItemVideoDescription';
+import { FragmentAddToCollection } from '../components/modals/FragmentAddToCollection';
 import { GET_ITEM_BY_ID } from '../item.gql';
-import { AddFragmentToCollection } from '../modals/AddFragmentToCollection';
 
 import './Item.scss';
 
@@ -70,7 +70,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [time, setTime] = useState<number>(0);
 	const [videoHeight, setVideoHeight] = useState<number>(387); // correct height for desktop screens
-	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
+	const [isOpenFragmentAddToCollectionModal, setIsOpenFragmentAddToCollectionModal] = useState(
 		false
 	);
 
@@ -253,7 +253,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 													type="tertiary"
 													icon="add"
 													label="Voeg fragment toe aan collectie"
-													onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
+													onClick={() => setIsOpenFragmentAddToCollectionModal(true)}
 												/>
 												<Button
 													type="tertiary"
@@ -495,11 +495,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					</Container>
 				</Container>
 				{typeof itemId !== undefined && (
-					<AddFragmentToCollection
+					<FragmentAddToCollection
 						itemMetaData={itemMetaData}
 						externalId={itemId as string}
-						isOpen={isOpenAddFragmentToCollectionModal}
-						onClose={() => setIsOpenAddFragmentToCollectionModal(false)}
+						isOpen={isOpenFragmentAddToCollectionModal}
+						onClose={() => setIsOpenFragmentAddToCollectionModal(false)}
 					/>
 				)}
 			</Fragment>

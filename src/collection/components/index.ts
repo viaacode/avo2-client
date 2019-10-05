@@ -1,4 +1,4 @@
-import AddFragment from './AddFragment';
+import FragmentAdd from './FragmentAdd';
 import FragmentDetail from './FragmentDetail';
 import FragmentEdit from './FragmentEdit';
 import CutFragmentModal from './modals/CutFragmentModal';
@@ -9,7 +9,7 @@ export {
 	ReorderCollectionModal,
 	ShareCollectionModal,
 	FragmentEdit,
-	AddFragment,
+	FragmentAdd,
 	FragmentDetail,
 	CutFragmentModal,
 };

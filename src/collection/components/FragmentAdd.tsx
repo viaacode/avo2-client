@@ -8,7 +8,7 @@ import { ContentBlockType } from '../types';
 
 const COLLECTION_CONTENT_BLOCKS = ['RichText'];
 
-interface AddFragmentProps {
+interface FragmentAddProps {
 	index: number;
 	collection: Avo.Collection.Collection;
 	updateCollection: (collection: Avo.Collection.Collection) => void;
@@ -29,7 +29,7 @@ const fragmentsDefaults = {
 	},
 };
 
-const AddFragment: FunctionComponent<AddFragmentProps> = ({
+const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	index,
 	collection,
 	updateCollection,
@@ -41,7 +41,7 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 		collection_id: collection.id,
 	};
 
-	const addFragment = (index: number, contentBlockType: ContentBlockType) => {
+	const FragmentAdd = (index: number, contentBlockType: ContentBlockType) => {
 		const newFragments = orderBy([...collection.collection_fragments], 'position', 'asc');
 
 		switch (contentBlockType) {
@@ -74,7 +74,7 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 							<Button
 								type="secondary"
 								icon="add"
-								onClick={() => addFragment(index, ContentBlockType.RichText)}
+								onClick={() => FragmentAdd(index, ContentBlockType.RichText)}
 							/>
 						)}
 						<div className="u-sr-accessible">Sectie toevoegen</div>
@@ -88,4 +88,4 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 	);
 };
 
-export default AddFragment;
+export default FragmentAdd;
