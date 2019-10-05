@@ -69,6 +69,54 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
   }
 `;
 
+export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
+	query getAssignmentWithResponse($assignmentId: Int!, $studentUuid: [String!]) {
+		assignments: app_assignments(
+			where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false }, is_archived: { _eq: false } }
+		) {
+			assignment_assignment_tags {
+				assignment_tag {
+					color_enum_value
+					color_override
+					enum_color {
+						label
+					}
+					id
+				}
+			}
+			assignment_responses(where: { owner_uids: { _has_keys_any: $studentUuid } }) {
+				id
+				started_at
+				finished_at
+				owner_uids
+				assignment_id
+				collection_id
+			}
+			assignment_type
+			class_room
+			deadline_at
+			id
+			is_archived
+			is_deleted
+			title
+			description
+			content_id
+			content_label
+			content_layout
+			created_at
+			updated_at
+			answer_url
+			user {
+				first_name
+				last_name
+				role {
+					label
+				}
+			}
+		}
+	}
+`;
+
 export const UPDATE_ASSIGNMENT = gql`
 	mutation updateAssignmentById($id: Int!, $assignment: app_assignments_set_input!) {
 		update_app_assignments(where: { id: { _eq: $id } }, _set: $assignment) {
@@ -84,6 +132,14 @@ export const INSERT_ASSIGNMENT = gql`
 			returning {
 				id
 			}
+		}
+	}
+`;
+
+export const DELETE_ASSIGNMENT = gql`
+	mutation deleteAssignmentById($id: Int!) {
+		delete_app_assignments(where: { id: { _eq: $id } }) {
+			affected_rows
 		}
 	}
 `;

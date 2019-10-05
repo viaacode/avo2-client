@@ -280,6 +280,12 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 		copyToClipboard(window.location.href);
 	};
 
+	const onCopySearchLinkClicked = () => {
+		copySearchLink();
+		setIsOptionsMenuOpen(false);
+		toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
+	};
+
 	const orderOptions = [
 		{ label: 'Meest relevant', value: 'relevance_desc' },
 		{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
@@ -338,28 +344,22 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 									</DropdownButton>
 									<DropdownContent>
 										<Fragment>
-											<a
+											<Button
+												type="link"
 												className="c-menu__item"
-												onClick={() => {
-													copySearchLink();
-													setIsOptionsMenuOpen(false);
-													toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
-												}}
-											>
-												<div className="c-menu__label">
-													Kopieer vaste link naar deze zoekopdracht
-												</div>
-											</a>
-											<a
+												label="Kopieer vaste link naar deze zoekopdracht"
+												onClick={onCopySearchLinkClicked}
+											/>
+											{/* TODO Create link to create search assignment task */}
+											<Button
+												type="link"
 												className="c-menu__item"
+												label="Maak van deze zoekopdracht een opdracht"
 												onClick={() => {
 													setIsOptionsMenuOpen(false);
 													toastService('Nog niet geïmplementeerd');
 												}}
-											>
-												{/* TODO Create link to create search assignment task */}
-												<div className="c-menu__label">Maak van deze zoekopdracht een opdracht</div>
-											</a>
+											/>
 										</Fragment>
 									</DropdownContent>
 								</Dropdown>

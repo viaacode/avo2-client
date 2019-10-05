@@ -1,5 +1,7 @@
+import { useMutation } from '@apollo/react-hooks';
+import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -25,22 +27,48 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+
 import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
+import InputModal from '../../shared/components/modals/InputModal';
 import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
-import { GET_ASSIGNMENTS_BY_OWNER_ID } from '../graphql';
+import { dataService } from '../../shared/services/data-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
+import {
+	DELETE_ASSIGNMENT,
+	GET_ASSIGNMENT_BY_ID,
+	GET_ASSIGNMENTS_BY_OWNER_ID,
+	INSERT_ASSIGNMENT,
+	UPDATE_ASSIGNMENT,
+} from '../graphql';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
 import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../types';
+
+type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
 interface AssignmentsProps extends RouteComponentProps {}
 
 const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
-	const [actionsDropdownOpen, setActionsDropdownOpen] = useState<{ [key: string]: boolean }>({});
+	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
+		string | number | null
+	>(null);
+	const [isDuplicateAssignmentModalOpen, setDuplicateAssignmentModalOpen] = useState<boolean>(
+		false
+	);
+	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
+	const [markedAssignment, setMarkedAssignment] = useState<null | Partial<Assignment>>(null);
 	const [sortColumn, setSortColumn] = useState<keyof Assignment>('deadline_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 	const [page, setPage] = useState<number>(0);
+
+	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
+	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
+	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
 
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
@@ -50,18 +78,10 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		}
 
 		return [
-			{ title: { _like: `%${filter}%` } },
-			{ assignment_assignment_tags: { assignment_tag: { label: { _like: `%${filter}%` } } } },
-			{ class_room: { _like: `%${filter}%` } },
-			{ assignment_type: { _like: `%${filter}%` } },
-			{ title: { _like: `%${uppercaseFilter}%` } },
-			{
-				assignment_assignment_tags: {
-					assignment_tag: { label: { _like: `%${uppercaseFilter}%` } },
-				},
-			},
-			{ class_room: { _like: `%${uppercaseFilter}%` } },
-			{ assignment_type: { _like: `%${uppercaseFilter}%` } },
+			{ title: { _ilike: `%${filter}%` } },
+			{ assignment_assignment_tags: { assignment_tag: { label: { _ilike: `%${filter}%` } } } },
+			{ class_room: { _ilike: `%${filter}%` } },
+			{ assignment_type: { _ilike: `%${filter}%` } },
 		];
 	};
 
@@ -76,7 +96,148 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		}
 	};
 
-	const renderCell = (rowData: Assignment, colKey: keyof Assignment | 'actions') => {
+	const getAssigmentById = async (assignmentId: number | string) => {
+		const response: ApolloQueryResult<Assignment> = await dataService.query({
+			query: GET_ASSIGNMENT_BY_ID,
+			variables: { id: assignmentId },
+		});
+		const assignment = get(response, 'data.app_assignments[0]');
+
+		if (!assignment) {
+			toastService('Het ophalen van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			return;
+		}
+		return assignment;
+	};
+
+	const duplicateAssignment = async (
+		newTitle: string,
+		assignment: Partial<Assignment> | null,
+		refetchAssignments: () => void
+	) => {
+		try {
+			if (assignment) {
+				delete assignment.id;
+				assignment.title = newTitle;
+				const duplicateAssignment = await insertAssignment(triggerAssignmentInsert, assignment);
+				if (!duplicateAssignment) {
+					return; // assignment was not valid => validation service already showed a toast
+				}
+				refetchAssignments();
+				toastService('De opdracht is gedupliceerd', TOAST_TYPE.SUCCESS);
+			}
+		} catch (err) {
+			console.error(err);
+			toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+		}
+	};
+
+	const archiveAssignment = async (
+		assignmentId: number | string,
+		refetchAssignments: () => void
+	) => {
+		try {
+			const assignment: Partial<Assignment> = await getAssigmentById(assignmentId);
+			if (assignment) {
+				const archivedAssigment: Partial<Assignment> = {
+					...assignment,
+					is_archived: !assignment.is_archived,
+				};
+
+				if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
+					refetchAssignments();
+					toastService(
+						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`,
+						TOAST_TYPE.SUCCESS
+					);
+				}
+				// else: assignment was not valid and could not be saved yet
+				// the update assignment function will have already notified the user of the validation errors
+			}
+		} catch (err) {
+			console.error(err);
+			toastService(
+				`Het ${
+					activeView === 'archived_assignments' ? 'de' : ''
+				}archiveren van de opdracht is mislukt`,
+				TOAST_TYPE.DANGER
+			);
+		}
+	};
+
+	const deleteCurrentAssignment = async (
+		assignmentId: number | string | null,
+		refetchAssignments: () => void
+	) => {
+		try {
+			if (typeof assignmentId === 'undefined' || assignmentId === null) {
+				toastService('De huidige opdracht is nog nooit opgeslagen (geen id)', TOAST_TYPE.DANGER);
+				return;
+			}
+			await deleteAssignment(triggerAssignmentDelete, assignmentId);
+			refetchAssignments();
+			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
+		} catch (err) {
+			console.error(err);
+			toastService('Het verwijderen van de opdracht is mislukt', TOAST_TYPE.DANGER);
+		}
+	};
+
+	const handleExtraOptionsItemClicked = async (
+		actionId: ExtraAssignmentOptions,
+		dataRow: Partial<Assignment>,
+		refetchAssignments: () => void
+	) => {
+		if (!dataRow.id) {
+			toastService('Het opdracht id van de geselecteerde rij is niet ingesteld', TOAST_TYPE.DANGER);
+			return;
+		}
+		switch (actionId) {
+			case 'edit':
+				history.push(
+					`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${dataRow.id}/${RouteParts.Edit}`
+				);
+				break;
+			case 'duplicate':
+				const assignment: Partial<Assignment> = await getAssigmentById(dataRow.id);
+				if (assignment) {
+					setMarkedAssignment(assignment);
+					setDuplicateAssignmentModalOpen(true);
+				} else {
+					toastService('Het ophalen van de details van de opdracht is mislukt', TOAST_TYPE.DANGER);
+				}
+				break;
+			case 'archive':
+				await archiveAssignment(dataRow.id, refetchAssignments);
+				break;
+			case 'delete':
+				setMarkedAssignment(dataRow);
+				setDeleteAssignmentModalOpen(true);
+				break;
+			default:
+				return null;
+		}
+
+		setDropdownOpenForAssignmentId(null);
+	};
+
+	const handleDeleteModalClose = () => {
+		setDeleteAssignmentModalOpen(false);
+		setMarkedAssignment(null);
+	};
+
+	const handleDuplicateModalClose = () => {
+		setDuplicateAssignmentModalOpen(false);
+		setMarkedAssignment(null);
+	};
+
+	const renderCell = (
+		rowData: Assignment,
+		colKey: keyof Assignment | 'actions',
+		rowIndex: number,
+		colIndex: number,
+		refetchAssignments: () => void
+	) => {
 		const cellData: any = (rowData as any)[colKey];
 
 		switch (colKey) {
@@ -88,7 +249,11 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
-								<Link to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}`}>
+								<Link
+									to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
+										RouteParts.Edit
+									}`}
+								>
 									{rowData.title}
 								</Link>
 							</h3>
@@ -124,9 +289,9 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 					<div className="c-button-toolbar">
 						<Dropdown
 							autoSize
-							isOpen={actionsDropdownOpen[rowData.id] || false}
-							onClose={() => setActionsDropdownOpen({ [rowData.id]: false })}
-							onOpen={() => setActionsDropdownOpen({ [rowData.id]: true })}
+							isOpen={dropdownOpenForAssignmentId === rowData.id}
+							onClose={() => setDropdownOpenForAssignmentId(null)}
+							onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
 							placement="bottom-end"
 						>
 							<DropdownButton>
@@ -135,27 +300,22 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 							<DropdownContent>
 								<MenuContent
 									menuItems={[
-										{ icon: 'edit2', id: 'edit', label: 'Bewerk' },
-										{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-										{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+										{ icon: 'edit2' as IconName, id: 'edit', label: 'Bewerk' },
+										{
+											icon: 'archive' as IconName,
+											id: 'archive',
+											label: activeView === 'archived_assignments' ? 'Dearchiveer' : 'Archiveer',
+										},
+										{ icon: 'copy' as IconName, id: 'duplicate', label: 'Dupliceer' },
+										{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' },
 									]}
-									onClick={itemId => {
-										switch (itemId) {
-											case 'edit':
-												history.push(
-													`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
-														RouteParts.Edit
-													}`
-												);
-												break;
-											case 'duplicate':
-												break;
-											case 'delete':
-												break;
-											default:
-												return null;
-										}
-									}}
+									onClick={(actionId: ReactText) =>
+										handleExtraOptionsItemClicked(
+											actionId.toString() as ExtraAssignmentOptions,
+											rowData,
+											refetchAssignments
+										)
+									}
 								/>
 							</DropdownContent>
 						</Dropdown>
@@ -184,10 +344,13 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		{ id: 'actions', label: '' },
 	];
 
-	const renderAssignmentsTable = (data: {
-		assignments: Assignment[];
-		count: { aggregate: { count: number } };
-	}) => {
+	const renderAssignmentsTable = (
+		data: {
+			assignments: Assignment[];
+			count: { aggregate: { count: number } };
+		},
+		refetchAssignments: () => void
+	) => {
 		return (
 			<Fragment>
 				<Table
@@ -200,7 +363,12 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 							? 'Er zijn nog geen opdrachten gearchiveerd'
 							: 'Er zijn nog geen opdrachten aangemaakt'
 					}
-					renderCell={renderCell}
+					renderCell={(
+						rowData: Assignment,
+						colKey: keyof Assignment | 'actions',
+						rowIndex: number,
+						colIndex: number
+					) => renderCell(rowData, colKey, rowIndex, colIndex, refetchAssignments)}
 					rowKey="id"
 					styled
 					onColumnClick={handleColumnClick as any}
@@ -214,6 +382,28 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						onPageChange={setPage}
 					/>
 				</Spacer>
+
+				<DeleteObjectModal
+					title="Ben je zeker dat je deze opdracht wil verwijderen?"
+					body="Deze actie kan niet ongedaan gemaakt worden"
+					isOpen={isDeleteAssignmentModalOpen}
+					onClose={handleDeleteModalClose}
+					deleteObjectCallback={() =>
+						deleteCurrentAssignment(get(markedAssignment, 'id', null), refetchAssignments)
+					}
+				/>
+
+				<InputModal
+					title="Dupliceer taak"
+					inputLabel="Geef de nieuwe taak een naam:"
+					inputValue={get(markedAssignment, 'title', '')}
+					inputPlaceholder="Titel van de nieuwe taak"
+					isOpen={isDuplicateAssignmentModalOpen}
+					onClose={handleDuplicateModalClose}
+					inputCallback={(newTitle: string) =>
+						duplicateAssignment(newTitle, markedAssignment, refetchAssignments)
+					}
+				/>
 			</Fragment>
 		);
 	};
@@ -250,6 +440,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						</ToolbarItem>
 					</ToolbarRight>
 				</Toolbar>
+
 				<DataQueryComponent
 					query={GET_ASSIGNMENTS_BY_OWNER_ID}
 					variables={{
