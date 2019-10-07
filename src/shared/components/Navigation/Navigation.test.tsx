@@ -17,7 +17,7 @@ const pItems = [
 
 const sItems = [
 	{ label: 'Registreren', location: `/${RouteParts.Register}` },
-	{ label: 'Aanmelden', location: `/${RouteParts.Login}` },
+	{ label: 'Aanmelden', location: `/${RouteParts.LoginAvo}` },
 ];
 
 describe('<Navigation />', () => {
