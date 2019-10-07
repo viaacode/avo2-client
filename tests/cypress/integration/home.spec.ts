@@ -4,13 +4,14 @@ context('Home', () => {
 	beforeEach(() => {
 		cy.viewport(1920, 937);
 		cy.visit(Cypress.env('CLIENT_BASE_URL'));
+		cy.manualLogin('', Cypress.env('SHD_TEST_ACCOUNT_EMAIL'), Cypress.env('SHD_TEST_ACCOUNT_PASSWORD'));
 	});
 
 	it('Homepage should load correctly', () => {
 		cy.contains('Vind alles wat je nodig hebt om je lessen te verrijken.');
 	});
 
-	it('Homepage should have working search field', () => {
+	it('Homepage should have a working search field when logged in', () => {
 		const searchField = cy.get('[placeholder="Vul een zoekterm in"]');
 		searchField.click();
 
@@ -21,7 +22,7 @@ context('Home', () => {
 		// Check menu items
 		searchResultMenu
 			.find('.c-menu__item')
-			.should('have.length', 5)
+			.should('have.length', 5) // Not allowed search when logged out
 			.should('be.visible');
 	});
 
@@ -33,8 +34,6 @@ context('Home', () => {
 		const allSearchResultsButton = searchResultMenu.find('.c-menu__footer .c-button');
 		allSearchResultsButton.click();
 
-		cy.login(Cypress.env('SHD_TEST_ACCOUNT_EMAIL'), Cypress.env('SHD_TEST_ACCOUNT_PASSWORD'));
-
 		cy.location('pathname').should('equal', '/zoeken');
 	});
 
@@ -42,13 +41,15 @@ context('Home', () => {
 		const searchField = cy.get('[placeholder="Vul een zoekterm in"]');
 		searchField.click();
 
-		const searchResultMenu = cy.get('.c-menu--search-result');
-		searchResultMenu
+		cy.waitUntil(() => cy.get('.c-menu--search-result')
+			.find('.c-menu__item')
+			.its('length')
+			.then(length => length >= 5));
+
+		cy.get('.c-menu--search-result')
 			.find('.c-menu__item')
 			.first()
 			.click();
-
-		cy.login(Cypress.env('SHD_TEST_ACCOUNT_EMAIL'), Cypress.env('SHD_TEST_ACCOUNT_PASSWORD'));
 
 		// double encoded version of one of the content urls:
 		// * /zoeken/item

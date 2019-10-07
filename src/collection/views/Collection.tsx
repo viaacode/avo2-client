@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, orderBy } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -41,6 +41,7 @@ import {
 	generateSearchLinks,
 } from '../../shared/helpers/generateLink';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 import CollectionFragmentsDetail from '../components/CollectionFragmentsDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
@@ -166,13 +167,27 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 													<MenuContent
 														menuItems={[
 															...(canEditCollection
-																? [{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }]
+																? [
+																		{
+																			icon: 'edit' as IconName,
+																			id: 'edit',
+																			label: 'Bewerk collectie',
+																		},
+																  ]
 																: []),
-															{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
-															{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
-															{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+															{
+																icon: 'play' as IconName,
+																id: 'play',
+																label: 'Alle items afspelen',
+															},
+															{
+																icon: 'clipboard' as IconName,
+																id: 'createAssignment',
+																label: 'Maak opdracht',
+															},
+															{ icon: 'copy' as IconName, id: 'duplicate', label: 'Dupliceer' },
 															...(canDeleteCollection
-																? [{ icon: 'delete', id: 'delete', label: 'Verwijder' }]
+																? [{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' }]
 																: []),
 														]}
 														onClick={itemId => {

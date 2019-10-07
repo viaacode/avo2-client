@@ -54,6 +54,7 @@ import { LANGUAGES } from '../../shared/helpers/languages';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 import ItemVideoDescription from '../components/ItemVideoDescription';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import { AddFragmentToCollection } from '../modals/AddFragmentToCollection';
@@ -168,9 +169,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 											{itemMetaData.type && (
 												<Icon
 													name={
-														itemMetaData.type.id === ContentTypeNumber.audio
+														(itemMetaData.type.id === ContentTypeNumber.audio
 															? 'headphone'
-															: itemMetaData.type.label
+															: itemMetaData.type.label) as IconName
 													}
 												/>
 											)}

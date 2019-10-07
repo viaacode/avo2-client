@@ -1,0 +1,15 @@
+{
+  "name": "avo2-client-integration-tests",
+  "version": "0.10.0",
+  "private": true,
+  "scripts": {
+    "integration-tests": "cypress run",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "dependencies": {
+    "cypress": "^3.4.1",
+    "cypress-wait-until": "^1.4.1",
+    "typescript": "3.5.3"
+  }
+}

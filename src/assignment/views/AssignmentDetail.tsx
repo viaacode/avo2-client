@@ -17,14 +17,15 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Icon,
 	MenuContent,
-	Navbar,
 	Spinner,
 	TagList,
 	TagOption,
 	Toolbar,
 	ToolbarCenter,
+	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
@@ -37,6 +38,7 @@ import { RouteParts } from '../../constants';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import { dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 import { GET_ASSIGNMENT_WITH_RESPONSE } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
 import { Assignment, AssignmentContent, AssignmentTag } from '../types';
@@ -53,7 +55,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const [assignment, setAssignment] = useState<Assignment | undefined>();
 	const [assigmentContent, setAssigmentContent] = useState<AssignmentContent | null | undefined>();
 	const [loadingState, setLoadingState] = useState<LoadingState>('loading');
-	const [loadingError, setLoadingError] = useState<{ error: string; icon: string } | null>(null);
+	const [loadingError, setLoadingError] = useState<{ error: string; icon: IconName } | null>(null);
 
 	const navBarRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
 
@@ -150,7 +152,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 							{/*TODO replace with toolbar with direct children*/}
 							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
 								<ToolbarLeft>
-									<div className="c-toolbar__item">
+									<ToolbarItem>
 										<Link
 											className="c-return"
 											to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
@@ -159,8 +161,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 											<span>Mijn opdrachten</span>
 										</Link>
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
-									</div>
+									</ToolbarItem>
 								</ToolbarLeft>
+								{/* Do not switch to a NavBar component since we need to be able to set a ref to get the height dynamically */}
 								<ToolbarCenter>
 									<div style={{ zIndex: 22 }}>
 										<Button
@@ -172,11 +175,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 								</ToolbarCenter>
 								<ToolbarRight>
 									<Fragment>
-										<div className="c-toolbar__item">
+										<ToolbarItem>
 											<TagList tags={tags} closable={false} swatches bordered />
-										</div>
+										</ToolbarItem>
 										{!!assignment.user && (
-											<div className="c-toolbar__item">
+											<ToolbarItem>
 												<Avatar
 													size="small"
 													initials={assignment.user.first_name[0] + assignment.user.last_name[0]}
@@ -187,9 +190,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 														(assignment.user.profile && assignment.user.profile.avatar) || undefined
 													}
 												/>
-											</div>
+											</ToolbarItem>
 										)}
-										<div className="c-toolbar__item">
+										<ToolbarItem>
 											<Dropdown
 												autoSize
 												isOpen={isActionsDropdownOpen}
@@ -207,7 +210,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 													/>
 												</DropdownContent>
 											</Dropdown>
-										</div>
+										</ToolbarItem>
 									</Fragment>
 								</ToolbarRight>
 							</Toolbar>
@@ -253,20 +256,22 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 
 	if (loadingState === 'loading') {
 		return (
-			<div className="o-flex o-flex--horizontal-center">
+			<Flex orientation="horizontal" center>
 				<Spinner size="large" />
-			</div>
-		);
-	} else if (loadingState === 'loaded' && assignment) {
-		return renderAssignment(assignment);
-	} else {
-		return (
-			<NotFound
-				message={loadingError ? loadingError.error : 'Het ophalen van de opdracht is mislukt'}
-				icon={loadingError ? loadingError.icon : 'alert-triangle'}
-			/>
+			</Flex>
 		);
 	}
+
+	if (loadingState === 'loaded' && assignment) {
+		return renderAssignment(assignment);
+	}
+
+	return (
+		<NotFound
+			message={loadingError ? loadingError.error : 'Het ophalen van de opdracht is mislukt'}
+			icon={loadingError ? loadingError.icon : 'alert-triangle'}
+		/>
+	);
 };
 
 export default withRouter(AssignmentDetail);

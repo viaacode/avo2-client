@@ -12,6 +12,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { IconName } from '../../../shared/types/types';
+
 import './Navigation.scss';
 
 type NavigationItem = {
@@ -62,7 +64,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 														activeClassName="c-nav__item--active"
 														exact={item.location === '/'}
 													>
-														{item.icon && <Icon name={item.icon} />}
+														{item.icon && <Icon name={item.icon as IconName} />}
 														{item.label}
 													</NavLink>
 												</li>
@@ -120,7 +122,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 										exact={false}
 									>
 										{item.label}
-										{item.icon && <Icon name={item.icon} />}
+										{item.icon && <Icon name={item.icon as IconName} />}
 									</NavLink>
 								</li>
 							))}
@@ -155,7 +157,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 													activeClassName="c-nav__item--active"
 													className="c-nav__item c-nav__item--i"
 												>
-													{item.icon && <Icon name={item.icon} />}
+													{item.icon && <Icon name={item.icon as IconName} />}
 													{item.label}
 												</NavLink>
 											</li>

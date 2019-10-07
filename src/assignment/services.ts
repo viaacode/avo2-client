@@ -1,7 +1,6 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, get } from 'lodash-es';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
-import { DELETE_ASSIGNMENT, INSERT_ASSIGNMENT, UPDATE_ASSIGNMENT } from './graphql';
 import { Assignment, AssignmentLayout } from './types';
 
 /**
@@ -50,7 +49,10 @@ export const deleteAssignment = async (triggerAssignmentDelete: any, id: number 
 	}
 };
 
-export const updateAssignment = async (triggerAssignmentUpdate: any, assignment: Partial<Assignment>) => {
+export const updateAssignment = async (
+	triggerAssignmentUpdate: any,
+	assignment: Partial<Assignment>
+) => {
 	try {
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 		if (validationErrors.length) {
@@ -65,17 +67,19 @@ export const updateAssignment = async (triggerAssignmentUpdate: any, assignment:
 		});
 		if (response && response.data) {
 			return assignment;
-		} else {
-			console.error('assignment update returned empty response', response);
-			throw new Error('Het opslaan van de opdracht is mislukt');
 		}
+		console.error('assignment update returned empty response', response);
+		throw new Error('Het opslaan van de opdracht is mislukt');
 	} catch (err) {
 		console.error(err);
 		throw err;
 	}
 };
 
-export const insertAssignment = async (triggerAssignmentInsert: any, assignment: Partial<Assignment>) => {
+export const insertAssignment = async (
+	triggerAssignmentInsert: any,
+	assignment: Partial<Assignment>
+) => {
 	try {
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 		if (validationErrors.length) {
@@ -94,10 +98,9 @@ export const insertAssignment = async (triggerAssignmentInsert: any, assignment:
 				...assignment, // Do not copy the auto modified fields from the validation back into the input controls
 				id,
 			};
-		} else {
-			console.error('assignment insert returned empty response', response);
-			throw Error('Het opslaan van de opdracht is mislukt');
 		}
+		console.error('assignment insert returned empty response', response);
+		throw Error('Het opslaan van de opdracht is mislukt');
 	} catch (err) {
 		console.error(err);
 		throw err;
