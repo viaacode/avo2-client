@@ -1,22 +1,25 @@
 import { Blankslate, Container } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
+import { IconName } from '../../shared/types/types';
 
 interface NotFoundProps {
 	message?: string;
-	icon?: string;
+	icon?: IconName;
+	children?: ReactNode;
 }
 
-export const NotFound: FunctionComponent<NotFoundProps> = ({
+const NotFound: FunctionComponent<NotFoundProps> = ({
 	message = 'De pagina werd niet gevonden',
 	icon = 'search',
-}) => {
-	return (
-		<Container mode="vertical" background="alt" className="o-container-vertical-title">
-			<Container size="medium" mode="horizontal">
-				<Blankslate body="" icon={icon} title={message} />
-			</Container>
+	children = null,
+}) => (
+	<Container mode="vertical" background={'alt'}>
+		<Container size="medium" mode="horizontal">
+			<Blankslate body="" icon={icon} title={message}>
+				{children}
+			</Blankslate>
 		</Container>
-	);
-};
+	</Container>
+);
 
 export default NotFound;

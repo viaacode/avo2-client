@@ -219,12 +219,14 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	};
 
 	const cleanupFilterObject = (obj: any): any => {
-		return pickBy(obj, (value: any) => {
-			const isEmptyString = value === '';
-			const isUndefinedOrNull = isNil(value);
-			const isEmptyObjectOrArray = (isPlainObject(value) || isArray(value)) && isEmpty(value);
-			const isArrayWithEmptyValues = isArray(value) && every(value, value => value === '');
-			const isEmptyRangeObject = isPlainObject(value) && !(value as any).gte && !(value as any).lte;
+		return pickBy(obj, (value: string) => {
+			const isEmptyString: boolean = value === '';
+			const isUndefinedOrNull: boolean = isNil(value);
+			const isEmptyObjectOrArray: boolean =
+				(isPlainObject(value) || isArray(value)) && isEmpty(value);
+			const isArrayWithEmptyValues: boolean = isArray(value) && every(value, value => value === '');
+			const isEmptyRangeObject: boolean =
+				isPlainObject(value) && !(value as any).gte && !(value as any).lte;
 
 			return (
 				!isEmptyString &&
@@ -276,6 +278,12 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 
 	const copySearchLink = () => {
 		copyToClipboard(window.location.href);
+	};
+
+	const onCopySearchLinkClicked = () => {
+		copySearchLink();
+		setIsOptionsMenuOpen(false);
+		toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
 	};
 
 	const orderOptions = [
@@ -336,28 +344,22 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 									</DropdownButton>
 									<DropdownContent>
 										<Fragment>
-											<a
+											<Button
+												type="link"
 												className="c-menu__item"
-												onClick={() => {
-													copySearchLink();
-													setIsOptionsMenuOpen(false);
-													toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
-												}}
-											>
-												<div className="c-menu__label">
-													Kopieer vaste link naar deze zoekopdracht
-												</div>
-											</a>
-											<a
+												label="Kopieer vaste link naar deze zoekopdracht"
+												onClick={onCopySearchLinkClicked}
+											/>
+											{/* TODO Create link to create search assignment task */}
+											<Button
+												type="link"
 												className="c-menu__item"
+												label="Maak van deze zoekopdracht een opdracht"
 												onClick={() => {
 													setIsOptionsMenuOpen(false);
 													toastService('Nog niet geïmplementeerd');
 												}}
-											>
-												{/* TODO Create link to create search assignment task */}
-												<div className="c-menu__label">Maak van deze zoekopdracht een opdracht</div>
-											</a>
+											/>
 										</Fragment>
 									</DropdownContent>
 								</Dropdown>

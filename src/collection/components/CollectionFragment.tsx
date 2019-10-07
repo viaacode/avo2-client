@@ -3,9 +3,6 @@ import React, { FunctionComponent, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
-import { fetchPlayerToken } from '../../shared/services/player-service';
-
 import {
 	Button,
 	Column,
@@ -27,9 +24,10 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { GET_ITEM_META_BY_EXTERNAL_ID } from '../graphql';
+import { IconName } from '../../shared/types/types';
 import { isVideoFragment } from '../helpers';
 import AddFragment from './AddFragment';
 import CutFragmentModal from './modals/CutFragmentModal';
@@ -39,9 +37,9 @@ interface CollectionFragmentProps extends RouteComponentProps {
 	collection: Avo.Collection.Response;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
-	isOptionsMenuOpen: string | null;
-	setIsOptionsMenuOpen: React.Dispatch<React.SetStateAction<null>>;
-	fragment: any;
+	openOptionsId: number | null;
+	setOpenOptionsId: React.Dispatch<React.SetStateAction<number | null>>;
+	fragment: Avo.Collection.Fragment;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 	updateCollection: (collection: Avo.Collection.Response) => void;
 }
@@ -51,15 +49,15 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	collection,
 	swapFragments,
 	updateFragmentProperty,
-	isOptionsMenuOpen,
-	setIsOptionsMenuOpen,
+	openOptionsId,
+	setOpenOptionsId,
 	fragment,
 	reorderFragments,
 	updateCollection,
 }) => {
-	const [playerToken, setPlayerToken] = useState();
-	const [useCustomFields, setUseCustomFields] = useState(fragment.use_custom_fields);
-	const [isCutModalOpen, setIsCutModalOpen] = useState(false);
+	const [playerTicket, setPlayerTicket] = useState<string>();
+	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
+	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [cuePoints, setCuePoints] = useState({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
@@ -73,7 +71,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	const renderReorderButton = (fragmentId: number, direction: 'up' | 'down') => (
 		<Button
 			type="secondary"
-			icon={`chevron-${direction}`}
+			icon={`chevron-${direction}` as IconName}
 			onClick={() => swapFragments(fragmentId, direction)}
 		/>
 	);
@@ -90,21 +88,11 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	) => {
 		const disableVideoFields: boolean = !useCustomFields && !!isVideoFragment(fragment);
 
-		const onChangeTitle = (value: string) => {
-			if (disableVideoFields) {
-				return null;
-			}
+		const onChangeTitle = (value: string) =>
+			updateFragmentProperty(value, 'custom_title', fragment.id);
 
-			return updateFragmentProperty(value, 'custom_title', fragment.id);
-		};
-
-		const onChangeDescription = (html: string) => {
-			if (disableVideoFields) {
-				return null;
-			}
-
-			return updateFragmentProperty(html, 'custom_description', fragment.id);
-		};
+		const onChangeDescription = (html: string) =>
+			updateFragmentProperty(html, 'custom_description', fragment.id);
 
 		const getFragmentProperty = (
 			itemMetaData: Avo.Item.Response,
@@ -150,28 +138,28 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	};
 
 	const onDuplicateFragment = (fragmentId: number) => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol gedupliceerd', TOAST_TYPE.SUCCESS);
 	};
 
 	const onMoveFragment = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol verplaatst', TOAST_TYPE.SUCCESS);
 	};
 
 	const onCopyFragmentToCollection = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol gekopiëerd naar collectie', TOAST_TYPE.SUCCESS);
 	};
 
 	const onMoveFragmentToCollection = () => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 		toastService('Fragment is succesvol verplaatst naar collectie', TOAST_TYPE.SUCCESS);
 	};
 
 	// Delete fragment from collection
 	const onDeleteFragment = (fragmentId: number) => {
-		setIsOptionsMenuOpen(null);
+		setOpenOptionsId(null);
 
 		// Sort fragments by position
 		const orderedFragments = orderBy(
@@ -193,144 +181,130 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
 	};
 
-	const renderCollectionFragment = (itemMetaData: any) => {
-		const initFlowPlayer = () =>
-			!playerToken &&
-			fetchPlayerToken(fragment.external_id)
-				.then(data => setPlayerToken(data))
-				.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
+	const initFlowPlayer = () =>
+		!playerTicket &&
+		fetchPlayerTicket(fragment.external_id)
+			.then(data => setPlayerTicket(data))
+			.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
-		return (
-			<>
-				<div className="c-card">
-					<div className="c-card__header">
-						<Toolbar>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<div className="c-button-toolbar">
-										{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
-										{!isLast(index) && renderReorderButton(fragment.position, 'down')}
-										{itemMetaData && (
-											<Button
-												icon="scissors"
-												label="Knippen"
-												type="secondary"
-												onClick={() => setIsCutModalOpen(true)}
-											/>
-										)}
-									</div>
-								</ToolbarItem>
-							</ToolbarLeft>
-							<ToolbarRight>
-								<ToolbarItem>
-									<ControlledDropdown
-										isOpen={isOptionsMenuOpen === fragment.id}
-										onOpen={() => setIsOptionsMenuOpen(fragment.id)}
-										onClose={() => setIsOptionsMenuOpen(null)}
-										placement="bottom-end"
-										autoSize
-									>
-										<DropdownButton>
-											<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
-										</DropdownButton>
-										<DropdownContent>
-											<MenuContent
-												menuItems={[
-													{ icon: 'copy', id: 'duplicate', label: 'Dupliceren' },
-													{ icon: 'arrow-right', id: 'move', label: 'Verplaatsen' },
-													{ icon: 'delete', id: 'delete', label: 'Verwijderen' },
-													{
-														icon: 'copy',
-														id: 'copyToCollection',
-														label: 'Kopiëren naar andere collectie',
-													},
-													{
-														icon: 'arrow-right',
-														id: 'moveToCollection',
-														label: 'Verplaatsen naar andere collectie',
-													},
-												]}
-												onClick={itemId => {
-													switch (itemId) {
-														case 'duplicate':
-															onDuplicateFragment(fragment.id);
-															break;
-														case 'move':
-															onMoveFragment();
-															break;
-														case 'delete':
-															onDeleteFragment(fragment.id);
-															break;
-														case 'copyToCollection':
-															onCopyFragmentToCollection();
-															break;
-														case 'moveToCollection':
-															onMoveFragmentToCollection();
-															break;
-														default:
-															return null;
-													}
-												}}
-											/>
-										</DropdownContent>
-									</ControlledDropdown>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
-					</div>
-					<div className="c-card__body">
-						{isVideoFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
-							<Grid>
-								<Column size="3-6">
-									<FlowPlayer
-										src={playerToken ? playerToken.toString() : null}
-										poster={itemMetaData.thumbnail_path}
-										title={itemMetaData.title}
-										onInit={initFlowPlayer}
-										start={cuePoints.start}
-										end={cuePoints.end}
-										subtitles={['30-12-2011', 'VRT']}
-									/>
-								</Column>
-								<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
-							</Grid>
-						) : (
-							<Form>{renderForm(fragment, itemMetaData, index)}</Form>
-						)}
-					</div>
+	const itemMetaData = (fragment as any).item_meta;
+
+	return (
+		<>
+			<div className="c-panel">
+				<div className="c-panel__header">
+					<Toolbar>
+						<ToolbarLeft>
+							<ToolbarItem>
+								<div className="c-button-toolbar">
+									{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
+									{!isLast(index) && renderReorderButton(fragment.position, 'down')}
+									{itemMetaData && (
+										<Button
+											icon="scissors"
+											label="Knippen"
+											type="secondary"
+											onClick={() => setIsCutModalOpen(true)}
+										/>
+									)}
+								</div>
+							</ToolbarItem>
+						</ToolbarLeft>
+						<ToolbarRight>
+							<ToolbarItem>
+								<ControlledDropdown
+									isOpen={openOptionsId === fragment.id}
+									onOpen={() => setOpenOptionsId(fragment.id)}
+									onClose={() => setOpenOptionsId(null)}
+									placement="bottom-end"
+									autoSize
+								>
+									<DropdownButton>
+										<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
+									</DropdownButton>
+									<DropdownContent>
+										<MenuContent
+											menuItems={[
+												{ icon: 'copy', id: 'duplicate', label: 'Dupliceren' },
+												{ icon: 'arrow-right', id: 'move', label: 'Verplaatsen' },
+												{ icon: 'delete', id: 'delete', label: 'Verwijderen' },
+												{
+													icon: 'copy',
+													id: 'copyToCollection',
+													label: 'Kopiëren naar andere collectie',
+												},
+												{
+													icon: 'arrow-right',
+													id: 'moveToCollection',
+													label: 'Verplaatsen naar andere collectie',
+												},
+											]}
+											onClick={itemId => {
+												switch (itemId) {
+													case 'duplicate':
+														onDuplicateFragment(fragment.id);
+														break;
+													case 'move':
+														onMoveFragment();
+														break;
+													case 'delete':
+														onDeleteFragment(fragment.id);
+														break;
+													case 'copyToCollection':
+														onCopyFragmentToCollection();
+														break;
+													case 'moveToCollection':
+														onMoveFragmentToCollection();
+														break;
+													default:
+														return null;
+												}
+											}}
+										/>
+									</DropdownContent>
+								</ControlledDropdown>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
 				</div>
-				<AddFragment
-					index={index}
-					collection={collection}
-					updateCollection={updateCollection}
-					reorderFragments={reorderFragments}
+				<div className="c-panel__body">
+					{isVideoFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
+						<Grid>
+							<Column size="3-6">
+								<FlowPlayer
+									src={playerTicket ? playerTicket.toString() : null}
+									poster={itemMetaData.thumbnail_path}
+									title={itemMetaData.title}
+									onInit={initFlowPlayer}
+									start={cuePoints.start}
+									end={cuePoints.end}
+									subtitles={['30-12-2011', 'VRT']}
+								/>
+							</Column>
+							<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
+						</Grid>
+					) : (
+						<Form>{renderForm(fragment, itemMetaData, index)}</Form>
+					)}
+				</div>
+			</div>
+			<AddFragment
+				index={index}
+				collection={collection}
+				updateCollection={updateCollection}
+				reorderFragments={reorderFragments}
+			/>
+			{itemMetaData && (
+				<CutFragmentModal
+					isOpen={isCutModalOpen}
+					setIsOpen={setIsCutModalOpen}
+					itemMetaData={itemMetaData}
+					updateFragmentProperty={updateFragmentProperty}
+					fragment={fragment}
+					updateCuePoints={setCuePoints}
 				/>
-				{itemMetaData && (
-					<CutFragmentModal
-						isOpen={isCutModalOpen}
-						setIsOpen={setIsCutModalOpen}
-						itemMetaData={itemMetaData}
-						updateFragmentProperty={updateFragmentProperty}
-						fragment={fragment}
-						updateCuePoints={setCuePoints}
-					/>
-				)}
-			</>
-		);
-	};
-
-	return isVideoFragment(fragment) ? (
-		// TODO: Change when relationship between item_meta and collection exists
-		<DataQueryComponent
-			query={GET_ITEM_META_BY_EXTERNAL_ID}
-			variables={{ externalId: fragment.external_id }}
-			resultPath="app_item_meta[0]"
-			renderData={renderCollectionFragment}
-			notFoundMessage="De meta item van deze collectie werd niet gevonden"
-			showSpinner={false}
-		/>
-	) : (
-		renderCollectionFragment(null)
+			)}
+		</>
 	);
 };
 

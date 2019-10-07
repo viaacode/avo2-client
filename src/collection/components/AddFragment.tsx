@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import { Button, Container, ToolbarItem } from '@viaa/avo2-components';
+import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockType } from '../types';
@@ -64,26 +64,24 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 
 	return (
 		<Container>
-			<div className="c-toolbar">
-				<div className="c-toolbar__justified">
-					<div className="c-toolbar__item c-toolbar__item--stretch">
-						<div className="c-hr" />
-					</div>
-					<ToolbarItem>
-						{COLLECTION_CONTENT_BLOCKS.length > 1 ? null /* TODO: Dropdown */ : (
-							<Button
-								type="secondary"
-								icon="add"
-								onClick={() => addFragment(index, ContentBlockType.RichText)}
-							/>
-						)}
-						<div className="u-sr-accessible">Sectie toevoegen</div>
-					</ToolbarItem>
-					<div className="c-toolbar__item c-toolbar__item--stretch">
-						<div className="c-hr" />
-					</div>
-				</div>
-			</div>
+			<Toolbar justify>
+				<ToolbarItem grow>
+					<div className="c-hr" />
+				</ToolbarItem>
+				<ToolbarItem>
+					{COLLECTION_CONTENT_BLOCKS.length > 1 ? null : (
+						<Button
+							type="secondary"
+							icon="add"
+							onClick={() => addFragment(index, ContentBlockType.RichText)}
+							ariaLabel="Sectie toevoegen"
+						/>
+					)}
+				</ToolbarItem>
+				<ToolbarItem grow>
+					<div className="c-hr" />
+				</ToolbarItem>
+			</Toolbar>
 		</Container>
 	);
 };

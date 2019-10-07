@@ -1,0 +1,25 @@
+/* ==========================================================================
+   Component: Brand
+   ========================================================================== */
+
+.c-brand {
+	width: 14.3rem;
+	height: 2.9rem;
+
+	a, img {
+		display: block;
+		height: 100%;
+		width: 100%;
+	}
+}
+
+.c-navbar .c-brand {
+	margin-right: 1.2rem;
+	position: relative;
+	bottom: 0.3rem;
+}
+
+.c-brand--large {
+	width: 21.45rem;
+	height: 4.35rem;
+}

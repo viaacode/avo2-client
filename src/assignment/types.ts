@@ -1,6 +1,10 @@
+// TODO remove ones typings repo published
 import { Avo } from '@viaa/avo2-types';
 
-// TODO move these types to Types repo
+export type AssignmentType = 'ZOEK' | 'KIJK' | 'BOUW';
+export type AssignmentContentLabel = 'ITEM' | 'COLLECTIE' | 'ZOEKOPDRACHT';
+export type AssignmentContent = Avo.Item.Response | Avo.Collection.Response; // | Avo.SearchQuery.response;
+export type AssignmentView = 'assignments' | 'archived_assignments';
 
 export interface Assignment {
 	id: number;
@@ -14,6 +18,7 @@ export interface Assignment {
 	available_at?: string | null; // ISO date string
 	deadline_at?: string | null; // ISO date string
 	owner_uid: string;
+	user?: Avo.User.Response;
 	is_archived: boolean;
 	is_deleted: boolean;
 	class_room?: string | null;
@@ -36,16 +41,6 @@ export interface AssignmentResponse {
 	collection?: Avo.Collection.Response | null;
 }
 
-export type AssignmentType = 'ZOEK' | 'KIJK' | 'BOUW';
-
-export enum AssignmentLayout {
-	OnlyPlayer = 0,
-	PlayerAndText = 1,
-}
-
-export type AssignmentContentLabel = 'ITEM' | 'COLLECTIE' | 'ZOEKOPDRACHT';
-export type AssignmentContent = Avo.Item.Response | Avo.Collection.Response; // | Avo.SearchQuery.response;
-
 export interface AssignmentTag {
 	id: number;
 	label: string;
@@ -55,4 +50,15 @@ export interface AssignmentTag {
 	};
 	color_override?: string | null; // #FF0000
 	user: Avo.User.Response;
+}
+
+export interface AssignmentColumn {
+	id: keyof Assignment | 'actions';
+	label: string;
+	sortable?: boolean;
+}
+
+export enum AssignmentLayout {
+	OnlyPlayer = 0,
+	PlayerAndText = 1,
 }

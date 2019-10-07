@@ -21,9 +21,10 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { DeleteCollectionModal } from '../components';
+import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
 import './Collections.scss';
@@ -35,7 +36,7 @@ interface CollectionsProps extends RouteComponentProps {
 const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections, history }) => {
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [page, setPage] = useState<number>(0);
 
@@ -53,7 +54,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				},
 			});
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
-			setTimeout(refetchCollections, 0);
+			refetchCollections();
 		} catch (err) {
 			console.error(err);
 			toastService('Collectie kon niet verwijdert worden', TOAST_TYPE.DANGER);
@@ -70,9 +71,10 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				return (
 					<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
 						<Thumbnail
-							category="video"
-							src="https://via.placeholder.com/1080x720"
+							alt="thumbnail"
+							category="collection"
 							className="m-collection-overview-thumbnail"
+							src="https://via.placeholder.com/1080x720"
 						/>
 					</Link>
 				);
@@ -117,9 +119,9 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							<DropdownContent>
 								<MenuContent
 									menuItems={[
-										{ icon: 'edit2', id: 'edit', label: 'Bewerk' },
-										{ icon: 'clipboard', id: 'assign', label: 'Maak opdracht' },
-										{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+										{ icon: 'edit2' as IconName, id: 'edit', label: 'Bewerk' },
+										{ icon: 'clipboard' as IconName, id: 'assign', label: 'Maak opdracht' },
+										{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' },
 									]}
 									onClick={itemId => {
 										switch (itemId) {
@@ -206,10 +208,12 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					onPageChange={setPage}
 				/>
 
-				<DeleteCollectionModal
+				<DeleteObjectModal
+					title="Verwijder collectie?"
+					body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
 					isOpen={isDeleteModalOpen}
-					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={() => deleteCollection(refetchCollections)}
+					onClose={() => setIsDeleteModalOpen(false)}
+					deleteObjectCallback={() => deleteCollection(refetchCollections)}
 				/>
 			</>
 		);

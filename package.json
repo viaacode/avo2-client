@@ -1,18 +1,15 @@
 {
   "name": "avo2-client",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "private": true,
   "scripts": {
     "prestart": "npm run env",
     "start": "react-scripts start",
-    "env": "bash ./scripts/env.sh && cp env-config.js ./public",
+    "env": "node ./scripts/env.js && cp env-config.js ./public",
     "build": "react-scripts build",
     "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
-    "integration-tests": "cypress run",
     "lint": "tslint -p .",
-    "format": "npm run lint -- --fix",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "format": "npm run lint -- --fix"
   },
   "contributors": [
     "Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -22,7 +19,7 @@
   ],
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@viaa/avo2-components": "1.10.5",
+    "@viaa/avo2-components": "1.13.1",
     "@viaa/avo2-types": "^1.7.0",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
@@ -41,7 +38,7 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-scrollbars-custom": "^4.0.15",
-    "react-select": "^3.0.4",
+    "react-select": "^3.0.8",
     "react-toastify": "^5.3.2",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
@@ -66,7 +63,6 @@
     "@types/react-router-config": "^5.0.0",
     "@types/react-router-dom": "^4.3.3",
     "@types/storybook__react": "^4.0.2",
-    "cypress": "^3.4.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "husky": "^2.3.0",

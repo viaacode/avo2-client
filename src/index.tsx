@@ -3,8 +3,6 @@ import 'moment/locale/nl-be';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import '@viaa/avo2-components/dist/styles/main.css';
-
 import pkg from '../package.json';
 import App from './App';
 import { CustomWindow } from './shared/types/global';

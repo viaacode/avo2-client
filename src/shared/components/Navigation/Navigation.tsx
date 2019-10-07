@@ -1,5 +1,5 @@
 import React, { Fragment, FunctionComponent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 import {
 	Button,
@@ -11,6 +11,10 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+
+import { IconName } from '../../../shared/types/types';
+
+import './Navigation.scss';
 
 type NavigationItem = {
 	label: string;
@@ -44,7 +48,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 											<img
 												className="c-brand__image"
 												src="/images/avo-logo-i.svg"
-												alt="Archief voor Onderwijs"
+												alt="Archief voor Onderwijs logo"
 											/>
 										</Link>
 									</h1>
@@ -53,14 +57,16 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 									<div className="u-mq-switch-main-nav-has-space">
 										<ul className="c-nav">
 											{primaryItems.map(item => (
-												<li
-													className="c-nav__item c-nav__item--i"
-													key={`${item.location}-${item.label}`}
-												>
-													<Link to={item.location}>
-														{item.icon && <Icon name={item.icon} />}
+												<li key={`${item.location}-${item.label}`}>
+													<NavLink
+														to={item.location}
+														className="c-nav__item c-nav__item--i"
+														activeClassName="c-nav__item--active"
+														exact={item.location === '/'}
+													>
+														{item.icon && <Icon name={item.icon as IconName} />}
 														{item.label}
-													</Link>
+													</NavLink>
 												</li>
 											))}
 										</ul>
@@ -74,11 +80,15 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 									<div className="u-mq-switch-main-nav-authentication">
 										<ul className="c-nav">
 											{secondaryItems.map(item => (
-												<li
-													className="c-nav__item c-nav__item--i"
-													key={`${item.location}-${item.label}`}
-												>
-													<Link to={item.location}>{item.label}</Link>
+												<li key={`${item.location}-${item.label}`}>
+													<NavLink
+														to={item.location}
+														className="c-nav__item c-nav__item--i"
+														activeClassName="c-nav__item--active"
+														exact={false}
+													>
+														{item.label}
+													</NavLink>
 												</li>
 											))}
 										</ul>
@@ -104,18 +114,30 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
 							{primaryItems.map(item => (
-								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
-									<Link to={item.location}>
+								<li key={`${item.location}-${item.label}`}>
+									<NavLink
+										to={item.location}
+										className="c-nav-mobile__item"
+										activeClassName="c-nav__item--active"
+										exact={false}
+									>
 										{item.label}
-										{item.icon && <Icon name={item.icon} />}
-									</Link>
+										{item.icon && <Icon name={item.icon as IconName} />}
+									</NavLink>
 								</li>
 							))}
 						</ul>
 						<ul className="c-nav-mobile">
 							{secondaryItems.map(item => (
-								<li className="c-nav-mobile__item" key={`${item.location}-${item.label}`}>
-									<Link to={item.location}>{item.label}</Link>
+								<li key={`${item.location}-${item.label}`}>
+									<NavLink
+										to={item.location}
+										className="c-nav-mobile__item"
+										activeClassName="c-nav__item--active"
+										exact={false}
+									>
+										{item.label}
+									</NavLink>
 								</li>
 							))}
 						</ul>
@@ -129,14 +151,15 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								<div className="c-toolbar__item">
 									<ul className="c-nav">
 										{primaryItems.map(item => (
-											<li
-												className="c-nav__item c-nav__item--i"
-												key={`${item.location}-${item.label}`}
-											>
-												<Link to={item.location}>
-													{item.icon && <Icon name={item.icon} />}
+											<li key={`${item.location}-${item.label}`}>
+												<NavLink
+													to={item.location}
+													activeClassName="c-nav__item--active"
+													className="c-nav__item c-nav__item--i"
+												>
+													{item.icon && <Icon name={item.icon as IconName} />}
 													{item.label}
-												</Link>
+												</NavLink>
 											</li>
 										))}
 									</ul>

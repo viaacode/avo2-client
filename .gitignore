@@ -239,6 +239,7 @@ jspm_packages
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -251,7 +252,10 @@ yarn-error.log*
 
 # App specific
 env-config.js
-cypress/videos
-cypress/screenshots
+tests/cypress/videos
+tests/cypress/screenshots
+tests/cypress-report*xml
+tests/cypress-report*xml
+tests/ci-results
 cypress-report*xml
 ci-results
