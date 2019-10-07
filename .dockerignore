@@ -4,4 +4,3 @@
 ./build/*
 ./openshift/*
 ./cypress/*
-./__mocks__*
