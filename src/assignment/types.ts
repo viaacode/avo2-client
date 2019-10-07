@@ -18,6 +18,7 @@ export interface Assignment {
 	available_at?: string | null; // ISO date string
 	deadline_at?: string | null; // ISO date string
 	owner_uid: string;
+	user?: Avo.User.Response;
 	is_archived: boolean;
 	is_deleted: boolean;
 	class_room?: string | null;

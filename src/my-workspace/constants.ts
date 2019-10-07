@@ -1,4 +1,5 @@
 import { RouteParts } from '../constants';
+import { IconName } from '../shared/types/types';
 
 export const COLLECTIONS_ID = RouteParts.Collections;
 export const FOLDERS_ID = RouteParts.Folders;
@@ -8,22 +9,22 @@ export const BOOKMARKS_ID = RouteParts.Bookmarks;
 export const TABS = [
 	{
 		label: 'Collecties',
-		icon: 'collection',
+		icon: 'collection' as IconName,
 		id: COLLECTIONS_ID,
 	},
 	{
 		label: 'Mappen',
-		icon: 'folder',
+		icon: 'folder' as IconName,
 		id: FOLDERS_ID,
 	},
 	{
 		label: 'Opdrachten',
-		icon: 'clipboard',
+		icon: 'clipboard' as IconName,
 		id: ASSIGNMENTS_ID,
 	},
 	{
 		label: 'Bladwijzers',
-		icon: 'bookmark',
+		icon: 'bookmark' as IconName,
 		id: BOOKMARKS_ID,
 	},
 ];

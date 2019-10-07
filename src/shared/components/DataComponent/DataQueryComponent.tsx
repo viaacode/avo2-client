@@ -51,7 +51,8 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 
 				const data = get(result, resultPath ? `data.${resultPath}` : 'data');
 				if (data || ignoreNotFound) {
-					return renderData(data, result.refetch);
+					// We always want to wait until the current database operation finishes, before we refetch the changed data
+					return renderData(data, () => setTimeout(result.refetch, 0));
 				}
 
 				return <NotFound message={notFoundMessage} />;

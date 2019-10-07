@@ -3,9 +3,6 @@ import { gql } from 'apollo-boost';
 export const GET_ITEM_BY_ID = gql`
 	query getItemById($id: bpchar!) {
 		app_item_meta(where: { external_id: { _eq: $id } }) {
-			bookmarks {
-				count
-			}
 			browse_path
 			created_at
 			depublish_at
@@ -36,9 +33,6 @@ export const GET_ITEM_BY_ID = gql`
 			}
 			type_id
 			updated_at
-			views {
-				count
-			}
 		}
 	}
 `;

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 
 import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';
-import Assignment from './views/Assignment';
+import AssignmentDetail from './views/AssignmentDetail';
 import EditAssignment from './views/EditAssignment';
 
 export const renderAssignmentRoutes = () => (
@@ -17,10 +17,6 @@ export const renderAssignmentRoutes = () => (
 			component={EditAssignment}
 			exact={false}
 		/>
-		<SecuredRoute
-			path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/:id/${RouteParts.Detail}`}
-			component={Assignment}
-			exact
-		/>
+		<SecuredRoute path={`/${RouteParts.Assignment}/:id`} component={AssignmentDetail} exact />
 	</Fragment>
 );

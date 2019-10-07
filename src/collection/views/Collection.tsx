@@ -1,32 +1,10 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, orderBy } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { Fragment, FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Avatar,
-	BlockImage,
-	BlockImageProps,
-	BlockImageTitleTextButton,
-	BlockImageTitleTextButtonProps,
-	BlockIntro,
-	BlockIntroProps,
-	BlockLinks,
-	BlockLinksProps,
-	BlockQuote,
-	BlockQuoteProps,
-	BlockSubtitle,
-	BlockSubtitleProps,
-	BlockText,
-	BlockTextProps,
-	BlockTitle,
-	BlockTitleImageText,
-	BlockTitleImageTextProps,
-	BlockTitleProps,
-	BlockVideo,
-	BlockVideoProps,
-	BlockVideoTitleTextButton,
-	BlockVideoTitleTextButtonProps,
 	Button,
 	Column,
 	Container,
@@ -51,21 +29,22 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import {
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
 } from '../../shared/helpers/generateLink';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { DeleteCollectionModal } from '../components';
+import { IconName } from '../../shared/types/types';
+import CollectionFragmentsDetail from '../components/CollectionFragmentsDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
-import { isVideoFragment } from '../helpers';
-import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
+import { ContentTypeString } from '../types';
 
 import './Collection.scss';
 
@@ -73,7 +52,6 @@ interface CollectionProps extends RouteComponentProps {}
 
 const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
-	const [playerTicket, setPlayerTicket] = useState<string | undefined>();
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -99,127 +77,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		}
 	};
 
-	const renderContentBlocks = (contentBlocks: ContentBlockInfo[]) => {
-		return contentBlocks.map((contentBlock: ContentBlockInfo, index: number) => {
-			return (
-				<li className="c-collection-list__item" key={`content-block-${index}`}>
-					{renderContentBlock(contentBlock)}
-				</li>
-			);
-		});
-	};
-
-	const renderContentBlock = (contentBlock: ContentBlockInfo) => {
-		const {
-			Image,
-			ImageTitleTextButton,
-			Intro,
-			Links,
-			Quote,
-			RichText,
-			Subtitle,
-			Title,
-			Video,
-			TitleImageText,
-			VideoTitleTextButton,
-		} = ContentBlockType;
-		const { content, blockType } = contentBlock;
-
-		switch (blockType) {
-			case Image:
-				return <BlockImage {...content as BlockImageProps} />;
-			case ImageTitleTextButton:
-				return <BlockImageTitleTextButton {...content as BlockImageTitleTextButtonProps} />;
-			case Intro:
-				return <BlockIntro {...content as BlockIntroProps} />;
-			case Links:
-				return <BlockLinks {...content as BlockLinksProps} />;
-			case Quote:
-				return <BlockQuote {...content as BlockQuoteProps} />;
-			case RichText:
-				return <BlockText {...content as BlockTextProps} />;
-			case Subtitle:
-				return <BlockSubtitle {...content as BlockSubtitleProps} />;
-			case Title:
-				return <BlockTitle {...content as BlockTitleProps} />;
-			case TitleImageText:
-				return <BlockTitleImageText {...content as BlockTitleImageTextProps} />;
-			case Video:
-				return <BlockVideo {...content as BlockVideoProps} />;
-			case VideoTitleTextButton:
-				return <BlockVideoTitleTextButton {...content as BlockVideoTitleTextButtonProps} />;
-			default:
-				toastService(`Failed to find contentBlock type: ${blockType}`, TOAST_TYPE.DANGER);
-				return null;
-		}
-	};
-
-	// TODO: Replace types when available
-	const getFragmentField = (fragment: Avo.Collection.Fragment, field: string) =>
-		fragment.use_custom_fields
-			? (fragment as any)[`custom_${field}`]
-			: (fragment as any).item_meta[field];
-
 	const renderCollection = (collection: Avo.Collection.Response) => {
-		const contentBlockInfos: ContentBlockInfo[] = [];
-
-		if (collection) {
-			contentBlockInfos.push({
-				blockType: ContentBlockType.Intro,
-				content: {
-					subtitle: 'Introductie',
-					text: collection.description,
-				} as BlockIntroProps,
-			});
-
-			const fragments = orderBy([...collection.collection_fragments], 'position', 'asc') || [];
-
-			fragments.forEach((fragment: Avo.Collection.Fragment) => {
-				const initFlowPlayer = () =>
-					!playerTicket &&
-					fetchPlayerTicket(fragment.external_id)
-						.then(data => setPlayerTicket(data))
-						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
-
-				if (isVideoFragment(fragment)) {
-					initFlowPlayer();
-				}
-
-				const contentBlocks: {
-					[contentBlockName: string]: {
-						type: ContentBlockType;
-						content: BlockVideoTitleTextButtonProps | BlockIntroProps;
-					};
-				} = {
-					videoTitleText: {
-						type: ContentBlockType.VideoTitleTextButton,
-						content: {
-							title: getFragmentField(fragment, 'title'),
-							text: getFragmentField(fragment, 'description'),
-							titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
-							videoSource: playerTicket,
-						},
-					},
-					titleText: {
-						type: ContentBlockType.Intro,
-						content: {
-							subtitle: getFragmentField(fragment, 'title'),
-							text: getFragmentField(fragment, 'description'),
-						},
-					},
-				};
-
-				const currentContentBlock = isVideoFragment(fragment)
-					? contentBlocks.videoTitleText
-					: contentBlocks.titleText;
-
-				contentBlockInfos.push({
-					blockType: currentContentBlock.type,
-					content: currentContentBlock.content,
-				});
-			});
-		}
-
 		const ownerNameAndRole = [
 			get(collection, 'owner.first_name', ''),
 			get(collection, 'owner.last_name', ''),
@@ -227,11 +85,19 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		].join(' ');
 
 		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
+		const canEditCollection = PermissionService.hasPermissions([
+			{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
+			{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
+		]);
+		const canDeleteCollection = PermissionService.hasPermissions([
+			{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
+			{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
+		]);
 
 		return (
 			<Fragment>
 				<Navbar autoHeight background="alt">
-					<Container mode="vertical" size="small" background={'alt'}>
+					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
 							<Toolbar autoHeight>
 								<ToolbarLeft>
@@ -300,11 +166,29 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 												<DropdownContent>
 													<MenuContent
 														menuItems={[
-															{ icon: 'edit', id: 'edit', label: 'Bewerk collectie' }, // TODO: Add PermissionGuard
-															{ icon: 'play', id: 'play', label: 'Alle items afspelen' },
-															{ icon: 'clipboard', id: 'createAssignment', label: 'Maak opdracht' },
-															{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-															{ icon: 'delete', id: 'delete', label: 'Verwijder' }, // TODO: Add PermissionGuard
+															...(canEditCollection
+																? [
+																		{
+																			icon: 'edit' as IconName,
+																			id: 'edit',
+																			label: 'Bewerk collectie',
+																		},
+																  ]
+																: []),
+															{
+																icon: 'play' as IconName,
+																id: 'play',
+																label: 'Alle items afspelen',
+															},
+															{
+																icon: 'clipboard' as IconName,
+																id: 'createAssignment',
+																label: 'Maak opdracht',
+															},
+															{ icon: 'copy' as IconName, id: 'duplicate', label: 'Dupliceer' },
+															...(canDeleteCollection
+																? [{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' }]
+																: []),
 														]}
 														onClick={itemId => {
 															switch (itemId) {
@@ -346,7 +230,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 				</Navbar>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<ul className="c-collection-list">{renderContentBlocks(contentBlockInfos)}</ul>
+						<CollectionFragmentsDetail collectionFragments={collection.collection_fragments} />
 					</Container>
 				</Container>
 				<Container mode="vertical">
@@ -497,10 +381,13 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 						</Grid>
 					</Container>
 				</Container>
-				<DeleteCollectionModal
+
+				<DeleteObjectModal
+					title={`Ben je zeker dat de collectie "${collection.title}" wil verwijderen?`}
+					body="Deze actie kan niet ongedaan gemaakt worden"
 					isOpen={isDeleteModalOpen}
-					setIsOpen={setIsDeleteModalOpen}
-					deleteCollection={deleteCollection}
+					onClose={() => setIsDeleteModalOpen(false)}
+					deleteObjectCallback={deleteCollection}
 				/>
 			</Fragment>
 		);
