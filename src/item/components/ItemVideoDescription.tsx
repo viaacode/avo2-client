@@ -22,6 +22,8 @@ import './ItemVideoDescription.scss';
 
 interface ItemVideoDescriptionProps extends RouteComponentProps {
 	itemMetaData: Avo.Item.Item;
+	showTitleOnVideo?: boolean;
+	showDescriptionNextToVideo?: boolean;
 }
 
 const DEFAULT_VIDEO_HEIGHT = 421;

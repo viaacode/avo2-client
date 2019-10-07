@@ -41,7 +41,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 		collection_id: collection.id,
 	};
 
-	const FragmentAdd = (index: number, contentBlockType: ContentBlockType) => {
+	const addFragment = (index: number, contentBlockType: ContentBlockType) => {
 		const newFragments = orderBy([...collection.collection_fragments], 'position', 'asc');
 
 		switch (contentBlockType) {
@@ -64,25 +64,23 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 
 	return (
 		<Container>
-			<Toolbar>
-				<div className="c-toolbar__justified">
-					<ToolbarItem grow>
-						<div className="c-hr" />
-					</ToolbarItem>
-					<ToolbarItem>
-						{COLLECTION_CONTENT_BLOCKS.length > 1 ? null /* TODO: Dropdown */ : (
-							<Button
-								type="secondary"
-								icon="add"
-								onClick={() => FragmentAdd(index, ContentBlockType.RichText)}
-							/>
-						)}
-						<div className="u-sr-accessible">Sectie toevoegen</div>
-					</ToolbarItem>
-					<ToolbarItem grow>
-						<div className="c-hr" />
-					</ToolbarItem>
-				</div>
+			<Toolbar justify>
+				<ToolbarItem grow>
+					<div className="c-hr" />
+				</ToolbarItem>
+				<ToolbarItem>
+					{COLLECTION_CONTENT_BLOCKS.length > 1 ? null : (
+						<Button
+							type="secondary"
+							icon="add"
+							onClick={() => addFragment(index, ContentBlockType.RichText)}
+							ariaLabel="Sectie toevoegen"
+						/>
+					)}
+				</ToolbarItem>
+				<ToolbarItem grow>
+					<div className="c-hr" />
+				</ToolbarItem>
 			</Toolbar>
 		</Container>
 	);

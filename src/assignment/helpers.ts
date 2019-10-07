@@ -42,11 +42,14 @@ export const getAssignmentContent = async (
 					CONTENT_LABEL_TO_QUERY[assignment.content_label as AssignmentContentLabel].resultPath
 				}`
 			);
+
 			if (!newAssignmentContent) {
 				return 'De opdracht werdt niet gevonden';
 			}
+
 			return newAssignmentContent;
 		}
+
 		return null;
 	} catch (err) {
 		console.error(err);

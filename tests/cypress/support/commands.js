@@ -24,6 +24,7 @@
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
+import 'cypress-wait-until';
 
 Cypress.Commands.add("login", (email, password) => {
 	cy.location('pathname').should('equal', '/module.php/core/loginuserpass.php');
@@ -31,6 +32,12 @@ Cypress.Commands.add("login", (email, password) => {
 	cy.get('#passwordId').type(password, { log: false });
 	cy.get('#wp-submit').click();
 	cy.location('host').should('equal', Cypress.env('CLIENT_BASE_URL').split('/').pop());
+});
+
+Cypress.Commands.add("manualLogin", (redirectPath, email, password) => {
+	cy.visit(`${Cypress.env('CLIENT_BASE_URL')}/aanmelden`);
+	cy.login(email, password);
+	cy.visit(`${Cypress.env('CLIENT_BASE_URL')}/${redirectPath}`);
 });
 
 Cypress.Commands.add("logout", () => {

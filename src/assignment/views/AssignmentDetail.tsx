@@ -1,5 +1,12 @@
-import { get } from 'lodash-es';
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
+import { debounce, get } from 'lodash-es';
+import React, {
+	createRef,
+	Fragment,
+	FunctionComponent,
+	RefObject,
+	useEffect,
+	useState,
+} from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -13,12 +20,13 @@ import {
 	Flex,
 	Icon,
 	MenuContent,
-	Navbar,
 	Spinner,
 	TagList,
 	TagOption,
 	Toolbar,
 	ToolbarItem,
+	ToolbarLeft,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 
 import { Avo } from '@viaa/avo2-types';
@@ -34,15 +42,21 @@ import { GET_ASSIGNMENT_WITH_RESPONSE } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
 import { Assignment, AssignmentContent, AssignmentTag } from '../types';
 
+import './AssignmentDetail.scss';
+
 interface AssignmentProps extends RouteComponentProps {}
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
+	const [isDescriptionCollapsed, setDescriptionCollapsed] = useState<boolean>(false);
+	const [navBarHeight, setNavBarHeight] = useState<number>(200);
 
 	const [assignment, setAssignment] = useState<Assignment | undefined>();
 	const [assigmentContent, setAssigmentContent] = useState<AssignmentContent | null | undefined>();
 	const [loadingState, setLoadingState] = useState<LoadingState>('loading');
 	const [loadingError, setLoadingError] = useState<{ error: string; icon: IconName } | null>(null);
+
+	const navBarRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
 
 	/**
 	 * Load the content (collection, item or searchquery) after we've loaded the assignment
@@ -84,6 +98,30 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			});
 	}, [match.params]);
 
+	useEffect(() => {
+		// Register window listener when the component mounts
+		console.log('useeffect');
+		const onResizeHandler = debounce(
+			() => {
+				if (navBarRef.current) {
+					const navBarHeight = navBarRef.current.getBoundingClientRect().height;
+					setNavBarHeight(navBarHeight);
+				} else {
+					setNavBarHeight(387);
+				}
+			},
+			300,
+			{ leading: false, trailing: true }
+		);
+
+		window.addEventListener('resize', onResizeHandler);
+		onResizeHandler();
+
+		return () => {
+			window.removeEventListener('resize', onResizeHandler);
+		};
+	}, [isDescriptionCollapsed]);
+
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		switch (itemId) {
 			case 'archive':
@@ -105,13 +143,14 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		);
 
 		return (
-			<Fragment>
-				<Container mode="vertical" size="small" background={'alt'}>
-					<Navbar background="alt" autoHeight>
+			<div className="c-assigment-detail">
+				{/* Do not switch to a NavBar component since we need to be able to set a ref to get the height dynamically */}
+				<div className="c-navbar" ref={navBarRef}>
+					<Container mode="vertical" size="small" background={'alt'}>
 						<Container mode="horizontal">
-							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq">
-								<div className="c-toolbar__left">
-									{/* TODO: Fix ToolbarLeft & ToolbarRight slot to allow multiple ToolbarItem's */}
+							{/* TODO: Fix ToolbarLeft & ToolbarRight slot to allow multiple ToolbarItem's */}
+							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
+								<ToolbarLeft>
 									<ToolbarItem>
 										<Link
 											className="c-return"
@@ -122,66 +161,72 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 										</Link>
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
 									</ToolbarItem>
-								</div>
-								<div className="c-toolbar__right">
-									<ToolbarItem>
-										<TagList tags={tags} closable={false} swatches bordered />
-									</ToolbarItem>
-									{!!assignment.user && (
+								</ToolbarLeft>
+								<ToolbarRight>
+									<Fragment>
 										<ToolbarItem>
-											<Avatar
-												size="small"
-												initials={
-													get(assignment, 'user.first_name[0]') +
-													get(assignment, 'user.last_name[0]')
-												}
-												name={`${assignment.user.role && assignment.user.role.label}: ${
-													assignment.user.first_name
-												} ${assignment.user.last_name}`}
-												image={
-													(assignment.user.profile && assignment.user.profile.avatar) || undefined
-												}
-											/>
+											<TagList tags={tags} closable={false} swatches bordered />
 										</ToolbarItem>
-									)}
-									<ToolbarItem>
-										<Dropdown
-											autoSize
-											isOpen={isActionsDropdownOpen}
-											onClose={() => setActionsDropdownOpen(false)}
-											onOpen={() => setActionsDropdownOpen(true)}
-											placement="bottom-end"
-										>
-											<DropdownButton>
-												<Button icon="more-horizontal" type="secondary" />
-											</DropdownButton>
-											<DropdownContent>
-												<MenuContent
-													menuItems={[{ icon: 'archive', id: 'archive', label: 'Archiveer' }]}
-													onClick={handleExtraOptionsClick as any}
+										{!!assignment.user && (
+											<ToolbarItem>
+												<Avatar
+													size="small"
+													initials={
+														get(assignment, 'user.first_name[0]') +
+														get(assignment, 'user.last_name[0]')
+													}
+													name={`${assignment.user.role && assignment.user.role.label}: ${
+														assignment.user.first_name
+													} ${assignment.user.last_name}`}
+													image={
+														(assignment.user.profile && assignment.user.profile.avatar) || undefined
+													}
 												/>
-											</DropdownContent>
-										</Dropdown>
-									</ToolbarItem>
-								</div>
+											</ToolbarItem>
+										)}
+										<ToolbarItem>
+											<Dropdown
+												autoSize
+												isOpen={isActionsDropdownOpen}
+												onClose={() => setActionsDropdownOpen(false)}
+												onOpen={() => setActionsDropdownOpen(true)}
+												placement="bottom-end"
+											>
+												<DropdownButton>
+													<Button icon="more-horizontal" type="secondary" />
+												</DropdownButton>
+												<DropdownContent>
+													<MenuContent
+														menuItems={[{ icon: 'archive', id: 'archive', label: 'Archiveer' }]}
+														onClick={handleExtraOptionsClick as any}
+													/>
+												</DropdownContent>
+											</Dropdown>
+										</ToolbarItem>
+									</Fragment>
+								</ToolbarRight>
 							</Toolbar>
 						</Container>
-						<Container mode="horizontal">
-							<div
-								className="c-content"
-								dangerouslySetInnerHTML={{ __html: assignment.description }}
-							/>
-							{!!assignment.answer_url && (
-								<div className="c-box c-box--padding-small c-box--soft-white">
-									<p>Geef je antwoorden in op:</p>
-									<p>
-										<a href={assignment.answer_url}>{assignment.answer_url}</a>
-									</p>
-								</div>
-							)}
-						</Container>
-					</Navbar>
-				</Container>
+						{!isDescriptionCollapsed && (
+							<Container mode="horizontal">
+								<div
+									className="c-content"
+									dangerouslySetInnerHTML={{ __html: assignment.description }}
+								/>
+								{!!assignment.answer_url && (
+									<div className="c-box c-box--padding-small c-box--soft-white">
+										<p>Geef je antwoorden in op:</p>
+										<p>
+											<a href={assignment.answer_url}>{assignment.answer_url}</a>
+										</p>
+									</div>
+								)}
+							</Container>
+						)}
+					</Container>
+				</div>
+
+				<div style={{ height: `${navBarHeight}px` }}>{/*whitespace behind fixed navbar*/}</div>
 
 				<Container mode="vertical">
 					<Container mode="horizontal">
@@ -197,7 +242,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 						)}
 					</Container>
 				</Container>
-			</Fragment>
+			</div>
 		);
 	};
 

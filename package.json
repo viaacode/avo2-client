@@ -8,11 +8,8 @@
     "env": "node ./scripts/env.js && cp env-config.js ./public",
     "build": "react-scripts build",
     "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
-    "integration-tests": "cypress run",
     "lint": "tslint -p .",
-    "format": "npm run lint -- --fix",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "format": "npm run lint -- --fix"
   },
   "contributors": [
     "Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -66,7 +63,6 @@
     "@types/react-router-config": "^5.0.0",
     "@types/react-router-dom": "^4.3.3",
     "@types/storybook__react": "^4.0.2",
-    "cypress": "^3.4.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "husky": "^2.3.0",
