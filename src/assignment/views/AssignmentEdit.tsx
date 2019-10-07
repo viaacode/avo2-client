@@ -3,7 +3,7 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
 import { cloneDeep, get, remove } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Fragment, FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -417,7 +417,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 	};
 
 	const renderAssignmentEditForm = () => (
-		<Fragment>
+		<>
 			<Container mode="vertical" background={'alt'}>
 				<Navbar autoHeight>
 					<Container mode="horizontal">
@@ -677,7 +677,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 				onClose={() => setDuplicateModalOpen(false)}
 				inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
 			/>
-		</Fragment>
+		</>
 	);
 
 	switch (loadingState) {

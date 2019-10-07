@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, MouseEvent, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, useState } from 'react';
 
 import {
 	Button,
@@ -188,7 +188,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		// }
 
 		return (
-			<Fragment>
+			<>
 				<div className="c-checkbox-dropdown__trigger" onClick={openDropdownOrModal}>
 					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
 				</div>
@@ -231,7 +231,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 						</Toolbar>
 					</ModalFooterRight>
 				</Modal>
-			</Fragment>
+			</>
 		);
 	};
 

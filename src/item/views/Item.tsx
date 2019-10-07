@@ -2,7 +2,6 @@ import queryString from 'query-string';
 import React, {
 	createRef,
 	CSSProperties,
-	Fragment,
 	FunctionComponent,
 	RefObject,
 	useEffect,
@@ -111,7 +110,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
 
 		return (
-			<Fragment>
+			<>
 				<Container mode="vertical" size="small" background={'alt'}>
 					<Container mode="horizontal">
 						<Toolbar>
@@ -212,7 +211,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 								</Spacer>
 							</Column>
 							<Column size="2-5">
-								<Fragment />
+								<></>
 							</Column>
 						</Grid>
 						<Grid>
@@ -433,7 +432,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 						onClose={() => setIsOpenFragmentAddToCollectionModal(false)}
 					/>
 				)}
-			</Fragment>
+			</>
 		);
 	};
 

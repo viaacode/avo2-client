@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
@@ -39,7 +39,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 		lookup_enum_lom_classification: { description: string }[];
 	}) => {
 		return (
-			<Fragment>
+			<>
 				<Container mode="vertical">
 					<Container mode="horizontal">
 						<Form>
@@ -126,7 +126,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 					setIsOpen={setCollectionsStillsModalOpen}
 					collection={collection}
 				/>
-			</Fragment>
+			</>
 		);
 	};
 

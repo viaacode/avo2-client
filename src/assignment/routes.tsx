@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';
@@ -6,7 +6,7 @@ import AssignmentDetail from './views/AssignmentDetail';
 import AssignmentEdit from './views/AssignmentEdit';
 
 export const renderAssignmentRoutes = () => (
-	<Fragment>
+	<>
 		<SecuredRoute
 			path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/:id/${RouteParts.Edit}`}
 			component={AssignmentEdit}
@@ -18,5 +18,5 @@ export const renderAssignmentRoutes = () => (
 			exact={false}
 		/>
 		<SecuredRoute path={`/${RouteParts.Assignment}/:id`} component={AssignmentDetail} exact />
-	</Fragment>
+	</>
 );

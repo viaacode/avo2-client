@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
-import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
+import React, { FunctionComponent, ReactText, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -353,7 +353,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		return (
-			<Fragment>
+			<>
 				<Table
 					columns={columns}
 					data={data.assignments}
@@ -405,7 +405,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						duplicateAssignment(newTitle, markedAssignment, refetchAssignments)
 					}
 				/>
-			</Fragment>
+			</>
 		);
 	};
 

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -95,7 +95,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 		]);
 
 		return (
-			<Fragment>
+			<>
 				<Navbar autoHeight background="alt">
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
@@ -389,7 +389,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCollection}
 				/>
-			</Fragment>
+			</>
 		);
 	};
 

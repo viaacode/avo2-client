@@ -1,12 +1,6 @@
+import { ApolloQueryResult } from 'apollo-client';
 import { debounce, get } from 'lodash-es';
-import React, {
-	createRef,
-	Fragment,
-	FunctionComponent,
-	RefObject,
-	useEffect,
-	useState,
-} from 'react';
+import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -29,9 +23,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-
 import { Avo } from '@viaa/avo2-types';
-import { ApolloQueryResult } from 'apollo-client';
+
 import NotFound from '../../404/views/NotFound';
 import FragmentDetail from '../../collection/components/FragmentDetail';
 import { RouteParts } from '../../constants';
@@ -53,7 +46,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [isDescriptionCollapsed, setDescriptionCollapsed] = useState<boolean>(false);
 	const [navBarHeight, setNavBarHeight] = useState<number>(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
-
 	const [assignment, setAssignment] = useState<Assignment | undefined>();
 	const [assigmentContent, setAssigmentContent] = useState<AssignmentContent | null | undefined>();
 	const [loadingState, setLoadingState] = useState<LoadingState>('loading');
@@ -75,24 +67,25 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			})
 			.then((response: ApolloQueryResult<Assignment>) => {
 				const tempAssignment = get(response, 'data.assignments[0]');
+
 				if (!tempAssignment) {
 					setLoadingState('error');
 					setLoadingError({ error: 'De opdracht werdt niet gevonden', icon: 'search' });
 					return;
 				}
+
 				getAssignmentContent(tempAssignment).then((response: AssignmentContent | string | null) => {
 					if (typeof response === 'string') {
-						// error message
 						toastService(response);
 						return;
 					}
+
 					setAssigmentContent(response);
 					setAssignment(tempAssignment);
 					setLoadingState('loaded');
 				});
 			})
-			.catch(err => {
-				console.error(err);
+			.catch(() => {
 				setLoadingState('error');
 				setLoadingError({
 					error: 'Het ophalen van de opdracht is mislukt',
@@ -144,13 +137,28 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			})
 		);
 
+		const renderContent = () => {
+			switch (assignment.content_label) {
+				case 'COLLECTIE':
+					return (
+						<FragmentDetail
+							collectionFragments={
+								(assigmentContent as Avo.Collection.Collection).collection_fragments
+							}
+						/>
+					);
+				case 'ITEM':
+					return <ItemVideoDescription itemMetaData={assigmentContent as Avo.Item.Item} />;
+				default:
+					return null;
+			}
+		};
+
 		return (
 			<div className="c-assigment-detail">
-				{/* Do not switch to a NavBar component since we need to be able to set a ref to get the height dynamically */}
 				<div className="c-navbar" ref={navBarRef}>
 					<Container mode="vertical" size="small" background={'alt'}>
 						<Container mode="horizontal">
-							{/* TODO: Fix ToolbarLeft & ToolbarRight slot to allow multiple ToolbarItem's */}
 							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
 								<ToolbarLeft>
 									<ToolbarItem>
@@ -164,7 +172,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
 									</ToolbarItem>
 								</ToolbarLeft>
-								{/* Do not switch to a NavBar component since we need to be able to set a ref to get the height dynamically */}
 								<ToolbarCenter>
 									<div style={{ zIndex: 22 }}>
 										<Button
@@ -175,7 +182,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 									</div>
 								</ToolbarCenter>
 								<ToolbarRight>
-									<Fragment>
+									<>
 										<ToolbarItem>
 											<TagList tags={tags} closable={false} swatches bordered />
 										</ToolbarItem>
@@ -215,7 +222,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 												</DropdownContent>
 											</Dropdown>
 										</ToolbarItem>
-									</Fragment>
+									</>
 								</ToolbarRight>
 							</Toolbar>
 						</Container>
@@ -241,18 +248,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				<div style={{ height: `${navBarHeight}px` }}>{/*whitespace behind fixed navbar*/}</div>
 
 				<Container mode="vertical">
-					<Container mode="horizontal">
-						{assignment.content_label === 'COLLECTIE' && (
-							<FragmentDetail
-								collectionFragments={
-									(assigmentContent as Avo.Collection.Collection).collection_fragments
-								}
-							/>
-						)}
-						{assignment.content_label === 'ITEM' && (
-							<ItemVideoDescription itemMetaData={assigmentContent as Avo.Item.Item} />
-						)}
-					</Container>
+					<Container mode="horizontal">{renderContent()}</Container>
 				</Container>
 			</div>
 		);

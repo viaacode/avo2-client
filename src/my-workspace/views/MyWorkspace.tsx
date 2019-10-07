@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
+import React, { FunctionComponent, ReactText, useState } from 'react';
 import { withRouter } from 'react-router';
 
 import { get } from 'lodash-es';
@@ -129,7 +129,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 			[BOOKMARKS_ID]: 0, // TODO get from database once the table exists
 		};
 		return (
-			<Fragment>
+			<>
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<h2 className="c-h2 u-m-0">Mijn Werkruimte</h2>
@@ -152,7 +152,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">{getActiveTab(counts).component}</Container>
 				</Container>
-			</Fragment>
+			</>
 		);
 	};
 
