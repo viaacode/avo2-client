@@ -24,6 +24,7 @@ import {
 	TagList,
 	TagOption,
 	Toolbar,
+	ToolbarCenter,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
@@ -46,10 +47,12 @@ import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {}
 
+const DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT = 200;
+
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [isDescriptionCollapsed, setDescriptionCollapsed] = useState<boolean>(false);
-	const [navBarHeight, setNavBarHeight] = useState<number>(200);
+	const [navBarHeight, setNavBarHeight] = useState<number>(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
 
 	const [assignment, setAssignment] = useState<Assignment | undefined>();
 	const [assigmentContent, setAssigmentContent] = useState<AssignmentContent | null | undefined>();
@@ -100,14 +103,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 
 	useEffect(() => {
 		// Register window listener when the component mounts
-		console.log('useeffect');
 		const onResizeHandler = debounce(
 			() => {
 				if (navBarRef.current) {
 					const navBarHeight = navBarRef.current.getBoundingClientRect().height;
 					setNavBarHeight(navBarHeight);
 				} else {
-					setNavBarHeight(387);
+					setNavBarHeight(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
 				}
 			},
 			300,
@@ -162,6 +164,16 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
 									</ToolbarItem>
 								</ToolbarLeft>
+								{/* Do not switch to a NavBar component since we need to be able to set a ref to get the height dynamically */}
+								<ToolbarCenter>
+									<div style={{ zIndex: 22 }}>
+										<Button
+											icon={isDescriptionCollapsed ? 'chevron-up' : 'chevron-down'}
+											label={isDescriptionCollapsed ? 'opdracht tonen' : 'opdracht verbergen'}
+											onClick={() => setDescriptionCollapsed(!isDescriptionCollapsed)}
+										/>
+									</div>
+								</ToolbarCenter>
 								<ToolbarRight>
 									<Fragment>
 										<ToolbarItem>
