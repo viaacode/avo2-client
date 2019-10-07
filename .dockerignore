@@ -1,0 +1,7 @@
+./.git*
+./node_modules*
+./ci-results*
+./build/*
+./openshift/*
+./cypress/*
+./__mocks__*
