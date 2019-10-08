@@ -156,7 +156,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					return <ItemVideoDescription itemMetaData={assigmentContent as Avo.Item.Item} />;
 				default:
 					return (
-						<NotFound message={`Onverwacht opdracht inhoud type: "${assignment.content_label}"`} />
+						<NotFound
+							icon="alert-triangle"
+							message={`Onverwacht opdracht inhoud type: "${assignment.content_label}"`}
+						/>
 					);
 			}
 		};
