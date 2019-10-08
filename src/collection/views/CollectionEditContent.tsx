@@ -4,16 +4,16 @@ import React, { FunctionComponent, useState } from 'react';
 import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { AddFragment, CollectionFragment } from '../components';
+import { FragmentAdd, FragmentEdit } from '../components';
 
-interface EditCollectionContentProps {
-	collection: Avo.Collection.Response;
+interface CollectionEditContentProps {
+	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	updateCollection: (collection: Avo.Collection.Response) => void;
+	updateCollection: (collection: Avo.Collection.Collection) => void;
 	updateFragmentProperty: (value: string, fieldName: string, fragmentId: number) => void;
 }
 
-const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
+const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 	collection,
 	swapFragments,
 	updateCollection,
@@ -33,7 +33,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 			<Container mode="horizontal">
 				{orderBy(collection.collection_fragments, ['position'], ['asc']).map(
 					(fragment: any, index: number) => (
-						<CollectionFragment
+						<FragmentEdit
 							key={`fragment_${index}`}
 							index={index}
 							collection={collection}
@@ -49,7 +49,7 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 				)}
 			</Container>
 			{!collection.collection_fragments.length && (
-				<AddFragment
+				<FragmentAdd
 					index={0}
 					collection={collection}
 					updateCollection={updateCollection}
@@ -60,4 +60,4 @@ const EditCollectionContent: FunctionComponent<EditCollectionContentProps> = ({
 	);
 };
 
-export default EditCollectionContent;
+export default CollectionEditContent;

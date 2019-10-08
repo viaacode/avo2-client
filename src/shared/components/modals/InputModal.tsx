@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
@@ -45,7 +45,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable={true}>
 			<ModalBody>
-				<Fragment>
+				<>
 					<Spacer margin="bottom-large">
 						<FormGroup label={inputLabel} labelFor="collectionNameId">
 							<TextInput
@@ -66,7 +66,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>
-				</Fragment>
+				</>
 			</ModalBody>
 		</Modal>
 	);

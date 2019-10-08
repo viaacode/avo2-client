@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react';
 
 import {
 	Button,
@@ -36,7 +36,7 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable={true}>
 			<ModalBody>
-				<Fragment>
+				<>
 					{!!body && <p>{body}</p>}
 					<Toolbar spaced>
 						<ToolbarRight>
@@ -48,7 +48,7 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>
-				</Fragment>
+				</>
 			</ModalBody>
 		</Modal>
 	);

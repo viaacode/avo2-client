@@ -23,7 +23,7 @@ import { isVideoFragment } from '../../helpers';
 interface CollectionStillsModalProps {
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
-	collection: Avo.Collection.Response;
+	collection: Avo.Collection.Collection;
 }
 
 const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({

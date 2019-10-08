@@ -4,7 +4,11 @@ context('Home', () => {
 	beforeEach(() => {
 		cy.viewport(1920, 937);
 		cy.visit(Cypress.env('CLIENT_BASE_URL'));
-		cy.manualLogin('', Cypress.env('SHD_TEST_ACCOUNT_EMAIL'), Cypress.env('SHD_TEST_ACCOUNT_PASSWORD'));
+		cy.manualLogin(
+			'',
+			Cypress.env('SHD_TEST_ACCOUNT_EMAIL'),
+			Cypress.env('SHD_TEST_ACCOUNT_PASSWORD')
+		);
 	});
 
 	it('Homepage should load correctly', () => {
@@ -41,10 +45,13 @@ context('Home', () => {
 		const searchField = cy.get('[placeholder="Vul een zoekterm in"]');
 		searchField.click();
 
-		cy.waitUntil(() => cy.get('.c-menu--search-result')
-			.find('.c-menu__item')
-			.its('length')
-			.then(length => length >= 5));
+		cy.waitUntil(() =>
+			cy
+				.get('.c-menu--search-result')
+				.find('.c-menu__item')
+				.its('length')
+				.then(length => length >= 5)
+		);
 
 		cy.get('.c-menu--search-result')
 			.find('.c-menu__item')

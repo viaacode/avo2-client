@@ -21,7 +21,7 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import './ItemVideoDescription.scss';
 
 interface ItemVideoDescriptionProps extends RouteComponentProps {
-	itemMetaData: Avo.Item.Response;
+	itemMetaData: Avo.Item.Item;
 	showTitleOnVideo?: boolean;
 	showDescriptionNextToVideo?: boolean;
 }

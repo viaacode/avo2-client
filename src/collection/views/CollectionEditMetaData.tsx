@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
@@ -17,14 +17,14 @@ import { Avo } from '@viaa/avo2-types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import CollectionStillsModal from '../components/modals/CollectionStillsModal';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
-import { getValidationFeedbackForShortDescription } from './EditCollection';
+import { getValidationFeedbackForShortDescription } from './CollectionEdit';
 
-interface EditCollectionMetadataProps {
-	collection: Avo.Collection.Response;
+interface CollectionEditMetaDataProps {
+	collection: Avo.Collection.Collection;
 	updateCollectionProperty: (value: string | string[], fieldName: string) => void;
 }
 
-const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = ({
+const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = ({
 	collection,
 	updateCollectionProperty,
 }) => {
@@ -39,7 +39,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 		lookup_enum_lom_classification: { description: string }[];
 	}) => {
 		return (
-			<Fragment>
+			<>
 				<Container mode="vertical">
 					<Container mode="horizontal">
 						<Form>
@@ -126,7 +126,7 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 					setIsOpen={setCollectionsStillsModalOpen}
 					collection={collection}
 				/>
-			</Fragment>
+			</>
 		);
 	};
 
@@ -138,4 +138,4 @@ const EditCollectionMetadata: FunctionComponent<EditCollectionMetadataProps> = (
 	);
 };
 
-export default EditCollectionMetadata;
+export default CollectionEditMetaData;

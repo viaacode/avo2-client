@@ -30,25 +30,25 @@ import {
 	GET_COLLECTION_TITLES_BY_OWNER,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENT,
-} from '../../collection/graphql';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
-import { formatDurationHoursMinutesSeconds } from '../../shared/helpers/formatters/duration';
-import { toSeconds } from '../../shared/helpers/parsers/duration';
-import { dataService } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import './AddFragmentToCollection.scss';
+} from '../../../collection/graphql';
+import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
+import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { dataService } from '../../../shared/services/data-service';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import './FragmentAddToCollection.scss';
 
-interface AddFragmentToCollectionProps {
+interface FragmentAddToCollectionProps {
 	externalId: string;
-	itemMetaData: Avo.Item.Response;
+	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
 }
 
-export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionProps> = ({
+export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
@@ -57,9 +57,9 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
-	const [selectedCollection, setSelectedCollection] = useState<Avo.Collection.Response | undefined>(
-		undefined
-	);
+	const [selectedCollection, setSelectedCollection] = useState<
+		Avo.Collection.Collection | undefined
+	>(undefined);
 	const [newCollectionTitle, setNewCollectionTitle] = useState<string>('');
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
@@ -72,7 +72,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 		try {
 			setSelectedCollection(undefined);
 			setSelectedCollectionId(id);
-			const response: ApolloQueryResult<Avo.Collection.Response> = await dataService.query({
+			const response: ApolloQueryResult<Avo.Collection.Collection> = await dataService.query({
 				query: GET_COLLECTION_BY_ID,
 				variables: { id },
 			});
@@ -88,7 +88,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 		}
 	};
 
-	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Response>) => {
+	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {
 		try {
 			const response: void | ExecutionResult<
 				Avo.Collection.Fragment
@@ -124,7 +124,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 		try {
 			// Create new collection with one fragment in it
 			const response: void | ExecutionResult<
-				Avo.Collection.Response
+				Avo.Collection.Collection
 			> = await triggerInsertCollection({
 				variables: {
 					collection: {
@@ -133,10 +133,10 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 						is_public: false,
 						owner_uid: '54859c98-d5d3-1038-8d91-6dfda901a78e',
 						type_id: 3,
-					} as Partial<Avo.Collection.Response>,
+					} as Partial<Avo.Collection.Collection>,
 				},
 			});
-			const insertedCollection: Partial<Avo.Collection.Response> = get(
+			const insertedCollection: Partial<Avo.Collection.Collection> = get(
 				response,
 				'data.insert_app_collections.returning[0]'
 			);
@@ -187,7 +187,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 		setFragmentEndTime(values[1]);
 	};
 
-	const renderAddFragmentToCollectionModal = (collections: { id: number; title: string }[]) => {
+	const renderFragmentAddToCollectionModal = (collections: { id: number; title: string }[]) => {
 		const initFlowPlayer = () =>
 			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 
@@ -315,7 +315,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 												? addItemToNewCollection
 												: () =>
 														addItemToExistingCollection(selectedCollection as Partial<
-															Avo.Collection.Response
+															Avo.Collection.Collection
 														>)
 										}
 									/>
@@ -334,7 +334,7 @@ export const AddFragmentToCollection: FunctionComponent<AddFragmentToCollectionP
 			// TODO: replace with actual owner id from ldap object
 			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
 			resultPath="app_collections"
-			renderData={renderAddFragmentToCollectionModal}
+			renderData={renderFragmentAddToCollectionModal}
 			notFoundMessage="Er konden geen collecties worden opgehaald"
 		/>
 	);

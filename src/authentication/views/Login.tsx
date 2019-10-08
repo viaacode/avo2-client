@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -87,11 +87,11 @@ const Login: FunctionComponent<LoginProps> = ({
 
 	if (loginStateError || hasRecentLoginAttempt()) {
 		return (
-			<Fragment>
+			<>
 				<NotFound message="Het inloggen is mislukt" icon="lock">
 					<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
 				</NotFound>
-			</Fragment>
+			</>
 		);
 	}
 

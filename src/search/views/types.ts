@@ -6,7 +6,7 @@ export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange |
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };
 
 export interface SearchProps extends RouteComponentProps {
-	searchResults: Avo.Search.Response | null;
+	searchResults: Avo.Search.Search | null;
 	searchResultsLoading: boolean;
 	search: (
 		orderProperty: Avo.Search.OrderProperty,

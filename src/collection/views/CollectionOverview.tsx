@@ -26,8 +26,9 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
+import { getInitialChar } from '../helpers';
 
-import './Collections.scss';
+import './CollectionOverview.scss';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
@@ -155,7 +156,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	};
 
 	const renderCollections = (
-		collections: Avo.Collection.Response[],
+		collections: Avo.Collection.Collection[],
 		refetchCollections: () => void
 	) => {
 		const mappedCollections = !!collections
@@ -163,11 +164,9 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					const users = [collection.owner];
 
 					const avatars = users.map(user => {
-						const { first_name, last_name } = user;
-
 						return {
-							initials: `${first_name.charAt(0)}${last_name.charAt(0)}`,
-							name: `${first_name} ${last_name}`,
+							initials: `${getInitialChar(user.first_name)}${getInitialChar(user.last_name)}`,
+							name: `${user.first_name} ${user.last_name} `,
 							subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
 						};
 					});

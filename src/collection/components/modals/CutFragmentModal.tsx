@@ -21,7 +21,7 @@ import { fetchPlayerTicket } from '../../../shared/services/player-ticket-servic
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
-	itemMetaData: Avo.Item.Response;
+	itemMetaData: Avo.Item.Item;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
 	updateCuePoints: (cuepoints: any) => void;
 	fragment: Avo.Collection.Fragment;

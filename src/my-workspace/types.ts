@@ -18,7 +18,7 @@ export type TabViewMap = {
 };
 
 export interface MyWorkspaceProps extends RouteComponentProps<{ tabId: string }> {
-	collections: Avo.Collection.Response | null;
+	collections: Avo.Collection.Collection | null;
 }
 
 // Bookmarks

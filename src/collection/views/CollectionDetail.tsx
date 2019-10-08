@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -42,15 +42,15 @@ import {
 } from '../../shared/helpers/generateLink';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-import CollectionFragmentsDetail from '../components/CollectionFragmentsDetail';
+import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
 
-import './Collection.scss';
+import './CollectionDetail.scss';
 
-interface CollectionProps extends RouteComponentProps {}
+interface CollectionDetailProps extends RouteComponentProps {}
 
-const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
+const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, history }) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -77,7 +77,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		}
 	};
 
-	const renderCollection = (collection: Avo.Collection.Response) => {
+	const renderCollection = (collection: Avo.Collection.Collection) => {
 		const ownerNameAndRole = [
 			get(collection, 'owner.first_name', ''),
 			get(collection, 'owner.last_name', ''),
@@ -95,7 +95,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 		]);
 
 		return (
-			<Fragment>
+			<>
 				<Navbar autoHeight background="alt">
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
@@ -230,7 +230,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 				</Navbar>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<CollectionFragmentsDetail collectionFragments={collection.collection_fragments} />
+						<FragmentDetail collectionFragments={collection.collection_fragments} />
 					</Container>
 				</Container>
 				<Container mode="vertical">
@@ -389,7 +389,7 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCollection}
 				/>
-			</Fragment>
+			</>
 		);
 	};
 
@@ -404,4 +404,4 @@ const Collection: FunctionComponent<CollectionProps> = ({ match, history }) => {
 	);
 };
 
-export default withRouter(Collection);
+export default withRouter(CollectionDetail);

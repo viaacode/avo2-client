@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { Blankslate, Container, Flex, Pagination, Spacer, Spinner } from '@viaa/avo2-components';
 
@@ -21,7 +21,7 @@ const SearchResults = ({
 						<Spinner size="large" />
 					</Flex>
 				) : data && data.count !== 0 ? (
-					<Fragment>
+					<>
 						<ul className="c-search-result-list">
 							{data.results.map((result, index) => (
 								<SearchResultItem
@@ -34,7 +34,7 @@ const SearchResults = ({
 						<Spacer margin="large">
 							<Pagination pageCount={pageCount} currentPage={currentPage} onPageChange={setPage} />
 						</Spacer>
-					</Fragment>
+					</>
 				) : (
 					<Blankslate
 						body=""

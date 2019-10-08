@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Dispatch } from 'redux';
@@ -309,7 +309,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				<Container mode="horizontal">
 					<Toolbar>
 						<ToolbarLeft>
-							<Fragment>
+							<>
 								<ToolbarItem>
 									<ToolbarTitle>Zoekresultaten</ToolbarTitle>
 								</ToolbarItem>
@@ -318,7 +318,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 										{resultStart}-{resultEnd} van {resultsCount} resultaten
 									</p>
 								</ToolbarItem>
-							</Fragment>
+							</>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<Flex spaced="regular">
@@ -343,7 +343,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 										<Button type="tertiary" icon="more-horizontal" />
 									</DropdownButton>
 									<DropdownContent>
-										<Fragment>
+										<>
 											<Button
 												type="link"
 												className="c-menu__item"
@@ -360,7 +360,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 													toastService('Nog niet geïmplementeerd');
 												}}
 											/>
-										</Fragment>
+										</>
 									</DropdownContent>
 								</Dropdown>
 							</Flex>

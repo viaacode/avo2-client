@@ -8,10 +8,10 @@ import { ContentBlockType } from '../types';
 
 const COLLECTION_CONTENT_BLOCKS = ['RichText'];
 
-interface AddFragmentProps {
+interface FragmentAddProps {
 	index: number;
-	collection: Avo.Collection.Response;
-	updateCollection: (collection: Avo.Collection.Response) => void;
+	collection: Avo.Collection.Collection;
+	updateCollection: (collection: Avo.Collection.Collection) => void;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 }
 
@@ -29,7 +29,7 @@ const fragmentsDefaults = {
 	},
 };
 
-const AddFragment: FunctionComponent<AddFragmentProps> = ({
+const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	index,
 	collection,
 	updateCollection,
@@ -86,4 +86,4 @@ const AddFragment: FunctionComponent<AddFragmentProps> = ({
 	);
 };
 
-export default AddFragment;
+export default FragmentAdd;

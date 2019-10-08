@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
+import React, { FunctionComponent, ReactText, useState } from 'react';
 import { withRouter } from 'react-router';
 
 import { get } from 'lodash-es';
@@ -17,8 +17,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import Assignments from '../../assignment/views/Assignments';
-import Collections from '../../collection/views/Collections';
+import AssignmentOverview from '../../assignment/views/AssignmentOverview';
+import CollectionOverview from '../../collection/views/CollectionOverview';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -44,7 +44,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 	const getTabs = (counts: { [tabId: string]: number }): TabViewMap => {
 		return {
 			[COLLECTIONS_ID]: {
-				component: <Collections numberOfCollections={counts[COLLECTIONS_ID]} />,
+				component: <CollectionOverview numberOfCollections={counts[COLLECTIONS_ID]} />,
 				// TODO: Vergeet deze filter niet terug te plaatsen.
 				// filter: {
 				// 	label: 'Auteur',
@@ -64,7 +64,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 				},
 			},
 			[ASSIGNMENTS_ID]: {
-				component: <Assignments />,
+				component: <AssignmentOverview />,
 			},
 			[BOOKMARKS_ID]: {
 				component: <Bookmarks />,
@@ -129,7 +129,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 			[BOOKMARKS_ID]: 0, // TODO get from database once the table exists
 		};
 		return (
-			<Fragment>
+			<>
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<h2 className="c-h2 u-m-0">Mijn Werkruimte</h2>
@@ -152,7 +152,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">{getActiveTab(counts).component}</Container>
 				</Container>
-			</Fragment>
+			</>
 		);
 	};
 

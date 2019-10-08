@@ -39,14 +39,14 @@ const getSearchResults = (
 
 			const data = await response.json();
 
-			return dispatch(setSearchResultsSuccess(data as Avo.Search.Response));
+			return dispatch(setSearchResultsSuccess(data as Avo.Search.Search));
 		} catch (e) {
 			return dispatch(setSearchResultsError());
 		}
 	};
 };
 
-const setSearchResultsSuccess = (data: Avo.Search.Response): SetSearchResultsSuccessAction => ({
+const setSearchResultsSuccess = (data: Avo.Search.Search): SetSearchResultsSuccessAction => ({
 	data,
 	type: SearchActionTypes.SET_RESULTS_SUCCESS,
 });
