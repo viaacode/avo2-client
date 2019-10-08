@@ -132,7 +132,7 @@ pipeline {
                         '''
                     }// end script
                 }
-            }//end stage       	        			    		     
+            }//end stage
         stage('Deploy production') {
             steps {
             input message: "tag image for pod prd?: avo2-client-prd. Approve?", id: "approval"
@@ -152,11 +152,12 @@ pipeline {
     } // stages
     post {
         always {
-            junit 'ci-results/*.xml'
+            // following disabled , we dont record test data for now
+            //junit 'ci-results/*.xml'
             
-            archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
-            archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
-            archiveArtifacts artifacts: 'ci-results/*.xml', fingerprint: true
+            //archiveArtifacts artifacts: 'cypress/videos/**/*.mp4', fingerprint: true
+            //archiveArtifacts artifacts: 'cypress/screenshots/**/*.png', fingerprint: true
+            //archiveArtifacts artifacts: 'ci-results/*.xml', fingerprint: true
 
             script {
                slackNotifier(currentBuild.currentResult)

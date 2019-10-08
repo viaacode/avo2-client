@@ -32,7 +32,7 @@ CMD_UNIT_TEST="npm run integration-tests"
 login:	check-env
 	#oc login ${openshiftserver}
 	oc project "${OC_PROJECT}" 
-	docker login -p $(TOKEN) -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be 2>/dev/null
+	docker login -p ${TOKEN} -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be 2>/dev/null
 
 build:	login
 	docker  build --build-arg NODE_ENV=int . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
