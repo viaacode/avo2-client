@@ -61,11 +61,11 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
       is_deleted
       title
     }
-		count: app_assignments_aggregate(where: { owner_uid: { _eq: $ownerId }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}) {
-			aggregate {
-				count
-			}
+	count: app_assignments_aggregate(where: { owner_uid: { _eq: $ownerId }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}) {
+		aggregate {
+			count
 		}
+	}
   }
 `;
 

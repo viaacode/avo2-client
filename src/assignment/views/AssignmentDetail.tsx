@@ -1,9 +1,8 @@
+import { ApolloQueryResult } from 'apollo-client';
+import { debounce, get } from 'lodash-es';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-
-import { ApolloQueryResult } from 'apollo-client';
-import { debounce, get } from 'lodash-es';
 
 import {
 	Avatar,
@@ -78,16 +77,18 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	useEffect(registerResizeHandler, [isDescriptionCollapsed]);
 
 	// Retrieve data from GraphQL
-	useEffect(() => {
+	const retrieveData = () => {
+		const assignmentQuery = {
+			query: GET_ASSIGNMENT_WITH_RESPONSE,
+			variables: {
+				studentUuid: ['54859c98-d5d3-1038-8d91-6dfda901a78e'],
+				assignmentId: (match.params as any).id,
+			},
+		};
+
 		// Load assignment
 		dataService
-			.query({
-				query: GET_ASSIGNMENT_WITH_RESPONSE,
-				variables: {
-					studentUuid: ['54859c98-d5d3-1038-8d91-6dfda901a78e'],
-					assignmentId: (match.params as any).id,
-				},
-			})
+			.query(assignmentQuery)
 			.then((response: ApolloQueryResult<Assignment>) => {
 				const tempAssignment = get(response, 'data.assignments[0]');
 
@@ -116,7 +117,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					icon: 'alert-triangle',
 				});
 			});
-	}, [match.params]);
+	};
+
+	useEffect(retrieveData, [match.params]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		switch (itemId) {

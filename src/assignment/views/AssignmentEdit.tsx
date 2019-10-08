@@ -92,7 +92,6 @@ const CONTENT_LABEL_TO_QUERY: {
 
 interface AssignmentEditProps extends RouteComponentProps {}
 
-// https://medium.com/@divyabiyani26/react-hooks-with-closures-usestate-v-s-usereducer-9e0c20e81051
 let currentAssignment: Partial<Assignment>;
 let setCurrentAssignment: (newAssignment: any) => void;
 let initialAssignment: Partial<Assignment>;
@@ -106,9 +105,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		content_layout: AssignmentLayout.PlayerAndText,
 	});
 	const [pageType, setPageType] = useState<'create' | 'edit' | undefined>();
-	const [assignmentContent, setAssignmentContent] = useState<AssignmentContent | undefined>(
-		undefined
-	);
+	const [assignmentContent, setAssignmentContent] = useState<AssignmentContent | undefined>();
 	const [loadingState, setLoadingState] = useState<'loaded' | 'loading' | 'not-found'>('loading');
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
@@ -123,9 +120,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		setInitialAssignment(assignment);
 	};
 
-	/**
-	 * Get query string variables and store them into the assignment state object
-	 */
+	// Get query string variables and store them into the assignment state object
 	useEffect(() => {
 		// Determine if this is an edit or create page
 		if (location.pathname.includes(RouteParts.Create)) {
@@ -134,17 +129,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 			// Get assignment_type, content_id and content_label from query params
 			const queryParams = queryString.parse(location.search);
 			let newAssignment: Partial<Assignment> | undefined;
+
 			if (typeof queryParams.assignment_type === 'string') {
 				newAssignment = {
 					assignment_type: queryParams.assignment_type as AssignmentType,
 				};
 			}
+
 			if (typeof queryParams.content_id === 'string') {
 				newAssignment = {
 					...(newAssignment || {}),
 					content_id: queryParams.content_id,
 				};
 			}
+
 			if (typeof queryParams.content_label === 'string') {
 				newAssignment = {
 					...(newAssignment || {}),
@@ -159,12 +157,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		} else {
 			setPageType('edit');
 
+			const assignmentQuery = {
+				query: GET_ASSIGNMENT_BY_ID,
+				variables: { id: (match.params as any).id },
+			};
+
 			// Get the assigment from graphql
 			dataService
-				.query({
-					query: GET_ASSIGNMENT_BY_ID,
-					variables: { id: (match.params as any).id },
-				})
+				.query(assignmentQuery)
 				.then((response: ApolloQueryResult<AssignmentContent>) => {
 					const assignmentResponse: Assignment | undefined = get(
 						response,
