@@ -26,6 +26,7 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
+import { getInitialChar } from '../helpers';
 
 import './CollectionOverview.scss';
 
@@ -163,17 +164,11 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					const users = [collection.owner];
 
 					const avatars = users.map(user => {
-						const { first_name, last_name } = user;
-
-						if (first_name && last_name) {
-							return {
-								initials: `${first_name.charAt(0)}${last_name.charAt(0)}`,
-								name: `${first_name} ${last_name}`,
-								subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
-							};
-						}
-
-						return null;
+						return {
+							initials: `${getInitialChar(user.first_name)}${getInitialChar(user.last_name)}`,
+							name: `${user.first_name} ${user.last_name} `,
+							subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
+						};
 					});
 
 					return {

@@ -120,7 +120,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		setInitialAssignment(assignment);
 	};
 
-	// Get query string variables and store them into the assignment state object
+	/**
+	 *  Get query string variables and store them into the assignment state object
+	 */
+
 	useEffect(() => {
 		// Determine if this is an edit or create page
 		if (location.pathname.includes(RouteParts.Create)) {

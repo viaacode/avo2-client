@@ -77,7 +77,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	useEffect(registerResizeHandler, [isDescriptionCollapsed]);
 
 	// Retrieve data from GraphQL
-	const retrieveData = () => {
+	const retrieveAssignmentAndContent = () => {
 		const assignmentQuery = {
 			query: GET_ASSIGNMENT_WITH_RESPONSE,
 			variables: {
@@ -110,7 +110,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					setLoadingState('loaded');
 				});
 			})
-			.catch(() => {
+			.catch(err => {
+				console.error(err);
 				setLoadingState('error');
 				setLoadingError({
 					error: 'Het ophalen van de opdracht is mislukt',
@@ -119,7 +120,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			});
 	};
 
-	useEffect(retrieveData, [match.params]);
+	useEffect(retrieveAssignmentAndContent, [match.params]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		switch (itemId) {
@@ -154,7 +155,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				case 'ITEM':
 					return <ItemVideoDescription itemMetaData={assigmentContent as Avo.Item.Item} />;
 				default:
-					return null;
+					return (
+						<NotFound message={`Onverwacht opdracht inhoud type: "${assignment.content_label}"`} />
+					);
 			}
 		};
 
@@ -198,9 +201,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 														get(assignment, 'user.first_name[0]') +
 														get(assignment, 'user.last_name[0]')
 													}
-													name={`${assignment.user.role && assignment.user.role.label}: ${
-														assignment.user.first_name
-													} ${assignment.user.last_name}`}
+													name={`${assignment.user.role && assignment.user.role.label}: ${get(
+														assignment,
+														'user.first_name[0]'
+													)}. ${assignment.user.last_name}`}
 													image={
 														(assignment.user.profile && assignment.user.profile.avatar) || undefined
 													}
