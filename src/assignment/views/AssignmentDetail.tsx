@@ -1,8 +1,9 @@
-import { ApolloQueryResult } from 'apollo-client';
-import { debounce, get } from 'lodash-es';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
+
+import { ApolloQueryResult } from 'apollo-client';
+import { debounce, get } from 'lodash-es';
 
 import {
 	Avatar,
@@ -53,10 +54,32 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 
 	const navBarRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
 
-	/**
-	 * Load the content (collection, item or searchquery) after we've loaded the assignment
-	 */
+	// Handle resize
+	const onResizeHandler = debounce(
+		() => {
+			if (navBarRef.current) {
+				const navBarHeight = navBarRef.current.getBoundingClientRect().height;
+				setNavBarHeight(navBarHeight);
+			} else {
+				setNavBarHeight(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
+			}
+		},
+		300,
+		{ leading: false, trailing: true }
+	);
+
+	const registerResizeHandler = () => {
+		window.addEventListener('resize', onResizeHandler);
+		onResizeHandler();
+
+		return window.removeEventListener('resize', onResizeHandler);
+	};
+
+	useEffect(registerResizeHandler, [isDescriptionCollapsed]);
+
+	// Retrieve data from GraphQL
 	useEffect(() => {
+		// Load assignment
 		dataService
 			.query({
 				query: GET_ASSIGNMENT_WITH_RESPONSE,
@@ -74,6 +97,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					return;
 				}
 
+				// Load content (collection, item or search query) according to assignment
 				getAssignmentContent(tempAssignment).then((response: AssignmentContent | string | null) => {
 					if (typeof response === 'string') {
 						toastService(response);
@@ -93,29 +117,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				});
 			});
 	}, [match.params]);
-
-	useEffect(() => {
-		// Register window listener when the component mounts
-		const onResizeHandler = debounce(
-			() => {
-				if (navBarRef.current) {
-					const navBarHeight = navBarRef.current.getBoundingClientRect().height;
-					setNavBarHeight(navBarHeight);
-				} else {
-					setNavBarHeight(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
-				}
-			},
-			300,
-			{ leading: false, trailing: true }
-		);
-
-		window.addEventListener('resize', onResizeHandler);
-		onResizeHandler();
-
-		return () => {
-			window.removeEventListener('resize', onResizeHandler);
-		};
-	}, [isDescriptionCollapsed]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		switch (itemId) {
@@ -157,7 +158,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		return (
 			<div className="c-assigment-detail">
 				<div className="c-navbar" ref={navBarRef}>
-					<Container mode="vertical" size="small" background={'alt'}>
+					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
 							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
 								<ToolbarLeft>
@@ -254,6 +255,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		);
 	};
 
+	// Display loading spinner when assignment is being retrieved
 	if (loadingState === 'loading') {
 		return (
 			<Flex orientation="horizontal" center>
@@ -262,10 +264,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		);
 	}
 
+	// Display assignment when loaded
 	if (loadingState === 'loaded' && assignment) {
 		return renderAssignment(assignment);
 	}
 
+	// Display 404 message if loading assignment fails
 	return (
 		<NotFound
 			message={loadingError ? loadingError.error : 'Het ophalen van de opdracht is mislukt'}

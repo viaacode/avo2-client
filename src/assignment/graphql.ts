@@ -86,8 +86,8 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 			}
 			assignment_responses(where: { owner_uids: { _has_keys_any: $studentUuid } }) {
 				id
-				started_at
-				finished_at
+				created_at
+				submitted_at
 				owner_uids
 				assignment_id
 				collection_id

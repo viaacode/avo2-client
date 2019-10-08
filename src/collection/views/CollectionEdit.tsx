@@ -463,7 +463,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					when={hasUnsavedChanged()}
 					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
 				/>
-				<Container background={'alt'} mode="vertical" size="small">
+				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
@@ -583,7 +583,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 						</Toolbar>
 					</Container>
 				</Container>
-				<Navbar background={'alt'} placement="top" autoHeight>
+				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={selectTab} />
 					</Container>

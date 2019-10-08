@@ -111,7 +111,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 		return (
 			<>
-				<Container mode="vertical" size="small" background={'alt'}>
+				<Container mode="vertical" size="small" background="alt">
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
