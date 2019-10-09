@@ -39,7 +39,6 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 			setLastSeekTime(seekTime);
 			// seekTime should be updated
 			if (videoPlayerRef.current) {
-				console.log('seekTime updated', seekTime);
 				videoPlayerRef.current.currentTime = seekTime;
 			}
 		}
