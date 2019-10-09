@@ -106,6 +106,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 			created_at
 			updated_at
 			answer_url
+			owner_uid
 			user {
 				first_name
 				last_name

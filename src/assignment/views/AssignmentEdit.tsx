@@ -252,8 +252,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		}
 	};
 
-	const getAssignmentUrl = () => {
-		return `${window.location.origin}/${RouteParts.Assignment}/${currentAssignment.id}`;
+	const getAssignmentUrl = (absolute: boolean = true) => {
+		return `${absolute ? window.location.origin : ''}/${RouteParts.Assignment}/${
+			currentAssignment.id
+		}`;
 	};
 
 	const copyAssignmentUrl = () => {
@@ -262,7 +264,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 	};
 
 	const viewAsStudent = () => {
-		window.open(getAssignmentUrl(), '_blank');
+		history.push(getAssignmentUrl(false));
 	};
 
 	const archiveAssignment = async (shouldBeArchived: boolean) => {
@@ -420,8 +422,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 
 	const renderAssignmentEditForm = () => (
 		<>
-			<Container mode="vertical" background="alt">
-				<Navbar autoHeight>
+			<Navbar autoHeight>
+				{' '}
+				<Container mode="vertical" background="alt">
 					<Container mode="horizontal">
 						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
 							<ToolbarLeft>
@@ -512,8 +515,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 							</ToolbarRight>
 						</Toolbar>
 					</Container>
-				</Navbar>
-			</Container>
+				</Container>
+			</Navbar>
 			<Container mode="horizontal" size="small">
 				<Container mode="vertical" size="large">
 					<Form>
