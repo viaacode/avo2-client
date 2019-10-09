@@ -125,6 +125,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		switch (itemId) {
 			case 'archive':
+				// TODO archive AssignmentResponse
+				break;
 
 			default:
 				return null;
