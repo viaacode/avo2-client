@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent, MouseEvent, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, useState } from 'react';
 
 import {
 	Button,
@@ -183,12 +183,12 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 
 		// TODO add search in checkbox modal components
 		// private getFilterOptions(searchTerm: string, propertyName: string): Promise<Avo.Search.OptionProp[]> {
-		// 	const searchResponse: Avo.Search.Response = await executeSearch();
+		// 	const searchResponse: Avo.Search.Search = await executeSearch();
 		// 	return searchResponse.aggregations[propertyName];
 		// }
 
 		return (
-			<Fragment>
+			<>
 				<div className="c-checkbox-dropdown__trigger" onClick={openDropdownOrModal}>
 					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
 				</div>
@@ -231,7 +231,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 						</Toolbar>
 					</ModalFooterRight>
 				</Modal>
-			</Fragment>
+			</>
 		);
 	};
 

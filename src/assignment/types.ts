@@ -3,7 +3,7 @@ import { Avo } from '@viaa/avo2-types';
 
 export type AssignmentType = 'ZOEK' | 'KIJK' | 'BOUW';
 export type AssignmentContentLabel = 'ITEM' | 'COLLECTIE' | 'ZOEKOPDRACHT';
-export type AssignmentContent = Avo.Item.Response | Avo.Collection.Response; // | Avo.SearchQuery.response;
+export type AssignmentContent = Avo.Item.Item | Avo.Collection.Collection; // | Avo.SearchQuery.response;
 export type AssignmentView = 'assignments' | 'archived_assignments';
 
 export interface Assignment {
@@ -18,7 +18,7 @@ export interface Assignment {
 	available_at?: string | null; // ISO date string
 	deadline_at?: string | null; // ISO date string
 	owner_uid: string;
-	user?: Avo.User.Response;
+	user?: Avo.User.User;
 	is_archived: boolean;
 	is_deleted: boolean;
 	class_room?: string | null;
@@ -38,7 +38,7 @@ export interface AssignmentResponse {
 	finished_at?: string | null; // ISO date string
 	owner_uids: number[];
 	started_at?: Date | null;
-	collection?: Avo.Collection.Response | null;
+	collection?: Avo.Collection.Collection | null;
 }
 
 export interface AssignmentTag {
@@ -49,7 +49,7 @@ export interface AssignmentTag {
 		value: string; // BRIGHT_RED
 	};
 	color_override?: string | null; // #FF0000
-	user: Avo.User.Response;
+	user: Avo.User.User;
 }
 
 export interface AssignmentColumn {

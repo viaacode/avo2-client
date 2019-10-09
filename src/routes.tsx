@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { renderAssignmentRoutes } from './assignment/routes';
 import { renderAuthenticationRoutes } from './authentication/routes';
@@ -11,7 +11,7 @@ import { renderSearchRoutes } from './search/routes';
 // import { renderNotFoundRoutes } from './404/routes';
 
 export const renderRoutes = () => (
-	<Fragment>
+	<>
 		{renderHomeRoutes()}
 		{renderSearchRoutes()}
 		{renderItemRoutes()}
@@ -21,5 +21,5 @@ export const renderRoutes = () => (
 		{renderMyWorkspaceRoutes()}
 		{renderAuthenticationRoutes()}
 		{/*{renderNotFoundRoutes()}*/}
-	</Fragment>
+	</>
 );

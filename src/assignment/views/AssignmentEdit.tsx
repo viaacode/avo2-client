@@ -3,7 +3,7 @@ import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
 import { cloneDeep, get, remove } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Fragment, FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -64,7 +64,7 @@ import {
 	AssignmentTag,
 	AssignmentType,
 } from '../types';
-import './EditAssignment.scss';
+import './AssignmentEdit.scss';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in AssignmentContentLabel]: string } = {
 	ITEM: RouteParts.Item,
@@ -90,15 +90,14 @@ const CONTENT_LABEL_TO_QUERY: {
 	} as any,
 };
 
-interface EditAssignmentProps extends RouteComponentProps {}
+interface AssignmentEditProps extends RouteComponentProps {}
 
-// https://medium.com/@divyabiyani26/react-hooks-with-closures-usestate-v-s-usereducer-9e0c20e81051
 let currentAssignment: Partial<Assignment>;
 let setCurrentAssignment: (newAssignment: any) => void;
 let initialAssignment: Partial<Assignment>;
 let setInitialAssignment: (newAssignment: any) => void;
 
-const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, location, match }) => {
+const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, location, match }) => {
 	[currentAssignment, setCurrentAssignment] = useState<Partial<Assignment>>({
 		content_layout: AssignmentLayout.PlayerAndText,
 	});
@@ -106,9 +105,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		content_layout: AssignmentLayout.PlayerAndText,
 	});
 	const [pageType, setPageType] = useState<'create' | 'edit' | undefined>();
-	const [assignmentContent, setAssignmentContent] = useState<AssignmentContent | undefined>(
-		undefined
-	);
+	const [assignmentContent, setAssignmentContent] = useState<AssignmentContent | undefined>();
 	const [loadingState, setLoadingState] = useState<'loaded' | 'loading' | 'not-found'>('loading');
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
@@ -124,7 +121,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 	};
 
 	/**
-	 * Get query string variables and store them into the assignment state object
+	 *  Get query string variables and store them into the assignment state object
 	 */
 	useEffect(() => {
 		// Determine if this is an edit or create page
@@ -134,17 +131,20 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			// Get assignment_type, content_id and content_label from query params
 			const queryParams = queryString.parse(location.search);
 			let newAssignment: Partial<Assignment> | undefined;
+
 			if (typeof queryParams.assignment_type === 'string') {
 				newAssignment = {
 					assignment_type: queryParams.assignment_type as AssignmentType,
 				};
 			}
+
 			if (typeof queryParams.content_id === 'string') {
 				newAssignment = {
 					...(newAssignment || {}),
 					content_id: queryParams.content_id,
 				};
 			}
+
 			if (typeof queryParams.content_label === 'string') {
 				newAssignment = {
 					...(newAssignment || {}),
@@ -159,12 +159,14 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		} else {
 			setPageType('edit');
 
+			const assignmentQuery = {
+				query: GET_ASSIGNMENT_BY_ID,
+				variables: { id: (match.params as any).id },
+			};
+
 			// Get the assigment from graphql
 			dataService
-				.query({
-					query: GET_ASSIGNMENT_BY_ID,
-					variables: { id: (match.params as any).id },
-				})
+				.query(assignmentQuery)
 				.then((response: ApolloQueryResult<AssignmentContent>) => {
 					const assignmentResponse: Assignment | undefined = get(
 						response,
@@ -416,9 +418,9 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 		);
 	};
 
-	const renderEditAssignmentForm = () => (
-		<Fragment>
-			<Container mode="vertical" background={'alt'}>
+	const renderAssignmentEditForm = () => (
+		<>
+			<Container mode="vertical" background="alt">
 				<Navbar autoHeight>
 					<Container mode="horizontal">
 						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
@@ -677,7 +679,7 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 				onClose={() => setDuplicateModalOpen(false)}
 				inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
 			/>
-		</Fragment>
+		</>
 	);
 
 	switch (loadingState) {
@@ -689,11 +691,11 @@ const EditAssignment: FunctionComponent<EditAssignmentProps> = ({ history, locat
 			);
 
 		case 'loaded':
-			return renderEditAssignmentForm();
+			return renderAssignmentEditForm();
 
 		case 'not-found':
 			return <NotFound message="De inhoud voor deze opdracht is niet gevonden" icon="search" />;
 	}
 };
 
-export default withRouter(EditAssignment);
+export default withRouter(AssignmentEdit);

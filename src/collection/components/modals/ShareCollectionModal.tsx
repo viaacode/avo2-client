@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import React, { Fragment, FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
@@ -25,7 +25,7 @@ interface ShareCollectionModalProps {
 	setIsOpen: (isOpen: boolean) => void;
 	initialIsPublic: boolean;
 	updateCollectionProperty: (value: any, fieldName: string) => void;
-	collection: Avo.Collection.Response;
+	collection: Avo.Collection.Collection;
 }
 
 const shareOptions = [
@@ -198,7 +198,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			scrollable={true}
 		>
 			<ModalBody>
-				<Fragment>
+				<>
 					<p>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</p>
 					<FormGroup error={validationError}>
 						<Spacer margin="top-large">
@@ -227,7 +227,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>
-				</Fragment>
+				</>
 			</ModalBody>
 		</Modal>
 	);

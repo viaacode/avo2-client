@@ -13,6 +13,6 @@ export interface SearchResultsProps extends SearchResultItemHandlers {
 	currentPage: number;
 	loading: boolean;
 	pageCount: number;
-	data: Avo.Search.Response | null;
+	data: Avo.Search.Search | null;
 	setPage: (page: number) => void;
 }

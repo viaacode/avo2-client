@@ -29,22 +29,22 @@ import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { isVideoFragment } from '../helpers';
-import AddFragment from './AddFragment';
+import FragmentAdd from './FragmentAdd';
 import CutFragmentModal from './modals/CutFragmentModal';
 
-interface CollectionFragmentProps extends RouteComponentProps {
+interface FragmentEditProps extends RouteComponentProps {
 	index: number;
-	collection: Avo.Collection.Response;
+	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<React.SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
-	updateCollection: (collection: Avo.Collection.Response) => void;
+	updateCollection: (collection: Avo.Collection.Collection) => void;
 }
 
-const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
+const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	index,
 	collection,
 	swapFragments,
@@ -83,7 +83,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 
 	const renderForm = (
 		fragment: Avo.Collection.Fragment,
-		itemMetaData: Avo.Item.Response,
+		itemMetaData: Avo.Item.Item,
 		index: number
 	) => {
 		const disableVideoFields: boolean = !useCustomFields && !!isVideoFragment(fragment);
@@ -95,7 +95,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 			updateFragmentProperty(html, 'custom_description', fragment.id);
 
 		const getFragmentProperty = (
-			itemMetaData: Avo.Item.Response,
+			itemMetaData: Avo.Item.Item,
 			fragment: Avo.Collection.Fragment,
 			useCustomFields: Boolean,
 			prop: 'title' | 'description'
@@ -288,7 +288,7 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 					)}
 				</div>
 			</div>
-			<AddFragment
+			<FragmentAdd
 				index={index}
 				collection={collection}
 				updateCollection={updateCollection}
@@ -308,4 +308,4 @@ const CollectionFragment: FunctionComponent<CollectionFragmentProps> = ({
 	);
 };
 
-export default withRouter(withApollo(CollectionFragment));
+export default withRouter(withApollo(FragmentEdit));

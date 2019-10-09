@@ -1,11 +1,8 @@
-import { debounce } from 'lodash-es';
 import queryString from 'query-string';
 import React, {
 	createRef,
 	CSSProperties,
-	Fragment,
 	FunctionComponent,
-	ReactNode,
 	RefObject,
 	useEffect,
 	useState,
@@ -51,13 +48,10 @@ import {
 	generateSearchLinkString,
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
-import { parseDuration } from '../../shared/helpers/parsers/duration';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import ItemVideoDescription from '../components/ItemVideoDescription';
+import { FragmentAddToCollection } from '../components/modals/FragmentAddToCollection';
 import { GET_ITEM_BY_ID } from '../item.gql';
-import { AddFragmentToCollection } from '../modals/AddFragmentToCollection';
 
 import './Item.scss';
 
@@ -67,10 +61,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
-	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [time, setTime] = useState<number>(0);
-	const [videoHeight, setVideoHeight] = useState<number>(387); // correct height for desktop screens
-	const [isOpenAddFragmentToCollectionModal, setIsOpenAddFragmentToCollectionModal] = useState(
+	const [isOpenFragmentAddToCollectionModal, setIsOpenFragmentAddToCollectionModal] = useState(
 		false
 	);
 
@@ -107,59 +99,19 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	// 	setTime(parseInt((queryParams.time as string) || '0', 10));
 	// };
 
-	const handleTimeLinkClicked = async (timestamp: string) => {
-		const seconds = parseDuration(timestamp);
-		setTime(seconds);
-	};
-
-	/**
-	 * Split string by time markers and adds links to those times into the output jsx code
-	 */
-	const formatTimestamps = (description: string = ''): ReactNode => {
-		const timestampRegex = /([0-9]{2}:[0-9]{2}:[0-9]{2}|\n)/g;
-		const parts: string[] = description.split(timestampRegex);
-		return parts.map((part: string, index: number) => {
-			if (part === '\n') {
-				return <br key={`description-new-line-${index}`} />;
-			}
-
-			if (timestampRegex.test(part)) {
-				return (
-					<a
-						key={`description-link-${index}`}
-						className="u-clickable"
-						onClick={() => handleTimeLinkClicked(part)}
-					>
-						{part}
-					</a>
-				);
-			}
-
-			return <span key={`description-part-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
-		});
-	};
-
 	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
 		history.push(generateSearchLinkString(prop, value));
 	};
 
 	const relatedItemStyle: CSSProperties = { width: '100%', float: 'left', marginRight: '2%' };
 
-	const renderItem = (itemMetaData: Avo.Item.Response) => {
-		const initFlowPlayer = () =>
-			!playerTicket &&
-			fetchPlayerTicket(itemMetaData.external_id)
-				.then(data => setPlayerTicket(data))
-				.catch((err: any) => {
-					console.error(err);
-					toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);
-				});
+	const renderItem = (itemMetaData: Avo.Item.Item) => {
 		const englishContentType: ContentType =
 			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
 
 		return (
-			<Fragment>
-				<Container mode="vertical" size="small" background={'alt'}>
+			<>
+				<Container mode="vertical" size="small" background="alt">
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
@@ -231,7 +183,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 													type="tertiary"
 													icon="add"
 													label="Voeg fragment toe aan collectie"
-													onClick={() => setIsOpenAddFragmentToCollectionModal(true)}
+													onClick={() => setIsOpenFragmentAddToCollectionModal(true)}
 												/>
 												<Button
 													type="tertiary"
@@ -259,7 +211,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 								</Spacer>
 							</Column>
 							<Column size="2-5">
-								<Fragment />
+								<></>
 							</Column>
 						</Grid>
 						<Grid>
@@ -473,14 +425,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					</Container>
 				</Container>
 				{typeof itemId !== undefined && (
-					<AddFragmentToCollection
+					<FragmentAddToCollection
 						itemMetaData={itemMetaData}
 						externalId={itemId as string}
-						isOpen={isOpenAddFragmentToCollectionModal}
-						onClose={() => setIsOpenAddFragmentToCollectionModal(false)}
+						isOpen={isOpenFragmentAddToCollectionModal}
+						onClose={() => setIsOpenFragmentAddToCollectionModal(false)}
 					/>
 				)}
-			</Fragment>
+			</>
 		);
 	};
 

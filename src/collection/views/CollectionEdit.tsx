@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, eq, get, isEmpty, omit, without } from 'lodash-es';
-import React, { Fragment, FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { Prompt, RouteComponentProps, withRouter } from 'react-router';
 
@@ -42,15 +42,15 @@ import {
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../graphql';
-import EditCollectionContent from './EditCollectionContent';
-import EditCollectionMetadata from './EditCollectionMetadata';
+import CollectionEditContent from './CollectionEditContent';
+import CollectionEditMetaData from './CollectionEditMetaData';
 
-interface EditCollectionProps extends RouteComponentProps {}
+interface CollectionEditProps extends RouteComponentProps {}
 
 let currentCollection: any;
-let setCurrentCollection: (collection: Avo.Collection.Response) => void;
+let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
 
-const EditCollection: FunctionComponent<EditCollectionProps> = props => {
+const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -58,11 +58,11 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
-	const [initialCollection, setInitialCollection] = useState<Avo.Collection.Response>();
+	const [initialCollection, setInitialCollection] = useState<Avo.Collection.Collection>();
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 
-	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Response>();
+	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection>();
 
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -140,7 +140,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 
 	// Update individual property of fragment
 	const updateFragmentProperty = (value: any, propertyName: string, fragmentId: number) => {
-		const tempCollection: Avo.Collection.Response | undefined = cloneDeep(currentCollection);
+		const tempCollection: Avo.Collection.Collection | undefined = cloneDeep(currentCollection);
 
 		if (!tempCollection) {
 			toastService(
@@ -164,7 +164,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		setCurrentCollection({
 			...currentCollection,
 			[fieldName]: value,
-		} as Avo.Collection.Response);
+		} as Avo.Collection.Collection);
 	};
 
 	const renameCollection = async (newTitle: string) => {
@@ -244,7 +244,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		});
 	};
 
-	function getValidationErrorForCollection(collection: Avo.Collection.Response): string {
+	function getValidationErrorForCollection(collection: Avo.Collection.Collection): string {
 		// List of validator functions, so we can use the functions separately as well
 		return getValidationFeedbackForShortDescription(collection, true) || '';
 	}
@@ -288,17 +288,19 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 	};
 
 	const getFragmentIdsFromCollection = (
-		collection: Avo.Collection.Response | undefined
+		collection: Avo.Collection.Collection | undefined
 	): number[] => {
-		return (get(collection, 'collection_fragments') || []).map(fragment => fragment.id);
+		return (get(collection, 'collection_fragments') || []).map(
+			(fragment: Avo.Collection.Fragment) => fragment.id
+		);
 	};
 
 	/**
 	 * Clean the collection of properties from other tables, properties that can't be saved
 	 */
 	const cleanCollectionBeforeSave = (
-		collection: Partial<Avo.Collection.Response>
-	): Partial<Avo.Collection.Response> => {
+		collection: Partial<Avo.Collection.Collection>
+	): Partial<Avo.Collection.Collection> => {
 		const propertiesToDelete = [
 			'collection_fragments',
 			'label_redactie',
@@ -326,7 +328,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 				return;
 			}
 
-			let newCollection: Avo.Collection.Response = cloneDeep(currentCollection);
+			let newCollection: Avo.Collection.Collection = cloneDeep(currentCollection);
 
 			// Not using lodash default value parameter since the value an be null and
 			// that doesn't default to the default value
@@ -445,8 +447,8 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		return JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
 	};
 
-	const renderEditCollection = (
-		collection: Avo.Collection.Response,
+	const renderCollectionEdit = (
+		collection: Avo.Collection.Collection,
 		refetchCollection: () => void
 	) => {
 		if (!isFirstRender) {
@@ -456,12 +458,12 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 		}
 
 		return currentCollection ? (
-			<Fragment>
+			<>
 				<Prompt
 					when={hasUnsavedChanged()}
 					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
 				/>
-				<Container background={'alt'} mode="vertical" size="small">
+				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
@@ -581,13 +583,13 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 						</Toolbar>
 					</Container>
 				</Container>
-				<Navbar background={'alt'} placement="top" autoHeight>
+				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={selectTab} />
 					</Container>
 				</Navbar>
 				{currentTab === 'inhoud' && (
-					<EditCollectionContent
+					<CollectionEditContent
 						collection={currentCollection}
 						swapFragments={swapFragments}
 						updateCollection={setCurrentCollection}
@@ -595,7 +597,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					/>
 				)}
 				{currentTab === 'metadata' && (
-					<EditCollectionMetadata
+					<CollectionEditMetaData
 						collection={currentCollection}
 						updateCollectionProperty={updateCollectionProperty}
 					/>
@@ -623,7 +625,7 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 					onClose={() => setIsRenameModalOpen(false)}
 					inputCallback={renameCollection}
 				/>
-			</Fragment>
+			</>
 		) : null;
 	};
 
@@ -632,14 +634,14 @@ const EditCollection: FunctionComponent<EditCollectionProps> = props => {
 			query={GET_COLLECTION_BY_ID}
 			variables={{ id: collectionId }}
 			resultPath="app_collections[0]"
-			renderData={renderEditCollection}
+			renderData={renderCollectionEdit}
 			notFoundMessage="Deze collectie werd niet gevonden"
 		/>
 	);
 };
 
 export function getValidationFeedbackForShortDescription(
-	collection: Avo.Collection.Response,
+	collection: Avo.Collection.Collection,
 	isError?: boolean | null
 ): string {
 	const count = `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
@@ -656,4 +658,4 @@ export function getValidationFeedbackForShortDescription(
 		: `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
 }
 
-export default withRouter(withApollo(EditCollection));
+export default withRouter(withApollo(CollectionEdit));

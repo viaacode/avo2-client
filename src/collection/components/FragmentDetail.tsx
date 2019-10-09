@@ -33,19 +33,17 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { isVideoFragment } from '../helpers';
 import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
 
-interface CollectionFragmentsDetailProps {
+interface FragmentDetailProps {
 	collectionFragments: Avo.Collection.Fragment[];
 }
 
 /**
  * Renders the collection body with all of its fragments for the detail page
  * The bottom meta data is not included in the component
- * @param props CollectionFragmentsDetailProps
+ * @param props FragmentDetailProps
  * @constructor
  */
-const CollectionFragmentsDetail: FunctionComponent<CollectionFragmentsDetailProps> = ({
-	collectionFragments,
-}) => {
+const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFragments }) => {
 	const [playerTicket, setPlayerTicket] = useState<string | undefined>();
 
 	const getFragmentField = (fragment: Avo.Collection.Fragment, field: string) =>
@@ -163,4 +161,4 @@ const CollectionFragmentsDetail: FunctionComponent<CollectionFragmentsDetailProp
 	return <ul className="c-collection-list">{renderCollectionFragments()}</ul>;
 };
 
-export default CollectionFragmentsDetail;
+export default FragmentDetail;

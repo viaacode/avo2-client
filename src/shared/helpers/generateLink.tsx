@@ -41,7 +41,7 @@ export function generateSearchLink(
 	onClick: () => void = noop
 ) {
 	return (
-		<Fragment>
+		<>
 			{filterValue && (
 				<Link
 					className={className}
@@ -52,7 +52,7 @@ export function generateSearchLink(
 				</Link>
 			)}
 			{!filterValue && <Fragment />}
-		</Fragment>
+		</>
 	);
 }
 

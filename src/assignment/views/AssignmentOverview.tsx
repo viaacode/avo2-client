@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
-import React, { Fragment, FunctionComponent, ReactText, useState } from 'react';
+import React, { FunctionComponent, ReactText, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -49,9 +49,9 @@ import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
-interface AssignmentsProps extends RouteComponentProps {}
+interface AssignmentOverviewProps extends RouteComponentProps {}
 
-const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
+const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ history }) => {
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
@@ -73,6 +73,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
 		const uppercaseFilter = filter && filter.toUpperCase();
+
 		if (!filter) {
 			return {};
 		}
@@ -352,7 +353,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 		refetchAssignments: () => void
 	) => {
 		return (
-			<Fragment>
+			<>
 				<Table
 					columns={columns}
 					data={data.assignments}
@@ -404,7 +405,7 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 						duplicateAssignment(newTitle, markedAssignment, refetchAssignments)
 					}
 				/>
-			</Fragment>
+			</>
 		);
 	};
 
@@ -459,4 +460,4 @@ const Assignments: FunctionComponent<AssignmentsProps> = ({ history }) => {
 	);
 };
 
-export default withRouter(Assignments);
+export default withRouter(AssignmentOverview);

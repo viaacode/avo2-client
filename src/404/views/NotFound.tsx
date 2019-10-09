@@ -13,7 +13,7 @@ const NotFound: FunctionComponent<NotFoundProps> = ({
 	icon = 'search',
 	children = null,
 }) => (
-	<Container mode="vertical" background={'alt'}>
+	<Container mode="vertical" background="alt">
 		<Container size="medium" mode="horizontal">
 			<Blankslate body="" icon={icon} title={message}>
 				{children}

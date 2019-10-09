@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent } from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
 import {
@@ -36,12 +36,12 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	handleMenuClick = () => {},
 }: NavigationProps) => {
 	return (
-		<Fragment>
+		<>
 			<Navbar background="inverse" position="fixed" placement="top">
 				<Container mode="horizontal">
 					<Toolbar>
 						<ToolbarLeft>
-							<Fragment>
+							<>
 								<ToolbarItem>
 									<h1 className="c-brand">
 										<Link to="/">
@@ -72,10 +72,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 										</ul>
 									</div>
 								</ToolbarItem>
-							</Fragment>
+							</>
 						</ToolbarLeft>
 						<ToolbarRight>
-							<Fragment>
+							<>
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-authentication">
 										<ul className="c-nav">
@@ -104,7 +104,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 										/>
 									</div>
 								</ToolbarItem>
-							</Fragment>
+							</>
 						</ToolbarRight>
 					</Toolbar>
 				</Container>
@@ -169,6 +169,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					</Container>
 				</Navbar>
 			)}
-		</Fragment>
+		</>
 	);
 };
