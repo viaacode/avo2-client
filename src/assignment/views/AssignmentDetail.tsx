@@ -337,13 +337,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
 								<ToolbarLeft>
 									<ToolbarItem>
-										<Link
-											className="c-return"
-											to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
-										>
-											<Icon type="arrows" name="chevron-left" />
-											<span>Mijn opdrachten</span>
-										</Link>
+										{renderBackLink()}
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
 									</ToolbarItem>
 								</ToolbarLeft>
