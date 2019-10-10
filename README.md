@@ -83,6 +83,22 @@ Steps to deploy:
     * https://do-prd-okp-m0.do.viaa.be:8443/console/project/ci-cd/browse/pipelines
     * same login as jenkins
 
+### Troubleshoot deploy    
+If the deploy completes succesfully but the version on the server doesn't seem to update, 
+this could be an issue with the image not automatically being selected by openshift
+
+Steps:
+* You can login to openshift
+* Go to Deployments > avo2-client-qas
+* Actions > edit at the top right
+* Scroll down to Image Stream Tag and select the correct image in the dropdown on the right
+* Save, wait for image to be deloyed
+
+Note:
+* the correct image should normally be the tag containing the environment name (eg: qas for qas environment)
+* This image is automatically updated when a new deploy occurs
+* When you select a different image than the env image, the auto updating behavior will not happen anymore
+
 ## Process Flow
 
 #### Flow
