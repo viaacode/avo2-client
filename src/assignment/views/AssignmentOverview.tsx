@@ -70,8 +70,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
 	const [markedAssignment, setMarkedAssignment] = useState<null | Partial<Assignment>>(null);
-	const [sortColumn, setSortColumn] = useState<keyof Assignment>('deadline_at');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [sortColumn, setSortColumn] = useState<keyof Assignment>('created_at');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
@@ -80,7 +80,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
-		const uppercaseFilter = filter && filter.toUpperCase();
 
 		if (!filter) {
 			return {};
@@ -332,7 +331,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						<Button
 							icon="chevron-right"
 							onClick={() =>
-								history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}`)
+								history.push(
+									`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
+										RouteParts.Edit
+									}`
+								)
 							}
 							type="borderless"
 						/>
@@ -345,11 +348,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const columns: AssignmentColumn[] = [
 		{ id: 'title', label: 'Titel', sortable: true },
-		{ id: 'assignment_type', label: 'Type', sortable: true },
+		// { id: 'assignment_type', label: 'Type', sortable: true }, // https://district01.atlassian.net/browse/AVO2-421
 		{ id: 'assignment_assignment_tags', label: 'Vak of project' },
 		{ id: 'class_room', label: 'Klas', sortable: true },
 		{ id: 'deadline_at', label: 'Deadline', sortable: true },
-		{ id: 'assignment_responses', label: 'Indieningen' },
+		// { id: 'assignment_responses', label: 'Indieningen' }, // https://district01.atlassian.net/browse/AVO2-421
 		{ id: 'actions', label: '' },
 	];
 

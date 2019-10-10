@@ -1,5 +1,6 @@
-import authClient from '../Auth';
 import { get } from 'lodash-es';
+
+import authClient from '../Auth';
 
 type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
 
