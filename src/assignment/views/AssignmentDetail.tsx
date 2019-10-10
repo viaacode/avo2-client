@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
-import { debounce, get } from 'lodash-es';
+import { debounce, eq, get } from 'lodash-es';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -25,7 +25,10 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { connect } from 'react-redux';
 import NotFound from '../../404/views/NotFound';
+import { selectLogin } from '../../authentication/store/selectors';
+import { LoginResponse } from '../../authentication/store/types';
 import FragmentDetail from '../../collection/components/FragmentDetail';
 import { RouteParts } from '../../constants';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
@@ -38,11 +41,19 @@ import { Assignment, AssignmentContent, AssignmentTag } from '../types';
 
 import './AssignmentDetail.scss';
 
-interface AssignmentProps extends RouteComponentProps {}
+interface AssignmentProps extends RouteComponentProps {
+	loginState: LoginResponse | null;
+}
 
 const DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT = 200;
 
-const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
+export enum AssignmentRetrieveError {
+	DELETED = 'DELETED',
+	NOT_YET_AVAILABLE = 'NOT_YET_AVAILABLE',
+	PAST_DEADLINE = 'PAST_DEADLINE',
+} // TODO replace with typings repo Avo.Assignment.RetrieveError
+
+const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginState }) => {
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [isDescriptionCollapsed, setDescriptionCollapsed] = useState<boolean>(false);
 	const [navBarHeight, setNavBarHeight] = useState<number>(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
@@ -78,10 +89,14 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 
 	// Retrieve data from GraphQL
 	const retrieveAssignmentAndContent = () => {
+		if (!loginState) {
+			return;
+		}
+
 		const assignmentQuery = {
 			query: GET_ASSIGNMENT_WITH_RESPONSE,
 			variables: {
-				studentUuid: ['54859c98-d5d3-1038-8d91-6dfda901a78e'],
+				studentUuid: [get(loginState, 'userInfo.uid')],
 				assignmentId: (match.params as any).id,
 			},
 		};
@@ -111,16 +126,47 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				});
 			})
 			.catch(err => {
-				console.error(err);
-				setLoadingState('error');
-				setLoadingError({
-					error: 'Het ophalen van de opdracht is mislukt',
-					icon: 'alert-triangle',
-				});
+				let errorObj: { error: string; icon: IconName };
+				const graphqlError = get(err, 'graphQLErrors[0].message');
+				switch (graphqlError) {
+					case AssignmentRetrieveError.DELETED:
+						errorObj = {
+							error: 'De opdracht werdt verwijderd',
+							icon: 'delete' as IconName,
+						};
+						break;
+
+					case AssignmentRetrieveError.NOT_YET_AVAILABLE:
+						errorObj = {
+							error: `De opdracht is nog niet beschikbaar`,
+							icon: 'clock' as IconName,
+						};
+						break;
+
+					case AssignmentRetrieveError.PAST_DEADLINE:
+						errorObj = {
+							error: 'De deadline voor deze opdracht is reeds verlopen',
+							icon: 'clock' as IconName,
+						};
+						break;
+
+					default:
+						errorObj = {
+							error: 'Het ophalen van de opdracht is mislukt',
+							icon: 'alert-triangle' as IconName,
+						};
+						break;
+				}
+
+				if (loadingState !== 'error' || !eq(errorObj, loadingError)) {
+					console.error(err);
+					setLoadingState('error');
+					setLoadingError(errorObj);
+				}
 			});
 	};
 
-	useEffect(retrieveAssignmentAndContent, [match.params]);
+	useEffect(retrieveAssignmentAndContent, [loginState]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		switch (itemId) {
@@ -288,4 +334,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	);
 };
 
-export default withRouter(AssignmentDetail);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(AssignmentDetail));

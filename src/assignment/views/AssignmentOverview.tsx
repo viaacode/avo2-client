@@ -28,6 +28,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { connect } from 'react-redux';
+import { selectLogin } from '../../authentication/store/selectors';
+import { LoginResponse } from '../../authentication/store/types';
 import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -49,9 +52,14 @@ import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
-interface AssignmentOverviewProps extends RouteComponentProps {}
+interface AssignmentOverviewProps extends RouteComponentProps {
+	loginState: LoginResponse | null;
+}
 
-const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ history }) => {
+const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
+	history,
+	loginState,
+}) => {
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
@@ -445,7 +453,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				<DataQueryComponent
 					query={GET_ASSIGNMENTS_BY_OWNER_ID}
 					variables={{
-						ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e',
+						ownerId: loginState && loginState.userInfo.uid,
 						archived: activeView === 'archived_assignments',
 						order: { [sortColumn]: sortOrder },
 						offset: page * ITEMS_PER_PAGE,
@@ -460,4 +468,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	);
 };
 
-export default withRouter(AssignmentOverview);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(AssignmentOverview));

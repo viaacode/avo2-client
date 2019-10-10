@@ -57,13 +57,13 @@ export const deleteAssignment = async (triggerAssignmentDelete: any, id: number 
 export const updateAssignment = async (
 	triggerAssignmentUpdate: any,
 	assignment: Partial<Assignment>
-) => {
+): Promise<Assignment | null> => {
 	try {
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
 			toastService(validationErrors.join('<br/>'), TOAST_TYPE.DANGER);
-			return;
+			return null;
 		}
 
 		const response: void | ExecutionResult<Assignment> = await triggerAssignmentUpdate({
@@ -78,7 +78,7 @@ export const updateAssignment = async (
 			throw new Error('Het opslaan van de opdracht is mislukt');
 		}
 
-		return assignment;
+		return assignment as Assignment;
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -88,13 +88,13 @@ export const updateAssignment = async (
 export const insertAssignment = async (
 	triggerAssignmentInsert: any,
 	assignment: Partial<Assignment>
-) => {
+): Promise<Assignment | null> => {
 	try {
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
 			toastService(validationErrors.join('<br/>'), TOAST_TYPE.DANGER);
-			return;
+			return null;
 		}
 
 		const response: void | ExecutionResult<Assignment> = await triggerAssignmentInsert({
@@ -109,7 +109,7 @@ export const insertAssignment = async (
 			return {
 				...assignment, // Do not copy the auto modified fields from the validation back into the input controls
 				id,
-			};
+			} as Assignment;
 		}
 
 		console.error('assignment insert returned empty response', response);

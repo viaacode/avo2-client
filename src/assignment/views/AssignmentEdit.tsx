@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
-import { cloneDeep, get, remove } from 'lodash-es';
+import { cloneDeep, eq, get, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -38,7 +38,10 @@ import {
 } from '@viaa/avo2-components';
 import { ContentType } from '@viaa/avo2-components/dist/types';
 
+import { connect } from 'react-redux';
 import NotFound from '../../404/views/NotFound';
+import { selectLogin } from '../../authentication/store/selectors';
+import { LoginResponse } from '../../authentication/store/types';
 import { GET_COLLECTION_BY_ID } from '../../collection/graphql';
 import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
 import { RouteParts } from '../../constants';
@@ -90,14 +93,21 @@ const CONTENT_LABEL_TO_QUERY: {
 	} as any,
 };
 
-interface AssignmentEditProps extends RouteComponentProps {}
+interface AssignmentEditProps extends RouteComponentProps {
+	loginState: LoginResponse | null;
+}
 
 let currentAssignment: Partial<Assignment>;
 let setCurrentAssignment: (newAssignment: any) => void;
 let initialAssignment: Partial<Assignment>;
 let setInitialAssignment: (newAssignment: any) => void;
 
-const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, location, match }) => {
+const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
+	history,
+	location,
+	match,
+	loginState,
+}) => {
 	[currentAssignment, setCurrentAssignment] = useState<Partial<Assignment>>({
 		content_layout: AssignmentLayout.PlayerAndText,
 	});
@@ -152,10 +162,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 				};
 			}
 
-			setBothAssignments({
+			newAssignment = {
 				...(currentAssignment || {}),
 				...newAssignment,
-			});
+			};
+
+			if (!eq(currentAssignment, newAssignment)) {
+				setBothAssignments(newAssignment);
+			}
 		} else {
 			setPageType('edit');
 
@@ -192,10 +206,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 	}, [location, match.params]);
 
 	/**
-	 * Load the content if the query params change
+	 * Load the content if they are not loaded yet
 	 */
 	useEffect(() => {
-		if (currentAssignment.assignment_type) {
+		if (currentAssignment.assignment_type && !assignmentContent) {
 			if (currentAssignment.content_id && currentAssignment.content_label) {
 				dataService
 					.query({
@@ -235,7 +249,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 				setLoadingState('loaded');
 			}
 		}
-	}, [setLoadingState]);
+	}, [setLoadingState, currentAssignment]);
+
+	/**
+	 * Set user id for the current collection when loginState becomes available
+	 */
+	useEffect(() => {
+		const ownerUid = get(loginState, 'userInfo.uid');
+		if (ownerUid && (!currentAssignment || !currentAssignment.owner_uid)) {
+			setCurrentAssignment({
+				...currentAssignment,
+				owner_uid: ownerUid,
+			});
+		}
+	}, [loginState]);
 
 	const deleteCurrentAssignment = async () => {
 		try {
@@ -350,9 +377,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		try {
 			if (pageType === 'create') {
 				// create => insert into graphql
-				await insertAssignment(triggerAssignmentInsert, assignment);
-				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
+				const insertedAssignment = await insertAssignment(triggerAssignmentInsert, assignment);
+
+				if (insertedAssignment) {
+					setBothAssignments(insertedAssignment);
+					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
+					history.push(
+						`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
+							RouteParts.Edit
+						}`
+					);
+				}
 			} else {
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
@@ -698,4 +733,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 	}
 };
 
-export default withRouter(AssignmentEdit);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(AssignmentEdit));
