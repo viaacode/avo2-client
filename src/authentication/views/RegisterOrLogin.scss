@@ -1,0 +1,17 @@
+.c-button.c-smartschool-button.c-button--primary {
+	background: url("/images/smartschool-login.png");
+	background-size: cover;
+  width: 293px;
+	height: 36px;
+	border: none;
+
+	&:hover {
+		background: url("/images/smartschool-login.png");
+		background-size: cover;
+		opacity: 0.9;
+	}
+
+	.c-button__content {
+		display: none;
+	}
+}
