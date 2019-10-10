@@ -28,7 +28,7 @@ import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-import { isVideoFragment } from '../helpers';
+import { isMediaFragment } from '../helpers';
 import FragmentAdd from './FragmentAdd';
 import CutFragmentModal from './modals/CutFragmentModal';
 
@@ -86,7 +86,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		itemMetaData: Avo.Item.Item,
 		index: number
 	) => {
-		const disableVideoFields: boolean = !useCustomFields && !!isVideoFragment(fragment);
+		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
 
 		const onChangeTitle = (value: string) =>
 			updateFragmentProperty(value, 'custom_title', fragment.id);
@@ -268,7 +268,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					</Toolbar>
 				</div>
 				<div className="c-panel__body">
-					{isVideoFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
+					{isMediaFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
 						<Grid>
 							<Column size="3-6">
 								<FlowPlayer
