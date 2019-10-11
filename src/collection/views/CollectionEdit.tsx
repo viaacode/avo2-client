@@ -313,6 +313,15 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		return omit(collection, propertiesToDelete);
 	};
 
+	const getThumbnailPathForCollection = (collection: Avo.Collection.Collection) => {
+		// TODO check if thumbnail was automatically selected from the first media fragment => need to update every save
+		// or if the thumbnail was selected by the user => need to update only if video is not available anymore
+		// This will need a new field in the database: is_custom_thumbnail
+		if (!collection.thumbnail_path) {
+			getVideoStills();
+		}
+	};
+
 	async function onSaveCollection(refetchCollection: () => void) {
 		try {
 			if (!currentCollection) {
@@ -424,7 +433,10 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			});
 
 			// Trigger collection update
-			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
+			const cleanedCollection: Partial<Avo.Collection.Collection> = cleanCollectionBeforeSave(
+				newCollection
+			);
+			cleanedCollection.thumbnail_path = getThumbnailPathForCollection(cleanedCollection);
 			await triggerCollectionUpdate({
 				variables: {
 					id: cleanedCollection.id,

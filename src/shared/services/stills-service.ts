@@ -23,3 +23,14 @@ export const getVideoStills = async (
 		throw new Error('Failed to get video stills');
 	}
 };
+
+export const getVideoStillsForCollection = async (collection: Avo.Collection.Collection): Promise<Avo.Stills.StillInfo[]> => {
+	const stillRequests: Avo.Stills.StillRequest[] = compact(
+		collection.collection_fragments.map(fragment =>
+			isVideoFragment(fragment)
+				? { externalId: fragment.external_id, startTime: (fragment.start_oc || 0) * 1000 }
+				: undefined
+		)
+	);
+	return getVideoStills(stillRequests);
+};
