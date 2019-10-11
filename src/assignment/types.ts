@@ -35,10 +35,11 @@ export interface AssignmentResponse {
 	id: number;
 	assignment_id: number;
 	collection_id?: string | null;
-	finished_at?: string | null; // ISO date string
-	owner_uids: number[];
-	started_at?: Date | null;
+	owner_uids: string[];
 	collection?: Avo.Collection.Collection | null;
+	created_at?: string | null;
+	updated_at?: string | null;
+	submitted_at?: string | null; // ISO date string
 }
 
 export interface AssignmentTag {

@@ -22,12 +22,12 @@ import { isVideoFragment } from '../../helpers';
 
 interface CollectionStillsModalProps {
 	isOpen: boolean;
-	setIsOpen: (isOpen: boolean) => void;
+	onClose: () => void;
 	collection: Avo.Collection.Collection;
 }
 
 const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
-	setIsOpen,
+	onClose,
 	isOpen,
 	collection,
 }) => {
@@ -66,7 +66,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 
 	const saveCoverImage = () => {
 		collection.thumbnail_path = selectedCoverImages[0];
-		setIsOpen(false);
+		onClose();
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
@@ -75,7 +75,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 			isOpen={isOpen}
 			title="Stel een cover afbeelding in"
 			size="large"
-			onClose={() => setIsOpen(!isOpen)}
+			onClose={onClose}
 			scrollable={true}
 		>
 			<ModalBody>
@@ -109,12 +109,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<div className="c-button-toolbar">
-								<Button
-									label="Annuleren"
-									type="secondary"
-									block={true}
-									onClick={() => setIsOpen(false)}
-								/>
+								<Button label="Annuleren" type="secondary" block={true} onClick={onClose} />
 								<Button
 									label="Opslaan"
 									type="primary"
