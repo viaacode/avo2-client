@@ -374,6 +374,52 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 			})
 		);
 
+		const renderContent = () => {
+			switch (assignment.content_label) {
+				case 'COLLECTIE':
+					return (
+						<FragmentDetail
+							collectionFragments={
+								(assigmentContent as Avo.Collection.Collection).collection_fragments
+							}
+						/>
+					);
+				case 'ITEM':
+					return <ItemVideoDescription itemMetaData={assigmentContent as Avo.Item.Item} />;
+				default:
+					return (
+						<NotFound
+							icon="alert-triangle"
+							message={`Onverwacht opdracht inhoud type: "${assignment.content_label}"`}
+						/>
+					);
+			}
+		};
+
+		/**
+		 * Should render a back link to the edit page if the current user has edit rights on the assignment
+		 * Should render back link to assignments overview if the current user does not have edit rights
+		 */
+		const renderBackLink = () => {
+			// TODO replace with getUser().uuid once available
+			const isOwner = '54859c98-d5d3-1038-8d91-6dfda901a78e' === assignment.owner_uid;
+			return (
+				<Link
+					className="c-return"
+					to={
+						isOwner
+							? `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assignment.id}/${
+									RouteParts.Edit
+							  }`
+							: `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`
+					}
+				>
+					<Icon type="arrows" name="chevron-left" />
+					<span>{isOwner ? 'Terug naar opdracht bewerken' : 'Mijn opdrachten'}</span>
+				</Link>
+			);
+		};
+
 		return (
 			<div className="c-assigment-detail">
 				<div className="c-navbar" ref={navBarRef}>
