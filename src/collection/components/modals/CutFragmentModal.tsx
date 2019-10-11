@@ -20,7 +20,7 @@ import { fetchPlayerTicket } from '../../../shared/services/player-ticket-servic
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
-	setIsOpen: (isOpen: boolean) => void;
+	onClose: () => void;
 	itemMetaData: Avo.Item.Item;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
 	updateCuePoints: (cuepoints: any) => void;
@@ -28,7 +28,7 @@ interface CutFragmentModalProps {
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
-	setIsOpen,
+	onClose,
 	isOpen,
 	itemMetaData,
 	updateFragmentProperty,
@@ -48,7 +48,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			start: fragmentStartTime,
 			end: fragmentEndTime,
 		});
-		setIsOpen(false);
+		onClose();
 	};
 
 	/**
@@ -79,13 +79,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	// TODO: Replace publisher, published_at by real publisher
 	return (
-		<Modal
-			isOpen={isOpen}
-			title="Knip fragment"
-			size="medium"
-			onClose={() => setIsOpen(!isOpen)}
-			scrollable={true}
-		>
+		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable={true}>
 			<ModalBody>
 				<>
 					<FlowPlayer
@@ -118,7 +112,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						<ToolbarRight>
 							<ToolbarItem>
 								<div className="c-button-toolbar">
-									<Button type="secondary" label="Annuleren" onClick={() => setIsOpen(false)} />
+									<Button type="secondary" label="Annuleren" onClick={onClose} />
 									<Button type="primary" label="Knippen" onClick={onSaveCut} />
 								</div>
 							</ToolbarItem>

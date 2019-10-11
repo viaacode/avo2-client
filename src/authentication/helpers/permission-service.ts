@@ -1,10 +1,10 @@
+import { get } from 'lodash-es';
+
 import authClient from '../Auth';
 
 type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
 
 export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
-
-type PermissionName = keyof typeof PERMISSIONS;
 
 export const PERMISSIONS: { [permissionName: string]: string } = {
 	EDIT_OWN_COLLECTION: 'EDIT_OWN_COLLECTION',
@@ -12,6 +12,8 @@ export const PERMISSIONS: { [permissionName: string]: string } = {
 	DELETE_OWN_COLLECTION: 'DELETE_OWN_COLLECTION',
 	DELETE_ALL_COLLECTIONS: 'DELETE_ALL_COLLECTIONS',
 };
+
+type PermissionName = keyof typeof PERMISSIONS;
 
 export class PermissionService {
 	// TODO replace with userInfo.permissions
@@ -58,12 +60,14 @@ export class PermissionService {
 			// TODO replace example permissions
 			case PERMISSIONS.EDIT_OWN_COLLECTION:
 				const profile = authClient.getProfile();
-				if (profile && profile.id === obj.owner.id) {
+				const profileId = get(profile, 'id');
+				const ownerId = get(obj, 'owner.id');
+				if (profileId && ownerId && profileId === obj.owner.id) {
 					return true;
 				}
 				break;
 			default:
-				return true;
+				return false;
 		}
 	}
 }

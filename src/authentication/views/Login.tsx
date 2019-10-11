@@ -47,10 +47,10 @@ const Login: FunctionComponent<LoginProps> = ({
 		localStorage.setItem(LOGIN_ATTEMPT_KEY, new Date().toISOString());
 	};
 
-	const hasRecentLoginAttempt = () => {
+	const hasRecentLoginAttempt = React.useCallback(() => {
 		const lastAttempt = getLastLoginAttempt();
 		return lastAttempt && lastAttempt.getTime() > new Date().getTime() - 5 * 1000;
-	};
+	}, []);
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -78,7 +78,15 @@ const Login: FunctionComponent<LoginProps> = ({
 			const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
 			redirectToLoginPage(returnToUrl);
 		}
-	}, [getLoginState, loginState, loginStateLoading, loginStateError]);
+	}, [
+		getLoginState,
+		loginState,
+		loginStateLoading,
+		loginStateError,
+		hasRecentLoginAttempt,
+		history,
+		location,
+	]);
 
 	const tryLoginAgainManually = () => {
 		localStorage.removeItem(LOGIN_ATTEMPT_KEY);

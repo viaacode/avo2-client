@@ -21,6 +21,10 @@ export const GET_COLLECTION_BY_ID = gql`
 					title
 					description
 					thumbnail_path
+					type {
+						id
+						label
+					}
 				}
 				end_oc
 				custom_title
