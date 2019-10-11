@@ -18,7 +18,10 @@ describe('login > store > reducer', () => {
 	});
 
 	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_SUCCESS}`, () => {
-		const payload: LoginResponse = { message: 'LOGGED_IN' };
+		const payload: LoginResponse = {
+			message: 'LOGGED_IN',
+			userInfo: {} as any,
+		};
 
 		const state = loginReducer(initialState, setLoginSuccess(payload));
 

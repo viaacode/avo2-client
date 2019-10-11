@@ -31,7 +31,7 @@ const validateAssignment = (assignment: Partial<Assignment>): [string[], Assignm
 		errors.push('Een deadline is verplicht');
 	}
 
-	assignmentToSave.owner_uid = assignmentToSave.owner_uid || '54859c98-d5d3-1038-8d91-6dfda901a78e';
+	assignmentToSave.owner_profile_id = assignmentToSave.owner_profile_id || 'owner_profile_id';
 	assignmentToSave.is_archived = assignmentToSave.is_archived || false;
 	assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
 	assignmentToSave.is_collaborative = assignmentToSave.is_collaborative || false;
@@ -57,13 +57,13 @@ export const deleteAssignment = async (triggerAssignmentDelete: any, id: number 
 export const updateAssignment = async (
 	triggerAssignmentUpdate: any,
 	assignment: Partial<Assignment>
-) => {
+): Promise<Assignment | null> => {
 	try {
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
 			toastService(validationErrors.join('<br/>'), TOAST_TYPE.DANGER);
-			return;
+			return null;
 		}
 
 		const response: void | ExecutionResult<Assignment> = await triggerAssignmentUpdate({
@@ -78,7 +78,7 @@ export const updateAssignment = async (
 			throw new Error('Het opslaan van de opdracht is mislukt');
 		}
 
-		return assignment;
+		return assignment as Assignment;
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -88,13 +88,13 @@ export const updateAssignment = async (
 export const insertAssignment = async (
 	triggerAssignmentInsert: any,
 	assignment: Partial<Assignment>
-) => {
+): Promise<Assignment | null> => {
 	try {
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
 			toastService(validationErrors.join('<br/>'), TOAST_TYPE.DANGER);
-			return;
+			return null;
 		}
 
 		const response: void | ExecutionResult<Assignment> = await triggerAssignmentInsert({
@@ -109,7 +109,7 @@ export const insertAssignment = async (
 			return {
 				...assignment, // Do not copy the auto modified fields from the validation back into the input controls
 				id,
-			};
+			} as Assignment;
 		}
 
 		console.error('assignment insert returned empty response', response);

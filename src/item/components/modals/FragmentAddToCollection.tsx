@@ -123,17 +123,18 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 	const addItemToNewCollection = async () => {
 		try {
 			// Create new collection with one fragment in it
+			const newCollection: Partial<Avo.Collection.Collection> = {
+				title: newCollectionTitle,
+				thumbnail_path: '/images/100x100.svg', // TODO get video stills of fragment and set first frame as cover
+				is_public: false,
+				owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba',
+				type_id: 3,
+			};
 			const response: void | ExecutionResult<
 				Avo.Collection.Collection
 			> = await triggerInsertCollection({
 				variables: {
-					collection: {
-						title: newCollectionTitle,
-						thumbnail_path: '/images/100x100.svg', // TODO get video stills of fragment and set first frame as cover
-						is_public: false,
-						owner_uid: '54859c98-d5d3-1038-8d91-6dfda901a78e',
-						type_id: 3,
-					} as Partial<Avo.Collection.Collection>,
+					collection: newCollection,
 				},
 			});
 			const insertedCollection: Partial<Avo.Collection.Collection> = get(
@@ -332,7 +333,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 		<DataQueryComponent
 			query={GET_COLLECTION_TITLES_BY_OWNER}
 			// TODO: replace with actual owner id from ldap object
-			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
+			variables={{ owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba' }}
 			resultPath="app_collections"
 			renderData={renderFragmentAddToCollectionModal}
 			notFoundMessage="Er konden geen collecties worden opgehaald"

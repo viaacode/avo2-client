@@ -28,6 +28,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { connect } from 'react-redux';
+import { selectLogin } from '../../authentication/store/selectors';
+import { LoginResponse } from '../../authentication/store/types';
 import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -49,9 +52,14 @@ import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
-interface AssignmentOverviewProps extends RouteComponentProps {}
+interface AssignmentOverviewProps extends RouteComponentProps {
+	loginState: LoginResponse | null;
+}
 
-const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ history }) => {
+const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
+	history,
+	loginState,
+}) => {
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
@@ -62,8 +70,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
 	const [markedAssignment, setMarkedAssignment] = useState<null | Partial<Assignment>>(null);
-	const [sortColumn, setSortColumn] = useState<keyof Assignment>('deadline_at');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [sortColumn, setSortColumn] = useState<keyof Assignment>('created_at');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
@@ -72,7 +80,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
-		const uppercaseFilter = filter && filter.toUpperCase();
 
 		if (!filter) {
 			return {};
@@ -324,7 +331,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						<Button
 							icon="chevron-right"
 							onClick={() =>
-								history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}`)
+								history.push(
+									`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
+										RouteParts.Edit
+									}`
+								)
 							}
 							type="borderless"
 						/>
@@ -337,11 +348,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 	const columns: AssignmentColumn[] = [
 		{ id: 'title', label: 'Titel', sortable: true },
-		{ id: 'assignment_type', label: 'Type', sortable: true },
+		// { id: 'assignment_type', label: 'Type', sortable: true }, // https://district01.atlassian.net/browse/AVO2-421
 		{ id: 'assignment_assignment_tags', label: 'Vak of project' },
 		{ id: 'class_room', label: 'Klas', sortable: true },
 		{ id: 'deadline_at', label: 'Deadline', sortable: true },
-		{ id: 'assignment_responses', label: 'Indieningen' },
+		// { id: 'assignment_responses', label: 'Indieningen' }, // https://district01.atlassian.net/browse/AVO2-421
 		{ id: 'actions', label: '' },
 	];
 
@@ -445,7 +456,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				<DataQueryComponent
 					query={GET_ASSIGNMENTS_BY_OWNER_ID}
 					variables={{
-						ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e',
+						ownerId: loginState && loginState.userInfo.uid,
 						archived: activeView === 'archived_assignments',
 						order: { [sortColumn]: sortOrder },
 						offset: page * ITEMS_PER_PAGE,
@@ -460,4 +471,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	);
 };
 
-export default withRouter(AssignmentOverview);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(AssignmentOverview));

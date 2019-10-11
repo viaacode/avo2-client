@@ -176,6 +176,33 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		collections: Avo.Collection.Collection[],
 		refetchCollections: () => void
 	) => {
+		const mappedCollections = !!collections
+			? collections.map(collection => {
+					const userProfiles = [collection.profile];
+
+					const avatars = userProfiles.map(userProfile => {
+						return {
+							initials: `${getInitialChar(userProfile.user.first_name)}${getInitialChar(
+								userProfile.user.last_name
+							)}`,
+							name: `${userProfile.user.first_name} ${userProfile.user.last_name} `,
+							subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
+						};
+					});
+
+					return {
+						createdAt: collection.created_at,
+						id: collection.id,
+						thumbnail: null,
+						title: collection.title,
+						updatedAt: collection.updated_at,
+						inFolder: true,
+						access: avatars,
+						actions: true,
+					};
+			  })
+			: [];
+
 		return (
 			<>
 				<Table
@@ -215,7 +242,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}
 			// TODO: replace with actual owner id from ldap object
-			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e', offset: page }}
+			variables={{ owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba', offset: page }}
 			resultPath="app_collections"
 			renderData={renderCollections}
 			notFoundMessage="Er konden geen collecties worden gevonden"
