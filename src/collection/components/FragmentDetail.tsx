@@ -26,11 +26,11 @@ import {
 } from '@viaa/avo2-components';
 
 import { Avo } from '@viaa/avo2-types';
-import { orderBy } from 'lodash-es';
+import { get, orderBy } from 'lodash-es';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { isVideoFragment } from '../helpers';
+import { isMediaFragment } from '../helpers';
 import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
 
 interface FragmentDetailProps {
@@ -46,10 +46,11 @@ interface FragmentDetailProps {
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFragments }) => {
 	const [playerTicket, setPlayerTicket] = useState<string | undefined>();
 
-	const getFragmentField = (fragment: Avo.Collection.Fragment, field: string) =>
-		fragment.use_custom_fields
-			? (fragment as any)[`custom_${field}`]
-			: (fragment as any).item_meta[field];
+	const getFragmentField = (fragment: Avo.Collection.Fragment, field: 'description' | 'title') => {
+		return fragment.use_custom_fields
+			? get(fragment, `custom_${field}`, '')
+			: get(fragment, `item_meta.${field}`, '');
+	};
 
 	const getCollectionFragmentInfos = (): ContentBlockInfo[] => {
 		const collectionFragmentInfos: ContentBlockInfo[] = [];
@@ -63,7 +64,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 					.then(data => setPlayerTicket(data))
 					.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
-			if (isVideoFragment(fragment)) {
+			if (isMediaFragment(fragment)) {
 				initFlowPlayer();
 			}
 
@@ -91,7 +92,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 				},
 			};
 
-			const currentContentBlock = isVideoFragment(fragment)
+			const currentContentBlock = isMediaFragment(fragment)
 				? contentBlocks.videoTitleText
 				: contentBlocks.titleText;
 

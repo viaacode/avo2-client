@@ -1,4 +1,4 @@
-export const isVideoFragment = (fragmentInfo: { external_id: string | undefined }) => {
+export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
 	return fragmentInfo.external_id && fragmentInfo.external_id !== '-1';
 };
 

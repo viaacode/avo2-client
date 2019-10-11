@@ -2,7 +2,7 @@
 WD=/usr/share/nginx/html
 cd $WD
 echo "setting env"
-node ./env.js
+sh ./env.sh
 
 if  [[ "$1" -eq "bash" ]]; then
     bash

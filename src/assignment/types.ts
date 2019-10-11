@@ -17,8 +17,8 @@ export interface Assignment {
 	answer_url?: string | null;
 	available_at?: string | null; // ISO date string
 	deadline_at?: string | null; // ISO date string
-	owner_uid: string;
-	user?: Avo.User.User;
+	owner_profile_id: string;
+	profile?: Avo.User.Profile;
 	is_archived: boolean;
 	is_deleted: boolean;
 	class_room?: string | null;
@@ -35,8 +35,8 @@ export interface AssignmentResponse {
 	id: number;
 	assignment_id: number;
 	collection_id?: string | null;
-	finished_at?: string | null; // ISO date string
-	owner_uids: number[];
+	submitted_at?: string | null; // ISO date string
+	owner_profile_ids: string[];
 	started_at?: Date | null;
 	collection?: Avo.Collection.Collection | null;
 }

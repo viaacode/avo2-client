@@ -42,6 +42,7 @@ import {
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../graphql';
+import { getValidationErrorForSave, getValidationErrorsForPublish } from '../helpers/validation';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
 
@@ -244,11 +245,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		});
 	};
 
-	function getValidationErrorForCollection(collection: Avo.Collection.Collection): string {
-		// List of validator functions, so we can use the functions separately as well
-		return getValidationFeedbackForShortDescription(collection, true) || '';
-	}
-
 	const insertFragment = async (tempId: number, currentFragments: Avo.Collection.Fragment[]) => {
 		if (!currentCollection) {
 			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
@@ -321,9 +317,15 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			}
 			setIsSavingCollection(true);
 			// Validate collection before save
-			const validationError = getValidationErrorForCollection(currentCollection);
-			if (validationError) {
-				toastService(validationError, TOAST_TYPE.DANGER);
+			let validationErrors: string[];
+			if (currentCollection.is_public) {
+				validationErrors = getValidationErrorsForPublish(currentCollection);
+			} else {
+				validationErrors = getValidationErrorForSave(currentCollection);
+			}
+
+			if (validationErrors.length) {
+				toastService(validationErrors.join('</br>'), TOAST_TYPE.DANGER);
 				setIsSavingCollection(false);
 				return;
 			}
@@ -445,6 +447,27 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 
 	const hasUnsavedChanged = () => {
 		return JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
+	};
+
+	const handleShareCollectionModalClose = (collection?: Avo.Collection.Collection) => {
+		setIsShareModalOpen(false);
+		// Update initial and current states, so that the 'hasUnsavedChanged' status is correct
+		if (collection) {
+			if (currentCollection) {
+				setCurrentCollection({
+					...currentCollection,
+					is_public: collection.is_public,
+					publish_at: collection.publish_at,
+				});
+			}
+			if (initialCollection) {
+				setInitialCollection({
+					...initialCollection,
+					is_public: collection.is_public,
+					publish_at: collection.publish_at,
+				});
+			}
+		}
 	};
 
 	const renderCollectionEdit = (
@@ -602,16 +625,18 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 						updateCollectionProperty={updateCollectionProperty}
 					/>
 				)}
-				<ReorderCollectionModal isOpen={isReorderModalOpen} setIsOpen={setIsReorderModalOpen} />
+				<ReorderCollectionModal
+					isOpen={isReorderModalOpen}
+					onClose={() => setIsReorderModalOpen(false)}
+				/>
 				<ShareCollectionModal
-					collection={collection}
+					collection={currentCollection}
 					isOpen={isShareModalOpen}
-					setIsOpen={setIsShareModalOpen}
-					initialIsPublic={collection.is_public}
+					onClose={handleShareCollectionModalClose}
 					updateCollectionProperty={updateCollectionProperty}
 				/>
 				<DeleteObjectModal
-					title={`Ben je zeker dat de collectie "${collection.title}" wil verwijderen?`}
+					title={`Ben je zeker dat de collectie "${currentCollection.title}" wil verwijderen?`}
 					body="Deze actie kan niet ongedaan gemaakt worden"
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
