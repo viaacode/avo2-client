@@ -423,7 +423,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 	const renderAssignmentEditForm = () => (
 		<>
 			<Navbar autoHeight>
-				{' '}
 				<Container mode="vertical" background="alt">
 					<Container mode="horizontal">
 						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">

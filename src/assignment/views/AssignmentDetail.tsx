@@ -170,26 +170,22 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		 */
 		const renderBackLink = () => {
 			// TODO replace with getUser().uuid once available
-			if ('54859c98-d5d3-1038-8d91-6dfda901a78e' === assignment.owner_uid) {
-				return (
-					<Link
-						className="c-return"
-						to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assignment.id}/${
-							RouteParts.Edit
-						}`}
-					>
-						<Icon type="arrows" name="chevron-left" />
-						<span>Terug naar opdracht bewerken</span>
-					</Link>
-				);
-			} else {
-				return (
-					<Link className="c-return" to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}>
-						<Icon type="arrows" name="chevron-left" />
-						<span>Mijn opdrachten</span>
-					</Link>
-				);
-			}
+			const isOwner = '54859c98-d5d3-1038-8d91-6dfda901a78e' === assignment.owner_uid;
+			return (
+				<Link
+					className="c-return"
+					to={
+						isOwner
+							? `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assignment.id}/${
+									RouteParts.Edit
+							  }`
+							: `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`
+					}
+				>
+					<Icon type="arrows" name="chevron-left" />
+					<span>{isOwner ? 'Terug naar opdracht bewerken' : 'Mijn opdrachten'}</span>
+				</Link>
+			);
 		};
 
 		return (
