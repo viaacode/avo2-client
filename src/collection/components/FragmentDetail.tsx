@@ -30,7 +30,7 @@ import { get, orderBy } from 'lodash-es';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { isVideoFragment } from '../helpers';
+import { isMediaFragment } from '../helpers';
 import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
 
 interface FragmentDetailProps {
@@ -64,7 +64,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 					.then(data => setPlayerTicket(data))
 					.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
-			if (isVideoFragment(fragment)) {
+			if (isMediaFragment(fragment)) {
 				initFlowPlayer();
 			}
 
@@ -92,7 +92,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 				},
 			};
 
-			const currentContentBlock = isVideoFragment(fragment)
+			const currentContentBlock = isMediaFragment(fragment)
 				? contentBlocks.videoTitleText
 				: contentBlocks.titleText;
 

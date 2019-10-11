@@ -18,7 +18,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { getVideoStills } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { isVideoFragment } from '../../helpers';
+import { isMediaFragment } from '../../helpers';
+import { ContentTypeString } from '../../types';
 
 interface CollectionStillsModalProps {
 	isOpen: boolean;
@@ -37,22 +38,43 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	);
 
 	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
+
 		const fetchThumbnailImages = async () => {
 			// Only update thumbnails when modal is opened, not when closed
 			try {
+				// Only request the thumbnail of one audio fragment since those thumbnails are all identical
+				const mediaFragments = collection.collection_fragments.filter(
+					fragment => isMediaFragment(fragment) && fragment.item_meta
+				);
+				const videoFragments = mediaFragments.filter(
+					fragment =>
+						fragment.item_meta && fragment.item_meta.type.label === ContentTypeString.video
+				);
+				const audioFragments = mediaFragments.filter(
+					fragment =>
+						fragment.item_meta && fragment.item_meta.type.label === ContentTypeString.audio
+				);
 				const stillRequests: Avo.Stills.StillRequest[] = compact(
-					collection.collection_fragments.map(fragment =>
-						isVideoFragment(fragment)
-							? { externalId: fragment.external_id, startTime: (fragment.start_oc || 0) * 1000 }
-							: undefined
-					)
+					videoFragments.map(fragment => ({
+						externalId: fragment.external_id,
+						startTime: (fragment.start_oc || 0) * 1000,
+					}))
 				);
 				const videoStills: Avo.Stills.StillInfo[] = await getVideoStills(stillRequests);
 
 				setVideoStills(
 					uniq([
+						// current thumbnail image
 						...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
+						// Video thumbnails
 						...videoStills.map(videoStill => videoStill.thumbnailImagePath),
+						// One audio thumbnail
+						...(audioFragments[0] && audioFragments[0].item_meta
+							? [audioFragments[0].item_meta.thumbnail_path]
+							: []),
 					])
 				);
 			} catch (err) {
