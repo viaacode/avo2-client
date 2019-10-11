@@ -33,6 +33,7 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 			is_deleted
 			title
 			updated_at
+			owner_uid
 		}
 	}
 `;
@@ -60,6 +61,8 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
       is_archived
       is_deleted
       title
+			owner_uid
+			created_at
     }
 	count: app_assignments_aggregate(where: { owner_uid: { _eq: $ownerId }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}) {
 		aggregate {
@@ -106,6 +109,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 			created_at
 			updated_at
 			answer_url
+			owner_uid
 			user {
 				first_name
 				last_name

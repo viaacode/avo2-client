@@ -1,3 +1,5 @@
+import { get } from 'lodash-es';
+
 import authClient from '../Auth';
 
 type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
@@ -58,12 +60,14 @@ export class PermissionService {
 			// TODO replace example permissions
 			case PERMISSIONS.EDIT_OWN_COLLECTION:
 				const profile = authClient.getProfile();
-				if (profile && profile.id === obj.owner.id) {
+				const profileId = get(profile, 'id');
+				const ownerId = get(obj, 'owner.id');
+				if (profileId && ownerId && profileId === obj.owner.id) {
 					return true;
 				}
 				break;
 			default:
-				return true;
+				return false;
 		}
 	}
 }
