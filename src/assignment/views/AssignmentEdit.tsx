@@ -93,9 +93,9 @@ const CONTENT_LABEL_TO_QUERY: {
 interface AssignmentEditProps extends RouteComponentProps {}
 
 let currentAssignment: Partial<Assignment>;
-let setCurrentAssignment: (newAssignment: any) => void;
+let setCurrentAssignment: (newAssignment: Partial<Assignment>) => void;
 let initialAssignment: Partial<Assignment>;
-let setInitialAssignment: (newAssignment: any) => void;
+let setInitialAssignment: (newAssignment: Partial<Assignment>) => void;
 
 const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, location, match }) => {
 	[currentAssignment, setCurrentAssignment] = useState<Partial<Assignment>>({
@@ -236,6 +236,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 			}
 		}
 	}, [setLoadingState]);
+
+	/**
+	 * Set user id for the current collection when loginState becomes available
+	 */
+	useEffect(() => {
+		const ownerProfileUid = get(loginState, 'userInfo.profile.id');
+		if (ownerProfileUid && (!currentAssignment || !currentAssignment.owner_profile_id)) {
+			setCurrentAssignment({
+				...currentAssignment,
+				owner_profile_id: ownerProfileUid,
+			});
+		}
+	}, [loginState]);
 
 	const deleteCurrentAssignment = async () => {
 		try {
