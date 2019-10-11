@@ -237,19 +237,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		}
 	}, [setLoadingState]);
 
-	/**
-	 * Set user id for the current collection when loginState becomes available
-	 */
-	useEffect(() => {
-		const ownerProfileUid = get(loginState, 'userInfo.profile.id');
-		if (ownerProfileUid && (!currentAssignment || !currentAssignment.owner_profile_id)) {
-			setCurrentAssignment({
-				...currentAssignment,
-				owner_profile_id: ownerProfileUid,
-			});
-		}
-	}, [loginState]);
-
 	const deleteCurrentAssignment = async () => {
 		try {
 			if (typeof currentAssignment.id === 'undefined') {
