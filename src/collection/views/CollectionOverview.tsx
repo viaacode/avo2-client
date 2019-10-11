@@ -26,8 +26,9 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
-import { getInitialChar } from '../helpers';
+import { getFullName, getInitialChar, getInitials } from '../helpers';
 
+import { get } from 'lodash-es';
 import './CollectionOverview.scss';
 
 interface CollectionsProps extends RouteComponentProps {
@@ -107,11 +108,11 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 
 			case 'access':
 				// TODO get alle users that are allowed to edit this collection
-				const users = [collection.owner];
-				const avatars = users.map(user => {
+				const userProfiles = [collection.profile];
+				const avatars = userProfiles.map(profile => {
 					return {
-						initials: `${getInitialChar(user.first_name)}${getInitialChar(user.last_name)}`,
-						name: `${user.first_name} ${user.last_name} `,
+						initials: getInitials(profile),
+						name: getFullName(profile),
 						subtitle: 'Mag Bewerken', // TODO: Display correct permissions
 					};
 				});
@@ -180,12 +181,10 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 			? collections.map(collection => {
 					const userProfiles = [collection.profile];
 
-					const avatars = userProfiles.map(userProfile => {
+					const avatars = userProfiles.map(profile => {
 						return {
-							initials: `${getInitialChar(userProfile.user.first_name)}${getInitialChar(
-								userProfile.user.last_name
-							)}`,
-							name: `${userProfile.user.first_name} ${userProfile.user.last_name} `,
+							initials: getInitials(profile),
+							name: getFullName(profile),
 							subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
 						};
 					});

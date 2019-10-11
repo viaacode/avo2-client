@@ -1,11 +1,10 @@
 import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, eq, get, isEmpty, omit, without } from 'lodash-es';
+import { cloneDeep, eq, get, omit, without } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { Prompt, RouteComponentProps, withRouter } from 'react-router';
 
 import {
-	Avatar,
 	Button,
 	Container,
 	DropdownButton,
@@ -30,10 +29,10 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import InputModal from '../../shared/components/modals/InputModal';
+import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { ReorderCollectionModal, ShareCollectionModal } from '../components';
-import { USER_GROUPS } from '../constants';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -42,13 +41,14 @@ import {
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../graphql';
+import { renderAvatar } from '../helpers';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from '../helpers/validation';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
 
 interface CollectionEditProps extends RouteComponentProps {}
 
-let currentCollection: any;
+let currentCollection: Avo.Collection.Collection | undefined;
 let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
 
 const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
@@ -63,7 +63,9 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 
-	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection>();
+	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection | undefined>(
+		undefined
+	);
 
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -125,6 +127,11 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 
 	const deleteCollection = async () => {
 		try {
+			if (!currentCollection) {
+				console.error('Failed to delete collection since currentCollection is undefined');
+				toastService('Het verwijderen van de collectie is mislukt (collectie niet ingesteld)');
+				return;
+			}
 			await triggerCollectionDelete({
 				variables: {
 					id: currentCollection.id,
@@ -198,6 +205,10 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		}
 	};
 
+	const getFragments = (collection: Avo.Collection.Collection | null | undefined) => {
+		return get(collection, 'collection_fragments') || [];
+	};
+
 	// Swap position of two fragments within a collection
 	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
 		if (!currentCollection) {
@@ -210,14 +221,14 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			return;
 		}
 
-		const fragments = currentCollection.collection_fragments;
+		const fragments = getFragments(currentCollection);
 
 		const changeFragmentsPositions = (fragments: Avo.Collection.Fragment[], sign: number) => {
 			const fragment = fragments.find(
 				(fragment: Avo.Collection.Fragment) => fragment.position === currentId
 			);
 
-			const otherFragment = currentCollection.collection_fragments.find(
+			const otherFragment = fragments.find(
 				(fragment: Avo.Collection.Fragment) => fragment.position === currentId - sign
 			);
 
@@ -309,12 +320,28 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		return omit(collection, propertiesToDelete);
 	};
 
-	const getThumbnailPathForCollection = (collection: Avo.Collection.Collection) => {
-		// TODO check if thumbnail was automatically selected from the first media fragment => need to update every save
-		// or if the thumbnail was selected by the user => need to update only if video is not available anymore
-		// This will need a new field in the database: is_custom_thumbnail
-		if (!collection.thumbnail_path) {
-			getVideoStills();
+	const getThumbnailPathForCollection = async (
+		collection: Partial<Avo.Collection.Collection>
+	): Promise<string | null> => {
+		try {
+			// TODO check if thumbnail was automatically selected from the first media fragment => need to update every save
+			// or if the thumbnail was selected by the user => need to update only if video is not available anymore
+			// This will need a new field in the database: thumbnail_type = 'auto' | 'chosen' | 'uploaded'
+			// TODO  || collection.thumbnail_type === 'auto'
+			if (!collection.thumbnail_path) {
+				return await getThumbnailForCollection(collection);
+			}
+			return collection.thumbnail_path;
+		} catch (err) {
+			console.error('Failed to get the thumbnail path for collection', err, { collection });
+			toastService(
+				<>
+					Het ophalen van de eerste video thumbnail is mislukt.
+					<br />
+					De collectie zal opgeslagen worden zonder thumbnail.
+				</>
+			);
+			return null;
 		}
 	};
 
@@ -381,13 +408,11 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			// Update fragments
 			const updatePromises: Promise<any>[] = [];
 			updateFragmentIds.forEach((id: number) => {
-				let fragmentToUpdate:
-					| Avo.Collection.Fragment
-					| undefined = currentCollection.collection_fragments.find(
-					(fragment: Avo.Collection.Fragment) => {
-						return Number(id) === fragment.id;
-					}
-				);
+				let fragmentToUpdate: Avo.Collection.Fragment | undefined = getFragments(
+					currentCollection
+				).find((fragment: Avo.Collection.Fragment) => {
+					return Number(id) === fragment.id;
+				});
 
 				if (!fragmentToUpdate) {
 					toastService(`Kan het te updaten fragment niet vinden (id: ${id})`);
@@ -438,7 +463,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			const cleanedCollection: Partial<Avo.Collection.Collection> = cleanCollectionBeforeSave(
 				newCollection
 			);
-			cleanedCollection.thumbnail_path = getThumbnailPathForCollection(cleanedCollection);
+			// Determine new thumbnail path since videos could have changed order / been deleted
+			cleanedCollection.thumbnail_path = await getThumbnailPathForCollection(cleanedCollection);
 			await triggerCollectionUpdate({
 				variables: {
 					id: cleanedCollection.id,
@@ -527,22 +553,9 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 									>
 										{currentCollection.title}
 									</h1>
-									{currentCollection.owner && (
+									{currentCollection.profile && (
 										<Flex spaced="regular">
-											{!isEmpty(get(currentCollection, 'owner.id')) && (
-												<Avatar
-													image={get(currentCollection, 'owner.avatar')}
-													name={`${get(currentCollection, 'owner.first_name')} ${get(
-														currentCollection,
-														'owner.last_name'
-													)} (
-														${USER_GROUPS[get(currentCollection, 'owner.role.id')]})`}
-													initials={
-														get(currentCollection, 'owner.first_name[0]', '') +
-														get(currentCollection, 'owner.last_name[0]', '')
-													}
-												/>
-											)}
+											{renderAvatar(currentCollection.profile, { includeRole: true })}
 										</Flex>
 									)}
 								</ToolbarItem>

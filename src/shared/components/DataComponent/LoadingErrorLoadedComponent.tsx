@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactElement, ReactNode } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import NotFound from '../../../404/views/NotFound';
@@ -44,14 +44,13 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 		case 'loaded':
 			if (dataObject) {
 				return render();
-			} else {
-				return (
-					<NotFound
-						message={notFoundError || 'Het gevraagde object is niet gevonden'}
-						icon={'search'}
-					/>
-				);
 			}
+			return (
+				<NotFound
+					message={notFoundError || 'Het gevraagde object is niet gevonden'}
+					icon={'search'}
+				/>
+			);
 
 		case 'loading':
 		default:

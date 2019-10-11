@@ -255,11 +255,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	 * Set user id for the current collection when loginState becomes available
 	 */
 	useEffect(() => {
-		const ownerUid = get(loginState, 'userInfo.uid');
-		if (ownerUid && (!currentAssignment || !currentAssignment.owner_uid)) {
+		const ownerProfileId = get(loginState, 'userInfo.uid');
+		if (ownerProfileId && (!currentAssignment || !currentAssignment.owner_profile_id)) {
 			setCurrentAssignment({
 				...currentAssignment,
-				owner_uid: ownerUid,
+				owner_profile_id: ownerProfileId,
 			});
 		}
 	}, [loginState]);

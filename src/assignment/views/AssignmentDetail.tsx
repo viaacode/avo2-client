@@ -13,7 +13,6 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import {
-	Avatar,
 	Button,
 	Container,
 	Dropdown,
@@ -36,6 +35,7 @@ import NotFound from '../../404/views/NotFound';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
 import FragmentDetail from '../../collection/components/FragmentDetail';
+import { renderAvatar } from '../../collection/helpers';
 import { RouteParts } from '../../constants';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
@@ -279,8 +279,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 					.catch(err => {
 						console.error('failed to update assignmentResponse object', err, {
 							variables: {
-								id: assignmentResponse.id,
 								assignmentResponse,
+								id: assignmentResponse.id,
 							},
 						});
 						toastService('Het archiveren van de opdracht is mislukt', TOAST_TYPE.DANGER);
@@ -336,27 +336,24 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 		if (!assignment) {
 			return null;
 		}
+		// TODO replace with getUser().uuid once available
+		const isOwner = '260bb4ae-b120-4ae1-b13e-abe85ab575ba' === assignment.owner_profile_id;
 
-		if (isOwnerOfAssignment(assignment)) {
-			return (
-				<Link
-					className="c-return"
-					to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assignment.id}/${
-						RouteParts.Edit
-					}`}
-				>
-					<Icon type="arrows" name="chevron-left" />
-					<span>Terug naar opdracht bewerken</span>
-				</Link>
-			);
-		} else {
-			return (
-				<Link className="c-return" to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}>
-					<Icon type="arrows" name="chevron-left" />
-					<span>Mijn opdrachten</span>
-				</Link>
-			);
-		}
+		return (
+			<Link
+				className="c-return"
+				to={
+					isOwner
+						? `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assignment.id}/${
+								RouteParts.Edit
+						  }`
+						: `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`
+				}
+			>
+				<Icon type="arrows" name="chevron-left" />
+				<span>{isOwner ? 'Terug naar opdracht bewerken' : 'Mijn opdrachten'}</span>
+			</Link>
+		);
 	};
 
 	const renderAssignment = (): ReactElement | null => {
@@ -373,52 +370,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 				color: tag.color_override || tag.enum_color.label,
 			})
 		);
-
-		const renderContent = () => {
-			switch (assignment.content_label) {
-				case 'COLLECTIE':
-					return (
-						<FragmentDetail
-							collectionFragments={
-								(assigmentContent as Avo.Collection.Collection).collection_fragments
-							}
-						/>
-					);
-				case 'ITEM':
-					return <ItemVideoDescription itemMetaData={assigmentContent as Avo.Item.Item} />;
-				default:
-					return (
-						<NotFound
-							icon="alert-triangle"
-							message={`Onverwacht opdracht inhoud type: "${assignment.content_label}"`}
-						/>
-					);
-			}
-		};
-
-		/**
-		 * Should render a back link to the edit page if the current user has edit rights on the assignment
-		 * Should render back link to assignments overview if the current user does not have edit rights
-		 */
-		const renderBackLink = () => {
-			// TODO replace with getUser().uuid once available
-			const isOwner = '260bb4ae-b120-4ae1-b13e-abe85ab575ba' === assignment.owner_profile_id;
-			return (
-				<Link
-					className="c-return"
-					to={
-						isOwner
-							? `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assignment.id}/${
-									RouteParts.Edit
-							  }`
-							: `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`
-					}
-				>
-					<Icon type="arrows" name="chevron-left" />
-					<span>{isOwner ? 'Terug naar opdracht bewerken' : 'Mijn opdrachten'}</span>
-				</Link>
-			);
-		};
 
 		return (
 			<div className="c-assigment-detail">
@@ -448,18 +399,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 										</ToolbarItem>
 										{!!assignment.profile && (
 											<ToolbarItem>
-												<Avatar
-													size="small"
-													initials={
-														get(assignment, 'user.first_name[0]') +
-														get(assignment, 'user.last_name[0]')
-													}
-													name={`${get(assignment, 'profile.user.role.label', '')}: ${get(
-														assignment,
-														'user.first_name[0]'
-													)}. ${get(assignment, 'profile.user.last_name', '')}`}
-													image={get(assignment, 'profile.avatar', undefined)}
-												/>
+												{renderAvatar(assignment.profile, { includeRole: true, small: true })}
 											</ToolbarItem>
 										)}
 										<ToolbarItem>

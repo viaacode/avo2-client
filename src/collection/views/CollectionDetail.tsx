@@ -78,12 +78,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 	};
 
 	const renderCollection = (collection: Avo.Collection.Collection) => {
-		const ownerNameAndRole = [
-			get(collection, 'owner.first_name', ''),
-			get(collection, 'owner.last_name', ''),
-			get(collection, 'owner.role.name', ''),
-		].join(' ');
-
 		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 		const canEditCollection = PermissionService.hasPermissions([
 			{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
@@ -122,19 +116,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 										</Spacer>
 										<h1 className="c-h2 u-m-0">{collection.title}</h1>
 										{collection.profile && (
-											<Flex spaced="regular">
-												{!!get(collection, 'profile.id') && (
-													<Avatar
-														image={get(collection, 'profile.avatar')}
-														name={ownerNameAndRole || ' '}
-														initials={`${get(collection, 'profile.user.first_name[0]', '')}${get(
-															collection,
-															'profile.user.last_name[0]',
-															''
-														)}`}
-													/>
-												)}
-											</Flex>
+											<Flex spaced="regular">renderAvatar(collection.profile, true)</Flex>
 										)}
 									</ToolbarItem>
 								</ToolbarLeft>
