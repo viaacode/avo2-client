@@ -297,7 +297,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			{itemMetaData && (
 				<CutFragmentModal
 					isOpen={isCutModalOpen}
-					setIsOpen={setIsCutModalOpen}
+					onClose={() => setIsCutModalOpen(false)}
 					itemMetaData={itemMetaData}
 					updateFragmentProperty={updateFragmentProperty}
 					fragment={fragment}
