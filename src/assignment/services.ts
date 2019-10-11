@@ -31,7 +31,7 @@ const validateAssignment = (assignment: Partial<Assignment>): [string[], Assignm
 		errors.push('Een deadline is verplicht');
 	}
 
-	assignmentToSave.owner_uid = assignmentToSave.owner_uid || '54859c98-d5d3-1038-8d91-6dfda901a78e';
+	assignmentToSave.owner_profile_id = assignmentToSave.owner_profile_id || 'owner_profile_id';
 	assignmentToSave.is_archived = assignmentToSave.is_archived || false;
 	assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
 	assignmentToSave.is_collaborative = assignmentToSave.is_collaborative || false;

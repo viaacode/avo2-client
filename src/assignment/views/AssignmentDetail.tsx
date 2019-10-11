@@ -80,7 +80,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 
 	const isOwnerOfAssignment = (tempAssignment: Assignment) => {
 		// TODO replace with getUser().uuid once available
-		return '54859c98-d5d3-1038-8d91-6dfda901a78e' === tempAssignment.owner_uid;
+		return '260bb4ae-b120-4ae1-b13e-abe85ab575ba' === tempAssignment.owner_profile_id;
 	};
 
 	// Handle resize
@@ -121,7 +121,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 			if (!assignmentResponse) {
 				// Student has never viewed this assignment before, we should create a response object for him
 				assignmentResponse = {
-					owner_uids: ['54859c98-d5d3-1038-8d91-6dfda901a78e'], // TODO replace with getUser().uuid
+					owner_profile_ids: ['260bb4ae-b120-4ae1-b13e-abe85ab575ba'], // TODO replace with getUser().uuid
 					assignment_id: tempAssignment.id,
 					collection: null,
 					collection_id: null,
@@ -446,7 +446,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 										<ToolbarItem>
 											<TagList tags={tags} closable={false} swatches bordered />
 										</ToolbarItem>
-										{!!assignment.user && (
+										{!!assignment.profile && (
 											<ToolbarItem>
 												<Avatar
 													size="small"
@@ -454,13 +454,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 														get(assignment, 'user.first_name[0]') +
 														get(assignment, 'user.last_name[0]')
 													}
-													name={`${assignment.user.role && assignment.user.role.label}: ${get(
+													name={`${get(assignment, 'profile.user.role.label', '')}: ${get(
 														assignment,
 														'user.first_name[0]'
-													)}. ${assignment.user.last_name}`}
-													image={
-														(assignment.user.profile && assignment.user.profile.avatar) || undefined
-													}
+													)}. ${get(assignment, 'profile.user.last_name', '')}`}
+													image={get(assignment, 'profile.avatar', undefined)}
 												/>
 											</ToolbarItem>
 										)}

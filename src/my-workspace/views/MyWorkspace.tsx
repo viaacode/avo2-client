@@ -160,7 +160,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		<DataQueryComponent
 			query={GET_WORKSPACE_TAB_COUNTS}
 			// TODO: replace with actual owner id from ldap object
-			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e' }}
+			variables={{ owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba' }}
 			renderData={renderTabsAndContent}
 			notFoundMessage="Er zijn geen collecties gevonden"
 		/>

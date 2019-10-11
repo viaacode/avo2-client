@@ -98,9 +98,9 @@ interface AssignmentEditProps extends RouteComponentProps {
 }
 
 let currentAssignment: Partial<Assignment>;
-let setCurrentAssignment: (newAssignment: any) => void;
+let setCurrentAssignment: (newAssignment: Partial<Assignment>) => void;
 let initialAssignment: Partial<Assignment>;
-let setInitialAssignment: (newAssignment: any) => void;
+let setInitialAssignment: (newAssignment: Partial<Assignment>) => void;
 
 const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	history,

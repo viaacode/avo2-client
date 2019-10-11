@@ -121,15 +121,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 											</MetaData>
 										</Spacer>
 										<h1 className="c-h2 u-m-0">{collection.title}</h1>
-										{collection.owner && (
+										{collection.profile && (
 											<Flex spaced="regular">
-												{!!get(collection, 'owner.id') && (
+												{!!get(collection, 'profile.id') && (
 													<Avatar
-														image={get(collection, 'owner.profiles[0].avatar')}
+														image={get(collection, 'profile.avatar')}
 														name={ownerNameAndRole || ' '}
-														initials={`${get(collection, 'owner.first_name[0]', '')}${get(
+														initials={`${get(collection, 'profile.user.first_name[0]', '')}${get(
 															collection,
-															'owner.last_name[0]',
+															'profile.user.last_name[0]',
 															''
 														)}`}
 													/>
