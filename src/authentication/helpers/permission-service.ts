@@ -6,14 +6,14 @@ type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
 
 export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
 
-type PermissionName = keyof typeof PERMISSIONS;
-
 export const PERMISSIONS: { [permissionName: string]: string } = {
 	EDIT_OWN_COLLECTION: 'EDIT_OWN_COLLECTION',
 	EDIT_ALL_COLLECTIONS: 'EDIT_ALL_COLLECTIONS',
 	DELETE_OWN_COLLECTION: 'DELETE_OWN_COLLECTION',
 	DELETE_ALL_COLLECTIONS: 'DELETE_ALL_COLLECTIONS',
 };
+
+type PermissionName = keyof typeof PERMISSIONS;
 
 export class PermissionService {
 	// TODO replace with userInfo.permissions

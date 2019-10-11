@@ -253,7 +253,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 				);
 				return;
 			}
-
 			const assignmentResponse = getAssignmentResponse();
 			if (!isNil(assignmentResponse) && !isNil(assignmentResponse.id)) {
 				const updatedAssignmentResponse = omit(cloneDeep(assignmentResponse), ['__typename', 'id']);
