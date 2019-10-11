@@ -4,11 +4,11 @@ import { Modal, ModalBody } from '@viaa/avo2-components';
 
 interface ReorderCollectionModalProps {
 	isOpen: boolean;
-	setIsOpen: (isOpen: boolean) => void;
+	onClose: () => void;
 }
 
 const ReorderCollectionModal: FunctionComponent<ReorderCollectionModalProps> = ({
-	setIsOpen,
+	onClose,
 	isOpen,
 }) => {
 	return (
@@ -16,7 +16,7 @@ const ReorderCollectionModal: FunctionComponent<ReorderCollectionModalProps> = (
 			isOpen={isOpen}
 			title="Herschik items in collectie"
 			size="large"
-			onClose={() => setIsOpen(!isOpen)}
+			onClose={onClose}
 			scrollable={true}
 		>
 			{/* TODO: Add draggable list component */}

@@ -121,14 +121,6 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 	}
 `;
 
-export const UPDATE_ASSIGNMENT = gql`
-	mutation updateAssignmentById($id: Int!, $assignment: app_assignments_set_input!) {
-		update_app_assignments(where: { id: { _eq: $id } }, _set: $assignment) {
-			affected_rows
-		}
-	}
-`;
-
 export const INSERT_ASSIGNMENT = gql`
 	mutation insertAssignment($assignment: app_assignments_insert_input!) {
 		insert_app_assignments(objects: [$assignment]) {
@@ -140,9 +132,41 @@ export const INSERT_ASSIGNMENT = gql`
 	}
 `;
 
+export const UPDATE_ASSIGNMENT = gql`
+	mutation updateAssignmentById($id: Int!, $assignment: app_assignments_set_input!) {
+		update_app_assignments(where: { id: { _eq: $id } }, _set: $assignment) {
+			affected_rows
+		}
+	}
+`;
+
 export const DELETE_ASSIGNMENT = gql`
 	mutation deleteAssignmentById($id: Int!) {
 		delete_app_assignments(where: { id: { _eq: $id } }) {
+			affected_rows
+		}
+	}
+`;
+
+export const INSERT_ASSIGNMENT_RESPONSE = gql`
+	mutation insertAssignmentResponse(
+		$assignmentResponses: [app_assignment_responses_insert_input!]!
+	) {
+		insert_app_assignment_responses(objects: $assignmentResponses) {
+			affected_rows
+			returning {
+				id
+			}
+		}
+	}
+`;
+
+export const UPDATE_ASSIGNMENT_RESPONSE = gql`
+	mutation updateAssignmentResponse(
+		$id: Int!
+		$assignmentResponse: app_assignment_responses_set_input
+	) {
+		update_app_assignment_responses(where: { id: { _eq: $id } }, _set: $assignmentResponse) {
 			affected_rows
 		}
 	}

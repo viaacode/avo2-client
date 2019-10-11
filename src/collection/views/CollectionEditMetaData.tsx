@@ -123,7 +123,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 				</Container>
 				<CollectionStillsModal
 					isOpen={isCollectionsStillsModalOpen}
-					setIsOpen={setCollectionsStillsModalOpen}
+					onClose={() => setCollectionsStillsModalOpen(false)}
 					collection={collection}
 				/>
 			</>
