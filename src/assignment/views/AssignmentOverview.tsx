@@ -72,7 +72,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
-		const uppercaseFilter = filter && filter.toUpperCase();
 
 		if (!filter) {
 			return {};

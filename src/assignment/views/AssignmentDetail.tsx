@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
-import { clone, cloneDeep, debounce, get, isNil, omit, set } from 'lodash-es';
+import { cloneDeep, debounce, get, isNil, omit, set } from 'lodash-es';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -207,7 +207,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				);
 				return;
 			}
-
 			const assignmentResponse = getAssignmentResponse();
 			if (!isNil(assignmentResponse) && !isNil(assignmentResponse.id)) {
 				const updatedAssignmentResponse = omit(cloneDeep(assignmentResponse), ['__typename', 'id']);
