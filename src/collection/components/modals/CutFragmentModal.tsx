@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	Container,
 	Modal,
 	ModalBody,
@@ -111,10 +112,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					<Toolbar spaced>
 						<ToolbarRight>
 							<ToolbarItem>
-								<div className="c-button-toolbar">
+								<ButtonToolbar>
 									<Button type="secondary" label="Annuleren" onClick={onClose} />
 									<Button type="primary" label="Knippen" onClick={onSaveCut} />
-								</div>
+								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>

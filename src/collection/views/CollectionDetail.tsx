@@ -4,6 +4,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
 	DropdownButton,
@@ -44,8 +45,8 @@ import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
 
-import './CollectionDetail.scss';
 import { renderAvatar } from '../helpers';
+import './CollectionDetail.scss';
 
 interface CollectionDetailProps extends RouteComponentProps {}
 
@@ -123,7 +124,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 								</ToolbarLeft>
 								<ToolbarRight>
 									<ToolbarItem>
-										<div className="c-button-toolbar">
+										<ButtonToolbar>
 											<Button
 												title="Bladwijzer"
 												type="secondary"
@@ -204,7 +205,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 													/>
 												</DropdownContent>
 											</ControlledDropdown>
-										</div>
+										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>
 							</Toolbar>

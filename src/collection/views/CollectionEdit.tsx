@@ -6,6 +6,7 @@ import { Prompt, RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
+	ButtonToolbar,
 	Container,
 	DropdownButton,
 	DropdownContent,
@@ -563,7 +564,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 							</ToolbarLeft>
 							<ToolbarRight>
 								<ToolbarItem>
-									<div className="c-button-toolbar">
+									<ButtonToolbar>
 										<Button
 											type="secondary"
 											label="Delen"
@@ -626,7 +627,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 												disabled={isSavingCollection}
 											/>
 										</Spacer>
-									</div>
+									</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>
 						</Toolbar>

@@ -2,6 +2,7 @@ import React, { FunctionComponent, MouseEvent, useState } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	Checkbox,
 	CheckboxGroup,
 	Column,
@@ -217,7 +218,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 						<Toolbar spaced>
 							<ToolbarRight>
 								<ToolbarItem>
-									<div className="c-button-toolbar">
+									<ButtonToolbar>
 										<Button
 											label="Annuleren"
 											type="secondary"
@@ -225,7 +226,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 											onClick={closeDropdownOrModal}
 										/>
 										<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
-									</div>
+									</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>
 						</Toolbar>

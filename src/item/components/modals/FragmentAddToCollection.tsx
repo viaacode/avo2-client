@@ -6,6 +6,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
 	Form,
@@ -294,7 +295,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 					<Toolbar spaced>
 						<ToolbarRight>
 							<ToolbarItem>
-								<div className="c-button-toolbar">
+								<ButtonToolbar>
 									<Button label="Annuleren" type="link" block={true} onClick={onClose} />
 									<Button
 										label="Toepassen"
@@ -320,7 +321,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 														>)
 										}
 									/>
-								</div>
+								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>

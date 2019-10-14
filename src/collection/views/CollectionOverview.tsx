@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import {
 	AvatarList,
 	Button,
+	ButtonToolbar,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -107,7 +108,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 
 			case 'access':
 				// TODO get alle users that are allowed to edit this collection
-				const userProfiles = [collection.profile];
+				const userProfiles = [(collection as any).profile];
 				const avatars = userProfiles.map(profile => {
 					return {
 						initials: getInitials(profile),
@@ -119,7 +120,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 
 			case 'actions':
 				return (
-					<div className="c-button-toolbar">
+					<ButtonToolbar>
 						<Dropdown
 							autoSize
 							isOpen={dropdownOpen[collection.id] || false}
@@ -160,7 +161,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							onClick={() => history.push(`/${RouteParts.Collection}/${collection.id}`)}
 							type="borderless"
 						/>
-					</div>
+					</ButtonToolbar>
 				);
 			case 'created_at':
 			case 'updated_at':
@@ -178,7 +179,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	) => {
 		const mappedCollections = !!collections
 			? collections.map(collection => {
-					const userProfiles = [collection.profile];
+					const userProfiles = [(collection as any).profile];
 
 					const avatars = userProfiles.map(profile => {
 						return {

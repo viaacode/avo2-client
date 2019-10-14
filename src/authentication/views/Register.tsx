@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	Checkbox,
 	Column,
 	Container,
@@ -84,10 +85,10 @@ const Register: FunctionComponent<RegisterProps> = () => {
 				<div className="u-text-center">
 					<p>Of gebruik je account op:</p>
 					<Spacer margin="top">
-						<div className="c-button-toolbar">
+						<ButtonToolbar>
 							<Button icon="klascement" label="KlasCement" type="secondary" />
 							<Button icon="smartschool" label="SmartSchool" type="secondary" />
-						</div>
+						</ButtonToolbar>
 					</Spacer>
 				</div>
 			</Container>

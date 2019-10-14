@@ -27,6 +27,7 @@ import {
 
 import { Avo } from '@viaa/avo2-types';
 import { get, orderBy } from 'lodash-es';
+import { getEnv } from '../../shared/helpers/env';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -80,7 +81,16 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 						title: getFragmentField(fragment, 'title'),
 						text: getFragmentField(fragment, 'description'),
 						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
-						videoSource: playerTicket,
+						flowPlayerProps: {
+							src: playerTicket || null,
+							poster: 'https://via.placeholder.com/1920x1080', // TODO: fragment.thumbnail_path
+							title: getFragmentField(fragment, 'title'),
+							subtitles: ['12/12/2013'],
+							start: fragment.start_oc,
+							end: fragment.end_oc,
+							token: getEnv('PROXY_URL'),
+							dataPlayerId: getEnv('PROXY_URL'),
+						},
 					},
 				},
 				titleText: {
