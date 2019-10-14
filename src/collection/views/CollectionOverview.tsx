@@ -26,7 +26,7 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
-import { getInitialChar } from '../helpers';
+import { getFullName, getInitials } from '../helpers';
 
 import './CollectionOverview.scss';
 
@@ -64,34 +64,33 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	};
 
 	// Render
-	const renderCell = (rowData: any, colKey: any) => {
-		const cellData = rowData[colKey];
-
+	const renderCell = (collection: Avo.Collection.Collection, colKey: string) => {
 		switch (colKey) {
 			case 'thumbnail':
 				return (
-					<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
+					<Link to={`/${RouteParts.Collection}/${collection.id}`} title={collection.title}>
 						<Thumbnail
 							alt="thumbnail"
 							category="collection"
 							className="m-collection-overview-thumbnail"
-							src="https://via.placeholder.com/1080x720"
+							src={collection.thumbnail_path || undefined}
 						/>
 					</Link>
 				);
+
 			case 'title':
 				return (
 					<div className="c-content-header">
 						<h3 className="c-content-header__header">
-							<Link to={`/${RouteParts.Collection}/${rowData.id}`} title={rowData.title}>
-								{cellData}
+							<Link to={`/${RouteParts.Collection}/${collection.id}`} title={collection.title}>
+								{collection.title}
 							</Link>
 						</h3>
 						<div className="c-content-header__meta u-text-muted">
 							<MetaData category="collection">
 								<MetaDataItem>
-									<span title={`Aangemaakt: ${formatDate(rowData.createdAt)}`}>
-										{fromNow(rowData.createdAt)}
+									<span title={`Aangemaakt: ${formatDate(collection.created_at)}`}>
+										{fromNow(collection.created_at)}
 									</span>
 								</MetaDataItem>
 								{/* TODO link view count from db */}
@@ -100,18 +99,32 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 						</div>
 					</div>
 				);
+
 			case 'inFolder':
-				return cellData && <Button icon="folder" type="borderless" />;
+				// TODO check if collection is in folder or not
+				const isInFolder = true;
+				return isInFolder && <Button icon="folder" type="borderless" />;
+
 			case 'access':
-				return cellData && <AvatarList avatars={cellData} isOpen={false} />;
+				// TODO get alle users that are allowed to edit this collection
+				const userProfiles = [collection.profile];
+				const avatars = userProfiles.map(profile => {
+					return {
+						initials: getInitials(profile),
+						name: getFullName(profile),
+						subtitle: 'Mag Bewerken', // TODO: Display correct permissions
+					};
+				});
+				return avatars && <AvatarList avatars={avatars} isOpen={false} />;
+
 			case 'actions':
 				return (
 					<div className="c-button-toolbar">
 						<Dropdown
 							autoSize
-							isOpen={dropdownOpen[rowData.id] || false}
-							onClose={() => setDropdownOpen({ [rowData.id]: false })}
-							onOpen={() => setDropdownOpen({ [rowData.id]: true })}
+							isOpen={dropdownOpen[collection.id] || false}
+							onClose={() => setDropdownOpen({ [collection.id]: false })}
+							onOpen={() => setDropdownOpen({ [collection.id]: true })}
 							placement="bottom-end"
 						>
 							<DropdownButton>
@@ -127,10 +140,12 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 									onClick={itemId => {
 										switch (itemId) {
 											case 'edit':
-												history.push(`/${RouteParts.Collection}/${rowData.id}/${RouteParts.Edit}`);
+												history.push(
+													`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
+												);
 												break;
 											case 'delete':
-												openDeleteModal(rowData.id);
+												openDeleteModal(collection.id);
 												break;
 											default:
 												return null;
@@ -142,16 +157,18 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 
 						<Button
 							icon="chevron-right"
-							onClick={() => history.push(`/${RouteParts.Collection}/${rowData.id}`)}
+							onClick={() => history.push(`/${RouteParts.Collection}/${collection.id}`)}
 							type="borderless"
 						/>
 					</div>
 				);
-			case 'createdAt':
-			case 'updatedAt':
+			case 'created_at':
+			case 'updated_at':
+				const cellData = collection[colKey as 'created_at' | 'updated_at'];
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+
 			default:
-				return cellData;
+				return null;
 		}
 	};
 
@@ -161,12 +178,12 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	) => {
 		const mappedCollections = !!collections
 			? collections.map(collection => {
-					const users = [collection.owner];
+					const userProfiles = [collection.profile];
 
-					const avatars = users.map(user => {
+					const avatars = userProfiles.map(profile => {
 						return {
-							initials: `${getInitialChar(user.first_name)}${getInitialChar(user.last_name)}`,
-							name: `${user.first_name} ${user.last_name} `,
+							initials: getInitials(profile),
+							name: getFullName(profile),
 							subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
 						};
 					});
@@ -195,7 +212,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 						{ id: 'access', label: 'Toegang' },
 						{ id: 'actions', label: '' },
 					]}
-					data={mappedCollections}
+					data={collections}
 					emptyStateMessage="Geen resultaten gevonden"
 					renderCell={renderCell}
 					rowKey="id"
@@ -223,7 +240,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}
 			// TODO: replace with actual owner id from ldap object
-			variables={{ ownerId: '54859c98-d5d3-1038-8d91-6dfda901a78e', offset: page }}
+			variables={{ owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba', offset: page }}
 			resultPath="app_collections"
 			renderData={renderCollections}
 			notFoundMessage="Er konden geen collecties worden gevonden"

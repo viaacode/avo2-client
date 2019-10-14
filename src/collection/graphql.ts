@@ -21,6 +21,10 @@ export const GET_COLLECTION_BY_ID = gql`
 					title
 					description
 					thumbnail_path
+					type {
+						id
+						label
+					}
 				}
 				end_oc
 				custom_title
@@ -38,32 +42,36 @@ export const GET_COLLECTION_BY_ID = gql`
 			note
 			thumbnail_path
 			publish_at
-			owner {
+			profile {
+				alias
+				alternative_email
+				avatar
 				id
-				last_name
-				mail
-				organisation_id
-				profiles {
-					alias
-					alternative_email
-					avatar
-					created_at
-					id
-					location
-					stamboek
-					updated_at
-					user_id
-				}
-				role {
-					id
-					name
-					label
-				}
-				type
-				uid
+				location
+				stamboek
 				updated_at
-				role_id
-				first_name
+				user_id
+				user: usersByuserId {
+					created_at
+					expires_at
+					external_uid
+					first_name
+					id
+					last_name
+					mail
+					organisation_id
+					role_id
+					type
+					uid
+					updated_at
+					role {
+						id
+						name
+						label
+					}
+				}
+				created_at
+				updated_at
 			}
 			organisation_id
 			is_public
@@ -165,8 +173,8 @@ export const INSERT_COLLECTION_FRAGMENT = gql`
 `;
 
 export const GET_COLLECTIONS_BY_OWNER = gql`
-	query getCollectionsByOwner($ownerId: uuid, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}) {
-		app_collections(where: { owner: { uid: { _eq: $ownerId } } }, offset: $offset, limit: $limit) {
+	query getCollectionsByOwner($owner_profile_id: uuid, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}) {
+		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }, offset: $offset, limit: $limit) {
 			id
 			updated_at
 			type_id
@@ -176,27 +184,22 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			}
 			title
 			publish_at
-			owner {
-				updated_at
-				uid
-				role_id
-				last_name
+			profile {
 				id
-				first_name
+				alias
+				alternative_email
+				avatar
 				created_at
-				role {
-					id
-					label
-					name
-					users {
-						id
-					}
-				}
+				location
+				stamboek
+				updated_at
+				user_id
 			}
 			is_public
 			external_id
 			depublish_at
 			created_at
+			thumbnail_path
 			collection_permissions {
 				collection_id
 				created_at
@@ -210,26 +213,10 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 `;
 
 export const GET_COLLECTION_TITLES_BY_OWNER = gql`
-	query getCollectionNamesByOwner($ownerId: uuid) {
-		app_collections(where: { owner: { uid: { _eq: $ownerId } } }) {
+	query getCollectionNamesByOwner($owner_profile_id: uuid) {
+		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }) {
 			id
 			title
-		}
-	}
-`;
-
-export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
-	query getMetaItemByExternalId($externalId: bpchar!) {
-		app_item_meta(where: { external_id: { _eq: $externalId } }) {
-			description
-			thumbnail_path
-			title
-			type {
-				label
-				id
-			}
-			duration
-			external_id
 		}
 	}
 `;
