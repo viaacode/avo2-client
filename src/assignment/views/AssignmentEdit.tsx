@@ -249,17 +249,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				setLoadingState('loaded');
 			}
 		}
-	}, [setLoadingState, currentAssignment]);
+	}, [setLoadingState, currentAssignment, assignmentContent]);
 
 	/**
 	 * Set user id for the current collection when loginState becomes available
 	 */
 	useEffect(() => {
-		const ownerUid = get(loginState, 'userInfo.uid');
-		if (ownerUid && (!currentAssignment || !currentAssignment.owner_uid)) {
+		const ownerProfileId = get(loginState, 'userInfo.profile.id');
+		if (ownerProfileId && (!currentAssignment || !currentAssignment.owner_profile_id)) {
 			setCurrentAssignment({
 				...currentAssignment,
-				owner_uid: ownerUid,
+				owner_profile_id: ownerProfileId,
 			});
 		}
 	}, [loginState]);
