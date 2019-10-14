@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
 
 import { Alert } from '@viaa/avo2-components';
@@ -11,14 +11,7 @@ export enum TOAST_TYPE {
 	SUCCESS = 'success',
 }
 
-interface ToastService {
-	message: string;
-	type?: TOAST_TYPE;
-	dark?: boolean;
-	options?: ToastOptions;
-}
-
-interface ToastService {
+interface ToastInfo {
 	message: string;
 	type?: TOAST_TYPE;
 	dark?: boolean;
@@ -30,18 +23,18 @@ const Toast: FunctionComponent<any> = ({ closeToast, ...rest }) => (
 );
 
 export default function toastService(
-	alert: ToastService | string,
+	alert: ToastInfo | string | ReactNode,
 	alertType: TOAST_TYPE = TOAST_TYPE.INFO
 ) {
 	if (isNil(alert)) {
 		return null;
 	}
 
-	if (isString(alert)) {
+	if (isString(alert) || !(alert as ToastInfo).message) {
 		return toast(<Toast message={alert} type={alertType} />);
 	}
 
-	const { options = {}, type = alertType, ...rest } = alert;
+	const { options = {}, type = alertType, ...rest } = alert as ToastInfo;
 
 	return toast(<Toast {...rest} type={type} />, options);
 }

@@ -42,46 +42,36 @@ export const GET_COLLECTION_BY_ID = gql`
 			note
 			thumbnail_path
 			publish_at
-			owner {
+			profile {
+				alias
+				alternative_email
+				avatar
 				id
-				last_name
-				mail
-				organisation_id
-				profiles {
-					alias
-					alternative_email
-					avatar
+				location
+				stamboek
+				updated_at
+				user_id
+				user: usersByuserId {
 					created_at
+					expires_at
+					external_uid
+					first_name
 					id
-					location
-					stamboek
+					last_name
+					mail
+					organisation_id
+					role_id
+					type
+					uid
 					updated_at
-					user_id
-					user: usersByuserId {
-						created_at
-						expires_at
-						external_uid
-						first_name
+					role {
 						id
-						last_name
-						mail
-						organisation_id
-						role_id
-						type
-						uid
-						updated_at
+						name
+						label
 					}
 				}
-				role {
-					id
-					name
-					label
-				}
-				type
-				uid
+				created_at
 				updated_at
-				role_id
-				first_name
 			}
 			organisation_id
 			is_public
@@ -209,6 +199,7 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			external_id
 			depublish_at
 			created_at
+			thumbnail_path
 			collection_permissions {
 				collection_id
 				created_at
@@ -226,22 +217,6 @@ export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }) {
 			id
 			title
-		}
-	}
-`;
-
-export const GET_ITEM_META_BY_EXTERNAL_ID = gql`
-	query getMetaItemByExternalId($externalId: bpchar!) {
-		app_item_meta(where: { external_id: { _eq: $externalId } }) {
-			description
-			thumbnail_path
-			title
-			type {
-				label
-				id
-			}
-			duration
-			external_id
 		}
 	}
 `;
