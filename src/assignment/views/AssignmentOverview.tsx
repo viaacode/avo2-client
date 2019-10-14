@@ -453,19 +453,21 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					</ToolbarRight>
 				</Toolbar>
 
-				<DataQueryComponent
-					query={GET_ASSIGNMENTS_BY_OWNER_ID}
-					variables={{
-						ownerId: loginState && loginState.userInfo.uid,
-						archived: activeView === 'archived_assignments',
-						order: { [sortColumn]: sortOrder },
-						offset: page * ITEMS_PER_PAGE,
-						filter: getFilterObject(),
-					}}
-					renderData={renderAssignmentsTable}
-					resultPath=""
-					ignoreNotFound
-				/>
+				{get(loginState, 'userInfo.profile.id') && (
+					<DataQueryComponent
+						query={GET_ASSIGNMENTS_BY_OWNER_ID}
+						variables={{
+							owner_profile_id: get(loginState, 'userInfo.profile.id'),
+							archived: activeView === 'archived_assignments',
+							order: { [sortColumn]: sortOrder },
+							offset: page * ITEMS_PER_PAGE,
+							filter: getFilterObject(),
+						}}
+						renderData={renderAssignmentsTable}
+						resultPath=""
+						ignoreNotFound
+					/>
+				)}
 			</Container>
 		</Container>
 	);

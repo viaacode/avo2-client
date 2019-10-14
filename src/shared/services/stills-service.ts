@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { compact, get, uniq, uniqBy } from 'lodash-es';
+import { compact, uniq } from 'lodash-es';
 import { isMediaFragment } from '../../collection/helpers';
 import { ContentTypeString } from '../../collection/types';
 import { getEnv } from '../helpers/env';

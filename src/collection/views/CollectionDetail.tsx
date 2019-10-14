@@ -1,10 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
-	Avatar,
 	Button,
 	Column,
 	Container,
@@ -47,6 +45,7 @@ import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
 
 import './CollectionDetail.scss';
+import { renderAvatar } from '../helpers';
 
 interface CollectionDetailProps extends RouteComponentProps {}
 
@@ -116,7 +115,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 										</Spacer>
 										<h1 className="c-h2 u-m-0">{collection.title}</h1>
 										{collection.profile && (
-											<Flex spaced="regular">renderAvatar(collection.profile, true)</Flex>
+											<Flex spaced="regular">
+												{renderAvatar(collection.profile, { includeRole: true })}
+											</Flex>
 										)}
 									</ToolbarItem>
 								</ToolbarLeft>

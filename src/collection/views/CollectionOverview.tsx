@@ -26,9 +26,8 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
-import { getFullName, getInitialChar, getInitials } from '../helpers';
+import { getFullName, getInitials } from '../helpers';
 
-import { get } from 'lodash-es';
 import './CollectionOverview.scss';
 
 interface CollectionsProps extends RouteComponentProps {
