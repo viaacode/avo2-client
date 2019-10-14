@@ -126,7 +126,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 						<ToolbarRight>
 							<ToolbarItem>
 								<ButtonToolbar>
-									<Button type="secondary" label="Annuleren" onClick={onClose} />
+									<Button type="secondary" label="Annuleren" onClick={() => onClose} />
 									<Button type="primary" label="Opslaan" onClick={onSave} />
 								</ButtonToolbar>
 							</ToolbarItem>
