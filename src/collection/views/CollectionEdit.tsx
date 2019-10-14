@@ -311,10 +311,10 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		const propertiesToDelete = [
 			'collection_fragments',
 			'label_redactie',
-			'owner',
 			'collection_permissions',
 			'__typename',
 			'type',
+			'profile',
 		];
 
 		return omit(collection, propertiesToDelete);
@@ -459,12 +459,13 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				};
 			});
 
+			// Determine new thumbnail path since videos could have changed order / been deleted
+			newCollection.thumbnail_path = await getThumbnailPathForCollection(newCollection);
+
 			// Trigger collection update
 			const cleanedCollection: Partial<Avo.Collection.Collection> = cleanCollectionBeforeSave(
 				newCollection
 			);
-			// Determine new thumbnail path since videos could have changed order / been deleted
-			cleanedCollection.thumbnail_path = await getThumbnailPathForCollection(cleanedCollection);
 			await triggerCollectionUpdate({
 				variables: {
 					id: cleanedCollection.id,
