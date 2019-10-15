@@ -29,6 +29,7 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import InputModal from '../../shared/components/modals/InputModal';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
@@ -136,6 +137,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				variables: {
 					id: currentCollection.id,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			// TODO: Refresh data on Collections page.
@@ -198,6 +200,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					id: cleanedCollection.id,
 					collection: cleanedCollection,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			console.error(err);
@@ -284,6 +287,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				id: currentCollection.id,
 				fragment: fragmentToAdd,
 			},
+			update: ApolloCacheManager.clearCollectionCache,
 		});
 
 		const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
@@ -402,7 +406,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			const deletePromises: Promise<any>[] = [];
 
 			deleteFragmentIds.forEach((id: number) => {
-				deletePromises.push(triggerCollectionFragmentDelete({ variables: { id } }));
+				deletePromises.push(
+					triggerCollectionFragmentDelete({
+						variables: { id },
+						update: ApolloCacheManager.clearCollectionCache,
+					})
+				);
 			});
 
 			// Update fragments
@@ -431,6 +440,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 							id,
 							fragment: fragmentToUpdate,
 						},
+						update: ApolloCacheManager.clearCollectionCache,
 					})
 				);
 			});
@@ -471,6 +481,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					id: cleanedCollection.id,
 					collection: cleanedCollection,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			setCurrentCollection(newCollection);
 			setInitialCollection(cloneDeep(newCollection));

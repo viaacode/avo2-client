@@ -74,7 +74,7 @@ export function trackEvents(events: Event[] | Event) {
 			variables: { eventLogEntries },
 		})
 		.then(() => {})
-		.catch(err => {
+		.catch((err: any) => {
 			console.error('Failed to log events to database', { eventLogEntries, innerException: err });
 		});
 }

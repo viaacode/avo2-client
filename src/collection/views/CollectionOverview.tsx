@@ -23,6 +23,7 @@ import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
@@ -53,6 +54,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				variables: {
 					id: idToDelete,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
 			refetchCollections();
