@@ -1,7 +1,7 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
 import {
@@ -114,6 +114,21 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 			} else {
 				toastService('Het fragment is toegevoegd aan de collectie', TOAST_TYPE.SUCCESS);
 				onClose();
+				trackEvents({
+					event_subject: {
+						type: 'user',
+						identifier: '260bb4ae-b120-4ae1-b13e-abe85ab575ba',
+					},
+					event_object: {
+						type: 'collection',
+						identifier: String(collection.id as number),
+					},
+					event_message: `User Bert Verhelst has added the fragment ${''} to the collection ${
+						collection.id
+					}`, // TODO dynamically fill user name
+					name: 'add_to_collection',
+					category: 'item',
+				});
 			}
 		} catch (err) {
 			console.error(err);
@@ -146,17 +161,21 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 
 			if (!response || response.errors) {
 				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
-			} else if (!insertedCollection) {
+			} else if (!insertedCollection || isNil(insertedCollection.id)) {
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 			} else {
 				trackEvents({
-					activity: `User ??? has created a new collection ${insertedCollection.id}`, // TODO fill in user id
-					message: {
-						object: {
-							identifier: String(insertedCollection.id),
-							type: 'collection',
-						},
+					event_subject: {
+						type: 'user',
+						identifier: '260bb4ae-b120-4ae1-b13e-abe85ab575ba',
 					},
+					event_object: {
+						type: 'collection',
+						identifier: String(insertedCollection.id as number),
+					},
+					event_message: `User Bert Verhelst has created a new collection ${insertedCollection.id}`, // TODO dynamically fill user name
+					name: 'create',
+					category: 'item',
 				});
 
 				// Add fragment to collection
