@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Switch } from 'react-router';
+import { renderNotFoundRoutes } from './404/routes';
 import { renderAssignmentRoutes } from './assignment/routes';
 import { renderAuthenticationRoutes } from './authentication/routes';
 import { renderCollectionRoutes } from './collection/routes';
@@ -8,10 +10,9 @@ import { renderHomeRoutes } from './home/routes';
 import { renderItemRoutes } from './item/routes';
 import { renderMyWorkspaceRoutes } from './my-workspace/routes';
 import { renderSearchRoutes } from './search/routes';
-// import { renderNotFoundRoutes } from './404/routes';
 
 export const renderRoutes = () => (
-	<>
+	<Switch>
 		{renderHomeRoutes()}
 		{renderSearchRoutes()}
 		{renderItemRoutes()}
@@ -20,6 +21,6 @@ export const renderRoutes = () => (
 		{renderAssignmentRoutes()}
 		{renderMyWorkspaceRoutes()}
 		{renderAuthenticationRoutes()}
-		{/*{renderNotFoundRoutes()}*/}
-	</>
+		{renderNotFoundRoutes()}
+	</Switch>
 );
