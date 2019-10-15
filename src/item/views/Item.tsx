@@ -130,14 +130,16 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 											<p>{itemMetaData.type.label}</p>
 										</div>
 									</Spacer>
-									<h1 className="c-h2 u-m-b-0">{itemMetaData.title}</h1>
+									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
 									<MetaData
 										spaced={true}
 										category={dutchContentLabelToEnglishLabel(itemMetaData.type.label)}
 									>
 										{itemMetaData.org_name && (
 											<MetaDataItem>
-												{generateSearchLink('provider', itemMetaData.org_name || '')}
+												<p className="c-body-2 u-text-muted">
+													{generateSearchLink('provider', itemMetaData.org_name || '')}
+												</p>
 											</MetaDataItem>
 										)}
 										{itemMetaData.publish_at && (
@@ -148,7 +150,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 											</MetaDataItem>
 										)}
 										<MetaDataItem>
-											Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
+											<p className="c-body-2 u-text-muted">
+												Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
+											</p>
 										</MetaDataItem>
 									</MetaData>
 								</ToolbarItem>
