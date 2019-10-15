@@ -29,6 +29,7 @@ import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 import { getFullName, getInitials } from '../helpers';
 
 import './CollectionOverview.scss';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
@@ -53,6 +54,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				variables: {
 					id: idToDelete,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
 			refetchCollections();

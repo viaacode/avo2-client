@@ -46,6 +46,7 @@ import { ContentTypeString } from '../types';
 
 import './CollectionDetail.scss';
 import { renderAvatar } from '../helpers';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 
 interface CollectionDetailProps extends RouteComponentProps {}
 
@@ -67,6 +68,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 				variables: {
 					id: idToDelete,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			setIdToDelete(null);
 			toastService('Het verwijderen van de collectie is gelukt', TOAST_TYPE.SUCCESS);
