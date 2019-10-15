@@ -16,6 +16,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { UPDATE_COLLECTION } from '../../graphql';
 import { getValidationErrorsForPublish } from '../../helpers/validation';
@@ -76,6 +77,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 					id: collection.id,
 					collection: newCollection,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			setValidationError(undefined);
 			toastService(

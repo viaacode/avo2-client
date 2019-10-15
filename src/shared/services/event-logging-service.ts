@@ -117,7 +117,7 @@ export function trackEvents(events: Partial<Event>[] | Partial<Event>) {
 			variables: { eventLogEntries },
 		})
 		.then(() => {})
-		.catch(err => {
+		.catch((err: any) => {
 			console.error('Failed to log events to database', { eventLogEntries, innerException: err });
 		});
 }
