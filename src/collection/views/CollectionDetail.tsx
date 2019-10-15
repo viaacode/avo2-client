@@ -27,7 +27,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { userInfo } from 'os';
+import { connect } from 'react-redux';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import { selectLogin } from '../../authentication/store/selectors';
+import { LoginResponse } from '../../authentication/store/types';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -46,11 +50,18 @@ import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { renderAvatar } from '../helpers';
 import { ContentTypeString } from '../types';
 
+import { get } from 'lodash-es';
 import './CollectionDetail.scss';
 
-interface CollectionDetailProps extends RouteComponentProps {}
+interface CollectionDetailProps extends RouteComponentProps {
+	loginState: LoginResponse | null;
+}
 
-const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, history }) => {
+const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
+	match,
+	history,
+	loginState,
+}) => {
 	const [collectionId] = useState((match.params as any)['id'] as string);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -80,14 +91,20 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 
 	const renderCollection = (collection: Avo.Collection.Collection) => {
 		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
-		const canEditCollection = PermissionService.hasPermissions([
-			{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
-			{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
-		]);
-		const canDeleteCollection = PermissionService.hasPermissions([
-			{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
-			{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
-		]);
+		const canEditCollection = PermissionService.hasPermissions(
+			[
+				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
+				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
+			],
+			get(loginState, 'userInfo.profile', null)
+		);
+		const canDeleteCollection = PermissionService.hasPermissions(
+			[
+				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
+				{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
+			],
+			get(loginState, 'userInfo.profile', null)
+		);
 
 		return (
 			<>
@@ -389,4 +406,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({ match, his
 	);
 };
 
-export default withRouter(CollectionDetail);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(CollectionDetail));
