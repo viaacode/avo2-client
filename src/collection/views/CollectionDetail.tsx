@@ -36,6 +36,7 @@ import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { formatDate } from '../../shared/helpers/formatters/date';
 import {
 	generateAssignmentCreateLink,

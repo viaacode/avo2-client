@@ -29,6 +29,7 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import InputModal from '../../shared/components/modals/InputModal';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -42,7 +43,6 @@ import {
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../graphql';
-import { renderAvatar } from '../helpers';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from '../helpers/validation';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';

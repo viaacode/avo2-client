@@ -22,14 +22,16 @@ import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
+import { getAvatarProps, renderAvatars } from '../../shared/helpers/formatters/avatar';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
-import { getFullName, getInitials } from '../helpers';
 
 import './CollectionOverview.scss';
+import { compact } from 'lodash-es';
+import { AvatarProps } from '@viaa/avo2-components/dist/components/Avatar/Avatar';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
@@ -108,16 +110,14 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				return isInFolder && <Button icon="folder" type="borderless" />;
 
 			case 'access':
-				// TODO get alle users that are allowed to edit this collection
-				const userProfiles = [collection.profile];
-				const avatars = userProfiles.map(profile => {
-					return {
-						initials: getInitials(profile),
-						name: getFullName(profile),
-						subtitle: 'Mag Bewerken', // TODO: Display correct permissions
-					};
+				// TODO get all users that are allowed to edit this collection
+				const userProfiles: Avo.User.Profile[] = compact([collection.profile]);
+				const avatarProps = userProfiles.map(profile => {
+					const props = getAvatarProps(profile);
+					(props as any).subtitle = 'mag bewerken'; // TODO check permissions for every user
+					return props;
 				});
-				return avatars && <AvatarList avatars={avatars} isOpen={false} />;
+				return userProfiles && <AvatarList avatars={avatarProps as any[]} isOpen={false} />;
 
 			case 'actions':
 				return (
@@ -178,31 +178,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		collections: Avo.Collection.Collection[],
 		refetchCollections: () => void
 	) => {
-		const mappedCollections = !!collections
-			? collections.map(collection => {
-					const userProfiles = [collection.profile];
-
-					const avatars = userProfiles.map(profile => {
-						return {
-							initials: getInitials(profile),
-							name: getFullName(profile),
-							subtitle: 'Mag Bewerken', // TODO: Diplay correct permissions
-						};
-					});
-
-					return {
-						createdAt: collection.created_at,
-						id: collection.id,
-						thumbnail: null,
-						title: collection.title,
-						updatedAt: collection.updated_at,
-						inFolder: true,
-						access: avatars,
-						actions: true,
-					};
-			  })
-			: [];
-
 		return (
 			<>
 				<Table
