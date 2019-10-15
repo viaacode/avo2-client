@@ -66,7 +66,7 @@ export class PermissionService {
 			case PERMISSIONS.EDIT_OWN_COLLECTION:
 				const profileId = get(profile, 'id');
 				const ownerId = get(obj, 'owner_profile_id');
-				return profileId && ownerId && profileId === obj.owner.id;
+				return profileId && ownerId && profileId === ownerId;
 
 			default:
 				// The permission does not require any other checks besides is presence in the permission list
