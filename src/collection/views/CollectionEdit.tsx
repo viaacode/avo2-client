@@ -525,9 +525,9 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					when={hasUnsavedChanged()}
 					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
 				/>
-				<Container background="alt" mode="vertical" size="small">
+				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">
-						<Toolbar>
+						<Toolbar autoHeight>
 							<ToolbarLeft>
 								<ToolbarItem>
 									<Spacer margin="bottom">
@@ -548,10 +548,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 											/>
 										</MetaData>
 									</Spacer>
-									<h1
-										className="c-h2 u-m-b-0 u-clickable"
-										onClick={() => setIsRenameModalOpen(true)}
-									>
+									<h1 className="c-h2 u-clickable" onClick={() => setIsRenameModalOpen(true)}>
 										{currentCollection.title}
 									</h1>
 									{currentCollection.profile && (
