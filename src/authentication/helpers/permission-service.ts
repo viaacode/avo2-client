@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 
+import { Avo } from '@viaa/avo2-types';
 import authClient from '../Auth';
 
 type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
@@ -19,7 +20,7 @@ export class PermissionService {
 	// TODO replace with userInfo.permissions
 	private static currentUserPermissions: PermissionName[] = Object.values(PERMISSIONS);
 
-	public static hasPermissions(permissions: Permissions) {
+	public static hasPermissions(permissions: Permissions, profile: Avo.User.Profile | null) {
 		// Reformat all permissions to format: PermissionInfo[]
 		let permissionList: PermissionInfo[];
 		if (typeof permissions === 'string') {
@@ -43,14 +44,18 @@ export class PermissionService {
 		}
 		// Check every permission and return true for the first permission that returns true (lazy eval)
 		for (const perm of permissionList) {
-			if (this.hasPermission(perm.permissionName, perm.obj)) {
+			if (this.hasPermission(perm.permissionName, perm.obj, profile)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private static hasPermission(permissionName: PermissionName, obj: any | null | undefined) {
+	private static hasPermission(
+		permissionName: PermissionName,
+		obj: any | null | undefined,
+		profile: Avo.User.Profile | null
+	) {
 		// Check if user has the requested permission
 		if (!this.currentUserPermissions.includes(permissionName)) {
 			return false;
@@ -59,15 +64,13 @@ export class PermissionService {
 		switch (permissionName) {
 			// TODO replace example permissions
 			case PERMISSIONS.EDIT_OWN_COLLECTION:
-				const profile = authClient.getProfile();
 				const profileId = get(profile, 'id');
-				const ownerId = get(obj, 'owner.id');
-				if (profileId && ownerId && profileId === obj.owner.id) {
-					return true;
-				}
-				break;
+				const ownerId = get(obj, 'owner_profile_id');
+				return profileId && ownerId && profileId === obj.owner.id;
+
 			default:
-				return false;
+				// The permission does not require any other checks besides is presence in the permission list
+				return true;
 		}
 	}
 }
