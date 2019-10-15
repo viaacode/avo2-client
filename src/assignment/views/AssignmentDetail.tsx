@@ -35,7 +35,6 @@ import NotFound from '../../404/views/NotFound';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
 import FragmentDetail from '../../collection/components/FragmentDetail';
-import { renderAvatar } from '../../collection/helpers';
 import { RouteParts } from '../../constants';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
@@ -51,6 +50,7 @@ import { getAssignmentContent, LoadingState } from '../helpers';
 import { Assignment, AssignmentContent, AssignmentResponse, AssignmentTag } from '../types';
 
 import './AssignmentDetail.scss';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
