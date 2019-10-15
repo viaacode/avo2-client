@@ -38,15 +38,15 @@ import {
 	generateContentLinkString,
 	generateSearchLinks,
 } from '../../shared/helpers/generateLink';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
+import { renderAvatar } from '../helpers';
 import { ContentTypeString } from '../types';
 
 import './CollectionDetail.scss';
-import { renderAvatar } from '../helpers';
-import { ApolloCacheManager } from '../../shared/services/data-service';
 
 interface CollectionDetailProps extends RouteComponentProps {}
 

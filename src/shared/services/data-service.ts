@@ -13,7 +13,7 @@ export class ApolloCacheManager {
 	 * @param cache
 	 */
 	public static clearCollectionCache(cache: { [key: string]: any }) {
-		ApolloCacheManager.deleteCacheFromCache(cache, 'app_collection');
+		ApolloCacheManager.deleteFromCache(cache, 'app_collection');
 	}
 
 	/**
@@ -22,9 +22,9 @@ export class ApolloCacheManager {
 	 * @param cache
 	 */
 	public static clearAssignmentCache = (cache: { [key: string]: any }) =>
-		ApolloCacheManager.deleteCacheFromCache(cache, 'app_assignment');
+		ApolloCacheManager.deleteFromCache(cache, 'app_assignment');
 
-	private static deleteCacheFromCache(cache: { [key: string]: any }, keyPrefix: string) {
+	private static deleteFromCache(cache: { [key: string]: any }, keyPrefix: string) {
 		Object.keys(cache.data.data).forEach(
 			(key: string) => key.match(new RegExp(`^${keyPrefix}`)) && cache.data.delete(key)
 		);

@@ -23,13 +23,13 @@ import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 import { getFullName, getInitials } from '../helpers';
 
 import './CollectionOverview.scss';
-import { ApolloCacheManager } from '../../shared/services/data-service';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
