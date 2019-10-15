@@ -48,7 +48,6 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
-import { renderAvatar } from '../helpers';
 import { ContentTypeString } from '../types';
 
 import { get } from 'lodash-es';

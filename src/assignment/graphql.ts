@@ -112,6 +112,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 			owner_profile_id
 			profile {
 				user: usersByuserId {
+					id
 					role {
 						label
 						id
