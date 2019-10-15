@@ -42,6 +42,7 @@ export const GET_COLLECTION_BY_ID = gql`
 			note
 			thumbnail_path
 			publish_at
+			owner_profile_id
 			profile {
 				alias
 				alternative_email

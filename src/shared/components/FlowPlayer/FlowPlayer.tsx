@@ -1,4 +1,4 @@
-import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from 'react';
+import React, { FunctionComponent, MutableRefObject, useEffect, useRef, useState } from 'react';
 
 import { Icon } from '@viaa/avo2-components';
 
@@ -16,6 +16,7 @@ interface FlowPlayerProps {
 	subtitles: string[];
 	start?: number | null;
 	end?: number | null;
+	seekTime?: number;
 	onInit?: () => void;
 }
 
@@ -26,10 +27,22 @@ export const FlowPlayer: FunctionComponent<FlowPlayerProps> = ({
 	onInit,
 	start = 0,
 	end = undefined,
+	seekTime,
 	subtitles,
 }) => {
 	const videoContainerRef = useRef(null);
 	const videoPlayerRef: MutableRefObject<any | undefined> = useRef<any>();
+	const [lastSeekTime, setLastSeekTime] = useState<number | undefined>(undefined);
+
+	useEffect(() => {
+		if (typeof seekTime !== 'undefined' && seekTime !== lastSeekTime && seekTime !== 0) {
+			setLastSeekTime(seekTime);
+			// seekTime should be updated
+			if (videoPlayerRef.current) {
+				videoPlayerRef.current.currentTime = seekTime;
+			}
+		}
+	}, [seekTime]);
 
 	const createTitleOverlay = () => {
 		const titleOverlay = document.createElement('div');
