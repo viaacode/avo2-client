@@ -1,5 +1,6 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, get } from 'lodash-es';
+import { ApolloCacheManager } from '../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
 import { Assignment, AssignmentLayout } from './types';
 
@@ -47,6 +48,7 @@ export const deleteAssignment = async (triggerAssignmentDelete: any, id: number 
 	try {
 		await triggerAssignmentDelete({
 			variables: { id },
+			update: ApolloCacheManager.clearAssignmentCache,
 		});
 	} catch (err) {
 		console.error(err);
@@ -71,6 +73,7 @@ export const updateAssignment = async (
 				id: assignment.id,
 				assignment: assignmentToSave,
 			},
+			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
 		if (!response || !response.data) {
@@ -101,6 +104,7 @@ export const insertAssignment = async (
 			variables: {
 				assignment: assignmentToSave,
 			},
+			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
 		const id = get(response, 'data.insert_app_assignments.returning[0].id');
