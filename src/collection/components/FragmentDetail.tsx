@@ -51,6 +51,7 @@ let setPlayerTickets: (newPlayerTickets: PlayerTicket[]) => void;
  * @param props FragmentDetailProps
  * @constructor
  */
+// TODO: Split up in FragmentDetailList and FragmentDetail component.
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFragments }) => {
 	[playerTickets, setPlayerTickets] = useState<PlayerTicket[]>([]);
 
