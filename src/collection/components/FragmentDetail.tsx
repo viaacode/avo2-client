@@ -38,8 +38,12 @@ interface FragmentDetailProps {
 	collectionFragments: Avo.Collection.Fragment[];
 }
 
-let playerTickets: any;
-let setPlayerTickets: (newPlayerTickets: any) => void;
+interface PlayerTicket {
+	[key: number]: string;
+}
+
+let playerTickets: PlayerTicket[];
+let setPlayerTickets: (newPlayerTickets: PlayerTicket[]) => void;
 
 /**
  * Renders the collection body with all of its fragments for the detail page
@@ -48,7 +52,7 @@ let setPlayerTickets: (newPlayerTickets: any) => void;
  * @constructor
  */
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFragments }) => {
-	[playerTickets, setPlayerTickets] = useState<any>();
+	[playerTickets, setPlayerTickets] = useState<PlayerTicket[]>([]);
 
 	const getFragmentField = (fragment: Avo.Collection.Fragment, field: 'description' | 'title') => {
 		return fragment.use_custom_fields
@@ -64,7 +68,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 		fragments.forEach((fragment: Avo.Collection.Fragment) => {
 			const initFlowPlayer = () => {
 				return (
-					(!playerTickets || !playerTickets[fragment.external_id]) &&
+					(!playerTickets || !playerTickets[fragment.id]) &&
 					fetchPlayerTicket(fragment.external_id)
 						.then(data =>
 							setPlayerTickets({
