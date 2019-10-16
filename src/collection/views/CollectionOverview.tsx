@@ -19,15 +19,22 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { compact } from 'lodash-es';
 import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
+import {
+	getAvatarProps,
+	getFullName,
+	getInitials,
+	renderAvatars,
+} from '../../shared/helpers/formatters/avatar';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
-import { getFullName, getInitials } from '../helpers';
 
 import './CollectionOverview.scss';
 
@@ -54,6 +61,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				variables: {
 					id: idToDelete,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
 			refetchCollections();
@@ -107,16 +115,14 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				return isInFolder && <Button icon="folder" type="borderless" />;
 
 			case 'access':
-				// TODO get alle users that are allowed to edit this collection
-				const userProfiles = [(collection as any).profile];
-				const avatars = userProfiles.map(profile => {
-					return {
-						initials: getInitials(profile),
-						name: getFullName(profile),
-						subtitle: 'Mag Bewerken', // TODO: Display correct permissions
-					};
+				// TODO get all users that are allowed to edit this collection
+				const userProfiles: Avo.User.Profile[] = compact([collection.profile]);
+				const avatarProps = userProfiles.map(profile => {
+					const props = getAvatarProps(profile);
+					(props as any).subtitle = 'mag bewerken'; // TODO check permissions for every user
+					return props;
 				});
-				return avatars && <AvatarList avatars={avatars} isOpen={false} />;
+				return userProfiles && <AvatarList avatars={avatarProps as any[]} isOpen={false} />;
 
 			case 'actions':
 				return (

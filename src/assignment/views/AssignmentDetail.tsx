@@ -35,11 +35,11 @@ import NotFound from '../../404/views/NotFound';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
 import FragmentDetail from '../../collection/components/FragmentDetail';
-import { renderAvatar } from '../../collection/helpers';
 import { RouteParts } from '../../constants';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
-import { dataService } from '../../shared/services/data-service';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import {
@@ -132,6 +132,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 						variables: {
 							assignmentResponses: [assignmentResponse],
 						},
+						update: ApolloCacheManager.clearAssignmentCache,
 					});
 					const assignmentResponseId = get(
 						reply,
@@ -261,6 +262,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 						id: assignmentResponse.id,
 						assignmentResponse: updatedAssignmentResponse,
 					},
+					update: ApolloCacheManager.clearAssignmentCache,
 				})
 					.then(() => {
 						toastService(

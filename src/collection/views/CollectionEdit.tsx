@@ -30,6 +30,8 @@ import ControlledDropdown from '../../shared/components/ControlledDropdown/Contr
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import InputModal from '../../shared/components/modals/InputModal';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
@@ -42,7 +44,6 @@ import {
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../graphql';
-import { renderAvatar } from '../helpers';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from '../helpers/validation';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
@@ -137,6 +138,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				variables: {
 					id: currentCollection.id,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			// TODO: Refresh data on Collections page.
@@ -199,6 +201,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					id: cleanedCollection.id,
 					collection: cleanedCollection,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			console.error(err);
@@ -285,6 +288,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				id: currentCollection.id,
 				fragment: fragmentToAdd,
 			},
+			update: ApolloCacheManager.clearCollectionCache,
 		});
 
 		const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
@@ -403,7 +407,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			const deletePromises: Promise<any>[] = [];
 
 			deleteFragmentIds.forEach((id: number) => {
-				deletePromises.push(triggerCollectionFragmentDelete({ variables: { id } }));
+				deletePromises.push(
+					triggerCollectionFragmentDelete({
+						variables: { id },
+						update: ApolloCacheManager.clearCollectionCache,
+					})
+				);
 			});
 
 			// Update fragments
@@ -432,6 +441,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 							id,
 							fragment: fragmentToUpdate,
 						},
+						update: ApolloCacheManager.clearCollectionCache,
 					})
 				);
 			});
@@ -472,6 +482,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					id: cleanedCollection.id,
 					collection: cleanedCollection,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			setCurrentCollection(newCollection);
 			setInitialCollection(cloneDeep(newCollection));
@@ -526,9 +537,9 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					when={hasUnsavedChanged()}
 					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
 				/>
-				<Container background="alt" mode="vertical" size="small">
+				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">
-						<Toolbar>
+						<Toolbar autoHeight>
 							<ToolbarLeft>
 								<ToolbarItem>
 									<Spacer margin="bottom">
@@ -549,10 +560,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 											/>
 										</MetaData>
 									</Spacer>
-									<h1
-										className="c-h2 u-m-b-0 u-clickable"
-										onClick={() => setIsRenameModalOpen(true)}
-									>
+									<h1 className="c-h2 u-clickable" onClick={() => setIsRenameModalOpen(true)}>
 										{currentCollection.title}
 									</h1>
 									{currentCollection.profile && (

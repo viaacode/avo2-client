@@ -65,10 +65,6 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 					.then(data => setPlayerTicket(data))
 					.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
-			if (isMediaFragment(fragment)) {
-				initFlowPlayer();
-			}
-
 			const contentBlocks: {
 				[contentBlockName: string]: {
 					type: ContentBlockType;
@@ -82,7 +78,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 						text: getFragmentField(fragment, 'description'),
 						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
 						flowPlayerProps: {
-							src: playerTicket || null,
+							src: playerTicket ? playerTicket.toString() : null,
 							poster: 'https://via.placeholder.com/1920x1080', // TODO: fragment.thumbnail_path
 							title: getFragmentField(fragment, 'title'),
 							subtitles: ['12/12/2013'],
@@ -90,6 +86,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 							end: fragment.end_oc,
 							token: getEnv('FLOW_PLAYER_TOKEN'),
 							dataPlayerId: getEnv('FLOW_PLAYER_ID'),
+							onInit: initFlowPlayer,
 						},
 					},
 				},

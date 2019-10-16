@@ -37,7 +37,7 @@ import { DataQueryComponent } from '../../../shared/components/DataComponent/Dat
 import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
-import { dataService } from '../../../shared/services/data-service';
+import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
@@ -108,6 +108,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 						collection_id: collection.id,
 					},
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
@@ -138,6 +139,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				variables: {
 					collection: newCollection,
 				},
+				update: ApolloCacheManager.clearCollectionCache,
 			});
 			const insertedCollection: Partial<Avo.Collection.Collection> = get(
 				response,

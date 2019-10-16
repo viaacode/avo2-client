@@ -42,6 +42,7 @@ export const GET_COLLECTION_BY_ID = gql`
 			note
 			thumbnail_path
 			publish_at
+			owner_profile_id
 			profile {
 				alias
 				alternative_email
@@ -194,6 +195,14 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				stamboek
 				updated_at
 				user_id
+				user: usersByuserId {
+					first_name
+					last_name
+					role {
+						id
+						label
+					}
+				}
 			}
 			is_public
 			external_id
