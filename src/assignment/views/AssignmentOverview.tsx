@@ -296,8 +296,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return (
 					<div className="c-button-toolbar">
 						<Dropdown
-							autoSize
 							isOpen={dropdownOpenForAssignmentId === rowData.id}
+							menuWidth="fit-content"
 							onClose={() => setDropdownOpenForAssignmentId(null)}
 							onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
 							placement="bottom-end"

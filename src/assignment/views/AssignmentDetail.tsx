@@ -49,8 +49,8 @@ import {
 import { getAssignmentContent, LoadingState } from '../helpers';
 import { Assignment, AssignmentContent, AssignmentResponse, AssignmentTag } from '../types';
 
-import './AssignmentDetail.scss';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
@@ -406,8 +406,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 										)}
 										<ToolbarItem>
 											<Dropdown
-												autoSize
 												isOpen={isActionsDropdownOpen}
+												menuWidth="fit-content"
 												onClose={() => setActionsDropdownOpen(false)}
 												onOpen={() => setActionsDropdownOpen(true)}
 												placement="bottom-end"

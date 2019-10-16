@@ -597,10 +597,10 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 										/>
 										<ControlledDropdown
 											isOpen={isOptionsMenuOpen}
+											menuWidth="fit-content"
 											onOpen={() => setIsOptionsMenuOpen(true)}
 											onClose={() => setIsOptionsMenuOpen(false)}
 											placement="bottom-end"
-											autoSize
 										>
 											<DropdownButton>
 												<Button type="secondary" icon="more-horizontal" />

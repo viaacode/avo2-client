@@ -487,9 +487,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		return (
 			<Dropdown
 				isOpen={tagsDropdownOpen}
+				menuWidth="fit-content"
 				onOpen={() => setTagsDropdownOpen(true)}
 				onClose={() => setTagsDropdownOpen(false)}
-				autoSize={true}
 			>
 				<DropdownButton>
 					{renderDropdownButton(tags.length ? '' : 'Geen', false, tags, removeTag)}
@@ -558,10 +558,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												/>
 												<Dropdown
 													isOpen={isExtraOptionsMenuOpen}
+													menuWidth="fit-content"
 													onOpen={() => setExtraOptionsMenuOpen(true)}
 													onClose={() => setExtraOptionsMenuOpen(false)}
 													placement="bottom-end"
-													autoSize
 												>
 													<DropdownButton>
 														<Button

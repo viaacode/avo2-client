@@ -122,8 +122,8 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				return (
 					<div className="c-button-toolbar">
 						<Dropdown
-							autoSize
 							isOpen={dropdownOpen[collection.id] || false}
+							menuWidth="fit-content"
 							onClose={() => setDropdownOpen({ [collection.id]: false })}
 							onOpen={() => setDropdownOpen({ [collection.id]: true })}
 							placement="bottom-end"

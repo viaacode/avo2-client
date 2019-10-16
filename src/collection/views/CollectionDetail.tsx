@@ -151,10 +151,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 											<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
 											<ControlledDropdown
 												isOpen={isOptionsMenuOpen}
+												menuWidth="fit-content"
 												onOpen={() => setIsOptionsMenuOpen(true)}
 												onClose={() => setIsOptionsMenuOpen(false)}
 												placement="bottom-end"
-												autoSize
 											>
 												<DropdownButton>
 													<Button

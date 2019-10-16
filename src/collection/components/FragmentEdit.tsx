@@ -214,10 +214,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 							<ToolbarItem>
 								<ControlledDropdown
 									isOpen={openOptionsId === fragment.id}
+									menuWidth="fit-content"
 									onOpen={() => setOpenOptionsId(fragment.id)}
 									onClose={() => setOpenOptionsId(null)}
 									placement="bottom-end"
-									autoSize
 								>
 									<DropdownButton>
 										<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
