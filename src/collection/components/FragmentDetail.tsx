@@ -67,8 +67,10 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 
 		fragments.forEach((fragment: Avo.Collection.Fragment) => {
 			const initFlowPlayer = () => {
+				const hasNoPlayerTicket = !playerTickets || !playerTickets[fragment.id];
+
 				return (
-					(!playerTickets || !playerTickets[fragment.id]) &&
+					hasNoPlayerTicket &&
 					fetchPlayerTicket(fragment.external_id)
 						.then(data =>
 							setPlayerTickets({
@@ -76,7 +78,9 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 								[fragment.id]: data,
 							})
 						)
-						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER))
+						.catch(() =>
+							toastService('Player ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER)
+						)
 				);
 			};
 
