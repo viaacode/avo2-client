@@ -38,6 +38,7 @@ import FragmentDetail from '../../collection/components/FragmentDetail';
 import { RouteParts } from '../../constants';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
+import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
@@ -50,7 +51,6 @@ import { getAssignmentContent, LoadingState } from '../helpers';
 import { Assignment, AssignmentContent, AssignmentResponse, AssignmentTag } from '../types';
 
 import './AssignmentDetail.scss';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
