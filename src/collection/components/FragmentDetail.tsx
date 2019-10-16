@@ -69,7 +69,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 						.then(data =>
 							setPlayerTickets({
 								...playerTickets,
-								[fragment.external_id]: data,
+								[fragment.id]: data,
 							})
 						)
 						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER))
@@ -90,8 +90,8 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
 						flowPlayerProps: {
 							src:
-								playerTickets && playerTickets[fragment.external_id]
-									? playerTickets[fragment.external_id].toString()
+								playerTickets && playerTickets[fragment.id]
+									? playerTickets[fragment.id].toString()
 									: null,
 							poster: 'https://via.placeholder.com/1920x1080', // TODO: fragment.thumbnail_path
 							title: getFragmentField(fragment, 'title'),
