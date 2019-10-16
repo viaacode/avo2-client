@@ -80,7 +80,12 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 						title: getFragmentField(fragment, 'title'),
 						text: getFragmentField(fragment, 'description'),
 						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
-						videoSource: playerTicket,
+						flowPlayerProps: {
+							src: playerTicket || null,
+							poster: '',
+							title: '',
+							subtitles: [],
+						},
 					},
 				},
 				titleText: {
