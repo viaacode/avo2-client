@@ -24,8 +24,8 @@ import {
 	BlockVideoTitleTextButton,
 	BlockVideoTitleTextButtonProps,
 } from '@viaa/avo2-components';
-
 import { Avo } from '@viaa/avo2-types';
+
 import { get, orderBy } from 'lodash-es';
 import { getEnv } from '../../shared/helpers/env';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
@@ -88,8 +88,8 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 							subtitles: ['12/12/2013'],
 							start: fragment.start_oc,
 							end: fragment.end_oc,
-							token: getEnv('PROXY_URL'),
-							dataPlayerId: getEnv('PROXY_URL'),
+							token: getEnv('FLOW_PLAYER_TOKEN'),
+							dataPlayerId: getEnv('FLOW_PLAYER_ID'),
 						},
 					},
 				},
