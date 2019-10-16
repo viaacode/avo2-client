@@ -38,6 +38,9 @@ interface FragmentDetailProps {
 	collectionFragments: Avo.Collection.Fragment[];
 }
 
+let playerTickets: any;
+let setPlayerTickets: (newPlayerTickets: any) => void;
+
 /**
  * Renders the collection body with all of its fragments for the detail page
  * The bottom meta data is not included in the component
@@ -45,7 +48,7 @@ interface FragmentDetailProps {
  * @constructor
  */
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFragments }) => {
-	const [playerTicket, setPlayerTicket] = useState<string | undefined>();
+	[playerTickets, setPlayerTickets] = useState<any>();
 
 	const getFragmentField = (fragment: Avo.Collection.Fragment, field: 'description' | 'title') => {
 		return fragment.use_custom_fields
@@ -59,11 +62,19 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 		const fragments = orderBy([...collectionFragments], 'position', 'asc') || [];
 
 		fragments.forEach((fragment: Avo.Collection.Fragment) => {
-			const initFlowPlayer = () =>
-				!playerTicket &&
-				fetchPlayerTicket(fragment.external_id)
-					.then(data => setPlayerTicket(data))
-					.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
+			const initFlowPlayer = () => {
+				return (
+					(!playerTickets || !playerTickets[fragment.external_id]) &&
+					fetchPlayerTicket(fragment.external_id)
+						.then(data =>
+							setPlayerTickets({
+								...playerTickets,
+								[fragment.external_id]: data,
+							})
+						)
+						.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER))
+				);
+			};
 
 			const contentBlocks: {
 				[contentBlockName: string]: {
@@ -78,7 +89,10 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 						text: getFragmentField(fragment, 'description'),
 						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
 						flowPlayerProps: {
-							src: playerTicket ? playerTicket.toString() : null,
+							src:
+								playerTickets && playerTickets[fragment.external_id]
+									? playerTickets[fragment.external_id].toString()
+									: null,
 							poster: 'https://via.placeholder.com/1920x1080', // TODO: fragment.thumbnail_path
 							title: getFragmentField(fragment, 'title'),
 							subtitles: ['12/12/2013'],
@@ -111,15 +125,14 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 		return collectionFragmentInfos;
 	};
 
-	const renderCollectionFragments = () => {
-		return getCollectionFragmentInfos().map((contentBlock: ContentBlockInfo, index: number) => {
+	const renderCollectionFragments = () =>
+		getCollectionFragmentInfos().map((contentBlock: ContentBlockInfo, index: number) => {
 			return (
 				<li className="c-collection-list__item" key={`content-block-${index}`}>
 					{renderCollectionFragment(contentBlock)}
 				</li>
 			);
 		});
-	};
 
 	const renderCollectionFragment = (collectionFragment: ContentBlockInfo) => {
 		const {
