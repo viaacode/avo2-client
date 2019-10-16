@@ -18,6 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { compact } from 'lodash-es';
 import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -30,8 +31,6 @@ import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
 import './CollectionOverview.scss';
-import { compact } from 'lodash-es';
-import { AvatarProps } from '@viaa/avo2-components/dist/components/Avatar/Avatar';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
