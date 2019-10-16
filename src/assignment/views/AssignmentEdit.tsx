@@ -11,7 +11,6 @@ import {
 	Alert,
 	Button,
 	Container,
-	DatePicker,
 	DateTimePicker,
 	Dropdown,
 	DropdownButton,
@@ -137,8 +136,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	 *  Get query string variables and store them into the assignment state object
 	 */
 	useEffect(() => {
-		initAssignmentData().then(() => {});
-	}, [location, match.params, setLoadingState, currentAssignment, assignmentContent]);
+		initAssignmentData();
+	}, [location, match.params, setLoadingState, assignmentContent]);
 
 	const initAssignmentData = async () => {
 		try {

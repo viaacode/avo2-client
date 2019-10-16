@@ -40,7 +40,11 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
 	useEffect(() => {
-		getSeekerTimeFromQueryParams();
+		// Set video current time from the query params once the video has loaded its meta data
+		// If this happens sooner, the time will be ignored by the video player
+		const queryParams = queryString.parse(location.search);
+
+		setTime(parseInt((queryParams.time as string) || '0', 10));
 
 		// Register window listener when the component mounts
 		const onResizeHandler = debounce(
@@ -55,22 +59,14 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			300,
 			{ leading: false, trailing: true }
 		);
+
 		window.addEventListener('resize', onResizeHandler);
 		onResizeHandler();
 
 		return () => {
 			window.removeEventListener('resize', onResizeHandler);
 		};
-	}, [videoRef]);
-
-	/**
-	 * Set video current time from the query params once the video has loaded its meta data
-	 * If this happens sooner, the time will be ignored by the video player
-	 */
-	const getSeekerTimeFromQueryParams = () => {
-		const queryParams = queryString.parse(location.search);
-		setTime(parseInt((queryParams.time as string) || '0', 10));
-	};
+	}, [location.search, videoRef]);
 
 	const handleTimeLinkClicked = async (timestamp: string) => {
 		const seconds = parseDuration(timestamp);
