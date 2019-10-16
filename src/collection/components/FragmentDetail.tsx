@@ -81,10 +81,11 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 						text: getFragmentField(fragment, 'description'),
 						titleLink: generateContentLinkString(ContentTypeString.video, fragment.external_id),
 						flowPlayerProps: {
-							src: playerTicket || null,
+							onInit: initFlowPlayer,
 							poster: '',
-							title: '',
+							src: playerTicket ? playerTicket.toString() : null,
 							subtitles: [],
+							title: '',
 						},
 					},
 				},
