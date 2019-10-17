@@ -11,6 +11,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
 	Flex,
@@ -181,7 +182,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
-										<div className="c-button-toolbar">
+										<ButtonToolbar>
 											<Flex justify="between" wrap>
 												<Button
 													type="tertiary"
@@ -200,9 +201,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 													}
 												/>
 											</Flex>
-										</div>
+										</ButtonToolbar>
 									</Flex>
-									<div className="c-button-toolbar">
+									<ButtonToolbar>
 										<ToggleButton
 											type="tertiary"
 											icon="bookmark"
@@ -211,7 +212,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										/>
 										<Button type="tertiary" icon="share-2" ariaLabel="share item" />
 										<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
-									</div>
+									</ButtonToolbar>
 								</Spacer>
 							</Column>
 							<Column size="2-5">

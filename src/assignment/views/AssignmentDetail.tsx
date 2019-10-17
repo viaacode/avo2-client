@@ -406,8 +406,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 										)}
 										<ToolbarItem>
 											<Dropdown
-												autoSize
 												isOpen={isActionsDropdownOpen}
+												menuWidth="fit-content"
 												onClose={() => setActionsDropdownOpen(false)}
 												onOpen={() => setActionsDropdownOpen(true)}
 												placement="bottom-end"

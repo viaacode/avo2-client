@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import {
 	AvatarList,
 	Button,
+	ButtonToolbar,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -17,13 +18,13 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-
 import { compact } from 'lodash-es';
+
 import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import { getAvatarProps, renderAvatars } from '../../shared/helpers/formatters/avatar';
+import { getAvatarProps } from '../../shared/helpers/formatters/avatar';
 import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -120,10 +121,10 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 
 			case 'actions':
 				return (
-					<div className="c-button-toolbar">
+					<ButtonToolbar>
 						<Dropdown
-							autoSize
 							isOpen={dropdownOpen[collection.id] || false}
+							menuWidth="fit-content"
 							onClose={() => setDropdownOpen({ [collection.id]: false })}
 							onOpen={() => setDropdownOpen({ [collection.id]: true })}
 							placement="bottom-end"
@@ -161,7 +162,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							onClick={() => history.push(`/${RouteParts.Collection}/${collection.id}`)}
 							type="borderless"
 						/>
-					</div>
+					</ButtonToolbar>
 				);
 			case 'created_at':
 			case 'updated_at':
@@ -176,40 +177,38 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	const renderCollections = (
 		collections: Avo.Collection.Collection[],
 		refetchCollections: () => void
-	) => {
-		return (
-			<>
-				<Table
-					columns={[
-						{ id: 'thumbnail', label: '' },
-						{ id: 'title', label: 'Titel', sortable: true },
-						{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
-						{ id: 'inFolder', label: 'In map' },
-						{ id: 'access', label: 'Toegang' },
-						{ id: 'actions', label: '' },
-					]}
-					data={collections}
-					emptyStateMessage="Geen resultaten gevonden"
-					renderCell={renderCell}
-					rowKey="id"
-					styled
-				/>
-				<Pagination
-					pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
-					currentPage={page}
-					onPageChange={setPage}
-				/>
+	) => (
+		<>
+			<Table
+				columns={[
+					{ id: 'thumbnail', label: '' },
+					{ id: 'title', label: 'Titel', sortable: true },
+					{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
+					{ id: 'inFolder', label: 'In map' },
+					{ id: 'access', label: 'Toegang' },
+					{ id: 'actions', label: '' },
+				]}
+				data={collections}
+				emptyStateMessage="Geen resultaten gevonden"
+				renderCell={renderCell}
+				rowKey="id"
+				styled
+			/>
+			<Pagination
+				pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
+				currentPage={page}
+				onPageChange={setPage}
+			/>
 
-				<DeleteObjectModal
-					title="Verwijder collectie?"
-					body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
-					isOpen={isDeleteModalOpen}
-					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={() => deleteCollection(refetchCollections)}
-				/>
-			</>
-		);
-	};
+			<DeleteObjectModal
+				title="Verwijder collectie?"
+				body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
+				isOpen={isDeleteModalOpen}
+				onClose={() => setIsDeleteModalOpen(false)}
+				deleteObjectCallback={() => deleteCollection(refetchCollections)}
+			/>
+		</>
+	);
 
 	// TODO get actual owner id from ldap user + map to old drupal userid
 	return (
