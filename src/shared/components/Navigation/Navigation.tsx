@@ -34,7 +34,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	secondaryItems,
 	isOpen,
 	handleMenuClick = () => {},
-}: NavigationProps) => {
+}) => {
 	return (
 		<>
 			<Navbar background="inverse" position="fixed" placement="top">

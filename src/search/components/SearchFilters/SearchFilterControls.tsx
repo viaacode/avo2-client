@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
 import { capitalize, get } from 'lodash-es';
@@ -15,11 +15,11 @@ const languageCodeToLabel = (code: string): string => {
 	return capitalize(LANGUAGES.nl[code]) || code;
 };
 
-const SearchFilterControls = ({
+const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	formState,
 	handleFilterFieldChange,
 	multiOptions,
-}: SearchFilterControlsProps) => {
+}) => {
 	const renderCheckboxDropdownModal = (
 		label: string,
 		propertyName: Avo.Search.FilterProp,
