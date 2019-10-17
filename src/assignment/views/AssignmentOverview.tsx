@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import {
 	Button,
 	ButtonGroup,
+	ButtonToolbar,
 	Container,
 	Dropdown,
 	DropdownButton,
@@ -294,7 +295,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				);
 			case 'actions':
 				return (
-					<div className="c-button-toolbar">
+					<ButtonToolbar>
 						<Dropdown
 							autoSize
 							isOpen={dropdownOpenForAssignmentId === rowData.id}
@@ -339,7 +340,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							}
 							type="borderless"
 						/>
-					</div>
+					</ButtonToolbar>
 				);
 			default:
 				return cellData;
