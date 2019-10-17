@@ -56,7 +56,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 	onClose = () => {},
 }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
 	const [selectedCollection, setSelectedCollection] = useState<
@@ -92,7 +92,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {
 		// Disable "Toepassen" button
-		setIsLoading(true);
+		setIsProcessing(true);
 
 		try {
 			const response: void | ExecutionResult<
@@ -122,8 +122,8 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				onClose();
 			}
 
-			// Re-enable "Toepassen" button
-			setIsLoading(false);
+			// Re-enable apply button
+			setIsProcessing(false);
 		} catch (err) {
 			console.error(err);
 			toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
@@ -132,7 +132,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 
 	const addItemToNewCollection = async () => {
 		// Disable "Toepassen" button
-		setIsLoading(true);
+		setIsProcessing(true);
 
 		try {
 			// Create new collection with one fragment in it
@@ -313,13 +313,13 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 						<ToolbarRight>
 							<ToolbarItem>
 								<div className="c-button-toolbar">
-									{isLoading && <Spinner />}
+									{isProcessing && <Spinner />}
 									<Button
 										label="Annuleren"
 										type="link"
 										block
 										onClick={onClose}
-										disabled={isLoading}
+										disabled={isProcessing}
 									/>
 									<Button
 										label="Toepassen"
@@ -335,7 +335,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 										disabled={
 											(createNewCollection && !newCollectionTitle) ||
 											(!createNewCollection && !selectedCollection) ||
-											isLoading
+											isProcessing
 										}
 										onClick={onApply}
 									/>
