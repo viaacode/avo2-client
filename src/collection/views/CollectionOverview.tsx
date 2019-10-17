@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import {
 	AvatarList,
 	Button,
+	ButtonToolbar,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -120,7 +121,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 
 			case 'actions':
 				return (
-					<div className="c-button-toolbar">
+					<ButtonToolbar>
 						<Dropdown
 							isOpen={dropdownOpen[collection.id] || false}
 							menuWidth="fit-content"
@@ -161,7 +162,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 							onClick={() => history.push(`/${RouteParts.Collection}/${collection.id}`)}
 							type="borderless"
 						/>
-					</div>
+					</ButtonToolbar>
 				);
 			case 'created_at':
 			case 'updated_at':
@@ -176,40 +177,38 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	const renderCollections = (
 		collections: Avo.Collection.Collection[],
 		refetchCollections: () => void
-	) => {
-		return (
-			<>
-				<Table
-					columns={[
-						{ id: 'thumbnail', label: '' },
-						{ id: 'title', label: 'Titel', sortable: true },
-						{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
-						{ id: 'inFolder', label: 'In map' },
-						{ id: 'access', label: 'Toegang' },
-						{ id: 'actions', label: '' },
-					]}
-					data={collections}
-					emptyStateMessage="Geen resultaten gevonden"
-					renderCell={renderCell}
-					rowKey="id"
-					styled
-				/>
-				<Pagination
-					pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
-					currentPage={page}
-					onPageChange={setPage}
-				/>
+	) => (
+		<>
+			<Table
+				columns={[
+					{ id: 'thumbnail', label: '' },
+					{ id: 'title', label: 'Titel', sortable: true },
+					{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
+					{ id: 'inFolder', label: 'In map' },
+					{ id: 'access', label: 'Toegang' },
+					{ id: 'actions', label: '' },
+				]}
+				data={collections}
+				emptyStateMessage="Geen resultaten gevonden"
+				renderCell={renderCell}
+				rowKey="id"
+				styled
+			/>
+			<Pagination
+				pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
+				currentPage={page}
+				onPageChange={setPage}
+			/>
 
-				<DeleteObjectModal
-					title="Verwijder collectie?"
-					body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
-					isOpen={isDeleteModalOpen}
-					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={() => deleteCollection(refetchCollections)}
-				/>
-			</>
-		);
-	};
+			<DeleteObjectModal
+				title="Verwijder collectie?"
+				body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
+				isOpen={isDeleteModalOpen}
+				onClose={() => setIsDeleteModalOpen(false)}
+				deleteObjectCallback={() => deleteCollection(refetchCollections)}
+			/>
+		</>
+	);
 
 	// TODO get actual owner id from ldap user + map to old drupal userid
 	return (

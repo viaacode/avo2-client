@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import {
 	Alert,
 	Button,
+	ButtonToolbar,
 	Container,
 	DateTimePicker,
 	Dropdown,
@@ -545,7 +546,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							</ToolbarLeft>
 							<ToolbarRight>
 								<ToolbarItem>
-									<div className="c-button-toolbar">
+									<ButtonToolbar>
 										{pageType === 'create' && (
 											<Button type="secondary" onClick={() => history.goBack()} label="Annuleren" />
 										)}
@@ -596,7 +597,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											onClick={() => saveAssignment(currentAssignment)}
 											disabled={isSaving}
 										/>
-									</div>
+									</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>
 						</Toolbar>

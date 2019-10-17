@@ -209,13 +209,11 @@ $c-video-player-progress-handle-size: $c-video-player-progress-height * 2.5 !def
 
 .c-video-player-progress {
 	min-width: 100px;
-	//Background defined in theme
 	height: $c-video-player-progress-height;
 	position: relative;
 }
 
 .c-video-player-progress__inner {
-	//Background defined in theme
 	height: $c-video-player-progress-height;
 	position: absolute;
 	left: 0;
@@ -228,5 +226,4 @@ $c-video-player-progress-handle-size: $c-video-player-progress-height * 2.5 !def
 	position: absolute;
 	right: - $c-video-player-progress-handle-size / 2;
 	top: $c-video-player-progress-height / 2 - $c-video-player-progress-handle-size / 2;
-	//Background defined in theme
 }

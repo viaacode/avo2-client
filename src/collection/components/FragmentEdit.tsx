@@ -9,6 +9,7 @@ import {
 	convertToHtml,
 	DropdownButton,
 	DropdownContent,
+	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -24,7 +25,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { getEnv } from '../../shared/helpers/env';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
@@ -279,6 +280,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									start={cuePoints.start}
 									end={cuePoints.end}
 									subtitles={['30-12-2011', 'VRT']}
+									token={getEnv('FLOW_PLAYER_TOKEN')}
+									dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 								/>
 							</Column>
 							<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>

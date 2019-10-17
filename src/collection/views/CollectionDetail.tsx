@@ -1,9 +1,11 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { FunctionComponent, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
 	DropdownButton,
@@ -26,8 +28,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
 
-import { connect } from 'react-redux';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
@@ -48,8 +50,6 @@ import { IconName } from '../../shared/types/types';
 import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
-
-import { get } from 'lodash-es';
 import './CollectionDetail.scss';
 
 interface CollectionDetailProps extends RouteComponentProps {
@@ -141,7 +141,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								</ToolbarLeft>
 								<ToolbarRight>
 									<ToolbarItem>
-										<div className="c-button-toolbar">
+										<ButtonToolbar>
 											<Button
 												title="Bladwijzer"
 												type="secondary"
@@ -222,7 +222,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													/>
 												</DropdownContent>
 											</ControlledDropdown>
-										</div>
+										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>
 							</Toolbar>

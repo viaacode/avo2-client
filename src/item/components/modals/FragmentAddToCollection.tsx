@@ -6,8 +6,10 @@ import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
+	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -18,6 +20,7 @@ import {
 	RadioButton,
 	Select,
 	Spacer,
+	Spinner,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -32,7 +35,7 @@ import {
 	INSERT_COLLECTION_FRAGMENT,
 } from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
@@ -55,6 +58,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 	onClose = () => {},
 }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
+	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
 	const [selectedCollection, setSelectedCollection] = useState<
@@ -89,6 +93,9 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 	};
 
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {
+		// Disable "Toepassen" button
+		setIsProcessing(true);
+
 		try {
 			const response: void | ExecutionResult<
 				Avo.Collection.Fragment
@@ -108,6 +115,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
 				toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
@@ -119,9 +127,15 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 			console.error(err);
 			toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
 		}
+
+		// Re-enable apply button
+		setIsProcessing(false);
 	};
 
 	const addItemToNewCollection = async () => {
+		// Disable "Toepassen" button
+		setIsProcessing(true);
+
 		try {
 			// Create new collection with one fragment in it
 			const newCollection: Partial<Avo.Collection.Collection> = {
@@ -131,6 +145,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba',
 				type_id: 3,
 			};
+
 			const response: void | ExecutionResult<
 				Avo.Collection.Collection
 			> = await triggerInsertCollection({
@@ -139,6 +154,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			const insertedCollection: Partial<Avo.Collection.Collection> = get(
 				response,
 				'data.insert_app_collections.returning[0]'
@@ -146,8 +162,14 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 
 			if (!response || response.errors) {
 				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+
+				// Re-enable apply button
+				setIsProcessing(false);
 			} else if (!insertedCollection) {
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
+
+				// Re-enable apply button
+				setIsProcessing(false);
 			} else {
 				trackEvents({
 					activity: `User ??? has created a new collection ${insertedCollection.id}`, // TODO fill in user id
@@ -165,6 +187,9 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 			}
 		} catch (err) {
 			toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+
+			// Re-enable apply button
+			setIsProcessing(false);
 		}
 	};
 
@@ -189,6 +214,10 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 		setFragmentStartTime(values[0]);
 		setFragmentEndTime(values[1]);
 	};
+
+	const onApply = createNewCollection
+		? addItemToNewCollection
+		: () => addItemToExistingCollection(selectedCollection as Partial<Avo.Collection.Collection>);
 
 	const renderFragmentAddToCollectionModal = (collections: { id: number; title: string }[]) => {
 		const initFlowPlayer = () =>
@@ -215,6 +244,8 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
 												subtitles={['30-12-2011', 'VRT']}
+												token={getEnv('FLOW_PLAYER_TOKEN')}
+												dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 											/>
 										)}
 										<Container mode="vertical" className="m-time-crop-controls">
@@ -296,12 +327,19 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 					<Toolbar spaced>
 						<ToolbarRight>
 							<ToolbarItem>
-								<div className="c-button-toolbar">
-									<Button label="Annuleren" type="link" block={true} onClick={onClose} />
+								<ButtonToolbar>
+									{isProcessing && <Spinner />}
+									<Button
+										label="Annuleren"
+										type="link"
+										block
+										onClick={onClose}
+										disabled={isProcessing}
+									/>
 									<Button
 										label="Toepassen"
 										type="primary"
-										block={true}
+										block
 										title={
 											createNewCollection && !newCollectionTitle
 												? 'U moet een collectie titel opgeven'
@@ -311,18 +349,12 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 										}
 										disabled={
 											(createNewCollection && !newCollectionTitle) ||
-											(!createNewCollection && !selectedCollection)
+											(!createNewCollection && !selectedCollection) ||
+											isProcessing
 										}
-										onClick={
-											createNewCollection
-												? addItemToNewCollection
-												: () =>
-														addItemToExistingCollection(selectedCollection as Partial<
-															Avo.Collection.Collection
-														>)
-										}
+										onClick={onApply}
 									/>
-								</div>
+								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>

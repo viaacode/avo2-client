@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	Modal,
 	ModalBody,
 	Toolbar,
@@ -41,10 +42,10 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 					<Toolbar spaced>
 						<ToolbarRight>
 							<ToolbarItem>
-								<div className="c-button-toolbar">
+								<ButtonToolbar>
 									<Button type="secondary" label={cancelLabel} onClick={onClose} />
 									<Button type="danger" label={confirmLabel} onClick={handleDelete} />
-								</div>
+								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>
