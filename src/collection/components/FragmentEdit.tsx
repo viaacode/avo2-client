@@ -268,7 +268,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					</Toolbar>
 				</div>
 				<div className="c-panel__body">
-					{isMediaFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
+					{isMediaFragment(fragment) && itemMetaData ? ( // TODO: Replace publisher, published_at by real publisher
 						<Grid>
 							<Column size="3-6">
 								<FlowPlayer
