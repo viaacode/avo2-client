@@ -1,16 +1,16 @@
 import { get } from 'lodash-es';
 
-import { LoginState } from './types';
+import { AppState } from '../../store';
 
-const selectLogin = (store: any) => {
-	return get(store.loginState, ['data']);
+const selectLogin = ({ loginState }: AppState) => {
+	return get(loginState, ['data']);
 };
 
-const selectLoginLoading = ({ loginState }: { loginState: LoginState }) => {
+const selectLoginLoading = ({ loginState }: AppState) => {
 	return get(loginState, ['loading']);
 };
 
-const selectLoginError = ({ loginState }: { loginState: LoginState }) => {
+const selectLoginError = ({ loginState }: AppState) => {
 	return get(loginState, ['error']);
 };
 
