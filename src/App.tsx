@@ -1,8 +1,9 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect, Provider } from 'react-redux';
-
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
+
+import classnames from 'classnames';
 
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
@@ -18,11 +19,11 @@ import store from './store';
 
 import './styles/main.scss';
 
-interface AppProps {
+interface AppProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
 }
 
-const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, loginState }) => {
+const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	useEffect(() => {
@@ -37,8 +38,11 @@ const App: FunctionComponent<AppProps & RouteComponentProps> = ({ history, login
 		setMenuOpen(false);
 	};
 
+	const adminRouteRegex = new RegExp(`^/${RouteParts.Admin}`, 'g');
+	const isAdminRoute = adminRouteRegex.test(location.pathname);
+
 	return (
-		<div className="o-app">
+		<div className={classnames('o-app', { 'o-app--admin': isAdminRoute })}>
 			<ToastContainer
 				autoClose={4000}
 				className="c-alert-stack"
