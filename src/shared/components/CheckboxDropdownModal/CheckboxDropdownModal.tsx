@@ -133,7 +133,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		return (
 			<Dropdown
 				label={label}
-				autoSize={true}
+				menuWidth="fit-content"
 				isOpen={isOpen}
 				onOpen={openDropdownOrModal}
 				onClose={closeDropdownOrModal}

@@ -297,8 +297,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return (
 					<ButtonToolbar>
 						<Dropdown
-							autoSize
 							isOpen={dropdownOpenForAssignmentId === rowData.id}
+							menuWidth="fit-content"
 							onClose={() => setDropdownOpenForAssignmentId(null)}
 							onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
 							placement="bottom-end"
@@ -376,12 +376,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							? 'Er zijn nog geen opdrachten gearchiveerd'
 							: 'Er zijn nog geen opdrachten aangemaakt'
 					}
-					renderCell={(
-						rowData: Assignment,
-						colKey: keyof Assignment | 'actions',
-						rowIndex: number,
-						colIndex: number
-					) => renderCell(rowData, colKey, rowIndex, colIndex, refetchAssignments)}
+					renderCell={(rowData: Assignment, colKey: string, rowIndex: number, colIndex: number) =>
+						renderCell(
+							rowData,
+							colKey as keyof Assignment | 'actions',
+							rowIndex,
+							colIndex,
+							refetchAssignments
+						)
+					}
 					rowKey="id"
 					styled
 					onColumnClick={handleColumnClick as any}
