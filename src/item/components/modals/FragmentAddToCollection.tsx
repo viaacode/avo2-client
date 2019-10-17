@@ -121,13 +121,13 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				toastService('Het fragment is toegevoegd aan de collectie', TOAST_TYPE.SUCCESS);
 				onClose();
 			}
-
-			// Re-enable apply button
-			setIsProcessing(false);
 		} catch (err) {
 			console.error(err);
 			toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
 		}
+
+		// Re-enable apply button
+		setIsProcessing(false);
 	};
 
 	const addItemToNewCollection = async () => {
@@ -143,6 +143,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba',
 				type_id: 3,
 			};
+
 			const response: void | ExecutionResult<
 				Avo.Collection.Collection
 			> = await triggerInsertCollection({
@@ -151,6 +152,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			const insertedCollection: Partial<Avo.Collection.Collection> = get(
 				response,
 				'data.insert_app_collections.returning[0]'
@@ -158,8 +160,14 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 
 			if (!response || response.errors) {
 				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+
+				// Re-enable apply button
+				setIsProcessing(false);
 			} else if (!insertedCollection) {
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
+
+				// Re-enable apply button
+				setIsProcessing(false);
 			} else {
 				trackEvents({
 					activity: `User ??? has created a new collection ${insertedCollection.id}`, // TODO fill in user id
@@ -177,6 +185,9 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 			}
 		} catch (err) {
 			toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+
+			// Re-enable apply button
+			setIsProcessing(false);
 		}
 	};
 
