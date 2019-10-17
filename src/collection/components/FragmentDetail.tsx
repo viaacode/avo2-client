@@ -42,9 +42,6 @@ interface PlayerTicket {
 	[key: number]: string;
 }
 
-let playerTickets: PlayerTicket[];
-let setPlayerTickets: (newPlayerTickets: PlayerTicket[]) => void;
-
 /**
  * Renders the collection body with all of its fragments for the detail page
  * The bottom meta data is not included in the component
@@ -53,7 +50,7 @@ let setPlayerTickets: (newPlayerTickets: PlayerTicket[]) => void;
  */
 // TODO: Split up in FragmentDetailList and FragmentDetail component.
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFragments }) => {
-	[playerTickets, setPlayerTickets] = useState<PlayerTicket[]>([]);
+	const [playerTickets, setPlayerTickets] = useState<PlayerTicket[]>([]);
 
 	const getFragmentField = (fragment: Avo.Collection.Fragment, field: 'description' | 'title') => {
 		return fragment.use_custom_fields
