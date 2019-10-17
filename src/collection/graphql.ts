@@ -195,6 +195,14 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				stamboek
 				updated_at
 				user_id
+				user: usersByuserId {
+					first_name
+					last_name
+					role {
+						id
+						label
+					}
+				}
 			}
 			is_public
 			external_id

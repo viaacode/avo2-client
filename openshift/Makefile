@@ -31,27 +31,27 @@ CMD_UNIT_TEST="npm run integration-tests"
 
 login:	check-env
 	#oc login ${openshiftserver}
-	oc project "${OC_PROJECT}" 
+	oc project "${OC_PROJECT}"
 	docker login -p ${TOKEN} -u unused docker-registry-default.apps.do-prd-okp-m0.do.viaa.be 2>/dev/null
 
 build:	login
-	docker  build --build-arg NODE_ENV=int . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
+	docker  build --no-cache --build-arg NODE_ENV=int . -t docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
 
 push:	login
 	docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION}
-tag_int: 
-	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int 
+tag_int:
+	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:int
 rollout_int:	login
 	sh ./openshift/wait4rollout.sh int
 tag_staging:	login
-	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:qas 
-versions_int:	
+	oc tag sc-avo2/avo2-client:${GIT_VERSION} sc-avo2/avo2-client:qas
+versions_int:
 	sh ./openshift/versions.sh int
-versions_qas:	
+versions_qas:
 	sh ./openshift/versions.sh qas
-versions_prd:	
-	sh ./openshift/versions.sh prd	
-int_test: 
+versions_prd:
+	sh ./openshift/versions.sh prd
+int_test:
 	sh ./openshift/cy-openshift.sh
 unit_test:
 	sh ./openshift/unittest-openshift.sh
@@ -64,4 +64,4 @@ staging:	tag_staging
 	sh ./openshift/wait4rollout.sh qas && sh ./openshift/versions.sh qas
 
 
-	
+
