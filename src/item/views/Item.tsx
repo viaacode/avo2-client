@@ -62,7 +62,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
-	const [time, setTime] = useState<number>(0);
+	const [time] = useState<number>(0);
 	const [isOpenFragmentAddToCollectionModal, setIsOpenFragmentAddToCollectionModal] = useState(
 		false
 	);

@@ -137,177 +137,177 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	 *  Get query string variables and store them into the assignment state object
 	 */
 	useEffect(() => {
-		initAssignmentData();
-	}, [location, match.params, setLoadingState, assignmentContent]);
+		const initAssignmentData = async () => {
+			try {
+				if (loadingState === 'error') {
+					// Do not keep trying to fetch the assignment when an error occurred
+					return;
+				}
 
-	const initAssignmentData = async () => {
-		try {
-			if (loadingState === 'error') {
-				// Do not keep trying to fetch the assignment when an error occurred
-				return;
+				// Determine if this is an edit or create page and initialize or fetch the assignment
+				let assignment: Partial<Assignment> | null;
+				if (location.pathname.includes(RouteParts.Create)) {
+					setPageType('create');
+					assignment = initAssignmentsByQueryParams();
+				} else {
+					setPageType('edit');
+					assignment = await fetchAssignment((match.params as any).id);
+				}
+
+				if (!assignment) {
+					// Something went wrong during init/fetch
+					return;
+				}
+
+				// Fetch the content if the assignment has content
+				await fetchAssignmentContent();
+			} catch (err) {
+				setLoadingError({
+					error: 'Het ophalen/aanmaken van de opdracht is mislukt',
+					icon: 'alert-triangle',
+				});
 			}
-
-			// Determine if this is an edit or create page and initialize or fetch the assignment
-			let assignment: Partial<Assignment> | null;
-			if (location.pathname.includes(RouteParts.Create)) {
-				setPageType('create');
-				assignment = initAssignmentsByQueryParams();
-			} else {
-				setPageType('edit');
-				assignment = await fetchAssignment((match.params as any).id);
-			}
-
-			if (!assignment) {
-				// Something went wrong during init/fetch
-				return;
-			}
-
-			// Fetch the content if the assignment has content
-			await fetchAssignmentContent();
-		} catch (err) {
-			setLoadingError({
-				error: 'Het ophalen/aanmaken van de opdracht is mislukt',
-				icon: 'alert-triangle',
-			});
-		}
-	};
-
-	/**
-	 * Get assignment_type, content_id and content_label from query params
-	 */
-	const initAssignmentsByQueryParams = (): Partial<Assignment> => {
-		if (currentAssignment && !isEmpty(currentAssignment)) {
-			// Only init the assignment if not set yet
-			return currentAssignment;
-		}
-		const queryParams = queryString.parse(location.search);
-		let newAssignment: Partial<Assignment> | undefined;
-		if (typeof queryParams.assignment_type === 'string') {
-			newAssignment = {
-				assignment_type: queryParams.assignment_type as AssignmentType,
-			};
-		}
-
-		if (typeof queryParams.content_id === 'string') {
-			newAssignment = {
-				...(newAssignment || {}),
-				content_id: queryParams.content_id,
-			};
-		}
-
-		if (typeof queryParams.content_label === 'string') {
-			newAssignment = {
-				...(newAssignment || {}),
-				content_label: queryParams.content_label as AssignmentContentLabel,
-			};
-		}
-
-		newAssignment = {
-			...(currentAssignment || {}),
-			...newAssignment,
 		};
 
-		setBothAssignments(newAssignment);
-
-		return newAssignment;
-	};
-
-	const fetchAssignment = async (id: string | number): Promise<Assignment | null> => {
-		try {
+		/**
+		 * Get assignment_type, content_id and content_label from query params
+		 */
+		const initAssignmentsByQueryParams = (): Partial<Assignment> => {
 			if (currentAssignment && !isEmpty(currentAssignment)) {
-				// Only fetch the assignment if not set yet
-				return currentAssignment as Assignment;
+				// Only init the assignment if not set yet
+				return currentAssignment;
+			}
+			const queryParams = queryString.parse(location.search);
+			let newAssignment: Partial<Assignment> | undefined;
+			if (typeof queryParams.assignment_type === 'string') {
+				newAssignment = {
+					assignment_type: queryParams.assignment_type as AssignmentType,
+				};
 			}
 
-			const assignmentQuery = {
-				query: GET_ASSIGNMENT_BY_ID,
-				variables: { id },
+			if (typeof queryParams.content_id === 'string') {
+				newAssignment = {
+					...(newAssignment || {}),
+					content_id: queryParams.content_id,
+				};
+			}
+
+			if (typeof queryParams.content_label === 'string') {
+				newAssignment = {
+					...(newAssignment || {}),
+					content_label: queryParams.content_label as AssignmentContentLabel,
+				};
+			}
+
+			newAssignment = {
+				...(currentAssignment || {}),
+				...newAssignment,
 			};
 
-			// Get the assigment from graphql
-			const response: ApolloQueryResult<AssignmentContent> = await dataService.query(
-				assignmentQuery
-			);
+			setBothAssignments(newAssignment);
 
-			const assignmentResponse: Assignment | undefined = get(response, 'data.app_assignments[0]');
-			if (!assignmentResponse) {
+			return newAssignment;
+		};
+
+		const fetchAssignment = async (id: string | number): Promise<Assignment | null> => {
+			try {
+				if (currentAssignment && !isEmpty(currentAssignment)) {
+					// Only fetch the assignment if not set yet
+					return currentAssignment as Assignment;
+				}
+
+				const assignmentQuery = {
+					query: GET_ASSIGNMENT_BY_ID,
+					variables: { id },
+				};
+
+				// Get the assigment from graphql
+				const response: ApolloQueryResult<AssignmentContent> = await dataService.query(
+					assignmentQuery
+				);
+
+				const assignmentResponse: Assignment | undefined = get(response, 'data.app_assignments[0]');
+				if (!assignmentResponse) {
+					setLoadingState('error');
+					setLoadingError({
+						error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+						icon: 'search',
+					});
+					return null;
+				}
+				setBothAssignments(assignmentResponse);
+				setLoadingState('loaded');
+				return assignmentResponse;
+			} catch (err) {
+				console.error(err);
 				setLoadingState('error');
 				setLoadingError({
-					error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
-					icon: 'search',
+					error: 'Het ophalen van de opdracht is mislukt',
+					icon: 'alert-triangle',
 				});
 				return null;
 			}
-			setBothAssignments(assignmentResponse);
-			setLoadingState('loaded');
-			return assignmentResponse;
-		} catch (err) {
-			console.error(err);
-			setLoadingState('error');
-			setLoadingError({
-				error: 'Het ophalen van de opdracht is mislukt',
-				icon: 'alert-triangle',
-			});
-			return null;
-		}
-	};
+		};
 
-	/**
-	 * Load the content if they are not loaded yet
-	 */
-	const fetchAssignmentContent = async () => {
-		try {
-			if (!currentAssignment.assignment_type || assignmentContent) {
-				// Only fetch assignment content if not set yet
-				return;
-			}
-			if (!currentAssignment.content_id || !currentAssignment.content_label) {
-				// The assignment doesn't have content linked to it
+		/**
+		 * Load the content if they are not loaded yet
+		 */
+		const fetchAssignmentContent = async () => {
+			try {
+				if (!currentAssignment.assignment_type || assignmentContent) {
+					// Only fetch assignment content if not set yet
+					return;
+				}
+				if (!currentAssignment.content_id || !currentAssignment.content_label) {
+					// The assignment doesn't have content linked to it
+					setLoadingState('loaded');
+					return;
+				}
+
+				// Fetch the content from the network
+				const queryParams = {
+					query: CONTENT_LABEL_TO_QUERY[currentAssignment.content_label].query,
+					variables: { id: currentAssignment.content_id },
+				};
+				const response: ApolloQueryResult<AssignmentContent> = await dataService.query(queryParams);
+
+				const assignmentContentResponse = get(
+					response,
+					`data.${
+						CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel]
+							.resultPath
+					}`
+				);
+				if (!assignmentContentResponse) {
+					console.error('Failed to fetch the assignment content', { response, ...queryParams });
+					setLoadingState('error');
+					setLoadingError({
+						error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+						icon: 'search',
+					});
+					return;
+				}
+				setAssignmentContent(assignmentContentResponse);
+				setBothAssignments({
+					...currentAssignment,
+					title:
+						currentAssignment.title ||
+						(assignmentContentResponse && assignmentContentResponse.title) ||
+						'',
+				});
 				setLoadingState('loaded');
-				return;
-			}
-
-			// Fetch the content from the network
-			const queryParams = {
-				query: CONTENT_LABEL_TO_QUERY[currentAssignment.content_label].query,
-				variables: { id: currentAssignment.content_id },
-			};
-			const response: ApolloQueryResult<AssignmentContent> = await dataService.query(queryParams);
-
-			const assignmentContentResponse = get(
-				response,
-				`data.${
-					CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel]
-						.resultPath
-				}`
-			);
-			if (!assignmentContentResponse) {
-				console.error('Failed to fetch the assignment content', { response, ...queryParams });
+			} catch (err) {
+				console.error(err);
 				setLoadingState('error');
 				setLoadingError({
-					error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
-					icon: 'search',
+					error: 'Het ophalen van de opdracht inhoud is mislukt',
+					icon: 'alert-triangle',
 				});
-				return;
 			}
-			setAssignmentContent(assignmentContentResponse);
-			setBothAssignments({
-				...currentAssignment,
-				title:
-					currentAssignment.title ||
-					(assignmentContentResponse && assignmentContentResponse.title) ||
-					'',
-			});
-			setLoadingState('loaded');
-		} catch (err) {
-			console.error(err);
-			setLoadingState('error');
-			setLoadingError({
-				error: 'Het ophalen van de opdracht inhoud is mislukt',
-				icon: 'alert-triangle',
-			});
-		}
-	};
+		};
+
+		initAssignmentData();
+	}, [loadingState, location, match.params, setLoadingState, assignmentContent]);
 
 	const deleteCurrentAssignment = async () => {
 		try {
