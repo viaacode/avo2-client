@@ -6,8 +6,10 @@ import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
+	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -33,7 +35,7 @@ import {
 	INSERT_COLLECTION_FRAGMENT,
 } from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
@@ -242,6 +244,8 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 												title={itemMetaData.title}
 												onInit={initFlowPlayer}
 												subtitles={['30-12-2011', 'VRT']}
+												token={getEnv('FLOW_PLAYER_TOKEN')}
+												dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 											/>
 										)}
 										<Container mode="vertical" className="m-time-crop-controls">
@@ -323,7 +327,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 					<Toolbar spaced>
 						<ToolbarRight>
 							<ToolbarItem>
-								<div className="c-button-toolbar">
+								<ButtonToolbar>
 									{isProcessing && <Spinner />}
 									<Button
 										label="Annuleren"
@@ -350,7 +354,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 										}
 										onClick={onApply}
 									/>
-								</div>
+								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>

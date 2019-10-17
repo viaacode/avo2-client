@@ -4,6 +4,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	FormGroup,
 	Modal,
 	ModalBody,
@@ -126,10 +127,10 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 					<Toolbar spaced>
 						<ToolbarRight>
 							<ToolbarItem>
-								<div className="c-button-toolbar">
-									<Button type="secondary" label="Annuleren" onClick={() => closeModal()} />
+								<ButtonToolbar>
+									<Button type="secondary" label="Annuleren" onClick={() => onClose} />
 									<Button type="primary" label="Opslaan" onClick={onSave} />
-								</div>
+								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>

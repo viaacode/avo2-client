@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	FormGroup,
 	Modal,
 	ModalBody,
@@ -59,10 +60,10 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 					<Toolbar>
 						<ToolbarRight>
 							<ToolbarItem>
-								<div className="c-button-toolbar">
+								<ButtonToolbar>
 									<Button type="secondary" label={cancelLabel} onClick={onClose} />
 									<Button type="primary" label={confirmLabel} onClick={handleConfirm} />
-								</div>
+								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>
