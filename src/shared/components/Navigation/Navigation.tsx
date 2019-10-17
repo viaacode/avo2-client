@@ -119,7 +119,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 										to={item.location}
 										className="c-nav-mobile__item"
 										activeClassName="c-nav__item--active"
-										exact={false}
+										exact={item.location === '/'}
 									>
 										{item.label}
 										{item.icon && <Icon name={item.icon as IconName} />}
