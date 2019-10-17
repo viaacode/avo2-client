@@ -18,6 +18,7 @@ import {
 	RadioButton,
 	Select,
 	Spacer,
+	Spinner,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -55,6 +56,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 	onClose = () => {},
 }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
 	const [selectedCollection, setSelectedCollection] = useState<
@@ -89,6 +91,9 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 	};
 
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {
+		// Disable "Toepassen" button
+		setIsLoading(true);
+
 		try {
 			const response: void | ExecutionResult<
 				Avo.Collection.Fragment
@@ -108,6 +113,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
 				toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
@@ -115,6 +121,9 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				toastService('Het fragment is toegevoegd aan de collectie', TOAST_TYPE.SUCCESS);
 				onClose();
 			}
+
+			// Re-enable "Toepassen" button
+			setIsLoading(false);
 		} catch (err) {
 			console.error(err);
 			toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
@@ -122,6 +131,9 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 	};
 
 	const addItemToNewCollection = async () => {
+		// Disable "Toepassen" button
+		setIsLoading(true);
+
 		try {
 			// Create new collection with one fragment in it
 			const newCollection: Partial<Avo.Collection.Collection> = {
@@ -189,6 +201,10 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 		setFragmentStartTime(values[0]);
 		setFragmentEndTime(values[1]);
 	};
+
+	const onApply = createNewCollection
+		? addItemToNewCollection
+		: () => addItemToExistingCollection(selectedCollection as Partial<Avo.Collection.Collection>);
 
 	const renderFragmentAddToCollectionModal = (collections: { id: number; title: string }[]) => {
 		const initFlowPlayer = () =>
@@ -297,11 +313,18 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 						<ToolbarRight>
 							<ToolbarItem>
 								<div className="c-button-toolbar">
-									<Button label="Annuleren" type="link" block={true} onClick={onClose} />
+									{isLoading && <Spinner />}
+									<Button
+										label="Annuleren"
+										type="link"
+										block
+										onClick={onClose}
+										disabled={isLoading}
+									/>
 									<Button
 										label="Toepassen"
 										type="primary"
-										block={true}
+										block
 										title={
 											createNewCollection && !newCollectionTitle
 												? 'U moet een collectie titel opgeven'
@@ -311,16 +334,10 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 										}
 										disabled={
 											(createNewCollection && !newCollectionTitle) ||
-											(!createNewCollection && !selectedCollection)
+											(!createNewCollection && !selectedCollection) ||
+											isLoading
 										}
-										onClick={
-											createNewCollection
-												? addItemToNewCollection
-												: () =>
-														addItemToExistingCollection(selectedCollection as Partial<
-															Avo.Collection.Collection
-														>)
-										}
+										onClick={onApply}
 									/>
 								</div>
 							</ToolbarItem>
