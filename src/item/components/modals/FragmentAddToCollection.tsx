@@ -164,20 +164,6 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 			} else if (!insertedCollection || isNil(insertedCollection.id)) {
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 			} else {
-				trackEvents({
-					event_subject: {
-						type: 'user',
-						identifier: '260bb4ae-b120-4ae1-b13e-abe85ab575ba',
-					},
-					event_object: {
-						type: 'collection',
-						identifier: String(insertedCollection.id as number),
-					},
-					event_message: `User Bert Verhelst has created a new collection ${insertedCollection.id}`, // TODO dynamically fill user name
-					name: 'create',
-					category: 'item',
-				});
-
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
 				onClose();
