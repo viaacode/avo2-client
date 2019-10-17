@@ -3,6 +3,8 @@ import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import {
 	Button,
@@ -25,6 +27,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { selectLogin } from '../../../authentication/store/selectors';
+import { LoginResponse } from '../../../authentication/store/types';
 import {
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
@@ -33,12 +37,14 @@ import {
 } from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import { getFullName } from '../../../shared/helpers/formatters/avatar';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+
 import './FragmentAddToCollection.scss';
 
 interface FragmentAddToCollectionProps {
@@ -46,13 +52,15 @@ interface FragmentAddToCollectionProps {
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
+	loginState: LoginResponse | null;
 }
 
-export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
+const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
 	onClose = () => {},
+	loginState,
 }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
@@ -117,15 +125,18 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				trackEvents({
 					event_subject: {
 						type: 'user',
-						identifier: '260bb4ae-b120-4ae1-b13e-abe85ab575ba',
+						identifier: get(loginState, 'userInfo.uid'),
 					},
 					event_object: {
 						type: 'collection',
 						identifier: String(collection.id as number),
 					},
-					event_message: `User Bert Verhelst has added the fragment ${''} to the collection ${
-						collection.id
-					}`, // TODO dynamically fill user name
+					event_message: `User ${getFullName(
+						get(loginState, 'userInfo')
+					)} has added the fragment ${get(
+						response,
+						'data.insert_app_collection_fragments.returning[0].id'
+					)} to the collection ${collection.id}`,
 					name: 'add_to_collection',
 					category: 'item',
 				});
@@ -347,3 +358,11 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 		/>
 	);
 };
+
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31363#issuecomment-484542717
+// @ts-ignore
+export default withRouter(connect(mapStateToProps)(FragmentAddToCollection));
