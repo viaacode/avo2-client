@@ -38,6 +38,7 @@ import {
 	WYSIWYG,
 } from '@viaa/avo2-components';
 import { ContentType } from '@viaa/avo2-components/dist/types';
+import { Avo } from '@viaa/avo2-types';
 
 import { connect } from 'react-redux';
 import { selectLogin } from '../../authentication/store/selectors';
@@ -60,25 +61,18 @@ import {
 	UPDATE_ASSIGNMENT,
 } from '../graphql';
 import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
-import {
-	Assignment,
-	AssignmentContent,
-	AssignmentContentLabel,
-	AssignmentLayout,
-	AssignmentTag,
-	AssignmentType,
-} from '../types';
+import { AssignmentLayout } from '../types';
 
 import './AssignmentEdit.scss';
 
-const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in AssignmentContentLabel]: string } = {
+const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: RouteParts.Item,
 	COLLECTIE: RouteParts.Collection,
 	ZOEKOPDRACHT: RouteParts.SearchQuery,
 };
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string }
+	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,
@@ -99,10 +93,10 @@ interface AssignmentEditProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
 }
 
-let currentAssignment: Partial<Assignment>;
-let setCurrentAssignment: (newAssignment: Partial<Assignment>) => void;
-let initialAssignment: Partial<Assignment>;
-let setInitialAssignment: (newAssignment: Partial<Assignment>) => void;
+let currentAssignment: Partial<Avo.Assignment.Assignment>;
+let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
+let initialAssignment: Partial<Avo.Assignment.Assignment>;
+let setInitialAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
 
 const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	history,
@@ -110,10 +104,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	match,
 	loginState,
 }) => {
-	[currentAssignment, setCurrentAssignment] = useState<Partial<Assignment>>({});
-	[initialAssignment, setInitialAssignment] = useState<Partial<Assignment>>({});
+	[currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>({});
+	[initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>({});
 	const [pageType, setPageType] = useState<'create' | 'edit' | undefined>();
-	const [assignmentContent, setAssignmentContent] = useState<AssignmentContent | undefined>(
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | undefined>(
 		undefined
 	);
 	const [loadingState, setLoadingState] = useState<'loading' | 'loaded' | 'error'>('loading');
@@ -128,7 +122,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
 
-	const setBothAssignments = (assignment: Partial<Assignment>) => {
+	const setBothAssignments = (assignment: Partial<Avo.Assignment.Assignment>) => {
 		setCurrentAssignment(assignment);
 		setInitialAssignment(assignment);
 	};
@@ -148,7 +142,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 
 			// Determine if this is an edit or create page and initialize or fetch the assignment
-			let assignment: Partial<Assignment> | null;
+			let assignment: Partial<Avo.Assignment.Assignment> | null;
 			if (location.pathname.includes(RouteParts.Create)) {
 				setPageType('create');
 				assignment = initAssignmentsByQueryParams();
@@ -175,16 +169,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	/**
 	 * Get assignment_type, content_id and content_label from query params
 	 */
-	const initAssignmentsByQueryParams = (): Partial<Assignment> => {
+	const initAssignmentsByQueryParams = (): Partial<Avo.Assignment.Assignment> => {
 		if (currentAssignment && !isEmpty(currentAssignment)) {
 			// Only init the assignment if not set yet
 			return currentAssignment;
 		}
 		const queryParams = queryString.parse(location.search);
-		let newAssignment: Partial<Assignment> | undefined;
+		let newAssignment: Partial<Avo.Assignment.Assignment> | undefined;
+
 		if (typeof queryParams.assignment_type === 'string') {
 			newAssignment = {
-				assignment_type: queryParams.assignment_type as AssignmentType,
+				assignment_type: queryParams.assignment_type as Avo.Assignment.Type,
 			};
 		}
 
@@ -198,25 +193,27 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		if (typeof queryParams.content_label === 'string') {
 			newAssignment = {
 				...(newAssignment || {}),
-				content_label: queryParams.content_label as AssignmentContentLabel,
+				content_label: queryParams.content_label as Avo.Assignment.ContentLabel,
 			};
 		}
 
 		newAssignment = {
 			...(currentAssignment || {}),
 			...newAssignment,
-		};
+		} as Avo.Assignment.Assignment;
 
 		setBothAssignments(newAssignment);
 
 		return newAssignment;
 	};
 
-	const fetchAssignment = async (id: string | number): Promise<Assignment | null> => {
+	const fetchAssignment = async (
+		id: string | number
+	): Promise<Avo.Assignment.Assignment | null> => {
 		try {
 			if (currentAssignment && !isEmpty(currentAssignment)) {
 				// Only fetch the assignment if not set yet
-				return currentAssignment as Assignment;
+				return currentAssignment as Avo.Assignment.Assignment;
 			}
 
 			const assignmentQuery = {
@@ -225,11 +222,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			};
 
 			// Get the assigment from graphql
-			const response: ApolloQueryResult<AssignmentContent> = await dataService.query(
+			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
 				assignmentQuery
 			);
 
-			const assignmentResponse: Assignment | undefined = get(response, 'data.app_assignments[0]');
+			const assignmentResponse: Avo.Assignment.Assignment | undefined = get(
+				response,
+				'data.app_assignments[0]'
+			);
 			if (!assignmentResponse) {
 				setLoadingState('error');
 				setLoadingError({
@@ -269,15 +269,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			// Fetch the content from the network
 			const queryParams = {
-				query: CONTENT_LABEL_TO_QUERY[currentAssignment.content_label].query,
+				query:
+					CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as Avo.Assignment.ContentLabel]
+						.query,
 				variables: { id: currentAssignment.content_id },
 			};
-			const response: ApolloQueryResult<AssignmentContent> = await dataService.query(queryParams);
+			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
+				queryParams
+			);
 
 			const assignmentContentResponse = get(
 				response,
 				`data.${
-					CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel]
+					CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as Avo.Assignment.ContentLabel]
 						.resultPath
 				}`
 			);
@@ -342,7 +346,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const archiveAssignment = async (shouldBeArchived: boolean) => {
 		try {
 			// Use initialAssignment to avoid saving changes the user made, but hasn't explicitly saved yet
-			const archivedAssigment: Partial<Assignment> = {
+			const archivedAssigment: Partial<Avo.Assignment.Assignment> = {
 				...initialAssignment,
 				is_archived: shouldBeArchived,
 			};
@@ -412,7 +416,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const setAssignmentProp = (property: keyof Assignment, value: any) => {
+	const setAssignmentProp = (property: keyof Avo.Assignment.Assignment, value: any) => {
 		const newAssignment = {
 			...currentAssignment,
 			[property]: value,
@@ -420,15 +424,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setCurrentAssignment(newAssignment);
 	};
 
-	const saveAssignment = async (assignment: Partial<Assignment>) => {
+	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
 			if (pageType === 'create') {
 				// create => insert into graphql
-				const newAssignment: Assignment = {
+				const newAssignment: Avo.Assignment.Assignment = {
 					...assignment,
 					owner_profile_id: get(loginState, 'userInfo.profile.id'),
-				} as Assignment;
+				} as Avo.Assignment.Assignment;
 				const insertedAssignment = await insertAssignment(triggerAssignmentInsert, newAssignment);
 
 				if (insertedAssignment) {
@@ -456,7 +460,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const getTagOptions = (): TagOption[] => {
 		return get(currentAssignment, 'assignment_assignment_tags.assignment_tag', []).map(
-			(assignmentTag: AssignmentTag) => {
+			(assignmentTag: Avo.Assignment.Tag) => {
 				return {
 					label: assignmentTag.label,
 					id: assignmentTag.id,
@@ -470,10 +474,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const removeTag = (tagId: string | number, evt: MouseEvent) => {
 		evt.stopPropagation();
-		const tags: AssignmentTag[] = [
+		const tags: Avo.Assignment.Tag[] = [
 			...get(currentAssignment, 'assignment_assignment_tags.assignment_tag', []),
 		];
-		remove(tags, (tag: AssignmentTag) => tag.id === tagId);
+		remove(tags, (tag: Avo.Assignment.Tag) => tag.id === tagId);
 		setCurrentAssignment({
 			...currentAssignment,
 			assignment_assignment_tags: {
@@ -625,9 +629,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						{assignmentContent && currentAssignment.content_label && (
 							<FormGroup label="Inhoud">
 								<Link
-									to={`/${CONTENT_LABEL_TO_ROUTE_PARTS[currentAssignment.content_label]}/${
-										currentAssignment.content_id
-									}`}
+									to={`/${
+										CONTENT_LABEL_TO_ROUTE_PARTS[
+											currentAssignment.content_label as Avo.Assignment.ContentLabel
+										]
+									}/${currentAssignment.content_id}`}
 								>
 									<div className="c-box c-box--padding-small">
 										<Flex orientation="vertical" center>

@@ -42,6 +42,7 @@ import { ApolloCacheManager, dataService } from '../../../shared/services/data-s
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+
 import './FragmentAddToCollection.scss';
 
 interface FragmentAddToCollectionProps {

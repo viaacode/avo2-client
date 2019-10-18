@@ -1,5 +1,5 @@
 import { debounce } from 'lodash-es';
-import * as queryString from 'querystring';
+import { parse } from 'querystring';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -49,7 +49,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	useEffect(() => {
 		// Set video current time from the query params once the video has loaded its meta data
 		// If this happens sooner, the time will be ignored by the video player
-		const queryParams = queryString.parse(location.search);
+		const queryParams = parse(location.search);
 
 		setTime(parseInt((queryParams.time as string) || '0', 10));
 

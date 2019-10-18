@@ -1,15 +1,20 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, get } from 'lodash-es';
+
+import { Avo } from '@viaa/avo2-types';
+
 import { ApolloCacheManager } from '../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
-import { Assignment, AssignmentLayout } from './types';
+import { AssignmentLayout } from './types';
 
 /**
  * Helper functions for inserting, updating, validating and deleting assigment
  * This will be used by the Assignments view and the AssignmentEdit view
  * @param assignment
  */
-const validateAssignment = (assignment: Partial<Assignment>): [string[], Assignment] => {
+const validateAssignment = (
+	assignment: Partial<Avo.Assignment.Assignment>
+): [string[], Avo.Assignment.Assignment] => {
 	const assignmentToSave = cloneDeep(assignment);
 	const errors = [];
 
@@ -41,7 +46,7 @@ const validateAssignment = (assignment: Partial<Assignment>): [string[], Assignm
 	// 	assignment_tag: [],
 	// };
 	delete (assignmentToSave as any).__typename;
-	return [errors, assignmentToSave as Assignment];
+	return [errors, assignmentToSave as Avo.Assignment.Assignment];
 };
 
 export const deleteAssignment = async (triggerAssignmentDelete: any, id: number | string) => {
@@ -58,8 +63,8 @@ export const deleteAssignment = async (triggerAssignmentDelete: any, id: number 
 
 export const updateAssignment = async (
 	triggerAssignmentUpdate: any,
-	assignment: Partial<Assignment>
-): Promise<Assignment | null> => {
+	assignment: Partial<Avo.Assignment.Assignment>
+): Promise<Avo.Assignment.Assignment | null> => {
 	try {
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
@@ -68,7 +73,9 @@ export const updateAssignment = async (
 			return null;
 		}
 
-		const response: void | ExecutionResult<Assignment> = await triggerAssignmentUpdate({
+		const response: void | ExecutionResult<
+			Avo.Assignment.Assignment
+		> = await triggerAssignmentUpdate({
 			variables: {
 				id: assignment.id,
 				assignment: assignmentToSave,
@@ -81,7 +88,7 @@ export const updateAssignment = async (
 			throw new Error('Het opslaan van de opdracht is mislukt');
 		}
 
-		return assignment as Assignment;
+		return assignment as Avo.Assignment.Assignment;
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -90,8 +97,8 @@ export const updateAssignment = async (
 
 export const insertAssignment = async (
 	triggerAssignmentInsert: any,
-	assignment: Partial<Assignment>
-): Promise<Assignment | null> => {
+	assignment: Partial<Avo.Assignment.Assignment>
+): Promise<Avo.Assignment.Assignment | null> => {
 	try {
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
@@ -100,7 +107,9 @@ export const insertAssignment = async (
 			return null;
 		}
 
-		const response: void | ExecutionResult<Assignment> = await triggerAssignmentInsert({
+		const response: void | ExecutionResult<
+			Avo.Assignment.Assignment
+		> = await triggerAssignmentInsert({
 			variables: {
 				assignment: assignmentToSave,
 			},
@@ -113,7 +122,7 @@ export const insertAssignment = async (
 			return {
 				...assignment, // Do not copy the auto modified fields from the validation back into the input controls
 				id,
-			} as Assignment;
+			} as Avo.Assignment.Assignment;
 		}
 
 		console.error('assignment insert returned empty response', response);

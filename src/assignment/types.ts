@@ -5,3 +5,8 @@ export interface AssignmentColumn {
 	label: string;
 	sortable?: boolean;
 }
+
+export enum AssignmentLayout {
+	OnlyPlayer = 0,
+	PlayerAndText = 1,
+}
