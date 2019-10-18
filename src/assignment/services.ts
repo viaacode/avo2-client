@@ -7,6 +7,26 @@ import { ApolloCacheManager } from '../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
 import { AssignmentLayout } from './types';
 
+interface AssignmentProperty {
+	name: string;
+	label: string;
+}
+
+const OBLIGATORY_PROPERTIES: AssignmentProperty[] = [
+	{
+		name: 'title',
+		label: 'titel',
+	},
+	{
+		name: 'description',
+		label: 'beschrijving',
+	},
+	{
+		name: 'deadline_at',
+		label: 'deadline',
+	},
+];
+
 /**
  * Helper functions for inserting, updating, validating and deleting assigment
  * This will be used by the Assignments view and the AssignmentEdit view
@@ -16,25 +36,19 @@ const validateAssignment = (
 	assignment: Partial<Avo.Assignment.Assignment>
 ): [string[], Avo.Assignment.Assignment] => {
 	const assignmentToSave = cloneDeep(assignment);
-	const errors = [];
+	const errors: string[] = [];
 
-	if (!assignmentToSave.title) {
-		errors.push('Een titel is verplicht');
-	}
-
-	if (!assignmentToSave.description) {
-		errors.push('Een beschrijving is verplicht');
-	}
+	OBLIGATORY_PROPERTIES.forEach((prop: AssignmentProperty) => {
+		if (!(assignmentToSave as any)[prop.name]) {
+			errors.push(`Een ${prop.label} is verplicht`);
+		}
+	});
 
 	assignmentToSave.content_layout =
 		assignmentToSave.content_layout || AssignmentLayout.PlayerAndText;
 
 	if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 		assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
-	}
-
-	if (!assignmentToSave.deadline_at) {
-		errors.push('Een deadline is verplicht');
 	}
 
 	assignmentToSave.owner_profile_id = assignmentToSave.owner_profile_id || 'owner_profile_id';
