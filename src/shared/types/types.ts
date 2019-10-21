@@ -190,3 +190,9 @@ export type IconName =
 	| 'youtube'
 	| 'zoom-in'
 	| 'zoom-out';
+
+export type NavigationItem = {
+	label: string;
+	location: string;
+	icon?: IconName;
+};

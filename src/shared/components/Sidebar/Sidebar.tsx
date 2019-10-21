@@ -1,0 +1,34 @@
+import React, { FunctionComponent } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+
+import { NavigationItem } from '../../types/types';
+
+import './Sidebar.scss';
+
+interface SidebarProps {
+	headerLink: string;
+	navItems: NavigationItem[];
+}
+
+const Sidebar: FunctionComponent<SidebarProps> = ({ headerLink, navItems }) => (
+	<div className="o-sidebar">
+		<div className="o-sidebar__header">
+			<Link className="u-remove-link-styling u-color-white" to={headerLink}>
+				Kitchen
+			</Link>
+		</div>
+		<div className="o-sidebar__content">
+			<ul className="o-sidebar__nav c-bordered-list">
+				{navItems.map((navItem, index) => (
+					<li key={`${navItem.location}-${index}`}>
+						<NavLink className="o-sidebar__nav-item" to={navItem.location}>
+							{navItem.label}
+						</NavLink>
+					</li>
+				))}
+			</ul>
+		</div>
+	</div>
+);
+
+export default Sidebar;
