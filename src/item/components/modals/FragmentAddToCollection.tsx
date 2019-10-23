@@ -1,8 +1,10 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 
 import {
 	Button,
@@ -28,6 +30,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { selectLogin } from '../../../authentication/store/selectors';
+import { LoginResponse } from '../../../authentication/store/types';
 import {
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
@@ -36,12 +40,14 @@ import {
 } from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { getEnv } from '../../../shared/helpers/env';
+import { getFullName } from '../../../shared/helpers/formatters/avatar';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+
 import './FragmentAddToCollection.scss';
 
 interface FragmentAddToCollectionProps {
@@ -49,13 +55,15 @@ interface FragmentAddToCollectionProps {
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
+	loginState: LoginResponse | null;
 }
 
-export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
+const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
 	onClose = () => {},
+	loginState,
 }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -122,6 +130,24 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 			} else {
 				toastService('Het fragment is toegevoegd aan de collectie', TOAST_TYPE.SUCCESS);
 				onClose();
+				trackEvents({
+					event_subject: {
+						type: 'user',
+						identifier: get(loginState, 'userInfo.uid'),
+					},
+					event_object: {
+						type: 'collection',
+						identifier: String(collection.id as number),
+					},
+					event_message: `User ${getFullName(
+						get(loginState, 'userInfo')
+					)} has added the fragment ${get(
+						response,
+						'data.insert_app_collection_fragments.returning[0].id'
+					)} to the collection ${collection.id}`,
+					name: 'add_to_collection',
+					category: 'item',
+				});
 			}
 		} catch (err) {
 			console.error(err);
@@ -165,22 +191,12 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 
 				// Re-enable apply button
 				setIsProcessing(false);
-			} else if (!insertedCollection) {
+			} else if (!insertedCollection || isNil(insertedCollection.id)) {
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 
 				// Re-enable apply button
 				setIsProcessing(false);
 			} else {
-				trackEvents({
-					activity: `User ??? has created a new collection ${insertedCollection.id}`, // TODO fill in user id
-					message: {
-						object: {
-							identifier: String(insertedCollection.id),
-							type: 'collection',
-						},
-					},
-				});
-
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
 				onClose();
@@ -374,3 +390,11 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 		/>
 	);
 };
+
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31363#issuecomment-484542717
+// @ts-ignore
+export default withRouter(connect(mapStateToProps)(FragmentAddToCollection));
