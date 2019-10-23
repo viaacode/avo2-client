@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
-import { cloneDeep, get, remove } from 'lodash-es';
+import { cloneDeep, get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -10,8 +10,9 @@ import { Link } from 'react-router-dom';
 import {
 	Alert,
 	Button,
+	ButtonToolbar,
 	Container,
-	DatePicker,
+	DateTimePicker,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -20,12 +21,12 @@ import {
 	Form,
 	FormGroup,
 	Icon,
+	IconName,
 	MenuContent,
 	Navbar,
 	RadioButton,
 	RadioButtonGroup,
 	Spacer,
-	Spinner,
 	TagOption,
 	TextInput,
 	Thumbnail,
@@ -38,12 +39,15 @@ import {
 } from '@viaa/avo2-components';
 import { ContentType } from '@viaa/avo2-components/dist/types';
 
-import NotFound from '../../404/views/NotFound';
+import { connect } from 'react-redux';
+import { selectLogin } from '../../authentication/store/selectors';
+import { LoginResponse } from '../../authentication/store/types';
 import { GET_COLLECTION_BY_ID } from '../../collection/graphql';
 import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
 import { RouteParts } from '../../constants';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import InputModal from '../../shared/components/modals/InputModal';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
@@ -64,6 +68,7 @@ import {
 	AssignmentTag,
 	AssignmentType,
 } from '../types';
+
 import './AssignmentEdit.scss';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in AssignmentContentLabel]: string } = {
@@ -90,27 +95,35 @@ const CONTENT_LABEL_TO_QUERY: {
 	} as any,
 };
 
-interface AssignmentEditProps extends RouteComponentProps {}
+interface AssignmentEditProps extends RouteComponentProps {
+	loginState: LoginResponse | null;
+}
 
 let currentAssignment: Partial<Assignment>;
-let setCurrentAssignment: (newAssignment: any) => void;
+let setCurrentAssignment: (newAssignment: Partial<Assignment>) => void;
 let initialAssignment: Partial<Assignment>;
-let setInitialAssignment: (newAssignment: any) => void;
+let setInitialAssignment: (newAssignment: Partial<Assignment>) => void;
 
-const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, location, match }) => {
-	[currentAssignment, setCurrentAssignment] = useState<Partial<Assignment>>({
-		content_layout: AssignmentLayout.PlayerAndText,
-	});
-	[initialAssignment, setInitialAssignment] = useState<Partial<Assignment>>({
-		content_layout: AssignmentLayout.PlayerAndText,
-	});
+const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
+	history,
+	location,
+	match,
+	loginState,
+}) => {
+	[currentAssignment, setCurrentAssignment] = useState<Partial<Assignment>>({});
+	[initialAssignment, setInitialAssignment] = useState<Partial<Assignment>>({});
 	const [pageType, setPageType] = useState<'create' | 'edit' | undefined>();
-	const [assignmentContent, setAssignmentContent] = useState<AssignmentContent | undefined>();
-	const [loadingState, setLoadingState] = useState<'loaded' | 'loading' | 'not-found'>('loading');
+	const [assignmentContent, setAssignmentContent] = useState<AssignmentContent | undefined>(
+		undefined
+	);
+	const [loadingState, setLoadingState] = useState<'loading' | 'loaded' | 'error'>('loading');
+	const [loadingError, setLoadingError] = useState<{ error: string; icon: IconName } | null>(null);
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
+
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
@@ -124,118 +137,177 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 	 *  Get query string variables and store them into the assignment state object
 	 */
 	useEffect(() => {
-		// Determine if this is an edit or create page
-		if (location.pathname.includes(RouteParts.Create)) {
-			setPageType('create');
+		initAssignmentData();
+	}, [location, match.params, setLoadingState, assignmentContent]);
 
-			// Get assignment_type, content_id and content_label from query params
-			const queryParams = queryString.parse(location.search);
-			let newAssignment: Partial<Assignment> | undefined;
-
-			if (typeof queryParams.assignment_type === 'string') {
-				newAssignment = {
-					assignment_type: queryParams.assignment_type as AssignmentType,
-				};
+	const initAssignmentData = async () => {
+		try {
+			if (loadingState === 'error') {
+				// Do not keep trying to fetch the assignment when an error occurred
+				return;
 			}
 
-			if (typeof queryParams.content_id === 'string') {
-				newAssignment = {
-					...(newAssignment || {}),
-					content_id: queryParams.content_id,
-				};
+			// Determine if this is an edit or create page and initialize or fetch the assignment
+			let assignment: Partial<Assignment> | null;
+			if (location.pathname.includes(RouteParts.Create)) {
+				setPageType('create');
+				assignment = initAssignmentsByQueryParams();
+			} else {
+				setPageType('edit');
+				assignment = await fetchAssignment((match.params as any).id);
 			}
 
-			if (typeof queryParams.content_label === 'string') {
-				newAssignment = {
-					...(newAssignment || {}),
-					content_label: queryParams.content_label as AssignmentContentLabel,
-				};
+			if (!assignment) {
+				// Something went wrong during init/fetch
+				return;
 			}
 
-			setBothAssignments({
-				...(currentAssignment || {}),
-				...newAssignment,
+			// Fetch the content if the assignment has content
+			await fetchAssignmentContent();
+		} catch (err) {
+			setLoadingError({
+				error: 'Het ophalen/aanmaken van de opdracht is mislukt',
+				icon: 'alert-triangle',
 			});
-		} else {
-			setPageType('edit');
+		}
+	};
+
+	/**
+	 * Get assignment_type, content_id and content_label from query params
+	 */
+	const initAssignmentsByQueryParams = (): Partial<Assignment> => {
+		if (currentAssignment && !isEmpty(currentAssignment)) {
+			// Only init the assignment if not set yet
+			return currentAssignment;
+		}
+		const queryParams = queryString.parse(location.search);
+		let newAssignment: Partial<Assignment> | undefined;
+		if (typeof queryParams.assignment_type === 'string') {
+			newAssignment = {
+				assignment_type: queryParams.assignment_type as AssignmentType,
+			};
+		}
+
+		if (typeof queryParams.content_id === 'string') {
+			newAssignment = {
+				...(newAssignment || {}),
+				content_id: queryParams.content_id,
+			};
+		}
+
+		if (typeof queryParams.content_label === 'string') {
+			newAssignment = {
+				...(newAssignment || {}),
+				content_label: queryParams.content_label as AssignmentContentLabel,
+			};
+		}
+
+		newAssignment = {
+			...(currentAssignment || {}),
+			...newAssignment,
+		};
+
+		setBothAssignments(newAssignment);
+
+		return newAssignment;
+	};
+
+	const fetchAssignment = async (id: string | number): Promise<Assignment | null> => {
+		try {
+			if (currentAssignment && !isEmpty(currentAssignment)) {
+				// Only fetch the assignment if not set yet
+				return currentAssignment as Assignment;
+			}
 
 			const assignmentQuery = {
 				query: GET_ASSIGNMENT_BY_ID,
-				variables: { id: (match.params as any).id },
+				variables: { id },
 			};
 
 			// Get the assigment from graphql
-			dataService
-				.query(assignmentQuery)
-				.then((response: ApolloQueryResult<AssignmentContent>) => {
-					const assignmentResponse: Assignment | undefined = get(
-						response,
-						'data.app_assignments[0]'
-					);
-					if (!assignmentResponse) {
-						toastService(
-							'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
-							TOAST_TYPE.DANGER
-						);
-						setLoadingState('not-found');
-						return;
-					}
-					setBothAssignments(assignmentResponse);
-					setLoadingState('loaded');
-				})
-				.catch((err: any) => {
-					console.error(err);
-					toastService('Het ophalen van de opdracht inhoud is mislukt', TOAST_TYPE.DANGER);
-					setLoadingState('not-found');
+			const response: ApolloQueryResult<AssignmentContent> = await dataService.query(
+				assignmentQuery
+			);
+
+			const assignmentResponse: Assignment | undefined = get(response, 'data.app_assignments[0]');
+			if (!assignmentResponse) {
+				setLoadingState('error');
+				setLoadingError({
+					error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+					icon: 'search',
 				});
+				return null;
+			}
+			setBothAssignments(assignmentResponse);
+			setLoadingState('loaded');
+			return assignmentResponse;
+		} catch (err) {
+			console.error(err);
+			setLoadingState('error');
+			setLoadingError({
+				error: 'Het ophalen van de opdracht is mislukt',
+				icon: 'alert-triangle',
+			});
+			return null;
 		}
-	}, [location, match.params]);
+	};
 
 	/**
-	 * Load the content if the query params change
+	 * Load the content if they are not loaded yet
 	 */
-	useEffect(() => {
-		if (currentAssignment.assignment_type) {
-			if (currentAssignment.content_id && currentAssignment.content_label) {
-				dataService
-					.query({
-						query: CONTENT_LABEL_TO_QUERY[currentAssignment.content_label].query,
-						variables: { id: currentAssignment.content_id },
-					})
-					.then((response: ApolloQueryResult<AssignmentContent>) => {
-						const assignmentContent = get(
-							response,
-							`data.${
-								CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel]
-									.resultPath
-							}`
-						);
-						if (!assignmentContent) {
-							toastService(
-								'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
-								TOAST_TYPE.DANGER
-							);
-							setLoadingState('not-found');
-							return;
-						}
-						setAssignmentContent(assignmentContent);
-						setBothAssignments({
-							...currentAssignment,
-							title:
-								currentAssignment.title || (assignmentContent && assignmentContent.title) || '',
-						});
-						setLoadingState('loaded');
-					})
-					.catch((err: any) => {
-						console.error(err);
-						toastService('Het ophalen van de opdracht inhoud is mislukt', TOAST_TYPE.DANGER);
-						setLoadingState('not-found');
-					});
-			} else {
-				setLoadingState('loaded');
+	const fetchAssignmentContent = async () => {
+		try {
+			if (!currentAssignment.assignment_type || assignmentContent) {
+				// Only fetch assignment content if not set yet
+				return;
 			}
+			if (!currentAssignment.content_id || !currentAssignment.content_label) {
+				// The assignment doesn't have content linked to it
+				setLoadingState('loaded');
+				return;
+			}
+
+			// Fetch the content from the network
+			const queryParams = {
+				query: CONTENT_LABEL_TO_QUERY[currentAssignment.content_label].query,
+				variables: { id: currentAssignment.content_id },
+			};
+			const response: ApolloQueryResult<AssignmentContent> = await dataService.query(queryParams);
+
+			const assignmentContentResponse = get(
+				response,
+				`data.${
+					CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as AssignmentContentLabel]
+						.resultPath
+				}`
+			);
+			if (!assignmentContentResponse) {
+				console.error('Failed to fetch the assignment content', { response, ...queryParams });
+				setLoadingState('error');
+				setLoadingError({
+					error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+					icon: 'search',
+				});
+				return;
+			}
+			setAssignmentContent(assignmentContentResponse);
+			setBothAssignments({
+				...currentAssignment,
+				title:
+					currentAssignment.title ||
+					(assignmentContentResponse && assignmentContentResponse.title) ||
+					'',
+			});
+			setLoadingState('loaded');
+		} catch (err) {
+			console.error(err);
+			setLoadingState('error');
+			setLoadingError({
+				error: 'Het ophalen van de opdracht inhoud is mislukt',
+				icon: 'alert-triangle',
+			});
 		}
-	}, [setLoadingState]);
+	};
 
 	const deleteCurrentAssignment = async () => {
 		try {
@@ -252,8 +324,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		}
 	};
 
-	const getAssignmentUrl = () => {
-		return `${window.location.origin}/${RouteParts.Assignment}/${currentAssignment.id}`;
+	const getAssignmentUrl = (absolute: boolean = true) => {
+		return `${absolute ? window.location.origin : ''}/${RouteParts.Assignment}/${
+			currentAssignment.id
+		}`;
 	};
 
 	const copyAssignmentUrl = () => {
@@ -262,7 +336,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 	};
 
 	const viewAsStudent = () => {
-		window.open(getAssignmentUrl(), '_blank');
+		history.push(getAssignmentUrl(false));
 	};
 
 	const archiveAssignment = async (shouldBeArchived: boolean) => {
@@ -348,20 +422,35 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 
 	const saveAssignment = async (assignment: Partial<Assignment>) => {
 		try {
+			setIsSaving(true);
 			if (pageType === 'create') {
 				// create => insert into graphql
-				await insertAssignment(triggerAssignmentInsert, assignment);
-				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
+				const newAssignment: Assignment = {
+					...assignment,
+					owner_profile_id: get(loginState, 'userInfo.profile.id'),
+				} as Assignment;
+				const insertedAssignment = await insertAssignment(triggerAssignmentInsert, newAssignment);
+
+				if (insertedAssignment) {
+					setBothAssignments(insertedAssignment);
+					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
+					history.push(
+						`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
+							RouteParts.Edit
+						}`
+					);
+				}
 			} else {
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
 				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
 			}
+			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
 			toastService('Het opslaan van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			setIsSaving(false);
 		}
 	};
 
@@ -399,9 +488,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		return (
 			<Dropdown
 				isOpen={tagsDropdownOpen}
+				menuWidth="fit-content"
 				onOpen={() => setTagsDropdownOpen(true)}
 				onClose={() => setTagsDropdownOpen(false)}
-				autoSize={true}
 			>
 				<DropdownButton>
 					{renderDropdownButton(tags.length ? '' : 'Geen', false, tags, removeTag)}
@@ -420,8 +509,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 
 	const renderAssignmentEditForm = () => (
 		<>
-			<Container mode="vertical" background="alt">
-				<Navbar autoHeight>
+			<Navbar autoHeight>
+				<Container mode="vertical" background="alt">
 					<Container mode="horizontal">
 						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
 							<ToolbarLeft>
@@ -457,7 +546,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 							</ToolbarLeft>
 							<ToolbarRight>
 								<ToolbarItem>
-									<div className="c-button-toolbar">
+									<ButtonToolbar>
 										{pageType === 'create' && (
 											<Button type="secondary" onClick={() => history.goBack()} label="Annuleren" />
 										)}
@@ -470,10 +559,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 												/>
 												<Dropdown
 													isOpen={isExtraOptionsMenuOpen}
+													menuWidth="fit-content"
 													onOpen={() => setExtraOptionsMenuOpen(true)}
 													onClose={() => setExtraOptionsMenuOpen(false)}
 													placement="bottom-end"
-													autoSize
 												>
 													<DropdownButton>
 														<Button
@@ -506,14 +595,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 											type="primary"
 											label="Opslaan"
 											onClick={() => saveAssignment(currentAssignment)}
+											disabled={isSaving}
 										/>
-									</div>
+									</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>
 						</Toolbar>
 					</Container>
-				</Navbar>
-			</Container>
+				</Container>
+			</Navbar>
 			<Container mode="horizontal" size="small">
 				<Container mode="vertical" size="large">
 					<Form>
@@ -552,7 +642,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 													}
 													src={assignmentContent.thumbnail_path || undefined}
 												/>
-												{/*TODO use stills api to get thumbnail*/}
 											</Spacer>
 											<FlexItem>
 												<div className="c-overline-plus-p">
@@ -607,8 +696,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 						</FormGroup>
 						<FormGroup label="Beschikbaar vanaf">
 							<Flex>
-								{/*TODO Replace with DateTimePicker from components*/}
-								<DatePicker
+								<DateTimePicker
 									value={
 										currentAssignment.available_at ? new Date(currentAssignment.available_at) : null
 									}
@@ -616,19 +704,22 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 										setAssignmentProp('available_at', value ? value.toISOString() : null)
 									}
 									id="available_at"
+									defaultHours={0}
+									defaultMinutes={0}
 								/>
 							</Flex>
 						</FormGroup>
 						<FormGroup label="Deadline" required>
 							<Flex>
 								<Spacer margin="right-small">
-									{/*TODO Replace with DateTimePicker from components*/}
-									<DatePicker
+									<DateTimePicker
 										value={
 											currentAssignment.deadline_at ? new Date(currentAssignment.deadline_at) : null
 										}
 										onChange={value => setAssignmentProp('deadline_at', value)}
 										id="deadline_at"
+										defaultHours={23}
+										defaultMinutes={59}
 									/>
 								</Spacer>
 							</Flex>
@@ -682,20 +773,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({ history, locat
 		</>
 	);
 
-	switch (loadingState) {
-		case 'loading':
-			return (
-				<Flex center orientation="horizontal">
-					<Spinner size="large" />
-				</Flex>
-			);
-
-		case 'loaded':
-			return renderAssignmentEditForm();
-
-		case 'not-found':
-			return <NotFound message="De inhoud voor deze opdracht is niet gevonden" icon="search" />;
-	}
+	return (
+		<LoadingErrorLoadedComponent
+			loadingState={loadingState}
+			dataObject={currentAssignment}
+			render={renderAssignmentEditForm}
+			loadingError={loadingError && loadingError.error}
+			loadingErrorIcon={loadingError && loadingError.icon}
+			notFoundError="De opdracht is niet gevonden"
+		/>
+	);
 };
 
-export default withRouter(AssignmentEdit);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(AssignmentEdit));

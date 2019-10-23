@@ -155,7 +155,7 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	return (
 		<Dropdown
 			label={label}
-			autoSize={true}
+			menuWidth="fit-content"
 			isOpen={isDropdownOpen}
 			onOpen={openDropdown}
 			onClose={closeDropdown}

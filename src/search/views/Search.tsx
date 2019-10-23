@@ -249,7 +249,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	};
 
 	const handleBookmarkToggle = (id: string, active: boolean) => {
-		console.log('TODO handle search result bookmark button toggle', active, id);
+		// TODO handle search result bookmark button toggle
 	};
 
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
@@ -334,9 +334,9 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 								</Form>
 								<Dropdown
 									isOpen={isOptionsMenuOpen}
+									menuWidth="fit-content"
 									onOpen={() => setIsOptionsMenuOpen(true)}
 									onClose={() => setIsOptionsMenuOpen(false)}
-									autoSize={true}
 									placement="bottom-end"
 								>
 									<DropdownButton>

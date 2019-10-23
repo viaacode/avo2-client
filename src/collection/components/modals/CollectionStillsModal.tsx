@@ -1,9 +1,9 @@
-import { compact, uniq } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import {
 	Blankslate,
 	Button,
+	ButtonToolbar,
 	Flex,
 	Form,
 	ImageGrid,
@@ -16,18 +16,17 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { getVideoStills } from '../../../shared/services/stills-service';
+import { getThumbnailsForCollection } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { isVideoFragment } from '../../helpers';
 
 interface CollectionStillsModalProps {
 	isOpen: boolean;
-	setIsOpen: (isOpen: boolean) => void;
+	onClose: () => void;
 	collection: Avo.Collection.Collection;
 }
 
 const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
-	setIsOpen,
+	onClose,
 	isOpen,
 	collection,
 }) => {
@@ -37,27 +36,18 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	);
 
 	useEffect(() => {
+		if (!isOpen) {
+			return;
+		}
+
 		const fetchThumbnailImages = async () => {
 			// Only update thumbnails when modal is opened, not when closed
 			try {
-				const stillRequests: Avo.Stills.StillRequest[] = compact(
-					collection.collection_fragments.map(fragment =>
-						isVideoFragment(fragment)
-							? { externalId: fragment.external_id, startTime: (fragment.start_oc || 0) * 1000 }
-							: undefined
-					)
-				);
-				const videoStills: Avo.Stills.StillInfo[] = await getVideoStills(stillRequests);
-
-				setVideoStills(
-					uniq([
-						...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
-						...videoStills.map(videoStill => videoStill.thumbnailImagePath),
-					])
-				);
+				setVideoStills(await getThumbnailsForCollection(collection));
 			} catch (err) {
 				toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
 				console.error(err);
+				setVideoStills([]);
 			}
 		};
 
@@ -66,7 +56,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 
 	const saveCoverImage = () => {
 		collection.thumbnail_path = selectedCoverImages[0];
-		setIsOpen(false);
+		onClose();
 		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
 	};
 
@@ -75,7 +65,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 			isOpen={isOpen}
 			title="Stel een cover afbeelding in"
 			size="large"
-			onClose={() => setIsOpen(!isOpen)}
+			onClose={onClose}
 			scrollable={true}
 		>
 			<ModalBody>
@@ -108,20 +98,15 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 				<Toolbar spaced>
 					<ToolbarRight>
 						<ToolbarItem>
-							<div className="c-button-toolbar">
-								<Button
-									label="Annuleren"
-									type="secondary"
-									block={true}
-									onClick={() => setIsOpen(false)}
-								/>
+							<ButtonToolbar>
+								<Button label="Annuleren" type="secondary" block={true} onClick={onClose} />
 								<Button
 									label="Opslaan"
 									type="primary"
 									block={true}
 									onClick={() => saveCoverImage()}
 								/>
-							</div>
+							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>
 				</Toolbar>

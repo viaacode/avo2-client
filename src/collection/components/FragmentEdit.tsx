@@ -9,6 +9,7 @@ import {
 	convertToHtml,
 	DropdownButton,
 	DropdownContent,
+	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -24,11 +25,11 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { getEnv } from '../../shared/helpers/env';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-import { isVideoFragment } from '../helpers';
+import { isMediaFragment } from '../helpers';
 import FragmentAdd from './FragmentAdd';
 import CutFragmentModal from './modals/CutFragmentModal';
 
@@ -86,7 +87,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		itemMetaData: Avo.Item.Item,
 		index: number
 	) => {
-		const disableVideoFields: boolean = !useCustomFields && !!isVideoFragment(fragment);
+		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
 
 		const onChangeTitle = (value: string) =>
 			updateFragmentProperty(value, 'custom_title', fragment.id);
@@ -214,10 +215,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 							<ToolbarItem>
 								<ControlledDropdown
 									isOpen={openOptionsId === fragment.id}
+									menuWidth="fit-content"
 									onOpen={() => setOpenOptionsId(fragment.id)}
 									onClose={() => setOpenOptionsId(null)}
 									placement="bottom-end"
-									autoSize
 								>
 									<DropdownButton>
 										<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
@@ -268,7 +269,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					</Toolbar>
 				</div>
 				<div className="c-panel__body">
-					{isVideoFragment(fragment) ? ( // TODO: Replace publisher, published_at by real publisher
+					{isMediaFragment(fragment) && itemMetaData ? ( // TODO: Replace publisher, published_at by real publisher
 						<Grid>
 							<Column size="3-6">
 								<FlowPlayer
@@ -279,6 +280,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									start={cuePoints.start}
 									end={cuePoints.end}
 									subtitles={['30-12-2011', 'VRT']}
+									token={getEnv('FLOW_PLAYER_TOKEN')}
+									dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 								/>
 							</Column>
 							<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
@@ -297,7 +300,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			{itemMetaData && (
 				<CutFragmentModal
 					isOpen={isCutModalOpen}
-					setIsOpen={setIsCutModalOpen}
+					onClose={() => setIsCutModalOpen(false)}
 					itemMetaData={itemMetaData}
 					updateFragmentProperty={updateFragmentProperty}
 					fragment={fragment}

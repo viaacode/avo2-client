@@ -6,6 +6,7 @@ describe('login > store > actions', () => {
 	it('Should create an action to set the loginState', () => {
 		const loginResult: LoginResponse = {
 			message: 'LOGGED_IN',
+			userInfo: {} as any,
 		};
 
 		const expectedAction = {

@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "0.10.4",
+  "version": "0.13.0",
   "private": true,
   "scripts": {
     "prestart": "npm run env",
@@ -19,8 +19,8 @@
   ],
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@viaa/avo2-types": "^2.0.0",
-    "@viaa/avo2-components": "1.13.1",
+    "@viaa/avo2-types": "^2.1.2",
+    "@viaa/avo2-components": "1.15.1",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
     "graphql": "^14.4.2",
@@ -28,7 +28,7 @@
     "marked": "^0.7.0",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",
-    "query-string": "^6.8.1",
+    "query-string": "^6.8.3",
     "react": "^16.8.6",
     "react-apollo": "^2.5.8",
     "react-dom": "^16.8.6",

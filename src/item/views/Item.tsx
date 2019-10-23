@@ -11,6 +11,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
 	Flex,
@@ -130,14 +131,16 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 											<p>{itemMetaData.type.label}</p>
 										</div>
 									</Spacer>
-									<h1 className="c-h2 u-m-b-0">{itemMetaData.title}</h1>
+									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
 									<MetaData
 										spaced={true}
 										category={dutchContentLabelToEnglishLabel(itemMetaData.type.label)}
 									>
 										{itemMetaData.org_name && (
 											<MetaDataItem>
-												{generateSearchLink('provider', itemMetaData.org_name || '')}
+												<p className="c-body-2 u-text-muted">
+													{generateSearchLink('provider', itemMetaData.org_name || '')}
+												</p>
 											</MetaDataItem>
 										)}
 										{itemMetaData.publish_at && (
@@ -148,7 +151,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 											</MetaDataItem>
 										)}
 										<MetaDataItem>
-											Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
+											<p className="c-body-2 u-text-muted">
+												Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
+											</p>
 										</MetaDataItem>
 									</MetaData>
 								</ToolbarItem>
@@ -177,7 +182,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
-										<div className="c-button-toolbar">
+										<ButtonToolbar>
 											<Flex justify="between" wrap>
 												<Button
 													type="tertiary"
@@ -196,9 +201,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 													}
 												/>
 											</Flex>
-										</div>
+										</ButtonToolbar>
 									</Flex>
-									<div className="c-button-toolbar">
+									<ButtonToolbar>
 										<ToggleButton
 											type="tertiary"
 											icon="bookmark"
@@ -207,7 +212,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										/>
 										<Button type="tertiary" icon="share-2" ariaLabel="share item" />
 										<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
-									</div>
+									</ButtonToolbar>
 								</Spacer>
 							</Column>
 							<Column size="2-5">

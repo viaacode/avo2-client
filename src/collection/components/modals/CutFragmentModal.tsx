@@ -2,7 +2,9 @@ import React, { FunctionComponent, useState } from 'react';
 
 import {
 	Button,
+	ButtonToolbar,
 	Container,
+	FlowPlayer,
 	Modal,
 	ModalBody,
 	MultiRange,
@@ -13,14 +15,14 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
+import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
-	setIsOpen: (isOpen: boolean) => void;
+	onClose: () => void;
 	itemMetaData: Avo.Item.Item;
 	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
 	updateCuePoints: (cuepoints: any) => void;
@@ -28,7 +30,7 @@ interface CutFragmentModalProps {
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
-	setIsOpen,
+	onClose,
 	isOpen,
 	itemMetaData,
 	updateFragmentProperty,
@@ -48,7 +50,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			start: fragmentStartTime,
 			end: fragmentEndTime,
 		});
-		setIsOpen(false);
+		onClose();
 	};
 
 	/**
@@ -79,13 +81,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	// TODO: Replace publisher, published_at by real publisher
 	return (
-		<Modal
-			isOpen={isOpen}
-			title="Knip fragment"
-			size="medium"
-			onClose={() => setIsOpen(!isOpen)}
-			scrollable={true}
-		>
+		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable={true}>
 			<ModalBody>
 				<>
 					<FlowPlayer
@@ -94,6 +90,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						title={itemMetaData.title}
 						onInit={initFlowPlayer}
 						subtitles={['30-12-2011', 'VRT']}
+						token={getEnv('FLOW_PLAYER_TOKEN')}
+						dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 					/>
 					<Container mode="vertical" className="m-time-crop-controls">
 						<TextInput
@@ -117,10 +115,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					<Toolbar spaced>
 						<ToolbarRight>
 							<ToolbarItem>
-								<div className="c-button-toolbar">
-									<Button type="secondary" label="Annuleren" onClick={() => setIsOpen(false)} />
+								<ButtonToolbar>
+									<Button type="secondary" label="Annuleren" onClick={onClose} />
 									<Button type="primary" label="Knippen" onClick={onSaveCut} />
-								</div>
+								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>
