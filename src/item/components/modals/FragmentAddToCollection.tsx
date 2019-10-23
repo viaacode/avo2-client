@@ -39,9 +39,8 @@ import {
 	INSERT_COLLECTION_FRAGMENT,
 } from '../../../collection/graphql';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import { FlowPlayer } from '../../../shared/components/FlowPlayer/FlowPlayer';
-import { getFullName } from '../../../shared/helpers/formatters/avatar';
 import { getEnv } from '../../../shared/helpers/env';
+import { getFullName } from '../../../shared/helpers/formatters/avatar';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
