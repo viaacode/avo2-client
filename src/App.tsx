@@ -10,6 +10,7 @@ import { LoginResponse } from './authentication/store/types';
 import { renderRoutes } from './routes';
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
+import Sidebar from './shared/components/Sidebar/Sidebar';
 
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import { ApolloProvider } from 'react-apollo';
@@ -24,12 +25,14 @@ interface AppProps extends RouteComponentProps {
 }
 
 const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
+	// Hooks
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	useEffect(() => {
 		return history.listen(closeMenu);
 	});
 
+	// Methods
 	const toggleMenu = () => {
 		setMenuOpen(!menuOpen);
 	};
@@ -38,20 +41,23 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 		setMenuOpen(false);
 	};
 
+	// Computed
 	const adminRouteRegex = new RegExp(`^/${RouteParts.Admin}`, 'g');
 	const isAdminRoute = adminRouteRegex.test(location.pathname);
 
-	return (
-		<div className={classnames('o-app', { 'o-app--admin': isAdminRoute })}>
-			<ToastContainer
-				autoClose={4000}
-				className="c-alert-stack"
-				closeButton={false}
-				closeOnClick={false}
-				draggable={false}
-				position="bottom-left"
-				transition={Slide}
+	// Render
+	const renderAdmin = () => (
+		<div className="u-d-flex">
+			<Sidebar
+				headerLink={`/${RouteParts.Admin}`}
+				navItems={[{ label: 'Navigatie', location: `/${RouteParts.Admin}/${RouteParts.Menus}` }]}
 			/>
+			<div className="u-content-flex u-scroll">{renderRoutes()}</div>
+		</div>
+	);
+
+	const renderApp = () => (
+		<>
 			<Navigation
 				primaryItems={[
 					{ label: 'Home', location: '/' },
@@ -82,6 +88,22 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 			/>
 			{renderRoutes()}
 			<Footer />
+		</>
+	);
+
+	return (
+		<div className={classnames('o-app', { 'o-app--admin': isAdminRoute })}>
+			<ToastContainer
+				autoClose={4000}
+				className="c-alert-stack"
+				closeButton={false}
+				closeOnClick={false}
+				draggable={false}
+				position="bottom-left"
+				transition={Slide}
+			/>
+			{/* TODO: this needs to be also based on the current users persmissions */}
+			{isAdminRoute ? renderAdmin() : renderApp()}
 		</div>
 	);
 };
