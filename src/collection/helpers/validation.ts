@@ -7,7 +7,7 @@ import { stripHtml } from '../../shared/helpers/formatters/strip-html';
 import { toSeconds } from '../../shared/helpers/parsers/duration';
 
 type ValidationRule<T> = {
-	error: string;
+	error: string | ((object: T) => string);
 	isValid: (object: T) => boolean;
 };
 
@@ -88,7 +88,9 @@ const VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: ValidationRule<
 		},
 	},
 	{
-		error: 'De eindtijd moet tussen de begintijd en eindtijd van het fragment liggen',
+		error: (collectionFragment: Avo.Collection.Fragment) =>
+			`De eindtijd moet tussen de begintijd (00:00:00) en eindtijd (${collectionFragment.item_meta &&
+				collectionFragment.item_meta.duration}) van het fragment liggen`,
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			if (isNil(collectionFragment.item_meta)) {
 				throw new Error('fragment item meta is null');
@@ -160,7 +162,7 @@ export const getValidationErrorsForStartAndEndTime = (
 ): string[] => {
 	return compact(
 		VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT.map(rule =>
-			rule.isValid(collectionFragment) ? null : rule.error
+			rule.isValid(collectionFragment) ? null : getError(rule, collectionFragment)
 		)
 	);
 };
@@ -168,7 +170,7 @@ export const getValidationErrorsForStartAndEndTime = (
 export const getValidationErrorsForPublish = (collection: Avo.Collection.Collection): string[] => {
 	return compact(
 		[...VALIDATION_RULES_FOR_SAVE, ...VALIDATION_RULES_FOR_PUBLISH].map(rule =>
-			rule.isValid(collection) ? null : rule.error
+			rule.isValid(collection) ? null : getError(rule, collection)
 		)
 	);
 };
@@ -176,6 +178,16 @@ export const getValidationErrorsForPublish = (collection: Avo.Collection.Collect
 export function getValidationErrorForSave(collection: Avo.Collection.Collection): string[] {
 	// List of validator functions, so we can use the functions separately as well
 	return compact(
-		VALIDATION_RULES_FOR_SAVE.map(rule => (rule.isValid(collection) ? null : rule.error))
+		VALIDATION_RULES_FOR_SAVE.map(rule =>
+			rule.isValid(collection) ? null : getError(rule, collection)
+		)
 	);
+}
+
+function getError<T>(rule: ValidationRule<T>, object: T) {
+	if (typeof rule.error === 'string') {
+		return rule.error;
+	} else {
+		return rule.error(object);
+	}
 }

@@ -1,4 +1,3 @@
-import { debounce } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 
 import {
@@ -43,50 +42,52 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(fragment.start_oc || 0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
-		fragment.end_oc || toSeconds(itemMetaData.duration) || 0
+		fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0
 	);
 	const [fragmentStartTimeString, setFragmentStartTimeString] = useState<string>(
 		formatDurationHoursMinutesSeconds(fragment.start_oc || 0)
 	);
 	const [fragmentEndTimeString, setFragmentEndTimeString] = useState<string>(
-		formatDurationHoursMinutesSeconds(fragment.end_oc || toSeconds(itemMetaData.duration) || 0)
+		formatDurationHoursMinutesSeconds(
+			fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0
+		)
 	);
 
-	const isValidTimes = (): boolean => {
-		const start = toSeconds(fragmentStartTimeString);
-		const end = toSeconds(fragmentEndTimeString);
+	const getValidationErrors = (): string[] => {
+		const start = toSeconds(fragmentStartTimeString, true);
+		const end = toSeconds(fragmentEndTimeString, true);
 
-		const errors = getValidationErrorsForStartAndEndTime({
+		return getValidationErrorsForStartAndEndTime({
 			...fragment,
 			start_oc: start,
 			end_oc: end,
 		});
+	};
 
+	const onSaveCut = () => {
+		const errors = getValidationErrors();
 		if (errors && errors.length) {
 			toastService(
 				<>
 					{errors.map(error => (
 						<>
 							{error}
-							<br />
-							<br />
+							{errors.length > 1 ? (
+								<>
+									<br />
+									<br />
+								</>
+							) : null}
 						</>
 					))}
 				</>,
 				TOAST_TYPE.DANGER
 			);
-			return false;
-		}
-		return true;
-	};
-
-	const onSaveCut = () => {
-		if (!isValidTimes()) {
 			return;
 		}
 
-		const start = toSeconds(fragmentStartTimeString);
-		const end = toSeconds(fragmentEndTimeString);
+		const start = toSeconds(fragmentStartTimeString, true);
+		const end = toSeconds(fragmentEndTimeString, true);
 
 		updateFragmentProperty(start, 'start_oc', fragment.id);
 		updateFragmentProperty(end, 'end_oc', fragment.id);
@@ -101,12 +102,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	 * Checks in the text input fields have a correct value
 	 */
 	const parseTimes = () => {
-		if (!isValidTimes()) {
+		const errors = getValidationErrors();
+		if (errors && errors.length) {
 			return;
 		}
 
-		setFragmentStartTime(toSeconds(fragmentStartTimeString) as number);
-		setFragmentEndTime(toSeconds(fragmentEndTimeString) as number);
+		setFragmentStartTime(toSeconds(fragmentStartTimeString, true) as number);
+		setFragmentEndTime(toSeconds(fragmentEndTimeString, true) as number);
 		setFragmentStartTimeString(formatDurationHoursMinutesSeconds(fragmentStartTime));
 		setFragmentEndTimeString(formatDurationHoursMinutesSeconds(fragmentEndTime));
 	};
@@ -154,7 +156,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 								values={[fragmentStartTime, fragmentEndTime]}
 								onChange={onUpdateMultiRangeValues}
 								min={0}
-								max={toSeconds(itemMetaData.duration) || 0}
+								max={toSeconds(itemMetaData.duration, true) || 0}
 								step={1}
 							/>
 						</div>
