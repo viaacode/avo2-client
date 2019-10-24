@@ -11,14 +11,23 @@ import React, {
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
 
-import { Button, Column, convertToHtml, ExpandableContainer, Grid } from '@viaa/avo2-components';
+import {
+	Button,
+	Column,
+	convertToHtml,
+	ExpandableContainer,
+	FlowPlayer,
+	Grid,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { FlowPlayer } from '../../shared/components/FlowPlayer/FlowPlayer';
+import { getEnv } from '../../shared/helpers/env';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import './ItemVideoDescription.scss';
 
 interface ItemVideoDescriptionProps extends RouteComponentProps {
@@ -40,7 +49,11 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
 	useEffect(() => {
-		getSeekerTimeFromQueryParams();
+		// Set video current time from the query params once the video has loaded its meta data
+		// If this happens sooner, the time will be ignored by the video player
+		const queryParams = queryString.parse(location.search);
+
+		setTime(parseInt((queryParams.time as string) || '0', 10));
 
 		// Register window listener when the component mounts
 		const onResizeHandler = debounce(
@@ -55,22 +68,14 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			300,
 			{ leading: false, trailing: true }
 		);
+
 		window.addEventListener('resize', onResizeHandler);
 		onResizeHandler();
 
 		return () => {
 			window.removeEventListener('resize', onResizeHandler);
 		};
-	}, [videoRef]);
-
-	/**
-	 * Set video current time from the query params once the video has loaded its meta data
-	 * If this happens sooner, the time will be ignored by the video player
-	 */
-	const getSeekerTimeFromQueryParams = () => {
-		const queryParams = queryString.parse(location.search);
-		setTime(parseInt((queryParams.time as string) || '0', 10));
-	};
+	}, [location.search, videoRef]);
 
 	const handleTimeLinkClicked = async (timestamp: string) => {
 		const seconds = parseDuration(timestamp);
@@ -108,7 +113,21 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const initFlowPlayer = () =>
 		!playerTicket &&
 		fetchPlayerTicket(itemMetaData.external_id)
-			.then((data: any) => setPlayerTicket(data))
+			.then((data: any) => {
+				// TODO add interface @benji
+				setPlayerTicket(data);
+				trackEvents({
+					event_object: {
+						type: 'item',
+						identifier: itemMetaData.external_id,
+					},
+					event_message: `Gebruiker ${getProfileName()} heeft het item ${
+						itemMetaData.external_id
+					} afgespeeld`,
+					name: 'view',
+					category: 'item',
+				});
+			})
 			.catch((err: any) => {
 				console.error(err);
 				toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);
@@ -126,6 +145,8 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 							title={itemMetaData.title}
 							onInit={initFlowPlayer}
 							subtitles={['Publicatiedatum', 'Aanbieder']}
+							token={getEnv('FLOW_PLAYER_TOKEN')}
+							dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 						/>
 					)}
 				</div>

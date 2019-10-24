@@ -11,6 +11,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
 	Flex,
@@ -48,12 +49,14 @@ import {
 	generateSearchLinkString,
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { IconName } from '../../shared/types/types';
 import ItemVideoDescription from '../components/ItemVideoDescription';
-import { FragmentAddToCollection } from '../components/modals/FragmentAddToCollection';
+import FragmentAddToCollection from '../components/modals/FragmentAddToCollection';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
 import './Item.scss';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 
 interface ItemProps extends RouteComponentProps {}
 
@@ -86,6 +89,19 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 		if (time) {
 			setSeekerTimeInQueryParams();
 			setSeekerTime();
+		}
+
+		// Log event of item page view
+		if (itemId) {
+			trackEvents({
+				event_object: {
+					type: 'item',
+					identifier: itemId,
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de pagina van fragment ${itemId} bezocht`,
+				name: 'view',
+				category: 'item',
+			});
 		}
 	}, [time, history, videoRef, itemId]);
 
@@ -181,7 +197,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
-										<div className="c-button-toolbar">
+										<ButtonToolbar>
 											<Flex justify="between" wrap>
 												<Button
 													type="tertiary"
@@ -200,9 +216,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 													}
 												/>
 											</Flex>
-										</div>
+										</ButtonToolbar>
 									</Flex>
-									<div className="c-button-toolbar">
+									<ButtonToolbar>
 										<ToggleButton
 											type="tertiary"
 											icon="bookmark"
@@ -211,7 +227,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										/>
 										<Button type="tertiary" icon="share-2" ariaLabel="share item" />
 										<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
-									</div>
+									</ButtonToolbar>
 								</Spacer>
 							</Column>
 							<Column size="2-5">

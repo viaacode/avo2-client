@@ -3,6 +3,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import {
 	Blankslate,
 	Button,
+	ButtonToolbar,
 	Flex,
 	Form,
 	ImageGrid,
@@ -97,7 +98,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 				<Toolbar spaced>
 					<ToolbarRight>
 						<ToolbarItem>
-							<div className="c-button-toolbar">
+							<ButtonToolbar>
 								<Button label="Annuleren" type="secondary" block={true} onClick={onClose} />
 								<Button
 									label="Opslaan"
@@ -105,7 +106,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 									block={true}
 									onClick={() => saveCoverImage()}
 								/>
-							</div>
+							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>
 				</Toolbar>

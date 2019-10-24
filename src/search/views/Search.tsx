@@ -334,9 +334,9 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 								</Form>
 								<Dropdown
 									isOpen={isOptionsMenuOpen}
+									menuWidth="fit-content"
 									onOpen={() => setIsOptionsMenuOpen(true)}
 									onClose={() => setIsOptionsMenuOpen(false)}
-									autoSize={true}
 									placement="bottom-end"
 								>
 									<DropdownButton>

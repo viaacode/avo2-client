@@ -1,7 +1,5 @@
-import { get } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
-import authClient from '../Auth';
+import { get } from 'lodash-es';
 
 type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
 

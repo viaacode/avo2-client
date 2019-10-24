@@ -3,11 +3,13 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
 import loginReducer from './authentication/store/reducer';
+import { LoginState } from './authentication/store/types';
 import searchReducer from './search/store/reducer';
 import { SearchState } from './search/store/types';
 
 interface AppState {
 	search: SearchState;
+	loginState: LoginState;
 }
 
 const middleware = [thunk];

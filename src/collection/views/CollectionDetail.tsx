@@ -1,9 +1,11 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
+	ButtonToolbar,
 	Column,
 	Container,
 	DropdownButton,
@@ -26,9 +28,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
 
-import { userInfo } from 'os';
-import { connect } from 'react-redux';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
@@ -44,14 +45,15 @@ import {
 	generateSearchLinks,
 } from '../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../shared/services/data-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
 
-import { get } from 'lodash-es';
 import './CollectionDetail.scss';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 
 interface CollectionDetailProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
@@ -67,6 +69,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+
+	useEffect(() => {
+		trackEvents({
+			event_object: {
+				type: 'collection',
+				identifier: String(collectionId),
+			},
+			event_message: `Gebruiker ${getProfileName()} heeft de pagina voor collectie ${collectionId} bekeken`,
+			name: 'view',
+			category: 'item',
+		});
+	});
 
 	const openDeleteModal = (collectionId: number) => {
 		setIdToDelete(collectionId);
@@ -142,7 +156,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								</ToolbarLeft>
 								<ToolbarRight>
 									<ToolbarItem>
-										<div className="c-button-toolbar">
+										<ButtonToolbar>
 											<Button
 												title="Bladwijzer"
 												type="secondary"
@@ -152,10 +166,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 											<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
 											<ControlledDropdown
 												isOpen={isOptionsMenuOpen}
+												menuWidth="fit-content"
 												onOpen={() => setIsOptionsMenuOpen(true)}
 												onClose={() => setIsOptionsMenuOpen(false)}
 												placement="bottom-end"
-												autoSize
 											>
 												<DropdownButton>
 													<Button
@@ -223,7 +237,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													/>
 												</DropdownContent>
 											</ControlledDropdown>
-										</div>
+										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>
 							</Toolbar>

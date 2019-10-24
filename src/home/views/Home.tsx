@@ -118,9 +118,11 @@ const Home: FunctionComponent<HomeProps> = ({
 						<div className="u-text-center">
 							<Spacer margin="large">
 								<Dropdown
+									triggerWidth="full-width"
 									isOpen={isAutocompleteSearchOpen}
 									onOpen={() => setAutocompleteSearchOpen(true)}
 									onClose={() => setAutocompleteSearchOpen(false)}
+									searchMenu
 								>
 									<DropdownButton>
 										<TextInput
@@ -131,15 +133,16 @@ const Home: FunctionComponent<HomeProps> = ({
 										/>
 									</DropdownButton>
 									<DropdownContent>
-										<div className="c-menu--search-result">
-											{!searchResultsLoading && (
+										<>
+											{!searchResultsLoading ? (
 												<MenuSearchResultContent
 													menuItems={autocompleteMenuItems}
 													noResultsLabel="Geen resultaten"
 													onClick={id => goToSearchResult(id.toString())}
 												/>
+											) : (
+												<Spinner size="large" />
 											)}
-											{searchResultsLoading && <Spinner size="large" />}
 											<div className="c-menu__footer">
 												<Link
 													className="c-button c-button--secondary c-button--block"
@@ -152,7 +155,7 @@ const Home: FunctionComponent<HomeProps> = ({
 													</div>
 												</Link>
 											</div>
-										</div>
+										</>
 									</DropdownContent>
 								</Dropdown>
 							</Spacer>
