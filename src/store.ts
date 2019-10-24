@@ -10,6 +10,7 @@ import { SearchState } from './search/store/types';
 export interface AppState {
 	loginState: LoginState;
 	search: SearchState;
+	loginState: LoginState;
 }
 
 const middleware = [thunk];
