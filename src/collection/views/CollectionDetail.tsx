@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -45,11 +45,13 @@ import {
 	generateSearchLinks,
 } from '../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../shared/services/data-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
+
 import './CollectionDetail.scss';
 
 interface CollectionDetailProps extends RouteComponentProps {
@@ -104,6 +106,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			],
 			get(loginState, 'userInfo.profile', null)
 		);
+
+		console.log('rendering collection');
 
 		return (
 			<>

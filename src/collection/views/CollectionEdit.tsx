@@ -47,6 +47,8 @@ import {
 import { getValidationErrorForSave, getValidationErrorsForPublish } from '../helpers/validation';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 
 interface CollectionEditProps extends RouteComponentProps {}
 
@@ -141,7 +143,18 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			// TODO: Refresh data on Collections page.
+			trackEvents({
+				event_object: {
+					type: 'collection',
+					identifier: String(currentCollection.id),
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+					currentCollection.id
+				} verwijderd`,
+				name: 'delete',
+				category: 'item',
+			});
+
 			props.history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`);
 		} catch (err) {
 			console.error(err);
@@ -488,6 +501,17 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			setInitialCollection(cloneDeep(newCollection));
 			setIsSavingCollection(false);
 			toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
+			trackEvents({
+				event_object: {
+					type: 'collection',
+					identifier: String(newCollection.id),
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+					newCollection.id
+				} bijgewerkt`,
+				name: 'edit',
+				category: 'item',
+			});
 			// refetch collection:
 			refetchCollection();
 		} catch (err) {

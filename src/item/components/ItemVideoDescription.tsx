@@ -23,9 +23,11 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../../shared/helpers/env';
 import { parseDuration } from '../../shared/helpers/parsers/duration';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import './ItemVideoDescription.scss';
 
 interface ItemVideoDescriptionProps extends RouteComponentProps {
@@ -111,7 +113,20 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const initFlowPlayer = () =>
 		!playerTicket &&
 		fetchPlayerTicket(itemMetaData.external_id)
-			.then((data: any) => setPlayerTicket(data))
+			.then((data: any) => {
+				setPlayerTicket(data);
+				trackEvents({
+					event_object: {
+						type: 'item',
+						identifier: itemMetaData.external_id,
+					},
+					event_message: `Gebruiker ${getProfileName()} heeft het item ${
+						itemMetaData.external_id
+					} afgespeeld`,
+					name: 'view',
+					category: 'item',
+				});
+			})
 			.catch((err: any) => {
 				console.error(err);
 				toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);

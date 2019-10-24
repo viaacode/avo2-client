@@ -1,15 +1,24 @@
+import { get } from 'lodash-es';
+
+import { ClientEvent, EventCategory, EventName } from '@viaa/avo2-types/types/event-logging/types';
+import store from '../../store';
 import { getEnv } from '../helpers/env';
-import { ClientEvent, EventCategory, EventName } from './event-logging-service-types';
+import { getFullName } from '../helpers/formatters/avatar';
+import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
+
+export type EventObjectType =
+	| 'item'
+	| 'collection'
+	| 'bundle'
+	| 'user'
+	| 'searchQuery'
+	| 'assignment';
 
 interface MinimalClientEvent {
 	name: EventName;
 	category: EventCategory;
-	event_subject: {
-		type: 'user' | 'system';
-		identifier: string;
-	}; // entity doing the modification
 	event_object: {
-		type: 'item' | 'collection' | 'bundle' | 'user';
+		type: EventObjectType;
 		identifier: string;
 	}; // entity being modified
 	event_message: any; // user played item xxx on avo
@@ -27,6 +36,10 @@ export function trackEvents(events: MinimalClientEvent[] | MinimalClientEvent) {
 			return {
 				event_timestamp: new Date().toISOString(),
 				event_source: window.location.href, // url when the event was triggered
+				event_subject: {
+					type: 'user',
+					identifier: getProfileId(),
+				},
 				...event,
 			} as ClientEvent;
 		}

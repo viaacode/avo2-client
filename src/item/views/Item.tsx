@@ -49,12 +49,14 @@ import {
 	generateSearchLinkString,
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { IconName } from '../../shared/types/types';
 import ItemVideoDescription from '../components/ItemVideoDescription';
 import FragmentAddToCollection from '../components/modals/FragmentAddToCollection';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
 import './Item.scss';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 
 interface ItemProps extends RouteComponentProps {}
 
@@ -87,6 +89,19 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 		if (time) {
 			setSeekerTimeInQueryParams();
 			setSeekerTime();
+		}
+
+		// Log event of item page view
+		if (itemId) {
+			trackEvents({
+				event_object: {
+					type: 'item',
+					identifier: itemId,
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de pagina van fragment ${itemId} bezocht`,
+				name: 'view',
+				category: 'item',
+			});
 		}
 	}, [time, history, videoRef, itemId]);
 

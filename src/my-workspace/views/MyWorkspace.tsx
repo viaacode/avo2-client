@@ -18,6 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import AssignmentOverview from '../../assignment/views/AssignmentOverview';
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import CollectionOverview from '../../collection/views/CollectionOverview';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
@@ -159,8 +160,7 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 	return tabId.includes('/') ? null : (
 		<DataQueryComponent
 			query={GET_WORKSPACE_TAB_COUNTS}
-			// TODO: replace with actual owner id from ldap object
-			variables={{ owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba' }}
+			variables={{ owner_profile_id: getProfileId() }}
 			renderData={renderTabsAndContent}
 			notFoundMessage="Er zijn geen collecties gevonden"
 		/>
