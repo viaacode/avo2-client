@@ -1,4 +1,5 @@
-import React, { FunctionComponent, useState } from 'react';
+import { debounce } from 'lodash-es';
+import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 
 import {
 	Button,
@@ -19,6 +20,8 @@ import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { getValidationErrorsForStartAndEndTime } from '../../helpers/validation';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
@@ -42,37 +45,83 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		fragment.end_oc || toSeconds(itemMetaData.duration) || 0
 	);
+	const [fragmentStartTimeString, setFragmentStartTimeString] = useState<string>(
+		formatDurationHoursMinutesSeconds(fragment.start_oc || 0)
+	);
+	const [fragmentEndTimeString, setFragmentEndTimeString] = useState<string>(
+		formatDurationHoursMinutesSeconds(fragment.end_oc || toSeconds(itemMetaData.duration) || 0)
+	);
+
+	const isValidTimes = (): boolean => {
+		const start = toSeconds(fragmentStartTimeString);
+		const end = toSeconds(fragmentEndTimeString);
+
+		const errors = getValidationErrorsForStartAndEndTime({
+			...fragment,
+			start_oc: start,
+			end_oc: end,
+		});
+
+		if (errors && errors.length) {
+			toastService(
+				<>
+					{errors.map(error => (
+						<>
+							{error}
+							<br />
+							<br />
+						</>
+					))}
+				</>,
+				TOAST_TYPE.DANGER
+			);
+			return false;
+		}
+		return true;
+	};
 
 	const onSaveCut = () => {
-		updateFragmentProperty(fragmentStartTime, 'start_oc', fragment.id);
-		updateFragmentProperty(fragmentEndTime, 'end_oc', fragment.id);
+		if (!isValidTimes()) {
+			return;
+		}
+
+		const start = toSeconds(fragmentStartTimeString);
+		const end = toSeconds(fragmentEndTimeString);
+
+		updateFragmentProperty(start, 'start_oc', fragment.id);
+		updateFragmentProperty(end, 'end_oc', fragment.id);
 		updateCuePoints({
-			start: fragmentStartTime,
-			end: fragmentEndTime,
+			start,
+			end,
 		});
 		onClose();
 	};
 
 	/**
-	 * Converts a duration of the format "00:03:36" to number of seconds and stores it under the appropriate state
-	 * @param timeString
-	 * @param startOrEnd
+	 * Checks in the text input fields have a correct value
 	 */
-	const setFragmentTime = (timeString: string, startOrEnd: 'start' | 'end') => {
-		const setFunctions = {
-			start: setFragmentStartTime,
-			end: setFragmentEndTime,
-		};
-		const seconds = toSeconds(timeString);
-
-		if (seconds !== null) {
-			setFunctions[startOrEnd](seconds);
+	const parseTimes = () => {
+		if (!isValidTimes()) {
+			return;
 		}
+
+		setFragmentStartTime(toSeconds(fragmentStartTimeString) as number);
+		setFragmentEndTime(toSeconds(fragmentEndTimeString) as number);
+		setFragmentStartTimeString(formatDurationHoursMinutesSeconds(fragmentStartTime));
+		setFragmentEndTimeString(formatDurationHoursMinutesSeconds(fragmentEndTime));
 	};
 
 	const onUpdateMultiRangeValues = (values: number[]) => {
+		setFragmentStartTimeString(formatDurationHoursMinutesSeconds(values[0]));
+		setFragmentEndTimeString(formatDurationHoursMinutesSeconds(values[1]));
 		setFragmentStartTime(values[0]);
 		setFragmentEndTime(values[1]);
+	};
+
+	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
+		if (evt.keyCode || evt.which === 13) {
+			parseTimes();
+		}
 	};
 
 	const initFlowPlayer = () =>
@@ -95,8 +144,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					/>
 					<Container mode="vertical" className="m-time-crop-controls">
 						<TextInput
-							value={formatDurationHoursMinutesSeconds(fragmentStartTime)}
-							onChange={timeString => setFragmentTime(timeString, 'start')}
+							value={fragmentStartTimeString}
+							onChange={setFragmentStartTimeString}
+							onBlur={parseTimes}
+							// onKeyUp={handleOnKeyUp} // TODO enable when next components version is released (1.16.0)
 						/>
 						<div className="m-multi-range-wrapper">
 							<MultiRange
@@ -108,8 +159,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							/>
 						</div>
 						<TextInput
-							value={formatDurationHoursMinutesSeconds(fragmentEndTime)}
-							onChange={timeString => setFragmentTime(timeString, 'end')}
+							value={fragmentEndTimeString}
+							onChange={setFragmentEndTimeString}
+							onBlur={parseTimes}
+							// onKeyUp={handleOnKeyUp} // TODO enable when next components version is released (1.16.0)
 						/>
 					</Container>
 					<Toolbar spaced>
