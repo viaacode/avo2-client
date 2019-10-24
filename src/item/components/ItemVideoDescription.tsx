@@ -114,6 +114,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		!playerTicket &&
 		fetchPlayerTicket(itemMetaData.external_id)
 			.then((data: any) => {
+				// TODO add interface @benji
 				setPlayerTicket(data);
 				trackEvents({
 					event_object: {
