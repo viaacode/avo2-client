@@ -1,10 +1,6 @@
-import { get } from 'lodash-es';
-
 import { ClientEvent, EventCategory, EventName } from '@viaa/avo2-types/types/event-logging/types';
-import store from '../../store';
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { getEnv } from '../helpers/env';
-import { getFullName } from '../helpers/formatters/avatar';
-import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 
 export type EventObjectType =
 	| 'item'
