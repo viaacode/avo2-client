@@ -21,6 +21,8 @@ import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { UPDATE_COLLECTION } from '../../graphql';
 import { getValidationErrorsForPublish } from '../../helpers/validation';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 
 interface ShareCollectionModalProps {
 	isOpen: boolean;
@@ -54,7 +56,14 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 	const onSave = async () => {
 		try {
-			if (isCollectionPublic) {
+			const isPublished = isCollectionPublic && !collection.is_public;
+			const isDepublished = !isCollectionPublic && collection.is_public;
+			if (!isPublished && !isDepublished) {
+				// Nothing changed
+				return;
+			}
+
+			if (isPublished) {
 				// We only need to check if you can publish if the user wants to publish
 				// If the user wants to de-publish, we don't need to check anything
 				const validationErrors: string[] = getValidationErrorsForPublish(collection);
@@ -86,6 +95,19 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				TOAST_TYPE.SUCCESS
 			);
 			closeModal(newCollection);
+
+			// Public status changed => log as event
+			trackEvents({
+				event_object: {
+					type: 'collection',
+					identifier: String(collection.id),
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${collection.id} ${
+					isPublished ? 'gepubliceerd' : 'gedepubliceerd'
+				}`,
+				name: isPublished ? 'publish' : 'unpublish',
+				category: 'item',
+			});
 		} catch (err) {
 			toastService('De aanpassingen kunnen niet worden opgeslagen', TOAST_TYPE.DANGER);
 		}

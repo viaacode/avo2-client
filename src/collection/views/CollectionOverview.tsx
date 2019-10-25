@@ -32,6 +32,7 @@ import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
 import './CollectionOverview.scss';
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
@@ -214,8 +215,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	return (
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}
-			// TODO: replace with actual owner id from ldap object
-			variables={{ owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba', offset: page }}
+			variables={{ owner_profile_id: getProfileId(), offset: page }}
 			resultPath="app_collections"
 			renderData={renderCollections}
 			notFoundMessage="Er konden geen collecties worden gevonden"

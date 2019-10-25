@@ -53,11 +53,11 @@ export const GET_COLLECTION_BY_ID = gql`
 				updated_at
 				user_id
 				user: usersByuserId {
+					id
 					created_at
 					expires_at
 					external_uid
 					first_name
-					id
 					last_name
 					mail
 					organisation_id
@@ -196,6 +196,7 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				updated_at
 				user_id
 				user: usersByuserId {
+				  id
 					first_name
 					last_name
 					role {
