@@ -74,7 +74,7 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabe
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in AssignmentContentLabel]: EventObjectType
+	[contentType in Avo.Assignment.ContentLabel]: EventObjectType
 } = {
 	ITEM: 'item',
 	COLLECTIE: 'collection',
@@ -449,7 +449,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setCurrentAssignment(newAssignment);
 	};
 
-	const trackAddObjectToAssignment = (assignment: Assignment) => {
+	const trackAddObjectToAssignment = (assignment: Avo.Assignment.Assignment) => {
 		if (!assignment.content_label || !assignment.content_id) {
 			return;
 		}
@@ -466,7 +466,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		});
 	};
 
-	const saveAssignment = async (assignment: Partial<Assignment>) => {
+	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
 			if (pageType === 'create') {

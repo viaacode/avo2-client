@@ -9,7 +9,6 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -79,7 +78,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 
 	const navBarRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
 
-	const isOwnerOfAssignment = (tempAssignment: Assignment) => {
+	const isOwnerOfAssignment = (tempAssignment: Avo.Assignment.Assignment) => {
 		return getProfileId() === tempAssignment.owner_profile_id;
 	};
 
