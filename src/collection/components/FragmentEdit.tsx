@@ -68,75 +68,26 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const isFirst = (index: number) => index === 0;
 	const isLast = (index: number) => index === collection.collection_fragments.length - 1;
 
-	// Render methods
-	const renderReorderButton = (fragmentId: number, direction: 'up' | 'down') => (
-		<Button
-			type="secondary"
-			icon={`chevron-${direction}` as IconName}
-			onClick={() => swapFragments(fragmentId, direction)}
-		/>
-	);
-
+	// Change listener for custom fields toggle
 	const onChangeToggle = () => {
 		updateFragmentProperty(!useCustomFields, 'use_custom_fields', fragment.id);
 		setUseCustomFields(!useCustomFields);
 	};
 
-	const renderForm = (
-		fragment: Avo.Collection.Fragment,
+	// Change listener for custom fields text
+	const onChangeText = (field: string, value: string) =>
+		updateFragmentProperty(value, `custom_${field}`, fragment.id);
+
+	// Get correct fragment property according to fragment type
+	const getFragmentProperty = (
 		itemMetaData: Avo.Item.Item,
-		index: number
-	) => {
-		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
-
-		const onChangeTitle = (value: string) =>
-			updateFragmentProperty(value, 'custom_title', fragment.id);
-
-		const onChangeDescription = (html: string) =>
-			updateFragmentProperty(html, 'custom_description', fragment.id);
-
-		const getFragmentProperty = (
-			itemMetaData: Avo.Item.Item,
-			fragment: Avo.Collection.Fragment,
-			useCustomFields: Boolean,
-			prop: 'title' | 'description'
-		) => {
-			if (useCustomFields || !itemMetaData) {
-				return get(fragment, `custom_${prop}`) || '';
-			}
-			return get(itemMetaData, prop, '');
-		};
-
-		return (
-			<Form>
-				{itemMetaData && (
-					<FormGroup label="Alternatieve Tekst" labelFor="customFields">
-						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
-					</FormGroup>
-				)}
-				<FormGroup label={`Tekstblok titel`} labelFor="title">
-					<TextInput
-						id="title"
-						type="text"
-						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
-						placeholder="Titel"
-						onChange={onChangeTitle}
-						disabled={disableVideoFields}
-					/>
-				</FormGroup>
-				<FormGroup label="Tekstblok beschrijving" labelFor={`beschrijving_${index}`}>
-					<WYSIWYG
-						id={`beschrijving_${index}`}
-						data={convertToHtml(
-							getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
-						)}
-						onChange={onChangeDescription}
-						disabled={disableVideoFields}
-					/>
-				</FormGroup>
-			</Form>
-		);
-	};
+		fragment: Avo.Collection.Fragment,
+		useCustomFields: Boolean,
+		prop: 'title' | 'description'
+	) =>
+		useCustomFields || !itemMetaData
+			? get(fragment, `custom_${prop}`, '')
+			: get(itemMetaData, prop, '');
 
 	const onDuplicateFragment = (fragmentId: number) => {
 		setOpenOptionsId(null);
@@ -189,6 +140,55 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
 
 	const itemMetaData = (fragment as any).item_meta;
+
+	// Render methods
+	const renderReorderButton = (fragmentId: number, direction: 'up' | 'down') => (
+		<Button
+			type="secondary"
+			icon={`chevron-${direction}` as IconName}
+			onClick={() => swapFragments(fragmentId, direction)}
+		/>
+	);
+
+	const renderForm = (
+		fragment: Avo.Collection.Fragment,
+		itemMetaData: Avo.Item.Item,
+		index: number
+	) => {
+		// Disable input fields for non-custom-field videos
+		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
+
+		return (
+			<Form>
+				{itemMetaData && (
+					<FormGroup label="Alternatieve tekst" labelFor="customFields">
+						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
+					</FormGroup>
+				)}
+				<FormGroup label="Tekstblok titel" labelFor={`title_${fragment.id}`}>
+					<TextInput
+						id={`title_${fragment.id}`}
+						type="text"
+						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
+						placeholder="Geef hier de titel van je tekstblok in..."
+						onChange={(value: string) => onChangeText('title', value)}
+						disabled={disableVideoFields}
+					/>
+				</FormGroup>
+				<FormGroup label="Tekstblok beschrijving" labelFor={`description_${fragment.id}`}>
+					<WYSIWYG
+						id={`description_${fragment.id}`}
+						placeholder="Geef hier de inhoud van je tekstblok in..."
+						data={convertToHtml(
+							getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
+						)}
+						onChange={(value: string) => onChangeText('description', value)}
+						disabled={disableVideoFields}
+					/>
+				</FormGroup>
+			</Form>
+		);
+	};
 
 	return (
 		<>
