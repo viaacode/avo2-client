@@ -10,7 +10,7 @@ import { LoginResponse } from './authentication/store/types';
 import { renderRoutes } from './routes';
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
-import Sidebar from './shared/components/Sidebar/Sidebar';
+import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import { ApolloProvider } from 'react-apollo';
@@ -42,8 +42,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 	};
 
 	// Computed
-	const adminRouteRegex = new RegExp(`^/${RouteParts.Admin}`, 'g');
-	const isAdminRoute = adminRouteRegex.test(location.pathname);
+	const isAdminRoute = new RegExp(`^/${RouteParts.Admin}`, 'g').test(location.pathname);
 
 	// Render
 	const renderAdmin = () => (

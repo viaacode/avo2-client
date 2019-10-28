@@ -64,6 +64,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
+	// TODO: use setTime when adding logic for enabling timestamps in the URL
 	const [time] = useState<number>(0);
 	const [isOpenFragmentAddToCollectionModal, setIsOpenFragmentAddToCollectionModal] = useState(
 		false
