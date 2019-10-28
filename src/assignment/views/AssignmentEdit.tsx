@@ -93,6 +93,7 @@ interface AssignmentEditProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
 }
 
+// TODO: Test with a single useEffect
 let currentAssignment: Partial<Avo.Assignment.Assignment>;
 let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
 let initialAssignment: Partial<Avo.Assignment.Assignment>;
