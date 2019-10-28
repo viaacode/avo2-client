@@ -5,10 +5,9 @@ import ReactDOM from 'react-dom';
 
 import pkg from '../package.json';
 import App from './App';
-import { CustomWindow } from './shared/types/global';
 
 // Expose app info through the window object
-(window as CustomWindow).APP_INFO = {
+window.APP_INFO = {
 	mode: process.env.NODE_ENV,
 	version: pkg.version,
 };

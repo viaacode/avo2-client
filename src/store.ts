@@ -7,9 +7,9 @@ import { LoginState } from './authentication/store/types';
 import searchReducer from './search/store/reducer';
 import { SearchState } from './search/store/types';
 
-interface AppState {
-	search: SearchState;
+export interface AppState {
 	loginState: LoginState;
+	search: SearchState;
 }
 
 const middleware = [thunk];

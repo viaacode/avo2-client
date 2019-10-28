@@ -1,51 +1,67 @@
-.c-nav ul {
-	margin: 0;
-	padding: 0;
-}
+@import '../../../styles/settings/colors';
 
-.c-nav li {
-	display: inline-block;
-	margin-right: 0.4rem;
+/* ==========================================================================
+   Component: Nav
+   ==========================================================================
+*/
+
+/* Main navigation desktop
+   ========================================================================== */
+
+.c-nav {
+	ul {
+		margin: 0;
+		padding: 0;
+	}
+
+	li {
+		display: inline-block;
+		margin-right: 0.4rem;
+	}
 }
 
 .c-nav__item {
 	display: block;
 	padding: 0.8rem 1.6rem;
-	color: #385265;
+	color: $color-gray-600;
 	text-decoration: none;
 	border-radius: 0.3rem;
-}
 
-.c-nav__item:hover, .c-nav__item:focus {
-	background: #EDEFF2;
-	color: #2B414F;
+	&:hover,
+	&:focus {
+		background: $color-gray-50;
+		color: $color-gray-700;
+	}
 }
 
 .c-nav__item--i {
 	color: #FFF;
-}
 
-.c-nav__item--i:hover, .c-nav__item--i:focus {
-	background: #436580;
-	color: #FFF;
+	&:hover,
+	&:focus {
+		background: lighten($color-night-blue, 5%);
+		color: #FFF;
+	}
 }
 
 .c-nav__item--active {
-	background: #EDEFF2;
-	color: #2B414F;
-}
+	background: $color-gray-50;
+	color: $color-gray-700;
 
-.c-nav__item--active:hover, .c-nav__item--active:focus {
-	background: #D6DEE3;
+	&:hover,
+	&:focus {
+		background: $color-gray-100;
+	}
 }
 
 .c-nav__item--i.c-nav__item--active {
-	background: #283d4e;
+	background: darken($color-night-blue, 10%);
 	color: #FFF;
-}
 
-.c-nav__item--i.c-nav__item--active:hover, .c-nav__item--i.c-nav__item--active:focus {
-	background: #05080b;
+	&:hover,
+	&:focus {
+		background: darken($color-night-blue, 30%);
+	}
 }
 
 .c-nav.c-nav .o-svg-icon {
@@ -54,8 +70,42 @@
 	position: relative;
 	bottom: 0.2rem;
 	margin-right: 0.75rem;
+
+	* {
+		fill: $color-gray-400;
+	}
 }
 
-.c-nav.c-nav .o-svg-icon * {
-	fill: #557891;
+/* Main navigation mobile
+   ========================================================================== */
+
+.c-nav-mobile + .c-nav-mobile {
+	margin: 1.2rem 0;
+}
+
+.c-nav-mobile__item {
+	color: $color-gray-500;
+	display: flex;
+	justify-content: space-between;
+	text-decoration: none;
+	padding: 1.2rem 0.8rem;
+
+	+ .c-nav-mobile__item {
+		border-top: 0.1rem solid $color-gray-100;
+	}
+
+	&:hover {
+		background-color: $color-gray-100;
+	}
+
+	.o-svg-icon {
+		opacity: .5;
+		width: 1.8rem;
+		height: 1.8rem;
+	}
+}
+
+.c-nav-mobile__item--active {
+	font-weight: 500;
+	color: $color-gray-700;
 }
