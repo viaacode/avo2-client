@@ -32,7 +32,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import NotFound from '../../404/views/NotFound';
-import { selectLogin } from '../../authentication/store/selectors';
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
 import FragmentDetail from '../../collection/components/FragmentDetail';
 import { RouteParts } from '../../constants';
@@ -52,7 +52,7 @@ import { getAssignmentContent, LoadingState } from '../helpers';
 import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginResponse: LoginResponse | null;
 }
 
 const DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT = 200;
@@ -63,7 +63,7 @@ export enum AssignmentRetrieveError {
 	PAST_DEADLINE = 'PAST_DEADLINE',
 } // TODO replace with typings repo Avo.Assignment.RetrieveError
 
-const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginState }) => {
+const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResponse }) => {
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [isDescriptionCollapsed, setDescriptionCollapsed] = useState<boolean>(false);
 	const [navBarHeight, setNavBarHeight] = useState<number>(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
@@ -79,9 +79,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 
 	const navBarRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
 
-	const isOwnerOfAssignment = (tempAssignment: Avo.Assignment.Assignment) => {
-		// TODO replace with getUser().uuid once available
-		return '260bb4ae-b120-4ae1-b13e-abe85ab575ba' === tempAssignment.owner_profile_id;
+	const isOwnerOfAssignment = (tempAssignment: Assignment) => {
+		return getProfileId() === tempAssignment.owner_profile_id;
 	};
 
 	// Handle resize
@@ -122,7 +121,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 			if (!assignmentResponse) {
 				// Student has never viewed this assignment before, we should create a response object for him
 				assignmentResponse = {
-					owner_profile_ids: ['260bb4ae-b120-4ae1-b13e-abe85ab575ba'], // TODO replace with getUser().uuid
+					owner_profile_ids: [getProfileId()], // TODO replace with getUser().uuid
 					assignment_id: tempAssignment.id,
 					collection: null,
 					collection_id: null,
@@ -158,14 +157,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 
 	// Retrieve data from GraphQL
 	const retrieveAssignmentAndContent = () => {
-		if (!loginState) {
-			return;
-		}
-
 		const assignmentQuery = {
 			query: GET_ASSIGNMENT_WITH_RESPONSE,
 			variables: {
-				studentUuid: [get(loginState, 'userInfo.uid')],
+				studentUuid: [getProfileId()],
 				assignmentId: (match.params as any).id,
 			},
 		};
@@ -246,7 +241,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 			});
 	};
 
-	useEffect(retrieveAssignmentAndContent, [loginState]);
+	useEffect(retrieveAssignmentAndContent, []);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {
@@ -341,8 +336,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 		if (!assignment) {
 			return null;
 		}
-		// TODO replace with getUser().uuid once available
-		const isOwner = '260bb4ae-b120-4ae1-b13e-abe85ab575ba' === assignment.owner_profile_id;
+		const isOwner = getProfileId() === assignment.owner_profile_id;
 
 		return (
 			<Link
@@ -478,8 +472,4 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginStat
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	loginState: selectLogin(state),
-});
-
-export default withRouter(connect(mapStateToProps)(AssignmentDetail));
+export default withRouter(AssignmentDetail);

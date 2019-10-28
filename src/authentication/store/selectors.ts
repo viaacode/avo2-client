@@ -2,8 +2,8 @@ import { get } from 'lodash-es';
 
 import { LoginState } from './types';
 
-const selectLogin = (store: any) => {
-	return get(store.loginState, ['data']);
+const selectLogin = ({ loginState }: { loginState: LoginState }) => {
+	return get(loginState, ['data']);
 };
 
 const selectLoginLoading = ({ loginState }: { loginState: LoginState }) => {

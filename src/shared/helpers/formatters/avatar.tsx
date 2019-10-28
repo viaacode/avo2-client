@@ -5,13 +5,30 @@ import { Avatar, AvatarList } from '@viaa/avo2-components';
 import { AvatarProps } from '@viaa/avo2-components/dist/components/Avatar/Avatar';
 import { Avo } from '@viaa/avo2-types';
 
+const getProfile = (obj: Avo.User.Profile | Avo.User.User | null | undefined) => {
+	if (!obj) {
+		return null;
+	}
+	if ((obj as Avo.User.Profile).user) {
+		return obj;
+	}
+	return {
+		...((obj as Avo.User.User).profile || {}),
+		user: obj as Avo.User.User,
+	};
+};
+
 export const getInitialChar = (value: string | undefined | null) => (value ? value[0] : '');
 
 export const getInitials = (profile: Avo.User.Profile | null) =>
 	getInitialChar(get(profile, 'user.first_name')) + getInitialChar(get(profile, 'user.last_name'));
 
-export const getFullName = (profile: Avo.User.Profile | null) =>
-	`${get(profile, 'user.first_name')} ${get(profile, 'user.last_name')}`;
+export const getFullName = (userOrProfile: Avo.User.Profile | Avo.User.User | null | undefined) => {
+	return `${get(getProfile(userOrProfile), 'user.first_name')} ${get(
+		getProfile(userOrProfile),
+		'user.last_name'
+	)}`;
+};
 
 export const getAbbreviatedFullName = (profile: Avo.User.Profile | null) =>
 	`${get(profile, 'user.first_name', '')[0]}. ${get(profile, 'user.last_name')}`;

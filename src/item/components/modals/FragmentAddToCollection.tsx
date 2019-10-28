@@ -1,8 +1,9 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { withRouter } from 'react-router';
 
 import {
 	Button,
@@ -43,6 +44,7 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
+import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
 import './FragmentAddToCollection.scss';
 
 interface FragmentAddToCollectionProps {
@@ -52,7 +54,7 @@ interface FragmentAddToCollectionProps {
 	onClose: () => void;
 }
 
-export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
+const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
@@ -123,6 +125,18 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 			} else {
 				toastService('Het fragment is toegevoegd aan de collectie', TOAST_TYPE.SUCCESS);
 				onClose();
+				trackEvents({
+					event_object: {
+						type: 'collection',
+						identifier: String(collection.id as number),
+					},
+					event_message: `Gebruiker ${getProfileName()} heeft fragment ${get(
+						response,
+						'data.insert_app_collection_fragments.returning[0].id'
+					)} toegevoegd aan collectie ${collection.id}`,
+					name: 'add_to_collection',
+					category: 'item',
+				});
 			}
 		} catch (err) {
 			console.error(err);
@@ -143,7 +157,7 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 				title: newCollectionTitle,
 				thumbnail_path: '/images/100x100.svg', // TODO get video stills of fragment and set first frame as cover
 				is_public: false,
-				owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba',
+				owner_profile_id: getProfileId(),
 				type_id: 3,
 			};
 
@@ -166,22 +180,12 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 
 				// Re-enable apply button
 				setIsProcessing(false);
-			} else if (!insertedCollection) {
+			} else if (!insertedCollection || isNil(insertedCollection.id)) {
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 
 				// Re-enable apply button
 				setIsProcessing(false);
 			} else {
-				trackEvents({
-					activity: `User ??? has created a new collection ${insertedCollection.id}`, // TODO fill in user id
-					message: {
-						object: {
-							identifier: String(insertedCollection.id),
-							type: 'collection',
-						},
-					},
-				});
-
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
 				onClose();
@@ -367,11 +371,14 @@ export const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionP
 	return (
 		<DataQueryComponent
 			query={GET_COLLECTION_TITLES_BY_OWNER}
-			// TODO: replace with actual owner id from ldap object
-			variables={{ owner_profile_id: '260bb4ae-b120-4ae1-b13e-abe85ab575ba' }}
+			variables={{ owner_profile_id: getProfileId() }}
 			resultPath="app_collections"
 			renderData={renderFragmentAddToCollectionModal}
 			notFoundMessage="Er konden geen collecties worden opgehaald"
 		/>
 	);
 };
+
+// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31363#issuecomment-484542717
+// @ts-ignore
+export default withRouter(FragmentAddToCollection);

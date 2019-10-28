@@ -53,6 +53,7 @@ import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal'
 import InputModal from '../../shared/components/modals/InputModal';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { dataService } from '../../shared/services/data-service';
+import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import {
 	DELETE_ASSIGNMENT,
@@ -63,12 +64,21 @@ import {
 import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
 import { AssignmentLayout } from '../types';
 
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import './AssignmentEdit.scss';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: RouteParts.Item,
 	COLLECTIE: RouteParts.Collection,
 	ZOEKOPDRACHT: RouteParts.SearchQuery,
+};
+
+const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
+	[contentType in AssignmentContentLabel]: EventObjectType
+} = {
+	ITEM: 'item',
+	COLLECTIE: 'collection',
+	ZOEKOPDRACHT: 'searchQuery',
 };
 
 const CONTENT_LABEL_TO_QUERY: {
@@ -338,6 +348,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
 		toastService('De url is naar het klembord gekopieert', TOAST_TYPE.SUCCESS);
+
+		if (currentAssignment.id) {
+			trackEvents({
+				event_object: {
+					type: 'assignment',
+					identifier: String(currentAssignment.id),
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de permalink voor opdracht ${
+					currentAssignment.id
+				} gekopieert`,
+				name: 'view',
+				category: 'item',
+			});
+		}
 	};
 
 	const viewAsStudent = () => {
@@ -425,7 +449,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setCurrentAssignment(newAssignment);
 	};
 
-	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
+	const trackAddObjectToAssignment = (assignment: Assignment) => {
+		if (!assignment.content_label || !assignment.content_id) {
+			return;
+		}
+		trackEvents({
+			event_object: {
+				type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
+				identifier: assignment.content_id,
+			},
+			event_message: `User ${getProfileName()} heeft ${
+				CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
+			} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
+			name: 'view',
+			category: 'item',
+		});
+	};
+
+	const saveAssignment = async (assignment: Partial<Assignment>) => {
 		try {
 			setIsSaving(true);
 			if (pageType === 'create') {
@@ -438,6 +479,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				if (insertedAssignment) {
 					setBothAssignments(insertedAssignment);
+					trackAddObjectToAssignment(insertedAssignment);
 					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
 					history.push(
 						`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${

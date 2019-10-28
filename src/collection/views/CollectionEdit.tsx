@@ -25,6 +25,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { MAX_SEARCH_DESCRIPTION_LENGTH, RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -32,6 +33,7 @@ import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal'
 import InputModal from '../../shared/components/modals/InputModal';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { ApolloCacheManager } from '../../shared/services/data-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
@@ -141,7 +143,18 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			// TODO: Refresh data on Collections page.
+			trackEvents({
+				event_object: {
+					type: 'collection',
+					identifier: String(currentCollection.id),
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+					currentCollection.id
+				} verwijderd`,
+				name: 'delete',
+				category: 'item',
+			});
+
 			props.history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`);
 		} catch (err) {
 			console.error(err);
@@ -488,6 +501,17 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			setInitialCollection(cloneDeep(newCollection));
 			setIsSavingCollection(false);
 			toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
+			trackEvents({
+				event_object: {
+					type: 'collection',
+					identifier: String(newCollection.id),
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+					newCollection.id
+				} bijgewerkt`,
+				name: 'edit',
+				category: 'item',
+			});
 			// refetch collection:
 			refetchCollection();
 		} catch (err) {
