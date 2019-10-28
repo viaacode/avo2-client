@@ -31,8 +31,8 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
-import './CollectionOverview.scss';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import './CollectionOverview.scss';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;

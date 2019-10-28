@@ -55,8 +55,8 @@ import ItemVideoDescription from '../components/ItemVideoDescription';
 import FragmentAddToCollection from '../components/modals/FragmentAddToCollection';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
-import './Item.scss';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
 

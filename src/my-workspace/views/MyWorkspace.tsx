@@ -1,7 +1,6 @@
-import React, { FunctionComponent, ReactText, useState } from 'react';
-import { withRouter } from 'react-router';
-
 import { get } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useState } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Container,
@@ -17,6 +16,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+
 import AssignmentOverview from '../../assignment/views/AssignmentOverview';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import CollectionOverview from '../../collection/views/CollectionOverview';
@@ -24,11 +25,15 @@ import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
-import { MyWorkspaceProps, TabViewMap } from '../types';
+import { TabViewMap } from '../types';
+import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import Bookmarks from './Bookmarks';
 
-import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import './MyWorkspace.scss';
+
+export interface MyWorkspaceProps extends RouteComponentProps<{ tabId: string }> {
+	collections: Avo.Collection.Collection | null;
+}
 
 const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) => {
 	// State

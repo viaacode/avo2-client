@@ -1,5 +1,7 @@
-import { Blankslate, Container } from '@viaa/avo2-components';
 import React, { FunctionComponent, ReactNode } from 'react';
+
+import { Blankslate, Container } from '@viaa/avo2-components';
+
 import { IconName } from '../../shared/types/types';
 
 interface NotFoundProps {
