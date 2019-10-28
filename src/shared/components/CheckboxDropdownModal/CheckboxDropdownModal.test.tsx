@@ -1,7 +1,7 @@
+import { action } from '@storybook/addon-actions';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
-import { action } from '@storybook/addon-actions';
 import { CheckboxDropdownModal } from './CheckboxDropdownModal';
 
 export const countOptions = [

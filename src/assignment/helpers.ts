@@ -1,13 +1,15 @@
 import { ApolloQueryResult } from 'apollo-client';
 import { DocumentNode } from 'graphql';
 import { get } from 'lodash-es';
+
+import { Avo } from '@viaa/avo2-types';
+
 import { GET_COLLECTION_BY_ID } from '../collection/graphql';
 import { GET_ITEM_BY_ID } from '../item/item.gql';
 import { dataService } from '../shared/services/data-service';
-import { Assignment, AssignmentContent, AssignmentContentLabel } from './types';
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in AssignmentContentLabel]: { query: DocumentNode; resultPath: string }
+	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,
@@ -27,11 +29,11 @@ const CONTENT_LABEL_TO_QUERY: {
 export type LoadingState = 'loading' | 'loaded' | 'error';
 
 export const getAssignmentContent = async (
-	assignment: Assignment
-): Promise<string | AssignmentContent | null> => {
+	assignment: Avo.Assignment.Assignment
+): Promise<string | Avo.Assignment.Content | null> => {
 	try {
 		if (assignment.content_id && assignment.content_label) {
-			const response: ApolloQueryResult<AssignmentContent> = await dataService.query({
+			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
 				query: CONTENT_LABEL_TO_QUERY[assignment.content_label].query,
 				variables: { id: assignment.content_id },
 			});
@@ -39,7 +41,7 @@ export const getAssignmentContent = async (
 			const newAssignmentContent = get(
 				response,
 				`data.${
-					CONTENT_LABEL_TO_QUERY[assignment.content_label as AssignmentContentLabel].resultPath
+					CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].resultPath
 				}`
 			);
 

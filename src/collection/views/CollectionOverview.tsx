@@ -31,8 +31,8 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
-import './CollectionOverview.scss';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import './CollectionOverview.scss';
 
 interface CollectionsProps extends RouteComponentProps {
 	numberOfCollections: number;
@@ -182,12 +182,12 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		<>
 			<Table
 				columns={[
-					{ id: 'thumbnail', label: '' },
-					{ id: 'title', label: 'Titel', sortable: true },
-					{ id: 'updatedAt', label: 'Laatst bewerkt', sortable: true },
-					{ id: 'inFolder', label: 'In map' },
-					{ id: 'access', label: 'Toegang' },
-					{ id: 'actions', label: '' },
+					{ id: 'thumbnail', label: '', col: '2' },
+					{ id: 'title', label: 'Titel', col: '6', sortable: true },
+					{ id: 'updatedAt', label: 'Laatst bewerkt', col: '3', sortable: true },
+					{ id: 'inFolder', label: 'In map', col: '2' },
+					{ id: 'access', label: 'Toegang', col: '2' },
+					{ id: 'actions', label: '', col: '1' },
 				]}
 				data={collections}
 				emptyStateMessage="Geen resultaten gevonden"

@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 import { Blankslate, Container, Flex, Pagination, Spacer, Spinner } from '@viaa/avo2-components';
 
 import SearchResultItem from './SearchResultItem';
 import { SearchResultsProps } from './types';
 
-const SearchResults = ({
+const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	currentPage,
 	loading,
 	data,
 	pageCount,
 	setPage,
 	...resultProps
-}: SearchResultsProps) => {
+}) => {
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal">
