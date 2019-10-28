@@ -42,8 +42,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 	};
 
 	// Computed
-	const adminRouteRegex = new RegExp(`^/${RouteParts.Admin}`, 'g');
-	const isAdminRoute = adminRouteRegex.test(location.pathname);
+	const isAdminRoute = new RegExp(`^/${RouteParts.Admin}`, 'g').test(location.pathname);
 
 	// Render
 	const renderAdmin = () => (
