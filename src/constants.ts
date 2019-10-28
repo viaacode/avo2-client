@@ -21,6 +21,8 @@ export const RouteParts = {
 	Assignment: 'opdracht',
 	Responses: 'indieningen',
 	SearchQuery: 'zoekopdracht',
+	Admin: 'beheer',
+	Menus: 'navigatie',
 };
 
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;

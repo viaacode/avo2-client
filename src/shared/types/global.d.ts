@@ -1,4 +1,4 @@
-export interface CustomWindow extends Window {
+interface Window {
 	_ENV_: {
 		PROXY_URL: string;
 		FLOW_PLAYER_TOKEN: string;

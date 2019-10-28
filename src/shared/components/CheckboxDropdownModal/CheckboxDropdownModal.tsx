@@ -1,3 +1,5 @@
+import classnames from 'classnames';
+import { clone, compact, fromPairs } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useState } from 'react';
 
 import {
@@ -24,8 +26,6 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import classnames from 'classnames';
-import { clone, compact, fromPairs } from 'lodash-es';
 
 import './CheckboxDropdownModal.scss';
 

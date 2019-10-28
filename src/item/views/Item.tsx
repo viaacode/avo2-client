@@ -55,8 +55,8 @@ import ItemVideoDescription from '../components/ItemVideoDescription';
 import FragmentAddToCollection from '../components/modals/FragmentAddToCollection';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
-import './Item.scss';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
 
@@ -64,7 +64,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
-	const [time, setTime] = useState<number>(0);
+	// TODO: use setTime when adding logic for enabling timestamps in the URL
+	const [time] = useState<number>(0);
 	const [isOpenFragmentAddToCollectionModal, setIsOpenFragmentAddToCollectionModal] = useState(
 		false
 	);
@@ -237,8 +238,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
-									{/* TODO: make columns, data and rowKey props optional */}
-									<Table columns={[]} data={[]} rowKey="">
+									{/* TODO: make rowKey prop optional */}
+									<Table rowKey="">
 										<Grid tag="tbody">
 											<Column size="2-5" tag="tr">
 												<th scope="row">Publicatiedatum</th>
@@ -278,8 +279,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										</Grid>
 									</Table>
 									<div className="c-hr" />
-									{/* TODO: make columns, data and rowKey props optional */}
-									<Table columns={[]} data={[]} rowKey="">
+									{/* TODO: make rowKey prop optional */}
+									<Table rowKey="">
 										<tbody>
 											<tr>
 												<th scope="row">Geschikt voor</th>
@@ -304,8 +305,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										</tbody>
 									</Table>
 									<div className="c-hr" />
-									{/* TODO: make columns, data and rowKey props optional */}
-									<Table columns={[]} data={[]} rowKey="">
+									{/* TODO: make rowKey prop optional */}
+									<Table rowKey="">
 										<tbody>
 											<tr>
 												<th scope="row">Trefwoorden</th>

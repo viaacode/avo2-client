@@ -1,5 +1,5 @@
 import { DocumentNode } from 'graphql';
-import { get } from 'lodash-es';
+import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { Query, QueryResult } from 'react-apollo';
 
@@ -47,6 +47,15 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 					return (
 						<NotFound message={'Er ging iets mis tijdens het ophalen'} icon="alert-triangle" />
 					);
+				}
+
+				if (isEmpty(get(result, 'data'))) {
+					// Temp empty because of cache clean
+					return showSpinner ? (
+						<Flex orientation="horizontal" center>
+							<Spinner size="large" />
+						</Flex>
+					) : null;
 				}
 
 				const data = get(result, resultPath ? `data.${resultPath}` : 'data');

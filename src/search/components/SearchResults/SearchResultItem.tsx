@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
 import {
@@ -17,11 +17,11 @@ import {
 } from '../../../shared/helpers/generateLink';
 import { SearchResultItemProps } from './types';
 
-const SearchResultItem = ({
+const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	handleBookmarkToggle,
 	handleOriginalCpLinkClicked,
 	result,
-}: SearchResultItemProps) => {
+}) => {
 	const contentLink: string = generateContentLinkString(result.administrative_type, result.id);
 
 	return (

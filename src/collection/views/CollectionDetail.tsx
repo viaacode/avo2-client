@@ -52,8 +52,8 @@ import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
 
-import './CollectionDetail.scss';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import './CollectionDetail.scss';
 
 interface CollectionDetailProps extends RouteComponentProps {
 	loginState: LoginResponse | null;

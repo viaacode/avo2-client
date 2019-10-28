@@ -12,15 +12,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import { IconName } from '../../../shared/types/types';
+import { NavigationItem } from '../../../shared/types/types';
 
 import './Navigation.scss';
-
-type NavigationItem = {
-	label: string;
-	location: string;
-	icon?: string;
-};
 
 export interface NavigationProps {
 	primaryItems: NavigationItem[];
@@ -34,7 +28,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	secondaryItems,
 	isOpen,
 	handleMenuClick = () => {},
-}: NavigationProps) => {
+}) => {
 	return (
 		<>
 			<Navbar background="inverse" position="fixed" placement="top">
@@ -64,7 +58,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 														activeClassName="c-nav__item--active"
 														exact={item.location === '/'}
 													>
-														{item.icon && <Icon name={item.icon as IconName} />}
+														{item.icon && <Icon name={item.icon} />}
 														{item.label}
 													</NavLink>
 												</li>
@@ -119,10 +113,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 										to={item.location}
 										className="c-nav-mobile__item"
 										activeClassName="c-nav__item--active"
-										exact={false}
+										exact={item.location === '/'}
 									>
 										{item.label}
-										{item.icon && <Icon name={item.icon as IconName} />}
+										{item.icon && <Icon name={item.icon} />}
 									</NavLink>
 								</li>
 							))}
@@ -157,7 +151,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 													activeClassName="c-nav__item--active"
 													className="c-nav__item c-nav__item--i"
 												>
-													{item.icon && <Icon name={item.icon as IconName} />}
+													{item.icon && <Icon name={item.icon} />}
 													{item.label}
 												</NavLink>
 											</li>
