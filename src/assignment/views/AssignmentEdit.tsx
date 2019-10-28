@@ -711,7 +711,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						<FormGroup label="Weergave" labelFor="only_player">
 							<RadioButtonGroup>
 								<RadioButton
-									label="Weergeven als mediaspeler met tekst"
+									label="mediaspeler met beschrijving"
 									name="content_layout"
 									value={String(AssignmentLayout.PlayerAndText)}
 									checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
@@ -720,7 +720,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									}
 								/>
 								<RadioButton
-									label="Weergeven als enkel mediaspeler"
+									label="enkel mediaspeler"
 									name="content_layout"
 									value={String(AssignmentLayout.OnlyPlayer)}
 									checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
