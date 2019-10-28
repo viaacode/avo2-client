@@ -1,20 +1,20 @@
 import { get } from 'lodash-es';
 
-import { SearchState } from './types';
+import { AppState } from '../../store';
 
-const selectSearch = ({ search }: { search: SearchState }) => {
+const selectSearch = ({ search }: AppState) => {
 	return search;
 };
 
-const selectSearchResults = ({ search }: { search: SearchState }) => {
+const selectSearchResults = ({ search }: AppState) => {
 	return get(search, ['data']);
 };
 
-const selectSearchLoading = ({ search }: { search: SearchState }) => {
+const selectSearchLoading = ({ search }: AppState) => {
 	return get(search, ['loading']);
 };
 
-const selectSearchError = ({ search }: { search: SearchState }) => {
+const selectSearchError = ({ search }: AppState) => {
 	return get(search, ['error']);
 };
 

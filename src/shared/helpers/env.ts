@@ -1,8 +1,3 @@
-import { CustomWindow } from '../types/global';
-
-export function getEnv(name: keyof CustomWindow['_ENV_']): string | undefined {
-	if ((window as CustomWindow)._ENV_) {
-		return (window as CustomWindow)._ENV_[name];
-	}
-	return process.env[name];
+export function getEnv(name: keyof Window['_ENV_']): string | undefined {
+	return window._ENV_ ? window._ENV_[name] : process.env[name];
 }

@@ -47,7 +47,6 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE,
 } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
-import { Assignment, AssignmentContent, AssignmentResponse, AssignmentTag } from '../types';
 
 import './AssignmentDetail.scss';
 
@@ -67,8 +66,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [isDescriptionCollapsed, setDescriptionCollapsed] = useState<boolean>(false);
 	const [navBarHeight, setNavBarHeight] = useState<number>(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
-	const [assignment, setAssignment] = useState<Assignment>();
-	const [assigmentContent, setAssigmentContent] = useState<AssignmentContent | null | undefined>();
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
+	const [assigmentContent, setAssigmentContent] = useState<
+		Avo.Assignment.Content | null | undefined
+	>();
 	const [loadingState, setLoadingState] = useState<LoadingState>('loading');
 	const [loadingError, setLoadingError] = useState<{ error: string; icon: IconName } | null>(null);
 
@@ -77,7 +78,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 
 	const navBarRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
 
-	const isOwnerOfAssignment = (tempAssignment: Assignment) => {
+	const isOwnerOfAssignment = (tempAssignment: Avo.Assignment.Assignment) => {
 		return getProfileId() === tempAssignment.owner_profile_id;
 	};
 
@@ -110,9 +111,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 	 * since we might need to get the assignment content as well and
 	 * this looks cleaner if everything loads at once instead of staggered
 	 */
-	const createAssignmentResponseObject = async (tempAssignment: Assignment) => {
+	const createAssignmentResponseObject = async (tempAssignment: Avo.Assignment.Assignment) => {
 		if (!isOwnerOfAssignment(tempAssignment)) {
-			let assignmentResponse: Partial<AssignmentResponse> | null | undefined = get(
+			let assignmentResponse: Partial<Avo.Assignment.Response> | null | undefined = get(
 				tempAssignment,
 				'assignment_responses[0]'
 			);
@@ -140,8 +141,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 						toastService('Het aanmaken van de opdracht antwoord entry is mislukt (leeg id)');
 						return;
 					}
-					(assignmentResponse as Partial<AssignmentResponse>).id = assignmentResponseId;
-					tempAssignment.assignment_responses = [assignmentResponse as AssignmentResponse];
+					(assignmentResponse as Partial<Avo.Assignment.Response>).id = assignmentResponseId;
+					tempAssignment.assignment_responses = [assignmentResponse as Avo.Assignment.Response];
 				} catch (err) {
 					console.error(err);
 					toastService(
@@ -166,8 +167,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 		// Load assignment
 		dataService
 			.query(assignmentQuery)
-			.then(async (apiResponse: ApolloQueryResult<Assignment>) => {
-				const tempAssignment: Assignment | undefined | null = get(
+			.then(async (apiResponse: ApolloQueryResult<Avo.Assignment.Assignment>) => {
+				const tempAssignment: Avo.Assignment.Assignment | undefined | null = get(
 					apiResponse,
 					'data.assignments[0]'
 				);
@@ -185,16 +186,18 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				await createAssignmentResponseObject(tempAssignment);
 
 				// Load content (collection, item or search query) according to assignment
-				getAssignmentContent(tempAssignment).then((response: AssignmentContent | string | null) => {
-					if (typeof response === 'string') {
-						toastService(response);
-						return;
-					}
+				getAssignmentContent(tempAssignment).then(
+					(response: Avo.Assignment.Content | string | null) => {
+						if (typeof response === 'string') {
+							toastService(response);
+							return;
+						}
 
-					setAssigmentContent(response);
-					setAssignment(tempAssignment);
-					setLoadingState('loaded');
-				});
+						setAssigmentContent(response);
+						setAssignment(tempAssignment);
+						setLoadingState('loaded');
+					}
+				);
 			})
 			.catch(err => {
 				let errorObj: { error: string; icon: IconName };
@@ -266,7 +269,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 						// Update local cached assignment
 						setAssignment(
 							set(
-								cloneDeep(assignment as Assignment),
+								cloneDeep(assignment as Avo.Assignment.Assignment),
 								'assignment_responses[0].is_archived',
 								!isAssignmentResponseArchived()
 							)
@@ -290,11 +293,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 		}
 	};
 
-	const getAssignmentResponse = (): AssignmentResponse | null => {
+	const getAssignmentResponse = (): Avo.Assignment.Response | null => {
 		return get(assignment, 'assignment_responses[0]', null);
 	};
 
-	const isAssignmentResponseArchived = (): AssignmentResponse | null => {
+	const isAssignmentResponseArchived = (): Avo.Assignment.Response | null => {
 		return get(getAssignmentResponse(), 'is_archived', false);
 	};
 
@@ -359,7 +362,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 		const tags: TagOption[] = (
 			get(assignment, 'assignment_assignment_tags.assignment_tag') || []
 		).map(
-			(tag: AssignmentTag): TagOption => ({
+			(tag: Avo.Assignment.Tag): TagOption => ({
 				id: tag.id,
 				label: tag.label,
 				color: tag.color_override || tag.enum_color.label,
