@@ -3,14 +3,16 @@ import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
+import { Flex, FlexItem } from '@viaa/avo2-components';
 import classnames from 'classnames';
 
+import { Sidebar, TopBar } from './admin/components';
+import { ADMIN_PATH } from './admin/routes';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
 import { renderRoutes } from './routes';
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
-import { Sidebar } from './shared/components/Sidebar/Sidebar';
 
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import { ApolloProvider } from 'react-apollo';
@@ -33,6 +35,13 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 	});
 
 	// Methods
+	const shouldNavigateBack = () => {
+		const depth = location.pathname.split('/').filter(p => !!p);
+		const previousPath = depth.slice(0, depth.length - 1).join('/');
+
+		return depth.length > 2 ? () => history.push(`/${previousPath}`) : null;
+	};
+
 	const toggleMenu = () => {
 		setMenuOpen(!menuOpen);
 	};
@@ -46,13 +55,16 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 
 	// Render
 	const renderAdmin = () => (
-		<div className="u-d-flex">
+		<Flex>
 			<Sidebar
 				headerLink={`/${RouteParts.Admin}`}
-				navItems={[{ label: 'Navigatie', location: `/${RouteParts.Admin}/${RouteParts.Menus}` }]}
+				navItems={[{ label: 'Navigatie', location: ADMIN_PATH.MENU }]}
 			/>
-			<div className="u-content-flex u-scroll">{renderRoutes()}</div>
-		</div>
+			<Flex className="u-flex-auto u-scroll" orientation="vertical">
+				<TopBar navigateBack={shouldNavigateBack()} />
+				{renderRoutes()}
+			</Flex>
+		</Flex>
 	);
 
 	const renderApp = () => (
