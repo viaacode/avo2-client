@@ -100,7 +100,7 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 					toastService('Het ophalen van de bestaande collecties is mislukt', TOAST_TYPE.DANGER);
 				});
 		}
-	}, [isOpen]);
+	}, [isOpen, itemMetaData.duration]);
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
