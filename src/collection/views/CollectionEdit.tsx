@@ -38,6 +38,7 @@ import { getThumbnailForCollection } from '../../shared/services/stills-service'
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { ReorderCollectionModal, ShareCollectionModal } from '../components';
+import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -163,7 +164,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	};
 
 	// Update individual property of fragment
-	const updateFragmentProperty = (value: any, propertyName: string, fragmentId: number) => {
+	const updateFragmentProperties = (updateInfos: FragmentPropertyUpdateInfo[]) => {
 		const tempCollection: Avo.Collection.Collection | undefined = cloneDeep(currentCollection);
 
 		if (!tempCollection) {
@@ -174,11 +175,13 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			return;
 		}
 
-		const fragmentToUpdate = tempCollection.collection_fragments.find(
-			(item: Avo.Collection.Fragment) => item.id === fragmentId
-		);
+		updateInfos.forEach((updateInfo: FragmentPropertyUpdateInfo) => {
+			const fragmentToUpdate = tempCollection.collection_fragments.find(
+				(item: Avo.Collection.Fragment) => item.id === updateInfo.fragmentId
+			);
 
-		(fragmentToUpdate as any)[propertyName] = value;
+			(fragmentToUpdate as any)[updateInfo.fieldName] = updateInfo.value;
+		});
 
 		setCurrentCollection(tempCollection);
 	};
@@ -673,7 +676,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 						collection={currentCollection}
 						swapFragments={swapFragments}
 						updateCollection={setCurrentCollection}
-						updateFragmentProperty={updateFragmentProperty}
+						updateFragmentProperties={updateFragmentProperties}
 					/>
 				)}
 				{currentTab === 'metadata' && (

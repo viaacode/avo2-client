@@ -5,19 +5,20 @@ import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { FragmentAdd, FragmentEdit } from '../components';
+import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
 
 interface CollectionEditContentProps {
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateCollection: (collection: Avo.Collection.Collection) => void;
-	updateFragmentProperty: (value: string, fieldName: string, fragmentId: number) => void;
+	updateFragmentProperties: (updateInfo: FragmentPropertyUpdateInfo[]) => void;
 }
 
 const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 	collection,
 	swapFragments,
 	updateCollection,
-	updateFragmentProperty,
+	updateFragmentProperties,
 }) => {
 	const [openOptionsId, setOpenOptionsId] = useState<number | null>(null);
 
@@ -38,7 +39,7 @@ const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 							index={index}
 							collection={collection}
 							swapFragments={swapFragments}
-							updateFragmentProperty={updateFragmentProperty}
+							updateFragmentProperties={updateFragmentProperties}
 							openOptionsId={openOptionsId}
 							setOpenOptionsId={setOpenOptionsId}
 							fragment={fragment}

@@ -22,11 +22,17 @@ import { fetchPlayerTicket } from '../../../shared/services/player-ticket-servic
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { getValidationErrorsForStartAndEndTime } from '../../helpers/validation';
 
+export interface FragmentPropertyUpdateInfo {
+	value: string | number | boolean | null;
+	fieldName: keyof Avo.Collection.Fragment;
+	fragmentId: number;
+}
+
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	itemMetaData: Avo.Item.Item;
-	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
+	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
 	updateCuePoints: (cuepoints: any) => void;
 	fragment: Avo.Collection.Fragment;
 }
@@ -35,7 +41,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	onClose,
 	isOpen,
 	itemMetaData,
-	updateFragmentProperty,
+	updateFragmentProperties,
 	fragment,
 	updateCuePoints,
 }) => {
@@ -89,8 +95,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const start = toSeconds(fragmentStartTimeString, true);
 		const end = toSeconds(fragmentEndTimeString, true);
 
-		updateFragmentProperty(start, 'start_oc', fragment.id);
-		updateFragmentProperty(end, 'end_oc', fragment.id);
+		updateFragmentProperties([
+			{ value: start, fieldName: 'start_oc' as const, fragmentId: fragment.id },
+			{ value: end, fieldName: 'end_oc' as const, fragmentId: fragment.id },
+		]);
 		updateCuePoints({
 			start,
 			end,
