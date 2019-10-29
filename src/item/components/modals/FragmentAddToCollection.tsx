@@ -177,7 +177,6 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 	const addItemToNewCollection = async () => {
 		// Disable "Toepassen" button
 		setIsProcessing(true);
-		console.log('adding to new collection');
 
 		let newCollection: Partial<Avo.Collection.Collection> | null = null;
 		try {
