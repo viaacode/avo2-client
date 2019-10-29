@@ -1,0 +1,17 @@
+@import '../../../styles/settings/colors';
+@import '../../../styles/settings/variables';
+
+.c-menu-detail {
+
+}
+
+// Elements
+.c-menu-detail__nav-edit {
+	li {
+		align-items: center;
+	}
+}
+
+.c-menu-detail__nav-label {
+	margin: 0 auto 0 ($g-spacer-unit * 3);
+}

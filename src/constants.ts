@@ -22,7 +22,7 @@ export const RouteParts = {
 	Responses: 'indieningen',
 	SearchQuery: 'zoekopdracht',
 	Admin: 'beheer',
-	Menus: 'navigatie',
+	Menu: 'navigatie',
 };
 
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
