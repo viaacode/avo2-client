@@ -165,7 +165,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 
 				// Fetch the content if the assignment has content
-				await fetchAssignmentContent();
+				await fetchAssignmentContent(assignment);
 			} catch (err) {
 				setLoadingError({
 					error: 'Het ophalen/aanmaken van de opdracht is mislukt',
@@ -264,13 +264,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		/**
 		 * Load the content if they are not loaded yet
 		 */
-		const fetchAssignmentContent = async () => {
+		const fetchAssignmentContent = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 			try {
-				if (!currentAssignment.assignment_type || assignmentContent) {
+				if (!assignment.assignment_type || assignmentContent) {
 					// Only fetch assignment content if not set yet
 					return;
 				}
-				if (!currentAssignment.content_id || !currentAssignment.content_label) {
+				if (!assignment.content_id || !assignment.content_label) {
 					// The assignment doesn't have content linked to it
 					setLoadingState('loaded');
 					return;
@@ -279,9 +279,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// Fetch the content from the network
 				const queryParams = {
 					query:
-						CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as Avo.Assignment.ContentLabel]
-							.query,
-					variables: { id: currentAssignment.content_id },
+						CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].query,
+					variables: { id: assignment.content_id },
 				};
 				const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
 					queryParams
@@ -290,7 +289,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				const assignmentContentResponse = get(
 					response,
 					`data.${
-						CONTENT_LABEL_TO_QUERY[currentAssignment.content_label as Avo.Assignment.ContentLabel]
+						CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
 							.resultPath
 					}`
 				);
@@ -305,9 +304,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 				setAssignmentContent(assignmentContentResponse);
 				setBothAssignments({
-					...currentAssignment,
+					...assignment,
 					title:
-						currentAssignment.title ||
+						assignment.title ||
 						(assignmentContentResponse && assignmentContentResponse.title) ||
 						'',
 				});
@@ -711,7 +710,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						<FormGroup label="Weergave" labelFor="only_player">
 							<RadioButtonGroup>
 								<RadioButton
-									label="Weergeven als mediaspeler met tekst"
+									label="mediaspeler met beschrijving"
 									name="content_layout"
 									value={String(AssignmentLayout.PlayerAndText)}
 									checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
@@ -720,7 +719,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									}
 								/>
 								<RadioButton
-									label="Weergeven als enkel mediaspeler"
+									label="enkel mediaspeler"
 									name="content_layout"
 									value={String(AssignmentLayout.OnlyPlayer)}
 									checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}

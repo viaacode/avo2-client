@@ -7,6 +7,6 @@ export interface AssignmentColumn {
 }
 
 export enum AssignmentLayout {
-	OnlyPlayer = 0,
-	PlayerAndText = 1,
+	PlayerAndText = 0,
+	OnlyPlayer = 1,
 }

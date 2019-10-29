@@ -394,7 +394,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						)
 					}
 					rowKey="id"
-					styled
+					variant="styled"
 					onColumnClick={handleColumnClick as any}
 					sortColumn={sortColumn}
 					sortOrder={sortOrder}
