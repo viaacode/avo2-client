@@ -423,7 +423,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				deletePromises.push(
 					triggerCollectionFragmentDelete({
 						variables: { id },
-						update: ApolloCacheManager.clearCollectionCache,
 					})
 				);
 			});
@@ -454,7 +453,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 							id,
 							fragment: fragmentToUpdate,
 						},
-						update: ApolloCacheManager.clearCollectionCache,
 					})
 				);
 			});
