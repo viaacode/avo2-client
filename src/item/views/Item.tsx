@@ -130,7 +130,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 			<>
 				<Container mode="vertical" size="small" background="alt">
 					<Container mode="horizontal">
-						<Toolbar>
+						<Toolbar autoHeight>
 							<ToolbarLeft>
 								<ToolbarItem>
 									<Spacer margin="bottom">
