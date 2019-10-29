@@ -31,13 +31,13 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { isMediaFragment } from '../helpers';
 import FragmentAdd from './FragmentAdd';
-import CutFragmentModal from './modals/CutFragmentModal';
+import CutFragmentModal, { FragmentPropertyUpdateInfo } from './modals/CutFragmentModal';
 
 interface FragmentEditProps extends RouteComponentProps {
 	index: number;
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	updateFragmentProperty: (value: any, fieldName: string, fragmentId: number) => void;
+	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<React.SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
@@ -49,7 +49,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	index,
 	collection,
 	swapFragments,
-	updateFragmentProperty,
+	updateFragmentProperties,
 	openOptionsId,
 	setOpenOptionsId,
 	fragment,
@@ -70,13 +70,21 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	// Change listener for custom fields toggle
 	const onChangeToggle = () => {
-		updateFragmentProperty(!useCustomFields, 'use_custom_fields', fragment.id);
+		updateFragmentProperties([
+			{ value: !useCustomFields, fieldName: 'use_custom_fields' as const, fragmentId: fragment.id },
+		]);
 		setUseCustomFields(!useCustomFields);
 	};
 
 	// Change listener for custom fields text
-	const onChangeText = (field: string, value: string) =>
-		updateFragmentProperty(value, `custom_${field}`, fragment.id);
+	const onChangeText = (field: 'title' | 'description', value: string) =>
+		updateFragmentProperties([
+			{
+				value,
+				fieldName: `custom_${field}` as 'custom_title' | 'custom_description',
+				fragmentId: fragment.id,
+			},
+		]);
 
 	// Get correct fragment property according to fragment type
 	const getFragmentProperty = (
@@ -302,7 +310,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}
 					itemMetaData={itemMetaData}
-					updateFragmentProperty={updateFragmentProperty}
+					updateFragmentProperties={updateFragmentProperties}
 					fragment={fragment}
 					updateCuePoints={setCuePoints}
 				/>

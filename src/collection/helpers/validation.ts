@@ -187,7 +187,6 @@ export function getValidationErrorForSave(collection: Avo.Collection.Collection)
 function getError<T>(rule: ValidationRule<T>, object: T) {
 	if (typeof rule.error === 'string') {
 		return rule.error;
-	} else {
-		return rule.error(object);
 	}
+	return rule.error(object);
 }

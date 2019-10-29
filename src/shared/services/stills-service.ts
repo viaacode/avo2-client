@@ -4,6 +4,7 @@ import { compact, uniq } from 'lodash-es';
 import { isMediaFragment } from '../../collection/helpers';
 import { ContentTypeString } from '../../collection/types';
 import { getEnv } from '../helpers/env';
+import { toSeconds } from '../helpers/parsers/duration';
 
 export const getVideoStills = async (
 	stillRequests: Avo.Stills.StillRequest[]
@@ -40,24 +41,42 @@ export const getThumbnailsForCollection = async (
 	const audioFragments = mediaFragments.filter(
 		fragment => fragment.item_meta && fragment.item_meta.type.label === ContentTypeString.audio
 	);
-	const stillRequests: Avo.Stills.StillRequest[] = compact(
-		videoFragments.map(fragment => ({
+	const cutVideoFragments = videoFragments.filter(
+		fragment =>
+			fragment.start_oc !== 0 ||
+			(fragment.item_meta && fragment.end_oc !== toSeconds(fragment.item_meta.duration))
+	);
+	const uncutVideoFragments = videoFragments.filter(
+		fragment =>
+			(!fragment.start_oc && !fragment.end_oc) ||
+			(fragment.start_oc === 0 &&
+				fragment.item_meta &&
+				fragment.end_oc === toSeconds(fragment.item_meta.duration))
+	);
+	const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
+		cutVideoFragments.map(fragment => ({
 			externalId: fragment.external_id,
 			startTime: (fragment.start_oc || 0) * 1000,
 		}))
 	);
-	const videoStills = await getVideoStills(stillRequests);
+	const cutVideoStills = await getVideoStills(cutVideoStillRequests);
 
-	return uniq([
-		// current thumbnail image
-		...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
-		// Video thumbnails
-		...videoStills.map(videoStill => videoStill.thumbnailImagePath),
-		// One audio thumbnail
-		...(audioFragments[0] && audioFragments[0].item_meta
-			? [audioFragments[0].item_meta.thumbnail_path]
-			: []),
-	]);
+	return uniq(
+		compact([
+			// current thumbnail image
+			...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
+			// Cut video thumbnails
+			...cutVideoStills.map(videoStill => videoStill.thumbnailImagePath),
+			// Uncut video thumbnails
+			...uncutVideoFragments.map(
+				fragment => fragment.item_meta && fragment.item_meta.thumbnail_path
+			),
+			// One audio thumbnail
+			...(audioFragments[0] && audioFragments[0].item_meta
+				? [audioFragments[0].item_meta.thumbnail_path]
+				: []),
+		])
+	);
 };
 
 export const getThumbnailForCollection = async (
