@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Avo } from '@viaa/avo2-types';
+import { isArray, isEmpty, isNil, noop } from 'lodash-es';
 import queryString from 'query-string';
 
-import { isArray, noop } from 'lodash-es';
-import { Link } from 'react-router-dom';
 import { RouteParts } from '../../constants';
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
@@ -14,6 +14,26 @@ export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: str
 	bundel: RouteParts.Folder,
 };
 
+export function buildLink(route: string, params: { [key: string]: any } = {}) {
+	if (route.includes(':') && (isNil(params) || isEmpty(params))) {
+		const missingParams = route
+			.split('/')
+			.filter(r => r.includes(':'))
+			.join(', ');
+		console.error(`Include following params: ${missingParams}`);
+
+		return '';
+	}
+
+	let builtLink = route;
+
+	Object.keys(params).forEach((param: string) => {
+		builtLink = builtLink.replace(`:${param}`, params[param]);
+	});
+
+	return builtLink;
+}
+
 export function generateSearchLinks(
 	key: string,
 	filterProp: Avo.Search.FilterProp,
@@ -21,14 +41,12 @@ export function generateSearchLinks(
 	className: string = ''
 ) {
 	if (isArray(filterValue)) {
-		return filterValue.map((value: string, index: number) => {
-			return (
-				<Fragment key={`${key}:${filterProp}":${value}`}>
-					{generateSearchLink(filterProp, value, className)}
-					{index === filterValue.length - 1 ? '' : ', '}
-				</Fragment>
-			);
-		});
+		return filterValue.map((value: string, index: number) => (
+			<Fragment key={`${key}:${filterProp}":${value}`}>
+				{generateSearchLink(filterProp, value, className)}
+				{index === filterValue.length - 1 ? '' : ', '}
+			</Fragment>
+		));
 	}
 	return generateSearchLink(filterProp, filterValue, className);
 }
@@ -39,29 +57,25 @@ export function generateSearchLink(
 	className: string = '',
 	onClick: () => void = noop
 ) {
-	return (
-		<>
-			{filterValue && (
-				<Link
-					className={className}
-					to={generateSearchLinkString(filterProp, filterValue)}
-					onClick={onClick}
-				>
-					{filterValue}
-				</Link>
-			)}
-			{!filterValue && <Fragment />}
-		</>
+	return filterValue ? (
+		<Link
+			className={className}
+			to={generateSearchLinkString(filterProp, filterValue)}
+			onClick={onClick}
+		>
+			{filterValue}
+		</Link>
+	) : (
+		<Fragment />
 	);
 }
 
 export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filterValue: string) {
-	if (String(filterProp) === 'query') {
-		const queryParams = queryString.stringify({ filters: JSON.stringify({ query: filterValue }) });
-		return `/${RouteParts.Search}?${queryParams}`;
-	}
+	const queryParams =
+		String(filterProp) === 'query'
+			? queryString.stringify({ filters: JSON.stringify({ query: filterValue }) })
+			: queryString.stringify({ filters: `{"${filterProp}":["${filterValue}"]}` });
 
-	const queryParams = queryString.stringify({ filters: `{"${filterProp}":["${filterValue}"]}` });
 	return `/${RouteParts.Search}?${queryParams}`;
 }
 
