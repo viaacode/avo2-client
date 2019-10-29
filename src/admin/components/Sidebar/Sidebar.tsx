@@ -21,7 +21,11 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ headerLink, navItems 
 			<ul className="o-sidebar__nav c-bordered-list">
 				{navItems.map((navItem, index) => (
 					<li key={`${navItem.location}-${index}`}>
-						<NavLink className="o-sidebar__nav-item" to={navItem.location}>
+						<NavLink
+							activeClassName="o-sidebar__nav-item--active"
+							className="o-sidebar__nav-item"
+							to={navItem.location}
+						>
 							{navItem.label}
 						</NavLink>
 					</li>
