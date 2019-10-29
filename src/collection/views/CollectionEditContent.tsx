@@ -34,7 +34,7 @@ const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 				{orderBy(collection.collection_fragments, ['position'], ['asc']).map(
 					(fragment: any, index: number) => (
 						<FragmentEdit
-							key={`fragment_${index}`}
+							key={`fragment_${fragment.id}`}
 							index={index}
 							collection={collection}
 							swapFragments={swapFragments}
