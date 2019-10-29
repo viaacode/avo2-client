@@ -2,7 +2,7 @@ import { ExecutionResult } from '@apollo/react-common';
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 
 import {
@@ -35,7 +35,6 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENT,
 } from '../../../collection/graphql';
-import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
@@ -72,8 +71,36 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0
 	);
+	const [collections, setCollections] = useState<Avo.Collection.Collection[]>([]);
+
 	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
 	const [triggerInsertCollection] = useMutation(INSERT_COLLECTION);
+
+	useEffect(() => {
+		if (isOpen) {
+			// Reset the state
+			setCreateNewCollection(false);
+			setSelectedCollectionId('');
+			setSelectedCollection(undefined);
+			setNewCollectionTitle('');
+			setFragmentStartTime(0);
+			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
+
+			const queryInfo = {
+				query: GET_COLLECTION_TITLES_BY_OWNER,
+				variables: { owner_profile_id: getProfileId() },
+			};
+			dataService
+				.query(queryInfo)
+				.then(response => {
+					setCollections(get(response, 'data.app_collections'));
+				})
+				.catch(err => {
+					console.error('Failed to get collection titles by owner', err, queryInfo);
+					toastService('Het ophalen van de bestaande collecties is mislukt', TOAST_TYPE.DANGER);
+				});
+		}
+	}, [isOpen, itemMetaData.duration]);
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
@@ -151,9 +178,10 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		// Disable "Toepassen" button
 		setIsProcessing(true);
 
+		let newCollection: Partial<Avo.Collection.Collection> | null = null;
 		try {
 			// Create new collection with one fragment in it
-			const newCollection: Partial<Avo.Collection.Collection> = {
+			newCollection = {
 				title: newCollectionTitle,
 				thumbnail_path: '/images/100x100.svg', // TODO get video stills of fragment and set first frame as cover
 				is_public: false,
@@ -177,20 +205,22 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 
 			if (!response || response.errors) {
 				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
-
-				// Re-enable apply button
-				setIsProcessing(false);
 			} else if (!insertedCollection || isNil(insertedCollection.id)) {
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
-
-				// Re-enable apply button
-				setIsProcessing(false);
 			} else {
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
 				onClose();
 			}
+
+			// Re-enable apply button
+			setIsProcessing(false);
 		} catch (err) {
+			console.error('Failed to create collection', err, {
+				variables: {
+					collection: newCollection,
+				},
+			});
 			toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
 
 			// Re-enable apply button
@@ -224,7 +254,7 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		? addItemToNewCollection
 		: () => addItemToExistingCollection(selectedCollection as Partial<Avo.Collection.Collection>);
 
-	const renderFragmentAddToCollectionModal = (collections: { id: number; title: string }[]) => {
+	const renderFragmentAddToCollectionModal = () => {
 		const initFlowPlayer = () =>
 			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 
@@ -368,15 +398,7 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		);
 	};
 
-	return (
-		<DataQueryComponent
-			query={GET_COLLECTION_TITLES_BY_OWNER}
-			variables={{ owner_profile_id: getProfileId() }}
-			resultPath="app_collections"
-			renderData={renderFragmentAddToCollectionModal}
-			notFoundMessage="Er konden geen collecties worden opgehaald"
-		/>
-	);
+	return renderFragmentAddToCollectionModal();
 };
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31363#issuecomment-484542717
