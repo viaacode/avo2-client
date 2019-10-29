@@ -1,16 +1,7 @@
 /* ==========================================================================
-    Object: App
+   Utility: Color
    ========================================================================== */
 
-.o-app {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	padding-top: 6.4rem;
-}
-
-
-// Modifiers
-.o-app--admin {
-	padding-top: 0;
+.u-color-white {
+	color: #FFF !important;
 }

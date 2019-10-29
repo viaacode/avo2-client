@@ -28,6 +28,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { connect } from 'react-redux';
 import { selectLogin } from '../../authentication/store/selectors';
@@ -49,7 +50,7 @@ import {
 	UPDATE_ASSIGNMENT,
 } from '../graphql';
 import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
-import { Assignment, AssignmentColumn, AssignmentTag, AssignmentView } from '../types';
+import { AssignmentColumn } from '../types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -62,7 +63,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	loginState,
 }) => {
 	const [filterString, setFilterString] = useState<string>('');
-	const [activeView, setActiveView] = useState<AssignmentView>('assignments');
+	const [activeView, setActiveView] = useState<Avo.Assignment.View>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
 		string | number | null
 	>(null);
@@ -70,8 +71,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		false
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
-	const [markedAssignment, setMarkedAssignment] = useState<null | Partial<Assignment>>(null);
-	const [sortColumn, setSortColumn] = useState<keyof Assignment>('created_at');
+	const [markedAssignment, setMarkedAssignment] = useState<null | Partial<
+		Avo.Assignment.Assignment
+	>>(null);
+	const [sortColumn, setSortColumn] = useState<keyof Avo.Assignment.Assignment>('created_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 
@@ -94,7 +97,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		];
 	};
 
-	const handleColumnClick = (columnId: keyof Assignment) => {
+	const handleColumnClick = (columnId: keyof Avo.Assignment.Assignment) => {
 		if (sortColumn === columnId) {
 			// Flip previous ordering
 			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -106,7 +109,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const getAssigmentById = async (assignmentId: number | string) => {
-		const response: ApolloQueryResult<Assignment> = await dataService.query({
+		const response: ApolloQueryResult<Avo.Assignment.Assignment> = await dataService.query({
 			query: GET_ASSIGNMENT_BY_ID,
 			variables: { id: assignmentId },
 		});
@@ -121,7 +124,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const duplicateAssignment = async (
 		newTitle: string,
-		assignment: Partial<Assignment> | null,
+		assignment: Partial<Avo.Assignment.Assignment> | null,
 		refetchAssignments: () => void
 	) => {
 		try {
@@ -146,9 +149,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		refetchAssignments: () => void
 	) => {
 		try {
-			const assignment: Partial<Assignment> = await getAssigmentById(assignmentId);
+			const assignment: Partial<Avo.Assignment.Assignment> = await getAssigmentById(assignmentId);
 			if (assignment) {
-				const archivedAssigment: Partial<Assignment> = {
+				const archivedAssigment: Partial<Avo.Assignment.Assignment> = {
 					...assignment,
 					is_archived: !assignment.is_archived,
 				};
@@ -194,7 +197,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const handleExtraOptionsItemClicked = async (
 		actionId: ExtraAssignmentOptions,
-		dataRow: Partial<Assignment>,
+		dataRow: Partial<Avo.Assignment.Assignment>,
 		refetchAssignments: () => void
 	) => {
 		if (!dataRow.id) {
@@ -208,7 +211,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				);
 				break;
 			case 'duplicate':
-				const assignment: Partial<Assignment> = await getAssigmentById(dataRow.id);
+				const assignment: Partial<Avo.Assignment.Assignment> = await getAssigmentById(dataRow.id);
 				if (assignment) {
 					setMarkedAssignment(assignment);
 					setDuplicateAssignmentModalOpen(true);
@@ -241,8 +244,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderCell = (
-		rowData: Assignment,
-		colKey: keyof Assignment | 'actions',
+		rowData: Avo.Assignment.Assignment,
+		colKey: keyof Avo.Assignment.Assignment | 'actions',
 		rowIndex: number,
 		colIndex: number,
 		refetchAssignments: () => void
@@ -272,8 +275,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			case 'assignment_type':
 				return `${capitalize(cellData)}`;
 			case 'assignment_assignment_tags':
-				const assignmentTags: AssignmentTag[] = get(cellData, 'assignment_tag', []);
-				const tagOptions = assignmentTags.map((tag: AssignmentTag) => ({
+				const assignmentTags: Avo.Assignment.Tag[] = get(cellData, 'assignment_tag', []);
+				const tagOptions = assignmentTags.map((tag: Avo.Assignment.Tag) => ({
 					id: tag.id,
 					label: tag.label,
 					color: tag.color_override || tag.enum_color.label,
@@ -359,7 +362,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const renderAssignmentsTable = (
 		data: {
-			assignments: Assignment[];
+			assignments: Avo.Assignment.Assignment[];
 			count: { aggregate: { count: number } };
 		},
 		refetchAssignments: () => void
@@ -376,17 +379,22 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							? 'Er zijn nog geen opdrachten gearchiveerd'
 							: 'Er zijn nog geen opdrachten aangemaakt'
 					}
-					renderCell={(rowData: Assignment, colKey: string, rowIndex: number, colIndex: number) =>
+					renderCell={(
+						rowData: Avo.Assignment.Assignment,
+						colKey: string,
+						rowIndex: number,
+						colIndex: number
+					) =>
 						renderCell(
 							rowData,
-							colKey as keyof Assignment | 'actions',
+							colKey as keyof Avo.Assignment.Assignment | 'actions',
 							rowIndex,
 							colIndex,
 							refetchAssignments
 						)
 					}
 					rowKey="id"
-					styled
+					variant="styled"
 					onColumnClick={handleColumnClick as any}
 					sortColumn={sortColumn}
 					sortOrder={sortOrder}

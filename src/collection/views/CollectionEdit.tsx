@@ -25,6 +25,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { MAX_SEARCH_DESCRIPTION_LENGTH, RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -32,10 +33,12 @@ import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal'
 import InputModal from '../../shared/components/modals/InputModal';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { ApolloCacheManager } from '../../shared/services/data-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { ReorderCollectionModal, ShareCollectionModal } from '../components';
+import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -47,8 +50,6 @@ import {
 import { getValidationErrorForSave, getValidationErrorsForPublish } from '../helpers/validation';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 
 interface CollectionEditProps extends RouteComponentProps {}
 
@@ -163,7 +164,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	};
 
 	// Update individual property of fragment
-	const updateFragmentProperty = (value: any, propertyName: string, fragmentId: number) => {
+	const updateFragmentProperties = (updateInfos: FragmentPropertyUpdateInfo[]) => {
 		const tempCollection: Avo.Collection.Collection | undefined = cloneDeep(currentCollection);
 
 		if (!tempCollection) {
@@ -174,11 +175,13 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			return;
 		}
 
-		const fragmentToUpdate = tempCollection.collection_fragments.find(
-			(item: Avo.Collection.Fragment) => item.id === fragmentId
-		);
+		updateInfos.forEach((updateInfo: FragmentPropertyUpdateInfo) => {
+			const fragmentToUpdate = tempCollection.collection_fragments.find(
+				(item: Avo.Collection.Fragment) => item.id === updateInfo.fragmentId
+			);
 
-		(fragmentToUpdate as any)[propertyName] = value;
+			(fragmentToUpdate as any)[updateInfo.fieldName] = updateInfo.value;
+		});
 
 		setCurrentCollection(tempCollection);
 	};
@@ -423,7 +426,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				deletePromises.push(
 					triggerCollectionFragmentDelete({
 						variables: { id },
-						update: ApolloCacheManager.clearCollectionCache,
 					})
 				);
 			});
@@ -454,7 +456,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 							id,
 							fragment: fragmentToUpdate,
 						},
-						update: ApolloCacheManager.clearCollectionCache,
 					})
 				);
 			});
@@ -675,7 +676,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 						collection={currentCollection}
 						swapFragments={swapFragments}
 						updateCollection={setCurrentCollection}
-						updateFragmentProperty={updateFragmentProperty}
+						updateFragmentProperties={updateFragmentProperties}
 					/>
 				)}
 				{currentTab === 'metadata' && (
