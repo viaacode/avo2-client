@@ -49,6 +49,7 @@ import {
 import { getAssignmentContent, LoadingState } from '../helpers';
 
 import './AssignmentDetail.scss';
+import { AssignmentLayout } from '../types';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginResponse: LoginResponse | null;
@@ -316,7 +317,14 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 					/>
 				);
 			case 'ITEM':
-				return <ItemVideoDescription itemMetaData={assigmentContent as Avo.Item.Item} />;
+				return (
+					<ItemVideoDescription
+						itemMetaData={assigmentContent as Avo.Item.Item}
+						showDescriptionNextToVideo={
+							assignment.content_layout === AssignmentLayout.PlayerAndText
+						}
+					/>
+				);
 			default:
 				return (
 					<NotFound

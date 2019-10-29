@@ -193,7 +193,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				emptyStateMessage="Geen resultaten gevonden"
 				renderCell={renderCell}
 				rowKey="id"
-				styled
+				variant="styled"
 			/>
 			<Pagination
 				pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
