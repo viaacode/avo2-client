@@ -127,9 +127,8 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		setIsProcessing(true);
 
 		try {
-			const hasCut = !(
-				fragmentEndTime === toSeconds(itemMetaData.duration) && fragmentStartTime === 0
-			);
+			const hasCut =
+				fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
 
 			const response: void | ExecutionResult<
 				Avo.Collection.Fragment
