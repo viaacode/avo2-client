@@ -285,11 +285,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									poster={itemMetaData.thumbnail_path}
 									title={itemMetaData.title}
 									onInit={initFlowPlayer}
-									start={cuePoints.start}
-									end={cuePoints.end}
 									subtitles={['30-12-2011', 'VRT']}
 									token={getEnv('FLOW_PLAYER_TOKEN')}
 									dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+									{...cuePoints}
 								/>
 							</Column>
 							<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
