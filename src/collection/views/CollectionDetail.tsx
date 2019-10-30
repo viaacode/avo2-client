@@ -104,7 +104,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const renderCollection = (collection: Avo.Collection.Collection) => {
-		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 		const canEditCollection = PermissionService.hasPermissions(
 			[
 				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
@@ -294,14 +293,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<h3 className="c-h3" style={{ width: '100%' }}>
-							Bekijk ook
-						</h3>
+						<h3 className="c-h3">Bekijk ook</h3>
 						<Grid>
 							<Column size="3-6">
 								<Container size="small" mode="vertical">
 									<ul className="c-media-card-list">
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/${RouteParts.Collection}/${collection.id}`}
@@ -322,7 +319,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												</MediaCardMetaData>
 											</MediaCard>
 										</li>
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/${RouteParts.Collection}/${collection.id}`}
@@ -349,7 +346,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							<Column size="3-6">
 								<Container size="small" mode="vertical">
 									<ul className="c-media-card-list">
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/${RouteParts.Collection}/${collection.id}`}
@@ -370,7 +367,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												</MediaCardMetaData>
 											</MediaCard>
 										</li>
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/${RouteParts.Collection}/${collection.id}`}

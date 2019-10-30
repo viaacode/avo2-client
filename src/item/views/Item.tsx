@@ -1,12 +1,5 @@
 import queryString from 'query-string';
-import React, {
-	createRef,
-	CSSProperties,
-	FunctionComponent,
-	RefObject,
-	useEffect,
-	useState,
-} from 'react';
+import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -119,8 +112,6 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const goToSearchPage = (prop: Avo.Search.FilterProp, value: string) => {
 		history.push(generateSearchLinkString(prop, value));
 	};
-
-	const relatedItemStyle: CSSProperties = { width: '100%', float: 'left', marginRight: '2%' };
 
 	const renderItem = (itemMetaData: Avo.Item.Item) => {
 		const englishContentType: ContentType =
@@ -336,7 +327,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 								<Container size="small" mode="vertical">
 									<h3 className="c-h3">Bekijk ook</h3>
 									<ul className="c-media-card-list">
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${itemMetaData.id}`}
@@ -356,7 +347,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 												</MediaCardMetaData>
 											</MediaCard>
 										</li>
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${itemMetaData.id}`}
@@ -376,7 +367,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 												</MediaCardMetaData>
 											</MediaCard>
 										</li>
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${itemMetaData.id}`}
@@ -396,7 +387,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 												</MediaCardMetaData>
 											</MediaCard>
 										</li>
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${itemMetaData.id}`}
@@ -416,7 +407,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 												</MediaCardMetaData>
 											</MediaCard>
 										</li>
-										<li style={relatedItemStyle}>
+										<li>
 											<MediaCard
 												title="Organisatie van het politieke veld: Europa"
 												href={`/item/${itemMetaData.id}`}
