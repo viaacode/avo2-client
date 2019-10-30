@@ -130,7 +130,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 			<>
 				<Container mode="vertical" size="small" background="alt">
 					<Container mode="horizontal">
-						<Toolbar>
+						<Toolbar autoHeight>
 							<ToolbarLeft>
 								<ToolbarItem>
 									<Spacer margin="bottom">
@@ -238,8 +238,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
-									{/* TODO: make rowKey prop optional */}
-									<Table rowKey="">
+									<Table horizontal untable>
 										<Grid tag="tbody">
 											<Column size="2-5" tag="tr">
 												<th scope="row">Publicatiedatum</th>
@@ -279,8 +278,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										</Grid>
 									</Table>
 									<div className="c-hr" />
-									{/* TODO: make rowKey prop optional */}
-									<Table rowKey="">
+									<Table horizontal untable>
 										<tbody>
 											<tr>
 												<th scope="row">Geschikt voor</th>
@@ -305,8 +303,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										</tbody>
 									</Table>
 									<div className="c-hr" />
-									{/* TODO: make rowKey prop optional */}
-									<Table rowKey="">
+									<Table horizontal untable>
 										<tbody>
 											<tr>
 												<th scope="row">Trefwoorden</th>
