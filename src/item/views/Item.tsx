@@ -238,8 +238,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
-									{/* TODO: make rowKey prop optional */}
-									<Table rowKey="">
+									<Table>
 										<Grid tag="tbody">
 											<Column size="2-5" tag="tr">
 												<th scope="row">Publicatiedatum</th>

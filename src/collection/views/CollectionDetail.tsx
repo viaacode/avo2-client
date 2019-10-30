@@ -30,6 +30,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
+import PermissionGuard from '../../authentication/components/PermissionGuard';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
@@ -105,13 +106,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const renderCollection = (collection: Avo.Collection.Collection) => {
 		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
-		const canEditCollection = PermissionService.hasPermissions(
-			[
-				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
-			],
-			get(loginState, 'userInfo.profile', null)
-		);
+
 		const canDeleteCollection = PermissionService.hasPermissions(
 			[
 				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
@@ -119,6 +114,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			],
 			get(loginState, 'userInfo.profile', null)
 		);
+
+		const canEditPermissions = {
+			permissions: [
+				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
+				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
+			],
+			profile: get(loginState, 'userInfo.profile', null),
+		};
+
+		const onEdit = () => {
+			history.push(
+				`${generateContentLinkString(ContentTypeString.collection, collection.id.toString())}/${
+					RouteParts.Edit
+				}`
+			);
+		};
 
 		return (
 			<>
@@ -164,6 +175,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												ariaLabel="Bladwijzer"
 											/>
 											<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
+											<Button
+												type="secondary"
+												label="Delen"
+												// disabled={hasUnsavedChanged()}
+												// title={
+												// 	!eq(currentCollection, initialCollection)
+												// 		? 'U moet uw wijzigingen eerst opslaan'
+												// 		: ''
+												// }
+												// onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+											/>
 											<ControlledDropdown
 												isOpen={isOptionsMenuOpen}
 												menuWidth="fit-content"
@@ -182,15 +204,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												<DropdownContent>
 													<MenuContent
 														menuItems={[
-															...(canEditCollection
-																? [
-																		{
-																			icon: 'edit' as IconName,
-																			id: 'edit',
-																			label: 'Bewerk collectie',
-																		},
-																  ]
-																: []),
 															{
 																icon: 'play' as IconName,
 																id: 'play',
@@ -208,15 +221,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 														]}
 														onClick={itemId => {
 															switch (itemId) {
-																case 'edit':
-																	history.push(
-																		`${generateContentLinkString(
-																			ContentTypeString.collection,
-																			collection.id.toString()
-																		)}/${RouteParts.Edit}`
-																	);
-																	break;
-
 																case 'createAssignment':
 																	history.push(
 																		generateAssignmentCreateLink(
@@ -237,6 +241,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													/>
 												</DropdownContent>
 											</ControlledDropdown>
+											<PermissionGuard {...canEditPermissions}>
+												<Spacer margin="left-small">
+													<Button type="primary" icon="edit" label="Bewerken" onClick={onEdit} />
+												</Spacer>
+											</PermissionGuard>
 										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>
