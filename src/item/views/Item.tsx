@@ -128,7 +128,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 		return (
 			<>
-				<Container mode="vertical" size="small" background="alt">
+				<Container className="c-item-view__header" mode="vertical" size="small" background="alt">
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarLeft>
@@ -191,7 +191,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 						</Toolbar>
 					</Container>
 				</Container>
-				<Container mode="vertical">
+				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">
 						<ItemVideoDescription itemMetaData={itemMetaData} />
 						<Grid>

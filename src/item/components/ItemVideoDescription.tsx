@@ -170,20 +170,24 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		</Scrollbar>
 	);
 
-	return showDescriptionNextToVideo ? (
-		<Grid>
-			<Column size="2-7">{renderMedia()}</Column>
-			<Column size="2-5">{renderDescription()}</Column>
-		</Grid>
-	) : (
-		<Grid>
-			<Column size="2-3">
-				<></>
-			</Column>
-			<Column size="2-6">{renderMedia()}</Column>
-			<Column size="2-3">
-				<></>
-			</Column>
+	return (
+		<Grid className="c-item-video-description">
+			{showDescriptionNextToVideo ? (
+				<>
+					<Column size="2-7">{renderMedia()}</Column>
+					<Column size="2-5">{renderDescription()}</Column>
+				</>
+			) : (
+				<>
+					<Column size="2-3">
+						<></>
+					</Column>
+					<Column size="2-6">{renderMedia()}</Column>
+					<Column size="2-3">
+						<></>
+					</Column>
+				</>
+			)}
 		</Grid>
 	);
 };
