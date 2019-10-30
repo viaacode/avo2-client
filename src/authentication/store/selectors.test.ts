@@ -1,10 +1,17 @@
+import { Avo } from '@viaa/avo2-types';
+
+import { AppState } from '../../store';
 import { selectLogin, selectLoginError, selectLoginLoading } from './selectors';
-import { LoginResponse, LoginState } from './types';
 
 describe('login > store > selectors', () => {
-	const store = {
+	const store: AppState = {
 		loginState: {
-			data: { message: 'LOGGED_IN' } as LoginResponse,
+			data: { message: 'LOGGED_IN', userInfo: {} as Avo.User.User },
+			loading: false,
+			error: false,
+		},
+		search: {
+			data: null,
 			loading: false,
 			error: false,
 		},
@@ -19,6 +26,6 @@ describe('login > store > selectors', () => {
 	});
 
 	it('Should get the login data from the store', () => {
-		expect(selectLogin(store)).toMatchObject(store.loginState.data);
+		expect(selectLogin(store)).toMatchObject(store.loginState.data as any);
 	});
 });
