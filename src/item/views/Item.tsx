@@ -117,7 +117,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 				category: 'item',
 			});
 		}
-	}, [time, history, videoRef, itemId]);
+	}, [time, history, videoRef, itemId, relatedItems]);
 
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data

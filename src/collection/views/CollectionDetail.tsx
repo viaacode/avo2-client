@@ -98,7 +98,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					toastService('Het ophalen van de gerelateerde collecties is mislukt', TOAST_TYPE.DANGER);
 				});
 		}
-	}, [collectionId]);
+	}, [collectionId, relatedCollections]);
 
 	const openDeleteModal = (collectionId: number) => {
 		setIdToDelete(collectionId);
@@ -348,16 +348,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							Bekijk ook
 						</h3>
 						<Grid>
-							<Column size="3-6">
-								<Container size="small" mode="vertical">
+							<Container size="small" mode="vertical">
+								<Column size="3-6">
 									<ul className="c-media-card-list">{renderRelatedCollections(0, 2)}</ul>
-								</Container>
-							</Column>
-							<Column size="3-6">
-								<Container size="small" mode="vertical">
+								</Column>
+								<Column size="3-6">
 									<ul className="c-media-card-list">{renderRelatedCollections(2, 4)}</ul>
-								</Container>
-							</Column>
+								</Column>
+							</Container>
 						</Grid>
 					</Container>
 				</Container>
