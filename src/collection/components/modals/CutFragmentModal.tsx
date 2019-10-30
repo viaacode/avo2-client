@@ -30,11 +30,11 @@ export interface FragmentPropertyUpdateInfo {
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
-	onClose: () => void;
 	itemMetaData: Avo.Item.Item;
+	fragment: Avo.Collection.Fragment;
 	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
 	updateCuePoints: (cuepoints: any) => void;
-	fragment: Avo.Collection.Fragment;
+	onClose: () => void;
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
@@ -72,6 +72,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	const onSaveCut = () => {
 		const errors = getValidationErrors();
+
 		if (errors && errors.length) {
 			toastService(
 				<>
@@ -89,6 +90,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 				</>,
 				TOAST_TYPE.DANGER
 			);
+
 			return;
 		}
 
@@ -122,10 +124,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const onUpdateMultiRangeValues = (values: number[]) => {
-		setFragmentStartTimeString(formatDurationHoursMinutesSeconds(values[0]));
-		setFragmentEndTimeString(formatDurationHoursMinutesSeconds(values[1]));
 		setFragmentStartTime(values[0]);
 		setFragmentEndTime(values[1]);
+		setFragmentStartTimeString(formatDurationHoursMinutesSeconds(values[0]));
+		setFragmentEndTimeString(formatDurationHoursMinutesSeconds(values[1]));
 	};
 
 	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
@@ -157,7 +159,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							value={fragmentStartTimeString}
 							onChange={setFragmentStartTimeString}
 							onBlur={parseTimes}
-							// onKeyUp={handleOnKeyUp} // TODO enable when next components version is released (1.16.0)
+							onKeyUp={handleOnKeyUp}
 						/>
 						<div className="m-multi-range-wrapper">
 							<MultiRange
@@ -172,7 +174,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							value={fragmentEndTimeString}
 							onChange={setFragmentEndTimeString}
 							onBlur={parseTimes}
-							// onKeyUp={handleOnKeyUp} // TODO enable when next components version is released (1.16.0)
+							onKeyUp={handleOnKeyUp}
 						/>
 					</Container>
 					<Toolbar spaced>
