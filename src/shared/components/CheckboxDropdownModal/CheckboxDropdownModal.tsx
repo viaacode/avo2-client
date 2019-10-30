@@ -251,18 +251,17 @@ export const renderDropdownButton = (
 	removeFilter: (tagId: string | number, clickEvent: MouseEvent) => void
 ) => {
 	return (
-		<Button type="secondary">
+		// TODO: add autoHeight prop once available in 1.16.1
+		<Button className="c-checkbox-dropdown-modal__trigger" type="secondary">
 			<div className="c-button__content">
 				<div className="c-button__label">{label}</div>
 				{!!selectedTags.length && (
-					<div style={{ marginLeft: '6px', width: 'calc(100% - 20px)' }}>
-						<TagList
-							tags={selectedTags}
-							swatches={false}
-							closable={true}
-							onTagClosed={removeFilter}
-						/>
-					</div>
+					<TagList
+						tags={selectedTags}
+						swatches={false}
+						closable={true}
+						onTagClosed={removeFilter}
+					/>
 				)}
 				<Icon name={isOpen ? 'caret-up' : 'caret-down'} size="small" type="arrows" />
 			</div>

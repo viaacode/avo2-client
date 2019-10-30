@@ -1,14 +1,16 @@
-.c-button:not(.c-button--icon) {
-	.c-tag-list {
-		.o-svg-icon:first-child,
-		.o-svg-icon:last-child {
-			margin: 0;
-		}
-	}
-}
-
-.c-button {
-	padding: 0 1.6rem;
+.c-checkbox-dropdown-modal__trigger {
+	// TODO: Remove this when 1.16.1 is used
 	max-height: none;
 	min-height: 3.6rem;
+	// END TODO
+	padding: 0 1.6rem;
+
+	.c-tag-list {
+		width: calc(100% - 20px);
+		margin-left: 6px;
+
+		.c-tag {
+			margin: 0.3rem 0.4rem;
+		}
+	}
 }
