@@ -38,25 +38,23 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 		collection.thumbnail_path ? [collection.thumbnail_path] : []
 	);
 
-	const fetchThumbnailImages = async () => {
-		try {
-			setVideoStills(await getThumbnailsForCollection(collection));
-		} catch (err) {
-			console.error(err);
-			toastService('Het ophalen van de media thumbnails is mislukt.', TOAST_TYPE.DANGER);
-			setVideoStills([]);
-		}
-	};
-
-	const onCollectionUpdate = () => {
+	useEffect(() => {
 		if (!isOpen) {
 			return;
 		}
 
-		fetchThumbnailImages();
-	};
+		const fetchThumbnailImages = async () => {
+			try {
+				setVideoStills(await getThumbnailsForCollection(collection));
+			} catch (err) {
+				console.error(err);
+				toastService('Het ophalen van de media thumbnails is mislukt.', TOAST_TYPE.DANGER);
+				setVideoStills([]);
+			}
+		};
 
-	useEffect(onCollectionUpdate, [isOpen, collection]);
+		fetchThumbnailImages();
+	}, [isOpen, collection]);
 
 	const saveCoverImage = () => {
 		collection.thumbnail_path = selectedCoverImages[0];
