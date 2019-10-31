@@ -40,4 +40,26 @@ export const GET_MENU_ITEM_BY_ID = gql`
 	}
 `;
 
-export const UPDATE_MENU_ITEM = '';
+export const UPDATE_MENU_ITEMS = gql`
+	mutation updateMenuItems($menuItems: app_content_nav_elements_set_input!) {
+		update_app_content_nav_elements(_set: $menuItems) {
+			affected_rows
+		}
+	}
+`;
+
+export const UPDATE_MENU_ITEM_BY_ID = gql`
+	mutation updateMenuItemById($id: Int!, $menuItem: app_content_nav_elements_set_input!) {
+		update_app_content_nav_elements(where: { id: { _eq: $id } }, _set: $menuItem) {
+			affected_rows
+		}
+	}
+`;
+
+export const INSERT_MENU_ITEM = gql`
+	mutation updateMenuItemById($menuItem: app_content_nav_elements_set_input!) {
+		update_app_content_nav_elements(objects: [$menuItem]) {
+			affected_rows
+		}
+	}
+`;
