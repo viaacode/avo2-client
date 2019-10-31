@@ -2,6 +2,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Form, FormGroup, IconName, TextInput } from '@viaa/avo2-components';
+import { startCase } from 'lodash-es';
 
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { ActionsBar } from '../../components';
@@ -50,6 +51,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Computed
 	const menuId = match.params.menu;
+	const pageTitle = `${startCase(menuId)}: item ${
+		pageType === 'create' ? 'toevoegen' : 'aanpassen'
+	}`;
 
 	// Methods
 	const handleChange = (key: keyof MenuEditForm, value: any) => {
@@ -65,7 +69,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Render
 	return (
-		<AdminLayout pageTitle={`Menu item ${pageType === 'create' ? 'toevoegen' : 'aanapassen'}`}>
+		<AdminLayout pageTitle={pageTitle}>
 			<AdminLayoutBody>
 				<Form>
 					<FormGroup label="Icon">
