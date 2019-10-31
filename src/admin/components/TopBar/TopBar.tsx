@@ -14,12 +14,19 @@ interface TopbarProps {
 }
 
 export const TopBar: FunctionComponent<TopbarProps> = ({ navigateBack }) => (
-	<Navbar className="c-topbar">
+	<Navbar className="c-top-bar">
 		<Container mode="horizontal">
 			<Toolbar>
 				<ToolbarLeft>
 					<ToolbarItem>
-						{navigateBack && <Button icon="chevron-left" onClick={navigateBack} type="link" />}
+						{navigateBack && (
+							<Button
+								className="c-top-bar__back"
+								icon="chevron-left"
+								onClick={navigateBack}
+								type="link"
+							/>
+						)}
 					</ToolbarItem>
 				</ToolbarLeft>
 			</Toolbar>
