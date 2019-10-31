@@ -16,12 +16,15 @@ describe('<ActionsBar />', () => {
 		shallow(<ActionsBar />);
 	});
 
+	it('Should set the correct className', () => {
+		expect(actionsBarComponent.hasClass('c-actions-bar')).toBeTruthy();
+	});
+
 	it('Should render children when passed', () => {
 		expect(actionsBarComponent.find(`.${actionClassName}`)).toHaveLength(1);
 	});
 
 	it('Should set the correct className when `fixed` is given', () => {
-		expect(actionsBarComponent.hasClass('c-actions-bar')).toBeTruthy();
 		expect(actionsBarComponent.hasClass('c-actions-bar--fixed')).toBeTruthy();
 	});
 });

@@ -3,7 +3,7 @@ import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
-import { Flex, FlexItem } from '@viaa/avo2-components';
+import { Flex } from '@viaa/avo2-components';
 import classnames from 'classnames';
 
 import { Sidebar, TopBar } from './admin/components';
