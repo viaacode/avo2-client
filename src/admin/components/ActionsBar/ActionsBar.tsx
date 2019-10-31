@@ -6,25 +6,28 @@ import {
 	Navbar,
 	Toolbar,
 	ToolbarItem,
-	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import classnames from 'classnames';
+
+import './ActionsBar.scss';
 
 interface ActionsBarprops {
 	children?: ReactNode;
+	fixed?: boolean;
 }
 
-export const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children }) => {
+export const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => {
 	return (
-		<Navbar autoHeight className="c-actions-bar" background="alt" placement="bottom">
+		<Navbar
+			autoHeight
+			className={classnames('c-actions-bar', { 'c-actions-bar--fixed': fixed })}
+			background="alt"
+			placement="bottom"
+		>
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Toolbar>
-						<ToolbarLeft>
-							<ToolbarItem>
-								<ButtonToolbar>{children}</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarLeft>
 						<ToolbarRight>
 							<ToolbarItem>
 								<ButtonToolbar>{children}</ButtonToolbar>
