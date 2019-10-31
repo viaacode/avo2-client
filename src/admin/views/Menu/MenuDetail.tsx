@@ -1,12 +1,11 @@
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { Button, ButtonToolbar, Flex, IconName, Table } from '@viaa/avo2-components';
-import { cloneDeep, isEqual } from 'lodash-es';
+import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
+import { cloneDeep, isEqual, isNull, startCase } from 'lodash-es';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
-import { ActionsBar } from '../../components';
 import { GET_MENU_ITEMS_BY_PLACEMENT } from '../../graphql';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
 import { ADMIN_PATH } from '../../routes';
@@ -54,12 +53,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	// Render
 	const renderReorderButton = (dir: 'up' | 'down', id: number) => {
 		const decrease = dir === 'up';
-		const newPosition = decrease ? -1 : 1;
+		const indexUpdate = decrease ? -1 : 1;
 
 		return (
 			<Button
 				icon={`chevron-${dir}` as IconName}
-				onClick={() => reorderMenuItem(id, newPosition)}
+				onClick={() => reorderMenuItem(id, indexUpdate)}
 				title={`Verplaats item naar ${decrease ? 'boven' : 'onder'}`}
 				type="secondary"
 			/>
@@ -80,9 +79,9 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		const isLast = (i: number) => i === menuItems.length - 1;
 
 		return (
-			<AdminLayout className="c-menu-detail" pageTitle="Menu detail">
+			<AdminLayout className="c-menu-detail" pageTitle={startCase(menuId)}>
 				<AdminLayoutBody>
-					<Table className="c-table--align-middle" rowKey="" styled>
+					<Table className="c-menu-detail__table" align variant="styled">
 						<tbody>
 							{menuItems.map((item, index) => (
 								<tr key={`nav-edit-${item.id}`}>
@@ -109,24 +108,40 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 									</td>
 								</tr>
 							))}
+							<tr>
+								<td colSpan={3}>
+									<Spacer margin="top">
+										<Flex center>
+											<Button
+												icon="plus"
+												label="Voeg een item toe"
+												onClick={() =>
+													handleNavigate(ADMIN_PATH.MENU_CREATE, {
+														menu: menuId,
+													})
+												}
+												type="borderless"
+											/>
+										</Flex>
+									</Spacer>
+								</td>
+							</tr>
 						</tbody>
 					</Table>
 				</AdminLayoutBody>
 				<AdminLayoutActions>
-					<ActionsBar>
-						<ButtonToolbar>
-							<Button
-								disabled={isEqual(initialMenuItems, menuItems)}
-								label="Opslaan"
-								onClick={handleSave}
-							/>
-							<Button
-								label="Annuleer"
-								onClick={() => handleNavigate(ADMIN_PATH.MENU)}
-								type="tertiary"
-							/>
-						</ButtonToolbar>
-					</ActionsBar>
+					<ButtonToolbar>
+						<Button
+							disabled={isEqual(initialMenuItems, menuItems)}
+							label="Opslaan"
+							onClick={handleSave}
+						/>
+						<Button
+							label="Annuleer"
+							onClick={() => handleNavigate(ADMIN_PATH.MENU)}
+							type="tertiary"
+						/>
+					</ButtonToolbar>
 				</AdminLayoutActions>
 			</AdminLayout>
 		);

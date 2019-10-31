@@ -7,7 +7,7 @@ import { startCase } from 'lodash-es';
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { GET_MENUS } from '../../graphql';
-import { AdminLayout, AdminLayoutBody } from '../../layouts';
+import { AdminLayout } from '../../layouts';
 import { ADMIN_PATH } from '../../routes';
 import { MenuItem } from '../../types';
 
@@ -58,26 +58,24 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const renderMenuOverview = (data: Partial<MenuItem>[]) => {
 		return (
 			<Table
-				bordered
 				columns={MENUS_TABLE_COLS}
 				data={data}
 				renderCell={(rowData: Partial<MenuItem>, columnId: string) =>
 					renderCell(rowData, columnId as MenuTableCols)
 				}
 				rowKey="id"
+				variant="bordered"
 			/>
 		);
 	};
 
 	return (
 		<AdminLayout pageTitle="Navigatie overzicht">
-			<AdminLayoutBody>
-				<DataQueryComponent
-					renderData={renderMenuOverview}
-					resultPath="app_content_nav_elements"
-					query={GET_MENUS}
-				/>
-			</AdminLayoutBody>
+			<DataQueryComponent
+				renderData={renderMenuOverview}
+				resultPath="app_content_nav_elements"
+				query={GET_MENUS}
+			/>
 		</AdminLayout>
 	);
 };

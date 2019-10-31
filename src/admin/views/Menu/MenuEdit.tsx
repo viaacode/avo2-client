@@ -65,7 +65,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Render
 	return (
-		<AdminLayout pageTitle="Menu detail">
+		<AdminLayout pageTitle={`Menu item ${pageType === 'create' ? 'toevoegen' : 'aanapassen'}`}>
 			<AdminLayoutBody>
 				<Form>
 					<FormGroup label="Icon">
@@ -74,7 +74,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					<FormGroup label="Label" required>
 						<TextInput onChange={(e: any) => handleChange('label', e)} value={menuForm.label} />
 					</FormGroup>
-					<FormGroup label="Link target">
+					<FormGroup label="Link" required>
 						<TextInput onChange={(e: any) => handleChange('link', e)} value={menuForm.link} />
 					</FormGroup>
 				</Form>

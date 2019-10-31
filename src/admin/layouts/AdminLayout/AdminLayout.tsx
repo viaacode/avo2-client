@@ -25,7 +25,7 @@ export const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 				<h1 className="c-h2 u-m-t-0">{pageTitle}</h1>
 				{!body && !actions && children}
 				{body}
-				<ActionsBar fixed>{actions}</ActionsBar>
+				{actions && <ActionsBar fixed>{actions}</ActionsBar>}
 			</Container>
 		</Container>
 	);
