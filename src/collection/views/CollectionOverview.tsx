@@ -59,12 +59,14 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
-			toastService('Collectie kon niet verwijdert worden', TOAST_TYPE.DANGER);
+			toastService('Collectie kon niet verwijderd worden', TOAST_TYPE.DANGER);
 		}
+
 		setIdToDelete(null);
 	};
 
