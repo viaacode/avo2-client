@@ -157,7 +157,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							value={fragmentStartTimeString}
 							onChange={setFragmentStartTimeString}
 							onBlur={parseTimes}
-							// onKeyUp={handleOnKeyUp} // TODO enable when next components version is released (1.16.0)
+							onKeyUp={handleOnKeyUp}
 						/>
 						<div className="m-multi-range-wrapper">
 							<MultiRange
@@ -172,7 +172,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							value={fragmentEndTimeString}
 							onChange={setFragmentEndTimeString}
 							onBlur={parseTimes}
-							// onKeyUp={handleOnKeyUp} // TODO enable when next components version is released (1.16.0)
+							onKeyUp={handleOnKeyUp}
 						/>
 					</Container>
 					<Toolbar spaced>
