@@ -1,8 +1,8 @@
-import React, { FunctionComponent, useRef, useState } from 'react';
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
-import { cloneDeep, isEqual, isNull, startCase } from 'lodash-es';
+import { cloneDeep, isEqual, startCase } from 'lodash-es';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
@@ -16,9 +16,25 @@ import './MenuDetail.scss';
 interface MenuDetailProps extends RouteComponentProps<{ menu: string }> {}
 
 const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
+	const [activeRow, setActiveRow] = useState<number | null>(null);
 	const [initialMenuItems, setInitialMenuItems] = useState<MenuItem[]>([]);
 	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-	const hasInitialData = useRef(false);
+
+	const hasInitialData = useRef<boolean>(false);
+	const timeout = useRef<NodeJS.Timeout | null>(null);
+
+	useEffect(() => {
+		// Reset active row to clear styling
+		timeout.current = setTimeout(() => {
+			setActiveRow(null);
+		}, 1000);
+
+		return () => {
+			if (timeout.current) {
+				clearTimeout(timeout.current);
+			}
+		};
+	}, [activeRow]);
 
 	// Computed
 	const menuId = match.params.menu;
@@ -39,7 +55,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			return item;
 		});
 
-	const reorderMenuItem = (currentIndex: number, indexUpdate: number) => {
+	const reorderMenuItem = (currentIndex: number, indexUpdate: number, id: number) => {
 		const newIndex = currentIndex + indexUpdate;
 		const menuItemsCopy = cloneDeep(menuItems);
 		// Get updated item and remove it from copy
@@ -47,18 +63,19 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		// Add item back at new index
 		menuItemsCopy.splice(newIndex, 0, updatedItem);
 
+		setActiveRow(id);
 		setMenuItems(menuItemsCopy);
 	};
 
 	// Render
-	const renderReorderButton = (dir: 'up' | 'down', id: number) => {
+	const renderReorderButton = (dir: 'up' | 'down', index: number, id: number) => {
 		const decrease = dir === 'up';
 		const indexUpdate = decrease ? -1 : 1;
 
 		return (
 			<Button
 				icon={`chevron-${dir}` as IconName}
-				onClick={() => reorderMenuItem(id, indexUpdate)}
+				onClick={() => reorderMenuItem(index, indexUpdate, id)}
 				title={`Verplaats item naar ${decrease ? 'boven' : 'onder'}`}
 				type="secondary"
 			/>
@@ -84,11 +101,14 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 					<Table className="c-menu-detail__table" align variant="styled">
 						<tbody>
 							{menuItems.map((item, index) => (
-								<tr key={`nav-edit-${item.id}`}>
+								<tr
+									key={`nav-edit-${item.id}`}
+									className={activeRow === item.id ? 'c-menu-detail__table-row--active' : ''}
+								>
 									<td className="o-table-col-1">
 										<ButtonToolbar>
-											{!isFirst(index) && renderReorderButton('up', index)}
-											{!isLast(index) && renderReorderButton('down', index)}
+											{!isFirst(index) && renderReorderButton('up', index, item.id)}
+											{!isLast(index) && renderReorderButton('down', index, item.id)}
 										</ButtonToolbar>
 									</td>
 									<td>{item.label}</td>
