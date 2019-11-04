@@ -57,7 +57,7 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 	externalId,
 	itemMetaData,
 	isOpen,
-	onClose = () => {},
+	onClose,
 }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);

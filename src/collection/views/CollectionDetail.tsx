@@ -109,10 +109,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
-	const updateCollectionProperty = (value: any, fieldName: string) => {
-		setIsPublic(value);
-	};
-
 	const renderCollection = (collection: Avo.Collection.Collection) => {
 		if (!isFirstRender) {
 			setIsPublic(collection.is_public);
@@ -421,7 +417,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						collection={{ ...collection, is_public: isPublic }}
 						isOpen={isShareModalOpen}
 						onClose={() => setIsShareModalOpen(false)}
-						updateCollectionProperty={updateCollectionProperty}
+						setIsPublic={setIsPublic}
 					/>
 				)}
 				<DeleteObjectModal

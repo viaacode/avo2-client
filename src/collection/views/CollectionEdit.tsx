@@ -291,6 +291,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 
 	const handleShareCollectionModalClose = (collection?: Avo.Collection.Collection) => {
 		setIsShareModalOpen(false);
+
 		// Update initial and current states, so that the 'hasUnsavedChanged' status is correct
 		if (collection) {
 			if (currentCollection) {
@@ -462,7 +463,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					collection={currentCollection}
 					isOpen={isShareModalOpen}
 					onClose={handleShareCollectionModalClose}
-					updateCollectionProperty={updateCollectionProperty}
+					setIsPublic={(value: boolean) => updateCollectionProperty(value, 'is_public')}
 				/>
 				<DeleteObjectModal
 					title={`Ben je zeker dat de collectie "${currentCollection.title}" wil verwijderen?`}

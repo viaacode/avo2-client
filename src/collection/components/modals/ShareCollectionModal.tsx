@@ -26,7 +26,7 @@ import { getValidationErrorsForPublish } from '../../helpers/validation';
 interface ShareCollectionModalProps {
 	isOpen: boolean;
 	onClose: (collection?: Avo.Collection.Collection) => void;
-	updateCollectionProperty: (value: any, fieldName: string) => void;
+	setIsPublic: (value: any) => void;
 	collection: Avo.Collection.Collection;
 }
 
@@ -47,7 +47,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	onClose,
 	isOpen,
 	collection,
-	updateCollectionProperty,
+	setIsPublic,
 }) => {
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
@@ -75,7 +75,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				}
 			}
 
-			updateCollectionProperty(isCollectionPublic, 'is_public');
+			setIsPublic(isCollectionPublic);
 
 			const newCollection: Avo.Collection.Collection = {
 				is_public: isCollectionPublic,
@@ -147,7 +147,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 						<ToolbarRight>
 							<ToolbarItem>
 								<ButtonToolbar>
-									<Button type="secondary" label="Annuleren" onClick={() => onClose} />
+									<Button type="secondary" label="Annuleren" onClick={() => onClose()} />
 									<Button type="primary" label="Opslaan" onClick={onSave} />
 								</ButtonToolbar>
 							</ToolbarItem>
