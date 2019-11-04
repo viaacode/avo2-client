@@ -34,11 +34,14 @@ import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import './CollectionOverview.scss';
 
-interface CollectionsProps extends RouteComponentProps {
+interface CollectionOverviewProps extends RouteComponentProps {
 	numberOfCollections: number;
 }
 
-const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections, history }) => {
+const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
+	numberOfCollections,
+	history,
+}) => {
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -223,4 +226,4 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	);
 };
 
-export default withRouter(Collections);
+export default withRouter(CollectionOverview);
