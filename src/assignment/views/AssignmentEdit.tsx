@@ -554,275 +554,286 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 	};
 
-	const renderAssignmentEditForm = () => (
-		<>
-			<Navbar autoHeight>
-				<Container mode="vertical" background="alt">
-					<Container mode="horizontal">
-						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
-							<ToolbarLeft>
-								<ToolbarItem grow>
-									<Link
-										className="c-return"
-										to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
-									>
-										<Icon name="chevron-left" size="small" type="arrows" />
-										Mijn opdrachten
-									</Link>
-									<h2 className="c-h2 u-m-0">
-										{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
-									</h2>
-									{currentAssignment.id && (
-										<Spacer margin="top-small">
-											<Form type="inline">
-												<FormGroup label="URL">
-													<TextInput value={getAssignmentUrl()} disabled />
-												</FormGroup>
-												<Spacer margin="left-small">
-													<Button
-														icon="copy"
-														type="secondary"
-														ariaLabel="Kopieer de opdracht url"
-														onClick={copyAssignmentUrl}
-													/>
-												</Spacer>
-											</Form>
-										</Spacer>
-									)}
-								</ToolbarItem>
-							</ToolbarLeft>
-							<ToolbarRight>
-								<ToolbarItem>
-									<ButtonToolbar>
-										{pageType === 'create' && (
-											<Button type="secondary" onClick={() => history.goBack()} label="Annuleren" />
+	const renderAssignmentEditForm = () => {
+		const now = new Date(Date.now());
+
+		return (
+			<>
+				<Navbar autoHeight>
+					<Container mode="vertical" background="alt">
+						<Container mode="horizontal">
+							<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
+								<ToolbarLeft>
+									<ToolbarItem grow>
+										<Link
+											className="c-return"
+											to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
+										>
+											<Icon name="chevron-left" size="small" type="arrows" />
+											Mijn opdrachten
+										</Link>
+										<h2 className="c-h2 u-m-0">
+											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
+										</h2>
+										{currentAssignment.id && (
+											<Spacer margin="top-small">
+												<Form type="inline">
+													<FormGroup label="URL">
+														<TextInput value={getAssignmentUrl()} disabled />
+													</FormGroup>
+													<Spacer margin="left-small">
+														<Button
+															icon="copy"
+															type="secondary"
+															ariaLabel="Kopieer de opdracht url"
+															onClick={copyAssignmentUrl}
+														/>
+													</Spacer>
+												</Form>
+											</Spacer>
 										)}
-										{pageType === 'edit' && (
-											<Spacer margin="right-small">
+									</ToolbarItem>
+								</ToolbarLeft>
+								<ToolbarRight>
+									<ToolbarItem>
+										<ButtonToolbar>
+											{pageType === 'create' && (
 												<Button
 													type="secondary"
-													onClick={viewAsStudent}
-													label="Bekijk als leerling"
+													onClick={() => history.goBack()}
+													label="Annuleren"
 												/>
-												<Dropdown
-													isOpen={isExtraOptionsMenuOpen}
-													menuWidth="fit-content"
-													onOpen={() => setExtraOptionsMenuOpen(true)}
-													onClose={() => setExtraOptionsMenuOpen(false)}
-													placement="bottom-end"
-												>
-													<DropdownButton>
-														<Button
-															type="secondary"
-															icon="more-horizontal"
-															ariaLabel="Meer opties"
-															title="Meer opties"
-														/>
-													</DropdownButton>
-													<DropdownContent>
-														<MenuContent
-															menuItems={[
-																{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-																{
-																	icon: 'archive',
-																	id: 'archive',
-																	label: initialAssignment.is_archived
-																		? 'Dearchiveer'
-																		: 'Archiveer',
-																},
-																{ icon: 'delete', id: 'delete', label: 'Verwijder' },
-															]}
-															onClick={id => handleExtraOptionClicked(id.toString() as any)}
-														/>
-													</DropdownContent>
-												</Dropdown>
-											</Spacer>
-										)}
-										<Button
-											type="primary"
-											label="Opslaan"
-											onClick={() => saveAssignment(currentAssignment)}
-											disabled={isSaving}
-										/>
-									</ButtonToolbar>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
+											)}
+											{pageType === 'edit' && (
+												<Spacer margin="right-small">
+													<Button
+														type="secondary"
+														onClick={viewAsStudent}
+														label="Bekijk als leerling"
+													/>
+													<Dropdown
+														isOpen={isExtraOptionsMenuOpen}
+														menuWidth="fit-content"
+														onOpen={() => setExtraOptionsMenuOpen(true)}
+														onClose={() => setExtraOptionsMenuOpen(false)}
+														placement="bottom-end"
+													>
+														<DropdownButton>
+															<Button
+																type="secondary"
+																icon="more-horizontal"
+																ariaLabel="Meer opties"
+																title="Meer opties"
+															/>
+														</DropdownButton>
+														<DropdownContent>
+															<MenuContent
+																menuItems={[
+																	{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+																	{
+																		icon: 'archive',
+																		id: 'archive',
+																		label: initialAssignment.is_archived
+																			? 'Dearchiveer'
+																			: 'Archiveer',
+																	},
+																	{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+																]}
+																onClick={id => handleExtraOptionClicked(id.toString() as any)}
+															/>
+														</DropdownContent>
+													</Dropdown>
+												</Spacer>
+											)}
+											<Button
+												type="primary"
+												label="Opslaan"
+												onClick={() => saveAssignment(currentAssignment)}
+												disabled={isSaving}
+											/>
+										</ButtonToolbar>
+									</ToolbarItem>
+								</ToolbarRight>
+							</Toolbar>
+						</Container>
 					</Container>
-				</Container>
-			</Navbar>
-			<Container mode="horizontal" size="small">
-				<Container mode="vertical" size="large">
-					<Form>
-						<FormGroup required label="Titel">
-							<TextInput
-								id="title"
-								value={currentAssignment.title}
-								onChange={title => setAssignmentProp('title', title)}
-							/>
-						</FormGroup>
-						<FormGroup label="Opdracht" required>
-							<WYSIWYG
-								id="assignmentDescription"
-								autogrow
-								data={currentAssignment.description}
-								onChange={description => setAssignmentProp('description', description)}
-							/>
-						</FormGroup>
-						{assignmentContent && currentAssignment.content_label && (
-							<FormGroup label="Inhoud">
-								<Link
-									to={`/${
-										CONTENT_LABEL_TO_ROUTE_PARTS[
-											currentAssignment.content_label as Avo.Assignment.ContentLabel
-										]
-									}/${currentAssignment.content_id}`}
-								>
-									<div className="c-box c-box--padding-small">
-										<Flex orientation="vertical" center>
-											<Spacer margin="right">
-												<Thumbnail
-													className="m-content-thumbnail"
-													category={
-														dutchContentLabelToEnglishLabel((currentAssignment.content_label ===
-														'ITEM'
-															? assignmentContent.type.label
-															: currentAssignment.content_label) as DutchContentType) as ContentType
-													}
-													src={assignmentContent.thumbnail_path || undefined}
-												/>
-											</Spacer>
-											<FlexItem>
-												<div className="c-overline-plus-p">
-													<p className="c-overline">
-														{currentAssignment.content_label === 'ITEM'
-															? assignmentContent.type.label
-															: currentAssignment.content_label}
-													</p>
-													<p>{assignmentContent.title || assignmentContent.description}</p>
-												</div>
-											</FlexItem>
-										</Flex>
-									</div>
-								</Link>
+				</Navbar>
+				<Container mode="horizontal" size="small">
+					<Container mode="vertical" size="large">
+						<Form>
+							<FormGroup required label="Titel">
+								<TextInput
+									id="title"
+									value={currentAssignment.title}
+									onChange={title => setAssignmentProp('title', title)}
+								/>
 							</FormGroup>
-						)}
-						<FormGroup label="Weergave" labelFor="only_player">
-							<RadioButtonGroup>
-								<RadioButton
-									label="mediaspeler met beschrijving"
-									name="content_layout"
-									value={String(AssignmentLayout.PlayerAndText)}
-									checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
-									onChange={isChecked =>
-										isChecked && setAssignmentProp('content_layout', AssignmentLayout.PlayerAndText)
-									}
+							<FormGroup label="Opdracht" required>
+								<WYSIWYG
+									id="assignmentDescription"
+									autogrow
+									data={currentAssignment.description}
+									onChange={description => setAssignmentProp('description', description)}
 								/>
-								<RadioButton
-									label="enkel mediaspeler"
-									name="content_layout"
-									value={String(AssignmentLayout.OnlyPlayer)}
-									checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
-									onChange={isChecked =>
-										isChecked && setAssignmentProp('content_layout', AssignmentLayout.OnlyPlayer)
-									}
+							</FormGroup>
+							{assignmentContent && currentAssignment.content_label && (
+								<FormGroup label="Inhoud">
+									<Link
+										to={`/${
+											CONTENT_LABEL_TO_ROUTE_PARTS[
+												currentAssignment.content_label as Avo.Assignment.ContentLabel
+											]
+										}/${currentAssignment.content_id}`}
+									>
+										<div className="c-box c-box--padding-small">
+											<Flex orientation="vertical" center>
+												<Spacer margin="right">
+													<Thumbnail
+														className="m-content-thumbnail"
+														category={
+															dutchContentLabelToEnglishLabel((currentAssignment.content_label ===
+															'ITEM'
+																? assignmentContent.type.label
+																: currentAssignment.content_label) as DutchContentType) as ContentType
+														}
+														src={assignmentContent.thumbnail_path || undefined}
+													/>
+												</Spacer>
+												<FlexItem>
+													<div className="c-overline-plus-p">
+														<p className="c-overline">
+															{currentAssignment.content_label === 'ITEM'
+																? assignmentContent.type.label
+																: currentAssignment.content_label}
+														</p>
+														<p>{assignmentContent.title || assignmentContent.description}</p>
+													</div>
+												</FlexItem>
+											</Flex>
+										</div>
+									</Link>
+								</FormGroup>
+							)}
+							<FormGroup label="Weergave" labelFor="only_player">
+								<RadioButtonGroup>
+									<RadioButton
+										label="mediaspeler met beschrijving"
+										name="content_layout"
+										value={String(AssignmentLayout.PlayerAndText)}
+										checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
+										onChange={isChecked =>
+											isChecked &&
+											setAssignmentProp('content_layout', AssignmentLayout.PlayerAndText)
+										}
+									/>
+									<RadioButton
+										label="enkel mediaspeler"
+										name="content_layout"
+										value={String(AssignmentLayout.OnlyPlayer)}
+										checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
+										onChange={isChecked =>
+											isChecked && setAssignmentProp('content_layout', AssignmentLayout.OnlyPlayer)
+										}
+									/>
+								</RadioButtonGroup>
+							</FormGroup>
+							<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
+							<FormGroup label="Antwoorden op" labelFor="answer_url">
+								<TextInput
+									id="answer_url"
+									type="text"
+									placeholder="http://..."
+									value={currentAssignment.answer_url || ''}
+									onChange={value => setAssignmentProp('answer_url', value)}
 								/>
-							</RadioButtonGroup>
-						</FormGroup>
-						<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
-						<FormGroup label="Antwoorden op" labelFor="answer_url">
-							<TextInput
-								id="answer_url"
-								type="text"
-								placeholder="http://..."
-								value={currentAssignment.answer_url || ''}
-								onChange={value => setAssignmentProp('answer_url', value)}
-							/>
-							<p className="c-form-help-text">
-								Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
-								platform toe.
-							</p>
-						</FormGroup>
-						<FormGroup label="Beschikbaar vanaf">
-							<Flex>
-								<DateTimePicker
-									value={
-										currentAssignment.available_at
-											? new Date(currentAssignment.available_at)
-											: new Date(Date.now())
-									}
-									onChange={(value: Date | null) =>
-										setAssignmentProp('available_at', value ? value.toISOString() : null)
-									}
-									id="available_at"
-									defaultHours={new Date(Date.now()).getHours()}
-									defaultMinutes={new Date(Date.now()).getMinutes()}
-								/>
-							</Flex>
-						</FormGroup>
-						<FormGroup label="Deadline" required>
-							<Flex>
-								<Spacer margin="right-small">
+								<p className="c-form-help-text">
+									Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
+									platform toe.
+								</p>
+							</FormGroup>
+							<FormGroup label="Beschikbaar vanaf">
+								<Flex>
 									<DateTimePicker
 										value={
-											currentAssignment.deadline_at ? new Date(currentAssignment.deadline_at) : null
+											currentAssignment.available_at
+												? new Date(currentAssignment.available_at)
+												: now
 										}
-										onChange={value => setAssignmentProp('deadline_at', value)}
-										id="deadline_at"
-										defaultHours={23}
-										defaultMinutes={59}
+										onChange={(value: Date | null) =>
+											setAssignmentProp('available_at', value ? value.toISOString() : null)
+										}
+										id="available_at"
+										defaultHours={now.getHours()}
+										defaultMinutes={now.getMinutes()}
 									/>
-								</Spacer>
-							</Flex>
-							<p className="c-form-help-text">
-								Na deze datum kan de leerling de opdracht niet meer invullen.
-							</p>
-						</FormGroup>
-						{currentAssignment.assignment_type === 'BOUW' && (
-							<FormGroup label="Groepswerk?" labelFor="only_player">
-								<Toggle
-									checked={currentAssignment.is_collaborative}
-									onChange={checked => setAssignmentProp('is_collaborative', checked)}
-								/>
+								</Flex>
 							</FormGroup>
-						)}
-						<hr className="c-hr" />
-						<Alert type="info">
-							<div className="c-content c-content--no-m">
-								<p>
-									Hulp nodig bij het maken van opdrachten?
-									<br />
-									Bekijk onze{' '}
-									<a href="http://google.com" target="_blank" rel="noopener noreferrer">
-										screencast
-									</a>
-									.
+							<FormGroup label="Deadline" required>
+								<Flex>
+									<Spacer margin="right-small">
+										<DateTimePicker
+											value={
+												currentAssignment.deadline_at
+													? new Date(currentAssignment.deadline_at)
+													: null
+											}
+											onChange={value => setAssignmentProp('deadline_at', value)}
+											id="deadline_at"
+											defaultHours={23}
+											defaultMinutes={59}
+										/>
+									</Spacer>
+								</Flex>
+								<p className="c-form-help-text">
+									Na deze datum kan de leerling de opdracht niet meer invullen.
 								</p>
-							</div>
-						</Alert>
-					</Form>
+							</FormGroup>
+							{currentAssignment.assignment_type === 'BOUW' && (
+								<FormGroup label="Groepswerk?" labelFor="only_player">
+									<Toggle
+										checked={currentAssignment.is_collaborative}
+										onChange={checked => setAssignmentProp('is_collaborative', checked)}
+									/>
+								</FormGroup>
+							)}
+							<hr className="c-hr" />
+							<Alert type="info">
+								<div className="c-content c-content--no-m">
+									<p>
+										Hulp nodig bij het maken van opdrachten?
+										<br />
+										Bekijk onze{' '}
+										<a href="http://google.com" target="_blank" rel="noopener noreferrer">
+											screencast
+										</a>
+										.
+									</p>
+								</div>
+							</Alert>
+						</Form>
+					</Container>
 				</Container>
-			</Container>
 
-			<DeleteObjectModal
-				title={`Ben je zeker dat de opdracht "${currentAssignment.title}" wil verwijderen?`}
-				body="Deze actie kan niet ongedaan gemaakt worden"
-				isOpen={isDeleteModalOpen}
-				onClose={() => setDeleteModalOpen(false)}
-				deleteObjectCallback={deleteCurrentAssignment}
-			/>
+				<DeleteObjectModal
+					title={`Ben je zeker dat de opdracht "${currentAssignment.title}" wil verwijderen?`}
+					body="Deze actie kan niet ongedaan gemaakt worden"
+					isOpen={isDeleteModalOpen}
+					onClose={() => setDeleteModalOpen(false)}
+					deleteObjectCallback={deleteCurrentAssignment}
+				/>
 
-			<InputModal
-				title="Dupliceer taak"
-				inputLabel="Geef de nieuwe taak een naam:"
-				inputValue={currentAssignment.title}
-				inputPlaceholder="Titel van de nieuwe taak"
-				isOpen={isDuplicateModalOpen}
-				onClose={() => setDuplicateModalOpen(false)}
-				inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
-			/>
-		</>
-	);
+				<InputModal
+					title="Dupliceer taak"
+					inputLabel="Geef de nieuwe taak een naam:"
+					inputValue={currentAssignment.title}
+					inputPlaceholder="Titel van de nieuwe taak"
+					isOpen={isDuplicateModalOpen}
+					onClose={() => setDuplicateModalOpen(false)}
+					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
+				/>
+			</>
+		);
+	};
 
 	return (
 		<LoadingErrorLoadedComponent
