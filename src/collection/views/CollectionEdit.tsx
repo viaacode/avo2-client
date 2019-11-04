@@ -329,7 +329,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			<>
 				<Prompt
 					when={hasUnsavedChanged()}
-					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
+					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u de pagina wil verlaten?"
 				/>
 				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">

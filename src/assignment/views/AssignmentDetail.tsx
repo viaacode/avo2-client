@@ -13,6 +13,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import {
+	Box,
 	Button,
 	Container,
 	Dropdown,
@@ -48,8 +49,8 @@ import {
 } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
 
-import './AssignmentDetail.scss';
 import { AssignmentLayout } from '../types';
+import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginResponse: LoginResponse | null;
@@ -446,12 +447,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 									dangerouslySetInnerHTML={{ __html: assignment.description }}
 								/>
 								{!!assignment.answer_url && (
-									<div className="c-box c-box--padding-small c-box--soft-white">
+									<Box className="c-box--soft-white" condensed>
 										<p>Geef je antwoorden in op:</p>
 										<p>
 											<a href={assignment.answer_url}>{assignment.answer_url}</a>
 										</p>
-									</div>
+									</Box>
 								)}
 							</Container>
 						)}

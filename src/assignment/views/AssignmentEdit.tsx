@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 import {
 	Alert,
+	Box,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -352,7 +353,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		let index = 0;
 		let candidateTitle: string;
 		do {
-			index++;
+			index += 1;
 			candidateTitle = prefix.replace('%index%', String(index));
 		} while (titles.includes(candidateTitle));
 
@@ -643,7 +644,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		const dutchLabel = (assignmentContent.type.label ||
 			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
 		const linkContent = (
-			<div className="c-box c-box--padding-small">
+			<Box condensed>
 				<Flex orientation="vertical" center>
 					<Spacer margin="right">
 						<Thumbnail
@@ -659,7 +660,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						</div>
 					</FlexItem>
 				</Flex>
-			</div>
+			</Box>
 		);
 
 		if (
@@ -674,19 +675,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					{linkContent}
 				</div>
 			);
-		} else {
-			return (
-				<Link
-					to={`/${
-						CONTENT_LABEL_TO_ROUTE_PARTS[
-							currentAssignment.content_label as Avo.Assignment.ContentLabel
-						]
-					}/${currentAssignment.content_id}`}
-				>
-					{linkContent}
-				</Link>
-			);
 		}
+
+		return (
+			<Link
+				to={`/${
+					CONTENT_LABEL_TO_ROUTE_PARTS[
+						currentAssignment.content_label as Avo.Assignment.ContentLabel
+					]
+				}/${currentAssignment.content_id}`}
+			>
+				{linkContent}
+			</Link>
+		);
 	};
 
 	const renderAssignmentEditForm = () => (
