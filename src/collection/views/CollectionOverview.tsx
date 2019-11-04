@@ -184,7 +184,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				columns={[
 					{ id: 'thumbnail', label: '', col: '2' },
 					{ id: 'title', label: 'Titel', col: '6', sortable: true },
-					{ id: 'updatedAt', label: 'Laatst bewerkt', col: '3', sortable: true },
+					{ id: 'updated_at', label: 'Laatst bewerkt', col: '3', sortable: true },
 					{ id: 'inFolder', label: 'In map', col: '2' },
 					{ id: 'access', label: 'Toegang', col: '2' },
 					{ id: 'actions', label: '', col: '1' },
