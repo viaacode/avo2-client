@@ -177,6 +177,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		}
 	};
 
+	// TODO: make shared function because also used in assignments
 	const handleColumnClick = (columnId: keyof Avo.Collection.Collection) => {
 		if (sortColumn === columnId) {
 			// Flip previous ordering
