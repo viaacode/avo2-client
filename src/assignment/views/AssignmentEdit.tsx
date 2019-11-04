@@ -347,7 +347,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	 */
 	const getCopyTitleForCollection = async (prefix: string): Promise<string> => {
 		const collections = await CollectionService.getCollectionTitlesByUser();
-		const titles = collections.map((c: Partial<Avo.Collection.Collection>) => c.title);
+		const titles = collections.map(c => c.title);
 
 		let index = 0;
 		let candidateTitle: string;
