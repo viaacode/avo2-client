@@ -17,13 +17,17 @@ export const GET_MENU_ITEMS_BY_PLACEMENT = gql`
 			where: { placement: { _eq: $placement } }
 		) {
 			id
-			placement
+			created_at
+			content_id
 			description
-			icon_name
-			position
-			link_target
-			label
 			external_link
+			group_access
+			icon_name
+			label
+			link_target
+			placement
+			position
+			updated_at
 		}
 	}
 `;
@@ -32,18 +36,17 @@ export const GET_MENU_ITEM_BY_ID = gql`
 	query getMenuItemById($id: Int!) {
 		app_content_nav_elements(where: { id: { _eq: $id } }) {
 			id
+			created_at
+			content_id
+			description
+			external_link
+			group_access
 			icon_name
 			label
 			link_target
 			placement
-		}
-	}
-`;
-
-export const UPDATE_MENU_ITEMS = gql`
-	mutation updateMenuItems($menuItems: app_content_nav_elements_set_input!) {
-		update_app_content_nav_elements(_set: $menuItems) {
-			affected_rows
+			position
+			updated_at
 		}
 	}
 `;
@@ -57,8 +60,8 @@ export const UPDATE_MENU_ITEM_BY_ID = gql`
 `;
 
 export const INSERT_MENU_ITEM = gql`
-	mutation updateMenuItemById($menuItem: app_content_nav_elements_set_input!) {
-		update_app_content_nav_elements(objects: [$menuItem]) {
+	mutation insertMenuItem($menuItem: app_content_nav_elements_insert_input!) {
+		insert_app_content_nav_elements(objects: [$menuItem]) {
 			affected_rows
 		}
 	}

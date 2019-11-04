@@ -1,8 +1,8 @@
 import { get } from 'lodash-es';
 
-import { dataService } from '../../shared/services/data-service';
-import { GET_MENU_ITEM_BY_ID } from '../graphql';
-import { MenuItem } from '../types';
+import { GET_MENU_ITEM_BY_ID } from '../../admin/graphql';
+import { MenuItem } from '../../admin/types';
+import { dataService } from './data-service';
 
 export const fetchMenuItemById = async (id: number): Promise<MenuItem | null> => {
 	try {
