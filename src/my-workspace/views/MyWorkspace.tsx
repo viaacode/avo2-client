@@ -25,7 +25,7 @@ import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
-import { TabViewMap } from '../types';
+import { TabAggregates, TabViewMap } from '../types';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import Bookmarks from './Bookmarks';
 
@@ -126,14 +126,14 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 		}
 	};
 
-	const renderTabsAndContent = (data: {
-		app_collections_aggregate: { aggregate: { count: number } };
-	}) => {
+	const renderTabsAndContent = (data: TabAggregates) => {
 		const counts = {
 			[COLLECTIONS_ID]: get(data, 'app_collections_aggregate.aggregate.count'),
 			[FOLDERS_ID]: 0, // TODO get from database once the table exists
+			[ASSIGNMENTS_ID]: get(data, 'app_assignments_aggregate.aggregate.count'),
 			[BOOKMARKS_ID]: 0, // TODO get from database once the table exists
 		};
+
 		return (
 			<>
 				<Container background="alt" mode="vertical" size="small">

@@ -13,3 +13,16 @@ type TabView = {
 export type TabViewMap = {
 	[key: string]: TabView;
 };
+
+interface Aggregate {
+	count: number;
+}
+
+interface AggregateResponse {
+	aggregate: Aggregate;
+}
+
+export interface TabAggregates {
+	app_collections_aggregate: AggregateResponse;
+	app_assignments_aggregate: AggregateResponse;
+}
