@@ -25,6 +25,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
+import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { getEnv } from '../../shared/helpers/env';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -59,6 +60,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [cuePoints, setCuePoints] = useState({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
@@ -257,7 +259,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 														onMoveFragment();
 														break;
 													case 'delete':
-														onDeleteFragment(fragment.id);
+														setDeleteModalOpen(true);
 														break;
 													case 'copyToCollection':
 														onCopyFragmentToCollection();
@@ -268,6 +270,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 													default:
 														return null;
 												}
+
+												setOpenOptionsId(null);
 											}}
 										/>
 									</DropdownContent>
@@ -298,12 +302,22 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					)}
 				</div>
 			</div>
+
 			<FragmentAdd
 				index={index}
 				collection={collection}
 				updateCollection={updateCollection}
 				reorderFragments={reorderFragments}
 			/>
+
+			<DeleteObjectModal
+				title={`Ben je zeker dat je dit fragment wil verwijderen?`}
+				body="Deze actie kan niet ongedaan gemaakt worden"
+				isOpen={isDeleteModalOpen}
+				onClose={() => setDeleteModalOpen(false)}
+				deleteObjectCallback={() => onDeleteFragment(fragment.id)}
+			/>
+
 			{itemMetaData && (
 				<CutFragmentModal
 					isOpen={isCutModalOpen}
