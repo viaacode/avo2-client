@@ -1,27 +1,45 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import { useMutation } from '@apollo/react-hooks';
 import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
 import { cloneDeep, isEqual, startCase } from 'lodash-es';
+import { Dispatch } from 'redux';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
-import { GET_MENU_ITEMS_BY_PLACEMENT } from '../../graphql';
+import { ApolloCacheManager } from '../../../shared/services/data-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../../graphql';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
 import { ADMIN_PATH } from '../../routes';
+import { setMenuItems } from '../../store/actions';
 import { MenuItem } from '../../types';
 
 import './MenuDetail.scss';
 
-interface MenuDetailProps extends RouteComponentProps<{ menu: string }> {}
+interface MenuDetailProps extends RouteComponentProps<{ menu: string }> {
+	setMenuItemsAction: (menuItems: MenuItem[]) => void;
+}
 
-const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
+const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match, setMenuItemsAction }) => {
 	const [activeRow, setActiveRow] = useState<number | null>(null);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [initialMenuItems, setInitialMenuItems] = useState<MenuItem[]>([]);
 	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
+	const [updateMenuItem] = useMutation(UPDATE_MENU_ITEM_BY_ID);
+
 	const hasInitialData = useRef<boolean>(false);
 	const timeout = useRef<NodeJS.Timeout | null>(null);
+
+	useEffect(() => {
+		if (menuItems && menuItems.length) {
+			// Save menu items in store
+			setMenuItemsAction(menuItems);
+		}
+	}, [menuItems, setMenuItemsAction]);
 
 	useEffect(() => {
 		// Reset active row to clear styling
@@ -40,22 +58,53 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const menuId = match.params.menu;
 
 	// Methods
-	const handleNavigate = (path: string, params: { [key: string]: string } = {}) => {
+	const handleNavigate = (path: string, params: { [key: string]: string } = {}): void => {
 		history.push(buildLink(path, params));
 	};
 
-	const handleSave = () => {
-		console.log('do stuff');
+	const handleSave = (refetch: () => void): void => {
+		setIsSaving(true);
+
+		const promises: Promise<any>[] = [];
+		menuItems.forEach(menuItem => {
+			promises.push(
+				updateMenuItem({
+					variables: {
+						id: menuItem.id,
+						menuItem: {
+							...menuItem,
+							updated_at: new Date().toISOString(),
+						},
+					},
+					update: ApolloCacheManager.clearNavElementsCache,
+				})
+			);
+		});
+
+		Promise.all(promises)
+			.then(() => {
+				refetch();
+				toastService('De navigatie items zijn succesvol opgeslagen', TOAST_TYPE.SUCCESS);
+			})
+			.catch(err => {
+				console.error(err);
+				toastService(
+					'Er ging iets mis tijdens het opslaan van de navigatie items',
+					TOAST_TYPE.DANGER
+				);
+			});
 	};
 
-	const reindexMenuitems = (items: MenuItem[]) =>
+	const reindexMenuitems = (items: MenuItem[]): MenuItem[] =>
 		items.map((item, index) => {
 			item.position = index;
+			// Remove properties that we don't need for save
+			delete item.__typename;
 
 			return item;
 		});
 
-	const reorderMenuItem = (currentIndex: number, indexUpdate: number, id: number) => {
+	const reorderMenuItem = (currentIndex: number, indexUpdate: number, id: number): void => {
 		const newIndex = currentIndex + indexUpdate;
 		const menuItemsCopy = cloneDeep(menuItems);
 		// Get updated item and remove it from copy
@@ -64,7 +113,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		menuItemsCopy.splice(newIndex, 0, updatedItem);
 
 		setActiveRow(id);
-		setMenuItems(menuItemsCopy);
+		setMenuItems(reindexMenuitems(menuItemsCopy));
 	};
 
 	// Render
@@ -82,7 +131,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const renderMenuDetail = (menu: MenuItem[]) => {
+	const renderMenuDetail = (menu: MenuItem[], refetch: () => void) => {
 		if (!hasInitialData.current) {
 			hasInitialData.current = true;
 			// Set items position property equal to index in array
@@ -96,7 +145,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		const isLast = (i: number) => i === menuItems.length - 1;
 
 		return (
-			<AdminLayout className="c-menu-detail" pageTitle={startCase(menuId)}>
+			<AdminLayout
+				className="c-menu-detail"
+				navigateBack={() => handleNavigate(ADMIN_PATH.MENU)}
+				pageTitle={startCase(menuId)}
+			>
 				<AdminLayoutBody>
 					<Table className="c-menu-detail__table" align variant="styled">
 						<tbody>
@@ -152,9 +205,9 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				<AdminLayoutActions>
 					<ButtonToolbar>
 						<Button
-							disabled={isEqual(initialMenuItems, menuItems)}
+							disabled={isEqual(initialMenuItems, menuItems) || isSaving}
 							label="Opslaan"
-							onClick={handleSave}
+							onClick={() => handleSave(refetch)}
 						/>
 						<Button
 							label="Annuleer"
@@ -177,4 +230,15 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	);
 };
 
-export default withRouter(MenuDetail);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	setMenuItemsAction: (menuItems: MenuItem[]) => {
+		dispatch(setMenuItems(menuItems));
+	},
+});
+
+export default withRouter(
+	connect(
+		null,
+		mapDispatchToProps
+	)(MenuDetail)
+);

@@ -47,9 +47,9 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE,
 } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
+import { AssignmentLayout } from '../types';
 
 import './AssignmentDetail.scss';
-import { AssignmentLayout } from '../types';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginResponse: LoginResponse | null;

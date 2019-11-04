@@ -6,7 +6,7 @@ import { Slide, ToastContainer } from 'react-toastify';
 import { Flex } from '@viaa/avo2-components';
 import classnames from 'classnames';
 
-import { Sidebar, TopBar } from './admin/components';
+import { Sidebar } from './admin/components';
 import { ADMIN_PATH } from './admin/routes';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
@@ -35,13 +35,6 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 	});
 
 	// Methods
-	const shouldNavigateBack = () => {
-		const depth = location.pathname.split('/').filter(p => !!p);
-		const previousPath = depth.slice(0, depth.length - 1).join('/');
-
-		return depth.length > 2 ? () => history.push(`/${previousPath}`) : null;
-	};
-
 	const toggleMenu = () => {
 		setMenuOpen(!menuOpen);
 	};
@@ -61,7 +54,6 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 				navItems={[{ label: 'Navigatie', location: ADMIN_PATH.MENU }]}
 			/>
 			<Flex className="u-flex-auto u-scroll" orientation="vertical">
-				<TopBar navigateBack={shouldNavigateBack()} />
 				{renderRoutes()}
 			</Flex>
 		</Flex>
