@@ -300,9 +300,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		setIsSavingCollection(false);
 	}
 
-	const hasUnsavedChanged = () => {
-		return JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
-	};
+	const hasUnsavedChanged = () =>
+		JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
 
 	const handleShareCollectionModalClose = (collection?: Avo.Collection.Collection) => {
 		setIsShareModalOpen(false);

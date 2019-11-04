@@ -113,6 +113,9 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		setIsProcessing(true);
 
 		try {
+			const hasCut =
+				fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
+
 			const response: void | ExecutionResult<
 				Avo.Collection.Fragment
 			> = await triggerCollectionFragmentsInsert({
@@ -121,10 +124,10 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 					fragments: [
 						{
 							use_custom_fields: false,
-							start_oc: fragmentStartTime,
+							start_oc: hasCut ? fragmentStartTime : null,
 							position: (collection.collection_fragments || []).length,
 							external_id: externalId,
-							end_oc: fragmentEndTime,
+							end_oc: hasCut ? fragmentEndTime : null,
 							custom_title: null,
 							custom_description: null,
 							collection_id: collection.id,
