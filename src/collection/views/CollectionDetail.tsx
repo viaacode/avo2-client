@@ -334,7 +334,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									<p className="c-body-1">
 										{collection.lom_classification && collection.lom_classification.length ? (
 											(collection.lom_classification || []).map((lomClassification: string) =>
-												generateSearchLinks(String(collection.id), 'domain', lomClassification)
+												generateSearchLinks(String(collection.id), 'subject', lomClassification)
 											)
 										) : (
 											<span className="u-d-block">-</span>
