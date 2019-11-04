@@ -347,7 +347,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService('De url is naar het klembord gekopieert', TOAST_TYPE.SUCCESS);
+		toastService('De url is naar het klembord gekopieerd', TOAST_TYPE.SUCCESS);
 
 		if (currentAssignment.id) {
 			trackEvents({
@@ -491,7 +491,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				toastService('De opdracht is succesvol geüpdatet', TOAST_TYPE.SUCCESS);
 			}
 			setIsSaving(false);
 		} catch (err) {
@@ -747,14 +747,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							<Flex>
 								<DateTimePicker
 									value={
-										currentAssignment.available_at ? new Date(currentAssignment.available_at) : null
+										currentAssignment.available_at
+											? new Date(currentAssignment.available_at)
+											: new Date(Date.now())
 									}
 									onChange={(value: Date | null) =>
 										setAssignmentProp('available_at', value ? value.toISOString() : null)
 									}
 									id="available_at"
-									defaultHours={0}
-									defaultMinutes={0}
+									defaultHours={new Date(Date.now()).getHours()}
+									defaultMinutes={new Date(Date.now()).getMinutes()}
 								/>
 							</Flex>
 						</FormGroup>

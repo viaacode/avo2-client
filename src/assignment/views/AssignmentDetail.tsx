@@ -48,8 +48,8 @@ import {
 } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
 
-import './AssignmentDetail.scss';
 import { AssignmentLayout } from '../types';
+import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginResponse: LoginResponse | null;
@@ -206,7 +206,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				switch (graphqlError) {
 					case AssignmentRetrieveError.DELETED:
 						errorObj = {
-							error: 'De opdracht werdt verwijderd',
+							error: 'De opdracht werd verwijderd',
 							icon: 'delete' as IconName,
 						};
 						break;
