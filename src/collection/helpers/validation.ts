@@ -157,7 +157,7 @@ const validateFragments = (fragments: Avo.Collection.Fragment[], type: string): 
 	return isValid;
 };
 
-export const getValidationErrorsForStartAndEndTime = (
+export const getValidationErrorsForStartAndEnd = (
 	collectionFragment: Avo.Collection.Fragment
 ): string[] => {
 	return compact(
