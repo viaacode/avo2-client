@@ -1,6 +1,8 @@
+import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
+import { Dispatch } from 'redux';
 
 import {
 	Button,
@@ -16,8 +18,6 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { find, get, isNil } from 'lodash-es';
-import { Dispatch } from 'redux';
 
 import { dutchContentLabelToEnglishLabel } from '../../collection/types';
 import { getSearchResults } from '../../search/store/actions';
