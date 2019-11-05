@@ -37,7 +37,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-import { ReorderCollectionModal, ShareCollectionModal } from '../components';
+import { /* ReorderCollectionModal, */ ShareCollectionModal } from '../components';
 import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
 import {
 	DELETE_COLLECTION,
@@ -60,7 +60,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
-	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
+	// const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
@@ -614,12 +614,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 											onClick={onPreviewCollection}
 											disabled
 										/>
-										<Button
+										{/* <Button
 											type="secondary"
 											label="Herschik alle items"
 											onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 											disabled
-										/>
+										/> */}
 										<ControlledDropdown
 											isOpen={isOptionsMenuOpen}
 											menuWidth="fit-content"
@@ -684,10 +684,10 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 						updateCollectionProperty={updateCollectionProperty}
 					/>
 				)}
-				<ReorderCollectionModal
+				{/* <ReorderCollectionModal
 					isOpen={isReorderModalOpen}
 					onClose={() => setIsReorderModalOpen(false)}
-				/>
+				/> */}
 				<ShareCollectionModal
 					collection={currentCollection}
 					isOpen={isShareModalOpen}
