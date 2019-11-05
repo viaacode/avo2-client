@@ -25,6 +25,10 @@ const OBLIGATORY_PROPERTIES: AssignmentProperty[] = [
 		name: 'deadline_at',
 		label: 'deadline',
 	},
+	{
+		name: 'class_room',
+		label: 'klas of groep',
+	},
 ];
 
 /**

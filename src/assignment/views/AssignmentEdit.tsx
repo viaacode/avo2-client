@@ -729,9 +729,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								/>
 							</RadioButtonGroup>
 						</FormGroup>
-						<FormGroup label="Klas">
+						<FormGroup label="Klas of groep" required>
 							<TextInput
-								id="classRoom"
+								id="class_room"
 								value={currentAssignment.class_room || ''}
 								onChange={classRoom => setAssignmentProp('class_room', classRoom)}
 							/>
