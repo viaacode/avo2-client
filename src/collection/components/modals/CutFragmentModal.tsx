@@ -137,10 +137,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const onUpdateMultiRangeValues = (values: number[]) => {
-		setFragmentStartTime(values[0]);
-		setFragmentEndTime(values[1]);
-		setFragmentStartTimeString(formatDurationHoursMinutesSeconds(values[0]));
-		setFragmentEndTimeString(formatDurationHoursMinutesSeconds(values[1]));
+		setFragmentStart(values[0]);
+		setFragmentEnd(values[1]);
+		setFragmentStartString(formatDurationHoursMinutesSeconds(values[0]));
+		setFragmentEndString(formatDurationHoursMinutesSeconds(values[1]));
 	};
 
 	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
