@@ -326,8 +326,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							<Column size="3-6">
 								<p className="u-text-bold">Ordering</p>
 								{/* TODO: add links */}
-								<p className="c-body-1">Deze collectie is een kopie van -</p>
-								<p className="c-body-1">Deze collectie is deel van een map: -</p>
+								<p className="c-body-1">Deze collectie is een kopie van:</p>
+								<p className="c-body-1">Deze collectie is deel van een map:</p>
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
