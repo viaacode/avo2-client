@@ -382,7 +382,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			}
 
 			if (validationErrors.length) {
-				toastService(validationErrors.join('</br>'), TOAST_TYPE.DANGER);
+				toastService(validationErrors.join('<br />'), TOAST_TYPE.DANGER);
 				setIsSavingCollection(false);
 				return;
 			}
