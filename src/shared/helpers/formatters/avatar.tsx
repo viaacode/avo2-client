@@ -58,7 +58,7 @@ export const getAvatarProps = (
 };
 
 export const renderAvatar = (
-	profile: Avo.User.Profile | undefined,
+	profile: Avo.User.Profile | null,
 	options: {
 		includeRole?: boolean;
 		small?: boolean;
