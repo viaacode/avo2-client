@@ -121,35 +121,31 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
-	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
-
-	const renderRelatedCollections = (start: number, end: number) => {
+	const renderRelatedCollections = () => {
 		if (relatedCollections && relatedCollections.length) {
-			return relatedCollections.slice(start, end).map(relatedCollection => {
-				return (
-					<li style={relatedItemStyle}>
-						<MediaCard
-							title={relatedCollection.dc_title}
-							href={`/${RouteParts.Collection}/${relatedCollection.id}`}
-							category="collection"
-							orientation="horizontal"
-						>
-							<MediaCardThumbnail>
-								<Thumbnail
-									category="collection"
-									src={relatedCollection.thumbnail_path || undefined}
-								/>
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category="collection">
-									{/*TODO resolve org id using graphql query*/}
-									<MetaDataItem label={relatedCollection.original_cp || ''} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
-					</li>
-				);
-			});
+			return relatedCollections.map(relatedCollection => (
+				<Column size="3-6">
+					<MediaCard
+						title={relatedCollection.dc_title}
+						href={`/${RouteParts.Collection}/${relatedCollection.id}`}
+						category="collection"
+						orientation="horizontal"
+					>
+						<MediaCardThumbnail>
+							<Thumbnail
+								category="collection"
+								src={relatedCollection.thumbnail_path || undefined}
+							/>
+						</MediaCardThumbnail>
+						<MediaCardMetaData>
+							<MetaData category="collection">
+								{/*TODO resolve org id using graphql query*/}
+								<MetaDataItem label={relatedCollection.original_cp || ''} />
+							</MetaData>
+						</MediaCardMetaData>
+					</MediaCard>
+				</Column>
+			));
 		}
 		return null;
 	};
@@ -334,7 +330,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									<p className="c-body-1">
 										{collection.lom_classification && collection.lom_classification.length ? (
 											(collection.lom_classification || []).map((lomClassification: string) =>
-												generateSearchLinks(String(collection.id), 'domain', lomClassification)
+												generateSearchLinks(String(collection.id), 'subject', lomClassification)
 											)
 										) : (
 											<span className="u-d-block">-</span>
@@ -344,19 +340,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<h3 className="c-h3" style={{ width: '100%' }}>
-							Bekijk ook
-						</h3>
-						<Grid>
-							<Container size="small" mode="vertical">
-								<Column size="3-6">
-									<ul className="c-media-card-list">{renderRelatedCollections(0, 2)}</ul>
-								</Column>
-								<Column size="3-6">
-									<ul className="c-media-card-list">{renderRelatedCollections(2, 4)}</ul>
-								</Column>
-							</Container>
-						</Grid>
+						<h3 className="c-h3">Bekijk ook</h3>
+						<Grid className="c-media-card-list">{renderRelatedCollections()}</Grid>
 					</Container>
 				</Container>
 

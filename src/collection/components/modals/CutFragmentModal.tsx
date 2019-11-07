@@ -20,7 +20,7 @@ import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/forma
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { getValidationErrorsForStartAndEndTime } from '../../helpers/validation';
+import { getValidationErrorsForStartAndEnd } from '../../helpers/validation';
 
 export interface FragmentPropertyUpdateInfo {
 	value: string | number | boolean | null;
@@ -45,25 +45,27 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	fragment,
 	updateCuePoints,
 }) => {
-	const [playerTicket, setPlayerTicket] = useState<string>();
-	const [fragmentStartTime, setFragmentStartTime] = useState<number>(fragment.start_oc || 0);
-	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
-		fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0
-	);
-	const [fragmentStartTimeString, setFragmentStartTimeString] = useState<string>(
-		formatDurationHoursMinutesSeconds(fragment.start_oc || 0)
-	);
-	const [fragmentEndTimeString, setFragmentEndTimeString] = useState<string>(
-		formatDurationHoursMinutesSeconds(
+	// Save initial state for reusability purposess
+	const { start, end, startString, endString } = {
+		start: fragment.start_oc || 0,
+		end: fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0,
+		startString: formatDurationHoursMinutesSeconds(fragment.start_oc || 0),
+		endString: formatDurationHoursMinutesSeconds(
 			fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0
-		)
-	);
+		),
+	};
+
+	const [playerTicket, setPlayerTicket] = useState<string>();
+	const [fragmentStart, setFragmentStart] = useState<number>(start);
+	const [fragmentEnd, setFragmentEnd] = useState<number>(end);
+	const [fragmentStartString, setFragmentStartString] = useState<string>(startString);
+	const [fragmentEndString, setFragmentEndString] = useState<string>(endString);
 
 	const getValidationErrors = (): string[] => {
-		const start = toSeconds(fragmentStartTimeString, true);
-		const end = toSeconds(fragmentEndTimeString, true);
+		const start = toSeconds(fragmentStartString, true);
+		const end = toSeconds(fragmentEndString, true);
 
-		return getValidationErrorsForStartAndEndTime({
+		return getValidationErrorsForStartAndEnd({
 			...fragment,
 			start_oc: start,
 			end_oc: end,
@@ -94,8 +96,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			return;
 		}
 
-		const start = toSeconds(fragmentStartTimeString, true);
-		const end = toSeconds(fragmentEndTimeString, true);
+		const start = toSeconds(fragmentStartString, true);
+		const end = toSeconds(fragmentEndString, true);
 
 		updateFragmentProperties([
 			{ value: start, fieldName: 'start_oc' as const, fragmentId: fragment.id },
@@ -108,6 +110,17 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		onClose();
 	};
 
+	const onCancelCut = () => {
+		// Reset to default state
+		setFragmentStart(start);
+		setFragmentEnd(end);
+		setFragmentStartString(startString);
+		setFragmentEndString(endString);
+
+		// Close modal
+		onClose();
+	};
+
 	/**
 	 * Checks in the text input fields have a correct value
 	 */
@@ -117,17 +130,17 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			return;
 		}
 
-		setFragmentStartTime(toSeconds(fragmentStartTimeString, true) as number);
-		setFragmentEndTime(toSeconds(fragmentEndTimeString, true) as number);
-		setFragmentStartTimeString(formatDurationHoursMinutesSeconds(fragmentStartTime));
-		setFragmentEndTimeString(formatDurationHoursMinutesSeconds(fragmentEndTime));
+		setFragmentStart(toSeconds(fragmentStartString, true) as number);
+		setFragmentEnd(toSeconds(fragmentEndString, true) as number);
+		setFragmentStartString(formatDurationHoursMinutesSeconds(fragmentStart));
+		setFragmentEndString(formatDurationHoursMinutesSeconds(fragmentEnd));
 	};
 
 	const onUpdateMultiRangeValues = (values: number[]) => {
-		setFragmentStartTime(values[0]);
-		setFragmentEndTime(values[1]);
-		setFragmentStartTimeString(formatDurationHoursMinutesSeconds(values[0]));
-		setFragmentEndTimeString(formatDurationHoursMinutesSeconds(values[1]));
+		setFragmentStart(values[0]);
+		setFragmentEnd(values[1]);
+		setFragmentStartString(formatDurationHoursMinutesSeconds(values[0]));
+		setFragmentEndString(formatDurationHoursMinutesSeconds(values[1]));
 	};
 
 	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
@@ -156,14 +169,14 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					/>
 					<Container mode="vertical" className="m-time-crop-controls">
 						<TextInput
-							value={fragmentStartTimeString}
-							onChange={setFragmentStartTimeString}
+							value={fragmentStartString}
+							onChange={setFragmentStartString}
 							onBlur={parseTimes}
 							onKeyUp={handleOnKeyUp}
 						/>
 						<div className="m-multi-range-wrapper">
 							<MultiRange
-								values={[fragmentStartTime, fragmentEndTime]}
+								values={[fragmentStart, fragmentEnd]}
 								onChange={onUpdateMultiRangeValues}
 								min={0}
 								max={toSeconds(itemMetaData.duration, true) || 0}
@@ -171,8 +184,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							/>
 						</div>
 						<TextInput
-							value={fragmentEndTimeString}
-							onChange={setFragmentEndTimeString}
+							value={fragmentEndString}
+							onChange={setFragmentEndString}
 							onBlur={parseTimes}
 							onKeyUp={handleOnKeyUp}
 						/>
@@ -181,7 +194,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						<ToolbarRight>
 							<ToolbarItem>
 								<ButtonToolbar>
-									<Button type="secondary" label="Annuleren" onClick={onClose} />
+									<Button type="secondary" label="Annuleren" onClick={onCancelCut} />
 									<Button type="primary" label="Knippen" onClick={onSaveCut} />
 								</ButtonToolbar>
 							</ToolbarItem>

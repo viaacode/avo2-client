@@ -1,15 +1,15 @@
+import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, get, isNil, omit, without } from 'lodash-es';
+import React from 'react';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { ExecutionResult } from '@apollo/react-common';
-import React from 'react';
+import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
-import { getValidationErrorForSave, getValidationErrorsForPublish } from './helpers/validation';
 import { GET_COLLECTION_TITLES_BY_OWNER } from './graphql';
-import { getProfileId } from '../authentication/helpers/get-profile-info';
+import { getValidationErrorForSave, getValidationErrorsForPublish } from './helpers/validation';
 
 export class CollectionService {
 	public static async insertCollection(
@@ -38,7 +38,8 @@ export class CollectionService {
 			if (!response || response.errors) {
 				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
 				return null;
-			} else if (!insertedCollection || isNil(insertedCollection.id)) {
+			}
+			if (!insertedCollection || isNil(insertedCollection.id)) {
 				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
 				return null;
 			}

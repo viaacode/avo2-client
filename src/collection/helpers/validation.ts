@@ -15,7 +15,7 @@ const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collectio
 	{
 		error: 'De collectie beschrijving is te lang',
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!collection.description || collection.description.length < MAX_SEARCH_DESCRIPTION_LENGTH,
+			!collection.description || collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
 	},
 ];
 
@@ -159,7 +159,7 @@ const validateFragments = (fragments: Avo.Collection.Fragment[], type: string): 
 	return isValid;
 };
 
-export const getValidationErrorsForStartAndEndTime = (
+export const getValidationErrorsForStartAndEnd = (
 	collectionFragment: Avo.Collection.Fragment
 ): string[] => {
 	return compact(

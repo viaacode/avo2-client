@@ -352,7 +352,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		let index = 0;
 		let candidateTitle: string;
 		do {
-			index++;
+			index += 1;
 			candidateTitle = prefix.replace('%index%', String(index));
 		} while (titles.includes(candidateTitle));
 
@@ -574,9 +574,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 			} else {
 				// edit => update graphql
-				await updateAssignment(triggerAssignmentUpdate, assignment);
-				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				const updatedAssignment = await updateAssignment(triggerAssignmentUpdate, assignment);
+
+				if (updatedAssignment) {
+					setBothAssignments(assignment);
+					toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				}
 			}
 			setIsSaving(false);
 		} catch (err) {
@@ -674,19 +677,18 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					{linkContent}
 				</div>
 			);
-		} else {
-			return (
-				<Link
-					to={`/${
-						CONTENT_LABEL_TO_ROUTE_PARTS[
-							currentAssignment.content_label as Avo.Assignment.ContentLabel
-						]
-					}/${currentAssignment.content_id}`}
-				>
-					{linkContent}
-				</Link>
-			);
 		}
+		return (
+			<Link
+				to={`/${
+					CONTENT_LABEL_TO_ROUTE_PARTS[
+						currentAssignment.content_label as Avo.Assignment.ContentLabel
+					]
+				}/${currentAssignment.content_id}`}
+			>
+				{linkContent}
+			</Link>
+		);
 	};
 
 	const renderAssignmentEditForm = () => (
