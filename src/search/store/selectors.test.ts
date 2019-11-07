@@ -1,3 +1,6 @@
+import { Avo } from '@viaa/avo2-types';
+
+import { AppState } from '../../store';
 import {
 	selectSearch,
 	selectSearchError,
@@ -6,7 +9,12 @@ import {
 } from './selectors';
 
 describe('search > store > selectors', () => {
-	const store = {
+	const store: AppState = {
+		loginState: {
+			data: { message: 'LOGGED_IN', userInfo: {} as Avo.User.User },
+			loading: false,
+			error: false,
+		},
 		search: {
 			data: { results: [], count: 0, aggregations: {} },
 			loading: false,
@@ -27,6 +35,6 @@ describe('search > store > selectors', () => {
 	});
 
 	it('Should get the search results from the store', () => {
-		expect(selectSearchResults(store)).toMatchObject(store.search.data);
+		expect(selectSearchResults(store)).toMatchObject(store.search.data as any);
 	});
 });
