@@ -241,6 +241,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 																		},
 																  ]
 																: []),
+															// TODO DISABLED_FEATURE
 															// {
 															// 	icon: 'play' as IconName,
 															// 	id: 'play',

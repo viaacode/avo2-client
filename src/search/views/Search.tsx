@@ -350,7 +350,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												label="Kopieer vaste link naar deze zoekopdracht"
 												onClick={onCopySearchLinkClicked}
 											/>
-											{/* TODO: Create link to create search assignment task */}
+											{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
 											{/* <Button
 												type="link"
 												className="c-menu__item"
