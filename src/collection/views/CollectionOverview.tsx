@@ -179,67 +179,65 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 
 	const onClickCreate = () => history.push(`/${RouteParts.Search}`);
 
+	const renderTable = (collections: Avo.Collection.Collection[]) => (
+		<>
+			<Table
+				columns={[
+					{ id: 'thumbnail', label: '', col: '2' },
+					{ id: 'title', label: 'Titel', col: '6', sortable: true },
+					{ id: 'updated_at', label: 'Laatst bewerkt', col: '3', sortable: true },
+					{ id: 'inFolder', label: 'In map', col: '2' },
+					{ id: 'access', label: 'Toegang', col: '2' },
+					{ id: 'actions', label: '', col: '1' },
+				]}
+				data={collections}
+				emptyStateMessage="Geen resultaten gevonden"
+				renderCell={renderCell}
+				rowKey="id"
+				variant="styled"
+			/>
+			<Pagination
+				pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
+				currentPage={page}
+				onPageChange={setPage}
+			/>
+		</>
+	);
+
+	const renderEmptyFallback = () => (
+		<NotFound icon="collection" message="Je hebt nog geen collecties aangemaakt.">
+			<p>
+				Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
+				voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
+				gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen die
+				je dan hier terugvindt.
+			</p>
+			<Spacer margin="top">
+				<Button
+					type="primary"
+					icon="add"
+					label="Maak je eerste collectie"
+					onClick={onClickCreate}
+				/>
+			</Spacer>
+		</NotFound>
+	);
+
 	const renderCollections = (
 		collections: Avo.Collection.Collection[],
 		refetchCollections: () => void
-	) => {
-		const renderTable = () => (
-			<>
-				<Table
-					columns={[
-						{ id: 'thumbnail', label: '', col: '2' },
-						{ id: 'title', label: 'Titel', col: '6', sortable: true },
-						{ id: 'updated_at', label: 'Laatst bewerkt', col: '3', sortable: true },
-						{ id: 'inFolder', label: 'In map', col: '2' },
-						{ id: 'access', label: 'Toegang', col: '2' },
-						{ id: 'actions', label: '', col: '1' },
-					]}
-					data={collections}
-					emptyStateMessage="Geen resultaten gevonden"
-					renderCell={renderCell}
-					rowKey="id"
-					variant="styled"
-				/>
-				<Pagination
-					pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
-					currentPage={page}
-					onPageChange={setPage}
-				/>
-			</>
-		);
-
-		const renderEmptyFallback = () => (
-			<NotFound icon="collection" message="Je hebt nog geen collecties aangemaakt.">
-				<p>
-					Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
-					voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
-					gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen
-					die je dan hier terugvindt.
-				</p>
-				<Spacer margin="top">
-					<Button
-						type="primary"
-						icon="add"
-						label="Maak je eerste collectie"
-						onClick={onClickCreate}
-					/>
-				</Spacer>
-			</NotFound>
-		);
-
-		return (
-			<>
-				{collections.length ? renderTable() : renderEmptyFallback()}
-				<DeleteObjectModal
-					title="Verwijder collectie?"
-					body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
-					isOpen={isDeleteModalOpen}
-					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={() => deleteCollection(refetchCollections)}
-				/>
-			</>
-		);
-	};
+	) => (
+		<>
+			{collections.length ? renderTable(collections) : renderEmptyFallback()}
+			<DeleteObjectModal
+				title="Verwijder collectie?"
+				body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
+				isOpen={isDeleteModalOpen}
+				onClose={() => setIsDeleteModalOpen(false)}
+				deleteObjectCallback={() => deleteCollection(refetchCollections)}
+			/>
+		</>
+	);
 
 	return (
 		<DataQueryComponent
