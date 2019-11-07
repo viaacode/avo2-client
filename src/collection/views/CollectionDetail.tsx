@@ -30,6 +30,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get, isNull } from 'lodash-es';
 
+import PermissionGuard from '../../authentication/components/PermissionGuard';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { selectLogin } from '../../authentication/store/selectors';
@@ -50,6 +51,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
+import { ShareCollectionModal } from '../components';
 import FragmentDetail from '../components/FragmentDetail';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
@@ -69,6 +71,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
+	const [isPublic, setIsPublic] = useState<boolean | null>(null);
+
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -121,47 +127,43 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
-	const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
-
-	const renderRelatedCollections = (start: number, end: number) => {
+	const renderRelatedCollections = () => {
 		if (relatedCollections && relatedCollections.length) {
-			return relatedCollections.slice(start, end).map(relatedCollection => {
-				return (
-					<li style={relatedItemStyle}>
-						<MediaCard
-							title={relatedCollection.dc_title}
-							href={`/${RouteParts.Collection}/${relatedCollection.id}`}
-							category="collection"
-							orientation="horizontal"
-						>
-							<MediaCardThumbnail>
-								<Thumbnail
-									category="collection"
-									src={relatedCollection.thumbnail_path || undefined}
-								/>
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category="collection">
-									{/*TODO resolve org id using graphql query*/}
-									<MetaDataItem label={relatedCollection.original_cp || ''} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
-					</li>
-				);
-			});
+			return relatedCollections.map(relatedCollection => (
+				<Column size="3-6">
+					<MediaCard
+						title={relatedCollection.dc_title}
+						href={`/${RouteParts.Collection}/${relatedCollection.id}`}
+						category="collection"
+						orientation="horizontal"
+					>
+						<MediaCardThumbnail>
+							<Thumbnail
+								category="collection"
+								src={relatedCollection.thumbnail_path || undefined}
+							/>
+						</MediaCardThumbnail>
+						<MediaCardMetaData>
+							<MetaData category="collection">
+								{/*TODO resolve org id using graphql query*/}
+								<MetaDataItem label={relatedCollection.original_cp || ''} />
+							</MetaData>
+						</MediaCardMetaData>
+					</MediaCard>
+				</Column>
+			));
 		}
 		return null;
 	};
 
 	const renderCollection = (collection: Avo.Collection.Collection) => {
-		const canEditCollection = PermissionService.hasPermissions(
-			[
-				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
-			],
-			get(loginState, 'userInfo.profile', null)
-		);
+		if (!isFirstRender) {
+			setIsPublic(collection.is_public);
+			setIsFirstRender(true);
+		}
+
+		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
+
 		const canDeleteCollection = PermissionService.hasPermissions(
 			[
 				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
@@ -169,6 +171,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			],
 			get(loginState, 'userInfo.profile', null)
 		);
+
+		const canEditCollection = {
+			permissions: [
+				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
+				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
+			],
+			profile: get(loginState, 'userInfo.profile', null),
+		};
+
+		const onEdit = () => {
+			history.push(
+				`${generateContentLinkString(ContentTypeString.collection, collection.id.toString())}/${
+					RouteParts.Edit
+				}`
+			);
+		};
 
 		return (
 			<>
@@ -214,6 +232,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												ariaLabel="Bladwijzer"
 											/>
 											<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
+											<PermissionGuard {...canEditCollection}>
+												<Button
+													type="secondary"
+													label="Delen"
+													onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+												/>
+											</PermissionGuard>
 											<ControlledDropdown
 												isOpen={isOptionsMenuOpen}
 												menuWidth="fit-content"
@@ -241,11 +266,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 																		},
 																  ]
 																: []),
-															{
-																icon: 'play' as IconName,
-																id: 'play',
-																label: 'Alle items afspelen',
-															},
+															// TODO DISABLED_FEATURE
+															// {
+															// 	icon: 'play' as IconName,
+															// 	id: 'play',
+															// 	label: 'Alle items afspelen',
+															// },
 															{
 																icon: 'clipboard' as IconName,
 																id: 'createAssignment',
@@ -258,15 +284,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 														]}
 														onClick={itemId => {
 															switch (itemId) {
-																case 'edit':
-																	history.push(
-																		`${generateContentLinkString(
-																			ContentTypeString.collection,
-																			collection.id.toString()
-																		)}/${RouteParts.Edit}`
-																	);
-																	break;
-
 																case 'createAssignment':
 																	history.push(
 																		generateAssignmentCreateLink(
@@ -287,6 +304,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													/>
 												</DropdownContent>
 											</ControlledDropdown>
+											<PermissionGuard {...canEditCollection}>
+												<Spacer margin="left-small">
+													<Button type="primary" icon="edit" label="Bewerken" onClick={onEdit} />
+												</Spacer>
+											</PermissionGuard>
 										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>
@@ -325,8 +347,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 							<Column size="3-6">
 								<p className="u-text-bold">Ordering</p>
-								<p className="c-body-1">Deze collectie is een kopie van TODO add link</p>
-								<p className="c-body-1">Deze collectie is deel van een map: TODO add link</p>
+								{/* TODO: add links */}
+								<p className="c-body-1">Deze collectie is een kopie van:</p>
+								<p className="c-body-1">Deze collectie is deel van een map:</p>
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
@@ -334,7 +357,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									<p className="c-body-1">
 										{collection.lom_classification && collection.lom_classification.length ? (
 											(collection.lom_classification || []).map((lomClassification: string) =>
-												generateSearchLinks(String(collection.id), 'domain', lomClassification)
+												generateSearchLinks(String(collection.id), 'subject', lomClassification)
 											)
 										) : (
 											<span className="u-d-block">-</span>
@@ -344,22 +367,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<h3 className="c-h3" style={{ width: '100%' }}>
-							Bekijk ook
-						</h3>
-						<Grid>
-							<Container size="small" mode="vertical">
-								<Column size="3-6">
-									<ul className="c-media-card-list">{renderRelatedCollections(0, 2)}</ul>
-								</Column>
-								<Column size="3-6">
-									<ul className="c-media-card-list">{renderRelatedCollections(2, 4)}</ul>
-								</Column>
-							</Container>
-						</Grid>
+						<h3 className="c-h3">Bekijk ook</h3>
+						<Grid className="c-media-card-list">{renderRelatedCollections()}</Grid>
 					</Container>
 				</Container>
-
+				{isPublic !== null && (
+					<ShareCollectionModal
+						collection={{ ...collection, is_public: isPublic }}
+						isOpen={isShareModalOpen}
+						onClose={() => setIsShareModalOpen(false)}
+						setIsPublic={setIsPublic}
+					/>
+				)}
 				<DeleteObjectModal
 					title={`Ben je zeker dat de collectie "${collection.title}" wil verwijderen?`}
 					body="Deze actie kan niet ongedaan gemaakt worden"
