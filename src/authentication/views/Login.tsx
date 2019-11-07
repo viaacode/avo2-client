@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 
 import { get } from 'lodash-es';
 
-import { Button, Spinner } from '@viaa/avo2-components';
+import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import NotFound from '../../404/views/NotFound';
 import { RouteParts } from '../../constants';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
@@ -106,11 +106,11 @@ const Login: FunctionComponent<LoginProps> = ({
 	if (!loginState || loginStateLoading) {
 		// Wait for login check
 		return (
-			<div
-				style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '400px' }}
-			>
-				<Spinner size="large" />
-			</div>
+			<Spacer margin={['top-large', 'bottom-large']}>
+				<Flex center>
+					<Spinner size="large" />
+				</Flex>
+			</Spacer>
 		);
 	}
 
