@@ -69,8 +69,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				const validationErrors: string[] = getValidationErrorsForPublish(collection);
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-					// <br> tags will be resolved to html by viaacode/avo2-components@v1.4.0
-					toastService(validationErrors.join('</br>'), TOAST_TYPE.DANGER);
+					toastService(validationErrors.join('<br />'), TOAST_TYPE.DANGER);
 					return;
 				}
 			}

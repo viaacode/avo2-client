@@ -489,9 +489,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 			} else {
 				// edit => update graphql
-				await updateAssignment(triggerAssignmentUpdate, assignment);
-				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				const updatedAssignment = await updateAssignment(triggerAssignmentUpdate, assignment);
+
+				if (updatedAssignment) {
+					setBothAssignments(assignment);
+					toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				}
 			}
 			setIsSaving(false);
 		} catch (err) {
