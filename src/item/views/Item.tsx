@@ -1,12 +1,6 @@
+import { isNull } from 'lodash-es';
 import queryString from 'query-string';
-import React, {
-	createRef,
-	CSSProperties,
-	FunctionComponent,
-	RefObject,
-	useEffect,
-	useState,
-} from 'react';
+import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -35,6 +29,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentType } from '@viaa/avo2-components/dist/types';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
@@ -50,12 +45,13 @@ import {
 } from '../../shared/helpers/generateLink';
 import { LANGUAGES } from '../../shared/helpers/languages';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../shared/services/related-items-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import ItemVideoDescription from '../components/ItemVideoDescription';
 import FragmentAddToCollection from '../components/modals/FragmentAddToCollection';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import './Item.scss';
 
 interface ItemProps extends RouteComponentProps {}
@@ -69,6 +65,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const [isOpenFragmentAddToCollectionModal, setIsOpenFragmentAddToCollectionModal] = useState(
 		false
 	);
+	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 
 	/**
 	 * Update video and query param time when time changes in the state
@@ -92,8 +89,17 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 			setSeekerTime();
 		}
 
-		// Log event of item page view
 		if (itemId) {
+			if (isNull(relatedItems)) {
+				getRelatedItems(itemId, 'items', 5)
+					.then(setRelatedItems)
+					.catch(err => {
+						console.error('Failed to get related items', err, { itemId, index: 'items', limit: 5 });
+						toastService('Het ophalen van de gerelateerde items is mislukt', TOAST_TYPE.DANGER);
+					});
+			}
+
+			// Log event of item page view
 			trackEvents({
 				event_object: {
 					type: 'item',
@@ -104,7 +110,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 				category: 'item',
 			});
 		}
-	}, [time, history, videoRef, itemId]);
+	}, [time, history, videoRef, itemId, relatedItems]);
 
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
@@ -120,7 +126,36 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 		history.push(generateSearchLinkString(prop, value));
 	};
 
-	const relatedItemStyle: CSSProperties = { width: '100%', float: 'left', marginRight: '2%' };
+	const renderRelatedItems = () => {
+		if (relatedItems && relatedItems.length) {
+			return relatedItems.map(relatedItem => {
+				const englishContentType: ContentType =
+					dutchContentLabelToEnglishLabel(relatedItem.administrative_type) ||
+					ContentTypeString.video;
+
+				return (
+					<li>
+						<MediaCard
+							title={relatedItem.dc_title}
+							href={`/item/${relatedItem.id}`}
+							category={englishContentType}
+							orientation="horizontal"
+						>
+							<MediaCardThumbnail>
+								<Thumbnail category={englishContentType} src={relatedItem.thumbnail_path} />
+							</MediaCardThumbnail>
+							<MediaCardMetaData>
+								<MetaData category={englishContentType}>
+									<MetaDataItem label={relatedItem.original_cp || ''} />
+								</MetaData>
+							</MediaCardMetaData>
+						</MediaCard>
+					</li>
+				);
+			});
+		}
+		return null;
+	};
 
 	const renderItem = (itemMetaData: Avo.Item.Item) => {
 		const englishContentType: ContentType =
@@ -128,7 +163,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 		return (
 			<>
-				<Container mode="vertical" size="small" background="alt">
+				<Container className="c-item-view__header" mode="vertical" size="small" background="alt">
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarLeft>
@@ -191,7 +226,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 						</Toolbar>
 					</Container>
 				</Container>
-				<Container mode="vertical">
+				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">
 						<ItemVideoDescription itemMetaData={itemMetaData} />
 						<Grid>
@@ -335,108 +370,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
 									<h3 className="c-h3">Bekijk ook</h3>
-									<ul className="c-media-card-list">
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/item/${itemMetaData.id}`}
-												category={englishContentType}
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={englishContentType}
-														src={itemMetaData.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={englishContentType}>
-														<MetaDataItem label={itemMetaData.org_name || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/item/${itemMetaData.id}`}
-												category={englishContentType}
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={englishContentType}
-														src={itemMetaData.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={englishContentType}>
-														<MetaDataItem label={itemMetaData.org_name || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/item/${itemMetaData.id}`}
-												category={englishContentType}
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={englishContentType}
-														src={itemMetaData.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={englishContentType}>
-														<MetaDataItem label={itemMetaData.org_name || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/item/${itemMetaData.id}`}
-												category={englishContentType}
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={englishContentType}
-														src={itemMetaData.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={englishContentType}>
-														<MetaDataItem label={itemMetaData.org_name || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/item/${itemMetaData.id}`}
-												category={englishContentType}
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category={englishContentType}
-														src={itemMetaData.thumbnail_path}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category={englishContentType}>
-														<MetaDataItem label={itemMetaData.org_name || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-									</ul>
+									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>
 							</Column>
 						</Grid>

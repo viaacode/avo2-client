@@ -48,6 +48,7 @@ import {
 } from '../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { ShareCollectionModal } from '../components';
@@ -75,6 +76,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
+		null
+	);
 
 	useEffect(() => {
 		trackEvents({
@@ -86,7 +90,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			name: 'view',
 			category: 'item',
 		});
-	});
+		if (isNull(relatedCollections)) {
+			getRelatedItems(collectionId, 'collections', 4)
+				.then(relatedCollections => {
+					setRelatedCollections(relatedCollections);
+				})
+				.catch(err => {
+					console.error('Failed to get related items', err, {
+						collectionId,
+						index: 'collections',
+						limit: 4,
+					});
+					toastService('Het ophalen van de gerelateerde collecties is mislukt', TOAST_TYPE.DANGER);
+				});
+		}
+	}, [collectionId, relatedCollections]);
 
 	const openDeleteModal = (collectionId: number) => {
 		setIdToDelete(collectionId);
@@ -107,6 +125,35 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			console.error(err);
 			toastService('Het verwijderen van de collectie is mislukt', TOAST_TYPE.DANGER);
 		}
+	};
+
+	const renderRelatedCollections = () => {
+		if (relatedCollections && relatedCollections.length) {
+			return relatedCollections.map(relatedCollection => (
+				<Column size="3-6">
+					<MediaCard
+						title={relatedCollection.dc_title}
+						href={`/${RouteParts.Collection}/${relatedCollection.id}`}
+						category="collection"
+						orientation="horizontal"
+					>
+						<MediaCardThumbnail>
+							<Thumbnail
+								category="collection"
+								src={relatedCollection.thumbnail_path || undefined}
+							/>
+						</MediaCardThumbnail>
+						<MediaCardMetaData>
+							<MetaData category="collection">
+								{/*TODO resolve org id using graphql query*/}
+								<MetaDataItem label={relatedCollection.original_cp || ''} />
+							</MetaData>
+						</MediaCardMetaData>
+					</MediaCard>
+				</Column>
+			));
+		}
+		return null;
 	};
 
 	const renderCollection = (collection: Avo.Collection.Collection) => {
@@ -299,7 +346,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									<p className="c-body-1">
 										{collection.lom_classification && collection.lom_classification.length ? (
 											(collection.lom_classification || []).map((lomClassification: string) =>
-												generateSearchLinks(String(collection.id), 'domain', lomClassification)
+												generateSearchLinks(String(collection.id), 'subject', lomClassification)
 											)
 										) : (
 											<span className="u-d-block">-</span>
@@ -309,107 +356,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<h3 className="c-h3" style={{ width: '100%' }}>
-							Bekijk ook
-						</h3>
-						<Grid>
-							<Column size="3-6">
-								<Container size="small" mode="vertical">
-									<ul className="c-media-card-list">
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/${RouteParts.Collection}/${collection.id}`}
-												category="collection"
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category="collection"
-														src={collection.thumbnail_path || undefined}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category="collection">
-														{/*TODO resolve org id using graphql query*/}
-														<MetaDataItem label={collection.organisation_id || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/${RouteParts.Collection}/${collection.id}`}
-												category="collection"
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category="collection"
-														src={collection.thumbnail_path || undefined}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category="collection">
-														{/*TODO resolve org id using graphql query*/}
-														<MetaDataItem label={collection.organisation_id || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-									</ul>
-								</Container>
-							</Column>
-							<Column size="3-6">
-								<Container size="small" mode="vertical">
-									<ul className="c-media-card-list">
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/${RouteParts.Collection}/${collection.id}`}
-												category="collection"
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category="collection"
-														src={collection.thumbnail_path || undefined}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category="collection">
-														{/*TODO resolve org id using graphql query*/}
-														<MetaDataItem label={collection.organisation_id || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-										<li style={relatedItemStyle}>
-											<MediaCard
-												title="Organisatie van het politieke veld: Europa"
-												href={`/${RouteParts.Collection}/${collection.id}`}
-												category="collection"
-												orientation="horizontal"
-											>
-												<MediaCardThumbnail>
-													<Thumbnail
-														category="collection"
-														src={collection.thumbnail_path || undefined}
-													/>
-												</MediaCardThumbnail>
-												<MediaCardMetaData>
-													<MetaData category="collection">
-														{/*TODO resolve org id using graphql query*/}
-														<MetaDataItem label={collection.organisation_id || ''} />
-													</MetaData>
-												</MediaCardMetaData>
-											</MediaCard>
-										</li>
-									</ul>
-								</Container>
-							</Column>
-						</Grid>
+						<h3 className="c-h3">Bekijk ook</h3>
+						<Grid className="c-media-card-list">{renderRelatedCollections()}</Grid>
 					</Container>
 				</Container>
 				{isPublic !== null && (

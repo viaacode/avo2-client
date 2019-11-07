@@ -348,7 +348,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	 */
 	const getCopyTitleForCollection = async (prefix: string): Promise<string> => {
 		const collections = await CollectionService.getCollectionTitlesByUser();
-		const titles = collections.map((c: Partial<Avo.Collection.Collection>) => c.title);
+		const titles = collections.map(c => c.title);
 
 		let index = 0;
 		let candidateTitle: string;
@@ -575,9 +575,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 			} else {
 				// edit => update graphql
-				await updateAssignment(triggerAssignmentUpdate, assignment);
-				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				const updatedAssignment = await updateAssignment(triggerAssignmentUpdate, assignment);
+
+				if (updatedAssignment) {
+					setBothAssignments(assignment);
+					toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				}
 			}
 			setIsSaving(false);
 		} catch (err) {

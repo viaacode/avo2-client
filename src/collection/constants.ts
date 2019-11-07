@@ -15,3 +15,8 @@ export const COLLECTION_EDIT_TABS = [
 		icon: 'file-text' as IconName,
 	},
 ];
+
+export const STILL_DIMENSIONS = {
+	width: 177,
+	height: 100,
+};

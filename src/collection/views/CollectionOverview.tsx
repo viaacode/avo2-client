@@ -43,6 +43,8 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 
 	const openDeleteModal = (collectionId: number) => {
@@ -177,6 +179,18 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		}
 	};
 
+	// TODO: make shared function because also used in assignments
+	const handleColumnClick = (columnId: keyof Avo.Collection.Collection) => {
+		if (sortColumn === columnId) {
+			// Flip previous ordering
+			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+		} else {
+			// Set initial ordering for new column
+			setSortColumn(columnId);
+			setSortOrder('asc');
+		}
+	};
+
 	const renderCollections = (
 		collections: Avo.Collection.Collection[],
 		refetchCollections: () => void
@@ -186,7 +200,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				columns={[
 					{ id: 'thumbnail', label: '', col: '2' },
 					{ id: 'title', label: 'Titel', col: '6', sortable: true },
-					{ id: 'updatedAt', label: 'Laatst bewerkt', col: '3', sortable: true },
+					{ id: 'updated_at', label: 'Laatst bewerkt', col: '3', sortable: true },
 					{ id: 'inFolder', label: 'In map', col: '2' },
 					{ id: 'access', label: 'Toegang', col: '2' },
 					{ id: 'actions', label: '', col: '1' },
@@ -196,6 +210,9 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				renderCell={renderCell}
 				rowKey="id"
 				variant="styled"
+				onColumnClick={handleColumnClick as any}
+				sortColumn={sortColumn}
+				sortOrder={sortOrder}
 			/>
 			<Pagination
 				pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
@@ -217,7 +234,11 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	return (
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}
-			variables={{ owner_profile_id: getProfileId(), offset: page }}
+			variables={{
+				owner_profile_id: getProfileId(),
+				offset: page,
+				order: { [sortColumn]: sortOrder },
+			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
 			notFoundMessage="Er konden geen collecties worden gevonden"

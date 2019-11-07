@@ -38,6 +38,7 @@ const validateAssignment = (
 	const assignmentToSave = cloneDeep(assignment);
 	const errors: string[] = [];
 
+	// Validate obligatory fields
 	OBLIGATORY_PROPERTIES.forEach((prop: AssignmentProperty) => {
 		if (!(assignmentToSave as any)[prop.name]) {
 			errors.push(`Een ${prop.label} is verplicht`);
@@ -49,6 +50,14 @@ const validateAssignment = (
 
 	if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 		assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
+	}
+
+	// Validate if deadline_at is not in the past
+	if (
+		assignmentToSave.deadline_at &&
+		new Date(assignmentToSave.deadline_at) < new Date(Date.now())
+	) {
+		errors.push(`De deadline is reeds voorbij.`);
 	}
 
 	assignmentToSave.owner_profile_id = assignmentToSave.owner_profile_id || 'owner_profile_id';
@@ -83,7 +92,7 @@ export const updateAssignment = async (
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
-			toastService(validationErrors.join('<br/>'), TOAST_TYPE.DANGER);
+			toastService(validationErrors.join('<br />'), TOAST_TYPE.DANGER);
 			return null;
 		}
 
@@ -117,7 +126,7 @@ export const insertAssignment = async (
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
-			toastService(validationErrors.join('<br/>'), TOAST_TYPE.DANGER);
+			toastService(validationErrors.join('<br />'), TOAST_TYPE.DANGER);
 			return null;
 		}
 

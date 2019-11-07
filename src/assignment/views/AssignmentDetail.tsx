@@ -21,10 +21,10 @@ import {
 	DropdownContent,
 	Icon,
 	MenuContent,
+	Spacer,
 	TagList,
 	TagOption,
 	Toolbar,
-	ToolbarCenter,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
@@ -48,8 +48,8 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE,
 } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
-
 import { AssignmentLayout } from '../types';
+
 import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
@@ -379,7 +379,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 		);
 
 		return (
-			<div className="c-assigment-detail">
+			<div className="c-assignment-detail">
 				<div className="c-navbar" ref={navBarRef}>
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
@@ -388,17 +388,16 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 									<ToolbarItem>
 										{renderBackLink()}
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
+										<Spacer margin="top-small">
+											<Button
+												icon={isDescriptionCollapsed ? 'chevron-up' : 'chevron-down'}
+												label={isDescriptionCollapsed ? 'opdracht tonen' : 'opdracht verbergen'}
+												onClick={() => setDescriptionCollapsed(!isDescriptionCollapsed)}
+												size="small"
+											/>
+										</Spacer>
 									</ToolbarItem>
 								</ToolbarLeft>
-								<ToolbarCenter>
-									<div style={{ zIndex: 22 }}>
-										<Button
-											icon={isDescriptionCollapsed ? 'chevron-up' : 'chevron-down'}
-											label={isDescriptionCollapsed ? 'opdracht tonen' : 'opdracht verbergen'}
-											onClick={() => setDescriptionCollapsed(!isDescriptionCollapsed)}
-										/>
-									</div>
-								</ToolbarCenter>
 								<ToolbarRight>
 									<>
 										<ToolbarItem>
@@ -441,29 +440,32 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 							</Toolbar>
 						</Container>
 						{!isDescriptionCollapsed && (
-							<Container mode="horizontal">
-								<div
-									className="c-content"
-									dangerouslySetInnerHTML={{ __html: assignment.description }}
-								/>
-								{!!assignment.answer_url && (
-									<Box className="c-box--soft-white" condensed>
-										<p>Geef je antwoorden in op:</p>
-										<p>
-											<a href={assignment.answer_url}>{assignment.answer_url}</a>
-										</p>
-									</Box>
-								)}
-							</Container>
+							<Spacer margin="top">
+								<Container mode="horizontal">
+									<div
+										className="c-content"
+										dangerouslySetInnerHTML={{ __html: assignment.description }}
+									/>
+									{!!assignment.answer_url && (
+										<Box className="c-box--soft-white" condensed>
+											<p>Geef je antwoorden in op:</p>
+											<p>
+												<a href={assignment.answer_url}>{assignment.answer_url}</a>
+											</p>
+										</Box>
+									)}
+								</Container>
+							</Spacer>
 						)}
 					</Container>
 				</div>
 
-				<div style={{ height: `${navBarHeight}px` }}>{/*whitespace behind fixed navbar*/}</div>
-
-				<Container mode="vertical">
-					<Container mode="horizontal">{renderContent()}</Container>
-				</Container>
+				{/*whitespace behind fixed navbar*/}
+				<div style={{ paddingTop: `${navBarHeight}px` }}>
+					<Container mode="vertical">
+						<Container mode="horizontal">{renderContent()}</Container>
+					</Container>
+				</div>
 			</div>
 		);
 	};

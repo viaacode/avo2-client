@@ -255,6 +255,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 
 	async function onSaveCollection(refetchCollection: () => void) {
 		setIsSavingCollection(true);
+
 		if (currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
 				initialCollection,
@@ -265,6 +266,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				triggerCollectionFragmentUpdate,
 				refetchCollection
 			);
+
 			if (newCollection) {
 				setCurrentCollection(newCollection);
 				setInitialCollection(cloneDeep(newCollection));
@@ -282,12 +284,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				});
 			}
 		}
+
 		setIsSavingCollection(false);
 	}
 
-	const hasUnsavedChanged = () => {
-		return JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
-	};
+	const hasUnsavedChanged = () =>
+		JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
 
 	const handleShareCollectionModalClose = (collection?: Avo.Collection.Collection) => {
 		setIsShareModalOpen(false);
@@ -455,6 +457,24 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 						updateCollectionProperty={updateCollectionProperty}
 					/>
 				)}
+				<Container background="alt" mode="vertical">
+					<Container mode="horizontal">
+						<Toolbar autoHeight>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										<Button
+											type="primary"
+											label="Opslaan"
+											onClick={() => onSaveCollection(refetchCollection)}
+											disabled={isSavingCollection}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
+				</Container>
 				<ReorderCollectionModal
 					isOpen={isReorderModalOpen}
 					onClose={() => setIsReorderModalOpen(false)}

@@ -70,7 +70,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-					toastService(validationErrors.join('</br>'), TOAST_TYPE.DANGER);
+					toastService(validationErrors.join('<br />'), TOAST_TYPE.DANGER);
 					return;
 				}
 			}
