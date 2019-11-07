@@ -66,8 +66,6 @@ export enum AssignmentRetrieveError {
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResponse }) => {
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
-	const [isDescriptionCollapsed, setDescriptionCollapsed] = useState<boolean>(false);
-	const [navBarHeight, setNavBarHeight] = useState<number>(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
 	const [assigmentContent, setAssigmentContent] = useState<
 		Avo.Assignment.Content | null | undefined
@@ -78,34 +76,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 	const [triggerInsertAssignmentResponse] = useMutation(INSERT_ASSIGNMENT_RESPONSE);
 	const [triggerUpdateAssignmentResponse] = useMutation(UPDATE_ASSIGNMENT_RESPONSE);
 
-	const navBarRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
-
 	const isOwnerOfAssignment = (tempAssignment: Avo.Assignment.Assignment) => {
 		return getProfileId() === tempAssignment.owner_profile_id;
 	};
-
-	// Handle resize
-	const onResizeHandler = debounce(
-		() => {
-			if (navBarRef.current) {
-				const navBarHeight = navBarRef.current.getBoundingClientRect().height;
-				setNavBarHeight(navBarHeight);
-			} else {
-				setNavBarHeight(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
-			}
-		},
-		300,
-		{ leading: false, trailing: true }
-	);
-
-	const registerResizeHandler = () => {
-		window.addEventListener('resize', onResizeHandler);
-		onResizeHandler();
-
-		return window.removeEventListener('resize', onResizeHandler);
-	};
-
-	useEffect(registerResizeHandler, [isDescriptionCollapsed]);
 
 	/**
 	 * If the creation of the assignment response fails, we'll still continue with getting the assignment content
@@ -380,7 +353,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 
 		return (
 			<div className="c-assignment-detail">
-				<div className="c-navbar" ref={navBarRef}>
+				<div className="c-navbar">
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
 							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
@@ -388,14 +361,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 									<ToolbarItem>
 										{renderBackLink()}
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
-										<Spacer margin="top-small">
-											<Button
-												icon={isDescriptionCollapsed ? 'chevron-up' : 'chevron-down'}
-												label={isDescriptionCollapsed ? 'opdracht tonen' : 'opdracht verbergen'}
-												onClick={() => setDescriptionCollapsed(!isDescriptionCollapsed)}
-												size="small"
-											/>
-										</Spacer>
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>
@@ -439,33 +404,27 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 								</ToolbarRight>
 							</Toolbar>
 						</Container>
-						{!isDescriptionCollapsed && (
-							<Spacer margin="top">
-								<Container mode="horizontal">
-									<div
-										className="c-content"
-										dangerouslySetInnerHTML={{ __html: assignment.description }}
-									/>
-									{!!assignment.answer_url && (
-										<Box className="c-box--soft-white" condensed>
-											<p>Geef je antwoorden in op:</p>
-											<p>
-												<a href={assignment.answer_url}>{assignment.answer_url}</a>
-											</p>
-										</Box>
-									)}
-								</Container>
-							</Spacer>
-						)}
+						<Spacer margin="top">
+							<Container mode="horizontal">
+								<div
+									className="c-content"
+									dangerouslySetInnerHTML={{ __html: assignment.description }}
+								/>
+								{!!assignment.answer_url && (
+									<Box className="c-box--soft-white" condensed>
+										<p>Geef je antwoorden in op:</p>
+										<p>
+											<a href={assignment.answer_url}>{assignment.answer_url}</a>
+										</p>
+									</Box>
+								)}
+							</Container>
+						</Spacer>
 					</Container>
 				</div>
-
-				{/*whitespace behind fixed navbar*/}
-				<div style={{ paddingTop: `${navBarHeight}px` }}>
-					<Container mode="vertical">
-						<Container mode="horizontal">{renderContent()}</Container>
-					</Container>
-				</div>
+				<Container mode="vertical">
+					<Container mode="horizontal">{renderContent()}</Container>
+				</Container>
 			</div>
 		);
 	};
