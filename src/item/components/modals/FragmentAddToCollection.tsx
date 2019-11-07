@@ -31,7 +31,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import {
 	GET_COLLECTION_BY_ID,
-	GET_COLLECTION_TITLES_BY_OWNER,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../../../collection/graphql';

@@ -28,7 +28,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get, isNil, omit } from 'lodash-es';
+import { get, isNull } from 'lodash-es';
 
 import PermissionGuard from '../../authentication/components/PermissionGuard';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -53,7 +53,7 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { ShareCollectionModal } from '../components';
 import FragmentDetail from '../components/FragmentDetail';
-import { DELETE_COLLECTION, GET_COLLECTION_BY_ID, UPDATE_COLLECTION } from '../graphql';
+import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
 import { ContentTypeString } from '../types';
 
 import './CollectionDetail.scss';
