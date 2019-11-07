@@ -793,7 +793,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						</Container>
 					</Container>
 				</Navbar>
-				<Container mode="horizontal" size="small">
+				<Container mode="horizontal" size="small" className="c-assignment-edit">
 					<Container mode="vertical" size="large">
 						<Form>
 							<FormGroup required label="Titel">
