@@ -10,14 +10,17 @@ import {
 	Modal,
 	ModalBody,
 	ModalFooterRight,
+	Spacer,
 	Spinner,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
 import { getThumbnailsForCollection } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { STILL_DIMENSIONS } from '../../constants';
 
 interface CollectionStillsModalProps {
 	isOpen: boolean;
@@ -41,23 +44,22 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 		}
 
 		const fetchThumbnailImages = async () => {
-			// Only update thumbnails when modal is opened, not when closed
 			try {
 				setVideoStills(await getThumbnailsForCollection(collection));
 			} catch (err) {
-				toastService('Het ophalen van de video thumbnails is mislukt', TOAST_TYPE.DANGER);
 				console.error(err);
+				toastService('Het ophalen van de media thumbnails is mislukt.', TOAST_TYPE.DANGER);
 				setVideoStills([]);
 			}
 		};
 
-		fetchThumbnailImages().then(() => {});
-	}, [collection, isOpen]);
+		fetchThumbnailImages();
+	}, [isOpen, collection]);
 
 	const saveCoverImage = () => {
 		collection.thumbnail_path = selectedCoverImages[0];
 		onClose();
-		toastService('De cover afbeelding is ingesteld', TOAST_TYPE.SUCCESS);
+		toastService('De cover afbeelding is ingesteld.', TOAST_TYPE.SUCCESS);
 	};
 
 	return (
@@ -66,16 +68,16 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 			title="Stel een cover afbeelding in"
 			size="large"
 			onClose={onClose}
-			scrollable={true}
+			scrollable
 		>
 			<ModalBody>
-				<div className="u-spacer">
+				<Spacer>
 					<Form>
-						{videoStills === null ? (
+						{!videoStills ? (
 							<Flex center orientation="horizontal">
 								<Spinner size="large" />
 							</Flex>
-						) : videoStills.length === 0 ? (
+						) : !videoStills.length ? (
 							<Blankslate
 								body=""
 								icon="search"
@@ -84,28 +86,22 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 						) : (
 							<ImageGrid
 								images={videoStills}
-								allowSelect={true}
+								allowSelect
 								value={selectedCoverImages}
 								onChange={setSelectedCoverImages}
-								width={177}
-								height={100}
+								{...STILL_DIMENSIONS}
 							/>
 						)}
 					</Form>
-				</div>
+				</Spacer>
 			</ModalBody>
 			<ModalFooterRight>
 				<Toolbar spaced>
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button label="Annuleren" type="secondary" block={true} onClick={onClose} />
-								<Button
-									label="Opslaan"
-									type="primary"
-									block={true}
-									onClick={() => saveCoverImage()}
-								/>
+								<Button label="Annuleren" type="secondary" block onClick={onClose} />
+								<Button label="Opslaan" type="primary" block onClick={saveCoverImage} />
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

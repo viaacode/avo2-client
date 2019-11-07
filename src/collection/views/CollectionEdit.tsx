@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, eq, get, omit, without } from 'lodash-es';
+import { cloneDeep, eq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { Prompt, RouteComponentProps, withRouter } from 'react-router';
@@ -34,33 +34,30 @@ import InputModal from '../../shared/components/modals/InputModal';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
-import { ReorderCollectionModal, ShareCollectionModal } from '../components';
+import { /* ReorderCollectionModal, */ ShareCollectionModal } from '../components';
 import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
+import { COLLECTION_EDIT_TABS } from '../constants';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
 	GET_COLLECTION_BY_ID,
-	INSERT_COLLECTION_FRAGMENT,
+	INSERT_COLLECTION_FRAGMENTS,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../graphql';
-import { getValidationErrorForSave, getValidationErrorsForPublish } from '../helpers/validation';
+import { CollectionService } from '../service';
+import { Tab } from '../types';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
 
 interface CollectionEditProps extends RouteComponentProps {}
 
-let currentCollection: Avo.Collection.Collection | undefined;
-let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
-
 const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
-	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
+	// const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
@@ -68,31 +65,15 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 
-	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection | undefined>(
+	const [currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection | undefined>(
 		undefined
 	);
 
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
-	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
+	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
-
-	// Tab navigation
-	const tabs = [
-		{
-			id: 'inhoud',
-			label: 'Inhoud',
-			active: currentTab === 'inhoud',
-			icon: 'collection' as IconName,
-		},
-		{
-			id: 'metadata',
-			label: 'Metadata',
-			active: currentTab === 'metadata',
-			icon: 'file-text' as IconName,
-		},
-	];
 
 	const onUnload = (event: any) => {
 		if (hasUnsavedChanged()) {
@@ -209,7 +190,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			};
 			// Update the name in the initial collection
 			setInitialCollection(collectionWithNewName);
-			const cleanedCollection = cleanCollectionBeforeSave(collectionWithNewName);
+			const cleanedCollection = CollectionService.cleanCollectionBeforeSave(collectionWithNewName);
 
 			// Immediately store the new name, without the user having to click the save button twice
 			await triggerCollectionUpdate({
@@ -225,10 +206,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		}
 	};
 
-	const getFragments = (collection: Avo.Collection.Collection | null | undefined) => {
-		return get(collection, 'collection_fragments') || [];
-	};
-
 	// Swap position of two fragments within a collection
 	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
 		if (!currentCollection) {
@@ -241,7 +218,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			return;
 		}
 
-		const fragments = getFragments(currentCollection);
+		const fragments = CollectionService.getFragments(currentCollection);
 
 		const changeFragmentsPositions = (fragments: Avo.Collection.Fragment[], sign: number) => {
 			const fragment = fragments.find(
@@ -276,249 +253,39 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		});
 	};
 
-	const insertFragment = async (tempId: number, currentFragments: Avo.Collection.Fragment[]) => {
-		if (!currentCollection) {
-			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
-			return;
-		}
-
-		const tempFragment = currentFragments.find(
-			(fragment: Avo.Collection.Fragment) => fragment.id === tempId
-		);
-
-		if (!tempFragment) {
-			toastService(`Fragment om toe te voegen is niet gevonden (id: ${tempId})`);
-			return;
-		}
-
-		const fragmentToAdd: Avo.Collection.Fragment = { ...tempFragment };
-		const oldId = fragmentToAdd.id;
-
-		delete fragmentToAdd.id;
-		delete (fragmentToAdd as any).__typename;
-		// TODO remove type cast when next typings repo version is released (1.8.0)
-		delete (fragmentToAdd as any).item_meta;
-
-		const response = await triggerCollectionFragmentInsert({
-			variables: {
-				id: currentCollection.id,
-				fragment: fragmentToAdd,
-			},
-			update: ApolloCacheManager.clearCollectionCache,
-		});
-
-		const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
-
-		return {
-			newFragment,
-			oldId,
-		};
-	};
-
-	const getFragmentIdsFromCollection = (
-		collection: Avo.Collection.Collection | undefined
-	): number[] => {
-		return (get(collection, 'collection_fragments') || []).map(
-			(fragment: Avo.Collection.Fragment) => fragment.id
-		);
-	};
-
-	/**
-	 * Clean the collection of properties from other tables, properties that can't be saved
-	 */
-	const cleanCollectionBeforeSave = (
-		collection: Partial<Avo.Collection.Collection>
-	): Partial<Avo.Collection.Collection> => {
-		const propertiesToDelete = [
-			'collection_fragments',
-			'label_redactie',
-			'collection_permissions',
-			'__typename',
-			'type',
-			'profile',
-		];
-
-		return omit(collection, propertiesToDelete);
-	};
-
-	const getThumbnailPathForCollection = async (
-		collection: Partial<Avo.Collection.Collection>
-	): Promise<string | null> => {
-		try {
-			// TODO check if thumbnail was automatically selected from the first media fragment => need to update every save
-			// or if the thumbnail was selected by the user => need to update only if video is not available anymore
-			// This will need a new field in the database: thumbnail_type = 'auto' | 'chosen' | 'uploaded'
-			// TODO  || collection.thumbnail_type === 'auto'
-			if (!collection.thumbnail_path) {
-				return await getThumbnailForCollection(collection);
-			}
-			return collection.thumbnail_path;
-		} catch (err) {
-			console.error('Failed to get the thumbnail path for collection', err, { collection });
-			toastService(
-				<>
-					Het ophalen van de eerste video thumbnail is mislukt.
-					<br />
-					De collectie zal opgeslagen worden zonder thumbnail.
-				</>
-			);
-			return null;
-		}
-	};
-
 	async function onSaveCollection(refetchCollection: () => void) {
-		try {
-			if (!currentCollection) {
-				toastService(`De huidige collectie is niet gevonden`, TOAST_TYPE.DANGER);
-				return;
-			}
-			setIsSavingCollection(true);
-			// Validate collection before save
-			let validationErrors: string[];
-			if (currentCollection.is_public) {
-				validationErrors = getValidationErrorsForPublish(currentCollection);
-			} else {
-				validationErrors = getValidationErrorForSave(currentCollection);
-			}
+		setIsSavingCollection(true);
 
-			if (validationErrors.length) {
-				toastService(validationErrors.join('</br>'), TOAST_TYPE.DANGER);
-				setIsSavingCollection(false);
-				return;
-			}
-
-			let newCollection: Avo.Collection.Collection = cloneDeep(currentCollection);
-
-			// Not using lodash default value parameter since the value an be null and
-			// that doesn't default to the default value
-			// only undefined defaults to the default value
-			const initialFragmentIds: number[] = getFragmentIdsFromCollection(initialCollection);
-			const currentFragmentIds: number[] = getFragmentIdsFromCollection(currentCollection);
-			const newFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
-			const currentFragments: Avo.Collection.Fragment[] = get(
+		if (currentCollection) {
+			const newCollection = await CollectionService.updateCollection(
+				initialCollection,
 				currentCollection,
-				'collection_fragments',
-				[]
+				triggerCollectionUpdate,
+				triggerCollectionFragmentsInsert,
+				triggerCollectionFragmentDelete,
+				triggerCollectionFragmentUpdate,
+				refetchCollection
 			);
 
-			// Insert fragments that added to collection
-			const insertFragmentIds = without(newFragmentIds, ...initialFragmentIds);
-
-			// Delete fragments that were removed from collection
-			const deleteFragmentIds = without(initialFragmentIds, ...newFragmentIds);
-
-			// Update fragments that are neither inserted nor deleted
-			const updateFragmentIds = currentFragmentIds.filter((fragmentId: number) =>
-				initialFragmentIds.includes(fragmentId)
-			);
-
-			// Insert fragments
-			const insertPromises: Promise<any>[] = [];
-
-			insertFragmentIds.forEach(tempId => {
-				insertPromises.push(insertFragment(tempId, currentFragments));
-			});
-
-			// Delete fragments
-			const deletePromises: Promise<any>[] = [];
-
-			deleteFragmentIds.forEach((id: number) => {
-				deletePromises.push(
-					triggerCollectionFragmentDelete({
-						variables: { id },
-					})
-				);
-			});
-
-			// Update fragments
-			const updatePromises: Promise<any>[] = [];
-			updateFragmentIds.forEach((id: number) => {
-				let fragmentToUpdate: Avo.Collection.Fragment | undefined = getFragments(
-					currentCollection
-				).find((fragment: Avo.Collection.Fragment) => {
-					return Number(id) === fragment.id;
+			if (newCollection) {
+				setCurrentCollection(newCollection);
+				setInitialCollection(cloneDeep(newCollection));
+				toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
+				trackEvents({
+					event_object: {
+						type: 'collection',
+						identifier: String(newCollection.id),
+					},
+					event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+						newCollection.id
+					} bijgewerkt`,
+					name: 'edit',
+					category: 'item',
 				});
-
-				if (!fragmentToUpdate) {
-					toastService(`Kan het te updaten fragment niet vinden (id: ${id})`);
-					return;
-				}
-
-				fragmentToUpdate = cloneDeep(fragmentToUpdate);
-
-				delete (fragmentToUpdate as any).__typename;
-				// TODO remove type cast when next typings repo version is released (1.8.0)
-				delete (fragmentToUpdate as any).item_meta;
-
-				updatePromises.push(
-					triggerCollectionFragmentUpdate({
-						variables: {
-							id,
-							fragment: fragmentToUpdate,
-						},
-					})
-				);
-			});
-
-			// Make all crud requests in parallel
-			const crudPromises: Promise<any[]>[] = [
-				Promise.all(insertPromises),
-				Promise.all(deletePromises),
-				Promise.all(updatePromises),
-			];
-
-			const crudResponses = await Promise.all(crudPromises);
-
-			// Process new fragments responses
-			crudResponses[0].forEach((data: any) => {
-				const newFragments = [
-					...newCollection.collection_fragments.filter(
-						(fragment: Avo.Collection.Fragment) => fragment.id !== data.oldId
-					),
-					data.newFragment,
-				];
-				newCollection = {
-					...newCollection,
-					collection_fragment_ids: newFragments.map(fragment => fragment.id),
-					collection_fragments: newFragments,
-				};
-			});
-
-			// Determine new thumbnail path since videos could have changed order / been deleted
-			newCollection.thumbnail_path = await getThumbnailPathForCollection(newCollection);
-
-			// Trigger collection update
-			const cleanedCollection: Partial<Avo.Collection.Collection> = cleanCollectionBeforeSave(
-				newCollection
-			);
-			await triggerCollectionUpdate({
-				variables: {
-					id: cleanedCollection.id,
-					collection: cleanedCollection,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
-			setCurrentCollection(newCollection);
-			setInitialCollection(cloneDeep(newCollection));
-			setIsSavingCollection(false);
-			toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
-			trackEvents({
-				event_object: {
-					type: 'collection',
-					identifier: String(newCollection.id),
-				},
-				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
-					newCollection.id
-				} bijgewerkt`,
-				name: 'edit',
-				category: 'item',
-			});
-			// refetch collection:
-			refetchCollection();
-		} catch (err) {
-			console.error(err);
-			toastService('Opslaan mislukt', TOAST_TYPE.DANGER);
+			}
 		}
+
+		setIsSavingCollection(false);
 	}
 
 	const hasUnsavedChanged = () =>
@@ -526,6 +293,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 
 	const handleShareCollectionModalClose = (collection?: Avo.Collection.Collection) => {
 		setIsShareModalOpen(false);
+
 		// Update initial and current states, so that the 'hasUnsavedChanged' status is correct
 		if (collection) {
 			if (currentCollection) {
@@ -555,11 +323,16 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			setIsFirstRender(true);
 		}
 
+		const tabs: Tab[] = COLLECTION_EDIT_TABS.map((tab: Tab) => ({
+			...tab,
+			active: currentTab === tab.id,
+		}));
+
 		return currentCollection ? (
 			<>
 				<Prompt
 					when={hasUnsavedChanged()}
-					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
+					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u de pagina wil verlaten?"
 				/>
 				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">
@@ -614,12 +387,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 											onClick={onPreviewCollection}
 											disabled
 										/>
-										<Button
+										{/* <Button
 											type="secondary"
 											label="Herschik alle items"
 											onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 											disabled
-										/>
+										/> */}
 										<ControlledDropdown
 											isOpen={isOptionsMenuOpen}
 											menuWidth="fit-content"
@@ -684,15 +457,15 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 						updateCollectionProperty={updateCollectionProperty}
 					/>
 				)}
-				<ReorderCollectionModal
+				{/* <ReorderCollectionModal
 					isOpen={isReorderModalOpen}
 					onClose={() => setIsReorderModalOpen(false)}
-				/>
+				/> */}
 				<ShareCollectionModal
 					collection={currentCollection}
 					isOpen={isShareModalOpen}
 					onClose={handleShareCollectionModalClose}
-					updateCollectionProperty={updateCollectionProperty}
+					setIsPublic={(value: boolean) => updateCollectionProperty(value, 'is_public')}
 				/>
 				<DeleteObjectModal
 					title={`Ben je zeker dat de collectie "${currentCollection.title}" wil verwijderen?`}
