@@ -251,8 +251,7 @@ export const renderDropdownButton = (
 	removeFilter: (tagId: string | number, clickEvent: MouseEvent) => void
 ) => {
 	return (
-		<Button className="c-checkbox-dropdown-modal__trigger" type="secondary">
-			{/* TODO: add autoHeight to Button when types deploy */}
+		<Button autoHeight className="c-checkbox-dropdown-modal__trigger" type="secondary">
 			<div className="c-button__content">
 				<div className="c-button__label">{label}</div>
 				{!!selectedTags.length && (
