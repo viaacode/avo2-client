@@ -257,11 +257,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												<DropdownContent>
 													<MenuContent
 														menuItems={[
-															{
-																icon: 'play' as IconName,
-																id: 'play',
-																label: 'Alle items afspelen',
-															},
+															...(canEditCollection
+																? [
+																		{
+																			icon: 'edit' as IconName,
+																			id: 'edit',
+																			label: 'Bewerk collectie',
+																		},
+																  ]
+																: []),
+															// TODO DISABLED_FEATURE
+															// {
+															// 	icon: 'play' as IconName,
+															// 	id: 'play',
+															// 	label: 'Alle items afspelen',
+															// },
 															{
 																icon: 'clipboard' as IconName,
 																id: 'createAssignment',
@@ -337,8 +347,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 							<Column size="3-6">
 								<p className="u-text-bold">Ordering</p>
-								<p className="c-body-1">Deze collectie is een kopie van TODO add link</p>
-								<p className="c-body-1">Deze collectie is deel van een map: TODO add link</p>
+								{/* TODO: add links */}
+								<p className="c-body-1">Deze collectie is een kopie van:</p>
+								<p className="c-body-1">Deze collectie is deel van een map:</p>
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
