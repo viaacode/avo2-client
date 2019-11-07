@@ -330,8 +330,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									<p className="u-text-bold">Onderwijsniveau</p>
 									<p className="c-body-1">
 										{collection.lom_context && collection.lom_context.length ? (
-											(collection.lom_context || []).map((lomContext: string) =>
-												generateSearchLinks(String(collection.id), 'educationLevel', lomContext)
+											generateSearchLinks(
+												String(collection.id),
+												'educationLevel',
+												collection.lom_context
 											)
 										) : (
 											<span className="u-d-block">-</span>
@@ -356,8 +358,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									<p className="u-text-bold">Vakken</p>
 									<p className="c-body-1">
 										{collection.lom_classification && collection.lom_classification.length ? (
-											(collection.lom_classification || []).map((lomClassification: string) =>
-												generateSearchLinks(String(collection.id), 'subject', lomClassification)
+											generateSearchLinks(
+												String(collection.id),
+												'subject',
+												collection.lom_classification
 											)
 										) : (
 											<span className="u-d-block">-</span>
