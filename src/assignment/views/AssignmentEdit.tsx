@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 import {
 	Alert,
+	Box,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -37,16 +38,16 @@ import {
 	ToolbarRight,
 	WYSIWYG,
 } from '@viaa/avo2-components';
-import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
 import { connect } from 'react-redux';
+import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
-import { GET_COLLECTION_BY_ID } from '../../collection/graphql';
+import { CollectionService } from '../../collection/service';
 import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
 import { RouteParts } from '../../constants';
-import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
@@ -55,17 +56,25 @@ import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { dataService } from '../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
+import { AssignmentLayout } from '../types';
+
+import {
+	GET_COLLECTION_BY_ID,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENTS,
+} from '../../collection/graphql';
+import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../graphql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
-import { AssignmentLayout } from '../types';
 
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import './AssignmentEdit.scss';
+
+const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: RouteParts.Item,
@@ -132,6 +141,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
+	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
+	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	const setBothAssignments = (assignment: Partial<Avo.Assignment.Assignment>) => {
 		setCurrentAssignment(assignment);
@@ -286,7 +297,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					queryParams
 				);
 
-				const assignmentContentResponse = get(
+				const assignmentContentResponse: AssignmentContent = get(
 					response,
 					`data.${
 						CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
@@ -302,6 +313,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					});
 					return;
 				}
+
 				setAssignmentContent(assignmentContentResponse);
 				setBothAssignments({
 					...assignment,
@@ -323,6 +335,66 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 		initAssignmentData();
 	}, [loadingState, location, match.params, setLoadingState, assignmentContent]);
+
+	/**
+	 * Find name that isn't a duplicate of an existing name of a collection of this user
+	 * eg if these collections exist:
+	 * copy 1: test
+	 * copy 2: test
+	 * copy 4: test
+	 *
+	 * Then the algorithm will propose: copy 3: test
+	 * @param prefix
+	 */
+	const getCopyTitleForCollection = async (prefix: string): Promise<string> => {
+		const collections = await CollectionService.getCollectionTitlesByUser();
+		const titles = collections.map(c => c.title);
+
+		let index = 0;
+		let candidateTitle: string;
+		do {
+			index += 1;
+			candidateTitle = prefix.replace('%index%', String(index));
+		} while (titles.includes(candidateTitle));
+
+		return candidateTitle;
+	};
+
+	/**
+	 * Makes a copy of the collection where the current user is the owner and the collection is set to be non public
+	 * @param collection
+	 */
+	const copyCollectionToCurrentUser = async (
+		collection: Avo.Collection.Collection
+	): Promise<Avo.Collection.Collection | null> => {
+		try {
+			collection.owner_profile_id = getProfileId();
+			collection.is_public = false;
+			delete collection.id;
+			try {
+				collection.title = await getCopyTitleForCollection(ASSIGNMENT_COPY);
+			} catch (err) {
+				console.error('Failed to get good copy title for collection', err, { collection });
+				// Fallback to simple copy title
+				collection.title = `${ASSIGNMENT_COPY.replace(' %index%', '')}${collection.title}`;
+			}
+
+			return await CollectionService.insertCollection(
+				collection,
+				triggerCollectionInsert,
+				triggerCollectionFragmentsInsert
+			);
+		} catch (err) {
+			console.error('Failed to insert copy of a collection for current user', err, {
+				collection,
+			});
+			toastService(
+				'De collectie kon niet worden gekopieert om te gebruiken bij de nieuwe opdracht',
+				TOAST_TYPE.DANGER
+			);
+			return null;
+		}
+	};
 
 	const deleteCurrentAssignment = async () => {
 		try {
@@ -470,6 +542,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			setIsSaving(true);
 			if (pageType === 'create') {
+				// Copy content if it's a collection collection if not owned by logged in user
+				// so your assignment can work after the other user deletes his collection
+				if (
+					assignment.content_label === 'COLLECTIE' &&
+					(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId()
+				) {
+					const sourceCollection = assignmentContent as Avo.Collection.Collection;
+					const copy = await copyCollectionToCurrentUser(sourceCollection);
+					if (!copy) {
+						return; // Creating the copy failed, error has already been shown to the user
+					}
+					assignment.content_id = String(copy.id);
+				}
+
 				// create => insert into graphql
 				const newAssignment: Avo.Assignment.Assignment = {
 					...assignment,
@@ -489,9 +575,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 			} else {
 				// edit => update graphql
-				await updateAssignment(triggerAssignmentUpdate, assignment);
-				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				const updatedAssignment = await updateAssignment(triggerAssignmentUpdate, assignment);
+
+				if (updatedAssignment) {
+					setBothAssignments(assignment);
+					toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				}
 			}
 			setIsSaving(false);
 		} catch (err) {
@@ -551,6 +640,56 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					</Spacer>
 				</DropdownContent>
 			</Dropdown>
+		);
+	};
+
+	const renderContentLink = (assignmentContent: AssignmentContent) => {
+		const dutchLabel = (assignmentContent.type.label ||
+			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
+		const linkContent = (
+			<Box condensed>
+				<Flex orientation="vertical" center>
+					<Spacer margin="right">
+						<Thumbnail
+							className="m-content-thumbnail"
+							category={dutchContentLabelToEnglishLabel(dutchLabel)}
+							src={assignmentContent.thumbnail_path || undefined}
+						/>
+					</Spacer>
+					<FlexItem>
+						<div className="c-overline-plus-p">
+							<p className="c-overline">{dutchLabel}</p>
+							<p>{assignmentContent.title || assignmentContent.description}</p>
+						</div>
+					</FlexItem>
+				</Flex>
+			</Box>
+		);
+
+		if (
+			pageType === 'create' &&
+			currentAssignment.content_label === 'COLLECTIE' &&
+			getProfileId() !== (assignmentContent as Avo.Collection.Collection).owner_profile_id
+		) {
+			// During create we do not allow linking to the collection if you do not own the collection,
+			// since we still need to make a copy when the user clicks on "save assignment" button
+			return (
+				<div title="U kan pas doorklikken naar de collectie nadat u de opdracht hebt aangemaakt">
+					{linkContent}
+				</div>
+			);
+		}
+
+		return (
+			<Link
+				to={`/${
+					CONTENT_LABEL_TO_ROUTE_PARTS[
+						currentAssignment.content_label as Avo.Assignment.ContentLabel
+					]
+				}/${currentAssignment.content_id}`}
+			>
+				{linkContent}
+			</Link>
 		);
 	};
 
@@ -670,42 +809,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							/>
 						</FormGroup>
 						{assignmentContent && currentAssignment.content_label && (
-							<FormGroup label="Inhoud">
-								<Link
-									to={`/${
-										CONTENT_LABEL_TO_ROUTE_PARTS[
-											currentAssignment.content_label as Avo.Assignment.ContentLabel
-										]
-									}/${currentAssignment.content_id}`}
-								>
-									<div className="c-box c-box--padding-small">
-										<Flex orientation="vertical" center>
-											<Spacer margin="right">
-												<Thumbnail
-													className="m-content-thumbnail"
-													category={
-														dutchContentLabelToEnglishLabel((currentAssignment.content_label ===
-														'ITEM'
-															? assignmentContent.type.label
-															: currentAssignment.content_label) as DutchContentType) as ContentType
-													}
-													src={assignmentContent.thumbnail_path || undefined}
-												/>
-											</Spacer>
-											<FlexItem>
-												<div className="c-overline-plus-p">
-													<p className="c-overline">
-														{currentAssignment.content_label === 'ITEM'
-															? assignmentContent.type.label
-															: currentAssignment.content_label}
-													</p>
-													<p>{assignmentContent.title || assignmentContent.description}</p>
-												</div>
-											</FlexItem>
-										</Flex>
-									</div>
-								</Link>
-							</FormGroup>
+							<FormGroup label="Inhoud">{renderContentLink(assignmentContent)}</FormGroup>
 						)}
 						<FormGroup label="Weergave" labelFor="only_player">
 							<RadioButtonGroup>
@@ -728,6 +832,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									}
 								/>
 							</RadioButtonGroup>
+						</FormGroup>
+						<FormGroup label="Klas of groep" required>
+							<TextInput
+								id="class_room"
+								value={currentAssignment.class_room || ''}
+								onChange={classRoom => setAssignmentProp('class_room', classRoom)}
+							/>
 						</FormGroup>
 						<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
 						<FormGroup label="Antwoorden op" labelFor="answer_url">

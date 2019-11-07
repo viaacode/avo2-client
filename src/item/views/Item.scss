@@ -1,25 +1,29 @@
-.c-button-toolbar .c-button + .c-button {
-	margin-left: 0;
-}
+.c-item-view__main {
+	.c-button-toolbar {
+		.c-button + .c-button {
+			margin-left: 0;
+		}
 
-.c-button-toolbar .c-button {
-	margin-bottom: 0.8rem;
+		.c-button {
+			margin-bottom: 0.8rem;
 
-	&:not(:last-child) {
-		margin-right: 0.8rem;
+			&:not(:last-child) {
+				margin-right: 0.8rem;
+			}
+		}
 	}
-}
 
-@media (max-width: 600px) {
-	.c-video-player {
-		margin-left: -1.2rem;
-		width: calc(100% + 2.4rem);
+	@media (max-width: 600px) {
+		.c-video-player {
+			margin-left: -1.2rem;
+			width: calc(100% + 2.4rem);
+		}
 	}
-}
 
-@media (min-width: 300px) {
-	.c-table [class^='o-grid-col'] {
-		flex-shrink: 0;
-		flex-basis: 0;
+	@media (min-width: 300px) {
+		.c-table [class^='o-grid-col'] {
+			flex-shrink: 0;
+			flex-basis: 0;
+		}
 	}
 }

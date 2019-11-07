@@ -12,6 +12,7 @@ import {
 	BlockVideoTitleTextButtonProps,
 } from '@viaa/avo2-components';
 import { ContentType } from '@viaa/avo2-components/dist/types';
+import { IconName } from '../shared/types/types';
 
 export enum ContentBlockType {
 	'Image',
@@ -73,4 +74,10 @@ export function dutchContentLabelToEnglishLabel(label: DutchContentType): Conten
 		zoek: 'search',
 		zoekopdracht: 'searchquery',
 	}[label] as ContentType;
+}
+
+export interface Tab {
+	id: string;
+	label: string;
+	icon: IconName;
 }
