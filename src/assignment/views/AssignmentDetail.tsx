@@ -31,11 +31,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import NotFound from '../../404/views/NotFound';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
 import FragmentDetail from '../../collection/components/FragmentDetail';
 import { RouteParts } from '../../constants';
+import ErrorView from '../../error/views/ErrorView';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
@@ -328,7 +328,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				);
 			default:
 				return (
-					<NotFound
+					<ErrorView
 						icon="alert-triangle"
 						message={`Onverwacht opdracht inhoud type: "${assignment.content_label}"`}
 					/>

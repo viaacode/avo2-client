@@ -6,7 +6,7 @@ import { Dispatch } from 'redux';
 import { get } from 'lodash-es';
 
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import NotFound from '../../404/views/NotFound';
+import ErrorView from '../../error/views/ErrorView';
 import { RouteParts } from '../../constants';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
@@ -96,9 +96,9 @@ const Login: FunctionComponent<LoginProps> = ({
 	if (loginStateError || hasRecentLoginAttempt()) {
 		return (
 			<>
-				<NotFound message="Het inloggen is mislukt" icon="lock">
+				<ErrorView message="Het inloggen is mislukt" icon="lock">
 					<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
-				</NotFound>
+				</ErrorView>
 			</>
 		);
 	}

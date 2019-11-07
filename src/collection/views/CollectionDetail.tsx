@@ -257,7 +257,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												<DropdownContent>
 													<MenuContent
 														menuItems={[
-															...(canEditCollection
+															...(canEditPermissions
 																? [
 																		{
 																			icon: 'edit' as IconName,
