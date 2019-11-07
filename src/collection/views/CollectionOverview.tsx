@@ -21,9 +21,9 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
-import NotFound from '../../404/views/NotFound';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { RouteParts } from '../../constants';
+import ErrorView from '../../error/views/ErrorView';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
@@ -224,7 +224,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	);
 
 	const renderEmptyFallback = () => (
-		<NotFound icon="collection" message="Je hebt nog geen collecties aangemaakt.">
+		<ErrorView icon="collection" message="Je hebt nog geen collecties aangemaakt.">
 			<p>
 				Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
 				voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
@@ -239,7 +239,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 					onClick={onClickCreate}
 				/>
 			</Spacer>
-		</NotFound>
+		</ErrorView>
 	);
 
 	const renderCollections = (
