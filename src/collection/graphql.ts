@@ -152,22 +152,15 @@ export const DELETE_COLLECTION_FRAGMENT = gql`
 	}
 `;
 
-export const INSERT_COLLECTION_FRAGMENT = gql`
-	mutation insertCollectionFragment($id: Int!, $fragment: app_collection_fragments_insert_input!) {
-		insert_app_collection_fragments(objects: [$fragment]) {
+export const INSERT_COLLECTION_FRAGMENTS = gql`
+	mutation insertCollectionFragment(
+		$id: Int!
+		$fragments: [app_collection_fragments_insert_input!]!
+	) {
+		insert_app_collection_fragments(objects: $fragments) {
 			affected_rows
 			returning {
-				use_custom_fields
-				updated_at
-				start_oc
-				position
 				id
-				external_id
-				end_oc
-				custom_title
-				custom_description
-				created_at
-				collection_id
 			}
 		}
 	}
