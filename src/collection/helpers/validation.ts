@@ -15,7 +15,7 @@ const VALIDATION_RULES_FOR_SAVE: ValidationRule<Avo.Collection.Collection>[] = [
 	{
 		error: 'De collectie beschrijving is te lang',
 		isValid: (collection: Avo.Collection.Collection) =>
-			!collection.description || collection.description.length < MAX_SEARCH_DESCRIPTION_LENGTH,
+			!collection.description || collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
 	},
 ];
 
