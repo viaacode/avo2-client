@@ -29,7 +29,8 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			key={`search-result-${result.id}`}
 			type={dutchContentLabelToEnglishLabel(result.administrative_type)}
 			date={formatDate(result.dcterms_issued)}
-			tags={[{ label: 'Redactiekeuze', id: 'redactiekeuze' }, { label: 'Partner', id: 'partner' }]}
+			// TODO DISABLED_FEATURE
+			// tags={[{ label: 'Redactiekeuze', id: 'redactiekeuze' }, { label: 'Partner', id: 'partner' }]}
 			viewCount={412}
 			bookmarkCount={85}
 			description={result.dcterms_abstract}
