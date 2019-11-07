@@ -1,13 +1,16 @@
-.c-button.c-smartschool-button.c-button--primary {
+@mixin background-smartschool {
 	background: url("/images/smartschool-login.png");
 	background-size: cover;
-  width: 293px;
+}
+
+.c-button.c-smartschool-button.c-button--primary {
+	@include background-smartschool;
+	width: 273px;
 	height: 36px;
 	border: none;
 
 	&:hover {
-		background: url("/images/smartschool-login.png");
-		background-size: cover;
+		@include background-smartschool;
 		opacity: 0.9;
 	}
 
