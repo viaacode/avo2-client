@@ -1,3 +1,4 @@
+import { clamp } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 
 import {
@@ -73,6 +74,11 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const onSaveCut = () => {
+		setFragmentStart(toSeconds(fragmentStartString, true) as number);
+		setFragmentEnd(toSeconds(fragmentEndString, true) as number);
+		setFragmentStartString(formatDurationHoursMinutesSeconds(fragmentStart));
+		setFragmentEndString(formatDurationHoursMinutesSeconds(fragmentEnd));
+
 		const errors = getValidationErrors();
 
 		if (errors && errors.length) {
@@ -125,15 +131,24 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	 * Checks in the text input fields have a correct value
 	 */
 	const parseTimes = () => {
-		const errors = getValidationErrors();
-		if (errors && errors.length) {
-			return;
+		// Limit start end and times between 0 and fragment duration
+		let start = toSeconds(fragmentStartString, true) as number;
+		let end = toSeconds(fragmentEndString, true) as number;
+		const duration =
+			(fragment.item_meta &&
+				fragment.item_meta.duration &&
+				toSeconds(fragment.item_meta.duration)) ||
+			0;
+		if (start) {
+			start = clamp(start, 0, duration);
+			setFragmentStart(start);
+			setFragmentStartString(formatDurationHoursMinutesSeconds(start));
 		}
-
-		setFragmentStart(toSeconds(fragmentStartString, true) as number);
-		setFragmentEnd(toSeconds(fragmentEndString, true) as number);
-		setFragmentStartString(formatDurationHoursMinutesSeconds(fragmentStart));
-		setFragmentEndString(formatDurationHoursMinutesSeconds(fragmentEnd));
+		if (end) {
+			end = clamp(end, 0, duration);
+			setFragmentEnd(end);
+			setFragmentEndString(formatDurationHoursMinutesSeconds(end));
+		}
 	};
 
 	const onUpdateMultiRangeValues = (values: number[]) => {
@@ -144,7 +159,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
-		if (evt.keyCode || evt.which === 13) {
+		if (evt.keyCode === 13 || evt.which === 13) {
 			parseTimes();
 		}
 	};
