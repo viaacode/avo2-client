@@ -21,7 +21,6 @@ import { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
 import { RouteParts } from '../../constants';
-import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
 import { getAvatarProps } from '../../shared/helpers/formatters/avatar';
@@ -29,7 +28,8 @@ import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/forma
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import './CollectionOverview.scss';

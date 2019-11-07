@@ -6,10 +6,10 @@ import { capitalize, get } from 'lodash-es';
 import {
 	CheckboxDropdownModal,
 	CheckboxOption,
-} from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { DateRangeDropdown } from '../../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { LANGUAGES } from '../../../shared/helpers/languages';
-import { SearchFilterControlsProps } from './types';
+} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { LANGUAGES } from '../../shared/helpers/languages';
+import { SearchFilterControlsProps } from '../search.types';
 
 const languageCodeToLabel = (code: string): string => {
 	return capitalize(LANGUAGES.nl[code]) || code;

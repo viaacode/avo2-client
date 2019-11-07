@@ -1,4 +1,4 @@
-class Auth {
+class Authentication {
 	private profile: { id: number; role: string } | null = null;
 	private expiresAt: number | null = null;
 
@@ -21,7 +21,7 @@ class Auth {
 	}
 }
 
-const authClient = new Auth();
+const authClient = new Authentication();
 authClient.signIn(); // TODO replace with actual dispatch action to backend to get user info
 
 export default authClient;

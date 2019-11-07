@@ -50,9 +50,9 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
+import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
+import { ContentTypeString } from '../collection.types';
 import FragmentDetail from '../components/FragmentDetail';
-import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
-import { ContentTypeString } from '../types';
 
 import './CollectionDetail.scss';
 

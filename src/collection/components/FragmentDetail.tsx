@@ -31,8 +31,8 @@ import { getEnv } from '../../shared/helpers/env';
 import { generateContentLinkString } from '../../shared/helpers/generateLink';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { isMediaFragment } from '../helpers';
-import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
+import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../collection.types';
+import { isMediaFragment } from '../helpers/is-media-fragment';
 
 interface FragmentDetailProps {
 	collectionFragments: Avo.Collection.Fragment[];

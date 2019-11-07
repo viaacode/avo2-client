@@ -6,10 +6,10 @@ import { startCase } from 'lodash-es';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
-import { GET_MENUS } from '../../graphql';
+import { GET_MENUS } from '../../admin.gql';
+import { ADMIN_PATH } from '../../admin.routes';
+import { MenuItem } from '../../admin.types';
 import { AdminLayout } from '../../layouts';
-import { ADMIN_PATH } from '../../routes';
-import { MenuItem } from '../../types';
 
 const MENUS_TABLE_COLS = [
 	{ id: 'placement', label: 'Naam' },
@@ -22,7 +22,6 @@ type MenuTableCols = 'placement' | 'description' | 'actions';
 interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
-	// Render
 	const renderCell = (rowData: Partial<MenuItem>, columnId: MenuTableCols) => {
 		switch (columnId) {
 			case 'placement':

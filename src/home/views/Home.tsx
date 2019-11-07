@@ -1,12 +1,9 @@
+import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
-
-import { find, get, isNil } from 'lodash-es';
-
-import './Home.scss';
 
 import {
 	Button,
@@ -22,7 +19,8 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { dutchContentLabelToEnglishLabel } from '../../collection/types';
+
+import { dutchContentLabelToEnglishLabel } from '../../collection/collection.types';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import {
@@ -31,6 +29,8 @@ import {
 } from '../../shared/helpers/generateLink';
 import { useDebounce } from '../../shared/helpers/useDebounce';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+
+import './Home.scss';
 
 interface HomeProps extends RouteComponentProps {
 	searchResults: Avo.Search.Search | null;

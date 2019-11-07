@@ -41,7 +41,7 @@ import {
 	ContentTypeNumber,
 	ContentTypeString,
 	dutchContentLabelToEnglishLabel,
-} from '../../collection/types';
+} from '../../collection/collection.types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {

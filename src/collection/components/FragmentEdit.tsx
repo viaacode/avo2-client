@@ -29,7 +29,7 @@ import { getEnv } from '../../shared/helpers/env';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-import { isMediaFragment } from '../helpers';
+import { isMediaFragment } from '../helpers/is-media-fragment';
 import FragmentAdd from './FragmentAdd';
 import CutFragmentModal, { FragmentPropertyUpdateInfo } from './modals/CutFragmentModal';
 

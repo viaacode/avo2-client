@@ -34,7 +34,7 @@ import {
 	GET_COLLECTION_TITLES_BY_OWNER,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENT,
-} from '../../../collection/graphql';
+} from '../../../collection/collection.gql';
 import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';

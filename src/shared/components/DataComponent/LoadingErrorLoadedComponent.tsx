@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactElement } from 'react';
 
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import NotFound from '../../../404/views/NotFound';
-import { LoadingState } from '../../../assignment/helpers';
+import { LoadingState } from '../../../assignment/assignment.constants';
 
 export interface LoadingErrorLoadedComponentProps {
 	loadingState: LoadingState;

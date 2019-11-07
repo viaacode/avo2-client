@@ -41,13 +41,13 @@ import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
+import { getAssignmentContent, LoadingState } from '../assignment.constants';
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE,
-} from '../graphql';
-import { getAssignmentContent, LoadingState } from '../helpers';
-import { AssignmentLayout } from '../types';
+} from '../assignment.gql';
+import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
@@ -350,10 +350,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				className="c-return"
 				to={
 					isOwner
-						? `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assignment.id}/${
+						? `/${RouteParts.Workspace}/${RouteParts.Assignments}/${assignment.id}/${
 								RouteParts.Edit
 						  }`
-						: `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`
+						: `/${RouteParts.Workspace}/${RouteParts.Assignments}`
 				}
 			>
 				<Icon type="arrows" name="chevron-left" />

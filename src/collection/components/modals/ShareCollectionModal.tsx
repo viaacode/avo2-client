@@ -21,7 +21,7 @@ import { getProfileName } from '../../../authentication/helpers/get-profile-info
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { UPDATE_COLLECTION } from '../../graphql';
+import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../helpers/validation';
 
 interface ShareCollectionModalProps {

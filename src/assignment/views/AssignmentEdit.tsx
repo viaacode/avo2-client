@@ -43,8 +43,11 @@ import { Avo } from '@viaa/avo2-types';
 import { connect } from 'react-redux';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
-import { GET_COLLECTION_BY_ID } from '../../collection/graphql';
-import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
+import { GET_COLLECTION_BY_ID } from '../../collection/collection.gql';
+import {
+	dutchContentLabelToEnglishLabel,
+	DutchContentType,
+} from '../../collection/collection.types';
 import { RouteParts } from '../../constants';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
@@ -60,9 +63,9 @@ import {
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
-} from '../graphql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
-import { AssignmentLayout } from '../types';
+} from '../assignment.gql';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import { AssignmentLayout } from '../assignment.types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import './AssignmentEdit.scss';
@@ -331,7 +334,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
-			history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`);
+			history.push(`/${RouteParts.Workspace}/${RouteParts.Assignments}`);
 			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
 		} catch (err) {
 			console.error(err);
@@ -408,7 +411,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return; // assignment was not valid
 			}
 			history.push(
-				`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assigment.id}/${RouteParts.Edit}`
+				`/${RouteParts.Workspace}/${RouteParts.Assignments}/${assigment.id}/${RouteParts.Edit}`
 			);
 			toastService(
 				'De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat',
@@ -482,7 +485,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					trackAddObjectToAssignment(insertedAssignment);
 					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
 					history.push(
-						`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
+						`/${RouteParts.Workspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
 							RouteParts.Edit
 						}`
 					);
@@ -564,7 +567,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								<ToolbarItem grow>
 									<Link
 										className="c-return"
-										to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
+										to={`/${RouteParts.Workspace}/${RouteParts.Assignments}`}
 									>
 										<Icon name="chevron-left" size="small" type="arrows" />
 										Mijn opdrachten

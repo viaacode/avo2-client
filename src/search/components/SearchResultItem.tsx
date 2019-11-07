@@ -9,13 +9,10 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 
-import { dutchContentLabelToEnglishLabel } from '../../../collection/types';
-import { formatDate } from '../../../shared/helpers/formatters/date';
-import {
-	generateContentLinkString,
-	generateSearchLink,
-} from '../../../shared/helpers/generateLink';
-import { SearchResultItemProps } from './types';
+import { dutchContentLabelToEnglishLabel } from '../../collection/collection.types';
+import { formatDate } from '../../shared/helpers/formatters/date';
+import { generateContentLinkString, generateSearchLink } from '../../shared/helpers/generateLink';
+import { SearchResultItemProps } from '../search.types';
 
 const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	handleBookmarkToggle,

@@ -15,8 +15,8 @@ import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInp
 import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../collection.gql';
 import CollectionStillsModal from '../components/modals/CollectionStillsModal';
-import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
 import { getValidationFeedbackForShortDescription } from './CollectionEdit';
 
 interface CollectionEditMetaDataProps {

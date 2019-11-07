@@ -11,11 +11,11 @@ import { DataQueryComponent } from '../../../shared/components/DataComponent/Dat
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../../graphql';
+import { GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
+import { ADMIN_PATH } from '../../admin.routes';
+import { MenuItem } from '../../admin.types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
-import { ADMIN_PATH } from '../../routes';
 import { setMenuItems } from '../../store/actions';
-import { MenuItem } from '../../types';
 
 import './MenuDetail.scss';
 
@@ -29,7 +29,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match, setMen
 	const [initialMenuItems, setInitialMenuItems] = useState<MenuItem[]>([]);
 	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
-	const [updateMenuItem] = useMutation(UPDATE_MENU_ITEM_BY_ID);
+	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
 
 	const hasInitialData = useRef<boolean>(false);
 	const timeout = useRef<NodeJS.Timeout | null>(null);
@@ -68,7 +68,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match, setMen
 		const promises: Promise<any>[] = [];
 		menuItems.forEach(menuItem => {
 			promises.push(
-				updateMenuItem({
+				triggerMenuItemUpdate({
 					variables: {
 						id: menuItem.id,
 						menuItem: {

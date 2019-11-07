@@ -1,4 +1,4 @@
-import { MenuItem } from '../types';
+import { MenuItem } from '../admin.types';
 import { MenuActionTypes } from './types';
 
 export const setMenuItems = (menuItems: MenuItem[]) => ({

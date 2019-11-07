@@ -20,12 +20,12 @@ import { ApolloCacheManager } from '../../../shared/services/data-service';
 import { fetchMenuItemById } from '../../../shared/services/menu-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { AppState } from '../../../store';
+import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
+import { ADMIN_PATH } from '../../admin.routes';
+import { MenuItem } from '../../admin.types';
 import { ActionsBar } from '../../components';
-import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../graphql';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
-import { ADMIN_PATH } from '../../routes';
 import { selectMenuItems } from '../../store/selectors';
-import { MenuItem } from '../../types';
 
 interface MenuEditForm {
 	icon: IconName | '';
@@ -51,8 +51,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
-	const [insertMenuItem] = useMutation(INSERT_MENU_ITEM);
-	const [updateMenuItem] = useMutation(UPDATE_MENU_ITEM_BY_ID);
+	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
+	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
 
 	useEffect(() => {
 		const menuItemId = match.params.id;
@@ -115,7 +115,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 		};
 
 		if (pageType === 'create') {
-			insertMenuItem({
+			triggerMenuItemInsert({
 				variables: {
 					menuItem: {
 						...menuItem,
@@ -128,7 +128,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 				.then(() => handleSucces('Het navigatie item is succesvol aangemaakt'))
 				.catch(err => handleError('Het aanmaken van het navigatie item is mislukt', err));
 		} else {
-			updateMenuItem({
+			triggerMenuItemUpdate({
 				variables: {
 					id,
 					menuItem: {

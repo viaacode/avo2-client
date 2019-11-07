@@ -4,7 +4,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { GET_COLLECTION_BY_ID } from '../collection/graphql';
+import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
 import { GET_ITEM_BY_ID } from '../item/item.gql';
 import { dataService } from '../shared/services/data-service';
 

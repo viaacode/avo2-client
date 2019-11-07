@@ -37,8 +37,6 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-import { ReorderCollectionModal, ShareCollectionModal } from '../components';
-import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -46,7 +44,9 @@ import {
 	INSERT_COLLECTION_FRAGMENT,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
-} from '../graphql';
+} from '../collection.gql';
+import { ReorderCollectionModal, ShareCollectionModal } from '../components';
+import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from '../helpers/validation';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
@@ -156,7 +156,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				category: 'item',
 			});
 
-			props.history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`);
+			props.history.push(`/${RouteParts.Workspace}/${RouteParts.Collections}`);
 		} catch (err) {
 			console.error(err);
 			toastService('Het verwijderen van de collectie is mislukt');
