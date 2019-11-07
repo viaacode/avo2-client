@@ -14,12 +14,15 @@ import {
 	MetaData,
 	MetaDataItem,
 	Pagination,
+	Spacer,
 	Table,
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
+import NotFound from '../../404/views/NotFound';
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { RouteParts } from '../../constants';
 import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
@@ -31,7 +34,6 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
 
-import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import './CollectionOverview.scss';
 
 interface CollectionsProps extends RouteComponentProps {
@@ -179,6 +181,8 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		}
 	};
 
+	const onClickCreate = () => history.push(`/${RouteParts.Search}`);
+
 	// TODO: make shared function because also used in assignments
 	const handleColumnClick = (columnId: keyof Avo.Collection.Collection) => {
 		if (sortColumn === columnId) {
@@ -191,10 +195,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		}
 	};
 
-	const renderCollections = (
-		collections: Avo.Collection.Collection[],
-		refetchCollections: () => void
-	) => (
+	const renderTable = (collections: Avo.Collection.Collection[]) => (
 		<>
 			<Table
 				columns={[
@@ -219,7 +220,34 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				currentPage={page}
 				onPageChange={setPage}
 			/>
+		</>
+	);
 
+	const renderEmptyFallback = () => (
+		<NotFound icon="collection" message="Je hebt nog geen collecties aangemaakt.">
+			<p>
+				Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
+				voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
+				gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen die
+				je dan hier terugvindt.
+			</p>
+			<Spacer margin="top">
+				<Button
+					type="primary"
+					icon="add"
+					label="Maak je eerste collectie"
+					onClick={onClickCreate}
+				/>
+			</Spacer>
+		</NotFound>
+	);
+
+	const renderCollections = (
+		collections: Avo.Collection.Collection[],
+		refetchCollections: () => void
+	) => (
+		<>
+			{collections.length ? renderTable(collections) : renderEmptyFallback()}
 			<DeleteObjectModal
 				title="Verwijder collectie?"
 				body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
@@ -230,7 +258,6 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		</>
 	);
 
-	// TODO get actual owner id from ldap user + map to old drupal userid
 	return (
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}

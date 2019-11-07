@@ -35,7 +35,6 @@ import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
 import { /* ReorderCollectionModal, */ ShareCollectionModal } from '../components';
 import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
 import { COLLECTION_EDIT_TABS } from '../constants';

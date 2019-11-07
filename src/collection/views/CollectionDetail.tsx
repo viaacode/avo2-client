@@ -172,7 +172,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			get(loginState, 'userInfo.profile', null)
 		);
 
-		const canEditPermissions = {
+		const canEditCollection = {
 			permissions: [
 				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
 				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
@@ -232,7 +232,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 												ariaLabel="Bladwijzer"
 											/>
 											<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
-											<PermissionGuard {...canEditPermissions}>
+											<PermissionGuard {...canEditCollection}>
 												<Button
 													type="secondary"
 													label="Delen"
@@ -304,7 +304,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 													/>
 												</DropdownContent>
 											</ControlledDropdown>
-											<PermissionGuard {...canEditPermissions}>
+											<PermissionGuard {...canEditCollection}>
 												<Spacer margin="left-small">
 													<Button type="primary" icon="edit" label="Bewerken" onClick={onEdit} />
 												</Spacer>
