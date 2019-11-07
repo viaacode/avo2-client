@@ -207,7 +207,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				switch (graphqlError) {
 					case AssignmentRetrieveError.DELETED:
 						errorObj = {
-							error: 'De opdracht werdt verwijderd',
+							error: 'De opdracht werd verwijderd',
 							icon: 'delete' as IconName,
 						};
 						break;
