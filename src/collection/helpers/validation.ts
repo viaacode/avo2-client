@@ -74,41 +74,7 @@ const VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: ValidationRule<
 		},
 	},
 	{
-		error: 'De starttijd moet tussen de begintijd en eindtijd van het fragment liggen',
-		isValid: (collectionFragment: Avo.Collection.Fragment) => {
-			if (isNil(collectionFragment.item_meta)) {
-				throw new Error('fragment item meta is null');
-			}
-			const duration = toSeconds(collectionFragment.item_meta.duration);
-			if (isNil(duration)) {
-				throw new Error('fragment item meta duration is null');
-			}
-			return (
-				!collectionFragment.start_oc ||
-				(collectionFragment.item_meta && collectionFragment.start_oc <= duration)
-			);
-		},
-	},
-	{
-		error: (collectionFragment: Avo.Collection.Fragment) =>
-			`De eindtijd moet tussen de begintijd (00:00:00) en eindtijd (${collectionFragment.item_meta &&
-				collectionFragment.item_meta.duration}) van het fragment liggen`,
-		isValid: (collectionFragment: Avo.Collection.Fragment) => {
-			if (isNil(collectionFragment.item_meta)) {
-				throw new Error('fragment item meta is null');
-			}
-			const duration = toSeconds(collectionFragment.item_meta.duration);
-			if (isNil(duration)) {
-				throw new Error('fragment item meta duration is null');
-			}
-			return (
-				isNil(collectionFragment.end_oc) ||
-				(collectionFragment.item_meta && collectionFragment.end_oc <= duration)
-			);
-		},
-	},
-	{
-		error: 'De eindtijd moet groter zijn dan de starttijd',
+		error: 'De starttijd moet voor de eindtijd vallen',
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return (
 				!collectionFragment.start_oc ||
