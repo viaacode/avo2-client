@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 import {
 	Alert,
+	Box,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -646,7 +647,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		const dutchLabel = (assignmentContent.type.label ||
 			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
 		const linkContent = (
-			<div className="c-box c-box--padding-small">
+			<Box condensed>
 				<Flex orientation="vertical" center>
 					<Spacer margin="right">
 						<Thumbnail
@@ -662,7 +663,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						</div>
 					</FlexItem>
 				</Flex>
-			</div>
+			</Box>
 		);
 
 		if (
@@ -678,6 +679,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				</div>
 			);
 		}
+
 		return (
 			<Link
 				to={`/${

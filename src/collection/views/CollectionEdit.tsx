@@ -35,9 +35,9 @@ import { renderAvatar } from '../../shared/helpers/formatters/avatar';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
 import { ReorderCollectionModal, ShareCollectionModal } from '../components';
 import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
+import { COLLECTION_EDIT_TABS } from '../constants';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -47,6 +47,7 @@ import {
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../graphql';
 import { CollectionService } from '../service';
+import { Tab } from '../types';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
 
@@ -73,22 +74,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
-
-	// Tab navigation
-	const tabs = [
-		{
-			id: 'inhoud',
-			label: 'Inhoud',
-			active: currentTab === 'inhoud',
-			icon: 'collection' as IconName,
-		},
-		{
-			id: 'metadata',
-			label: 'Metadata',
-			active: currentTab === 'metadata',
-			icon: 'file-text' as IconName,
-		},
-	];
 
 	const onUnload = (event: any) => {
 		if (hasUnsavedChanged()) {
@@ -308,6 +293,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 
 	const handleShareCollectionModalClose = (collection?: Avo.Collection.Collection) => {
 		setIsShareModalOpen(false);
+
 		// Update initial and current states, so that the 'hasUnsavedChanged' status is correct
 		if (collection) {
 			if (currentCollection) {
@@ -337,11 +323,16 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			setIsFirstRender(true);
 		}
 
+		const tabs: Tab[] = COLLECTION_EDIT_TABS.map((tab: Tab) => ({
+			...tab,
+			active: currentTab === tab.id,
+		}));
+
 		return currentCollection ? (
 			<>
 				<Prompt
 					when={hasUnsavedChanged()}
-					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u weg wilt?"
+					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u de pagina wil verlaten?"
 				/>
 				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">
@@ -492,7 +483,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					collection={currentCollection}
 					isOpen={isShareModalOpen}
 					onClose={handleShareCollectionModalClose}
-					updateCollectionProperty={updateCollectionProperty}
+					setIsPublic={(value: boolean) => updateCollectionProperty(value, 'is_public')}
 				/>
 				<DeleteObjectModal
 					title={`Ben je zeker dat de collectie "${currentCollection.title}" wil verwijderen?`}
