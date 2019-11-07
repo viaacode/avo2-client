@@ -732,6 +732,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								/>
 							</RadioButtonGroup>
 						</FormGroup>
+						<FormGroup label="Klas of groep" required>
+							<TextInput
+								id="class_room"
+								value={currentAssignment.class_room || ''}
+								onChange={classRoom => setAssignmentProp('class_room', classRoom)}
+							/>
+						</FormGroup>
 						<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
 						<FormGroup label="Antwoorden op" labelFor="answer_url">
 							<TextInput
