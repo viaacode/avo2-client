@@ -457,6 +457,24 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 						updateCollectionProperty={updateCollectionProperty}
 					/>
 				)}
+				<Container background="alt" mode="vertical">
+					<Container mode="horizontal">
+						<Toolbar autoHeight>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										<Button
+											type="primary"
+											label="Opslaan"
+											onClick={() => onSaveCollection(refetchCollection)}
+											disabled={isSavingCollection}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
+				</Container>
 				{/* <ReorderCollectionModal
 					isOpen={isReorderModalOpen}
 					onClose={() => setIsReorderModalOpen(false)}

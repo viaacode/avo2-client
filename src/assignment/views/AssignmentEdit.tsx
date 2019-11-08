@@ -920,6 +920,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						</Form>
 					</Container>
 				</Container>
+				<Container background="alt" mode="vertical">
+					<Container mode="horizontal">
+						<Toolbar autoHeight>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										<Button
+											type="primary"
+											label="Opslaan"
+											onClick={() => saveAssignment(currentAssignment)}
+											disabled={isSaving}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</Container>
+				</Container>
 
 				<DeleteObjectModal
 					title={`Ben je zeker dat de opdracht "${currentAssignment.title}" wil verwijderen?`}
