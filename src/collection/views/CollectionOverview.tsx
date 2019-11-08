@@ -263,7 +263,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 			query={GET_COLLECTIONS_BY_OWNER}
 			variables={{
 				owner_profile_id: getProfileId(),
-				offset: page,
+				offset: page * ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
 			}}
 			resultPath="app_collections"
