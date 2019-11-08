@@ -43,6 +43,8 @@ import { fetchPlayerTicket } from '../../../shared/services/player-ticket-servic
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { CollectionService } from '../../../collection/service';
+import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 import './FragmentAddToCollection.scss';
 
 interface FragmentAddToCollectionProps {
@@ -107,31 +109,37 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		}
 	};
 
+	const getFragment = (
+		collection: Partial<Avo.Collection.Collection>
+	): Partial<Avo.Collection.Fragment> => {
+		const hasCut = fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
+
+		return {
+			use_custom_fields: false,
+			start_oc: hasCut ? fragmentStartTime : null,
+			position: (collection.collection_fragments || []).length,
+			external_id: externalId,
+			end_oc: hasCut ? fragmentEndTime : null,
+			custom_title: null,
+			custom_description: null,
+			collection_id: collection.id,
+			item_meta: itemMetaData,
+		};
+	};
+
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {
 		// Disable "Toepassen" button
 		setIsProcessing(true);
 
 		try {
-			const hasCut =
-				fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
-
+			const fragment = getFragment(collection);
+			delete fragment.item_meta;
 			const response: void | ExecutionResult<
 				Avo.Collection.Fragment
 			> = await triggerCollectionFragmentsInsert({
 				variables: {
 					id: collection.id,
-					fragments: [
-						{
-							use_custom_fields: false,
-							start_oc: hasCut ? fragmentStartTime : null,
-							position: (collection.collection_fragments || []).length,
-							external_id: externalId,
-							end_oc: hasCut ? fragmentEndTime : null,
-							custom_title: null,
-							custom_description: null,
-							collection_id: collection.id,
-						},
-					],
+					fragments: [fragment],
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
@@ -173,11 +181,21 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 			// Create new collection with one fragment in it
 			newCollection = {
 				title: newCollectionTitle,
-				thumbnail_path: '/images/100x100.svg', // TODO get video stills of fragment and set first frame as cover
+				thumbnail_path: null,
 				is_public: false,
 				owner_profile_id: getProfileId(),
 				type_id: 3,
 			};
+			try {
+				newCollection.thumbnail_path = await getThumbnailForCollection({
+					thumbnail_path: undefined,
+					collection_fragments: [getFragment(newCollection) as Avo.Collection.Fragment],
+				});
+			} catch (err) {
+				console.error('Failed to find cover image for new collection', err, {
+					collectionFragments: [getFragment(newCollection) as Avo.Collection.Fragment],
+				});
+			}
 
 			const response: void | ExecutionResult<
 				Avo.Collection.Collection
