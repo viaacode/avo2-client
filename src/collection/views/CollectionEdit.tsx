@@ -198,7 +198,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					id: cleanedCollection.id,
 					collection: cleanedCollection,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			console.error(err);
