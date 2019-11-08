@@ -44,7 +44,12 @@ import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { SearchFilterControls, SearchResults } from '../components';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
-import { SearchFilterFieldValues, SearchFilterMultiOptions, SearchProps, SortOrder } from './types';
+import {
+	SearchFilterFieldValues,
+	SearchFilterMultiOptions,
+	SearchProps,
+	SortOrder,
+} from '../types';
 
 const ITEMS_PER_PAGE = 10;
 

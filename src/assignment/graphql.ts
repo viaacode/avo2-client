@@ -64,16 +64,52 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 			owner_profile_id
 			created_at
     }
-	count: app_assignments_aggregate(where: { owner_profile_id: { _eq: $owner_profile_id }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}) {
-		aggregate {
-			count
+		count: app_assignments_aggregate(where: { owner_profile_id: { _eq: $owner_profile_id }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}) {
+			aggregate {
+				count
+			}
 		}
-	}
+  }
+`;
+
+export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
+	query getAssignmentsByResponseOwnerId($owner_profile_id: String!, $archived: Boolean = false, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}, $order: [app_assignments_order_by!] = {deadline_at: desc}, $filter: [app_assignments_bool_exp]) {
+		app_assignment_responses(where: {owner_profile_ids: {_has_key: $owner_profile_id}, assignment: {is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}}, limit: $limit, offset: $offset) {
+			assignment {
+				assignment_assignment_tags {
+					assignment_tag {
+						color_enum_value
+						color_override
+						enum_color {
+							label
+						}
+						id
+					}
+				}
+				assignment_responses {
+					id
+				}
+				assignment_type
+				class_room
+				deadline_at
+				id
+				is_archived
+				is_deleted
+				title
+				owner_profile_id
+				created_at
+			}
+		}
+		count: app_assignments_aggregate(where: {assignment_responses: {owner_profile_ids: {_has_key: $owner_profile_id}}, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}) {
+			aggregate {
+				count
+			}
+		}
   }
 `;
 
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
-	query getAssignmentWithResponse($assignmentId: Int!, $studentUuid: [String!]) {
+	query getAssignmentWithResponse($assignmentId: Int!, $studentUuid: String!) {
 		assignments: app_assignments(
 			where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false }, is_archived: { _eq: false } }
 		) {
@@ -87,7 +123,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					id
 				}
 			}
-			assignment_responses(where: { owner_profile_ids: { _has_keys_any: $studentUuid } }) {
+			assignment_responses(where: { owner_profile_ids: { _has_key: $studentUuid } }) {
 				id
 				created_at
 				submitted_at

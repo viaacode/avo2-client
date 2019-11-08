@@ -164,20 +164,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
 
-		const canDeleteCollection = PermissionService.hasPermissions(
-			[
-				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
-			],
-			get(loginState, 'userInfo.profile', null)
-		);
+		const canDeleteCollection = PermissionService.hasPermissions([
+			{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
+			{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
+		]);
 
 		const canEditCollection = {
 			permissions: [
 				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
 				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
 			],
-			profile: get(loginState, 'userInfo.profile', null),
 		};
 
 		const onEdit = () => {

@@ -46,11 +46,19 @@ import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../graphql';
 import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
 import { AssignmentColumn } from '../types';
+import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import PermissionGuard from '../../authentication/components/PermissionGuard';
+import {
+	PermissionGuardFail,
+	PermissionGuardPass,
+} from '../../authentication/components/PermissionGuard.slots';
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -432,6 +440,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
+	const canEditAssignments = false;
+	// PermissionService.hasPermissions([
+	// 	{ permissionName: PERMISSIONS.EDIT_OWN_ASSIGNMENTS },
+	// 	{ permissionName: PERMISSIONS.EDIT_ALL_ASSIGNMENTS },
+	// ]);
+
 	return (
 		<Container mode="vertical" size="small">
 			<Container mode="horizontal">
@@ -465,21 +479,21 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					</ToolbarRight>
 				</Toolbar>
 
-				{get(loginState, 'userInfo.profile.id') && (
-					<DataQueryComponent
-						query={GET_ASSIGNMENTS_BY_OWNER_ID}
-						variables={{
-							owner_profile_id: get(loginState, 'userInfo.profile.id'),
-							archived: activeView === 'archived_assignments',
-							order: { [sortColumn]: sortOrder },
-							offset: page * ITEMS_PER_PAGE,
-							filter: getFilterObject(),
-						}}
-						renderData={renderAssignmentsTable}
-						resultPath=""
-						ignoreNotFound
-					/>
-				)}
+				<DataQueryComponent
+					query={
+						canEditAssignments ? GET_ASSIGNMENTS_BY_OWNER_ID : GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID
+					}
+					variables={{
+						owner_profile_id: getProfileId(),
+						archived: activeView === 'archived_assignments',
+						order: { [sortColumn]: sortOrder },
+						offset: page * ITEMS_PER_PAGE,
+						filter: getFilterObject(),
+					}}
+					renderData={renderAssignmentsTable}
+					resultPath=""
+					ignoreNotFound
+				/>
 			</Container>
 		</Container>
 	);

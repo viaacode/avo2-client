@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { SearchFilterFieldValues, SearchFilterMultiOptions } from '../../views/types';
+import { SearchFilterFieldValues, SearchFilterMultiOptions } from '../../types';
 
 export interface SearchFilterControlsProps {
 	formState: Avo.Search.Filters;
