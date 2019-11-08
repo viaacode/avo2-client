@@ -96,7 +96,7 @@ export const updateAssignment = async (
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
-			toastService(validationErrors.join('<br />'), TOAST_TYPE.DANGER);
+			toastService(validationErrors, TOAST_TYPE.DANGER);
 			return null;
 		}
 
@@ -130,7 +130,7 @@ export const insertAssignment = async (
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
-			toastService(validationErrors.join('<br />'), TOAST_TYPE.DANGER);
+			toastService(validationErrors, TOAST_TYPE.DANGER);
 			return null;
 		}
 

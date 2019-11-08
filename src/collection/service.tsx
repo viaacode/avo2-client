@@ -85,7 +85,7 @@ export class CollectionService {
 			}
 
 			if (validationErrors.length) {
-				toastService(validationErrors.join('</br>'), TOAST_TYPE.DANGER);
+				toastService(validationErrors, TOAST_TYPE.DANGER);
 				return null;
 			}
 
@@ -358,11 +358,11 @@ export class CollectionService {
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
 			toastService(
-				<>
-					Het ophalen van de eerste video thumbnail is mislukt.
-					<br />
-					De collectie zal opgeslagen worden zonder thumbnail.
-				</>
+				[
+					'Het ophalen van de eerste video thumbnail is mislukt.',
+					'De collectie zal opgeslagen worden zonder thumbnail.',
+				],
+				TOAST_TYPE.DANGER
 			);
 			return null;
 		}

@@ -82,22 +82,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const errors = getValidationErrors();
 
 		if (errors && errors.length) {
-			toastService(
-				<>
-					{errors.map(error => (
-						<>
-							{error}
-							{errors.length > 1 ? (
-								<>
-									<br />
-									<br />
-								</>
-							) : null}
-						</>
-					))}
-				</>,
-				TOAST_TYPE.DANGER
-			);
+			toastService(errors, TOAST_TYPE.DANGER);
 
 			return;
 		}
