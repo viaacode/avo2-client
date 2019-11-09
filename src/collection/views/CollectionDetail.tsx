@@ -72,10 +72,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
+	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
 	useEffect(() => {
 		trackEvents({
@@ -88,11 +88,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			category: 'item',
 		});
 
-		if (isNull(relatedCollections)) {
+		if (!relatedCollections) {
 			getRelatedItems(collectionId, 'collections', 4)
-				.then(relatedCollections => {
-					setRelatedCollections(relatedCollections);
-				})
+				.then(relatedCollections => setRelatedCollections(relatedCollections))
 				.catch(err => {
 					console.error('Failed to get related items', err, {
 						collectionId,
@@ -170,23 +168,25 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			const category = toEnglishContentType(CONTENT_TYPE);
 
 			return (
-				<Column size="3-6">
-					<MediaCard
-						title={dc_title}
-						href={`/${RouteParts.Collection}/${id}`}
-						category={category}
-						orientation="horizontal"
-					>
-						<MediaCardThumbnail>
-							<Thumbnail category={category} src={thumbnail_path} />
-						</MediaCardThumbnail>
-						<MediaCardMetaData>
-							<MetaData category={category}>
-								<MetaDataItem label={original_cp} />
-							</MetaData>
-						</MediaCardMetaData>
-					</MediaCard>
-				</Column>
+				<Grid className="c-media-card-list">
+					<Column size="3-6">
+						<MediaCard
+							title={dc_title}
+							href={`/${RouteParts.Collection}/${id}`}
+							category={category}
+							orientation="horizontal"
+						>
+							<MediaCardThumbnail>
+								<Thumbnail category={category} src={thumbnail_path} />
+							</MediaCardThumbnail>
+							<MediaCardMetaData>
+								<MetaData category={category}>
+									<MetaDataItem label={original_cp} />
+								</MetaData>
+							</MediaCardMetaData>
+						</MediaCard>
+					</Column>
+				</Grid>
 			);
 		});
 	};
@@ -318,9 +318,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						</Grid>
 						<hr className="c-hr" />
 						<h3 className="c-h3">Bekijk ook</h3>
-						<Grid className="c-media-card-list">
-							{renderRelatedCollections(relatedCollections)}
-						</Grid>
+						{renderRelatedCollections(relatedCollections)}
 					</Container>
 				</Container>
 				{isPublic !== null && (
