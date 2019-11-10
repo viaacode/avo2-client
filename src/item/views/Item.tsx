@@ -26,11 +26,15 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentType } from '@viaa/avo2-components/dist/types';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { ContentTypeNumber, ContentTypeString, toEnglishContentType } from '../../collection/types';
+import {
+	ContentTypeNumber,
+	ContentTypeString,
+	toEnglishContentType,
+} from '../../collection/collection.types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
@@ -44,6 +48,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
+
 import ItemVideoDescription from '../components/ItemVideoDescription';
 import FragmentAddToCollection from '../components/modals/FragmentAddToCollection';
 import { GET_ITEM_BY_ID } from '../item.gql';
@@ -206,10 +211,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 									<div className="u-mq-switch-main-nav-authentication">
 										<MetaData category={englishContentType}>
 											{/* TODO link meta data to actual data */}
-											<MetaDataItem label={String(188)} icon="eye" />
-											<MetaDataItem label={String(370)} icon="bookmark" />
+											<MetaDataItem label="0" icon="eye" />
+											<MetaDataItem label="0" icon="bookmark" />
 											{itemMetaData.type.id === ContentTypeNumber.collection && (
-												<MetaDataItem label={String(12)} icon="collection" />
+												<MetaDataItem label="0" icon="collection" />
 											)}
 										</MetaData>
 									</div>

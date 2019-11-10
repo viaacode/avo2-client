@@ -9,12 +9,13 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 
-import { toEnglishContentType } from '../../../collection/types';
+import { toEnglishContentType } from '../../../collection/collection.types';
 import { formatDate } from '../../../shared/helpers/formatters/date';
 import {
 	generateContentLinkString,
 	generateSearchLink,
 } from '../../../shared/helpers/generateLink';
+
 import { SearchResultItemProps } from './types';
 
 const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({

@@ -24,16 +24,17 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { getEnv } from '../../shared/helpers/env';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
-import { isMediaFragment } from '../helpers';
-import FragmentAdd from './FragmentAdd';
-import CutFragmentModal, { FragmentPropertyUpdateInfo } from './modals/CutFragmentModal';
+import ControlledDropdown from '../../../shared/components/ControlledDropdown/ControlledDropdown';
+import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
+import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
+import { getEnv } from '../../../shared/helpers/env';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { IconName } from '../../../shared/types/types';
+
+import { CutFragmentModal, FragmentAdd } from '../';
+import { isMediaFragment } from '../../collection.helpers';
+import { FragmentPropertyUpdateInfo } from '../../collection.types';
 
 interface FragmentEditProps extends RouteComponentProps {
 	index: number;

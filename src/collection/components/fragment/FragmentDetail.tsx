@@ -1,3 +1,4 @@
+import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
 import {
@@ -26,13 +27,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { get, orderBy } from 'lodash-es';
-import { getEnv } from '../../shared/helpers/env';
-import { generateContentLinkString } from '../../shared/helpers/generateLink';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { isMediaFragment } from '../helpers';
-import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../types';
+import { getEnv } from '../../../shared/helpers/env';
+import { generateContentLinkString } from '../../../shared/helpers/generateLink';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+
+import { isMediaFragment } from '../../collection.helpers';
+import { ContentBlockInfo, ContentBlockType, ContentTypeString } from '../../collection.types';
 
 interface FragmentDetailProps {
 	collectionFragments: Avo.Collection.Fragment[];

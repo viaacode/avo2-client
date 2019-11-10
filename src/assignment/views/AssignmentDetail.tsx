@@ -1,14 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { cloneDeep, debounce, eq, get, isNil, omit, set } from 'lodash-es';
-import React, {
-	createRef,
-	FunctionComponent,
-	ReactElement,
-	RefObject,
-	useEffect,
-	useState,
-} from 'react';
+import React, { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -33,7 +26,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
-import FragmentDetail from '../../collection/components/FragmentDetail';
+// TODO: Move FragmentDetail to shared components
+import { FragmentDetail } from '../../collection/components';
 import { RouteParts } from '../../constants';
 import ErrorView from '../../error/views/ErrorView';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
@@ -411,7 +405,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 									dangerouslySetInnerHTML={{ __html: assignment.description }}
 								/>
 								{!!assignment.answer_url && (
-									<Box className="c-box--soft-white" condensed>
+									<Box backgroundColor="soft-white" condensed>
 										<p>Geef je antwoorden in op:</p>
 										<p>
 											<a href={assignment.answer_url}>{assignment.answer_url}</a>

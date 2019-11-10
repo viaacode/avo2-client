@@ -20,3 +20,5 @@ export const STILL_DIMENSIONS = {
 	width: 177,
 	height: 100,
 };
+
+export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;

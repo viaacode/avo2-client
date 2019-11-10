@@ -29,22 +29,21 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
-} from '../../../collection/graphql';
+} from '../../../collection/collection.gql';
 import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
-import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { CollectionService } from '../../../collection/service';
-import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 import './FragmentAddToCollection.scss';
 
 interface FragmentAddToCollectionProps {

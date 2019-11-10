@@ -21,18 +21,19 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
-import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { RouteParts } from '../../constants';
-import ErrorView from '../../error/views/ErrorView';
-import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import { getAvatarProps } from '../../shared/helpers/formatters/avatar';
-import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
-import { ApolloCacheManager } from '../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
-import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
+import { getProfileId } from '../../../authentication/helpers/get-profile-info';
+import { RouteParts } from '../../../constants';
+import ErrorView from '../../../error/views/ErrorView';
+import { ITEMS_PER_PAGE } from '../../../my-workspace/constants';
+import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
+import { getAvatarProps } from '../../../shared/helpers/formatters/avatar';
+import { formatDate, formatTimestamp, fromNow } from '../../../shared/helpers/formatters/date';
+import { ApolloCacheManager } from '../../../shared/services/data-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { IconName } from '../../../shared/types/types';
+
+import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../../collection.gql';
 
 import './CollectionOverview.scss';
 

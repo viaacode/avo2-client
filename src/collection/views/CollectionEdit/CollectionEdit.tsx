@@ -23,23 +23,20 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { RouteParts } from '../../constants';
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../shared/components/modals/InputModal';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
-import { ApolloCacheManager } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import {
-	// TODO: DISABLED FEATURE - ReorderCollectionModal,
-	ShareCollectionModal,
-} from '../components';
-import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
-import { COLLECTION_EDIT_TABS } from '../constants';
+import { getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { RouteParts } from '../../../constants';
+import ControlledDropdown from '../../../shared/components/ControlledDropdown/ControlledDropdown';
+import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
+import InputModal from '../../../shared/components/modals/InputModal';
+import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
+import { renderAvatar } from '../../../shared/helpers/formatters/avatar';
+import { ApolloCacheManager } from '../../../shared/services/data-service';
+import { trackEvents } from '../../../shared/services/event-logging-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+
+import { CollectionEditContent, CollectionEditMetaData } from '../';
+import { COLLECTION_EDIT_TABS } from '../../collection.const';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -47,11 +44,13 @@ import {
 	INSERT_COLLECTION_FRAGMENTS,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
-} from '../graphql';
-import { CollectionService } from '../service';
-import { Tab } from '../types';
-import CollectionEditContent from './CollectionEditContent';
-import CollectionEditMetaData from './CollectionEditMetaData';
+} from '../../collection.gql';
+import { CollectionService } from '../../collection.service';
+import { FragmentPropertyUpdateInfo, Tab } from '../../collection.types';
+import {
+	// TODO: DISABLED FEATURE - ReorderCollectionModal,
+	ShareCollectionModal,
+} from '../../components';
 
 interface CollectionEditProps extends RouteComponentProps {}
 
@@ -337,7 +336,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		refetchCollection: () => void
 	) => {
 		if (!currentCollection) {
-			console.log('RESET');
 			setCurrentCollection(collection);
 			setInitialCollection(cloneDeep(collection));
 			return null;

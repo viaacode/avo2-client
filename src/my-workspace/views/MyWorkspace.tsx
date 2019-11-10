@@ -20,10 +20,11 @@ import { Avo } from '@viaa/avo2-types';
 
 import AssignmentOverview from '../../assignment/views/AssignmentOverview';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import CollectionOverview from '../../collection/views/CollectionOverview';
+import { CollectionOverview } from '../../collection/views';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+
 import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
 import { TabViewMap } from '../types';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';

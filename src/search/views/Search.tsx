@@ -248,9 +248,8 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 		setCurrentPage(pageIndex);
 	};
 
-	const handleBookmarkToggle = (id: string, active: boolean) => {
-		// TODO handle search result bookmark button toggle
-	};
+	// TODO: FEATURE - handle search result bookmark button toggle
+	const handleBookmarkToggle = (id: string, active: boolean) => {};
 
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {

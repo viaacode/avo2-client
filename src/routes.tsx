@@ -4,7 +4,7 @@ import { Switch } from 'react-router';
 import { renderAdminRoutes } from './admin/routes';
 import { renderAssignmentRoutes } from './assignment/routes';
 import { renderAuthenticationRoutes } from './authentication/routes';
-import { renderCollectionRoutes } from './collection/routes';
+import { renderCollectionRoutes } from './collection/collection.routes';
 import { renderDiscoverRoutes } from './discover/routes';
 import { renderErrorRoutes } from './error/routes';
 import { renderHomeRoutes } from './home/routes';

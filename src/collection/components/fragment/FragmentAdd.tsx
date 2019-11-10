@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentBlockType } from '../types';
+import { ContentBlockType } from '../../collection.types';
 
 const COLLECTION_CONTENT_BLOCKS = ['RichText'];
 

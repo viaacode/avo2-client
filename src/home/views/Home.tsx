@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { toEnglishContentType } from '../../collection/types';
+import { toEnglishContentType } from '../../collection/collection.types';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import {

@@ -4,7 +4,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { GET_COLLECTION_BY_ID } from '../collection/graphql';
+import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
 import { GET_ITEM_BY_ID } from '../item/item.gql';
 import { dataService } from '../shared/services/data-service';
 
@@ -20,7 +20,7 @@ const CONTENT_LABEL_TO_QUERY: {
 		resultPath: 'app_item_meta[0]',
 	},
 	ZOEKOPDRACHT: {
-		// TODO implement search query saving and usage
+		// TODO: DISABLED FEATURE - search query saving and usage
 		// query: GET_SEARCH_QUERY_BY_ID,
 		// resultPath: 'app_item_meta[0]',
 	} as any,

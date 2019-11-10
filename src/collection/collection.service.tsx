@@ -1,6 +1,5 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, get, isNil, omit, without } from 'lodash-es';
-import React from 'react';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -8,7 +7,8 @@ import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
-import { GET_COLLECTION_TITLES_BY_OWNER } from './graphql';
+
+import { GET_COLLECTION_TITLES_BY_OWNER } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './helpers/validation';
 
 export class CollectionService {

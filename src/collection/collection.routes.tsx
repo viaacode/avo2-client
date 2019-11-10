@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 
 import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';
-import CollectionDetail from './views/CollectionDetail';
-import CollectionEdit from './views/CollectionEdit';
+
+import { CollectionDetail, CollectionEdit } from './views';
 
 export const renderCollectionRoutes = (): ReactNode[] => [
 	<SecuredRoute

@@ -4,6 +4,7 @@ import { DocumentNode } from 'graphql';
 import { cloneDeep, get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -40,12 +41,11 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
-import { connect } from 'react-redux';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
-import { CollectionService } from '../../collection/service';
-import { DutchContentType, toEnglishContentType } from '../../collection/types';
+import { CollectionService } from '../../collection/collection.service';
+import { DutchContentType, toEnglishContentType } from '../../collection/collection.types';
 import { RouteParts } from '../../constants';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
@@ -55,6 +55,7 @@ import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { dataService } from '../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+
 import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
 import { AssignmentLayout } from '../types';
 
@@ -62,7 +63,7 @@ import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/graphql';
+} from '../../collection/collection.gql';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DELETE_ASSIGNMENT,

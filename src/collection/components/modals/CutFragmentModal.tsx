@@ -21,13 +21,9 @@ import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/forma
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { getValidationErrorsForStartAndEnd } from '../../helpers/validation';
 
-export interface FragmentPropertyUpdateInfo {
-	value: string | number | boolean | null;
-	fieldName: keyof Avo.Collection.Fragment;
-	fragmentId: number;
-}
+import { FragmentPropertyUpdateInfo } from '../../collection.types';
+import { getValidationErrorsForStartAndEnd } from '../../helpers/validation';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;

@@ -1,4 +1,4 @@
-import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../constants';
+import { MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
 
 export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
 	return fragmentInfo.external_id && fragmentInfo.external_id !== '-1';

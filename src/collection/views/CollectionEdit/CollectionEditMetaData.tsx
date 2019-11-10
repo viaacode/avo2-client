@@ -14,10 +14,11 @@ import {
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { Avo } from '@viaa/avo2-types';
 
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import CollectionStillsModal from '../components/modals/CollectionStillsModal';
-import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
-import { getValidationFeedbackForShortDescription } from '../helpers';
+import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+
+import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../collection.gql';
+import { getValidationFeedbackForShortDescription } from '../../collection.helpers';
+import { CollectionStillsModal } from '../../components';
 
 interface CollectionEditMetaDataProps {
 	collection: Avo.Collection.Collection;

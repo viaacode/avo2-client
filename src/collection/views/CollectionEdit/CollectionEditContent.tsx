@@ -4,8 +4,8 @@ import React, { FunctionComponent, useState } from 'react';
 import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { FragmentAdd, FragmentEdit } from '../components';
-import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
+import { FragmentPropertyUpdateInfo } from '../../collection.types';
+import { FragmentAdd, FragmentEdit } from '../../components';
 
 interface CollectionEditContentProps {
 	collection: Avo.Collection.Collection;

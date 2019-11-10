@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isNull } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -26,31 +26,31 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import PermissionGuard from '../../authentication/components/PermissionGuard';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
-import { selectLogin } from '../../authentication/store/selectors';
-import { LoginResponse } from '../../authentication/store/types';
-import { RouteParts } from '../../constants';
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import { createDropdownMenuItem } from '../../shared/helpers/dropdown';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
-import { formatDate } from '../../shared/helpers/formatters/date';
+import PermissionGuard from '../../../authentication/components/PermissionGuard';
+import { getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { PERMISSIONS, PermissionService } from '../../../authentication/helpers/permission-service';
+import { selectLogin } from '../../../authentication/store/selectors';
+import { LoginResponse } from '../../../authentication/store/types';
+import { RouteParts } from '../../../constants';
+import ControlledDropdown from '../../../shared/components/ControlledDropdown/ControlledDropdown';
+import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
+import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
+import { renderAvatar } from '../../../shared/helpers/formatters/avatar';
+import { formatDate } from '../../../shared/helpers/formatters/date';
 import {
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
-} from '../../shared/helpers/generateLink';
-import { ApolloCacheManager } from '../../shared/services/data-service';
-import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { ShareCollectionModal } from '../components';
-import FragmentDetail from '../components/FragmentDetail';
-import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../graphql';
-import { ContentTypeString, DutchContentType, toEnglishContentType } from '../types';
+} from '../../../shared/helpers/generateLink';
+import { ApolloCacheManager } from '../../../shared/services/data-service';
+import { EventObjectType, trackEvents } from '../../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../../shared/services/related-items-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+
+import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../../collection.gql';
+import { ContentTypeString, DutchContentType, toEnglishContentType } from '../../collection.types';
+import { FragmentDetail, ShareCollectionModal } from '../../components';
 
 import './CollectionDetail.scss';
 
