@@ -31,7 +31,7 @@ export interface DateRange {
 
 const DEFAULT_DATE_RANGE = { gte: '', lte: '' };
 
-export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
+const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	label,
 	id,
 	range = DEFAULT_DATE_RANGE,
@@ -267,3 +267,5 @@ export const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		</Dropdown>
 	);
 };
+
+export default DateRangeDropdown;

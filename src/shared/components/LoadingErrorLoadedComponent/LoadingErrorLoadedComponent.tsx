@@ -1,8 +1,9 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
-import ErrorView from '../../../error/views/ErrorView';
+
 import { LoadingState } from '../../../assignment/helpers';
+import ErrorView from '../../../error/views/ErrorView';
 
 export interface LoadingErrorLoadedComponentProps {
 	loadingState: LoadingState;

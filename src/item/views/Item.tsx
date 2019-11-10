@@ -35,15 +35,15 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { reorderDate } from '../../shared/helpers/formatters/date';
+import { DataQueryComponent } from '../../shared/components';
+import { LANGUAGES } from '../../shared/constants';
 import {
 	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
 	generateSearchLinkString,
-} from '../../shared/helpers/generateLink';
-import { LANGUAGES } from '../../shared/helpers/languages';
+	reorderDate,
+} from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';

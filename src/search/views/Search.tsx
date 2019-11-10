@@ -39,7 +39,7 @@ import {
 import queryString from 'query-string';
 
 import { RouteParts } from '../../constants';
-import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { copyToClipboard } from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { SearchFilterControls, SearchResults } from '../components';
 import { getSearchResults } from '../store/actions';

@@ -10,11 +10,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { toEnglishContentType } from '../../../collection/collection.types';
-import { formatDate } from '../../../shared/helpers/formatters/date';
-import {
-	generateContentLinkString,
-	generateSearchLink,
-} from '../../../shared/helpers/generateLink';
+import { formatDate, generateContentLinkString, generateSearchLink } from '../../../shared/helpers';
 
 import { SearchResultItemProps } from './types';
 

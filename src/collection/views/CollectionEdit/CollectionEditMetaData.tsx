@@ -14,7 +14,7 @@ import {
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { Avo } from '@viaa/avo2-types';
 
-import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+import { DataQueryComponent } from '../../../shared/components';
 
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../collection.gql';
 import { getValidationFeedbackForShortDescription } from '../../collection.helpers';

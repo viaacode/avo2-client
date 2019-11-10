@@ -1,25 +1,20 @@
+import { isArray, noop } from 'lodash-es';
+import queryString from 'query-string';
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Avo } from '@viaa/avo2-types';
-import queryString from 'query-string';
 
-import { isArray, noop } from 'lodash-es';
-import { Link } from 'react-router-dom';
 import { RouteParts } from '../../constants';
 
-export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
-	video: RouteParts.Item,
-	audio: RouteParts.Item,
-	collectie: RouteParts.Collection,
-	bundel: RouteParts.Folder,
-};
+import { CONTENT_TYPE_TO_ROUTE } from '../constants';
 
-export function generateSearchLinks(
+export const generateSearchLinks = (
 	key: string,
 	filterProp: Avo.Search.FilterProp,
 	filterValue: string | string[] | undefined,
 	className: string = ''
-) {
+) => {
 	if (isArray(filterValue)) {
 		return filterValue.map((value: string, index: number) => {
 			return (
@@ -30,8 +25,9 @@ export function generateSearchLinks(
 			);
 		});
 	}
+
 	return generateSearchLink(filterProp, filterValue, className);
-}
+};
 
 export function generateSearchLink(
 	filterProp: Avo.Search.FilterProp,

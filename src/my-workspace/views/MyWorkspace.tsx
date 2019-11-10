@@ -22,8 +22,7 @@ import AssignmentOverview from '../../assignment/views/AssignmentOverview';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { CollectionOverview } from '../../collection/views';
 import { RouteParts } from '../../constants';
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { ControlledDropdown, DataQueryComponent } from '../../shared/components';
 
 import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
 import { TabViewMap } from '../types';

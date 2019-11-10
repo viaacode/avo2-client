@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 
-import { getFullName } from '../../shared/helpers/formatters/avatar';
+import { getFullName } from '../../shared/helpers';
 import store from '../../store';
 
 function getUserInfo() {

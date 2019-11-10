@@ -46,7 +46,7 @@ export interface CheckboxDropdownModalProps {
 	onChange: (checkedOptions: string[], id: string) => void;
 }
 
-export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
+const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 	label,
 	id,
 	options,
@@ -272,3 +272,5 @@ export const renderDropdownButton = (
 		</Button>
 	);
 };
+
+export default CheckboxDropdownModal;

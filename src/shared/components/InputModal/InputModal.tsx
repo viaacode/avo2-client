@@ -13,7 +13,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService, { TOAST_TYPE } from '../../services/toast-service';
 
 interface InputModalProps {
 	title?: string;

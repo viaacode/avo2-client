@@ -25,8 +25,8 @@ import { selectSearchLoading, selectSearchResults } from '../../search/store/sel
 import {
 	generateContentLinkString,
 	generateSearchLinkString,
-} from '../../shared/helpers/generateLink';
-import { useDebounce } from '../../shared/helpers/useDebounce';
+	useDebounce,
+} from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 import './Home.scss';

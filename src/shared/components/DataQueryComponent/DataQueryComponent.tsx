@@ -17,7 +17,7 @@ export interface DataQueryComponentProps {
 	showSpinner?: boolean;
 }
 
-export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
+const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	query,
 	variables,
 	resultPath,
@@ -71,3 +71,5 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 		</Query>
 	);
 };
+
+export default DataQueryComponent;

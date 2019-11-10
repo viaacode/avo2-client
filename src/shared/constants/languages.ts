@@ -1,4 +1,12 @@
-export const LANGUAGES: { [language: string]: { [languageCode: string]: string } } = {
+interface Language {
+	[languageCode: string]: string;
+}
+
+interface LanguagesByLanguage {
+	[languageCode: string]: Language;
+}
+
+export const LANGUAGES: LanguagesByLanguage = {
 	nl: {
 		aa: 'Afar',
 		ab: 'Abchazisch',

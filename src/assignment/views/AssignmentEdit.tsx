@@ -47,11 +47,13 @@ import { LoginResponse } from '../../authentication/store/types';
 import { CollectionService } from '../../collection/collection.service';
 import { DutchContentType, toEnglishContentType } from '../../collection/collection.types';
 import { RouteParts } from '../../constants';
+import {
+	DeleteObjectModal,
+	InputModal,
+	LoadingErrorLoadedComponent,
+} from '../../shared/components';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../shared/components/modals/InputModal';
-import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { copyToClipboard } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';

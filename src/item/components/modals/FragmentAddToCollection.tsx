@@ -35,9 +35,7 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../../../collection/collection.gql';
-import { getEnv } from '../../../shared/helpers/env';
-import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
