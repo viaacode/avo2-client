@@ -26,7 +26,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			key={`search-result-${result.id}`}
 			type={toEnglishContentType(result.administrative_type)}
 			date={formatDate(result.dcterms_issued)}
-			// TODO DISABLED_FEATURE
+			// TODO: DISABLED_FEATURE
 			// tags={[{ label: 'Redactiekeuze', id: 'redactiekeuze' }, { label: 'Partner', id: 'partner' }]}
 			viewCount={412}
 			bookmarkCount={85}

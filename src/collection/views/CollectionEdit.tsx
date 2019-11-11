@@ -56,6 +56,7 @@ import {
 interface CollectionEditProps extends RouteComponentProps {}
 
 const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
+	// State
 	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -69,6 +70,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	// TODO: DISABLED FEATURE - const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
 
+	// Mutations
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);

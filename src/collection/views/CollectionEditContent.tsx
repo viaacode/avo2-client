@@ -20,20 +20,20 @@ const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 	updateCollection,
 	updateFragmentProperties,
 }) => {
+	// State
 	const [openOptionsId, setOpenOptionsId] = useState<number | null>(null);
 
-	const reorderFragments = (fragments: Avo.Collection.Fragment[]) => {
-		return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
+	const reorderFragments = (fragments: Avo.Collection.Fragment[]) =>
+		fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
 			...fragment,
 			position: index + 1,
 		}));
-	};
 
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal">
 				{orderBy(collection.collection_fragments, ['position'], ['asc']).map(
-					(fragment: any, index: number) => (
+					(fragment: Avo.Collection.Fragment, index: number) => (
 						<FragmentEdit
 							key={`fragment_${fragment.id}`}
 							index={index}

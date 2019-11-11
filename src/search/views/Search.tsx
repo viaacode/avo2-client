@@ -100,7 +100,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
 			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
 
-			// TODO do the search by dispatching a redux action
+			// TODO: do the search by dispatching a redux action
 			search(
 				sortOrder.orderProperty,
 				sortOrder.orderDirection,

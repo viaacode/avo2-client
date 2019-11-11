@@ -63,16 +63,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	history,
 	loginState,
 }) => {
+	// State
 	const [collectionId] = useState((match.params as any)['id'] as string);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
+
+	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
 	useEffect(() => {

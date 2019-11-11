@@ -114,7 +114,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	 * Set video current time from the query params once the video has loaded its meta data
 	 * If this happens sooner, the time will be ignored by the video player
 	 */
-	// TODO trigger this function when flowplayer is loaded
+	// TODO: trigger this function when flowplayer is loaded
 	// const getSeekerTimeFromQueryParams = () => {
 	// 	const queryParams = queryString.parse(location.search);
 	// 	setTime(parseInt((queryParams.time as string) || '0', 10));

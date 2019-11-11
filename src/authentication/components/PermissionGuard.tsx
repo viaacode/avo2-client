@@ -2,7 +2,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { useSlot } from '../../shared/hooks/useSlot'; // TODO replace this with avo2-components useSlot once exported
+import { useSlot } from '../../shared/hooks/useSlot'; // TODO: replace this with avo2-components useSlot once exported
 import { Permissions, PermissionService } from '../helpers/permission-service';
 import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
 

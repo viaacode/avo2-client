@@ -156,7 +156,7 @@ export class CollectionService {
 				fragmentToUpdate = cloneDeep(fragmentToUpdate);
 
 				delete (fragmentToUpdate as any).__typename;
-				// TODO remove type cast when next typings repo version is released (1.8.0)
+				// TODO: remove type cast when next typings repo version is released (1.8.0)
 				delete (fragmentToUpdate as any).item_meta;
 
 				updatePromises.push(
@@ -324,7 +324,7 @@ export class CollectionService {
 
 		delete fragmentToAdd.id;
 		delete (fragmentToAdd as any).__typename;
-		// TODO remove type cast when next typings repo version is released (1.8.0)
+		// TODO: remove type cast when next typings repo version is released (1.8.0)
 		delete (fragmentToAdd as any).item_meta;
 
 		const response = await triggerCollectionFragmentInsert({
@@ -347,10 +347,10 @@ export class CollectionService {
 		collection: Partial<Avo.Collection.Collection>
 	): Promise<string | null> {
 		try {
-			// TODO check if thumbnail was automatically selected from the first media fragment => need to update every save
+			// TODO: check if thumbnail was automatically selected from the first media fragment => need to update every save
 			// or if the thumbnail was selected by the user => need to update only if video is not available anymore
 			// This will need a new field in the database: thumbnail_type = 'auto' | 'chosen' | 'uploaded'
-			// TODO  || collection.thumbnail_type === 'auto'
+			// TODO:  || collection.thumbnail_type === 'auto'
 			if (!collection.thumbnail_path) {
 				return await getThumbnailForCollection(collection);
 			}

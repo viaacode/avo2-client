@@ -29,6 +29,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 	collection,
 	updateCollectionProperty,
 }) => {
+	// State
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
@@ -99,7 +100,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 										>
 											<TextArea
 												name="personalRemarkId"
-												value={(collection as any).note || ''} // TODO cleanup when note is available from types repo
+												value={(collection as any).note || ''} // TODO: cleanup when note is available from types repo
 												id="personalRemarkId"
 												height="medium"
 												placeholder="Geef hier je persoonlijke opmerkingen/notities in..."

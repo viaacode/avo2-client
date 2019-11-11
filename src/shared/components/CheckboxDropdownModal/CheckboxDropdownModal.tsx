@@ -182,7 +182,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 		const secondColumnOptions = options.slice(oneThird, oneThird * 2);
 		const thirdColumnOptions = options.slice(oneThird * 2);
 
-		// TODO add search in checkbox modal components
+		// TODO: add search in checkbox modal components
 		// private getFilterOptions(searchTerm: string, propertyName: string): Promise<Avo.Search.OptionProp[]> {
 		// 	const searchResponse: Avo.Search.Search = await executeSearch();
 		// 	return searchResponse.aggregations[propertyName];

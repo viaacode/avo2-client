@@ -1,20 +1,20 @@
+import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
+import classnames from 'classnames';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { ApolloProvider } from 'react-apollo';
 import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
-import classnames from 'classnames';
-
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
-import { renderRoutes } from './routes';
 import { Footer, Navigation, Sidebar } from './shared/components';
-
-import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
-import { ApolloProvider } from 'react-apollo';
-import { RouteParts } from './constants';
 import { dataService } from './shared/services/data-service';
-import store from './store';
+import { NavigationItem } from './shared/types/types';
+
+import { RouteParts } from './constants';
+import { renderRoutes } from './routes';
+import store, { AppState } from './store';
 
 import './styles/main.scss';
 
@@ -23,31 +23,60 @@ interface AppProps extends RouteComponentProps {
 }
 
 const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
-	// Hooks
+	const {
+		Admin,
+		Discover,
+		Search,
+		Projects,
+		News,
+		Logout,
+		RegisterOrLogin,
+		Menus,
+		Workspace,
+		Register,
+	} = RouteParts;
+	const PRIMARY_ITEMS: NavigationItem[] = [
+		{ label: 'Home', location: '/' },
+		{
+			label: 'Zoeken',
+			location: `/${Search}`,
+			icon: 'search',
+		},
+		{ label: 'Ontdek', location: `/${Discover}` },
+		{
+			label: 'Mijn Werkruimte',
+			location: `/${Workspace}`,
+			icon: 'briefcase',
+		},
+		{ label: 'Projecten', location: `/${Projects}` },
+		{ label: 'Nieuws', location: `/${News}` },
+	];
+	const SECONDARY_ITEMS: NavigationItem[] =
+		loginState && loginState.message === 'LOGGED_IN'
+			? [{ label: 'Afmelden', location: `/${Logout}` }]
+			: [
+					{ label: 'Registreren', location: `/${Register}` },
+					{ label: 'Aanmelden', location: `/${RegisterOrLogin}` },
+			  ];
+
+	// State
 	const [menuOpen, setMenuOpen] = useState(false);
 
-	useEffect(() => {
-		return history.listen(closeMenu);
-	});
+	useEffect(() => history.listen(onCloseMenu));
 
 	// Methods
-	const toggleMenu = () => {
-		setMenuOpen(!menuOpen);
-	};
+	const onToggleMenu = () => setMenuOpen(!menuOpen);
 
-	const closeMenu = () => {
-		setMenuOpen(false);
-	};
+	const onCloseMenu = () => setMenuOpen(false);
 
-	// Computed
-	const isAdminRoute = new RegExp(`^/${RouteParts.Admin}`, 'g').test(location.pathname);
+	const isAdminRoute = new RegExp(`^/${Admin}`, 'g').test(location.pathname);
 
 	// Render
 	const renderAdmin = () => (
 		<div className="u-d-flex">
 			<Sidebar
-				headerLink={`/${RouteParts.Admin}`}
-				navItems={[{ label: 'Navigatie', location: `/${RouteParts.Admin}/${RouteParts.Menus}` }]}
+				headerLink={`/${Admin}`}
+				navItems={[{ label: 'Navigatie', location: `/${Admin}/${Menus}` }]}
 			/>
 			<div className="u-content-flex u-scroll">{renderRoutes()}</div>
 		</div>
@@ -56,32 +85,10 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 	const renderApp = () => (
 		<>
 			<Navigation
-				primaryItems={[
-					{ label: 'Home', location: '/' },
-					{
-						label: 'Zoeken',
-						location: `/${RouteParts.Search}`,
-						icon: 'search',
-					},
-					{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
-					{
-						label: 'Mijn Werkruimte',
-						location: `/${RouteParts.Workspace}`,
-						icon: 'briefcase',
-					},
-					{ label: 'Projecten', location: `/${RouteParts.Projects}` },
-					{ label: 'Nieuws', location: `/${RouteParts.News}` },
-				]}
-				secondaryItems={
-					loginState && loginState.message === 'LOGGED_IN'
-						? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
-						: [
-								{ label: 'Registreren', location: `/${RouteParts.Register}` },
-								{ label: 'Aanmelden', location: `/${RouteParts.RegisterOrLogin}` },
-						  ]
-				}
+				primaryItems={PRIMARY_ITEMS}
+				secondaryItems={SECONDARY_ITEMS}
 				isOpen={menuOpen}
-				handleMenuClick={toggleMenu}
+				handleMenuClick={onToggleMenu}
 			/>
 			{renderRoutes()}
 			<Footer />
@@ -99,30 +106,28 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 				position="bottom-left"
 				transition={Slide}
 			/>
-			{/* TODO: this needs to be also based on the current users persmissions */}
+			{/* TODO: Based on current user permissions */}
 			{isAdminRoute ? renderAdmin() : renderApp()}
 		</div>
 	);
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
 	loginState: selectLogin(state),
 });
 
 const AppWithRouter = withRouter(connect(mapStateToProps)(App));
 
-const Root: FunctionComponent = () => {
-	return (
-		<ApolloProvider client={dataService}>
-			<ApolloHooksProvider client={dataService}>
-				<Provider store={store}>
-					<Router>
-						<AppWithRouter />
-					</Router>
-				</Provider>
-			</ApolloHooksProvider>
-		</ApolloProvider>
-	);
-};
+const Root: FunctionComponent = () => (
+	<ApolloProvider client={dataService}>
+		<ApolloHooksProvider client={dataService}>
+			<Provider store={store}>
+				<Router>
+					<AppWithRouter />
+				</Router>
+			</Provider>
+		</ApolloHooksProvider>
+	</ApolloProvider>
+);
 
 export default Root;

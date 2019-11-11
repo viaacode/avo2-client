@@ -26,7 +26,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
-// TODO: Move FragmentDetail to shared components
 import { FragmentDetail } from '../../collection/components';
 import { RouteParts } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -55,7 +54,7 @@ export enum AssignmentRetrieveError {
 	DELETED = 'DELETED',
 	NOT_YET_AVAILABLE = 'NOT_YET_AVAILABLE',
 	PAST_DEADLINE = 'PAST_DEADLINE',
-} // TODO replace with typings repo Avo.Assignment.RetrieveError
+} // TODO: replace with typings repo Avo.Assignment.RetrieveError
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResponse }) => {
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
@@ -88,7 +87,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 			if (!assignmentResponse) {
 				// Student has never viewed this assignment before, we should create a response object for him
 				assignmentResponse = {
-					owner_profile_ids: [getProfileId()], // TODO replace with getUser().uuid
+					owner_profile_ids: [getProfileId()], // TODO: replace with getUser().uuid
 					assignment_id: tempAssignment.id,
 					collection: null,
 					collection_id: null,

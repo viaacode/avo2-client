@@ -104,7 +104,7 @@ const CONTENT_LABEL_TO_QUERY: {
 		resultPath: 'app_item_meta[0]',
 	},
 	ZOEKOPDRACHT: {
-		// TODO implement search query saving and usage
+		// TODO: implement search query saving and usage
 		// query: GET_SEARCH_QUERY_BY_ID,
 		// resultPath: 'app_item_meta[0]',
 	} as any,

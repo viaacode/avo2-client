@@ -44,7 +44,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 					const firstGraphQlError = get(result, 'error.graphQLErrors[0].message');
 
 					if (firstGraphQlError === 'DELETED') {
-						// TODO show different message if a list of items was returned but only some were deleted
+						// TODO: show different message if a list of items was returned but only some were deleted
 						return <ErrorView message="Dit item is verwijderd" icon="delete" />;
 					}
 

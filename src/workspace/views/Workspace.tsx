@@ -131,8 +131,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 	}) => {
 		const counts = {
 			[COLLECTIONS_ID]: get(data, 'app_collections_aggregate.aggregate.count'),
-			[FOLDERS_ID]: 0, // TODO get from database once the table exists
-			[BOOKMARKS_ID]: 0, // TODO get from database once the table exists
+			[FOLDERS_ID]: 0, // TODO: get from database once the table exists
+			[BOOKMARKS_ID]: 0, // TODO: get from database once the table exists
 		};
 		return (
 			<>
