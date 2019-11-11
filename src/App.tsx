@@ -23,40 +23,28 @@ interface AppProps extends RouteComponentProps {
 }
 
 const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
-	const {
-		Admin,
-		Discover,
-		Search,
-		Projects,
-		News,
-		Logout,
-		RegisterOrLogin,
-		Menus,
-		Workspace,
-		Register,
-	} = RouteParts;
 	const PRIMARY_ITEMS: NavigationItem[] = [
 		{ label: 'Home', location: '/' },
 		{
 			label: 'Zoeken',
-			location: `/${Search}`,
+			location: `/${RouteParts.Search}`,
 			icon: 'search',
 		},
-		{ label: 'Ontdek', location: `/${Discover}` },
+		{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
 		{
 			label: 'Mijn Werkruimte',
-			location: `/${Workspace}`,
+			location: `/${RouteParts.Workspace}`,
 			icon: 'briefcase',
 		},
-		{ label: 'Projecten', location: `/${Projects}` },
-		{ label: 'Nieuws', location: `/${News}` },
+		{ label: 'Projecten', location: `/${RouteParts.Projects}` },
+		{ label: 'Nieuws', location: `/${RouteParts.News}` },
 	];
 	const SECONDARY_ITEMS: NavigationItem[] =
 		loginState && loginState.message === 'LOGGED_IN'
-			? [{ label: 'Afmelden', location: `/${Logout}` }]
+			? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
 			: [
-					{ label: 'Registreren', location: `/${Register}` },
-					{ label: 'Aanmelden', location: `/${RegisterOrLogin}` },
+					{ label: 'Registreren', location: `/${RouteParts.Register}` },
+					{ label: 'Aanmelden', location: `/${RouteParts.RegisterOrLogin}` },
 			  ];
 
 	// State
@@ -69,14 +57,14 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 
 	const onCloseMenu = () => setMenuOpen(false);
 
-	const isAdminRoute = new RegExp(`^/${Admin}`, 'g').test(location.pathname);
+	const isAdminRoute = new RegExp(`^/${RouteParts.Admin}`, 'g').test(location.pathname);
 
 	// Render
 	const renderAdmin = () => (
 		<div className="u-d-flex">
 			<Sidebar
-				headerLink={`/${Admin}`}
-				navItems={[{ label: 'Navigatie', location: `/${Admin}/${Menus}` }]}
+				headerLink={`/${RouteParts.Admin}`}
+				navItems={[{ label: 'Navigatie', location: `/${RouteParts.Admin}/${RouteParts.Menus}` }]}
 			/>
 			<div className="u-content-flex u-scroll">{renderRoutes()}</div>
 		</div>
