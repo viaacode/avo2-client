@@ -26,7 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import PermissionGuard from '../../../authentication/components/PermissionGuard';
+import { PermissionGuard } from '../../../authentication/components';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../../authentication/helpers/permission-service';
 import { selectLogin } from '../../../authentication/store/selectors';
@@ -138,7 +138,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(`/${RouteParts.MyWorkspace}`);
+			history.push(`/${RouteParts.Workspace}`);
 			toastService('De collectie werd succesvol verwijderd.', TOAST_TYPE.SUCCESS);
 		} catch (err) {
 			console.error(err);

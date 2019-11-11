@@ -5,7 +5,7 @@ import { Query, QueryResult } from 'react-apollo';
 
 import { Flex, Spinner } from '@viaa/avo2-components';
 
-import ErrorView from '../../../error/views/ErrorView';
+import { ErrorView } from '../../../error/views';
 
 export interface DataQueryComponentProps {
 	query: DocumentNode;

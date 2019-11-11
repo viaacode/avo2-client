@@ -42,9 +42,14 @@ import { RouteParts } from '../../constants';
 import { copyToClipboard } from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { SearchFilterControls, SearchResults } from '../components';
+import {
+	SearchFilterFieldValues,
+	SearchFilterMultiOptions,
+	SearchProps,
+	SortOrder,
+} from '../search.types';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
-import { SearchFilterFieldValues, SearchFilterMultiOptions, SearchProps, SortOrder } from './types';
 
 const ITEMS_PER_PAGE = 10;
 

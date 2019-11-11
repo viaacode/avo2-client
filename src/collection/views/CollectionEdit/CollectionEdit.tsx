@@ -277,7 +277,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				category: 'item',
 			});
 
-			props.history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`);
+			props.history.push(`/${RouteParts.Workspace}/${RouteParts.Collections}`);
 		} catch (err) {
 			console.error(err);
 			toastService('Het verwijderen van de collectie is mislukt');

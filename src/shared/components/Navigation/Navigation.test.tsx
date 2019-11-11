@@ -4,13 +4,13 @@ import React from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
 import { RouteParts } from '../../../constants';
-import { Navigation } from './Navigation';
+import Navigation from './Navigation';
 
 const pItems = [
 	{ label: 'Home', location: '/' },
 	{ label: 'Zoeken', location: `/${RouteParts.Search}` },
 	{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
-	{ label: 'Mijn Werkruimte', location: `/${RouteParts.MyWorkspace}/${RouteParts.Collections}` },
+	{ label: 'Mijn Werkruimte', location: `/${RouteParts.Workspace}/${RouteParts.Collections}` },
 	{ label: 'Projecten', location: `/${RouteParts.Projects}` },
 	{ label: 'Nieuws', location: `/${RouteParts.News}` },
 ];

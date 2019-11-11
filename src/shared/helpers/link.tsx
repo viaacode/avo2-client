@@ -70,7 +70,7 @@ export function generateAssignmentCreateLink(
 	contentId?: string,
 	contentLabel?: Avo.Assignment.ContentLabel
 ) {
-	return `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${
+	return `/${RouteParts.Workspace}/${RouteParts.Assignments}/${
 		RouteParts.Create
 	}?assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`;
 }
