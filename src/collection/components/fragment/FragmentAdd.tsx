@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentBlockType } from '../../collection.types';
+import { NEW_FRAGMENT } from '../../collection.const';
 
 const COLLECTION_CONTENT_BLOCKS = ['RichText'];
 
@@ -15,50 +15,30 @@ interface FragmentAddProps {
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 }
 
-const fragmentsDefaults = {
-	TEXT: {
-		id: null,
-		collection_id: null,
-		position: 1,
-		external_id: '',
-		custom_description: '',
-		custom_title: '',
-		end_oc: null,
-		start_oc: null,
-		use_custom_fields: true,
-	},
-};
-
 const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	index,
 	collection,
 	updateCollection,
 	reorderFragments,
 }) => {
+	const { collection_fragments, id } = collection;
 	const TEXT_BLOCK_FRAGMENT: any = {
-		...fragmentsDefaults.TEXT,
-		id: -collection.collection_fragments.length,
-		collection_id: collection.id,
+		...NEW_FRAGMENT.text,
+		id: -collection_fragments.length,
+		collection_id: id,
 	};
 
-	const addFragment = (index: number, contentBlockType: ContentBlockType) => {
-		const newFragments = orderBy([...collection.collection_fragments], 'position', 'asc');
+	const addFragment = (index: number) => {
+		const newFragments = orderBy([...collection_fragments], 'position', 'asc');
 
-		switch (contentBlockType) {
-			case ContentBlockType.RichText:
-				newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
-				break;
-			default:
-				// TODO: Could not add fragment because unknown type.
-				break;
-		}
+		newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
 
 		const positionedFragments = reorderFragments(newFragments);
 
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: positionedFragments.map(fragment => fragment.id),
+			collection_fragment_ids: positionedFragments.map(({ id }) => id),
 		});
 	};
 
@@ -69,14 +49,12 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 					<div className="c-hr" />
 				</ToolbarItem>
 				<ToolbarItem>
-					{COLLECTION_CONTENT_BLOCKS.length > 1 ? null : (
-						<Button
-							type="secondary"
-							icon="add"
-							onClick={() => addFragment(index, ContentBlockType.RichText)}
-							ariaLabel="Sectie toevoegen"
-						/>
-					)}
+					<Button
+						type="secondary"
+						icon="add"
+						onClick={() => addFragment(index)}
+						ariaLabel="Sectie toevoegen"
+					/>
 				</ToolbarItem>
 				<ToolbarItem grow>
 					<div className="c-hr" />

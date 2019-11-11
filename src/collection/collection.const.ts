@@ -22,3 +22,17 @@ export const STILL_DIMENSIONS = {
 };
 
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
+
+export const NEW_FRAGMENT = {
+	text: {
+		id: null,
+		collection_id: null,
+		position: 1,
+		external_id: '',
+		custom_description: '',
+		custom_title: '',
+		end_oc: null,
+		start_oc: null,
+		use_custom_fields: true,
+	},
+};
