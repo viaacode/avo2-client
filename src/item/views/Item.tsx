@@ -62,7 +62,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
 	// TODO: use setTime when adding logic for enabling timestamps in the URL
 	const [time] = useState<number>(0);
-	const [isOpenAddToCollectionModalModal, setIsOpenAddToCollectionModalModal] = useState(false);
+	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 
 	/**
@@ -233,7 +233,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 													type="tertiary"
 													icon="add"
 													label="Voeg fragment toe aan collectie"
-													onClick={() => setIsOpenAddToCollectionModalModal(true)}
+													onClick={() => setIsOpenAddToCollectionModal(true)}
 												/>
 												<Button
 													type="tertiary"
@@ -374,8 +374,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					<AddToCollectionModal
 						itemMetaData={itemMetaData}
 						externalId={itemId as string}
-						isOpen={isOpenAddToCollectionModalModal}
-						onClose={() => setIsOpenAddToCollectionModalModal(false)}
+						isOpen={isOpenAddToCollectionModal}
+						onClose={() => setIsOpenAddToCollectionModal(false)}
 					/>
 				)}
 			</>
