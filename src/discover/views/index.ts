@@ -1,3 +1,3 @@
-import Discover from './Discover/Discover';
+import Discover from './Discover';
 
 export { Discover };

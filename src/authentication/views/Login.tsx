@@ -6,12 +6,12 @@ import { Dispatch } from 'redux';
 import { get } from 'lodash-es';
 
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { RouteParts } from '../../../constants';
-import { ErrorView } from '../../../error/views';
-import { redirectToLoginPage } from '../../helpers/redirect-to-idp';
-import { getLoginState } from '../../store/actions';
-import { selectLogin, selectLoginError, selectLoginLoading } from '../../store/selectors';
-import { LoginResponse } from '../../store/types';
+import { RouteParts } from '../../constants';
+import { ErrorView } from '../../error/views';
+import { redirectToLoginPage } from '../helpers/redirect-to-idp';
+import { getLoginState } from '../store/actions';
+import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
+import { LoginResponse } from '../store/types';
 
 export interface LoginProps extends RouteComponentProps {
 	loginState: LoginResponse | null;

@@ -1,3 +1,3 @@
-import Item from './Item/Item';
+import Item from './Item';
 
 export { Item };

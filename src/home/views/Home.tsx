@@ -19,15 +19,15 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { toEnglishContentType } from '../../../collection/collection.types';
-import { getSearchResults } from '../../../search/store/actions';
-import { selectSearchLoading, selectSearchResults } from '../../../search/store/selectors';
+import { toEnglishContentType } from '../../collection/collection.types';
+import { getSearchResults } from '../../search/store/actions';
+import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import {
 	generateContentLinkString,
 	generateSearchLinkString,
 	useDebounce,
-} from '../../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+} from '../../shared/helpers';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 import './Home.scss';
 

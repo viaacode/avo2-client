@@ -6,7 +6,7 @@ import { RouteConfigComponentProps } from 'react-router-config';
 
 import { Blankslate, Container } from '@viaa/avo2-components';
 
-import { IconName } from '../../../shared/types/types';
+import { IconName } from '../../shared/types/types';
 
 interface ErrorViewQueryParams {
 	message?: string;

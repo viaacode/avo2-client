@@ -23,21 +23,21 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { RouteParts } from '../../../constants';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { RouteParts } from '../../constants';
 import {
 	ControlledDropdown,
 	DataQueryComponent,
 	DeleteObjectModal,
 	InputModal,
-} from '../../../shared/components';
-import { createDropdownMenuItem, renderAvatar } from '../../../shared/helpers';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+} from '../../shared/components';
+import { createDropdownMenuItem, renderAvatar } from '../../shared/helpers';
+import { ApolloCacheManager } from '../../shared/services/data-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
-import { CollectionEditContent, CollectionEditMetaData } from '../';
-import { COLLECTION_EDIT_TABS } from '../../collection.const';
+import { CollectionEditContent, CollectionEditMetaData } from '.';
+import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -45,13 +45,13 @@ import {
 	INSERT_COLLECTION_FRAGMENTS,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
-} from '../../collection.gql';
-import { CollectionService } from '../../collection.service';
-import { FragmentPropertyUpdateInfo, Tab } from '../../collection.types';
+} from '../collection.gql';
+import { CollectionService } from '../collection.service';
+import { FragmentPropertyUpdateInfo, Tab } from '../collection.types';
 import {
 	// TODO: DISABLED FEATURE - ReorderCollectionModal,
 	ShareCollectionModal,
-} from '../../components';
+} from '../components';
 
 interface CollectionEditProps extends RouteComponentProps {}
 

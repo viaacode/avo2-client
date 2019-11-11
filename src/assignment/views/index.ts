@@ -1,5 +1,5 @@
-import AssignmentDetail from './AssignmentDetail/AssignmentDetail';
-import AssignmentEdit from './AssignmentEdit/AssignmentEdit';
-import AssignmentOverview from './AssignmentOverview/AssignmentOverview';
+import AssignmentDetail from './AssignmentDetail';
+import AssignmentEdit from './AssignmentEdit';
+import AssignmentOverview from './AssignmentOverview';
 
 export { AssignmentDetail, AssignmentEdit, AssignmentOverview };

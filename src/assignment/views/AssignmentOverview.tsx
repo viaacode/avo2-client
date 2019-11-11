@@ -31,24 +31,24 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { connect } from 'react-redux';
-import { selectLogin } from '../../../authentication/store/selectors';
-import { LoginResponse } from '../../../authentication/store/types';
-import { RouteParts } from '../../../constants';
-import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../../shared/components';
-import { formatTimestamp, fromNow } from '../../../shared/helpers';
-import { dataService } from '../../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { IconName } from '../../../shared/types/types';
-import { ITEMS_PER_PAGE } from '../../../workspace/workspace.const';
+import { selectLogin } from '../../authentication/store/selectors';
+import { LoginResponse } from '../../authentication/store/types';
+import { RouteParts } from '../../constants';
+import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
+import { formatTimestamp, fromNow } from '../../shared/helpers';
+import { dataService } from '../../shared/services/data-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
-} from '../../assignment.gql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../../assignment.services';
-import { AssignmentColumn } from '../../assignment.types';
+} from '../assignment.gql';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import { AssignmentColumn } from '../assignment.types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 

@@ -16,8 +16,8 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
-import { RouteParts } from '../../../constants';
-import { getEnv } from '../../../shared/helpers';
+import { RouteParts } from '../../constants';
+import { getEnv } from '../../shared/helpers';
 
 import './RegisterOrLogin.scss';
 

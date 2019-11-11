@@ -29,28 +29,28 @@ import {
 import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
 	toEnglishContentType,
-} from '../../../collection/collection.types';
-import { DataQueryComponent } from '../../../shared/components';
-import { LANGUAGES } from '../../../shared/constants';
+} from '../../collection/collection.types';
+import { DataQueryComponent } from '../../shared/components';
+import { LANGUAGES } from '../../shared/constants';
 import {
 	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
 	generateSearchLinkString,
 	reorderDate,
-} from '../../../shared/helpers';
-import { trackEvents } from '../../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../../shared/services/related-items-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { IconName } from '../../../shared/types/types';
+} from '../../shared/helpers';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../shared/services/related-items-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 
-import { AddToCollectionModal, ItemVideoDescription } from '../../components';
-import { GET_ITEM_BY_ID } from '../../item.gql';
+import { AddToCollectionModal, ItemVideoDescription } from '../components';
+import { GET_ITEM_BY_ID } from '../item.gql';
 
 import './Item.scss';
 

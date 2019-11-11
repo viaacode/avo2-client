@@ -26,17 +26,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { PermissionGuard } from '../../../authentication/components';
-import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { PERMISSIONS, PermissionService } from '../../../authentication/helpers/permission-service';
-import { selectLogin } from '../../../authentication/store/selectors';
-import { LoginResponse } from '../../../authentication/store/types';
-import { RouteParts } from '../../../constants';
-import {
-	ControlledDropdown,
-	DataQueryComponent,
-	DeleteObjectModal,
-} from '../../../shared/components';
+import { PermissionGuard } from '../../authentication/components';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import { selectLogin } from '../../authentication/store/selectors';
+import { LoginResponse } from '../../authentication/store/types';
+import { RouteParts } from '../../constants';
+import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import {
 	createDropdownMenuItem,
 	formatDate,
@@ -44,15 +40,15 @@ import {
 	generateContentLinkString,
 	generateSearchLinks,
 	renderAvatar,
-} from '../../../shared/helpers';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
-import { EventObjectType, trackEvents } from '../../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../../shared/services/related-items-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+} from '../../shared/helpers';
+import { ApolloCacheManager } from '../../shared/services/data-service';
+import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../shared/services/related-items-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
-import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../../collection.gql';
-import { ContentTypeString, DutchContentType, toEnglishContentType } from '../../collection.types';
-import { FragmentDetail, ShareCollectionModal } from '../../components';
+import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
+import { ContentTypeString, DutchContentType, toEnglishContentType } from '../collection.types';
+import { FragmentDetail, ShareCollectionModal } from '../components';
 
 import './CollectionDetail.scss';
 

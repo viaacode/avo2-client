@@ -24,26 +24,26 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileId } from '../../../authentication/helpers/get-profile-info';
-import { LoginResponse } from '../../../authentication/store/types';
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { LoginResponse } from '../../authentication/store/types';
 // TODO: Move FragmentDetail to shared components
-import { FragmentDetail } from '../../../collection/components';
-import { RouteParts } from '../../../constants';
-import { ErrorView } from '../../../error/views';
-import { ItemVideoDescription } from '../../../item/components';
-import { LoadingErrorLoadedComponent } from '../../../shared/components';
-import { renderAvatar } from '../../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { IconName } from '../../../shared/types/types';
+import { FragmentDetail } from '../../collection/components';
+import { RouteParts } from '../../constants';
+import { ErrorView } from '../../error/views';
+import { ItemVideoDescription } from '../../item/components';
+import { LoadingErrorLoadedComponent } from '../../shared/components';
+import { renderAvatar } from '../../shared/helpers';
+import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { IconName } from '../../shared/types/types';
 
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE,
-} from '../../assignment.gql';
-import { getAssignmentContent, LoadingState } from '../../assignment.helpers';
-import { AssignmentLayout } from '../../assignment.types';
+} from '../assignment.gql';
+import { getAssignmentContent, LoadingState } from '../assignment.helpers';
+import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
