@@ -24,10 +24,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import ControlledDropdown from '../../../shared/components/ControlledDropdown/ControlledDropdown';
-import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
-import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
-import { getEnv } from '../../../shared/helpers/env';
+import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
+import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { IconName } from '../../../shared/types/types';

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import SecuredRoute from '../authentication/components/SecuredRoute';
+import { SecuredRoute } from '../authentication/components';
 import { RouteParts } from '../constants';
 
 import { CollectionDetail, CollectionEdit } from './views';

@@ -8,9 +8,7 @@ import classnames from 'classnames';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
 import { renderRoutes } from './routes';
-import { Footer } from './shared/components/Footer/Footer';
-import { Navigation } from './shared/components/Navigation/Navigation';
-import { Sidebar } from './shared/components/Sidebar/Sidebar';
+import { Footer, Navigation, Sidebar } from './shared/components';
 
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import { ApolloProvider } from 'react-apollo';
@@ -68,7 +66,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 					{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
 					{
 						label: 'Mijn Werkruimte',
-						location: `/${RouteParts.MyWorkspace}`,
+						location: `/${RouteParts.Workspace}`,
 						icon: 'briefcase',
 					},
 					{ label: 'Projecten', location: `/${RouteParts.Projects}` },

@@ -1,6 +1,6 @@
 import { Action, Dispatch } from 'redux';
 
-import { getEnv } from '../../shared/helpers/env';
+import { getEnv } from '../../shared/helpers';
 import {
 	LoginActionTypes,
 	LoginResponse,

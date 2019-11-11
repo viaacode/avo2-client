@@ -27,8 +27,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getEnv } from '../../../shared/helpers/env';
-import { generateContentLinkString } from '../../../shared/helpers/generateLink';
+import { generateContentLinkString, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 

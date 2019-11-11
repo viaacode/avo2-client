@@ -4,7 +4,7 @@ export const RouteParts = {
 	Folder: 'map',
 	Collection: 'collectie',
 	Collections: 'collecties',
-	MyWorkspace: 'mijn-werkruimte',
+	Workspace: 'mijn-werkruimte',
 	Bookmarks: 'bladwijzers',
 	Folders: 'mappen',
 	LoginAvo: 'login-avo',

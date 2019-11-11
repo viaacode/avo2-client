@@ -26,23 +26,25 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import PermissionGuard from '../../../authentication/components/PermissionGuard';
+import { PermissionGuard } from '../../../authentication/components';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../../authentication/helpers/permission-service';
 import { selectLogin } from '../../../authentication/store/selectors';
 import { LoginResponse } from '../../../authentication/store/types';
 import { RouteParts } from '../../../constants';
-import ControlledDropdown from '../../../shared/components/ControlledDropdown/ControlledDropdown';
-import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
-import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
-import { renderAvatar } from '../../../shared/helpers/formatters/avatar';
-import { formatDate } from '../../../shared/helpers/formatters/date';
 import {
+	ControlledDropdown,
+	DataQueryComponent,
+	DeleteObjectModal,
+} from '../../../shared/components';
+import {
+	createDropdownMenuItem,
+	formatDate,
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
-} from '../../../shared/helpers/generateLink';
+	renderAvatar,
+} from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../../shared/services/related-items-service';
@@ -136,7 +138,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(`/${RouteParts.MyWorkspace}`);
+			history.push(`/${RouteParts.Workspace}`);
 			toastService('De collectie werd succesvol verwijderd.', TOAST_TYPE.SUCCESS);
 		} catch (err) {
 			console.error(err);

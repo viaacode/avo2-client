@@ -25,12 +25,13 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { RouteParts } from '../../../constants';
-import ControlledDropdown from '../../../shared/components/ControlledDropdown/ControlledDropdown';
-import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../../shared/components/modals/InputModal';
-import { createDropdownMenuItem } from '../../../shared/helpers/dropdown';
-import { renderAvatar } from '../../../shared/helpers/formatters/avatar';
+import {
+	ControlledDropdown,
+	DataQueryComponent,
+	DeleteObjectModal,
+	InputModal,
+} from '../../../shared/components';
+import { createDropdownMenuItem, renderAvatar } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
@@ -276,7 +277,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				category: 'item',
 			});
 
-			props.history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`);
+			props.history.push(`/${RouteParts.Workspace}/${RouteParts.Collections}`);
 		} catch (err) {
 			console.error(err);
 			toastService('Het verwijderen van de collectie is mislukt');
