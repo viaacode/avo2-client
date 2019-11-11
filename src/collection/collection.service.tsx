@@ -200,6 +200,7 @@ export class CollectionService {
 			const cleanedCollection: Partial<Avo.Collection.Collection> = this.cleanCollectionBeforeSave(
 				newCollection
 			);
+
 			await triggerCollectionUpdate({
 				variables: {
 					id: cleanedCollection.id,
@@ -330,7 +331,7 @@ export class CollectionService {
 		const response = await triggerCollectionFragmentInsert({
 			variables: {
 				id: collection.id,
-				fragment: fragmentToAdd,
+				fragments: fragmentToAdd,
 			},
 			update: ApolloCacheManager.clearCollectionCache,
 		});
@@ -354,6 +355,7 @@ export class CollectionService {
 			if (!collection.thumbnail_path) {
 				return await getThumbnailForCollection(collection);
 			}
+
 			return collection.thumbnail_path;
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });

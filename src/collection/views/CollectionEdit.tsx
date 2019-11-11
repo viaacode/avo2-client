@@ -55,13 +55,16 @@ import {
 
 interface CollectionEditProps extends RouteComponentProps {}
 
+let currentCollection: Avo.Collection.Collection | undefined;
+let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
+
 const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	// State
 	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
-	const [currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection | undefined>(
+	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection | undefined>(
 		undefined
 	);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -401,25 +404,27 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		);
 
 		const renderTab = () => {
-			switch (currentTab) {
-				case 'inhoud':
-					return (
-						<CollectionEditContent
-							collection={currentCollection}
-							swapFragments={swapFragments}
-							updateCollection={setCurrentCollection}
-							updateFragmentProperties={updateFragmentProperties}
-						/>
-					);
-				case 'metadata':
-					return (
-						<CollectionEditMetaData
-							collection={currentCollection}
-							updateCollectionProperty={updateCollectionProperty}
-						/>
-					);
-				default:
-					return null;
+			if (currentCollection) {
+				switch (currentTab) {
+					case 'inhoud':
+						return (
+							<CollectionEditContent
+								collection={currentCollection}
+								swapFragments={swapFragments}
+								updateCollection={setCurrentCollection}
+								updateFragmentProperties={updateFragmentProperties}
+							/>
+						);
+					case 'metadata':
+						return (
+							<CollectionEditMetaData
+								collection={currentCollection}
+								updateCollectionProperty={updateCollectionProperty}
+							/>
+						);
+					default:
+						return null;
+				}
 			}
 		};
 
