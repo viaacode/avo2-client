@@ -1,5 +1,3 @@
-import { debounce } from 'lodash-es';
-import { parse } from 'querystring';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -20,6 +18,8 @@ import {
 	Grid,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { debounce } from 'lodash-es';
+import { parse } from 'querystring';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv } from '../../shared/helpers/env';
@@ -163,27 +163,29 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			<h4 className="c-h4">Beschrijving</h4>
 			{/* "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
 			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
-				<p style={{ paddingRight: '1rem' }}>
-					{formatTimestamps(convertToHtml(itemMetaData.description))}
-				</p>
+				<p>{formatTimestamps(convertToHtml(itemMetaData.description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>
 	);
 
-	return showDescriptionNextToVideo ? (
-		<Grid>
-			<Column size="2-7">{renderMedia()}</Column>
-			<Column size="2-5">{renderDescription()}</Column>
-		</Grid>
-	) : (
-		<Grid>
-			<Column size="2-3">
-				<></>
-			</Column>
-			<Column size="2-6">{renderMedia()}</Column>
-			<Column size="2-3">
-				<></>
-			</Column>
+	return (
+		<Grid className="c-item-video-description">
+			{showDescriptionNextToVideo ? (
+				<>
+					<Column size="2-7">{renderMedia()}</Column>
+					<Column size="2-5">{renderDescription()}</Column>
+				</>
+			) : (
+				<>
+					<Column size="2-3">
+						<></>
+					</Column>
+					<Column size="2-6">{renderMedia()}</Column>
+					<Column size="2-3">
+						<></>
+					</Column>
+				</>
+			)}
 		</Grid>
 	);
 };

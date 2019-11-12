@@ -5,9 +5,9 @@ import { Dispatch } from 'redux';
 
 import { get } from 'lodash-es';
 
-import { Button, Spinner } from '@viaa/avo2-components';
-import NotFound from '../../404/views/NotFound';
+import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { RouteParts } from '../../constants';
+import ErrorView from '../../error/views/ErrorView';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
@@ -96,9 +96,9 @@ const Login: FunctionComponent<LoginProps> = ({
 	if (loginStateError || hasRecentLoginAttempt()) {
 		return (
 			<>
-				<NotFound message="Het inloggen is mislukt" icon="lock">
+				<ErrorView message="Het inloggen is mislukt" icon="lock">
 					<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
-				</NotFound>
+				</ErrorView>
 			</>
 		);
 	}
@@ -106,11 +106,11 @@ const Login: FunctionComponent<LoginProps> = ({
 	if (!loginState || loginStateLoading) {
 		// Wait for login check
 		return (
-			<div
-				style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '400px' }}
-			>
-				<Spinner size="large" />
-			</div>
+			<Spacer margin={['top-large', 'bottom-large']}>
+				<Flex center>
+					<Spinner size="large" />
+				</Flex>
+			</Spacer>
 		);
 	}
 

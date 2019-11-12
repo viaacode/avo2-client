@@ -1,8 +1,8 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
-import NotFound from '../../../404/views/NotFound';
 import { LoadingState } from '../../../assignment/assignment.constants';
+import ErrorView from '../../../error/views/ErrorView';
 
 export interface LoadingErrorLoadedComponentProps {
 	loadingState: LoadingState;
@@ -30,7 +30,7 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 	);
 
 	const renderError = () => (
-		<NotFound
+		<ErrorView
 			message={loadingError || 'Er is iets mis gegaan bij het laden van de gegevens'}
 			icon={loadingErrorIcon || 'alert-triangle'}
 		/>
@@ -46,7 +46,7 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 				return render();
 			}
 			return (
-				<NotFound
+				<ErrorView
 					message={notFoundError || 'Het gevraagde object is niet gevonden'}
 					icon={'search'}
 				/>

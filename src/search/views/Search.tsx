@@ -355,8 +355,8 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												label="Kopieer vaste link naar deze zoekopdracht"
 												onClick={onCopySearchLinkClicked}
 											/>
-											{/* TODO Create link to create search assignment task */}
-											<Button
+											{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
+											{/* <Button
 												type="link"
 												className="c-menu__item"
 												label="Maak van deze zoekopdracht een opdracht"
@@ -364,7 +364,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 													setIsOptionsMenuOpen(false);
 													toastService('Nog niet geïmplementeerd');
 												}}
-											/>
+											/> */}
 										</>
 									</DropdownContent>
 								</Dropdown>

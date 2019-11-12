@@ -2,7 +2,7 @@ import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
 
-import { Spinner } from '@viaa/avo2-components';
+import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Dispatch } from 'redux';
 import { RouteParts } from '../../constants';
 import { getLoginState } from '../store/actions';
@@ -38,11 +38,11 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 	if (!loginState || loginStateLoading) {
 		// Wait for login check
 		return (
-			<div
-				style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '400px' }}
-			>
-				<Spinner size="large" />
-			</div>
+			<Spacer margin={['top-large', 'bottom-large']}>
+				<Flex center>
+					<Spinner size="large" />
+				</Flex>
+			</Spacer>
 		);
 	}
 
