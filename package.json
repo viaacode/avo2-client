@@ -19,8 +19,8 @@
   ],
   "dependencies": {
     "@apollo/react-hooks": "^3.0.0",
-    "@viaa/avo2-types": "^2.2.1",
     "@viaa/avo2-components": "1.16.0",
+    "@viaa/avo2-types": "^2.2.1",
     "apollo-boost": "^0.4.3",
     "classnames": "^2.2.6",
     "graphql": "^14.4.2",
@@ -61,6 +61,7 @@
     "@types/react-redux": "^6.0.14",
     "@types/react-router-config": "^5.0.0",
     "@types/react-router-dom": "^4.3.3",
+    "@types/react-select": "^3.0.8",
     "@types/storybook__react": "^4.0.2",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
