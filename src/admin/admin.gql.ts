@@ -66,3 +66,11 @@ export const INSERT_MENU_ITEM = gql`
 		}
 	}
 `;
+
+export const DELETE_MENU_ITEM = gql`
+	mutation deleteMenuItemById($id: Int!) {
+		delete_app_content_nav_elements(where: { id: { _eq: $id } }) {
+			affected_rows
+		}
+	}
+`;

@@ -6,10 +6,15 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
+import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
+import {
+	DELETE_MENU_ITEM,
+	GET_MENU_ITEMS_BY_PLACEMENT,
+	UPDATE_MENU_ITEM_BY_ID,
+} from '../../admin.gql';
 import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem } from '../../admin.types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
@@ -20,10 +25,13 @@ interface MenuDetailProps extends RouteComponentProps<{ menu: string }> {}
 
 const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [activeRow, setActiveRow] = useState<number | null>(null);
+	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [initialMenuItems, setInitialMenuItems] = useState<MenuItem[]>([]);
 	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
+	const [triggerMenuItemDelete] = useMutation(DELETE_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
 
 	const hasInitialData = useRef<boolean>(false);
@@ -46,6 +54,24 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const menuId = match.params.menu;
 
 	// Methods
+	const handleDelete = (refetch: () => void): void => {
+		triggerMenuItemDelete({
+			variables: { id: idToDelete },
+			update: ApolloCacheManager.clearNavElementsCache,
+		})
+			.then(() => {
+				refetch();
+				toastService(`Het navigatie item is succesvol verwijderd`, TOAST_TYPE.SUCCESS);
+			})
+			.catch(err => {
+				console.error(err);
+				toastService(
+					`Er ging iets mis tijdens het verwijderen van het navigatie item`,
+					TOAST_TYPE.DANGER
+				);
+			});
+	};
+
 	const handleNavigate = (path: string, params: { [key: string]: string } = {}): void => {
 		history.push(buildLink(path, params));
 	};
@@ -81,6 +107,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 					TOAST_TYPE.DANGER
 				);
 			});
+	};
+
+	const openConfirmModal = (id: number): void => {
+		setIdToDelete(id);
+		setIsConfirmModalOpen(true);
 	};
 
 	const reindexMenuitems = (items: MenuItem[]): MenuItem[] =>
@@ -139,7 +170,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				pageTitle={startCase(menuId)}
 			>
 				<AdminLayoutBody>
-					<Table className="c-menu-detail__table" align variant="styled">
+					<Table align className="c-menu-detail__table" variant="styled">
 						<tbody>
 							{menuItems.map((item, index) => (
 								<tr
@@ -165,30 +196,36 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 												}
 												type="secondary"
 											/>
+											<Button
+												icon="delete"
+												onClick={() => openConfirmModal(item.id)}
+												type="secondary"
+											/>
 										</ButtonToolbar>
 									</td>
 								</tr>
 							))}
-							<tr>
-								<td colSpan={3}>
-									<Spacer margin="top">
-										<Flex center>
-											<Button
-												icon="plus"
-												label="Voeg een item toe"
-												onClick={() =>
-													handleNavigate(ADMIN_PATH.MENU_CREATE, {
-														menu: menuId,
-													})
-												}
-												type="borderless"
-											/>
-										</Flex>
-									</Spacer>
-								</td>
-							</tr>
 						</tbody>
 					</Table>
+					<Spacer margin="top">
+						<Flex center>
+							<Button
+								icon="plus"
+								label="Voeg een item toe"
+								onClick={() =>
+									handleNavigate(ADMIN_PATH.MENU_CREATE, {
+										menu: menuId,
+									})
+								}
+								type="borderless"
+							/>
+						</Flex>
+					</Spacer>
+					<DeleteObjectModal
+						deleteObjectCallback={() => handleDelete(refetch)}
+						isOpen={isConfirmModalOpen}
+						onClose={() => setIsConfirmModalOpen(false)}
+					/>
 				</AdminLayoutBody>
 				<AdminLayoutActions>
 					<Button
