@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import React, { FunctionComponent, ReactNode } from 'react';
 
 import {
@@ -8,7 +9,6 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import classnames from 'classnames';
 
 import './ActionsBar.scss';
 
@@ -17,7 +17,7 @@ interface ActionsBarprops {
 	fixed?: boolean;
 }
 
-export const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => {
+const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => {
 	return (
 		<Navbar
 			autoHeight
@@ -39,3 +39,5 @@ export const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed
 		</Navbar>
 	);
 };
+
+export default ActionsBar;

@@ -2,6 +2,8 @@ import React from 'react';
 
 import { TextInput } from '@viaa/avo2-components';
 
-export const IconPicker = () => {
+const IconPicker = () => {
 	return <TextInput />;
 };
+
+export default IconPicker;

@@ -1,19 +1,11 @@
 import React, { ReactNode } from 'react';
 
 import SecuredRoute from '../authentication/components/SecuredRoute';
-import { RouteParts } from '../constants';
+import { ADMIN_PATH } from './admin.const';
 import Dashboard from './views/Dashboard';
 import MenuDetail from './views/Menu/MenuDetail';
 import MenuEdit from './views/Menu/MenuEdit';
 import MenuOverview from './views/Menu/MenuOverview';
-
-export const ADMIN_PATH = Object.freeze({
-	DASHBOARD: `/${RouteParts.Admin}`,
-	MENU: `/${RouteParts.Admin}/${RouteParts.Menu}`,
-	MENU_DETAIL: `/${RouteParts.Admin}/${RouteParts.Menu}/:menu`,
-	MENU_CREATE: `/${RouteParts.Admin}/${RouteParts.Menu}/:menu/${RouteParts.Create}`,
-	MENU_EDIT: `/${RouteParts.Admin}/${RouteParts.Menu}/:menu/:id/${RouteParts.Edit}`,
-});
 
 // Menu routes
 export const renderAdminRoutes = (): ReactNode[] => [

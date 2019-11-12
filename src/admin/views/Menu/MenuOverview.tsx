@@ -6,9 +6,9 @@ import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
-import { MENU_OVERVIEW_TABLE_COLS } from '../../admin.const';
+
+import { ADMIN_PATH, MENU_OVERVIEW_TABLE_COLS } from '../../admin.const';
 import { GET_MENUS } from '../../admin.gql';
-import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem, MenuOverviewTableCols } from '../../admin.types';
 import { AdminLayout } from '../../layouts';
 

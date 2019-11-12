@@ -1,8 +1,7 @@
+import { shallow } from 'enzyme';
 import React from 'react';
 
-import { shallow } from 'enzyme';
-
-import { ActionsBar } from './ActionsBar';
+import ActionsBar from './ActionsBar';
 
 describe('<ActionsBar />', () => {
 	const actionClassName = 'c-custom-action';

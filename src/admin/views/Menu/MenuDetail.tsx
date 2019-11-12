@@ -10,12 +10,13 @@ import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectMod
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+
+import { ADMIN_PATH } from '../../admin.const';
 import {
 	DELETE_MENU_ITEM,
 	GET_MENU_ITEMS_BY_PLACEMENT,
 	UPDATE_MENU_ITEM_BY_ID,
 } from '../../admin.gql';
-import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem } from '../../admin.types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
 

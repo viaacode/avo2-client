@@ -12,8 +12,9 @@ import {
 	fetchMenuItemsByPlacement,
 } from '../../../shared/services/menu-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+
+import { ADMIN_PATH } from '../../admin.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
-import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem } from '../../admin.types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
 

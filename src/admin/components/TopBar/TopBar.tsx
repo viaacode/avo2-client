@@ -13,7 +13,7 @@ interface TopbarProps {
 	navigateBack: (() => void) | null;
 }
 
-export const TopBar: FunctionComponent<TopbarProps> = ({ navigateBack }) => (
+const TopBar: FunctionComponent<TopbarProps> = ({ navigateBack }) => (
 	<Navbar className="c-top-bar">
 		<Container mode="horizontal">
 			<Toolbar>
@@ -33,3 +33,5 @@ export const TopBar: FunctionComponent<TopbarProps> = ({ navigateBack }) => (
 		</Container>
 	</Navbar>
 );
+
+export default TopBar;
