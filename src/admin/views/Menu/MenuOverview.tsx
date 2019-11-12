@@ -1,22 +1,21 @@
+import { startCase } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
-import { startCase } from 'lodash-es';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
-import { MENU_OVERVIEW_TABLE_COLS } from '../../constants';
-import { GET_MENUS } from '../../graphql';
+import { MENU_OVERVIEW_TABLE_COLS } from '../../admin.const';
+import { GET_MENUS } from '../../admin.gql';
+import { ADMIN_PATH } from '../../admin.routes';
+import { MenuItem, MenuOverviewTableCols } from '../../admin.types';
 import { AdminLayout } from '../../layouts';
-import { ADMIN_PATH } from '../../routes';
-import { MenuItem, MenuOverviewTableCols } from '../../types';
 
 interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
-	// Render
-	const renderCell = (rowData: Partial<MenuItem>, columnId: MenuOverviewTableCols) => {
+	const renderTableCell = (rowData: Partial<MenuItem>, columnId: MenuOverviewTableCols) => {
 		switch (columnId) {
 			case 'placement':
 				return startCase(rowData.placement);
@@ -54,7 +53,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 				columns={MENU_OVERVIEW_TABLE_COLS}
 				data={data}
 				renderCell={(rowData: Partial<MenuItem>, columnId: string) =>
-					renderCell(rowData, columnId as MenuOverviewTableCols)
+					renderTableCell(rowData, columnId as MenuOverviewTableCols)
 				}
 				rowKey="id"
 				variant="bordered"

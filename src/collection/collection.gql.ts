@@ -1,5 +1,6 @@
 import { gql } from 'apollo-boost';
-import { ITEMS_PER_PAGE } from '../my-workspace/constants';
+
+import { ITEMS_PER_PAGE } from '../workspace/workspace.const';
 
 // TODO: Reduce to only what we need.
 export const GET_COLLECTION_BY_ID = gql`
@@ -152,30 +153,23 @@ export const DELETE_COLLECTION_FRAGMENT = gql`
 	}
 `;
 
-export const INSERT_COLLECTION_FRAGMENT = gql`
-	mutation insertCollectionFragment($id: Int!, $fragment: app_collection_fragments_insert_input!) {
-		insert_app_collection_fragments(objects: [$fragment]) {
+export const INSERT_COLLECTION_FRAGMENTS = gql`
+	mutation insertCollectionFragment(
+		$id: Int!
+		$fragments: [app_collection_fragments_insert_input!]!
+	) {
+		insert_app_collection_fragments(objects: $fragments) {
 			affected_rows
 			returning {
-				use_custom_fields
-				updated_at
-				start_oc
-				position
 				id
-				external_id
-				end_oc
-				custom_title
-				custom_description
-				created_at
-				collection_id
 			}
 		}
 	}
 `;
 
 export const GET_COLLECTIONS_BY_OWNER = gql`
-	query getCollectionsByOwner($owner_profile_id: uuid, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}) {
-		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }, offset: $offset, limit: $limit) {
+	query getCollectionsByOwner($owner_profile_id: uuid, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}, $order: [app_collections_order_by!] = { updated_at: desc }) {
+		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }, offset: $offset, limit: $limit, order_by: $order) {
 			id
 			updated_at
 			type_id

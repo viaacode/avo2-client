@@ -1,5 +1,6 @@
 import { gql } from 'apollo-boost';
-import { ITEMS_PER_PAGE } from '../my-workspace/constants';
+
+import { ITEMS_PER_PAGE } from '../workspace/workspace.const';
 
 export const GET_ASSIGNMENT_BY_ID = gql`
 	query getAssignmentsById($id: Int!) {

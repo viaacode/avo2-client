@@ -1,22 +1,21 @@
+import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
+import classnames from 'classnames';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { ApolloProvider } from 'react-apollo';
 import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
 import { Flex } from '@viaa/avo2-components';
-import classnames from 'classnames';
 
+import { ADMIN_PATH } from './admin/admin.routes';
 import { Sidebar } from './admin/components';
-import { ADMIN_PATH } from './admin/routes';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
+import { RouteParts } from './constants';
 import { renderRoutes } from './routes';
 import { Footer } from './shared/components/Footer/Footer';
 import { Navigation } from './shared/components/Navigation/Navigation';
-
-import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
-import { ApolloProvider } from 'react-apollo';
-import { RouteParts } from './constants';
 import { dataService } from './shared/services/data-service';
 import store from './store';
 
@@ -72,7 +71,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 					{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
 					{
 						label: 'Mijn Werkruimte',
-						location: `/${RouteParts.MyWorkspace}`,
+						location: `/${RouteParts.Workspace}`,
 						icon: 'briefcase',
 					},
 					{ label: 'Projecten', location: `/${RouteParts.Projects}` },

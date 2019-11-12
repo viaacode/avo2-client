@@ -1,12 +1,8 @@
+import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
-import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
-
-import { find, get, isNil } from 'lodash-es';
-
-import './Home.scss';
 
 import {
 	Button,
@@ -22,7 +18,8 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { dutchContentLabelToEnglishLabel } from '../../collection/types';
+
+import { dutchContentLabelToEnglishLabel } from '../../collection/collection.types';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import {
@@ -31,6 +28,8 @@ import {
 } from '../../shared/helpers/generateLink';
 import { useDebounce } from '../../shared/helpers/useDebounce';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+
+import './Home.scss';
 
 interface HomeProps extends RouteComponentProps {
 	searchResults: Avo.Search.Search | null;
@@ -62,17 +61,28 @@ const Home: FunctionComponent<HomeProps> = ({
 	 */
 	useEffect(() => {
 		// Only do initial search after query params have been analysed and have been added to the state
-		search(
-			'relevance',
-			'desc',
-			0,
-			ITEMS_IN_AUTOCOMPLETE,
-			{
-				query: debouncedSearchTerms || '',
-			},
-			{}
-		);
+		const filters = { query: debouncedSearchTerms || '' };
+
+		search('relevance', 'desc', 0, ITEMS_IN_AUTOCOMPLETE, filters, {});
 	}, [debouncedSearchTerms, search]);
+
+	// Computed
+	const autocompleteMenuItems = (get(searchResults, 'results', []) as Avo.Search.ResultItem[]).map(
+		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
+			label: searchResult.dc_title,
+			id: searchResult.external_id,
+			type: dutchContentLabelToEnglishLabel(searchResult.administrative_type),
+		})
+	);
+
+	const autocompleteButtonLabel = autocompleteMenuItems.length
+		? 'Alle zoekresultaten'
+		: 'Ga naar de zoek pagina';
+
+	// Methods
+	const gotoSearchPage = () => {
+		history.push(generateSearchLinkString('query', searchTerms));
+	};
 
 	const goToSearchResult = (searchResultId: string | undefined) => {
 		if (!isNil(searchResultId)) {
@@ -82,7 +92,7 @@ const Home: FunctionComponent<HomeProps> = ({
 				{
 					id: searchResultId.toString(),
 				}
-			) as Avo.Search.ResultItem | undefined;
+			);
 
 			if (searchResultItem) {
 				history.push(
@@ -93,14 +103,6 @@ const Home: FunctionComponent<HomeProps> = ({
 			}
 		}
 	};
-
-	const autocompleteMenuItems = (get(searchResults, 'results', []) as Avo.Search.ResultItem[]).map(
-		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
-			label: searchResult.dc_title,
-			id: searchResult.external_id as string,
-			type: dutchContentLabelToEnglishLabel(searchResult.administrative_type),
-		})
-	);
 
 	const handleSearchTermChanged = (searchTerm: string) => {
 		setSearchTerms(searchTerm);
@@ -144,16 +146,12 @@ const Home: FunctionComponent<HomeProps> = ({
 												<Spinner size="large" />
 											)}
 											<div className="c-menu__footer">
-												<Link
-													className="c-button c-button--secondary c-button--block"
-													to={generateSearchLinkString('query', searchTerms)}
-												>
-													<div className="c-button__label">
-														{autocompleteMenuItems.length
-															? 'Alle zoekresultaten'
-															: 'Ga naar de zoek pagina'}
-													</div>
-												</Link>
+												<Button
+													block
+													label={autocompleteButtonLabel}
+													onClick={gotoSearchPage}
+													type="secondary"
+												/>
 											</div>
 										</>
 									</DropdownContent>

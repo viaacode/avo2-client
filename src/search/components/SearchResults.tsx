@@ -2,8 +2,8 @@ import React, { FunctionComponent } from 'react';
 
 import { Blankslate, Container, Flex, Pagination, Spacer, Spinner } from '@viaa/avo2-components';
 
+import { SearchResultsProps } from '../search.types';
 import SearchResultItem from './SearchResultItem';
-import { SearchResultsProps } from './types';
 
 const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	currentPage,

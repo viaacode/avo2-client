@@ -42,9 +42,14 @@ import { RouteParts } from '../../constants';
 import { copyToClipboard } from '../../shared/helpers/clipboard';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { SearchFilterControls, SearchResults } from '../components';
+import {
+	SearchFilterFieldValues,
+	SearchFilterMultiOptions,
+	SearchProps,
+	SortOrder,
+} from '../search.types';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
-import { SearchFilterFieldValues, SearchFilterMultiOptions, SearchProps, SortOrder } from './types';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -350,8 +355,8 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												label="Kopieer vaste link naar deze zoekopdracht"
 												onClick={onCopySearchLinkClicked}
 											/>
-											{/* TODO Create link to create search assignment task */}
-											<Button
+											{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
+											{/* <Button
 												type="link"
 												className="c-menu__item"
 												label="Maak van deze zoekopdracht een opdracht"
@@ -359,7 +364,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 													setIsOptionsMenuOpen(false);
 													toastService('Nog niet geïmplementeerd');
 												}}
-											/>
+											/> */}
 										</>
 									</DropdownContent>
 								</Dropdown>

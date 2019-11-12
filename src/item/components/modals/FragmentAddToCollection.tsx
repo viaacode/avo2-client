@@ -29,21 +29,21 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
 import {
 	GET_COLLECTION_BY_ID,
-	GET_COLLECTION_TITLES_BY_OWNER,
 	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENT,
-} from '../../../collection/graphql';
+	INSERT_COLLECTION_FRAGMENTS,
+} from '../../../collection/collection.gql';
 import { getEnv } from '../../../shared/helpers/env';
 import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
 import { toSeconds } from '../../../shared/helpers/parsers/duration';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
-import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
 import './FragmentAddToCollection.scss';
 
 interface FragmentAddToCollectionProps {
@@ -57,7 +57,7 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 	externalId,
 	itemMetaData,
 	isOpen,
-	onClose = () => {},
+	onClose,
 }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -71,10 +71,10 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0
 	);
-	const [collections, setCollections] = useState<Avo.Collection.Collection[]>([]);
+	const [collections] = useState<Avo.Collection.Collection[]>([]);
 
-	const [triggerCollectionFragmentInsert] = useMutation(INSERT_COLLECTION_FRAGMENT);
-	const [triggerInsertCollection] = useMutation(INSERT_COLLECTION);
+	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
+	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -85,20 +85,6 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 			setNewCollectionTitle('');
 			setFragmentStartTime(0);
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
-
-			const queryInfo = {
-				query: GET_COLLECTION_TITLES_BY_OWNER,
-				variables: { owner_profile_id: getProfileId() },
-			};
-			dataService
-				.query(queryInfo)
-				.then(response => {
-					setCollections(get(response, 'data.app_collections'));
-				})
-				.catch(err => {
-					console.error('Failed to get collection titles by owner', err, queryInfo);
-					toastService('Het ophalen van de bestaande collecties is mislukt', TOAST_TYPE.DANGER);
-				});
 		}
 	}, [isOpen, itemMetaData.duration]);
 
@@ -122,26 +108,37 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		}
 	};
 
+	const getFragment = (
+		collection: Partial<Avo.Collection.Collection>
+	): Partial<Avo.Collection.Fragment> => {
+		const hasCut = fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
+
+		return {
+			use_custom_fields: false,
+			start_oc: hasCut ? fragmentStartTime : null,
+			position: (collection.collection_fragments || []).length,
+			external_id: externalId,
+			end_oc: hasCut ? fragmentEndTime : null,
+			custom_title: null,
+			custom_description: null,
+			collection_id: collection.id,
+			item_meta: itemMetaData,
+		};
+	};
+
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {
 		// Disable "Toepassen" button
 		setIsProcessing(true);
 
 		try {
+			const fragment = getFragment(collection);
+			delete fragment.item_meta;
 			const response: void | ExecutionResult<
 				Avo.Collection.Fragment
-			> = await triggerCollectionFragmentInsert({
+			> = await triggerCollectionFragmentsInsert({
 				variables: {
 					id: collection.id,
-					fragment: {
-						use_custom_fields: false,
-						start_oc: fragmentStartTime,
-						position: (collection.collection_fragments || []).length,
-						external_id: externalId,
-						end_oc: fragmentEndTime,
-						custom_title: null,
-						custom_description: null,
-						collection_id: collection.id,
-					},
+					fragments: [fragment],
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
@@ -183,15 +180,25 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 			// Create new collection with one fragment in it
 			newCollection = {
 				title: newCollectionTitle,
-				thumbnail_path: '/images/100x100.svg', // TODO get video stills of fragment and set first frame as cover
+				thumbnail_path: null,
 				is_public: false,
 				owner_profile_id: getProfileId(),
 				type_id: 3,
 			};
+			try {
+				newCollection.thumbnail_path = await getThumbnailForCollection({
+					thumbnail_path: undefined,
+					collection_fragments: [getFragment(newCollection) as Avo.Collection.Fragment],
+				});
+			} catch (err) {
+				console.error('Failed to find cover image for new collection', err, {
+					collectionFragments: [getFragment(newCollection) as Avo.Collection.Fragment],
+				});
+			}
 
 			const response: void | ExecutionResult<
 				Avo.Collection.Collection
-			> = await triggerInsertCollection({
+			> = await triggerCollectionInsert({
 				variables: {
 					collection: newCollection,
 				},

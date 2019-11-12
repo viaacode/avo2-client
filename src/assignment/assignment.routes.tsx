@@ -9,14 +9,14 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		component={AssignmentEdit}
 		exact
-		path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/:id/${RouteParts.Edit}`}
-		key={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/:id/${RouteParts.Edit}`}
+		path={`/${RouteParts.Workspace}/${RouteParts.Assignments}/:id/${RouteParts.Edit}`}
+		key={`/${RouteParts.Workspace}/${RouteParts.Assignments}/:id/${RouteParts.Edit}`}
 	/>,
 	<SecuredRoute
 		component={AssignmentEdit}
 		exact={false}
-		path={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Create}`}
-		key={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Create}`}
+		path={`/${RouteParts.Workspace}/${RouteParts.Assignments}/${RouteParts.Create}`}
+		key={`/${RouteParts.Workspace}/${RouteParts.Assignments}/${RouteParts.Create}`}
 	/>,
 	<SecuredRoute
 		component={AssignmentDetail}

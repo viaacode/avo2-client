@@ -5,8 +5,8 @@ interface AdminLayoutSlotProps {
 }
 
 export const AdminLayoutActions: FunctionComponent<AdminLayoutSlotProps> = ({ children }) => (
-	<>children</>
+	<>{children}</>
 );
 export const AdminLayoutBody: FunctionComponent<AdminLayoutSlotProps> = ({ children }) => (
-	<>children</>
+	<>{children}</>
 );

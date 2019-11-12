@@ -5,7 +5,7 @@ import { Query, QueryResult } from 'react-apollo';
 
 import { Flex, Spinner } from '@viaa/avo2-components';
 
-import NotFound from '../../../404/views/NotFound';
+import ErrorView from '../../../error/views/ErrorView';
 
 export interface DataQueryComponentProps {
 	query: DocumentNode;
@@ -26,36 +26,38 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	notFoundMessage = 'Het opgevraagde object werd niet gevonden',
 	showSpinner = true,
 }) => {
+	const renderSpinner = () =>
+		showSpinner ? (
+			<Flex orientation="horizontal" center>
+				<Spinner size="large" />
+			</Flex>
+		) : null;
+
 	return (
 		<Query query={query} variables={variables}>
 			{(result: QueryResult) => {
 				if (result.loading) {
-					return showSpinner ? (
-						<Flex orientation="horizontal" center>
-							<Spinner size="large" />
-						</Flex>
-					) : null;
+					return renderSpinner();
 				}
 
 				if (result.error) {
 					const firstGraphQlError = get(result, 'error.graphQLErrors[0].message');
+
 					if (firstGraphQlError === 'DELETED') {
 						// TODO show different message if a list of items was returned but only some were deleted
-						return <NotFound message="Dit item is verwijderd" icon="delete" />;
+						return <ErrorView message="Dit item is verwijderd" icon="delete" />;
 					}
+
 					console.error(result.error);
+
 					return (
-						<NotFound message={'Er ging iets mis tijdens het ophalen'} icon="alert-triangle" />
+						<ErrorView message={'Er ging iets mis tijdens het ophalen'} icon="alert-triangle" />
 					);
 				}
 
 				if (isEmpty(get(result, 'data'))) {
 					// Temp empty because of cache clean
-					return showSpinner ? (
-						<Flex orientation="horizontal" center>
-							<Spinner size="large" />
-						</Flex>
-					) : null;
+					return renderSpinner();
 				}
 
 				const data = get(result, resultPath ? `data.${resultPath}` : 'data');
@@ -64,7 +66,7 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 					return renderData(data, () => setTimeout(result.refetch, 0));
 				}
 
-				return <NotFound message={notFoundMessage} />;
+				return <ErrorView message={notFoundMessage} />;
 			}}
 		</Query>
 	);

@@ -17,6 +17,10 @@ import {
 } from '@viaa/avo2-components';
 import { RouteParts } from '../../constants';
 
+import queryString from 'query-string';
+import { getEnv } from '../../shared/helpers/env';
+import './RegisterOrLogin.scss';
+
 export interface RegisterOrLoginProps extends RouteComponentProps {}
 
 const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
@@ -27,6 +31,16 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 		history.push(`/${RouteParts.LoginAvo}`, {
 			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
 		});
+	};
+
+	const redirectToSmartschoolLogin = () => {
+		// Redirect to smartschool login form
+		const base = window.location.href.split(`/${RouteParts.RegisterOrLogin}`)[0];
+		// Url to return to after authentication is completed and server stored auth object in session
+		const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
+		window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
+			returnToUrl,
+		})}`;
 	};
 
 	const redirectToRegister = () => {
@@ -73,7 +87,12 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 										</Spacer>
 										<p>Of meld aan met ...</p>
 										<Spacer margin="bottom-small">
-											<Button icon="smartschool" label="Login met Smartschool" />
+											<Button
+												icon="smartschool"
+												label="Login met Smartschool"
+												className="c-smartschool-button"
+												onClick={redirectToSmartschoolLogin}
+											/>
 										</Spacer>
 										<FormGroup>
 											<Button icon="klascement" label="Login met Klascement" />

@@ -24,25 +24,25 @@ import CollectionOverview from '../../collection/views/CollectionOverview';
 import { RouteParts } from '../../constants';
 import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../constants';
-import { TabViewMap } from '../types';
+import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
+import { TabViewMap } from '../workspace.types';
 import Bookmarks from './Bookmarks';
 
-import './MyWorkspace.scss';
+import './Workspace.scss';
 
-export interface MyWorkspaceProps extends RouteComponentProps<{ tabId: string }> {
+export interface WorkspaceProps extends RouteComponentProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
 }
 
-const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) => {
+const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
 	const [tabId, setTabId] = useState<string>(match.params.tabId || COLLECTIONS_ID);
 
 	// Methods
 	const goToTab = (id: ReactText) => {
-		history.push(`/${RouteParts.MyWorkspace}/${id}`);
+		history.push(`/${RouteParts.Workspace}/${id}`);
 		setTabId(String(id));
 	};
 
@@ -172,4 +172,4 @@ const MyWorkspace: FunctionComponent<MyWorkspaceProps> = ({ history, match }) =>
 	);
 };
 
-export default withRouter(MyWorkspace);
+export default withRouter(Workspace);

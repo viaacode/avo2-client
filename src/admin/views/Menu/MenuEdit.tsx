@@ -1,25 +1,25 @@
+import { useMutation } from '@apollo/react-hooks';
+import { get, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { ValueType } from 'react-select';
 
-import { useMutation } from '@apollo/react-hooks';
 import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
-import { get, startCase } from 'lodash-es';
 
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import { fetchMenuItemById } from '../../../shared/services/menu-service';
+import {
+	fetchMenuItemById,
+	fetchMenuItemsByPlacement,
+} from '../../../shared/services/menu-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types/types';
-import { AppState } from '../../../store';
+import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
+import { ADMIN_PATH } from '../../admin.routes';
+import { MenuItem } from '../../admin.types';
 import { IconPicker } from '../../components';
 import { MENU_ICON_OPTIONS } from '../../constants';
-import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../graphql';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
-import { ADMIN_PATH } from '../../routes';
-import { selectMenuItems } from '../../store/selectors';
-import { MenuItem } from '../../types';
 
 interface MenuEditForm {
 	icon: IconName | '';
@@ -33,20 +33,29 @@ const initialMenuForm = (): MenuEditForm => ({
 	link: '',
 });
 
-interface MenuEditProps extends RouteComponentProps<{ menu: string; id?: string }> {
-	menuItems: MenuItem[];
-}
+interface MenuEditProps extends RouteComponentProps<{ menu: string; id?: string }> {}
 
-const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems }) => {
+const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
 	const [menuForm, setMenuForm] = useState<MenuEditForm>(initialMenuForm());
 	const [pageType, setPageType] = useState<'edit' | 'create' | undefined>();
 	const [initialMenuItem, setInitialMenuItem] = useState<MenuItem | null>(null);
+	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
-	const [insertMenuItem] = useMutation(INSERT_MENU_ITEM);
-	const [updateMenuItem] = useMutation(UPDATE_MENU_ITEM_BY_ID);
+	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
+	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
+
+	useEffect(() => {
+		const menuId = match.params.menu;
+
+		fetchMenuItemsByPlacement(menuId).then((menuItemsByPlacement: MenuItem[] | null) => {
+			if (menuItemsByPlacement && menuItemsByPlacement.length) {
+				setMenuItems(menuItemsByPlacement);
+			}
+		});
+	}, [match.params.menu]);
 
 	useEffect(() => {
 		const menuItemId = match.params.id;
@@ -109,7 +118,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 		};
 
 		if (pageType === 'create') {
-			insertMenuItem({
+			triggerMenuItemInsert({
 				variables: {
 					menuItem: {
 						...menuItem,
@@ -122,7 +131,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 				.then(() => handleSucces('Het navigatie item is succesvol aangemaakt'))
 				.catch(err => handleError('Het aanmaken van het navigatie item is mislukt', err));
 		} else {
-			updateMenuItem({
+			triggerMenuItemUpdate({
 				variables: {
 					id,
 					menuItem: {
@@ -213,8 +222,4 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	menuItems: selectMenuItems(state),
-});
-
-export default withRouter(connect(mapStateToProps)(MenuEdit));
+export default withRouter(MenuEdit);
