@@ -1,11 +1,9 @@
+import { useMutation } from '@apollo/react-hooks';
+import { cloneDeep, isEqual, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
-import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { useMutation } from '@apollo/react-hooks';
 import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
-import { cloneDeep, isEqual, startCase } from 'lodash-es';
-import { Dispatch } from 'redux';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
@@ -15,15 +13,12 @@ import { GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../../admin
 import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem } from '../../admin.types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
-import { setMenuItems } from '../../store/actions';
 
 import './MenuDetail.scss';
 
-interface MenuDetailProps extends RouteComponentProps<{ menu: string }> {
-	setMenuItemsAction: (menuItems: MenuItem[]) => void;
-}
+interface MenuDetailProps extends RouteComponentProps<{ menu: string }> {}
 
-const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match, setMenuItemsAction }) => {
+const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [activeRow, setActiveRow] = useState<number | null>(null);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [initialMenuItems, setInitialMenuItems] = useState<MenuItem[]>([]);
@@ -33,13 +28,6 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match, setMen
 
 	const hasInitialData = useRef<boolean>(false);
 	const timeout = useRef<NodeJS.Timeout | null>(null);
-
-	useEffect(() => {
-		if (menuItems && menuItems.length) {
-			// Save menu items in store
-			setMenuItemsAction(menuItems);
-		}
-	}, [menuItems, setMenuItemsAction]);
 
 	useEffect(() => {
 		// Reset active row to clear styling
@@ -230,15 +218,4 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match, setMen
 	);
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-	setMenuItemsAction: (menuItems: MenuItem[]) => {
-		dispatch(setMenuItems(menuItems));
-	},
-});
-
-export default withRouter(
-	connect(
-		null,
-		mapDispatchToProps
-	)(MenuDetail)
-);
+export default withRouter(MenuDetail);

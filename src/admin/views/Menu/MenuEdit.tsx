@@ -1,8 +1,8 @@
+import { useMutation } from '@apollo/react-hooks';
+import { get, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { useMutation } from '@apollo/react-hooks';
 import {
 	Button,
 	ButtonToolbar,
@@ -13,19 +13,19 @@ import {
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
-import { get, startCase } from 'lodash-es';
 
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import { fetchMenuItemById } from '../../../shared/services/menu-service';
+import {
+	fetchMenuItemById,
+	fetchMenuItemsByPlacement,
+} from '../../../shared/services/menu-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { AppState } from '../../../store';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
 import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem } from '../../admin.types';
 import { ActionsBar } from '../../components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
-import { selectMenuItems } from '../../store/selectors';
 
 interface MenuEditForm {
 	icon: IconName | '';
@@ -39,20 +39,29 @@ const initialMenuForm = (): MenuEditForm => ({
 	link: '',
 });
 
-interface MenuEditProps extends RouteComponentProps<{ menu: string; id?: string }> {
-	menuItems: MenuItem[];
-}
+interface MenuEditProps extends RouteComponentProps<{ menu: string; id?: string }> {}
 
-const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems }) => {
+const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
 	const [menuForm, setMenuForm] = useState<MenuEditForm>(initialMenuForm());
 	const [pageType, setPageType] = useState<'edit' | 'create' | undefined>();
 	const [initialMenuItem, setInitialMenuItem] = useState<MenuItem | null>(null);
+	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
+
+	useEffect(() => {
+		const menuId = match.params.menu;
+
+		fetchMenuItemsByPlacement(menuId).then((menuItemsByPlacement: MenuItem[] | null) => {
+			if (menuItemsByPlacement && menuItemsByPlacement.length) {
+				setMenuItems(menuItemsByPlacement);
+			}
+		});
+	}, [match.params.menu]);
 
 	useEffect(() => {
 		const menuItemId = match.params.id;
@@ -209,8 +218,4 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	menuItems: selectMenuItems(state),
-});
-
-export default withRouter(connect(mapStateToProps)(MenuEdit));
+export default withRouter(MenuEdit);
