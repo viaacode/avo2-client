@@ -1,26 +1,20 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { ValueType } from 'react-select';
 
 import { useMutation } from '@apollo/react-hooks';
-import {
-	Button,
-	ButtonToolbar,
-	Flex,
-	Form,
-	FormGroup,
-	IconName,
-	Spinner,
-	TextInput,
-} from '@viaa/avo2-components';
+import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
 import { get, startCase } from 'lodash-es';
 
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import { fetchMenuItemById } from '../../../shared/services/menu-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { ReactSelectOption } from '../../../shared/types/types';
 import { AppState } from '../../../store';
-import { ActionsBar } from '../../components';
+import { IconPicker } from '../../components';
+import { MENU_ICON_OPTIONS } from '../../constants';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../graphql';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
 import { ADMIN_PATH } from '../../routes';
@@ -186,14 +180,28 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 		<AdminLayout navigateBack={navigateBack} pageTitle={pageTitle}>
 			<AdminLayoutBody>
 				<Form>
-					<FormGroup label="Icon">
-						<TextInput onChange={(e: any) => handleChange('icon', e)} value={menuForm.icon} />
+					<FormGroup label="Icoon">
+						<IconPicker
+							options={MENU_ICON_OPTIONS}
+							onChange={(e: ValueType<ReactSelectOption<string>>) =>
+								handleChange('icon', get(e, 'value', ''))
+							}
+							value={MENU_ICON_OPTIONS.find(
+								(option: ReactSelectOption<string>) => option.value === menuForm.icon
+							)}
+						/>
 					</FormGroup>
 					<FormGroup error={formErrors.label} label="Label" required>
-						<TextInput onChange={(e: any) => handleChange('label', e)} value={menuForm.label} />
+						<TextInput
+							onChange={(value: string) => handleChange('label', value)}
+							value={menuForm.label}
+						/>
 					</FormGroup>
 					<FormGroup error={formErrors.link} label="Link" required>
-						<TextInput onChange={(e: any) => handleChange('link', e)} value={menuForm.link} />
+						<TextInput
+							onChange={(value: string) => handleChange('link', value)}
+							value={menuForm.link}
+						/>
 					</FormGroup>
 				</Form>
 			</AdminLayoutBody>

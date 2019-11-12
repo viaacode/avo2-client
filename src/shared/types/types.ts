@@ -196,3 +196,8 @@ export type NavigationItem = {
 	location: string;
 	icon?: IconName;
 };
+
+export type ReactSelectOption<T = any> = {
+	label: string;
+	value: T;
+};
