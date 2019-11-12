@@ -6,23 +6,16 @@ import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';
+import { MENU_OVERVIEW_TABLE_COLS } from '../../admin.const';
 import { GET_MENUS } from '../../admin.gql';
 import { ADMIN_PATH } from '../../admin.routes';
-import { MenuItem } from '../../admin.types';
+import { MenuItem, MenuOverviewTableCols } from '../../admin.types';
 import { AdminLayout } from '../../layouts';
-
-const MENUS_TABLE_COLS = [
-	{ id: 'placement', label: 'Naam' },
-	{ id: 'description', label: 'Omschrijving' },
-	{ id: 'actions', label: '' },
-];
-
-type MenuTableCols = 'placement' | 'description' | 'actions';
 
 interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
-	const renderCell = (rowData: Partial<MenuItem>, columnId: MenuTableCols) => {
+	const renderTableCell = (rowData: Partial<MenuItem>, columnId: MenuOverviewTableCols) => {
 		switch (columnId) {
 			case 'placement':
 				return startCase(rowData.placement);
@@ -57,10 +50,10 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const renderMenuOverview = (data: Partial<MenuItem>[]) => {
 		return (
 			<Table
-				columns={MENUS_TABLE_COLS}
+				columns={MENU_OVERVIEW_TABLE_COLS}
 				data={data}
 				renderCell={(rowData: Partial<MenuItem>, columnId: string) =>
-					renderCell(rowData, columnId as MenuTableCols)
+					renderTableCell(rowData, columnId as MenuOverviewTableCols)
 				}
 				rowKey="id"
 				variant="bordered"

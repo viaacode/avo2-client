@@ -3,16 +3,7 @@ import { get, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import {
-	Button,
-	ButtonToolbar,
-	Flex,
-	Form,
-	FormGroup,
-	IconName,
-	Spinner,
-	TextInput,
-} from '@viaa/avo2-components';
+import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
 
 import { buildLink } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
@@ -24,7 +15,6 @@ import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
 import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem } from '../../admin.types';
-import { ActionsBar } from '../../components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
 
 interface MenuEditForm {
@@ -207,12 +197,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				</Form>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
-				<ActionsBar>
-					<ButtonToolbar>
-						<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
-						<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
-					</ButtonToolbar>
-				</ActionsBar>
+				<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
+				<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
 			</AdminLayoutActions>
 		</AdminLayout>
 	);

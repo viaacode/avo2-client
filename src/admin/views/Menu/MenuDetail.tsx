@@ -191,18 +191,16 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 					</Table>
 				</AdminLayoutBody>
 				<AdminLayoutActions>
-					<ButtonToolbar>
-						<Button
-							disabled={isEqual(initialMenuItems, menuItems) || isSaving}
-							label="Opslaan"
-							onClick={() => handleSave(refetch)}
-						/>
-						<Button
-							label="Annuleer"
-							onClick={() => handleNavigate(ADMIN_PATH.MENU)}
-							type="tertiary"
-						/>
-					</ButtonToolbar>
+					<Button
+						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
+						label="Opslaan"
+						onClick={() => handleSave(refetch)}
+					/>
+					<Button
+						label="Annuleer"
+						onClick={() => handleNavigate(ADMIN_PATH.MENU)}
+						type="tertiary"
+					/>
 				</AdminLayoutActions>
 			</AdminLayout>
 		);
