@@ -5,7 +5,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
 
-import { buildLink } from '../../../shared/helpers/generateLink';
+import { navigate } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import {
 	fetchMenuItemById,
@@ -155,7 +155,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 		setIsSaving(false);
 		toastService(message, TOAST_TYPE.SUCCESS);
-		history.push(buildLink(ADMIN_PATH.MENU_DETAIL, { menu }));
+		navigate(history, ADMIN_PATH.MENU_DETAIL, { menu });
 	};
 
 	const handleValidation = (): boolean => {
@@ -174,7 +174,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	};
 
 	const navigateBack = () => {
-		history.push(buildLink(ADMIN_PATH.MENU_DETAIL, { menu: menuId }));
+		navigate(history, ADMIN_PATH.MENU_DETAIL, { menu: menuId });
 	};
 
 	// Render

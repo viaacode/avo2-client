@@ -7,7 +7,7 @@ import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
-import { buildLink } from '../../../shared/helpers/generateLink';
+import { navigate } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
@@ -66,15 +66,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			})
 			.catch(err => {
 				console.error(err);
-				toastService(
-					`Er ging iets mis tijdens het verwijderen van het navigatie item`,
-					TOAST_TYPE.DANGER
-				);
+				toastService(`Het verwijderen van het navigatie item is mislukt`, TOAST_TYPE.DANGER);
 			});
 	};
 
 	const handleNavigate = (path: string, params: { [key: string]: string } = {}): void => {
-		history.push(buildLink(path, params));
+		navigate(history, path, params);
 	};
 
 	const handleSave = (refetch: () => void): void => {
@@ -103,10 +100,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			})
 			.catch(err => {
 				console.error(err);
-				toastService(
-					'Er ging iets mis tijdens het opslaan van de navigatie items',
-					TOAST_TYPE.DANGER
-				);
+				toastService('Het opslaan van de navigatie items is mislukt', TOAST_TYPE.DANGER);
 			});
 	};
 
