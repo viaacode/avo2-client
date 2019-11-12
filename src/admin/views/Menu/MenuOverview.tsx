@@ -1,8 +1,8 @@
+import { startCase } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
-import { startCase } from 'lodash-es';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
 import { buildLink } from '../../../shared/helpers/generateLink';

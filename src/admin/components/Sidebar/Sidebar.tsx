@@ -14,7 +14,7 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ headerLink, navItems 
 	<div className="o-sidebar">
 		<div className="o-sidebar__header">
 			<Link className="u-remove-link-styling u-color-white" to={headerLink}>
-				Kitchen
+				Beheer
 			</Link>
 		</div>
 		<div className="o-sidebar__content">
