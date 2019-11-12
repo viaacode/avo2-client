@@ -198,12 +198,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, menuItems 
 				</Form>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
-				<ActionsBar>
-					<ButtonToolbar>
-						<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
-						<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
-					</ButtonToolbar>
-				</ActionsBar>
+				<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
+				<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
 			</AdminLayoutActions>
 		</AdminLayout>
 	);

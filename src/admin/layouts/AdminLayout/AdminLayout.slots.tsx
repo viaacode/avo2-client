@@ -1,6 +1,12 @@
-import { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 
-import { SlotProps } from '@viaa/avo2-components/dist/types';
+interface AdminLayoutSlotProps {
+	children: ReactElement | ReactElement[];
+}
 
-export const AdminLayoutActions: FunctionComponent<SlotProps> = ({ children }) => children;
-export const AdminLayoutBody: FunctionComponent<SlotProps> = ({ children }) => children;
+export const AdminLayoutActions: FunctionComponent<AdminLayoutSlotProps> = ({ children }) => (
+	<>children</>
+);
+export const AdminLayoutBody: FunctionComponent<AdminLayoutSlotProps> = ({ children }) => (
+	<>children</>
+);
