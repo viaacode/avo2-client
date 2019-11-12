@@ -290,7 +290,7 @@ export class CollectionService {
 			},
 			update: ApolloCacheManager.clearCollectionCache,
 		});
-		get(response, 'data.insert_app_collection_fragments.returning', []).map(
+		get(response, 'data.insert_app_collection_fragments.returning', []).forEach(
 			(f: { id: number }, index: number) => {
 				fragments[index].id = f.id;
 			}

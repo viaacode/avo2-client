@@ -161,8 +161,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			setIsFirstRender(true);
 		}
 
-		const relatedItemStyle: any = { width: '100%', float: 'left', marginRight: '2%' };
-
 		const canDeleteCollection = PermissionService.hasPermissions(
 			[
 				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },

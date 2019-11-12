@@ -1,14 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
-import { cloneDeep, debounce, eq, get, isNil, omit, set } from 'lodash-es';
-import React, {
-	createRef,
-	FunctionComponent,
-	ReactElement,
-	RefObject,
-	useEffect,
-	useState,
-} from 'react';
+import { cloneDeep, eq, get, isNil, omit, set } from 'lodash-es';
+import React, { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -55,8 +48,6 @@ import './AssignmentDetail.scss';
 interface AssignmentProps extends RouteComponentProps {
 	loginResponse: LoginResponse | null;
 }
-
-const DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT = 200;
 
 export enum AssignmentRetrieveError {
 	DELETED = 'DELETED',

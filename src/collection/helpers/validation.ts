@@ -4,7 +4,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
 import { stripHtml } from '../../shared/helpers/formatters/strip-html';
-import { toSeconds } from '../../shared/helpers/parsers/duration';
 
 type ValidationRule<T> = {
 	error: string | ((object: T) => string);

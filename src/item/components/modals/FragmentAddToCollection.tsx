@@ -71,7 +71,7 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0
 	);
-	const [collections, setCollections] = useState<Avo.Collection.Collection[]>([]);
+	const [collections] = useState<Avo.Collection.Collection[]>([]);
 
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
