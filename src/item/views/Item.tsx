@@ -134,7 +134,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					ContentTypeString.video;
 
 				return (
-					<li>
+					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							title={relatedItem.dc_title}
 							href={`/item/${relatedItem.id}`}
