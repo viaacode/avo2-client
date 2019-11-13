@@ -12,7 +12,7 @@ interface AdminLayoutProps {
 	pageTitle: string;
 }
 
-export const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
+const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 	children,
 	className,
 	navigateBack = null,
@@ -35,3 +35,5 @@ export const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 		</>
 	);
 };
+
+export default AdminLayout;

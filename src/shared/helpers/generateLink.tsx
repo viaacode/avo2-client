@@ -1,3 +1,4 @@
+import { History } from 'history';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -6,6 +7,7 @@ import { isArray, isEmpty, isNil, noop } from 'lodash-es';
 import queryString from 'query-string';
 
 import { RouteParts } from '../../constants';
+import toastService, { TOAST_TYPE } from '../services/toast-service';
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
 	video: RouteParts.Item,
@@ -14,24 +16,46 @@ export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: str
 	bundel: RouteParts.Folder,
 };
 
-export function buildLink(route: string, params: { [key: string]: any } = {}) {
-	if (route.includes(':') && (isNil(params) || isEmpty(params))) {
-		const missingParams = route
-			.split('/')
-			.filter(r => r.includes(':'))
-			.join(', ');
-		console.error(`Include following params: ${missingParams}`);
+export function navigate(history: History, route: string, params: { [key: string]: any } = {}) {
+	const showError = (params: string[]) => {
+		const paramsString = params.join(', ').replace(':', '');
 
-		return '';
+		console.error(`The following params were not included: [${paramsString}] for ${route}`);
+		toastService(`De navigatie is afgebroken wegens foutieve parameters`, TOAST_TYPE.DANGER);
+	};
+	let builtLink = route;
+	let missingParams: string[] = [];
+
+	// Abort navigation when params were expected but none were given
+	if (route.includes(':') && (isNil(params) || isEmpty(params))) {
+		missingParams = route.split('/').filter(r => r.includes(':'));
+
+		showError(missingParams);
+
+		return;
 	}
 
-	let builtLink = route;
-
+	// Replace url with given params
 	Object.keys(params).forEach((param: string) => {
-		builtLink = builtLink.replace(`:${param}`, params[param]);
+		const substring = `:${param}`;
+		const replaced = builtLink.search(substring) >= 0;
+
+		// Check if something was actually replaced
+		if (!replaced) {
+			missingParams.push(substring);
+		}
+
+		builtLink = builtLink.replace(substring, params[param]);
 	});
 
-	return builtLink;
+	// Abort navigation if not all params were replaced
+	if (missingParams.length) {
+		showError(missingParams);
+
+		return;
+	}
+
+	history.push(builtLink);
 }
 
 export function generateSearchLinks(

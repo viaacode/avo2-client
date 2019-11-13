@@ -5,10 +5,10 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 
 import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import { buildLink } from '../../../shared/helpers/generateLink';
-import { MENU_OVERVIEW_TABLE_COLS } from '../../admin.const';
+import { navigate } from '../../../shared/helpers/generateLink';
+
+import { ADMIN_PATH, MENU_OVERVIEW_TABLE_COLS } from '../../admin.const';
 import { GET_MENUS } from '../../admin.gql';
-import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem, MenuOverviewTableCols } from '../../admin.types';
 import { AdminLayout } from '../../layouts';
 
@@ -24,18 +24,14 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 					<ButtonToolbar>
 						<Button
 							icon="list"
-							onClick={() =>
-								history.push(buildLink(ADMIN_PATH.MENU_DETAIL, { menu: rowData.placement }))
-							}
+							onClick={() => navigate(history, ADMIN_PATH.MENU_DETAIL, { menu: rowData.placement })}
 							size="small"
 							title="Bekijk alle navigatie items"
 							type="tertiary"
 						/>
 						<Button
 							icon="plus"
-							onClick={() =>
-								history.push(buildLink(ADMIN_PATH.MENU_CREATE, { menu: rowData.placement }))
-							}
+							onClick={() => navigate(history, ADMIN_PATH.MENU_CREATE, { menu: rowData.placement })}
 							size="small"
 							title="Voeg een navigatie item toe"
 							type="tertiary"

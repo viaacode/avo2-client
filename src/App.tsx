@@ -8,7 +8,7 @@ import { Slide, ToastContainer } from 'react-toastify';
 
 import { Flex } from '@viaa/avo2-components';
 
-import { ADMIN_PATH } from './admin/admin.routes';
+import { ADMIN_PATH } from './admin/admin.const';
 import { Sidebar } from './admin/components';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';

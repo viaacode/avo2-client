@@ -6,7 +6,7 @@ import { ValueType } from 'react-select';
 
 import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
 
-import { buildLink } from '../../../shared/helpers/generateLink';
+import { navigate } from '../../../shared/helpers/generateLink';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import {
 	fetchMenuItemById,
@@ -14,8 +14,9 @@ import {
 } from '../../../shared/services/menu-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types/types';
+
+import { ADMIN_PATH } from '../../admin.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
-import { ADMIN_PATH } from '../../admin.routes';
 import { MenuItem } from '../../admin.types';
 import { IconPicker } from '../../components';
 import { MENU_ICON_OPTIONS } from '../../constants';
@@ -158,7 +159,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 		setIsSaving(false);
 		toastService(message, TOAST_TYPE.SUCCESS);
-		history.push(buildLink(ADMIN_PATH.MENU_DETAIL, { menu }));
+		navigate(history, ADMIN_PATH.MENU_DETAIL, { menu });
 	};
 
 	const handleValidation = (): boolean => {
@@ -177,7 +178,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	};
 
 	const navigateBack = () => {
-		history.push(buildLink(ADMIN_PATH.MENU_DETAIL, { menu: menuId }));
+		navigate(history, ADMIN_PATH.MENU_DETAIL, { menu: menuId });
 	};
 
 	// Render
