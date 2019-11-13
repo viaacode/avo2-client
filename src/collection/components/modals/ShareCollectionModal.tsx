@@ -18,7 +18,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { UPDATE_COLLECTION } from '../../graphql';
@@ -27,7 +26,7 @@ import { getValidationErrorsForPublish } from '../../helpers/validation';
 interface ShareCollectionModalProps {
 	isOpen: boolean;
 	onClose: (collection?: Avo.Collection.Collection) => void;
-	updateCollectionProperty: (value: any, fieldName: string) => void;
+	setIsPublic: (value: any) => void;
 	collection: Avo.Collection.Collection;
 }
 
@@ -48,7 +47,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	onClose,
 	isOpen,
 	collection,
-	updateCollectionProperty,
+	setIsPublic,
 }) => {
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
@@ -58,36 +57,34 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		try {
 			const isPublished = isCollectionPublic && !collection.is_public;
 			const isDepublished = !isCollectionPublic && collection.is_public;
+
+			// Close modal when isPublic doesn't change
 			if (!isPublished && !isDepublished) {
-				// Nothing changed
+				onClose();
 				return;
 			}
 
+			// Validate if user wants to publish
 			if (isPublished) {
-				// We only need to check if you can publish if the user wants to publish
-				// If the user wants to de-publish, we don't need to check anything
 				const validationErrors: string[] = getValidationErrorsForPublish(collection);
+
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-					// <br> tags will be resolved to html by viaacode/avo2-components@v1.4.0
-					toastService(validationErrors.join('</br>'), TOAST_TYPE.DANGER);
+					toastService(validationErrors, TOAST_TYPE.DANGER);
 					return;
 				}
 			}
 
-			updateCollectionProperty(isCollectionPublic, 'is_public');
-			// TODO: Change when published_at is added in GraphQL
-			updateCollectionProperty(new Date().toISOString(), 'publish_at');
+			setIsPublic(isCollectionPublic);
+
 			const newCollection: Avo.Collection.Collection = {
 				is_public: isCollectionPublic,
-				publish_at: new Date().toISOString(),
 			} as Avo.Collection.Collection;
 			await triggerCollectionPropertyUpdate({
 				variables: {
 					id: collection.id,
 					collection: newCollection,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 			setValidationError(undefined);
 			toastService(
@@ -150,7 +147,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 						<ToolbarRight>
 							<ToolbarItem>
 								<ButtonToolbar>
-									<Button type="secondary" label="Annuleren" onClick={() => onClose} />
+									<Button type="secondary" label="Annuleren" onClick={() => onClose()} />
 									<Button type="primary" label="Opslaan" onClick={onSave} />
 								</ButtonToolbar>
 							</ToolbarItem>

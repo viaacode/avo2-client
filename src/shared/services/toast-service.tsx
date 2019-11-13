@@ -23,11 +23,33 @@ const Toast: FunctionComponent<any> = ({ closeToast, ...rest }) => (
 );
 
 export default function toastService(
-	alert: ToastInfo | string | ReactNode,
+	alert: ToastInfo | string | string[] | ReactNode,
 	alertType: TOAST_TYPE = TOAST_TYPE.INFO
 ) {
 	if (isNil(alert)) {
 		return null;
+	}
+
+	if (Array.isArray(alert)) {
+		const messages = alert as string[];
+		const multiLineMessage = (
+			<>
+				{messages.map((message: string, index: number) => {
+					return (
+						<>
+							{index ? (
+								<>
+									<br />
+									<br />
+								</>
+							) : null}
+							{message}
+						</>
+					);
+				})}
+			</>
+		);
+		return toast(<Toast message={multiLineMessage} type={alertType} />);
 	}
 
 	if (isString(alert) || !(alert as ToastInfo).message) {

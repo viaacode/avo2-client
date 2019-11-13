@@ -13,6 +13,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import {
+	Box,
 	Button,
 	Container,
 	Dropdown,
@@ -20,21 +21,21 @@ import {
 	DropdownContent,
 	Icon,
 	MenuContent,
+	Spacer,
 	TagList,
 	TagOption,
 	Toolbar,
-	ToolbarCenter,
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import NotFound from '../../404/views/NotFound';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
 import FragmentDetail from '../../collection/components/FragmentDetail';
 import { RouteParts } from '../../constants';
+import ErrorView from '../../error/views/ErrorView';
 import ItemVideoDescription from '../../item/components/ItemVideoDescription';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
 import { renderAvatar } from '../../shared/helpers/formatters/avatar';
@@ -47,9 +48,9 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE,
 } from '../graphql';
 import { getAssignmentContent, LoadingState } from '../helpers';
+import { AssignmentLayout } from '../types';
 
 import './AssignmentDetail.scss';
-import { AssignmentLayout } from '../types';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginResponse: LoginResponse | null;
@@ -65,8 +66,6 @@ export enum AssignmentRetrieveError {
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResponse }) => {
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
-	const [isDescriptionCollapsed, setDescriptionCollapsed] = useState<boolean>(false);
-	const [navBarHeight, setNavBarHeight] = useState<number>(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
 	const [assigmentContent, setAssigmentContent] = useState<
 		Avo.Assignment.Content | null | undefined
@@ -77,34 +76,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 	const [triggerInsertAssignmentResponse] = useMutation(INSERT_ASSIGNMENT_RESPONSE);
 	const [triggerUpdateAssignmentResponse] = useMutation(UPDATE_ASSIGNMENT_RESPONSE);
 
-	const navBarRef: RefObject<HTMLDivElement> = createRef<HTMLDivElement>();
-
 	const isOwnerOfAssignment = (tempAssignment: Avo.Assignment.Assignment) => {
 		return getProfileId() === tempAssignment.owner_profile_id;
 	};
-
-	// Handle resize
-	const onResizeHandler = debounce(
-		() => {
-			if (navBarRef.current) {
-				const navBarHeight = navBarRef.current.getBoundingClientRect().height;
-				setNavBarHeight(navBarHeight);
-			} else {
-				setNavBarHeight(DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT);
-			}
-		},
-		300,
-		{ leading: false, trailing: true }
-	);
-
-	const registerResizeHandler = () => {
-		window.addEventListener('resize', onResizeHandler);
-		onResizeHandler();
-
-		return window.removeEventListener('resize', onResizeHandler);
-	};
-
-	useEffect(registerResizeHandler, [isDescriptionCollapsed]);
 
 	/**
 	 * If the creation of the assignment response fails, we'll still continue with getting the assignment content
@@ -206,7 +180,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				switch (graphqlError) {
 					case AssignmentRetrieveError.DELETED:
 						errorObj = {
-							error: 'De opdracht werdt verwijderd',
+							error: 'De opdracht werd verwijderd',
 							icon: 'delete' as IconName,
 						};
 						break;
@@ -327,7 +301,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				);
 			default:
 				return (
-					<NotFound
+					<ErrorView
 						icon="alert-triangle"
 						message={`Onverwacht opdracht inhoud type: "${assignment.content_label}"`}
 					/>
@@ -378,8 +352,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 		);
 
 		return (
-			<div className="c-assigment-detail">
-				<div className="c-navbar" ref={navBarRef}>
+			<div className="c-assignment-detail">
+				<div className="c-navbar">
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
 							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
@@ -389,15 +363,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
 									</ToolbarItem>
 								</ToolbarLeft>
-								<ToolbarCenter>
-									<div style={{ zIndex: 22 }}>
-										<Button
-											icon={isDescriptionCollapsed ? 'chevron-up' : 'chevron-down'}
-											label={isDescriptionCollapsed ? 'opdracht tonen' : 'opdracht verbergen'}
-											onClick={() => setDescriptionCollapsed(!isDescriptionCollapsed)}
-										/>
-									</div>
-								</ToolbarCenter>
 								<ToolbarRight>
 									<>
 										<ToolbarItem>
@@ -439,27 +404,24 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 								</ToolbarRight>
 							</Toolbar>
 						</Container>
-						{!isDescriptionCollapsed && (
+						<Spacer margin="top">
 							<Container mode="horizontal">
 								<div
 									className="c-content"
 									dangerouslySetInnerHTML={{ __html: assignment.description }}
 								/>
 								{!!assignment.answer_url && (
-									<div className="c-box c-box--padding-small c-box--soft-white">
+									<Box className="c-box--soft-white" condensed>
 										<p>Geef je antwoorden in op:</p>
 										<p>
 											<a href={assignment.answer_url}>{assignment.answer_url}</a>
 										</p>
-									</div>
+									</Box>
 								)}
 							</Container>
-						)}
+						</Spacer>
 					</Container>
 				</div>
-
-				<div style={{ height: `${navBarHeight}px` }}>{/*whitespace behind fixed navbar*/}</div>
-
 				<Container mode="vertical">
 					<Container mode="horizontal">{renderContent()}</Container>
 				</Container>

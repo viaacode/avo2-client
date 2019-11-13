@@ -29,7 +29,7 @@ export interface RegisterProps {}
 
 const Register: FunctionComponent<RegisterProps> = () => {
 	return (
-		<Container mode="vertical">
+		<Container className="c-register-view" mode="vertical">
 			<Container mode="horizontal" size="small">
 				<h3 className="c-h2">Registreren</h3>
 				<hr className="c-hr" />

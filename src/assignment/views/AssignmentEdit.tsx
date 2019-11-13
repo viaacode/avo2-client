@@ -37,16 +37,16 @@ import {
 	ToolbarRight,
 	WYSIWYG,
 } from '@viaa/avo2-components';
-import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
+import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
 import { connect } from 'react-redux';
+import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
-import { GET_COLLECTION_BY_ID } from '../../collection/graphql';
+import { CollectionService } from '../../collection/service';
 import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
 import { RouteParts } from '../../constants';
-import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
 import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
@@ -55,17 +55,25 @@ import { copyToClipboard } from '../../shared/helpers/clipboard';
 import { dataService } from '../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
+import { AssignmentLayout } from '../types';
+
+import {
+	GET_COLLECTION_BY_ID,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENTS,
+} from '../../collection/graphql';
+import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../graphql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
-import { AssignmentLayout } from '../types';
 
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import './AssignmentEdit.scss';
+
+const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: RouteParts.Item,
@@ -132,6 +140,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
+	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
+	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	const setBothAssignments = (assignment: Partial<Avo.Assignment.Assignment>) => {
 		setCurrentAssignment(assignment);
@@ -286,7 +296,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					queryParams
 				);
 
-				const assignmentContentResponse = get(
+				const assignmentContentResponse: AssignmentContent = get(
 					response,
 					`data.${
 						CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
@@ -302,6 +312,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					});
 					return;
 				}
+
 				setAssignmentContent(assignmentContentResponse);
 				setBothAssignments({
 					...assignment,
@@ -323,6 +334,66 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 		initAssignmentData();
 	}, [loadingState, location, match.params, setLoadingState, assignmentContent]);
+
+	/**
+	 * Find name that isn't a duplicate of an existing name of a collection of this user
+	 * eg if these collections exist:
+	 * copy 1: test
+	 * copy 2: test
+	 * copy 4: test
+	 *
+	 * Then the algorithm will propose: copy 3: test
+	 * @param prefix
+	 */
+	const getCopyTitleForCollection = async (prefix: string): Promise<string> => {
+		const collections = await CollectionService.getCollectionTitlesByUser();
+		const titles = collections.map(c => c.title);
+
+		let index = 0;
+		let candidateTitle: string;
+		do {
+			index += 1;
+			candidateTitle = prefix.replace('%index%', String(index));
+		} while (titles.includes(candidateTitle));
+
+		return candidateTitle;
+	};
+
+	/**
+	 * Makes a copy of the collection where the current user is the owner and the collection is set to be non public
+	 * @param collection
+	 */
+	const copyCollectionToCurrentUser = async (
+		collection: Avo.Collection.Collection
+	): Promise<Avo.Collection.Collection | null> => {
+		try {
+			collection.owner_profile_id = getProfileId();
+			collection.is_public = false;
+			delete collection.id;
+			try {
+				collection.title = await getCopyTitleForCollection(ASSIGNMENT_COPY);
+			} catch (err) {
+				console.error('Failed to get good copy title for collection', err, { collection });
+				// Fallback to simple copy title
+				collection.title = `${ASSIGNMENT_COPY.replace(' %index%', '')}${collection.title}`;
+			}
+
+			return await CollectionService.insertCollection(
+				collection,
+				triggerCollectionInsert,
+				triggerCollectionFragmentsInsert
+			);
+		} catch (err) {
+			console.error('Failed to insert copy of a collection for current user', err, {
+				collection,
+			});
+			toastService(
+				'De collectie kon niet worden gekopieert om te gebruiken bij de nieuwe opdracht',
+				TOAST_TYPE.DANGER
+			);
+			return null;
+		}
+	};
 
 	const deleteCurrentAssignment = async () => {
 		try {
@@ -347,7 +418,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService('De url is naar het klembord gekopieert', TOAST_TYPE.SUCCESS);
+		toastService('De url is naar het klembord gekopieerd', TOAST_TYPE.SUCCESS);
 
 		if (currentAssignment.id) {
 			trackEvents({
@@ -470,6 +541,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			setIsSaving(true);
 			if (pageType === 'create') {
+				// Copy content if it's a collection collection if not owned by logged in user
+				// so your assignment can work after the other user deletes his collection
+				if (
+					assignment.content_label === 'COLLECTIE' &&
+					(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId()
+				) {
+					const sourceCollection = assignmentContent as Avo.Collection.Collection;
+					const copy = await copyCollectionToCurrentUser(sourceCollection);
+					if (!copy) {
+						return; // Creating the copy failed, error has already been shown to the user
+					}
+					assignment.content_id = String(copy.id);
+				}
+
 				// create => insert into graphql
 				const newAssignment: Avo.Assignment.Assignment = {
 					...assignment,
@@ -491,7 +576,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol geupdate', TOAST_TYPE.SUCCESS);
+				toastService('De opdracht is succesvol geüpdatet', TOAST_TYPE.SUCCESS);
 			}
 			setIsSaving(false);
 		} catch (err) {
@@ -554,90 +639,293 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 	};
 
-	const renderAssignmentEditForm = () => (
-		<>
-			<Navbar autoHeight>
-				<Container mode="vertical" background="alt">
-					<Container mode="horizontal">
-						<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
-							<ToolbarLeft>
-								<ToolbarItem grow>
-									<Link
-										className="c-return"
-										to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
-									>
-										<Icon name="chevron-left" size="small" type="arrows" />
-										Mijn opdrachten
-									</Link>
-									<h2 className="c-h2 u-m-0">
-										{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
-									</h2>
-									{currentAssignment.id && (
-										<Spacer margin="top-small">
-											<Form type="inline">
-												<FormGroup label="URL">
-													<TextInput value={getAssignmentUrl()} disabled />
-												</FormGroup>
-												<Spacer margin="left-small">
+	const renderContentLink = (assignmentContent: AssignmentContent) => {
+		const dutchLabel = (assignmentContent.type.label ||
+			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
+		const linkContent = (
+			<div className="c-box c-box--padding-small">
+				<Flex orientation="vertical" center>
+					<Spacer margin="right">
+						<Thumbnail
+							className="m-content-thumbnail"
+							category={dutchContentLabelToEnglishLabel(dutchLabel)}
+							src={assignmentContent.thumbnail_path || undefined}
+						/>
+					</Spacer>
+					<FlexItem>
+						<div className="c-overline-plus-p">
+							<p className="c-overline">{dutchLabel}</p>
+							<p>{assignmentContent.title || assignmentContent.description}</p>
+						</div>
+					</FlexItem>
+				</Flex>
+			</div>
+		);
+
+		if (
+			pageType === 'create' &&
+			currentAssignment.content_label === 'COLLECTIE' &&
+			getProfileId() !== (assignmentContent as Avo.Collection.Collection).owner_profile_id
+		) {
+			// During create we do not allow linking to the collection if you do not own the collection,
+			// since we still need to make a copy when the user clicks on "save assignment" button
+			return (
+				<div title="U kan pas doorklikken naar de collectie nadat u de opdracht hebt aangemaakt">
+					{linkContent}
+				</div>
+			);
+		}
+
+		return (
+			<Link
+				to={`/${
+					CONTENT_LABEL_TO_ROUTE_PARTS[
+						currentAssignment.content_label as Avo.Assignment.ContentLabel
+					]
+				}/${currentAssignment.content_id}`}
+			>
+				{linkContent}
+			</Link>
+		);
+	};
+
+	const renderAssignmentEditForm = () => {
+		const now = new Date(Date.now());
+
+		return (
+			<>
+				<Navbar autoHeight>
+					<Container mode="vertical" background="alt">
+						<Container mode="horizontal">
+							<Toolbar autoHeight className="c-toolbar--drop-columns-low-mq">
+								<ToolbarLeft>
+									<ToolbarItem grow>
+										<Link
+											className="c-return"
+											to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
+										>
+											<Icon name="chevron-left" size="small" type="arrows" />
+											Mijn opdrachten
+										</Link>
+										<h2 className="c-h2 u-m-0">
+											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
+										</h2>
+										{currentAssignment.id && (
+											<Spacer margin="top-small">
+												<Form type="inline">
+													<FormGroup label="URL">
+														<TextInput value={getAssignmentUrl()} disabled />
+													</FormGroup>
+													<Spacer margin="left-small">
+														<Button
+															icon="copy"
+															type="secondary"
+															ariaLabel="Kopieer de opdracht url"
+															onClick={copyAssignmentUrl}
+														/>
+													</Spacer>
+												</Form>
+											</Spacer>
+										)}
+									</ToolbarItem>
+								</ToolbarLeft>
+								<ToolbarRight>
+									<ToolbarItem>
+										<ButtonToolbar>
+											{pageType === 'create' && (
+												<Button
+													type="secondary"
+													onClick={() => history.goBack()}
+													label="Annuleren"
+												/>
+											)}
+											{pageType === 'edit' && (
+												<Spacer margin="right-small">
 													<Button
-														icon="copy"
 														type="secondary"
-														ariaLabel="Kopieer de opdracht url"
-														onClick={copyAssignmentUrl}
+														onClick={viewAsStudent}
+														label="Bekijk als leerling"
 													/>
+													<Dropdown
+														isOpen={isExtraOptionsMenuOpen}
+														menuWidth="fit-content"
+														onOpen={() => setExtraOptionsMenuOpen(true)}
+														onClose={() => setExtraOptionsMenuOpen(false)}
+														placement="bottom-end"
+													>
+														<DropdownButton>
+															<Button
+																type="secondary"
+																icon="more-horizontal"
+																ariaLabel="Meer opties"
+																title="Meer opties"
+															/>
+														</DropdownButton>
+														<DropdownContent>
+															<MenuContent
+																menuItems={[
+																	{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+																	{
+																		icon: 'archive',
+																		id: 'archive',
+																		label: initialAssignment.is_archived
+																			? 'Dearchiveer'
+																			: 'Archiveer',
+																	},
+																	{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+																]}
+																onClick={id => handleExtraOptionClicked(id.toString() as any)}
+															/>
+														</DropdownContent>
+													</Dropdown>
 												</Spacer>
-											</Form>
-										</Spacer>
-									)}
-								</ToolbarItem>
-							</ToolbarLeft>
+											)}
+											<Button
+												type="primary"
+												label="Opslaan"
+												onClick={() => saveAssignment(currentAssignment)}
+												disabled={isSaving}
+											/>
+										</ButtonToolbar>
+									</ToolbarItem>
+								</ToolbarRight>
+							</Toolbar>
+						</Container>
+					</Container>
+				</Navbar>
+				<Container mode="horizontal" size="small" className="c-assignment-edit">
+					<Container mode="vertical" size="large">
+						<Form>
+							<FormGroup required label="Titel">
+								<TextInput
+									id="title"
+									value={currentAssignment.title}
+									onChange={title => setAssignmentProp('title', title)}
+								/>
+							</FormGroup>
+							<FormGroup label="Opdracht" required>
+								<WYSIWYG
+									id="assignmentDescription"
+									autogrow
+									data={currentAssignment.description}
+									onChange={description => setAssignmentProp('description', description)}
+								/>
+							</FormGroup>
+							{assignmentContent && currentAssignment.content_label && (
+								<FormGroup label="Inhoud">{renderContentLink(assignmentContent)}</FormGroup>
+							)}
+							<FormGroup label="Weergave" labelFor="only_player">
+								<RadioButtonGroup>
+									<RadioButton
+										label="mediaspeler met beschrijving"
+										name="content_layout"
+										value={String(AssignmentLayout.PlayerAndText)}
+										checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
+										onChange={isChecked =>
+											isChecked &&
+											setAssignmentProp('content_layout', AssignmentLayout.PlayerAndText)
+										}
+									/>
+									<RadioButton
+										label="enkel mediaspeler"
+										name="content_layout"
+										value={String(AssignmentLayout.OnlyPlayer)}
+										checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
+										onChange={isChecked =>
+											isChecked && setAssignmentProp('content_layout', AssignmentLayout.OnlyPlayer)
+										}
+									/>
+								</RadioButtonGroup>
+							</FormGroup>
+							<FormGroup label="Klas of groep" required>
+								<TextInput
+									id="class_room"
+									value={currentAssignment.class_room || ''}
+									onChange={classRoom => setAssignmentProp('class_room', classRoom)}
+								/>
+							</FormGroup>
+							<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
+							<FormGroup label="Antwoorden op" labelFor="answer_url">
+								<TextInput
+									id="answer_url"
+									type="text"
+									placeholder="http://..."
+									value={currentAssignment.answer_url || ''}
+									onChange={value => setAssignmentProp('answer_url', value)}
+								/>
+								<p className="c-form-help-text">
+									Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
+									platform toe.
+								</p>
+							</FormGroup>
+							<FormGroup label="Beschikbaar vanaf">
+								<Flex>
+									<DateTimePicker
+										value={
+											currentAssignment.available_at
+												? new Date(currentAssignment.available_at)
+												: now
+										}
+										onChange={(value: Date | null) =>
+											setAssignmentProp('available_at', value ? value.toISOString() : null)
+										}
+										id="available_at"
+										defaultHours={now.getHours()}
+										defaultMinutes={now.getMinutes()}
+									/>
+								</Flex>
+							</FormGroup>
+							<FormGroup label="Deadline" required>
+								<Flex>
+									<Spacer margin="right-small">
+										<DateTimePicker
+											value={
+												currentAssignment.deadline_at
+													? new Date(currentAssignment.deadline_at)
+													: null
+											}
+											onChange={value => setAssignmentProp('deadline_at', value)}
+											id="deadline_at"
+											defaultHours={23}
+											defaultMinutes={59}
+										/>
+									</Spacer>
+								</Flex>
+								<p className="c-form-help-text">
+									Na deze datum kan de leerling de opdracht niet meer invullen.
+								</p>
+							</FormGroup>
+							{currentAssignment.assignment_type === 'BOUW' && (
+								<FormGroup label="Groepswerk?" labelFor="only_player">
+									<Toggle
+										checked={currentAssignment.is_collaborative}
+										onChange={checked => setAssignmentProp('is_collaborative', checked)}
+									/>
+								</FormGroup>
+							)}
+							<hr className="c-hr" />
+							<Alert type="info">
+								<div className="c-content c-content--no-m">
+									<p>
+										Hulp nodig bij het maken van opdrachten?
+										<br />
+										Bekijk onze{' '}
+										<a href="http://google.com" target="_blank" rel="noopener noreferrer">
+											screencast
+										</a>
+										.
+									</p>
+								</div>
+							</Alert>
+						</Form>
+					</Container>
+				</Container>
+				<Container background="alt" mode="vertical">
+					<Container mode="horizontal">
+						<Toolbar autoHeight>
 							<ToolbarRight>
 								<ToolbarItem>
 									<ButtonToolbar>
-										{pageType === 'create' && (
-											<Button type="secondary" onClick={() => history.goBack()} label="Annuleren" />
-										)}
-										{pageType === 'edit' && (
-											<Spacer margin="right-small">
-												<Button
-													type="secondary"
-													onClick={viewAsStudent}
-													label="Bekijk als leerling"
-												/>
-												<Dropdown
-													isOpen={isExtraOptionsMenuOpen}
-													menuWidth="fit-content"
-													onOpen={() => setExtraOptionsMenuOpen(true)}
-													onClose={() => setExtraOptionsMenuOpen(false)}
-													placement="bottom-end"
-												>
-													<DropdownButton>
-														<Button
-															type="secondary"
-															icon="more-horizontal"
-															ariaLabel="Meer opties"
-															title="Meer opties"
-														/>
-													</DropdownButton>
-													<DropdownContent>
-														<MenuContent
-															menuItems={[
-																{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-																{
-																	icon: 'archive',
-																	id: 'archive',
-																	label: initialAssignment.is_archived
-																		? 'Dearchiveer'
-																		: 'Archiveer',
-																},
-																{ icon: 'delete', id: 'delete', label: 'Verwijder' },
-															]}
-															onClick={id => handleExtraOptionClicked(id.toString() as any)}
-														/>
-													</DropdownContent>
-												</Dropdown>
-											</Spacer>
-										)}
 										<Button
 											type="primary"
 											label="Opslaan"
@@ -650,177 +938,27 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						</Toolbar>
 					</Container>
 				</Container>
-			</Navbar>
-			<Container mode="horizontal" size="small">
-				<Container mode="vertical" size="large">
-					<Form>
-						<FormGroup required label="Titel">
-							<TextInput
-								id="title"
-								value={currentAssignment.title}
-								onChange={title => setAssignmentProp('title', title)}
-							/>
-						</FormGroup>
-						<FormGroup label="Opdracht" required>
-							<WYSIWYG
-								id="assignmentDescription"
-								autogrow
-								data={currentAssignment.description}
-								onChange={description => setAssignmentProp('description', description)}
-							/>
-						</FormGroup>
-						{assignmentContent && currentAssignment.content_label && (
-							<FormGroup label="Inhoud">
-								<Link
-									to={`/${
-										CONTENT_LABEL_TO_ROUTE_PARTS[
-											currentAssignment.content_label as Avo.Assignment.ContentLabel
-										]
-									}/${currentAssignment.content_id}`}
-								>
-									<div className="c-box c-box--padding-small">
-										<Flex orientation="vertical" center>
-											<Spacer margin="right">
-												<Thumbnail
-													className="m-content-thumbnail"
-													category={
-														dutchContentLabelToEnglishLabel((currentAssignment.content_label ===
-														'ITEM'
-															? assignmentContent.type.label
-															: currentAssignment.content_label) as DutchContentType) as ContentType
-													}
-													src={assignmentContent.thumbnail_path || undefined}
-												/>
-											</Spacer>
-											<FlexItem>
-												<div className="c-overline-plus-p">
-													<p className="c-overline">
-														{currentAssignment.content_label === 'ITEM'
-															? assignmentContent.type.label
-															: currentAssignment.content_label}
-													</p>
-													<p>{assignmentContent.title || assignmentContent.description}</p>
-												</div>
-											</FlexItem>
-										</Flex>
-									</div>
-								</Link>
-							</FormGroup>
-						)}
-						<FormGroup label="Weergave" labelFor="only_player">
-							<RadioButtonGroup>
-								<RadioButton
-									label="mediaspeler met beschrijving"
-									name="content_layout"
-									value={String(AssignmentLayout.PlayerAndText)}
-									checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
-									onChange={isChecked =>
-										isChecked && setAssignmentProp('content_layout', AssignmentLayout.PlayerAndText)
-									}
-								/>
-								<RadioButton
-									label="enkel mediaspeler"
-									name="content_layout"
-									value={String(AssignmentLayout.OnlyPlayer)}
-									checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
-									onChange={isChecked =>
-										isChecked && setAssignmentProp('content_layout', AssignmentLayout.OnlyPlayer)
-									}
-								/>
-							</RadioButtonGroup>
-						</FormGroup>
-						<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
-						<FormGroup label="Antwoorden op" labelFor="answer_url">
-							<TextInput
-								id="answer_url"
-								type="text"
-								placeholder="http://..."
-								value={currentAssignment.answer_url || ''}
-								onChange={value => setAssignmentProp('answer_url', value)}
-							/>
-							<p className="c-form-help-text">
-								Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
-								platform toe.
-							</p>
-						</FormGroup>
-						<FormGroup label="Beschikbaar vanaf">
-							<Flex>
-								<DateTimePicker
-									value={
-										currentAssignment.available_at ? new Date(currentAssignment.available_at) : null
-									}
-									onChange={(value: Date | null) =>
-										setAssignmentProp('available_at', value ? value.toISOString() : null)
-									}
-									id="available_at"
-									defaultHours={0}
-									defaultMinutes={0}
-								/>
-							</Flex>
-						</FormGroup>
-						<FormGroup label="Deadline" required>
-							<Flex>
-								<Spacer margin="right-small">
-									<DateTimePicker
-										value={
-											currentAssignment.deadline_at ? new Date(currentAssignment.deadline_at) : null
-										}
-										onChange={value => setAssignmentProp('deadline_at', value)}
-										id="deadline_at"
-										defaultHours={23}
-										defaultMinutes={59}
-									/>
-								</Spacer>
-							</Flex>
-							<p className="c-form-help-text">
-								Na deze datum kan de leerling de opdracht niet meer invullen.
-							</p>
-						</FormGroup>
-						{currentAssignment.assignment_type === 'BOUW' && (
-							<FormGroup label="Groepswerk?" labelFor="only_player">
-								<Toggle
-									checked={currentAssignment.is_collaborative}
-									onChange={checked => setAssignmentProp('is_collaborative', checked)}
-								/>
-							</FormGroup>
-						)}
-						<hr className="c-hr" />
-						<Alert type="info">
-							<div className="c-content c-content--no-m">
-								<p>
-									Hulp nodig bij het maken van opdrachten?
-									<br />
-									Bekijk onze{' '}
-									<a href="http://google.com" target="_blank" rel="noopener noreferrer">
-										screencast
-									</a>
-									.
-								</p>
-							</div>
-						</Alert>
-					</Form>
-				</Container>
-			</Container>
 
-			<DeleteObjectModal
-				title={`Ben je zeker dat de opdracht "${currentAssignment.title}" wil verwijderen?`}
-				body="Deze actie kan niet ongedaan gemaakt worden"
-				isOpen={isDeleteModalOpen}
-				onClose={() => setDeleteModalOpen(false)}
-				deleteObjectCallback={deleteCurrentAssignment}
-			/>
+				<DeleteObjectModal
+					title={`Ben je zeker dat de opdracht "${currentAssignment.title}" wil verwijderen?`}
+					body="Deze actie kan niet ongedaan gemaakt worden"
+					isOpen={isDeleteModalOpen}
+					onClose={() => setDeleteModalOpen(false)}
+					deleteObjectCallback={deleteCurrentAssignment}
+				/>
 
-			<InputModal
-				title="Dupliceer taak"
-				inputLabel="Geef de nieuwe taak een naam:"
-				inputValue={currentAssignment.title}
-				inputPlaceholder="Titel van de nieuwe taak"
-				isOpen={isDuplicateModalOpen}
-				onClose={() => setDuplicateModalOpen(false)}
-				inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
-			/>
-		</>
-	);
+				<InputModal
+					title="Dupliceer taak"
+					inputLabel="Geef de nieuwe taak een naam:"
+					inputValue={currentAssignment.title}
+					inputPlaceholder="Titel van de nieuwe taak"
+					isOpen={isDuplicateModalOpen}
+					onClose={() => setDuplicateModalOpen(false)}
+					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
+				/>
+			</>
+		);
+	};
 
 	return (
 		<LoadingErrorLoadedComponent
