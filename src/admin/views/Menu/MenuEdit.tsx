@@ -15,11 +15,10 @@ import {
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types/types';
 
-import { ADMIN_PATH } from '../../admin.const';
+import { ADMIN_PATH, MENU_ICON_OPTIONS } from '../../admin.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
 import { MenuItem } from '../../admin.types';
 import { IconPicker } from '../../components';
-import { MENU_ICON_OPTIONS } from '../../constants';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
 
 interface MenuEditForm {

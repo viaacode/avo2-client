@@ -1,4 +1,9 @@
+import { OptionsType } from 'react-select';
+
+import { IconName } from '@viaa/avo2-components';
+
 import { RouteParts } from '../constants';
+import { ReactSelectOption } from '../shared/types/types';
 
 export const ADMIN_PATH = Object.freeze({
 	DASHBOARD: `/${RouteParts.Admin}`,
@@ -13,3 +18,8 @@ export const MENU_OVERVIEW_TABLE_COLS = [
 	{ id: 'description', label: 'Omschrijving' },
 	{ id: 'actions', label: '' },
 ];
+
+export const MENU_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Object.freeze([
+	{ label: 'Aktentas', value: 'briefcase' },
+	{ label: 'Zoek', value: 'search' },
+]);
