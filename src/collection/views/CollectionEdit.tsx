@@ -485,6 +485,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					isOpen={isRenameModalOpen}
 					onClose={() => setIsRenameModalOpen(false)}
 					inputCallback={onRenameCollection}
+					emptyMessage="Gelieve een collectie-titel in te vullen."
 				/>
 			</>
 		);

@@ -955,6 +955,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
+					emptyMessage="Gelieve een opdracht-titel in te geven."
 				/>
 			</>
 		);
