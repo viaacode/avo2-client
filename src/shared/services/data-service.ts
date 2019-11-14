@@ -24,6 +24,14 @@ export class ApolloCacheManager {
 	public static clearAssignmentCache = (cache: { [key: string]: any }) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_assignment');
 
+	/**
+	 * Clears all nav elements related items from the cache
+	 * eg: content_nav_elements
+	 * @param cache
+	 */
+	public static clearNavElementsCache = (cache: { [key: string]: any }) =>
+		ApolloCacheManager.deleteFromCache(cache, 'app_content_nav_elements');
+
 	private static deleteFromCache(cache: { [key: string]: any }, keyPrefix: string) {
 		Object.keys(cache.data.data).forEach(
 			(key: string) => key.match(new RegExp(`^${keyPrefix}`)) && cache.data.delete(key)

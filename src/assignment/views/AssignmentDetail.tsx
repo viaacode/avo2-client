@@ -35,7 +35,6 @@ import { renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
-
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,

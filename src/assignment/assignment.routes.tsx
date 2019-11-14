@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 
-import { SecuredRoute } from '../authentication/components';
+import SecuredRoute from '../authentication/components/SecuredRoute';
 import { RouteParts } from '../constants';
-
-import { AssignmentDetail, AssignmentEdit } from './views';
+import AssignmentDetail from './views/AssignmentDetail';
+import AssignmentEdit from './views/AssignmentEdit';
 
 export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute

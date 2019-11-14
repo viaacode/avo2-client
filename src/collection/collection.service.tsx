@@ -7,9 +7,8 @@ import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
-
 import { GET_COLLECTION_TITLES_BY_OWNER } from './collection.gql';
-import { getValidationErrorForSave, getValidationErrorsForPublish } from './helpers/validation';
+import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
 
 export class CollectionService {
 	public static async insertCollection(
@@ -290,7 +289,7 @@ export class CollectionService {
 			},
 			update: ApolloCacheManager.clearCollectionCache,
 		});
-		get(response, 'data.insert_app_collection_fragments.returning', []).map(
+		get(response, 'data.insert_app_collection_fragments.returning', []).forEach(
 			(f: { id: number }, index: number) => {
 				fragments[index].id = f.id;
 			}
