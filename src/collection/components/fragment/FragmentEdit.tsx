@@ -1,5 +1,5 @@
 import { get, orderBy } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useState } from 'react';
+import React, { FunctionComponent, ReactText, SetStateAction, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -40,7 +40,7 @@ interface FragmentEditProps extends RouteComponentProps {
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
 	openOptionsId: number | null;
-	setOpenOptionsId: React.Dispatch<React.SetStateAction<number | null>>;
+	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 	updateCollection: (collection: Avo.Collection.Collection) => void;
@@ -101,9 +101,30 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	// Listeners
 	const onChangeToggle = () => {
-		updateFragmentProperties([
-			{ value: !useCustomFields, fieldName: 'use_custom_fields' as const, fragmentId: fragment.id },
-		]);
+		const propsToUpdate = [
+			{
+				value: !useCustomFields,
+				fieldName: 'use_custom_fields' as keyof Avo.Collection.Fragment,
+				fragmentId: fragment.id,
+			},
+		];
+
+		// If empty title or description, apply item title and description
+		const propsToTransfer: string[] = ['title', 'description'];
+
+		propsToTransfer.forEach((prop: string) => {
+			const customProp = `custom_${prop}` as keyof Avo.Collection.Fragment;
+
+			if (!fragment[customProp] && itemMetaData[prop]) {
+				propsToUpdate.push({
+					value: itemMetaData[prop],
+					fieldName: customProp,
+					fragmentId: fragment.id,
+				});
+			}
+		});
+
+		updateFragmentProperties(propsToUpdate);
 		setUseCustomFields(!useCustomFields);
 	};
 
