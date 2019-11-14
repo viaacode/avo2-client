@@ -21,8 +21,7 @@ import { Avo } from '@viaa/avo2-types';
 import { debounce } from 'lodash-es';
 import { parse } from 'querystring';
 
-import { getEnv } from '../../shared/helpers/env';
-import { parseDuration } from '../../shared/helpers/parsers/duration';
+import { getEnv, parseDuration } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
@@ -116,7 +115,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		!playerTicket &&
 		fetchPlayerTicket(itemMetaData.external_id)
 			.then((data: any) => {
-				// TODO add interface @benji
+				// TODO: add interface @benji
 				setPlayerTicket(data);
 				trackEvents({
 					event_object: {

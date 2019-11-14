@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, ReactText, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -23,16 +23,20 @@ import { compact } from 'lodash-es';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { RouteParts } from '../../constants';
-import ErrorView from '../../error/views/ErrorView';
-import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import { getAvatarProps } from '../../shared/helpers/formatters/avatar';
-import { formatDate, formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
+import { ErrorView } from '../../error/views';
+import { DataQueryComponent, DeleteObjectModal } from '../../shared/components';
+import {
+	createDropdownMenuItem,
+	formatDate,
+	formatTimestamp,
+	fromNow,
+	getAvatarProps,
+} from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
-import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../graphql';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+
+import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 
 import './CollectionOverview.scss';
 
@@ -41,21 +45,27 @@ interface CollectionsProps extends RouteComponentProps {
 }
 
 const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections, history }) => {
+	const { Collection, Edit, Search } = RouteParts;
+
+	// State
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 
-	const openDeleteModal = (collectionId: number) => {
+	// Mutations
+	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+
+	// Listeners
+	const onClickDelete = (collectionId: number) => {
 		setDropdownOpen({ [collectionId]: false });
 		setIdToDelete(collectionId);
 		setIsDeleteModalOpen(true);
 	};
 
-	const deleteCollection = async (refetchCollections: () => void) => {
+	const onDeleteCollection = async (refetchCollections: () => void) => {
 		try {
 			await triggerCollectionDelete({
 				variables: {
@@ -74,124 +84,128 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		setIdToDelete(null);
 	};
 
-	// Render
-	const renderCell = (collection: Avo.Collection.Collection, colKey: string) => {
-		switch (colKey) {
-			case 'thumbnail':
-				return (
-					<Link to={`/${RouteParts.Collection}/${collection.id}`} title={collection.title}>
-						<Thumbnail
-							alt="thumbnail"
-							category="collection"
-							className="m-collection-overview-thumbnail"
-							src={collection.thumbnail_path || undefined}
-						/>
-					</Link>
-				);
+	const onClickCreate = () => history.push(`/${Search}`);
 
-			case 'title':
-				return (
-					<div className="c-content-header">
-						<h3 className="c-content-header__header">
-							<Link to={`/${RouteParts.Collection}/${collection.id}`} title={collection.title}>
-								{collection.title}
-							</Link>
-						</h3>
-						<div className="c-content-header__meta u-text-muted">
-							<MetaData category="collection">
-								<MetaDataItem>
-									<span title={`Aangemaakt: ${formatDate(collection.created_at)}`}>
-										{fromNow(collection.created_at)}
-									</span>
-								</MetaDataItem>
-								{/* TODO link view count from db */}
-								<MetaDataItem icon="eye" label={(Math.random() * (200 - 1) + 1).toFixed()} />
-							</MetaData>
-						</div>
-					</div>
-				);
-
-			case 'inFolder':
-				// TODO check if collection is in folder or not
-				const isInFolder = true;
-				return isInFolder && <Button icon="folder" type="borderless" />;
-
-			case 'access':
-				// TODO get all users that are allowed to edit this collection
-				const userProfiles: Avo.User.Profile[] = compact([collection.profile]);
-				const avatarProps = userProfiles.map(profile => {
-					const props = getAvatarProps(profile);
-					(props as any).subtitle = 'mag bewerken'; // TODO check permissions for every user
-					return props;
-				});
-				return userProfiles && <AvatarList avatars={avatarProps as any[]} isOpen={false} />;
-
-			case 'actions':
-				return (
-					<ButtonToolbar>
-						<Dropdown
-							isOpen={dropdownOpen[collection.id] || false}
-							menuWidth="fit-content"
-							onClose={() => setDropdownOpen({ [collection.id]: false })}
-							onOpen={() => setDropdownOpen({ [collection.id]: true })}
-							placement="bottom-end"
-						>
-							<DropdownButton>
-								<Button icon="more-horizontal" type="borderless" />
-							</DropdownButton>
-							<DropdownContent>
-								<MenuContent
-									menuItems={[
-										{ icon: 'edit2' as IconName, id: 'edit', label: 'Bewerk' },
-										{ icon: 'clipboard' as IconName, id: 'assign', label: 'Maak opdracht' },
-										{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' },
-									]}
-									onClick={itemId => {
-										switch (itemId) {
-											case 'edit':
-												history.push(
-													`/${RouteParts.Collection}/${collection.id}/${RouteParts.Edit}`
-												);
-												break;
-											case 'delete':
-												openDeleteModal(collection.id);
-												break;
-											default:
-												return null;
-										}
-									}}
-								/>
-							</DropdownContent>
-						</Dropdown>
-
-						<Button
-							icon="chevron-right"
-							onClick={() => history.push(`/${RouteParts.Collection}/${collection.id}`)}
-							type="borderless"
-						/>
-					</ButtonToolbar>
-				);
-			case 'created_at':
-			case 'updated_at':
-				const cellData = collection[colKey as 'created_at' | 'updated_at'];
-				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
-
-			default:
-				return null;
+	// TODO: Make shared function because also used in assignments
+	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {
+		if (sortColumn === columnId) {
+			// Change column sort order
+			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+		} else {
+			// Initial column sort order
+			setSortColumn(columnId);
+			setSortOrder('asc');
 		}
 	};
 
-	const onClickCreate = () => history.push(`/${RouteParts.Search}`);
+	// Render functions
+	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
+		<Link to={`/${Collection}/${id}`} title={title}>
+			<Thumbnail
+				alt="thumbnail"
+				category="collection"
+				className="m-collection-overview-thumbnail"
+				src={thumbnail_path || undefined}
+			/>
+		</Link>
+	);
 
-	// TODO: make shared function because also used in assignments
-	const handleColumnClick = (columnId: keyof Avo.Collection.Collection) => {
-		if (sortColumn === columnId) {
-			// Flip previous ordering
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-		} else {
-			// Set initial ordering for new column
-			setSortColumn(columnId);
-			setSortOrder('asc');
+	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
+		<div className="c-content-header">
+			<h3 className="c-content-header__header">
+				<Link to={`/${Collection}/${id}`} title={title}>
+					{title}
+				</Link>
+			</h3>
+			<div className="c-content-header__meta u-text-muted">
+				<MetaData category="collection">
+					<MetaDataItem>
+						<span title={`Aangemaakt: ${formatDate(created_at)}`}>{fromNow(created_at)}</span>
+					</MetaDataItem>
+					{/* TODO: Views from GQL */}
+					<MetaDataItem icon="eye" label="0" />
+				</MetaData>
+			</div>
+		</div>
+	);
+
+	const renderActions = (collectionId: number) => {
+		const ROW_DROPDOWN_ITEMS = [
+			createDropdownMenuItem('edit', 'Bewerk', 'edit2'),
+			createDropdownMenuItem('assign', 'Maak opdracht', 'clipboard'),
+			createDropdownMenuItem('delete', 'Verwijderen'),
+		];
+
+		// Listeners
+		const onClickDropdownItem = () => (item: ReactText) => {
+			switch (item) {
+				case 'edit':
+					history.push(`/${Collection}/${collectionId}/${Edit}`);
+					break;
+				case 'delete':
+					onClickDelete(collectionId);
+					break;
+				default:
+					return null;
+			}
+		};
+
+		return (
+			<ButtonToolbar>
+				<Dropdown
+					isOpen={dropdownOpen[collectionId] || false}
+					menuWidth="fit-content"
+					onClose={() => setDropdownOpen({ [collectionId]: false })}
+					onOpen={() => setDropdownOpen({ [collectionId]: true })}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button icon="more-horizontal" type="borderless" />
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent menuItems={ROW_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
+					</DropdownContent>
+				</Dropdown>
+
+				<Button
+					icon="chevron-right"
+					onClick={() => history.push(`/${Collection}/${collectionId}`)}
+					type="borderless"
+				/>
+			</ButtonToolbar>
+		);
+	};
+
+	const renderCell = (collection: Avo.Collection.Collection, colKey: string) => {
+		const { id, profile } = collection;
+
+		switch (colKey) {
+			case 'thumbnail':
+				return renderThumbnail(collection);
+			case 'title':
+				return renderTitle(collection);
+			case 'inFolder':
+				const isInFolder = true; // TODO: Check if collection is in folder
+
+				return isInFolder && <Button icon="folder" type="borderless" />;
+			case 'access':
+				const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
+				const avatarProps = userProfiles.map(profile => {
+					const props = getAvatarProps(profile);
+					(props as any).subtitle = 'mag bewerken'; // TODO: Check permissions for all users
+					return props;
+				});
+
+				return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
+			case 'actions':
+				return renderActions(id);
+			case 'created_at':
+			case 'updated_at':
+				const cellData = collection[colKey as 'created_at' | 'updated_at'];
+
+				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+			default:
+				return null;
 		}
 	};
 
@@ -211,7 +225,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				renderCell={renderCell}
 				rowKey="id"
 				variant="styled"
-				onColumnClick={handleColumnClick as any}
+				onColumnClick={onClickColumn as any}
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
 			/>
@@ -253,7 +267,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 				body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
 				isOpen={isDeleteModalOpen}
 				onClose={() => setIsDeleteModalOpen(false)}
-				deleteObjectCallback={() => deleteCollection(refetchCollections)}
+				deleteObjectCallback={() => onDeleteCollection(refetchCollections)}
 			/>
 		</>
 	);
@@ -263,7 +277,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 			query={GET_COLLECTIONS_BY_OWNER}
 			variables={{
 				owner_profile_id: getProfileId(),
-				offset: page,
+				offset: page * ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
 			}}
 			resultPath="app_collections"

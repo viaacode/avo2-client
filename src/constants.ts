@@ -4,7 +4,7 @@ export const RouteParts = {
 	Folder: 'map',
 	Collection: 'collectie',
 	Collections: 'collecties',
-	MyWorkspace: 'mijn-werkruimte',
+	Workspace: 'mijn-werkruimte',
 	Bookmarks: 'bladwijzers',
 	Folders: 'mappen',
 	LoginAvo: 'login-avo',
@@ -24,5 +24,3 @@ export const RouteParts = {
 	Admin: 'beheer',
 	Menus: 'navigatie',
 };
-
-export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;

@@ -20,7 +20,8 @@ import { Avo } from '@viaa/avo2-types';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { UPDATE_COLLECTION } from '../../graphql';
+
+import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../helpers/validation';
 
 interface ShareCollectionModalProps {
@@ -70,7 +71,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-					toastService(validationErrors.join('<br />'), TOAST_TYPE.DANGER);
+					toastService(validationErrors, TOAST_TYPE.DANGER);
 					return;
 				}
 			}
