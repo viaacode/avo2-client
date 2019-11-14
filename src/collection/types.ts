@@ -64,7 +64,7 @@ export enum ContentTypeString {
 
 export type DutchContentType = 'item' | 'audio' | 'video' | 'collectie' | 'bundel' | 'zoekopdracht';
 
-export function dutchContentLabelToEnglishLabel(label: DutchContentType): ContentType {
+export function toEnglishContentType(label: DutchContentType): ContentType {
 	return {
 		item: 'item',
 		audio: 'audio',

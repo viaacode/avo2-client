@@ -30,11 +30,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentType } from '@viaa/avo2-components/dist/types';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	ContentTypeNumber,
-	ContentTypeString,
-	dutchContentLabelToEnglishLabel,
-} from '../../collection/types';
+import { ContentTypeNumber, ContentTypeString, toEnglishContentType } from '../../collection/types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import { reorderDate } from '../../shared/helpers/formatters/date';
 import {
@@ -130,8 +126,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map(relatedItem => {
 				const englishContentType: ContentType =
-					dutchContentLabelToEnglishLabel(relatedItem.administrative_type) ||
-					ContentTypeString.video;
+					toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 				return (
 					<li key={`related-item-${relatedItem.id}`}>
@@ -159,7 +154,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 	const renderItem = (itemMetaData: Avo.Item.Item) => {
 		const englishContentType: ContentType =
-			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
+			toEnglishContentType(itemMetaData.type.label) || ContentTypeString.video;
 
 		return (
 			<>
@@ -183,10 +178,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
-									<MetaData
-										spaced={true}
-										category={dutchContentLabelToEnglishLabel(itemMetaData.type.label)}
-									>
+									<MetaData spaced={true} category={toEnglishContentType(itemMetaData.type.label)}>
 										{itemMetaData.org_name && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">

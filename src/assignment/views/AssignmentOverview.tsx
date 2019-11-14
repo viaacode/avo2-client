@@ -427,6 +427,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					inputCallback={(newTitle: string) =>
 						duplicateAssignment(newTitle, markedAssignment, refetchAssignments)
 					}
+					emptyMessage="Gelieve een opdracht-titel in te vullen."
 				/>
 			</>
 		);

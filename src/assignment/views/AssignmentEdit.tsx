@@ -45,7 +45,7 @@ import { getProfileId, getProfileName } from '../../authentication/helpers/get-p
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
 import { CollectionService } from '../../collection/service';
-import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
+import { DutchContentType, toEnglishContentType } from '../../collection/types';
 import { RouteParts } from '../../constants';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
@@ -648,7 +648,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					<Spacer margin="right">
 						<Thumbnail
 							className="m-content-thumbnail"
-							category={dutchContentLabelToEnglishLabel(dutchLabel)}
+							category={toEnglishContentType(dutchLabel)}
 							src={assignmentContent.thumbnail_path || undefined}
 						/>
 					</Spacer>
@@ -955,6 +955,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
+					emptyMessage="Gelieve een opdracht-titel in te geven."
 				/>
 			</>
 		);

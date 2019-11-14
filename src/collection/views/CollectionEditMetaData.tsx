@@ -17,7 +17,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
 import CollectionStillsModal from '../components/modals/CollectionStillsModal';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../graphql';
-import { getValidationFeedbackForShortDescription } from './CollectionEdit';
+import { getValidationFeedbackForShortDescription } from '../helpers';
 
 interface CollectionEditMetaDataProps {
 	collection: Avo.Collection.Collection;
@@ -79,7 +79,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 										<FormGroup
 											label="Korte omschrijving"
 											labelFor="shortDescriptionId"
-											error={getValidationFeedbackForShortDescription(collection, true)}
+											error={getValidationFeedbackForShortDescription(collection.description, true)}
 										>
 											<TextArea
 												name="shortDescriptionId"
@@ -88,7 +88,9 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 												height="medium"
 												onChange={(value: string) => updateCollectionProperty(value, 'description')}
 											/>
-											<label>{getValidationFeedbackForShortDescription(collection)}</label>
+											<label>
+												{getValidationFeedbackForShortDescription(collection.description)}
+											</label>
 										</FormGroup>
 										<FormGroup
 											label="Persoonlijke opmerkingen/notities"
@@ -112,9 +114,11 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
 										</FormGroup>
-										<FormGroup label="Map" labelFor="mapId">
-											<Button type="secondary" icon="add" label="Voeg toe aan een map" />
-										</FormGroup>
+										{/* TODO: DISABLED FEATURE
+											<FormGroup label="Map" labelFor="mapId">
+												<Button type="secondary" icon="add" label="Voeg toe aan een map" />
+											</FormGroup>
+										*/}
 									</Column>
 								</Grid>
 							</Spacer>

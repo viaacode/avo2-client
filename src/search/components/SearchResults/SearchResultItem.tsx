@@ -9,7 +9,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 
-import { dutchContentLabelToEnglishLabel } from '../../../collection/types';
+import { toEnglishContentType } from '../../../collection/types';
 import { formatDate } from '../../../shared/helpers/formatters/date';
 import {
 	generateContentLinkString,
@@ -27,7 +27,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	return (
 		<SearchResult
 			key={`search-result-${result.id}`}
-			type={dutchContentLabelToEnglishLabel(result.administrative_type)}
+			type={toEnglishContentType(result.administrative_type)}
 			date={formatDate(result.dcterms_issued)}
 			// TODO DISABLED_FEATURE
 			// tags={[{ label: 'Redactiekeuze', id: 'redactiekeuze' }, { label: 'Partner', id: 'partner' }]}
@@ -47,7 +47,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			<SearchResultThumbnail>
 				<Link to={contentLink}>
 					<Thumbnail
-						category={dutchContentLabelToEnglishLabel(result.administrative_type)}
+						category={toEnglishContentType(result.administrative_type)}
 						src={result.thumbnail_path}
 						label={result.administrative_type}
 					/>
