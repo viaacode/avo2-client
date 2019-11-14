@@ -6,8 +6,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { NEW_FRAGMENT } from '../../collection.const';
 
-const COLLECTION_CONTENT_BLOCKS = ['RichText'];
-
 interface FragmentAddProps {
 	index: number;
 	collection: Avo.Collection.Collection;

@@ -34,7 +34,6 @@ import {
 } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
