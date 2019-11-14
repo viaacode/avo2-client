@@ -4,6 +4,7 @@ import { DocumentNode } from 'graphql';
 import { cloneDeep, get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -40,36 +41,38 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
-import { connect } from 'react-redux';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
-import { CollectionService } from '../../collection/service';
-import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
+import { CollectionService } from '../../collection/collection.service';
+import { DutchContentType, toEnglishContentType } from '../../collection/collection.types';
 import { RouteParts } from '../../constants';
+import {
+	DeleteObjectModal,
+	InputModal,
+	LoadingErrorLoadedComponent,
+} from '../../shared/components';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../shared/components/modals/InputModal';
-import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { copyToClipboard } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
-import { AssignmentLayout } from '../types';
+
+import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import { AssignmentLayout } from '../assignment.types';
 
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/graphql';
+} from '../../collection/collection.gql';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
-} from '../graphql';
+} from '../assignment.gql';
 
 import './AssignmentEdit.scss';
 
@@ -101,7 +104,7 @@ const CONTENT_LABEL_TO_QUERY: {
 		resultPath: 'app_item_meta[0]',
 	},
 	ZOEKOPDRACHT: {
-		// TODO implement search query saving and usage
+		// TODO: implement search query saving and usage
 		// query: GET_SEARCH_QUERY_BY_ID,
 		// resultPath: 'app_item_meta[0]',
 	} as any,
@@ -402,7 +405,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
-			history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`);
+			history.push(`/${RouteParts.Workspace}/${RouteParts.Assignments}`);
 			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
 		} catch (err) {
 			console.error(err);
@@ -479,7 +482,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return; // assignment was not valid
 			}
 			history.push(
-				`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assigment.id}/${RouteParts.Edit}`
+				`/${RouteParts.Workspace}/${RouteParts.Assignments}/${assigment.id}/${RouteParts.Edit}`
 			);
 			toastService(
 				'De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat',
@@ -567,7 +570,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					trackAddObjectToAssignment(insertedAssignment);
 					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
 					history.push(
-						`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
+						`/${RouteParts.Workspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
 							RouteParts.Edit
 						}`
 					);
@@ -648,7 +651,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					<Spacer margin="right">
 						<Thumbnail
 							className="m-content-thumbnail"
-							category={dutchContentLabelToEnglishLabel(dutchLabel)}
+							category={toEnglishContentType(dutchLabel)}
 							src={assignmentContent.thumbnail_path || undefined}
 						/>
 					</Spacer>
@@ -702,7 +705,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									<ToolbarItem grow>
 										<Link
 											className="c-return"
-											to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
+											to={`/${RouteParts.Workspace}/${RouteParts.Assignments}`}
 										>
 											<Icon name="chevron-left" size="small" type="arrows" />
 											Mijn opdrachten
@@ -955,6 +958,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
+					emptyMessage="Gelieve een opdracht-titel in te geven."
 				/>
 			</>
 		);

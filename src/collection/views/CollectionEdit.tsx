@@ -10,34 +10,34 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
-	Flex,
-	Icon,
+	Header,
+	HeaderAvatar,
+	HeaderButtons,
 	MenuContent,
-	MetaData,
-	MetaDataItem,
 	Navbar,
 	Spacer,
 	Tabs,
 	Toolbar,
 	ToolbarItem,
-	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { MAX_SEARCH_DESCRIPTION_LENGTH, RouteParts } from '../../constants';
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../shared/components/modals/InputModal';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { RouteParts } from '../../constants';
+import {
+	ControlledDropdown,
+	DataQueryComponent,
+	DeleteObjectModal,
+	InputModal,
+} from '../../shared/components';
+import { createDropdownMenuItem, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { /* ReorderCollectionModal, */ ShareCollectionModal } from '../components';
-import { FragmentPropertyUpdateInfo } from '../components/modals/CutFragmentModal';
-import { COLLECTION_EDIT_TABS } from '../constants';
+
+import { CollectionEditContent, CollectionEditMetaData } from '.';
+import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -45,45 +45,40 @@ import {
 	INSERT_COLLECTION_FRAGMENTS,
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
-} from '../graphql';
-import { CollectionService } from '../service';
-import { Tab } from '../types';
-import CollectionEditContent from './CollectionEditContent';
-import CollectionEditMetaData from './CollectionEditMetaData';
+} from '../collection.gql';
+import { CollectionService } from '../collection.service';
+import { FragmentPropertyUpdateInfo, Tab } from '../collection.types';
+import {
+	// TODO: DISABLED FEATURE - ReorderCollectionModal,
+	ShareCollectionModal,
+} from '../components';
 
 interface CollectionEditProps extends RouteComponentProps {}
 
+let currentCollection: Avo.Collection.Collection | undefined;
+let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
+
 const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
+	// State
 	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
-	// const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
-	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
-	const [initialCollection, setInitialCollection] = useState<Avo.Collection.Collection>();
-	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
-
-	const [currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection | undefined>(
+	[currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection | undefined>(
 		undefined
 	);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [initialCollection, setInitialCollection] = useState<Avo.Collection.Collection>();
+	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
+	// TODO: DISABLED FEATURE - const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
 
+	// Mutations
 	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
-
-	const onUnload = (event: any) => {
-		if (hasUnsavedChanged()) {
-			// Cancel the event as stated by the standard.
-			event.preventDefault();
-
-			// Chrome requires returnValue to be set.
-			event.returnValue = '';
-		}
-	};
 
 	useEffect(() => {
 		// Register listener once when the component loads
@@ -98,50 +93,18 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		setCurrentTab(String(selectedTab));
 	};
 
-	// Collection methods
-	const onRenameCollection = () => {
-		setIsOptionsMenuOpen(false);
-		setIsRenameModalOpen(true);
-	};
+	// Add active state to current tab
+	const tabs: Tab[] = COLLECTION_EDIT_TABS.map((tab: Tab) => ({
+		...tab,
+		active: currentTab === tab.id,
+	}));
 
-	const onDeleteCollection = () => {
-		setIsOptionsMenuOpen(false);
-		setIsDeleteModalOpen(true);
-	};
-
-	const onPreviewCollection = () => {};
-
-	const deleteCollection = async () => {
-		try {
-			if (!currentCollection) {
-				console.error('Failed to delete collection since currentCollection is undefined');
-				toastService('Het verwijderen van de collectie is mislukt (collectie niet ingesteld)');
-				return;
-			}
-			await triggerCollectionDelete({
-				variables: {
-					id: currentCollection.id,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
-
-			trackEvents({
-				event_object: {
-					type: 'collection',
-					identifier: String(currentCollection.id),
-				},
-				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
-					currentCollection.id
-				} verwijderd`,
-				name: 'delete',
-				category: 'item',
-			});
-
-			props.history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Collections}`);
-		} catch (err) {
-			console.error(err);
-			toastService('Het verwijderen van de collectie is mislukt');
-		}
+	// Update individual property of collection
+	const updateCollectionProperty = (value: any, fieldName: string) => {
+		setCurrentCollection({
+			...currentCollection,
+			[fieldName]: value,
+		} as Avo.Collection.Collection);
 	};
 
 	// Update individual property of fragment
@@ -165,45 +128,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		});
 
 		setCurrentCollection(tempCollection);
-	};
-
-	// Update individual property of collection
-	const updateCollectionProperty = (value: any, fieldName: string) => {
-		setCurrentCollection({
-			...currentCollection,
-			[fieldName]: value,
-		} as Avo.Collection.Collection);
-	};
-
-	const renameCollection = async (newTitle: string) => {
-		try {
-			if (!initialCollection) {
-				toastService('De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)');
-				return;
-			}
-			// Update the name in the current collection
-			updateCollectionProperty(newTitle, 'title');
-
-			const collectionWithNewName = {
-				...initialCollection,
-				title: newTitle,
-			};
-			// Update the name in the initial collection
-			setInitialCollection(collectionWithNewName);
-			const cleanedCollection = CollectionService.cleanCollectionBeforeSave(collectionWithNewName);
-
-			// Immediately store the new name, without the user having to click the save button twice
-			await triggerCollectionUpdate({
-				variables: {
-					id: cleanedCollection.id,
-					collection: cleanedCollection,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
-		} catch (err) {
-			console.error(err);
-			toastService('Het hernoemen van de collectie is mislukt');
-		}
 	};
 
 	// Swap position of two fragments within a collection
@@ -253,7 +177,11 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		});
 	};
 
-	async function onSaveCollection(refetchCollection: () => void) {
+	const hasUnsavedChanged = () =>
+		JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
+
+	// Listeners
+	const onSaveCollection = async (refetchCollection: () => void) => {
 		setIsSavingCollection(true);
 
 		if (currentCollection) {
@@ -274,7 +202,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				trackEvents({
 					event_object: {
 						type: 'collection',
-						identifier: String(newCollection.id),
+						identifier: `${newCollection.id}`,
 					},
 					event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
 						newCollection.id
@@ -286,12 +214,98 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		}
 
 		setIsSavingCollection(false);
-	}
+	};
 
-	const hasUnsavedChanged = () =>
-		JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
+	const onClickRename = () => {
+		setIsOptionsMenuOpen(false);
+		setIsRenameModalOpen(true);
+	};
 
-	const handleShareCollectionModalClose = (collection?: Avo.Collection.Collection) => {
+	const onRenameCollection = async (newTitle: string) => {
+		try {
+			if (!initialCollection) {
+				toastService('De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)');
+				return;
+			}
+			// Update the name in the current collection
+			updateCollectionProperty(newTitle, 'title');
+
+			const collectionWithNewName = {
+				...initialCollection,
+				title: newTitle,
+			};
+			// Update the name in the initial collection
+			setInitialCollection(collectionWithNewName);
+			const cleanedCollection = CollectionService.cleanCollectionBeforeSave(collectionWithNewName);
+
+			// Immediately store the new name, without the user having to click the save button twice
+			await triggerCollectionUpdate({
+				variables: {
+					id: cleanedCollection.id,
+					collection: cleanedCollection,
+				},
+			});
+		} catch (err) {
+			console.error(err);
+			toastService('Het hernoemen van de collectie is mislukt');
+		}
+	};
+
+	const onClickDelete = () => {
+		setIsOptionsMenuOpen(false);
+		setIsDeleteModalOpen(true);
+	};
+
+	const onDeleteCollection = async () => {
+		try {
+			if (!currentCollection) {
+				console.error('Failed to delete collection since currentCollection is undefined');
+				toastService('Het verwijderen van de collectie is mislukt (collectie niet ingesteld)');
+				return;
+			}
+			await triggerCollectionDelete({
+				variables: {
+					id: currentCollection.id,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+
+			trackEvents({
+				event_object: {
+					type: 'collection',
+					identifier: String(currentCollection.id),
+				},
+				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+					currentCollection.id
+				} verwijderd`,
+				name: 'delete',
+				category: 'item',
+			});
+
+			props.history.push(`/${RouteParts.Workspace}/${RouteParts.Collections}`);
+		} catch (err) {
+			console.error(err);
+			toastService('Het verwijderen van de collectie is mislukt');
+		}
+	};
+
+	// TODO: DISABLED FEATURE
+	// const onPreviewCollection = () => {};
+
+	const onClickDropdownItem = (item: ReactText) => {
+		switch (item) {
+			case 'rename':
+				onClickRename();
+				break;
+			case 'delete':
+				onClickDelete();
+				break;
+			default:
+				return null;
+		}
+	};
+
+	const onCloseShareCollectionModal = (collection?: Avo.Collection.Collection) => {
 		setIsShareModalOpen(false);
 
 		// Update initial and current states, so that the 'hasUnsavedChanged' status is correct
@@ -313,195 +327,174 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		}
 	};
 
+	const onUnload = (event: any) => {
+		if (hasUnsavedChanged()) {
+			event.preventDefault();
+
+			// Chrome requires returnValue to be set
+			event.returnValue = '';
+		}
+	};
+
+	// Render functions
 	const renderCollectionEdit = (
 		collection: Avo.Collection.Collection,
 		refetchCollection: () => void
 	) => {
-		if (!isFirstRender) {
+		if (!currentCollection) {
 			setCurrentCollection(collection);
-			setInitialCollection(cloneDeep(collection)); // Clone so we can keep track of changes deep within the collection
-			setIsFirstRender(true);
+			setInitialCollection(cloneDeep(collection));
+			return null;
 		}
 
-		const tabs: Tab[] = COLLECTION_EDIT_TABS.map((tab: Tab) => ({
-			...tab,
-			active: currentTab === tab.id,
-		}));
+		const { profile } = collection;
+		const { title } = currentCollection;
+		const COLLECTION_DROPDOWN_ITEMS = [
+			createDropdownMenuItem('rename', 'Collectie hernoemen', 'folder'),
+			createDropdownMenuItem('delete', 'Verwijderen'),
+		];
 
-		return currentCollection ? (
+		const renderSaveButton = () => (
+			<Button
+				type="primary"
+				label="Opslaan"
+				onClick={() => onSaveCollection(refetchCollection)}
+				disabled={isSavingCollection}
+			/>
+		);
+
+		const renderHeaderButtons = () => (
+			<ButtonToolbar>
+				<Button
+					type="secondary"
+					label="Delen"
+					disabled={hasUnsavedChanged()}
+					title={
+						!eq(currentCollection, initialCollection) ? 'U moet uw wijzigingen eerst opslaan' : ''
+					}
+					onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+				/>
+				{/* TODO: DISABLED FEATURE
+					<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} disabled />
+				*/}
+				{/* TODO: DISABLED FEATURE
+					<Button
+						type = "secondary"
+						label="Herschik alle items"
+						onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
+						disabled
+					/>
+				*/}
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button type="secondary" icon="more-horizontal" />
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent menuItems={COLLECTION_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
+					</DropdownContent>
+				</ControlledDropdown>
+				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
+			</ButtonToolbar>
+		);
+
+		const renderTab = () => {
+			if (currentCollection) {
+				switch (currentTab) {
+					case 'inhoud':
+						return (
+							<CollectionEditContent
+								collection={currentCollection}
+								swapFragments={swapFragments}
+								updateCollection={setCurrentCollection}
+								updateFragmentProperties={updateFragmentProperties}
+							/>
+						);
+					case 'metadata':
+						return (
+							<CollectionEditMetaData
+								collection={currentCollection}
+								updateCollectionProperty={updateCollectionProperty}
+							/>
+						);
+					default:
+						return null;
+				}
+			}
+		};
+
+		return (
 			<>
 				<Prompt
 					when={hasUnsavedChanged()}
 					message="Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u de pagina wil verlaten?"
 				/>
-				<Container background="alt" mode="vertical">
-					<Container mode="horizontal">
-						<Toolbar autoHeight>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<Spacer margin="bottom">
-										<MetaData spaced={true} category="collection">
-											<MetaDataItem>
-												<div className="c-content-type c-content-type--collection">
-													<Icon name="collection" />
-													<p>COLLECTION</p>
-												</div>
-											</MetaDataItem>
-											<MetaDataItem
-												icon="eye"
-												label={String(188) /* TODO currentCollection.view_count */}
-											/>
-											<MetaDataItem
-												icon="bookmark"
-												label={String(12) /* TODO currentCollection.bookInhoud_count */}
-											/>
-										</MetaData>
-									</Spacer>
-									<h1 className="c-h2 u-clickable" onClick={() => setIsRenameModalOpen(true)}>
-										{currentCollection.title}
-									</h1>
-									{currentCollection.profile && (
-										<Flex spaced="regular">
-											{renderAvatar(currentCollection.profile, { includeRole: true })}
-										</Flex>
-									)}
-								</ToolbarItem>
-							</ToolbarLeft>
-							<ToolbarRight>
-								<ToolbarItem>
-									<ButtonToolbar>
-										<Button
-											type="secondary"
-											label="Delen"
-											disabled={hasUnsavedChanged()}
-											title={
-												!eq(currentCollection, initialCollection)
-													? 'U moet uw wijzigingen eerst opslaan'
-													: ''
-											}
-											onClick={() => setIsShareModalOpen(!isShareModalOpen)}
-										/>
-										<Button
-											type="secondary"
-											label="Bekijk"
-											onClick={onPreviewCollection}
-											disabled
-										/>
-										{/* <Button
-											type="secondary"
-											label="Herschik alle items"
-											onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
-											disabled
-										/> */}
-										<ControlledDropdown
-											isOpen={isOptionsMenuOpen}
-											menuWidth="fit-content"
-											onOpen={() => setIsOptionsMenuOpen(true)}
-											onClose={() => setIsOptionsMenuOpen(false)}
-											placement="bottom-end"
-										>
-											<DropdownButton>
-												<Button type="secondary" icon="more-horizontal" />
-											</DropdownButton>
-											<DropdownContent>
-												<MenuContent
-													menuItems={[
-														{ icon: 'folder', id: 'rename', label: 'Collectie hernoemen' },
-														{ icon: 'delete', id: 'delete', label: 'Verwijder' },
-													]}
-													onClick={itemId => {
-														switch (itemId) {
-															case 'rename':
-																onRenameCollection();
-																break;
-															case 'delete':
-																onDeleteCollection();
-																break;
-															default:
-																return null;
-														}
-													}}
-												/>
-											</DropdownContent>
-										</ControlledDropdown>
-										<Spacer margin="left-small">
-											<Button
-												type="primary"
-												label="Opslaan"
-												onClick={() => onSaveCollection(refetchCollection)}
-												disabled={isSavingCollection}
-											/>
-										</Spacer>
-									</ButtonToolbar>
-								</ToolbarItem>
-							</ToolbarRight>
-						</Toolbar>
-					</Container>
-				</Container>
+				<Header
+					title={title}
+					onClickTitle={() => setIsRenameModalOpen(true)}
+					category="collection"
+					categoryLabel="collectie"
+					showMetaData
+					bookmarks="0" // TODO: Real bookmark count
+					views="0" // TODO: Real view count
+				>
+					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
+					<HeaderAvatar>
+						<>{profile && renderAvatar(profile, { includeRole: true })}</>
+					</HeaderAvatar>
+				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={selectTab} />
 					</Container>
 				</Navbar>
-				{currentTab === 'inhoud' && (
-					<CollectionEditContent
-						collection={currentCollection}
-						swapFragments={swapFragments}
-						updateCollection={setCurrentCollection}
-						updateFragmentProperties={updateFragmentProperties}
-					/>
-				)}
-				{currentTab === 'metadata' && (
-					<CollectionEditMetaData
-						collection={currentCollection}
-						updateCollectionProperty={updateCollectionProperty}
-					/>
-				)}
+				{renderTab()}
 				<Container background="alt" mode="vertical">
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarRight>
 								<ToolbarItem>
-									<ButtonToolbar>
-										<Button
-											type="primary"
-											label="Opslaan"
-											onClick={() => onSaveCollection(refetchCollection)}
-											disabled={isSavingCollection}
-										/>
-									</ButtonToolbar>
+									<ButtonToolbar>{renderSaveButton()}</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>
 						</Toolbar>
 					</Container>
 				</Container>
-				{/* <ReorderCollectionModal
-					isOpen={isReorderModalOpen}
-					onClose={() => setIsReorderModalOpen(false)}
-				/> */}
+				{/* TODO: DISABLED_FEATURE
+					<ReorderCollectionModal
+						isOpen={isReorderModalOpen}
+						onClose={() => setIsReorderModalOpen(false)}
+					/>
+				*/}
 				<ShareCollectionModal
 					collection={currentCollection}
 					isOpen={isShareModalOpen}
-					onClose={handleShareCollectionModalClose}
+					onClose={onCloseShareCollectionModal}
 					setIsPublic={(value: boolean) => updateCollectionProperty(value, 'is_public')}
 				/>
 				<DeleteObjectModal
-					title={`Ben je zeker dat de collectie "${currentCollection.title}" wil verwijderen?`}
+					title={`Ben je zeker dat de collectie "${title}" wil verwijderen?`}
 					body="Deze actie kan niet ongedaan gemaakt worden"
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={deleteCollection}
+					deleteObjectCallback={onDeleteCollection}
 				/>
 				<InputModal
 					title="Hernoem deze collectie"
 					inputLabel="Naam collectie:"
-					inputValue={collection.title}
+					inputValue={title}
 					isOpen={isRenameModalOpen}
 					onClose={() => setIsRenameModalOpen(false)}
-					inputCallback={renameCollection}
+					inputCallback={onRenameCollection}
+					emptyMessage="Gelieve een collectie-titel in te vullen."
 				/>
 			</>
-		) : null;
+		);
 	};
 
 	return (
@@ -514,23 +507,5 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		/>
 	);
 };
-
-export function getValidationFeedbackForShortDescription(
-	collection: Avo.Collection.Collection,
-	isError?: boolean | null
-): string {
-	const count = `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
-
-	const exceedsSize: boolean =
-		(collection.description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH;
-
-	if (isError) {
-		return exceedsSize ? `De korte omschrijving is te lang. ${count}` : '';
-	}
-
-	return exceedsSize
-		? ''
-		: `${(collection.description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
-}
 
 export default withRouter(withApollo(CollectionEdit));

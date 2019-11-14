@@ -1,6 +1,6 @@
 {
 	"name": "avo2-client",
-	"version": "0.16.0",
+	"version": "0.17.0",
 	"private": true,
 	"scripts": {
 		"prestart": "npm run env",
@@ -61,6 +61,7 @@
 		"@types/react-redux": "^6.0.14",
 		"@types/react-router-config": "^5.0.0",
 		"@types/react-router-dom": "^4.3.3",
+		"@types/react-select": "^3.0.8",
 		"@types/storybook__react": "^4.0.2",
 		"enzyme": "^3.10.0",
 		"enzyme-adapter-react-16": "^1.14.0",
