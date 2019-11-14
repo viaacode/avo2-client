@@ -175,7 +175,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		} as Avo.Collection.Collection);
 	};
 
-	const renameCollection = async (newTitle: string) => {
+	const renameCollection = async (newTitle: string, refetchCollection: () => void) => {
 		try {
 			if (!initialCollection) {
 				toastService('De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)');
@@ -200,6 +200,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
+			refetchCollection();
 		} catch (err) {
 			console.error(err);
 			toastService('Het hernoemen van de collectie is mislukt');
@@ -498,7 +500,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					inputValue={collection.title}
 					isOpen={isRenameModalOpen}
 					onClose={() => setIsRenameModalOpen(false)}
-					inputCallback={renameCollection}
+					inputCallback={(input: string) => renameCollection(input, refetchCollection)}
 				/>
 			</>
 		) : null;
