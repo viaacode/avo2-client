@@ -10,7 +10,7 @@ interface SidebarProps {
 	navItems: NavigationItem[];
 }
 
-export const Sidebar: FunctionComponent<SidebarProps> = ({ headerLink, navItems }) => (
+const Sidebar: FunctionComponent<SidebarProps> = ({ headerLink, navItems }) => (
 	<div className="o-sidebar">
 		<div className="o-sidebar__header">
 			<Link className="u-remove-link-styling u-color-white" to={headerLink}>
@@ -30,3 +30,5 @@ export const Sidebar: FunctionComponent<SidebarProps> = ({ headerLink, navItems 
 		</div>
 	</div>
 );
+
+export default Sidebar;

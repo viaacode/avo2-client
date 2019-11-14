@@ -1,4 +1,4 @@
-import { createReducer } from '../../shared/helpers/redux/create-reducer';
+import { createReducer } from '../../shared/helpers';
 
 import initialState from './initial-state';
 import {

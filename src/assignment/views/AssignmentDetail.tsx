@@ -1,14 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
-import { cloneDeep, debounce, eq, get, isNil, omit, set } from 'lodash-es';
-import React, {
-	createRef,
-	FunctionComponent,
-	ReactElement,
-	RefObject,
-	useEffect,
-	useState,
-} from 'react';
+import { cloneDeep, eq, get, isNil, omit, set } from 'lodash-es';
+import React, { FunctionComponent, ReactElement, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -33,22 +26,23 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
-import FragmentDetail from '../../collection/components/FragmentDetail';
+import { FragmentDetail } from '../../collection/components';
 import { RouteParts } from '../../constants';
-import ErrorView from '../../error/views/ErrorView';
-import ItemVideoDescription from '../../item/components/ItemVideoDescription';
-import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
-import { renderAvatar } from '../../shared/helpers/formatters/avatar';
+import { ErrorView } from '../../error/views';
+import { ItemVideoDescription } from '../../item/components';
+import { LoadingErrorLoadedComponent } from '../../shared/components';
+import { renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
+
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,
 	UPDATE_ASSIGNMENT_RESPONSE,
-} from '../graphql';
-import { getAssignmentContent, LoadingState } from '../helpers';
-import { AssignmentLayout } from '../types';
+} from '../assignment.gql';
+import { getAssignmentContent, LoadingState } from '../assignment.helpers';
+import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
@@ -56,15 +50,14 @@ interface AssignmentProps extends RouteComponentProps {
 	loginResponse: LoginResponse | null;
 }
 
-const DEFAULT_ASSIGNMENT_DESCRIPTION_HEIGHT = 200;
-
 export enum AssignmentRetrieveError {
 	DELETED = 'DELETED',
 	NOT_YET_AVAILABLE = 'NOT_YET_AVAILABLE',
 	PAST_DEADLINE = 'PAST_DEADLINE',
-} // TODO replace with typings repo Avo.Assignment.RetrieveError
+} // TODO: replace with typings repo Avo.Assignment.RetrieveError
 
-const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResponse }) => {
+const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
+	// State
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
 	const [assigmentContent, setAssigmentContent] = useState<
@@ -73,6 +66,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 	const [loadingState, setLoadingState] = useState<LoadingState>('loading');
 	const [loadingError, setLoadingError] = useState<{ error: string; icon: IconName } | null>(null);
 
+	// Mutations
 	const [triggerInsertAssignmentResponse] = useMutation(INSERT_ASSIGNMENT_RESPONSE);
 	const [triggerUpdateAssignmentResponse] = useMutation(UPDATE_ASSIGNMENT_RESPONSE);
 
@@ -92,15 +86,17 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				tempAssignment,
 				'assignment_responses[0]'
 			);
+
 			if (!assignmentResponse) {
 				// Student has never viewed this assignment before, we should create a response object for him
 				assignmentResponse = {
-					owner_profile_ids: [getProfileId()], // TODO replace with getUser().uuid
+					owner_profile_ids: [getProfileId()], // TODO: replace with getUser().uuid
 					assignment_id: tempAssignment.id,
 					collection: null,
 					collection_id: null,
 					submitted_at: null,
 				};
+
 				try {
 					const reply = await triggerInsertAssignmentResponse({
 						variables: {
@@ -108,14 +104,17 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 						},
 						update: ApolloCacheManager.clearAssignmentCache,
 					});
+
 					const assignmentResponseId = get(
 						reply,
 						'data.insert_app_assignment_responses.returning[0].id'
 					);
+
 					if (isNil(assignmentResponseId)) {
 						toastService('Het aanmaken van de opdracht antwoord entry is mislukt (leeg id)');
 						return;
 					}
+
 					(assignmentResponse as Partial<Avo.Assignment.Response>).id = assignmentResponseId;
 					tempAssignment.assignment_responses = [assignmentResponse as Avo.Assignment.Response];
 				} catch (err) {
@@ -175,24 +174,26 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				);
 			})
 			.catch(err => {
+				const { DELETED, NOT_YET_AVAILABLE, PAST_DEADLINE } = AssignmentRetrieveError;
 				let errorObj: { error: string; icon: IconName };
 				const graphqlError = get(err, 'graphQLErrors[0].message');
+
 				switch (graphqlError) {
-					case AssignmentRetrieveError.DELETED:
+					case DELETED:
 						errorObj = {
 							error: 'De opdracht werd verwijderd',
 							icon: 'delete' as IconName,
 						};
 						break;
 
-					case AssignmentRetrieveError.NOT_YET_AVAILABLE:
+					case NOT_YET_AVAILABLE:
 						errorObj = {
 							error: `De opdracht is nog niet beschikbaar`,
 							icon: 'clock' as IconName,
 						};
 						break;
 
-					case AssignmentRetrieveError.PAST_DEADLINE:
+					case PAST_DEADLINE:
 						errorObj = {
 							error: 'De deadline voor deze opdracht is reeds verlopen',
 							icon: 'clock' as IconName,
@@ -226,7 +227,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				);
 				return;
 			}
+
 			const assignmentResponse = getAssignmentResponse();
+
 			if (!isNil(assignmentResponse) && !isNil(assignmentResponse.id)) {
 				const updatedAssignmentResponse = omit(cloneDeep(assignmentResponse), ['__typename', 'id']);
 				triggerUpdateAssignmentResponse({
@@ -241,6 +244,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 							`De opdracht is ge${isAssignmentResponseArchived() ? 'de' : ''}archiveerd`,
 							TOAST_TYPE.SUCCESS
 						);
+
 						// Update local cached assignment
 						setAssignment(
 							set(
@@ -281,7 +285,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 			return null;
 		}
 
-		switch (assignment.content_label) {
+		const { content_label, content_layout } = assignment;
+
+		switch (content_label) {
 			case 'COLLECTIE':
 				return (
 					<FragmentDetail
@@ -294,16 +300,14 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				return (
 					<ItemVideoDescription
 						itemMetaData={assigmentContent as Avo.Item.Item}
-						showDescriptionNextToVideo={
-							assignment.content_layout === AssignmentLayout.PlayerAndText
-						}
+						showDescriptionNextToVideo={content_layout === AssignmentLayout.PlayerAndText}
 					/>
 				);
 			default:
 				return (
 					<ErrorView
 						icon="alert-triangle"
-						message={`Onverwacht opdracht inhoud type: "${assignment.content_label}"`}
+						message={`Onverwacht opdracht inhoud type: "${content_label}"`}
 					/>
 				);
 		}
@@ -324,10 +328,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 				className="c-return"
 				to={
 					isOwner
-						? `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assignment.id}/${
+						? `/${RouteParts.Workspace}/${RouteParts.Assignments}/${assignment.id}/${
 								RouteParts.Edit
 						  }`
-						: `/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`
+						: `/${RouteParts.Workspace}/${RouteParts.Assignments}`
 				}
 			>
 				<Icon type="arrows" name="chevron-left" />
@@ -411,7 +415,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, loginResp
 									dangerouslySetInnerHTML={{ __html: assignment.description }}
 								/>
 								{!!assignment.answer_url && (
-									<Box className="c-box--soft-white" condensed>
+									<Box backgroundColor="soft-white" condensed>
 										<p>Geef je antwoorden in op:</p>
 										<p>
 											<a href={assignment.answer_url}>{assignment.answer_url}</a>

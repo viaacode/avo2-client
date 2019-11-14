@@ -1,8 +1,9 @@
+import { compact, uniq } from 'lodash-es';
+
 import { Avo } from '@viaa/avo2-types';
 
-import { compact, uniq } from 'lodash-es';
-import { isMediaFragment } from '../../collection/helpers';
-import { ContentTypeString } from '../../collection/types';
+import { isMediaFragment } from '../../collection/collection.helpers';
+import { ContentTypeString } from '../../collection/collection.types';
 import { getEnv } from '../helpers/env';
 import { toSeconds } from '../helpers/parsers/duration';
 

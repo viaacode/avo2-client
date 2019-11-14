@@ -34,23 +34,21 @@ import { connect } from 'react-redux';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
 import { RouteParts } from '../../constants';
-import { ITEMS_PER_PAGE } from '../../my-workspace/constants';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../shared/components/modals/InputModal';
-import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
+import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
+import { formatTimestamp, fromNow } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
-} from '../graphql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
-import { AssignmentColumn } from '../types';
+} from '../assignment.gql';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import { AssignmentColumn } from '../assignment.types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -207,7 +205,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		switch (actionId) {
 			case 'edit':
 				history.push(
-					`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${dataRow.id}/${RouteParts.Edit}`
+					`/${RouteParts.Workspace}/${RouteParts.Assignments}/${dataRow.id}/${RouteParts.Edit}`
 				);
 				break;
 			case 'duplicate':
@@ -262,7 +260,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
 								<Link
-									to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
+									to={`/${RouteParts.Workspace}/${RouteParts.Assignments}/${rowData.id}/${
 										RouteParts.Edit
 									}`}
 								>
@@ -289,7 +287,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			case 'assignment_responses':
 				return (
 					<Link
-						to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${RouteParts.Assignments}/${
+						to={`/${RouteParts.Workspace}/${RouteParts.Assignments}/${RouteParts.Assignments}/${
 							rowData.id
 						}/${RouteParts.Responses}`}
 					>
@@ -336,7 +334,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							icon="chevron-right"
 							onClick={() =>
 								history.push(
-									`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${rowData.id}/${
+									`/${RouteParts.Workspace}/${RouteParts.Assignments}/${rowData.id}/${
 										RouteParts.Edit
 									}`
 								)
