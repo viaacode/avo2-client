@@ -25,18 +25,20 @@ interface InputModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	inputCallback: (input: string) => void;
+	emptyMessage?: string;
 }
 
 const InputModal: FunctionComponent<InputModalProps> = ({
+	inputValue,
+	inputCallback,
+	isOpen,
 	title = 'Vul in',
 	inputLabel = '',
-	inputValue,
 	inputPlaceholder = '',
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Opslaan',
 	onClose = () => {},
-	isOpen,
-	inputCallback,
+	emptyMessage = 'Gelieve een waarde in te vullen.',
 }) => {
 	const [input, setInput] = useState<string>(inputValue || '');
 
@@ -48,7 +50,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 
 	const onClickConfirm = () => {
 		if (!input) {
-			toastService('Gelieve een collectie-titel in te vullen.', TOAST_TYPE.DANGER);
+			toastService(emptyMessage, TOAST_TYPE.DANGER);
 			return null;
 		}
 

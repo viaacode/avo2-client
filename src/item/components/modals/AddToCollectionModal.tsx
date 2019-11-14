@@ -69,10 +69,18 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0
 	);
-	const [collections, setCollections] = useState<Avo.Collection.Collection[]>([]);
+	const [collections, setCollections] = useState<Partial<Avo.Collection.Collection>[]>([]);
 
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
+
+	useEffect(() => {
+		CollectionService.getCollectionTitlesByUser().then(
+			(collectionTitles: Partial<Avo.Collection.Collection>[]) => {
+				setCollections(collectionTitles);
+			}
+		);
+	}, []);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -329,10 +337,12 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 														id="existingCollection"
 														options={[
 															{ label: 'Kies collectie', value: '', disabled: true },
-															...collections.map((collection: { id: number; title: string }) => ({
-																label: collection.title,
-																value: String(collection.id),
-															})),
+															...collections.map(
+																(collection: Partial<Avo.Collection.Collection>) => ({
+																	label: collection.title || '',
+																	value: String(collection.id),
+																})
+															),
 														]}
 														value={selectedCollectionId}
 														onChange={setSelectedCollectionIdAndGetCollectionInfo}

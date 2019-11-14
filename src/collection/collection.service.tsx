@@ -267,9 +267,7 @@ export class CollectionService {
 	private static getFragmentIdsFromCollection(
 		collection: Partial<Avo.Collection.Collection> | undefined
 	): number[] {
-		return (get(collection, 'collection_fragments') || []).map(
-			(fragment: Avo.Collection.Fragment) => fragment.id
-		);
+		return this.getFragments(collection).map((fragment: Avo.Collection.Fragment) => fragment.id);
 	}
 
 	private static async insertFragments(
