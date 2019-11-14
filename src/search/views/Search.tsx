@@ -39,7 +39,7 @@ import {
 import queryString from 'query-string';
 
 import { RouteParts } from '../../constants';
-import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { copyToClipboard } from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { SearchFilterControls, SearchResults } from '../components';
 import {
@@ -100,7 +100,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
 			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
 
-			// TODO do the search by dispatching a redux action
+			// TODO: do the search by dispatching a redux action
 			search(
 				sortOrder.orderProperty,
 				sortOrder.orderDirection,
@@ -253,9 +253,8 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 		setCurrentPage(pageIndex);
 	};
 
-	const handleBookmarkToggle = (id: string, active: boolean) => {
-		// TODO handle search result bookmark button toggle
-	};
+	// TODO: FEATURE - handle search result bookmark button toggle
+	const handleBookmarkToggle = (id: string, active: boolean) => {};
 
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {

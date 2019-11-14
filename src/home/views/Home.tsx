@@ -19,14 +19,14 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { dutchContentLabelToEnglishLabel } from '../../collection/collection.types';
+import { toEnglishContentType } from '../../collection/collection.types';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import {
 	generateContentLinkString,
 	generateSearchLinkString,
-} from '../../shared/helpers/generateLink';
-import { useDebounce } from '../../shared/helpers/useDebounce';
+	useDebounce,
+} from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 
 import './Home.scss';
@@ -71,7 +71,7 @@ const Home: FunctionComponent<HomeProps> = ({
 		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
 			label: searchResult.dc_title,
 			id: searchResult.external_id,
-			type: dutchContentLabelToEnglishLabel(searchResult.administrative_type),
+			type: toEnglishContentType(searchResult.administrative_type),
 		})
 	);
 

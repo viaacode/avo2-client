@@ -13,6 +13,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import toastService, { TOAST_TYPE } from '../../services/toast-service';
+
 interface InputModalProps {
 	title?: string;
 	inputLabel?: string;
@@ -23,35 +25,49 @@ interface InputModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	inputCallback: (input: string) => void;
+	emptyMessage?: string;
 }
 
 const InputModal: FunctionComponent<InputModalProps> = ({
+	inputValue,
+	inputCallback,
+	isOpen,
 	title = 'Vul in',
 	inputLabel = '',
-	inputValue,
 	inputPlaceholder = '',
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Opslaan',
 	onClose = () => {},
-	isOpen,
-	inputCallback,
+	emptyMessage = 'Gelieve een waarde in te vullen.',
 }) => {
 	const [input, setInput] = useState<string>(inputValue || '');
 
-	const handleConfirm = () => {
+	// Listeners
+	const onClickClose = () => {
+		onClose();
+		setInput(inputValue || '');
+	};
+
+	const onClickConfirm = () => {
+		if (!input) {
+			toastService(emptyMessage, TOAST_TYPE.DANGER);
+			return null;
+		}
+
 		onClose();
 		inputCallback(input);
 	};
 
+	// Render
 	return (
-		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable={true}>
+		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable={true}>
 			<ModalBody>
 				<>
 					<Spacer margin="bottom-large">
 						<FormGroup label={inputLabel} labelFor="collectionNameId">
 							<TextInput
 								type="text"
-								value={input || inputValue}
+								value={input}
 								onChange={setInput}
 								placeholder={inputPlaceholder}
 							/>
@@ -61,8 +77,8 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 						<ToolbarRight>
 							<ToolbarItem>
 								<ButtonToolbar>
-									<Button type="secondary" label={cancelLabel} onClick={onClose} />
-									<Button type="primary" label={confirmLabel} onClick={handleConfirm} />
+									<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
+									<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
 								</ButtonToolbar>
 							</ToolbarItem>
 						</ToolbarRight>

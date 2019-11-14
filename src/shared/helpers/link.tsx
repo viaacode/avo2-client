@@ -1,22 +1,17 @@
 import { History } from 'history';
+import { isArray, isEmpty, isNil, noop } from 'lodash-es';
+import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Avo } from '@viaa/avo2-types';
-import { isArray, isEmpty, isNil, noop } from 'lodash-es';
-import queryString from 'query-string';
 
 import { RouteParts } from '../../constants';
 import toastService, { TOAST_TYPE } from '../services/toast-service';
 
-export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
-	video: RouteParts.Item,
-	audio: RouteParts.Item,
-	collectie: RouteParts.Collection,
-	bundel: RouteParts.Folder,
-};
+import { CONTENT_TYPE_TO_ROUTE } from '../constants';
 
-export function navigate(history: History, route: string, params: { [key: string]: any } = {}) {
+export const navigate = (history: History, route: string, params: { [key: string]: any } = {}) => {
 	const showError = (params: string[]) => {
 		const paramsString = params.join(', ').replace(':', '');
 
@@ -56,14 +51,14 @@ export function navigate(history: History, route: string, params: { [key: string
 	}
 
 	history.push(builtLink);
-}
+};
 
-export function generateSearchLinks(
+export const generateSearchLinks = (
 	key: string,
 	filterProp: Avo.Search.FilterProp,
 	filterValue: string | string[] | undefined,
 	className: string = ''
-) {
+) => {
 	if (isArray(filterValue)) {
 		return filterValue.map((value: string, index: number) => (
 			<Fragment key={`${key}:${filterProp}":${value}`}>
@@ -72,8 +67,9 @@ export function generateSearchLinks(
 			</Fragment>
 		));
 	}
+
 	return generateSearchLink(filterProp, filterValue, className);
-}
+};
 
 export function generateSearchLink(
 	filterProp: Avo.Search.FilterProp,

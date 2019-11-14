@@ -7,7 +7,7 @@ import { get } from 'lodash-es';
 
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { RouteParts } from '../../constants';
-import ErrorView from '../../error/views/ErrorView';
+import { ErrorView } from '../../error/views';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';

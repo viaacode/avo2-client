@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
 
-import SecuredRoute from '../authentication/components/SecuredRoute';
+import { SecuredRoute } from '../authentication/components';
 import { RouteParts } from '../constants';
-import Discover from './views/Discover';
+import { Discover } from './views';
 
 export const renderDiscoverRoutes = (): ReactNode[] => [
 	<SecuredRoute

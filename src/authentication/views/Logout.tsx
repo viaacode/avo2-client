@@ -1,7 +1,8 @@
 import { FunctionComponent } from 'react';
-
 import { RouteComponentProps } from 'react-router';
+
 import { RouteParts } from '../../constants';
+
 import { redirectToLogoutPage } from '../helpers/redirect-to-idp';
 
 export interface LogoutProps extends RouteComponentProps {}

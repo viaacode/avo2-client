@@ -6,7 +6,7 @@ import { ValueType } from 'react-select';
 
 import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
 
-import { navigate } from '../../../shared/helpers/generateLink';
+import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import {
 	fetchMenuItemById,

@@ -1,7 +1,7 @@
+import { get } from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
-
-import { get } from 'lodash-es';
 
 import {
 	Button,
@@ -15,10 +15,10 @@ import {
 	ModalBody,
 	Spacer,
 } from '@viaa/avo2-components';
-import { RouteParts } from '../../constants';
 
-import queryString from 'query-string';
-import { getEnv } from '../../shared/helpers/env';
+import { RouteParts } from '../../constants';
+import { getEnv } from '../../shared/helpers';
+
 import './RegisterOrLogin.scss';
 
 export interface RegisterOrLoginProps extends RouteComponentProps {}

@@ -8,7 +8,7 @@ import { ApolloCacheManager, dataService } from '../shared/services/data-service
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
 import { GET_COLLECTION_TITLES_BY_OWNER } from './collection.gql';
-import { getValidationErrorForSave, getValidationErrorsForPublish } from './helpers/validation';
+import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
 
 export class CollectionService {
 	public static async insertCollection(
@@ -155,7 +155,7 @@ export class CollectionService {
 				fragmentToUpdate = cloneDeep(fragmentToUpdate);
 
 				delete (fragmentToUpdate as any).__typename;
-				// TODO remove type cast when next typings repo version is released (1.8.0)
+				// TODO: remove type cast when next typings repo version is released (1.8.0)
 				delete (fragmentToUpdate as any).item_meta;
 
 				updatePromises.push(
@@ -199,6 +199,7 @@ export class CollectionService {
 			const cleanedCollection: Partial<Avo.Collection.Collection> = this.cleanCollectionBeforeSave(
 				newCollection
 			);
+
 			await triggerCollectionUpdate({
 				variables: {
 					id: cleanedCollection.id,
@@ -266,9 +267,7 @@ export class CollectionService {
 	private static getFragmentIdsFromCollection(
 		collection: Partial<Avo.Collection.Collection> | undefined
 	): number[] {
-		return (get(collection, 'collection_fragments') || []).map(
-			(fragment: Avo.Collection.Fragment) => fragment.id
-		);
+		return this.getFragments(collection).map((fragment: Avo.Collection.Fragment) => fragment.id);
 	}
 
 	private static async insertFragments(
@@ -323,13 +322,13 @@ export class CollectionService {
 
 		delete fragmentToAdd.id;
 		delete (fragmentToAdd as any).__typename;
-		// TODO remove type cast when next typings repo version is released (1.8.0)
+		// TODO: remove type cast when next typings repo version is released (1.8.0)
 		delete (fragmentToAdd as any).item_meta;
 
 		const response = await triggerCollectionFragmentInsert({
 			variables: {
 				id: collection.id,
-				fragment: fragmentToAdd,
+				fragments: fragmentToAdd,
 			},
 			update: ApolloCacheManager.clearCollectionCache,
 		});
@@ -346,13 +345,14 @@ export class CollectionService {
 		collection: Partial<Avo.Collection.Collection>
 	): Promise<string | null> {
 		try {
-			// TODO check if thumbnail was automatically selected from the first media fragment => need to update every save
+			// TODO: check if thumbnail was automatically selected from the first media fragment => need to update every save
 			// or if the thumbnail was selected by the user => need to update only if video is not available anymore
 			// This will need a new field in the database: thumbnail_type = 'auto' | 'chosen' | 'uploaded'
-			// TODO  || collection.thumbnail_type === 'auto'
+			// TODO:  || collection.thumbnail_type === 'auto'
 			if (!collection.thumbnail_path) {
 				return await getThumbnailForCollection(collection);
 			}
+
 			return collection.thumbnail_path;
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });

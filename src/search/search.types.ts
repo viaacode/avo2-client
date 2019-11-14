@@ -28,6 +28,15 @@ export interface SearchResults {
 	items: Avo.Search.ResultItem[];
 }
 
+export interface SearchFilterControlsProps {
+	formState: Avo.Search.Filters;
+	handleFilterFieldChange: (
+		values: SearchFilterFieldValues,
+		propertyName: Avo.Search.FilterProp
+	) => void;
+	multiOptions: SearchFilterMultiOptions;
+}
+
 interface SearchResultItemHandlers {
 	handleBookmarkToggle: (id: string, active: boolean) => void;
 	handleOriginalCpLinkClicked: (id: string, cp: string) => void;
@@ -43,13 +52,4 @@ export interface SearchResultsProps extends SearchResultItemHandlers {
 	pageCount: number;
 	data: Avo.Search.Search | null;
 	setPage: (page: number) => void;
-}
-
-export interface SearchFilterControlsProps {
-	formState: Avo.Search.Filters;
-	handleFilterFieldChange: (
-		values: SearchFilterFieldValues,
-		propertyName: Avo.Search.FilterProp
-	) => void;
-	multiOptions: SearchFilterMultiOptions;
 }

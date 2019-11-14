@@ -3,12 +3,9 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import { Avo } from '@viaa/avo2-types';
 import { capitalize, get } from 'lodash-es';
 
-import {
-	CheckboxDropdownModal,
-	CheckboxOption,
-} from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { DateRangeDropdown } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { LANGUAGES } from '../../shared/helpers/languages';
+import { CheckboxDropdownModal, DateRangeDropdown } from '../../shared/components';
+import { CheckboxOption } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { LANGUAGES } from '../../shared/constants';
 import { SearchFilterControlsProps } from '../search.types';
 
 const languageCodeToLabel = (code: string): string => {

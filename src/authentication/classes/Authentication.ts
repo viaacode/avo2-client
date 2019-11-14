@@ -22,6 +22,6 @@ class Authentication {
 }
 
 const authClient = new Authentication();
-authClient.signIn(); // TODO replace with actual dispatch action to backend to get user info
+authClient.signIn(); // TODO: replace with actual dispatch action to backend to get user info
 
 export default authClient;

@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
 
-import SecuredRoute from '../authentication/components/SecuredRoute';
+import { SecuredRoute } from '../authentication/components';
 import { RouteParts } from '../constants';
-import Search from './views/Search';
+import { Search } from './views';
 
 export const renderSearchRoutes = (): ReactNode[] => [
 	<SecuredRoute

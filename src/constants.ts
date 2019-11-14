@@ -24,5 +24,3 @@ export const RouteParts = {
 	Admin: 'beheer',
 	Menu: 'navigatie',
 };
-
-export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;

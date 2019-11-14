@@ -18,12 +18,12 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import AssignmentOverview from '../../assignment/views/AssignmentOverview';
+import { AssignmentOverview } from '../../assignment/views';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import CollectionOverview from '../../collection/views/CollectionOverview';
+import { CollectionOverview } from '../../collection/views';
 import { RouteParts } from '../../constants';
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { ControlledDropdown, DataQueryComponent } from '../../shared/components';
+
 import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabViewMap } from '../workspace.types';
@@ -131,8 +131,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 	}) => {
 		const counts = {
 			[COLLECTIONS_ID]: get(data, 'app_collections_aggregate.aggregate.count'),
-			[FOLDERS_ID]: 0, // TODO get from database once the table exists
-			[BOOKMARKS_ID]: 0, // TODO get from database once the table exists
+			[FOLDERS_ID]: 0, // TODO: get from database once the table exists
+			[BOOKMARKS_ID]: 0, // TODO: get from database once the table exists
 		};
 		return (
 			<>

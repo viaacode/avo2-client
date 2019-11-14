@@ -5,7 +5,7 @@ import { Query, QueryResult } from 'react-apollo';
 
 import { Flex, Spinner } from '@viaa/avo2-components';
 
-import ErrorView from '../../../error/views/ErrorView';
+import { ErrorView } from '../../../error/views';
 
 export interface DataQueryComponentProps {
 	query: DocumentNode;
@@ -17,7 +17,7 @@ export interface DataQueryComponentProps {
 	showSpinner?: boolean;
 }
 
-export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
+const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	query,
 	variables,
 	resultPath,
@@ -44,7 +44,7 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 					const firstGraphQlError = get(result, 'error.graphQLErrors[0].message');
 
 					if (firstGraphQlError === 'DELETED') {
-						// TODO show different message if a list of items was returned but only some were deleted
+						// TODO: show different message if a list of items was returned but only some were deleted
 						return <ErrorView message="Dit item is verwijderd" icon="delete" />;
 					}
 
@@ -71,3 +71,5 @@ export const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 		</Query>
 	);
 };
+
+export default DataQueryComponent;

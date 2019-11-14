@@ -1,5 +1,5 @@
 import { get, orderBy } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, ReactText, SetStateAction, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -24,15 +24,15 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import ControlledDropdown from '../../shared/components/ControlledDropdown/ControlledDropdown';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import { getEnv } from '../../shared/helpers/env';
-import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
-import { isMediaFragment } from '../helpers/is-media-fragment';
-import FragmentAdd from './FragmentAdd';
-import CutFragmentModal, { FragmentPropertyUpdateInfo } from './modals/CutFragmentModal';
+import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
+import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
+import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import { IconName } from '../../../shared/types/types';
+
+import { CutFragmentModal, FragmentAdd } from '../';
+import { isMediaFragment } from '../../collection.helpers';
+import { FragmentPropertyUpdateInfo } from '../../collection.types';
 
 interface FragmentEditProps extends RouteComponentProps {
 	index: number;
@@ -40,7 +40,7 @@ interface FragmentEditProps extends RouteComponentProps {
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
 	openOptionsId: number | null;
-	setOpenOptionsId: React.Dispatch<React.SetStateAction<number | null>>;
+	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 	updateCollection: (collection: Avo.Collection.Collection) => void;
@@ -70,23 +70,15 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const isFirst = (index: number) => index === 0;
 	const isLast = (index: number) => index === collection.collection_fragments.length - 1;
 
-	// Change listener for custom fields toggle
-	const onChangeToggle = () => {
-		updateFragmentProperties([
-			{ value: !useCustomFields, fieldName: 'use_custom_fields' as const, fragmentId: fragment.id },
-		]);
-		setUseCustomFields(!useCustomFields);
-	};
-
-	// Change listener for custom fields text
-	const onChangeText = (field: 'title' | 'description', value: string) =>
-		updateFragmentProperties([
-			{
-				value,
-				fieldName: `custom_${field}` as 'custom_title' | 'custom_description',
-				fragmentId: fragment.id,
-			},
-		]);
+	const FRAGMENT_DROPDOWN_ITEMS = [
+		// TODO: DISABLED FEATURE
+		// createDropdownMenuItem('duplicate', 'Dupliceren', 'copy'),
+		// createDropdownMenuItem('move', 'Verplaatsen', 'arrow-right'),
+		createDropdownMenuItem('delete', 'Verwijderen'),
+		// TODO: DISABLED FEATURE
+		// createDropdownMenuItem('copyToCollection', 'Kopiëren naar andere collectie', 'copy'),
+		// createDropdownMenuItem('moveToCollection', 'Verplaatsen naar andere collectie', 'arrow-right'),
+	];
 
 	// Get correct fragment property according to fragment type
 	const getFragmentProperty = (
@@ -99,27 +91,52 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			? get(fragment, `custom_${prop}`, '')
 			: get(itemMetaData, prop, '');
 
-	const onDuplicateFragment = (fragmentId: number) => {
-		setOpenOptionsId(null);
-		toastService('Fragment is succesvol gedupliceerd', TOAST_TYPE.SUCCESS);
+	const initFlowPlayer = () =>
+		!playerTicket &&
+		fetchPlayerTicket(fragment.external_id)
+			.then(data => setPlayerTicket(data))
+			.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
+
+	const itemMetaData = (fragment as any).item_meta;
+
+	// Listeners
+	const onChangeToggle = () => {
+		const propsToUpdate = [
+			{
+				value: !useCustomFields,
+				fieldName: 'use_custom_fields' as keyof Avo.Collection.Fragment,
+				fragmentId: fragment.id,
+			},
+		];
+
+		// If empty title or description, apply item title and description
+		const propsToTransfer: string[] = ['title', 'description'];
+
+		propsToTransfer.forEach((prop: string) => {
+			const customProp = `custom_${prop}` as keyof Avo.Collection.Fragment;
+
+			if (!fragment[customProp] && itemMetaData[prop]) {
+				propsToUpdate.push({
+					value: itemMetaData[prop],
+					fieldName: customProp,
+					fragmentId: fragment.id,
+				});
+			}
+		});
+
+		updateFragmentProperties(propsToUpdate);
+		setUseCustomFields(!useCustomFields);
 	};
 
-	const onMoveFragment = () => {
-		setOpenOptionsId(null);
-		toastService('Fragment is succesvol verplaatst', TOAST_TYPE.SUCCESS);
-	};
+	const onChangeText = (field: 'title' | 'description', value: string) =>
+		updateFragmentProperties([
+			{
+				value,
+				fieldName: `custom_${field}` as 'custom_title' | 'custom_description',
+				fragmentId: fragment.id,
+			},
+		]);
 
-	const onCopyFragmentToCollection = () => {
-		setOpenOptionsId(null);
-		toastService('Fragment is succesvol gekopiëerd naar collectie', TOAST_TYPE.SUCCESS);
-	};
-
-	const onMoveFragmentToCollection = () => {
-		setOpenOptionsId(null);
-		toastService('Fragment is succesvol verplaatst naar collectie', TOAST_TYPE.SUCCESS);
-	};
-
-	// Delete fragment from collection
 	const onDeleteFragment = (fragmentId: number) => {
 		setOpenOptionsId(null);
 
@@ -143,15 +160,55 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
 	};
 
-	const initFlowPlayer = () =>
-		!playerTicket &&
-		fetchPlayerTicket(fragment.external_id)
-			.then(data => setPlayerTicket(data))
-			.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
+	// TODO: DISABLED FEATURE
+	// const onDuplicateFragment = () => {
+	// 	setOpenOptionsId(null);
+	// 	toastService('Fragment is succesvol gedupliceerd', TOAST_TYPE.SUCCESS);
+	// };
 
-	const itemMetaData = (fragment as any).item_meta;
+	// const onMoveFragment = () => {
+	// 	setOpenOptionsId(null);
+	// 	toastService('Fragment is succesvol verplaatst', TOAST_TYPE.SUCCESS);
+	// };
 
-	// Render methods
+	// const onCopyFragmentToCollection = () => {
+	// 	setOpenOptionsId(null);
+	// 	toastService('Fragment is succesvol gekopiëerd naar collectie', TOAST_TYPE.SUCCESS);
+	// };
+
+	// const onMoveFragmentToCollection = () => {
+	// 	setOpenOptionsId(null);
+	// 	toastService('Fragment is succesvol verplaatst naar collectie', TOAST_TYPE.SUCCESS);
+	// };
+
+	const onClickDropdownItem = (item: ReactText) => {
+		switch (item) {
+			// TODO: DISABLED FEATURE
+			// case 'duplicate':
+			// 	onDuplicateFragment();
+			// 	break;
+			// case 'move':
+			// 	onMoveFragment();
+			// 	break;
+			case 'delete':
+				setDeleteModalOpen(true);
+				break;
+
+			// TODO: DISABLED FEATURE
+			// case 'copyToCollection':
+			// 	onCopyFragmentToCollection();
+			// 	break;
+			// case 'moveToCollection':
+			// 	onMoveFragmentToCollection();
+			// 	break;
+			default:
+				return null;
+		}
+
+		setOpenOptionsId(null);
+	};
+
+	// Render functions
 	const renderReorderButton = (fragmentId: number, direction: 'up' | 'down') => (
 		<Button
 			type="secondary"
@@ -160,12 +217,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		/>
 	);
 
-	const renderForm = (
-		fragment: Avo.Collection.Fragment,
-		itemMetaData: Avo.Item.Item,
-		index: number
-	) => {
-		// Disable input fields for non-custom-field videos
+	const renderForm = (fragment: Avo.Collection.Fragment, itemMetaData: Avo.Item.Item) => {
 		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
 
 		return (
@@ -235,44 +287,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									</DropdownButton>
 									<DropdownContent>
 										<MenuContent
-											menuItems={[
-												{ icon: 'copy', id: 'duplicate', label: 'Dupliceren' },
-												{ icon: 'arrow-right', id: 'move', label: 'Verplaatsen' },
-												{ icon: 'delete', id: 'delete', label: 'Verwijderen' },
-												{
-													icon: 'copy',
-													id: 'copyToCollection',
-													label: 'Kopiëren naar andere collectie',
-												},
-												{
-													icon: 'arrow-right',
-													id: 'moveToCollection',
-													label: 'Verplaatsen naar andere collectie',
-												},
-											]}
-											onClick={itemId => {
-												switch (itemId) {
-													case 'duplicate':
-														onDuplicateFragment(fragment.id);
-														break;
-													case 'move':
-														onMoveFragment();
-														break;
-													case 'delete':
-														setDeleteModalOpen(true);
-														break;
-													case 'copyToCollection':
-														onCopyFragmentToCollection();
-														break;
-													case 'moveToCollection':
-														onMoveFragmentToCollection();
-														break;
-													default:
-														return null;
-												}
-
-												setOpenOptionsId(null);
-											}}
+											menuItems={FRAGMENT_DROPDOWN_ITEMS}
+											onClick={onClickDropdownItem}
 										/>
 									</DropdownContent>
 								</ControlledDropdown>
@@ -295,10 +311,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									{...cuePoints}
 								/>
 							</Column>
-							<Column size="3-6">{renderForm(fragment, itemMetaData, index)}</Column>
+							<Column size="3-6">{renderForm(fragment, itemMetaData)}</Column>
 						</Grid>
 					) : (
-						<Form>{renderForm(fragment, itemMetaData, index)}</Form>
+						<Form>{renderForm(fragment, itemMetaData)}</Form>
 					)}
 				</div>
 			</div>

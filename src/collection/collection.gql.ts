@@ -153,6 +153,7 @@ export const DELETE_COLLECTION_FRAGMENT = gql`
 	}
 `;
 
+// TODO: Use only necessary returning attributes
 export const INSERT_COLLECTION_FRAGMENTS = gql`
 	mutation insertCollectionFragment(
 		$id: Int!
@@ -161,7 +162,28 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 		insert_app_collection_fragments(objects: $fragments) {
 			affected_rows
 			returning {
+				use_custom_fields
+				updated_at
+				start_oc
+				position
 				id
+				external_id
+				item_meta {
+					id
+					duration
+					title
+					description
+					thumbnail_path
+					type {
+						id
+						label
+					}
+				}
+				end_oc
+				custom_title
+				custom_description
+				created_at
+				collection_id
 			}
 		}
 	}

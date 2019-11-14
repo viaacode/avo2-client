@@ -35,25 +35,24 @@ import {
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../../../collection/collection.gql';
-import { getEnv } from '../../../shared/helpers/env';
-import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { CollectionService } from '../../../collection/collection.service';
+import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
-import './FragmentAddToCollection.scss';
+import './AddToCollectionModal.scss';
 
-interface FragmentAddToCollectionProps {
+interface AddToCollectionModalProps {
 	externalId: string;
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
 }
 
-const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> = ({
+const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
@@ -71,10 +70,18 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0
 	);
-	const [collections] = useState<Avo.Collection.Collection[]>([]);
+	const [collections, setCollections] = useState<Partial<Avo.Collection.Collection>[]>([]);
 
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
+
+	useEffect(() => {
+		CollectionService.getCollectionTitlesByUser().then(
+			(collectionTitles: Partial<Avo.Collection.Collection>[]) => {
+				setCollections(collectionTitles);
+			}
+		);
+	}, []);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -261,7 +268,7 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		? addItemToNewCollection
 		: () => addItemToExistingCollection(selectedCollection as Partial<Avo.Collection.Collection>);
 
-	const renderFragmentAddToCollectionModal = () => {
+	const renderAddToCollectionModalModal = () => {
 		const initFlowPlayer = () =>
 			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 
@@ -331,10 +338,12 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 														id="existingCollection"
 														options={[
 															{ label: 'Kies collectie', value: '', disabled: true },
-															...collections.map((collection: { id: number; title: string }) => ({
-																label: collection.title,
-																value: String(collection.id),
-															})),
+															...collections.map(
+																(collection: Partial<Avo.Collection.Collection>) => ({
+																	label: collection.title || '',
+																	value: String(collection.id),
+																})
+															),
 														]}
 														value={selectedCollectionId}
 														onChange={setSelectedCollectionIdAndGetCollectionInfo}
@@ -405,9 +414,9 @@ const FragmentAddToCollection: FunctionComponent<FragmentAddToCollectionProps> =
 		);
 	};
 
-	return renderFragmentAddToCollectionModal();
+	return renderAddToCollectionModalModal();
 };
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31363#issuecomment-484542717
 // @ts-ignore
-export default withRouter(FragmentAddToCollection);
+export default withRouter(AddToCollectionModal);

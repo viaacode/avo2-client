@@ -5,9 +5,8 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
 
-import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../../shared/components/modals/DeleteObjectModal';
-import { navigate } from '../../../shared/helpers/generateLink';
+import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
+import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 

@@ -44,35 +44,35 @@ import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
+import { CollectionService } from '../../collection/collection.service';
+import { DutchContentType, toEnglishContentType } from '../../collection/collection.types';
+import { RouteParts } from '../../constants';
+import {
+	DeleteObjectModal,
+	InputModal,
+	LoadingErrorLoadedComponent,
+} from '../../shared/components';
+import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { copyToClipboard } from '../../shared/helpers';
+import { dataService } from '../../shared/services/data-service';
+import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+
+import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import { AssignmentLayout } from '../assignment.types';
+
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../../collection/collection.gql';
-import { CollectionService } from '../../collection/collection.service';
-import {
-	dutchContentLabelToEnglishLabel,
-	DutchContentType,
-} from '../../collection/collection.types';
-import { RouteParts } from '../../constants';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
-import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../shared/components/modals/InputModal';
-import { copyToClipboard } from '../../shared/helpers/clipboard';
-import { dataService } from '../../shared/services/data-service';
-import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
-import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentEdit.scss';
 
@@ -104,7 +104,7 @@ const CONTENT_LABEL_TO_QUERY: {
 		resultPath: 'app_item_meta[0]',
 	},
 	ZOEKOPDRACHT: {
-		// TODO implement search query saving and usage
+		// TODO: implement search query saving and usage
 		// query: GET_SEARCH_QUERY_BY_ID,
 		// resultPath: 'app_item_meta[0]',
 	} as any,
@@ -651,7 +651,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					<Spacer margin="right">
 						<Thumbnail
 							className="m-content-thumbnail"
-							category={dutchContentLabelToEnglishLabel(dutchLabel)}
+							category={toEnglishContentType(dutchLabel)}
 							src={assignmentContent.thumbnail_path || undefined}
 						/>
 					</Spacer>
@@ -958,6 +958,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
+					emptyMessage="Gelieve een opdracht-titel in te geven."
 				/>
 			</>
 		);

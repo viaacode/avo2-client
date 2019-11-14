@@ -14,10 +14,11 @@ import {
 import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { Avo } from '@viaa/avo2-types';
 
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
+import { DataQueryComponent } from '../../shared/components';
+
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../collection.gql';
-import CollectionStillsModal from '../components/modals/CollectionStillsModal';
-import { getValidationFeedbackForShortDescription } from './CollectionEdit';
+import { getValidationFeedbackForShortDescription } from '../collection.helpers';
+import { CollectionStillsModal } from '../components';
 
 interface CollectionEditMetaDataProps {
 	collection: Avo.Collection.Collection;
@@ -28,6 +29,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 	collection,
 	updateCollectionProperty,
 }) => {
+	// State
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
@@ -79,7 +81,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 										<FormGroup
 											label="Korte omschrijving"
 											labelFor="shortDescriptionId"
-											error={getValidationFeedbackForShortDescription(collection, true)}
+											error={getValidationFeedbackForShortDescription(collection.description, true)}
 										>
 											<TextArea
 												name="shortDescriptionId"
@@ -88,7 +90,9 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 												height="medium"
 												onChange={(value: string) => updateCollectionProperty(value, 'description')}
 											/>
-											<label>{getValidationFeedbackForShortDescription(collection)}</label>
+											<label>
+												{getValidationFeedbackForShortDescription(collection.description)}
+											</label>
 										</FormGroup>
 										<FormGroup
 											label="Persoonlijke opmerkingen/notities"
@@ -96,7 +100,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 										>
 											<TextArea
 												name="personalRemarkId"
-												value={(collection as any).note || ''} // TODO cleanup when note is available from types repo
+												value={(collection as any).note || ''} // TODO: cleanup when note is available from types repo
 												id="personalRemarkId"
 												height="medium"
 												placeholder="Geef hier je persoonlijke opmerkingen/notities in..."
@@ -112,9 +116,11 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
 										</FormGroup>
-										<FormGroup label="Map" labelFor="mapId">
-											<Button type="secondary" icon="add" label="Voeg toe aan een map" />
-										</FormGroup>
+										{/* TODO: DISABLED FEATURE
+											<FormGroup label="Map" labelFor="mapId">
+												<Button type="secondary" icon="add" label="Voeg toe aan een map" />
+											</FormGroup>
+										*/}
 									</Column>
 								</Grid>
 							</Spacer>

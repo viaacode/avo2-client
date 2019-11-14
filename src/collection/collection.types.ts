@@ -12,6 +12,8 @@ import {
 	BlockVideoTitleTextButtonProps,
 } from '@viaa/avo2-components';
 import { ContentType } from '@viaa/avo2-components/dist/types';
+import { Avo } from '@viaa/avo2-types';
+
 import { IconName } from '../shared/types/types';
 
 export enum ContentBlockType {
@@ -64,7 +66,7 @@ export enum ContentTypeString {
 
 export type DutchContentType = 'item' | 'audio' | 'video' | 'collectie' | 'bundel' | 'zoekopdracht';
 
-export function dutchContentLabelToEnglishLabel(label: DutchContentType): ContentType {
+export function toEnglishContentType(label: DutchContentType): ContentType {
 	return {
 		item: 'item',
 		audio: 'audio',
@@ -80,4 +82,10 @@ export interface Tab {
 	id: string;
 	label: string;
 	icon: IconName;
+}
+
+export interface FragmentPropertyUpdateInfo {
+	value: string | number | boolean | null;
+	fieldName: keyof Avo.Collection.Fragment;
+	fragmentId: number;
 }

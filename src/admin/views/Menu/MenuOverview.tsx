@@ -4,8 +4,8 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 
-import { DataQueryComponent } from '../../../shared/components/DataComponent/DataQueryComponent';
-import { navigate } from '../../../shared/helpers/generateLink';
+import { DataQueryComponent } from '../../../shared/components';
+import { navigate } from '../../../shared/helpers';
 
 import { ADMIN_PATH, MENU_OVERVIEW_TABLE_COLS } from '../../admin.const';
 import { GET_MENUS } from '../../admin.gql';

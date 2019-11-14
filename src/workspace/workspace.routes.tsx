@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
 
-import SecuredRoute from '../authentication/components/SecuredRoute';
+import { SecuredRoute } from '../authentication/components';
 import { RouteParts } from '../constants';
-import Workspace from './views/Workspace';
+import { Workspace } from './views';
 
 export const renderWorkspaceRoutes = (): ReactNode[] => [
 	<SecuredRoute

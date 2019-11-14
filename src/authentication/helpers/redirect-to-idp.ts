@@ -1,6 +1,6 @@
 import queryString from 'query-string';
 
-import { getEnv } from '../../shared/helpers/env';
+import { getEnv } from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { getLogoutPath } from './get-profile-info';
 

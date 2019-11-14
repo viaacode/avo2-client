@@ -2,9 +2,29 @@ import { compact, isNil } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../constants';
-import { stripHtml } from '../../shared/helpers/formatters/strip-html';
+import { stripHtml } from '../shared/helpers/formatters/strip-html';
+import { MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
 
+export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
+	return fragmentInfo.external_id && fragmentInfo.external_id !== '-1';
+};
+
+export const getValidationFeedbackForShortDescription = (
+	description: string | null,
+	isError?: boolean | null
+): string => {
+	const count = `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+
+	const exceedsSize: boolean = (description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH;
+
+	if (isError) {
+		return exceedsSize ? `De korte omschrijving is te lang. ${count}` : '';
+	}
+
+	return exceedsSize ? '' : `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+};
+
+// Validation
 type ValidationRule<T> = {
 	error: string | ((object: T) => string);
 	isValid: (object: T) => boolean;

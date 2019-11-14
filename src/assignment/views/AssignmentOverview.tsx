@@ -34,10 +34,8 @@ import { connect } from 'react-redux';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
 import { RouteParts } from '../../constants';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../shared/components/modals/InputModal';
-import { formatTimestamp, fromNow } from '../../shared/helpers/formatters/date';
+import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
+import { formatTimestamp, fromNow } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
@@ -427,6 +425,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					inputCallback={(newTitle: string) =>
 						duplicateAssignment(newTitle, markedAssignment, refetchAssignments)
 					}
+					emptyMessage="Gelieve een opdracht-titel in te vullen."
 				/>
 			</>
 		);

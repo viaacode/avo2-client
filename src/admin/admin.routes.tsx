@@ -1,13 +1,10 @@
 import React, { ReactNode } from 'react';
 
-import SecuredRoute from '../authentication/components/SecuredRoute';
-import { ADMIN_PATH } from './admin.const';
-import Dashboard from './views/Dashboard';
-import MenuDetail from './views/Menu/MenuDetail';
-import MenuEdit from './views/Menu/MenuEdit';
-import MenuOverview from './views/Menu/MenuOverview';
+import { SecuredRoute } from '../authentication/components';
 
-// Menu routes
+import { ADMIN_PATH } from './admin.const';
+import { Dashboard, MenuDetail, MenuEdit, MenuOverview } from './views';
+
 export const renderAdminRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={ADMIN_PATH.DASHBOARD}
