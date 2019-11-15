@@ -1,7 +1,7 @@
 import { get } from 'lodash-es';
 
-import { GET_MENU_ITEM_BY_ID, GET_MENU_ITEMS_BY_PLACEMENT } from '../../admin/admin.gql';
-import { MenuItem } from '../../admin/admin.types';
+import { GET_MENU_ITEM_BY_ID, GET_MENU_ITEMS_BY_PLACEMENT } from '../../admin/menu/menu.gql';
+import { MenuItem } from '../../admin/menu/menu.types';
 import { dataService } from './data-service';
 
 const MENU_RESULT_PATH = 'app_content_nav_elements';

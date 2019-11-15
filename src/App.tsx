@@ -9,7 +9,7 @@ import { Slide, ToastContainer } from 'react-toastify';
 import { Flex } from '@viaa/avo2-components';
 
 import { ADMIN_PATH } from './admin/admin.const';
-import { Sidebar } from './admin/components';
+import { Sidebar } from './admin/shared/components';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
 import { Footer, Navigation } from './shared/components';

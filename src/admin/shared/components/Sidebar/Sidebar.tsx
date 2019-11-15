@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-import { NavigationItem } from '../../../shared/types/types';
+import { NavigationItem } from '../../../../shared/types/types';
 
 import './Sidebar.scss';
 

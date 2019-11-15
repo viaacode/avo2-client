@@ -15,11 +15,11 @@ import {
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types/types';
 
-import { ADMIN_PATH, MENU_ICON_OPTIONS } from '../../admin.const';
-import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
-import { MenuItem } from '../../admin.types';
-import { IconPicker } from '../../components';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
+import { IconPicker } from '../../shared/components';
+import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { MENU_ICON_OPTIONS, MENU_PATH } from '../menu.const';
+import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
+import { MenuItem } from '../menu.types';
 
 interface MenuEditForm {
 	icon: IconName | '';
@@ -158,7 +158,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 		setIsSaving(false);
 		toastService(message, TOAST_TYPE.SUCCESS);
-		navigate(history, ADMIN_PATH.MENU_DETAIL, { menu });
+		navigate(history, MENU_PATH.MENU_DETAIL, { menu });
 	};
 
 	const handleValidation = (): boolean => {
@@ -177,7 +177,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	};
 
 	const navigateBack = () => {
-		navigate(history, ADMIN_PATH.MENU_DETAIL, { menu: menuId });
+		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuId });
 	};
 
 	// Render
