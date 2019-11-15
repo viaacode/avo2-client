@@ -140,7 +140,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		];
 
 		// Listeners
-		const onClickDropdownItem = () => (item: ReactText) => {
+		const onClickDropdownItem = (item: ReactText) => {
 			switch (item) {
 				case 'edit':
 					history.push(`/${Collection}/${collectionId}/${Edit}`);
