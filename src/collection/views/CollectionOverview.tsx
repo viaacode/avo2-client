@@ -42,11 +42,13 @@ import './CollectionOverview.scss';
 
 interface CollectionOverviewProps extends RouteComponentProps {
 	numberOfCollections: number;
+	refetchCount: () => void;
 }
 
 const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
-	numberOfCollections,
 	history,
+	numberOfCollections,
+	refetchCount,
 }) => {
 	const { Collection, Edit, Search } = RouteParts;
 
@@ -78,6 +80,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			});
 
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
+			refetchCount();
 			refetchCollections();
 		} catch (err) {
 			console.error(err);

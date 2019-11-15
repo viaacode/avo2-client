@@ -50,7 +50,12 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 	const getTabs = (counts: { [tabId: string]: number }): TabViewMap => {
 		return {
 			[COLLECTIONS_ID]: {
-				component: <CollectionOverview numberOfCollections={counts[COLLECTIONS_ID]} />,
+				component: (refetchCounts: () => void) => (
+					<CollectionOverview
+						numberOfCollections={counts[COLLECTIONS_ID]}
+						refetchCount={refetchCounts}
+					/>
+				),
 				// TODO: Vergeet deze filter niet terug te plaatsen.
 				// filter: {
 				// 	label: 'Auteur',
@@ -63,17 +68,19 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 				// },
 			},
 			[FOLDERS_ID]: {
-				component: <span>TODO Mappen</span>,
+				component: () => <span>TODO Mappen</span>,
 				filter: {
 					label: 'Filter op label',
 					options: [{ id: 'all', label: 'Alle' }],
 				},
 			},
 			[ASSIGNMENTS_ID]: {
-				component: <AssignmentOverview />,
+				component: (refetchCounts: () => void) => (
+					<AssignmentOverview refetchCount={refetchCounts} />
+				),
 			},
 			[BOOKMARKS_ID]: {
-				component: <Bookmarks />,
+				component: () => <Bookmarks />,
 			},
 		};
 	};
@@ -126,10 +133,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 		}
 	};
 
-	const renderTabsAndContent = (data: TabAggregates) => {
+	const renderTabsAndContent = (data: TabAggregates, refetchCounts: () => void) => {
 		const counts = {
 			[COLLECTIONS_ID]: get(data, 'app_collections_aggregate.aggregate.count'),
 			[FOLDERS_ID]: 0, // TODO: get from database once the table exists
+			[ASSIGNMENTS_ID]: get(data, 'app_assignments_aggregate.aggregate.count'),
 			[BOOKMARKS_ID]: 0, // TODO: get from database once the table exists
 		};
 
@@ -155,7 +163,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 				</Navbar>
 
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{getActiveTab(counts).component}</Container>
+					<Container mode="horizontal">{getActiveTab(counts).component(refetchCounts)}</Container>
 				</Container>
 			</>
 		);

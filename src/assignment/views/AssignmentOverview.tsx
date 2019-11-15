@@ -54,11 +54,13 @@ type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
 interface AssignmentOverviewProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
+	refetchCount: () => void;
 }
 
 const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	history,
 	loginState,
+	refetchCount,
 }) => {
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<Avo.Assignment.View>('assignments');
@@ -134,6 +136,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					return; // assignment was not valid => validation service already showed a toast
 				}
 				refetchAssignments();
+				refetchCount();
 				toastService('De opdracht is gedupliceerd', TOAST_TYPE.SUCCESS);
 			}
 		} catch (err) {
@@ -156,6 +159,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 				if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 					refetchAssignments();
+					refetchCount();
 					toastService(
 						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`,
 						TOAST_TYPE.SUCCESS
@@ -186,6 +190,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 			await deleteAssignment(triggerAssignmentDelete, assignmentId);
 			refetchAssignments();
+			refetchCount();
 			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
 		} catch (err) {
 			console.error(err);
