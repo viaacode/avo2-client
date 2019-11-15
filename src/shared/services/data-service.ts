@@ -35,6 +35,7 @@ export class ApolloCacheManager {
 
 	private static deleteFromCache(cache: { [key: string]: any }, keyPrefix: string) {
 		Object.keys(cache.data.data).forEach((key: string) => {
+			// Also match keys starting with $ROOT_QUERY. for clearing aggregates cache
 			if (key.match(new RegExp(`^\\$root_query\\.${keyPrefix}|^${keyPrefix}`, 'gmi'))) {
 				cache.data.delete(key);
 			}
