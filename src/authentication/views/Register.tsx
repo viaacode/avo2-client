@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useReducer } from 'react';
 
 import {
 	Button,
@@ -16,18 +16,33 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
+import { INITIAL_USER_STATE } from '../authentication.const';
+import { Action, UserState } from '../authentication.types';
+
 import './Register.scss';
 
+// TODO: Get roles
 const mockSelectRoles = [
 	{ label: 'Kies een type', value: '', disabled: true },
 	{ label: 'Leerkracht', value: 'leerkracht' },
-	{ label: 'Student', value: 'student' },
-	{ label: 'Andere', value: 'andere' },
 ];
 
 export interface RegisterProps {}
 
+const userReducer = (state: UserState, { type, payload }: Action) => ({
+	...state,
+	[type]: payload,
+});
+
 const Register: FunctionComponent<RegisterProps> = () => {
+	const [userState, userDispatch] = useReducer(userReducer, INITIAL_USER_STATE);
+
+	const setUserState = (field: string, value: string | boolean) =>
+		userDispatch({
+			type: field,
+			payload: value,
+		});
+
 	return (
 		<Container className="c-register-view" mode="vertical">
 			<Container mode="horizontal" size="small">
@@ -35,26 +50,49 @@ const Register: FunctionComponent<RegisterProps> = () => {
 				<hr className="c-hr" />
 				<Form>
 					<Spacer margin="bottom-large">
-						<Grid>
-							<Column size="2-6">
-								<FormGroup labelFor="firstNameId" label="Voornaam">
-									<TextInput id="firstNameId" />
-								</FormGroup>
-							</Column>
-							<Column size="2-6">
-								<FormGroup labelFor="lastNameId" label="Achternaam">
-									<TextInput id="lastNameId" />
-								</FormGroup>
-							</Column>
-						</Grid>
-						<FormGroup label="E-mailadres *" labelFor="emailId">
-							<TextInput id="emailId" />
+						<Spacer margin="bottom">
+							<Grid>
+								<Column size="2-6">
+									<FormGroup labelFor="firstName" label="Voornaam">
+										<TextInput
+											id="firstName"
+											value={userState.firstName}
+											onChange={value => setUserState('firstName', value)}
+										/>
+									</FormGroup>
+								</Column>
+								<Column size="2-6">
+									<FormGroup labelFor="lastName" label="Achternaam">
+										<TextInput
+											id="lastName"
+											value={userState.lastName}
+											onChange={value => setUserState('lastName', value)}
+										/>
+									</FormGroup>
+								</Column>
+							</Grid>
+						</Spacer>
+						<FormGroup label="E-mailadres *" labelFor="email">
+							<TextInput
+								id="email"
+								value={userState.email}
+								onChange={value => setUserState('email', value)}
+							/>
 						</FormGroup>
-						<FormGroup label="Wachtwoord *" labelFor="passwordId">
-							<TextInput id="passwordId" type="password" />
+						<FormGroup label="Wachtwoord *" labelFor="password">
+							<TextInput
+								id="password"
+								type="password"
+								value={userState.password}
+								onChange={value => setUserState('password', value)}
+							/>
 						</FormGroup>
 						<FormGroup label="Type gebruiker">
-							<Select options={mockSelectRoles} value="" />
+							<Select
+								options={mockSelectRoles}
+								value={userState.type}
+								onChange={value => setUserState('type', value)}
+							/>
 						</FormGroup>
 						<div className="c-content">
 							<p className="u-text-bold">Heb je een stamboeknummer?</p>
@@ -65,11 +103,15 @@ const Register: FunctionComponent<RegisterProps> = () => {
 									name="stamboeknummer"
 									value="yes"
 									label="Ja, ik heb een stamboeknummer"
+									checked={userState.hasRegimentalNo}
+									onChange={() => setUserState('regimentalNo', true)}
 								/>
 								<RadioButton
 									name="stamboeknummer"
 									value="no"
 									label="Nee, ik heb geen stamboeknummer"
+									checked={!userState.hasRegimentalNo}
+									onChange={() => setUserState('regimentalNo', false)}
 								/>
 							</RadioButtonGroup>
 						</FormGroup>
