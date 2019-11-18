@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -26,6 +26,17 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	history,
 	location,
 }) => {
+	// TODO: remove this once className is available on Modal
+	useEffect(() => {
+		const viewClass = 'c-register-login-view';
+
+		document.body.classList.add(viewClass);
+
+		return () => {
+			document.body.classList.remove(viewClass);
+		};
+	});
+
 	const redirectToLogin = () => {
 		history.push(`/${RouteParts.LoginAvo}`, {
 			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
