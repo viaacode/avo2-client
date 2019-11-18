@@ -2,7 +2,7 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 
 import { action } from '@storybook/addon-actions';
-import { DateRangeDropdown } from './DateRangeDropdown';
+import DateRangeDropdown from './DateRangeDropdown';
 
 describe('<Checkbox />', () => {
 	it('Should be able to render', () => {
