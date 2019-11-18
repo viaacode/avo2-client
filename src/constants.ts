@@ -23,4 +23,5 @@ export const RouteParts = {
 	SearchQuery: 'zoekopdracht',
 	Admin: 'beheer',
 	Menu: 'navigatie',
+	Content: 'content',
 };
