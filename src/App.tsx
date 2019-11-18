@@ -6,10 +6,7 @@ import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
-import { Flex } from '@viaa/avo2-components';
-
-import { ADMIN_PATH } from './admin/admin.const';
-import { Sidebar } from './admin/shared/components';
+import Admin from './admin/Admin';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
 import { Footer, Navigation } from './shared/components';
@@ -64,18 +61,6 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 	const isAdminRoute = new RegExp(`^/${RouteParts.Admin}`, 'g').test(location.pathname);
 
 	// Render
-	const renderAdmin = () => (
-		<Flex>
-			<Sidebar
-				headerLink={`/${RouteParts.Admin}`}
-				navItems={[{ label: 'Navigatie', location: ADMIN_PATH.MENU }]}
-			/>
-			<Flex className="u-flex-auto u-scroll" orientation="vertical">
-				{renderRoutes()}
-			</Flex>
-		</Flex>
-	);
-
 	const renderApp = () => (
 		<>
 			<Navigation
@@ -101,7 +86,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 				transition={Slide}
 			/>
 			{/* TODO: Based on current user permissions */}
-			{isAdminRoute ? renderAdmin() : renderApp()}
+			{isAdminRoute ? <Admin /> : renderApp()}
 		</div>
 	);
 };

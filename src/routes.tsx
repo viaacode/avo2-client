@@ -1,7 +1,6 @@
 import React from 'react';
 import { Switch } from 'react-router';
 
-import { renderAdminRoutes } from './admin/admin.routes';
 import { renderAssignmentRoutes } from './assignment/assignment.routes';
 import { renderAuthenticationRoutes } from './authentication/authentication.routes';
 import { renderCollectionRoutes } from './collection/collection.routes';
@@ -21,7 +20,6 @@ export const renderRoutes = () => (
 		{renderCollectionRoutes()}
 		{renderAssignmentRoutes()}
 		{renderWorkspaceRoutes()}
-		{renderAdminRoutes()}
 		{renderAuthenticationRoutes()}
 		{renderErrorRoutes()}
 	</Switch>
