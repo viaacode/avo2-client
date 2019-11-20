@@ -66,23 +66,23 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
-				<Modal isOpen size="medium" onClose={redirectToHome}>
+				<Modal isOpen size="small" onClose={redirectToHome}>
 					<ModalBody>
 						<Grid>
-							<Column size="3-6">
-								<Flex center orientation="horizontal">
-									<FlexItem>
-										<h2 className="c-h2 u-m-0">Welkom op Het Archief voor Onderwijs</h2>
-										<Spacer margin={['top-small', 'bottom']}>
-											<p>
-												Maak een gratis account aan en verrijk je lessen met beeld en geluid op maat
-												van de klas.
-											</p>
-										</Spacer>
-										<Button label="Account aanmaken" type="primary" onClick={redirectToRegister} />
-									</FlexItem>
-								</Flex>
-							</Column>
+							{/*<Column size="3-6">*/}
+							{/*	<Flex center orientation="horizontal">*/}
+							{/*		<FlexItem>*/}
+							{/*			<h2 className="c-h2 u-m-0">Welkom op Het Archief voor Onderwijs</h2>*/}
+							{/*			<Spacer margin={['top-small', 'bottom']}>*/}
+							{/*				<p>*/}
+							{/*					Maak een gratis account aan en verrijk je lessen met beeld en geluid op maat*/}
+							{/*					van de klas.*/}
+							{/*				</p>*/}
+							{/*			</Spacer>*/}
+							{/*			<Button label="Account aanmaken" type="primary" onClick={redirectToRegister} />*/}
+							{/*		</FlexItem>*/}
+							{/*	</Flex>*/}
+							{/*</Column>*/}
 							<Column size="3-6">
 								<Flex center orientation="horizontal">
 									<FlexItem>
