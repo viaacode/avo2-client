@@ -1,51 +1,68 @@
 import { History } from 'history';
-import { isArray, isEmpty, isNil, noop } from 'lodash-es';
+import { get, isArray, isEmpty, isNil, noop } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { RouteParts } from '../../constants';
-import toastService, { TOAST_TYPE } from '../services/toast-service';
+import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
+import { SEARCH_PATH } from '../../search/search.const';
 
 import { CONTENT_TYPE_TO_ROUTE } from '../constants';
+import toastService, { TOAST_TYPE } from '../services/toast-service';
 
-export const navigate = (history: History, route: string, params: { [key: string]: any } = {}) => {
-	const showError = (params: string[]) => {
-		const paramsString = params.join(', ').replace(':', '');
+type RouteParams = { [key: string]: string | number | undefined };
 
-		console.error(`The following params were not included: [${paramsString}] for ${route}`);
-		toastService(`De navigatie is afgebroken wegens foutieve parameters`, TOAST_TYPE.DANGER);
-	};
+const getMissingParams = (route: string): string[] => route.split('/').filter(r => r.includes(':'));
+const showNavigateError = (params: string[], route: string) => {
+	const paramsString = params.join(', ').replace(':', '');
+
+	console.error(`The following params were not included: [${paramsString}] for route ${route}`);
+	toastService(`De navigatie is afgebroken wegens foutieve parameters`, TOAST_TYPE.DANGER);
+};
+
+export const buildLink = (route: string, params: RouteParams = {}, search?: string): string => {
 	let builtLink = route;
-	let missingParams: string[] = [];
+
+	// Replace url with given params
+	Object.keys(params).forEach((param: string) => {
+		builtLink = builtLink.replace(`:${param}`, String(get(params, [param], '')));
+	});
+
+	const missingParams = getMissingParams(builtLink);
+
+	// Return empty string if not all params were replaced
+	if (missingParams.length > 0) {
+		console.error(`The following params were not included: [${missingParams}] for route ${route}`);
+		return '';
+	}
+
+	// Add search query if present
+	return search ? `${builtLink}?${search}` : builtLink;
+};
+
+export const navigate = (
+	history: History,
+	route: string,
+	params: RouteParams = {},
+	search?: string
+) => {
+	let missingParams = getMissingParams(route);
 
 	// Abort navigation when params were expected but none were given
-	if (route.includes(':') && (isNil(params) || isEmpty(params))) {
-		missingParams = route.split('/').filter(r => r.includes(':'));
-
-		showError(missingParams);
+	if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
+		showNavigateError(missingParams, route);
 
 		return;
 	}
 
-	// Replace url with given params
-	Object.keys(params).forEach((param: string) => {
-		const substring = `:${param}`;
-		const replaced = builtLink.search(substring) >= 0;
-
-		// Check if something was actually replaced
-		if (!replaced) {
-			missingParams.push(substring);
-		}
-
-		builtLink = builtLink.replace(substring, params[param]);
-	});
+	const builtLink = buildLink(route, params, search);
+	missingParams = getMissingParams(builtLink);
 
 	// Abort navigation if not all params were replaced
-	if (missingParams.length) {
-		showError(missingParams);
+	if (missingParams.length > 0) {
+		showNavigateError(missingParams, route);
 
 		return;
 	}
@@ -96,7 +113,7 @@ export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filt
 			? queryString.stringify({ filters: JSON.stringify({ query: filterValue }) })
 			: queryString.stringify({ filters: `{"${filterProp}":["${filterValue}"]}` });
 
-	return `/${RouteParts.Search}?${queryParams}`;
+	return buildLink(SEARCH_PATH.SEARCH, {}, queryParams);
 }
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
@@ -108,7 +125,9 @@ export function generateAssignmentCreateLink(
 	contentId?: string,
 	contentLabel?: Avo.Assignment.ContentLabel
 ) {
-	return `/${RouteParts.Workspace}/${RouteParts.Assignments}/${
-		RouteParts.Create
-	}?assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`;
+	return buildLink(
+		ASSIGNMENT_PATH.ASSIGNMENT_CREATE,
+		{},
+		`?assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`
+	);
 }

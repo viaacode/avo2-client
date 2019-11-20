@@ -26,6 +26,7 @@ import {
 import { pad } from './formatters/pad';
 import { stripHtml } from './formatters/strip-html';
 import {
+	buildLink,
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLink,
@@ -37,6 +38,7 @@ import { parseDuration, toSeconds } from './parsers/duration';
 import { createReducer } from './redux/create-reducer';
 
 export {
+	buildLink,
 	copyToClipboard,
 	createDropdownMenuItem,
 	createReducer,
