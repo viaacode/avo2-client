@@ -1,4 +1,10 @@
+import { ROUTE_PARTS } from '../shared/constants';
 import { IconName } from '../shared/types/types';
+
+export const COLLECTION_PATH = Object.freeze({
+	COLLECTION_DETAIL: `/${ROUTE_PARTS.collection}/:id`,
+	COLLECTION_EDIT: `/${ROUTE_PARTS.collection}/:id/${ROUTE_PARTS.edit}`,
+});
 
 // TODO: get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];

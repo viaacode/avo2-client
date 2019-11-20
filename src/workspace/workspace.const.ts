@@ -1,10 +1,15 @@
-import { RouteParts } from '../constants';
+import { ROUTE_PARTS } from '../shared/constants';
 import { IconName } from '../shared/types/types';
 
-export const COLLECTIONS_ID = RouteParts.Collections;
-export const FOLDERS_ID = RouteParts.Folders;
-export const ASSIGNMENTS_ID = RouteParts.Assignments;
-export const BOOKMARKS_ID = RouteParts.Bookmarks;
+export const WORKSPACE_PATH = Object.freeze({
+	WORKSPACE: `/${ROUTE_PARTS.workspace}`,
+	WORKSPACE_TAB: `/${ROUTE_PARTS.workspace}/:tabId`,
+});
+
+export const COLLECTIONS_ID = ROUTE_PARTS.collections;
+export const FOLDERS_ID = ROUTE_PARTS.folders;
+export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
+export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 
 export const TABS = [
 	{

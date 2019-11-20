@@ -6,7 +6,17 @@ import { Avo } from '@viaa/avo2-types';
 
 import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
 import { GET_ITEM_BY_ID } from '../item/item.gql';
+import { ROUTE_PARTS } from '../shared/constants';
 import { dataService } from '../shared/services/data-service';
+
+export const ASSIGNMENT_PATH = Object.freeze({
+	ASSIGNMENT_CREATE: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
+	ASSIGNMENT_DETAIL: `/${ROUTE_PARTS.assignment}/:id`,
+	ASSIGNMENT_EDIT: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}`,
+	ASSIGNMENT_RESPONSES: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${
+		ROUTE_PARTS.responses
+	}`,
+});
 
 const CONTENT_LABEL_TO_QUERY: {
 	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
