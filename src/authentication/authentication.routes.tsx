@@ -3,7 +3,7 @@ import { Route } from 'react-router';
 
 import { RouteParts } from '../constants';
 
-import { Login, Logout, Register, RegisterOrLogin } from './views';
+import { Login, Logout, RegisterOrLogin, RegisterPupilOrTeacher, RegisterStamboek } from './views';
 
 export const renderAuthenticationRoutes = (): ReactNode[] => [
 	<Route
@@ -14,10 +14,16 @@ export const renderAuthenticationRoutes = (): ReactNode[] => [
 	/>,
 	<Route component={Logout} exact path={`/${RouteParts.Logout}`} key={`/${RouteParts.Logout}`} />,
 	<Route
-		component={Register}
+		component={RegisterPupilOrTeacher}
 		exact
-		path={`/${RouteParts.Register}`}
-		key={`/${RouteParts.Register}`}
+		path={`/${RouteParts.PupilOrTeacher}`}
+		key={`/${RouteParts.PupilOrTeacher}`}
+	/>,
+	<Route
+		component={RegisterStamboek}
+		exact
+		path={`/${RouteParts.Stamboek}`}
+		key={`/${RouteParts.Stamboek}`}
 	/>,
 	<Route
 		component={RegisterOrLogin}

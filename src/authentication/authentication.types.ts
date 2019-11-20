@@ -6,8 +6,7 @@ export interface UserState {
 	email: string;
 	password: string;
 	type: UserRole;
-	hasRegimentalNo: boolean;
-	regimentalNo: string;
+	stamboekNumber: string;
 }
 
 export type ActionPayload = string | boolean;

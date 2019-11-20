@@ -47,7 +47,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 		loginState && loginState.message === 'LOGGED_IN'
 			? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
 			: [
-					// { label: 'Registreren', location: `/${RouteParts.Register}` },
+					{ label: 'Registreren', location: `/${RouteParts.PupilOrTeacher}` },
 					{ label: 'Aanmelden', location: `/${RouteParts.RegisterOrLogin}` },
 			  ];
 

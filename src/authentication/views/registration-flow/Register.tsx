@@ -16,8 +16,8 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
-import { INITIAL_USER_STATE } from '../authentication.const';
-import { Action, UserState } from '../authentication.types';
+import { INITIAL_USER_STATE } from '../../authentication.const';
+import { Action, UserState } from '../../authentication.types';
 
 import './Register.scss';
 
@@ -103,15 +103,15 @@ const Register: FunctionComponent<RegisterProps> = () => {
 									name="stamboeknummer"
 									value="yes"
 									label="Ja, ik heb een stamboeknummer"
-									checked={userState.hasRegimentalNo}
-									onChange={() => setUserState('regimentalNo', true)}
+									checked={!!userState.stamboekNumber}
+									onChange={() => setUserState('stamboekNumber', true)}
 								/>
 								<RadioButton
 									name="stamboeknummer"
 									value="no"
 									label="Nee, ik heb geen stamboeknummer"
-									checked={!userState.hasRegimentalNo}
-									onChange={() => setUserState('regimentalNo', false)}
+									checked={!userState.stamboekNumber}
+									onChange={() => setUserState('stamboekNumber', false)}
 								/>
 							</RadioButtonGroup>
 						</FormGroup>

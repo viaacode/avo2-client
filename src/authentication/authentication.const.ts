@@ -6,6 +6,5 @@ export const INITIAL_USER_STATE: UserState = {
 	email: '',
 	password: '',
 	type: 'Leerkracht',
-	hasRegimentalNo: false,
-	regimentalNo: '',
+	stamboekNumber: '',
 };
