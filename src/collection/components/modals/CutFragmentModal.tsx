@@ -20,8 +20,8 @@ import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../s
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
+import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
-import { getValidationErrorsForStartAndEnd } from '../../helpers/validation';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;

@@ -6,9 +6,13 @@ import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
+import { Flex } from '@viaa/avo2-components';
+
+import { ADMIN_PATH } from './admin/admin.const';
+import { Sidebar } from './admin/components';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginResponse } from './authentication/store/types';
-import { Footer, Navigation, Sidebar } from './shared/components';
+import { Footer, Navigation } from './shared/components';
 import { dataService } from './shared/services/data-service';
 import { NavigationItem } from './shared/types/types';
 
@@ -43,7 +47,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 		loginState && loginState.message === 'LOGGED_IN'
 			? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
 			: [
-					{ label: 'Registreren', location: `/${RouteParts.Register}` },
+					// { label: 'Registreren', location: `/${RouteParts.Register}` },
 					{ label: 'Aanmelden', location: `/${RouteParts.RegisterOrLogin}` },
 			  ];
 
@@ -61,13 +65,15 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 
 	// Render
 	const renderAdmin = () => (
-		<div className="u-d-flex">
+		<Flex>
 			<Sidebar
 				headerLink={`/${RouteParts.Admin}`}
-				navItems={[{ label: 'Navigatie', location: `/${RouteParts.Admin}/${RouteParts.Menus}` }]}
+				navItems={[{ label: 'Navigatie', location: ADMIN_PATH.MENU }]}
 			/>
-			<div className="u-content-flex u-scroll">{renderRoutes()}</div>
-		</div>
+			<Flex className="u-flex-auto u-scroll" orientation="vertical">
+				{renderRoutes()}
+			</Flex>
+		</Flex>
 	);
 
 	const renderApp = () => (

@@ -40,11 +40,16 @@ import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 
 import './CollectionOverview.scss';
 
-interface CollectionsProps extends RouteComponentProps {
+interface CollectionOverviewProps extends RouteComponentProps {
 	numberOfCollections: number;
+	refetchCount: () => void;
 }
 
-const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections, history }) => {
+const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
+	history,
+	numberOfCollections,
+	refetchCount,
+}) => {
 	const { Collection, Edit, Search } = RouteParts;
 
 	// State
@@ -75,6 +80,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 			});
 
 			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
+			refetchCount();
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
@@ -137,7 +143,7 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 		];
 
 		// Listeners
-		const onClickDropdownItem = () => (item: ReactText) => {
+		const onClickDropdownItem = (item: ReactText) => {
 			switch (item) {
 				case 'edit':
 					history.push(`/${Collection}/${collectionId}/${Edit}`);
@@ -287,4 +293,4 @@ const Collections: FunctionComponent<CollectionsProps> = ({ numberOfCollections,
 	);
 };
 
-export default withRouter(Collections);
+export default withRouter(CollectionOverview);

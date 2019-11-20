@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -9,7 +9,6 @@ import {
 	Container,
 	Flex,
 	FlexItem,
-	FormGroup,
 	Grid,
 	Modal,
 	ModalBody,
@@ -27,6 +26,17 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	history,
 	location,
 }) => {
+	// TODO: remove this once className is available on Modal
+	useEffect(() => {
+		const viewClass = 'c-register-login-view';
+
+		document.body.classList.add(viewClass);
+
+		return () => {
+			document.body.classList.remove(viewClass);
+		};
+	});
+
 	const redirectToLogin = () => {
 		history.push(`/${RouteParts.LoginAvo}`, {
 			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
@@ -54,49 +64,58 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	};
 
 	return (
-		<Container mode="horizontal">
+		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
-				<Modal isOpen size="medium" onClose={redirectToHome}>
+				<Modal isOpen size="small" onClose={redirectToHome}>
 					<ModalBody>
 						<Grid>
-							<Column size="3-6">
-								<Flex center orientation="horizontal">
-									<FlexItem>
-										<h2 className="c-h2 u-m-0">Welkom op het Archief voor Onderwijs</h2>
-										<p>Een schat aan audio en video in de klas</p>
-										<p>
-											Benieuwd naar meer? Neem je lerarenkaart of stamboeknummer bij de hand en
-											registreer nu gratis.
-										</p>
-										<Button label="Registeer" type="primary" onClick={redirectToRegister} />
-									</FlexItem>
-								</Flex>
-							</Column>
+							{/*<Column size="3-6">*/}
+							{/*	<Flex center orientation="horizontal">*/}
+							{/*		<FlexItem>*/}
+							{/*			<h2 className="c-h2 u-m-0">Welkom op Het Archief voor Onderwijs</h2>*/}
+							{/*			<Spacer margin={['top-small', 'bottom']}>*/}
+							{/*				<p>*/}
+							{/*					Maak een gratis account aan en verrijk je lessen met beeld en geluid op maat*/}
+							{/*					van de klas.*/}
+							{/*				</p>*/}
+							{/*			</Spacer>*/}
+							{/*			<Button label="Account aanmaken" type="primary" onClick={redirectToRegister} />*/}
+							{/*		</FlexItem>*/}
+							{/*	</Flex>*/}
+							{/*</Column>*/}
 							<Column size="3-6">
 								<Flex center orientation="horizontal">
 									<FlexItem>
 										<Spacer margin="bottom-large">
-											<h2 className="c-h2 u-m-0">Reeds een account? Meld je dan hier aan.</h2>
-											<FormGroup>
+											<h2 className="c-h2 u-m-0">
+												Reeds een account?
+												<br />
+												Log dan hier in.
+											</h2>
+											<Spacer margin="top-small">
 												<Button
-													label="Login met AvO account"
+													label="Inloggen met e-mailadres"
 													type="primary"
 													onClick={redirectToLogin}
 												/>
-											</FormGroup>
+											</Spacer>
 										</Spacer>
-										<p>Of meld aan met ...</p>
-										<Spacer margin="bottom-small">
+										<p>Of kies voor ...</p>
+										<Spacer margin={['top-small', 'bottom-small']}>
 											<Button
+												block
+												className="c-button-smartschool"
 												icon="smartschool"
-												label="Login met Smartschool"
-												className="c-smartschool-button"
+												label="Inloggen met Smartschool"
 												onClick={redirectToSmartschoolLogin}
 											/>
 										</Spacer>
-										<FormGroup>
-											<Button icon="klascement" label="Login met Klascement" />
-										</FormGroup>
+										<Button
+											block
+											className="c-button-klascement"
+											icon="klascement"
+											label="Inloggen met KlasCement"
+										/>
 									</FlexItem>
 								</Flex>
 							</Column>

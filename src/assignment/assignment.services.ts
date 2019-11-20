@@ -5,7 +5,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ApolloCacheManager } from '../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
-
 import { AssignmentLayout } from './assignment.types';
 
 interface AssignmentProperty {
