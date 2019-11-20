@@ -13,7 +13,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	DateTimePicker,
+	DatePicker,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -863,7 +863,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							</FormGroup>
 							<FormGroup label="Beschikbaar vanaf">
 								<Flex>
-									<DateTimePicker
+									<DatePicker
 										value={
 											currentAssignment.available_at
 												? new Date(currentAssignment.available_at)
@@ -873,15 +873,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											setAssignmentProp('available_at', value ? value.toISOString() : null)
 										}
 										id="available_at"
-										defaultHours={now.getHours()}
-										defaultMinutes={now.getMinutes()}
+										showTimeInput
 									/>
 								</Flex>
 							</FormGroup>
 							<FormGroup label="Deadline" required>
 								<Flex>
 									<Spacer margin="right-small">
-										<DateTimePicker
+										<DatePicker
 											value={
 												currentAssignment.deadline_at
 													? new Date(currentAssignment.deadline_at)
@@ -889,8 +888,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											}
 											onChange={value => setAssignmentProp('deadline_at', value)}
 											id="deadline_at"
-											defaultHours={23}
-											defaultMinutes={59}
+											showTimeInput
 										/>
 									</Spacer>
 								</Flex>
