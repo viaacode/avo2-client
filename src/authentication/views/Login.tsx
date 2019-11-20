@@ -11,7 +11,7 @@ import { ErrorView } from '../../error/views';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginResponse } from '../store/types';
+import { LoginMessage, LoginResponse } from '../store/types';
 
 export interface LoginProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
@@ -59,14 +59,14 @@ const Login: FunctionComponent<LoginProps> = ({
 		}
 
 		// Redirect to previous requested path or home page
-		if (loginState && loginState.message === 'LOGGED_IN' && !loginStateLoading) {
+		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
 			history.push(get(location, 'state.from.pathname', '/'));
 			return;
 		}
 
 		if (
 			loginState &&
-			loginState.message === 'LOGGED_OUT' &&
+			loginState.message === LoginMessage.LOGGED_OUT &&
 			!loginStateLoading &&
 			!loginStateError &&
 			!hasRecentLoginAttempt()

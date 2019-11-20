@@ -11,7 +11,7 @@ import { Flex } from '@viaa/avo2-components';
 import { ADMIN_PATH } from './admin/admin.const';
 import { Sidebar } from './admin/components';
 import { selectLogin } from './authentication/store/selectors';
-import { LoginResponse } from './authentication/store/types';
+import { LoginMessage, LoginResponse } from './authentication/store/types';
 import { Footer, Navigation } from './shared/components';
 import { dataService } from './shared/services/data-service';
 import { NavigationItem } from './shared/types/types';
@@ -44,7 +44,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 		{ label: 'Nieuws', location: `/${RouteParts.News}` },
 	];
 	const SECONDARY_ITEMS: NavigationItem[] =
-		loginState && loginState.message === 'LOGGED_IN'
+		loginState && loginState.message === LoginMessage.LOGGED_IN
 			? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
 			: [
 					// { label: 'Registreren', location: `/${RouteParts.Register}` },
