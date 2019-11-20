@@ -1,10 +1,11 @@
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { Dispatch } from 'redux';
-import { RouteParts } from '../../constants';
+
+import { AUTH_PATH } from '../authentication.const';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginMessage, LoginResponse } from '../store/types';
@@ -61,7 +62,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 				return (
 					<Redirect
 						to={{
-							pathname: `/${RouteParts.RegisterOrLogin}`,
+							pathname: AUTH_PATH.REGISTER_OR_LOGIN,
 							state: { from: props.location },
 						}}
 					/>

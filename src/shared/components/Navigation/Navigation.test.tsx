@@ -3,21 +3,21 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-import { RouteParts } from '../../../constants';
+import { ROUTE_PARTS } from '../../constants';
 import Navigation from './Navigation';
 
 const pItems = [
 	{ label: 'Home', location: '/' },
-	{ label: 'Zoeken', location: `/${RouteParts.Search}` },
-	{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
-	{ label: 'Mijn Werkruimte', location: `/${RouteParts.Workspace}/${RouteParts.Collections}` },
-	{ label: 'Projecten', location: `/${RouteParts.Projects}` },
-	{ label: 'Nieuws', location: `/${RouteParts.News}` },
+	{ label: 'Zoeken', location: `/${ROUTE_PARTS.search}` },
+	{ label: 'Ontdek', location: `/${ROUTE_PARTS.discover}` },
+	{ label: 'Mijn Werkruimte', location: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.collections}` },
+	{ label: 'Projecten', location: `/${ROUTE_PARTS.projects}` },
+	{ label: 'Nieuws', location: `/${ROUTE_PARTS.news}` },
 ];
 
 const sItems = [
-	{ label: 'Registreren', location: `/${RouteParts.Register}` },
-	{ label: 'Aanmelden', location: `/${RouteParts.LoginAvo}` },
+	{ label: 'Registreren', location: `/${ROUTE_PARTS.register}` },
+	{ label: 'Aanmelden', location: `/${ROUTE_PARTS.loginAvo}` },
 ];
 
 describe('<Navigation />', () => {
@@ -74,7 +74,7 @@ describe('<Navigation />', () => {
 
 		const openNavigationComponent = mount(
 			<Router>
-				<Navigation primaryItems={pItems} secondaryItems={sItems} isOpen={true} />
+				<Navigation primaryItems={pItems} secondaryItems={sItems} isOpen />
 			</Router>
 		);
 
@@ -88,7 +88,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render the `primaryItems` on mobile', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation primaryItems={pItems} secondaryItems={sItems} isOpen={true} />
+				<Navigation primaryItems={pItems} secondaryItems={sItems} isOpen />
 			</Router>
 		);
 
@@ -107,7 +107,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render the `secondaryItems` on mobile', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation primaryItems={pItems} secondaryItems={sItems} isOpen={true} />
+				<Navigation primaryItems={pItems} secondaryItems={sItems} isOpen />
 			</Router>
 		);
 

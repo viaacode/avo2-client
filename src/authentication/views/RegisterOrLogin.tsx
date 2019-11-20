@@ -15,8 +15,10 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
-import { RouteParts } from '../../constants';
+import { SEARCH_PATH } from '../../search/search.const';
 import { getEnv } from '../../shared/helpers';
+
+import { AUTH_PATH } from '../authentication.const';
 
 import './RegisterOrLogin.scss';
 
@@ -27,16 +29,16 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	location,
 }) => {
 	const redirectToLogin = () => {
-		history.push(`/${RouteParts.LoginAvo}`, {
-			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
+		history.push(AUTH_PATH.LOGIN_AVO, {
+			from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
 		});
 	};
 
 	const redirectToSmartschoolLogin = () => {
 		// Redirect to smartschool login form
-		const base = window.location.href.split(`/${RouteParts.RegisterOrLogin}`)[0];
+		const base = window.location.href.split(AUTH_PATH.REGISTER_OR_LOGIN)[0];
 		// Url to return to after authentication is completed and server stored auth object in session
-		const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
+		const returnToUrl = base + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
 		window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 			returnToUrl,
 		})}`;
@@ -44,8 +46,8 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 
 	// TODO: disabled feature
 	// const redirectToRegister = () => {
-	// 	history.push(`/${RouteParts.Register}`, {
-	// 		from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
+	// 	history.push(AUTH_PATH.REGISTER, {
+	// 		from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
 	// 	});
 	// };
 

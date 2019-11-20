@@ -31,9 +31,10 @@ import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
-import { RouteParts } from '../../constants';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
+import { ROUTE_PARTS } from '../../shared/constants';
 import {
+	buildLink,
 	createDropdownMenuItem,
 	formatDate,
 	generateAssignmentCreateLink,
@@ -45,7 +46,9 @@ import { ApolloCacheManager } from '../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { ContentTypeString, DutchContentType, toEnglishContentType } from '../collection.types';
 import { FragmentDetail, ShareCollectionModal } from '../components';
@@ -123,7 +126,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const onEditCollection = () => {
 		history.push(
 			`${generateContentLinkString(ContentTypeString.collection, `${collectionId}`)}/${
-				RouteParts.Edit
+				ROUTE_PARTS.edit
 			}`
 		);
 	};
@@ -136,7 +139,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(`/${RouteParts.Workspace}`);
+			history.push(WORKSPACE_PATH.WORKSPACE);
 			toastService('De collectie werd succesvol verwijderd.', TOAST_TYPE.SUCCESS);
 		} catch (err) {
 			console.error(err);
@@ -172,7 +175,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Column size="3-6">
 						<MediaCard
 							title={dc_title}
-							href={`/${RouteParts.Collection}/${id}`}
+							href={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })}
 							category={category}
 							orientation="horizontal"
 						>

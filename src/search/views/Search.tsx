@@ -38,10 +38,11 @@ import {
 } from 'lodash-es';
 import queryString from 'query-string';
 
-import { RouteParts } from '../../constants';
-import { copyToClipboard } from '../../shared/helpers';
+import { copyToClipboard, navigate } from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+
 import { SearchFilterControls, SearchResults } from '../components';
+import { SEARCH_PATH } from '../search.const';
 import {
 	SearchFilterFieldValues,
 	SearchFilterMultiOptions,
@@ -134,10 +135,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
 
 			const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
-			history.push({
-				pathname: `/${RouteParts.Search}`,
-				search: queryParams.length ? `?${queryParams}` : '',
-			});
+			navigate(history, SEARCH_PATH.SEARCH, {}, queryParams.length ? queryParams : '');
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);

@@ -33,13 +33,14 @@ import { Avo } from '@viaa/avo2-types';
 import { connect } from 'react-redux';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
-import { RouteParts } from '../../constants';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
-import { formatTimestamp, fromNow } from '../../shared/helpers';
+import { buildLink, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+
+import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
@@ -209,9 +210,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 		switch (actionId) {
 			case 'edit':
-				history.push(
-					`/${RouteParts.Workspace}/${RouteParts.Assignments}/${dataRow.id}/${RouteParts.Edit}`
-				);
+				navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: dataRow.id });
 				break;
 			case 'duplicate':
 				const assignment: Partial<Avo.Assignment.Assignment> = await getAssigmentById(dataRow.id);
@@ -264,11 +263,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
-								<Link
-									to={`/${RouteParts.Workspace}/${RouteParts.Assignments}/${rowData.id}/${
-										RouteParts.Edit
-									}`}
-								>
+								<Link to={buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id })}>
 									{rowData.title}
 								</Link>
 							</h3>
@@ -291,11 +286,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
 			case 'assignment_responses':
 				return (
-					<Link
-						to={`/${RouteParts.Workspace}/${RouteParts.Assignments}/${RouteParts.Assignments}/${
-							rowData.id
-						}/${RouteParts.Responses}`}
-					>
+					<Link to={buildLink(ASSIGNMENT_PATH.ASSIGNMENT_RESPONSES, { id: rowData.id })}>
 						{(cellData || []).length}
 					</Link>
 				);
@@ -337,13 +328,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 						<Button
 							icon="chevron-right"
-							onClick={() =>
-								history.push(
-									`/${RouteParts.Workspace}/${RouteParts.Assignments}/${rowData.id}/${
-										RouteParts.Edit
-									}`
-								)
-							}
+							onClick={() => navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id })}
 							type="borderless"
 						/>
 					</ButtonToolbar>
