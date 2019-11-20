@@ -7,14 +7,14 @@ import { Workspace } from './views';
 export const renderWorkspaceRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		component={Workspace}
-		exact={true}
 		path={`/${RouteParts.Workspace}`}
 		key={`/${RouteParts.Workspace}`}
+		exact
 	/>,
 	<SecuredRoute
 		component={Workspace}
-		exact={true}
 		path={`/${RouteParts.Workspace}/:tabId`}
 		key={`/${RouteParts.Workspace}/:tabId`}
+		exact
 	/>,
 ];

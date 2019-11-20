@@ -276,9 +276,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			<Modal
 				title="Voeg fragment toe aan collectie"
 				size="auto"
-				scrollable={true}
 				isOpen={isOpen}
 				onClose={onClose}
+				scrollable
 			>
 				<ModalBody>
 					<div className="c-modal__body-add-fragment">

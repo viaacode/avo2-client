@@ -162,12 +162,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 								</CheckboxGroup>
 							</FormGroup>
 							<FormGroup>
-								<Button
-									label="Toepassen"
-									type="primary"
-									block={true}
-									onClick={() => applyFilter()}
-								/>
+								<Button label="Toepassen" type="primary" block onClick={() => applyFilter()} />
 							</FormGroup>
 						</Form>
 					</Spacer>
@@ -193,13 +188,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 				<div className="c-checkbox-dropdown__trigger" onClick={openDropdownOrModal}>
 					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
 				</div>
-				<Modal
-					isOpen={isOpen}
-					title={label}
-					size="large"
-					onClose={closeDropdownOrModal}
-					scrollable={true}
-				>
+				<Modal isOpen={isOpen} title={label} size="large" onClose={closeDropdownOrModal} scrollable>
 					<ModalHeaderRight>
 						<TextInput placeholder="Zoeken..." icon="search" />
 					</ModalHeaderRight>
@@ -222,10 +211,10 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 										<Button
 											label="Annuleren"
 											type="secondary"
-											block={true}
+											block
 											onClick={closeDropdownOrModal}
 										/>
-										<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
+										<Button label="Toepassen" type="primary" block onClick={applyFilter} />
 									</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>
@@ -255,12 +244,7 @@ export const renderDropdownButton = (
 			<div className="c-button__content">
 				<div className="c-button__label">{label}</div>
 				{!!selectedTags.length && (
-					<TagList
-						tags={selectedTags}
-						swatches={false}
-						closable={true}
-						onTagClosed={removeFilter}
-					/>
+					<TagList tags={selectedTags} swatches={false} closable onTagClosed={removeFilter} />
 				)}
 				<Icon
 					className="c-button__icon"

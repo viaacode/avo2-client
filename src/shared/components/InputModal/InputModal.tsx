@@ -60,7 +60,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 
 	// Render
 	return (
-		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable={true}>
+		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
 			<ModalBody>
 				<>
 					<Spacer margin="bottom-large">

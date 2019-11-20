@@ -35,7 +35,7 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable={true}>
+		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable>
 			<ModalBody>
 				<>
 					{!!body && <p>{body}</p>}

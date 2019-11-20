@@ -180,7 +180,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
-									<MetaData spaced={true} category={toEnglishContentType(itemMetaData.type.label)}>
+									<MetaData category={toEnglishContentType(itemMetaData.type.label)} spaced>
 										{itemMetaData.org_name && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">

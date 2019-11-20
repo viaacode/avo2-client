@@ -372,7 +372,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 					</Toolbar>
 				</Container>
 			</Navbar>
-			<Navbar autoHeight={true}>
+			<Navbar autoHeight>
 				<Container mode="horizontal">
 					<Spacer margin="top-large">
 						<Spacer margin="bottom-large">
