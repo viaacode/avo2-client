@@ -1,6 +1,9 @@
 @import '../../styles/settings/colors';
 
-.c-register-login-view {
+.c-register-login-view__modal {
+	background-image: url('/images/login-bg.jpg');
+	background-size: cover;
+
 	.c-button.c-button--primary{
 		&.c-button-klascement,
 		&.c-button-smartschool {
@@ -34,10 +37,4 @@
 			}
 		}
 	}
-
-	.c-modal-context {
-		background-image: url('/images/login-bg.jpg');
-		background-size: cover;
-	}
 }
-
