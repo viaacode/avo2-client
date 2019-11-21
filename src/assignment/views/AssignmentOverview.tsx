@@ -17,6 +17,7 @@ import {
 	Form,
 	FormGroup,
 	Icon,
+	IconName,
 	MenuContent,
 	Pagination,
 	Spacer,
@@ -37,7 +38,6 @@ import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/
 import { buildLink, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { ASSIGNMENT_PATH } from '../assignment.const';

@@ -1,5 +1,4 @@
 import { ROUTE_PARTS } from '../shared/constants';
-import { IconName } from '../shared/types/types';
 
 export const COLLECTION_PATH = Object.freeze({
 	COLLECTION_DETAIL: `/${ROUTE_PARTS.collection}/:id`,

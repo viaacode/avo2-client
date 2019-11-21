@@ -13,6 +13,7 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	IconName,
 	MenuContent,
 	TextInput,
 	Toggle,
@@ -28,7 +29,6 @@ import { ControlledDropdown, DeleteObjectModal } from '../../../shared/component
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { IconName } from '../../../shared/types/types';
 
 import { CutFragmentModal, FragmentAdd } from '../';
 import { isMediaFragment } from '../../collection.helpers';

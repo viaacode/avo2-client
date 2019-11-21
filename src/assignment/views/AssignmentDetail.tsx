@@ -13,6 +13,7 @@ import {
 	DropdownButton,
 	DropdownContent,
 	Icon,
+	IconName,
 	MenuContent,
 	Spacer,
 	TagList,
@@ -33,7 +34,6 @@ import { LoadingErrorLoadedComponent } from '../../shared/components';
 import { buildLink, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { ASSIGNMENT_PATH } from '../assignment.const';
