@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -26,17 +26,6 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	history,
 	location,
 }) => {
-	// TODO: remove this once className is available on Modal
-	useEffect(() => {
-		const viewClass = 'c-register-login-view';
-
-		document.body.classList.add(viewClass);
-
-		return () => {
-			document.body.classList.remove(viewClass);
-		};
-	});
-
 	const redirectToLogin = () => {
 		history.push(`/${RouteParts.LoginAvo}`, {
 			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
@@ -53,20 +42,17 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 		})}`;
 	};
 
-	const redirectToRegister = () => {
-		history.push(`/${RouteParts.Register}`, {
-			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
-		});
-	};
-
-	const redirectToHome = () => {
-		history.push(`/`);
-	};
+	// TODO: disabled feature
+	// const redirectToRegister = () => {
+	// 	history.push(`/${RouteParts.Register}`, {
+	// 		from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
+	// 	});
+	// };
 
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
-				<Modal isOpen size="small" onClose={redirectToHome}>
+				<Modal className="c-register-login-view__modal" isOpen size="small">
 					<ModalBody>
 						<Grid>
 							{/*<Column size="3-6">*/}
