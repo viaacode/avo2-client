@@ -2,8 +2,13 @@ import { Action } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
+export enum LoginMessage {
+	LOGGED_IN = 'LOGGED_IN',
+	LOGGED_OUT = 'LOGGED_OUT',
+}
+
 export interface LoginResponse {
-	message: 'LOGGED_IN' | 'LOGGED_OUT';
+	message: LoginMessage;
 	userInfo: Avo.User.User;
 }
 

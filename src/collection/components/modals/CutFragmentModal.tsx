@@ -149,7 +149,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	// TODO: Replace publisher, published_at by real publisher
 	return (
-		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable={true}>
+		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable>
 			<ModalBody>
 				<>
 					<FlowPlayer
