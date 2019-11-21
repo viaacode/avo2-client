@@ -34,6 +34,7 @@ import { createDropdownMenuItem, navigate, renderAvatar } from '../../shared/hel
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { Tab } from '../../shared/types';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { CollectionEditContent, CollectionEditMetaData } from '.';
@@ -47,7 +48,7 @@ import {
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../collection.gql';
 import { CollectionService } from '../collection.service';
-import { FragmentPropertyUpdateInfo, Tab } from '../collection.types';
+import { FragmentPropertyUpdateInfo } from '../collection.types';
 import {
 	// TODO: DISABLED FEATURE - ReorderCollectionModal,
 	ShareCollectionModal,

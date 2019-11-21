@@ -14,8 +14,6 @@ import {
 import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
-import { IconName } from '../shared/types/types';
-
 export enum ContentBlockType {
 	'Image',
 	'ImageTitleTextButton',
@@ -76,12 +74,6 @@ export function toEnglishContentType(label: DutchContentType): ContentType {
 		zoek: 'search',
 		zoekopdracht: 'searchquery',
 	}[label] as ContentType;
-}
-
-export interface Tab {
-	id: string;
-	label: string;
-	icon: IconName;
 }
 
 export interface FragmentPropertyUpdateInfo {

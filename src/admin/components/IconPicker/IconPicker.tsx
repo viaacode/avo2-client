@@ -5,7 +5,7 @@ import { Props } from 'react-select/src/Select';
 import { Flex, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import classnames from 'classnames';
 
-import { ReactSelectOption } from '../../../shared/types/types';
+import { ReactSelectOption } from '../../../shared/types';
 
 import './IconPicker.scss';
 

@@ -1,5 +1,5 @@
 import { ROUTE_PARTS } from '../shared/constants';
-import { IconName } from '../shared/types/types';
+import { Tab } from '../shared/types';
 
 export const WORKSPACE_PATH = Object.freeze({
 	WORKSPACE: `/${ROUTE_PARTS.workspace}`,
@@ -11,25 +11,25 @@ export const FOLDERS_ID = ROUTE_PARTS.folders;
 export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
 export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 
-export const TABS = [
+export const TABS: Tab[] = [
 	{
 		label: 'Collecties',
-		icon: 'collection' as IconName,
+		icon: 'collection',
 		id: COLLECTIONS_ID,
 	},
 	{
 		label: 'Mappen',
-		icon: 'folder' as IconName,
+		icon: 'folder',
 		id: FOLDERS_ID,
 	},
 	{
 		label: 'Opdrachten',
-		icon: 'clipboard' as IconName,
+		icon: 'clipboard',
 		id: ASSIGNMENTS_ID,
 	},
 	{
 		label: 'Bladwijzers',
-		icon: 'bookmark' as IconName,
+		icon: 'bookmark',
 		id: BOOKMARKS_ID,
 	},
 ];

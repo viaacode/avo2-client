@@ -13,7 +13,7 @@ import {
 	fetchMenuItemsByPlacement,
 } from '../../../shared/services/menu-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { ReactSelectOption } from '../../../shared/types/types';
+import { ReactSelectOption } from '../../../shared/types';
 
 import { ADMIN_PATH, MENU_ICON_OPTIONS } from '../../admin.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
