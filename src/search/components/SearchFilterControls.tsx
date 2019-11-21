@@ -8,6 +8,8 @@ import { CheckboxOption } from '../../shared/components/CheckboxDropdownModal/Ch
 import { LANGUAGES } from '../../shared/constants';
 import { SearchFilterControlsProps } from '../search.types';
 
+import './SearchFilterControls.scss';
+
 const languageCodeToLabel = (code: string): string => {
 	return capitalize(LANGUAGES.nl[code]) || code;
 };
@@ -40,7 +42,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		);
 
 		return (
-			<li className="c-filter-dropdown">
+			<li className={`c-filter-dropdown c-filter-dropdown-${propertyName.toLowerCase()}`}>
 				<CheckboxDropdownModal
 					label={label}
 					id={propertyName as string}
@@ -63,7 +65,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		range.lte = range.lte || '';
 
 		return (
-			<li className="c-filter-dropdown">
+			<li className={`c-filter-dropdown c-filter-dropdown-${propertyName.toLowerCase()}`}>
 				<DateRangeDropdown
 					label={label}
 					id={propertyName}

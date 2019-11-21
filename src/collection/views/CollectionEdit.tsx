@@ -54,14 +54,14 @@ import {
 	ShareCollectionModal,
 } from '../components';
 
-interface CollectionEditProps extends RouteComponentProps {}
+interface CollectionEditProps extends RouteComponentProps<{ id: string }> {}
 
 let currentCollection: Avo.Collection.Collection | undefined;
 let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
 
 const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match }) => {
 	// State
-	const [collectionId] = useState<string | undefined>((match.params as any)['id']);
+	const [collectionId] = useState<string | undefined>(match.params.id);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);

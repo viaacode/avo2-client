@@ -230,7 +230,6 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									<Column size="6">
 										<FormGroup label="Van">
 											<DatePicker
-												id="gte"
 												value={fromDate}
 												onChange={value =>
 													handleDateChange(
@@ -244,7 +243,6 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									<Column size="6">
 										<FormGroup label="Tot">
 											<DatePicker
-												id="lte"
 												value={tillDate}
 												onChange={value =>
 													handleDateChange(

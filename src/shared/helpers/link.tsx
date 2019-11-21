@@ -14,13 +14,12 @@ import toastService, { TOAST_TYPE } from '../services/toast-service';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
-const getMissingParams = (route: string): string[] => route.split('/').filter(r => r.includes(':'));
-const showNavigateError = (params: string[], route: string) => {
-	const paramsString = params.join(', ').replace(':', '');
-
+const getMissingParams = (route: string): string[] => route.split('/').filter(r => r.match(/^:/));
+const navigationConsoleError = (route: string, missingParams: string[] = []) => {
+	const paramsString = missingParams.join(', ');
 	console.error(`The following params were not included: [${paramsString}] for route ${route}`);
-	toastService(`De navigatie is afgebroken wegens foutieve parameters`, TOAST_TYPE.DANGER);
 };
+const navigationToastError = 'De navigatie is afgebroken wegens foutieve parameters';
 
 export const buildLink = (route: string, params: RouteParams = {}, search?: string): string => {
 	let builtLink = route;
@@ -34,7 +33,8 @@ export const buildLink = (route: string, params: RouteParams = {}, search?: stri
 
 	// Return empty string if not all params were replaced
 	if (missingParams.length > 0) {
-		console.error(`The following params were not included: [${missingParams}] for route ${route}`);
+		navigationConsoleError(route, missingParams);
+
 		return '';
 	}
 
@@ -48,21 +48,21 @@ export const navigate = (
 	params: RouteParams = {},
 	search?: string
 ) => {
-	let missingParams = getMissingParams(route);
+	const missingParams = getMissingParams(route);
 
 	// Abort navigation when params were expected but none were given
 	if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
-		showNavigateError(missingParams, route);
+		navigationConsoleError(route, missingParams);
+		toastService(navigationToastError, TOAST_TYPE.DANGER);
 
 		return;
 	}
 
+	// Abort navigation if link build fails
 	const builtLink = buildLink(route, params, search);
-	missingParams = getMissingParams(builtLink);
 
-	// Abort navigation if not all params were replaced
-	if (missingParams.length > 0) {
-		showNavigateError(missingParams, route);
+	if (isEmpty(builtLink)) {
+		toastService(navigationToastError, TOAST_TYPE.DANGER);
 
 		return;
 	}
@@ -128,6 +128,6 @@ export function generateAssignmentCreateLink(
 	return buildLink(
 		ASSIGNMENT_PATH.ASSIGNMENT_CREATE,
 		{},
-		`?assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`
+		`assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`
 	);
 }
