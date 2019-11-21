@@ -14,7 +14,7 @@ import toastService, { TOAST_TYPE } from '../services/toast-service';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
-const getMissingParams = (route: string): string[] => route.split('/').filter(r => r.includes(':'));
+const getMissingParams = (route: string): string[] => route.split('/').filter(r => r.match(/^:/));
 const showNavigateError = (params: string[], route: string) => {
 	const paramsString = params.join(', ').replace(':', '');
 
@@ -128,6 +128,6 @@ export function generateAssignmentCreateLink(
 	return buildLink(
 		ASSIGNMENT_PATH.ASSIGNMENT_CREATE,
 		{},
-		`?assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`
+		`assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`
 	);
 }
