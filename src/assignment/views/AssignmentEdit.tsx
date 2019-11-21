@@ -872,7 +872,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										onChange={(value: Date | null) =>
 											setAssignmentProp('available_at', value ? value.toISOString() : null)
 										}
-										id="available_at"
 										showTimeInput
 									/>
 								</Flex>
@@ -887,7 +886,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 													: null
 											}
 											onChange={value => setAssignmentProp('deadline_at', value)}
-											id="deadline_at"
 											showTimeInput
 										/>
 									</Spacer>
