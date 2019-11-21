@@ -26,9 +26,13 @@ import { INITIAL_USER_STATE } from '../../authentication.const';
 import { Action, UserState } from '../../authentication.types';
 
 import './r3-stamboek.scss';
+import { RouteParts } from '../../../constants';
 
+export type StamboekValidationStatuses = 'VALID' | 'ALREADY_IN_USE' | 'INVALID'; // TODO use typings version
+
+// TODO use typings version
 export interface ValidateStamboekResponse {
-	isValid: boolean;
+	status: StamboekValidationStatuses;
 }
 
 export interface RegisterStamboekProps {
@@ -41,14 +45,25 @@ const userReducer = (state: UserState, { type, payload }: Action) => ({
 	[type]: payload,
 });
 
+type validationStatuses =
+	| 'INCOMPLETE'
+	| 'INVALID_FORMAT'
+	| 'INVALID_NUMBER'
+	| 'VALID_FORMAT'
+	| 'VALID'
+	| 'ALREADY_IN_USE'
+	| 'SERVER_ERROR';
+
+export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
+
 const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, location }) => {
 	const [userState, userDispatch] = useReducer(userReducer, INITIAL_USER_STATE);
 	const [intendsToHaveStamboekNumber, setIntendsToHaveStamboekNumber] = useState<
 		boolean | undefined
 	>(undefined);
-	const [stamboekValidationStatus, setStamboekValidationStatus] = useState<
-		'INCOMPLETE' | 'INVALID_FORMAT' | 'INVALID_NUMBER' | 'VALID_FORMAT' | 'VALID' | 'SERVER_ERROR'
-	>('INCOMPLETE');
+	const [stamboekValidationStatus, setStamboekValidationStatus] = useState<validationStatuses>(
+		'INCOMPLETE'
+	);
 	const [hasAcceptedConditions, setHasAcceptedConditions] = useState<boolean>(false);
 	const [rawStamboekNumber, setRawStamboekNumber] = useState<string>('');
 	const [stamboekValidationCache, setStamboekValidationCache] = useState<{
@@ -61,11 +76,16 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 	};
 
 	const redirectToArchiefRegistrationIdp = () => {
-		window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register`;
+		const base = window.location.href.split(`/${RouteParts.Stamboek}`)[0];
+		const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.LoginAvo}`);
+
+		window.location.href = `${getEnv(
+			'PROXY_URL'
+		)}/auth/hetarchief/register?returnToUrl=${encodeURIComponent(returnToUrl)}`;
 	};
 
 	const STAMBOEK_MESSAGES: {
-		[status: string]: { message: string | ReactNode; status: TOAST_TYPE | undefined };
+		[status in validationStatuses]: { message: string | ReactNode; status: TOAST_TYPE | undefined }
 	} = {
 		INCOMPLETE: {
 			message: '',
@@ -99,6 +119,20 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 			message: 'Het stamboek nummer is geldig',
 			status: TOAST_TYPE.SUCCESS,
 		},
+		ALREADY_IN_USE: {
+			message: (
+				<span>
+					Dit stamboek nummer is reeds in gebruik,{' '}
+					<Button
+						label="contacteer de helpdesk"
+						onClick={redirectToManualAccessRequest}
+						type="inline-link"
+					/>
+					.
+				</span>
+			),
+			status: TOAST_TYPE.SUCCESS,
+		},
 		SERVER_ERROR: {
 			message:
 				'Er ging iets mis bij het valideren van het stamboek nummer. Probeer later eens opnieuw.',
@@ -106,15 +140,11 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 		},
 	};
 
-	const setUserState = (field: string, value: string | boolean) =>
-		userDispatch({
-			type: field,
-			payload: value,
-		});
-
-	const verifyStamboekNumber = async (stamboekNumber: string): Promise<boolean> => {
+	const verifyStamboekNumber = async (
+		stamboekNumber: string
+	): Promise<StamboekValidationStatuses> => {
 		if (stamboekValidationCache[stamboekNumber]) {
-			return true;
+			return 'VALID';
 		}
 		const response = await fetch(
 			`${getEnv('PROXY_URL')}/stamboek/validate?${queryString.stringify({
@@ -130,14 +160,14 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 		);
 
 		const data: ValidateStamboekResponse = await response.json();
-		if (data.isValid) {
+		if (data.status === 'VALID') {
 			// Cache values as much as possible, to avoid multiple requests to the stamboek api
 			setStamboekValidationCache({
 				...stamboekValidationCache,
 				[stamboekNumber]: true,
 			});
 		}
-		return data.isValid;
+		return data.status;
 	};
 
 	const setStamboekNumber = async (rawStamboekNumber: string) => {
@@ -154,11 +184,16 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 			if (/^[0-9]{11}(-[0-9]*)?$/g.test(cleanedStamboekNumber)) {
 				const stamboekNumber = cleanedStamboekNumber.substring(0, 11);
 				setStamboekValidationStatus('VALID_FORMAT');
-				const isValid = await verifyStamboekNumber(stamboekNumber);
-				if (isValid) {
-					setUserState('stamboekNumber', stamboekNumber);
+				const validationStatus: StamboekValidationStatuses = await verifyStamboekNumber(
+					stamboekNumber
+				);
+				if (validationStatus === 'VALID') {
+					localStorage.setItem(STAMBOEK_LOCAL_STORAGE_KEY, stamboekNumber);
 					setStamboekValidationStatus('VALID');
+				} else if (validationStatus === 'ALREADY_IN_USE') {
+					setStamboekValidationStatus('ALREADY_IN_USE');
 				} else {
+					// 'INVALID' server response
 					setStamboekValidationStatus('INVALID_NUMBER');
 				}
 			} else {
