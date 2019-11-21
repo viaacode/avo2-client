@@ -54,7 +54,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
-				<Modal className="c-register-login-view__modal" isOpen size="medium">
+				<Modal className="c-register-login-view__modal" isOpen size="small">
 					<ModalBody>
 						<Grid>
 							{/*<Column size="3-6">*/}
