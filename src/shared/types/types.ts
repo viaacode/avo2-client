@@ -201,3 +201,8 @@ export type ReactSelectOption<T = any> = {
 	label: string;
 	value: T;
 };
+
+// Helpers
+
+// Get all possible values from object
+export type ValueOf<T> = T[keyof T];

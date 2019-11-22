@@ -14,7 +14,7 @@ import {
 import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
-import { IconName } from '../shared/types/types';
+import { IconName, ValueOf } from '../shared/types/types';
 
 export enum ContentBlockType {
 	'Image',
@@ -85,7 +85,7 @@ export interface Tab {
 }
 
 export interface FragmentPropertyUpdateInfo {
-	value: Partial<Avo.Collection.Fragment[keyof Avo.Collection.Fragment]>;
+	value: Partial<ValueOf<Avo.Collection.Fragment>>;
 	fieldName: keyof Avo.Collection.Fragment;
 	fragmentId: number;
 }
