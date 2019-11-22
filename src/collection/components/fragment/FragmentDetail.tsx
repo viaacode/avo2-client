@@ -99,7 +99,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({ collectionFrag
 								playerTickets && playerTickets[fragment.id]
 									? playerTickets[fragment.id].toString()
 									: null,
-							poster: 'https://via.placeholder.com/1920x1080', // TODO: fragment.thumbnail_path
+							poster: get(fragment, 'item_meta.thumbnail_path', ''),
 							title: getFragmentField(fragment, 'title'),
 							subtitles: ['12/12/2013'],
 							start: fragment.start_oc,
