@@ -7,6 +7,10 @@ import { ContentTypeString } from '../../collection/collection.types';
 import { getEnv } from '../helpers/env';
 import { toSeconds } from '../helpers/parsers/duration';
 
+/**
+ * Get the first video still after the provided start times for all provided videos
+ * @param stillRequests: list of info objects containing the video id and their desired start time in seconds
+ */
 export const getVideoStills = async (
 	stillRequests: Avo.Stills.StillRequest[]
 ): Promise<Avo.Stills.StillInfo[]> => {
