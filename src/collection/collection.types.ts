@@ -85,7 +85,7 @@ export interface Tab {
 }
 
 export interface FragmentPropertyUpdateInfo {
-	value: string | number | boolean | null;
+	value: Partial<Avo.Collection.Fragment[keyof Avo.Collection.Fragment]>;
 	fieldName: keyof Avo.Collection.Fragment;
 	fragmentId: number;
 }
