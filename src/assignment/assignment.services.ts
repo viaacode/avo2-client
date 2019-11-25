@@ -56,14 +56,6 @@ const validateAssignment = (
 		assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
 	}
 
-	// Validate if deadline_at is not in the past
-	if (
-		assignmentToSave.deadline_at &&
-		new Date(assignmentToSave.deadline_at) < new Date(Date.now())
-	) {
-		errors.push(`De deadline is reeds voorbij.`);
-	}
-
 	assignmentToSave.owner_profile_id = assignmentToSave.owner_profile_id || 'owner_profile_id';
 	assignmentToSave.is_archived = assignmentToSave.is_archived || false;
 	assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
@@ -100,6 +92,8 @@ export const updateAssignment = async (
 			return null;
 		}
 
+		warnAboutDeadlineInThePast(assignmentToSave);
+
 		const response: void | ExecutionResult<
 			Avo.Assignment.Assignment
 		> = await triggerAssignmentUpdate({
@@ -134,6 +128,8 @@ export const insertAssignment = async (
 			return null;
 		}
 
+		warnAboutDeadlineInThePast(assignmentToSave);
+
 		const response: void | ExecutionResult<
 			Avo.Assignment.Assignment
 		> = await triggerAssignmentInsert({
@@ -159,3 +155,16 @@ export const insertAssignment = async (
 		throw err;
 	}
 };
+
+function warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
+	// Validate if deadline_at is not in the past
+	if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
+		toastService(
+			[
+				'De ingestelde deadline ligt in het verleden',
+				'De leerlingen zullen dus geen toegang hebben tot deze opdracht.',
+			],
+			TOAST_TYPE.INFO
+		);
+	}
+}

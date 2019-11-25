@@ -586,6 +586,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
+	const isDeadlineInThePast = (): boolean => {
+		return (
+			!!currentAssignment.deadline_at &&
+			new Date(currentAssignment.deadline_at) < new Date(Date.now())
+		);
+	};
+
 	const getTagOptions = (): TagOption[] => {
 		return get(currentAssignment, 'assignment_assignment_tags.assignment_tag', []).map(
 			(assignmentTag: Avo.Assignment.Tag) => {
@@ -889,9 +896,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										/>
 									</Spacer>
 								</Flex>
-								<p className="c-form-help-text">
-									Na deze datum kan de leerling de opdracht niet meer invullen.
-								</p>
+								{isDeadlineInThePast() ? (
+									<div className="c-form-help-text c-form-help-text--error">
+										De deadline ligt in het verleden.
+										<br />
+										De leerlingen zullen dus geen toegang hebben tot deze opdracht
+									</div>
+								) : (
+									<p className="c-form-help-text">
+										Na deze datum kan de leerling de opdracht niet meer invullen.
+									</p>
+								)}
 							</FormGroup>
 							{currentAssignment.assignment_type === 'BOUW' && (
 								<FormGroup label="Groepswerk?" labelFor="only_player">
