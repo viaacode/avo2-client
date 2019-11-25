@@ -11,6 +11,7 @@ import {
 	Flex,
 	Grid,
 	Icon,
+	IconName,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -47,7 +48,6 @@ import {
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { GET_ITEM_BY_ID } from '../item.gql';
@@ -180,7 +180,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
-									<MetaData spaced={true} category={toEnglishContentType(itemMetaData.type.label)}>
+									<MetaData category={toEnglishContentType(itemMetaData.type.label)} spaced>
 										{itemMetaData.org_name && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">

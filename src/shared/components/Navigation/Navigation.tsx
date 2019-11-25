@@ -12,7 +12,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import { NavigationItem } from '../../../shared/types/types';
+import { NavigationItem } from '../../types';
 
 import './Navigation.scss';
 

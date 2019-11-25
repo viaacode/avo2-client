@@ -7,13 +7,14 @@ import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-
 import { Slide, ToastContainer } from 'react-toastify';
 
 import Admin from './admin/Admin';
+import { ADMIN_PATH } from './admin/admin.const';
 import { selectLogin } from './authentication/store/selectors';
-import { LoginResponse } from './authentication/store/types';
+import { LoginMessage, LoginResponse } from './authentication/store/types';
 import { Footer, Navigation } from './shared/components';
 import { dataService } from './shared/services/data-service';
-import { NavigationItem } from './shared/types/types';
+import { NavigationItem } from './shared/types';
 
-import { RouteParts } from './constants';
+import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import store, { AppState } from './store';
 
@@ -25,27 +26,27 @@ interface AppProps extends RouteComponentProps {
 
 const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
 	const PRIMARY_ITEMS: NavigationItem[] = [
-		{ label: 'Home', location: '/' },
+		{ label: 'Home', location: APP_PATH.HOME },
 		{
 			label: 'Zoeken',
-			location: `/${RouteParts.Search}`,
+			location: APP_PATH.SEARCH,
 			icon: 'search',
 		},
-		{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
+		{ label: 'Ontdek', location: APP_PATH.DISCOVER },
 		{
 			label: 'Mijn Werkruimte',
-			location: `/${RouteParts.Workspace}`,
+			location: APP_PATH.WORKSPACE,
 			icon: 'briefcase',
 		},
-		{ label: 'Projecten', location: `/${RouteParts.Projects}` },
-		{ label: 'Nieuws', location: `/${RouteParts.News}` },
+		{ label: 'Projecten', location: APP_PATH.PROJECTS },
+		{ label: 'Nieuws', location: APP_PATH.NEWS },
 	];
 	const SECONDARY_ITEMS: NavigationItem[] =
-		loginState && loginState.message === 'LOGGED_IN'
-			? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
+		loginState && loginState.message === LoginMessage.LOGGED_IN
+			? [{ label: 'Afmelden', location: APP_PATH.LOGOUT }]
 			: [
-					{ label: 'Registreren', location: `/${RouteParts.Register}` },
-					{ label: 'Aanmelden', location: `/${RouteParts.RegisterOrLogin}` },
+					// { label: 'Registreren', location: APP_PATH.REGISTER },
+					{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN },
 			  ];
 
 	// State
@@ -58,7 +59,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 
 	const onCloseMenu = () => setMenuOpen(false);
 
-	const isAdminRoute = new RegExp(`^/${RouteParts.Admin}`, 'g').test(location.pathname);
+	const isAdminRoute = new RegExp(`^${ADMIN_PATH.DASHBOARD}`, 'g').test(location.pathname);
 
 	// Render
 	const renderApp = () => (

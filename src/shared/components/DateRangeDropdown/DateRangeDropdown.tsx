@@ -167,7 +167,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 				<div className="u-spacer">
 					<Form>
 						<FormGroup label="Hoe specifiek?">
-							<RadioButtonGroup inline={true}>
+							<RadioButtonGroup inline>
 								<RadioButton
 									label="Op jaartal"
 									name="year"
@@ -230,7 +230,6 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									<Column size="6">
 										<FormGroup label="Van">
 											<DatePicker
-												id="gte"
 												value={fromDate}
 												onChange={value =>
 													handleDateChange(
@@ -244,7 +243,6 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									<Column size="6">
 										<FormGroup label="Tot">
 											<DatePicker
-												id="lte"
 												value={tillDate}
 												onChange={value =>
 													handleDateChange(
@@ -259,7 +257,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							)}
 						</FormGroup>
 						<FormGroup>
-							<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
+							<Button label="Toepassen" type="primary" block onClick={applyFilter} />
 						</FormGroup>
 					</Form>
 				</div>

@@ -1,5 +1,5 @@
-import { RouteParts } from '../../constants';
+import { ROUTE_PARTS } from '../../shared/constants';
 
 export const CONTENT_PATH = {
-	CONTENT: `/${RouteParts.Admin}/${RouteParts.Content}`,
+	CONTENT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}`,
 };

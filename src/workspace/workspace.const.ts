@@ -1,30 +1,35 @@
-import { RouteParts } from '../constants';
-import { IconName } from '../shared/types/types';
+import { ROUTE_PARTS } from '../shared/constants';
+import { Tab } from '../shared/types';
 
-export const COLLECTIONS_ID = RouteParts.Collections;
-export const FOLDERS_ID = RouteParts.Folders;
-export const ASSIGNMENTS_ID = RouteParts.Assignments;
-export const BOOKMARKS_ID = RouteParts.Bookmarks;
+export const WORKSPACE_PATH = Object.freeze({
+	WORKSPACE: `/${ROUTE_PARTS.workspace}`,
+	WORKSPACE_TAB: `/${ROUTE_PARTS.workspace}/:tabId`,
+});
 
-export const TABS = [
+export const COLLECTIONS_ID = ROUTE_PARTS.collections;
+export const FOLDERS_ID = ROUTE_PARTS.folders;
+export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
+export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
+
+export const TABS: Tab[] = [
 	{
 		label: 'Collecties',
-		icon: 'collection' as IconName,
+		icon: 'collection',
 		id: COLLECTIONS_ID,
 	},
 	{
 		label: 'Mappen',
-		icon: 'folder' as IconName,
+		icon: 'folder',
 		id: FOLDERS_ID,
 	},
 	{
 		label: 'Opdrachten',
-		icon: 'clipboard' as IconName,
+		icon: 'clipboard',
 		id: ASSIGNMENTS_ID,
 	},
 	{
 		label: 'Bladwijzers',
-		icon: 'bookmark' as IconName,
+		icon: 'bookmark',
 		id: BOOKMARKS_ID,
 	},
 ];

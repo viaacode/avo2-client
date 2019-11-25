@@ -1,17 +1,19 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { get } from 'lodash-es';
-
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { RouteParts } from '../../constants';
+
 import { ErrorView } from '../../error/views';
+import { SEARCH_PATH } from '../../search/search.const';
+
+import { AUTH_PATH } from '../authentication.const';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginResponse } from '../store/types';
+import { LoginMessage, LoginResponse } from '../store/types';
 
 export interface LoginProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
@@ -59,23 +61,23 @@ const Login: FunctionComponent<LoginProps> = ({
 		}
 
 		// Redirect to previous requested path or home page
-		if (loginState && loginState.message === 'LOGGED_IN' && !loginStateLoading) {
+		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
 			history.push(get(location, 'state.from.pathname', '/'));
 			return;
 		}
 
 		if (
 			loginState &&
-			loginState.message === 'LOGGED_OUT' &&
+			loginState.message === LoginMessage.LOGGED_OUT &&
 			!loginStateLoading &&
 			!loginStateError &&
 			!hasRecentLoginAttempt()
 		) {
 			addLoginAttempt();
 			// Redirect to login form
-			const base = window.location.href.split(`/${RouteParts.LoginAvo}`)[0];
+			const base = window.location.href.split(AUTH_PATH.LOGIN_AVO)[0];
 			// Url to return to after authentication is completed and server stored auth object in session
-			const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
+			const returnToUrl = base + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
 			redirectToLoginPage(returnToUrl);
 		}
 	}, [

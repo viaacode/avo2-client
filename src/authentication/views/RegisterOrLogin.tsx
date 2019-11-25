@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -15,8 +15,10 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
-import { RouteParts } from '../../constants';
+import { SEARCH_PATH } from '../../search/search.const';
 import { getEnv } from '../../shared/helpers';
+
+import { AUTH_PATH } from '../authentication.const';
 
 import './RegisterOrLogin.scss';
 
@@ -26,63 +28,49 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	history,
 	location,
 }) => {
-	// TODO: remove this once className is available on Modal
-	useEffect(() => {
-		const viewClass = 'c-register-login-view';
-
-		document.body.classList.add(viewClass);
-
-		return () => {
-			document.body.classList.remove(viewClass);
-		};
-	});
-
 	const redirectToLogin = () => {
-		history.push(`/${RouteParts.LoginAvo}`, {
-			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
+		history.push(AUTH_PATH.LOGIN_AVO, {
+			from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
 		});
 	};
 
 	const redirectToSmartschoolLogin = () => {
 		// Redirect to smartschool login form
-		const base = window.location.href.split(`/${RouteParts.RegisterOrLogin}`)[0];
+		const base = window.location.href.split(AUTH_PATH.REGISTER_OR_LOGIN)[0];
 		// Url to return to after authentication is completed and server stored auth object in session
-		const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
+		const returnToUrl = base + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
 		window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 			returnToUrl,
 		})}`;
 	};
 
-	const redirectToRegister = () => {
-		history.push(`/${RouteParts.Register}`, {
-			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
-		});
-	};
-
-	const redirectToHome = () => {
-		history.push(`/`);
-	};
+	// TODO: disabled feature
+	// const redirectToRegister = () => {
+	// 	history.push(AUTH_PATH.REGISTER, {
+	// 		from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
+	// 	});
+	// };
 
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
-				<Modal isOpen size="medium" onClose={redirectToHome}>
+				<Modal className="c-register-login-view__modal" isOpen size="small">
 					<ModalBody>
 						<Grid>
-							<Column size="3-6">
-								<Flex center orientation="horizontal">
-									<FlexItem>
-										<h2 className="c-h2 u-m-0">Welkom op Het Archief voor Onderwijs</h2>
-										<Spacer margin={['top-small', 'bottom']}>
-											<p>
-												Maak een gratis account aan en verrijk je lessen met beeld en geluid op maat
-												van de klas.
-											</p>
-										</Spacer>
-										<Button label="Account aanmaken" type="primary" onClick={redirectToRegister} />
-									</FlexItem>
-								</Flex>
-							</Column>
+							{/*<Column size="3-6">*/}
+							{/*	<Flex center orientation="horizontal">*/}
+							{/*		<FlexItem>*/}
+							{/*			<h2 className="c-h2 u-m-0">Welkom op Het Archief voor Onderwijs</h2>*/}
+							{/*			<Spacer margin={['top-small', 'bottom']}>*/}
+							{/*				<p>*/}
+							{/*					Maak een gratis account aan en verrijk je lessen met beeld en geluid op maat*/}
+							{/*					van de klas.*/}
+							{/*				</p>*/}
+							{/*			</Spacer>*/}
+							{/*			<Button label="Account aanmaken" type="primary" onClick={redirectToRegister} />*/}
+							{/*		</FlexItem>*/}
+							{/*	</Flex>*/}
+							{/*</Column>*/}
 							<Column size="3-6">
 								<Flex center orientation="horizontal">
 									<FlexItem>

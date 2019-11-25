@@ -13,7 +13,7 @@ import {
 	fetchMenuItemsByPlacement,
 } from '../../../shared/services/menu-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { ReactSelectOption } from '../../../shared/types/types';
+import { ReactSelectOption } from '../../../shared/types';
 
 import { IconPicker } from '../../shared/components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';

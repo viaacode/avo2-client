@@ -1,8 +1,10 @@
 import React, { ReactNode } from 'react';
-import { Route } from 'react-router';
 
+import { SecuredRoute } from '../authentication/components';
+
+import { HOME_PATH } from './home.const';
 import { Home } from './views';
 
 export const renderHomeRoutes = (): ReactNode[] => [
-	<Route component={Home} path="/" exact={true} key="/" />,
+	<SecuredRoute component={Home} exact path={HOME_PATH.HOME} key={HOME_PATH.HOME} />,
 ];

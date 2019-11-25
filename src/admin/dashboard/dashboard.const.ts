@@ -1,5 +1,5 @@
-import { RouteParts } from '../../constants';
+import { ROUTE_PARTS } from '../../shared/constants';
 
 export const DASHBOARD_PATH = {
-	DASHBOARD: `/${RouteParts.Admin}`,
+	DASHBOARD: `/${ROUTE_PARTS.admin}`,
 };

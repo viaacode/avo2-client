@@ -17,7 +17,7 @@ const ReorderCollectionModal: FunctionComponent<ReorderCollectionModalProps> = (
 			title="Herschik items in collectie"
 			size="large"
 			onClose={onClose}
-			scrollable={true}
+			scrollable
 		>
 			{/* TODO: Add draggable list component */}
 			<ModalBody>
