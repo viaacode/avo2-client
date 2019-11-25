@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from 'react';
 
-import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Spacer, Table } from '@viaa/avo2-components';
 
+import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { getFullName, getRole } from '../../../shared/helpers';
 import { AdminLayout } from '../../shared/layouts';
@@ -32,12 +33,23 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = () => {
 		}
 	};
 
-	const renderContentOverview = (data: Partial<ContentSchema>[]) => {
-		return (
+	const renderContentOverview = (content: Partial<ContentSchema>[]) => {
+		return !content.length ? (
+			<ErrorView message="Er is nog geen content aangemaakt.">
+				<p>
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
+					blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
+					ratione quas impedit repudiandae nisi corrupti quis eaque!
+				</p>
+				<Spacer margin="top">
+					<Button icon="plus" label="Content toevoegen" />
+				</Spacer>
+			</ErrorView>
+		) : (
 			<div className="c-table-responsive">
 				<Table
 					columns={CONTENT_OVERVIEW_TABLE_COLS}
-					data={data}
+					data={content}
 					renderCell={(rowData: Partial<ContentSchema>, columnId: string) =>
 						renderTableCell(rowData, columnId as ContentOverviewTableCols)
 					}
