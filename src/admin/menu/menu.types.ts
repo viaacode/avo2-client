@@ -3,7 +3,7 @@ import { IconName } from '@viaa/avo2-components';
 export type MenuOverviewTableCols = 'placement' | 'description' | 'actions';
 
 // TODO: these should go to the avo2-typings repo
-export interface MenuItem {
+export interface MenuSchema {
 	id: number;
 	label: string;
 	icon_name: IconName | '';

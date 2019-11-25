@@ -13,7 +13,7 @@ import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
 import { DELETE_MENU_ITEM, GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
-import { MenuItem } from '../menu.types';
+import { MenuSchema } from '../menu.types';
 
 import './MenuDetail.scss';
 
@@ -24,8 +24,8 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [initialMenuItems, setInitialMenuItems] = useState<MenuItem[]>([]);
-	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+	const [initialMenuItems, setInitialMenuItems] = useState<MenuSchema[]>([]);
+	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
 
 	const [triggerMenuItemDelete] = useMutation(DELETE_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -104,7 +104,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		setIsConfirmModalOpen(true);
 	};
 
-	const reindexMenuitems = (items: MenuItem[]): MenuItem[] =>
+	const reindexMenuitems = (items: MenuSchema[]): MenuSchema[] =>
 		items.map((item, index) => {
 			item.position = index;
 			// Remove properties that we don't need for save
@@ -140,7 +140,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const renderMenuDetail = (menu: MenuItem[], refetch: () => void) => {
+	const renderMenuDetail = (menu: MenuSchema[], refetch: () => void) => {
 		if (!hasInitialData.current) {
 			hasInitialData.current = true;
 			// Set items position property equal to index in array

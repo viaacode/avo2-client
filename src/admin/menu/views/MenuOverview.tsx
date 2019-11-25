@@ -10,12 +10,12 @@ import { navigate } from '../../../shared/helpers';
 import { AdminLayout } from '../../shared/layouts';
 import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
-import { MenuItem, MenuOverviewTableCols } from '../menu.types';
+import { MenuOverviewTableCols, MenuSchema } from '../menu.types';
 
 interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
-	const renderTableCell = (rowData: Partial<MenuItem>, columnId: MenuOverviewTableCols) => {
+	const renderTableCell = (rowData: Partial<MenuSchema>, columnId: MenuOverviewTableCols) => {
 		switch (columnId) {
 			case 'placement':
 				return startCase(rowData.placement);
@@ -43,12 +43,12 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 		}
 	};
 
-	const renderMenuOverview = (data: Partial<MenuItem>[]) => {
+	const renderMenuOverview = (data: Partial<MenuSchema>[]) => {
 		return (
 			<Table
 				columns={MENU_OVERVIEW_TABLE_COLS}
 				data={data}
-				renderCell={(rowData: Partial<MenuItem>, columnId: string) =>
+				renderCell={(rowData: Partial<MenuSchema>, columnId: string) =>
 					renderTableCell(rowData, columnId as MenuOverviewTableCols)
 				}
 				rowKey="id"

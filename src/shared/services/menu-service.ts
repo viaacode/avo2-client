@@ -1,15 +1,15 @@
 import { get } from 'lodash-es';
 
 import { GET_MENU_ITEM_BY_ID, GET_MENU_ITEMS_BY_PLACEMENT } from '../../admin/menu/menu.gql';
-import { MenuItem } from '../../admin/menu/menu.types';
+import { MenuSchema } from '../../admin/menu/menu.types';
 import { dataService } from './data-service';
 
 const MENU_RESULT_PATH = 'app_content_nav_elements';
 
-export const fetchMenuItemById = async (id: number): Promise<MenuItem | null> => {
+export const fetchMenuItemById = async (id: number): Promise<MenuSchema | null> => {
 	try {
 		const response = await dataService.query({ query: GET_MENU_ITEM_BY_ID, variables: { id } });
-		const menuItem: MenuItem | null = get(response, `data.${MENU_RESULT_PATH}[0]`, null);
+		const menuItem: MenuSchema | null = get(response, `data.${MENU_RESULT_PATH}[0]`, null);
 
 		return menuItem;
 	} catch (err) {
@@ -18,13 +18,15 @@ export const fetchMenuItemById = async (id: number): Promise<MenuItem | null> =>
 	}
 };
 
-export const fetchMenuItemsByPlacement = async (placement: string): Promise<MenuItem[] | null> => {
+export const fetchMenuItemsByPlacement = async (
+	placement: string
+): Promise<MenuSchema[] | null> => {
 	try {
 		const response = await dataService.query({
 			query: GET_MENU_ITEMS_BY_PLACEMENT,
 			variables: { placement },
 		});
-		const menuItems: MenuItem[] | null = get(response, `data.${MENU_RESULT_PATH}`, null);
+		const menuItems: MenuSchema[] | null = get(response, `data.${MENU_RESULT_PATH}`, null);
 
 		return menuItems;
 	} catch (err) {
