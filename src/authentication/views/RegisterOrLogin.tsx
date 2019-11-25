@@ -45,7 +45,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	};
 
 	const redirectToRegister = () => {
-		history.push(AUTH_PATH.REGISTER, {
+		history.push(AUTH_PATH.PUPIL_OR_TEACHER, {
 			from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
 		});
 	};

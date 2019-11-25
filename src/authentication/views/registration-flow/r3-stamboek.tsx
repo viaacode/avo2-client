@@ -65,6 +65,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 	);
 	const [hasAcceptedConditions, setHasAcceptedConditions] = useState<boolean>(false);
 	const [rawStamboekNumber, setRawStamboekNumber] = useState<string>('');
+	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 	const [stamboekValidationCache, setStamboekValidationCache] = useState<{
 		[stamboekNumber: string]: boolean;
 	}>({});
@@ -78,9 +79,12 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 		const base = window.location.href.split(AUTH_PATH.STAMBOEK)[0];
 		const returnToUrl = base + get(location, 'state.from.pathname', AUTH_PATH.LOGIN_AVO);
 
-		window.location.href = `${getEnv(
-			'PROXY_URL'
-		)}/auth/hetarchief/register?returnToUrl=${encodeURIComponent(returnToUrl)}`;
+		window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify(
+			{
+				returnToUrl,
+				stamboekNumber: validStamboekNumber,
+			}
+		)}`;
 	};
 
 	const STAMBOEK_MESSAGES: {
@@ -187,7 +191,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					stamboekNumber
 				);
 				if (validationStatus === 'VALID') {
-					localStorage.setItem(STAMBOEK_LOCAL_STORAGE_KEY, stamboekNumber);
+					setValidStamboekNumber(stamboekNumber);
 					setStamboekValidationStatus('VALID');
 				} else if (validationStatus === 'ALREADY_IN_USE') {
 					setStamboekValidationStatus('ALREADY_IN_USE');

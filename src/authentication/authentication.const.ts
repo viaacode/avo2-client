@@ -13,7 +13,6 @@ export const INITIAL_USER_STATE: UserState = {
 export const AUTH_PATH = Object.freeze({
 	LOGIN_AVO: `/${ROUTE_PARTS.loginAvo}`,
 	LOGOUT: `/${ROUTE_PARTS.logout}`,
-	REGISTER: `/${ROUTE_PARTS.register}`,
 	REGISTER_OR_LOGIN: `/${ROUTE_PARTS.registerOrLogin}`,
 	PUPIL_OR_TEACHER: `/${ROUTE_PARTS.pupilOrTeacher}`,
 	STAMBOEK: `/${ROUTE_PARTS.stamboek}`,
