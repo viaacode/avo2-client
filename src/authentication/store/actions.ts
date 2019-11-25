@@ -1,8 +1,9 @@
 import { Action, Dispatch } from 'redux';
 
-import { getEnv } from '../../shared/helpers/env';
+import { getEnv } from '../../shared/helpers';
 import {
 	LoginActionTypes,
+	LoginMessage,
 	LoginResponse,
 	SetLoginErrorAction,
 	SetLoginLoadingAction,
@@ -14,7 +15,7 @@ export const getLoginState = () => {
 		const { loginMessage } = getState();
 
 		// don't fetch login state if we already logged in
-		if (loginMessage && loginMessage.message === 'LOGGED_IN') {
+		if (loginMessage && loginMessage.message === LoginMessage.LOGGED_IN) {
 			return null;
 		}
 

@@ -46,7 +46,7 @@ export interface CheckboxDropdownModalProps {
 	onChange: (checkedOptions: string[], id: string) => void;
 }
 
-export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
+const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 	label,
 	id,
 	options,
@@ -162,12 +162,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 								</CheckboxGroup>
 							</FormGroup>
 							<FormGroup>
-								<Button
-									label="Toepassen"
-									type="primary"
-									block={true}
-									onClick={() => applyFilter()}
-								/>
+								<Button label="Toepassen" type="primary" block onClick={() => applyFilter()} />
 							</FormGroup>
 						</Form>
 					</Spacer>
@@ -182,7 +177,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 		const secondColumnOptions = options.slice(oneThird, oneThird * 2);
 		const thirdColumnOptions = options.slice(oneThird * 2);
 
-		// TODO add search in checkbox modal components
+		// TODO: add search in checkbox modal components
 		// private getFilterOptions(searchTerm: string, propertyName: string): Promise<Avo.Search.OptionProp[]> {
 		// 	const searchResponse: Avo.Search.Search = await executeSearch();
 		// 	return searchResponse.aggregations[propertyName];
@@ -193,13 +188,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 				<div className="c-checkbox-dropdown__trigger" onClick={openDropdownOrModal}>
 					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
 				</div>
-				<Modal
-					isOpen={isOpen}
-					title={label}
-					size="large"
-					onClose={closeDropdownOrModal}
-					scrollable={true}
-				>
+				<Modal isOpen={isOpen} title={label} size="large" onClose={closeDropdownOrModal} scrollable>
 					<ModalHeaderRight>
 						<TextInput placeholder="Zoeken..." icon="search" />
 					</ModalHeaderRight>
@@ -222,10 +211,10 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 										<Button
 											label="Annuleren"
 											type="secondary"
-											block={true}
+											block
 											onClick={closeDropdownOrModal}
 										/>
-										<Button label="Toepassen" type="primary" block={true} onClick={applyFilter} />
+										<Button label="Toepassen" type="primary" block onClick={applyFilter} />
 									</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>
@@ -255,12 +244,7 @@ export const renderDropdownButton = (
 			<div className="c-button__content">
 				<div className="c-button__label">{label}</div>
 				{!!selectedTags.length && (
-					<TagList
-						tags={selectedTags}
-						swatches={false}
-						closable={true}
-						onTagClosed={removeFilter}
-					/>
+					<TagList tags={selectedTags} swatches={false} closable onTagClosed={removeFilter} />
 				)}
 				<Icon
 					className="c-button__icon"
@@ -272,3 +256,5 @@ export const renderDropdownButton = (
 		</Button>
 	);
 };
+
+export default CheckboxDropdownModal;

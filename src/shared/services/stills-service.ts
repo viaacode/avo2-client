@@ -1,11 +1,16 @@
+import { compact, uniq } from 'lodash-es';
+
 import { Avo } from '@viaa/avo2-types';
 
-import { compact, uniq } from 'lodash-es';
-import { isMediaFragment } from '../../collection/helpers';
-import { ContentTypeString } from '../../collection/types';
+import { isMediaFragment } from '../../collection/collection.helpers';
+import { ContentTypeString } from '../../collection/collection.types';
 import { getEnv } from '../helpers/env';
 import { toSeconds } from '../helpers/parsers/duration';
 
+/**
+ * Get the first video still after the provided start times for all provided videos
+ * @param stillRequests: list of info objects containing the video id and their desired start time in seconds
+ */
 export const getVideoStills = async (
 	stillRequests: Avo.Stills.StillRequest[]
 ): Promise<Avo.Stills.StillInfo[]> => {

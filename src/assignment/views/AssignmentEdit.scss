@@ -1,3 +1,9 @@
-.c-assignment-edit .m-content-thumbnail {
-	width: 150px;
+.c-assignment-edit {
+	.m-content-thumbnail {
+		width: 150px;
+	}
+
+	.react-datepicker {
+		display: flex; // Avoids time selector to be below date selector in popper content
+	}
 }

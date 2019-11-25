@@ -38,18 +38,19 @@ import {
 } from 'lodash-es';
 import queryString from 'query-string';
 
-import { RouteParts } from '../../constants';
-import { copyToClipboard } from '../../shared/helpers/clipboard';
+import { copyToClipboard, navigate } from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+
 import { SearchFilterControls, SearchResults } from '../components';
-import { getSearchResults } from '../store/actions';
-import { selectSearchLoading, selectSearchResults } from '../store/selectors';
+import { SEARCH_PATH } from '../search.const';
 import {
 	SearchFilterFieldValues,
 	SearchFilterMultiOptions,
 	SearchProps,
 	SortOrder,
-} from '../types';
+} from '../search.types';
+import { getSearchResults } from '../store/actions';
+import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -100,7 +101,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
 			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
 
-			// TODO do the search by dispatching a redux action
+			// TODO: do the search by dispatching a redux action
 			search(
 				sortOrder.orderProperty,
 				sortOrder.orderDirection,
@@ -134,10 +135,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
 
 			const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
-			history.push({
-				pathname: `/${RouteParts.Search}`,
-				search: queryParams.length ? `?${queryParams}` : '',
-			});
+			navigate(history, SEARCH_PATH.SEARCH, {}, queryParams.length ? queryParams : '');
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
@@ -253,9 +251,8 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 		setCurrentPage(pageIndex);
 	};
 
-	const handleBookmarkToggle = (id: string, active: boolean) => {
-		// TODO handle search result bookmark button toggle
-	};
+	// TODO: FEATURE - handle search result bookmark button toggle
+	const handleBookmarkToggle = (id: string, active: boolean) => {};
 
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {
@@ -373,7 +370,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 					</Toolbar>
 				</Container>
 			</Navbar>
-			<Navbar autoHeight={true}>
+			<Navbar autoHeight>
 				<Container mode="horizontal">
 					<Spacer margin="top-large">
 						<Spacer margin="bottom-large">

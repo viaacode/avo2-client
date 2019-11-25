@@ -4,6 +4,7 @@ import { DocumentNode } from 'graphql';
 import { cloneDeep, get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -12,7 +13,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	DateTimePicker,
+	DatePicker,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -40,45 +41,48 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
-import { connect } from 'react-redux';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
-import { CollectionService } from '../../collection/service';
-import { dutchContentLabelToEnglishLabel, DutchContentType } from '../../collection/types';
-import { RouteParts } from '../../constants';
-import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import LoadingErrorLoadedComponent from '../../shared/components/DataComponent/LoadingErrorLoadedComponent';
-import DeleteObjectModal from '../../shared/components/modals/DeleteObjectModal';
-import InputModal from '../../shared/components/modals/InputModal';
-import { copyToClipboard } from '../../shared/helpers/clipboard';
-import { dataService } from '../../shared/services/data-service';
-import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../services';
-import { AssignmentLayout } from '../types';
-
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/graphql';
+} from '../../collection/collection.gql';
+import { CollectionService } from '../../collection/collection.service';
+import { DutchContentType, toEnglishContentType } from '../../collection/collection.types';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
+import {
+	DeleteObjectModal,
+	InputModal,
+	LoadingErrorLoadedComponent,
+} from '../../shared/components';
+import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { ROUTE_PARTS } from '../../shared/constants';
+import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
+import { dataService } from '../../shared/services/data-service';
+import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
+
+import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
-} from '../graphql';
+} from '../assignment.gql';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentEdit.scss';
 
 const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
-	ITEM: RouteParts.Item,
-	COLLECTIE: RouteParts.Collection,
-	ZOEKOPDRACHT: RouteParts.SearchQuery,
+	ITEM: ROUTE_PARTS.item,
+	COLLECTIE: ROUTE_PARTS.collection,
+	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
@@ -101,7 +105,7 @@ const CONTENT_LABEL_TO_QUERY: {
 		resultPath: 'app_item_meta[0]',
 	},
 	ZOEKOPDRACHT: {
-		// TODO implement search query saving and usage
+		// TODO: implement search query saving and usage
 		// query: GET_SEARCH_QUERY_BY_ID,
 		// resultPath: 'app_item_meta[0]',
 	} as any,
@@ -161,7 +165,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				// Determine if this is an edit or create page and initialize or fetch the assignment
 				let assignment: Partial<Avo.Assignment.Assignment> | null;
-				if (location.pathname.includes(RouteParts.Create)) {
+				if (location.pathname.includes(ROUTE_PARTS.create)) {
 					setPageType('create');
 					assignment = initAssignmentsByQueryParams();
 				} else {
@@ -402,7 +406,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
-			history.push(`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`);
+			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
 			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
 		} catch (err) {
 			console.error(err);
@@ -411,7 +415,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	};
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
-		return `${absolute ? window.location.origin : ''}/${RouteParts.Assignment}/${
+		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignment}/${
 			currentAssignment.id
 		}`;
 	};
@@ -475,12 +479,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			delete duplicateAssignment.id;
 			duplicateAssignment.title = newTitle;
 			const assigment = await insertAssignment(triggerAssignmentInsert, duplicateAssignment);
+
 			if (!assigment) {
 				return; // assignment was not valid
 			}
-			history.push(
-				`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${assigment.id}/${RouteParts.Edit}`
-			);
+
+			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assigment.id });
 			toastService(
 				'De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat',
 				TOAST_TYPE.SUCCESS
@@ -566,11 +570,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					setBothAssignments(insertedAssignment);
 					trackAddObjectToAssignment(insertedAssignment);
 					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
-					history.push(
-						`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
-							RouteParts.Edit
-						}`
-					);
+					navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
 				}
 			} else {
 				// edit => update graphql
@@ -584,6 +584,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			toastService('Het opslaan van de opdracht is mislukt', TOAST_TYPE.DANGER);
 			setIsSaving(false);
 		}
+	};
+
+	const isDeadlineInThePast = (): boolean => {
+		return (
+			!!currentAssignment.deadline_at &&
+			new Date(currentAssignment.deadline_at) < new Date(Date.now())
+		);
 	};
 
 	const getTagOptions = (): TagOption[] => {
@@ -648,7 +655,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					<Spacer margin="right">
 						<Thumbnail
 							className="m-content-thumbnail"
-							category={dutchContentLabelToEnglishLabel(dutchLabel)}
+							category={toEnglishContentType(dutchLabel)}
 							src={assignmentContent.thumbnail_path || undefined}
 						/>
 					</Spacer>
@@ -702,7 +709,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									<ToolbarItem grow>
 										<Link
 											className="c-return"
-											to={`/${RouteParts.MyWorkspace}/${RouteParts.Assignments}`}
+											to={buildLink(WORKSPACE_PATH.WORKSPACE_TAB, {
+												tabId: ASSIGNMENTS_ID,
+											})}
 										>
 											<Icon name="chevron-left" size="small" type="arrows" />
 											Mijn opdrachten
@@ -860,7 +869,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							</FormGroup>
 							<FormGroup label="Beschikbaar vanaf">
 								<Flex>
-									<DateTimePicker
+									<DatePicker
 										value={
 											currentAssignment.available_at
 												? new Date(currentAssignment.available_at)
@@ -869,31 +878,35 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										onChange={(value: Date | null) =>
 											setAssignmentProp('available_at', value ? value.toISOString() : null)
 										}
-										id="available_at"
-										defaultHours={now.getHours()}
-										defaultMinutes={now.getMinutes()}
+										showTimeInput
 									/>
 								</Flex>
 							</FormGroup>
 							<FormGroup label="Deadline" required>
 								<Flex>
 									<Spacer margin="right-small">
-										<DateTimePicker
+										<DatePicker
 											value={
 												currentAssignment.deadline_at
 													? new Date(currentAssignment.deadline_at)
 													: null
 											}
 											onChange={value => setAssignmentProp('deadline_at', value)}
-											id="deadline_at"
-											defaultHours={23}
-											defaultMinutes={59}
+											showTimeInput
 										/>
 									</Spacer>
 								</Flex>
-								<p className="c-form-help-text">
-									Na deze datum kan de leerling de opdracht niet meer invullen.
-								</p>
+								{isDeadlineInThePast() ? (
+									<div className="c-form-help-text c-form-help-text--error">
+										De deadline ligt in het verleden.
+										<br />
+										De leerlingen zullen dus geen toegang hebben tot deze opdracht
+									</div>
+								) : (
+									<p className="c-form-help-text">
+										Na deze datum kan de leerling de opdracht niet meer invullen.
+									</p>
+								)}
 							</FormGroup>
 							{currentAssignment.assignment_type === 'BOUW' && (
 								<FormGroup label="Groepswerk?" labelFor="only_player">
@@ -955,6 +968,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
+					emptyMessage="Gelieve een opdracht-titel in te geven."
 				/>
 			</>
 		);

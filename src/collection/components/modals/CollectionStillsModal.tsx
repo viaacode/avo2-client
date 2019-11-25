@@ -20,7 +20,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getThumbnailsForCollection } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { STILL_DIMENSIONS } from '../../constants';
+import { STILL_DIMENSIONS } from '../../collection.const';
 
 interface CollectionStillsModalProps {
 	isOpen: boolean;

@@ -16,18 +16,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { getEnv } from '../../../shared/helpers/env';
-import { formatDurationHoursMinutesSeconds } from '../../../shared/helpers/formatters/duration';
-import { toSeconds } from '../../../shared/helpers/parsers/duration';
+import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import { getVideoStills } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { getValidationErrorsForStartAndEnd } from '../../helpers/validation';
 
-export interface FragmentPropertyUpdateInfo {
-	value: string | number | boolean | null;
-	fieldName: keyof Avo.Collection.Fragment;
-	fragmentId: number;
-}
+import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
+import { FragmentPropertyUpdateInfo } from '../../collection.types';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
@@ -73,7 +68,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		});
 	};
 
-	const onSaveCut = () => {
+	const onSaveCut = async () => {
 		setFragmentStart(toSeconds(fragmentStartString, true) as number);
 		setFragmentEnd(toSeconds(fragmentEndString, true) as number);
 		setFragmentStartString(formatDurationHoursMinutesSeconds(fragmentStart));
@@ -90,9 +85,25 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const start = toSeconds(fragmentStartString, true);
 		const end = toSeconds(fragmentEndString, true);
 
+		const videoStills = await getVideoStills([
+			{ externalId: fragment.external_id, startTime: start || 0 },
+		]);
+
 		updateFragmentProperties([
 			{ value: start, fieldName: 'start_oc' as const, fragmentId: fragment.id },
 			{ value: end, fieldName: 'end_oc' as const, fragmentId: fragment.id },
+			...(videoStills && videoStills.length > 0
+				? [
+						{
+							value: {
+								...(fragment.item_meta || {}),
+								thumbnail_path: videoStills[0].thumbnailImagePath,
+							},
+							fieldName: 'item_meta' as const,
+							fragmentId: fragment.id,
+						},
+				  ]
+				: []),
 		]);
 		updateCuePoints({
 			start,
@@ -155,7 +166,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	// TODO: Replace publisher, published_at by real publisher
 	return (
-		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable={true}>
+		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable>
 			<ModalBody>
 				<>
 					<FlowPlayer

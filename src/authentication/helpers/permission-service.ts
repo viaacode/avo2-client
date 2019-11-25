@@ -18,7 +18,7 @@ export const PERMISSIONS: { [permissionName: string]: string } = {
 type PermissionName = keyof typeof PERMISSIONS;
 
 export class PermissionService {
-	// TODO replace with userInfo.permissions
+	// TODO: replace with userInfo.permissions
 	private static currentUserPermissions: PermissionName[] = Object.values(PERMISSIONS);
 
 	public static hasPermissions(permissions: Permissions) {
@@ -64,7 +64,7 @@ export class PermissionService {
 		}
 		// Special checks on top of permissionName being in the permission list
 		switch (permissionName) {
-			// TODO replace example permissions
+			// TODO: replace example permissions
 			case PERMISSIONS.EDIT_OWN_COLLECTION:
 				const ownerId = get(obj, 'owner_profile_id');
 				return profileId && ownerId && profileId === ownerId;

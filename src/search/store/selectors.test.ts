@@ -1,17 +1,13 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { AppState } from '../../store';
-import {
-	selectSearch,
-	selectSearchError,
-	selectSearchLoading,
-	selectSearchResults,
-} from './selectors';
+import { selectSearch, selectSearchError, selectSearchLoading, selectSearchResults, } from './selectors';
+import { LoginMessage } from '../../authentication/store/types';
 
 describe('search > store > selectors', () => {
 	const store: AppState = {
 		loginState: {
-			data: { message: 'LOGGED_IN', userInfo: {} as Avo.User.User },
+			data: { message: LoginMessage.LOGGED_IN, userInfo: {} as Avo.User.User },
 			loading: false,
 			error: false,
 		},

@@ -1,0 +1,34 @@
+@import '../../../styles/settings/colors';
+@import '../../../styles/settings/variables';
+
+.c-icon-picker {
+	.react-select__control {
+		min-height: 3.6rem;
+		border-color: $c-input-border-color;
+		box-shadow: none;
+		transition: all 0.15s ease-in-out;
+
+		&--is-focused,
+		&:hover {
+			border-color: $c-input-accent-color;
+			box-shadow: inset 0 0 0 0.1rem $c-input-accent-color;
+		}
+	}
+
+	.react-select__indicator {
+		padding: 6px 8px;
+	}
+
+	.react-select__option {
+		&--is-focused,
+		&:hover {
+			background-color: $color-gray-50;
+		}
+
+		&--is-selected {
+			font-weight: 600;
+			background-color: $color-gray-150;
+			color: inherit;
+		}
+	}
+}

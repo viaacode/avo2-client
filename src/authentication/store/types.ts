@@ -2,8 +2,13 @@ import { Action } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
+export enum LoginMessage {
+	LOGGED_IN = 'LOGGED_IN',
+	LOGGED_OUT = 'LOGGED_OUT',
+}
+
 export interface LoginResponse {
-	message: 'LOGGED_IN' | 'LOGGED_OUT';
+	message: LoginMessage;
 	userInfo: Avo.User.User;
 }
 
@@ -28,7 +33,7 @@ export interface SetLoginErrorAction extends Action {
 export type LoginAction = SetLoginSuccessAction | SetLoginLoadingAction | SetLoginErrorAction;
 
 export interface LoginState {
-	readonly data: LoginResponse | null; // TODO move to types: Avo.Authentication.Response
+	readonly data: LoginResponse | null; // TODO: move to types: Avo.Authentication.Response
 	readonly loading: boolean;
 	readonly error: boolean;
 }

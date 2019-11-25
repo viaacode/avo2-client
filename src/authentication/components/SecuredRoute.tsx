@@ -1,13 +1,14 @@
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { Dispatch } from 'redux';
-import { RouteParts } from '../../constants';
+
+import { AUTH_PATH } from '../authentication.const';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginResponse } from '../store/types';
+import { LoginMessage, LoginResponse } from '../store/types';
 
 export interface SecuredRouteProps {
 	component: ComponentType<any>;
@@ -52,7 +53,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 			exact={exact}
 			render={props => {
 				// Already logged in
-				if (loginState && loginState.message === 'LOGGED_IN') {
+				if (loginState && loginState.message === LoginMessage.LOGGED_IN) {
 					const Component = component;
 					return <Component />;
 				}
@@ -61,7 +62,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 				return (
 					<Redirect
 						to={{
-							pathname: `/${RouteParts.RegisterOrLogin}`,
+							pathname: AUTH_PATH.REGISTER_OR_LOGIN,
 							state: { from: props.location },
 						}}
 					/>

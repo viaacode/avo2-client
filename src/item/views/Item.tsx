@@ -11,6 +11,7 @@ import {
 	Flex,
 	Grid,
 	Icon,
+	IconName,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -26,30 +27,29 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentType } from '@viaa/avo2-components/dist/types';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
-	dutchContentLabelToEnglishLabel,
-} from '../../collection/types';
-import { DataQueryComponent } from '../../shared/components/DataComponent/DataQueryComponent';
-import { reorderDate } from '../../shared/helpers/formatters/date';
+	toEnglishContentType,
+} from '../../collection/collection.types';
+import { DataQueryComponent } from '../../shared/components';
+import { LANGUAGES } from '../../shared/constants';
 import {
 	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
 	generateSearchLinkString,
-} from '../../shared/helpers/generateLink';
-import { LANGUAGES } from '../../shared/helpers/languages';
+	reorderDate,
+} from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
-import ItemVideoDescription from '../components/ItemVideoDescription';
-import FragmentAddToCollection from '../components/modals/FragmentAddToCollection';
+
+import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
 import './Item.scss';
@@ -62,9 +62,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
 	// TODO: use setTime when adding logic for enabling timestamps in the URL
 	const [time] = useState<number>(0);
-	const [isOpenFragmentAddToCollectionModal, setIsOpenFragmentAddToCollectionModal] = useState(
-		false
-	);
+	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 
 	/**
@@ -116,7 +114,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	 * Set video current time from the query params once the video has loaded its meta data
 	 * If this happens sooner, the time will be ignored by the video player
 	 */
-	// TODO trigger this function when flowplayer is loaded
+	// TODO: trigger this function when flowplayer is loaded
 	// const getSeekerTimeFromQueryParams = () => {
 	// 	const queryParams = queryString.parse(location.search);
 	// 	setTime(parseInt((queryParams.time as string) || '0', 10));
@@ -130,11 +128,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map(relatedItem => {
 				const englishContentType: ContentType =
-					dutchContentLabelToEnglishLabel(relatedItem.administrative_type) ||
-					ContentTypeString.video;
+					toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 				return (
-					<li>
+					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							title={relatedItem.dc_title}
 							href={`/item/${relatedItem.id}`}
@@ -159,7 +156,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 	const renderItem = (itemMetaData: Avo.Item.Item) => {
 		const englishContentType: ContentType =
-			dutchContentLabelToEnglishLabel(itemMetaData.type.label) || ContentTypeString.video;
+			toEnglishContentType(itemMetaData.type.label) || ContentTypeString.video;
 
 		return (
 			<>
@@ -183,10 +180,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
-									<MetaData
-										spaced={true}
-										category={dutchContentLabelToEnglishLabel(itemMetaData.type.label)}
-									>
+									<MetaData category={toEnglishContentType(itemMetaData.type.label)} spaced>
 										{itemMetaData.org_name && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
@@ -214,10 +208,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 									<div className="u-mq-switch-main-nav-authentication">
 										<MetaData category={englishContentType}>
 											{/* TODO link meta data to actual data */}
-											<MetaDataItem label={String(188)} icon="eye" />
-											<MetaDataItem label={String(370)} icon="bookmark" />
+											<MetaDataItem label="0" icon="eye" />
+											<MetaDataItem label="0" icon="bookmark" />
 											{itemMetaData.type.id === ContentTypeNumber.collection && (
-												<MetaDataItem label={String(12)} icon="collection" />
+												<MetaDataItem label="0" icon="collection" />
 											)}
 										</MetaData>
 									</div>
@@ -239,7 +233,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 													type="tertiary"
 													icon="add"
 													label="Voeg fragment toe aan collectie"
-													onClick={() => setIsOpenFragmentAddToCollectionModal(true)}
+													onClick={() => setIsOpenAddToCollectionModal(true)}
 												/>
 												<Button
 													type="tertiary"
@@ -377,11 +371,11 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					</Container>
 				</Container>
 				{typeof itemId !== undefined && (
-					<FragmentAddToCollection
+					<AddToCollectionModal
 						itemMetaData={itemMetaData}
 						externalId={itemId as string}
-						isOpen={isOpenFragmentAddToCollectionModal}
-						onClose={() => setIsOpenFragmentAddToCollectionModal(false)}
+						isOpen={isOpenAddToCollectionModal}
+						onClose={() => setIsOpenAddToCollectionModal(false)}
 					/>
 				)}
 			</>

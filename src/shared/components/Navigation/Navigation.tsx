@@ -12,7 +12,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import { NavigationItem } from '../../../shared/types/types';
+import { NavigationItem } from '../../types';
 
 import './Navigation.scss';
 
@@ -23,7 +23,7 @@ export interface NavigationProps {
 	handleMenuClick?: () => void;
 }
 
-export const Navigation: FunctionComponent<NavigationProps> = ({
+const Navigation: FunctionComponent<NavigationProps> = ({
 	primaryItems,
 	secondaryItems,
 	isOpen,
@@ -166,3 +166,5 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		</>
 	);
 };
+
+export default Navigation;
