@@ -18,6 +18,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
+import { getVideoStills } from '../../../shared/services/stills-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
@@ -67,7 +68,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		});
 	};
 
-	const onSaveCut = () => {
+	const onSaveCut = async () => {
 		setFragmentStart(toSeconds(fragmentStartString, true) as number);
 		setFragmentEnd(toSeconds(fragmentEndString, true) as number);
 		setFragmentStartString(formatDurationHoursMinutesSeconds(fragmentStart));
@@ -84,9 +85,25 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const start = toSeconds(fragmentStartString, true);
 		const end = toSeconds(fragmentEndString, true);
 
+		const videoStills = await getVideoStills([
+			{ externalId: fragment.external_id, startTime: start || 0 },
+		]);
+
 		updateFragmentProperties([
 			{ value: start, fieldName: 'start_oc' as const, fragmentId: fragment.id },
 			{ value: end, fieldName: 'end_oc' as const, fragmentId: fragment.id },
+			...(videoStills && videoStills.length > 0
+				? [
+						{
+							value: {
+								...(fragment.item_meta || {}),
+								thumbnail_path: videoStills[0].thumbnailImagePath,
+							},
+							fieldName: 'item_meta' as const,
+							fragmentId: fragment.id,
+						},
+				  ]
+				: []),
 		]);
 		updateCuePoints({
 			start,

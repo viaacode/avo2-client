@@ -22,11 +22,10 @@ import {
 
 import { getEnv } from '../../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { INITIAL_USER_STATE } from '../../authentication.const';
+import { AUTH_PATH, INITIAL_USER_STATE } from '../../authentication.const';
 import { Action, UserState } from '../../authentication.types';
 
 import './r3-stamboek.scss';
-import { RouteParts } from '../../../constants';
 
 export type StamboekValidationStatuses = 'VALID' | 'ALREADY_IN_USE' | 'INVALID'; // TODO use typings version
 
@@ -76,8 +75,8 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 	};
 
 	const redirectToArchiefRegistrationIdp = () => {
-		const base = window.location.href.split(`/${RouteParts.Stamboek}`)[0];
-		const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.LoginAvo}`);
+		const base = window.location.href.split(AUTH_PATH.STAMBOEK)[0];
+		const returnToUrl = base + get(location, 'state.from.pathname', AUTH_PATH.LOGIN_AVO);
 
 		window.location.href = `${getEnv(
 			'PROXY_URL'

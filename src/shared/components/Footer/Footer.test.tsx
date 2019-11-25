@@ -2,7 +2,7 @@ import { mount, shallow } from 'enzyme';
 import React from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-import { Footer } from './Footer';
+import Footer from './Footer';
 
 describe('<Footer />', () => {
 	it('Should be able to render', () => {

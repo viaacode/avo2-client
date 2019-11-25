@@ -6,9 +6,9 @@ import { withRouter } from 'react-router';
 
 import { Button, Column, Container, Grid, Spacer } from '@viaa/avo2-components';
 
-import { RouteParts } from '../../../constants';
+import { SEARCH_PATH } from '../../../search/search.const';
 import { getEnv } from '../../../shared/helpers';
-import { INITIAL_USER_STATE } from '../../authentication.const';
+import { AUTH_PATH, INITIAL_USER_STATE } from '../../authentication.const';
 import { Action, UserState } from '../../authentication.types';
 
 import './r1-pupil-or-teacher.scss';
@@ -36,23 +36,23 @@ const RegisterPupilOrTeacher: FunctionComponent<RegisterPupilOrTeacherProps> = (
 		});
 
 	const redirectToLogin = () => {
-		history.push(`/${RouteParts.LoginAvo}`, {
-			from: { pathname: get(location, 'state.from.pathname', `/${RouteParts.Search}`) },
+		history.push(AUTH_PATH.LOGIN_AVO, {
+			from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
 		});
 	};
 
 	const redirectToSmartschoolLogin = () => {
 		// Redirect to smartschool login form
-		const base = window.location.href.split(`/${RouteParts.RegisterOrLogin}`)[0];
+		const base = window.location.href.split(AUTH_PATH.REGISTER_OR_LOGIN)[0];
 		// Url to return to after authentication is completed and server stored auth object in session
-		const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
+		const returnToUrl = base + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
 		window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 			returnToUrl,
 		})}`;
 	};
 
 	const redirectToStamboek = () => {
-		history.push(`/${RouteParts.Stamboek}`);
+		history.push(AUTH_PATH.STAMBOEK);
 	};
 
 	return (

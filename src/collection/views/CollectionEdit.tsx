@@ -24,17 +24,17 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { RouteParts } from '../../constants';
 import {
 	ControlledDropdown,
 	DataQueryComponent,
 	DeleteObjectModal,
 	InputModal,
 } from '../../shared/components';
-import { createDropdownMenuItem, renderAvatar } from '../../shared/helpers';
+import { createDropdownMenuItem, navigate, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { CollectionEditContent, CollectionEditMetaData } from '.';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
@@ -53,14 +53,14 @@ import {
 	ShareCollectionModal,
 } from '../components';
 
-interface CollectionEditProps extends RouteComponentProps {}
+interface CollectionEditProps extends RouteComponentProps<{ id: string }> {}
 
 let currentCollection: Avo.Collection.Collection | undefined;
 let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
 
-const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
+const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match }) => {
 	// State
-	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
+	const [collectionId] = useState<string | undefined>(match.params.id);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
@@ -124,7 +124,9 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				(item: Avo.Collection.Fragment) => item.id === updateInfo.fragmentId
 			);
 
-			(fragmentToUpdate as any)[updateInfo.fieldName] = updateInfo.value;
+			if (fragmentToUpdate) {
+				(fragmentToUpdate as any)[updateInfo.fieldName] = updateInfo.value;
+			}
 		});
 
 		setCurrentCollection(tempCollection);
@@ -282,7 +284,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 				category: 'item',
 			});
 
-			props.history.push(`/${RouteParts.Workspace}/${RouteParts.Collections}`);
+			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID });
 		} catch (err) {
 			console.error(err);
 			toastService('Het verwijderen van de collectie is mislukt');

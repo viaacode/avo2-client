@@ -27,14 +27,16 @@ import { Avo } from '@viaa/avo2-types';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
 import { FragmentDetail } from '../../collection/components';
-import { RouteParts } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
-import { renderAvatar } from '../../shared/helpers';
+import { buildLink, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { IconName } from '../../shared/types/types';
+import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
+
+import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -321,18 +323,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			return null;
 		}
 		const isOwner = getProfileId() === assignment.owner_profile_id;
+		const backLink = isOwner
+			? buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assignment.id })
+			: buildLink(WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
 
 		return (
-			<Link
-				className="c-return"
-				to={
-					isOwner
-						? `/${RouteParts.Workspace}/${RouteParts.Assignments}/${assignment.id}/${
-								RouteParts.Edit
-						  }`
-						: `/${RouteParts.Workspace}/${RouteParts.Assignments}`
-				}
-			>
+			<Link className="c-return" to={backLink}>
 				<Icon type="arrows" name="chevron-left" />
 				<span>{isOwner ? 'Terug naar opdracht bewerken' : 'Mijn opdrachten'}</span>
 			</Link>

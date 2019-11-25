@@ -1,4 +1,4 @@
-import { CONTENT_TYPE_TO_ROUTE } from './content-type-route';
 import { LANGUAGES } from './languages';
+import { CONTENT_TYPE_TO_ROUTE, ROUTE_PARTS } from './routes';
 
-export { LANGUAGES, CONTENT_TYPE_TO_ROUTE };
+export { LANGUAGES, CONTENT_TYPE_TO_ROUTE, ROUTE_PARTS };

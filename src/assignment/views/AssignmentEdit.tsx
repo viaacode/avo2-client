@@ -44,44 +44,45 @@ import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
 import { LoginResponse } from '../../authentication/store/types';
+import {
+	GET_COLLECTION_BY_ID,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENTS,
+} from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
 import { DutchContentType, toEnglishContentType } from '../../collection/collection.types';
-import { RouteParts } from '../../constants';
+import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DeleteObjectModal,
 	InputModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { copyToClipboard } from '../../shared/helpers';
+import { ROUTE_PARTS } from '../../shared/constants';
+import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
-import { AssignmentLayout } from '../assignment.types';
-
-import {
-	GET_COLLECTION_BY_ID,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/collection.gql';
-import { GET_ITEM_BY_ID } from '../../item/item.gql';
+import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentEdit.scss';
 
 const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
-	ITEM: RouteParts.Item,
-	COLLECTIE: RouteParts.Collection,
-	ZOEKOPDRACHT: RouteParts.SearchQuery,
+	ITEM: ROUTE_PARTS.item,
+	COLLECTIE: ROUTE_PARTS.collection,
+	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
@@ -164,7 +165,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				// Determine if this is an edit or create page and initialize or fetch the assignment
 				let assignment: Partial<Avo.Assignment.Assignment> | null;
-				if (location.pathname.includes(RouteParts.Create)) {
+				if (location.pathname.includes(ROUTE_PARTS.create)) {
 					setPageType('create');
 					assignment = initAssignmentsByQueryParams();
 				} else {
@@ -405,7 +406,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
-			history.push(`/${RouteParts.Workspace}/${RouteParts.Assignments}`);
+			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
 			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
 		} catch (err) {
 			console.error(err);
@@ -414,7 +415,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	};
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
-		return `${absolute ? window.location.origin : ''}/${RouteParts.Assignment}/${
+		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignment}/${
 			currentAssignment.id
 		}`;
 	};
@@ -478,12 +479,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			delete duplicateAssignment.id;
 			duplicateAssignment.title = newTitle;
 			const assigment = await insertAssignment(triggerAssignmentInsert, duplicateAssignment);
+
 			if (!assigment) {
 				return; // assignment was not valid
 			}
-			history.push(
-				`/${RouteParts.Workspace}/${RouteParts.Assignments}/${assigment.id}/${RouteParts.Edit}`
-			);
+
+			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assigment.id });
 			toastService(
 				'De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat',
 				TOAST_TYPE.SUCCESS
@@ -569,11 +570,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					setBothAssignments(insertedAssignment);
 					trackAddObjectToAssignment(insertedAssignment);
 					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
-					history.push(
-						`/${RouteParts.Workspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
-							RouteParts.Edit
-						}`
-					);
+					navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
 				}
 			} else {
 				// edit => update graphql
@@ -705,7 +702,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									<ToolbarItem grow>
 										<Link
 											className="c-return"
-											to={`/${RouteParts.Workspace}/${RouteParts.Assignments}`}
+											to={buildLink(WORKSPACE_PATH.WORKSPACE_TAB, {
+												tabId: ASSIGNMENTS_ID,
+											})}
 										>
 											<Icon name="chevron-left" size="small" type="arrows" />
 											Mijn opdrachten
