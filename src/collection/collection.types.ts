@@ -14,6 +14,8 @@ import {
 import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
+import { ValueOf } from '../shared/types';
+
 export enum ContentBlockType {
 	'Image',
 	'ImageTitleTextButton',
@@ -77,7 +79,7 @@ export function toEnglishContentType(label: DutchContentType): ContentType {
 }
 
 export interface FragmentPropertyUpdateInfo {
-	value: string | number | boolean | null;
+	value: Partial<ValueOf<Avo.Collection.Fragment>>;
 	fieldName: keyof Avo.Collection.Fragment;
 	fragmentId: number;
 }

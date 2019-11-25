@@ -16,3 +16,8 @@ export interface Tab {
 	label: string;
 	icon?: IconName;
 }
+
+// Helpers
+
+// Get all possible values from object
+export type ValueOf<T> = T[keyof T];

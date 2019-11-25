@@ -125,7 +125,9 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 				(item: Avo.Collection.Fragment) => item.id === updateInfo.fragmentId
 			);
 
-			(fragmentToUpdate as any)[updateInfo.fieldName] = updateInfo.value;
+			if (fragmentToUpdate) {
+				(fragmentToUpdate as any)[updateInfo.fieldName] = updateInfo.value;
+			}
 		});
 
 		setCurrentCollection(tempCollection);
