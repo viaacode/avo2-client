@@ -13,7 +13,6 @@ export const renderAdminRoutes = () => (
 		{renderAdminMenuRoutes()}
 		{renderAdminContentRoutes()}
 		{/* Default routes */}
-		{renderAuthenticationRoutes()}
 		{renderErrorRoutes()}
 	</Switch>
 );
