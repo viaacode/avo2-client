@@ -40,6 +40,8 @@ import { dataService } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
@@ -51,13 +53,6 @@ import {
 } from '../assignment.gql';
 import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
 import { AssignmentColumn } from '../assignment.types';
-import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
-import PermissionGuard from '../../authentication/components/PermissionGuard';
-import {
-	PermissionGuardFail,
-	PermissionGuardPass,
-} from '../../authentication/components/PermissionGuard.slots';
-import { getProfileId } from '../../authentication/helpers/get-profile-info';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -68,7 +63,6 @@ interface AssignmentOverviewProps extends RouteComponentProps {
 
 const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	history,
-	loginState,
 	refetchCount,
 }) => {
 	const [filterString, setFilterString] = useState<string>('');
@@ -90,6 +84,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
+
+	const canEditAssignments = PermissionService.hasPermissions([
+		{ permissionName: PERMISSIONS.EDIT_OWN_ASSIGNMENTS },
+		{ permissionName: PERMISSIONS.EDIT_ALL_ASSIGNMENTS },
+	]);
 
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
@@ -261,6 +260,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		refetchAssignments: () => void
 	) => {
 		const cellData: any = (rowData as any)[colKey];
+		const editLink = buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id });
+		const detailLink = buildLink(ASSIGNMENT_PATH.ASSIGNMENT_DETAIL, { id: rowData.id });
 
 		switch (colKey) {
 			case 'title':
@@ -271,9 +272,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
-								<Link to={buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id })}>
-									{rowData.title}
-								</Link>
+								<Link to={canEditAssignments ? editLink : detailLink}>{rowData.title}</Link>
 							</h3>
 						</div>
 					</Flex>
@@ -358,16 +357,20 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const renderAssignmentsTable = (
 		data: {
-			assignments: Avo.Assignment.Assignment[];
+			app_assignments?: Avo.Assignment.Assignment[];
+			app_assignment_responses?: Avo.Assignment.Response[];
 			count: { aggregate: { count: number } };
 		},
 		refetchAssignments: () => void
 	) => {
+		const assignments = [];
+		assignments.push(...(data.app_assignment_responses || []).map(response => response.assignment));
+		assignments.push(...(data.app_assignments || []));
 		return (
 			<>
 				<Table
 					columns={columns}
-					data={data.assignments}
+					data={assignments}
 					emptyStateMessage={
 						filterString
 							? 'Er zijn geen opdrachten die voldoen aan de zoekopdracht'
@@ -428,12 +431,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			</>
 		);
 	};
-
-	const canEditAssignments = false;
-	// PermissionService.hasPermissions([
-	// 	{ permissionName: PERMISSIONS.EDIT_OWN_ASSIGNMENTS },
-	// 	{ permissionName: PERMISSIONS.EDIT_ALL_ASSIGNMENTS },
-	// ]);
 
 	return (
 		<Container mode="vertical" size="small">

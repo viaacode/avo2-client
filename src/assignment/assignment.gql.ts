@@ -41,7 +41,7 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 
 export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
   query getAssignmentsByOwner($owner_profile_id: uuid, $archived: Boolean = false, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}, $order: [app_assignments_order_by!] = {deadline_at: desc}, $filter: [app_assignments_bool_exp]) {
-    assignments: app_assignments(where: { owner_profile_id: { _eq: $owner_profile_id }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}, offset: $offset, limit: $limit, order_by: $order) {
+    app_assignments(where: { owner_profile_id: { _eq: $owner_profile_id }, is_deleted: {_eq: false}, is_archived: {_eq: $archived}, _or: $filter}, offset: $offset, limit: $limit, order_by: $order) {
       assignment_assignment_tags {
         assignment_tag {
           color_enum_value

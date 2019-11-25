@@ -1,4 +1,3 @@
-import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import { getProfileId } from './get-profile-info';
 
