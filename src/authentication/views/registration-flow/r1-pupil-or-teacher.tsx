@@ -71,7 +71,7 @@ const RegisterPupilOrTeacher: FunctionComponent<RegisterPupilOrTeacherProps> = (
 							icon="smartschool"
 							label="Inloggen met Smartschool"
 							onClick={redirectToSmartschoolLogin}
-						/>{' '}
+						/>
 					</Column>
 					<Column size="2-6">
 						<h4 className="c-h2">Lesgever</h4>
