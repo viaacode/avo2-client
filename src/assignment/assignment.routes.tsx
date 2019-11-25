@@ -1,7 +1,8 @@
 import React, { ReactNode } from 'react';
 
 import SecuredRoute from '../authentication/components/SecuredRoute';
-import { RouteParts } from '../constants';
+
+import { ASSIGNMENT_PATH } from './assignment.const';
 import AssignmentDetail from './views/AssignmentDetail';
 import AssignmentEdit from './views/AssignmentEdit';
 
@@ -9,19 +10,19 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		component={AssignmentEdit}
 		exact
-		path={`/${RouteParts.Workspace}/${RouteParts.Assignments}/:id/${RouteParts.Edit}`}
-		key={`/${RouteParts.Workspace}/${RouteParts.Assignments}/:id/${RouteParts.Edit}`}
+		path={ASSIGNMENT_PATH.ASSIGNMENT_EDIT}
+		key={ASSIGNMENT_PATH.ASSIGNMENT_EDIT}
 	/>,
 	<SecuredRoute
 		component={AssignmentEdit}
 		exact={false}
-		path={`/${RouteParts.Workspace}/${RouteParts.Assignments}/${RouteParts.Create}`}
-		key={`/${RouteParts.Workspace}/${RouteParts.Assignments}/${RouteParts.Create}`}
+		path={ASSIGNMENT_PATH.ASSIGNMENT_CREATE}
+		key={ASSIGNMENT_PATH.ASSIGNMENT_CREATE}
 	/>,
 	<SecuredRoute
 		component={AssignmentDetail}
 		exact
-		path={`/${RouteParts.Assignment}/:id`}
-		key={`/${RouteParts.Assignment}/:id`}
+		path={ASSIGNMENT_PATH.ASSIGNMENT_DETAIL}
+		key={ASSIGNMENT_PATH.ASSIGNMENT_DETAIL}
 	/>,
 ];

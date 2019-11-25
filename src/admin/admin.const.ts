@@ -2,15 +2,15 @@ import { OptionsType } from 'react-select';
 
 import { IconName } from '@viaa/avo2-components';
 
-import { RouteParts } from '../constants';
+import { ROUTE_PARTS } from '../shared/constants';
 import { ReactSelectOption } from '../shared/types/types';
 
 export const ADMIN_PATH = Object.freeze({
-	DASHBOARD: `/${RouteParts.Admin}`,
-	MENU: `/${RouteParts.Admin}/${RouteParts.Menu}`,
-	MENU_DETAIL: `/${RouteParts.Admin}/${RouteParts.Menu}/:menu`,
-	MENU_CREATE: `/${RouteParts.Admin}/${RouteParts.Menu}/:menu/${RouteParts.Create}`,
-	MENU_EDIT: `/${RouteParts.Admin}/${RouteParts.Menu}/:menu/:id/${RouteParts.Edit}`,
+	DASHBOARD: `/${ROUTE_PARTS.admin}`,
+	MENU: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}`,
+	MENU_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/:menu`,
+	MENU_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/:menu/${ROUTE_PARTS.create}`,
+	MENU_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/:menu/:id/${ROUTE_PARTS.edit}`,
 });
 
 export const MENU_OVERVIEW_TABLE_COLS = [

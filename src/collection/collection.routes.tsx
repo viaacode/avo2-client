@@ -1,21 +1,21 @@
 import React, { ReactNode } from 'react';
 
 import { SecuredRoute } from '../authentication/components';
-import { RouteParts } from '../constants';
 
+import { COLLECTION_PATH } from './collection.const';
 import { CollectionDetail, CollectionEdit } from './views';
 
 export const renderCollectionRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		component={CollectionDetail}
 		exact
-		path={`/${RouteParts.Collection}/:id`}
-		key={`/${RouteParts.Collection}/:id`}
+		path={COLLECTION_PATH.COLLECTION_DETAIL}
+		key={COLLECTION_PATH.COLLECTION_DETAIL}
 	/>,
 	<SecuredRoute
 		component={CollectionEdit}
 		exact
-		path={`/${RouteParts.Collection}/:id/${RouteParts.Edit}`}
-		key={`/${RouteParts.Collection}/:id/${RouteParts.Edit}`}
+		path={COLLECTION_PATH.COLLECTION_EDIT}
+		key={COLLECTION_PATH.COLLECTION_EDIT}
 	/>,
 ];

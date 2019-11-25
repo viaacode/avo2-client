@@ -21,10 +21,17 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentOverview } from '../../assignment/views';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { CollectionOverview } from '../../collection/views';
-import { RouteParts } from '../../constants';
 import { ControlledDropdown, DataQueryComponent } from '../../shared/components';
+import { navigate } from '../../shared/helpers';
 
-import { ASSIGNMENTS_ID, BOOKMARKS_ID, COLLECTIONS_ID, FOLDERS_ID, TABS } from '../workspace.const';
+import {
+	ASSIGNMENTS_ID,
+	BOOKMARKS_ID,
+	COLLECTIONS_ID,
+	FOLDERS_ID,
+	TABS,
+	WORKSPACE_PATH,
+} from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabAggregates, TabViewMap } from '../workspace.types';
 import Bookmarks from './Bookmarks';
@@ -42,7 +49,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 
 	// Methods
 	const goToTab = (id: ReactText) => {
-		history.push(`/${RouteParts.Workspace}/${id}`);
+		navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: id });
 		setTabId(String(id));
 	};
 

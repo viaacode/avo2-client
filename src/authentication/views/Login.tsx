@@ -1,13 +1,15 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { get } from 'lodash-es';
-
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { RouteParts } from '../../constants';
+
 import { ErrorView } from '../../error/views';
+import { SEARCH_PATH } from '../../search/search.const';
+
+import { AUTH_PATH } from '../authentication.const';
 import { redirectToLoginPage } from '../helpers/redirect-to-idp';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
@@ -73,9 +75,9 @@ const Login: FunctionComponent<LoginProps> = ({
 		) {
 			addLoginAttempt();
 			// Redirect to login form
-			const base = window.location.href.split(`/${RouteParts.LoginAvo}`)[0];
+			const base = window.location.href.split(AUTH_PATH.LOGIN_AVO)[0];
 			// Url to return to after authentication is completed and server stored auth object in session
-			const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
+			const returnToUrl = base + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
 			redirectToLoginPage(returnToUrl);
 		}
 	}, [

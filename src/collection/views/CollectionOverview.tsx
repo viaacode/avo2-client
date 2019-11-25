@@ -22,20 +22,23 @@ import { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { RouteParts } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { SEARCH_PATH } from '../../search/search.const';
 import { DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import {
+	buildLink,
 	createDropdownMenuItem,
 	formatDate,
 	formatTimestamp,
 	fromNow,
 	getAvatarProps,
+	navigate,
 } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
+import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 
 import './CollectionOverview.scss';
@@ -50,8 +53,6 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	numberOfCollections,
 	refetchCount,
 }) => {
-	const { Collection, Edit, Search } = RouteParts;
-
 	// State
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
@@ -90,7 +91,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		setIdToDelete(null);
 	};
 
-	const onClickCreate = () => history.push(`/${Search}`);
+	const onClickCreate = () => history.push(SEARCH_PATH.SEARCH);
 
 	// TODO: Make shared function because also used in assignments
 	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {
@@ -106,7 +107,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 
 	// Render functions
 	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
-		<Link to={`/${Collection}/${id}`} title={title}>
+		<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
 			<Thumbnail
 				alt="thumbnail"
 				category="collection"
@@ -119,7 +120,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link to={`/${Collection}/${id}`} title={title}>
+				<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
 					{title}
 				</Link>
 			</h3>
@@ -146,7 +147,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		const onClickDropdownItem = (item: ReactText) => {
 			switch (item) {
 				case 'edit':
-					history.push(`/${Collection}/${collectionId}/${Edit}`);
+					navigate(history, COLLECTION_PATH.COLLECTION_EDIT, { id: collectionId });
 					break;
 				case 'delete':
 					onClickDelete(collectionId);
@@ -175,7 +176,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 
 				<Button
 					icon="chevron-right"
-					onClick={() => history.push(`/${Collection}/${collectionId}`)}
+					onClick={() => navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, { id: collectionId })}
 					type="borderless"
 				/>
 			</ButtonToolbar>
