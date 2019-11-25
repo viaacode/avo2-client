@@ -14,7 +14,7 @@ import { selectLogin } from './authentication/store/selectors';
 import { LoginMessage, LoginResponse } from './authentication/store/types';
 import { Footer, Navigation } from './shared/components';
 import { dataService } from './shared/services/data-service';
-import { NavigationItem } from './shared/types/types';
+import { NavigationItem } from './shared/types';
 
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';

@@ -4,9 +4,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import { match, withRouter } from 'react-router';
 import { RouteConfigComponentProps } from 'react-router-config';
 
-import { Blankslate, Container } from '@viaa/avo2-components';
-
-import { IconName } from '../../shared/types/types';
+import { Blankslate, Container, IconName } from '@viaa/avo2-components';
 
 interface ErrorViewQueryParams {
 	message?: string;

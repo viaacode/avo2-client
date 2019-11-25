@@ -3,7 +3,7 @@ import { OptionsType } from 'react-select';
 import { IconName } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../shared/constants';
-import { ReactSelectOption } from '../shared/types/types';
+import { ReactSelectOption } from '../shared/types';
 
 export const ADMIN_PATH = Object.freeze({
 	DASHBOARD: `/${ROUTE_PARTS.admin}`,
