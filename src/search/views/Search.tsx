@@ -381,6 +381,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 											id="query"
 											placeholder="Vul uw zoekterm in..."
 											value={searchTerms}
+											className="c-search-term-input-field"
 											icon="search"
 											onChange={setSearchTerms}
 										/>

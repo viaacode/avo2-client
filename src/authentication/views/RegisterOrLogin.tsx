@@ -84,6 +84,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												<Button
 													label="Inloggen met e-mailadres"
 													type="primary"
+													className="login-with-archief"
 													onClick={redirectToLogin}
 												/>
 											</Spacer>
@@ -92,7 +93,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 										<Spacer margin={['top-small', 'bottom-small']}>
 											<Button
 												block
-												className="c-button-smartschool"
+												className="c-button-smartschool login-with-smartschool"
 												icon="smartschool"
 												label="Inloggen met Smartschool"
 												onClick={redirectToSmartschoolLogin}
@@ -100,7 +101,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 										</Spacer>
 										<Button
 											block
-											className="c-button-klascement"
+											className="c-button-klascement login-with-klascement"
 											icon="klascement"
 											label="Inloggen met KlasCement"
 										/>
