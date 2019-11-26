@@ -167,7 +167,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 									type="primary"
 									className="c-apply-filter-button"
 									block
-									onClick={() => applyFilter()}
+									onClick={applyFilter}
 								/>
 							</FormGroup>
 						</Form>
