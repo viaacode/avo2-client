@@ -220,7 +220,13 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 											block
 											onClick={closeDropdownOrModal}
 										/>
-										<Button label="Toepassen" type="primary" block onClick={applyFilter} />
+										<Button
+											label="Toepassen"
+											className="c-apply-filter-button"
+											type="primary"
+											block
+											onClick={applyFilter}
+										/>
 									</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>

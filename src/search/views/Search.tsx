@@ -387,7 +387,12 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 										/>
 									</FormGroup>
 									<FormGroup inlineMode="shrink">
-										<Button label="Zoeken" type="primary" onClick={copySearchTermsToFormState} />
+										<Button
+											label="Zoeken"
+											type="primary"
+											className="c-search-button"
+											onClick={copySearchTermsToFormState}
+										/>
 									</FormGroup>
 									{hasFilters && (
 										<FormGroup inlineMode="shrink">
