@@ -24,6 +24,7 @@ export const GET_ITEM_BY_ID = gql`
 			lom_typicalagerange
 			org_id
 			publish_at
+			published_at
 			series
 			thumbnail_path
 			title
