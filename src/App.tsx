@@ -7,10 +7,10 @@ import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-
 import { Slide, ToastContainer } from 'react-toastify';
 
 import Admin from './admin/Admin';
-import { ADMIN_PATH } from './admin/admin.const';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginMessage, LoginResponse } from './authentication/store/types';
 import { Footer, Navigation } from './shared/components';
+import { ROUTE_PARTS } from './shared/constants';
 import { dataService } from './shared/services/data-service';
 import { NavigationItem } from './shared/types';
 
@@ -59,22 +59,9 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 
 	const onCloseMenu = () => setMenuOpen(false);
 
-	const isAdminRoute = new RegExp(`^${ADMIN_PATH.DASHBOARD}`, 'g').test(location.pathname);
+	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(location.pathname);
 
 	// Render
-	const renderApp = () => (
-		<>
-			<Navigation
-				primaryItems={PRIMARY_ITEMS}
-				secondaryItems={SECONDARY_ITEMS}
-				isOpen={menuOpen}
-				handleMenuClick={onToggleMenu}
-			/>
-			{renderRoutes()}
-			<Footer />
-		</>
-	);
-
 	return (
 		<div className={classnames('o-app', { 'o-app--admin': isAdminRoute })}>
 			<ToastContainer
@@ -87,7 +74,20 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 				transition={Slide}
 			/>
 			{/* TODO: Based on current user permissions */}
-			{isAdminRoute ? <Admin /> : renderApp()}
+			{isAdminRoute ? (
+				<Admin />
+			) : (
+				<>
+					<Navigation
+						primaryItems={PRIMARY_ITEMS}
+						secondaryItems={SECONDARY_ITEMS}
+						isOpen={menuOpen}
+						handleMenuClick={onToggleMenu}
+					/>
+					{renderRoutes()}
+					<Footer />
+				</>
+			)}
 		</div>
 	);
 };
