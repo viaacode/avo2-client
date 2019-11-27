@@ -26,37 +26,43 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 		collection_id: id,
 	};
 
-	const addFragment = (index: number) => {
+	const generateNewFragments = (): Avo.Collection.Fragment[] => {
 		const newFragments = orderBy([...collection_fragments], 'position', 'asc');
 
 		newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
 
-		const positionedFragments = reorderFragments(newFragments);
+		return reorderFragments(newFragments);
+	};
+
+	const handleAddFragmentClick = () => {
+		const generatedFragments = generateNewFragments();
 
 		updateCollection({
 			...collection,
-			collection_fragments: positionedFragments,
-			collection_fragment_ids: positionedFragments.map(({ id }) => id),
+			collection_fragments: generatedFragments,
+			collection_fragment_ids: generatedFragments.map(({ id: fragmentId }) => fragmentId),
 		});
 	};
+
+	const renderDivider = () => (
+		<ToolbarItem grow>
+			<div className="c-hr" />
+		</ToolbarItem>
+	);
 
 	return (
 		<Container>
 			<Toolbar justify>
-				<ToolbarItem grow>
-					<div className="c-hr" />
-				</ToolbarItem>
+				{renderDivider()}
 				<ToolbarItem>
 					<Button
 						type="secondary"
 						icon="add"
-						onClick={() => addFragment(index)}
+						onClick={handleAddFragmentClick}
 						ariaLabel="Sectie toevoegen"
 					/>
 				</ToolbarItem>
-				<ToolbarItem grow>
-					<div className="c-hr" />
-				</ToolbarItem>
+				{renderDivider()}
 			</Toolbar>
 		</Container>
 	);
