@@ -63,6 +63,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												<Button
 													label="Inloggen met e-mailadres"
 													type="primary"
+													className="c-login-with-archief"
 													onClick={() => redirectToClientLogin(history, location)}
 												/>
 											</Spacer>
