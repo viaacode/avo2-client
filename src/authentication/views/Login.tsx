@@ -7,6 +7,7 @@ import { Dispatch } from 'redux';
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 
 import { ErrorView } from '../../error/views';
+
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
