@@ -7,15 +7,15 @@ import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-
 import { Slide, ToastContainer } from 'react-toastify';
 
 import Admin from './admin/Admin';
+import PupilOrTeacherDropdown from './authentication/components/PupilOrTeacherDropdown';
 import { selectLogin } from './authentication/store/selectors';
 import { LoginMessage, LoginResponse } from './authentication/store/types';
+import { APP_PATH } from './constants';
+import { renderRoutes } from './routes';
 import { Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
 import { dataService } from './shared/services/data-service';
 import { NavigationItem } from './shared/types';
-
-import { APP_PATH } from './constants';
-import { renderRoutes } from './routes';
 import store, { AppState } from './store';
 
 import './styles/main.scss';
@@ -45,7 +45,7 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 		loginState && loginState.message === LoginMessage.LOGGED_IN
 			? [{ label: 'Afmelden', location: APP_PATH.LOGOUT }]
 			: [
-					{ label: 'Registreren', location: APP_PATH.PUPIL_OR_TEACHER },
+					{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown /> },
 					{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN },
 			  ];
 

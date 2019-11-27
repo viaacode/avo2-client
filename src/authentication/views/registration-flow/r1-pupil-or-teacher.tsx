@@ -2,9 +2,10 @@ import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, Column, Container, Grid, Spacer } from '@viaa/avo2-components';
+import { AUTH_PATH } from '../../authentication.const';
 import {
 	redirectToClientLogin,
-	redirectToClientStamboek,
+	redirectToClientPage,
 	redirectToServerSmartschoolLogin,
 } from '../../helpers/redirects';
 
@@ -42,7 +43,7 @@ const RegisterPupilOrTeacher: FunctionComponent<RegisterPupilOrTeacherProps> = (
 						<h4 className="c-h2">Lesgever</h4>
 						<Button
 							label="Maak een account aan"
-							onClick={() => redirectToClientStamboek(history)}
+							onClick={() => redirectToClientPage(AUTH_PATH.STAMBOEK, history)}
 						/>
 					</Column>
 				</Grid>

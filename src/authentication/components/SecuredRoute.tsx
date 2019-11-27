@@ -21,7 +21,6 @@ export interface SecuredRouteProps {
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = ({
-	history,
 	component,
 	path,
 	exact,

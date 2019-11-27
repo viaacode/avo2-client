@@ -9,7 +9,11 @@ import { AUTH_PATH } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
 import { getLogoutPath } from './get-profile-info';
 
-/** Client redirect functions **/
+/**
+ *
+ * Client redirect functions
+ *
+ **/
 export function redirectToClientLogin(history: History, location: Location) {
 	history.push(AUTH_PATH.LOGIN_AVO, {
 		from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
@@ -22,8 +26,8 @@ export function redirectToClientRegister(history: History, location: Location) {
 	});
 }
 
-export function redirectToClientStamboek(history: History) {
-	history.push(AUTH_PATH.STAMBOEK);
+export function redirectToClientPage(path: string, history: History) {
+	history.push(path);
 }
 
 export function redirectToClientManualAccessRequest(history: History) {
@@ -31,32 +35,35 @@ export function redirectToClientManualAccessRequest(history: History) {
 	// history.push(`/${RouteParts.ManualAccessRequest}`);
 }
 
-export function redirectToExternalPage(returnToUrl: string) {
-	window.location.href = returnToUrl;
-}
-
-/** Server redirect functions **/
+/**
+ *
+ * Server redirect functions
+ *
+ **/
 export function redirectToServerSmartschoolLogin(location: Location) {
 	// Redirect to smartschool login form
-	const base = window.location.href.split(AUTH_PATH.REGISTER_OR_LOGIN)[0];
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = base + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl =
+		getBaseUrl(location) + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
 }
 
 export function redirectToServerArchiefRegistrationIdp(location: Location, stamboekNumber: string) {
-	const base = window.location.href.split(AUTH_PATH.STAMBOEK)[0];
-	const returnToUrl = base + get(location, 'state.from.pathname', AUTH_PATH.LOGIN_AVO);
-
+	const returnToUrl =
+		getBaseUrl(location) + get(location, 'state.from.pathname', AUTH_PATH.LOGIN_AVO);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify({
 		returnToUrl,
 		stamboekNumber,
 	})}`;
 }
 
-export function redirectToServerLoginPage(returnToUrl: string) {
+export function redirectToServerLoginPage(location: Location) {
+	// Redirect to login form
+	// Url to return to after authentication is completed and server stored auth object in session
+	const returnToUrl =
+		getBaseUrl(location) + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/login?${queryString.stringify({
 		returnToUrl,
@@ -64,7 +71,9 @@ export function redirectToServerLoginPage(returnToUrl: string) {
 	})}`;
 }
 
-export function redirectToServerLogoutPage(returnToUrl: string) {
+export function redirectToServerLogoutPage(location: Location) {
+	// Url to return to after logout is completed
+	const returnToUrl = `${getBaseUrl(location)}/`;
 	const logoutPath = getLogoutPath();
 	if (!logoutPath) {
 		toastService('Het uitloggen is mislukt', TOAST_TYPE.DANGER);
@@ -73,4 +82,17 @@ export function redirectToServerLogoutPage(returnToUrl: string) {
 	window.location.href = `${getEnv('PROXY_URL')}/${logoutPath}?${queryString.stringify({
 		returnToUrl,
 	})}`;
+}
+
+/**
+ *
+ * Other redirect functions
+ *
+ **/
+export function redirectToExternalPage(returnToUrl: string) {
+	window.location.href = returnToUrl;
+}
+
+function getBaseUrl(location: Location) {
+	return window.location.href.split(location.pathname)[0];
 }

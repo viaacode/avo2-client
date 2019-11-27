@@ -1,9 +1,12 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
 import {
 	Button,
 	Container,
+	Dropdown,
+	DropdownButton,
+	DropdownContent,
 	Icon,
 	Navbar,
 	Toolbar,
@@ -29,6 +32,48 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 	isOpen,
 	handleMenuClick = () => {},
 }) => {
+	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [label: string]: boolean }>({});
+
+	const setDropdownOpen = (label: string, isOpen: boolean): void => {
+		const openStates = { ...areDropdownsOpen };
+		openStates[label] = isOpen;
+		setDropdownsOpen(openStates);
+	};
+
+	const renderNavLinkItem = (item: NavigationItem, className: string, exact: boolean) => {
+		return (
+			<li key={`${item.location}-${item.label}`}>
+				{!!item.location && (
+					<NavLink
+						to={item.location}
+						className={className}
+						activeClassName="c-nav__item--active"
+						exact={exact}
+					>
+						{item.icon && <Icon name={item.icon} />}
+						{item.label}
+					</NavLink>
+				)}
+				{!!item.component && (
+					<Dropdown
+						menuWidth="fit-content"
+						isOpen={areDropdownsOpen[item.label]}
+						onOpen={() => setDropdownOpen(item.label, true)}
+						onClose={() => setDropdownOpen(item.label, false)}
+					>
+						<DropdownButton>
+							<div className={`${className} u-clickable`}>
+								{item.icon && <Icon name={item.icon} />}
+								{item.label}
+							</div>
+						</DropdownButton>
+						<DropdownContent>{item.component}</DropdownContent>
+					</Dropdown>
+				)}
+			</li>
+		);
+	};
+
 	return (
 		<>
 			<Navbar background="inverse" position="fixed" placement="top">
@@ -50,19 +95,9 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-has-space">
 										<ul className="c-nav">
-											{primaryItems.map(item => (
-												<li key={`${item.location}-${item.label}`}>
-													<NavLink
-														to={item.location}
-														className="c-nav__item c-nav__item--i"
-														activeClassName="c-nav__item--active"
-														exact={item.location === '/'}
-													>
-														{item.icon && <Icon name={item.icon} />}
-														{item.label}
-													</NavLink>
-												</li>
-											))}
+											{primaryItems.map(item =>
+												renderNavLinkItem(item, 'c-nav__item c-nav__item--i', item.location === '/')
+											)}
 										</ul>
 									</div>
 								</ToolbarItem>
@@ -73,18 +108,9 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-authentication">
 										<ul className="c-nav">
-											{secondaryItems.map(item => (
-												<li key={`${item.location}-${item.label}`}>
-													<NavLink
-														to={item.location}
-														className="c-nav__item c-nav__item--i"
-														activeClassName="c-nav__item--active"
-														exact={false}
-													>
-														{item.label}
-													</NavLink>
-												</li>
-											))}
+											{secondaryItems.map(item =>
+												renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
+											)}
 										</ul>
 									</div>
 								</ToolbarItem>
@@ -107,33 +133,12 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 				<Container mode="horizontal">
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
-							{primaryItems.map(item => (
-								<li key={`${item.location}-${item.label}`}>
-									<NavLink
-										to={item.location}
-										className="c-nav-mobile__item"
-										activeClassName="c-nav__item--active"
-										exact={item.location === '/'}
-									>
-										{item.label}
-										{item.icon && <Icon name={item.icon} />}
-									</NavLink>
-								</li>
-							))}
+							{primaryItems.map(item =>
+								renderNavLinkItem(item, 'c-nav-mobile__item', item.location === '/')
+							)}
 						</ul>
 						<ul className="c-nav-mobile">
-							{secondaryItems.map(item => (
-								<li key={`${item.location}-${item.label}`}>
-									<NavLink
-										to={item.location}
-										className="c-nav-mobile__item"
-										activeClassName="c-nav__item--active"
-										exact={false}
-									>
-										{item.label}
-									</NavLink>
-								</li>
-							))}
+							{secondaryItems.map(item => renderNavLinkItem(item, 'c-nav-mobile__item', false))}
 						</ul>
 					</Container>
 				</Container>
@@ -144,18 +149,9 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 							<ToolbarLeft>
 								<div className="c-toolbar__item">
 									<ul className="c-nav">
-										{primaryItems.map(item => (
-											<li key={`${item.location}-${item.label}`}>
-												<NavLink
-													to={item.location}
-													activeClassName="c-nav__item--active"
-													className="c-nav__item c-nav__item--i"
-												>
-													{item.icon && <Icon name={item.icon} />}
-													{item.label}
-												</NavLink>
-											</li>
-										))}
+										{primaryItems.map(item =>
+											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
+										)}
 									</ul>
 								</div>
 							</ToolbarLeft>
