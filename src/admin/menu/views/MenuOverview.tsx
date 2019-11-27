@@ -17,22 +17,24 @@ interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
+		const { placement: menu } = rowData;
+
 		switch (columnId) {
 			case 'placement':
-				return startCase(rowData.placement);
+				return startCase(menu);
 			case 'actions':
 				return (
 					<ButtonToolbar>
 						<Button
 							icon="list"
-							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu: rowData.placement })}
+							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
 							size="small"
 							title="Bekijk alle navigatie items"
 							type="tertiary"
 						/>
 						<Button
 							icon="plus"
-							onClick={() => navigate(history, MENU_PATH.MENU_CREATE, { menu: rowData.placement })}
+							onClick={() => navigate(history, MENU_PATH.MENU_CREATE, { menu })}
 							size="small"
 							title="Voeg een navigatie item toe"
 							type="tertiary"
