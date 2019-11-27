@@ -24,7 +24,7 @@ import {
 
 import { APP_PATH } from '../../../constants';
 import { getEnv } from '../../../shared/helpers';
-import { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import {
 	redirectToClientPage,
 	redirectToServerArchiefRegistrationIdp,
@@ -260,6 +260,16 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 							</Spacer>
 						)}
 					</RadioButtonGroup>
+					<Spacer margin="top-small">
+						<Alert type="info">
+							<a
+								className="u-clickable"
+								onClick={() => toastService('Nog niet geimplementeerd', TOAST_TYPE.INFO)}
+							>
+								Waarom hebben jullie mijn stamboeknummer nodig?
+							</a>
+						</Alert>
+					</Spacer>
 				</FormGroup>
 				<Spacer margin={['bottom-large', 'top-large']}>
 					<FormGroup>
@@ -282,6 +292,16 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
 					/>
 				</FormGroup>
+				<Spacer margin="top-large">
+					<Alert type="info">
+						<a
+							className="u-clickable"
+							onClick={() => toastService('Nog niet geimplementeerd', TOAST_TYPE.INFO)}
+						>
+							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
+						</a>
+					</Alert>
+				</Spacer>
 			</Container>
 		</Container>
 	);
