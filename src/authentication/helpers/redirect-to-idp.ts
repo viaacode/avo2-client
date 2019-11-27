@@ -1,7 +1,7 @@
 import queryString from 'query-string';
 
 import { getEnv } from '../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { getLogoutPath } from './get-profile-info';
 
 export function redirectToLoginPage(returnToUrl: string) {
@@ -18,7 +18,7 @@ export function redirectToPage(returnToUrl: string) {
 export function redirectToLogoutPage(returnToUrl: string) {
 	const logoutPath = getLogoutPath();
 	if (!logoutPath) {
-		toastService('Het uitloggen is mislukt', TOAST_TYPE.DANGER);
+		toastService.danger('Het uitloggen is mislukt');
 		return;
 	}
 	window.location.href = `${getEnv('PROXY_URL')}/${logoutPath}?${queryString.stringify({

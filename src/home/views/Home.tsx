@@ -27,7 +27,7 @@ import {
 	generateSearchLinkString,
 	useDebounce,
 } from '../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 
 import './Home.scss';
 
@@ -99,7 +99,7 @@ const Home: FunctionComponent<HomeProps> = ({
 					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
 				);
 			} else {
-				toastService(`Geen zoekresultaten gevonden met id: ${searchResultId}`, TOAST_TYPE.DANGER);
+				toastService.danger(`Geen zoekresultaten gevonden met id: ${searchResultId}`);
 			}
 		}
 	};

@@ -45,7 +45,7 @@ import {
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
@@ -99,7 +99,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						index: 'collections',
 						limit: 4,
 					});
-					toastService('Het ophalen van de gerelateerde collecties is mislukt', TOAST_TYPE.DANGER);
+					toastService.danger('Het ophalen van de gerelateerde collecties is mislukt');
 				});
 		}
 	}, [collectionId, relatedCollections]);
@@ -139,10 +139,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService('De collectie werd succesvol verwijderd.', TOAST_TYPE.SUCCESS);
+			toastService.success('De collectie werd succesvol verwijderd.');
 		} catch (err) {
 			console.error(err);
-			toastService('Het verwijderen van de collectie is mislukt.', TOAST_TYPE.DANGER);
+			toastService.danger('Het verwijderen van de collectie is mislukt.');
 		}
 	};
 

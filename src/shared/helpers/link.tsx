@@ -10,7 +10,7 @@ import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
 import { SEARCH_PATH } from '../../search/search.const';
 
 import { CONTENT_TYPE_TO_ROUTE } from '../constants';
-import toastService, { TOAST_TYPE } from '../services/toast-service';
+import toastService from '../services/toast-service';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
@@ -53,7 +53,7 @@ export const navigate = (
 	// Abort navigation when params were expected but none were given
 	if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
 		navigationConsoleError(route, missingParams);
-		toastService(navigationToastError, TOAST_TYPE.DANGER);
+		toastService.danger(navigationToastError);
 
 		return;
 	}
@@ -62,7 +62,7 @@ export const navigate = (
 	const builtLink = buildLink(route, params, search);
 
 	if (isEmpty(builtLink)) {
-		toastService(navigationToastError, TOAST_TYPE.DANGER);
+		toastService.danger(navigationToastError);
 
 		return;
 	}

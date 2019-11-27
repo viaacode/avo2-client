@@ -19,7 +19,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 
@@ -70,7 +70,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-					toastService(validationErrors, TOAST_TYPE.DANGER);
+					toastService.danger(validationErrors);
 					return;
 				}
 			}
@@ -87,9 +87,8 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				},
 			});
 			setValidationError(undefined);
-			toastService(
-				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`,
-				TOAST_TYPE.SUCCESS
+			toastService.success(
+				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`
 			);
 			closeModal(newCollection);
 
@@ -106,7 +105,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				category: 'item',
 			});
 		} catch (err) {
-			toastService('De aanpassingen kunnen niet worden opgeslagen', TOAST_TYPE.DANGER);
+			toastService.danger('De aanpassingen kunnen niet worden opgeslagen');
 		}
 	};
 

@@ -37,7 +37,7 @@ import { LoginResponse } from '../../authentication/store/types';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { ASSIGNMENT_PATH } from '../assignment.const';
@@ -117,7 +117,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		const assignment = get(response, 'data.app_assignments[0]');
 
 		if (!assignment) {
-			toastService('Het ophalen van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het ophalen van de opdracht is mislukt');
 			return;
 		}
 		return assignment;
@@ -138,11 +138,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				}
 				refetchAssignments();
 				refetchCount();
-				toastService('De opdracht is gedupliceerd', TOAST_TYPE.SUCCESS);
+				toastService.success('De opdracht is gedupliceerd');
 			}
 		} catch (err) {
 			console.error(err);
-			toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het dupliceren van de opdracht is mislukt');
 		}
 	};
 
@@ -161,9 +161,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 					refetchAssignments();
 					refetchCount();
-					toastService(
-						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`,
-						TOAST_TYPE.SUCCESS
+					toastService.success(
+						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`
 					);
 				}
 				// else: assignment was not valid and could not be saved yet
@@ -171,11 +170,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 		} catch (err) {
 			console.error(err);
-			toastService(
+			toastService.danger(
 				`Het ${
 					activeView === 'archived_assignments' ? 'de' : ''
-				}archiveren van de opdracht is mislukt`,
-				TOAST_TYPE.DANGER
+				}archiveren van de opdracht is mislukt`
 			);
 		}
 	};
@@ -186,16 +184,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	) => {
 		try {
 			if (typeof assignmentId === 'undefined' || assignmentId === null) {
-				toastService('De huidige opdracht is nog nooit opgeslagen (geen id)', TOAST_TYPE.DANGER);
+				toastService.danger('De huidige opdracht is nog nooit opgeslagen (geen id)');
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, assignmentId);
 			refetchAssignments();
 			refetchCount();
-			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
+			toastService.success('De opdracht is verwijdert');
 		} catch (err) {
 			console.error(err);
-			toastService('Het verwijderen van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het verwijderen van de opdracht is mislukt');
 		}
 	};
 
@@ -205,7 +203,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		refetchAssignments: () => void
 	) => {
 		if (!dataRow.id) {
-			toastService('Het opdracht id van de geselecteerde rij is niet ingesteld', TOAST_TYPE.DANGER);
+			toastService.danger('Het opdracht id van de geselecteerde rij is niet ingesteld');
 			return;
 		}
 		switch (actionId) {
@@ -218,7 +216,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					setMarkedAssignment(assignment);
 					setDuplicateAssignmentModalOpen(true);
 				} else {
-					toastService('Het ophalen van de details van de opdracht is mislukt', TOAST_TYPE.DANGER);
+					toastService.danger('Het ophalen van de details van de opdracht is mislukt');
 				}
 				break;
 			case 'archive':

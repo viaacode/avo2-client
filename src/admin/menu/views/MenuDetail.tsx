@@ -8,7 +8,7 @@ import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
@@ -57,11 +57,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		})
 			.then(() => {
 				refetch();
-				toastService(`Het navigatie item is succesvol verwijderd`, TOAST_TYPE.SUCCESS);
+				toastService.success('Het navigatie item is succesvol verwijderd');
 			})
 			.catch(err => {
 				console.error(err);
-				toastService(`Het verwijderen van het navigatie item is mislukt`, TOAST_TYPE.DANGER);
+				toastService.danger('Het verwijderen van het navigatie item is mislukt');
 			});
 	};
 
@@ -91,11 +91,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		Promise.all(promises)
 			.then(() => {
 				refetch();
-				toastService('De navigatie items zijn succesvol opgeslagen', TOAST_TYPE.SUCCESS);
+				toastService.success('De navigatie items zijn succesvol opgeslagen');
 			})
 			.catch(err => {
 				console.error(err);
-				toastService('Het opslaan van de navigatie items is mislukt', TOAST_TYPE.DANGER);
+				toastService.danger('Het opslaan van de navigatie items is mislukt');
 			});
 	};
 
