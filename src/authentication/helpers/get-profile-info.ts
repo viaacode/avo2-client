@@ -8,11 +8,6 @@ function getUserInfo() {
 	return get(state, 'loginState.data.userInfo');
 }
 
-export function getLogoutPath(): string | undefined {
-	const state: any = store.getState();
-	return get(state, 'loginState.data.logoutPath');
-}
-
 export function getProfileId(): string {
 	const userInfo = getUserInfo();
 	const profileId = get(userInfo, 'profile.id');
