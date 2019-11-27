@@ -95,10 +95,8 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 			// Public status changed => log as event
 			trackEvents({
-				event_object: {
-					type: 'collection',
-					identifier: String(collection.id),
-				},
+				event_object: String(collection.id),
+				event_object_type: 'collections',
 				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${collection.id} ${
 					isPublished ? 'gepubliceerd' : 'gedepubliceerd'
 				}`,

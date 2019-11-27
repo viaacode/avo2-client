@@ -99,10 +99,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 			// Log event of item page view
 			trackEvents({
-				event_object: {
-					type: 'item',
-					identifier: itemId,
-				},
+				event_object: itemId,
+				event_object_type: 'avo_item_pid',
 				event_message: `Gebruiker ${getProfileName()} heeft de pagina van fragment ${itemId} bezocht`,
 				name: 'view',
 				category: 'item',

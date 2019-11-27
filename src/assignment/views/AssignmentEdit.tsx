@@ -61,7 +61,7 @@ import { renderDropdownButton } from '../../shared/components/CheckboxDropdownMo
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
-import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -86,11 +86,11 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabe
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: EventObjectType
+	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType
 } = {
-	ITEM: 'item',
-	COLLECTIE: 'collection',
-	ZOEKOPDRACHT: 'searchQuery',
+	ITEM: 'avo_item_pid',
+	COLLECTIE: 'collections',
+	ZOEKOPDRACHT: 'avo_search_query',
 };
 
 const CONTENT_LABEL_TO_QUERY: {
@@ -426,10 +426,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 		if (currentAssignment.id) {
 			trackEvents({
-				event_object: {
-					type: 'assignment',
-					identifier: String(currentAssignment.id),
-				},
+				event_object: String(currentAssignment.id),
+				event_object_type: 'avo_assignment',
 				event_message: `Gebruiker ${getProfileName()} heeft de permalink voor opdracht ${
 					currentAssignment.id
 				} gekopieert`,
@@ -529,10 +527,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			return;
 		}
 		trackEvents({
-			event_object: {
-				type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
-				identifier: assignment.content_id,
-			},
+			event_object: assignment.content_id,
+			event_object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
 			event_message: `User ${getProfileName()} heeft ${
 				CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
 			} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,

@@ -203,10 +203,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 				setInitialCollection(cloneDeep(newCollection));
 				toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
 				trackEvents({
-					event_object: {
-						type: 'collection',
-						identifier: `${newCollection.id}`,
-					},
+					event_object: String(newCollection.id),
+					event_object_type: 'collections',
 					event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
 						newCollection.id
 					} bijgewerkt`,
@@ -274,10 +272,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 			});
 
 			trackEvents({
-				event_object: {
-					type: 'collection',
-					identifier: String(currentCollection.id),
-				},
+				event_object: String(currentCollection.id),
+				event_object_type: 'collections',
 				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
 					currentCollection.id
 				} verwijderd`,

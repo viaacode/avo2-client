@@ -43,7 +43,7 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
-import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
@@ -81,10 +81,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	useEffect(() => {
 		trackEvents({
-			event_object: {
-				type: toEnglishContentType(CONTENT_TYPE) as EventObjectType,
-				identifier: `${collectionId}`,
-			},
+			event_object: collectionId,
+			event_object_type: 'collections',
 			event_message: `Gebruiker ${getProfileName()} heeft de pagina voor collectie ${collectionId} bekeken`,
 			name: 'view',
 			category: 'item',
