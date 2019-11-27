@@ -381,12 +381,18 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 											id="query"
 											placeholder="Vul uw zoekterm in..."
 											value={searchTerms}
+											className="c-search-term-input-field"
 											icon="search"
 											onChange={setSearchTerms}
 										/>
 									</FormGroup>
 									<FormGroup inlineMode="shrink">
-										<Button label="Zoeken" type="primary" onClick={copySearchTermsToFormState} />
+										<Button
+											label="Zoeken"
+											type="primary"
+											className="c-search-button"
+											onClick={copySearchTermsToFormState}
+										/>
 									</FormGroup>
 									{hasFilters && (
 										<FormGroup inlineMode="shrink">

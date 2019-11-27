@@ -91,7 +91,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			if (!assignmentResponse) {
 				// Student has never viewed this assignment before, we should create a response object for him
 				assignmentResponse = {
-					owner_profile_ids: [getProfileId()], // TODO: replace with getUser().uuid
+					owner_profile_ids: [getProfileId()],
 					assignment_id: tempAssignment.id,
 					collection: null,
 					collection_id: null,
@@ -131,7 +131,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		const assignmentQuery = {
 			query: GET_ASSIGNMENT_WITH_RESPONSE,
 			variables: {
-				studentUuid: [getProfileId()],
+				studentUuid: getProfileId(),
 				assignmentId: (match.params as any).id,
 			},
 		};

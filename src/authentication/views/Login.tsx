@@ -8,7 +8,6 @@ import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 
 import { ErrorView } from '../../error/views';
 import { SEARCH_PATH } from '../../search/search.const';
-
 import { AUTH_PATH } from '../authentication.const';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginState } from '../store/actions';

@@ -105,13 +105,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	}, [collectionId, relatedCollections]);
 
 	const getPermission = (collection: Avo.Collection.Collection) => ({
-		canDeleteCollection: PermissionService.hasPermissions(
-			[
-				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
-			],
-			get(loginState, 'userInfo.profile', null)
-		),
+		canDeleteCollection: PermissionService.hasPermissions([
+			{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
+			{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
+		]),
 		canEditCollection: {
 			permissions: [
 				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
