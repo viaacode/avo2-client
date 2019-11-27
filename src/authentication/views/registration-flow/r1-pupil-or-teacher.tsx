@@ -1,15 +1,14 @@
 import { History, Location } from 'history';
 import { get } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, useReducer } from 'react';
+import React, { FunctionComponent } from 'react';
 import { withRouter } from 'react-router';
 
 import { Button, Column, Container, Grid, Spacer } from '@viaa/avo2-components';
 
 import { SEARCH_PATH } from '../../../search/search.const';
 import { getEnv } from '../../../shared/helpers';
-import { AUTH_PATH, INITIAL_USER_STATE } from '../../authentication.const';
-import { Action, UserState } from '../../authentication.types';
+import { AUTH_PATH } from '../../authentication.const';
 
 import './r1-pupil-or-teacher.scss';
 
@@ -18,23 +17,10 @@ export interface RegisterPupilOrTeacherProps {
 	location: Location;
 }
 
-const userReducer = (state: UserState, { type, payload }: Action) => ({
-	...state,
-	[type]: payload,
-});
-
 const RegisterPupilOrTeacher: FunctionComponent<RegisterPupilOrTeacherProps> = ({
 	history,
 	location,
 }) => {
-	const [userState, userDispatch] = useReducer(userReducer, INITIAL_USER_STATE);
-
-	const setUserState = (field: string, value: string | boolean) =>
-		userDispatch({
-			type: field,
-			payload: value,
-		});
-
 	const redirectToLogin = () => {
 		history.push(AUTH_PATH.LOGIN_AVO, {
 			from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },

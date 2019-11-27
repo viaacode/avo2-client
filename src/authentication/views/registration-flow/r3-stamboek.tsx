@@ -1,7 +1,7 @@
 import { History, Location } from 'history';
-import { get, memoize } from 'lodash-es';
+import { get } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, ReactNode, useReducer, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useState } from 'react';
 import { withRouter } from 'react-router';
 
 import {
@@ -19,30 +19,21 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
+import {
+	StamboekValidationStatuses,
+	ValidateStamboekResponse,
+} from '@viaa/avo2-types/types/stamboek/types';
 
 import { getEnv } from '../../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { AUTH_PATH, INITIAL_USER_STATE } from '../../authentication.const';
-import { Action, UserState } from '../../authentication.types';
+import { AUTH_PATH } from '../../authentication.const';
 
 import './r3-stamboek.scss';
-
-export type StamboekValidationStatuses = 'VALID' | 'ALREADY_IN_USE' | 'INVALID'; // TODO use typings version
-
-// TODO use typings version
-export interface ValidateStamboekResponse {
-	status: StamboekValidationStatuses;
-}
 
 export interface RegisterStamboekProps {
 	history: History;
 	location: Location;
 }
-
-const userReducer = (state: UserState, { type, payload }: Action) => ({
-	...state,
-	[type]: payload,
-});
 
 type validationStatuses =
 	| 'INCOMPLETE'
@@ -55,8 +46,7 @@ type validationStatuses =
 
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
-const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, location }) => {
-	const [userState, userDispatch] = useReducer(userReducer, INITIAL_USER_STATE);
+const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }) => {
 	const [intendsToHaveStamboekNumber, setIntendsToHaveStamboekNumber] = useState<
 		boolean | undefined
 	>(undefined);
@@ -176,7 +166,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 	const setStamboekNumber = async (rawStamboekNumber: string) => {
 		try {
 			setRawStamboekNumber(rawStamboekNumber);
-			const cleanedStamboekNumber = rawStamboekNumber.replace(/[^0-9\-]+/, '');
+			const cleanedStamboekNumber = rawStamboekNumber.replace(/[^0-9-]+/, '');
 			// Check if stamboek number is incomplete
 			// eg: 3256
 			// or: 43457876543-34
@@ -244,6 +234,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 												<span>Je stamboek nummer staat op je lerarenkaart</span>
 											</Spacer>
 											<img
+												alt="Voorbeeld leeraren kaart"
 												className="a-stamboek-image"
 												src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
 											/>
