@@ -36,12 +36,6 @@ Cypress.Commands.add("login", (email, password) => {
 	cy.location('host').should('equal', Cypress.env('CLIENT_BASE_URL').split('/').pop());
 });
 
-Cypress.Commands.add("manualLogin", (redirectPath, email, password) => {
-	cy.visit(`${Cypress.env('CLIENT_BASE_URL')}/aanmelden`);
-	cy.login(email, password);
-	cy.visit(`${Cypress.env('CLIENT_BASE_URL')}/${redirectPath}`);
-});
-
 Cypress.Commands.add("logout", () => {
 	return cy.visit(`${Cypress.env('CLIENT_BASE_URL')}/afmelden`);
 });
