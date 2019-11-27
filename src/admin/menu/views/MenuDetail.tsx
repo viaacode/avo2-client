@@ -4,6 +4,7 @@ import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
@@ -13,7 +14,6 @@ import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
 import { DELETE_MENU_ITEM, GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
-import { MenuSchema } from '../menu.types';
 
 import './MenuDetail.scss';
 
@@ -24,8 +24,8 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [initialMenuItems, setInitialMenuItems] = useState<MenuSchema[]>([]);
-	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
+	const [initialMenuItems, setInitialMenuItems] = useState<Avo.Menu.Menu[]>([]);
+	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
 
 	const [triggerMenuItemDelete] = useMutation(DELETE_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -104,11 +104,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		setIsConfirmModalOpen(true);
 	};
 
-	const reindexMenuitems = (items: MenuSchema[]): MenuSchema[] =>
+	const reindexMenuitems = (items: Avo.Menu.Menu[]): Avo.Menu.Menu[] =>
 		items.map((item, index) => {
 			item.position = index;
 			// Remove properties that we don't need for save
-			delete item.__typename;
+			delete (item as any).__typename;
 
 			return item;
 		});
@@ -140,7 +140,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const renderMenuDetail = (menu: MenuSchema[], refetch: () => void) => {
+	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetch: () => void) => {
 		if (!hasInitialData.current) {
 			hasInitialData.current = true;
 			// Set items position property equal to index in array

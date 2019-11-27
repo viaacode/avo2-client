@@ -1,6 +1,5 @@
-import { LoginActionTypes, LoginMessage, LoginResponse } from './types';
-
 import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
+import { LoginActionTypes, LoginMessage, LoginResponse } from './types';
 
 describe('login > store > actions', () => {
 	it('Should create an action to set the loginState', () => {

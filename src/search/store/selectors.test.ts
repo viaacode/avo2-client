@@ -1,5 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
+import { LoginMessage } from '../../authentication/store/types';
 import { AppState } from '../../store';
 import { selectSearch, selectSearchError, selectSearchLoading, selectSearchResults, } from './selectors';
 import { LoginMessage } from '../../authentication/store/types';
