@@ -5,6 +5,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { ValueType } from 'react-select';
 
 import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
@@ -19,7 +20,6 @@ import { IconPicker } from '../../shared/components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_ICON_OPTIONS, MENU_PATH } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
-import { MenuSchema } from '../menu.types';
 
 interface MenuEditForm {
 	icon: IconName | '';
@@ -39,8 +39,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
 	const [menuForm, setMenuForm] = useState<MenuEditForm>(initialMenuForm());
 	const [pageType, setPageType] = useState<'edit' | 'create' | undefined>();
-	const [initialMenuItem, setInitialMenuItem] = useState<MenuSchema | null>(null);
-	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
+	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
+	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -50,7 +50,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	useEffect(() => {
 		const menuId = match.params.menu;
 
-		fetchMenuItemsByPlacement(menuId).then((menuItemsByPlacement: MenuSchema[] | null) => {
+		fetchMenuItemsByPlacement(menuId).then((menuItemsByPlacement: Avo.Menu.Menu[] | null) => {
 			if (menuItemsByPlacement && menuItemsByPlacement.length) {
 				setMenuItems(menuItemsByPlacement);
 			}
@@ -63,14 +63,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 		if (menuItemId) {
 			setIsLoading(true);
-			fetchMenuItemById(Number(menuItemId)).then((menuItem: MenuSchema | null) => {
+			fetchMenuItemById(Number(menuItemId)).then((menuItem: Avo.Menu.Menu | null) => {
 				if (menuItem) {
 					// Remove unnecessary props for saving
-					delete menuItem.__typename;
+					delete (menuItem as any).__typename;
 
 					setInitialMenuItem(menuItem);
 					setMenuForm({
-						icon: menuItem.icon_name,
+						icon: menuItem.icon_name as IconName,
 						label: menuItem.label,
 						link: menuItem.link_target || '',
 					});
@@ -110,7 +110,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 		// Create
 		const { id, menu } = match.params;
-		const menuItem: Partial<MenuSchema> = {
+		const menuItem: Partial<Avo.Menu.Menu> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			link_target: menuForm.link,
