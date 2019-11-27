@@ -27,7 +27,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
-import { FragmentDetail } from '../../collection/components';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
