@@ -271,12 +271,12 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										<Grid tag="tbody">
 											<Column size="2-5" tag="tr">
 												<th scope="row">Publicatiedatum</th>
-												<td>{reorderDate(itemMetaData.publish_at || null, '/')}</td>
+												<td>{reorderDate(itemMetaData.issued || null, '/')}</td>
 											</Column>
 											<Column size="2-5" tag="tr">
 												<th scope="row">Toegevoegd op</th>
 												{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
-												<td>{reorderDate(itemMetaData.issued || null, '/')}</td>
+												<td>{reorderDate(itemMetaData.published_at || null, '/')}</td>
 											</Column>
 										</Grid>
 										<Grid tag="tbody">

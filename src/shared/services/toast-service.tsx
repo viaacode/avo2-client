@@ -5,7 +5,7 @@ import { toast, ToastOptions } from 'react-toastify';
 import { Alert, Spacer } from '@viaa/avo2-components';
 import { AlertProps } from '@viaa/avo2-components/dist/components/Alert/Alert';
 
-enum ToastType {
+export enum ToastType {
 	DANGER = 'danger',
 	INFO = 'info',
 	SPINNER = 'spinner',
