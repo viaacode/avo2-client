@@ -91,10 +91,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		Promise.all(promises)
 			.then(() => {
 				refetch();
+				setIsSaving(false);
 				toastService('De navigatie items zijn succesvol opgeslagen', TOAST_TYPE.SUCCESS);
 			})
 			.catch(err => {
 				console.error(err);
+				setIsSaving(false);
 				toastService('Het opslaan van de navigatie items is mislukt', TOAST_TYPE.DANGER);
 			});
 	};

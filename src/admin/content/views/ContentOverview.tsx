@@ -17,6 +17,7 @@ interface ContentOverviewProps extends RouteComponentProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) => {
 	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
+
 	// Render
 	const renderTableCell = (
 		rowData: Partial<Avo.Content.Content>,
