@@ -18,6 +18,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				external_id
 				item_meta {
 					id
+					external_id
 					duration
 					title
 					description

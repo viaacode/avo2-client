@@ -3,19 +3,20 @@ import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 
-import { ADMIN_PATH, MENU_OVERVIEW_TABLE_COLS } from '../../admin.const';
-import { GET_MENUS } from '../../admin.gql';
-import { MenuItem, MenuOverviewTableCols } from '../../admin.types';
-import { AdminLayout } from '../../layouts';
+import { AdminLayout } from '../../shared/layouts';
+import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
+import { GET_MENUS } from '../menu.gql';
+import { MenuOverviewTableCols } from '../menu.types';
 
 interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
-	const renderTableCell = (rowData: Partial<MenuItem>, columnId: MenuOverviewTableCols) => {
+	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
 		switch (columnId) {
 			case 'placement':
 				return startCase(rowData.placement);
@@ -24,14 +25,14 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 					<ButtonToolbar>
 						<Button
 							icon="list"
-							onClick={() => navigate(history, ADMIN_PATH.MENU_DETAIL, { menu: rowData.placement })}
+							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu: rowData.placement })}
 							size="small"
 							title="Bekijk alle navigatie items"
 							type="tertiary"
 						/>
 						<Button
 							icon="plus"
-							onClick={() => navigate(history, ADMIN_PATH.MENU_CREATE, { menu: rowData.placement })}
+							onClick={() => navigate(history, MENU_PATH.MENU_CREATE, { menu: rowData.placement })}
 							size="small"
 							title="Voeg een navigatie item toe"
 							type="tertiary"
@@ -43,12 +44,12 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 		}
 	};
 
-	const renderMenuOverview = (data: Partial<MenuItem>[]) => {
+	const renderMenuOverview = (data: Partial<Avo.Menu.Menu>[]) => {
 		return (
 			<Table
 				columns={MENU_OVERVIEW_TABLE_COLS}
 				data={data}
-				renderCell={(rowData: Partial<MenuItem>, columnId: string) =>
+				renderCell={(rowData: Partial<Avo.Menu.Menu>, columnId: string) =>
 					renderTableCell(rowData, columnId as MenuOverviewTableCols)
 				}
 				rowKey="id"

@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-import { NavigationItem } from '../../../shared/types';
+import { NavigationItem } from '../../../../shared/types';
 
 import './Sidebar.scss';
 
@@ -20,7 +20,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ headerLink, navItems }) => (
 		<div className="o-sidebar__content">
 			<ul className="o-sidebar__nav c-bordered-list">
 				{navItems.map((navItem, index) => (
-					<li key={`${navItem.location}-${index}`}>
+					<li key={`${navItem.location}-${index}`} className="o-sidebar__nav-item-wrapper">
 						<NavLink
 							activeClassName="o-sidebar__nav-item--active"
 							className="o-sidebar__nav-item"

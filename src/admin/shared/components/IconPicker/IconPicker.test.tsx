@@ -1,7 +1,7 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
-import { MENU_ICON_OPTIONS } from '../../admin.const';
+import { MENU_ICON_OPTIONS } from '../../../menu/menu.const';
 import IconPicker from './IconPicker';
 
 const iconPickerProps = {

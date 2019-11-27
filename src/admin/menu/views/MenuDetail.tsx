@@ -4,20 +4,16 @@ import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
-import { ADMIN_PATH } from '../../admin.const';
-import {
-	DELETE_MENU_ITEM,
-	GET_MENU_ITEMS_BY_PLACEMENT,
-	UPDATE_MENU_ITEM_BY_ID,
-} from '../../admin.gql';
-import { MenuItem } from '../../admin.types';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
+import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { MENU_PATH } from '../menu.const';
+import { DELETE_MENU_ITEM, GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 
 import './MenuDetail.scss';
 
@@ -28,8 +24,8 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [initialMenuItems, setInitialMenuItems] = useState<MenuItem[]>([]);
-	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+	const [initialMenuItems, setInitialMenuItems] = useState<Avo.Menu.Menu[]>([]);
+	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
 
 	const [triggerMenuItemDelete] = useMutation(DELETE_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -108,11 +104,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		setIsConfirmModalOpen(true);
 	};
 
-	const reindexMenuitems = (items: MenuItem[]): MenuItem[] =>
+	const reindexMenuitems = (items: Avo.Menu.Menu[]): Avo.Menu.Menu[] =>
 		items.map((item, index) => {
 			item.position = index;
 			// Remove properties that we don't need for save
-			delete item.__typename;
+			delete (item as any).__typename;
 
 			return item;
 		});
@@ -144,7 +140,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const renderMenuDetail = (menu: MenuItem[], refetch: () => void) => {
+	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetch: () => void) => {
 		if (!hasInitialData.current) {
 			hasInitialData.current = true;
 			// Set items position property equal to index in array
@@ -160,7 +156,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		return (
 			<AdminLayout
 				className="c-menu-detail"
-				navigateBack={() => handleNavigate(ADMIN_PATH.MENU)}
+				navigateBack={() => handleNavigate(MENU_PATH.MENU)}
 				pageTitle={startCase(menuId)}
 			>
 				<AdminLayoutBody>
@@ -183,7 +179,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 											<Button
 												icon="edit-2"
 												onClick={() =>
-													handleNavigate(ADMIN_PATH.MENU_EDIT, {
+													handleNavigate(MENU_PATH.MENU_EDIT, {
 														menu: menuId,
 														id: String(item.id),
 													})
@@ -207,7 +203,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 								icon="plus"
 								label="Voeg een item toe"
 								onClick={() =>
-									handleNavigate(ADMIN_PATH.MENU_CREATE, {
+									handleNavigate(MENU_PATH.MENU_CREATE, {
 										menu: menuId,
 									})
 								}
@@ -227,11 +223,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 						label="Opslaan"
 						onClick={() => handleSave(refetch)}
 					/>
-					<Button
-						label="Annuleer"
-						onClick={() => handleNavigate(ADMIN_PATH.MENU)}
-						type="tertiary"
-					/>
+					<Button label="Annuleer" onClick={() => handleNavigate(MENU_PATH.MENU)} type="tertiary" />
 				</AdminLayoutActions>
 			</AdminLayout>
 		);

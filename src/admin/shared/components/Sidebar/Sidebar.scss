@@ -1,4 +1,4 @@
-@import '../../../styles/settings/colors';
+@import '../../../../styles/settings/colors';
 
 /* ==========================================================================
    Component: Sidebar
@@ -28,6 +28,10 @@
 }
 
 .o-sidebar__nav {
+
+	.o-sidebar__nav-item-wrapper {
+		border-color: rgba($color-gray-50, 0.4);
+	}
 
 	.o-sidebar__nav-item {
 		padding: 1.6rem 3.2rem;

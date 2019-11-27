@@ -27,7 +27,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { LoginResponse } from '../../authentication/store/types';
-import { FragmentDetail } from '../../collection/components';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
@@ -36,6 +35,7 @@ import { ApolloCacheManager, dataService } from '../../shared/services/data-serv
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import FragmentListDetail from '../../collection/components/fragment/FragmentListDetail';
 import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
@@ -291,9 +291,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		switch (content_label) {
 			case 'COLLECTIE':
 				return (
-					<FragmentDetail
+					<FragmentListDetail
 						collectionFragments={
 							(assigmentContent as Avo.Collection.Collection).collection_fragments
+						}
+						showDescriptionNextToVideo={
+							assignment.content_layout === AssignmentLayout.PlayerAndText
 						}
 					/>
 				);
