@@ -23,9 +23,9 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [activeRow, setActiveRow] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [initialMenuItems, setInitialMenuItems] = useState<MenuSchema[]>([]);
 	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const [triggerMenuItemDelete] = useMutation(DELETE_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);

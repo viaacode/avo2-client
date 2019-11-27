@@ -4,7 +4,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { ValueType } from 'react-select';
 
-import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
+import { Button, Flex, Form, FormGroup, Spinner, TextInput } from '@viaa/avo2-components';
 
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
@@ -17,30 +17,20 @@ import { ReactSelectOption } from '../../../shared/types';
 
 import { IconPicker } from '../../shared/components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
-import { MENU_ICON_OPTIONS, MENU_PATH } from '../menu.const';
+import { INITIAL_MENU_FORM, MENU_ICON_OPTIONS, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
-import { MenuSchema } from '../menu.types';
+import { MenuEditForm, MenuEditPageType, MenuEditParams, MenuSchema } from '../menu.types';
 
-interface MenuEditForm {
-	icon: IconName | '';
-	label: string;
-	link: string;
-}
-
-const initialMenuForm = (): MenuEditForm => ({
-	icon: '',
-	label: '',
-	link: '',
-});
-
-interface MenuEditProps extends RouteComponentProps<{ menu: string; id?: string }> {}
+interface MenuEditProps extends RouteComponentProps<MenuEditParams> {}
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
-	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
-	const [menuForm, setMenuForm] = useState<MenuEditForm>(initialMenuForm());
-	const [pageType, setPageType] = useState<'edit' | 'create' | undefined>();
+	const { menu, id } = match.params;
+
+	const [menuForm, setMenuForm] = useState<MenuEditForm>(INITIAL_MENU_FORM);
+	const [pageType, setPageType] = useState<MenuEditPageType>(id ? 'edit' : 'create');
 	const [initialMenuItem, setInitialMenuItem] = useState<MenuSchema | null>(null);
 	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
+	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -48,22 +38,20 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
 
 	useEffect(() => {
-		const menuId = match.params.menu;
-
-		fetchMenuItemsByPlacement(menuId).then((menuItemsByPlacement: MenuSchema[] | null) => {
-			if (menuItemsByPlacement && menuItemsByPlacement.length) {
-				setMenuItems(menuItemsByPlacement);
-			}
-		});
-	}, [match.params.menu]);
+		if (menu) {
+			fetchMenuItemsByPlacement(menu).then((menuItemsByPosition: MenuSchema[] | null) => {
+				if (menuItemsByPosition && menuItemsByPosition.length) {
+					setMenuItems(menuItemsByPosition);
+				}
+			});
+		}
+	}, [menu]);
 
 	useEffect(() => {
-		const menuItemId = match.params.id;
-		setPageType(menuItemId ? 'edit' : 'create');
-
-		if (menuItemId) {
+		if (id) {
+			setPageType('edit');
 			setIsLoading(true);
-			fetchMenuItemById(Number(menuItemId)).then((menuItem: MenuSchema | null) => {
+			fetchMenuItemById(Number(id)).then((menuItem: MenuSchema | null) => {
 				if (menuItem) {
 					// Remove unnecessary props for saving
 					delete menuItem.__typename;
@@ -78,15 +66,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				}
 			});
 		} else {
+			setPageType('create');
 			setIsLoading(false);
 		}
-	}, [match.params.id]);
+	}, [id]);
 
 	// Computed
-	const menuId = match.params.menu;
-	const pageTitle = `${startCase(menuId)}: item ${
-		pageType === 'create' ? 'toevoegen' : 'aanpassen'
-	}`;
+	const pageTitle = `${startCase(menu)}: item ${PAGE_TYPES_LANG[pageType]}`;
 
 	// Methods
 	const handleChange = (key: keyof MenuEditForm, value: any): void => {
@@ -109,7 +95,6 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		}
 
 		// Create
-		const { id, menu } = match.params;
 		const menuItem: Partial<MenuSchema> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
@@ -128,8 +113,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleSucces('Het navigatie item is succesvol aangemaakt'))
-				.catch(err => handleError('Het aanmaken van het navigatie item is mislukt', err));
+				.then(() => handleResponse('Het navigatie item is succesvol aangemaakt'))
+				.catch(err => handleResponse('Het aanmaken van het navigatie item is mislukt', err));
 		} else {
 			triggerMenuItemUpdate({
 				variables: {
@@ -142,22 +127,20 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleSucces('Het navigatie item is succesvol geüpdatet'))
-				.catch(err => handleError('Het updaten van het navigatie item is mislukt', err));
+				.then(() => handleResponse('Het navigatie item is succesvol geüpdatet'))
+				.catch(err => handleResponse('Het updaten van het navigatie item is mislukt', err));
 		}
 	};
 
-	const handleError = (message: string, err: any): void => {
-		console.error(err);
+	const handleResponse = (message: string, err?: any): void => {
 		setIsSaving(false);
-		toastService(message, TOAST_TYPE.DANGER);
-	};
+		toastService(message, TOAST_TYPE[err ? 'DANGER' : 'SUCCESS']);
 
-	const handleSucces = (message: string): void => {
-		const { menu } = match.params;
+		if (err) {
+			console.error(err);
+			return;
+		}
 
-		setIsSaving(false);
-		toastService(message, TOAST_TYPE.SUCCESS);
 		navigate(history, MENU_PATH.MENU_DETAIL, { menu });
 	};
 
@@ -167,6 +150,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		if (!menuForm.label) {
 			errors.label = 'Label is verplicht';
 		}
+
 		if (!menuForm.link) {
 			errors.link = 'Link is verplicht';
 		}
@@ -176,9 +160,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		return Object.keys(errors).length === 0;
 	};
 
-	const navigateBack = () => {
-		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuId });
-	};
+	const navigateBack = () => navigate(history, MENU_PATH.MENU_DETAIL, { menu });
 
 	// Render
 	return isLoading ? (

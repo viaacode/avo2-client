@@ -18,3 +18,16 @@ export interface MenuSchema {
 	updated_at: string;
 	__typename: string;
 }
+
+export interface MenuEditParams {
+	menu: string;
+	id?: string;
+}
+
+export type MenuEditPageType = 'edit' | 'create';
+
+export interface MenuEditForm {
+	icon: IconName | '';
+	label: string;
+	link: string;
+}
