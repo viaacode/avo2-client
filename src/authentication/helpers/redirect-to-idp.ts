@@ -1,6 +1,7 @@
 import queryString from 'query-string';
 
 import { getEnv } from '../../shared/helpers';
+
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 
 export function redirectToLoginPage(returnToUrl: string) {
