@@ -28,7 +28,7 @@ import 'cypress-wait-until';
 
 Cypress.Commands.add("login", (email, password) => {
 	cy.location('pathname').should('equal', '/registreer-of-login');
-	cy.get('.login-with-archief').click();
+	cy.get('.c-login-with-archief').click();
 	cy.location('pathname').should('equal', '/module.php/core/loginuserpass.php');
 	cy.get('#emailId').type(email, { timeout: 3000 });
 	cy.get('#passwordId').type(password, { log: false });
