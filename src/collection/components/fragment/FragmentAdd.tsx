@@ -26,6 +26,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 		collection_id: id,
 	};
 
+	// Listeners
 	const generateNewFragments = (): Avo.Collection.Fragment[] => {
 		const newFragments = orderBy([...collection_fragments], 'position', 'asc');
 
@@ -44,6 +45,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 		});
 	};
 
+	// Render methods
 	const renderDivider = () => (
 		<ToolbarItem grow>
 			<div className="c-hr" />
