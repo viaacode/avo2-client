@@ -5,9 +5,8 @@ import { get } from 'lodash-es';
 import { SEARCH_PATH } from '../../search/search.const';
 import { getEnv } from '../../shared/helpers';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { AUTH_PATH } from '../authentication.const';
+import { AUTH_PATH, SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
-import { getLogoutPath } from './get-profile-info';
 
 /**
  *
@@ -74,12 +73,7 @@ export function redirectToServerLoginPage(location: Location) {
 export function redirectToServerLogoutPage(location: Location) {
 	// Url to return to after logout is completed
 	const returnToUrl = `${getBaseUrl(location)}/`;
-	const logoutPath = getLogoutPath();
-	if (!logoutPath) {
-		toastService('Het uitloggen is mislukt', TOAST_TYPE.DANGER);
-		return;
-	}
-	window.location.href = `${getEnv('PROXY_URL')}/${logoutPath}?${queryString.stringify({
+	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
 		returnToUrl,
 	})}`;
 }

@@ -18,3 +18,5 @@ export const AUTH_PATH = Object.freeze({
 	STAMBOEK: `/${ROUTE_PARTS.stamboek}`,
 	MANUAL_ACCESS_REQUEST: `/${ROUTE_PARTS.manualAccessRequest}`,
 });
+
+export const SERVER_LOGOUT_PAGE = 'auth/logout';
