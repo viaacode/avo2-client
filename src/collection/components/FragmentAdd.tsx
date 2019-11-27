@@ -4,6 +4,8 @@ import React, { FunctionComponent } from 'react';
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+
 import { ContentBlockType } from '../collection.types';
 
 const COLLECTION_CONTENT_BLOCKS = ['RichText'];
@@ -41,7 +43,9 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 		collection_id: collection.id,
 	};
 
-	const addFragment = (index: number, contentBlockType: ContentBlockType) => {
+	const generateNewFragments = (
+		contentBlockType: ContentBlockType
+	): Avo.Collection.Fragment[] | null => {
 		const newFragments = orderBy([...collection.collection_fragments], 'position', 'asc');
 
 		switch (contentBlockType) {
@@ -49,16 +53,25 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 				newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
 				break;
 			default:
-				// TODO: Could not add fragment because unknown type.
-				break;
+				toastService(`Het toevoegen van het fragment is mislukt`, TOAST_TYPE.DANGER);
+				return null;
 		}
 
-		const positionedFragments = reorderFragments(newFragments);
+		return reorderFragments(newFragments);
+	};
+
+	const handleAddFragmentClick = () => {
+		const generatedFragments = generateNewFragments(ContentBlockType.RichText);
+
+		if (!generatedFragments) {
+			// Failure was handled in generate function
+			return;
+		}
 
 		updateCollection({
 			...collection,
-			collection_fragments: positionedFragments,
-			collection_fragment_ids: positionedFragments.map(fragment => fragment.id),
+			collection_fragments: generatedFragments,
+			collection_fragment_ids: generatedFragments.map(fragment => fragment.id),
 		});
 	};
 
@@ -73,7 +86,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 						<Button
 							type="secondary"
 							icon="add"
-							onClick={() => addFragment(index, ContentBlockType.RichText)}
+							onClick={handleAddFragmentClick}
 							ariaLabel="Sectie toevoegen"
 						/>
 					)}
