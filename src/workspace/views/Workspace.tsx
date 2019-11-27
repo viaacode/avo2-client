@@ -54,43 +54,40 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 	};
 
 	// Make map for available tab views
-	const getTabs = (counts: { [tabId: string]: number }): TabViewMap => {
-		return {
-			[COLLECTIONS_ID]: {
-				component: (refetchCounts: () => void) => (
-					<CollectionOverview
-						numberOfCollections={counts[COLLECTIONS_ID]}
-						refetchCount={refetchCounts}
-					/>
-				),
-				// TODO: Vergeet deze filter niet terug te plaatsen.
-				// filter: {
-				// 	label: 'Auteur',
-				// 	options: [
-				// 		{ id: 'all', label: 'Alles' },
-				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
-				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
-				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
-				// 	],
-				// },
+	const getTabs = (counts: { [tabId: string]: number }): TabViewMap => ({
+		[COLLECTIONS_ID]: {
+			component: (refetchCounts: () => void) => (
+				<CollectionOverview
+					numberOfCollections={counts[COLLECTIONS_ID]}
+					refetchCount={refetchCounts}
+				/>
+			),
+			// TODO: DISABLED_FEATURE filter
+			// filter: {
+			// 	label: 'Auteur',
+			// 	options: [
+			// 		{ id: 'all', label: 'Alles' },
+			// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
+			// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
+			// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
+			// 	],
+			// },
+		},
+		[FOLDERS_ID]: {
+			component: () => <span>TODO Mappen</span>,
+			filter: {
+				label: 'Filter op label',
+				options: [{ id: 'all', label: 'Alle' }],
 			},
-			[FOLDERS_ID]: {
-				component: () => <span>TODO Mappen</span>,
-				filter: {
-					label: 'Filter op label',
-					options: [{ id: 'all', label: 'Alle' }],
-				},
-			},
-			[ASSIGNMENTS_ID]: {
-				component: (refetchCounts: () => void) => (
-					<AssignmentOverview refetchCount={refetchCounts} />
-				),
-			},
-			[BOOKMARKS_ID]: {
-				component: () => <Bookmarks />,
-			},
-		};
-	};
+		},
+		[ASSIGNMENTS_ID]: {
+			component: (refetchCounts: () => void) => <AssignmentOverview refetchCount={refetchCounts} />,
+		},
+		[BOOKMARKS_ID]: {
+			component: () => <Bookmarks />,
+		},
+	});
+
 	// Get active tab based on above map with tabId
 	const getActiveTab = (counts: { [tabId: string]: number }) => getTabs(counts)[tabId];
 	const getNavTabs = (counts: { [tabId: string]: number }) => {
@@ -100,6 +97,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 			label: counts[t.id] ? `${t.label} (${counts[t.id]})` : t.label,
 		}));
 	};
+
+	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
 	const renderFilter = (counts: { [tabId: string]: number }) => {
 		const filter = getActiveTab(counts).filter;
@@ -126,12 +125,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 								</div>
 							</DropdownButton>
 							<DropdownContent>
-								<MenuContent
-									menuItems={filter.options}
-									onClick={filter => {
-										setActiveFilter(filter);
-									}}
-								/>
+								<MenuContent menuItems={filter.options} onClick={handleMenuContentClick} />
 							</DropdownContent>
 						</ControlledDropdown>
 					</FormGroup>
