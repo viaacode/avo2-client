@@ -6,6 +6,8 @@ import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
+import { IconName } from '@viaa/avo2-components';
+
 import Admin from './admin/Admin';
 import PupilOrTeacherDropdown from './authentication/components/PupilOrTeacherDropdown';
 import { selectLogin } from './authentication/store/selectors';
@@ -26,18 +28,25 @@ interface AppProps extends RouteComponentProps {
 
 const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
 	const PRIMARY_ITEMS: NavigationItem[] = [
-		{ label: 'Home', location: APP_PATH.HOME },
-		{
-			label: 'Zoeken',
-			location: APP_PATH.SEARCH,
-			icon: 'search',
-		},
-		{ label: 'Ontdek', location: APP_PATH.DISCOVER },
-		{
-			label: 'Mijn Werkruimte',
-			location: APP_PATH.WORKSPACE,
-			icon: 'briefcase',
-		},
+		...(!loginState || loginState.message !== LoginMessage.LOGGED_IN
+			? [
+					{ label: 'Voor leerkrachten', location: APP_PATH.FOR_TEACHERS },
+					{ label: 'Voor leerlingen', location: APP_PATH.FOR_PUPILS },
+			  ]
+			: [
+					{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME },
+					{
+						label: 'Zoeken',
+						location: APP_PATH.SEARCH,
+						icon: 'search' as IconName,
+					},
+					{ label: 'Ontdek', location: APP_PATH.DISCOVER },
+					{
+						label: 'Mijn Werkruimte',
+						location: APP_PATH.WORKSPACE,
+						icon: 'briefcase' as IconName,
+					},
+			  ]),
 		{ label: 'Projecten', location: APP_PATH.PROJECTS },
 		{ label: 'Nieuws', location: APP_PATH.NEWS },
 	];

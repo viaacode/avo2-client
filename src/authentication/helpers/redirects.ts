@@ -1,11 +1,12 @@
 import { History, Location } from 'history';
+import { get } from 'lodash-es';
 import queryString from 'query-string';
 
-import { get } from 'lodash-es';
+import { APP_PATH } from '../../constants';
 import { SEARCH_PATH } from '../../search/search.const';
 import { getEnv } from '../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { AUTH_PATH, SERVER_LOGOUT_PAGE } from '../authentication.const';
+
+import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
 
 /**
@@ -13,25 +14,8 @@ import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stambo
  * Client redirect functions
  *
  **/
-export function redirectToClientLogin(history: History, location: Location) {
-	history.push(AUTH_PATH.LOGIN_AVO, {
-		from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
-	});
-}
-
-export function redirectToClientRegister(history: History, location: Location) {
-	history.push(AUTH_PATH.PUPIL_OR_TEACHER, {
-		from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
-	});
-}
-
 export function redirectToClientPage(path: string, history: History) {
 	history.push(path);
-}
-
-export function redirectToClientManualAccessRequest(history: History) {
-	toastService('Deze functionaliteit is nog niet beschikbaar', TOAST_TYPE.INFO);
-	// history.push(`/${RouteParts.ManualAccessRequest}`);
 }
 
 /**
@@ -51,7 +35,7 @@ export function redirectToServerSmartschoolLogin(location: Location) {
 
 export function redirectToServerArchiefRegistrationIdp(location: Location, stamboekNumber: string) {
 	const returnToUrl =
-		getBaseUrl(location) + get(location, 'state.from.pathname', AUTH_PATH.LOGIN_AVO);
+		getBaseUrl(location) + get(location, 'state.from.pathname', APP_PATH.LOGIN_AVO);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify({
 		returnToUrl,
 		stamboekNumber,

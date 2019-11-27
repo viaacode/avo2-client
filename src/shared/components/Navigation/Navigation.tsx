@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
 import {
@@ -34,6 +34,16 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 }) => {
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [label: string]: boolean }>({});
 
+	useEffect(() => {
+		// Init areDropdownsOpen for all navigation items to false
+		// otherwise for some reason the dropdown starts in the open state
+		const openStates = { ...areDropdownsOpen };
+		setDropdownsOpen(openStates);
+		primaryItems.forEach(item => (openStates[item.label] = false));
+		secondaryItems.forEach(item => (openStates[item.label] = false));
+		setDropdownsOpen(openStates);
+	}, []);
+
 	const setDropdownOpen = (label: string, isOpen: boolean): void => {
 		const openStates = { ...areDropdownsOpen };
 		openStates[label] = isOpen;
@@ -67,7 +77,11 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 								{item.label}
 							</div>
 						</DropdownButton>
-						<DropdownContent>{item.component}</DropdownContent>
+						<DropdownContent>
+							{React.cloneElement(item.component, {
+								closeDropdown: () => setDropdownOpen(item.label, false),
+							})}
+						</DropdownContent>
 					</Dropdown>
 				)}
 			</li>

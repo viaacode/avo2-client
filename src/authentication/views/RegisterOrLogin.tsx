@@ -13,11 +13,9 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
-import {
-	redirectToClientLogin,
-	redirectToClientRegister,
-	redirectToServerSmartschoolLogin,
-} from '../helpers/redirects';
+import { APP_PATH } from '../../constants';
+
+import { redirectToClientPage, redirectToServerSmartschoolLogin } from '../helpers/redirects';
 import './RegisterOrLogin.scss';
 
 export interface RegisterOrLoginProps extends RouteComponentProps {}
@@ -45,7 +43,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 										<Button
 											label="Account aanmaken"
 											type="primary"
-											onClick={() => redirectToClientRegister(history, location)}
+											onClick={() => redirectToClientPage(APP_PATH.FOR_TEACHERS, history)}
 										/>
 									</FlexItem>
 								</Flex>
@@ -63,7 +61,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												<Button
 													label="Inloggen met e-mailadres"
 													type="primary"
-													onClick={() => redirectToClientLogin(history, location)}
+													onClick={() => redirectToClientPage(APP_PATH.LOGIN_AVO, history)}
 												/>
 											</Spacer>
 										</Spacer>

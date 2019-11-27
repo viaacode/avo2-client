@@ -14,9 +14,8 @@ export const AUTH_PATH = Object.freeze({
 	LOGIN_AVO: `/${ROUTE_PARTS.loginAvo}`,
 	LOGOUT: `/${ROUTE_PARTS.logout}`,
 	REGISTER_OR_LOGIN: `/${ROUTE_PARTS.registerOrLogin}`,
-	PUPIL_OR_TEACHER: `/${ROUTE_PARTS.pupilOrTeacher}`,
-	STAMBOEK: `/${ROUTE_PARTS.stamboek}`,
 	MANUAL_ACCESS_REQUEST: `/${ROUTE_PARTS.manualAccessRequest}`,
+	STAMBOEK: `/${ROUTE_PARTS.stamboek}`,
 });
 
 export const SERVER_LOGOUT_PAGE = 'auth/logout';

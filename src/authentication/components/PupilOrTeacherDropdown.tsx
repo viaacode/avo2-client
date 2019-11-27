@@ -3,13 +3,17 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 
-import { PUPILS_PATH } from '../../pupils/pupils.const';
-import { TEACHERS_PATH } from '../../teachers/teachers.const';
+import { APP_PATH } from '../../constants';
 import { redirectToClientPage } from '../helpers/redirects';
 
-export interface PupilOrTeacherDropdownProps extends RouteComponentProps {}
+export interface PupilOrTeacherDropdownProps extends RouteComponentProps {
+	closeDropdown?: () => void;
+}
 
-const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = ({ history }) => {
+const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = ({
+	history,
+	closeDropdown = () => {},
+}) => {
 	return (
 		<Container className="c-register-pupil-or-teacher-dropdown" mode="horizontal">
 			<Container mode="vertical">
@@ -20,7 +24,10 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 						block
 						type="primary"
 						label="Maak je gratis account aan"
-						onClick={() => redirectToClientPage(TEACHERS_PATH.FOR_TEACHERS, history)}
+						onClick={() => {
+							closeDropdown();
+							redirectToClientPage(APP_PATH.FOR_TEACHERS, history);
+						}}
 					/>
 				</Spacer>
 				<Spacer margin="top-large">
@@ -31,7 +38,10 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 							block
 							type="primary"
 							label="Toegang voor leerlingen"
-							onClick={() => redirectToClientPage(PUPILS_PATH.FOR_PUPILS, history)}
+							onClick={() => {
+								closeDropdown();
+								redirectToClientPage(APP_PATH.FOR_PUPILS, history);
+							}}
 						/>
 					</Spacer>
 				</Spacer>
