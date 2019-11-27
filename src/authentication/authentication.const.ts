@@ -6,3 +6,5 @@ export const AUTH_PATH = Object.freeze({
 	REGISTER: `/${ROUTE_PARTS.register}`,
 	REGISTER_OR_LOGIN: `/${ROUTE_PARTS.registerOrLogin}`,
 });
+
+export const SERVER_LOGOUT_PAGE = 'auth/logout';
