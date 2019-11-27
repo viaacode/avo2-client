@@ -7,6 +7,7 @@ export const ROUTE_PARTS = Object.freeze({
 	bookmarks: 'bladwijzers',
 	collection: 'collectie',
 	collections: 'collecties',
+	content: 'content',
 	create: 'maak',
 	detail: 'detail',
 	discover: 'ontdek',

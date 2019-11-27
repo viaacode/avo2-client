@@ -36,6 +36,7 @@ import { ApolloCacheManager, dataService } from '../../shared/services/data-serv
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import FragmentListDetail from '../../collection/components/fragment/FragmentListDetail';
 import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
@@ -291,9 +292,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		switch (content_label) {
 			case 'COLLECTIE':
 				return (
-					<FragmentDetail
+					<FragmentListDetail
 						collectionFragments={
 							(assigmentContent as Avo.Collection.Collection).collection_fragments
+						}
+						showDescriptionNextToVideo={
+							assignment.content_layout === AssignmentLayout.PlayerAndText
 						}
 					/>
 				);

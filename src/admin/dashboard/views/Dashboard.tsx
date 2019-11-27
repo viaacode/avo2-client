@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AdminLayout, AdminLayoutBody } from '../layouts';
+import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
 const Dashboard = () => (
 	<AdminLayout pageTitle="Dashboard">

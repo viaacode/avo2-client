@@ -47,11 +47,10 @@ import { EventObjectType, trackEvents } from '../../shared/services/event-loggin
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
-
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { ContentTypeString, DutchContentType, toEnglishContentType } from '../collection.types';
-import { FragmentDetail, ShareCollectionModal } from '../components';
+import { FragmentListDetail, ShareCollectionModal } from '../components';
 
 import './CollectionDetail.scss';
 
@@ -272,7 +271,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<FragmentDetail collectionFragments={collection_fragments} />
+						<FragmentListDetail
+							collectionFragments={collection_fragments}
+							showDescriptionNextToVideo
+						/>
 					</Container>
 				</Container>
 				<Container mode="vertical">
