@@ -3,38 +3,38 @@
 .c-register-login-view__modal {
 	background-image: url('/images/login-bg.jpg');
 	background-size: cover;
+}
 
-	.c-button.c-button--primary{
-		&.c-button-klascement,
-		&.c-button-smartschool {
-			height: 3.6rem;
-			padding: 0 1.6rem 0 1rem;
+.c-button.c-button--primary{
+	&.c-button-klascement,
+	&.c-button-smartschool {
+		height: 3.6rem;
+		padding: 0 1.6rem 0 1rem;
 
-			.c-button__content {
-				justify-content: start;
-			}
-
-			.c-button__icon {
-				width: 2.8rem;
-				height: 2.8rem;
-			}
-
-			.c-button__label {
-				padding-left: 1.2rem;
-			}
+		.c-button__content {
+			justify-content: start;
 		}
 
-		&.c-button-smartschool {
-			background-color: $color-smartschool;
-			border-color: $color-smartschool;
+		.c-button__icon {
+			width: 2.8rem;
+			height: 2.8rem;
+		}
 
-			.c-button__label {
-				border-left: 1px solid darken($color-smartschool, 8%);
-			}
+		.c-button__label {
+			padding-left: 1.2rem;
+		}
+	}
 
-			&:hover {
-				opacity: 0.9;
-			}
+	&.c-button-smartschool {
+		background-color: $color-smartschool;
+		border-color: $color-smartschool;
+
+		.c-button__label {
+			border-left: 1px solid darken($color-smartschool, 8%);
+		}
+
+		&:hover {
+			opacity: 0.9;
 		}
 	}
 }
