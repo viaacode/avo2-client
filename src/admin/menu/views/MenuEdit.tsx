@@ -15,11 +15,11 @@ import {
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types';
 
-import { ADMIN_PATH, MENU_ICON_OPTIONS } from '../../admin.const';
-import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../../admin.gql';
-import { MenuItem } from '../../admin.types';
-import { IconPicker } from '../../components';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../layouts';
+import { IconPicker } from '../../shared/components';
+import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { MENU_ICON_OPTIONS, MENU_PATH } from '../menu.const';
+import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
+import { MenuSchema } from '../menu.types';
 
 interface MenuEditForm {
 	icon: IconName | '';
@@ -39,8 +39,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
 	const [menuForm, setMenuForm] = useState<MenuEditForm>(initialMenuForm());
 	const [pageType, setPageType] = useState<'edit' | 'create' | undefined>();
-	const [initialMenuItem, setInitialMenuItem] = useState<MenuItem | null>(null);
-	const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+	const [initialMenuItem, setInitialMenuItem] = useState<MenuSchema | null>(null);
+	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -50,7 +50,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	useEffect(() => {
 		const menuId = match.params.menu;
 
-		fetchMenuItemsByPlacement(menuId).then((menuItemsByPlacement: MenuItem[] | null) => {
+		fetchMenuItemsByPlacement(menuId).then((menuItemsByPlacement: MenuSchema[] | null) => {
 			if (menuItemsByPlacement && menuItemsByPlacement.length) {
 				setMenuItems(menuItemsByPlacement);
 			}
@@ -63,7 +63,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 		if (menuItemId) {
 			setIsLoading(true);
-			fetchMenuItemById(Number(menuItemId)).then((menuItem: MenuItem | null) => {
+			fetchMenuItemById(Number(menuItemId)).then((menuItem: MenuSchema | null) => {
 				if (menuItem) {
 					// Remove unnecessary props for saving
 					delete menuItem.__typename;
@@ -110,7 +110,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 		// Create
 		const { id, menu } = match.params;
-		const menuItem: Partial<MenuItem> = {
+		const menuItem: Partial<MenuSchema> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			link_target: menuForm.link,
@@ -158,7 +158,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 		setIsSaving(false);
 		toastService(message, TOAST_TYPE.SUCCESS);
-		navigate(history, ADMIN_PATH.MENU_DETAIL, { menu });
+		navigate(history, MENU_PATH.MENU_DETAIL, { menu });
 	};
 
 	const handleValidation = (): boolean => {
@@ -177,7 +177,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	};
 
 	const navigateBack = () => {
-		navigate(history, ADMIN_PATH.MENU_DETAIL, { menu: menuId });
+		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuId });
 	};
 
 	// Render
