@@ -1,8 +1,6 @@
-import { History, Location } from 'history';
-import { get } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { withRouter } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Alert,
@@ -25,15 +23,15 @@ import {
 } from '@viaa/avo2-types/types/stamboek/types';
 
 import { getEnv } from '../../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
-import { AUTH_PATH } from '../../authentication.const';
+import { TOAST_TYPE } from '../../../shared/services/toast-service';
+import {
+	redirectToClientManualAccessRequest,
+	redirectToServerArchiefRegistrationIdp,
+} from '../../helpers/redirects';
 
 import './r3-stamboek.scss';
 
-export interface RegisterStamboekProps {
-	history: History;
-	location: Location;
-}
+export interface RegisterStamboekProps extends RouteComponentProps {}
 
 type validationStatuses =
 	| 'INCOMPLETE'
@@ -46,7 +44,7 @@ type validationStatuses =
 
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
-const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }) => {
+const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, location }) => {
 	const [intendsToHaveStamboekNumber, setIntendsToHaveStamboekNumber] = useState<
 		boolean | undefined
 	>(undefined);
@@ -59,23 +57,6 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 	const [stamboekValidationCache, setStamboekValidationCache] = useState<{
 		[stamboekNumber: string]: boolean;
 	}>({});
-
-	const redirectToManualAccessRequest = () => {
-		toastService('Deze functionaliteit is nog niet beschikbaar', TOAST_TYPE.INFO);
-		// history.push(`/${RouteParts.ManualAccessRequest}`);
-	};
-
-	const redirectToArchiefRegistrationIdp = () => {
-		const base = window.location.href.split(AUTH_PATH.STAMBOEK)[0];
-		const returnToUrl = base + get(location, 'state.from.pathname', AUTH_PATH.LOGIN_AVO);
-
-		window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify(
-			{
-				returnToUrl,
-				stamboekNumber: validStamboekNumber,
-			}
-		)}`;
-	};
 
 	const STAMBOEK_MESSAGES: {
 		[status in validationStatuses]: { message: string | ReactNode; status: TOAST_TYPE | undefined }
@@ -95,7 +76,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 					Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog maar recent uw
 					kaart heeft ontvangen kan u via{' '}
 					<Button
-						onClick={redirectToManualAccessRequest}
+						onClick={() => redirectToClientManualAccessRequest(history)}
 						label="een manuele aanvraag"
 						type="inline-link"
 					/>{' '}
@@ -118,7 +99,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 					Dit stamboek nummer is reeds in gebruik,{' '}
 					<Button
 						label="contacteer de helpdesk"
-						onClick={redirectToManualAccessRequest}
+						onClick={() => redirectToClientManualAccessRequest(history)}
 						type="inline-link"
 					/>
 					.
@@ -269,7 +250,10 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 											Zonder stamboek nummer heb je geen toegang tot de website. Indien u toch denkt
 											toegang te moeten hebben, vraag dan manueel een account aan.
 										</Spacer>
-										<Button label="Manuele aanvraag" onClick={redirectToManualAccessRequest} />
+										<Button
+											label="Manuele aanvraag"
+											onClick={() => redirectToClientManualAccessRequest(history)}
+										/>
 									</div>
 								</Alert>
 							</Spacer>
@@ -294,7 +278,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 							!intendsToHaveStamboekNumber ||
 							!hasAcceptedConditions
 						}
-						onClick={redirectToArchiefRegistrationIdp}
+						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
 					/>
 				</FormGroup>
 			</Container>

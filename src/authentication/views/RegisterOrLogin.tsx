@@ -1,5 +1,3 @@
-import { get } from 'lodash-es';
-import queryString from 'query-string';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -15,11 +13,11 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
-import { SEARCH_PATH } from '../../search/search.const';
-import { getEnv } from '../../shared/helpers';
-
-import { AUTH_PATH } from '../authentication.const';
-
+import {
+	redirectToClientLogin,
+	redirectToClientRegister,
+	redirectToServerSmartschoolLogin,
+} from '../helpers/redirects';
 import './RegisterOrLogin.scss';
 
 export interface RegisterOrLoginProps extends RouteComponentProps {}
@@ -28,28 +26,6 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	history,
 	location,
 }) => {
-	const redirectToLogin = () => {
-		history.push(AUTH_PATH.LOGIN_AVO, {
-			from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
-		});
-	};
-
-	const redirectToSmartschoolLogin = () => {
-		// Redirect to smartschool login form
-		const base = window.location.href.split(AUTH_PATH.REGISTER_OR_LOGIN)[0];
-		// Url to return to after authentication is completed and server stored auth object in session
-		const returnToUrl = base + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
-		window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
-			returnToUrl,
-		})}`;
-	};
-
-	const redirectToRegister = () => {
-		history.push(AUTH_PATH.PUPIL_OR_TEACHER, {
-			from: { pathname: get(location, 'state.from.pathname', SEARCH_PATH.SEARCH) },
-		});
-	};
-
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
@@ -66,7 +42,11 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												van de klas.
 											</p>
 										</Spacer>
-										<Button label="Account aanmaken" type="primary" onClick={redirectToRegister} />
+										<Button
+											label="Account aanmaken"
+											type="primary"
+											onClick={() => redirectToClientRegister(history, location)}
+										/>
 									</FlexItem>
 								</Flex>
 							</Column>
@@ -83,7 +63,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												<Button
 													label="Inloggen met e-mailadres"
 													type="primary"
-													onClick={redirectToLogin}
+													onClick={() => redirectToClientLogin(history, location)}
 												/>
 											</Spacer>
 										</Spacer>
@@ -94,7 +74,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												className="c-button-smartschool"
 												icon="smartschool"
 												label="Inloggen met Smartschool"
-												onClick={redirectToSmartschoolLogin}
+												onClick={() => redirectToServerSmartschoolLogin(location)}
 											/>
 										</Spacer>
 										<Button
