@@ -10,3 +10,5 @@ export type ContentOverviewTableCols =
 	| 'actions';
 
 export type ContentParams = { id: string };
+
+export type ContentTypesResponse = { value: string };

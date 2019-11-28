@@ -1,6 +1,6 @@
 import { gql } from 'apollo-boost';
 
-export const GET_CONTENT_TYPES = gql`
+export const GET_AVAILABLE_CONTENT_TYPES = gql`
 	{
 		app_content(distinct_on: content_type) {
 			content_type
@@ -63,6 +63,13 @@ export const GET_CONTENT_BY_ID = gql`
 			publish_at
 			title
 			updated_at
+		}
+	}
+`;
+export const GET_CONTENT_TYPES = gql`
+	{
+		lookup_enum_content_types {
+			value
 		}
 	}
 `;
