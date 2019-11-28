@@ -8,3 +8,5 @@ export type ContentOverviewTableCols =
 	| 'created_at'
 	| 'updated_at'
 	| 'actions';
+
+export type ContentParams = { id: string };

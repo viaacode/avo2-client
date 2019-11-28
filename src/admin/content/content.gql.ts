@@ -38,3 +38,31 @@ export const GET_CONTENT = gql`
 		}
 	}
 `;
+
+export const GET_CONTENT_BY_ID = gql`
+	query getContentById($id: Int!) {
+		app_content(where: { id: { _eq: $id } }) {
+			content_type
+			created_at
+			depublish_at
+			description
+			id
+			is_protected
+			is_public
+			is_published
+			profile {
+				user: usersByuserId {
+					first_name
+					last_name
+					role {
+						id
+						label
+					}
+				}
+			}
+			publish_at
+			title
+			updated_at
+		}
+	}
+`;
