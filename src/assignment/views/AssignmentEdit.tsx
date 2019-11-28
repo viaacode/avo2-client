@@ -474,21 +474,27 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const duplicateAssignment = async (newTitle: string) => {
+	const duplicateAssignment = async (duplicateAssignmentTitle: string) => {
 		try {
-			const assignmentToDuplicate = cloneDeep(initialAssignment);
+			const assignmentToDuplicate = {
+				...cloneDeep(initialAssignment),
+				title: duplicateAssignmentTitle,
+			};
+
 			delete assignmentToDuplicate.id;
-			assignmentToDuplicate.title = newTitle;
 
-			const assigment = await insertAssignment(triggerAssignmentInsert, assignmentToDuplicate);
+			const duplicatedAssigment = await insertAssignment(
+				triggerAssignmentInsert,
+				assignmentToDuplicate
+			);
 
-			if (!assigment) {
+			if (!duplicatedAssigment) {
 				return; // assignment was not valid
 			}
 
-			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assigment.id });
+			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
 			toastService(
-				'De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat',
+				'De opdracht is succesvol gedupliceerd. U kijkt nu naar het duplicaat',
 				TOAST_TYPE.SUCCESS
 			);
 		} catch (err) {
