@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import { get } from 'lodash-es';
 import { SEARCH_PATH } from '../../search/search.const';
 import { getEnv } from '../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { AUTH_PATH, SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
 
@@ -26,7 +26,7 @@ export function redirectToClientStamboek(history: History) {
 }
 
 export function redirectToClientManualAccessRequest(history: History) {
-	toastService('Deze functionaliteit is nog niet beschikbaar', TOAST_TYPE.INFO);
+	toastService.info('Deze functionaliteit is nog niet beschikbaar');
 	// history.push(`/${RouteParts.ManualAccessRequest}`);
 }
 

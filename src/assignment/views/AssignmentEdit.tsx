@@ -62,7 +62,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { ASSIGNMENT_PATH } from '../assignment.const';
@@ -391,9 +391,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			console.error('Failed to insert copy of a collection for current user', err, {
 				collection,
 			});
-			toastService(
-				'De collectie kon niet worden gekopieert om te gebruiken bij de nieuwe opdracht',
-				TOAST_TYPE.DANGER
+			toastService.danger(
+				'De collectie kon niet worden gekopieert om te gebruiken bij de nieuwe opdracht'
 			);
 			return null;
 		}
@@ -402,15 +401,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const deleteCurrentAssignment = async () => {
 		try {
 			if (typeof currentAssignment.id === 'undefined') {
-				toastService('De huidige opdracht is nog nooit opgeslagen (geen id)', TOAST_TYPE.DANGER);
+				toastService.danger('De huidige opdracht is nog nooit opgeslagen (geen id)');
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
-			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
+			toastService.success('De opdracht is verwijdert');
 		} catch (err) {
 			console.error(err);
-			toastService('Het verwijderen van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het verwijderen van de opdracht is mislukt');
 		}
 	};
 
@@ -422,7 +421,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService('De url is naar het klembord gekopieerd', TOAST_TYPE.SUCCESS);
+		toastService.success('De url is naar het klembord gekopieerd');
 
 		if (currentAssignment.id) {
 			trackEvents({
@@ -456,17 +455,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				is_archived: shouldBeArchived,
 			});
 			if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
-				toastService(
-					`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`,
-					TOAST_TYPE.SUCCESS
-				);
+				toastService.success(`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`);
 			}
 			// else: assignment was not valid and could not be saved yet
 		} catch (err) {
 			console.error(err);
-			toastService(
-				`Het ${shouldBeArchived ? '' : 'de'}archiveren van de opdracht is mislukt`,
-				TOAST_TYPE.DANGER
+			toastService.danger(
+				`Het ${shouldBeArchived ? '' : 'de'}archiveren van de opdracht is mislukt`
 			);
 		}
 	};
@@ -483,13 +478,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 
 			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assigment.id });
-			toastService(
-				'De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat',
-				TOAST_TYPE.SUCCESS
-			);
+			toastService.success('De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat');
 		} catch (err) {
 			console.error(err);
-			toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het dupliceren van de opdracht is mislukt');
 		}
 	};
 
@@ -565,19 +557,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				if (insertedAssignment) {
 					setBothAssignments(insertedAssignment);
 					trackAddObjectToAssignment(insertedAssignment);
-					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
+					toastService.success('De opdracht is succesvol aangemaakt');
 					navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
 				}
 			} else {
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol geüpdatet', TOAST_TYPE.SUCCESS);
+				toastService.success('De opdracht is succesvol geüpdatet');
 			}
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
-			toastService('Het opslaan van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het opslaan van de opdracht is mislukt');
 			setIsSaving(false);
 		}
 	};

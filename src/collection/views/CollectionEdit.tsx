@@ -33,7 +33,7 @@ import {
 import { createDropdownMenuItem, navigate, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { Tab } from '../../shared/types';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -113,9 +113,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 		const tempCollection: Avo.Collection.Collection | undefined = cloneDeep(currentCollection);
 
 		if (!tempCollection) {
-			toastService(
-				'De collectie updaten is mislukt, kon geen kopie maken van de bestaande collectie',
-				TOAST_TYPE.DANGER
+			toastService.danger(
+				'De collectie updaten is mislukt, kon geen kopie maken van de bestaande collectie'
 			);
 			return;
 		}
@@ -136,12 +135,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 	// Swap position of two fragments within a collection
 	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
 		if (!currentCollection) {
-			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
+			toastService.danger('De collectie was niet ingesteld');
 			return;
 		}
 
 		if (!currentCollection.collection_fragments || !currentCollection.collection_fragments.length) {
-			toastService('De collectie fragmenten zijn niet ingesteld', TOAST_TYPE.DANGER);
+			toastService.danger('De collectie fragmenten zijn niet ingesteld');
 			return;
 		}
 
@@ -157,12 +156,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 			);
 
 			if (!fragment) {
-				toastService(`Het fragment met id ${currentId} is niet gevonden`, TOAST_TYPE.DANGER);
+				toastService.danger(`Het fragment met id ${currentId} is niet gevonden`);
 				return;
 			}
 
 			if (!otherFragment) {
-				toastService(`Het fragment met id ${currentId - sign} is niet gevonden`, TOAST_TYPE.DANGER);
+				toastService.danger(`Het fragment met id ${currentId - sign} is niet gevonden`);
 				return;
 			}
 
@@ -201,7 +200,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 			if (newCollection) {
 				setCurrentCollection(newCollection);
 				setInitialCollection(cloneDeep(newCollection));
-				toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
+				toastService.success('Collectie opgeslagen');
 				trackEvents({
 					event_object: String(newCollection.id),
 					event_object_type: 'collections',
@@ -225,7 +224,9 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 	const onRenameCollection = async (newTitle: string) => {
 		try {
 			if (!initialCollection) {
-				toastService('De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)');
+				toastService.info(
+					'De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)'
+				);
 				return;
 			}
 			// Update the name in the current collection
@@ -248,7 +249,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 			});
 		} catch (err) {
 			console.error(err);
-			toastService('Het hernoemen van de collectie is mislukt');
+			toastService.info('Het hernoemen van de collectie is mislukt');
 		}
 	};
 
@@ -261,7 +262,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 		try {
 			if (!currentCollection) {
 				console.error('Failed to delete collection since currentCollection is undefined');
-				toastService('Het verwijderen van de collectie is mislukt (collectie niet ingesteld)');
+				toastService.info('Het verwijderen van de collectie is mislukt (collectie niet ingesteld)');
 				return;
 			}
 			await triggerCollectionDelete({
@@ -284,7 +285,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID });
 		} catch (err) {
 			console.error(err);
-			toastService('Het verwijderen van de collectie is mislukt');
+			toastService.info('Het verwijderen van de collectie is mislukt');
 		}
 	};
 
