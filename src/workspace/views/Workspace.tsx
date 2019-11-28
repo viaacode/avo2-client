@@ -8,6 +8,7 @@ import {
 	DropdownContent,
 	Form,
 	FormGroup,
+	Heading,
 	Icon,
 	MenuContent,
 	Navbar,
@@ -146,7 +147,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 			<>
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
-						<h2 className="c-h2 u-m-0">Mijn Werkruimte</h2>
+						<Heading type="h2" className="u-m-0">
+							Mijn Werkruimte
+						</Heading>
 					</Container>
 				</Container>
 

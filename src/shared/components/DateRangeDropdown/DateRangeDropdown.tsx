@@ -14,6 +14,7 @@ import {
 	RadioButtonGroup,
 	TextInput,
 } from '@viaa/avo2-components';
+
 import { reorderDate } from '../../helpers/formatters/date';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
@@ -28,6 +29,8 @@ export interface DateRange {
 	gte: string;
 	lte: string;
 }
+
+type DateType = 'year' | 'date';
 
 const DEFAULT_DATE_RANGE = { gte: '', lte: '' };
 
@@ -57,6 +60,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		await closeDropdown();
 	};
 
+	// TODO: Is tagId necessary?
 	const removeFilter = (tagId: ReactText, evt: MouseEvent) => {
 		evt.stopPropagation();
 		setRangeState(DEFAULT_DATE_RANGE);
@@ -65,16 +69,16 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		onChange(DEFAULT_DATE_RANGE, id);
 	};
 
-	const handleDateChange = async (date: string | null, id: string) => {
+	const handleDateChange = async (date: string | null, rangeId: string) => {
 		if (date) {
 			setRangeState({
 				...rangeState,
-				[id]: date,
+				[rangeId]: date,
 			});
 		} else {
 			setRangeState({
 				...rangeState,
-				[id]: '',
+				[rangeId]: '',
 			});
 		}
 	};
@@ -83,8 +87,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	 * Called when the user switches between "year" range and "full date" range controls
 	 * @param type
 	 */
-	const dateTypeChanged = (type: 'year' | 'date') => {
+	const dateTypeChanged = (type: DateType) => {
 		setShowYearControls(type === 'year');
+
 		if (type === 'year') {
 			// Round selected dates to the larger year
 			setRangeState({
@@ -99,39 +104,41 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		setIsDropdownOpen(true);
 	};
 
-	const closeDropdown = async () => {
-		setIsDropdownOpen(false);
-	};
+	const closeDropdown = () => setIsDropdownOpen(false);
 
 	const getTag = () => {
-		const isGteStartOfYear = range.gte.includes('-01-01');
-		const isLteEndOfYear = range.lte.includes('-12-31');
-		const gteFormattedDate = reorderDate(range.gte);
-		const lteFormattedDate = reorderDate(range.lte);
-		const gteYear = range.gte.split('-')[0];
-		const lteYear = range.lte.split('-')[0];
-		let label: string | null = null;
-		if (range.gte && range.lte) {
+		const { gte, lte } = range;
+		const isGteStartOfYear = gte.includes('-01-01');
+		const isLteEndOfYear = lte.includes('-12-31');
+		const gteFormattedDate = reorderDate(gte);
+		const lteFormattedDate = reorderDate(lte);
+		const gteYear = gte.split('-')[0];
+		const lteYear = lte.split('-')[0];
+		let tagLabel: string | null = null;
+
+		if (gte && lte) {
 			if (isGteStartOfYear && isLteEndOfYear) {
 				// only show years
-				label = `${gteYear} - ${lteYear}`;
+				tagLabel = `${gteYear} - ${lteYear}`;
 			} else {
 				// show full dates
-				label = `${reorderDate(range.gte)} - ${reorderDate(range.lte)}`;
+				tagLabel = `${reorderDate(gte)} - ${reorderDate(lte)}`;
 			}
-		} else if (range.gte) {
-			label = `na ${isGteStartOfYear ? gteYear : gteFormattedDate}`;
-		} else if (range.lte) {
-			label = `voor ${isLteEndOfYear ? lteYear : lteFormattedDate}`;
+		} else if (gte) {
+			tagLabel = `na ${isGteStartOfYear ? gteYear : gteFormattedDate}`;
+		} else if (lte) {
+			tagLabel = `voor ${isLteEndOfYear ? lteYear : lteFormattedDate}`;
 		}
-		if (label) {
+
+		if (tagLabel) {
 			return [
 				{
-					label,
+					label: tagLabel,
 					id: 'date',
 				},
 			];
 		}
+
 		return []; // Do not render a filter if date object is empty: {gte: "", lte: ""}
 	};
 

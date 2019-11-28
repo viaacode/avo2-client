@@ -21,6 +21,7 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
+	Heading,
 	Icon,
 	IconName,
 	MenuContent,
@@ -475,10 +476,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const duplicateAssignment = async (newTitle: string) => {
 		try {
-			const duplicateAssignment = cloneDeep(initialAssignment);
-			delete duplicateAssignment.id;
-			duplicateAssignment.title = newTitle;
-			const assigment = await insertAssignment(triggerAssignmentInsert, duplicateAssignment);
+			const assignmentToDuplicate = cloneDeep(initialAssignment);
+			delete assignmentToDuplicate.id;
+			assignmentToDuplicate.title = newTitle;
+
+			const assigment = await insertAssignment(triggerAssignmentInsert, assignmentToDuplicate);
 
 			if (!assigment) {
 				return; // assignment was not valid
@@ -646,8 +648,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 	};
 
-	const renderContentLink = (assignmentContent: AssignmentContent) => {
-		const dutchLabel = (assignmentContent.type.label ||
+	const renderContentLink = (content: AssignmentContent) => {
+		const dutchLabel = (content.type.label ||
 			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
 		const linkContent = (
 			<div className="c-box c-box--padding-small">
@@ -656,13 +658,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						<Thumbnail
 							className="m-content-thumbnail"
 							category={toEnglishContentType(dutchLabel)}
-							src={assignmentContent.thumbnail_path || undefined}
+							src={content.thumbnail_path || undefined}
 						/>
 					</Spacer>
 					<FlexItem>
 						<div className="c-overline-plus-p">
 							<p className="c-overline">{dutchLabel}</p>
-							<p>{assignmentContent.title || assignmentContent.description}</p>
+							<p>{content.title || content.description}</p>
 						</div>
 					</FlexItem>
 				</Flex>
@@ -672,7 +674,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		if (
 			pageType === 'create' &&
 			currentAssignment.content_label === 'COLLECTIE' &&
-			getProfileId() !== (assignmentContent as Avo.Collection.Collection).owner_profile_id
+			getProfileId() !== (content as Avo.Collection.Collection).owner_profile_id
 		) {
 			// During create we do not allow linking to the collection if you do not own the collection,
 			// since we still need to make a copy when the user clicks on "save assignment" button
@@ -716,9 +718,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											<Icon name="chevron-left" size="small" type="arrows" />
 											Mijn opdrachten
 										</Link>
-										<h2 className="c-h2 u-m-0">
+										<Heading className="u-m-0" type="h2">
 											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
-										</h2>
+										</Heading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">

@@ -10,6 +10,7 @@ import {
 	Flex,
 	FlexItem,
 	Grid,
+	Heading,
 	Modal,
 	ModalBody,
 	Spacer,
@@ -75,11 +76,11 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 								<Flex center orientation="horizontal">
 									<FlexItem>
 										<Spacer margin="bottom-large">
-											<h2 className="c-h2 u-m-0">
+											<Heading type="h2" className="u-m-0">
 												Reeds een account?
 												<br />
 												Log dan hier in.
-											</h2>
+											</Heading>
 											<Spacer margin="top-small">
 												<Button
 													label="Inloggen met e-mailadres"

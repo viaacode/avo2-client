@@ -6,6 +6,7 @@ import {
 	Button,
 	ButtonToolbar,
 	FormGroup,
+	Heading,
 	Modal,
 	ModalBody,
 	RadioButton,
@@ -16,7 +17,6 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
@@ -110,9 +110,9 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		}
 	};
 
-	const closeModal = (collection?: Avo.Collection.Collection) => {
+	const closeModal = (newCollection?: Avo.Collection.Collection) => {
 		setValidationError(undefined);
-		onClose(collection);
+		onClose(newCollection);
 	};
 
 	return (
@@ -122,7 +122,9 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 					<p>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</p>
 					<FormGroup error={validationError}>
 						<Spacer margin="top-large">
-							<h4 className="c-h4 u-m-0">Zichtbaarheid</h4>
+							<Heading className="u-m-0" type="h4">
+								Zichtbaarheid
+							</Heading>
 						</Spacer>
 						<RadioButtonGroup>
 							{shareOptions.map((shareOption, index) => (
