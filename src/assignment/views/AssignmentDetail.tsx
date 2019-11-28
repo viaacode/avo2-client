@@ -26,7 +26,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { LoginResponse } from '../../authentication/store/types';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
@@ -48,7 +47,7 @@ import { AssignmentLayout } from '../assignment.types';
 import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
-	loginResponse: LoginResponse | null;
+	loginResponse: Avo.Auth.LoginResponse | null;
 }
 
 export enum AssignmentRetrieveError {

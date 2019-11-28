@@ -30,7 +30,6 @@ import { PermissionGuard } from '../../authentication/components';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { selectLogin } from '../../authentication/store/selectors';
-import { LoginResponse } from '../../authentication/store/types';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -57,7 +56,7 @@ import './CollectionDetail.scss';
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({

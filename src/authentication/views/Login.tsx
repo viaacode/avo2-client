@@ -5,6 +5,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ErrorView } from '../../error/views';
 import { SEARCH_PATH } from '../../search/search.const';
@@ -12,10 +13,10 @@ import { AUTH_PATH } from '../authentication.const';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginMessage, LoginResponse } from '../store/types';
+import { LoginMessage } from '../store/types';
 
 export interface LoginProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;
 	getLoginState: () => Dispatch;
