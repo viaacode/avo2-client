@@ -39,7 +39,7 @@ import {
 import queryString from 'query-string';
 
 import { copyToClipboard, navigate } from '../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 
 import { SearchFilterControls, SearchResults } from '../components';
 import { SEARCH_PATH } from '../search.const';
@@ -182,7 +182,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
-			toastService('Ongeldige zoek query', TOAST_TYPE.DANGER);
+			toastService.danger('Ongeldige zoek query');
 			console.error(err);
 		}
 		setQueryParamsAnalysed(true);
@@ -285,7 +285,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	const onCopySearchLinkClicked = () => {
 		copySearchLink();
 		setIsOptionsMenuOpen(false);
-		toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
+		toastService.success('De link is succesvol gekopieerd');
 	};
 
 	const orderOptions = [
@@ -359,7 +359,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 												label="Maak van deze zoekopdracht een opdracht"
 												onClick={() => {
 													setIsOptionsMenuOpen(false);
-													toastService('Nog niet geïmplementeerd');
+													toastService.info('Nog niet geïmplementeerd');
 												}}
 											/> */}
 										</>

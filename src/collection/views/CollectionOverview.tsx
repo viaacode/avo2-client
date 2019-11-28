@@ -35,7 +35,7 @@ import {
 	navigate,
 } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { COLLECTION_PATH } from '../collection.const';
@@ -80,12 +80,12 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			toastService('Collectie is verwijderd', TOAST_TYPE.SUCCESS);
+			toastService.success('Collectie is verwijderd');
 			refetchCount();
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
-			toastService('Collectie kon niet verwijderd worden', TOAST_TYPE.DANGER);
+			toastService.danger('Collectie kon niet verwijderd worden');
 		}
 
 		setIdToDelete(null);
