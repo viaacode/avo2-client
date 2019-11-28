@@ -1,9 +1,11 @@
 import { get } from 'lodash-es';
 
-import { getFullName } from '../../shared/helpers';
+import { Avo } from '@viaa/avo2-types';
+
+import { getFullName, getInitialChar, getInitials } from '../../shared/helpers';
 import store from '../../store';
 
-function getUserInfo() {
+function getUserInfo(): Avo.User.User | null {
 	const state: any = store.getState();
 	return get(state, 'loginState.data.userInfo');
 }
@@ -24,4 +26,12 @@ export function getProfileName(): string {
 		throw new Error('No profile id could be found for the logged in user');
 	}
 	return profileName;
+}
+
+export function getProfileInitials(): string {
+	const userInfo = getUserInfo();
+	return (
+		get(userInfo, 'user.first_name', 'X')[0] +
+		getInitialChar(get(userInfo, 'user.last_name', 'X'))[0]
+	);
 }

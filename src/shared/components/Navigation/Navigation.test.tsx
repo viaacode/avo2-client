@@ -14,20 +14,21 @@ import { buildLink } from '../../helpers';
 import Navigation from './Navigation';
 
 const pItems = [
-	{ label: 'Home', location: '/' },
-	{ label: 'Zoeken', location: SEARCH_PATH.SEARCH },
-	{ label: 'Ontdek', location: DISCOVER_PATH.DISCOVER },
+	{ key: 'home', label: 'Home', location: '/' },
+	{ key: 'search', label: 'Zoeken', location: SEARCH_PATH.SEARCH },
+	{ key: 'discover', label: 'Ontdek', location: DISCOVER_PATH.DISCOVER },
 	{
+		key: 'workspace',
 		label: 'Mijn Werkruimte',
 		location: buildLink(WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID }),
 	},
-	{ label: 'Projecten', location: `/${ROUTE_PARTS.projects}` }, // TODO replace when available with PROJECT_PATH
-	{ label: 'Nieuws', location: `/${ROUTE_PARTS.news}` },
+	{ key: 'projects', label: 'Projecten', location: `/${ROUTE_PARTS.projects}` }, // TODO replace when available with PROJECT_PATH
+	{ key: 'news', label: 'Nieuws', location: `/${ROUTE_PARTS.news}` },
 ];
 
 const sItems = [
-	{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown /> },
-	{ label: 'Aanmelden', location: APP_PATH.LOGIN_AVO },
+	{ key: 'createAccount', label: 'Account aanmaken', component: <PupilOrTeacherDropdown /> },
+	{ key: 'login', label: 'Aanmelden', location: APP_PATH.LOGIN_AVO },
 ];
 
 function checkLinks(menuItems: ReactWrapper<any, any>) {

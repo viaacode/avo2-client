@@ -1,13 +1,17 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { FunctionComponent, ReactText, useState } from 'react';
+import { connect } from 'react-redux';
+import { Link, NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import {
+	Avatar,
 	Button,
 	Container,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Icon,
+	IconName,
+	MenuContent,
 	Navbar,
 	Toolbar,
 	ToolbarItem,
@@ -17,32 +21,122 @@ import {
 
 import { NavigationItem } from '../../types';
 
+import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
+import {
+	getProfileInitials,
+	getProfileName,
+} from '../../../authentication/helpers/get-profile-info';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { selectLogin } from '../../../authentication/store/selectors';
+import { LoginMessage, LoginResponse } from '../../../authentication/store/types';
+import { APP_PATH } from '../../../constants';
+import { AppState } from '../../../store';
+import toastService from '../../services/toast-service';
 import './Navigation.scss';
+import { SETTINGS_PATH } from '../../../settings/settings.const';
 
-export interface NavigationProps {
-	primaryItems: NavigationItem[];
-	secondaryItems: NavigationItem[];
-	isOpen: boolean;
-	handleMenuClick?: () => void;
+export interface NavigationProps extends RouteComponentProps {
+	loginState: LoginResponse | null;
 }
 
-const Navigation: FunctionComponent<NavigationProps> = ({
-	primaryItems,
-	secondaryItems,
-	isOpen,
-	handleMenuClick = () => {},
-}) => {
-	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [label: string]: boolean }>({});
+/**
+ * Main navigation bar component
+ * @param history
+ * @param loginState
+ * @constructor
+ */
+const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState }) => {
+	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
+	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-	useEffect(() => {
-		// Init areDropdownsOpen for all navigation items to false
-		// otherwise for some reason the dropdown starts in the open state
-		const openStates = { ...areDropdownsOpen };
-		setDropdownsOpen(openStates);
-		primaryItems.forEach(item => (openStates[item.label] = false));
-		secondaryItems.forEach(item => (openStates[item.label] = false));
-		setDropdownsOpen(openStates);
-	}, []);
+	const getPrimaryNavigationItems = (): NavigationItem[] => {
+		const isLoggedIn = loginState && loginState.message === LoginMessage.LOGGED_IN;
+		if (!isLoggedIn) {
+			return [
+				{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME, key: 'teachers' },
+				{
+					label: 'Zoeken',
+					location: APP_PATH.SEARCH,
+					icon: 'search' as IconName,
+					key: 'pupils',
+				},
+				{ label: 'Ontdek', location: APP_PATH.DISCOVER, key: 'home' },
+				{
+					label: 'Mijn Werkruimte',
+					location: APP_PATH.WORKSPACE,
+					icon: 'briefcase' as IconName,
+					key: 'search',
+				},
+				{ label: 'Projecten', location: APP_PATH.PROJECTS, key: 'discover' },
+				{ label: 'Nieuws', location: APP_PATH.NEWS, key: 'workspace' },
+			];
+		} else {
+			return [
+				{ label: 'Voor leerkrachten', location: APP_PATH.FOR_TEACHERS, key: 'teachers' },
+				{ label: 'Voor leerlingen', location: APP_PATH.FOR_PUPILS, key: 'pupils' },
+				{ label: 'Projecten', location: APP_PATH.PROJECTS, key: 'projects' },
+				{ label: 'Nieuws', location: APP_PATH.NEWS, key: 'news' },
+			];
+		}
+	};
+
+	const getSecondaryNavigationItems = (): NavigationItem[] => {
+		const isLoggedIn = loginState && loginState.message === LoginMessage.LOGGED_IN;
+		if (!isLoggedIn) {
+			if (isMobileMenuOpen) {
+				return [
+					{ label: 'Instellingen', location: APP_PATH.SETTINGS, key: 'settings' },
+					{ label: 'Hulp', location: APP_PATH.HELP, key: 'help' },
+					{
+						label: 'Rapporteer feedback of probleem',
+						location: APP_PATH.FEEDBACK,
+						key: 'feedback',
+					},
+					{ label: 'Logout', location: APP_PATH.LOGOUT, key: 'logout' },
+				];
+			} else {
+				return [
+					{
+						label: (
+							<div className="c-navbar-profile-dropdown-button">
+								<Avatar initials={getProfileInitials()} name={getProfileName()} />
+								<Icon name="caret-down" size="small" />
+							</div>
+						),
+						component: (
+							<MenuContent
+								menuItems={[
+									[
+										{ id: 'settings', label: 'Instellingen' },
+										{ id: 'help', label: 'Hulp' },
+										{ id: 'feedback', label: 'Rapporteer feedback of probleem' },
+									],
+									[{ id: 'logout', label: 'Logout' }],
+								]}
+								onClick={handleMenuClick}
+							/>
+						),
+						key: 'profile',
+					},
+				];
+			}
+		} else {
+			return [
+				{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown />, key: 'createAccount' },
+				{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN, key: 'login' },
+			];
+		}
+	};
+
+	// useEffect(() => {
+	// 	// Init areDropdownsOpen for all navigation items to false
+	// 	// otherwise for some reason the dropdown starts in the open state
+	// 	const openStates = { ...areDropdownsOpen };
+	// 	setDropdownsOpen(openStates);
+	// 	getPrimaryNavigationItems().forEach(item => (openStates[item.key] = false));
+	// 	getSecondaryNavigationItems().forEach(item => (openStates[item.key] = false));
+	// 	setDropdownsOpen(openStates);
+	// }, []);
 
 	const setDropdownOpen = (label: string, isOpen: boolean): void => {
 		const openStates = { ...areDropdownsOpen };
@@ -50,9 +144,40 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 		setDropdownsOpen(openStates);
 	};
 
+	const onToggleMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
+
+	const onCloseMenu = () => setMobileMenuOpen(false);
+
+	const closeAllDropdowns = () => setDropdownsOpen({});
+
+	const handleMenuClick = (menuItemId: string | ReactText) => {
+		switch (menuItemId) {
+			case 'settings':
+				redirectToClientPage(SETTINGS_PATH.SETTINGS, history);
+				break;
+
+			case 'help':
+				toastService.info('Nog niet geimplementeerd');
+				break;
+
+			case 'feedback':
+				toastService.info('Nog niet geimplementeerd');
+				break;
+
+			case 'logout':
+				redirectToClientPage(APP_PATH.LOGOUT, history);
+				break;
+
+			default:
+				toastService.info('Nog niet geimplementeerd');
+				break;
+		}
+		closeAllDropdowns();
+	};
+
 	const renderNavLinkItem = (item: NavigationItem, className: string, exact: boolean) => {
 		return (
-			<li key={`${item.location}-${item.label}`}>
+			<li key={`${item.location}-${item.key}`}>
 				{!!item.location && (
 					<NavLink
 						to={item.location}
@@ -67,9 +192,10 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 				{!!item.component && (
 					<Dropdown
 						menuWidth="fit-content"
-						isOpen={areDropdownsOpen[item.label]}
-						onOpen={() => setDropdownOpen(item.label, true)}
-						onClose={() => setDropdownOpen(item.label, false)}
+						placement="bottom-end"
+						isOpen={areDropdownsOpen[item.key] || false}
+						onOpen={() => setDropdownOpen(item.key, true)}
+						onClose={() => setDropdownOpen(item.key, false)}
 					>
 						<DropdownButton>
 							<div className={`${className} u-clickable`}>
@@ -79,7 +205,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 						</DropdownButton>
 						<DropdownContent>
 							{React.cloneElement(item.component, {
-								closeDropdown: () => setDropdownOpen(item.label, false),
+								closeDropdown: () => setDropdownOpen(item.key, false),
 							})}
 						</DropdownContent>
 					</Dropdown>
@@ -109,7 +235,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-has-space">
 										<ul className="c-nav">
-											{primaryItems.map(item =>
+											{getPrimaryNavigationItems().map(item =>
 												renderNavLinkItem(item, 'c-nav__item c-nav__item--i', item.location === '/')
 											)}
 										</ul>
@@ -122,7 +248,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-authentication">
 										<ul className="c-nav">
-											{secondaryItems.map(item =>
+											{getSecondaryNavigationItems().map(item =>
 												renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
 											)}
 										</ul>
@@ -134,7 +260,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 											icon="menu"
 											type="borderless-i"
 											ariaLabel="menu"
-											onClick={handleMenuClick}
+											onClick={() => onToggleMenu()}
 										/>
 									</div>
 								</ToolbarItem>
@@ -143,16 +269,18 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 					</Toolbar>
 				</Container>
 			</Navbar>
-			{isOpen ? (
+			{isMobileMenuOpen ? (
 				<Container mode="horizontal">
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
-							{primaryItems.map(item =>
+							{getPrimaryNavigationItems().map(item =>
 								renderNavLinkItem(item, 'c-nav-mobile__item', item.location === '/')
 							)}
 						</ul>
 						<ul className="c-nav-mobile">
-							{secondaryItems.map(item => renderNavLinkItem(item, 'c-nav-mobile__item', false))}
+							{getSecondaryNavigationItems().map(item =>
+								renderNavLinkItem(item, 'c-nav-mobile__item', false)
+							)}
 						</ul>
 					</Container>
 				</Container>
@@ -163,7 +291,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 							<ToolbarLeft>
 								<div className="c-toolbar__item">
 									<ul className="c-nav">
-										{primaryItems.map(item =>
+										{getPrimaryNavigationItems().map(item =>
 											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
 										)}
 									</ul>
@@ -177,4 +305,8 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 	);
 };
 
-export default Navigation;
+const mapStateToProps = (state: AppState) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(Navigation));

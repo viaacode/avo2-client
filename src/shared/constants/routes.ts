@@ -31,7 +31,14 @@ export const ROUTE_PARTS = Object.freeze({
 	forTeachers: 'voor-leerkrachten',
 	forPupils: 'voor-leerlingen',
 	workspace: 'mijn-werkruimte',
-	LoggedInHome: 'home',
+	settings: 'instellingen',
+	help: 'hulp',
+	feedback: 'feedback',
+	loggedInHome: 'home',
+	profile: 'profiel',
+	email: 'email',
+	notifications: 'notificaties',
+	error: 'error',
 });
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
