@@ -29,6 +29,15 @@ import {
 
 import './CheckboxDropdownModal.scss';
 
+interface CheckedState {
+	[checkboxId: string]: boolean;
+}
+
+export interface Tag {
+	label: string;
+	id: string;
+}
+
 export interface CheckboxOption {
 	label: string;
 	// Provide option count separately from the label
@@ -53,55 +62,51 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 	disabled,
 	onChange,
 }) => {
-	const [checkedStates, setCheckedStates] = useState(
-		fromPairs(options.map((option: CheckboxOption) => [option.id, option.checked]))
+	// Computedd
+	const optionsFromPairs = fromPairs(
+		options.map(({ checked, ...option }: CheckboxOption) => [option.id, checked])
 	);
+
+	// State
+	const [checkedStates, setCheckedStates] = useState(optionsFromPairs);
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 
-	const handleCheckboxToggled = async (checked: boolean, id: string) => {
-		setCheckedStates({
-			...checkedStates,
-			[id]: checked,
-		});
-	};
-
-	const resetInternalCheckboxStates = () => {
-		setCheckedStates(
-			fromPairs(options.map((option: CheckboxOption) => [option.id, option.checked]))
-		);
-	};
-
-	const getSelectedFilterIds = (checkedStates: { [checkboxId: string]: boolean }) =>
-		compact(Object.keys(checkedStates).map(key => (checkedStates[key] ? key : null)));
-
-	const getSelectedTags = (): { label: string; id: string }[] => {
-		return compact(
-			options.map((option: CheckboxOption) => {
-				// Use checked state from parent state
-				// so the selected filters inside the dropdown button only change
-				// when the user clicks the submit button at the bottom of the dropdown menu
-				if (!option.checked) {
+	// Methods
+	const getSelectedTags = (): Tag[] =>
+		compact(
+			options.map(({ checked, ...option }: CheckboxOption) => {
+				// Only change when user clicks submit.
+				if (!checked) {
 					return null;
 				}
 
 				return { label: option.label, id: option.id };
 			})
 		);
-	};
 
+	const getSelectedFilterIds = (currentCheckedStates: CheckedState) =>
+		compact(Object.keys(currentCheckedStates).map(key => (currentCheckedStates[key] ? key : null)));
+
+	const resetInternalCheckboxStates = () => setCheckedStates(optionsFromPairs);
+
+	// Listeners
 	const applyFilter = async (): Promise<void> => {
 		onChange(getSelectedFilterIds(checkedStates), id);
 		await closeDropdownOrModal();
 	};
+
+	const handleCheckboxToggled = async (newCheckedState: boolean, toggledCheckboxId: string) =>
+		setCheckedStates({
+			...checkedStates,
+			[toggledCheckboxId]: newCheckedState,
+		});
 
 	const openDropdownOrModal = async () => {
 		await resetInternalCheckboxStates();
 		setIsOpen(true);
 	};
 
-	const closeDropdownOrModal = async () => {
-		setIsOpen(false);
-	};
+	const closeDropdownOrModal = () => setIsOpen(false);
 
 	const removeFilter = (tagId: string | number, evt: MouseEvent) => {
 		evt.stopPropagation();
@@ -111,23 +116,21 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 		onChange(getSelectedFilterIds(clonedCheckedStates), id);
 	};
 
-	const renderCheckboxGroup = (options: CheckboxOption[]) => {
-		return (
-			<FormGroup>
-				<CheckboxGroup>
-					{options.map((option: CheckboxOption) => (
-						<Checkbox
-							key={option.id}
-							id={option.id}
-							label={option.optionCount ? `${option.label} (${option.optionCount})` : option.label}
-							checked={checkedStates[option.id]}
-							onChange={(checked: boolean) => handleCheckboxToggled(checked, option.id)}
-						/>
-					))}
-				</CheckboxGroup>
-			</FormGroup>
-		);
-	};
+	const renderCheckbox = ({ id: optionId, optionCount, label: optionLabel }: CheckboxOption) => (
+		<Checkbox
+			key={optionId}
+			id={optionId}
+			label={optionCount ? `${optionLabel} (${optionCount})` : optionLabel}
+			checked={checkedStates[optionId]}
+			onChange={(checked: boolean) => handleCheckboxToggled(checked, optionId)}
+		/>
+	);
+
+	const renderCheckboxGroup = (checkboxOptions: CheckboxOption[]) => (
+		<FormGroup>
+			<CheckboxGroup>{checkboxOptions.map(renderCheckbox)}</CheckboxGroup>
+		</FormGroup>
+	);
 
 	const renderCheckboxControl = () => {
 		return (
@@ -162,7 +165,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 								</CheckboxGroup>
 							</FormGroup>
 							<FormGroup>
-								<Button label="Toepassen" type="primary" block onClick={() => applyFilter()} />
+								<Button label="Toepassen" type="primary" block onClick={applyFilter} />
 							</FormGroup>
 						</Form>
 					</Spacer>
@@ -193,7 +196,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 						<TextInput placeholder="Zoeken..." icon="search" />
 					</ModalHeaderRight>
 					<ModalBody>
-						<div className="u-spacer">
+						<Spacer>
 							<Form>
 								<Grid>
 									<Column size="2-4">{renderCheckboxGroup(firstColumnOptions)}</Column>
@@ -201,7 +204,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 									<Column size="2-4">{renderCheckboxGroup(thirdColumnOptions)}</Column>
 								</Grid>
 							</Form>
-						</div>
+						</Spacer>
 					</ModalBody>
 					<ModalFooterRight>
 						<Toolbar spaced>
@@ -227,8 +230,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 
 	return (
 		<div className={classnames({ 'u-opacity-50 u-disable-click': disabled })}>
-			{options.length <= 7 ? renderCheckboxControl() : null}
-			{options.length > 7 ? renderModalControl() : null}
+			{options.length <= 7 ? renderCheckboxControl() : renderModalControl()}
 		</div>
 	);
 };
