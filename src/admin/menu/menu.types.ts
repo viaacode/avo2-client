@@ -1,3 +1,5 @@
+import { IconName } from '@viaa/avo2-components';
+
 export type MenuOverviewTableCols = 'placement' | 'description' | 'actions';
 
 export interface MenuEditParams {
