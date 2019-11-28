@@ -27,36 +27,39 @@ interface AppProps extends RouteComponentProps {
 }
 
 const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
-	const PRIMARY_ITEMS: NavigationItem[] = [
-		...(!loginState || loginState.message !== LoginMessage.LOGGED_IN
-			? [
-					{ label: 'Voor leerkrachten', location: APP_PATH.FOR_TEACHERS },
-					{ label: 'Voor leerlingen', location: APP_PATH.FOR_PUPILS },
-			  ]
-			: [
-					{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME },
-					{
-						label: 'Zoeken',
-						location: APP_PATH.SEARCH,
-						icon: 'search' as IconName,
-					},
-					{ label: 'Ontdek', location: APP_PATH.DISCOVER },
-					{
-						label: 'Mijn Werkruimte',
-						location: APP_PATH.WORKSPACE,
-						icon: 'briefcase' as IconName,
-					},
-			  ]),
-		{ label: 'Projecten', location: APP_PATH.PROJECTS },
-		{ label: 'Nieuws', location: APP_PATH.NEWS },
-	];
-	const SECONDARY_ITEMS: NavigationItem[] =
-		loginState && loginState.message === LoginMessage.LOGGED_IN
-			? [{ label: 'Afmelden', location: APP_PATH.LOGOUT }]
-			: [
-					{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown /> },
-					{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN },
-			  ];
+	const isLoggedIn = loginState && loginState.message === LoginMessage.LOGGED_IN;
+	let PRIMARY_ITEMS: NavigationItem[];
+	let SECONDARY_ITEMS: NavigationItem[];
+	if (isLoggedIn) {
+		PRIMARY_ITEMS = [
+			{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME },
+			{
+				label: 'Zoeken',
+				location: APP_PATH.SEARCH,
+				icon: 'search' as IconName,
+			},
+			{ label: 'Ontdek', location: APP_PATH.DISCOVER },
+			{
+				label: 'Mijn Werkruimte',
+				location: APP_PATH.WORKSPACE,
+				icon: 'briefcase' as IconName,
+			},
+			{ label: 'Projecten', location: APP_PATH.PROJECTS },
+			{ label: 'Nieuws', location: APP_PATH.NEWS },
+		];
+		SECONDARY_ITEMS = [{ label: 'Afmelden', location: APP_PATH.LOGOUT }];
+	} else {
+		PRIMARY_ITEMS = [
+			{ label: 'Voor leerkrachten', location: APP_PATH.FOR_TEACHERS },
+			{ label: 'Voor leerlingen', location: APP_PATH.FOR_PUPILS },
+			{ label: 'Projecten', location: APP_PATH.PROJECTS },
+			{ label: 'Nieuws', location: APP_PATH.NEWS },
+		];
+		SECONDARY_ITEMS = [
+			{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown /> },
+			{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN },
+		];
+	}
 
 	// State
 	const [menuOpen, setMenuOpen] = useState(false);
