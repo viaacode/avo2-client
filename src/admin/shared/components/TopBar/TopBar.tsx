@@ -23,6 +23,7 @@ const TopBar: FunctionComponent<TopbarProps> = ({ navigateBack }) => (
 							<Button
 								className="c-top-bar__back"
 								icon="chevron-left"
+								label="Terug"
 								onClick={navigateBack}
 								type="link"
 							/>
