@@ -1,5 +1,6 @@
 import { ROUTE_PARTS } from '../../shared/constants';
 import { TableColumn } from '../../shared/types';
+import { ContentEditFormState } from './content.types';
 
 export const CONTENT_RESULT_PATH = 'app_content';
 
@@ -21,3 +22,11 @@ export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
 	{ id: 'updated_at', label: 'Laatst bewerkt' },
 	{ id: 'actions', label: '' },
 ];
+
+export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
+	title: '',
+	description: '',
+	contentType: '',
+	publishAt: '',
+	depublishAt: '',
+});

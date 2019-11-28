@@ -73,3 +73,18 @@ export const GET_CONTENT_TYPES = gql`
 		}
 	}
 `;
+export const UPDATE_CONTENT_BY_ID = gql`
+	mutation updateContentById($id: Int!, $contentItem: app_content_set_input!) {
+		update_app_content(where: { id: { _eq: $id } }, _set: $contentItem) {
+			affected_rows
+		}
+	}
+`;
+
+export const INSERT_CONTENT = gql`
+	mutation insertContent($contentItem: app_content_insert_input!) {
+		insert_app_content(objects: [$contentItem]) {
+			affected_rows
+		}
+	}
+`;
