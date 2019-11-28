@@ -4,11 +4,7 @@ context('Home', () => {
 	beforeEach(() => {
 		cy.viewport(1920, 937);
 		cy.visit(Cypress.env('CLIENT_BASE_URL'));
-		cy.manualLogin(
-			'',
-			Cypress.env('SHD_TEST_ACCOUNT_EMAIL'),
-			Cypress.env('SHD_TEST_ACCOUNT_PASSWORD')
-		);
+		cy.login(Cypress.env('SHD_TEST_ACCOUNT_EMAIL'), Cypress.env('SHD_TEST_ACCOUNT_PASSWORD'));
 	});
 
 	it('Homepage should load correctly', () => {
