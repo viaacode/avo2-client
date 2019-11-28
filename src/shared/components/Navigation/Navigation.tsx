@@ -57,14 +57,14 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState })
 				{
 					label: 'Zoeken',
 					location: APP_PATH.SEARCH,
-					icon: 'search' as IconName,
+					icon: 'search',
 					key: 'pupils',
 				},
 				{ label: 'Ontdek', location: APP_PATH.DISCOVER, key: 'home' },
 				{
 					label: 'Mijn Werkruimte',
 					location: APP_PATH.WORKSPACE,
-					icon: 'briefcase' as IconName,
+					icon: 'briefcase',
 					key: 'search',
 				},
 				{ label: 'Projecten', location: APP_PATH.PROJECTS, key: 'discover' },
