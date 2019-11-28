@@ -1,15 +1,16 @@
 import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
-import { getFullName, getRole, navigate } from '../../../shared/helpers';
+import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { CONTENT_OVERVIEW_TABLE_COLS, CONTENT_PATH } from '../content.const';
+import { CONTENT_OVERVIEW_TABLE_COLS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
 import { GET_CONTENT } from '../content.gql';
 import { ContentOverviewTableCols } from '../content.types';
 
@@ -23,13 +24,20 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 		rowData: Partial<Avo.Content.Content>,
 		columnId: ContentOverviewTableCols
 	) => {
-		const { id, profile } = rowData;
+		const { id, profile, title } = rowData;
 
 		switch (columnId) {
+			case 'title':
+				return <Link to={buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })}>{title}</Link>;
 			case 'author':
-				return getFullName(profile);
+				return profile ? getFullName(profile) : '-';
 			case 'role':
-				return getRole(profile || null);
+				return getRole(profile || null) || '-';
+			case 'publish_at':
+			case 'depublish_at':
+			case 'created_at':
+			case 'updated_at':
+				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
 			case 'actions':
 				return (
 					<ButtonToolbar>
@@ -38,12 +46,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
 							size="small"
 							title="Bekijk content"
+							type="tertiary"
 						/>
 						<Button
 							icon="edit"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 							size="small"
-							title="Bekijk content"
+							title="Pas content aan"
+							type="tertiary"
 						/>
 					</ButtonToolbar>
 				);
@@ -94,7 +104,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 			<AdminLayoutBody>
 				<DataQueryComponent
 					renderData={renderContentOverview}
-					resultPath="app_content"
+					resultPath={CONTENT_RESULT_PATH}
 					query={GET_CONTENT}
 				/>
 			</AdminLayoutBody>
