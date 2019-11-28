@@ -60,7 +60,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 	}>({});
 
 	const STAMBOEK_MESSAGES: {
-		[status in validationStatuses]: { message: string | ReactNode; status: TOAST_TYPE | undefined }
+		[status in validationStatuses]: { message: string | ReactNode; status: ToastType | undefined }
 	} = {
 		INCOMPLETE: {
 			message: '',
@@ -69,7 +69,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 		INVALID_FORMAT: {
 			message:
 				'Het stamboek nummer heeft een ongeldig formaat. Geldige formaten: 00000000000 of 00000000000-000000',
-			status: TOAST_TYPE.DANGER,
+			status: ToastType.DANGER,
 		},
 		INVALID_NUMBER: {
 			message: (
@@ -84,15 +84,15 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					toch al toegang krijgen.
 				</span>
 			),
-			status: TOAST_TYPE.DANGER,
+			status: ToastType.DANGER,
 		},
 		VALID_FORMAT: {
 			message: 'Bezig met valideren',
-			status: TOAST_TYPE.SPINNER,
+			status: ToastType.SPINNER,
 		},
 		VALID: {
 			message: 'Het stamboek nummer is geldig',
-			status: TOAST_TYPE.SUCCESS,
+			status: ToastType.SUCCESS,
 		},
 		ALREADY_IN_USE: {
 			message: (
@@ -106,12 +106,12 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					.
 				</span>
 			),
-			status: TOAST_TYPE.SUCCESS,
+			status: ToastType.SUCCESS,
 		},
 		SERVER_ERROR: {
 			message:
 				'Er ging iets mis bij het valideren van het stamboek nummer. Probeer later eens opnieuw.',
-			status: TOAST_TYPE.DANGER,
+			status: ToastType.DANGER,
 		},
 	};
 
