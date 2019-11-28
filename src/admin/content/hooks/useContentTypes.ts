@@ -18,7 +18,7 @@ export const useContentTypes = () => {
 			.finally(() => {
 				setIsLoadingContentTypes(false);
 			});
-	});
+	}, []);
 
 	return { contentTypes, isLoadingContentTypes };
 };

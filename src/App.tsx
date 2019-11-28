@@ -6,9 +6,11 @@ import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
+import { Avo } from '@viaa/avo2-types';
+
 import Admin from './admin/Admin';
 import { selectLogin } from './authentication/store/selectors';
-import { LoginMessage, LoginResponse } from './authentication/store/types';
+import { LoginMessage } from './authentication/store/types';
 import { Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
 import { dataService } from './shared/services/data-service';
@@ -21,7 +23,7 @@ import store, { AppState } from './store';
 import './styles/main.scss';
 
 interface AppProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
 const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
