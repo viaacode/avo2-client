@@ -53,8 +53,11 @@ import {
 	// TODO: DISABLED FEATURE - ReorderCollectionModal,
 	ShareCollectionModal,
 } from '../components';
+import { swapFragmentsPositions } from '../helpers';
 
 interface CollectionEditProps extends RouteComponentProps<{ id: string }> {}
+
+const { DANGER } = TOAST_TYPE;
 
 let currentCollection: Avo.Collection.Collection | undefined;
 let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
@@ -115,7 +118,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 		if (!tempCollection) {
 			toastService(
 				'De collectie updaten is mislukt, kon geen kopie maken van de bestaande collectie',
-				TOAST_TYPE.DANGER
+				DANGER
 			);
 			return;
 		}
@@ -134,49 +137,23 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 	};
 
 	// Swap position of two fragments within a collection
-	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
+	const swapFragments = (currentFragmentId: number, direction: 'up' | 'down') => {
 		if (!currentCollection) {
-			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
+			toastService('De collectie was niet ingesteld', DANGER);
 			return;
 		}
 
 		if (!currentCollection.collection_fragments || !currentCollection.collection_fragments.length) {
-			toastService('De collectie fragmenten zijn niet ingesteld', TOAST_TYPE.DANGER);
+			toastService('De collectie fragmenten zijn niet ingesteld', DANGER);
 			return;
 		}
 
 		const fragments = CollectionService.getFragments(currentCollection);
-
-		const changeFragmentsPositions = (fragments: Avo.Collection.Fragment[], sign: number) => {
-			const fragment = fragments.find(
-				(fragment: Avo.Collection.Fragment) => fragment.position === currentId
-			);
-
-			const otherFragment = fragments.find(
-				(fragment: Avo.Collection.Fragment) => fragment.position === currentId - sign
-			);
-
-			if (!fragment) {
-				toastService(`Het fragment met id ${currentId} is niet gevonden`, TOAST_TYPE.DANGER);
-				return;
-			}
-
-			if (!otherFragment) {
-				toastService(`Het fragment met id ${currentId - sign} is niet gevonden`, TOAST_TYPE.DANGER);
-				return;
-			}
-
-			fragment.position -= sign;
-			otherFragment.position += sign;
-		};
-
-		direction === 'up'
-			? changeFragmentsPositions(fragments, 1)
-			: changeFragmentsPositions(fragments, -1);
+		const delta = direction === 'up' ? 1 : -1;
 
 		setCurrentCollection({
 			...currentCollection,
-			collection_fragments: fragments,
+			collection_fragments: swapFragmentsPositions(fragments, currentFragmentId, delta),
 		});
 	};
 

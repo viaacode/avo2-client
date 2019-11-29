@@ -1,4 +1,4 @@
-import { get, orderBy } from 'lodash-es';
+import { orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -31,8 +31,8 @@ import { fetchPlayerTicket } from '../../../shared/services/player-ticket-servic
 import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
 
 import { CutFragmentModal, FragmentAdd } from '../';
-import { isMediaFragment } from '../../collection.helpers';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
+import { getFragmentProperty, isMediaFragment } from '../../helpers';
 
 interface FragmentEditProps extends RouteComponentProps {
 	index: number;
@@ -67,8 +67,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	});
 
 	// Check whether the current fragment is the first and/or last fragment in collection
-	const isFirst = (index: number) => index === 0;
-	const isLast = (index: number) => index === collection.collection_fragments.length - 1;
+	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
+	const isLast = (fragmentIndex: number) =>
+		fragmentIndex === collection.collection_fragments.length - 1;
 
 	const FRAGMENT_DROPDOWN_ITEMS = [
 		// TODO: DISABLED FEATURE
@@ -79,17 +80,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		// createDropdownMenuItem('copyToCollection', 'Kopiëren naar andere collectie', 'copy'),
 		// createDropdownMenuItem('moveToCollection', 'Verplaatsen naar andere collectie', 'arrow-right'),
 	];
-
-	// Get correct fragment property according to fragment type
-	const getFragmentProperty = (
-		itemMetaData: Avo.Item.Item,
-		fragment: Avo.Collection.Fragment,
-		useCustomFields: Boolean,
-		prop: 'title' | 'description'
-	) =>
-		useCustomFields || !itemMetaData
-			? get(fragment, `custom_${prop}`, '')
-			: get(itemMetaData, prop, '');
 
 	const initFlowPlayer = () =>
 		!playerTicket &&
@@ -143,7 +133,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		// Sort fragments by position
 		const orderedFragments = orderBy(
 			collection.collection_fragments.filter(
-				(fragment: Avo.Collection.Fragment) => fragment.id !== fragmentId
+				({ id: collectionFragmentId }: Avo.Collection.Fragment) =>
+					collectionFragmentId !== fragmentId
 			),
 			['position'],
 			['asc']
@@ -154,7 +145,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: positionedFragments.map(fragment => fragment.id),
+			collection_fragment_ids: positionedFragments.map(
+				({ id: positionedFragmentId }) => positionedFragmentId
+			),
 		});
 
 		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
@@ -217,7 +210,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		/>
 	);
 
-	const renderForm = (fragment: Avo.Collection.Fragment, itemMetaData: Avo.Item.Item) => {
+	const renderForm = () => {
 		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
 
 		return (
@@ -311,10 +304,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									{...cuePoints}
 								/>
 							</Column>
-							<Column size="3-6">{renderForm(fragment, itemMetaData)}</Column>
+							<Column size="3-6">{renderForm()}</Column>
 						</Grid>
 					) : (
-						<Form>{renderForm(fragment, itemMetaData)}</Form>
+						<Form>{renderForm()}</Form>
 					)}
 				</div>
 			</div>

@@ -197,8 +197,8 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				return isInFolder && <Button icon="folder" type="borderless" />;
 			case 'access':
 				const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
-				const avatarProps = userProfiles.map(profile => {
-					const props = getAvatarProps(profile);
+				const avatarProps = userProfiles.map(userProfile => {
+					const props = getAvatarProps(userProfile);
 					(props as any).subtitle = 'mag bewerken'; // TODO: Check permissions for all users
 					return props;
 				});

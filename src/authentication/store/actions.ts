@@ -10,7 +10,7 @@ import {
 	SetLoginSuccessAction,
 } from './types';
 
-export const getLoginState = () => {
+export const getLoginStateAction = () => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
 		const { loginMessage } = getState();
 

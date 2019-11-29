@@ -6,7 +6,7 @@ import { Dispatch } from 'redux';
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 
 import { AUTH_PATH } from '../authentication.const';
-import { getLoginState } from '../store/actions';
+import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginMessage, LoginResponse } from '../store/types';
 
@@ -80,7 +80,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getLoginState: () => dispatch(getLoginState() as any),
+		getLoginState: () => dispatch(getLoginStateAction() as any),
 	};
 };
 

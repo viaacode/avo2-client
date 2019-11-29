@@ -25,18 +25,18 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		disabled: boolean = false
 	): ReactNode => {
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
-			(option: Avo.Search.OptionProp): CheckboxOption => {
-				let label = capitalize(option.option_name);
+			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
+				let checkboxLabel = capitalize(option_name);
 
 				if (propertyName === 'language') {
-					label = languageCodeToLabel(option.option_name);
+					checkboxLabel = languageCodeToLabel(option_name);
 				}
 
 				return {
-					label,
-					optionCount: option.option_count,
-					id: option.option_name,
-					checked: ((formState[propertyName] as string[]) || []).includes(option.option_name),
+					label: checkboxLabel,
+					optionCount: option_count,
+					id: option_name,
+					checked: ((formState[propertyName] as string[]) || []).includes(option_name),
 				};
 			}
 		);
@@ -61,18 +61,20 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
 		const range: Avo.Search.DateRange = get(formState, 'broadcastDate') || { gte: '', lte: '' };
-		range.gte = range.gte || '';
-		range.lte = range.lte || '';
+		const correctRange: Avo.Search.DateRange = {
+			gte: range.gte || '',
+			lte: range.lte || '',
+		};
 
 		return (
 			<li className={`c-filter-dropdown c-filter-dropdown-${propertyName.toLowerCase()}`}>
 				<DateRangeDropdown
 					label={label}
 					id={propertyName}
-					range={range as { gte: string; lte: string }}
-					onChange={async (range: Avo.Search.DateRange) => {
-						await handleFilterFieldChange(range, propertyName);
-					}}
+					range={correctRange as { gte: string; lte: string }}
+					onChange={async (dateRange: Avo.Search.DateRange) =>
+						await handleFilterFieldChange(dateRange, propertyName)
+					}
 				/>
 			</li>
 		);

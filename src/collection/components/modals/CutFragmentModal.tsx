@@ -58,13 +58,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const [fragmentEndString, setFragmentEndString] = useState<string>(endString);
 
 	const getValidationErrors = (): string[] => {
-		const start = toSeconds(fragmentStartString, true);
-		const end = toSeconds(fragmentEndString, true);
+		const startTime = toSeconds(fragmentStartString, true);
+		const endTime = toSeconds(fragmentEndString, true);
 
 		return getValidationErrorsForStartAndEnd({
 			...fragment,
-			start_oc: start,
-			end_oc: end,
+			start_oc: startTime,
+			end_oc: endTime,
 		});
 	};
 
@@ -82,16 +82,16 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			return;
 		}
 
-		const start = toSeconds(fragmentStartString, true);
-		const end = toSeconds(fragmentEndString, true);
+		const startTime = toSeconds(fragmentStartString, true);
+		const endTime = toSeconds(fragmentEndString, true);
 
 		const videoStills = await getVideoStills([
-			{ externalId: fragment.external_id, startTime: start || 0 },
+			{ externalId: fragment.external_id, startTime: startTime || 0 },
 		]);
 
 		updateFragmentProperties([
-			{ value: start, fieldName: 'start_oc' as const, fragmentId: fragment.id },
-			{ value: end, fieldName: 'end_oc' as const, fragmentId: fragment.id },
+			{ value: startTime, fieldName: 'start_oc' as const, fragmentId: fragment.id },
+			{ value: endTime, fieldName: 'end_oc' as const, fragmentId: fragment.id },
 			...(videoStills && videoStills.length > 0
 				? [
 						{
@@ -106,8 +106,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 				: []),
 		]);
 		updateCuePoints({
-			start,
-			end,
+			start: startTime,
+			end: endTime,
 		});
 		onClose();
 	};
@@ -128,22 +128,22 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	 */
 	const parseTimes = () => {
 		// Limit start end and times between 0 and fragment duration
-		let start = toSeconds(fragmentStartString, true) as number;
-		let end = toSeconds(fragmentEndString, true) as number;
+		let startTime = toSeconds(fragmentStartString, true) as number;
+		let endTime = toSeconds(fragmentEndString, true) as number;
 		const duration =
 			(fragment.item_meta &&
 				fragment.item_meta.duration &&
 				toSeconds(fragment.item_meta.duration)) ||
 			0;
-		if (start) {
-			start = clamp(start, 0, duration);
-			setFragmentStart(start);
-			setFragmentStartString(formatDurationHoursMinutesSeconds(start));
+		if (startTime) {
+			startTime = clamp(startTime, 0, duration);
+			setFragmentStart(startTime);
+			setFragmentStartString(formatDurationHoursMinutesSeconds(startTime));
 		}
-		if (end) {
-			end = clamp(end, 0, duration);
-			setFragmentEnd(end);
-			setFragmentEndString(formatDurationHoursMinutesSeconds(end));
+		if (endTime) {
+			endTime = clamp(endTime, 0, duration);
+			setFragmentEnd(endTime);
+			setFragmentEndString(formatDurationHoursMinutesSeconds(endTime));
 		}
 	};
 
