@@ -162,6 +162,7 @@ export const insertDuplicateAssignment = async (
 	assignment: Partial<Avo.Assignment.Assignment> | null
 ) => {
 	if (!assignment) {
+		toastService('De opdracht is niet beschikbaar om te dupliceren', TOAST_TYPE.DANGER);
 		return;
 	}
 
