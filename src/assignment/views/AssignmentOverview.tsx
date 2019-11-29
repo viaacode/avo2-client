@@ -48,7 +48,11 @@ import {
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import {
+	deleteAssignment,
+	insertDuplicateAssignment,
+	updateAssignment,
+} from '../assignment.services';
 import { AssignmentColumn } from '../assignment.types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
@@ -123,28 +127,24 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		return assignment;
 	};
 
-	// TODO: Make this one function in a service or helper file as it is also used in AssignmentEdit
 	const duplicateAssignment = async (
-		newTitle: string,
+		title: string,
 		assignment: Partial<Avo.Assignment.Assignment> | null,
 		refetchAssignments: () => void
 	) => {
-		try {
-			if (assignment) {
-				delete assignment.id;
-				assignment.title = newTitle;
-				const duplicatedAssignment = await insertAssignment(triggerAssignmentInsert, assignment);
-				if (!duplicatedAssignment) {
-					return; // assignment was not valid => validation service already showed a toast
-				}
-				refetchAssignments();
-				refetchCount();
-				toastService('De opdracht is gedupliceerd', TOAST_TYPE.SUCCESS);
-			}
-		} catch (err) {
-			console.error(err);
-			toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+		const duplicatedAssignment = await insertDuplicateAssignment(
+			triggerAssignmentInsert,
+			title,
+			assignment
+		);
+
+		if (!duplicatedAssignment) {
+			return; // assignment was not valid => validation service already showed a toast
 		}
+
+		refetchAssignments();
+		refetchCount();
+		toastService('De opdracht is gedupliceerd', TOAST_TYPE.SUCCESS);
 	};
 
 	const archiveAssignment = async (

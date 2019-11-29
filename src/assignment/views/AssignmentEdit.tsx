@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
-import { cloneDeep, get, isEmpty, remove } from 'lodash-es';
+import { get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -73,7 +73,12 @@ import {
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import {
+	deleteAssignment,
+	insertAssignment,
+	insertDuplicateAssignment,
+	updateAssignment,
+} from '../assignment.services';
 import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentEdit.scss';
@@ -116,7 +121,6 @@ interface AssignmentEditProps extends RouteComponentProps {
 	loginState: LoginResponse | null;
 }
 
-// TODO: Test with a single useEffect
 let currentAssignment: Partial<Avo.Assignment.Assignment>;
 let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
 let initialAssignment: Partial<Avo.Assignment.Assignment>;
@@ -474,33 +478,22 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const duplicateAssignment = async (duplicateAssignmentTitle: string) => {
-		try {
-			const assignmentToDuplicate = {
-				...cloneDeep(initialAssignment),
-				title: duplicateAssignmentTitle,
-			};
+	const duplicateAssignment = async (title: string) => {
+		const duplicatedAssigment = await insertDuplicateAssignment(
+			triggerAssignmentInsert,
+			title,
+			initialAssignment
+		);
 
-			delete assignmentToDuplicate.id;
-
-			const duplicatedAssigment = await insertAssignment(
-				triggerAssignmentInsert,
-				assignmentToDuplicate
-			);
-
-			if (!duplicatedAssigment) {
-				return; // assignment was not valid
-			}
-
-			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
-			toastService(
-				'De opdracht is succesvol gedupliceerd. U kijkt nu naar het duplicaat',
-				TOAST_TYPE.SUCCESS
-			);
-		} catch (err) {
-			console.error(err);
-			toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+		if (!duplicatedAssigment) {
+			return; // assignment was not valid
 		}
+
+		navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
+		toastService(
+			'De opdracht is succesvol gedupliceerd. U kijkt nu naar het duplicaat',
+			TOAST_TYPE.SUCCESS
+		);
 	};
 
 	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {
