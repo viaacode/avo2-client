@@ -1,6 +1,4 @@
-import Login from './Login';
-import Logout from './Logout';
-import Register from './Register';
-import RegisterOrLogin from './RegisterOrLogin';
-
-export { Login, Logout, Register, RegisterOrLogin };
+export { default as Login } from './Login';
+export { default as Logout } from './Logout';
+export { default as Register } from './Register';
+export { default as RegisterOrLogin } from './RegisterOrLogin';

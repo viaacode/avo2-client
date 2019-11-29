@@ -1,3 +1,1 @@
-import Discover from './Discover';
-
-export { Discover };
+export { default as Discover } from './Discover';

@@ -1,4 +1,2 @@
-import Bookmarks from './Bookmarks';
-import Workspace from './Workspace';
-
-export { Bookmarks, Workspace };
+export { default as Bookmarks } from './Bookmarks';
+export { default as Workspace } from './Workspace';

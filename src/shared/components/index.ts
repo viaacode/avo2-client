@@ -1,21 +1,11 @@
-import CheckboxDropdownModal from './CheckboxDropdownModal/CheckboxDropdownModal';
-import ControlledDropdown from './ControlledDropdown/ControlledDropdown';
-import DataQueryComponent from './DataQueryComponent/DataQueryComponent';
-import DateRangeDropdown from './DateRangeDropdown/DateRangeDropdown';
-import DeleteObjectModal from './DeleteObjectModal/DeleteObjectModal';
-import Footer from './Footer/Footer';
-import InputModal from './InputModal/InputModal';
-import LoadingErrorLoadedComponent from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import Navigation from './Navigation/Navigation';
-
+export { default as CheckboxDropdownModal } from './CheckboxDropdownModal/CheckboxDropdownModal';
+export { default as ControlledDropdown } from './ControlledDropdown/ControlledDropdown';
+export { default as DataQueryComponent } from './DataQueryComponent/DataQueryComponent';
+export { default as DateRangeDropdown } from './DateRangeDropdown/DateRangeDropdown';
+export { default as DeleteObjectModal } from './DeleteObjectModal/DeleteObjectModal';
+export { default as Footer } from './Footer/Footer';
+export { default as InputModal } from './InputModal/InputModal';
 export {
-	CheckboxDropdownModal,
-	ControlledDropdown,
-	Footer,
-	Navigation,
-	DeleteObjectModal,
-	InputModal,
-	DateRangeDropdown,
-	DataQueryComponent,
-	LoadingErrorLoadedComponent,
-};
+	default as LoadingErrorLoadedComponent,
+} from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+export { default as Navigation } from './Navigation/Navigation';
