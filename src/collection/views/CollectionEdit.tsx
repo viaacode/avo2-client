@@ -202,15 +202,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 				setInitialCollection(cloneDeep(newCollection));
 				toastService.success('Collectie opgeslagen');
 				trackEvents({
-					event_object: {
-						type: 'collection',
-						identifier: `${newCollection.id}`,
-					},
-					event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+					object: String(newCollection.id),
+					object_type: 'collections',
+					message: `Gebruiker ${getProfileName()} heeft de collectie ${
 						newCollection.id
 					} bijgewerkt`,
-					name: 'edit',
-					category: 'item',
+					action: 'edit',
 				});
 			}
 		}
@@ -275,15 +272,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 			});
 
 			trackEvents({
-				event_object: {
-					type: 'collection',
-					identifier: String(currentCollection.id),
-				},
-				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+				object: String(currentCollection.id),
+				object_type: 'collections',
+				message: `Gebruiker ${getProfileName()} heeft de collectie ${
 					currentCollection.id
 				} verwijderd`,
-				name: 'delete',
-				category: 'item',
+				action: 'delete',
 			});
 
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID });

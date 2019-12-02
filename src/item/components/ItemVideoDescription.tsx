@@ -118,15 +118,12 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				// TODO: add interface @benji
 				setPlayerTicket(data);
 				trackEvents({
-					event_object: {
-						type: 'item',
-						identifier: itemMetaData.external_id,
-					},
-					event_message: `Gebruiker ${getProfileName()} heeft het item ${
+					object: itemMetaData.external_id,
+					object_type: 'avo_item_pid',
+					message: `Gebruiker ${getProfileName()} heeft het item ${
 						itemMetaData.external_id
 					} afgespeeld`,
-					name: 'view',
-					category: 'item',
+					action: 'view',
 				});
 			})
 			.catch((err: any) => {
