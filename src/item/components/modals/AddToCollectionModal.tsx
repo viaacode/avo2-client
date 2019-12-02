@@ -157,16 +157,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				toastService.success('Het fragment is toegevoegd aan de collectie');
 				onClose();
 				trackEvents({
-					event_object: {
-						type: 'collection',
-						identifier: String(collection.id as number),
-					},
-					event_message: `Gebruiker ${getProfileName()} heeft fragment ${get(
+					object: String(collection.id),
+					object_type: 'collections',
+					message: `Gebruiker ${getProfileName()} heeft fragment ${get(
 						response,
 						'data.insert_app_collection_fragments.returning[0].id'
 					)} toegevoegd aan collectie ${collection.id}`,
-					name: 'add_to_collection',
-					category: 'item',
+					action: 'add_to_collection',
 				});
 			}
 		} catch (err) {
