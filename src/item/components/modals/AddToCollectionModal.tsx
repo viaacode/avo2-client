@@ -41,7 +41,7 @@ import { ApolloCacheManager, dataService } from '../../../shared/services/data-s
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 
 import './AddToCollectionModal.scss';
 
@@ -108,10 +108,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			if (collection) {
 				setSelectedCollection(collection);
 			} else {
-				toastService('Het ophalen van de collectie details is mislukt', TOAST_TYPE.DANGER);
+				toastService.danger('Het ophalen van de collectie details is mislukt');
 			}
 		} catch (err) {
-			toastService('Het ophalen van de collectie details is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het ophalen van de collectie details is mislukt');
 		}
 	};
 
@@ -152,26 +152,23 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
-				toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
+				toastService.danger('Het fragment kon niet worden toegevoegd aan de collectie');
 			} else {
-				toastService('Het fragment is toegevoegd aan de collectie', TOAST_TYPE.SUCCESS);
+				toastService.success('Het fragment is toegevoegd aan de collectie');
 				onClose();
 				trackEvents({
-					event_object: {
-						type: 'collection',
-						identifier: String(collection.id as number),
-					},
-					event_message: `Gebruiker ${getProfileName()} heeft fragment ${get(
+					object: String(collection.id),
+					object_type: 'collections',
+					message: `Gebruiker ${getProfileName()} heeft fragment ${get(
 						response,
 						'data.insert_app_collection_fragments.returning[0].id'
 					)} toegevoegd aan collectie ${collection.id}`,
-					name: 'add_to_collection',
-					category: 'item',
+					action: 'add_to_collection',
 				});
 			}
 		} catch (err) {
 			console.error(err);
-			toastService('Het fragment kon niet worden toegevoegd aan de collectie', TOAST_TYPE.DANGER);
+			toastService.danger('Het fragment kon niet worden toegevoegd aan de collectie');
 		}
 
 		// Re-enable apply button
@@ -218,9 +215,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			);
 
 			if (!response || response.errors) {
-				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+				toastService.danger('De collectie kon niet worden aangemaakt');
 			} else if (!insertedCollection || isNil(insertedCollection.id)) {
-				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
+				toastService.danger('De aangemaakte collectie kon niet worden opgehaald');
 			} else {
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
@@ -235,7 +232,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					collection: newCollection,
 				},
 			});
-			toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+			toastService.danger('De collectie kon niet worden aangemaakt');
 
 			// Re-enable apply button
 			setIsProcessing(false);

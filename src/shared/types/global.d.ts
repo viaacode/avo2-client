@@ -5,6 +5,7 @@ interface Window {
 		FLOW_PLAYER_ID: string;
 		PORT: string;
 		NODE_ENV: string;
+		ENV: 'local' | 'qas' | 'production';
 	};
 	APP_INFO: {
 		version: string;
