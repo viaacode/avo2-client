@@ -13,16 +13,16 @@ export const renderAdminContentRoutes = (): ReactNode[] => [
 		path={CONTENT_PATH.CONTENT}
 	/>,
 	<SecuredRoute
-		key={CONTENT_PATH.CONTENT_DETAIL}
-		component={ContentDetail}
-		exact
-		path={CONTENT_PATH.CONTENT_DETAIL}
-	/>,
-	<SecuredRoute
 		key={CONTENT_PATH.CONTENT_CREATE}
 		component={ContentEdit}
 		exact
 		path={CONTENT_PATH.CONTENT_CREATE}
+	/>,
+	<SecuredRoute
+		key={CONTENT_PATH.CONTENT_DETAIL}
+		component={ContentDetail}
+		exact
+		path={CONTENT_PATH.CONTENT_DETAIL}
 	/>,
 	<SecuredRoute
 		key={CONTENT_PATH.CONTENT_EDIT}
