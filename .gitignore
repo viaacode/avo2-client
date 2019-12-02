@@ -257,3 +257,4 @@ tests/cypress/screenshots
 tests/cypress-report*xml
 tests/ci-results
 tests/cypress.env.json
+tests/dist

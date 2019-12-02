@@ -22,10 +22,11 @@ import {
 	ValidateStamboekResponse,
 } from '@viaa/avo2-types/types/stamboek/types';
 
+import { APP_PATH } from '../../../constants';
 import { getEnv } from '../../../shared/helpers';
 import { ToastType } from '../../../shared/services/toast-service';
 import {
-	redirectToClientManualAccessRequest,
+	redirectToClientPage,
 	redirectToServerArchiefRegistrationIdp,
 } from '../../helpers/redirects';
 
@@ -76,7 +77,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog maar recent uw
 					kaart heeft ontvangen kan u via{' '}
 					<Button
-						onClick={() => redirectToClientManualAccessRequest(history)}
+						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 						label="een manuele aanvraag"
 						type="inline-link"
 					/>{' '}
@@ -99,7 +100,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					Dit stamboek nummer is reeds in gebruik,{' '}
 					<Button
 						label="contacteer de helpdesk"
-						onClick={() => redirectToClientManualAccessRequest(history)}
+						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 						type="inline-link"
 					/>
 					.
@@ -252,13 +253,23 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 										</Spacer>
 										<Button
 											label="Manuele aanvraag"
-											onClick={() => redirectToClientManualAccessRequest(history)}
+											onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 										/>
 									</div>
 								</Alert>
 							</Spacer>
 						)}
 					</RadioButtonGroup>
+					<Spacer margin="top-small">
+						<Alert type="info">
+							<a
+								className="u-clickable"
+								onClick={() => toastService('Nog niet geimplementeerd', TOAST_TYPE.INFO)}
+							>
+								Waarom hebben jullie mijn stamboeknummer nodig?
+							</a>
+						</Alert>
+					</Spacer>
 				</FormGroup>
 				<Spacer margin={['bottom-large', 'top-large']}>
 					<FormGroup>
@@ -281,6 +292,16 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
 					/>
 				</FormGroup>
+				<Spacer margin="top-large">
+					<Alert type="info">
+						<a
+							className="u-clickable"
+							onClick={() => toastService('Nog niet geimplementeerd', TOAST_TYPE.INFO)}
+						>
+							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
+						</a>
+					</Alert>
+				</Spacer>
 			</Container>
 		</Container>
 	);
