@@ -66,17 +66,21 @@ export const updateContent = async (
 	contentItem: Partial<Avo.Content.Content>
 ): Promise<Partial<Avo.Content.Content> | null> => {
 	try {
-		const response = triggerContentInsert({
+		const response = await triggerContentInsert({
 			variables: {
 				contentItem,
 				id: contentItem.id,
 			},
 			update: ApolloCacheManager.clearContentCache,
 		});
-		console.log(response);
-		const insertedContent = get(response, `data.${CONTENT_RESULT_PATH.UPDATE}.returning[0]`, null);
+		const insertedContent = get(response, 'data', null);
 
-		return insertedContent ? contentItem : null;
+		if (!insertedContent) {
+			console.error('Content update returned empty response', response);
+			return null;
+		}
+
+		return contentItem;
 	} catch (err) {
 		console.error(err);
 		return null;
