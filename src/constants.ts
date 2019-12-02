@@ -4,8 +4,10 @@ import { COLLECTION_PATH } from './collection/collection.const';
 import { DISCOVER_PATH } from './discover/discover.const';
 import { HOME_PATH } from './home/home.const';
 import { ITEM_PATH } from './item/item.const';
+import { PUPILS_PATH } from './pupils/pupils.const';
 import { SEARCH_PATH } from './search/search.const';
 import { ROUTE_PARTS } from './shared/constants';
+import { TEACHERS_PATH } from './teachers/teachers.const';
 import { WORKSPACE_PATH } from './workspace/workspace.const';
 
 export const APP_PATH = Object.freeze({
@@ -13,6 +15,8 @@ export const APP_PATH = Object.freeze({
 	...AUTH_PATH,
 	...COLLECTION_PATH,
 	...DISCOVER_PATH,
+	...TEACHERS_PATH,
+	...PUPILS_PATH,
 	...HOME_PATH,
 	...ITEM_PATH,
 	...SEARCH_PATH,

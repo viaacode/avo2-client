@@ -5,7 +5,8 @@ import { Dispatch } from 'redux';
 
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 
-import { AUTH_PATH } from '../authentication.const';
+import { APP_PATH } from '../../constants';
+
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginMessage, LoginResponse } from '../store/types';
@@ -21,7 +22,6 @@ export interface SecuredRouteProps {
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = ({
-	history,
 	component,
 	path,
 	exact,
@@ -62,7 +62,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 				return (
 					<Redirect
 						to={{
-							pathname: AUTH_PATH.REGISTER_OR_LOGIN,
+							pathname: APP_PATH.REGISTER_OR_LOGIN,
 							state: { from: props.location },
 						}}
 					/>
