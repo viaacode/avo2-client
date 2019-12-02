@@ -5,16 +5,17 @@ import { Container, Navbar, Tabs, Toolbar, ToolbarLeft } from '@viaa/avo2-compon
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { buildLink } from '../../shared/helpers';
-import { Email, Notifications, Profile } from '../components';
+import toastService from '../../shared/services/toast-service';
+
+import { Account, Email, Notifications, Profile } from '../components';
 import {
+	ACCOUNT_ID,
 	EMAIL_ID,
 	NOTIFICATIONS_ID,
 	PROFILE_ID,
 	SETTINGS_PATH,
 	SettingsTab,
 } from '../settings.const';
-import { APP_PATH } from '../../constants';
-import toastService from '../../shared/services/toast-service';
 
 interface ForPupilsProps extends RouteComponentProps<{ tabId: string }> {}
 
@@ -27,6 +28,12 @@ const Settings: FunctionComponent<ForPupilsProps> = ({ history, match }) => {
 			label: 'Profiel',
 			id: PROFILE_ID,
 			onClick: () => setActiveTab(PROFILE_ID),
+		},
+		{
+			active: activeTab === ACCOUNT_ID,
+			label: 'Account',
+			id: ACCOUNT_ID,
+			onClick: () => setActiveTab(ACCOUNT_ID),
 		},
 		{
 			active: activeTab === EMAIL_ID,
@@ -45,6 +52,9 @@ const Settings: FunctionComponent<ForPupilsProps> = ({ history, match }) => {
 	const tabContents = {
 		[PROFILE_ID]: {
 			component: <Profile />,
+		},
+		[ACCOUNT_ID]: {
+			component: <Account />,
 		},
 		[EMAIL_ID]: {
 			component: <Email />,

@@ -32,6 +32,11 @@ export function getProfileInitials(): string {
 	const userInfo = getUserInfo();
 	return (
 		get(userInfo, 'user.first_name', 'X')[0] +
-		getInitialChar(get(userInfo, 'user.last_name', 'X'))[0]
+		get(userInfo, 'user.last_name', 'X')[0]
 	);
+}
+
+export function getProfileStamboekNumber(): string | null {
+	const userInfo = getUserInfo();
+	return get(userInfo, 'user.profile.stamboek');
 }

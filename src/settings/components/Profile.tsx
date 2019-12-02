@@ -41,46 +41,7 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 							<Column size="3-7">
 								<Form type="standard">
 									<FormGroup label="Functie" labelFor="function">
-										<Select
-											options={[
-												{
-													label: 'Leerkracht basis onderwijs',
-													value: 'leerkracht basis onderwijs',
-												},
-												{
-													label: 'Leerkracht secundair onderwijs',
-													value: 'leerkracht secundair onderwijs',
-												},
-												{
-													label: 'Leerkracht hoger onderwijs',
-													value: 'leerkracht hoger onderwijs',
-												},
-												{
-													label: 'Medewerker departement onderwijs',
-													value: 'medewerker departement onderwijs',
-												},
-											]}
-											id="function"
-										/>
-									</FormGroup>
-									<FormGroup label="School/organisatie" labelFor="organization">
-										<TagsInput
-											options={[
-												{
-													label: 'St. Eglisius Borsbeek',
-													value: '1345',
-												},
-												{
-													label: 'Sint Vincentiusschool Kachtem',
-													value: '568756753',
-												},
-												{
-													label: 'Broederschool Roeselare',
-													value: '352668',
-												},
-											]}
-											onChange={(values: TagInfo[]) => {}}
-										/>
+										<TextInput id="functie" placeholder="bv: Leerkracht basis onderwijs" />
 									</FormGroup>
 									<FormGroup label="Profielfoto" labelFor="profilePicture">
 										<Box>
@@ -100,22 +61,7 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 											onChange={(value: string) => updateProfileProp(value, 'bio')}
 										/>
 									</FormGroup>
-									<FormGroup label="Vakken" labelFor="subjectsId">
-										<TagsInput
-											options={[
-												{
-													label: 'Aardrijkskunde',
-													value: 'aardrijkskunde',
-												},
-												{
-													label: 'Wiskunde',
-													value: 'wiskunde',
-												},
-											]}
-											onChange={(values: TagInfo[]) => {}}
-										/>
-									</FormGroup>
-									<FormGroup label="Vakken" labelFor="subjectsId">
+									<FormGroup label="Onderwijsniveau" labelFor="educationLevel">
 										<TagsInput
 											options={[
 												{
@@ -130,15 +76,58 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 											onChange={(values: TagInfo[]) => {}}
 										/>
 									</FormGroup>
-									<FormGroup label="Stamboeknummer / Lerarenkaart nummer" labelFor="stamboekNumber">
-										<TextInput placeholder="00000000000-000000" />
+
+									<FormGroup label="School/organisatie" labelFor="organization">
+										<TagsInput
+											options={[
+												{
+													label: 'St. Eglisius Borsbeek',
+													value: '1345',
+												},
+												{
+													label: 'Sint Vincentiusschool Kachtem',
+													value: '568756753',
+												},
+												{
+													label: 'Broederschool Roeselare',
+													value: '352668',
+												},
+											]}
+											onChange={(values: TagInfo[]) => {}}
+										/>
+										<TagsInput
+											options={[
+												{
+													label: 'St. Eglisius Borsbeek',
+													value: '1345',
+												},
+												{
+													label: 'Sint Vincentiusschool Kachtem',
+													value: '568756753',
+												},
+												{
+													label: 'Broederschool Roeselare',
+													value: '352668',
+												},
+											]}
+											onChange={(values: TagInfo[]) => {}}
+										/>
 									</FormGroup>
-									<FormGroup label="KlasCement URL" labelFor="klascementUrl">
-										<TextInput icon="klascement" />
-									</FormGroup>
-									<FormGroup label="Smartschool URL" labelFor="SmartschoolUrl">
-										<TextInput icon="smartschool" />
-									</FormGroup>
+									{/*<FormGroup label="Vakken" labelFor="subjectsId">*/}
+									{/*	<TagsInput*/}
+									{/*		options={[*/}
+									{/*			{*/}
+									{/*				label: 'Aardrijkskunde',*/}
+									{/*				value: 'aardrijkskunde',*/}
+									{/*			},*/}
+									{/*			{*/}
+									{/*				label: 'Wiskunde',*/}
+									{/*				value: 'wiskunde',*/}
+									{/*			},*/}
+									{/*		]}*/}
+									{/*		onChange={(values: TagInfo[]) => {}}*/}
+									{/*	/>*/}
+									{/*</FormGroup>*/}
 									<Button
 										label="Instellingen opslaan"
 										type="primary"
@@ -163,32 +152,6 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 								</Spacer>
 							</Column>
 						</Grid>
-						{/* TODO replace with components from component repo */}
-						<div className="c-hr" />
-						<Form type="standard">
-							<Heading type="h3">Account</Heading>
-							<FormGroup label="Email">
-								<span>test@testers.be</span>
-							</FormGroup>
-							<FormGroup label="Wachtwoord">
-								<span>123456</span>
-							</FormGroup>
-							<FormGroup label="Geldigheid">
-								<span>Jouw account is nog 233 dagen gedlig.</span>
-							</FormGroup>
-							<Spacer margin="top-large">
-								<Alert type="info">
-									<span>
-										Jouw account wordt beheerd in een centraal systeem, dat je toelaat om op
-										meerdere VIAA websites aan te melden. <br />
-										Beheer jouw e-mailadres en wachtwoord in het{' '}
-										<a href="" target="_blank">
-											VIAA identiteitsmanagement systeem.
-										</a>
-									</span>
-								</Alert>
-							</Spacer>
-						</Form>
 					</Spacer>
 				</Container>
 			</Container>
