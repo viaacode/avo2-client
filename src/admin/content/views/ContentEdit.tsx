@@ -9,6 +9,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { selectLogin } from '../../../authentication/store/selectors';
 import { navigate } from '../../../shared/helpers';
+import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { AppState } from '../../../store';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -84,10 +85,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		setIsSaving(false);
 
 		if (response) {
-			// toast success
+			toastService.success({ message: 'Het content item is succesvol opgeslagen', dark: false });
 			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
 		} else {
-			// toast error
+			toastService.danger({
+				message: 'Er ging iets mis tijden het opslaan van het content item',
+				dark: false,
+			});
 		}
 	};
 
