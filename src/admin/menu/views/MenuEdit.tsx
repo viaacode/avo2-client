@@ -9,10 +9,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import {
-	fetchMenuItemById,
-	fetchMenuItemsByPlacement,
-} from '../../../shared/services/menu-service';
 import toastService from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types';
 
@@ -20,6 +16,7 @@ import { IconPicker } from '../../shared/components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_ICON_OPTIONS, MENU_PATH } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
+import { fetchMenuItemById, fetchMenuItemsByPlacement } from '../menu.services';
 
 interface MenuEditForm {
 	icon: IconName | '';
