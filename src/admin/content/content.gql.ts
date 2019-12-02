@@ -84,7 +84,9 @@ export const UPDATE_CONTENT_BY_ID = gql`
 export const INSERT_CONTENT = gql`
 	mutation insertContent($contentItem: app_content_insert_input!) {
 		insert_app_content(objects: [$contentItem]) {
-			affected_rows
+			returning {
+				id
+			}
 		}
 	}
 `;

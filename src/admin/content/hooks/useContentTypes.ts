@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fecthContentTypes } from '../../../shared/services/content-service';
-
+import { fecthContentTypes } from '../content.services';
 import { ContentTypesResponse } from '../content.types';
 
 export const useContentTypes = () => {

@@ -104,7 +104,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 			<AdminLayoutBody>
 				<DataQueryComponent
 					renderData={renderContentOverview}
-					resultPath={CONTENT_RESULT_PATH}
+					resultPath={CONTENT_RESULT_PATH.GET}
 					query={GET_CONTENT}
 				/>
 			</AdminLayoutBody>
