@@ -9,8 +9,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { selectLogin } from '../../../authentication/store/selectors';
 import { navigate } from '../../../shared/helpers';
-import { fetchContentItemById } from '../../../shared/services/content-service';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
+import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { AppState } from '../../../store';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -18,6 +17,7 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 import { ContentEditForm } from '../components';
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
+import { fetchContentItemById, insertContent, updateContent } from '../content.services';
 import { ContentEditFormState, PageType } from '../content.types';
 import { useContentTypes } from '../hooks/useContentTypes';
 
@@ -29,7 +29,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	// Hooks
 	const [contentForm, setContentForm] = useState<ContentEditFormState>(INITIAL_CONTENT_FORM);
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
-	const [initialContent, setInitialContent] = useState<Avo.Content.Content | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [pageType, setPageType] = useState<PageType | undefined>();
@@ -41,10 +40,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 
 	const { id } = match.params;
 	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
-	const contentTypeOptions = contentTypes.map(contentType => ({
-		label: contentType.value,
-		value: contentType.value,
-	}));
+	const contentTypeOptions = [
+		{ label: 'Kies een content type', value: '', disabled: true },
+		...contentTypes.map(contentType => ({
+			label: contentType.value,
+			value: contentType.value,
+		})),
+	];
 
 	useEffect(() => {
 		if (id) {
@@ -54,7 +56,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 			fetchContentItemById(Number(id))
 				.then((contentItem: Avo.Content.Content | null) => {
 					if (contentItem) {
-						setInitialContent(contentItem);
 						setContentForm({
 							title: contentItem.title,
 							description: contentItem.description || '',
@@ -80,13 +81,21 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		});
 	};
 
-	const handleResponse = () => {
-		// show toast message
-		// navigate to detail
+	const handleResponse = (response: Partial<Avo.Content.Content> | null) => {
 		setIsSaving(false);
+
+		if (response) {
+			toastService.success({ message: 'Het content item is succesvol opgeslagen', dark: false });
+			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
+		} else {
+			toastService.danger({
+				message: 'Er ging iets mis tijden het opslaan van het content item',
+				dark: false,
+			});
+		}
 	};
 
-	const handleSave = () => {
+	const handleSave = async () => {
 		setIsSaving(true);
 
 		// Validate form
@@ -100,37 +109,27 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 
 		const contentItem: Partial<Avo.Content.Content> = {
 			title: contentForm.title,
-			description: contentForm.description,
-			publish_at: contentForm.publishAt,
-			depublish_at: contentForm.depublishAt,
+			description: contentForm.description || null,
+			content_type: contentForm.contentType,
+			publish_at: contentForm.publishAt || null,
+			depublish_at: contentForm.depublishAt || null,
 		};
 
 		if (pageType === PageType.Create) {
-			triggerContentInsert({
-				variables: {
-					contentItem: {
-						...contentItem,
-						user_profile_id: get(loginState, 'userInfo.id', null),
-					},
-				},
-				update: ApolloCacheManager.clearContentCache,
-			})
-				.then(() => handleResponse())
-				.catch(err => handleResponse());
+			const insertedContent = await insertContent(triggerContentInsert, {
+				...contentItem,
+				user_profile_id: get(loginState, 'userInfo.profile.id', null),
+			});
+
+			handleResponse(insertedContent);
 		} else {
-			triggerContentUpdate({
-				variables: {
-					id,
-					contentItem: {
-						...initialContent,
-						...contentItem,
-						updated_at: new Date().toISOString(),
-					},
-				},
-				update: ApolloCacheManager.clearContentCache,
-			})
-				.then(() => handleResponse())
-				.catch(err => handleResponse());
+			const updatedContent = await updateContent(triggerContentUpdate, {
+				...contentItem,
+				updated_at: new Date().toISOString(),
+				id: Number(id),
+			});
+
+			handleResponse(updatedContent);
 		}
 	};
 

@@ -43,7 +43,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	};
 
 	const handleDateValue = (key: DateFormKeys) => {
-		return formState[key] ? new Date(formState[key]) : null;
+		return formState[key] ? new Date(formState[key] as string) : null;
 	};
 
 	// Render
@@ -68,7 +68,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							/>
 						</FormGroup>
 					</Column>
-					<Column size="3-6">
+					<Column size="3-12">
 						<FormGroup error={formErrors.contentType} label="Content type">
 							<Select
 								onChange={(value: string) => onChange('contentType', value)}

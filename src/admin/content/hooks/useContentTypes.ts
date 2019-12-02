@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fecthContentTypes } from '../../../shared/services/content-service';
-
+import { fecthContentTypes } from '../content.services';
 import { ContentTypesResponse } from '../content.types';
 
 export const useContentTypes = () => {
@@ -12,8 +11,10 @@ export const useContentTypes = () => {
 		setIsLoadingContentTypes(true);
 
 		fecthContentTypes()
-			.then((data: ContentTypesResponse[]) => {
-				setContentTypes(data);
+			.then((data: ContentTypesResponse[] | null) => {
+				if (data) {
+					setContentTypes(data);
+				}
 			})
 			.finally(() => {
 				setIsLoadingContentTypes(false);

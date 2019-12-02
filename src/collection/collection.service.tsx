@@ -6,7 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
-import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
+import toastService from '../shared/services/toast-service';
 import { GET_COLLECTION_TITLES_BY_OWNER } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
 
@@ -35,11 +35,11 @@ export class CollectionService {
 			);
 
 			if (!response || response.errors) {
-				toastService('De collectie kon niet worden aangemaakt', TOAST_TYPE.DANGER);
+				toastService.danger('De collectie kon niet worden aangemaakt');
 				return null;
 			}
 			if (!insertedCollection || isNil(insertedCollection.id)) {
-				toastService('De aangemaakte collectie kon niet worden opgehaald', TOAST_TYPE.DANGER);
+				toastService.danger('De aangemaakte collectie kon niet worden opgehaald');
 				return null;
 			}
 			newCollection.id = insertedCollection.id;
@@ -72,7 +72,7 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
-				toastService(`De huidige collectie is niet gevonden`, TOAST_TYPE.DANGER);
+				toastService.danger(`De huidige collectie is niet gevonden`);
 				return null;
 			}
 			// Validate collection before save
@@ -84,7 +84,7 @@ export class CollectionService {
 			}
 
 			if (validationErrors.length) {
-				toastService(validationErrors, TOAST_TYPE.DANGER);
+				toastService.danger(validationErrors);
 				return null;
 			}
 
@@ -148,7 +148,7 @@ export class CollectionService {
 				});
 
 				if (!fragmentToUpdate) {
-					toastService(`Kan het te updaten fragment niet vinden (id: ${id})`);
+					toastService.info(`Kan het te updaten fragment niet vinden (id: ${id})`);
 					return;
 				}
 
@@ -304,7 +304,7 @@ export class CollectionService {
 		triggerCollectionFragmentInsert: any
 	) {
 		if (!collection) {
-			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
+			toastService.danger('De collectie was niet ingesteld');
 			return;
 		}
 
@@ -313,7 +313,7 @@ export class CollectionService {
 		);
 
 		if (!tempFragment) {
-			toastService(`Fragment om toe te voegen is niet gevonden (id: ${tempId})`);
+			toastService.info(`Fragment om toe te voegen is niet gevonden (id: ${tempId})`);
 			return;
 		}
 
@@ -356,13 +356,10 @@ export class CollectionService {
 			return collection.thumbnail_path;
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
-			toastService(
-				[
-					'Het ophalen van de eerste video thumbnail is mislukt.',
-					'De collectie zal opgeslagen worden zonder thumbnail.',
-				],
-				TOAST_TYPE.DANGER
-			);
+			toastService.danger([
+				'Het ophalen van de eerste video thumbnail is mislukt.',
+				'De collectie zal opgeslagen worden zonder thumbnail.',
+			]);
 			return null;
 		}
 	}

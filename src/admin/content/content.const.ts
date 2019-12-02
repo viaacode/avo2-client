@@ -2,12 +2,16 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { TableColumn } from '../../shared/types';
 import { ContentEditFormState } from './content.types';
 
-export const CONTENT_RESULT_PATH = 'app_content';
+export const CONTENT_RESULT_PATH = {
+	GET: 'app_content',
+	INSERT: 'insert_app_content',
+	UPDATE: 'update_app_content',
+};
 
 export const CONTENT_PATH = {
 	CONTENT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}`,
-	CONTENT_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id`,
 	CONTENT_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/${ROUTE_PARTS.create}`,
+	CONTENT_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id`,
 	CONTENT_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id/${ROUTE_PARTS.edit}`,
 };
 

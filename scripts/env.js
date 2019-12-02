@@ -1,6 +1,7 @@
 const fs = require("fs");
 
 const CI_ENV_VARIABLES = {
+	ENV: process.env.NODE_ENV,
 	PORT: process.env.PORT,
 	PROXY_URL: process.env.PROXY_URL,
 	FLOW_PLAYER_TOKEN: process.env.FLOW_PLAYER_TOKEN,

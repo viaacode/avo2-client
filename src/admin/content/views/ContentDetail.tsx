@@ -69,7 +69,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 				<DataQueryComponent
 					query={GET_CONTENT_BY_ID}
 					renderData={renderContentDetail}
-					resultPath={CONTENT_RESULT_PATH}
+					resultPath={CONTENT_RESULT_PATH.GET}
 					variables={{ id }}
 				/>
 			</AdminLayoutBody>

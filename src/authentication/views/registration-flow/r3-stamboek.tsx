@@ -22,10 +22,11 @@ import {
 	ValidateStamboekResponse,
 } from '@viaa/avo2-types/types/stamboek/types';
 
+import { APP_PATH } from '../../../constants';
 import { getEnv } from '../../../shared/helpers';
-import { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService, { ToastType } from '../../../shared/services/toast-service';
 import {
-	redirectToClientManualAccessRequest,
+	redirectToClientPage,
 	redirectToServerArchiefRegistrationIdp,
 } from '../../helpers/redirects';
 
@@ -59,7 +60,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 	}>({});
 
 	const STAMBOEK_MESSAGES: {
-		[status in validationStatuses]: { message: string | ReactNode; status: TOAST_TYPE | undefined }
+		[status in validationStatuses]: { message: string | ReactNode; status: ToastType | undefined }
 	} = {
 		INCOMPLETE: {
 			message: '',
@@ -68,7 +69,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 		INVALID_FORMAT: {
 			message:
 				'Het stamboek nummer heeft een ongeldig formaat. Geldige formaten: 00000000000 of 00000000000-000000',
-			status: TOAST_TYPE.DANGER,
+			status: ToastType.DANGER,
 		},
 		INVALID_NUMBER: {
 			message: (
@@ -76,22 +77,22 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog maar recent uw
 					kaart heeft ontvangen kan u via{' '}
 					<Button
-						onClick={() => redirectToClientManualAccessRequest(history)}
+						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 						label="een manuele aanvraag"
 						type="inline-link"
 					/>{' '}
 					toch al toegang krijgen.
 				</span>
 			),
-			status: TOAST_TYPE.DANGER,
+			status: ToastType.DANGER,
 		},
 		VALID_FORMAT: {
 			message: 'Bezig met valideren',
-			status: TOAST_TYPE.SPINNER,
+			status: ToastType.SPINNER,
 		},
 		VALID: {
 			message: 'Het stamboek nummer is geldig',
-			status: TOAST_TYPE.SUCCESS,
+			status: ToastType.SUCCESS,
 		},
 		ALREADY_IN_USE: {
 			message: (
@@ -99,18 +100,18 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					Dit stamboek nummer is reeds in gebruik,{' '}
 					<Button
 						label="contacteer de helpdesk"
-						onClick={() => redirectToClientManualAccessRequest(history)}
+						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 						type="inline-link"
 					/>
 					.
 				</span>
 			),
-			status: TOAST_TYPE.SUCCESS,
+			status: ToastType.SUCCESS,
 		},
 		SERVER_ERROR: {
 			message:
 				'Er ging iets mis bij het valideren van het stamboek nummer. Probeer later eens opnieuw.',
-			status: TOAST_TYPE.DANGER,
+			status: ToastType.DANGER,
 		},
 	};
 
@@ -252,13 +253,23 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 										</Spacer>
 										<Button
 											label="Manuele aanvraag"
-											onClick={() => redirectToClientManualAccessRequest(history)}
+											onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 										/>
 									</div>
 								</Alert>
 							</Spacer>
 						)}
 					</RadioButtonGroup>
+					<Spacer margin="top-small">
+						<Alert type="info">
+							<a
+								className="u-clickable"
+								onClick={() => toastService.info('Nog niet geimplementeerd')}
+							>
+								Waarom hebben jullie mijn stamboeknummer nodig?
+							</a>
+						</Alert>
+					</Spacer>
 				</FormGroup>
 				<Spacer margin={['bottom-large', 'top-large']}>
 					<FormGroup>
@@ -281,6 +292,16 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
 					/>
 				</FormGroup>
+				<Spacer margin="top-large">
+					<Alert type="info">
+						<a
+							className="u-clickable"
+							onClick={() => toastService.info('Nog niet geimplementeerd')}
+						>
+							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
+						</a>
+					</Alert>
+				</Spacer>
 			</Container>
 		</Container>
 	);

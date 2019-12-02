@@ -9,17 +9,14 @@ import { Avo } from '@viaa/avo2-types';
 
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import {
-	fetchMenuItemById,
-	fetchMenuItemsByPlacement,
-} from '../../../shared/services/menu-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types';
 
 import { IconPicker } from '../../shared/components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_ICON_OPTIONS, MENU_PATH } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
+import { fetchMenuItemById, fetchMenuItemsByPlacement } from '../menu.services';
 
 interface MenuEditForm {
 	icon: IconName | '';
@@ -150,14 +147,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const handleError = (message: string, err: any): void => {
 		console.error(err);
 		setIsSaving(false);
-		toastService(message, TOAST_TYPE.DANGER);
+		toastService.danger(message);
 	};
 
 	const handleSucces = (message: string): void => {
 		const { menu } = match.params;
 
 		setIsSaving(false);
-		toastService(message, TOAST_TYPE.SUCCESS);
+		toastService.success(message);
 		navigate(history, MENU_PATH.MENU_DETAIL, { menu });
 	};
 
