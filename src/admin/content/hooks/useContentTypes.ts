@@ -12,8 +12,10 @@ export const useContentTypes = () => {
 		setIsLoadingContentTypes(true);
 
 		fecthContentTypes()
-			.then((data: ContentTypesResponse[]) => {
-				setContentTypes(data);
+			.then((data: ContentTypesResponse[] | null) => {
+				if (data) {
+					setContentTypes(data);
+				}
 			})
 			.finally(() => {
 				setIsLoadingContentTypes(false);
