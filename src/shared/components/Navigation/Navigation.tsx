@@ -51,7 +51,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState })
 
 	const getPrimaryNavigationItems = (): NavigationItem[] => {
 		const isLoggedIn = loginState && loginState.message === LoginMessage.LOGGED_IN;
-		if (!isLoggedIn) {
+		if (isLoggedIn) {
 			return [
 				{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME, key: 'teachers' },
 				{
@@ -82,7 +82,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState })
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
 		const isLoggedIn = loginState && loginState.message === LoginMessage.LOGGED_IN;
-		if (!isLoggedIn) {
+		if (isLoggedIn) {
 			if (isMobileMenuOpen) {
 				return [
 					{ label: 'Instellingen', location: APP_PATH.SETTINGS, key: 'settings' },

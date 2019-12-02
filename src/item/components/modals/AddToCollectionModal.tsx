@@ -159,7 +159,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				trackEvents({
 					event_object: {
 						type: 'collection',
-						identifier: String(collection.id as number),
+						identifier: String(collection.id),
 					},
 					event_message: `Gebruiker ${getProfileName()} heeft fragment ${get(
 						response,
