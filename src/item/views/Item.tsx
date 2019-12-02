@@ -47,7 +47,7 @@ import {
 } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { GET_ITEM_BY_ID } from '../item.gql';
@@ -93,7 +93,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					.then(setRelatedItems)
 					.catch(err => {
 						console.error('Failed to get related items', err, { itemId, index: 'items', limit: 5 });
-						toastService('Het ophalen van de gerelateerde items is mislukt', TOAST_TYPE.DANGER);
+						toastService.danger('Het ophalen van de gerelateerde items is mislukt');
 					});
 			}
 
