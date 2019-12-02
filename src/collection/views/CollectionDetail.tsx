@@ -81,11 +81,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	useEffect(() => {
 		trackEvents({
-			event_object: collectionId,
-			event_object_type: 'collections',
-			event_message: `Gebruiker ${getProfileName()} heeft de pagina voor collectie ${collectionId} bekeken`,
-			name: 'view',
-			category: 'item',
+			object: collectionId,
+			object_type: 'collections',
+			message: `Gebruiker ${getProfileName()} heeft de pagina voor collectie ${collectionId} bekeken`,
+			action: 'view',
 		});
 
 		if (!relatedCollections) {

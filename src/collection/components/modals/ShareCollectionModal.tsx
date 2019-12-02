@@ -94,13 +94,12 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 			// Public status changed => log as event
 			trackEvents({
-				event_object: String(collection.id),
-				event_object_type: 'collections',
-				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${collection.id} ${
+				object: String(collection.id),
+				object_type: 'collections',
+				message: `Gebruiker ${getProfileName()} heeft de collectie ${collection.id} ${
 					isPublished ? 'gepubliceerd' : 'gedepubliceerd'
 				}`,
-				name: isPublished ? 'publish' : 'unpublish',
-				category: 'item',
+				action: isPublished ? 'publish' : 'unpublish',
 			});
 		} catch (err) {
 			toastService.danger('De aanpassingen kunnen niet worden opgeslagen');

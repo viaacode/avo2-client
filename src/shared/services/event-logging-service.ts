@@ -1,15 +1,14 @@
 import { Avo } from '@viaa/avo2-types';
-import { ClientEvent, EventCategory, EventName } from '@viaa/avo2-types/types/event-logging/types';
+import { ClientEvent } from '@viaa/avo2-types/types/event-logging/types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { getEnv } from '../helpers/env';
 
 interface MinimalClientEvent {
-	name: EventName;
-	category: EventCategory;
-	event_object: string; // entity being modified
-	event_object_type: Avo.EventLogging.ObjectType;
-	event_message: any; // user played item xxx on avo
+	action: Avo.EventLogging.Action;
+	object: string; // entity being modified
+	object_type: Avo.EventLogging.ObjectType;
+	message: any; // user played item xxx on avo
 }
 
 export function trackEvents(events: MinimalClientEvent[] | MinimalClientEvent) {
@@ -22,10 +21,10 @@ export function trackEvents(events: MinimalClientEvent[] | MinimalClientEvent) {
 	const eventLogEntries = eventsArray.map(
 		(event: MinimalClientEvent): ClientEvent => {
 			return {
-				event_timestamp: new Date().toISOString(),
-				event_source: window.location.href, // url when the event was triggered
-				event_subject: getProfileId(), // Entity making causing the event
-				event_subject_type: 'user_uuid',
+				occurred_at: new Date().toISOString(),
+				source_url: window.location.href, // url when the event was triggered
+				subject: getProfileId(), // Entity making causing the event
+				subject_type: 'user_uuid',
 				...event,
 			} as ClientEvent;
 		}

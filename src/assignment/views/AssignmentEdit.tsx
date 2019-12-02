@@ -425,13 +425,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 		if (currentAssignment.id) {
 			trackEvents({
-				event_object: String(currentAssignment.id),
-				event_object_type: 'avo_assignment',
-				event_message: `Gebruiker ${getProfileName()} heeft de permalink voor opdracht ${
+				object: String(currentAssignment.id),
+				object_type: 'avo_assignment',
+				message: `Gebruiker ${getProfileName()} heeft de permalink voor opdracht ${
 					currentAssignment.id
 				} gekopieert`,
-				name: 'view',
-				category: 'item',
+				action: 'view',
 			});
 		}
 	};
@@ -519,13 +518,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			return;
 		}
 		trackEvents({
-			event_object: assignment.content_id,
-			event_object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
-			event_message: `User ${getProfileName()} heeft ${
+			object: assignment.content_id,
+			object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
+			message: `User ${getProfileName()} heeft ${
 				CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
 			} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
-			name: 'view',
-			category: 'item',
+			action: 'view',
 		});
 	};
 
