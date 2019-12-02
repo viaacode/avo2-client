@@ -90,7 +90,7 @@ const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
 } = {
 	ITEM: 'avo_item_pid',
 	COLLECTIE: 'collections',
-	ZOEKOPDRACHT: 'avo_search_query',
+	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
 };
 
 const CONTENT_LABEL_TO_QUERY: {
@@ -426,7 +426,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		if (currentAssignment.id) {
 			trackEvents({
 				object: String(currentAssignment.id),
-				object_type: 'avo_assignment',
+				object_type: 'avo_assignment' as any, // TODO add this object type to the database
 				message: `Gebruiker ${getProfileName()} heeft de permalink voor opdracht ${
 					currentAssignment.id
 				} gekopieert`,

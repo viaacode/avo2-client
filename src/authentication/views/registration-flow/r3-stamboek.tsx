@@ -24,7 +24,7 @@ import {
 
 import { APP_PATH } from '../../../constants';
 import { getEnv } from '../../../shared/helpers';
-import { ToastType } from '../../../shared/services/toast-service';
+import toastService, { ToastType } from '../../../shared/services/toast-service';
 import {
 	redirectToClientPage,
 	redirectToServerArchiefRegistrationIdp,
@@ -264,7 +264,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 						<Alert type="info">
 							<a
 								className="u-clickable"
-								onClick={() => toastService('Nog niet geimplementeerd', TOAST_TYPE.INFO)}
+								onClick={() => toastService.info('Nog niet geimplementeerd')}
 							>
 								Waarom hebben jullie mijn stamboeknummer nodig?
 							</a>
@@ -296,7 +296,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					<Alert type="info">
 						<a
 							className="u-clickable"
-							onClick={() => toastService('Nog niet geimplementeerd', TOAST_TYPE.INFO)}
+							onClick={() => toastService.info('Nog niet geimplementeerd')}
 						>
 							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
 						</a>
