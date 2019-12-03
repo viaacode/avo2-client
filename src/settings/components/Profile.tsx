@@ -138,7 +138,11 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 	const getOrganizationOptions = () => {
 		if (organizations.length === 0 && organizationsLoadingState === 'loaded') {
 			return [
-				{ label: 'Er zijn geen organisaties gekend in deze gemeente', value: '', disabled: true },
+				{
+					label: 'Er zijn geen (andere) organisaties gekend in deze gemeente',
+					value: '',
+					disabled: true,
+				},
 			];
 		}
 		return [
@@ -181,10 +185,8 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 									</FormGroup>
 									<FormGroup label="Onderwijsniveau" labelFor="educationLevel">
 										<TagsInput
-											options={[
-												{ label: 'Selecteer een opleidingsniveau', value: '' },
-												...educationLevels.map(edLevel => ({ label: edLevel, value: edLevel })),
-											]}
+											placeholder="Selecteer een opleidingsniveau"
+											options={educationLevels.map(edLevel => ({ label: edLevel, value: edLevel }))}
 											value={selectedEducationLevels}
 											onChange={setSelectedEducationLevels}
 										/>
