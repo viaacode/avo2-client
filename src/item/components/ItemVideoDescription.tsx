@@ -16,6 +16,7 @@ import {
 	ExpandableContainer,
 	FlowPlayer,
 	Grid,
+	Heading,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { debounce } from 'lodash-es';
@@ -156,7 +157,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				overflowY: 'auto',
 			}}
 		>
-			<h4 className="c-h4">Beschrijving</h4>
+			<Heading type="h4">Beschrijving</Heading>
 			{/* "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
 			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
 				<p>{formatTimestamps(convertToHtml(itemMetaData.description))}</p>
