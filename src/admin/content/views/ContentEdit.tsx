@@ -64,9 +64,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 							depublishAt: contentItem.depublish_at || '',
 						});
 					} else {
-						handleInvalidContentRequest(
-							`Er ging iets mis tijdens het ophalen van de content met id: ${id}`
+						toastService.danger(
+							`Er ging iets mis tijdens het ophalen van de content met id: ${id}`,
+							false
 						);
+						history.push(CONTENT_PATH.CONTENT);
 					}
 				})
 				.finally(() => {
@@ -75,7 +77,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		} else {
 			setPageType(PageType.Create);
 		}
-	}, [id]);
+	}, [id, history]);
 
 	// Methods
 	const handleChange = (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => {
@@ -83,11 +85,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 			...contentForm,
 			[key]: value,
 		});
-	};
-
-	const handleInvalidContentRequest = (message: string) => {
-		toastService.danger(message, false);
-		history.push(CONTENT_PATH.CONTENT);
 	};
 
 	const handleResponse = (response: Partial<Avo.Content.Content> | null) => {
@@ -138,7 +135,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 
 				handleResponse(updatedContent);
 			} else {
-				handleInvalidContentRequest(`Het content id: ${id} is ongeldig.`);
+				toastService.danger(`Het content id: ${id} is ongeldig.`, false);
+				history.push(CONTENT_PATH.CONTENT);
 			}
 		}
 	};
