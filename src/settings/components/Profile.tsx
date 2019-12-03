@@ -15,7 +15,6 @@ import {
 	Icon,
 	Select,
 	Spacer,
-	Spinner,
 	TagInfo,
 	TagList,
 	TagsInput,
@@ -23,14 +22,15 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
-import { dataService } from '../../shared/services/data-service';
+import { DataQueryComponent } from '../../shared/components';
+import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import {
 	ClientEducationOrganization,
 	fetchCities,
 	fetchEducationOrganizations,
 } from '../../shared/services/education-organizations-service';
 import toastService from '../../shared/services/toast-service';
-import { GET_EDUCATION_LEVELS } from '../profile.gql';
+import { ContextAndClassificationData } from '../../shared/types/lookup';
 
 export interface ProfileProps {}
 
@@ -50,8 +50,8 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 	const [organizationsCache, setOrganizationsCache] = useState<{
 		[cityAndZipCode: string]: ClientEducationOrganization[];
 	}>({});
-	const [educationLevels, setEducationLevels] = useState<string[]>([]);
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>([]);
+	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>([]);
 
 	const updateOrganizations = async () => {
 		try {
@@ -88,21 +88,6 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 			.catch(err => {
 				console.error('Failed to get cities', err);
 				toastService.danger('Het ophalen van de steden is mislukt');
-			});
-		dataService
-			.query({
-				query: GET_EDUCATION_LEVELS,
-			})
-			.then(response => {
-				setEducationLevels(
-					get(response, 'data.lookup_enum_lom_context', []).map(
-						(item: { description: string }) => item.description
-					)
-				);
-			})
-			.catch(err => {
-				console.error('Failed to get cities', err);
-				toastService.danger('Het ophalen van de opleidingniveaus is mislukt');
 			});
 	}, []);
 
@@ -154,118 +139,148 @@ const Profile: FunctionComponent<ProfileProps> = () => {
 		];
 	};
 
-	return (
-		<>
-			<Container mode="vertical">
-				<Container mode="horizontal">
-					<Spacer margin="bottom">
-						<Grid>
-							<Column size="3-7">
-								<Form type="standard">
-									<FormGroup label="Functie" labelFor="function">
-										<TextInput id="functie" placeholder="bv: Leerkracht basis onderwijs" />
-									</FormGroup>
-									<FormGroup label="Profielfoto" labelFor="profilePicture">
-										<Box>
-											{/* TODO replace with components from component repo */}
-											<Avatar initials="XX" />
-											<Icon name="user" size="large" />
-											<input type="file" placeholder="Profielfoto uploaden" />
-										</Box>
-									</FormGroup>
-									<FormGroup label="Bio" labelFor="bio">
-										<TextArea
-											name="bio"
-											value={profile.bio}
-											id="bio"
-											height="medium"
-											placeholder="Een korte beschrijving van jezelf..."
-											onChange={(value: string) => updateProfileProp(value, 'bio')}
-										/>
-									</FormGroup>
-									<FormGroup label="Onderwijsniveau" labelFor="educationLevel">
-										<TagsInput
-											placeholder="Selecteer een opleidingsniveau"
-											options={educationLevels.map(edLevel => ({ label: edLevel, value: edLevel }))}
-											value={selectedEducationLevels}
-											onChange={setSelectedEducationLevels}
-										/>
-									</FormGroup>
+	const renderProfile = (data: ContextAndClassificationData) => {
+		const educationLevels: string[] = (get(data, 'lookup_enum_lom_context', []) as {
+			description: string;
+		}[]).map((item: { description: string }) => item.description);
+		const subjects: string[] = (get(data, 'lookup_enum_lom_classification', []) as {
+			description: string;
+		}[]).map((item: { description: string }) => item.description);
 
-									<FormGroup label="School/organisatie" labelFor="organization">
-										<TagList
-											closable
-											swatches={false}
-											tags={selectedOrganizations.map(org => ({ label: org.label, id: org.label }))}
-											onTagClosed={removeOrganization}
-										/>
-										<Spacer margin="top-small">
-											<Select
-												options={[
-													{ label: 'Voeg een organisatie toe', value: '' },
-													...cities.map(c => ({ label: c, value: c })),
-												]}
-												value={selectedCity || ''}
-												onChange={onSelectedCityChanged}
+		return (
+			<>
+				<Container mode="vertical">
+					<Container mode="horizontal">
+						<Spacer margin="bottom">
+							<Grid>
+								<Column size="3-7">
+									<Form type="standard">
+										<FormGroup label="Functie" labelFor="function">
+											<TextInput id="functie" placeholder="bv: Leerkracht basis onderwijs" />
+										</FormGroup>
+										<FormGroup label="Profielfoto" labelFor="profilePicture">
+											<Box>
+												{/* TODO replace with components from component repo */}
+												<Avatar initials="XX" />
+												<Icon name="user" size="large" />
+												<input type="file" placeholder="Profielfoto uploaden" />
+											</Box>
+										</FormGroup>
+										<FormGroup label="Bio" labelFor="bio">
+											<TextArea
+												name="bio"
+												value={profile.bio}
+												id="bio"
+												height="medium"
+												placeholder="Een korte beschrijving van jezelf..."
+												onChange={(value: string) => updateProfileProp(value, 'bio')}
 											/>
-										</Spacer>
-										<Spacer margin="top-small">
-											{organizationsLoadingState === 'loading' && (
-												<Alert type="spinner" message="Bezig met ophalen van organisaties..." />
-											)}
-											{!!selectedCity && organizationsLoadingState === 'loaded' && (
+										</FormGroup>
+										<FormGroup label="Vakken" labelFor="subjects">
+											<TagsInput
+												id="subjects"
+												placeholder="Selecteer de vakken die u geeft"
+												options={subjects.map(subject => ({
+													label: subject,
+													value: subject,
+												}))}
+												value={selectedSubjects}
+												onChange={setSelectedSubjects}
+											/>
+										</FormGroup>
+										<FormGroup label="Onderwijsniveau" labelFor="educationLevel">
+											<TagsInput
+												id="educationLevel"
+												placeholder="Selecteer een opleidingsniveau"
+												options={educationLevels.map(edLevel => ({
+													label: edLevel,
+													value: edLevel,
+												}))}
+												value={selectedEducationLevels}
+												onChange={setSelectedEducationLevels}
+											/>
+										</FormGroup>
+
+										<FormGroup label="School/organisatie" labelFor="organization">
+											<TagList
+												closable
+												swatches={false}
+												tags={selectedOrganizations.map(org => ({
+													label: org.label,
+													id: org.label,
+												}))}
+												onTagClosed={removeOrganization}
+											/>
+											<Spacer margin="top-small">
 												<Select
-													options={getOrganizationOptions()}
-													value={''}
-													onChange={onSelectedOrganizationChanged}
+													options={[
+														{ label: 'Voeg een organisatie toe', value: '' },
+														...cities.map(c => ({ label: c, value: c })),
+													]}
+													value={selectedCity || ''}
+													onChange={onSelectedCityChanged}
 												/>
-											)}
-										</Spacer>
-									</FormGroup>
-									{/*<FormGroup label="Vakken" labelFor="subjectsId">*/}
-									{/*	<TagsInput*/}
-									{/*		options={[*/}
-									{/*			{*/}
-									{/*				label: 'Aardrijkskunde',*/}
-									{/*				value: 'aardrijkskunde',*/}
-									{/*			},*/}
-									{/*			{*/}
-									{/*				label: 'Wiskunde',*/}
-									{/*				value: 'wiskunde',*/}
-									{/*			},*/}
-									{/*		]}*/}
-									{/*		onChange={(values: TagInfo[]) => {}}*/}
-									{/*	/>*/}
-									{/*</FormGroup>*/}
-									<Button
-										label="Instellingen opslaan"
-										type="primary"
-										onClick={saveProfileChanges}
-									/>
-								</Form>
-							</Column>
-							<Column size="3-5">
-								<Box>
-									<Heading type="h4">Volledigheid profiel</Heading>
-									{/* TODO replace with components from component repo */}
-									<div className="c-progress-bar" />
-								</Box>
-								<Spacer margin={['top', 'bottom']}>
+											</Spacer>
+											<Spacer margin="top-small">
+												{organizationsLoadingState === 'loading' && (
+													<Alert type="spinner" message="Bezig met ophalen van organisaties..." />
+												)}
+												{!!selectedCity && organizationsLoadingState === 'loaded' && (
+													<Select
+														options={getOrganizationOptions()}
+														value={''}
+														onChange={onSelectedOrganizationChanged}
+													/>
+												)}
+											</Spacer>
+										</FormGroup>
+										{/*<FormGroup label="Vakken" labelFor="subjectsId">*/}
+										{/*	<TagsInput*/}
+										{/*		options={[*/}
+										{/*			{*/}
+										{/*				label: 'Aardrijkskunde',*/}
+										{/*				value: 'aardrijkskunde',*/}
+										{/*			},*/}
+										{/*			{*/}
+										{/*				label: 'Wiskunde',*/}
+										{/*				value: 'wiskunde',*/}
+										{/*			},*/}
+										{/*		]}*/}
+										{/*		onChange={(values: TagInfo[]) => {}}*/}
+										{/*	/>*/}
+										{/*</FormGroup>*/}
+										<Button
+											label="Instellingen opslaan"
+											type="primary"
+											onClick={saveProfileChanges}
+										/>
+									</Form>
+								</Column>
+								<Column size="3-5">
 									<Box>
-										<p>
-											Vul hier wat info over jezelf in! Deze informatie wordt getoond op jouw
-											persoonlijk profiel. Je kan voor elk veld aanduiden of je deze informatie wil
-											delen of niet.
-										</p>
+										<Heading type="h4">Volledigheid profiel</Heading>
+										{/* TODO replace with components from component repo */}
+										<div className="c-progress-bar" />
 									</Box>
-								</Spacer>
-							</Column>
-						</Grid>
-					</Spacer>
+									<Spacer margin={['top', 'bottom']}>
+										<Box>
+											<p>
+												Vul hier wat info over jezelf in! Deze informatie wordt getoond op jouw
+												persoonlijk profiel. Je kan voor elk veld aanduiden of je deze informatie
+												wil delen of niet.
+											</p>
+										</Box>
+									</Spacer>
+								</Column>
+							</Grid>
+						</Spacer>
+					</Container>
 				</Container>
-			</Container>
-		</>
-	);
+			</>
+		);
+	};
+
+	return <DataQueryComponent query={GET_CLASSIFICATIONS_AND_SUBJECTS} renderData={renderProfile} />;
 };
 
 export default Profile;
