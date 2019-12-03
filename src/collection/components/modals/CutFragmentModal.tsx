@@ -19,7 +19,7 @@ import { Avo } from '@viaa/avo2-types';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
@@ -77,7 +77,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const errors = getValidationErrors();
 
 		if (errors && errors.length) {
-			toastService(errors, TOAST_TYPE.DANGER);
+			toastService.danger(errors);
 
 			return;
 		}

@@ -30,8 +30,6 @@ export interface DateRange {
 	lte: string;
 }
 
-type DateType = 'year' | 'date';
-
 const DEFAULT_DATE_RANGE = { gte: '', lte: '' };
 
 const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
@@ -60,7 +58,6 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		await closeDropdown();
 	};
 
-	// TODO: Is tagId necessary?
 	const removeFilter = (tagId: ReactText, evt: MouseEvent) => {
 		evt.stopPropagation();
 		setRangeState(DEFAULT_DATE_RANGE);
@@ -87,7 +84,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	 * Called when the user switches between "year" range and "full date" range controls
 	 * @param type
 	 */
-	const dateTypeChanged = (type: DateType) => {
+	const dateTypeChanged = (type: 'year' | 'date') => {
 		setShowYearControls(type === 'year');
 
 		if (type === 'year') {
@@ -264,7 +261,13 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							)}
 						</FormGroup>
 						<FormGroup>
-							<Button label="Toepassen" type="primary" block onClick={applyFilter} />
+							<Button
+								label="Toepassen"
+								type="primary"
+								className="c-apply-filter-button"
+								block
+								onClick={applyFilter}
+							/>
 						</FormGroup>
 					</Form>
 				</div>

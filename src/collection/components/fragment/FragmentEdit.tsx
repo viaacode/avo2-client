@@ -28,7 +28,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 
 import { CutFragmentModal, FragmentAdd } from '../';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
@@ -85,7 +85,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		!playerTicket &&
 		fetchPlayerTicket(fragment.external_id)
 			.then(data => setPlayerTicket(data))
-			.catch(() => toastService('Play ticket kon niet opgehaald worden.', TOAST_TYPE.DANGER));
+			.catch(() => toastService.danger('Play ticket kon niet opgehaald worden.'));
 
 	const itemMetaData = (fragment as any).item_meta;
 
@@ -148,28 +148,28 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			collection_fragment_ids: positionedFragments.map(positionedFragment => positionedFragment.id),
 		});
 
-		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
+		toastService.success('Fragment is succesvol verwijderd');
 	};
 
 	// TODO: DISABLED FEATURE
 	// const onDuplicateFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService('Fragment is succesvol gedupliceerd', TOAST_TYPE.SUCCESS);
+	// 	toastService.success('Fragment is succesvol gedupliceerd');
 	// };
 
 	// const onMoveFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService('Fragment is succesvol verplaatst', TOAST_TYPE.SUCCESS);
+	// 	toastService.success('Fragment is succesvol verplaatst');
 	// };
 
 	// const onCopyFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService('Fragment is succesvol gekopiëerd naar collectie', TOAST_TYPE.SUCCESS);
+	// 	toastService.success('Fragment is succesvol gekopiëerd naar collectie');
 	// };
 
 	// const onMoveFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService('Fragment is succesvol verplaatst naar collectie', TOAST_TYPE.SUCCESS);
+	// 	toastService.success('Fragment is succesvol verplaatst naar collectie');
 	// };
 
 	const onClickDropdownItem = (item: ReactText) => {

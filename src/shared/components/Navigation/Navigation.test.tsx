@@ -1,24 +1,49 @@
 import { Button } from '@viaa/avo2-components';
-import { mount, shallow } from 'enzyme';
+import { mount, ReactWrapper, shallow } from 'enzyme';
 import React from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
+import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
+import { APP_PATH } from '../../../constants';
+import { DISCOVER_PATH } from '../../../discover/discover.const';
+import { SEARCH_PATH } from '../../../search/search.const';
+import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../../workspace/workspace.const';
 import { ROUTE_PARTS } from '../../constants';
+import { buildLink } from '../../helpers';
+
 import Navigation from './Navigation';
 
 const pItems = [
 	{ label: 'Home', location: '/' },
-	{ label: 'Zoeken', location: `/${ROUTE_PARTS.search}` },
-	{ label: 'Ontdek', location: `/${ROUTE_PARTS.discover}` },
-	{ label: 'Mijn Werkruimte', location: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.collections}` },
-	{ label: 'Projecten', location: `/${ROUTE_PARTS.projects}` },
+	{ label: 'Zoeken', location: SEARCH_PATH.SEARCH },
+	{ label: 'Ontdek', location: DISCOVER_PATH.DISCOVER },
+	{
+		label: 'Mijn Werkruimte',
+		location: buildLink(WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID }),
+	},
+	{ label: 'Projecten', location: `/${ROUTE_PARTS.projects}` }, // TODO replace when available with PROJECT_PATH
 	{ label: 'Nieuws', location: `/${ROUTE_PARTS.news}` },
 ];
 
 const sItems = [
-	{ label: 'Registreren', location: `/${ROUTE_PARTS.register}` },
-	{ label: 'Aanmelden', location: `/${ROUTE_PARTS.loginAvo}` },
+	{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown /> },
+	{ label: 'Aanmelden', location: APP_PATH.LOGIN_AVO },
 ];
+
+function checkLinks(menuItems: ReactWrapper<any, any>) {
+	const links = menuItems.find(Link);
+
+	expect(links).toHaveLength(sItems.length);
+
+	links.forEach((link, index) => {
+		if (link.prop('to')) {
+			expect(link.text()).toEqual(sItems[index].label);
+			expect(link.prop('to')).toEqual(sItems[index].location);
+		} else {
+			expect(sItems[index].component).toBeDefined();
+		}
+	});
+}
 
 describe('<Navigation />', () => {
 	it('Should be able to render', () => {
@@ -34,14 +59,7 @@ describe('<Navigation />', () => {
 
 		const primaryMenuDesktop = navigationComponent.find('.u-mq-switch-main-nav-has-space .c-nav');
 
-		const links = primaryMenuDesktop.find(Link);
-
-		expect(links).toHaveLength(pItems.length);
-
-		links.forEach((link, index) => {
-			expect(link.text()).toEqual(pItems[index].label);
-			expect(link.prop('to')).toEqual(pItems[index].location);
-		});
+		checkLinks(primaryMenuDesktop);
 	});
 
 	it('Should correctly render the `secondaryItems` on desktop', () => {
@@ -55,14 +73,7 @@ describe('<Navigation />', () => {
 			'.u-mq-switch-main-nav-authentication .c-nav'
 		);
 
-		const links = secondaryMenuDesktop.find(Link);
-
-		expect(links).toHaveLength(sItems.length);
-
-		links.forEach((link, index) => {
-			expect(link.text()).toEqual(sItems[index].label);
-			expect(link.prop('to')).toEqual(sItems[index].location);
-		});
+		checkLinks(secondaryMenuDesktop);
 	});
 
 	it('Should correctly render the mobile menu when `isOpen` ', () => {
@@ -96,12 +107,7 @@ describe('<Navigation />', () => {
 
 		const links = primaryMenuMobile.find(Link);
 
-		expect(links).toHaveLength(pItems.length);
-
-		links.forEach((link, index) => {
-			expect(link.text()).toEqual(pItems[index].label);
-			expect(link.prop('to')).toEqual(pItems[index].location);
-		});
+		checkLinks(links);
 	});
 
 	it('Should correctly render the `secondaryItems` on mobile', () => {
@@ -115,12 +121,7 @@ describe('<Navigation />', () => {
 
 		const links = secondaryMenuMobile.find(Link);
 
-		expect(links).toHaveLength(sItems.length);
-
-		links.forEach((link, index) => {
-			expect(link.text()).toEqual(sItems[index].label);
-			expect(link.prop('to')).toEqual(sItems[index].location);
-		});
+		checkLinks(links);
 	});
 
 	it('Should call `handleMenuClick` when clicking menu toggle', () => {

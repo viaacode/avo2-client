@@ -17,15 +17,21 @@ export const ROUTE_PARTS = Object.freeze({
 	item: 'item',
 	loginAvo: 'login-avo',
 	logout: 'afmelden',
+	manualAccessRequest: 'manuele-toegangsaanvraag',
 	menu: 'navigatie',
 	news: 'nieuws',
 	projects: 'projecten',
+	pupilOrTeacher: 'leerling-of-leerkracht',
 	register: 'registreren',
 	registerOrLogin: 'registreer-of-login',
 	responses: 'indieningen',
 	search: 'zoeken',
 	searchQuery: 'zoekopdracht',
+	stamboek: 'stamboek',
+	forTeachers: 'voor-leerkrachten',
+	forPupils: 'voor-leerlingen',
 	workspace: 'mijn-werkruimte',
+	LoggedInHome: 'home',
 });
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {

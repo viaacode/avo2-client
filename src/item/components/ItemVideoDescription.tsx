@@ -26,7 +26,7 @@ import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv, parseDuration } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 
 import './ItemVideoDescription.scss';
 
@@ -119,20 +119,17 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				// TODO: add interface @benji
 				setPlayerTicket(data);
 				trackEvents({
-					event_object: {
-						type: 'item',
-						identifier: itemMetaData.external_id,
-					},
-					event_message: `Gebruiker ${getProfileName()} heeft het item ${
+					object: itemMetaData.external_id,
+					object_type: 'avo_item_pid',
+					message: `Gebruiker ${getProfileName()} heeft het item ${
 						itemMetaData.external_id
 					} afgespeeld`,
-					name: 'view',
-					category: 'item',
+					action: 'view',
 				});
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);
+				toastService.danger('Het ophalen van de mediaplayer ticket is mislukt');
 			});
 
 	const renderMedia = () => (

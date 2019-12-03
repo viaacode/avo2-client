@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 
 import { Button, ButtonToolbar, Spacer, Table } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
@@ -9,18 +10,21 @@ import { AdminLayout } from '../../shared/layouts';
 
 import { CONTENT_OVERVIEW_TABLE_COLS } from '../content.const';
 import { GET_CONTENT } from '../content.gql';
-import { ContentOverviewTableCols, ContentSchema } from '../content.types';
+import { ContentOverviewTableCols } from '../content.types';
 
 interface ContentOverviewProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = () => {
 	// Render
-	const renderTableCell = (rowData: Partial<ContentSchema>, columnId: ContentOverviewTableCols) => {
+	const renderTableCell = (
+		rowData: Partial<Avo.Content.Content>,
+		columnId: ContentOverviewTableCols
+	) => {
 		switch (columnId) {
 			case 'author':
-				return getFullName(rowData.user);
+				return getFullName(rowData.profile);
 			case 'role':
-				return getRole(rowData.user || null);
+				return getRole(rowData.profile || null);
 			case 'actions':
 				return (
 					<ButtonToolbar>
@@ -33,7 +37,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = () => {
 		}
 	};
 
-	const renderContentOverview = (content: Partial<ContentSchema>[]) => {
+	const renderContentOverview = (content: Partial<Avo.Content.Content>[]) => {
 		return !content.length ? (
 			<ErrorView message="Er is nog geen content aangemaakt.">
 				<p>
@@ -50,7 +54,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = () => {
 				<Table
 					columns={CONTENT_OVERVIEW_TABLE_COLS}
 					data={content}
-					renderCell={(rowData: Partial<ContentSchema>, columnId: string) =>
+					renderCell={(rowData: Partial<Avo.Content.Content>, columnId: string) =>
 						renderTableCell(rowData, columnId as ContentOverviewTableCols)
 					}
 					rowKey="id"
