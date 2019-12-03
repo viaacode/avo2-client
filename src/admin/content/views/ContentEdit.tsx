@@ -85,13 +85,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		setIsSaving(false);
 
 		if (response) {
-			toastService.success({ message: 'Het content item is succesvol opgeslagen', dark: false });
+			toastService.success('Het content item is succesvol opgeslagen', false);
 			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
 		} else {
-			toastService.danger({
-				message: 'Er ging iets mis tijden het opslaan van het content item',
-				dark: false,
-			});
+			toastService.danger('Er ging iets mis tijden het opslaan van het content item', false);
 		}
 	};
 

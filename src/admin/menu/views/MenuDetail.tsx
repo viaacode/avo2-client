@@ -57,11 +57,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		})
 			.then(() => {
 				refetch();
-				toastService.success('Het navigatie item is succesvol verwijderd');
+				toastService.success('Het navigatie item is succesvol verwijderd', false);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger('Het verwijderen van het navigatie item is mislukt');
+				toastService.danger('Het verwijderen van het navigatie item is mislukt', false);
 			});
 	};
 
@@ -91,11 +91,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		Promise.all(promises)
 			.then(() => {
 				refetch();
-				toastService.success('De navigatie items zijn succesvol opgeslagen');
+				toastService.success('De navigatie items zijn succesvol opgeslagen', false);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger('Het opslaan van de navigatie items is mislukt');
+				toastService.danger('Het opslaan van de navigatie items is mislukt', false);
 			});
 	};
 
