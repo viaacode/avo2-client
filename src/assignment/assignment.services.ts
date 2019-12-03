@@ -162,7 +162,7 @@ export const insertDuplicateAssignment = async (
 	assignment: Partial<Avo.Assignment.Assignment> | null
 ) => {
 	if (!assignment) {
-		toastService('De opdracht is niet beschikbaar om te dupliceren', TOAST_TYPE.DANGER);
+		toastService.danger('De opdracht is niet beschikbaar om te dupliceren');
 		return;
 	}
 
@@ -177,7 +177,7 @@ export const insertDuplicateAssignment = async (
 		return await insertAssignment(triggerAssignmentInsert, newAssignment);
 	} catch (err) {
 		console.error(err);
-		toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+		toastService.danger('Het dupliceren van de opdracht is mislukt');
 	}
 };
 
