@@ -19,7 +19,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { getThumbnailsForCollection } from '../../../shared/services/stills-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 import { STILL_DIMENSIONS } from '../../collection.const';
 
 interface CollectionStillsModalProps {
@@ -48,7 +48,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 				setVideoStills(await getThumbnailsForCollection(collection));
 			} catch (err) {
 				console.error(err);
-				toastService('Het ophalen van de media thumbnails is mislukt.', TOAST_TYPE.DANGER);
+				toastService.danger('Het ophalen van de media thumbnails is mislukt.');
 				setVideoStills([]);
 			}
 		};
@@ -59,7 +59,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	const saveCoverImage = () => {
 		collection.thumbnail_path = selectedCoverImages[0];
 		onClose();
-		toastService('De cover afbeelding is ingesteld.', TOAST_TYPE.SUCCESS);
+		toastService.success('De cover afbeelding is ingesteld.');
 	};
 
 	return (

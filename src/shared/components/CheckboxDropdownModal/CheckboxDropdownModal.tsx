@@ -165,7 +165,13 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 								</CheckboxGroup>
 							</FormGroup>
 							<FormGroup>
-								<Button label="Toepassen" type="primary" block onClick={applyFilter} />
+								<Button
+									label="Toepassen"
+									type="primary"
+									className="c-apply-filter-button"
+									block
+									onClick={applyFilter}
+								/>
 							</FormGroup>
 						</Form>
 					</Spacer>
@@ -217,7 +223,13 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 											block
 											onClick={closeDropdownOrModal}
 										/>
-										<Button label="Toepassen" type="primary" block onClick={applyFilter} />
+										<Button
+											label="Toepassen"
+											className="c-apply-filter-button"
+											type="primary"
+											block
+											onClick={applyFilter}
+										/>
 									</ButtonToolbar>
 								</ToolbarItem>
 							</ToolbarRight>

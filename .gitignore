@@ -255,7 +255,6 @@ env-config.js
 tests/cypress/videos
 tests/cypress/screenshots
 tests/cypress-report*xml
-tests/cypress-report*xml
 tests/ci-results
-cypress-report*xml
-ci-results
+tests/cypress.env.json
+tests/dist
