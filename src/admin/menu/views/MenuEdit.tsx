@@ -13,7 +13,7 @@ import {
 	fetchMenuItemById,
 	fetchMenuItemsByPlacement,
 } from '../../../shared/services/menu-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types';
 
 import { IconPicker } from '../../shared/components';
@@ -138,7 +138,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const handleResponse = (message: string, err?: any): void => {
 		setIsSaving(false);
 		const hasError = err || err === null;
-		toastService(message, TOAST_TYPE[hasError ? 'DANGER' : 'SUCCESS']);
+		toastService[hasError ? 'danger' : 'success'](message);
 
 		if (hasError) {
 			console.error(err);

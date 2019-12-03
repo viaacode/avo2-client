@@ -24,7 +24,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({ headerLink, navItems }) => (
 						<NavLink
 							activeClassName="o-sidebar__nav-item--active"
 							className="o-sidebar__nav-item"
-							to={navItem.location}
+							to={navItem.location as string}
 						>
 							{navItem.label}
 						</NavLink>

@@ -1,0 +1,25 @@
+@import '../../styles/settings/colors';
+
+.c-register-stamboek-view {
+	.a-info-icon {
+		pointer-events: none;
+	}
+
+	.a-stamboek-image {
+		width: 300px;
+	}
+
+	.m-stamboek-tooltip {
+		background-color: $color-dark-night-blue;
+	}
+
+	.m-stamboek-input-field-wrapper {
+		position: relative;
+	}
+
+	.c-tooltip-trigger {
+		position: absolute;
+		right: 10px;
+		top: 6px;
+	}
+}
