@@ -1,8 +1,10 @@
 import { IconName } from '@viaa/avo2-components';
+import { ReactElement } from 'react';
 
 export type NavigationItem = {
 	label: string;
-	location: string;
+	location?: string;
+	component?: ReactElement;
 	icon?: IconName;
 };
 

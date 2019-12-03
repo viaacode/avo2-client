@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 declare namespace Cypress {
 	interface Chainable {
 		/**
@@ -19,8 +21,8 @@ declare namespace Cypress {
 		logout(): void;
 
 		waitUntil<Subject>(
-			checkFunction: () => Subject | Chainable<Subject> | Promise<Subject>,
+			checkFunction: () => Subject | Chainable | Promise<Subject>,
 			options?: { timeout?: number; interval?: number; errorMsg?: string }
-		): Chainable<Subject>;
+		): Chainable;
 	}
 }

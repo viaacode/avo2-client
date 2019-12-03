@@ -4,7 +4,7 @@ import { cloneDeep, get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { ApolloCacheManager } from '../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
+import toastService from '../shared/services/toast-service';
 import { AssignmentLayout } from './assignment.types';
 
 interface AssignmentProperty {
@@ -88,7 +88,7 @@ export const updateAssignment = async (
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
-			toastService(validationErrors, TOAST_TYPE.DANGER);
+			toastService.danger(validationErrors);
 			return null;
 		}
 
@@ -124,7 +124,7 @@ export const insertAssignment = async (
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
-			toastService(validationErrors, TOAST_TYPE.DANGER);
+			toastService.danger(validationErrors);
 			return null;
 		}
 
@@ -184,12 +184,9 @@ export const insertDuplicateAssignment = async (
 function warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
 	// Validate if deadline_at is not in the past
 	if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
-		toastService(
-			[
-				'De ingestelde deadline ligt in het verleden',
-				'De leerlingen zullen dus geen toegang hebben tot deze opdracht.',
-			],
-			TOAST_TYPE.INFO
-		);
+		toastService.info([
+			'De ingestelde deadline ligt in het verleden',
+			'De leerlingen zullen dus geen toegang hebben tot deze opdracht.',
+		]);
 	}
 }

@@ -33,7 +33,7 @@ import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
 import { buildLink, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import FragmentListDetail from '../../collection/components/fragment/FragmentListDetail';
@@ -92,7 +92,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			if (!assignmentResponse) {
 				// Student has never viewed this assignment before, we should create a response object for him
 				assignmentResponse = {
-					owner_profile_ids: [getProfileId()], // TODO: replace with getUser().uuid
+					owner_profile_ids: [getProfileId()],
 					assignment_id: tempAssignment.id,
 					collection: null,
 					collection_id: null,
@@ -113,7 +113,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					);
 
 					if (isNil(assignmentResponseId)) {
-						toastService('Het aanmaken van de opdracht antwoord entry is mislukt (leeg id)');
+						toastService.info('Het aanmaken van de opdracht antwoord entry is mislukt (leeg id)');
 						return;
 					}
 
@@ -121,10 +121,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					tempAssignment.assignment_responses = [assignmentResponse as Avo.Assignment.Response];
 				} catch (err) {
 					console.error(err);
-					toastService(
-						'Het aanmaken van een opdracht antwoord entry is mislukt',
-						TOAST_TYPE.DANGER
-					);
+					toastService.danger('Het aanmaken van een opdracht antwoord entry is mislukt');
 				}
 			}
 		}
@@ -135,7 +132,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		const assignmentQuery = {
 			query: GET_ASSIGNMENT_WITH_RESPONSE,
 			variables: {
-				studentUuid: [getProfileId()],
+				studentUuid: getProfileId(),
 				assignmentId: (match.params as any).id,
 			},
 		};
@@ -165,7 +162,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				getAssignmentContent(tempAssignment).then(
 					(response: Avo.Assignment.Content | string | null) => {
 						if (typeof response === 'string') {
-							toastService(response);
+							toastService.info(response);
 							return;
 						}
 
@@ -223,10 +220,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {
 			if (assignment && isOwnerOfAssignment(assignment)) {
-				toastService(
-					'U kan deze opdracht niet archiveren want dit is slechts een voorbeeld',
-					TOAST_TYPE.INFO
-				);
+				toastService.info('U kan deze opdracht niet archiveren want dit is slechts een voorbeeld');
 				return;
 			}
 
@@ -242,9 +236,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					update: ApolloCacheManager.clearAssignmentCache,
 				})
 					.then(() => {
-						toastService(
-							`De opdracht is ge${isAssignmentResponseArchived() ? 'de' : ''}archiveerd`,
-							TOAST_TYPE.SUCCESS
+						toastService.success(
+							`De opdracht is ge${isAssignmentResponseArchived() ? 'de' : ''}archiveerd`
 						);
 
 						// Update local cached assignment
@@ -263,13 +256,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 								id: assignmentResponse.id,
 							},
 						});
-						toastService('Het archiveren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+						toastService.danger('Het archiveren van de opdracht is mislukt');
 					});
 			} else {
 				console.error("assignmentResponse object is null or doesn't have an id", {
 					assignmentResponse,
 				});
-				toastService('Het archiveren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+				toastService.danger('Het archiveren van de opdracht is mislukt');
 			}
 		}
 	};

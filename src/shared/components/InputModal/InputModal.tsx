@@ -13,7 +13,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import toastService, { TOAST_TYPE } from '../../services/toast-service';
+import toastService from '../../services/toast-service';
 
 interface InputModalProps {
 	title?: string;
@@ -50,7 +50,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 
 	const onClickConfirm = () => {
 		if (!input) {
-			toastService(emptyMessage, TOAST_TYPE.DANGER);
+			toastService.danger(emptyMessage);
 			return null;
 		}
 
