@@ -50,7 +50,7 @@ export const getAvatarProps = (
 ): AvatarProps => {
 	const name: string = options.abbreviatedName
 		? getAbbreviatedFullName(profile)
-		: getFullName(profile);
+		: getFullName(profile) || '';
 	const role = getRole(profile);
 	const nameAndRole: string = options.includeRole && role ? `${name} (${role})` : name;
 
