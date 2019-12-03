@@ -1,3 +1,5 @@
+import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
+
 import { ROUTE_PARTS } from '../../shared/constants';
 import { TableColumn } from '../../shared/types';
 import { ContentEditFormState } from './content.types';
@@ -34,3 +36,16 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	publishAt: '',
 	depublishAt: '',
 });
+
+export const CONTENT_EDIT_TABS: TabProps[] = [
+	{
+		id: 'inhoud',
+		label: 'Inhoud',
+		icon: 'layout',
+	},
+	{
+		id: 'metadata',
+		label: 'Metadata',
+		icon: 'file-text',
+	},
+];

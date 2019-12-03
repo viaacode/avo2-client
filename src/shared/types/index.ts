@@ -13,12 +13,6 @@ export type ReactSelectOption<T = any> = {
 	value: T;
 };
 
-export interface Tab {
-	id: string;
-	label: string;
-	icon?: IconName;
-}
-
 // TODO: remove this once available from @viaa/avo2-components
 export type TableColumn = {
 	col?:
