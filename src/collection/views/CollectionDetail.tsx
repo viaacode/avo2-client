@@ -89,7 +89,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 		if (!relatedCollections) {
 			getRelatedItems(collectionId, 'collections', 4)
-				.then(relatedCollections => setRelatedCollections(relatedCollections))
+				.then(relatedItems => setRelatedCollections(relatedItems))
 				.catch(err => {
 					console.error('Failed to get related items', err, {
 						collectionId,
@@ -154,7 +154,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	// Render functions
-	const renderRelatedCollections = (relatedCollections: Avo.Search.ResultItem[] | null) => {
+	const renderRelatedCollections = () => {
 		if (!relatedCollections || !relatedCollections.length) {
 			return <p className="c-body-1">De gerelateerde collecties konden niet worden opgehaald.</p>;
 		}
@@ -317,7 +317,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						</Grid>
 						<hr className="c-hr" />
 						<h3 className="c-h3">Bekijk ook</h3>
-						{renderRelatedCollections(relatedCollections)}
+						{renderRelatedCollections()}
 					</Container>
 				</Container>
 				{isPublic !== null && (
