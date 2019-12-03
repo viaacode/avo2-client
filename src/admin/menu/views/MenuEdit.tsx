@@ -25,7 +25,7 @@ import { MenuEditForm, MenuEditPageType, MenuEditParams } from '../menu.types';
 interface MenuEditProps extends RouteComponentProps<MenuEditParams> {}
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
-	const { menu: menuParent, id: menuItemId } = match.params;
+	const { menu: menuParentId, id: menuItemId } = match.params;
 
 	const [menuForm, setMenuForm] = useState<MenuEditForm>(INITIAL_MENU_FORM);
 	const [pageType, setPageType] = useState<MenuEditPageType>(menuItemId ? 'edit' : 'create');
@@ -39,14 +39,16 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
 
 	useEffect(() => {
-		if (menuParent) {
-			fetchMenuItemsByPlacement(menuParent).then((menuItemsByPosition: Avo.Menu.Menu[] | null) => {
-				if (menuItemsByPosition && menuItemsByPosition.length) {
-					setMenuItems(menuItemsByPosition);
+		if (menuParentId) {
+			fetchMenuItemsByPlacement(menuParentId).then(
+				(menuItemsByPosition: Avo.Menu.Menu[] | null) => {
+					if (menuItemsByPosition && menuItemsByPosition.length) {
+						setMenuItems(menuItemsByPosition);
+					}
 				}
-			});
+			);
 		}
-	}, [menuParent]);
+	}, [menuParentId]);
 
 	useEffect(() => {
 		if (menuItemId) {
@@ -73,7 +75,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	}, [menuItemId]);
 
 	// Computed
-	const pageTitle = `${startCase(menuParent)}: item ${PAGE_TYPES_LANG[pageType]}`;
+	const pageTitle = `${startCase(menuParentId)}: item ${PAGE_TYPES_LANG[pageType]}`;
 
 	// Methods
 	const handleChange = (key: keyof MenuEditForm, value: any): void => {
@@ -100,7 +102,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			link_target: menuForm.link,
-			placement: menuParent,
+			placement: menuParentId,
 		};
 
 		if (pageType === 'create') {
@@ -145,7 +147,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParent });
+		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
 	};
 
 	const handleValidation = (): boolean => {
@@ -164,7 +166,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		return Object.keys(errors).length === 0;
 	};
 
-	const navigateBack = () => navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParent });
+	const navigateBack = () => navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
 
 	// Render
 	return isLoading ? (
