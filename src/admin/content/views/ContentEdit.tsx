@@ -63,6 +63,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 							publishAt: contentItem.publish_at || '',
 							depublishAt: contentItem.depublish_at || '',
 						});
+					} else {
+						handleInvalidContentRequest(
+							`Er ging iets mis tijdens het ophalen van de content met id: ${id}`
+						);
 					}
 				})
 				.finally(() => {
@@ -79,6 +83,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 			...contentForm,
 			[key]: value,
 		});
+	};
+
+	const handleInvalidContentRequest = (message: string) => {
+		toastService.danger(message, false);
+		history.push(CONTENT_PATH.CONTENT);
 	};
 
 	const handleResponse = (response: Partial<Avo.Content.Content> | null) => {
@@ -120,13 +129,17 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 
 			handleResponse(insertedContent);
 		} else {
-			const updatedContent = await updateContent(triggerContentUpdate, {
-				...contentItem,
-				updated_at: new Date().toISOString(),
-				id: Number(id),
-			});
+			if (id) {
+				const updatedContent = await updateContent(triggerContentUpdate, {
+					...contentItem,
+					updated_at: new Date().toISOString(),
+					id: parseInt(id, 10),
+				});
 
-			handleResponse(updatedContent);
+				handleResponse(updatedContent);
+			} else {
+				handleInvalidContentRequest(`Het content id: ${id} is ongeldig.`);
+			}
 		}
 	};
 
