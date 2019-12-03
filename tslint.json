@@ -4,7 +4,6 @@
 		"ordered-imports": true,
 		"variable-name": [true, "check-format", "allow-pascal-case"],
 		"import-name": false,
-		"prettier": true,
-		"no-shadowed-variable": true
+		"prettier": true
 	}
 }

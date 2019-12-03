@@ -2,16 +2,19 @@
 	"compilerOptions": {
 		"strict": true,
 		"baseUrl": "../node_modules",
+		"outDir": "./dist/",
+		"noImplicitAny": true,
+		"module": "es6",
 		"target": "es5",
 		"lib": [
 			"es5",
 			"dom"
 		],
-		"types": [
-			"cypress"
-		]
+		"jsx": "react",
+		"allowJs": true,
+		"types": ["cypress"]
 	},
 	"include": [
-		"./integration/**/*.spec.ts"
+		"./cypress/integration/**/*.spec.ts"
 	]
 }

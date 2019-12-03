@@ -261,7 +261,13 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							)}
 						</FormGroup>
 						<FormGroup>
-							<Button label="Toepassen" type="primary" block onClick={applyFilter} />
+							<Button
+								label="Toepassen"
+								type="primary"
+								className="c-apply-filter-button"
+								block
+								onClick={applyFilter}
+							/>
 						</FormGroup>
 					</Form>
 				</div>

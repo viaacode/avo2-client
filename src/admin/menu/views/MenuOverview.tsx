@@ -3,6 +3,7 @@ import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
@@ -10,12 +11,12 @@ import { navigate } from '../../../shared/helpers';
 import { AdminLayout } from '../../shared/layouts';
 import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
-import { MenuOverviewTableCols, MenuSchema } from '../menu.types';
+import { MenuOverviewTableCols } from '../menu.types';
 
 interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
-	const renderTableCell = (rowData: Partial<MenuSchema>, columnId: MenuOverviewTableCols) => {
+	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
 		switch (columnId) {
 			case 'placement':
 				return startCase(rowData.placement);
@@ -43,12 +44,12 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 		}
 	};
 
-	const renderMenuOverview = (data: Partial<MenuSchema>[]) => {
+	const renderMenuOverview = (data: Partial<Avo.Menu.Menu>[]) => {
 		return (
 			<Table
 				columns={MENU_OVERVIEW_TABLE_COLS}
 				data={data}
-				renderCell={(rowData: Partial<MenuSchema>, columnId: string) =>
+				renderCell={(rowData: Partial<Avo.Menu.Menu>, columnId: string) =>
 					renderTableCell(rowData, columnId as MenuOverviewTableCols)
 				}
 				rowKey="id"

@@ -37,14 +37,17 @@ import { LoginResponse } from '../../authentication/store/types';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
+	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
@@ -60,7 +63,6 @@ interface AssignmentOverviewProps extends RouteComponentProps {
 
 const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	history,
-	loginState,
 	refetchCount,
 }) => {
 	const [filterString, setFilterString] = useState<string>('');
@@ -82,6 +84,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
+
+	const canEditAssignments = PermissionService.hasPermissions([
+		{ permissionName: PERMISSIONS.EDIT_OWN_ASSIGNMENTS },
+		{ permissionName: PERMISSIONS.EDIT_ALL_ASSIGNMENTS },
+	]);
 
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
@@ -117,7 +124,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		const assignment = get(response, 'data.app_assignments[0]');
 
 		if (!assignment) {
-			toastService('Het ophalen van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het ophalen van de opdracht is mislukt');
 			return;
 		}
 		return assignment;
@@ -138,11 +145,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				}
 				refetchAssignments();
 				refetchCount();
-				toastService('De opdracht is gedupliceerd', TOAST_TYPE.SUCCESS);
+				toastService.success('De opdracht is gedupliceerd');
 			}
 		} catch (err) {
 			console.error(err);
-			toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het dupliceren van de opdracht is mislukt');
 		}
 	};
 
@@ -161,9 +168,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 					refetchAssignments();
 					refetchCount();
-					toastService(
-						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`,
-						TOAST_TYPE.SUCCESS
+					toastService.success(
+						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`
 					);
 				}
 				// else: assignment was not valid and could not be saved yet
@@ -171,11 +177,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 		} catch (err) {
 			console.error(err);
-			toastService(
+			toastService.danger(
 				`Het ${
 					activeView === 'archived_assignments' ? 'de' : ''
-				}archiveren van de opdracht is mislukt`,
-				TOAST_TYPE.DANGER
+				}archiveren van de opdracht is mislukt`
 			);
 		}
 	};
@@ -186,16 +191,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	) => {
 		try {
 			if (typeof assignmentId === 'undefined' || assignmentId === null) {
-				toastService('De huidige opdracht is nog nooit opgeslagen (geen id)', TOAST_TYPE.DANGER);
+				toastService.danger('De huidige opdracht is nog nooit opgeslagen (geen id)');
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, assignmentId);
 			refetchAssignments();
 			refetchCount();
-			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
+			toastService.success('De opdracht is verwijdert');
 		} catch (err) {
 			console.error(err);
-			toastService('Het verwijderen van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het verwijderen van de opdracht is mislukt');
 		}
 	};
 
@@ -205,7 +210,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		refetchAssignments: () => void
 	) => {
 		if (!dataRow.id) {
-			toastService('Het opdracht id van de geselecteerde rij is niet ingesteld', TOAST_TYPE.DANGER);
+			toastService.danger('Het opdracht id van de geselecteerde rij is niet ingesteld');
 			return;
 		}
 		switch (actionId) {
@@ -218,7 +223,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					setMarkedAssignment(assignment);
 					setDuplicateAssignmentModalOpen(true);
 				} else {
-					toastService('Het ophalen van de details van de opdracht is mislukt', TOAST_TYPE.DANGER);
+					toastService.danger('Het ophalen van de details van de opdracht is mislukt');
 				}
 				break;
 			case 'archive':
@@ -253,6 +258,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		refetchAssignments: () => void
 	) => {
 		const cellData: any = (rowData as any)[colKey];
+		const editLink = buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id });
+		const detailLink = buildLink(ASSIGNMENT_PATH.ASSIGNMENT_DETAIL, { id: rowData.id });
 
 		switch (colKey) {
 			case 'title':
@@ -263,9 +270,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
-								<Link to={buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id })}>
-									{rowData.title}
-								</Link>
+								<Link to={canEditAssignments ? editLink : detailLink}>{rowData.title}</Link>
 							</h3>
 						</div>
 					</Flex>
@@ -350,16 +355,20 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const renderAssignmentsTable = (
 		data: {
-			assignments: Avo.Assignment.Assignment[];
+			app_assignments?: Avo.Assignment.Assignment[];
+			app_assignment_responses?: Avo.Assignment.Response[];
 			count: { aggregate: { count: number } };
 		},
 		refetchAssignments: () => void
 	) => {
+		const assignments = [];
+		assignments.push(...(data.app_assignment_responses || []).map(response => response.assignment));
+		assignments.push(...(data.app_assignments || []));
 		return (
 			<>
 				<Table
 					columns={columns}
-					data={data.assignments}
+					data={assignments}
 					emptyStateMessage={
 						filterString
 							? 'Er zijn geen opdrachten die voldoen aan de zoekopdracht'
@@ -454,21 +463,21 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					</ToolbarRight>
 				</Toolbar>
 
-				{get(loginState, 'userInfo.profile.id') && (
-					<DataQueryComponent
-						query={GET_ASSIGNMENTS_BY_OWNER_ID}
-						variables={{
-							owner_profile_id: get(loginState, 'userInfo.profile.id'),
-							archived: activeView === 'archived_assignments',
-							order: { [sortColumn]: sortOrder },
-							offset: page * ITEMS_PER_PAGE,
-							filter: getFilterObject(),
-						}}
-						renderData={renderAssignmentsTable}
-						resultPath=""
-						ignoreNotFound
-					/>
-				)}
+				<DataQueryComponent
+					query={
+						canEditAssignments ? GET_ASSIGNMENTS_BY_OWNER_ID : GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID
+					}
+					variables={{
+						owner_profile_id: getProfileId(),
+						archived: activeView === 'archived_assignments',
+						order: { [sortColumn]: sortOrder },
+						offset: page * ITEMS_PER_PAGE,
+						filter: getFilterObject(),
+					}}
+					renderData={renderAssignmentsTable}
+					resultPath=""
+					ignoreNotFound
+				/>
 			</Container>
 		</Container>
 	);

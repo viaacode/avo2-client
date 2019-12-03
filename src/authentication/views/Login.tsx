@@ -7,10 +7,8 @@ import { Dispatch } from 'redux';
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 
 import { ErrorView } from '../../error/views';
-import { SEARCH_PATH } from '../../search/search.const';
 
-import { AUTH_PATH } from '../authentication.const';
-import { redirectToLoginPage } from '../helpers/redirect-to-idp';
+import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginState } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginMessage, LoginResponse } from '../store/types';
@@ -74,11 +72,7 @@ const Login: FunctionComponent<LoginProps> = ({
 			!hasRecentLoginAttempt()
 		) {
 			addLoginAttempt();
-			// Redirect to login form
-			const base = window.location.href.split(AUTH_PATH.LOGIN_AVO)[0];
-			// Url to return to after authentication is completed and server stored auth object in session
-			const returnToUrl = base + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
-			redirectToLoginPage(returnToUrl);
+			redirectToServerLoginPage(location);
 		}
 	}, [
 		getLoginState,
