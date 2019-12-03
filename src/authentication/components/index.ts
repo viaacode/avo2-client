@@ -1,5 +1,3 @@
-import PermissionGuard from './PermissionGuard';
-import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
-import SecuredRoute from './SecuredRoute';
-
-export { PermissionGuard, PermissionGuardPass, PermissionGuardFail, SecuredRoute };
+export { default as PermissionGuard } from './PermissionGuard';
+export { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
+export { default as SecuredRoute } from './SecuredRoute';

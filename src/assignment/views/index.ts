@@ -1,5 +1,3 @@
-import AssignmentDetail from './AssignmentDetail';
-import AssignmentEdit from './AssignmentEdit';
-import AssignmentOverview from './AssignmentOverview';
-
-export { AssignmentDetail, AssignmentEdit, AssignmentOverview };
+export { default as AssignmentDetail } from './AssignmentDetail';
+export { default as AssignmentEdit } from './AssignmentEdit';
+export { default as AssignmentOverview } from './AssignmentOverview';
