@@ -147,14 +147,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const handleError = (message: string, err: any): void => {
 		console.error(err);
 		setIsSaving(false);
-		toastService.danger(message);
+		toastService.danger(message, false);
 	};
 
 	const handleSucces = (message: string): void => {
 		const { menu } = match.params;
 
 		setIsSaving(false);
-		toastService.success(message);
+		toastService.success(message, false);
 		navigate(history, MENU_PATH.MENU_DETAIL, { menu });
 	};
 

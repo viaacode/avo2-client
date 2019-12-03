@@ -76,11 +76,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 
 	useEffect(() => {
-		CollectionService.getCollectionTitlesByUser().then(
-			(collectionTitles: Partial<Avo.Collection.Collection>[]) => {
-				setCollections(collectionTitles);
-			}
-		);
+		fetchCollections();
 	}, []);
 
 	useEffect(() => {
@@ -94,6 +90,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
 		}
 	}, [isOpen, itemMetaData.duration]);
+
+	const fetchCollections = () =>
+		CollectionService.getCollectionTitlesByUser().then(
+			(collectionTitles: Partial<Avo.Collection.Collection>[]) => {
+				setCollections(collectionTitles);
+			}
+		);
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
@@ -221,6 +224,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			} else {
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
+				fetchCollections();
 				onClose();
 			}
 
@@ -265,7 +269,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		? addItemToNewCollection
 		: () => addItemToExistingCollection(selectedCollection as Partial<Avo.Collection.Collection>);
 
-	const renderAddToCollectionModalModal = () => {
+	const renderAddToCollectionModal = () => {
 		const initFlowPlayer = () =>
 			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 
@@ -411,7 +415,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		);
 	};
 
-	return renderAddToCollectionModalModal();
+	return renderAddToCollectionModal();
 };
 
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31363#issuecomment-484542717

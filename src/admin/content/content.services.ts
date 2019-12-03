@@ -25,14 +25,14 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 	}
 };
 
-const CONTEN_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
+const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
 
 export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
 		const contentTypes: ContentTypesResponse[] | null = get(
 			response,
-			`data.${CONTEN_TYPES_LOOKUP_PATH}`,
+			`data.${CONTENT_TYPES_LOOKUP_PATH}`,
 			null
 		);
 

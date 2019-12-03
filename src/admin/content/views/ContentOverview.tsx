@@ -30,9 +30,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 			case 'title':
 				return <Link to={buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })}>{title}</Link>;
 			case 'author':
-				return profile ? getFullName(profile) : '-';
+				return getFullName(profile) || '-';
 			case 'role':
-				return getRole(profile || null) || '-';
+				return getRole(profile) || '-';
 			case 'publish_at':
 			case 'depublish_at':
 			case 'created_at':
