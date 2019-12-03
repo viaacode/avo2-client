@@ -145,9 +145,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: positionedFragments.map(
-				({ id: positionedFragmentId }) => positionedFragmentId
-			),
+			collection_fragment_ids: positionedFragments.map(positionedFragment => positionedFragment.id),
 		});
 
 		toastService('Fragment is succesvol verwijderd', TOAST_TYPE.SUCCESS);
