@@ -24,6 +24,10 @@ export const getInitials = (profile: Avo.User.Profile | null) =>
 	getInitialChar(get(profile, 'user.first_name')) + getInitialChar(get(profile, 'user.last_name'));
 
 export const getFullName = (userOrProfile: Avo.User.Profile | Avo.User.User | null | undefined) => {
+	if (!userOrProfile) {
+		return null;
+	}
+
 	return `${get(getProfile(userOrProfile), 'user.first_name')} ${get(
 		getProfile(userOrProfile),
 		'user.last_name'
@@ -33,7 +37,8 @@ export const getFullName = (userOrProfile: Avo.User.Profile | Avo.User.User | nu
 export const getAbbreviatedFullName = (profile: Avo.User.Profile | null) =>
 	`${get(profile, 'user.first_name', '')[0]}. ${get(profile, 'user.last_name')}`;
 
-export const getRole = (profile: Avo.User.Profile | null) => get(profile, 'user.role.name');
+export const getRole = (profile: Avo.User.Profile | null | undefined) =>
+	get(profile, 'user.role.name');
 
 export const getAvatarProps = (
 	profile: Avo.User.Profile | null,
