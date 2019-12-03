@@ -10,6 +10,7 @@ import {
 	Container,
 	Flex,
 	Grid,
+	Heading,
 	Icon,
 	IconName,
 	MediaCard,
@@ -360,7 +361,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 							</Column>
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
-									<h3 className="c-h3">Bekijk ook</h3>
+									<Heading type="h3">Bekijk ook</Heading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>
 							</Column>

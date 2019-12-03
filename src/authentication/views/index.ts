@@ -1,6 +1,4 @@
-import Login from './Login';
-import Logout from './Logout';
-import RegisterOrLogin from './RegisterOrLogin';
-import RegisterStamboek from './registration-flow/r3-stamboek';
-
-export { Login, Logout, RegisterOrLogin, RegisterStamboek };
+export { default as Login } from './Login';
+export { default as Logout } from './Logout';
+export { default as RegisterOrLogin } from './RegisterOrLogin';
+export { default as RegisterStamboek } from './registration-flow/r3-stamboek';

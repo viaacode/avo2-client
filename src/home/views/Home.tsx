@@ -11,6 +11,7 @@ import {
 	DropdownButton,
 	DropdownContent,
 	Flex,
+	Heading,
 	MenuSearchResultContent,
 	MenuSearchResultItemInfo,
 	Spacer,
@@ -114,9 +115,9 @@ const Home: FunctionComponent<HomeProps> = ({
 			<Container mode="vertical" background="alt">
 				<Container mode="horizontal" size="medium">
 					<Spacer>
-						<h2 className="c-h2 u-text-center">
+						<Heading type="h2" className="u-text-center">
 							Vind alles wat je nodig hebt om je lessen te verrijken.
-						</h2>
+						</Heading>
 						<div className="u-text-center">
 							<Spacer margin="large">
 								<Dropdown

@@ -68,6 +68,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 							publishAt: contentItem.publish_at || '',
 							depublishAt: contentItem.depublish_at || '',
 						});
+					} else {
+						toastService.danger(
+							`Er ging iets mis tijdens het ophalen van de content met id: ${id}`,
+							false
+						);
+						history.push(CONTENT_PATH.CONTENT);
 					}
 				})
 				.finally(() => {
@@ -76,7 +82,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		} else {
 			setPageType(PageType.Create);
 		}
-	}, [id]);
+	}, [id, history]);
 
 	// Methods
 	const handleChange = (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => {
@@ -125,13 +131,18 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 
 			handleResponse(insertedContent);
 		} else {
-			const updatedContent = await updateContent(triggerContentUpdate, {
-				...contentItem,
-				updated_at: new Date().toISOString(),
-				id: Number(id),
-			});
+			if (id) {
+				const updatedContent = await updateContent(triggerContentUpdate, {
+					...contentItem,
+					updated_at: new Date().toISOString(),
+					id: parseInt(id, 10),
+				});
 
-			handleResponse(updatedContent);
+				handleResponse(updatedContent);
+			} else {
+				toastService.danger(`Het content id: ${id} is ongeldig.`, false);
+				history.push(CONTENT_PATH.CONTENT);
+			}
 		}
 	};
 
@@ -155,7 +166,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		if (pageType === PageType.Create) {
 			history.push(CONTENT_PATH.CONTENT);
 		} else {
-			navigate(history, CONTENT_PATH.CONTENT, { id });
+			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id });
 		}
 	};
 

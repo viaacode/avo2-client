@@ -1,13 +1,5 @@
-import CollectionDetail from './CollectionDetail';
-import CollectionEdit from './CollectionEdit';
-import CollectionEditContent from './CollectionEditContent';
-import CollectionEditMetaData from './CollectionEditMetaData';
-import CollectionOverview from './CollectionOverview';
-
-export {
-	CollectionEditContent,
-	CollectionEditMetaData,
-	CollectionDetail,
-	CollectionOverview,
-	CollectionEdit,
-};
+export { default as CollectionDetail } from './CollectionDetail';
+export { default as CollectionEdit } from './CollectionEdit';
+export { default as CollectionEditContent } from './CollectionEditContent';
+export { default as CollectionEditMetaData } from './CollectionEditMetaData';
+export { default as CollectionOverview } from './CollectionOverview';

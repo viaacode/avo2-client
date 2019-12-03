@@ -1,5 +1,3 @@
-import SearchFilterControls from './SearchFilterControls';
-import SearchResultItem from './SearchResultItem';
-import SearchResults from './SearchResults';
-
-export { SearchFilterControls, SearchResults, SearchResultItem };
+export { default as SearchFilterControls } from './SearchFilterControls';
+export { default as SearchResultItem } from './SearchResultItem';
+export { default as SearchResults } from './SearchResults';
