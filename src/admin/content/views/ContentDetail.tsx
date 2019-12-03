@@ -1,5 +1,5 @@
 import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Button, Spacer, Table } from '@viaa/avo2-components';
@@ -16,7 +16,10 @@ import { ContentParams } from '../content.types';
 interface ContentDetailProps extends RouteComponentProps<ContentParams> {}
 
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }) => {
+	const [contentTitle, setContentTitle] = useState<string>('');
+
 	const { id } = match.params;
+	const pageTitle = `Content: ${contentTitle}`;
 
 	// Render
 	const renderFormattedDate = (date: string | null | undefined) =>
@@ -24,6 +27,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 
 	const renderContentDetail = (data: Avo.Content.Content[]) => {
 		const contentItem: Avo.Content.Content = get(data, '[0]');
+
+		if (contentItem) {
+			setContentTitle(contentItem.title);
+		}
 
 		return (
 			<div>
@@ -64,7 +71,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 	};
 
 	return (
-		<AdminLayout pageTitle="Content: titel" navigateBack={() => history.push(CONTENT_PATH.CONTENT)}>
+		<AdminLayout pageTitle={pageTitle} navigateBack={() => history.push(CONTENT_PATH.CONTENT)}>
 			<AdminLayoutBody>
 				<DataQueryComponent
 					query={GET_CONTENT_BY_ID}

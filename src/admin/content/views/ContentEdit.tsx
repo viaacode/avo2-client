@@ -163,7 +163,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		if (pageType === PageType.Create) {
 			history.push(CONTENT_PATH.CONTENT);
 		} else {
-			navigate(history, CONTENT_PATH.CONTENT, { id });
+			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id });
 		}
 	};
 
