@@ -1,4 +1,4 @@
-import { isNil, isString } from 'lodash-es';
+import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
 
