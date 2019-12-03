@@ -26,7 +26,7 @@ export function trackEvents(events: MinimalClientEvent[] | MinimalClientEvent) {
 				subject: getProfileId(), // Entity making causing the event
 				subject_type: 'user_uuid',
 				...event,
-			} as ClientEvent;
+			};
 		}
 	);
 	fetch(`${getEnv('PROXY_URL')}/event-logging`, {

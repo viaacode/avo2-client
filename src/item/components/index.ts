@@ -1,4 +1,2 @@
-import ItemVideoDescription from './ItemVideoDescription';
-import AddToCollectionModal from './modals/AddToCollectionModal';
-
-export { AddToCollectionModal, ItemVideoDescription };
+export { default as ItemVideoDescription } from './ItemVideoDescription';
+export { default as AddToCollectionModal } from './modals/AddToCollectionModal';

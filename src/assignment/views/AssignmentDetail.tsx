@@ -12,6 +12,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Heading,
 	Icon,
 	IconName,
 	MenuContent,
@@ -354,7 +355,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}
-										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
+										<Heading className="u-m-0" type="h2">
+											{assignment.title}
+										</Heading>
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>

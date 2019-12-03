@@ -14,30 +14,21 @@ import { ReactSelectOption } from '../../../shared/types';
 
 import { IconPicker } from '../../shared/components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
-import { MENU_ICON_OPTIONS, MENU_PATH } from '../menu.const';
+import { INITIAL_MENU_FORM, MENU_ICON_OPTIONS, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 import { fetchMenuItemById, fetchMenuItemsByPlacement } from '../menu.services';
+import { MenuEditForm, MenuEditPageType, MenuEditParams } from '../menu.types';
 
-interface MenuEditForm {
-	icon: IconName | '';
-	label: string;
-	link: string;
-}
-
-const initialMenuForm = (): MenuEditForm => ({
-	icon: '',
-	label: '',
-	link: '',
-});
-
-interface MenuEditProps extends RouteComponentProps<{ menu: string; id?: string }> {}
+interface MenuEditProps extends RouteComponentProps<MenuEditParams> {}
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
-	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
-	const [menuForm, setMenuForm] = useState<MenuEditForm>(initialMenuForm());
-	const [pageType, setPageType] = useState<'edit' | 'create' | undefined>();
+	const { menu: menuParentId, id: menuItemId } = match.params;
+
+	const [menuForm, setMenuForm] = useState<MenuEditForm>(INITIAL_MENU_FORM);
+	const [pageType, setPageType] = useState<MenuEditPageType>(menuItemId ? 'edit' : 'create');
 	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
+	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -45,20 +36,20 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
 
 	useEffect(() => {
-		const menuId = match.params.menu;
-
-		fetchMenuItemsByPlacement(menuId).then((menuItemsByPlacement: Avo.Menu.Menu[] | null) => {
-			if (menuItemsByPlacement && menuItemsByPlacement.length) {
-				setMenuItems(menuItemsByPlacement);
-			}
-		});
-	}, [match.params.menu]);
+		if (menuParentId) {
+			fetchMenuItemsByPlacement(menuParentId).then(
+				(menuItemsByPosition: Avo.Menu.Menu[] | null) => {
+					if (menuItemsByPosition && menuItemsByPosition.length) {
+						setMenuItems(menuItemsByPosition);
+					}
+				}
+			);
+		}
+	}, [menuParentId]);
 
 	useEffect(() => {
-		const menuItemId = match.params.id;
-		setPageType(menuItemId ? 'edit' : 'create');
-
 		if (menuItemId) {
+			setPageType('edit');
 			setIsLoading(true);
 			fetchMenuItemById(Number(menuItemId)).then((menuItem: Avo.Menu.Menu | null) => {
 				if (menuItem) {
@@ -75,15 +66,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				}
 			});
 		} else {
+			setPageType('create');
 			setIsLoading(false);
 		}
-	}, [match.params.id]);
+	}, [menuItemId]);
 
 	// Computed
-	const menuId = match.params.menu;
-	const pageTitle = `${startCase(menuId)}: item ${
-		pageType === 'create' ? 'toevoegen' : 'aanpassen'
-	}`;
+	const pageTitle = `${startCase(menuParentId)}: item ${PAGE_TYPES_LANG[pageType]}`;
 
 	// Methods
 	const handleChange = (key: keyof MenuEditForm, value: any): void => {
@@ -106,12 +95,11 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		}
 
 		// Create
-		const { id, menu } = match.params;
-		const menuItem: Partial<Avo.Menu.Menu> = {
+		const menuItem: Partial<Partial<Avo.Menu.Menu>> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			link_target: menuForm.link,
-			placement: menu,
+			placement: menuParentId,
 		};
 
 		if (pageType === 'create') {
@@ -125,12 +113,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleSucces('Het navigatie item is succesvol aangemaakt'))
-				.catch(err => handleError('Het aanmaken van het navigatie item is mislukt', err));
+				.then(() => handleResponse('Het navigatie item is succesvol aangemaakt'))
+				.catch(err =>
+					handleResponse('Het aanmaken van het navigatie item is mislukt', err || null)
+				);
 		} else {
 			triggerMenuItemUpdate({
 				variables: {
-					id,
+					id: menuItemId,
 					menuItem: {
 						...initialMenuItem,
 						...menuItem,
@@ -139,23 +129,23 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleSucces('Het navigatie item is succesvol geüpdatet'))
-				.catch(err => handleError('Het updaten van het navigatie item is mislukt', err));
+				.then(() => handleResponse('Het navigatie item is succesvol geüpdatet'))
+				.catch(err => handleResponse('Het updaten van het navigatie item is mislukt', err || null));
 		}
 	};
 
-	const handleError = (message: string, err: any): void => {
-		console.error(err);
+	const handleResponse = (message: string, err?: any): void => {
 		setIsSaving(false);
-		toastService.danger(message, false);
-	};
 
-	const handleSucces = (message: string): void => {
-		const { menu } = match.params;
+		const hasError = err || err === null;
+		toastService[hasError ? 'danger' : 'success'](message, false);
 
-		setIsSaving(false);
-		toastService.success(message, false);
-		navigate(history, MENU_PATH.MENU_DETAIL, { menu });
+		if (hasError) {
+			console.error(err);
+			return;
+		}
+
+		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
 	};
 
 	const handleValidation = (): boolean => {
@@ -164,6 +154,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		if (!menuForm.label) {
 			errors.label = 'Label is verplicht';
 		}
+
 		if (!menuForm.link) {
 			errors.link = 'Link is verplicht';
 		}
@@ -173,9 +164,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		return Object.keys(errors).length === 0;
 	};
 
-	const navigateBack = () => {
-		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuId });
-	};
+	const navigateBack = () => navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
 
 	// Render
 	return isLoading ? (
