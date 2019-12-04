@@ -14,7 +14,7 @@ import { buildLink } from '../../helpers';
 import Navigation from './Navigation';
 
 const pItems = [
-	{ label: 'Home', location: '/' },
+	{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME },
 	{ label: 'Zoeken', location: SEARCH_PATH.SEARCH },
 	{ label: 'Ontdek', location: DISCOVER_PATH.DISCOVER },
 	{
