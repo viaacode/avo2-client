@@ -18,8 +18,8 @@ const ColorSelect: FunctionComponent<ColorSelectProps> = ({
 }) => {
 	const renderLabel = ({ label, value }: ReactSelectOption<string>) => (
 		<Flex>
-			<span className={`c-color-select__preview u-${value}`} />
-			<Spacer margin="left">{label}</Spacer>
+			<div className={`c-color-select__preview u-bg-${value}`} />
+			<Spacer margin="left-small">{label}</Spacer>
 		</Flex>
 	);
 

@@ -16,9 +16,12 @@ import { ContentParams } from '../content.types';
 interface ContentDetailProps extends RouteComponentProps<ContentParams> {}
 
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }) => {
+	const { id } = match.params;
+
+	// Hooks
 	const [contentTitle, setContentTitle] = useState<string>('');
 
-	const { id } = match.params;
+	// Computed
 	const pageTitle = `Content: ${contentTitle}`;
 
 	// Render

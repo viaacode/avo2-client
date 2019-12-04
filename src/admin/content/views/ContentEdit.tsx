@@ -31,6 +31,8 @@ interface ContentEditProps extends RouteComponentProps<{ id?: string }> {
 }
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState, match }) => {
+	const { id } = match.params;
+
 	// Hooks
 	const [contentForm, setContentForm] = useState<ContentEditFormState>(INITIAL_CONTENT_FORM);
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
@@ -43,7 +45,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
 	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
 
-	const { id } = match.params;
+	// Computed
 	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
 	const contentTypeOptions = [
 		{ label: 'Kies een content type', value: '', disabled: true },
