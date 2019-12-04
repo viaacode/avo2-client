@@ -6,12 +6,12 @@ import { connect, Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
-import { IconName } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import Admin from './admin/Admin';
 import PupilOrTeacherDropdown from './authentication/components/PupilOrTeacherDropdown';
 import { selectLogin } from './authentication/store/selectors';
-import { LoginMessage, LoginResponse } from './authentication/store/types';
+import { LoginMessage } from './authentication/store/types';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import { Footer, Navigation } from './shared/components';
@@ -23,7 +23,7 @@ import store, { AppState } from './store';
 import './styles/main.scss';
 
 interface AppProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
 const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
@@ -36,13 +36,13 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 			{
 				label: 'Zoeken',
 				location: APP_PATH.SEARCH,
-				icon: 'search' as IconName,
+				icon: 'search',
 			},
 			{ label: 'Ontdek', location: APP_PATH.DISCOVER },
 			{
 				label: 'Mijn Werkruimte',
 				location: APP_PATH.WORKSPACE,
-				icon: 'briefcase' as IconName,
+				icon: 'briefcase',
 			},
 			{ label: 'Projecten', location: APP_PATH.PROJECTS },
 			{ label: 'Nieuws', location: APP_PATH.NEWS },

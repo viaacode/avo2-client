@@ -6,13 +6,15 @@ export const dataService = new ApolloClient({
 	credentials: 'include',
 });
 
+type ApolloCache = { [key: string]: any };
+
 export class ApolloCacheManager {
 	/**
 	 * Clear all collection aggregate related data from the cache
 	 * eg: app_collections, app_collection_fragments, app_collections_aggregate
 	 * @param cache
 	 */
-	public static clearCollectionCache(cache: { [key: string]: any }) {
+	public static clearCollectionCache(cache: ApolloCache) {
 		ApolloCacheManager.deleteFromCache(cache, 'app_collection');
 	}
 
@@ -21,7 +23,7 @@ export class ApolloCacheManager {
 	 * eg: app_assignment, app_assignments_aggregate
 	 * @param cache
 	 */
-	public static clearAssignmentCache(cache: { [key: string]: any }) {
+	public static clearAssignmentCache(cache: ApolloCache) {
 		ApolloCacheManager.deleteFromCache(cache, 'app_assignment');
 	}
 
@@ -30,10 +32,18 @@ export class ApolloCacheManager {
 	 * eg: content_nav_elements
 	 * @param cache
 	 */
-	public static clearNavElementsCache = (cache: { [key: string]: any }) =>
+	public static clearNavElementsCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content_nav_elements');
 
-	private static deleteFromCache(cache: { [key: string]: any }, keyPrefix: string) {
+	/**
+	 * Clears all content related items from the cache
+	 * eg: content
+	 * @param cache
+	 */
+	public static clearContentCache = (cache: ApolloCache) =>
+		ApolloCacheManager.deleteFromCache(cache, 'app_content');
+
+	private static deleteFromCache(cache: ApolloCache, keyPrefix: string) {
 		Object.keys(cache.data.data).forEach((key: string) => {
 			// Also match keys starting with $ROOT_QUERY. for clearing aggregates cache
 			if (key.match(new RegExp(`^\\$root_query\\.${keyPrefix}|^${keyPrefix}`, 'gmi'))) {
