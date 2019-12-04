@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
-import Select from 'react-select/src/Select';
+import Select from 'react-select';
 
 interface ContentBlockPickerProps {
 	className?: string;

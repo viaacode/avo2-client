@@ -1,6 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import Select from 'react-select';
-import { Props } from 'react-select/src/Select';
+import Select, { Props } from 'react-select';
 
 import { Flex, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import classnames from 'classnames';
