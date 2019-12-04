@@ -8,6 +8,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 
+import { isProfileComplete } from '../helpers/get-profile-info';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginMessage } from '../store/types';
@@ -55,8 +56,20 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 			render={props => {
 				// Already logged in
 				if (loginState && loginState.message === LoginMessage.LOGGED_IN) {
-					const Component = component;
-					return <Component />;
+					if (isProfileComplete()) {
+						const Component = component;
+						return <Component />;
+					} else {
+						// Force user to complete their profile before letting them in
+						return (
+							<Redirect
+								to={{
+									pathname: APP_PATH.COMPLETE_PROFILE,
+									state: { from: props.location },
+								}}
+							/>
+						);
+					}
 				}
 
 				// On errors or not logged in => redirect to login or register page
