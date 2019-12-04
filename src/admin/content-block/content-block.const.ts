@@ -9,7 +9,7 @@ export const BACKGROUND_COLOR_OPTIONS: { label: string; value: ContentBlockBackg
 ];
 
 // Heading
-export const HEADING_ALIGN_OPTIONS: HeadingAligns[] = ['left', 'right', 'center'];
+export const HEADING_ALIGN_OPTIONS: HeadingAligns[] = ['left', 'center', 'right'];
 export const HEADING_LEVEL_OPTIONS: { label: string; value: HeadingLevels }[] = [
 	{ label: 'H1', value: 'h1' },
 	{ label: 'H2', value: 'h2' },

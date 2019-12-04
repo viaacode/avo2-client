@@ -66,7 +66,10 @@ const HeadingBlockForm: FunctionComponent<HeadingBLockFormProps> = ({ onChange }
 				<Flex spaced="wide">
 					<FlexItem>
 						<FormGroup label="Titel">
-							<TextInput value={form.title} />
+							<TextInput
+								onChange={(value: string) => handleChange('title', value)}
+								value={form.title}
+							/>
 						</FormGroup>
 					</FlexItem>
 					<FormGroup label="Stijl">
