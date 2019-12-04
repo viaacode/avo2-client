@@ -180,7 +180,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		switch (currentTab) {
 			case 'inhoud':
 				return <HeadingBlockForm onChange={() => {}} />;
-			// return null;
 			case 'metadata':
 				return (
 					<ContentEditForm
