@@ -8,7 +8,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 
-import { getLoginState } from '../store/actions';
+import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginMessage } from '../store/types';
 
@@ -81,7 +81,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getLoginState: () => dispatch(getLoginState() as any),
+		getLoginState: () => dispatch(getLoginStateAction() as any),
 	};
 };
 

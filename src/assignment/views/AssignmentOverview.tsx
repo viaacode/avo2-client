@@ -129,6 +129,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		return assignment;
 	};
 
+	// TODO: Make this one function in a service or helper file as it is also used in AssignmentEdit
 	const duplicateAssignment = async (
 		newTitle: string,
 		assignment: Partial<Avo.Assignment.Assignment> | null,
@@ -138,8 +139,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			if (assignment) {
 				delete assignment.id;
 				assignment.title = newTitle;
-				const duplicateAssignment = await insertAssignment(triggerAssignmentInsert, assignment);
-				if (!duplicateAssignment) {
+				const duplicatedAssignment = await insertAssignment(triggerAssignmentInsert, assignment);
+				if (!duplicatedAssignment) {
 					return; // assignment was not valid => validation service already showed a toast
 				}
 				refetchAssignments();
