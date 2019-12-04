@@ -1,19 +1,8 @@
-import FragmentAdd from './fragment/FragmentAdd';
-import FragmentDetail from './fragment/FragmentDetail';
-import FragmentEdit from './fragment/FragmentEdit';
-import FragmentListDetail from './fragment/FragmentListDetail';
-import CollectionStillsModal from './modals/CollectionStillsModal';
-import CutFragmentModal from './modals/CutFragmentModal';
-import ReorderCollectionModal from './modals/ReorderCollectionModal';
-import ShareCollectionModal from './modals/ShareCollectionModal';
-
-export {
-	CollectionStillsModal,
-	CutFragmentModal,
-	ReorderCollectionModal,
-	ShareCollectionModal,
-	FragmentAdd,
-	FragmentListDetail,
-	FragmentDetail,
-	FragmentEdit,
-};
+export { default as FragmentAdd } from './fragment/FragmentAdd';
+export { default as FragmentDetail } from './fragment/FragmentDetail';
+export { default as FragmentEdit } from './fragment/FragmentEdit';
+export { default as FragmentListDetail } from './fragment/FragmentListDetail';
+export { default as CollectionStillsModal } from './modals/CollectionStillsModal';
+export { default as CutFragmentModal } from './modals/CutFragmentModal';
+export { default as ReorderCollectionModal } from './modals/ReorderCollectionModal';
+export { default as ShareCollectionModal } from './modals/ShareCollectionModal';

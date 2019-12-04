@@ -33,7 +33,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { connect } from 'react-redux';
 import { selectLogin } from '../../authentication/store/selectors';
-import { LoginResponse } from '../../authentication/store/types';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
@@ -57,7 +56,7 @@ import { AssignmentColumn } from '../assignment.types';
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
 interface AssignmentOverviewProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 	refetchCount: () => void;
 }
 
@@ -130,6 +129,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		return assignment;
 	};
 
+	// TODO: Make this one function in a service or helper file as it is also used in AssignmentEdit
 	const duplicateAssignment = async (
 		newTitle: string,
 		assignment: Partial<Avo.Assignment.Assignment> | null,
@@ -139,8 +139,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			if (assignment) {
 				delete assignment.id;
 				assignment.title = newTitle;
-				const duplicateAssignment = await insertAssignment(triggerAssignmentInsert, assignment);
-				if (!duplicateAssignment) {
+				const duplicatedAssignment = await insertAssignment(triggerAssignmentInsert, assignment);
+				if (!duplicatedAssignment) {
 					return; // assignment was not valid => validation service already showed a toast
 				}
 				refetchAssignments();

@@ -21,6 +21,7 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
+	Heading,
 	Icon,
 	IconName,
 	MenuContent,
@@ -43,7 +44,6 @@ import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
-import { LoginResponse } from '../../authentication/store/types';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
@@ -112,10 +112,10 @@ const CONTENT_LABEL_TO_QUERY: {
 };
 
 interface AssignmentEditProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
-// TODO: Test with a single useEffect
+// TODO: Replace with useReducer method.
 let currentAssignment: Partial<Avo.Assignment.Assignment>;
 let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
 let initialAssignment: Partial<Avo.Assignment.Assignment>;
@@ -465,18 +465,25 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const duplicateAssignment = async (newTitle: string) => {
+	const duplicateAssignment = async (duplicateAssignmentTitle: string) => {
 		try {
-			const duplicateAssignment = cloneDeep(initialAssignment);
-			delete duplicateAssignment.id;
-			duplicateAssignment.title = newTitle;
-			const assigment = await insertAssignment(triggerAssignmentInsert, duplicateAssignment);
+			const assignmentToDuplicate = {
+				...cloneDeep(initialAssignment),
+				title: duplicateAssignmentTitle,
+			};
 
-			if (!assigment) {
+			delete assignmentToDuplicate.id;
+
+			const duplicatedAssigment = await insertAssignment(
+				triggerAssignmentInsert,
+				assignmentToDuplicate
+			);
+
+			if (!duplicatedAssigment) {
 				return; // assignment was not valid
 			}
 
-			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assigment.id });
+			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
 			toastService.success('De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat');
 		} catch (err) {
 			console.error(err);
@@ -632,8 +639,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 	};
 
-	const renderContentLink = (assignmentContent: AssignmentContent) => {
-		const dutchLabel = (assignmentContent.type.label ||
+	const renderContentLink = (content: AssignmentContent) => {
+		const dutchLabel = (content.type.label ||
 			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
 		const linkContent = (
 			<div className="c-box c-box--padding-small">
@@ -642,13 +649,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						<Thumbnail
 							className="m-content-thumbnail"
 							category={toEnglishContentType(dutchLabel)}
-							src={assignmentContent.thumbnail_path || undefined}
+							src={content.thumbnail_path || undefined}
 						/>
 					</Spacer>
 					<FlexItem>
 						<div className="c-overline-plus-p">
 							<p className="c-overline">{dutchLabel}</p>
-							<p>{assignmentContent.title || assignmentContent.description}</p>
+							<p>{content.title || content.description}</p>
 						</div>
 					</FlexItem>
 				</Flex>
@@ -658,7 +665,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		if (
 			pageType === 'create' &&
 			currentAssignment.content_label === 'COLLECTIE' &&
-			getProfileId() !== (assignmentContent as Avo.Collection.Collection).owner_profile_id
+			getProfileId() !== (content as Avo.Collection.Collection).owner_profile_id
 		) {
 			// During create we do not allow linking to the collection if you do not own the collection,
 			// since we still need to make a copy when the user clicks on "save assignment" button
@@ -702,9 +709,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											<Icon name="chevron-left" size="small" type="arrows" />
 											Mijn opdrachten
 										</Link>
-										<h2 className="c-h2 u-m-0">
+										<Heading className="u-m-0" type="h2">
 											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
-										</h2>
+										</Heading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">

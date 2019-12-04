@@ -53,6 +53,7 @@ import {
 	// TODO: DISABLED FEATURE - ReorderCollectionModal,
 	ShareCollectionModal,
 } from '../components';
+import { swapFragmentsPositions } from '../helpers';
 
 interface CollectionEditProps extends RouteComponentProps<{ id: string }> {}
 
@@ -133,7 +134,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 	};
 
 	// Swap position of two fragments within a collection
-	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
+	const swapFragments = (currentFragmentId: number, direction: 'up' | 'down') => {
 		if (!currentCollection) {
 			toastService.danger('De collectie was niet ingesteld');
 			return;
@@ -146,36 +147,11 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 
 		const fragments = CollectionService.getFragments(currentCollection);
 
-		const changeFragmentsPositions = (fragments: Avo.Collection.Fragment[], sign: number) => {
-			const fragment = fragments.find(
-				(fragment: Avo.Collection.Fragment) => fragment.position === currentId
-			);
-
-			const otherFragment = fragments.find(
-				(fragment: Avo.Collection.Fragment) => fragment.position === currentId - sign
-			);
-
-			if (!fragment) {
-				toastService.danger(`Het fragment met id ${currentId} is niet gevonden`);
-				return;
-			}
-
-			if (!otherFragment) {
-				toastService.danger(`Het fragment met id ${currentId - sign} is niet gevonden`);
-				return;
-			}
-
-			fragment.position -= sign;
-			otherFragment.position += sign;
-		};
-
-		direction === 'up'
-			? changeFragmentsPositions(fragments, 1)
-			: changeFragmentsPositions(fragments, -1);
+		const delta = direction === 'up' ? 1 : -1;
 
 		setCurrentCollection({
 			...currentCollection,
-			collection_fragments: fragments,
+			collection_fragments: swapFragmentsPositions(fragments, currentFragmentId, delta),
 		});
 	};
 

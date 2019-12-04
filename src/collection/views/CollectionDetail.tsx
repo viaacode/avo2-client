@@ -30,7 +30,6 @@ import { PermissionGuard } from '../../authentication/components';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { selectLogin } from '../../authentication/store/selectors';
-import { LoginResponse } from '../../authentication/store/types';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -57,7 +56,7 @@ import './CollectionDetail.scss';
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
@@ -89,7 +88,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 		if (!relatedCollections) {
 			getRelatedItems(collectionId, 'collections', 4)
-				.then(relatedCollections => setRelatedCollections(relatedCollections))
+				.then(relatedItems => setRelatedCollections(relatedItems))
 				.catch(err => {
 					console.error('Failed to get related items', err, {
 						collectionId,
@@ -154,7 +153,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	// Render functions
-	const renderRelatedCollections = (relatedCollections: Avo.Search.ResultItem[] | null) => {
+	const renderRelatedCollections = () => {
 		if (!relatedCollections || !relatedCollections.length) {
 			return <p className="c-body-1">De gerelateerde collecties konden niet worden opgehaald.</p>;
 		}
@@ -317,7 +316,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						</Grid>
 						<hr className="c-hr" />
 						<h3 className="c-h3">Bekijk ook</h3>
-						{renderRelatedCollections(relatedCollections)}
+						{renderRelatedCollections()}
 					</Container>
 				</Container>
 				{isPublic !== null && (

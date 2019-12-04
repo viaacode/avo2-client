@@ -12,6 +12,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Heading,
 	Icon,
 	IconName,
 	MenuContent,
@@ -26,7 +27,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { LoginResponse } from '../../authentication/store/types';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
@@ -48,7 +48,7 @@ import { AssignmentLayout } from '../assignment.types';
 import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
-	loginResponse: LoginResponse | null;
+	loginResponse: Avo.Auth.LoginResponse | null;
 }
 
 export enum AssignmentRetrieveError {
@@ -355,7 +355,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}
-										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
+										<Heading className="u-m-0" type="h2">
+											{assignment.title}
+										</Heading>
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>

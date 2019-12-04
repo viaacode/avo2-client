@@ -17,8 +17,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-
-import { NavigationItem } from '../../types';
+import { Avo } from '@viaa/avo2-types';
 
 import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
 import {
@@ -27,16 +26,17 @@ import {
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { selectLogin } from '../../../authentication/store/selectors';
-import { LoginMessage, LoginResponse } from '../../../authentication/store/types';
+import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 import { SETTINGS_PATH } from '../../../settings/settings.const';
 import { AppState } from '../../../store';
 import toastService from '../../services/toast-service';
+import { NavigationItem } from '../../types';
 
 import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
 /**

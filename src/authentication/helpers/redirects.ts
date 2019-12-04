@@ -2,11 +2,9 @@ import { History, Location } from 'history';
 import { get } from 'lodash-es';
 import queryString from 'query-string';
 
-import { APP_PATH } from '../../constants';
 import { SEARCH_PATH } from '../../search/search.const';
 import { getEnv } from '../../shared/helpers';
-
-import { SERVER_LOGOUT_PAGE } from '../authentication.const';
+import { AUTH_PATH, SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
 
 /**
@@ -35,7 +33,7 @@ export function redirectToServerSmartschoolLogin(location: Location) {
 
 export function redirectToServerArchiefRegistrationIdp(location: Location, stamboekNumber: string) {
 	const returnToUrl =
-		getBaseUrl(location) + get(location, 'state.from.pathname', APP_PATH.LOGIN_AVO);
+		getBaseUrl(location) + get(location, 'state.from.pathname', AUTH_PATH.LOGIN_AVO);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify({
 		returnToUrl,
 		stamboekNumber,

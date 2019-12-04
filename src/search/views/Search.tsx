@@ -227,7 +227,8 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			const isUndefinedOrNull: boolean = isNil(value);
 			const isEmptyObjectOrArray: boolean =
 				(isPlainObject(value) || isArray(value)) && isEmpty(value);
-			const isArrayWithEmptyValues: boolean = isArray(value) && every(value, value => value === '');
+			const isArrayWithEmptyValues: boolean =
+				isArray(value) && every(value, arrayValue => arrayValue === '');
 			const isEmptyRangeObject: boolean =
 				isPlainObject(value) && !(value as any).gte && !(value as any).lte;
 

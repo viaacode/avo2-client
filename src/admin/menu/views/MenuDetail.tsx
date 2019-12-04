@@ -23,9 +23,9 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [activeRow, setActiveRow] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [initialMenuItems, setInitialMenuItems] = useState<Avo.Menu.Menu[]>([]);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const [triggerMenuItemDelete] = useMutation(DELETE_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -57,11 +57,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		})
 			.then(() => {
 				refetch();
-				toastService.success('Het navigatie item is succesvol verwijderd');
+				toastService.success('Het navigatie item is succesvol verwijderd', false);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger('Het verwijderen van het navigatie item is mislukt');
+				toastService.danger('Het verwijderen van het navigatie item is mislukt', false);
 			});
 	};
 
@@ -91,11 +91,11 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		Promise.all(promises)
 			.then(() => {
 				refetch();
-				toastService.success('De navigatie items zijn succesvol opgeslagen');
+				toastService.success('De navigatie items zijn succesvol opgeslagen', false);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger('Het opslaan van de navigatie items is mislukt');
+				toastService.danger('Het opslaan van de navigatie items is mislukt', false);
 			});
 	};
 
