@@ -1,7 +1,7 @@
 import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { Container, Navbar, Tabs, Toolbar, ToolbarLeft } from '@viaa/avo2-components';
+import { Container, Heading, Navbar, Tabs, Toolbar, ToolbarLeft } from '@viaa/avo2-components';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { buildLink } from '../../shared/helpers';
@@ -22,31 +22,18 @@ interface ForPupilsProps extends RouteComponentProps<{ tabId: string }> {}
 const Settings: FunctionComponent<ForPupilsProps> = ({ history, match }) => {
 	const [activeTab, setActiveTab] = useState<SettingsTab>(match.params.tabId || PROFILE_ID);
 
+	const generateTabHeader = (id: string /* <- TODO */, label: string) => ({
+		id,
+		label,
+		active: activeTab === id,
+		onClick: () => setActiveTab(id),
+	});
+
 	const tabHeaders = [
-		{
-			active: activeTab === PROFILE_ID,
-			label: 'Profiel',
-			id: PROFILE_ID,
-			onClick: () => setActiveTab(PROFILE_ID),
-		},
-		{
-			active: activeTab === ACCOUNT_ID,
-			label: 'Account',
-			id: ACCOUNT_ID,
-			onClick: () => setActiveTab(ACCOUNT_ID),
-		},
-		{
-			active: activeTab === EMAIL_ID,
-			label: 'E-mail voorkeuren',
-			id: EMAIL_ID,
-			onClick: () => setActiveTab(EMAIL_ID),
-		},
-		{
-			active: activeTab === NOTIFICATIONS_ID,
-			label: 'Notifications',
-			id: NOTIFICATIONS_ID,
-			onClick: () => setActiveTab(NOTIFICATIONS_ID),
-		},
+		generateTabHeader(PROFILE_ID, 'Profiel'),
+		generateTabHeader(ACCOUNT_ID, 'Account'),
+		generateTabHeader(EMAIL_ID, 'E-mail voorkeuren'),
+		generateTabHeader(NOTIFICATIONS_ID, 'Notifications'),
 	];
 
 	const tabContents = {
@@ -82,7 +69,9 @@ const Settings: FunctionComponent<ForPupilsProps> = ({ history, match }) => {
 		<>
 			<Container background="alt" mode="vertical" size="small">
 				<Container mode="horizontal">
-					<h2 className="c-h2 u-m-0">Instellingen</h2>
+					<Heading type="h2" className="u-m-0">
+						Instellingen
+					</Heading>
 				</Container>
 			</Container>
 
