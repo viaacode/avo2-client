@@ -177,6 +177,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						subtitles={['30-12-2011', 'VRT']}
 						token={getEnv('FLOW_PLAYER_TOKEN')}
 						dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+						logo={itemMetaData.organisation.logo_url}
 					/>
 					<Container mode="vertical" className="m-time-crop-controls">
 						<TextInput

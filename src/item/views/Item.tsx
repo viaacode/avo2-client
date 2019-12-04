@@ -179,20 +179,16 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
 									<MetaData category={toEnglishContentType(itemMetaData.type.label)} spaced>
-										{itemMetaData.org_name && (
-											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">
-													{generateSearchLink('provider', itemMetaData.org_name || '')}
-												</p>
-											</MetaDataItem>
-										)}
-										{itemMetaData.publish_at && (
-											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">
-													Gepubliceerd op {reorderDate(itemMetaData.issued || null, '/')}
-												</p>
-											</MetaDataItem>
-										)}
+										<MetaDataItem>
+											<p className="c-body-2 u-text-muted">
+												{generateSearchLink('provider', itemMetaData.organisation.name || '')}
+											</p>
+										</MetaDataItem>
+										<MetaDataItem>
+											<p className="c-body-2 u-text-muted">
+												Gepubliceerd op {reorderDate(itemMetaData.issued || null, '/')}
+											</p>
+										</MetaDataItem>
 										<MetaDataItem>
 											<p className="c-body-2 u-text-muted">
 												Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
@@ -273,16 +269,15 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 											</Column>
 											<Column size="2-5" tag="tr">
 												<th scope="row">Toegevoegd op</th>
-												{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
 												<td>{reorderDate(itemMetaData.published_at || null, '/')}</td>
 											</Column>
 										</Grid>
 										<Grid tag="tbody">
 											<Column size="2-5" tag="tr">
 												<th scope="row">Aanbieder</th>
-												{itemMetaData.org_name && (
-													<td>{generateSearchLink('provider', itemMetaData.org_name || '')}</td>
-												)}
+												<td>
+													{generateSearchLink('provider', itemMetaData.organisation.name || '')}
+												</td>
 											</Column>
 											<Column size="2-5" tag="tr">
 												<th scope="row">Speelduur</th>

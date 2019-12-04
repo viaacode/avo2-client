@@ -23,6 +23,10 @@ export const GET_ITEM_BY_ID = gql`
 			lom_languages
 			lom_typicalagerange
 			org_id
+			organisation {
+				name
+				logo_url
+			}
 			publish_at
 			published_at
 			series

@@ -144,6 +144,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 					subtitles={['Publicatiedatum', 'Aanbieder']}
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+					logo={itemMetaData.organisation.logo_url}
 				/>
 			)}
 		</div>

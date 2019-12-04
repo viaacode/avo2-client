@@ -287,7 +287,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 							<Form>
 								<Grid>
 									<Column size="2-7">
-										{itemMetaData && ( // TODO: Replace publisher, published_at by real publisher
+										{itemMetaData && (
 											<FlowPlayer
 												src={playerTicket ? playerTicket.toString() : null}
 												poster={itemMetaData.thumbnail_path}
@@ -296,6 +296,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												subtitles={['30-12-2011', 'VRT']}
 												token={getEnv('FLOW_PLAYER_TOKEN')}
 												dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+												logo={itemMetaData.organisation.logo_url}
 											/>
 										)}
 										<Container mode="vertical" className="m-time-crop-controls">

@@ -27,6 +27,9 @@ export const GET_COLLECTION_BY_ID = gql`
 						id
 						label
 					}
+					organisation {
+						logo_url
+					}
 				}
 				end_oc
 				custom_title
@@ -154,7 +157,6 @@ export const DELETE_COLLECTION_FRAGMENT = gql`
 	}
 `;
 
-// TODO: Use only necessary returning attributes
 export const INSERT_COLLECTION_FRAGMENTS = gql`
 	mutation insertCollectionFragment(
 		$id: Int!
@@ -178,6 +180,9 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 					type {
 						id
 						label
+					}
+					organisation {
+						logo_url
 					}
 				}
 				end_oc
