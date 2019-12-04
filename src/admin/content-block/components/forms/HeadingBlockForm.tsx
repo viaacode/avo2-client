@@ -80,6 +80,7 @@ const HeadingBlockForm: FunctionComponent<HeadingBLockFormProps> = ({ onChange }
 						<ButtonGroup>
 							{HEADING_ALIGN_OPTIONS.map(alignValue => (
 								<Button
+									key={`heading-block-align-${alignValue}`}
 									active={form.align === alignValue}
 									icon={`align-${alignValue}` as IconName}
 									onClick={() => handleChange('align', alignValue)}
