@@ -44,7 +44,6 @@ import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
-import { LoginResponse } from '../../authentication/store/types';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
@@ -113,7 +112,7 @@ const CONTENT_LABEL_TO_QUERY: {
 };
 
 interface AssignmentEditProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
 // TODO: Replace with useReducer method.

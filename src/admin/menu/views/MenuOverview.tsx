@@ -1,12 +1,13 @@
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent } from '../../../shared/components';
-import { navigate } from '../../../shared/helpers';
+import { buildLink, navigate } from '../../../shared/helpers';
 
 import { AdminLayout } from '../../shared/layouts';
 import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
@@ -17,22 +18,24 @@ interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
+		const { placement: menu } = rowData;
+
 		switch (columnId) {
 			case 'placement':
-				return startCase(rowData.placement);
+				return <Link to={buildLink(MENU_PATH.MENU_DETAIL, { menu })}>{startCase(menu)}</Link>;
 			case 'actions':
 				return (
 					<ButtonToolbar>
 						<Button
 							icon="list"
-							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu: rowData.placement })}
+							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
 							size="small"
 							title="Bekijk alle navigatie items"
 							type="tertiary"
 						/>
 						<Button
 							icon="plus"
-							onClick={() => navigate(history, MENU_PATH.MENU_CREATE, { menu: rowData.placement })}
+							onClick={() => navigate(history, MENU_PATH.MENU_CREATE, { menu })}
 							size="small"
 							title="Voeg een navigatie item toe"
 							type="tertiary"

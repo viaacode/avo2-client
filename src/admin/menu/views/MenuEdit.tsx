@@ -9,10 +9,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import {
-	fetchMenuItemById,
-	fetchMenuItemsByPlacement,
-} from '../../../shared/services/menu-service';
 import toastService from '../../../shared/services/toast-service';
 import { ReactSelectOption } from '../../../shared/types';
 
@@ -20,6 +16,7 @@ import { IconPicker } from '../../shared/components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { INITIAL_MENU_FORM, MENU_ICON_OPTIONS, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
+import { fetchMenuItemById, fetchMenuItemsByPlacement } from '../menu.services';
 import { MenuEditForm, MenuEditPageType, MenuEditParams } from '../menu.types';
 
 interface MenuEditProps extends RouteComponentProps<MenuEditParams> {}
@@ -139,8 +136,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	const handleResponse = (message: string, err?: any): void => {
 		setIsSaving(false);
+
 		const hasError = err || err === null;
-		toastService[hasError ? 'danger' : 'success'](message);
+		toastService[hasError ? 'danger' : 'success'](message, false);
 
 		if (hasError) {
 			console.error(err);
