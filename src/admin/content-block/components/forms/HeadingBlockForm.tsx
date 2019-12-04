@@ -2,7 +2,18 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { ValueType } from 'react-select';
 
-import { Form, FormGroup, Select, TextInput } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonGroup,
+	Flex,
+	FlexItem,
+	Form,
+	FormGroup,
+	Heading,
+	IconName,
+	Select,
+	TextInput,
+} from '@viaa/avo2-components';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 
@@ -34,36 +45,52 @@ const HeadingBlockForm: FunctionComponent<HeadingBLockFormProps> = ({ onChange }
 	};
 
 	return (
-		<Form>
-			<FormGroup inlineMode="grow">
-				<ColorSelect
-					onChange={(option: ValueType<ReactSelectOption<string>>) =>
-						handleChange('backgroundColor', get(option, 'value'))
-					}
-					value={BACKGROUND_COLOR_OPTIONS.find(
-						(option: ReactSelectOption<string>) => option.value === form.backgroundColor
-					)}
-					options={BACKGROUND_COLOR_OPTIONS}
-				/>
-			</FormGroup>
-			<FormGroup inlineMode="grow">
-				<TextInput value={form.title} />
-			</FormGroup>
-			<FormGroup inlineMode="grow">
-				<Select
-					onChange={(value: string) => handleChange('level', value)}
-					options={HEADING_LEVEL_OPTIONS}
-					value={form.level}
-				/>
-			</FormGroup>
-			<FormGroup inlineMode="grow">
-				<Select
-					onChange={(value: string) => handleChange('align', value)}
-					options={HEADING_ALIGN_OPTIONS}
-					value={form.align}
-				/>
-			</FormGroup>
-		</Form>
+		<div className="c-cb-form c-cb-form--heading">
+			<Flex className="c-cb-form__header" center justify="between">
+				<Heading type="h3">Hoofding block</Heading>
+				<Form type="inline">
+					<FormGroup inlineMode="grow" label="Achtergrondkleur">
+						<ColorSelect
+							onChange={(option: ValueType<ReactSelectOption<string>>) =>
+								handleChange('backgroundColor', get(option, 'value'))
+							}
+							value={BACKGROUND_COLOR_OPTIONS.find(
+								(option: ReactSelectOption<string>) => option.value === form.backgroundColor
+							)}
+							options={BACKGROUND_COLOR_OPTIONS}
+						/>
+					</FormGroup>
+				</Form>
+			</Flex>
+			<Form className="u-spacer-bottom-s">
+				<Flex spaced="wide">
+					<FlexItem>
+						<FormGroup label="Titel">
+							<TextInput value={form.title} />
+						</FormGroup>
+					</FlexItem>
+					<FormGroup label="Stijl">
+						<Select
+							onChange={(value: string) => handleChange('level', value)}
+							options={HEADING_LEVEL_OPTIONS}
+							value={form.level}
+						/>
+					</FormGroup>
+					<FormGroup label="Uitlijning">
+						<ButtonGroup>
+							{HEADING_ALIGN_OPTIONS.map(alignValue => (
+								<Button
+									active={form.align === alignValue}
+									icon={`align-${alignValue}` as IconName}
+									onClick={() => handleChange('align', alignValue)}
+									type="secondary"
+								/>
+							))}
+						</ButtonGroup>
+					</FormGroup>
+				</Flex>
+			</Form>
+		</div>
 	);
 };
 

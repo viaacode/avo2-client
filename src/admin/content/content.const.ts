@@ -37,7 +37,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	depublishAt: '',
 });
 
-export const CONTENT_EDIT_TABS: TabProps[] = [
+export const CONTENT_DETAIL_TABS: TabProps[] = [
 	{
 		id: 'inhoud',
 		label: 'Inhoud',

@@ -9,6 +9,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { selectLogin } from '../../../authentication/store/selectors';
 import { navigate } from '../../../shared/helpers';
+import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { AppState } from '../../../store';
@@ -19,8 +20,9 @@ import {
 	AdminLayoutHeader,
 } from '../../shared/layouts';
 
+import { HeadingBlockForm } from '../../content-block/components';
 import { ContentEditForm } from '../components';
-import { CONTENT_EDIT_TABS, CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
+import { CONTENT_DETAIL_TABS, CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { fetchContentItemById, insertContent, updateContent } from '../content.services';
 import { ContentEditFormState, PageType } from '../content.types';
@@ -41,6 +43,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	const [pageType, setPageType] = useState<PageType | undefined>();
 
 	const { contentTypes, isLoadingContentTypes } = useContentTypes();
+	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
 
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
 	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
@@ -173,6 +176,25 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	};
 
 	// Render
+	const renderTabContent = () => {
+		switch (currentTab) {
+			case 'inhoud':
+				return <HeadingBlockForm onChange={() => {}} />;
+			// return null;
+			case 'metadata':
+				return (
+					<ContentEditForm
+						contentTypeOptions={contentTypeOptions}
+						formErrors={formErrors}
+						formState={contentForm}
+						onChange={handleChange}
+					/>
+				);
+			default:
+				return null;
+		}
+	};
+
 	return isLoading || isLoadingContentTypes ? (
 		<Flex orientation="horizontal" center>
 			<Spinner size="large" />
@@ -183,18 +205,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 				<Header category="audio" categoryLabel="" title={pageTitle} showMetaData={false} />
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
-						<Tabs tabs={CONTENT_EDIT_TABS} onClick={() => {}} />
+						<Tabs tabs={tabs} onClick={setCurrentTab} />
 					</Container>
 				</Navbar>
 			</AdminLayoutHeader>
-			<AdminLayoutBody>
-				<ContentEditForm
-					contentTypeOptions={contentTypeOptions}
-					formErrors={formErrors}
-					formState={contentForm}
-					onChange={handleChange}
-				/>
-			</AdminLayoutBody>
+			<AdminLayoutBody>{renderTabContent()}</AdminLayoutBody>
 			<AdminLayoutActions>
 				<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
 				<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
