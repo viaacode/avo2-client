@@ -262,12 +262,11 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					</RadioButtonGroup>
 					<Spacer margin="top-small">
 						<Alert type="info">
-							<a
-								className="u-clickable"
+							<Button
+								type="inline-link"
 								onClick={() => toastService.info('Nog niet geimplementeerd')}
-							>
-								Waarom hebben jullie mijn stamboeknummer nodig?
-							</a>
+								label="Waarom hebben jullie mijn stamboeknummer nodig?"
+							/>
 						</Alert>
 					</Spacer>
 				</FormGroup>
@@ -294,12 +293,11 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 				</FormGroup>
 				<Spacer margin="top-large">
 					<Alert type="info">
-						<a
-							className="u-clickable"
+						<Button
+							type="inline-link"
 							onClick={() => toastService.info('Nog niet geimplementeerd')}
-						>
-							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
-						</a>
+							label="Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer."
+						/>
 					</Alert>
 				</Spacer>
 			</Container>
