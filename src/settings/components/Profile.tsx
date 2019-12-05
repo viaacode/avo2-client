@@ -57,7 +57,16 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>([]);
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>([]);
 
-	const updateOrganizations = async () => {
+	useEffect(() => {
+		fetchCities()
+			.then(setCities)
+			.catch(err => {
+				console.error('Failed to get cities', err);
+				toastService.danger('Het ophalen van de steden is mislukt');
+			});
+	}, []);
+
+	useEffect(() => {
 		try {
 			if (!selectedCity) {
 				setOrganizations([]);
@@ -72,7 +81,10 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 			} else {
 				// fetch from server
 				orgs = await fetchEducationOrganizations(city, zipCode);
-				setOrganizationsCache({ ...organizationsCache, ...{ [selectedCity]: orgs } });
+				setOrganizationsCache({
+					...organizationsCache,
+					...{ [selectedCity]: orgs },
+				});
 			}
 			pullAllBy(orgs, selectedOrganizations, 'label');
 			setOrganizations(orgs);
@@ -84,20 +96,7 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 				selectedCity,
 			});
 		}
-	};
-
-	useEffect(() => {
-		fetchCities()
-			.then(setCities)
-			.catch(err => {
-				console.error('Failed to get cities', err);
-				toastService.danger('Het ophalen van de steden is mislukt');
-			});
-	}, []);
-
-	useEffect(() => {
-		updateOrganizations();
-	}, [selectedOrganizations, selectedCity]);
+	}, [organizationsCache, selectedOrganizations, selectedCity]);
 
 	const updateProfileProp = (value: string, prop: string) => {
 		setProfile({ ...profile, [prop]: value });
