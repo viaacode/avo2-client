@@ -109,3 +109,16 @@
 	font-weight: 500;
 	color: $color-gray-700;
 }
+
+
+/* profile dropdown */
+
+.c-navbar-profile-dropdown-button {
+	display: flex;
+	align-items: center;
+
+	.o-svg-icon {
+		margin-top: 3px;
+		margin-left: 4px;
+	}
+}
