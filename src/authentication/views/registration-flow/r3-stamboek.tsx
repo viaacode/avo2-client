@@ -198,7 +198,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 									checked={intendsToHaveStamboekNumber}
 									onChange={setIntendsToHaveStamboekNumber}
 								/>
-								{intendsToHaveStamboekNumber === true && (
+								{intendsToHaveStamboekNumber && (
 									<Spacer
 										className="m-stamboek-input-field-wrapper"
 										margin={['left-large', 'top-small', 'bottom-large']}
