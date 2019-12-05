@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { getFullName, getInitialChar, getInitials } from '../../shared/helpers';
+import { getFullName } from '../../shared/helpers';
 import store from '../../store';
 
 function getUserInfo(): Avo.User.User | null {
@@ -30,10 +30,7 @@ export function getProfileName(): string {
 
 export function getProfileInitials(): string {
 	const userInfo = getUserInfo();
-	return (
-		get(userInfo, 'user.first_name', 'X')[0] +
-		get(userInfo, 'user.last_name', 'X')[0]
-	);
+	return get(userInfo, 'user.first_name', 'X')[0] + get(userInfo, 'user.last_name', 'X')[0];
 }
 
 export function getProfileStamboekNumber(): string | null {

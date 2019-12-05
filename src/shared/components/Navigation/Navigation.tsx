@@ -70,14 +70,13 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState })
 				{ label: 'Projecten', location: APP_PATH.PROJECTS, key: 'discover' },
 				{ label: 'Nieuws', location: APP_PATH.NEWS, key: 'workspace' },
 			];
-		} else {
-			return [
-				{ label: 'Voor leerkrachten', location: APP_PATH.FOR_TEACHERS, key: 'teachers' },
-				{ label: 'Voor leerlingen', location: APP_PATH.FOR_PUPILS, key: 'pupils' },
-				{ label: 'Projecten', location: APP_PATH.PROJECTS, key: 'projects' },
-				{ label: 'Nieuws', location: APP_PATH.NEWS, key: 'news' },
-			];
 		}
+		return [
+			{ label: 'Voor leerkrachten', location: APP_PATH.FOR_TEACHERS, key: 'teachers' },
+			{ label: 'Voor leerlingen', location: APP_PATH.FOR_PUPILS, key: 'pupils' },
+			{ label: 'Projecten', location: APP_PATH.PROJECTS, key: 'projects' },
+			{ label: 'Nieuws', location: APP_PATH.NEWS, key: 'news' },
+		];
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
@@ -94,38 +93,36 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState })
 					},
 					{ label: 'Logout', location: APP_PATH.LOGOUT, key: 'logout' },
 				];
-			} else {
-				return [
-					{
-						label: (
-							<div className="c-navbar-profile-dropdown-button">
-								<Avatar initials={getProfileInitials()} name={getProfileName()} />
-								<Icon name="caret-down" size="small" />
-							</div>
-						),
-						component: (
-							<MenuContent
-								menuItems={[
-									[
-										{ id: 'settings', label: 'Instellingen' },
-										{ id: 'help', label: 'Hulp' },
-										{ id: 'feedback', label: 'Rapporteer feedback of probleem' },
-									],
-									[{ id: 'logout', label: 'Logout' }],
-								]}
-								onClick={handleMenuClick}
-							/>
-						),
-						key: 'profile',
-					},
-				];
 			}
-		} else {
 			return [
-				{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown />, key: 'createAccount' },
-				{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN, key: 'login' },
+				{
+					label: (
+						<div className="c-navbar-profile-dropdown-button">
+							<Avatar initials={getProfileInitials()} name={getProfileName()} />
+							<Icon name="caret-down" size="small" />
+						</div>
+					),
+					component: (
+						<MenuContent
+							menuItems={[
+								[
+									{ id: 'settings', label: 'Instellingen' },
+									{ id: 'help', label: 'Hulp' },
+									{ id: 'feedback', label: 'Rapporteer feedback of probleem' },
+								],
+								[{ id: 'logout', label: 'Logout' }],
+							]}
+							onClick={handleMenuClick}
+						/>
+					),
+					key: 'profile',
+				},
 			];
 		}
+		return [
+			{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown />, key: 'createAccount' },
+			{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN, key: 'login' },
+		];
 	};
 
 	const setDropdownOpen = (label: string, isOpen: boolean): void => {
