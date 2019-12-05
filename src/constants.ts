@@ -11,6 +11,7 @@ import { SEARCH_PATH } from './search/search.const';
 import { ROUTE_PARTS } from './shared/constants';
 import { TEACHERS_PATH } from './teachers/teachers.const';
 import { WORKSPACE_PATH } from './workspace/workspace.const';
+import { SETTINGS_PATH } from './settings/settings.const';
 
 export const APP_PATH = Object.freeze({
 	...ASSIGNMENT_PATH,
@@ -23,6 +24,7 @@ export const APP_PATH = Object.freeze({
 	...ITEM_PATH,
 	...SEARCH_PATH,
 	...WORKSPACE_PATH,
+	...SETTINGS_PATH,
 	// TODO: Replace once available
 	NEWS: `/${ROUTE_PARTS.news}`,
 	PROJECTS: `/${ROUTE_PARTS.projects}`,

@@ -34,6 +34,7 @@ export const ROUTE_PARTS = Object.freeze({
 	feedback: 'feedback',
 	loggedInHome: 'home',
 	profile: 'profiel',
+	completeProfile: 'vervolledig-profiel',
 	account: 'account',
 	email: 'email',
 	notifications: 'notificaties',
