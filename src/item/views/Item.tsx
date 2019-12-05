@@ -245,17 +245,17 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 												/>
 											</Flex>
 										</ButtonToolbar>
+										<ButtonToolbar>
+											<ToggleButton
+												type="tertiary"
+												icon="bookmark"
+												active={false}
+												ariaLabel="toggle bladwijzer"
+											/>
+											<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+											<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+										</ButtonToolbar>
 									</Flex>
-									<ButtonToolbar>
-										<ToggleButton
-											type="tertiary"
-											icon="bookmark"
-											active={false}
-											ariaLabel="toggle bladwijzer"
-										/>
-										<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-										<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
-									</ButtonToolbar>
 								</Spacer>
 							</Column>
 							<Column size="2-5">
@@ -265,6 +265,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
+									<Heading type="h3">Metadata</Heading>
 									<Table horizontal untable>
 										<Grid tag="tbody">
 											<Column size="2-5" tag="tr">
