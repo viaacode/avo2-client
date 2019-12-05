@@ -67,35 +67,37 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 	}, []);
 
 	useEffect(() => {
-		try {
-			if (!selectedCity) {
+		(async () => {
+			try {
+				if (!selectedCity) {
+					setOrganizations([]);
+					return;
+				}
+				setOrganizationsLoadingState('loading');
+				const [city, zipCode] = selectedCity.split(/[()]/g).map(s => s.trim());
+				let orgs: ClientEducationOrganization[] = [];
+				if (organizationsCache[selectedCity]) {
+					// get from cache
+					orgs = [...organizationsCache[selectedCity]];
+				} else {
+					// fetch from server
+					orgs = await fetchEducationOrganizations(city, zipCode);
+					setOrganizationsCache({
+						...organizationsCache,
+						...{ [selectedCity]: orgs },
+					});
+				}
+				pullAllBy(orgs, selectedOrganizations, 'label');
+				setOrganizations(orgs);
+				setOrganizationsLoadingState('loaded');
+			} catch (err) {
 				setOrganizations([]);
-				return;
-			}
-			setOrganizationsLoadingState('loading');
-			const [city, zipCode] = selectedCity.split(/[()]/g).map(s => s.trim());
-			let orgs: ClientEducationOrganization[] = [];
-			if (organizationsCache[selectedCity]) {
-				// get from cache
-				orgs = [...organizationsCache[selectedCity]];
-			} else {
-				// fetch from server
-				orgs = await fetchEducationOrganizations(city, zipCode);
-				setOrganizationsCache({
-					...organizationsCache,
-					...{ [selectedCity]: orgs },
+				setOrganizationsLoadingState('loaded');
+				console.error('Failed to get educational organizations', err, {
+					selectedCity,
 				});
 			}
-			pullAllBy(orgs, selectedOrganizations, 'label');
-			setOrganizations(orgs);
-			setOrganizationsLoadingState('loaded');
-		} catch (err) {
-			setOrganizations([]);
-			setOrganizationsLoadingState('loaded');
-			console.error('Failed to get educational organizations', err, {
-				selectedCity,
-			});
-		}
+		})();
 	}, [organizationsCache, selectedOrganizations, selectedCity]);
 
 	const updateProfileProp = (value: string, prop: string) => {
