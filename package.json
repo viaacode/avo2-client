@@ -44,10 +44,10 @@
 		"react-toastify": "^5.3.2",
 		"redux": "^4.0.1",
 		"redux-devtools-extension": "^2.13.8",
-		"redux-thunk": "^2.3.0",
-		"redux-mock-store": "^1.5.3"
+		"redux-thunk": "^2.3.0"
 	},
 	"devDependencies": {
+		"redux-mock-store": "^1.5.3",
 		"@commitlint/cli": "^8.1.0",
 		"@commitlint/config-conventional": "^7.6.0",
 		"@storybook/addon-actions": "^5.1.3",
