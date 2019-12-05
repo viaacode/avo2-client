@@ -3,8 +3,8 @@ import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
 import { ROUTE_PARTS } from '../shared/constants';
 
 export const COLLECTION_PATH = Object.freeze({
-	COLLECTION_DETAIL: `/${ROUTE_PARTS.collection}/:id`,
-	COLLECTION_EDIT: `/${ROUTE_PARTS.collection}/:id/${ROUTE_PARTS.edit}`,
+	COLLECTION_DETAIL: `/${ROUTE_PARTS.collections}/:id`,
+	COLLECTION_EDIT: `/${ROUTE_PARTS.collections}/:id/${ROUTE_PARTS.edit}`,
 });
 
 // TODO: get these from the api once the database is filled up

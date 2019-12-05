@@ -6,8 +6,8 @@ import Sidebar from './Sidebar';
 const sidebarProps = {
 	headerLink: '/beheer',
 	navItems: [
-		{ label: 'Navigatie', location: '/beheer/navigatie' },
-		{ label: 'Content', location: '/beheer/content' },
+		{ label: 'Navigatie', location: '/beheer/navigatie', key: 'navigatie' },
+		{ label: 'Content', location: '/beheer/content', key: 'content' },
 	],
 };
 
