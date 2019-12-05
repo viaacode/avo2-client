@@ -1,9 +1,10 @@
 import { createBrowserHistory } from 'history';
 
+import { ROUTE_PARTS } from '../constants';
 import { buildLink, navigate } from './link';
 
-const route = '/search';
-const routeWithParam = '/collection/:id/edit';
+const route = `/${ROUTE_PARTS.search}`;
+const routeWithParam = `/${ROUTE_PARTS.collections}/:id/${ROUTE_PARTS.edit}`;
 const params = { id: 123 };
 const linkWithParam = routeWithParam.replace(':id', params.id.toString());
 const searchQuery = 'query={"serie":"["KLAAR"]"}';
