@@ -10,6 +10,7 @@ import { renderHomeRoutes } from './home/home.routes';
 import { renderItemRoutes } from './item/item.routes';
 import { renderPupilRoutes } from './pupils/pupils.routes';
 import { renderSearchRoutes } from './search/search.routes';
+import { renderSettingsRoutes } from './settings/settings.routes';
 import { renderTeacherRoutes } from './teachers/teachers.routes';
 import { renderWorkspaceRoutes } from './workspace/workspace.routes';
 
@@ -25,6 +26,7 @@ export const renderRoutes = () => (
 		{renderAssignmentRoutes()}
 		{renderWorkspaceRoutes()}
 		{renderAuthenticationRoutes()}
+		{renderSettingsRoutes()}
 		{renderErrorRoutes()}
 	</Switch>
 );

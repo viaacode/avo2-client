@@ -6,8 +6,10 @@ import {
 	Alert,
 	Button,
 	Checkbox,
+	Column,
 	Container,
 	FormGroup,
+	Grid,
 	Icon,
 	RadioButton,
 	RadioButtonGroup,
@@ -181,127 +183,133 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
-			<Container mode="horizontal" size="small">
-				<div className="c-content">
-					<p className="u-text-bold">Heb je een stamboeknummer?</p>
-				</div>
-				<FormGroup>
-					<RadioButtonGroup>
-						<RadioButton
-							name="stamboeknummer"
-							value="yes"
-							label="Ja, ik heb een stamboeknummer / lerarenkaart nummer"
-							checked={intendsToHaveStamboekNumber}
-							onChange={setIntendsToHaveStamboekNumber}
-						/>
-						{intendsToHaveStamboekNumber === true && (
-							<Spacer
-								className="m-stamboek-input-field-wrapper"
-								margin={['left-large', 'top-small', 'bottom-large']}
-							>
-								<TextInput
-									placeholder="00000000000-000000"
-									value={rawStamboekNumber}
-									onChange={setStamboekNumber}
+			<Container mode="horizontal" size="large">
+				<Grid>
+					<Column size="2-7">
+						<div className="c-content">
+							<p className="u-text-bold">Heb je een stamboeknummer?</p>
+						</div>
+						<FormGroup>
+							<RadioButtonGroup>
+								<RadioButton
+									name="stamboeknummer"
+									value="yes"
+									label="Ja, ik heb een stamboeknummer / lerarenkaart nummer"
+									checked={intendsToHaveStamboekNumber}
+									onChange={setIntendsToHaveStamboekNumber}
 								/>
-								<Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
-									<TooltipTrigger>
-										<span>
-											<Icon className="a-info-icon" name="info" size="small" />
-										</span>
-									</TooltipTrigger>
-									<TooltipContent>
-										<Spacer margin={'small'}>
-											<Spacer margin="bottom-small">
-												<span>Je stamboek nummer staat op je lerarenkaart</span>
-											</Spacer>
-											<img
-												alt="Voorbeeld leeraren kaart"
-												className="a-stamboek-image"
-												src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
-											/>
+								{intendsToHaveStamboekNumber && (
+									<Spacer
+										className="m-stamboek-input-field-wrapper"
+										margin={['left-large', 'top-small', 'bottom-large']}
+									>
+										<TextInput
+											placeholder="00000000000-000000"
+											value={rawStamboekNumber}
+											onChange={setStamboekNumber}
+										/>
+										<Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
+											<TooltipTrigger>
+												<span>
+													<Icon className="a-info-icon" name="info" size="small" />
+												</span>
+											</TooltipTrigger>
+											<TooltipContent>
+												<Spacer margin={'small'}>
+													<Spacer margin="bottom-small">
+														<span>Je stamboek nummer staat op je lerarenkaart</span>
+													</Spacer>
+													<img
+														alt="Voorbeeld leeraren kaart"
+														className="a-stamboek-image"
+														src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
+													/>
+												</Spacer>
+											</TooltipContent>
+										</Tooltip>
+										<Spacer margin="top-small">
+											{STAMBOEK_MESSAGES[stamboekValidationStatus].status && (
+												<Alert type={STAMBOEK_MESSAGES[stamboekValidationStatus].status}>
+													<div>
+														<Spacer margin="bottom-small">
+															{STAMBOEK_MESSAGES[stamboekValidationStatus].message}
+														</Spacer>
+													</div>
+												</Alert>
+											)}
 										</Spacer>
-									</TooltipContent>
-								</Tooltip>
-								<Spacer margin="top-small">
-									{STAMBOEK_MESSAGES[stamboekValidationStatus].status && (
-										<Alert type={STAMBOEK_MESSAGES[stamboekValidationStatus].status}>
+									</Spacer>
+								)}
+								<RadioButton
+									name="stamboeknummer"
+									value="no"
+									label="Nee, ik heb geen stamboeknummer"
+									checked={intendsToHaveStamboekNumber === false}
+									onChange={checked => setIntendsToHaveStamboekNumber(!checked)}
+								/>
+								{intendsToHaveStamboekNumber === false && (
+									<Spacer margin="left-large">
+										<Alert type="info">
 											<div>
 												<Spacer margin="bottom-small">
-													{STAMBOEK_MESSAGES[stamboekValidationStatus].message}
+													Zonder stamboek nummer heb je geen toegang tot de website. Indien u toch
+													denkt toegang te moeten hebben, vraag dan manueel een account aan.
 												</Spacer>
+												<Button
+													label="Manuele aanvraag"
+													onClick={() =>
+														redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)
+													}
+												/>
 											</div>
 										</Alert>
-									)}
-								</Spacer>
-							</Spacer>
-						)}
-						<RadioButton
-							name="stamboeknummer"
-							value="no"
-							label="Nee, ik heb geen stamboeknummer"
-							checked={intendsToHaveStamboekNumber === false}
-							onChange={checked => setIntendsToHaveStamboekNumber(!checked)}
-						/>
-						{intendsToHaveStamboekNumber === false && (
-							<Spacer margin="left-large">
-								<Alert type="info">
-									<div>
-										<Spacer margin="bottom-small">
-											Zonder stamboek nummer heb je geen toegang tot de website. Indien u toch denkt
-											toegang te moeten hebben, vraag dan manueel een account aan.
-										</Spacer>
-										<Button
-											label="Manuele aanvraag"
-											onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
-										/>
-									</div>
-								</Alert>
-							</Spacer>
-						)}
-					</RadioButtonGroup>
-					<Spacer margin="top-small">
-						<Alert type="info">
-							<a
-								className="u-clickable"
-								onClick={() => toastService.info('Nog niet geimplementeerd')}
-							>
-								Waarom hebben jullie mijn stamboeknummer nodig?
-							</a>
-						</Alert>
-					</Spacer>
-				</FormGroup>
-				<Spacer margin={['bottom-large', 'top-large']}>
-					<FormGroup>
-						<Checkbox
-							label="Ik aanvaard de gebruiksvoorwaarden en privacyverklaring."
-							checked={hasAcceptedConditions}
-							onChange={setHasAcceptedConditions}
-						/>
-					</FormGroup>
-				</Spacer>
-				<FormGroup>
-					<Button
-						label="Account aanmaken"
-						type="primary"
-						disabled={
-							stamboekValidationStatus !== 'VALID' ||
-							!intendsToHaveStamboekNumber ||
-							!hasAcceptedConditions
-						}
-						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
-					/>
-				</FormGroup>
-				<Spacer margin="top-large">
-					<Alert type="info">
-						<a
-							className="u-clickable"
-							onClick={() => toastService.info('Nog niet geimplementeerd')}
-						>
-							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
-						</a>
-					</Alert>
-				</Spacer>
+									</Spacer>
+								)}
+							</RadioButtonGroup>
+						</FormGroup>
+						<Spacer margin={['bottom-large', 'top-large']}>
+							<FormGroup>
+								<Checkbox
+									label="Ik aanvaard de gebruiksvoorwaarden en privacyverklaring."
+									checked={hasAcceptedConditions}
+									onChange={setHasAcceptedConditions}
+								/>
+							</FormGroup>
+						</Spacer>
+						<FormGroup>
+							<Button
+								label="Account aanmaken"
+								type="primary"
+								disabled={
+									stamboekValidationStatus !== 'VALID' ||
+									!intendsToHaveStamboekNumber ||
+									!hasAcceptedConditions
+								}
+								onClick={() =>
+									redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)
+								}
+							/>
+						</FormGroup>
+					</Column>
+					<Column size="2-5">
+						<Spacer margin="top-small">
+							<Alert type="info">
+								{/* TODO add links to help article */}
+								<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
+									Waarom hebben jullie mijn stamboeknummer nodig?
+								</a>
+							</Alert>
+						</Spacer>
+						<Spacer margin="top-large">
+							{/* TODO add links to help article */}
+							<Alert type="info">
+								<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
+									Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
+								</a>
+							</Alert>
+						</Spacer>
+					</Column>
+				</Grid>
 			</Container>
 		</Container>
 	);

@@ -9,7 +9,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
 import { SEARCH_PATH } from '../../search/search.const';
 
-import { CONTENT_TYPE_TO_ROUTE } from '../constants';
+import { CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import toastService from '../services/toast-service';
 
 type RouteParams = { [key: string]: string | number | undefined };
@@ -117,7 +117,7 @@ export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filt
 }
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
-	return `/${CONTENT_TYPE_TO_ROUTE[contentType]}/${id}`;
+	return buildLink(`${CONTENT_TYPE_TO_ROUTE[contentType]}`, { id });
 }
 
 export function generateAssignmentCreateLink(

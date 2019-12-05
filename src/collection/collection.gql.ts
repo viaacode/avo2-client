@@ -252,14 +252,3 @@ export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 		}
 	}
 `;
-
-export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
-	{
-		lookup_enum_lom_context {
-			description
-		}
-		lookup_enum_lom_classification {
-			description
-		}
-	}
-`;

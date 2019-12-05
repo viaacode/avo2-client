@@ -6,13 +6,11 @@ import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 
-import './ForTeachers.scss';
-
 export interface ForTeachersProps extends RouteComponentProps {}
 
 const ForTeachers: FunctionComponent<ForTeachersProps> = ({ history }) => {
 	return (
-		<Container className="c-register-stamboek-view" mode="vertical">
+		<Container className="c-for-teachers-view" mode="vertical">
 			<Container mode="horizontal" size="small">
 				<ButtonToolbar>
 					<Button

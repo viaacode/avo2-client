@@ -9,7 +9,7 @@ interface ForPupilsProps extends RouteComponentProps {}
 
 const ForPupils: FunctionComponent<ForPupilsProps> = ({ location }) => {
 	return (
-		<Container className="m-for-pupils-page" mode="vertical">
+		<Container className="c-for-pupils-view" mode="vertical">
 			<Container mode="horizontal" size="small">
 				<ButtonToolbar>
 					<Button
