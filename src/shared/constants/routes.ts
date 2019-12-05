@@ -1,5 +1,3 @@
-import { Avo } from '@viaa/avo2-types';
-
 export const ROUTE_PARTS = Object.freeze({
 	admin: 'beheer',
 	assignment: 'opdracht',
@@ -42,10 +40,3 @@ export const ROUTE_PARTS = Object.freeze({
 	notifications: 'notificaties',
 	error: 'error',
 });
-
-export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
-	video: ROUTE_PARTS.item,
-	audio: ROUTE_PARTS.item,
-	collectie: ROUTE_PARTS.collection,
-	bundel: ROUTE_PARTS.folder,
-};
