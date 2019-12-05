@@ -294,20 +294,16 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					<Column size="2-5">
 						<Spacer margin="top-small">
 							<Alert type="info">
-								<a
-									className="u-clickable"
-									onClick={() => toastService.info('Nog niet geimplementeerd')}
-								>
+								{/* TODO add links to help article */}
+								<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
 									Waarom hebben jullie mijn stamboeknummer nodig?
 								</a>
 							</Alert>
 						</Spacer>
 						<Spacer margin="top-large">
+							{/* TODO add links to help article */}
 							<Alert type="info">
-								<a
-									className="u-clickable"
-									onClick={() => toastService.info('Nog niet geimplementeerd')}
-								>
+								<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
 									Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
 								</a>
 							</Alert>

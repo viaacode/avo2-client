@@ -15,8 +15,9 @@ import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInp
 import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent } from '../../shared/components';
+import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
+import { ContextAndClassificationData } from '../../shared/types/lookup';
 
-import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../collection.gql';
 import { getValidationFeedbackForShortDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
 
@@ -36,10 +37,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
 	};
 
-	const renderCollectionMetaData = (data: {
-		lookup_enum_lom_context: { description: string }[];
-		lookup_enum_lom_classification: { description: string }[];
-	}) => {
+	const renderCollectionMetaData = (data: ContextAndClassificationData) => {
 		return (
 			<>
 				<Container mode="vertical">
