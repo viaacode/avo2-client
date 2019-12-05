@@ -51,5 +51,7 @@ export function isProfileComplete(): boolean {
 export function isLoggedIn(): boolean {
 	const state: any = store.getState();
 	const loggedInMessage: LoginMessage = get(state, 'loginState.data.message');
-	return loggedInMessage && loggedInMessage === LoginMessage.LOGGED_IN && isProfileComplete();
+
+	// TODO add once we can save profile info
+	return loggedInMessage && loggedInMessage === LoginMessage.LOGGED_IN; // && isProfileComplete();
 }
