@@ -31,6 +31,9 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 	loginStateLoading,
 	loginStateError,
 	getLoginState,
+	history,
+	location,
+	match,
 }) => {
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -56,20 +59,21 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 			render={props => {
 				// Already logged in
 				if (loginState && loginState.message === LoginMessage.LOGGED_IN) {
-					if (isProfileComplete()) {
-						const Component = component;
-						return <Component />;
-					} else {
-						// Force user to complete their profile before letting them in
-						return (
-							<Redirect
-								to={{
-									pathname: APP_PATH.COMPLETE_PROFILE,
-									state: { from: props.location },
-								}}
-							/>
-						);
-					}
+					// TODO enable this once we can save profile info
+					// if (isProfileComplete()) {
+					const Component = component;
+					return <Component history={history} location={location} match={match} />;
+					// } else {
+					// 	// Force user to complete their profile before letting them in
+					// 	return (
+					// 		<Redirect
+					// 			to={{
+					// 				pathname: APP_PATH.COMPLETE_PROFILE,
+					// 				state: { from: props.location },
+					// 			}}
+					// 		/>
+					// 	);
+					// }
 				}
 
 				// On errors or not logged in => redirect to login or register page

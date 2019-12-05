@@ -158,11 +158,12 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 	};
 
 	const areAllRequiredFieldFilledIn = (): boolean => {
-		return (
-			selectedSubjects.length > 0 &&
-			selectedEducationLevels.length > 0 &&
-			selectedOrganizations.length > 0
-		);
+		return true; // TODO switch this once we can save profile info
+		// return (
+		// 	selectedSubjects.length > 0 &&
+		// 	selectedEducationLevels.length > 0 &&
+		// 	selectedOrganizations.length > 0
+		// );
 	};
 
 	const renderProfile = (data: ContextAndClassificationData) => {
