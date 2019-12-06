@@ -361,43 +361,41 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>
-									<>
+									<ToolbarItem>
+										<TagList tags={tags} closable={false} swatches bordered />
+									</ToolbarItem>
+									{!!assignment.profile && (
 										<ToolbarItem>
-											<TagList tags={tags} closable={false} swatches bordered />
+											{renderAvatar(assignment.profile, { includeRole: true, small: true })}
 										</ToolbarItem>
-										{!!assignment.profile && (
-											<ToolbarItem>
-												{renderAvatar(assignment.profile, { includeRole: true, small: true })}
-											</ToolbarItem>
-										)}
-										<ToolbarItem>
-											<Dropdown
-												isOpen={isActionsDropdownOpen}
-												menuWidth="fit-content"
-												onClose={() => setActionsDropdownOpen(false)}
-												onOpen={() => setActionsDropdownOpen(true)}
-												placement="bottom-end"
-											>
-												<DropdownButton>
-													<Button icon="more-horizontal" type="secondary" />
-												</DropdownButton>
-												<DropdownContent>
-													<MenuContent
-														menuItems={[
-															{
-																icon: 'archive',
-																id: 'archive',
-																label: `${
-																	isAssignmentResponseArchived() ? 'Dearchiveer' : 'Archiveer'
-																}`,
-															},
-														]}
-														onClick={handleExtraOptionsClick as any}
-													/>
-												</DropdownContent>
-											</Dropdown>
-										</ToolbarItem>
-									</>
+									)}
+									<ToolbarItem>
+										<Dropdown
+											isOpen={isActionsDropdownOpen}
+											menuWidth="fit-content"
+											onClose={() => setActionsDropdownOpen(false)}
+											onOpen={() => setActionsDropdownOpen(true)}
+											placement="bottom-end"
+										>
+											<DropdownButton>
+												<Button icon="more-horizontal" type="secondary" />
+											</DropdownButton>
+											<DropdownContent>
+												<MenuContent
+													menuItems={[
+														{
+															icon: 'archive',
+															id: 'archive',
+															label: `${
+																isAssignmentResponseArchived() ? 'Dearchiveer' : 'Archiveer'
+															}`,
+														},
+													]}
+													onClick={handleExtraOptionsClick as any}
+												/>
+											</DropdownContent>
+										</Dropdown>
+									</ToolbarItem>
 								</ToolbarRight>
 							</Toolbar>
 						</Container>

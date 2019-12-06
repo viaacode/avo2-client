@@ -136,25 +136,23 @@ const Home: FunctionComponent<HomeProps> = ({
 										/>
 									</DropdownButton>
 									<DropdownContent>
-										<>
-											{!searchResultsLoading ? (
-												<MenuSearchResultContent
-													menuItems={autocompleteMenuItems}
-													noResultsLabel="Geen resultaten"
-													onClick={id => goToSearchResult(id.toString())}
-												/>
-											) : (
-												<Spinner size="large" />
-											)}
-											<div className="c-menu__footer">
-												<Button
-													block
-													label={autocompleteButtonLabel}
-													onClick={gotoSearchPage}
-													type="secondary"
-												/>
-											</div>
-										</>
+										{!searchResultsLoading ? (
+											<MenuSearchResultContent
+												menuItems={autocompleteMenuItems}
+												noResultsLabel="Geen resultaten"
+												onClick={id => goToSearchResult(id.toString())}
+											/>
+										) : (
+											<Spinner size="large" />
+										)}
+										<div className="c-menu__footer">
+											<Button
+												block
+												label={autocompleteButtonLabel}
+												onClick={gotoSearchPage}
+												type="secondary"
+											/>
+										</div>
 									</DropdownContent>
 								</Dropdown>
 							</Spacer>

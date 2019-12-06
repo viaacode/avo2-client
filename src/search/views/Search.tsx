@@ -312,16 +312,14 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				<Container mode="horizontal">
 					<Toolbar>
 						<ToolbarLeft>
-							<>
-								<ToolbarItem>
-									<ToolbarTitle>Zoekresultaten</ToolbarTitle>
-								</ToolbarItem>
-								<ToolbarItem>
-									<p className="c-body-1 u-text-muted">
-										{resultStart}-{resultEnd} van {resultsCount} resultaten
-									</p>
-								</ToolbarItem>
-							</>
+							<ToolbarItem>
+								<ToolbarTitle>Zoekresultaten</ToolbarTitle>
+							</ToolbarItem>
+							<ToolbarItem>
+								<p className="c-body-1 u-text-muted">
+									{resultStart}-{resultEnd} van {resultsCount} resultaten
+								</p>
+							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<Flex spaced="regular">

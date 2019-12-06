@@ -168,50 +168,48 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable>
 			<ModalBody>
-				<>
-					<FlowPlayer
-						src={playerTicket ? playerTicket.toString() : null}
-						poster={itemMetaData.thumbnail_path}
-						title={itemMetaData.title}
-						onInit={initFlowPlayer}
-						subtitles={['30-12-2011', 'VRT']}
-						token={getEnv('FLOW_PLAYER_TOKEN')}
-						dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+				<FlowPlayer
+					src={playerTicket ? playerTicket.toString() : null}
+					poster={itemMetaData.thumbnail_path}
+					title={itemMetaData.title}
+					onInit={initFlowPlayer}
+					subtitles={['30-12-2011', 'VRT']}
+					token={getEnv('FLOW_PLAYER_TOKEN')}
+					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+				/>
+				<Container mode="vertical" className="m-time-crop-controls">
+					<TextInput
+						value={fragmentStartString}
+						onChange={setFragmentStartString}
+						onBlur={parseTimes}
+						onKeyUp={handleOnKeyUp}
 					/>
-					<Container mode="vertical" className="m-time-crop-controls">
-						<TextInput
-							value={fragmentStartString}
-							onChange={setFragmentStartString}
-							onBlur={parseTimes}
-							onKeyUp={handleOnKeyUp}
+					<div className="m-multi-range-wrapper">
+						<MultiRange
+							values={[fragmentStart, fragmentEnd]}
+							onChange={onUpdateMultiRangeValues}
+							min={0}
+							max={toSeconds(itemMetaData.duration, true) || 0}
+							step={1}
 						/>
-						<div className="m-multi-range-wrapper">
-							<MultiRange
-								values={[fragmentStart, fragmentEnd]}
-								onChange={onUpdateMultiRangeValues}
-								min={0}
-								max={toSeconds(itemMetaData.duration, true) || 0}
-								step={1}
-							/>
-						</div>
-						<TextInput
-							value={fragmentEndString}
-							onChange={setFragmentEndString}
-							onBlur={parseTimes}
-							onKeyUp={handleOnKeyUp}
-						/>
-					</Container>
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									<Button type="secondary" label="Annuleren" onClick={onCancelCut} />
-									<Button type="primary" label="Knippen" onClick={onSaveCut} />
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</>
+					</div>
+					<TextInput
+						value={fragmentEndString}
+						onChange={setFragmentEndString}
+						onBlur={parseTimes}
+						onKeyUp={handleOnKeyUp}
+					/>
+				</Container>
+				<Toolbar spaced>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								<Button type="secondary" label="Annuleren" onClick={onCancelCut} />
+								<Button type="primary" label="Knippen" onClick={onSaveCut} />
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
 			</ModalBody>
 		</Modal>
 	);
