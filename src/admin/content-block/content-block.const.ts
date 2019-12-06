@@ -1,4 +1,7 @@
-import { ContentBlockBackgroundColor, HeadingAligns, HeadingLevels } from './content-block.types';
+import { Select, TextInput } from '@viaa/avo2-components';
+
+import { AlignSelect, ColorSelect } from './components';
+import { Aligns, ContentBlockBackgroundColor, HeadingLevels } from './content-block.types';
 
 export const BACKGROUND_COLOR_OPTIONS: { label: string; value: ContentBlockBackgroundColor }[] = [
 	{ label: 'Wit', value: ContentBlockBackgroundColor.White },
@@ -8,8 +11,15 @@ export const BACKGROUND_COLOR_OPTIONS: { label: string; value: ContentBlockBackg
 	{ label: 'Blauw', value: ContentBlockBackgroundColor.TealBright },
 ];
 
+export const EDITOR_TYPES_MAP = {
+	AlignSelect,
+	ColorSelect,
+	Select,
+	TextInput,
+};
+
 // Heading
-export const HEADING_ALIGN_OPTIONS: HeadingAligns[] = ['left', 'center', 'right'];
+export const HEADING_ALIGN_OPTIONS: Aligns[] = ['left', 'center', 'right'];
 export const HEADING_LEVEL_OPTIONS: { label: string; value: HeadingLevels }[] = [
 	{ label: 'H1', value: 'h1' },
 	{ label: 'H2', value: 'h2' },

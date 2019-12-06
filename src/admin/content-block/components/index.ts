@@ -1,2 +1,4 @@
+export { default as AlignSelect } from './AlignSelect/AlignSelect';
+export { default as ColorSelect } from './ColorSelect/ColorSelect';
+export { default as ContentBlockForm } from './ContentBlockForm/ContentBlockForm';
 export { default as ContentBlockPicker } from './ContentBlockPicker/ContentBlockPicker';
-export { default as HeadingBlockForm } from './forms/HeadingBlockForm';
