@@ -1,7 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import { Button, Form, FormGroup, Heading } from '@viaa/avo2-components';
+import { Button, Flex, Form, FormGroup, Heading, Spacer } from '@viaa/avo2-components';
 
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
@@ -9,6 +9,8 @@ import {
 	ContentBlockField,
 	ContentBlockFormStates,
 } from '../../content-block.types';
+
+import './ContentBlockForm.scss';
 
 interface ContentBlockFormProps {
 	config: ContentBlockConfig;
@@ -38,7 +40,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 
 		// Go over every field's validator if present
 		// to check if form is valid
-		Object.keys(config.fields).map((fieldKey: string) => {
+		Object.keys(config.fields).forEach((fieldKey: string) => {
 			const field = config.fields[fieldKey];
 			const validator = get(field, 'validator');
 
@@ -87,10 +89,17 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return (
 			<>
 				<Heading type="h4">
-					{cb.name} ({index}/{length})
+					{cb.name}{' '}
+					<span className="u-text-muted">
+						({index}/{length})
+					</span>
 				</Heading>
 				{Object.keys(cb.fields).map((key: string) => (
-					<FormGroup label={cb.fields[key].label} error={formErrors[key]}>
+					<FormGroup
+						key={`${index}-${cb.name}-${key}`}
+						label={cb.fields[key].label}
+						error={formErrors[key]}
+					>
 						{renderFieldEditor(key, cb.fields[key])}
 					</FormGroup>
 				))}
@@ -99,9 +108,13 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	};
 
 	return (
-		<Form type="horizontal">
+		<Form className="c-content-block-form" type="horizontal">
 			{renderFormGroups(config)}
-			<Button label="Opslaan" onClick={handleSave} />
+			<Spacer margin="top">
+				<Flex justify="end">
+					<Button label={`${config.name} opslaan`} onClick={handleSave} size="small" />
+				</Flex>
+			</Spacer>
 		</Form>
 	);
 };

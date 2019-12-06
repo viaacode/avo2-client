@@ -4,7 +4,16 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { Button, Container, Flex, Header, Navbar, Spinner, Tabs } from '@viaa/avo2-components';
+import {
+	Button,
+	Container,
+	Flex,
+	Header,
+	HeaderButtons,
+	Navbar,
+	Spinner,
+	Tabs,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { selectLogin } from '../../../authentication/store/selectors';
@@ -13,20 +22,17 @@ import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { AppState } from '../../../store';
-import {
-	AdminLayout,
-	AdminLayoutActions,
-	AdminLayoutBody,
-	AdminLayoutHeader,
-} from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { HeadingBlockForm } from '../../content-block/components';
 import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { fetchContentItemById, insertContent, updateContent } from '../content.services';
 import { ContentEditFormState, PageType } from '../content.types';
 import { useContentTypes } from '../hooks/useContentTypes';
+import ContentEditContentBlocks from './ContentEditContentBlocks';
+
+import './ContentEdit.scss';
 
 interface ContentEditProps extends RouteComponentProps<{ id?: string }> {
 	loginState: Avo.Auth.LoginResponse | null;
@@ -179,7 +185,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	const renderTabContent = () => {
 		switch (currentTab) {
 			case 'inhoud':
-				return <HeadingBlockForm onChange={() => {}} />;
+				return <ContentEditContentBlocks />;
 			case 'metadata':
 				return (
 					<ContentEditForm
@@ -201,7 +207,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	) : (
 		<AdminLayout navigateBack={navigateBack}>
 			<AdminLayoutHeader>
-				<Header category="audio" categoryLabel="" title={pageTitle} showMetaData={false} />
+				<Header category="audio" categoryLabel="" title={pageTitle} showMetaData={false}>
+					<HeaderButtons>
+						<>
+							<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
+							<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
+						</>
+					</HeaderButtons>
+				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={setCurrentTab} />
@@ -209,10 +222,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>{renderTabContent()}</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
-				<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };
