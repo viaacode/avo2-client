@@ -15,10 +15,11 @@ const AlignSelect: FunctionComponent<AlignSelectProps> = ({ onChange, options, v
 		<ButtonGroup>
 			{options.map(option => (
 				<Button
-					key={`heading-block-align-${option.label}`}
+					key={`heading-block-align-${option.value}`}
 					active={value === option.value}
-					icon={`align-${option.label}` as IconName}
+					icon={`align-${option.value}` as IconName}
 					onClick={() => onChange(option.value)}
+					title={option.label}
 					type="secondary"
 				/>
 			))}

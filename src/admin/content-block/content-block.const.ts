@@ -19,7 +19,11 @@ export const EDITOR_TYPES_MAP = {
 };
 
 // Heading
-export const HEADING_ALIGN_OPTIONS: Aligns[] = ['left', 'center', 'right'];
+export const HEADING_ALIGN_OPTIONS: { label: string; value: Aligns }[] = [
+	{ label: 'Links', value: 'left' },
+	{ label: 'Gecentreerd', value: 'center' },
+	{ label: 'Rechts', value: 'right' },
+];
 export const HEADING_LEVEL_OPTIONS: { label: string; value: HeadingLevels }[] = [
 	{ label: 'H1', value: 'h1' },
 	{ label: 'H2', value: 'h2' },
