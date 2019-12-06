@@ -5,16 +5,18 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ErrorView } from '../../error/views';
 
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginMessage, LoginResponse } from '../store/types';
+import { LoginMessage } from '../store/types';
+import { APP_PATH } from '../../constants';
 
 export interface LoginProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;
 	getLoginState: () => Dispatch;
@@ -60,7 +62,7 @@ const Login: FunctionComponent<LoginProps> = ({
 
 		// Redirect to previous requested path or home page
 		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
-			history.push(get(location, 'state.from.pathname', '/'));
+			history.push(get(location, 'state.from.pathname', APP_PATH.LOGGED_IN_HOME));
 			return;
 		}
 

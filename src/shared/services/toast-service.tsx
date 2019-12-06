@@ -1,4 +1,4 @@
-import { isNil, isString } from 'lodash-es';
+import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
 
@@ -12,31 +12,33 @@ export enum ToastType {
 	SUCCESS = 'success',
 }
 
-interface ToastInfo {
-	message: string;
-	type?: ToastType;
-	dark?: boolean;
-	options?: ToastOptions;
-}
-
-type ToastAlert = ToastInfo | string | string[] | ReactNode;
+type ToastAlert = string | string[] | ReactNode;
+type ToastServiceFn = (alert: ToastAlert, dark?: boolean, options?: ToastOptions) => void;
+type ToastService = { [type in ToastType]: ToastServiceFn };
 
 interface ToastProps extends AlertProps {
 	closeToast?: () => void;
 }
 
-const Toast: FunctionComponent<ToastProps> = ({ closeToast, dark = true, ...rest }) => (
-	<Alert {...rest} className="u-spacer-top" dark={dark} onClose={closeToast} />
+const Toast: FunctionComponent<ToastProps> = ({ closeToast, ...rest }) => (
+	<Alert {...rest} className="u-spacer-top" onClose={closeToast} />
 );
 
-function showToast(alert: ToastAlert, alertType: ToastType = ToastType.INFO) {
+function showToast(
+	alert: ToastAlert,
+	dark: boolean = true,
+	options: ToastOptions = {},
+	alertType: ToastType = ToastType.INFO
+) {
 	if (isNil(alert)) {
-		return null;
+		return;
 	}
+
+	let alertMessage = alert;
 
 	if (Array.isArray(alert)) {
 		const messages = alert as string[];
-		const multiLineMessage = (
+		alertMessage = (
 			<div>
 				{messages.map((message: string, index: number) => {
 					return index + 1 !== messages.length ? (
@@ -47,23 +49,16 @@ function showToast(alert: ToastAlert, alertType: ToastType = ToastType.INFO) {
 				})}
 			</div>
 		);
-		return toast(<Toast message={multiLineMessage} type={alertType} />);
 	}
 
-	if (isString(alert) || !(alert as ToastInfo).message) {
-		return toast(<Toast message={alert} type={alertType} />);
-	}
-
-	const { options = {}, type = alertType, ...rest } = alert as ToastInfo;
-
-	return toast(<Toast {...rest} type={type} />, options);
+	toast(<Toast dark={dark} message={alertMessage} type={alertType} />, options);
 }
 
-const toastService = {
-	danger: (alert: ToastAlert) => showToast(alert, ToastType.DANGER),
-	info: (alert: ToastAlert) => showToast(alert, ToastType.INFO),
-	spinner: (alert: ToastAlert) => showToast(alert, ToastType.SPINNER),
-	success: (alert: ToastAlert) => showToast(alert, ToastType.SUCCESS),
+const toastService: ToastService = {
+	danger: (alert, dark, options) => showToast(alert, dark, options, ToastType.DANGER),
+	info: (alert, dark, options) => showToast(alert, dark, options, ToastType.INFO),
+	spinner: (alert, dark, options) => showToast(alert, dark, options, ToastType.SPINNER),
+	success: (alert, dark, options) => showToast(alert, dark, options, ToastType.SUCCESS),
 };
 
 export default toastService;

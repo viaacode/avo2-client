@@ -8,8 +8,8 @@ import { Sidebar } from './shared/components';
 
 const Admin = () => {
 	const NAV_ITEMS = [
-		{ label: 'Navigatie', location: ADMIN_PATH.MENU },
-		{ label: 'Content', location: ADMIN_PATH.CONTENT },
+		{ label: 'Navigatie', location: ADMIN_PATH.MENU, key: 'navigatie' },
+		{ label: 'Content', location: ADMIN_PATH.CONTENT, key: 'content' },
 	];
 
 	return (

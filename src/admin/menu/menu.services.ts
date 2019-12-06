@@ -2,8 +2,9 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { GET_MENU_ITEM_BY_ID, GET_MENU_ITEMS_BY_PLACEMENT } from '../../admin/menu/menu.gql';
-import { dataService } from './data-service';
+import { dataService } from '../../shared/services/data-service';
+
+import { GET_MENU_ITEM_BY_ID, GET_MENU_ITEMS_BY_PLACEMENT } from './menu.gql';
 
 const MENU_RESULT_PATH = 'app_content_nav_elements';
 

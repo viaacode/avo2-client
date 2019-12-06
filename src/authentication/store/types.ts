@@ -7,11 +7,6 @@ export enum LoginMessage {
 	LOGGED_OUT = 'LOGGED_OUT',
 }
 
-export interface LoginResponse {
-	message: LoginMessage;
-	userInfo: Avo.User.User;
-}
-
 export enum LoginActionTypes {
 	SET_LOGIN_LOADING = '@@login/SET_LOGIN_LOADING',
 	SET_LOGIN_SUCCESS = '@@login/SET_LOGIN_SUCCESS',
@@ -19,7 +14,7 @@ export enum LoginActionTypes {
 }
 
 export interface SetLoginSuccessAction extends Action {
-	data: LoginResponse;
+	data: Avo.Auth.LoginResponse;
 }
 
 export interface SetLoginLoadingAction extends Action {
@@ -33,7 +28,7 @@ export interface SetLoginErrorAction extends Action {
 export type LoginAction = SetLoginSuccessAction | SetLoginLoadingAction | SetLoginErrorAction;
 
 export interface LoginState {
-	readonly data: LoginResponse | null; // TODO: move to types: Avo.Authentication.Response
+	readonly data: Avo.Auth.LoginResponse | null;
 	readonly loading: boolean;
 	readonly error: boolean;
 }

@@ -1,9 +1,11 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
-import { LoginActionTypes, LoginMessage, LoginResponse } from './types';
+import { LoginActionTypes, LoginMessage } from './types';
 
 describe('login > store > actions', () => {
 	it('Should create an action to set the loginState', () => {
-		const loginResult: LoginResponse = {
+		const loginResult: Avo.Auth.LoginResponse = {
 			message: LoginMessage.LOGGED_IN,
 			userInfo: {} as any,
 		};
