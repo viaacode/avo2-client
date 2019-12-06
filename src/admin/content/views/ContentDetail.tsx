@@ -121,12 +121,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
-				<DataQueryComponent
-					query={GET_CONTENT_BY_ID}
-					renderData={renderContentDetail}
-					resultPath={CONTENT_RESULT_PATH.GET}
-					variables={{ id }}
-				/>
+				<Container mode="vertical" size="small">
+					<Container mode="horizontal">
+						<DataQueryComponent
+							query={GET_CONTENT_BY_ID}
+							renderData={renderContentDetail}
+							resultPath={CONTENT_RESULT_PATH.GET}
+							variables={{ id }}
+						/>
+					</Container>
+				</Container>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

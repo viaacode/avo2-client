@@ -26,14 +26,16 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 		<>
 			<TopBar navigateBack={navigateBack} />
 			{header}
-			<Container className={className} mode="vertical" size="small">
-				<Container mode="horizontal">
-					{pageTitle && <h1 className="c-h2 u-m-t-0">{pageTitle}</h1>}
-					{!body && !actions && children}
-					{body}
-					{actions && <ActionsBar fixed>{actions}</ActionsBar>}
+			{(pageTitle || (children && !body)) && (
+				<Container className={className} mode="vertical" size="small">
+					<Container mode="horizontal">
+						{pageTitle && <h1 className="c-h2 u-m-t-0">{pageTitle}</h1>}
+						{!body && children}
+					</Container>
 				</Container>
-			</Container>
+			)}
+			{body}
+			{actions && <ActionsBar fixed>{actions}</ActionsBar>}
 		</>
 	);
 };
