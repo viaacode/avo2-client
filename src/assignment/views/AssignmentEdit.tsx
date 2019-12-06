@@ -455,6 +455,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				...currentAssignment,
 				is_archived: shouldBeArchived,
 			});
+
 			if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 				toastService.success(`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`);
 			}
@@ -470,12 +471,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const triggerCollectionCopy = async (
 		contentLabel: string
 	): Promise<Avo.Collection.Collection | null> => {
-		const isCollection = contentLabel === 'COLLECTIE';
-		const isOwnedByCurrentUser = !(
-			(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId()
-		);
-
-		if (!isCollection || isOwnedByCurrentUser) {
+		if (!(contentLabel === 'COLLECTIE')) {
 			return null;
 		}
 
