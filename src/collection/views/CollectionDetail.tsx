@@ -11,6 +11,7 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
+	DutchContentType,
 	Grid,
 	Header,
 	HeaderAvatar,
@@ -48,7 +49,7 @@ import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
-import { ContentTypeString, DutchContentType, toEnglishContentType } from '../collection.types';
+import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentListDetail, ShareCollectionModal } from '../components';
 
 import './CollectionDetail.scss';
