@@ -439,9 +439,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const viewAsStudent = () => {
-		history.push(getAssignmentUrl(false));
-	};
+	const viewAsStudent = () => history.push(getAssignmentUrl(false));
 
 	const archiveAssignment = async (shouldBeArchived: boolean) => {
 		try {
@@ -469,15 +467,37 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const duplicateAssignment = async (title: string) => {
-		const duplicatedAssigment = await insertDuplicateAssignment(
-			triggerAssignmentInsert,
-			title,
-			initialAssignment
+	const triggerCollectionCopy = async (
+		contentLabel: string
+	): Promise<Avo.Collection.Collection | null> => {
+		const isCollection = contentLabel === 'COLLECTIE';
+		const isOwnedByCurrentUser = !(
+			(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId()
 		);
 
+		if (!isCollection || isOwnedByCurrentUser) {
+			return null;
+		}
+
+		return await copyCollectionToCurrentUser(assignmentContent as Avo.Collection.Collection);
+	};
+
+	const duplicateAssignment = async (title: string) => {
+		// Copy collection if not own collection
+		const collectionCopy = await triggerCollectionCopy(initialAssignment.content_label || '');
+
+		if (!collectionCopy) {
+			return;
+		}
+
+		// Duplicate assignment with new content identifier
+		const duplicatedAssigment = await insertDuplicateAssignment(triggerAssignmentInsert, title, {
+			...initialAssignment,
+			content_id: String(collectionCopy.id),
+		});
+
 		if (!duplicatedAssigment) {
-			return; // assignment was not valid
+			return;
 		}
 
 		navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
