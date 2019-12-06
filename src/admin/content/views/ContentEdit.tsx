@@ -207,7 +207,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	) : (
 		<AdminLayout navigateBack={navigateBack}>
 			<AdminLayoutHeader>
-				<Header category="audio" categoryLabel="" title={pageTitle} showMetaData={false}>
+				<Header category="audio" title={pageTitle} showMetaData={false}>
 					<HeaderButtons>
 						<>
 							<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />

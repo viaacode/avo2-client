@@ -412,7 +412,6 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 					title={title}
 					onClickTitle={() => setIsRenameModalOpen(true)}
 					category="collection"
-					categoryLabel="collectie"
 					showMetaData
 					bookmarks="0" // TODO: Real bookmark count
 					views="0" // TODO: Real view count

@@ -255,7 +255,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					title={title}
 					onClickTitle={() => null}
 					category="collection"
-					categoryLabel="collectie"
 					showMetaData
 					bookmarks="0" // TODO: Real bookmark count
 					views="0" // TODO: Real view count
