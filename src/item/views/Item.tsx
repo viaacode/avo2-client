@@ -1,4 +1,4 @@
-import { isNull } from 'lodash-es';
+import { get, isNull } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -163,7 +163,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 	const renderItem = (itemMetaData: Avo.Item.Item) => {
 		const englishContentType: ContentType =
-			toEnglishContentType(itemMetaData.type.label) || ContentTypeString.video;
+			toEnglishContentType(get(itemMetaData, 'type.label')) || ContentTypeString.video;
 
 		return (
 			<>
@@ -176,31 +176,37 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 										<div className="c-content-type c-content-type--video">
 											<Icon
 												name={
-													(itemMetaData.type.id === ContentTypeNumber.audio
+													(get(itemMetaData, 'type.id') === ContentTypeNumber.audio
 														? 'headphone'
-														: itemMetaData.type.label) as IconName
+														: get(itemMetaData, 'type.label')) as IconName
 												}
 											/>
-											<p>{itemMetaData.type.label}</p>
+											<p>{get(itemMetaData, 'type.label')}</p>
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
-									<MetaData category={toEnglishContentType(itemMetaData.type.label)} spaced>
-										<MetaDataItem>
-											<p className="c-body-2 u-text-muted">
-												{generateSearchLink('provider', itemMetaData.organisation.name || '')}
-											</p>
-										</MetaDataItem>
-										<MetaDataItem>
-											<p className="c-body-2 u-text-muted">
-												Gepubliceerd op {reorderDate(itemMetaData.issued || null, '/')}
-											</p>
-										</MetaDataItem>
-										<MetaDataItem>
-											<p className="c-body-2 u-text-muted">
-												Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
-											</p>
-										</MetaDataItem>
+									<MetaData category={toEnglishContentType(get(itemMetaData, 'type.label'))} spaced>
+										{!!itemMetaData.organisation && !!itemMetaData.organisation.name && (
+											<MetaDataItem>
+												<p className="c-body-2 u-text-muted">
+													{generateSearchLink('provider', itemMetaData.organisation.name)}
+												</p>
+											</MetaDataItem>
+										)}
+										{!!itemMetaData.issued && (
+											<MetaDataItem>
+												<p className="c-body-2 u-text-muted">
+													Gepubliceerd op {reorderDate(itemMetaData.issued || null, '/')}
+												</p>
+											</MetaDataItem>
+										)}
+										{!!itemMetaData.series && (
+											<MetaDataItem>
+												<p className="c-body-2 u-text-muted">
+													Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
+												</p>
+											</MetaDataItem>
+										)}
 									</MetaData>
 								</ToolbarItem>
 							</ToolbarLeft>
@@ -211,7 +217,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 											{/* TODO link meta data to actual data */}
 											<MetaDataItem label="0" icon="eye" />
 											<MetaDataItem label="0" icon="bookmark" />
-											{itemMetaData.type.id === ContentTypeNumber.collection && (
+											{get(itemMetaData, 'type.id') === ContentTypeNumber.collection && (
 												<MetaDataItem label="0" icon="collection" />
 											)}
 										</MetaData>
