@@ -21,6 +21,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -34,7 +35,6 @@ import { createDropdownMenuItem, navigate, renderAvatar } from '../../shared/hel
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
-import { Tab } from '../../shared/types';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { CollectionEditContent, CollectionEditMetaData } from '.';
@@ -96,7 +96,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 	};
 
 	// Add active state to current tab
-	const tabs: Tab[] = COLLECTION_EDIT_TABS.map((tab: Tab) => ({
+	const tabs: TabProps[] = COLLECTION_EDIT_TABS.map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));

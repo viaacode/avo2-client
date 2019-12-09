@@ -1,5 +1,6 @@
+import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
+
 import { ROUTE_PARTS } from '../shared/constants';
-import { Tab } from '../shared/types';
 
 export const COLLECTION_PATH = Object.freeze({
 	COLLECTION_DETAIL: `/${ROUTE_PARTS.collections}/:id`,
@@ -9,7 +10,7 @@ export const COLLECTION_PATH = Object.freeze({
 // TODO: get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
-export const COLLECTION_EDIT_TABS: Tab[] = [
+export const COLLECTION_EDIT_TABS: TabProps[] = [
 	{
 		id: 'inhoud',
 		label: 'Inhoud',

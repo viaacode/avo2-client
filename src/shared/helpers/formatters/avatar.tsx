@@ -38,7 +38,7 @@ export const getAbbreviatedFullName = (profile: Avo.User.Profile | null) =>
 	`${get(profile, 'user.first_name', '')[0]}. ${get(profile, 'user.last_name')}`;
 
 export const getRole = (profile: Avo.User.Profile | null | undefined) =>
-	get(profile, 'user.role.name');
+	get(profile, 'user.role.label');
 
 export const getAvatarProps = (
 	profile: Avo.User.Profile | null,
