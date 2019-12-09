@@ -19,6 +19,7 @@ import {
 
 import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
 import {
+	getFirstName,
 	getProfileInitials,
 	getProfileName,
 	isLoggedIn,
@@ -89,7 +90,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history }) => {
 				{
 					label: (
 						<div className="c-navbar-profile-dropdown-button">
-							<Avatar initials={getProfileInitials()} name={getProfileName()} />
+							<Avatar initials={getProfileInitials()} name={getFirstName()} />
 							<Icon name="caret-down" size="small" />
 						</div>
 					),

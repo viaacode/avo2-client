@@ -11,6 +11,11 @@ function getUserInfo(): Avo.User.User | null {
 	return get(state, 'loginState.data.userInfo');
 }
 
+export const getFirstName = () => {
+	const state: any = store.getState();
+	return get(state, 'loginState.data.userInfo.first_name');
+};
+
 export function getProfileId(): string {
 	const userInfo = getUserInfo();
 	const profileId = get(userInfo, 'profile.id');
@@ -31,7 +36,9 @@ export function getProfileName(): string {
 
 export function getProfileInitials(): string {
 	const userInfo = getUserInfo();
-	return get(userInfo, 'user.first_name', 'X')[0] + get(userInfo, 'user.last_name', 'X')[0];
+	return (
+		(get(userInfo, 'first_name', 'X') as string)[0] + (get(userInfo, 'last_name', 'X') as string)[0]
+	);
 }
 
 export function getProfileStamboekNumber(): string | null {
