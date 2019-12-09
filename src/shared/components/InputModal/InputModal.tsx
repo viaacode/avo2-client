@@ -13,7 +13,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import toastService, { TOAST_TYPE } from '../../services/toast-service';
+import toastService from '../../services/toast-service';
 
 interface InputModalProps {
 	title?: string;
@@ -50,7 +50,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 
 	const onClickConfirm = () => {
 		if (!input) {
-			toastService(emptyMessage, TOAST_TYPE.DANGER);
+			toastService.danger(emptyMessage);
 			return null;
 		}
 
@@ -62,28 +62,26 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
 			<ModalBody>
-				<>
-					<Spacer margin="bottom-large">
-						<FormGroup label={inputLabel} labelFor="collectionNameId">
-							<TextInput
-								type="text"
-								value={input}
-								onChange={setInput}
-								placeholder={inputPlaceholder}
-							/>
-						</FormGroup>
-					</Spacer>
-					<Toolbar>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
-									<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</>
+				<Spacer margin="bottom-large">
+					<FormGroup label={inputLabel} labelFor="collectionNameId">
+						<TextInput
+							type="text"
+							value={input}
+							onChange={setInput}
+							placeholder={inputPlaceholder}
+						/>
+					</FormGroup>
+				</Spacer>
+				<Toolbar>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
+								<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
 			</ModalBody>
 		</Modal>
 	);

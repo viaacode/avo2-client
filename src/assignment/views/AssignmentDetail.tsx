@@ -12,7 +12,9 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Heading,
 	Icon,
+	IconName,
 	MenuContent,
 	Spacer,
 	TagList,
@@ -25,16 +27,16 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { LoginResponse } from '../../authentication/store/types';
-import { FragmentDetail } from '../../collection/components';
-import { RouteParts } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
-import { renderAvatar } from '../../shared/helpers';
+import { buildLink, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
+import toastService from '../../shared/services/toast-service';
+import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
+
+import FragmentListDetail from '../../collection/components/fragment/FragmentListDetail';
+import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -46,7 +48,7 @@ import { AssignmentLayout } from '../assignment.types';
 import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
-	loginResponse: LoginResponse | null;
+	loginResponse: Avo.Auth.LoginResponse | null;
 }
 
 export enum AssignmentRetrieveError {
@@ -89,7 +91,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			if (!assignmentResponse) {
 				// Student has never viewed this assignment before, we should create a response object for him
 				assignmentResponse = {
-					owner_profile_ids: [getProfileId()], // TODO: replace with getUser().uuid
+					owner_profile_ids: [getProfileId()],
 					assignment_id: tempAssignment.id,
 					collection: null,
 					collection_id: null,
@@ -110,7 +112,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					);
 
 					if (isNil(assignmentResponseId)) {
-						toastService('Het aanmaken van de opdracht antwoord entry is mislukt (leeg id)');
+						toastService.info('Het aanmaken van de opdracht antwoord entry is mislukt (leeg id)');
 						return;
 					}
 
@@ -118,10 +120,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					tempAssignment.assignment_responses = [assignmentResponse as Avo.Assignment.Response];
 				} catch (err) {
 					console.error(err);
-					toastService(
-						'Het aanmaken van een opdracht antwoord entry is mislukt',
-						TOAST_TYPE.DANGER
-					);
+					toastService.danger('Het aanmaken van een opdracht antwoord entry is mislukt');
 				}
 			}
 		}
@@ -132,7 +131,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		const assignmentQuery = {
 			query: GET_ASSIGNMENT_WITH_RESPONSE,
 			variables: {
-				studentUuid: [getProfileId()],
+				studentUuid: getProfileId(),
 				assignmentId: (match.params as any).id,
 			},
 		};
@@ -162,7 +161,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				getAssignmentContent(tempAssignment).then(
 					(response: Avo.Assignment.Content | string | null) => {
 						if (typeof response === 'string') {
-							toastService(response);
+							toastService.info(response);
 							return;
 						}
 
@@ -220,10 +219,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {
 			if (assignment && isOwnerOfAssignment(assignment)) {
-				toastService(
-					'U kan deze opdracht niet archiveren want dit is slechts een voorbeeld',
-					TOAST_TYPE.INFO
-				);
+				toastService.info('U kan deze opdracht niet archiveren want dit is slechts een voorbeeld');
 				return;
 			}
 
@@ -239,9 +235,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					update: ApolloCacheManager.clearAssignmentCache,
 				})
 					.then(() => {
-						toastService(
-							`De opdracht is ge${isAssignmentResponseArchived() ? 'de' : ''}archiveerd`,
-							TOAST_TYPE.SUCCESS
+						toastService.success(
+							`De opdracht is ge${isAssignmentResponseArchived() ? 'de' : ''}archiveerd`
 						);
 
 						// Update local cached assignment
@@ -260,13 +255,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 								id: assignmentResponse.id,
 							},
 						});
-						toastService('Het archiveren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+						toastService.danger('Het archiveren van de opdracht is mislukt');
 					});
 			} else {
 				console.error("assignmentResponse object is null or doesn't have an id", {
 					assignmentResponse,
 				});
-				toastService('Het archiveren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+				toastService.danger('Het archiveren van de opdracht is mislukt');
 			}
 		}
 	};
@@ -289,9 +284,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		switch (content_label) {
 			case 'COLLECTIE':
 				return (
-					<FragmentDetail
+					<FragmentListDetail
 						collectionFragments={
 							(assigmentContent as Avo.Collection.Collection).collection_fragments
+						}
+						showDescriptionNextToVideo={
+							assignment.content_layout === AssignmentLayout.PlayerAndText
 						}
 					/>
 				);
@@ -321,18 +319,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			return null;
 		}
 		const isOwner = getProfileId() === assignment.owner_profile_id;
+		const backLink = isOwner
+			? buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assignment.id })
+			: buildLink(WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
 
 		return (
-			<Link
-				className="c-return"
-				to={
-					isOwner
-						? `/${RouteParts.Workspace}/${RouteParts.Assignments}/${assignment.id}/${
-								RouteParts.Edit
-						  }`
-						: `/${RouteParts.Workspace}/${RouteParts.Assignments}`
-				}
-			>
+			<Link className="c-return" to={backLink}>
 				<Icon type="arrows" name="chevron-left" />
 				<span>{isOwner ? 'Terug naar opdracht bewerken' : 'Mijn opdrachten'}</span>
 			</Link>
@@ -363,47 +355,47 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}
-										<h2 className="c-h2 u-m-0">{assignment.title}</h2>
+										<Heading className="u-m-0" type="h2">
+											{assignment.title}
+										</Heading>
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>
-									<>
+									<ToolbarItem>
+										<TagList tags={tags} closable={false} swatches bordered />
+									</ToolbarItem>
+									{!!assignment.profile && (
 										<ToolbarItem>
-											<TagList tags={tags} closable={false} swatches bordered />
+											{renderAvatar(assignment.profile, { includeRole: true, small: true })}
 										</ToolbarItem>
-										{!!assignment.profile && (
-											<ToolbarItem>
-												{renderAvatar(assignment.profile, { includeRole: true, small: true })}
-											</ToolbarItem>
-										)}
-										<ToolbarItem>
-											<Dropdown
-												isOpen={isActionsDropdownOpen}
-												menuWidth="fit-content"
-												onClose={() => setActionsDropdownOpen(false)}
-												onOpen={() => setActionsDropdownOpen(true)}
-												placement="bottom-end"
-											>
-												<DropdownButton>
-													<Button icon="more-horizontal" type="secondary" />
-												</DropdownButton>
-												<DropdownContent>
-													<MenuContent
-														menuItems={[
-															{
-																icon: 'archive',
-																id: 'archive',
-																label: `${
-																	isAssignmentResponseArchived() ? 'Dearchiveer' : 'Archiveer'
-																}`,
-															},
-														]}
-														onClick={handleExtraOptionsClick as any}
-													/>
-												</DropdownContent>
-											</Dropdown>
-										</ToolbarItem>
-									</>
+									)}
+									<ToolbarItem>
+										<Dropdown
+											isOpen={isActionsDropdownOpen}
+											menuWidth="fit-content"
+											onClose={() => setActionsDropdownOpen(false)}
+											onOpen={() => setActionsDropdownOpen(true)}
+											placement="bottom-end"
+										>
+											<DropdownButton>
+												<Button icon="more-horizontal" type="secondary" />
+											</DropdownButton>
+											<DropdownContent>
+												<MenuContent
+													menuItems={[
+														{
+															icon: 'archive',
+															id: 'archive',
+															label: `${
+																isAssignmentResponseArchived() ? 'Dearchiveer' : 'Archiveer'
+															}`,
+														},
+													]}
+													onClick={handleExtraOptionsClick as any}
+												/>
+											</DropdownContent>
+										</Dropdown>
+									</ToolbarItem>
 								</ToolbarRight>
 							</Toolbar>
 						</Container>

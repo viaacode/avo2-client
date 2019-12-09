@@ -1,4 +1,4 @@
-import { isNull } from 'lodash-es';
+import { get, isNull } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -8,9 +8,12 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	EnglishContentType,
 	Flex,
 	Grid,
+	Heading,
 	Icon,
+	IconName,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -26,7 +29,6 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -46,10 +48,10 @@ import {
 } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-import { IconName } from '../../shared/types/types';
+import toastService from '../../shared/services/toast-service';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
+import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
 import './Item.scss';
@@ -89,26 +91,31 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 
 		if (itemId) {
 			if (isNull(relatedItems)) {
-				getRelatedItems(itemId, 'items', 5)
-					.then(setRelatedItems)
-					.catch(err => {
-						console.error('Failed to get related items', err, { itemId, index: 'items', limit: 5 });
-						toastService('Het ophalen van de gerelateerde items is mislukt', TOAST_TYPE.DANGER);
-					});
+				retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 			}
 
 			// Log event of item page view
 			trackEvents({
-				event_object: {
-					type: 'item',
-					identifier: itemId,
-				},
-				event_message: `Gebruiker ${getProfileName()} heeft de pagina van fragment ${itemId} bezocht`,
-				name: 'view',
-				category: 'item',
+				object: itemId,
+				object_type: 'avo_item_pid',
+				message: `Gebruiker ${getProfileName()} heeft de pagina van fragment ${itemId} bezocht`,
+				action: 'view',
 			});
 		}
 	}, [time, history, videoRef, itemId, relatedItems]);
+
+	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
+		getRelatedItems(currentItemId, 'items', limit)
+			.then(setRelatedItems)
+			.catch(err => {
+				console.error('Failed to get related items', err, {
+					currentItemId,
+					limit,
+					index: 'items',
+				});
+				toastService.danger('Het ophalen van de gerelateerde items is mislukt');
+			});
+	};
 
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
@@ -127,7 +134,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const renderRelatedItems = () => {
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map(relatedItem => {
-				const englishContentType: ContentType =
+				const englishContentType: EnglishContentType =
 					toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 				return (
@@ -155,8 +162,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	};
 
 	const renderItem = (itemMetaData: Avo.Item.Item) => {
-		const englishContentType: ContentType =
-			toEnglishContentType(itemMetaData.type.label) || ContentTypeString.video;
+		const englishContentType: EnglishContentType =
+			toEnglishContentType(get(itemMetaData, 'type.label')) || ContentTypeString.video;
 
 		return (
 			<>
@@ -167,39 +174,39 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 								<ToolbarItem>
 									<Spacer margin="bottom">
 										<div className="c-content-type c-content-type--video">
-											{itemMetaData.type && (
-												<Icon
-													name={
-														(itemMetaData.type.id === ContentTypeNumber.audio
-															? 'headphone'
-															: itemMetaData.type.label) as IconName
-													}
-												/>
-											)}
-											<p>{itemMetaData.type.label}</p>
+											<Icon
+												name={
+													(get(itemMetaData, 'type.id') === ContentTypeNumber.audio
+														? 'headphone'
+														: get(itemMetaData, 'type.label')) as IconName
+												}
+											/>
+											<p>{get(itemMetaData, 'type.label')}</p>
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
-									<MetaData category={toEnglishContentType(itemMetaData.type.label)} spaced>
-										{itemMetaData.org_name && (
+									<MetaData category={toEnglishContentType(get(itemMetaData, 'type.label'))} spaced>
+										{!!itemMetaData.organisation && !!itemMetaData.organisation.name && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													{generateSearchLink('provider', itemMetaData.org_name || '')}
+													{generateSearchLink('provider', itemMetaData.organisation.name)}
 												</p>
 											</MetaDataItem>
 										)}
-										{itemMetaData.publish_at && (
+										{!!itemMetaData.issued && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
 													Gepubliceerd op {reorderDate(itemMetaData.issued || null, '/')}
 												</p>
 											</MetaDataItem>
 										)}
-										<MetaDataItem>
-											<p className="c-body-2 u-text-muted">
-												Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
-											</p>
-										</MetaDataItem>
+										{!!itemMetaData.series && (
+											<MetaDataItem>
+												<p className="c-body-2 u-text-muted">
+													Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
+												</p>
+											</MetaDataItem>
+										)}
 									</MetaData>
 								</ToolbarItem>
 							</ToolbarLeft>
@@ -210,7 +217,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 											{/* TODO link meta data to actual data */}
 											<MetaDataItem label="0" icon="eye" />
 											<MetaDataItem label="0" icon="bookmark" />
-											{itemMetaData.type.id === ContentTypeNumber.collection && (
+											{get(itemMetaData, 'type.id') === ContentTypeNumber.collection && (
 												<MetaDataItem label="0" icon="collection" />
 											)}
 										</MetaData>
@@ -269,86 +276,101 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 								<Container mode="vertical" size="small">
 									<Table horizontal untable>
 										<Grid tag="tbody">
-											<Column size="2-5" tag="tr">
-												<th scope="row">Publicatiedatum</th>
-												<td>{reorderDate(itemMetaData.publish_at || null, '/')}</td>
-											</Column>
-											<Column size="2-5" tag="tr">
-												<th scope="row">Toegevoegd op</th>
-												{/* TODO replace meta data with actual data from api (more fields than SearchResultItem */}
-												<td>{reorderDate(itemMetaData.issued || null, '/')}</td>
-											</Column>
+											{!!itemMetaData.issued && (
+												<Column size="2-5" tag="tr">
+													<th scope="row">Publicatiedatum</th>
+													<td>{reorderDate(itemMetaData.issued, '/')}</td>
+												</Column>
+											)}
+											{!!itemMetaData.published_at && (
+												<Column size="2-5" tag="tr">
+													<th scope="row">Toegevoegd op</th>
+													<td>{reorderDate(itemMetaData.published_at, '/')}</td>
+												</Column>
+											)}
 										</Grid>
 										<Grid tag="tbody">
-											<Column size="2-5" tag="tr">
-												<th scope="row">Aanbieder</th>
-												{itemMetaData.org_name && (
-													<td>{generateSearchLink('provider', itemMetaData.org_name || '')}</td>
-												)}
-											</Column>
-											<Column size="2-5" tag="tr">
-												<th scope="row">Speelduur</th>
-												<td>{itemMetaData.duration}</td>
-											</Column>
+											{!!itemMetaData.organisation && !!itemMetaData.organisation.name && (
+												<Column size="2-5" tag="tr">
+													<th scope="row">Aanbieder</th>
+													<td>{generateSearchLink('provider', itemMetaData.organisation.name)}</td>
+												</Column>
+											)}
+											{!!itemMetaData.duration && (
+												<Column size="2-5" tag="tr">
+													<th scope="row">Speelduur</th>
+													<td>{itemMetaData.duration}</td>
+												</Column>
+											)}
 										</Grid>
 										<Grid tag="tbody">
-											<Column size="2-5" tag="tr">
-												<th scope="row">Reeks</th>
-												<td>{generateSearchLink('serie', itemMetaData.series)}</td>
-											</Column>
-											<Column size="2-5" tag="tr">
-												<th scope="row">Taal</th>
-												<td>
-													{(itemMetaData.lom_languages || [])
-														.map(languageCode => LANGUAGES.nl[languageCode])
-														.join(', ')}
-												</td>
-											</Column>
+											{!!itemMetaData.series && (
+												<Column size="2-5" tag="tr">
+													<th scope="row">Reeks</th>
+													<td>{generateSearchLink('serie', itemMetaData.series)}</td>
+												</Column>
+											)}
+											{!!itemMetaData.lom_languages && !!itemMetaData.lom_languages.length && (
+												<Column size="2-5" tag="tr">
+													<th scope="row">Taal</th>
+													<td>
+														{itemMetaData.lom_languages
+															.map(languageCode => LANGUAGES.nl[languageCode])
+															.join(', ')}
+													</td>
+												</Column>
+											)}
 										</Grid>
 									</Table>
 									<div className="c-hr" />
 									<Table horizontal untable>
 										<tbody>
-											<tr>
-												<th scope="row">Geschikt voor</th>
-												<td>
-													{generateSearchLinks(
-														itemMetaData.external_id,
-														'educationLevel',
-														itemMetaData.lom_context
-													)}
-												</td>
-											</tr>
-											<tr>
-												<th scope="row">Vakken</th>
-												<td>
-													{generateSearchLinks(
-														itemMetaData.external_id,
-														'subject',
-														itemMetaData.lom_classification
-													)}
-												</td>
-											</tr>
+											{!!itemMetaData.external_id && !!itemMetaData.lom_context && (
+												<tr>
+													<th scope="row">Geschikt voor</th>
+													<td>
+														{generateSearchLinks(
+															itemMetaData.external_id,
+															'educationLevel',
+															itemMetaData.lom_context
+														)}
+													</td>
+												</tr>
+											)}
+											{!!itemMetaData.external_id && !!itemMetaData.lom_classification && (
+												<tr>
+													<th scope="row">Vakken</th>
+													<td>
+														{generateSearchLinks(
+															itemMetaData.external_id,
+															'subject',
+															itemMetaData.lom_classification
+														)}
+													</td>
+												</tr>
+											)}
 										</tbody>
 									</Table>
 									<div className="c-hr" />
 									<Table horizontal untable>
 										<tbody>
-											<tr>
-												<th scope="row">Trefwoorden</th>
-												<td>
-													<TagList
-														tags={(itemMetaData.lom_keywords || []).map(keyword => ({
-															label: keyword,
-															id: keyword,
-														}))}
-														swatches={false}
-														onTagClicked={(tagId: string | number) =>
-															goToSearchPage('keyword', tagId as string)
-														}
-													/>
-												</td>
-											</tr>
+											{!!itemMetaData.lom_keywords && !!itemMetaData.lom_keywords.length && (
+												<tr>
+													<th scope="row">Trefwoorden</th>
+													<td>
+														<TagList
+															tags={itemMetaData.lom_keywords.map(keyword => ({
+																label: keyword,
+																id: keyword,
+															}))}
+															swatches={false}
+															onTagClicked={(tagId: string | number) =>
+																goToSearchPage('keyword', tagId as string)
+															}
+														/>
+													</td>
+												</tr>
+											)}
 											{/*<tr>*/}
 											{/*<th scope="row">Klascement</th>*/}
 											{/*<td>*/}
@@ -363,7 +385,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 							</Column>
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
-									<h3 className="c-h3">Bekijk ook</h3>
+									<Heading type="h3">Bekijk ook</Heading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>
 							</Column>

@@ -1,7 +1,7 @@
 import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import {
@@ -11,6 +11,7 @@ import {
 	DropdownButton,
 	DropdownContent,
 	Flex,
+	Heading,
 	MenuSearchResultContent,
 	MenuSearchResultItemInfo,
 	Spacer,
@@ -27,7 +28,7 @@ import {
 	generateSearchLinkString,
 	useDebounce,
 } from '../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 
 import './Home.scss';
 
@@ -99,7 +100,7 @@ const Home: FunctionComponent<HomeProps> = ({
 					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
 				);
 			} else {
-				toastService(`Geen zoekresultaten gevonden met id: ${searchResultId}`, TOAST_TYPE.DANGER);
+				toastService.danger(`Geen zoekresultaten gevonden met id: ${searchResultId}`);
 			}
 		}
 	};
@@ -114,9 +115,9 @@ const Home: FunctionComponent<HomeProps> = ({
 			<Container mode="vertical" background="alt">
 				<Container mode="horizontal" size="medium">
 					<Spacer>
-						<h2 className="c-h2 u-text-center">
+						<Heading type="h2" className="u-text-center">
 							Vind alles wat je nodig hebt om je lessen te verrijken.
-						</h2>
+						</Heading>
 						<div className="u-text-center">
 							<Spacer margin="large">
 								<Dropdown
@@ -135,25 +136,23 @@ const Home: FunctionComponent<HomeProps> = ({
 										/>
 									</DropdownButton>
 									<DropdownContent>
-										<>
-											{!searchResultsLoading ? (
-												<MenuSearchResultContent
-													menuItems={autocompleteMenuItems}
-													noResultsLabel="Geen resultaten"
-													onClick={id => goToSearchResult(id.toString())}
-												/>
-											) : (
-												<Spinner size="large" />
-											)}
-											<div className="c-menu__footer">
-												<Button
-													block
-													label={autocompleteButtonLabel}
-													onClick={gotoSearchPage}
-													type="secondary"
-												/>
-											</div>
-										</>
+										{!searchResultsLoading ? (
+											<MenuSearchResultContent
+												menuItems={autocompleteMenuItems}
+												noResultsLabel="Geen resultaten"
+												onClick={id => goToSearchResult(id.toString())}
+											/>
+										) : (
+											<Spinner size="large" />
+										)}
+										<div className="c-menu__footer">
+											<Button
+												block
+												label={autocompleteButtonLabel}
+												onClick={gotoSearchPage}
+												type="secondary"
+											/>
+										</div>
 									</DropdownContent>
 								</Dropdown>
 							</Spacer>
@@ -200,7 +199,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Home);
+export default withRouter(
+	connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(Home)
+);

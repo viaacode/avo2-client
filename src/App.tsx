@@ -1,94 +1,27 @@
 import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { connect, Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 
-import { Flex } from '@viaa/avo2-components';
-
-import { ADMIN_PATH } from './admin/admin.const';
-import { Sidebar } from './admin/components';
-import { selectLogin } from './authentication/store/selectors';
-import { LoginMessage, LoginResponse } from './authentication/store/types';
-import { Footer, Navigation } from './shared/components';
-import { dataService } from './shared/services/data-service';
-import { NavigationItem } from './shared/types/types';
-
-import { RouteParts } from './constants';
+import Admin from './admin/Admin';
+import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
-import store, { AppState } from './store';
+import { Footer, Navigation } from './shared/components';
+import { ROUTE_PARTS } from './shared/constants';
+import { dataService } from './shared/services/data-service';
+import store from './store';
 
 import './styles/main.scss';
 
-interface AppProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
-}
+interface AppProps extends RouteComponentProps {}
 
-const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => {
-	const PRIMARY_ITEMS: NavigationItem[] = [
-		{ label: 'Home', location: '/' },
-		{
-			label: 'Zoeken',
-			location: `/${RouteParts.Search}`,
-			icon: 'search',
-		},
-		{ label: 'Ontdek', location: `/${RouteParts.Discover}` },
-		{
-			label: 'Mijn Werkruimte',
-			location: `/${RouteParts.Workspace}`,
-			icon: 'briefcase',
-		},
-		{ label: 'Projecten', location: `/${RouteParts.Projects}` },
-		{ label: 'Nieuws', location: `/${RouteParts.News}` },
-	];
-	const SECONDARY_ITEMS: NavigationItem[] =
-		loginState && loginState.message === LoginMessage.LOGGED_IN
-			? [{ label: 'Afmelden', location: `/${RouteParts.Logout}` }]
-			: [
-					// { label: 'Registreren', location: `/${RouteParts.Register}` },
-					{ label: 'Aanmelden', location: `/${RouteParts.RegisterOrLogin}` },
-			  ];
-
-	// State
-	const [menuOpen, setMenuOpen] = useState(false);
-
-	useEffect(() => history.listen(onCloseMenu));
-
-	// Methods
-	const onToggleMenu = () => setMenuOpen(!menuOpen);
-
-	const onCloseMenu = () => setMenuOpen(false);
-
-	const isAdminRoute = new RegExp(`^/${RouteParts.Admin}`, 'g').test(location.pathname);
+const App: FunctionComponent<AppProps> = ({ location }) => {
+	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(location.pathname);
 
 	// Render
-	const renderAdmin = () => (
-		<Flex>
-			<Sidebar
-				headerLink={`/${RouteParts.Admin}`}
-				navItems={[{ label: 'Navigatie', location: ADMIN_PATH.MENU }]}
-			/>
-			<Flex className="u-flex-auto u-scroll" orientation="vertical">
-				{renderRoutes()}
-			</Flex>
-		</Flex>
-	);
-
-	const renderApp = () => (
-		<>
-			<Navigation
-				primaryItems={PRIMARY_ITEMS}
-				secondaryItems={SECONDARY_ITEMS}
-				isOpen={menuOpen}
-				handleMenuClick={onToggleMenu}
-			/>
-			{renderRoutes()}
-			<Footer />
-		</>
-	);
-
 	return (
 		<div className={classnames('o-app', { 'o-app--admin': isAdminRoute })}>
 			<ToastContainer
@@ -101,16 +34,20 @@ const App: FunctionComponent<AppProps> = ({ history, location, loginState }) => 
 				transition={Slide}
 			/>
 			{/* TODO: Based on current user permissions */}
-			{isAdminRoute ? renderAdmin() : renderApp()}
+			{isAdminRoute ? (
+				<Admin />
+			) : (
+				<>
+					{location.pathname !== APP_PATH.LOGIN_AVO ? <Navigation /> : null}
+					{renderRoutes()}
+					<Footer />
+				</>
+			)}
 		</div>
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	loginState: selectLogin(state),
-});
-
-const AppWithRouter = withRouter(connect(mapStateToProps)(App));
+const AppWithRouter = withRouter(App);
 
 const Root: FunctionComponent = () => (
 	<ApolloProvider client={dataService}>

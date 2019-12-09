@@ -21,20 +21,21 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { RouteParts } from '../../constants';
 import {
 	ControlledDropdown,
 	DataQueryComponent,
 	DeleteObjectModal,
 	InputModal,
 } from '../../shared/components';
-import { createDropdownMenuItem, renderAvatar } from '../../shared/helpers';
+import { createDropdownMenuItem, navigate, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
+import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { CollectionEditContent, CollectionEditMetaData } from '.';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
@@ -47,20 +48,21 @@ import {
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../collection.gql';
 import { CollectionService } from '../collection.service';
-import { FragmentPropertyUpdateInfo, Tab } from '../collection.types';
+import { FragmentPropertyUpdateInfo } from '../collection.types';
 import {
 	// TODO: DISABLED FEATURE - ReorderCollectionModal,
 	ShareCollectionModal,
 } from '../components';
+import { swapFragmentsPositions } from '../helpers';
 
-interface CollectionEditProps extends RouteComponentProps {}
+interface CollectionEditProps extends RouteComponentProps<{ id: string }> {}
 
 let currentCollection: Avo.Collection.Collection | undefined;
 let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
 
-const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
+const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match }) => {
 	// State
-	const [collectionId] = useState<string | undefined>((props.match.params as any)['id']);
+	const [collectionId] = useState<string | undefined>(match.params.id);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
@@ -94,7 +96,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	};
 
 	// Add active state to current tab
-	const tabs: Tab[] = COLLECTION_EDIT_TABS.map((tab: Tab) => ({
+	const tabs: TabProps[] = COLLECTION_EDIT_TABS.map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));
@@ -112,9 +114,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		const tempCollection: Avo.Collection.Collection | undefined = cloneDeep(currentCollection);
 
 		if (!tempCollection) {
-			toastService(
-				'De collectie updaten is mislukt, kon geen kopie maken van de bestaande collectie',
-				TOAST_TYPE.DANGER
+			toastService.danger(
+				'De collectie updaten is mislukt, kon geen kopie maken van de bestaande collectie'
 			);
 			return;
 		}
@@ -133,49 +134,24 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	};
 
 	// Swap position of two fragments within a collection
-	const swapFragments = (currentId: number, direction: 'up' | 'down') => {
+	const swapFragments = (currentFragmentId: number, direction: 'up' | 'down') => {
 		if (!currentCollection) {
-			toastService('De collectie was niet ingesteld', TOAST_TYPE.DANGER);
+			toastService.danger('De collectie was niet ingesteld');
 			return;
 		}
 
 		if (!currentCollection.collection_fragments || !currentCollection.collection_fragments.length) {
-			toastService('De collectie fragmenten zijn niet ingesteld', TOAST_TYPE.DANGER);
+			toastService.danger('De collectie fragmenten zijn niet ingesteld');
 			return;
 		}
 
 		const fragments = CollectionService.getFragments(currentCollection);
 
-		const changeFragmentsPositions = (fragments: Avo.Collection.Fragment[], sign: number) => {
-			const fragment = fragments.find(
-				(fragment: Avo.Collection.Fragment) => fragment.position === currentId
-			);
-
-			const otherFragment = fragments.find(
-				(fragment: Avo.Collection.Fragment) => fragment.position === currentId - sign
-			);
-
-			if (!fragment) {
-				toastService(`Het fragment met id ${currentId} is niet gevonden`, TOAST_TYPE.DANGER);
-				return;
-			}
-
-			if (!otherFragment) {
-				toastService(`Het fragment met id ${currentId - sign} is niet gevonden`, TOAST_TYPE.DANGER);
-				return;
-			}
-
-			fragment.position -= sign;
-			otherFragment.position += sign;
-		};
-
-		direction === 'up'
-			? changeFragmentsPositions(fragments, 1)
-			: changeFragmentsPositions(fragments, -1);
+		const delta = direction === 'up' ? 1 : -1;
 
 		setCurrentCollection({
 			...currentCollection,
-			collection_fragments: fragments,
+			collection_fragments: swapFragmentsPositions(fragments, currentFragmentId, delta),
 		});
 	};
 
@@ -200,17 +176,14 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			if (newCollection) {
 				setCurrentCollection(newCollection);
 				setInitialCollection(cloneDeep(newCollection));
-				toastService('Collectie opgeslagen', TOAST_TYPE.SUCCESS);
+				toastService.success('Collectie opgeslagen');
 				trackEvents({
-					event_object: {
-						type: 'collection',
-						identifier: `${newCollection.id}`,
-					},
-					event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+					object: String(newCollection.id),
+					object_type: 'collections',
+					message: `Gebruiker ${getProfileName()} heeft de collectie ${
 						newCollection.id
 					} bijgewerkt`,
-					name: 'edit',
-					category: 'item',
+					action: 'edit',
 				});
 			}
 		}
@@ -226,7 +199,9 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 	const onRenameCollection = async (newTitle: string) => {
 		try {
 			if (!initialCollection) {
-				toastService('De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)');
+				toastService.info(
+					'De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)'
+				);
 				return;
 			}
 			// Update the name in the current collection
@@ -249,7 +224,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			});
 		} catch (err) {
 			console.error(err);
-			toastService('Het hernoemen van de collectie is mislukt');
+			toastService.info('Het hernoemen van de collectie is mislukt');
 		}
 	};
 
@@ -262,7 +237,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 		try {
 			if (!currentCollection) {
 				console.error('Failed to delete collection since currentCollection is undefined');
-				toastService('Het verwijderen van de collectie is mislukt (collectie niet ingesteld)');
+				toastService.info('Het verwijderen van de collectie is mislukt (collectie niet ingesteld)');
 				return;
 			}
 			await triggerCollectionDelete({
@@ -273,21 +248,18 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 			});
 
 			trackEvents({
-				event_object: {
-					type: 'collection',
-					identifier: String(currentCollection.id),
-				},
-				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${
+				object: String(currentCollection.id),
+				object_type: 'collections',
+				message: `Gebruiker ${getProfileName()} heeft de collectie ${
 					currentCollection.id
 				} verwijderd`,
-				name: 'delete',
-				category: 'item',
+				action: 'delete',
 			});
 
-			props.history.push(`/${RouteParts.Workspace}/${RouteParts.Collections}`);
+			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID });
 		} catch (err) {
 			console.error(err);
-			toastService('Het verwijderen van de collectie is mislukt');
+			toastService.info('Het verwijderen van de collectie is mislukt');
 		}
 	};
 
@@ -440,15 +412,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = props => {
 					title={title}
 					onClickTitle={() => setIsRenameModalOpen(true)}
 					category="collection"
-					categoryLabel="collectie"
 					showMetaData
 					bookmarks="0" // TODO: Real bookmark count
 					views="0" // TODO: Real view count
 				>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-					<HeaderAvatar>
-						<>{profile && renderAvatar(profile, { includeRole: true })}</>
-					</HeaderAvatar>
+					<HeaderAvatar>{profile && renderAvatar(profile, { includeRole: true })}</HeaderAvatar>
 				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">

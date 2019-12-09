@@ -1,16 +1,17 @@
 import { Action, Dispatch } from 'redux';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { getEnv } from '../../shared/helpers';
 import {
 	LoginActionTypes,
 	LoginMessage,
-	LoginResponse,
 	SetLoginErrorAction,
 	SetLoginLoadingAction,
 	SetLoginSuccessAction,
 } from './types';
 
-export const getLoginState = () => {
+export const getLoginStateAction = () => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
 		const { loginMessage } = getState();
 
@@ -33,7 +34,7 @@ export const getLoginState = () => {
 
 			const data = await response.json();
 
-			return dispatch(setLoginSuccess(data as LoginResponse));
+			return dispatch(setLoginSuccess(data as Avo.Auth.LoginResponse));
 		} catch (err) {
 			console.error('failed to check login state', err);
 			return dispatch(setLoginError());
@@ -41,7 +42,7 @@ export const getLoginState = () => {
 	};
 };
 
-export const setLoginSuccess = (data: LoginResponse): SetLoginSuccessAction => ({
+export const setLoginSuccess = (data: Avo.Auth.LoginResponse): SetLoginSuccessAction => ({
 	data,
 	type: LoginActionTypes.SET_LOGIN_SUCCESS,
 });

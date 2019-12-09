@@ -1,28 +1,18 @@
 import React, { ReactNode } from 'react';
 import { Route } from 'react-router';
 
-import { RouteParts } from '../constants';
+import { APP_PATH } from '../constants';
 
-import { Login, Logout, Register, RegisterOrLogin } from './views';
+import { Login, Logout, RegisterOrLogin, RegisterStamboek } from './views';
 
 export const renderAuthenticationRoutes = (): ReactNode[] => [
-	<Route
-		component={Login}
-		exact
-		path={`/${RouteParts.LoginAvo}`}
-		key={`/${RouteParts.LoginAvo}`}
-	/>,
-	<Route component={Logout} exact path={`/${RouteParts.Logout}`} key={`/${RouteParts.Logout}`} />,
-	<Route
-		component={Register}
-		exact
-		path={`/${RouteParts.Register}`}
-		key={`/${RouteParts.Register}`}
-	/>,
+	<Route component={Login} exact path={APP_PATH.LOGIN_AVO} key={APP_PATH.LOGIN_AVO} />,
+	<Route component={Logout} exact path={APP_PATH.LOGOUT} key={APP_PATH.LOGOUT} />,
+	<Route component={RegisterStamboek} exact path={APP_PATH.STAMBOEK} key={APP_PATH.STAMBOEK} />,
 	<Route
 		component={RegisterOrLogin}
 		exact
-		path={`/${RouteParts.RegisterOrLogin}`}
-		key={`/${RouteParts.RegisterOrLogin}`}
+		path={APP_PATH.REGISTER_OR_LOGIN}
+		key={APP_PATH.REGISTER_OR_LOGIN}
 	/>,
 ];

@@ -11,6 +11,7 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
+	DutchContentType,
 	Grid,
 	Header,
 	HeaderAvatar,
@@ -30,10 +31,10 @@ import { PermissionGuard } from '../../authentication/components';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { selectLogin } from '../../authentication/store/selectors';
-import { LoginResponse } from '../../authentication/store/types';
-import { RouteParts } from '../../constants';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
+import { ROUTE_PARTS } from '../../shared/constants';
 import {
+	buildLink,
 	createDropdownMenuItem,
 	formatDate,
 	generateAssignmentCreateLink,
@@ -42,20 +43,21 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
-import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
-
+import toastService from '../../shared/services/toast-service';
+import { WORKSPACE_PATH } from '../../workspace/workspace.const';
+import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
-import { ContentTypeString, DutchContentType, toEnglishContentType } from '../collection.types';
-import { FragmentDetail, ShareCollectionModal } from '../components';
+import { ContentTypeString, toEnglishContentType } from '../collection.types';
+import { FragmentListDetail, ShareCollectionModal } from '../components';
 
 import './CollectionDetail.scss';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
@@ -79,37 +81,31 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	useEffect(() => {
 		trackEvents({
-			event_object: {
-				type: toEnglishContentType(CONTENT_TYPE) as EventObjectType,
-				identifier: `${collectionId}`,
-			},
-			event_message: `Gebruiker ${getProfileName()} heeft de pagina voor collectie ${collectionId} bekeken`,
-			name: 'view',
-			category: 'item',
+			object: collectionId,
+			object_type: 'collections',
+			message: `Gebruiker ${getProfileName()} heeft de pagina voor collectie ${collectionId} bekeken`,
+			action: 'view',
 		});
 
 		if (!relatedCollections) {
 			getRelatedItems(collectionId, 'collections', 4)
-				.then(relatedCollections => setRelatedCollections(relatedCollections))
+				.then(relatedItems => setRelatedCollections(relatedItems))
 				.catch(err => {
 					console.error('Failed to get related items', err, {
 						collectionId,
 						index: 'collections',
 						limit: 4,
 					});
-					toastService('Het ophalen van de gerelateerde collecties is mislukt', TOAST_TYPE.DANGER);
+					toastService.danger('Het ophalen van de gerelateerde collecties is mislukt');
 				});
 		}
 	}, [collectionId, relatedCollections]);
 
 	const getPermission = (collection: Avo.Collection.Collection) => ({
-		canDeleteCollection: PermissionService.hasPermissions(
-			[
-				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
-			],
-			get(loginState, 'userInfo.profile', null)
-		),
+		canDeleteCollection: PermissionService.hasPermissions([
+			{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
+			{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
+		]),
 		canEditCollection: {
 			permissions: [
 				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
@@ -123,7 +119,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const onEditCollection = () => {
 		history.push(
 			`${generateContentLinkString(ContentTypeString.collection, `${collectionId}`)}/${
-				RouteParts.Edit
+				ROUTE_PARTS.edit
 			}`
 		);
 	};
@@ -136,11 +132,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(`/${RouteParts.Workspace}`);
-			toastService('De collectie werd succesvol verwijderd.', TOAST_TYPE.SUCCESS);
+			history.push(WORKSPACE_PATH.WORKSPACE);
+			toastService.success('De collectie werd succesvol verwijderd.');
 		} catch (err) {
 			console.error(err);
-			toastService('Het verwijderen van de collectie is mislukt.', TOAST_TYPE.DANGER);
+			toastService.danger('Het verwijderen van de collectie is mislukt.');
 		}
 	};
 
@@ -158,7 +154,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	// Render functions
-	const renderRelatedCollections = (relatedCollections: Avo.Search.ResultItem[] | null) => {
+	const renderRelatedCollections = () => {
 		if (!relatedCollections || !relatedCollections.length) {
 			return <p className="c-body-1">De gerelateerde collecties konden niet worden opgehaald.</p>;
 		}
@@ -172,7 +168,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Column size="3-6">
 						<MediaCard
 							title={dc_title}
-							href={`/${RouteParts.Collection}/${id}`}
+							href={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })}
 							category={category}
 							orientation="horizontal"
 						>
@@ -260,19 +256,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					title={title}
 					onClickTitle={() => null}
 					category="collection"
-					categoryLabel="collectie"
 					showMetaData
 					bookmarks="0" // TODO: Real bookmark count
 					views="0" // TODO: Real view count
 				>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-					<HeaderAvatar>
-						<>{profile && renderAvatar(profile, { includeRole: true })}</>
-					</HeaderAvatar>
+					<HeaderAvatar>{profile && renderAvatar(profile, { includeRole: true })}</HeaderAvatar>
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<FragmentDetail collectionFragments={collection_fragments} />
+						<FragmentListDetail
+							collectionFragments={collection_fragments}
+							showDescriptionNextToVideo
+						/>
 					</Container>
 				</Container>
 				<Container mode="vertical">
@@ -318,7 +314,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						</Grid>
 						<hr className="c-hr" />
 						<h3 className="c-h3">Bekijk ook</h3>
-						{renderRelatedCollections(relatedCollections)}
+						{renderRelatedCollections()}
 					</Container>
 				</Container>
 				{isPublic !== null && (

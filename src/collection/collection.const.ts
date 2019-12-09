@@ -1,18 +1,25 @@
-import { IconName } from '../shared/types/types';
+import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
+
+import { ROUTE_PARTS } from '../shared/constants';
+
+export const COLLECTION_PATH = Object.freeze({
+	COLLECTION_DETAIL: `/${ROUTE_PARTS.collections}/:id`,
+	COLLECTION_EDIT: `/${ROUTE_PARTS.collections}/:id/${ROUTE_PARTS.edit}`,
+});
 
 // TODO: get these from the api once the database is filled up
 export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
 
-export const COLLECTION_EDIT_TABS = [
+export const COLLECTION_EDIT_TABS: TabProps[] = [
 	{
 		id: 'inhoud',
 		label: 'Inhoud',
-		icon: 'collection' as IconName,
+		icon: 'collection',
 	},
 	{
 		id: 'metadata',
 		label: 'Metadata',
-		icon: 'file-text' as IconName,
+		icon: 'file-text',
 	},
 ];
 

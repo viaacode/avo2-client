@@ -1,26 +1,29 @@
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { Dispatch } from 'redux';
-import { RouteParts } from '../../constants';
-import { getLoginState } from '../store/actions';
+import { Avo } from '@viaa/avo2-types';
+
+import { APP_PATH } from '../../constants';
+
+// import { isProfileComplete } from '../helpers/get-profile-info'; // TODO: uncomment once available
+import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginMessage, LoginResponse } from '../store/types';
+import { LoginMessage } from '../store/types';
 
 export interface SecuredRouteProps {
 	component: ComponentType<any>;
 	path?: string;
 	exact?: boolean;
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;
 	getLoginState: () => Dispatch;
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = ({
-	history,
 	component,
 	path,
 	exact,
@@ -28,6 +31,9 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 	loginStateLoading,
 	loginStateError,
 	getLoginState,
+	history,
+	location,
+	match,
 }) => {
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -53,15 +59,28 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 			render={props => {
 				// Already logged in
 				if (loginState && loginState.message === LoginMessage.LOGGED_IN) {
+					// TODO enable this once we can save profile info
+					// if (isProfileComplete()) {
 					const Component = component;
-					return <Component />;
+					return <Component history={history} location={location} match={match} />;
+					// } else {
+					// 	// Force user to complete their profile before letting them in
+					// 	return (
+					// 		<Redirect
+					// 			to={{
+					// 				pathname: APP_PATH.COMPLETE_PROFILE,
+					// 				state: { from: props.location },
+					// 			}}
+					// 		/>
+					// 	);
+					// }
 				}
 
 				// On errors or not logged in => redirect to login or register page
 				return (
 					<Redirect
 						to={{
-							pathname: `/${RouteParts.RegisterOrLogin}`,
+							pathname: APP_PATH.REGISTER_OR_LOGIN,
 							state: { from: props.location },
 						}}
 					/>
@@ -79,7 +98,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getLoginState: () => dispatch(getLoginState() as any),
+		getLoginState: () => dispatch(getLoginStateAction() as any),
 	};
 };
 

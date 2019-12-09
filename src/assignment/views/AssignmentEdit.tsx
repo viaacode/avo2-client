@@ -17,10 +17,12 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	DutchContentType,
 	Flex,
 	FlexItem,
 	Form,
 	FormGroup,
+	Heading,
 	Icon,
 	IconName,
 	MenuContent,
@@ -43,53 +45,53 @@ import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { selectLogin } from '../../authentication/store/selectors';
-import { LoginResponse } from '../../authentication/store/types';
+import {
+	GET_COLLECTION_BY_ID,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENTS,
+} from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
-import { DutchContentType, toEnglishContentType } from '../../collection/collection.types';
-import { RouteParts } from '../../constants';
+import { toEnglishContentType } from '../../collection/collection.types';
+import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DeleteObjectModal,
 	InputModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { copyToClipboard } from '../../shared/helpers';
+import { ROUTE_PARTS } from '../../shared/constants';
+import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
-import { EventObjectType, trackEvents } from '../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
+import toastService from '../../shared/services/toast-service';
+import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
-import { AssignmentLayout } from '../assignment.types';
-
-import {
-	GET_COLLECTION_BY_ID,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/collection.gql';
-import { GET_ITEM_BY_ID } from '../../item/item.gql';
+import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
+import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentEdit.scss';
 
 const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
-	ITEM: RouteParts.Item,
-	COLLECTIE: RouteParts.Collection,
-	ZOEKOPDRACHT: RouteParts.SearchQuery,
+	ITEM: ROUTE_PARTS.item,
+	COLLECTIE: ROUTE_PARTS.collection,
+	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: EventObjectType
+	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType
 } = {
-	ITEM: 'item',
-	COLLECTIE: 'collection',
-	ZOEKOPDRACHT: 'searchQuery',
+	ITEM: 'avo_item_pid',
+	COLLECTIE: 'collections',
+	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
 };
 
 const CONTENT_LABEL_TO_QUERY: {
@@ -111,10 +113,10 @@ const CONTENT_LABEL_TO_QUERY: {
 };
 
 interface AssignmentEditProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 }
 
-// TODO: Test with a single useEffect
+// TODO: Replace with useReducer method.
 let currentAssignment: Partial<Avo.Assignment.Assignment>;
 let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
 let initialAssignment: Partial<Avo.Assignment.Assignment>;
@@ -164,7 +166,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				// Determine if this is an edit or create page and initialize or fetch the assignment
 				let assignment: Partial<Avo.Assignment.Assignment> | null;
-				if (location.pathname.includes(RouteParts.Create)) {
+				if (location.pathname.includes(ROUTE_PARTS.create)) {
 					setPageType('create');
 					assignment = initAssignmentsByQueryParams();
 				} else {
@@ -390,9 +392,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			console.error('Failed to insert copy of a collection for current user', err, {
 				collection,
 			});
-			toastService(
-				'De collectie kon niet worden gekopieert om te gebruiken bij de nieuwe opdracht',
-				TOAST_TYPE.DANGER
+			toastService.danger(
+				'De collectie kon niet worden gekopieert om te gebruiken bij de nieuwe opdracht'
 			);
 			return null;
 		}
@@ -401,39 +402,36 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const deleteCurrentAssignment = async () => {
 		try {
 			if (typeof currentAssignment.id === 'undefined') {
-				toastService('De huidige opdracht is nog nooit opgeslagen (geen id)', TOAST_TYPE.DANGER);
+				toastService.danger('De huidige opdracht is nog nooit opgeslagen (geen id)');
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
-			history.push(`/${RouteParts.Workspace}/${RouteParts.Assignments}`);
-			toastService('De opdracht is verwijdert', TOAST_TYPE.SUCCESS);
+			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
+			toastService.success('De opdracht is verwijdert');
 		} catch (err) {
 			console.error(err);
-			toastService('Het verwijderen van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het verwijderen van de opdracht is mislukt');
 		}
 	};
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
-		return `${absolute ? window.location.origin : ''}/${RouteParts.Assignment}/${
+		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignment}/${
 			currentAssignment.id
 		}`;
 	};
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService('De url is naar het klembord gekopieerd', TOAST_TYPE.SUCCESS);
+		toastService.success('De url is naar het klembord gekopieerd');
 
 		if (currentAssignment.id) {
 			trackEvents({
-				event_object: {
-					type: 'assignment',
-					identifier: String(currentAssignment.id),
-				},
-				event_message: `Gebruiker ${getProfileName()} heeft de permalink voor opdracht ${
+				object: String(currentAssignment.id),
+				object_type: 'avo_assignment' as any, // TODO add this object type to the database
+				message: `Gebruiker ${getProfileName()} heeft de permalink voor opdracht ${
 					currentAssignment.id
 				} gekopieert`,
-				name: 'view',
-				category: 'item',
+				action: 'view',
 			});
 		}
 	};
@@ -457,40 +455,40 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				is_archived: shouldBeArchived,
 			});
 			if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
-				toastService(
-					`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`,
-					TOAST_TYPE.SUCCESS
-				);
+				toastService.success(`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`);
 			}
 			// else: assignment was not valid and could not be saved yet
 		} catch (err) {
 			console.error(err);
-			toastService(
-				`Het ${shouldBeArchived ? '' : 'de'}archiveren van de opdracht is mislukt`,
-				TOAST_TYPE.DANGER
+			toastService.danger(
+				`Het ${shouldBeArchived ? '' : 'de'}archiveren van de opdracht is mislukt`
 			);
 		}
 	};
 
-	const duplicateAssignment = async (newTitle: string) => {
+	const duplicateAssignment = async (duplicateAssignmentTitle: string) => {
 		try {
-			const duplicateAssignment = cloneDeep(initialAssignment);
-			delete duplicateAssignment.id;
-			duplicateAssignment.title = newTitle;
-			const assigment = await insertAssignment(triggerAssignmentInsert, duplicateAssignment);
-			if (!assigment) {
+			const assignmentToDuplicate = {
+				...cloneDeep(initialAssignment),
+				title: duplicateAssignmentTitle,
+			};
+
+			delete assignmentToDuplicate.id;
+
+			const duplicatedAssigment = await insertAssignment(
+				triggerAssignmentInsert,
+				assignmentToDuplicate
+			);
+
+			if (!duplicatedAssigment) {
 				return; // assignment was not valid
 			}
-			history.push(
-				`/${RouteParts.Workspace}/${RouteParts.Assignments}/${assigment.id}/${RouteParts.Edit}`
-			);
-			toastService(
-				'De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat',
-				TOAST_TYPE.SUCCESS
-			);
+
+			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
+			toastService.success('De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat');
 		} catch (err) {
 			console.error(err);
-			toastService('Het dupliceren van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het dupliceren van de opdracht is mislukt');
 		}
 	};
 
@@ -528,15 +526,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			return;
 		}
 		trackEvents({
-			event_object: {
-				type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
-				identifier: assignment.content_id,
-			},
-			event_message: `User ${getProfileName()} heeft ${
+			object: assignment.content_id,
+			object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
+			message: `User ${getProfileName()} heeft ${
 				CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
 			} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
-			name: 'view',
-			category: 'item',
+			action: 'view',
 		});
 	};
 
@@ -568,25 +563,28 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				if (insertedAssignment) {
 					setBothAssignments(insertedAssignment);
 					trackAddObjectToAssignment(insertedAssignment);
-					toastService('De opdracht is succesvol aangemaakt', TOAST_TYPE.SUCCESS);
-					history.push(
-						`/${RouteParts.Workspace}/${RouteParts.Assignments}/${insertedAssignment.id}/${
-							RouteParts.Edit
-						}`
-					);
+					toastService.success('De opdracht is succesvol aangemaakt');
+					navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
 				}
 			} else {
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
-				toastService('De opdracht is succesvol geüpdatet', TOAST_TYPE.SUCCESS);
+				toastService.success('De opdracht is succesvol geüpdatet');
 			}
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
-			toastService('Het opslaan van de opdracht is mislukt', TOAST_TYPE.DANGER);
+			toastService.danger('Het opslaan van de opdracht is mislukt');
 			setIsSaving(false);
 		}
+	};
+
+	const isDeadlineInThePast = (): boolean => {
+		return (
+			!!currentAssignment.deadline_at &&
+			new Date(currentAssignment.deadline_at) < new Date(Date.now())
+		);
 	};
 
 	const getTagOptions = (): TagOption[] => {
@@ -642,8 +640,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 	};
 
-	const renderContentLink = (assignmentContent: AssignmentContent) => {
-		const dutchLabel = (assignmentContent.type.label ||
+	const renderContentLink = (content: AssignmentContent) => {
+		const dutchLabel = (content.type.label ||
 			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
 		const linkContent = (
 			<div className="c-box c-box--padding-small">
@@ -652,13 +650,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						<Thumbnail
 							className="m-content-thumbnail"
 							category={toEnglishContentType(dutchLabel)}
-							src={assignmentContent.thumbnail_path || undefined}
+							src={content.thumbnail_path || undefined}
 						/>
 					</Spacer>
 					<FlexItem>
 						<div className="c-overline-plus-p">
 							<p className="c-overline">{dutchLabel}</p>
-							<p>{assignmentContent.title || assignmentContent.description}</p>
+							<p>{content.title || content.description}</p>
 						</div>
 					</FlexItem>
 				</Flex>
@@ -668,7 +666,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		if (
 			pageType === 'create' &&
 			currentAssignment.content_label === 'COLLECTIE' &&
-			getProfileId() !== (assignmentContent as Avo.Collection.Collection).owner_profile_id
+			getProfileId() !== (content as Avo.Collection.Collection).owner_profile_id
 		) {
 			// During create we do not allow linking to the collection if you do not own the collection,
 			// since we still need to make a copy when the user clicks on "save assignment" button
@@ -705,14 +703,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									<ToolbarItem grow>
 										<Link
 											className="c-return"
-											to={`/${RouteParts.Workspace}/${RouteParts.Assignments}`}
+											to={buildLink(WORKSPACE_PATH.WORKSPACE_TAB, {
+												tabId: ASSIGNMENTS_ID,
+											})}
 										>
 											<Icon name="chevron-left" size="small" type="arrows" />
 											Mijn opdrachten
 										</Link>
-										<h2 className="c-h2 u-m-0">
+										<Heading className="u-m-0" type="h2">
 											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
-										</h2>
+										</Heading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">
@@ -890,9 +890,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										/>
 									</Spacer>
 								</Flex>
-								<p className="c-form-help-text">
-									Na deze datum kan de leerling de opdracht niet meer invullen.
-								</p>
+								{isDeadlineInThePast() ? (
+									<div className="c-form-help-text c-form-help-text--error">
+										De deadline ligt in het verleden.
+										<br />
+										De leerlingen zullen dus geen toegang hebben tot deze opdracht
+									</div>
+								) : (
+									<p className="c-form-help-text">
+										Na deze datum kan de leerling de opdracht niet meer invullen.
+									</p>
+								)}
 							</FormGroup>
 							{currentAssignment.assignment_type === 'BOUW' && (
 								<FormGroup label="Groepswerk?" labelFor="only_player">

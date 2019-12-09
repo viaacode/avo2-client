@@ -1,4 +1,4 @@
-import { clamp } from 'lodash-es';
+import { clamp, get } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 
 import {
@@ -19,7 +19,7 @@ import { Avo } from '@viaa/avo2-types';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
@@ -58,13 +58,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	const [fragmentEndString, setFragmentEndString] = useState<string>(endString);
 
 	const getValidationErrors = (): string[] => {
-		const start = toSeconds(fragmentStartString, true);
-		const end = toSeconds(fragmentEndString, true);
+		const startTime = toSeconds(fragmentStartString, true);
+		const endTime = toSeconds(fragmentEndString, true);
 
 		return getValidationErrorsForStartAndEnd({
 			...fragment,
-			start_oc: start,
-			end_oc: end,
+			start_oc: startTime,
+			end_oc: endTime,
 		});
 	};
 
@@ -77,21 +77,21 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const errors = getValidationErrors();
 
 		if (errors && errors.length) {
-			toastService(errors, TOAST_TYPE.DANGER);
+			toastService.danger(errors);
 
 			return;
 		}
 
-		const start = toSeconds(fragmentStartString, true);
-		const end = toSeconds(fragmentEndString, true);
+		const startTime = toSeconds(fragmentStartString, true);
+		const endTime = toSeconds(fragmentEndString, true);
 
 		const videoStills = await getVideoStills([
-			{ externalId: fragment.external_id, startTime: start || 0 },
+			{ externalId: fragment.external_id, startTime: startTime || 0 },
 		]);
 
 		updateFragmentProperties([
-			{ value: start, fieldName: 'start_oc' as const, fragmentId: fragment.id },
-			{ value: end, fieldName: 'end_oc' as const, fragmentId: fragment.id },
+			{ value: startTime, fieldName: 'start_oc' as const, fragmentId: fragment.id },
+			{ value: endTime, fieldName: 'end_oc' as const, fragmentId: fragment.id },
 			...(videoStills && videoStills.length > 0
 				? [
 						{
@@ -106,8 +106,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 				: []),
 		]);
 		updateCuePoints({
-			start,
-			end,
+			start: startTime,
+			end: endTime,
 		});
 		onClose();
 	};
@@ -128,22 +128,22 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	 */
 	const parseTimes = () => {
 		// Limit start end and times between 0 and fragment duration
-		let start = toSeconds(fragmentStartString, true) as number;
-		let end = toSeconds(fragmentEndString, true) as number;
+		let startTime = toSeconds(fragmentStartString, true) as number;
+		let endTime = toSeconds(fragmentEndString, true) as number;
 		const duration =
 			(fragment.item_meta &&
 				fragment.item_meta.duration &&
 				toSeconds(fragment.item_meta.duration)) ||
 			0;
-		if (start) {
-			start = clamp(start, 0, duration);
-			setFragmentStart(start);
-			setFragmentStartString(formatDurationHoursMinutesSeconds(start));
+		if (startTime) {
+			startTime = clamp(startTime, 0, duration);
+			setFragmentStart(startTime);
+			setFragmentStartString(formatDurationHoursMinutesSeconds(startTime));
 		}
-		if (end) {
-			end = clamp(end, 0, duration);
-			setFragmentEnd(end);
-			setFragmentEndString(formatDurationHoursMinutesSeconds(end));
+		if (endTime) {
+			endTime = clamp(endTime, 0, duration);
+			setFragmentEnd(endTime);
+			setFragmentEndString(formatDurationHoursMinutesSeconds(endTime));
 		}
 	};
 
@@ -168,50 +168,49 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable>
 			<ModalBody>
-				<>
-					<FlowPlayer
-						src={playerTicket ? playerTicket.toString() : null}
-						poster={itemMetaData.thumbnail_path}
-						title={itemMetaData.title}
-						onInit={initFlowPlayer}
-						subtitles={['30-12-2011', 'VRT']}
-						token={getEnv('FLOW_PLAYER_TOKEN')}
-						dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+				<FlowPlayer
+					src={playerTicket ? playerTicket.toString() : null}
+					poster={itemMetaData.thumbnail_path}
+					title={itemMetaData.title}
+					onInit={initFlowPlayer}
+					subtitles={['30-12-2011', 'VRT']}
+					token={getEnv('FLOW_PLAYER_TOKEN')}
+					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+					logo={get(itemMetaData, 'organisation.logo_url')}
+				/>
+				<Container mode="vertical" className="m-time-crop-controls">
+					<TextInput
+						value={fragmentStartString}
+						onChange={setFragmentStartString}
+						onBlur={parseTimes}
+						onKeyUp={handleOnKeyUp}
 					/>
-					<Container mode="vertical" className="m-time-crop-controls">
-						<TextInput
-							value={fragmentStartString}
-							onChange={setFragmentStartString}
-							onBlur={parseTimes}
-							onKeyUp={handleOnKeyUp}
+					<div className="m-multi-range-wrapper">
+						<MultiRange
+							values={[fragmentStart, fragmentEnd]}
+							onChange={onUpdateMultiRangeValues}
+							min={0}
+							max={toSeconds(itemMetaData.duration, true) || 0}
+							step={1}
 						/>
-						<div className="m-multi-range-wrapper">
-							<MultiRange
-								values={[fragmentStart, fragmentEnd]}
-								onChange={onUpdateMultiRangeValues}
-								min={0}
-								max={toSeconds(itemMetaData.duration, true) || 0}
-								step={1}
-							/>
-						</div>
-						<TextInput
-							value={fragmentEndString}
-							onChange={setFragmentEndString}
-							onBlur={parseTimes}
-							onKeyUp={handleOnKeyUp}
-						/>
-					</Container>
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									<Button type="secondary" label="Annuleren" onClick={onCancelCut} />
-									<Button type="primary" label="Knippen" onClick={onSaveCut} />
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</>
+					</div>
+					<TextInput
+						value={fragmentEndString}
+						onChange={setFragmentEndString}
+						onBlur={parseTimes}
+						onKeyUp={handleOnKeyUp}
+					/>
+				</Container>
+				<Toolbar spaced>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								<Button type="secondary" label="Annuleren" onClick={onCancelCut} />
+								<Button type="primary" label="Knippen" onClick={onSaveCut} />
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
 			</ModalBody>
 		</Modal>
 	);

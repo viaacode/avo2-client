@@ -1,20 +1,22 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { get } from 'lodash-es';
-
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { RouteParts } from '../../constants';
+import { Avo } from '@viaa/avo2-types';
+
 import { ErrorView } from '../../error/views';
-import { redirectToLoginPage } from '../helpers/redirect-to-idp';
-import { getLoginState } from '../store/actions';
+
+import { APP_PATH } from '../../constants';
+import { redirectToServerLoginPage } from '../helpers/redirects';
+import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginMessage, LoginResponse } from '../store/types';
+import { LoginMessage } from '../store/types';
 
 export interface LoginProps extends RouteComponentProps {
-	loginState: LoginResponse | null;
+	loginState: Avo.Auth.LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;
 	getLoginState: () => Dispatch;
@@ -60,7 +62,7 @@ const Login: FunctionComponent<LoginProps> = ({
 
 		// Redirect to previous requested path or home page
 		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
-			history.push(get(location, 'state.from.pathname', '/'));
+			history.push(get(location, 'state.from.pathname', APP_PATH.LOGGED_IN_HOME));
 			return;
 		}
 
@@ -72,11 +74,7 @@ const Login: FunctionComponent<LoginProps> = ({
 			!hasRecentLoginAttempt()
 		) {
 			addLoginAttempt();
-			// Redirect to login form
-			const base = window.location.href.split(`/${RouteParts.LoginAvo}`)[0];
-			// Url to return to after authentication is completed and server stored auth object in session
-			const returnToUrl = base + get(location, 'state.from.pathname', `/${RouteParts.Search}`);
-			redirectToLoginPage(returnToUrl);
+			redirectToServerLoginPage(location);
 		}
 	}, [
 		getLoginState,
@@ -95,11 +93,9 @@ const Login: FunctionComponent<LoginProps> = ({
 
 	if (loginStateError || hasRecentLoginAttempt()) {
 		return (
-			<>
-				<ErrorView message="Het inloggen is mislukt" icon="lock">
-					<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
-				</ErrorView>
-			</>
+			<ErrorView message="Het inloggen is mislukt" icon="lock">
+				<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
+			</ErrorView>
 		);
 	}
 
@@ -125,7 +121,7 @@ const mapStateToProps = (state: any) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getLoginState: () => dispatch(getLoginState() as any),
+		getLoginState: () => dispatch(getLoginStateAction() as any),
 	};
 };
 

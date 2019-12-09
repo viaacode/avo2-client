@@ -4,7 +4,7 @@ import { cloneDeep, get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { ApolloCacheManager } from '../shared/services/data-service';
-import toastService, { TOAST_TYPE } from '../shared/services/toast-service';
+import toastService from '../shared/services/toast-service';
 import { AssignmentLayout } from './assignment.types';
 
 interface AssignmentProperty {
@@ -56,14 +56,6 @@ const validateAssignment = (
 		assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
 	}
 
-	// Validate if deadline_at is not in the past
-	if (
-		assignmentToSave.deadline_at &&
-		new Date(assignmentToSave.deadline_at) < new Date(Date.now())
-	) {
-		errors.push(`De deadline is reeds voorbij.`);
-	}
-
 	assignmentToSave.owner_profile_id = assignmentToSave.owner_profile_id || 'owner_profile_id';
 	assignmentToSave.is_archived = assignmentToSave.is_archived || false;
 	assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
@@ -96,9 +88,11 @@ export const updateAssignment = async (
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
-			toastService(validationErrors, TOAST_TYPE.DANGER);
+			toastService.danger(validationErrors);
 			return null;
 		}
+
+		warnAboutDeadlineInThePast(assignmentToSave);
 
 		const response: void | ExecutionResult<
 			Avo.Assignment.Assignment
@@ -130,9 +124,11 @@ export const insertAssignment = async (
 		const [validationErrors, assignmentToSave] = validateAssignment({ ...assignment });
 
 		if (validationErrors.length) {
-			toastService(validationErrors, TOAST_TYPE.DANGER);
+			toastService.danger(validationErrors);
 			return null;
 		}
+
+		warnAboutDeadlineInThePast(assignmentToSave);
 
 		const response: void | ExecutionResult<
 			Avo.Assignment.Assignment
@@ -159,3 +155,13 @@ export const insertAssignment = async (
 		throw err;
 	}
 };
+
+function warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
+	// Validate if deadline_at is not in the past
+	if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
+		toastService.info([
+			'De ingestelde deadline ligt in het verleden',
+			'De leerlingen zullen dus geen toegang hebben tot deze opdracht.',
+		]);
+	}
+}

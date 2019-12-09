@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
 import {
@@ -38,10 +38,11 @@ import {
 } from 'lodash-es';
 import queryString from 'query-string';
 
-import { RouteParts } from '../../constants';
-import { copyToClipboard } from '../../shared/helpers';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import { copyToClipboard, navigate } from '../../shared/helpers';
+import toastService from '../../shared/services/toast-service';
+
 import { SearchFilterControls, SearchResults } from '../components';
+import { SEARCH_PATH } from '../search.const';
 import {
 	SearchFilterFieldValues,
 	SearchFilterMultiOptions,
@@ -50,6 +51,8 @@ import {
 } from '../search.types';
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
+
+import './Search.scss';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -82,9 +85,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	location,
 }) => {
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
-	const [sortOrder, setSortOrder]: [SortOrder, (sortOrder: SortOrder) => void] = useState(
-		DEFAULT_SORT_ORDER
-	);
+	const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULT_SORT_ORDER);
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
@@ -134,10 +135,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
 
 			const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
-			history.push({
-				pathname: `/${RouteParts.Search}`,
-				search: queryParams.length ? `?${queryParams}` : '',
-			});
+			navigate(history, SEARCH_PATH.SEARCH, {}, queryParams.length ? queryParams : '');
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
@@ -184,7 +182,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
-			toastService('Ongeldige zoek query', TOAST_TYPE.DANGER);
+			toastService.danger('Ongeldige zoek query');
 			console.error(err);
 		}
 		setQueryParamsAnalysed(true);
@@ -229,7 +227,8 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			const isUndefinedOrNull: boolean = isNil(value);
 			const isEmptyObjectOrArray: boolean =
 				(isPlainObject(value) || isArray(value)) && isEmpty(value);
-			const isArrayWithEmptyValues: boolean = isArray(value) && every(value, value => value === '');
+			const isArrayWithEmptyValues: boolean =
+				isArray(value) && every(value, arrayValue => arrayValue === '');
 			const isEmptyRangeObject: boolean =
 				isPlainObject(value) && !(value as any).gte && !(value as any).lte;
 
@@ -287,7 +286,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	const onCopySearchLinkClicked = () => {
 		copySearchLink();
 		setIsOptionsMenuOpen(false);
-		toastService('De link is succesvol gekopieerd', TOAST_TYPE.SUCCESS);
+		toastService.success('De link is succesvol gekopieerd');
 	};
 
 	const orderOptions = [
@@ -308,27 +307,26 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
 	return (
-		<Container mode="horizontal">
+		<Container className="c-search-view" mode="horizontal">
 			<Navbar>
 				<Container mode="horizontal">
 					<Toolbar>
 						<ToolbarLeft>
-							<>
-								<ToolbarItem>
-									<ToolbarTitle>Zoekresultaten</ToolbarTitle>
-								</ToolbarItem>
-								<ToolbarItem>
-									<p className="c-body-1 u-text-muted">
-										{resultStart}-{resultEnd} van {resultsCount} resultaten
-									</p>
-								</ToolbarItem>
-							</>
+							<ToolbarItem>
+								<ToolbarTitle>Zoekresultaten</ToolbarTitle>
+							</ToolbarItem>
+							<ToolbarItem>
+								<p className="c-body-1 u-text-muted">
+									{resultStart}-{resultEnd} van {resultsCount} resultaten
+								</p>
+							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<Flex spaced="regular">
 								<Form type="inline">
 									<FormGroup label="Sorteer op" labelFor="sortBy">
 										<Select
+											className="c-search-view__sort-select"
 											id="sortBy"
 											options={orderOptions}
 											value={defaultOrder}
@@ -347,24 +345,22 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 										<Button type="tertiary" icon="more-horizontal" />
 									</DropdownButton>
 									<DropdownContent>
-										<>
-											<Button
-												type="link"
-												className="c-menu__item"
-												label="Kopieer vaste link naar deze zoekopdracht"
-												onClick={onCopySearchLinkClicked}
-											/>
-											{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
-											{/* <Button
-												type="link"
-												className="c-menu__item"
-												label="Maak van deze zoekopdracht een opdracht"
-												onClick={() => {
-													setIsOptionsMenuOpen(false);
-													toastService('Nog niet geïmplementeerd');
-												}}
-											/> */}
-										</>
+										<Button
+											type="link"
+											className="c-menu__item"
+											label="Kopieer vaste link naar deze zoekopdracht"
+											onClick={onCopySearchLinkClicked}
+										/>
+										{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
+										{/* <Button
+											type="link"
+											className="c-menu__item"
+											label="Maak van deze zoekopdracht een opdracht"
+											onClick={() => {
+												setIsOptionsMenuOpen(false);
+												toastService.info('Nog niet geïmplementeerd');
+											}}
+										/> */}
 									</DropdownContent>
 								</Dropdown>
 							</Flex>
@@ -383,12 +379,18 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 											id="query"
 											placeholder="Vul uw zoekterm in..."
 											value={searchTerms}
+											className="c-search-term-input-field"
 											icon="search"
 											onChange={setSearchTerms}
 										/>
 									</FormGroup>
 									<FormGroup inlineMode="shrink">
-										<Button label="Zoeken" type="primary" onClick={copySearchTermsToFormState} />
+										<Button
+											label="Zoeken"
+											type="primary"
+											className="c-search-button"
+											onClick={copySearchTermsToFormState}
+										/>
 									</FormGroup>
 									{hasFilters && (
 										<FormGroup inlineMode="shrink">
@@ -449,9 +451,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(Search)
-);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Search);

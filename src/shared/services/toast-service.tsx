@@ -1,62 +1,64 @@
+import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
 
-import { Alert } from '@viaa/avo2-components';
-import { isNil, isString } from 'lodash-es';
+import { Alert, Spacer } from '@viaa/avo2-components';
+import { AlertProps } from '@viaa/avo2-components/dist/components/Alert/Alert';
 
-export enum TOAST_TYPE {
+export enum ToastType {
 	DANGER = 'danger',
 	INFO = 'info',
 	SPINNER = 'spinner',
 	SUCCESS = 'success',
 }
 
-interface ToastInfo {
-	message: string;
-	type?: TOAST_TYPE;
-	dark?: boolean;
-	options?: ToastOptions;
+type ToastAlert = string | string[] | ReactNode;
+type ToastServiceFn = (alert: ToastAlert, dark?: boolean, options?: ToastOptions) => void;
+type ToastService = { [type in ToastType]: ToastServiceFn };
+
+interface ToastProps extends AlertProps {
+	closeToast?: () => void;
 }
 
-const Toast: FunctionComponent<any> = ({ closeToast, ...rest }) => (
-	<Alert {...rest} className="u-spacer-top" close={closeToast} />
+const Toast: FunctionComponent<ToastProps> = ({ closeToast, ...rest }) => (
+	<Alert {...rest} className="u-spacer-top" onClose={closeToast} />
 );
 
-export default function toastService(
-	alert: ToastInfo | string | string[] | ReactNode,
-	alertType: TOAST_TYPE = TOAST_TYPE.INFO
+function showToast(
+	alert: ToastAlert,
+	dark: boolean = true,
+	options: ToastOptions = {},
+	alertType: ToastType = ToastType.INFO
 ) {
 	if (isNil(alert)) {
-		return null;
+		return;
 	}
+
+	let alertMessage = alert;
 
 	if (Array.isArray(alert)) {
 		const messages = alert as string[];
-		const multiLineMessage = (
-			<>
+		alertMessage = (
+			<div>
 				{messages.map((message: string, index: number) => {
-					return (
-						<>
-							{index ? (
-								<>
-									<br />
-									<br />
-								</>
-							) : null}
-							{message}
-						</>
+					return index + 1 !== messages.length ? (
+						<Spacer margin="bottom-small">{message}</Spacer>
+					) : (
+						message
 					);
 				})}
-			</>
+			</div>
 		);
-		return toast(<Toast message={multiLineMessage} type={alertType} />);
 	}
 
-	if (isString(alert) || !(alert as ToastInfo).message) {
-		return toast(<Toast message={alert} type={alertType} />);
-	}
-
-	const { options = {}, type = alertType, ...rest } = alert as ToastInfo;
-
-	return toast(<Toast {...rest} type={type} />, options);
+	toast(<Toast dark={dark} message={alertMessage} type={alertType} />, options);
 }
+
+const toastService: ToastService = {
+	danger: (alert, dark, options) => showToast(alert, dark, options, ToastType.DANGER),
+	info: (alert, dark, options) => showToast(alert, dark, options, ToastType.INFO),
+	spinner: (alert, dark, options) => showToast(alert, dark, options, ToastType.SPINNER),
+	success: (alert, dark, options) => showToast(alert, dark, options, ToastType.SUCCESS),
+};
+
+export default toastService;

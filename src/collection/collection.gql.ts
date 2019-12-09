@@ -18,6 +18,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				external_id
 				item_meta {
 					id
+					external_id
 					duration
 					title
 					description
@@ -25,6 +26,9 @@ export const GET_COLLECTION_BY_ID = gql`
 					type {
 						id
 						label
+					}
+					organisation {
+						logo_url
 					}
 				}
 				end_oc
@@ -153,7 +157,6 @@ export const DELETE_COLLECTION_FRAGMENT = gql`
 	}
 `;
 
-// TODO: Use only necessary returning attributes
 export const INSERT_COLLECTION_FRAGMENTS = gql`
 	mutation insertCollectionFragment(
 		$id: Int!
@@ -177,6 +180,9 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 					type {
 						id
 						label
+					}
+					organisation {
+						logo_url
 					}
 				}
 				end_oc
@@ -243,17 +249,6 @@ export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }) {
 			id
 			title
-		}
-	}
-`;
-
-export const GET_CLASSIFICATIONS_AND_SUBJECTS = gql`
-	{
-		lookup_enum_lom_context {
-			description
-		}
-		lookup_enum_lom_classification {
-			description
 		}
 	}
 `;

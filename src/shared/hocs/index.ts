@@ -1,3 +1,1 @@
-import withLoading from './withLoading';
-
-export { withLoading };
+export { default as withLoading } from './withLoading';

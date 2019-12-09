@@ -6,6 +6,7 @@ import {
 	Button,
 	ButtonToolbar,
 	FormGroup,
+	Heading,
 	Modal,
 	ModalBody,
 	RadioButton,
@@ -16,10 +17,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import toastService, { TOAST_TYPE } from '../../../shared/services/toast-service';
+import toastService from '../../../shared/services/toast-service';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 
@@ -70,7 +70,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-					toastService(validationErrors, TOAST_TYPE.DANGER);
+					toastService.danger(validationErrors);
 					return;
 				}
 			}
@@ -87,67 +87,63 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				},
 			});
 			setValidationError(undefined);
-			toastService(
-				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`,
-				TOAST_TYPE.SUCCESS
+			toastService.success(
+				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`
 			);
 			closeModal(newCollection);
 
 			// Public status changed => log as event
 			trackEvents({
-				event_object: {
-					type: 'collection',
-					identifier: String(collection.id),
-				},
-				event_message: `Gebruiker ${getProfileName()} heeft de collectie ${collection.id} ${
+				object: String(collection.id),
+				object_type: 'collections',
+				message: `Gebruiker ${getProfileName()} heeft de collectie ${collection.id} ${
 					isPublished ? 'gepubliceerd' : 'gedepubliceerd'
 				}`,
-				name: isPublished ? 'publish' : 'unpublish',
-				category: 'item',
+				action: isPublished ? 'publish' : 'unpublish',
 			});
 		} catch (err) {
-			toastService('De aanpassingen kunnen niet worden opgeslagen', TOAST_TYPE.DANGER);
+			toastService.danger('De aanpassingen kunnen niet worden opgeslagen');
 		}
 	};
 
-	const closeModal = (collection?: Avo.Collection.Collection) => {
+	const closeModal = (newCollection?: Avo.Collection.Collection) => {
 		setValidationError(undefined);
-		onClose(collection);
+		onClose(newCollection);
 	};
 
 	return (
 		<Modal isOpen={isOpen} title="Deel deze collectie" size="large" onClose={onClose} scrollable>
 			<ModalBody>
-				<>
-					<p>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</p>
-					<FormGroup error={validationError}>
-						<Spacer margin="top-large">
-							<h4 className="c-h4 u-m-0">Zichtbaarheid</h4>
-						</Spacer>
-						<RadioButtonGroup>
-							{shareOptions.map((shareOption, index) => (
-								<RadioButton
-									key={index}
-									name={shareOption.value}
-									label={shareOption.label}
-									value={shareOption.value}
-									onChange={() => setIsCollectionPublic(shareOption.isPublic)}
-									checked={isCollectionPublic === shareOption.isPublic}
-								/>
-							))}
-						</RadioButtonGroup>
-					</FormGroup>
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									<Button type="secondary" label="Annuleren" onClick={() => onClose()} />
-									<Button type="primary" label="Opslaan" onClick={onSave} />
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</>
+				<p>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</p>
+				<FormGroup error={validationError}>
+					<Spacer margin="top-large">
+						<Heading className="u-m-0" type="h4">
+							Zichtbaarheid
+						</Heading>
+					</Spacer>
+					<RadioButtonGroup>
+						{shareOptions.map((shareOption, index) => (
+							<RadioButton
+								key={index}
+								name={shareOption.value}
+								label={shareOption.label}
+								value={shareOption.value}
+								onChange={() => setIsCollectionPublic(shareOption.isPublic)}
+								checked={isCollectionPublic === shareOption.isPublic}
+							/>
+						))}
+					</RadioButtonGroup>
+				</FormGroup>
+				<Toolbar spaced>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								<Button type="secondary" label="Annuleren" onClick={() => onClose()} />
+								<Button type="primary" label="Opslaan" onClick={onSave} />
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
 			</ModalBody>
 		</Modal>
 	);

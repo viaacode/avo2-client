@@ -1,5 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
+import { LoginMessage } from '../../authentication/store/types';
 import { AppState } from '../../store';
 import {
 	selectSearch,
@@ -11,7 +12,7 @@ import {
 describe('search > store > selectors', () => {
 	const store: AppState = {
 		loginState: {
-			data: { message: 'LOGGED_IN', userInfo: {} as Avo.User.User },
+			data: { message: LoginMessage.LOGGED_IN, userInfo: {} as Avo.User.User },
 			loading: false,
 			error: false,
 		},

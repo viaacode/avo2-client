@@ -1,0 +1,7 @@
+@import '../../../styles/settings/colors';
+
+.c-content-edit-view__sidebar {
+	height: calc(100vh - 22.3rem);
+	padding: 0 1.6rem 1.6rem;
+	border-left: 2px solid $color-gray-50;
+}

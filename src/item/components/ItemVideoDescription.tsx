@@ -1,3 +1,5 @@
+import { debounce, get } from 'lodash-es';
+import { parse } from 'querystring';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -16,16 +18,15 @@ import {
 	ExpandableContainer,
 	FlowPlayer,
 	Grid,
+	Heading,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { debounce } from 'lodash-es';
-import { parse } from 'querystring';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv, parseDuration } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService, { TOAST_TYPE } from '../../shared/services/toast-service';
+import toastService from '../../shared/services/toast-service';
 
 import './ItemVideoDescription.scss';
 
@@ -114,40 +115,35 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const initFlowPlayer = () =>
 		!playerTicket &&
 		fetchPlayerTicket(itemMetaData.external_id)
-			.then((data: any) => {
-				// TODO: add interface @benji
+			.then((data: string) => {
 				setPlayerTicket(data);
 				trackEvents({
-					event_object: {
-						type: 'item',
-						identifier: itemMetaData.external_id,
-					},
-					event_message: `Gebruiker ${getProfileName()} heeft het item ${
+					object: itemMetaData.external_id,
+					object_type: 'avo_item_pid',
+					message: `Gebruiker ${getProfileName()} heeft het item ${
 						itemMetaData.external_id
 					} afgespeeld`,
-					name: 'view',
-					category: 'item',
+					action: 'view',
 				});
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService('Het ophalen van de mediaplayer ticket is mislukt', TOAST_TYPE.DANGER);
+				toastService.danger('Het ophalen van de mediaplayer ticket is mislukt');
 			});
 
 	const renderMedia = () => (
 		<div className="c-video-player t-player-skin--dark">
-			{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
-				<FlowPlayer
-					src={playerTicket ? playerTicket.toString() : null}
-					seekTime={time}
-					poster={itemMetaData.thumbnail_path}
-					title={itemMetaData.title}
-					onInit={initFlowPlayer}
-					subtitles={['Publicatiedatum', 'Aanbieder']}
-					token={getEnv('FLOW_PLAYER_TOKEN')}
-					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-				/>
-			)}
+			<FlowPlayer
+				src={playerTicket ? playerTicket.toString() : null}
+				seekTime={time}
+				poster={itemMetaData.thumbnail_path}
+				title={itemMetaData.title}
+				onInit={initFlowPlayer}
+				subtitles={['Publicatiedatum', 'Aanbieder']}
+				token={getEnv('FLOW_PLAYER_TOKEN')}
+				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+				logo={get(itemMetaData, 'organisation.logo_url')}
+			/>
 		</div>
 	);
 
@@ -159,7 +155,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				overflowY: 'auto',
 			}}
 		>
-			<h4 className="c-h4">Beschrijving</h4>
+			<Heading type="h4">Beschrijving</Heading>
 			{/* "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
 			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
 				<p>{formatTimestamps(convertToHtml(itemMetaData.description))}</p>
