@@ -31,6 +31,7 @@ import {
 	formatDate,
 	formatTimestamp,
 	fromNow,
+	generateAssignmentCreateLink,
 	getAvatarProps,
 	navigate,
 } from '../../shared/helpers';
@@ -139,7 +140,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const renderActions = (collectionId: number) => {
 		const ROW_DROPDOWN_ITEMS = [
 			createDropdownMenuItem('edit', 'Bewerk', 'edit2'),
-			createDropdownMenuItem('assign', 'Maak opdracht', 'clipboard'),
+			createDropdownMenuItem('createAssignment', 'Maak opdracht', 'clipboard'),
 			createDropdownMenuItem('delete', 'Verwijderen'),
 		];
 
@@ -148,6 +149,9 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			switch (item) {
 				case 'edit':
 					navigate(history, COLLECTION_PATH.COLLECTION_EDIT, { id: collectionId });
+					break;
+				case 'createAssignment':
+					history.push(generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'));
 					break;
 				case 'delete':
 					onClickDelete(collectionId);

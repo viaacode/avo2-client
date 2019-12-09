@@ -1,4 +1,4 @@
-import { clamp } from 'lodash-es';
+import { clamp, get } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 
 import {
@@ -176,6 +176,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					subtitles={['30-12-2011', 'VRT']}
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+					logo={get(itemMetaData, 'organisation.logo_url')}
 				/>
 				<Container mode="vertical" className="m-time-crop-controls">
 					<TextInput
