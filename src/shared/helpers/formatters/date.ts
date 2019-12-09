@@ -5,6 +5,7 @@ import moment, { Moment } from 'moment';
 
 export function reorderDate(dateString: string | null, separator: string = '/'): string {
 	return (dateString || '')
+		.substring(0, 10)
 		.split('-')
 		.reverse()
 		.join(separator);

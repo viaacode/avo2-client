@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash-es';
+import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -299,6 +299,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									subtitles={['30-12-2011', 'VRT']}
 									token={getEnv('FLOW_PLAYER_TOKEN')}
 									dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+									logo={get(itemMetaData, 'organisation.logo_url')}
 									{...cuePoints}
 								/>
 							</Column>

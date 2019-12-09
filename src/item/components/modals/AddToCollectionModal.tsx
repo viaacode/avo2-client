@@ -287,17 +287,16 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 							<Form>
 								<Grid>
 									<Column size="2-7">
-										{itemMetaData && ( // TODO: Replace publisher, published_at by real publisher
-											<FlowPlayer
-												src={playerTicket ? playerTicket.toString() : null}
-												poster={itemMetaData.thumbnail_path}
-												title={itemMetaData.title}
-												onInit={initFlowPlayer}
-												subtitles={['30-12-2011', 'VRT']}
-												token={getEnv('FLOW_PLAYER_TOKEN')}
-												dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-											/>
-										)}
+										<FlowPlayer
+											src={playerTicket ? playerTicket.toString() : null}
+											poster={itemMetaData.thumbnail_path}
+											title={itemMetaData.title}
+											onInit={initFlowPlayer}
+											subtitles={['30-12-2011', 'VRT']}
+											token={getEnv('FLOW_PLAYER_TOKEN')}
+											dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+											logo={get(itemMetaData, 'organisation.logo_url')}
+										/>
 										<Container mode="vertical" className="m-time-crop-controls">
 											<TextInput
 												value={formatDurationHoursMinutesSeconds(fragmentStartTime)}

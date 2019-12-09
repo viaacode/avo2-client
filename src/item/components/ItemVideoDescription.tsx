@@ -1,3 +1,5 @@
+import { debounce, get } from 'lodash-es';
+import { parse } from 'querystring';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -19,8 +21,6 @@ import {
 	Heading,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { debounce } from 'lodash-es';
-import { parse } from 'querystring';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv, parseDuration } from '../../shared/helpers';
@@ -115,8 +115,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const initFlowPlayer = () =>
 		!playerTicket &&
 		fetchPlayerTicket(itemMetaData.external_id)
-			.then((data: any) => {
-				// TODO: add interface @benji
+			.then((data: string) => {
 				setPlayerTicket(data);
 				trackEvents({
 					object: itemMetaData.external_id,
@@ -134,18 +133,17 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 
 	const renderMedia = () => (
 		<div className="c-video-player t-player-skin--dark">
-			{itemMetaData.thumbnail_path && ( // TODO: Replace publisher, published_at by real publisher
-				<FlowPlayer
-					src={playerTicket ? playerTicket.toString() : null}
-					seekTime={time}
-					poster={itemMetaData.thumbnail_path}
-					title={itemMetaData.title}
-					onInit={initFlowPlayer}
-					subtitles={['Publicatiedatum', 'Aanbieder']}
-					token={getEnv('FLOW_PLAYER_TOKEN')}
-					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-				/>
-			)}
+			<FlowPlayer
+				src={playerTicket ? playerTicket.toString() : null}
+				seekTime={time}
+				poster={itemMetaData.thumbnail_path}
+				title={itemMetaData.title}
+				onInit={initFlowPlayer}
+				subtitles={['Publicatiedatum', 'Aanbieder']}
+				token={getEnv('FLOW_PLAYER_TOKEN')}
+				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+				logo={get(itemMetaData, 'organisation.logo_url')}
+			/>
 		</div>
 	);
 
