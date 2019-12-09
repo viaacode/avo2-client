@@ -196,51 +196,42 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history }) => {
 				<Container mode="horizontal">
 					<Toolbar>
 						<ToolbarLeft>
-							<>
-								<ToolbarItem>
-									<h1 className="c-brand">
-										<Link to="/">
-											<img
-												className="c-brand__image"
-												src="/images/avo-logo-i.svg"
-												alt="Archief voor Onderwijs logo"
-											/>
-										</Link>
-									</h1>
-								</ToolbarItem>
-								<ToolbarItem>
-									<div className="u-mq-switch-main-nav-has-space">
-										<ul className="c-nav">
-											{getPrimaryNavigationItems().map(item =>
-												renderNavLinkItem(item, 'c-nav__item c-nav__item--i', item.location === '/')
-											)}
-										</ul>
-									</div>
-								</ToolbarItem>
-							</>
+							<ToolbarItem>
+								<h1 className="c-brand">
+									<Link to="/">
+										<img
+											className="c-brand__image"
+											src="/images/avo-logo-i.svg"
+											alt="Archief voor Onderwijs logo"
+										/>
+									</Link>
+								</h1>
+							</ToolbarItem>
+							<ToolbarItem>
+								<div className="u-mq-switch-main-nav-has-space">
+									<ul className="c-nav">
+										{getPrimaryNavigationItems().map(item =>
+											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', item.location === '/')
+										)}
+									</ul>
+								</div>
+							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
-							<>
-								<ToolbarItem>
-									<div className="u-mq-switch-main-nav-authentication">
-										<ul className="c-nav">
-											{getSecondaryNavigationItems().map(item =>
-												renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
-											)}
-										</ul>
-									</div>
-								</ToolbarItem>
-								<ToolbarItem>
-									<div className="u-mq-switch-main-nav-very-little-space">
-										<Button
-											icon="menu"
-											type="borderless-i"
-											ariaLabel="menu"
-											onClick={onToggleMenu}
-										/>
-									</div>
-								</ToolbarItem>
-							</>
+							<ToolbarItem>
+								<div className="u-mq-switch-main-nav-authentication">
+									<ul className="c-nav">
+										{getSecondaryNavigationItems().map(item =>
+											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
+										)}
+									</ul>
+								</div>
+							</ToolbarItem>
+							<ToolbarItem>
+								<div className="u-mq-switch-main-nav-very-little-space">
+									<Button icon="menu" type="borderless-i" ariaLabel="menu" onClick={onToggleMenu} />
+								</div>
+							</ToolbarItem>
 						</ToolbarRight>
 					</Toolbar>
 				</Container>

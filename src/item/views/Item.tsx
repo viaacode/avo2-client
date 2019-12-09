@@ -8,6 +8,7 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	EnglishContentType,
 	Flex,
 	Grid,
 	Heading,
@@ -28,7 +29,6 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -134,7 +134,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const renderRelatedItems = () => {
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map(relatedItem => {
-				const englishContentType: ContentType =
+				const englishContentType: EnglishContentType =
 					toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 				return (
@@ -162,7 +162,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	};
 
 	const renderItem = (itemMetaData: Avo.Item.Item) => {
-		const englishContentType: ContentType =
+		const englishContentType: EnglishContentType =
 			toEnglishContentType(get(itemMetaData, 'type.label')) || ContentTypeString.video;
 
 		return (
