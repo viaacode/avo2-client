@@ -1,5 +1,6 @@
+import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
+
 import { ROUTE_PARTS } from '../shared/constants';
-import { Tab } from '../shared/types';
 
 export const WORKSPACE_PATH = Object.freeze({
 	WORKSPACE: `/${ROUTE_PARTS.workspace}`,
@@ -11,7 +12,7 @@ export const FOLDERS_ID = ROUTE_PARTS.folders;
 export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
 export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 
-export const TABS: Tab[] = [
+export const TABS: TabProps[] = [
 	{
 		label: 'Collecties',
 		icon: 'collection',

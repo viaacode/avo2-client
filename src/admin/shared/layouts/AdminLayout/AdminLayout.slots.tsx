@@ -10,3 +10,6 @@ export const AdminLayoutActions: FunctionComponent<AdminLayoutSlotProps> = ({ ch
 export const AdminLayoutBody: FunctionComponent<AdminLayoutSlotProps> = ({ children }) => (
 	<>{children}</>
 );
+export const AdminLayoutHeader: FunctionComponent<AdminLayoutSlotProps> = ({ children }) => (
+	<>{children}</>
+);
