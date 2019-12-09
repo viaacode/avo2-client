@@ -1,4 +1,5 @@
 @import '../../../../styles/settings/colors';
+@import '../../../../styles/settings/variables';
 
 /* ==========================================================================
    Component: Sidebar
@@ -11,6 +12,9 @@
 	background: $color-gray-700;
 	color: $color-gray-50;
 }
+
+/* Elements
+   ========================================================================== */
 
 .o-sidebar__header {
 	display: flex;
@@ -46,4 +50,12 @@
 			background: $color-gray-600;
 		}
 	}
+}
+
+/* Modifiers
+   ========================================================================== */
+
+.o-sidebar--light {
+	background: $g-base-background;
+	color: $g-text-color;
 }

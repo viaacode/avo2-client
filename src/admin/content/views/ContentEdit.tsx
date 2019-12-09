@@ -4,28 +4,43 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { Button, Flex, Spinner } from '@viaa/avo2-components';
+import {
+	Button,
+	Container,
+	Flex,
+	Header,
+	HeaderButtons,
+	Navbar,
+	Spinner,
+	Tabs,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { selectLogin } from '../../../authentication/store/selectors';
 import { navigate } from '../../../shared/helpers';
+import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { AppState } from '../../../store';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { ContentEditForm } from '../components';
-import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
+import { CONTENT_DETAIL_TABS, CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { fetchContentItemById, insertContent, updateContent } from '../content.services';
 import { ContentEditFormState, PageType } from '../content.types';
 import { useContentTypes } from '../hooks/useContentTypes';
+import ContentEditContentBlocks from './ContentEditContentBlocks';
+
+import './ContentEdit.scss';
 
 interface ContentEditProps extends RouteComponentProps<{ id?: string }> {
 	loginState: Avo.Auth.LoginResponse | null;
 }
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState, match }) => {
+	const { id } = match.params;
+
 	// Hooks
 	const [contentForm, setContentForm] = useState<ContentEditFormState>(INITIAL_CONTENT_FORM);
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
@@ -34,11 +49,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	const [pageType, setPageType] = useState<PageType | undefined>();
 
 	const { contentTypes, isLoadingContentTypes } = useContentTypes();
+	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
 
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
 	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
 
-	const { id } = match.params;
+	// Computed
 	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
 	const contentTypeOptions = [
 		{ label: 'Kies een content type', value: '', disabled: true },
@@ -166,24 +182,46 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	};
 
 	// Render
+	const renderTabContent = () => {
+		switch (currentTab) {
+			case 'inhoud':
+				return <ContentEditContentBlocks />;
+			case 'metadata':
+				return (
+					<ContentEditForm
+						contentTypeOptions={contentTypeOptions}
+						formErrors={formErrors}
+						formState={contentForm}
+						onChange={handleChange}
+					/>
+				);
+			default:
+				return null;
+		}
+	};
+
 	return isLoading || isLoadingContentTypes ? (
 		<Flex orientation="horizontal" center>
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout pageTitle={pageTitle} navigateBack={navigateBack}>
-			<AdminLayoutBody>
-				<ContentEditForm
-					contentTypeOptions={contentTypeOptions}
-					formErrors={formErrors}
-					formState={contentForm}
-					onChange={handleChange}
-				/>
-			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
-				<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
-			</AdminLayoutActions>
+		<AdminLayout navigateBack={navigateBack}>
+			<AdminLayoutHeader>
+				<Header category="audio" categoryLabel="" title={pageTitle} showMetaData={false}>
+					<HeaderButtons>
+						<>
+							<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
+							<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
+						</>
+					</HeaderButtons>
+				</Header>
+				<Navbar background="alt" placement="top" autoHeight>
+					<Container mode="horizontal">
+						<Tabs tabs={tabs} onClick={setCurrentTab} />
+					</Container>
+				</Navbar>
+			</AdminLayoutHeader>
+			<AdminLayoutBody>{renderTabContent()}</AdminLayoutBody>
 		</AdminLayout>
 	);
 };

@@ -1,4 +1,8 @@
 import AdminLayout from './AdminLayout/AdminLayout';
-import { AdminLayoutActions, AdminLayoutBody } from './AdminLayout/AdminLayout.slots';
+import {
+	AdminLayoutActions,
+	AdminLayoutBody,
+	AdminLayoutHeader,
+} from './AdminLayout/AdminLayout.slots';
 
-export { AdminLayout, AdminLayoutActions, AdminLayoutBody };
+export { AdminLayout, AdminLayoutActions, AdminLayoutBody, AdminLayoutHeader };
