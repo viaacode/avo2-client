@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Spacer, Table } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ErrorView } from '../../../error/views';
@@ -102,11 +102,15 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 	return (
 		<AdminLayout pageTitle="Content overzicht">
 			<AdminLayoutBody>
-				<DataQueryComponent
-					renderData={renderContentOverview}
-					resultPath={CONTENT_RESULT_PATH.GET}
-					query={GET_CONTENT}
-				/>
+				<Container mode="vertical" size="small">
+					<Container mode="horizontal">
+						<DataQueryComponent
+							renderData={renderContentOverview}
+							resultPath={CONTENT_RESULT_PATH.GET}
+							query={GET_CONTENT}
+						/>
+					</Container>
+				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
 				{!!contentList.length ? (

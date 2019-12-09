@@ -1,5 +1,3 @@
-import ContentDetail from './ContentDetail';
-import ContentEdit from './ContentEdit';
-import ContentOverview from './ContentOverview';
-
-export { ContentOverview, ContentDetail, ContentEdit };
+export { default as ContentDetail } from './ContentDetail';
+export { default as ContentEdit } from './ContentEdit';
+export { default as ContentOverview } from './ContentOverview';
