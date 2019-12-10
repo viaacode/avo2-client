@@ -234,26 +234,32 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
-										<ButtonToolbar>
-											<Flex justify="between" wrap>
-												<Button
-													type="tertiary"
-													icon="add"
-													label="Voeg fragment toe aan collectie"
-													onClick={() => setIsOpenAddToCollectionModal(true)}
-												/>
-												<Button
-													type="tertiary"
-													icon="clipboard"
-													label="Maak opdracht"
-													onClick={() =>
-														history.push(
-															generateAssignmentCreateLink('KIJK', itemMetaData.external_id, 'ITEM')
-														)
-													}
-												/>
-											</Flex>
-										</ButtonToolbar>
+										<Spacer margin="right-small">
+											<ButtonToolbar>
+												<Flex justify="between" wrap>
+													<Button
+														type="tertiary"
+														icon="add"
+														label="Voeg fragment toe aan collectie"
+														onClick={() => setIsOpenAddToCollectionModal(true)}
+													/>
+													<Button
+														type="tertiary"
+														icon="clipboard"
+														label="Maak opdracht"
+														onClick={() =>
+															history.push(
+																generateAssignmentCreateLink(
+																	'KIJK',
+																	itemMetaData.external_id,
+																	'ITEM'
+																)
+															)
+														}
+													/>
+												</Flex>
+											</ButtonToolbar>
+										</Spacer>
 										<ButtonToolbar>
 											<ToggleButton
 												type="tertiary"
