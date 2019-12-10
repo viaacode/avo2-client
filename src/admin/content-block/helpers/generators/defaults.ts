@@ -18,13 +18,13 @@ export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
 });
 
 // Recurring fields
-// TODO: Default value should be white.
 export const BACKGROUND_COLOR_FIELD = (label: string = 'Achtergrondkleur') => ({
 	background: {
 		label,
 		editorType: ContentBlockEditor.ColorSelect,
 		editorProps: {
 			options: BACKGROUND_COLOR_OPTIONS,
+			defaultValue: BACKGROUND_COLOR_OPTIONS[0],
 		},
 	},
 });
