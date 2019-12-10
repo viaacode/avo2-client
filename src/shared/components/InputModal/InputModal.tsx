@@ -62,28 +62,26 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
 			<ModalBody>
-				<>
-					<Spacer margin="bottom-large">
-						<FormGroup label={inputLabel} labelFor="collectionNameId">
-							<TextInput
-								type="text"
-								value={input}
-								onChange={setInput}
-								placeholder={inputPlaceholder}
-							/>
-						</FormGroup>
-					</Spacer>
-					<Toolbar>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
-									<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</>
+				<Spacer margin="bottom-large">
+					<FormGroup label={inputLabel} labelFor="collectionNameId">
+						<TextInput
+							type="text"
+							value={input}
+							onChange={setInput}
+							placeholder={inputPlaceholder}
+						/>
+					</FormGroup>
+				</Spacer>
+				<Toolbar>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
+								<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
 			</ModalBody>
 		</Modal>
 	);

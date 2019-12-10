@@ -8,7 +8,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 
-import { isProfileComplete } from '../helpers/get-profile-info';
+// import { isProfileComplete } from '../helpers/get-profile-info'; // TODO: uncomment once available
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginMessage } from '../store/types';

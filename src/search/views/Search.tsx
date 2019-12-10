@@ -52,6 +52,8 @@ import {
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
+import './Search.scss';
+
 const ITEMS_PER_PAGE = 10;
 
 const DEFAULT_FORM_STATE: Avo.Search.Filters = {
@@ -83,9 +85,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	location,
 }) => {
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
-	const [sortOrder, setSortOrder]: [SortOrder, (sortOrder: SortOrder) => void] = useState(
-		DEFAULT_SORT_ORDER
-	);
+	const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULT_SORT_ORDER);
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
 	const [currentPage, setCurrentPage] = useState(0);
 	const [searchTerms, setSearchTerms] = useState('');
@@ -307,27 +307,26 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
 	return (
-		<Container mode="horizontal">
+		<Container className="c-search-view" mode="horizontal">
 			<Navbar>
 				<Container mode="horizontal">
 					<Toolbar>
 						<ToolbarLeft>
-							<>
-								<ToolbarItem>
-									<ToolbarTitle>Zoekresultaten</ToolbarTitle>
-								</ToolbarItem>
-								<ToolbarItem>
-									<p className="c-body-1 u-text-muted">
-										{resultStart}-{resultEnd} van {resultsCount} resultaten
-									</p>
-								</ToolbarItem>
-							</>
+							<ToolbarItem>
+								<ToolbarTitle>Zoekresultaten</ToolbarTitle>
+							</ToolbarItem>
+							<ToolbarItem>
+								<p className="c-body-1 u-text-muted">
+									{resultStart}-{resultEnd} van {resultsCount} resultaten
+								</p>
+							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<Flex spaced="regular">
 								<Form type="inline">
 									<FormGroup label="Sorteer op" labelFor="sortBy">
 										<Select
+											className="c-search-view__sort-select"
 											id="sortBy"
 											options={orderOptions}
 											value={defaultOrder}
@@ -346,24 +345,22 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 										<Button type="tertiary" icon="more-horizontal" />
 									</DropdownButton>
 									<DropdownContent>
-										<>
-											<Button
-												type="link"
-												className="c-menu__item"
-												label="Kopieer vaste link naar deze zoekopdracht"
-												onClick={onCopySearchLinkClicked}
-											/>
-											{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
-											{/* <Button
-												type="link"
-												className="c-menu__item"
-												label="Maak van deze zoekopdracht een opdracht"
-												onClick={() => {
-													setIsOptionsMenuOpen(false);
-													toastService.info('Nog niet geïmplementeerd');
-												}}
-											/> */}
-										</>
+										<Button
+											type="link"
+											className="c-menu__item"
+											label="Kopieer vaste link naar deze zoekopdracht"
+											onClick={onCopySearchLinkClicked}
+										/>
+										{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
+										{/* <Button
+											type="link"
+											className="c-menu__item"
+											label="Maak van deze zoekopdracht een opdracht"
+											onClick={() => {
+												setIsOptionsMenuOpen(false);
+												toastService.info('Nog niet geïmplementeerd');
+											}}
+										/> */}
 									</DropdownContent>
 								</Dropdown>
 							</Flex>

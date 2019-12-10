@@ -1,5 +1,6 @@
 export enum ContentBlockType {
 	'Heading',
+	'RichText',
 }
 
 export enum ContentBlockEditor {
@@ -7,6 +8,7 @@ export enum ContentBlockEditor {
 	ColorSelect = 'ColorSelect',
 	Select = 'Select',
 	TextInput = 'TextInput',
+	WYSIWYG = 'WYSIWYG',
 }
 
 export enum ContentBlockBackgroundColor {
@@ -33,8 +35,12 @@ export interface HeadingBlockFormState extends DefaultContentBlock {
 	align: Aligns;
 }
 
+export interface RichTextBlockFormState extends DefaultContentBlock {
+	text: string;
+}
+
 // General config
-export type ContentBlockFormStates = HeadingBlockFormState;
+export type ContentBlockFormStates = HeadingBlockFormState | RichTextBlockFormState;
 export type ContentBlockField = {
 	label: string;
 	editorType: ContentBlockEditor;

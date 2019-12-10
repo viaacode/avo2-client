@@ -9,11 +9,11 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ErrorView } from '../../error/views';
 
+import { APP_PATH } from '../../constants';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 import { LoginMessage } from '../store/types';
-import { APP_PATH } from '../../constants';
 
 export interface LoginProps extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
@@ -93,11 +93,9 @@ const Login: FunctionComponent<LoginProps> = ({
 
 	if (loginStateError || hasRecentLoginAttempt()) {
 		return (
-			<>
-				<ErrorView message="Het inloggen is mislukt" icon="lock">
-					<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
-				</ErrorView>
-			</>
+			<ErrorView message="Het inloggen is mislukt" icon="lock">
+				<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
+			</ErrorView>
 		);
 	}
 
