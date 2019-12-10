@@ -22,7 +22,7 @@ interface ForPupilsProps extends RouteComponentProps<{ tabId: string }> {}
 const Settings: FunctionComponent<ForPupilsProps> = ({ history, match }) => {
 	const [activeTab, setActiveTab] = useState<SettingsTab>(match.params.tabId || PROFILE_ID);
 
-	const generateTabHeader = (id: string /* <- TODO */, label: string) => ({
+	const generateTabHeader = (id: string, label: string) => ({
 		id,
 		label,
 		active: activeTab === id,
