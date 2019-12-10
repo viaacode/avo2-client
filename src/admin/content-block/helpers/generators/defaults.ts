@@ -1,4 +1,4 @@
-import { BACKGROUND_COLOR_OPTIONS, HEADING_ALIGN_OPTIONS } from '../../content-block.const';
+import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockEditor,
@@ -13,23 +13,28 @@ export const FORM_STATE_DEFAULTS = (
 	blockType,
 });
 
-export const FIELD_DEFAULTS = () => ({
-	backgroundColor: {
-		label: 'Achtergrondkleur',
+export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
+	...BACKGROUND_COLOR_FIELD(),
+});
+
+// Recurring fields
+export const BACKGROUND_COLOR_FIELD = (label: string = 'Achtergrondkleur') => ({
+	background: {
+		label,
 		editorType: ContentBlockEditor.ColorSelect,
 		editorProps: {
 			options: BACKGROUND_COLOR_OPTIONS,
+			defaultValue: BACKGROUND_COLOR_OPTIONS[0],
 		},
 	},
 });
 
-// Returning fields
 export const ALIGN_FIELD = (label: string = 'Uitlijning') => ({
 	align: {
 		label,
 		editorType: ContentBlockEditor.AlignSelect,
 		editorProps: {
-			options: HEADING_ALIGN_OPTIONS,
+			options: ALIGN_OPTIONS,
 		},
 	},
 });

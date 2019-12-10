@@ -1,4 +1,4 @@
-import { Select, TextInput } from '@viaa/avo2-components';
+import { Select, TextInput, WYSIWYG } from '@viaa/avo2-components';
 
 import { AlignSelect, ColorSelect } from './components';
 import { Aligns, ContentBlockBackgroundColor, HeadingLevels } from './content-block.types';
@@ -11,19 +11,21 @@ export const BACKGROUND_COLOR_OPTIONS: { label: string; value: ContentBlockBackg
 	{ label: 'Blauw', value: ContentBlockBackgroundColor.TealBright },
 ];
 
+export const ALIGN_OPTIONS: { label: string; value: Aligns }[] = [
+	{ label: 'Links', value: 'left' },
+	{ label: 'Gecentreerd', value: 'center' },
+	{ label: 'Rechts', value: 'right' },
+];
+
 export const EDITOR_TYPES_MAP = {
 	AlignSelect,
 	ColorSelect,
 	Select,
 	TextInput,
+	WYSIWYG,
 };
 
 // Heading
-export const HEADING_ALIGN_OPTIONS: { label: string; value: Aligns }[] = [
-	{ label: 'Links', value: 'left' },
-	{ label: 'Gecentreerd', value: 'center' },
-	{ label: 'Rechts', value: 'right' },
-];
 export const HEADING_LEVEL_OPTIONS: { label: string; value: HeadingLevels }[] = [
 	{ label: 'H1', value: 'h1' },
 	{ label: 'H2', value: 'h2' },
