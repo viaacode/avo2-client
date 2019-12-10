@@ -114,38 +114,36 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title="Deel deze collectie" size="large" onClose={onClose} scrollable>
 			<ModalBody>
-				<>
-					<p>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</p>
-					<FormGroup error={validationError}>
-						<Spacer margin="top-large">
-							<Heading className="u-m-0" type="h4">
-								Zichtbaarheid
-							</Heading>
-						</Spacer>
-						<RadioButtonGroup>
-							{shareOptions.map((shareOption, index) => (
-								<RadioButton
-									key={index}
-									name={shareOption.value}
-									label={shareOption.label}
-									value={shareOption.value}
-									onChange={() => setIsCollectionPublic(shareOption.isPublic)}
-									checked={isCollectionPublic === shareOption.isPublic}
-								/>
-							))}
-						</RadioButtonGroup>
-					</FormGroup>
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									<Button type="secondary" label="Annuleren" onClick={() => onClose()} />
-									<Button type="primary" label="Opslaan" onClick={onSave} />
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</>
+				<p>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</p>
+				<FormGroup error={validationError}>
+					<Spacer margin="top-large">
+						<Heading className="u-m-0" type="h4">
+							Zichtbaarheid
+						</Heading>
+					</Spacer>
+					<RadioButtonGroup>
+						{shareOptions.map((shareOption, index) => (
+							<RadioButton
+								key={index}
+								name={shareOption.value}
+								label={shareOption.label}
+								value={shareOption.value}
+								onChange={() => setIsCollectionPublic(shareOption.isPublic)}
+								checked={isCollectionPublic === shareOption.isPublic}
+							/>
+						))}
+					</RadioButtonGroup>
+				</FormGroup>
+				<Toolbar spaced>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								<Button type="secondary" label="Annuleren" onClick={() => onClose()} />
+								<Button type="primary" label="Opslaan" onClick={onSave} />
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
 			</ModalBody>
 		</Modal>
 	);

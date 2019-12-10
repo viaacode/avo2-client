@@ -37,19 +37,17 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable>
 			<ModalBody>
-				<>
-					{!!body && <p>{body}</p>}
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									<Button type="secondary" label={cancelLabel} onClick={onClose} />
-									<Button type="danger" label={confirmLabel} onClick={handleDelete} />
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</>
+				{!!body && <p>{body}</p>}
+				<Toolbar spaced>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								<Button type="secondary" label={cancelLabel} onClick={onClose} />
+								<Button type="danger" label={confirmLabel} onClick={handleDelete} />
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
 			</ModalBody>
 		</Modal>
 	);

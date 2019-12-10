@@ -11,6 +11,7 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
+	DutchContentType,
 	Grid,
 	Header,
 	HeaderAvatar,
@@ -49,7 +50,7 @@ import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
-import { ContentTypeString, DutchContentType, toEnglishContentType } from '../collection.types';
+import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentListDetail, ShareCollectionModal } from '../components';
 
 import './CollectionDetail.scss';
@@ -256,15 +257,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					title={title}
 					onClickTitle={() => null}
 					category="collection"
-					categoryLabel="collectie"
 					showMetaData
 					bookmarks="0" // TODO: Real bookmark count
 					views="0" // TODO: Real view count
 				>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-					<HeaderAvatar>
-						<>{profile && renderAvatar(profile, { includeRole: true })}</>
-					</HeaderAvatar>
+					<HeaderAvatar>{profile && renderAvatar(profile, { includeRole: true })}</HeaderAvatar>
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">
