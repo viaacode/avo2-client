@@ -1,6 +1,6 @@
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
+import { Redirect, Route } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
@@ -23,7 +23,7 @@ export interface SecuredRouteProps {
 	getLoginState: () => Dispatch;
 }
 
-const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> = ({
+const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 	component,
 	path,
 	exact,
@@ -31,9 +31,6 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 	loginStateLoading,
 	loginStateError,
 	getLoginState,
-	history,
-	location,
-	match,
 }) => {
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -62,7 +59,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps & RouteComponentProps> =
 					// TODO enable this once we can save profile info
 					// if (isProfileComplete()) {
 					const Component = component;
-					return <Component history={history} location={location} match={match} />;
+					return <Component {...props} />;
 					// } else {
 					// 	// Force user to complete their profile before letting them in
 					// 	return (
@@ -102,9 +99,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(SecuredRoute)
-);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(SecuredRoute);
