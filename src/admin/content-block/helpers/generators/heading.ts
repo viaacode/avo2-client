@@ -6,7 +6,7 @@ import {
 	ContentBlockType,
 	HeadingBlockFormState,
 } from '../../content-block.types';
-import { ALIGN_FIELD, FIELD_DEFAULTS, FORM_STATE_DEFAULTS } from './defaults';
+import { ALIGN_FIELD, CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS } from './defaults';
 
 export const INITIAL_HEADING_BLOCK_STATE = (): HeadingBlockFormState => ({
 	title: '',
@@ -40,6 +40,6 @@ export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
 			},
 		},
 		...ALIGN_FIELD(),
-		...FIELD_DEFAULTS(),
+		...CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

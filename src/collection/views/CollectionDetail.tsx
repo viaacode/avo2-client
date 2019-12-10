@@ -16,6 +16,7 @@ import {
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
+	Heading,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -313,7 +314,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<h3 className="c-h3">Bekijk ook</h3>
+						<Heading type="h3">Bekijk ook</Heading>
 						{renderRelatedCollections()}
 					</Container>
 				</Container>
