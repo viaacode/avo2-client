@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactText, useState } from 'react';
+import { connect } from 'react-redux';
 import { Link, NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import {
@@ -16,6 +17,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
 import {
@@ -29,21 +31,25 @@ import { SETTINGS_PATH } from '../../../settings/settings.const';
 import toastService from '../../services/toast-service';
 import { NavigationItem } from '../../types';
 
+import { selectLogin } from '../../../authentication/store/selectors';
 import './Navigation.scss';
 
-export interface NavigationProps extends RouteComponentProps {}
+export interface NavigationProps extends RouteComponentProps {
+	loginState: Avo.Auth.LoginResponse | null;
+}
 
 /**
  * Main navigation bar component
  * @param history
+ * @param loginState
  * @constructor
  */
-const Navigation: FunctionComponent<NavigationProps> = ({ history }) => {
+const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState }) => {
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	const getPrimaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn()) {
+		if (isLoggedIn(loginState)) {
 			return [
 				{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME, key: 'teachers' },
 				{
@@ -72,7 +78,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history }) => {
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn()) {
+		if (isLoggedIn(loginState)) {
 			if (isMobileMenuOpen) {
 				return [
 					{ label: 'Instellingen', location: APP_PATH.SETTINGS, key: 'settings' },
@@ -272,4 +278,8 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history }) => {
 	);
 };
 
-export default withRouter(Navigation);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(Navigation));

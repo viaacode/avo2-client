@@ -5,10 +5,15 @@ import { Avo } from '@viaa/avo2-types';
 import { getFullName } from '../../shared/helpers';
 import store from '../../store';
 import { LoginMessage } from '../store/types';
+import { IdpType } from './redirects';
 
 function getUserInfo(): Avo.User.User | null {
 	const state: any = store.getState();
 	return get(state, 'loginState.data.userInfo');
+}
+
+export function hasIdpLinked(loginState: Avo.Auth.LoginResponse | null, idpType: IdpType): boolean {
+	return get(loginState, 'userInfo.idpmaps', []).includes(idpType);
 }
 
 export function getProfileId(): string {
@@ -48,9 +53,8 @@ export function isProfileComplete(): boolean {
 	return false; // TODO implement check based on user role
 }
 
-export function isLoggedIn(): boolean {
-	const state: any = store.getState();
-	const loggedInMessage: LoginMessage = get(state, 'loginState.data.message');
+export function isLoggedIn(loginState: Avo.Auth.LoginResponse | null): boolean {
+	const loggedInMessage: LoginMessage | undefined = get(loginState, 'message') as LoginMessage; // TODO switch to typings type
 
 	// TODO add once we can save profile info
 	return loggedInMessage && loggedInMessage === LoginMessage.LOGGED_IN; // && isProfileComplete();
