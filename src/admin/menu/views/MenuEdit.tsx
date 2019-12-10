@@ -1,10 +1,21 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, startCase } from 'lodash-es';
+import { get, kebabCase, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 import { ValueType } from 'react-select';
 
-import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
+import {
+	Button,
+	Container,
+	Flex,
+	Form,
+	FormGroup,
+	Heading,
+	IconName,
+	Spinner,
+	TextArea,
+	TextInput,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { navigate } from '../../../shared/helpers';
@@ -72,7 +83,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	}, [menuItemId]);
 
 	// Computed
-	const pageTitle = `${startCase(menuParentId)}: item ${PAGE_TYPES_LANG[pageType]}`;
+	const pageTitle = menuParentId
+		? `${startCase(menuParentId)}: item ${PAGE_TYPES_LANG[pageType]}`
+		: 'Navigatie toevoegen';
 
 	// Methods
 	const handleChange = (key: keyof MenuEditForm, value: any): void => {
@@ -99,7 +112,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			link_target: menuForm.link,
-			placement: menuParentId,
+			placement: menuParentId || kebabCase(menuForm.placement),
 		};
 
 		if (pageType === 'create') {
@@ -107,7 +120,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				variables: {
 					menuItem: {
 						...menuItem,
-						description: get(menuItems, '[0].description', ''),
+						description: get(menuItems, '[0].description', menuForm.description),
 						position: menuItems.length,
 					},
 				},
@@ -145,11 +158,17 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
+		navigate(history, MENU_PATH.MENU_DETAIL, {
+			menu: menuParentId || kebabCase(menuForm.placement),
+		});
 	};
 
 	const handleValidation = (): boolean => {
 		const errors: Partial<MenuEditForm> = {};
+
+		if (!menuParentId && !menuForm.placement) {
+			errors.placement = 'Navigatie naam is verplicht';
+		}
 
 		if (!menuForm.label) {
 			errors.label = 'Label is verplicht';
@@ -164,7 +183,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		return Object.keys(errors).length === 0;
 	};
 
-	const navigateBack = () => navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
+	const navigateBack = () => {
+		if (menuParentId) {
+			navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
+		} else {
+			navigate(history, MENU_PATH.MENU);
+		}
+	};
 
 	// Render
 	return isLoading ? (
@@ -174,31 +199,53 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	) : (
 		<AdminLayout navigateBack={navigateBack} pageTitle={pageTitle}>
 			<AdminLayoutBody>
-				<Form>
-					<FormGroup label="Icoon">
-						<IconPicker
-							options={MENU_ICON_OPTIONS}
-							onChange={(e: ValueType<ReactSelectOption<string>>) =>
-								handleChange('icon', get(e, 'value', ''))
-							}
-							value={MENU_ICON_OPTIONS.find(
-								(option: ReactSelectOption<string>) => option.value === menuForm.icon
-							)}
-						/>
-					</FormGroup>
-					<FormGroup error={formErrors.label} label="Label" required>
-						<TextInput
-							onChange={(value: string) => handleChange('label', value)}
-							value={menuForm.label}
-						/>
-					</FormGroup>
-					<FormGroup error={formErrors.link} label="Link" required>
-						<TextInput
-							onChange={(value: string) => handleChange('link', value)}
-							value={menuForm.link}
-						/>
-					</FormGroup>
-				</Form>
+				<Container mode="vertical" size="small">
+					<Container mode="horizontal">
+						<Form>
+							{!menuParentId ? (
+								<>
+									<Heading type="h3">Navigatie</Heading>
+									<FormGroup error={formErrors.placement} label="Naam" required>
+										<TextInput
+											onChange={(value: string) => handleChange('placement', value)}
+											value={menuForm.placement}
+										/>
+									</FormGroup>
+									<FormGroup error={formErrors.description} label="Omschrijving">
+										<TextArea
+											onChange={(value: string) => handleChange('description', value)}
+											value={menuForm.description}
+										/>
+									</FormGroup>
+									<Heading type="h3">Navigatie item</Heading>
+								</>
+							) : null}
+							<FormGroup label="Icoon">
+								<IconPicker
+									options={MENU_ICON_OPTIONS}
+									onChange={(e: ValueType<ReactSelectOption<string>>) =>
+										handleChange('icon', get(e, 'value', ''))
+									}
+									value={MENU_ICON_OPTIONS.find(
+										(option: ReactSelectOption<string>) => option.value === menuForm.icon
+									)}
+								/>
+							</FormGroup>
+							<FormGroup error={formErrors.label} label="Label" required>
+								<TextInput
+									onChange={(value: string) => handleChange('label', value)}
+									value={menuForm.label}
+								/>
+							</FormGroup>
+							<FormGroup error={formErrors.link} label="Link" required>
+								<TextInput
+									onChange={(value: string) => handleChange('link', value)}
+									value={menuForm.link}
+								/>
+							</FormGroup>
+						</Form>
+					</Container>
+				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
 				<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
@@ -208,4 +255,4 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	);
 };
 
-export default withRouter(MenuEdit);
+export default MenuEdit;

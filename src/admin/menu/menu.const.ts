@@ -9,9 +9,10 @@ import { MenuEditForm } from './menu.types';
 
 export const MENU_PATH = {
 	MENU: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}`,
+	MENU_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/${ROUTE_PARTS.create}`,
 	MENU_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/:menu`,
-	MENU_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/:menu/${ROUTE_PARTS.create}`,
-	MENU_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/:menu/:id/${ROUTE_PARTS.edit}`,
+	MENU_ITEM_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/:menu/${ROUTE_PARTS.create}`,
+	MENU_ITEM_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}/:menu/:id/${ROUTE_PARTS.edit}`,
 };
 
 export const MENU_OVERVIEW_TABLE_COLS: TableColumn[] = [
@@ -26,6 +27,8 @@ export const MENU_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Objec
 ]);
 
 export const INITIAL_MENU_FORM: MenuEditForm = {
+	description: '',
+	placement: '',
 	icon: '',
 	label: '',
 	link: '',

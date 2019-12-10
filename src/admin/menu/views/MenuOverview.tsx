@@ -1,15 +1,16 @@
 import { startCase } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
 
-import { AdminLayout } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
@@ -17,6 +18,8 @@ import { MenuOverviewTableCols } from '../menu.types';
 interface MenuOverviewProps extends RouteComponentProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
+	const [menus, setMenus] = useState<any>([]);
+
 	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
 		const { placement: menu } = rowData;
 
@@ -35,7 +38,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 						/>
 						<Button
 							icon="plus"
-							onClick={() => navigate(history, MENU_PATH.MENU_CREATE, { menu })}
+							onClick={() => navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu })}
 							size="small"
 							title="Voeg een navigatie item toe"
 							type="tertiary"
@@ -48,7 +51,26 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	};
 
 	const renderMenuOverview = (data: Partial<Avo.Menu.Menu>[]) => {
-		return (
+		if (data.length) {
+			setMenus(data);
+		}
+
+		return !data.length ? (
+			<ErrorView message="Er zijn nog geen navigaties aangemaakt.">
+				<p>
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
+					blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
+					ratione quas impedit repudiandae nisi corrupti quis eaque!
+				</p>
+				<Spacer margin="top">
+					<Button
+						icon="plus"
+						label="Navigatie toevoegen"
+						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
+					/>
+				</Spacer>
+			</ErrorView>
+		) : (
 			<Table
 				columns={MENU_OVERVIEW_TABLE_COLS}
 				data={data}
@@ -63,11 +85,22 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 
 	return (
 		<AdminLayout pageTitle="Navigatie overzicht">
-			<DataQueryComponent
-				renderData={renderMenuOverview}
-				resultPath="app_content_nav_elements"
-				query={GET_MENUS}
-			/>
+			<AdminLayoutBody>
+				<Container mode="vertical" size="small">
+					<Container mode="horizontal">
+						<DataQueryComponent
+							renderData={renderMenuOverview}
+							resultPath="app_content_nav_elements"
+							query={GET_MENUS}
+						/>
+					</Container>
+				</Container>
+			</AdminLayoutBody>
+			<AdminLayoutActions>
+				{!!menus.length ? (
+					<Button label="Navigatie toevoegen" onClick={() => history.push(MENU_PATH.MENU_CREATE)} />
+				) : null}
+			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };

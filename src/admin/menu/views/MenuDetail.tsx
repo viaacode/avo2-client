@@ -179,7 +179,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 											<Button
 												icon="edit-2"
 												onClick={() =>
-													handleNavigate(MENU_PATH.MENU_EDIT, {
+													handleNavigate(MENU_PATH.MENU_ITEM_EDIT, {
 														menu: menuId,
 														id: String(item.id),
 													})
@@ -203,7 +203,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 								icon="plus"
 								label="Voeg een item toe"
 								onClick={() =>
-									handleNavigate(MENU_PATH.MENU_CREATE, {
+									handleNavigate(MENU_PATH.MENU_ITEM_CREATE, {
 										menu: menuId,
 									})
 								}
