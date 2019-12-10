@@ -412,15 +412,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 					title={title}
 					onClickTitle={() => setIsRenameModalOpen(true)}
 					category="collection"
-					categoryLabel="collectie"
 					showMetaData
 					bookmarks="0" // TODO: Real bookmark count
 					views="0" // TODO: Real view count
 				>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-					<HeaderAvatar>
-						<>{profile && renderAvatar(profile, { includeRole: true })}</>
-					</HeaderAvatar>
+					<HeaderAvatar>{profile && renderAvatar(profile, { includeRole: true })}</HeaderAvatar>
 				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">

@@ -8,6 +8,7 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
+	EnglishContentType,
 	Flex,
 	Grid,
 	Heading,
@@ -28,7 +29,6 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { ContentType } from '@viaa/avo2-components/dist/types';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -134,7 +134,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	const renderRelatedItems = () => {
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map(relatedItem => {
-				const englishContentType: ContentType =
+				const englishContentType: EnglishContentType =
 					toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 				return (
@@ -162,7 +162,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	};
 
 	const renderItem = (itemMetaData: Avo.Item.Item) => {
-		const englishContentType: ContentType =
+		const englishContentType: EnglishContentType =
 			toEnglishContentType(get(itemMetaData, 'type.label')) || ContentTypeString.video;
 
 		return (
@@ -234,37 +234,43 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 							<Column size="2-7">
 								<Spacer margin="top-large">
 									<Flex justify="between" wrap>
+										<Spacer margin="right-small">
+											<ButtonToolbar>
+												<Flex justify="between" wrap>
+													<Button
+														type="tertiary"
+														icon="add"
+														label="Voeg fragment toe aan collectie"
+														onClick={() => setIsOpenAddToCollectionModal(true)}
+													/>
+													<Button
+														type="tertiary"
+														icon="clipboard"
+														label="Maak opdracht"
+														onClick={() =>
+															history.push(
+																generateAssignmentCreateLink(
+																	'KIJK',
+																	itemMetaData.external_id,
+																	'ITEM'
+																)
+															)
+														}
+													/>
+												</Flex>
+											</ButtonToolbar>
+										</Spacer>
 										<ButtonToolbar>
-											<Flex justify="between" wrap>
-												<Button
-													type="tertiary"
-													icon="add"
-													label="Voeg fragment toe aan collectie"
-													onClick={() => setIsOpenAddToCollectionModal(true)}
-												/>
-												<Button
-													type="tertiary"
-													icon="clipboard"
-													label="Maak opdracht"
-													onClick={() =>
-														history.push(
-															generateAssignmentCreateLink('KIJK', itemMetaData.external_id, 'ITEM')
-														)
-													}
-												/>
-											</Flex>
+											<ToggleButton
+												type="tertiary"
+												icon="bookmark"
+												active={false}
+												ariaLabel="toggle bladwijzer"
+											/>
+											<Button type="tertiary" icon="share-2" ariaLabel="share item" />
+											<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
 										</ButtonToolbar>
 									</Flex>
-									<ButtonToolbar>
-										<ToggleButton
-											type="tertiary"
-											icon="bookmark"
-											active={false}
-											ariaLabel="toggle bladwijzer"
-										/>
-										<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-										<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
-									</ButtonToolbar>
 								</Spacer>
 							</Column>
 							<Column size="2-5">
@@ -274,6 +280,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
+									<Heading type="h3">Metadata</Heading>
 									<Table horizontal untable>
 										<Grid tag="tbody">
 											{!!itemMetaData.issued && (

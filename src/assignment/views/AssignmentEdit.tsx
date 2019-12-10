@@ -17,6 +17,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	DutchContentType,
 	Flex,
 	FlexItem,
 	Form,
@@ -50,7 +51,7 @@ import {
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
-import { DutchContentType, toEnglishContentType } from '../../collection/collection.types';
+import { toEnglishContentType } from '../../collection/collection.types';
 import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DeleteObjectModal,

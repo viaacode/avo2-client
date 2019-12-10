@@ -293,8 +293,9 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 					</Column>
 					<Column size="2-5">
 						<Spacer margin="top-small">
+							{/* TODO add links to help article */}
 							<Alert type="info">
-								{/* TODO add links to help article */}
+								{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 								<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
 									Waarom hebben jullie mijn stamboeknummer nodig?
 								</a>
@@ -303,6 +304,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 						<Spacer margin="top-large">
 							{/* TODO add links to help article */}
 							<Alert type="info">
+								{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 								<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
 									Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
 								</a>
