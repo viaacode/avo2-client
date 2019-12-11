@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { DocumentNode } from 'graphql';
-import { cloneDeep, get, isEmpty, remove } from 'lodash-es';
+import { get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -73,7 +73,12 @@ import {
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
-import { deleteAssignment, insertAssignment, updateAssignment } from '../assignment.services';
+import {
+	deleteAssignment,
+	insertAssignment,
+	insertDuplicateAssignment,
+	updateAssignment,
+} from '../assignment.services';
 import { AssignmentLayout } from '../assignment.types';
 
 import './AssignmentEdit.scss';
@@ -116,7 +121,6 @@ interface AssignmentEditProps extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
 }
 
-// TODO: Replace with useReducer method.
 let currentAssignment: Partial<Avo.Assignment.Assignment>;
 let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
 let initialAssignment: Partial<Avo.Assignment.Assignment>;
@@ -436,9 +440,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const viewAsStudent = () => {
-		history.push(getAssignmentUrl(false));
-	};
+	const viewAsStudent = () => history.push(getAssignmentUrl(false));
 
 	const archiveAssignment = async (shouldBeArchived: boolean) => {
 		try {
@@ -454,6 +456,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				...currentAssignment,
 				is_archived: shouldBeArchived,
 			});
+
 			if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 				toastService.success(`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`);
 			}
@@ -466,30 +469,36 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const duplicateAssignment = async (duplicateAssignmentTitle: string) => {
-		try {
-			const assignmentToDuplicate = {
-				...cloneDeep(initialAssignment),
-				title: duplicateAssignmentTitle,
-			};
-
-			delete assignmentToDuplicate.id;
-
-			const duplicatedAssigment = await insertAssignment(
-				triggerAssignmentInsert,
-				assignmentToDuplicate
-			);
-
-			if (!duplicatedAssigment) {
-				return; // assignment was not valid
-			}
-
-			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
-			toastService.success('De opdracht is succesvol gedupliceerd. U kijk nu naar het duplicaat');
-		} catch (err) {
-			console.error(err);
-			toastService.danger('Het dupliceren van de opdracht is mislukt');
+	const triggerCollectionCopy = async (
+		contentLabel: string
+	): Promise<Avo.Collection.Collection | null> => {
+		if (!(contentLabel === 'COLLECTIE')) {
+			return null;
 		}
+
+		return await copyCollectionToCurrentUser(assignmentContent as Avo.Collection.Collection);
+	};
+
+	const duplicateAssignment = async (title: string) => {
+		// Copy collection if not own collection
+		const collectionCopy = await triggerCollectionCopy(initialAssignment.content_label || '');
+
+		if (!collectionCopy) {
+			return;
+		}
+
+		// Duplicate assignment with new content identifier
+		const duplicatedAssigment = await insertDuplicateAssignment(triggerAssignmentInsert, title, {
+			...initialAssignment,
+			content_id: String(collectionCopy.id),
+		});
+
+		if (!duplicatedAssigment) {
+			return;
+		}
+
+		navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
+		toastService.success('De opdracht is succesvol gedupliceerd. U kijkt nu naar het duplicaat');
 	};
 
 	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {

@@ -16,6 +16,7 @@ import {
 	Icon,
 	IconName,
 	MenuContent,
+	Navbar,
 	Spacer,
 	TagList,
 	TagOption,
@@ -43,19 +44,13 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE,
 } from '../assignment.gql';
 import { getAssignmentContent, LoadingState } from '../assignment.helpers';
-import { AssignmentLayout } from '../assignment.types';
+import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
 interface AssignmentProps extends RouteComponentProps {
 	loginResponse: Avo.Auth.LoginResponse | null;
 }
-
-export enum AssignmentRetrieveError {
-	DELETED = 'DELETED',
-	NOT_YET_AVAILABLE = 'NOT_YET_AVAILABLE',
-	PAST_DEADLINE = 'PAST_DEADLINE',
-} // TODO: replace with typings repo Avo.Assignment.RetrieveError
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	// State
@@ -274,6 +269,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		return get(getAssignmentResponse(), 'is_archived', false);
 	};
 
+	// Render methods
 	const renderContent = () => {
 		if (!assignment) {
 			return null;
@@ -318,6 +314,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		if (!assignment) {
 			return null;
 		}
+
 		const isOwner = getProfileId() === assignment.owner_profile_id;
 		const backLink = isOwner
 			? buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assignment.id })
@@ -336,19 +333,19 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			return null;
 		}
 
+		const { answer_url, description, profile, title } = assignment;
+
 		const tags: TagOption[] = (
 			get(assignment, 'assignment_assignment_tags.assignment_tag') || []
-		).map(
-			(tag: Avo.Assignment.Tag): TagOption => ({
-				id: tag.id,
-				label: tag.label,
-				color: tag.color_override || tag.enum_color.label,
-			})
-		);
+		).map(({ id, label, color_override, enum_color }: Avo.Assignment.Tag) => ({
+			id,
+			label,
+			color: color_override || enum_color.label,
+		}));
 
 		return (
 			<div className="c-assignment-detail">
-				<div className="c-navbar">
+				<Navbar>
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
 							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
@@ -356,67 +353,66 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 									<ToolbarItem>
 										{renderBackLink()}
 										<Heading className="u-m-0" type="h2">
-											{assignment.title}
+											{title}
 										</Heading>
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>
-									<ToolbarItem>
-										<TagList tags={tags} closable={false} swatches bordered />
-									</ToolbarItem>
-									{!!assignment.profile && (
+									<>
 										<ToolbarItem>
-											{renderAvatar(assignment.profile, { includeRole: true, small: true })}
+											<TagList tags={tags} closable={false} swatches bordered />
 										</ToolbarItem>
-									)}
-									<ToolbarItem>
-										<Dropdown
-											isOpen={isActionsDropdownOpen}
-											menuWidth="fit-content"
-											onClose={() => setActionsDropdownOpen(false)}
-											onOpen={() => setActionsDropdownOpen(true)}
-											placement="bottom-end"
-										>
-											<DropdownButton>
-												<Button icon="more-horizontal" type="secondary" />
-											</DropdownButton>
-											<DropdownContent>
-												<MenuContent
-													menuItems={[
-														{
-															icon: 'archive',
-															id: 'archive',
-															label: `${
-																isAssignmentResponseArchived() ? 'Dearchiveer' : 'Archiveer'
-															}`,
-														},
-													]}
-													onClick={handleExtraOptionsClick as any}
-												/>
-											</DropdownContent>
-										</Dropdown>
-									</ToolbarItem>
+										{!!profile && (
+											<ToolbarItem>
+												{renderAvatar(profile, { includeRole: true, small: true })}
+											</ToolbarItem>
+										)}
+										<ToolbarItem>
+											<Dropdown
+												isOpen={isActionsDropdownOpen}
+												menuWidth="fit-content"
+												onClose={() => setActionsDropdownOpen(false)}
+												onOpen={() => setActionsDropdownOpen(true)}
+												placement="bottom-end"
+											>
+												<DropdownButton>
+													<Button icon="more-horizontal" type="secondary" />
+												</DropdownButton>
+												<DropdownContent>
+													<MenuContent
+														menuItems={[
+															{
+																icon: 'archive',
+																id: 'archive',
+																label: `${
+																	isAssignmentResponseArchived() ? 'Dearchiveer' : 'Archiveer'
+																}`,
+															},
+														]}
+														onClick={handleExtraOptionsClick as any}
+													/>
+												</DropdownContent>
+											</Dropdown>
+										</ToolbarItem>
+									</>
 								</ToolbarRight>
 							</Toolbar>
 						</Container>
 						<Spacer margin="top">
 							<Container mode="horizontal">
-								<div
-									className="c-content"
-									dangerouslySetInnerHTML={{ __html: assignment.description }}
-								/>
-								{!!assignment.answer_url && (
+								<div className="c-content" dangerouslySetInnerHTML={{ __html: description }} />
+								{!!answer_url && (
 									<Box backgroundColor="soft-white" condensed>
 										<p>Geef je antwoorden in op:</p>
 										<p>
-											<a href={assignment.answer_url}>{assignment.answer_url}</a>
+											<a href={answer_url}>{answer_url}</a>
 										</p>
 									</Box>
 								)}
 							</Container>
 						</Spacer>
 					</Container>
-				</div>
+				</Navbar>
 				<Container mode="vertical">
 					<Container mode="horizontal">{renderContent()}</Container>
 				</Container>
