@@ -156,6 +156,31 @@ export const insertAssignment = async (
 	}
 };
 
+export const insertDuplicateAssignment = async (
+	triggerAssignmentInsert: any,
+	title: string,
+	assignment: Partial<Avo.Assignment.Assignment> | null
+) => {
+	if (!assignment) {
+		toastService.danger('De opdracht is niet beschikbaar om te dupliceren');
+		return;
+	}
+
+	const newAssignment = {
+		...cloneDeep(assignment),
+		title,
+	};
+
+	delete newAssignment.id;
+
+	try {
+		return await insertAssignment(triggerAssignmentInsert, newAssignment);
+	} catch (err) {
+		console.error(err);
+		toastService.danger('Het dupliceren van de opdracht is mislukt');
+	}
+};
+
 function warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
 	// Validate if deadline_at is not in the past
 	if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
