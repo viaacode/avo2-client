@@ -51,26 +51,28 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	};
 
 	const renderMenuOverview = (data: Partial<Avo.Menu.Menu>[]) => {
-		if (data.length) {
-			setMenus(data);
+		if (!data.length) {
+			return (
+				<ErrorView message="Er zijn nog geen navigaties aangemaakt.">
+					<p>
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
+						blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
+						ratione quas impedit repudiandae nisi corrupti quis eaque!
+					</p>
+					<Spacer margin="top">
+						<Button
+							icon="plus"
+							label="Navigatie toevoegen"
+							onClick={() => history.push(MENU_PATH.MENU_CREATE)}
+						/>
+					</Spacer>
+				</ErrorView>
+			);
 		}
 
-		return !data.length ? (
-			<ErrorView message="Er zijn nog geen navigaties aangemaakt.">
-				<p>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
-					blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
-					ratione quas impedit repudiandae nisi corrupti quis eaque!
-				</p>
-				<Spacer margin="top">
-					<Button
-						icon="plus"
-						label="Navigatie toevoegen"
-						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
-					/>
-				</Spacer>
-			</ErrorView>
-		) : (
+		setMenus(data);
+
+		return (
 			<Table
 				columns={MENU_OVERVIEW_TABLE_COLS}
 				data={data}
@@ -96,11 +98,11 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				{!!menus.length ? (
+			{!!menus.length && (
+				<AdminLayoutActions>
 					<Button label="Navigatie toevoegen" onClick={() => history.push(MENU_PATH.MENU_CREATE)} />
-				) : null}
-			</AdminLayoutActions>
+				</AdminLayoutActions>
+			)}
 		</AdminLayout>
 	);
 };
