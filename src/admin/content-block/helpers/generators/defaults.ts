@@ -38,8 +38,8 @@ export const ALIGN_FIELD = (label: string = 'Uitlijning') => ({
 });
 
 export const TEXT_FIELD = (
-	label: string = 'Tekst',
-	emptyFieldValidatorMessage: string = 'Tekstveld moet verplicht ingevuld zijn.'
+	label = 'Tekst',
+	emptyFieldValidatorMessage = 'Tekstveld moet verplicht ingevuld zijn.'
 ) => ({
 	label,
 	editorType: ContentBlockEditor.WYSIWYG,

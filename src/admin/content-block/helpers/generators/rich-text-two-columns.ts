@@ -16,14 +16,8 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Tekst (2 kolommen)',
 	initialState: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 	fields: {
-		firstColumnContent: TEXT_FIELD(
-			'Kolom 1 Tekst',
-			'Kolom 1 Tekstveld moet verplicht ingevuld zijn.'
-		),
-		seconColumnContent: TEXT_FIELD(
-			'Kolom 2 Tekst',
-			'Kolom 2 Tekstveld moet verplicht ingevuld zijn.'
-		),
+		firstColumnContent: TEXT_FIELD('Kolom 1', 'Kolom 1 tekstveld moet verplicht ingevuld zijn.'),
+		seconColumnContent: TEXT_FIELD('Kolom 2', 'Kolom 2 tekstveld moet verplicht ingevuld zijn.'),
 		...CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });
