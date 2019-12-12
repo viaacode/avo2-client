@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
 import {
 	Button,
@@ -94,4 +94,4 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	);
 };
 
-export default withRouter(RegisterOrRegisterOrLogin);
+export default RegisterOrRegisterOrLogin;

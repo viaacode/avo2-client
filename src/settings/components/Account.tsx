@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import {
 	Alert,
@@ -13,14 +14,21 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+
 import { getProfileStamboekNumber } from '../../authentication/helpers/get-profile-info';
 import { redirectToServerSmartschoolLogin } from '../../authentication/helpers/redirects';
+import withUser from '../../shared/hocs/withUser';
 import toastService from '../../shared/services/toast-service';
 
-export interface AccountProps extends RouteComponentProps {}
+export interface AccountProps extends RouteComponentProps {
+	user?: Avo.User.User;
+}
 
-const Account: FunctionComponent<AccountProps> = ({ location }) => {
-	const [stamboekNumber, setStamboekNumber] = useState<string>(getProfileStamboekNumber() || '');
+const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
+	const [stamboekNumber, setStamboekNumber] = useState<string>(
+		getProfileStamboekNumber(user) || ''
+	);
 
 	const getSsumAccountEditPage = () => {
 		// TODO replace this with a call to a proxy server route that forwards to the ssum page
@@ -104,5 +112,7 @@ const Account: FunctionComponent<AccountProps> = ({ location }) => {
 		</>
 	);
 };
-
-export default withRouter(Account);
+export default compose(
+	withRouter,
+	withUser
+)(Account) as FunctionComponent<AccountProps>;

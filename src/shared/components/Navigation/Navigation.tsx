@@ -1,7 +1,6 @@
-import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
 
 import {
 	Avatar,
@@ -27,17 +26,18 @@ import {
 	isLoggedIn,
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { selectLogin } from '../../../authentication/store/selectors';
+import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
 import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 import { SETTINGS_PATH } from '../../../settings/settings.const';
+import { AppState } from '../../../store';
 import toastService from '../../services/toast-service';
 import { NavigationItem } from '../../types';
 
 import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
-	userState?: Avo.Auth.LoginResponse;
+	user?: Avo.User.User;
 	loginMessage: LoginMessage;
 }
 
@@ -48,7 +48,12 @@ export interface NavigationProps extends RouteComponentProps {
  * @param loginMessage
  * @constructor
  */
-const Navigation: FunctionComponent<NavigationProps> = ({ history, userState, loginMessage }) => {
+const Navigation: FunctionComponent<NavigationProps> = ({
+	history,
+	loginMessage,
+	user,
+	...props
+}) => {
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -99,10 +104,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, userState, lo
 				{
 					label: (
 						<div className="c-navbar-profile-dropdown-button">
-							<Avatar
-								initials={getProfileInitials(userState)}
-								name={getFirstName(userState) || ''}
-							/>
+							<Avatar initials={getProfileInitials(user)} name={getFirstName(user) || ''} />
 							<Icon name="caret-down" size="small" />
 						</div>
 					),
@@ -124,7 +126,11 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, userState, lo
 			];
 		}
 		return [
-			{ label: 'Account aanmaken', component: <PupilOrTeacherDropdown />, key: 'createAccount' },
+			{
+				label: 'Account aanmaken',
+				component: <PupilOrTeacherDropdown history={history} {...props} />,
+				key: 'createAccount',
+			},
 			{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN, key: 'login' },
 		];
 	};
@@ -285,9 +291,9 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, userState, lo
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	loginMessage: get(state, 'data.loginMessage'),
-	loginState: selectLogin(state),
+const mapStateToProps = (state: AppState) => ({
+	loginMessage: selectLoginMessage(state),
+	user: selectUser(state),
 });
 
-export default withRouter(connect(mapStateToProps)(Navigation));
+export default connect(mapStateToProps)(Navigation);

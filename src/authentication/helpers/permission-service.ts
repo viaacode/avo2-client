@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import { getProfileId } from './get-profile-info';
+import { Avo } from '@viaa/avo2-types';
 
 type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
 
@@ -20,7 +21,7 @@ export class PermissionService {
 	// TODO: replace with userInfo.permissions
 	private static currentUserPermissions: PermissionName[] = Object.values(PERMISSIONS);
 
-	public static hasPermissions(permissions: Permissions) {
+	public static hasPermissions(permissions: Permissions, user: Avo.User.User) {
 		// Reformat all permissions to format: PermissionInfo[]
 		let permissionList: PermissionInfo[];
 		if (typeof permissions === 'string') {
@@ -43,7 +44,7 @@ export class PermissionService {
 			);
 		}
 		// Check every permission and return true for the first permission that returns true (lazy eval)
-		const profileId = getProfileId();
+		const profileId = getProfileId(user);
 		for (const perm of permissionList) {
 			if (this.hasPermission(perm.permissionName, perm.obj, profileId)) {
 				return true;

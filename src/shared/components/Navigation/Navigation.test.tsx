@@ -1,13 +1,14 @@
-import { mount, ReactWrapper, shallow } from 'enzyme';
+import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 
 import { LoginMessage, LoginState } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 
 import Navigation from './Navigation';
+import { getMockRouterProps } from '../../mocks/route-components-props-mock';
 
 const linkLoginState: {
 	[routePath: string]: { showWhenLoggedIn: boolean; showWhenLoggedOut: boolean };
@@ -48,10 +49,15 @@ function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
 }
 
 const mockStore = configureStore([]);
+const mockProps = getMockRouterProps({});
 
 describe('<Navigation />', () => {
 	it('Should be able to render', () => {
-		shallow(<Navigation />);
+		mount(
+			<MemoryRouter>
+				<Navigation {...mockProps} />
+			</MemoryRouter>
+		);
 	});
 
 	it('Should correctly render navbar links when logged out on desktop', () => {
@@ -65,7 +71,7 @@ describe('<Navigation />', () => {
 		const navigationComponent = mount(
 			<Router>
 				<Provider store={store}>
-					<Navigation />
+					<Navigation {...mockProps} />
 				</Provider>
 			</Router>
 		);
@@ -92,7 +98,7 @@ describe('<Navigation />', () => {
 		const navigationComponent = mount(
 			<Router>
 				<Provider store={store}>
-					<Navigation />
+					<Navigation {...mockProps} />
 				</Provider>
 			</Router>
 		);

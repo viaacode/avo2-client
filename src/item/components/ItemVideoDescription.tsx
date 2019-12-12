@@ -8,7 +8,6 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
@@ -22,6 +21,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv, parseDuration } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -30,7 +30,7 @@ import toastService from '../../shared/services/toast-service';
 
 import './ItemVideoDescription.scss';
 
-interface ItemVideoDescriptionProps extends RouteComponentProps {
+interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	itemMetaData: Avo.Item.Item;
 	showTitleOnVideo?: boolean;
 	showDescriptionNextToVideo?: boolean;
@@ -43,6 +43,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	location,
 	showTitleOnVideo = true,
 	showDescriptionNextToVideo = true,
+	user,
 }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
@@ -117,14 +118,17 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		fetchPlayerTicket(itemMetaData.external_id)
 			.then((data: string) => {
 				setPlayerTicket(data);
-				trackEvents({
-					object: itemMetaData.external_id,
-					object_type: 'avo_item_pid',
-					message: `Gebruiker ${getProfileName()} heeft het item ${
-						itemMetaData.external_id
-					} afgespeeld`,
-					action: 'view',
-				});
+				trackEvents(
+					{
+						object: itemMetaData.external_id,
+						object_type: 'avo_item_pid',
+						message: `Gebruiker ${getProfileName(user)} heeft het item ${
+							itemMetaData.external_id
+						} afgespeeld`,
+						action: 'view',
+					},
+					user
+				);
 			})
 			.catch((err: any) => {
 				console.error(err);
@@ -185,4 +189,4 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	);
 };
 
-export default withRouter(ItemVideoDescription);
+export default ItemVideoDescription;

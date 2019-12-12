@@ -1,61 +1,84 @@
 import { get } from 'lodash-es';
-import { AnyAction, Reducer } from 'redux';
-import store, { AppState } from '../../store';
+import store from '../../store';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { getFullName } from '../../shared/helpers';
 import { LoginMessage } from '../store/types';
 
-/**
- * Avoid using this function outside of secureRoutes like in the navbar
- * Since it will be an outdated version that is stored in the store at the time the navbar loads
- *
- * Prefer connect() your component to the loginState store
- * so you can pass the latest version on the userState to these functions
- */
-function getUserInfo(userState?: Avo.Auth.LoginResponse): Avo.User.User | null {
-	if (userState && userState.userInfo) {
-		return userState.userInfo;
+export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
+	if (!user) {
+		throw new Error('Failed to get user first name because the logged in user is undefined');
 	}
-	const state: Reducer<AppState, AnyAction> = store.getState();
-	return get(state, 'loginState.data.userInfo', null);
+	return get(user, 'first_name') || defaultName;
+};
+
+export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): string => {
+	if (!user) {
+		throw new Error('Failed to get user last name because the logged in user is undefined');
+	}
+	return get(user, 'last_name') || defaultName;
+};
+
+export function getProfile(user: Avo.User.User | undefined): Avo.User.Profile {
+	if (!user) {
+		throw new Error('Failed to get profile because the logged in user is undefined');
+	}
+	const profile = get(user, 'profile');
+	if (!profile) {
+		throw new Error('No profile could be found for the logged in user');
+	}
+	return profile;
 }
 
-export const getFirstName = (userState?: Avo.Auth.LoginResponse, defaultName = ''): string => {
-	return get(getUserInfo(userState), 'first_name') || defaultName;
-};
-
-export const getLastName = (userState?: Avo.Auth.LoginResponse, defaultName = ''): string => {
-	return get(getUserInfo(userState), 'last_name') || defaultName;
-};
-
-export function getProfileId(userState?: Avo.Auth.LoginResponse): string {
-	const profileId = get(getUserInfo(userState), 'profile.id');
+export function getProfileId(user: Avo.User.User | undefined): string {
+	const userInfo = user || get(store.getState(), 'loginState.data.userInfo', null);
+	if (!userInfo) {
+		throw new Error('Failed to get profile id because the logged in user is undefined');
+	}
+	const profileId = get(user, 'profile.id');
 	if (!profileId) {
 		throw new Error('No profile id could be found for the logged in user');
 	}
 	return profileId;
 }
 
-export function getProfileName(userState?: Avo.Auth.LoginResponse): string {
-	const profileName = getFullName(getUserInfo(userState));
+export function getProfileName(user: Avo.User.User | undefined): string {
+	if (!user) {
+		throw new Error('Failed to get profile name because the logged in user is undefined');
+	}
+	const profileName = getFullName(user);
 	if (!profileName) {
-		throw new Error('No profile id could be found for the logged in user');
+		throw new Error('No profile name could be found for the logged in user');
 	}
 	return profileName;
 }
 
-export function getProfileInitials(userState?: Avo.Auth.LoginResponse): string {
-	return getFirstName(userState, 'X')[0] + getLastName(userState, 'X')[0];
+export function getProfileAlias(user: Avo.User.User | undefined): string {
+	if (!user) {
+		throw new Error('Failed to get profile alias because the logged in user is undefined');
+	}
+	return get(user, 'profile.alias', '');
 }
 
-export function getProfileStamboekNumber(userState?: Avo.Auth.LoginResponse): string | null {
-	return get(getUserInfo(userState), 'user.profile.stamboek');
+export function getProfileInitials(user: Avo.User.User | undefined): string {
+	if (!user) {
+		throw new Error('Failed to get profile initials because the logged in user is undefined');
+	}
+	return getFirstName(user, 'X')[0] + getLastName(user, 'X')[0];
 }
 
-export function isProfileComplete(userState?: Avo.Auth.LoginResponse): boolean {
-	const profile = get(getUserInfo(userState), 'profile');
+export function getProfileStamboekNumber(user: Avo.User.User | undefined): string | null {
+	if (!user) {
+		throw new Error(
+			'Failed to get profile stamboek number because the logged in user is undefined'
+		);
+	}
+	return get(user, 'user.profile.stamboek', null);
+}
+
+export function isProfileComplete(user: Avo.User.User): boolean {
+	const profile = get(user, 'profile');
 	if (!profile) {
 		return false;
 	}

@@ -1,6 +1,6 @@
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
 import {
 	Alert,
@@ -317,4 +317,4 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 	);
 };
 
-export default withRouter(RegisterStamboek);
+export default RegisterStamboek;
