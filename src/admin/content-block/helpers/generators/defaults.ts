@@ -39,7 +39,7 @@ export const ALIGN_FIELD = (label: string = 'Uitlijning') => ({
 });
 
 export const TEXT_FIELD = (
-	emptyFieldValidatorMessage = 'Tekstveld moet verplicht ingevuld zijn.',
+	emptyFieldValidatorMessage = 'Tekst is verplicht.',
 	propOverride?: Partial<ContentBlockField>
 ) => ({
 	label: 'Tekst',

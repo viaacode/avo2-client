@@ -24,12 +24,10 @@ export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	initialState: INITIAL_INTRO_BLOCK_STATE,
 	fields: {
 		headingTitle: TEXT_FIELD('Titel is verplicht.', {
-			label: 'Intro titel',
+			label: 'Titel',
 			editorType: ContentBlockEditor.TextInput,
 		}),
-		introContent: TEXT_FIELD('Tekst is verplicht.', {
-			label: 'Intro tekst',
-		}),
+		introContent: TEXT_FIELD(),
 		align: ALIGN_FIELD(),
 		...CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
