@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -13,6 +14,8 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+
 import {
 	getProfileStamboekNumber,
 	hasIdpLinked,
@@ -21,14 +24,8 @@ import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
+import { selectLogin } from '../../authentication/store/selectors';
 import toastService from '../../shared/services/toast-service';
-import { connect } from 'react-redux';
-import {
-	selectLogin,
-	selectLoginError,
-	selectLoginLoading,
-} from '../../authentication/store/selectors';
-import { Avo } from '@viaa/avo2-types';
 
 export interface AccountProps extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
@@ -102,7 +99,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
 									<FormGroup label="Koppel je account met andere platformen">
 										{hasIdpLinked(loginState, 'SMARTSCHOOL') ? (
 											<>
-												<span>Uw smartschool account is reeds gelinked</span>
+												<span>Uw smartschool account is reeds gelinkt</span>
 												<Button
 													type="link"
 													label="unlink"
