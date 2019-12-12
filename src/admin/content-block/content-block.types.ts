@@ -1,6 +1,8 @@
 export enum ContentBlockType {
 	'Heading',
 	'RichText',
+	'RichTextTwoColumns',
+	'Buttons',
 }
 
 export enum ContentBlockEditor {
@@ -44,11 +46,16 @@ export interface RichTextTwoColumnsBlockFormState extends DefaultContentBlock {
 	secondColumnContent: string;
 }
 
+export interface ButtonsBlockFormState extends DefaultContentBlock {
+	label: string;
+}
+
 // General config
 export type ContentBlockFormStates =
 	| HeadingBlockFormState
 	| RichTextBlockFormState
-	| RichTextTwoColumnsBlockFormState;
+	| RichTextTwoColumnsBlockFormState
+	| ButtonsBlockFormState;
 
 export type ContentBlockField = {
 	label: string;
