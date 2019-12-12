@@ -38,9 +38,9 @@ const App: FunctionComponent<AppProps> = props => {
 				<Admin />
 			) : (
 				<>
-					{props.location.pathname !== APP_PATH.LOGIN_AVO ? <Navigation {...props} /> : null}
+					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Navigation {...props} />}
 					{renderRoutes()}
-					{props.location.pathname !== APP_PATH.LOGIN_AVO ? <Footer {...props} /> : null}
+					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer {...props} />}
 				</>
 			)}
 		</div>
