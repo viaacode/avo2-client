@@ -8,10 +8,10 @@ import { HOME_PATH } from './home/home.const';
 import { ITEM_PATH } from './item/item.const';
 import { PUPILS_PATH } from './pupils/pupils.const';
 import { SEARCH_PATH } from './search/search.const';
+import { SETTINGS_PATH } from './settings/settings.const';
 import { ROUTE_PARTS } from './shared/constants';
 import { TEACHERS_PATH } from './teachers/teachers.const';
 import { WORKSPACE_PATH } from './workspace/workspace.const';
-import { SETTINGS_PATH } from './settings/settings.const';
 
 export const APP_PATH = Object.freeze({
 	...ASSIGNMENT_PATH,
