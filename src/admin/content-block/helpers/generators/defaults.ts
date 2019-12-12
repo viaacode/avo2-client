@@ -4,6 +4,7 @@ import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.con
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockEditor,
+	ContentBlockField,
 	ContentBlockType,
 } from '../../content-block.types';
 
@@ -38,13 +39,15 @@ export const ALIGN_FIELD = (label: string = 'Uitlijning') => ({
 });
 
 export const TEXT_FIELD = (
-	label = 'Tekst',
-	emptyFieldValidatorMessage = 'Tekstveld moet verplicht ingevuld zijn.'
+	emptyFieldValidatorMessage = 'Tekstveld moet verplicht ingevuld zijn.',
+	propOverride?: Partial<ContentBlockField>
 ) => ({
-	label,
+	label: 'Tekst',
 	editorType: ContentBlockEditor.WYSIWYG,
 	editorProps: {
-		id: kebabCase(label),
+		id: Math.random()
+			.toString()
+			.substring(2, 9),
 	},
 	validator: (value: string) => {
 		const errorArray: string[] = [];
@@ -55,4 +58,5 @@ export const TEXT_FIELD = (
 
 		return errorArray;
 	},
+	...propOverride,
 });

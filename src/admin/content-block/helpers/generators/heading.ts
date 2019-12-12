@@ -6,7 +6,12 @@ import {
 	ContentBlockType,
 	HeadingBlockFormState,
 } from '../../content-block.types';
-import { ALIGN_FIELD, CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS } from './defaults';
+import {
+	ALIGN_FIELD,
+	CONTENT_BLOCK_FIELD_DEFAULTS,
+	FORM_STATE_DEFAULTS,
+	TEXT_FIELD,
+} from './defaults';
 
 export const INITIAL_HEADING_BLOCK_STATE = (): HeadingBlockFormState => ({
 	title: '',
@@ -19,19 +24,10 @@ export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Hoofding',
 	initialState: INITIAL_HEADING_BLOCK_STATE,
 	fields: {
-		title: {
+		title: TEXT_FIELD('Titel is verplicht.', {
 			label: 'Titel',
 			editorType: ContentBlockEditor.TextInput,
-			validator: (value: string) => {
-				const errorArray: string[] = [];
-
-				if (!!value) {
-					errorArray.push('Titel is verplicht');
-				}
-
-				return errorArray;
-			},
-		},
+		}),
 		level: {
 			label: 'Stijl',
 			editorType: ContentBlockEditor.Select,

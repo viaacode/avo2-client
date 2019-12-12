@@ -6,6 +6,7 @@ import { ContentBlockForm } from '../../content-block/components';
 import {
 	BUTTONS_BLOCK_CONFIG,
 	HEADING_BLOCK_CONFIG,
+	INTRO_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from '../../content-block/helpers';
@@ -21,15 +22,16 @@ const ContentEditContentBlocks: FunctionComponent = () => (
 			</Container>
 		</FlexItem>
 		<Sidebar className="c-content-edit-view__sidebar" light>
-			<ContentBlockForm config={HEADING_BLOCK_CONFIG()} index={1} length={4} onSave={() => {}} />
-			<ContentBlockForm config={RICH_TEXT_BLOCK_CONFIG()} index={2} length={4} onSave={() => {}} />
+			<ContentBlockForm config={HEADING_BLOCK_CONFIG()} index={1} length={5} onSave={() => {}} />
+			<ContentBlockForm config={RICH_TEXT_BLOCK_CONFIG()} index={2} length={5} onSave={() => {}} />
 			<ContentBlockForm
 				config={RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG()}
 				index={3}
-				length={4}
+				length={5}
 				onSave={() => {}}
 			/>
-			<ContentBlockForm config={BUTTONS_BLOCK_CONFIG()} index={4} length={4} onSave={() => {}} />
+			<ContentBlockForm config={BUTTONS_BLOCK_CONFIG()} index={4} length={5} onSave={() => {}} />
+			<ContentBlockForm config={INTRO_BLOCK_CONFIG()} index={5} length={5} onSave={() => {}} />
 		</Sidebar>
 	</Flex>
 );
