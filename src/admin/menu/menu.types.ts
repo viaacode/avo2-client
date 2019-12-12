@@ -9,7 +9,7 @@ export interface MenuEditParams {
 
 export type MenuEditPageType = 'edit' | 'create';
 
-export interface MenuEditForm {
+export interface MenuEditFormState {
 	description?: string;
 	placement?: string;
 	icon: IconName | '';
