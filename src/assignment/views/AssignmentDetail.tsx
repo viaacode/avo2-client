@@ -56,7 +56,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	// State
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
-	const [assigmentContent, setAssigmentContent] = useState<
+	const [assignmentContent, setAssigmentContent] = useState<
 		Avo.Assignment.Content | null | undefined
 	>();
 	const [loadingState, setLoadingState] = useState<LoadingState>('loading');
@@ -282,18 +282,16 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 				return (
 					<FragmentListDetail
 						collectionFragments={
-							(assigmentContent as Avo.Collection.Collection).collection_fragments
+							(assignmentContent as Avo.Collection.Collection).collection_fragments
 						}
-						showDescriptionNextToVideo={
-							assignment.content_layout === AssignmentLayout.PlayerAndText
-						}
+						showDescription={assignment.content_layout === AssignmentLayout.PlayerAndText}
 					/>
 				);
 			case 'ITEM':
 				return (
 					<ItemVideoDescription
-						itemMetaData={assigmentContent as Avo.Item.Item}
-						showDescriptionNextToVideo={content_layout === AssignmentLayout.PlayerAndText}
+						itemMetaData={assignmentContent as Avo.Item.Item}
+						showDescription={content_layout === AssignmentLayout.PlayerAndText}
 					/>
 				);
 			default:

@@ -266,10 +266,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<FragmentListDetail
-							collectionFragments={collection_fragments}
-							showDescriptionNextToVideo
-						/>
+						<FragmentListDetail collectionFragments={collection_fragments} showDescription />
 					</Container>
 				</Container>
 				<Container mode="vertical">
