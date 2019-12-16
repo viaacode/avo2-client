@@ -41,33 +41,49 @@ import {
 import toastService from '../../shared/services/toast-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 
-import { UPDATE_PROFILE_INFO } from '../settings.gql';
+import { DELETE_PROFILE_OBJECTS, UPDATE_PROFILE_INFO } from '../settings.gql';
 import { updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {}
 
 const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) => {
+	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
+		label: enumLabel,
+		value: enumLabel,
+	});
+	const gqlOrganizationToSelectOption = (org: {
+		organizationName: string;
+		unitAddress: string;
+	}): TagInfo => ({
+		label: `${org.organizationName} - ${org.unitAddress}`,
+		value: `${org.organizationName} - ${org.unitAddress}`,
+	});
 	const [cities, setCities] = useState<string[]>([]);
 	const [selectedCity, setSelectedCity] = useState<string>('');
 	const [organizations, setOrganizations] = useState<ClientEducationOrganization[]>([]);
 	const [organizationsLoadingState, setOrganizationsLoadingState] = useState<
 		'loading' | 'loaded' | 'error'
 	>('loaded');
-	const [selectedOrganizations, setSelectedOrganizations] = useState<ClientEducationOrganization[]>(
-		[]
-	);
-	const [triggerProfileUpdate] = useMutation(UPDATE_PROFILE_INFO);
-
 	// Cache organizations since the user will probably select multiple schools in the same city
 	const [organizationsCache, setOrganizationsCache] = useState<{
 		[cityAndZipCode: string]: ClientEducationOrganization[];
 	}>({});
-	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>([]);
-	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>([]);
+	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
+		get(user, 'profile.educationLevels', []).map(gqlEnumToSelectOption)
+	);
+	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>(
+		get(user, 'profile.subjects', []).map(gqlEnumToSelectOption)
+	);
+	const [selectedOrganizations, setSelectedOrganizations] = useState<ClientEducationOrganization[]>(
+		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)
+	);
 	const [alias, setAlias] = useState<string>(getProfileAlias(user));
 	const [avatar, setAvatar] = useState<string | null>(getProfile(user).avatar);
 	const [bio, setBio] = useState<string | null>((getProfile(user) as any).bio);
 	const [func, setFunc] = useState<string | null>((getProfile(user) as any).function);
+
+	const [triggerProfileUpdate] = useMutation(UPDATE_PROFILE_INFO);
+	const [triggerProfileObjectsDelete] = useMutation(DELETE_PROFILE_OBJECTS);
 
 	useEffect(() => {
 		fetchCities()
@@ -115,8 +131,8 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 	const saveProfileChanges = async () => {
 		try {
 			const profileId: string = getProfileId(user);
-			await updateProfileInfo(triggerProfileUpdate, getProfile(user), {
-				educationLevels: selectedEducationLevels.map(option => ({
+			await updateProfileInfo(triggerProfileObjectsDelete, triggerProfileUpdate, getProfile(user), {
+				educationLevels: selectedEducationLevels.map((option: TagInfo) => ({
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
@@ -137,9 +153,12 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 
 			if (isCompleteProfileStep()) {
 				redirectToClientPage(get(location, 'state.from.pathname', SEARCH_PATH.SEARCH), history);
+			} else {
+				toastService.success('Opgeslagen');
 			}
 		} catch (err) {
 			console.error(err);
+			toastService.danger('Het opslaan van de profiel information is mislukt.');
 		}
 	};
 

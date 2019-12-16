@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { connect } from 'react-redux';
 
 import {
 	Button,
@@ -21,10 +20,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { selectUser } from '../../../authentication/store/selectors';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService from '../../../shared/services/toast-service';
-import { AppState } from '../../../store';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 
