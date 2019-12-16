@@ -158,11 +158,9 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 			<Spacer margin="top-small">
 				{STAMBOEK_MESSAGES[stamboekValidationStatus].status && (
 					<Alert type={STAMBOEK_MESSAGES[stamboekValidationStatus].status}>
-						<div>
-							<Spacer margin="bottom-small">
-								{STAMBOEK_MESSAGES[stamboekValidationStatus].message}
-							</Spacer>
-						</div>
+						<Spacer margin="bottom-small">
+							{STAMBOEK_MESSAGES[stamboekValidationStatus].message}
+						</Spacer>
 					</Alert>
 				)}
 			</Spacer>
