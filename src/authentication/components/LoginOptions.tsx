@@ -18,48 +18,46 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 	history,
 	location,
 	onOptionClicked = () => {},
-}) => {
-	return (
-		<div className="m-login-options">
-			<Spacer margin="bottom-large">
-				<Spacer margin="top-small">
-					<Button
-						block
-						label="Inloggen met e-mailadres"
-						type="primary"
-						className="c-login-with-archief"
-						onClick={() => {
-							onOptionClicked();
-							redirectToClientPage(APP_PATH.LOGIN_AVO, history);
-						}}
-					/>
-				</Spacer>
-			</Spacer>
-			<p>Of kies voor ...</p>
-			<Spacer margin={['top-small', 'bottom-small']}>
+}) => (
+	<div className="m-login-options">
+		<Spacer margin="bottom-large">
+			<Spacer margin="top-small">
 				<Button
 					block
-					className="c-button-smartschool"
-					icon="smartschool"
-					label="Inloggen met Smartschool"
+					label="Inloggen met e-mailadres"
+					type="primary"
+					className="c-login-with-archief"
 					onClick={() => {
 						onOptionClicked();
-						redirectToServerSmartschoolLogin(location);
+						redirectToClientPage(APP_PATH.LOGIN_AVO, history);
 					}}
 				/>
 			</Spacer>
+		</Spacer>
+		<p>Of kies voor ...</p>
+		<Spacer margin={['top-small', 'bottom-small']}>
 			<Button
 				block
-				className="c-button-klascement"
-				icon="klascement"
-				label="Inloggen met KlasCement"
+				className="c-button-smartschool"
+				icon="smartschool"
+				label="Inloggen met Smartschool"
 				onClick={() => {
 					onOptionClicked();
-					toastService.info('Nog niet geïmplementeerd');
+					redirectToServerSmartschoolLogin(location);
 				}}
 			/>
-		</div>
-	);
-};
+		</Spacer>
+		<Button
+			block
+			className="c-button-klascement"
+			icon="klascement"
+			label="Inloggen met KlasCement"
+			onClick={() => {
+				onOptionClicked();
+				toastService.info('Nog niet geïmplementeerd');
+			}}
+		/>
+	</div>
+);
 
 export default LoginOptions;
