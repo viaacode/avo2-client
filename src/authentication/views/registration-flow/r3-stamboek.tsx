@@ -6,13 +6,10 @@ import {
 	Alert,
 	Button,
 	Checkbox,
-	Column,
 	Container,
 	FormGroup,
-	Grid,
+	Heading,
 	Icon,
-	RadioButton,
-	RadioButtonGroup,
 	Spacer,
 	TextInput,
 	Tooltip,
@@ -48,9 +45,6 @@ type validationStatuses =
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
 const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, location }) => {
-	const [intendsToHaveStamboekNumber, setIntendsToHaveStamboekNumber] = useState<
-		boolean | undefined
-	>(undefined);
 	const [stamboekValidationStatus, setStamboekValidationStatus] = useState<validationStatuses>(
 		'INCOMPLETE'
 	);
@@ -183,135 +177,95 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ history, l
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
-			<Container mode="horizontal" size="large">
-				<Grid>
-					<Column size="2-7">
-						<div className="c-content">
-							<p className="u-text-bold">Heb je een stamboeknummer?</p>
-						</div>
-						<FormGroup>
-							<RadioButtonGroup>
-								<RadioButton
-									name="stamboeknummer"
-									value="yes"
-									label="Ja, ik heb een stamboeknummer / lerarenkaart nummer"
-									checked={intendsToHaveStamboekNumber}
-									onChange={setIntendsToHaveStamboekNumber}
-								/>
-								{intendsToHaveStamboekNumber && (
-									<Spacer
-										className="m-stamboek-input-field-wrapper"
-										margin={['left-large', 'top-small', 'bottom-large']}
-									>
-										<TextInput
-											placeholder="00000000000-000000"
-											value={rawStamboekNumber}
-											onChange={setStamboekNumber}
-										/>
-										<Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
-											<TooltipTrigger>
-												<span>
-													<Icon className="a-info-icon" name="info" size="small" />
-												</span>
-											</TooltipTrigger>
-											<TooltipContent>
-												<Spacer margin={'small'}>
-													<Spacer margin="bottom-small">
-														<span>Je stamboek nummer staat op je lerarenkaart</span>
-													</Spacer>
-													<img
-														alt="Voorbeeld leeraren kaart"
-														className="a-stamboek-image"
-														src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
-													/>
-												</Spacer>
-											</TooltipContent>
-										</Tooltip>
-										<Spacer margin="top-small">
-											{STAMBOEK_MESSAGES[stamboekValidationStatus].status && (
-												<Alert type={STAMBOEK_MESSAGES[stamboekValidationStatus].status}>
-													<div>
-														<Spacer margin="bottom-small">
-															{STAMBOEK_MESSAGES[stamboekValidationStatus].message}
-														</Spacer>
-													</div>
-												</Alert>
-											)}
-										</Spacer>
-									</Spacer>
-								)}
-								<RadioButton
-									name="stamboeknummer"
-									value="no"
-									label="Nee, ik heb geen stamboeknummer"
-									checked={intendsToHaveStamboekNumber === false}
-									onChange={checked => setIntendsToHaveStamboekNumber(!checked)}
-								/>
-								{intendsToHaveStamboekNumber === false && (
-									<Spacer margin="left-large">
-										<Alert type="info">
-											<div>
-												<Spacer margin="bottom-small">
-													Zonder stamboek nummer heb je geen toegang tot de website. Indien u toch
-													denkt toegang te moeten hebben, vraag dan manueel een account aan.
-												</Spacer>
-												<Button
-													label="Manuele aanvraag"
-													onClick={() =>
-														redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)
-													}
-												/>
-											</div>
-										</Alert>
-									</Spacer>
-								)}
-							</RadioButtonGroup>
-						</FormGroup>
-						<Spacer margin={['bottom-large', 'top-large']}>
-							<FormGroup>
-								<Checkbox
-									label="Ik aanvaard de gebruiksvoorwaarden en privacyverklaring."
-									checked={hasAcceptedConditions}
-									onChange={setHasAcceptedConditions}
-								/>
-							</FormGroup>
-						</Spacer>
-						<FormGroup>
-							<Button
-								label="Account aanmaken"
-								type="primary"
-								disabled={
-									stamboekValidationStatus !== 'VALID' ||
-									!intendsToHaveStamboekNumber ||
-									!hasAcceptedConditions
-								}
-								onClick={() =>
-									redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)
-								}
+			<Container mode="horizontal" size="medium">
+				<div className="c-content">
+					<Heading type="h2">Geef hieronder je lerarenkaart- of stamboeknummer in.</Heading>
+					<p>
+						Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende
+						onderwijsinstelling.
+					</p>
+					<Spacer margin="top-small">
+						{/* TODO add links to help article */}
+						<Alert type="info">
+							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+							<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
+								Waarom hebben jullie mijn stamboeknummer nodig?
+							</a>
+						</Alert>
+					</Spacer>
+				</div>
+				<Spacer margin="top-large">
+					<FormGroup label="Lerarenkaart- of stamboeknummer" labelFor="stamboekInput">
+						<Spacer
+							className="m-stamboek-input-field-wrapper"
+							margin={['top-small', 'bottom-large']}
+						>
+							<TextInput
+								id="stamboekInput"
+								placeholder="00000000000-000000"
+								value={rawStamboekNumber}
+								onChange={setStamboekNumber}
 							/>
-						</FormGroup>
-					</Column>
-					<Column size="2-5">
-						<Spacer margin="top-small">
-							{/* TODO add links to help article */}
-							<Alert type="info">
-								{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-								<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
-									Waarom hebben jullie mijn stamboeknummer nodig?
-								</a>
-							</Alert>
+							<Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
+								<TooltipTrigger>
+									<span>
+										<Icon className="a-info-icon" name="info" size="small" />
+									</span>
+								</TooltipTrigger>
+								<TooltipContent>
+									<Spacer margin={'small'}>
+										<Spacer margin="bottom-small">
+											<span>Je stamboek nummer staat op je lerarenkaart</span>
+										</Spacer>
+										<img
+											alt="Voorbeeld leeraren kaart"
+											className="a-stamboek-image"
+											src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
+										/>
+									</Spacer>
+								</TooltipContent>
+							</Tooltip>
+							<Spacer margin="top-small">
+								{STAMBOEK_MESSAGES[stamboekValidationStatus].status && (
+									<Alert type={STAMBOEK_MESSAGES[stamboekValidationStatus].status}>
+										<div>
+											<Spacer margin="bottom-small">
+												{STAMBOEK_MESSAGES[stamboekValidationStatus].message}
+											</Spacer>
+										</div>
+									</Alert>
+								)}
+							</Spacer>
 						</Spacer>
-						<Spacer margin="top-large">
-							{/* TODO add links to help article */}
-							<Alert type="info">
-								{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-								<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
-									Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
-								</a>
-							</Alert>
-						</Spacer>
-					</Column>
-				</Grid>
+					</FormGroup>
+				</Spacer>
+				<Spacer margin={['bottom-large', 'top-large']}>
+					<FormGroup>
+						<Checkbox
+							label="Ik aanvaard de gebruiksvoorwaarden en privacyverklaring."
+							checked={hasAcceptedConditions}
+							onChange={setHasAcceptedConditions}
+						/>
+					</FormGroup>
+				</Spacer>
+				<FormGroup>
+					<Button
+						label="Account aanmaken"
+						type="primary"
+						disabled={stamboekValidationStatus !== 'VALID' || !hasAcceptedConditions}
+						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
+					/>
+				</FormGroup>
+
+				<Spacer margin="top-large">
+					{/* TODO add links to help article */}
+					<Alert type="info">
+						{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+						<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
+							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
+						</a>
+					</Alert>
+				</Spacer>
 			</Container>
 		</Container>
 	);
