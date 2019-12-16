@@ -5,10 +5,11 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ItemVideoDescription } from '../../../item/components';
+import { getFragmentProperty } from '../../helpers';
 
 interface FragmentDetailProps extends DefaultSecureRouteProps {
 	collectionFragment: Avo.Collection.Fragment;
-	showDescriptionNextToVideo: boolean;
+	showDescription: boolean;
 }
 
 /**
@@ -22,14 +23,27 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
 // TODO: Split up in FragmentDetailList and FragmentDetail component.
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragment,
-	showDescriptionNextToVideo,
+	showDescription,
 	...props
 }) => {
 	return collectionFragment.item_meta ? (
 		<ItemVideoDescription
-			showDescriptionNextToVideo={showDescriptionNextToVideo}
+			showDescription={showDescription}
+			showTitle={true}
 			itemMetaData={collectionFragment.item_meta}
 			showTitleOnVideo={false}
+			title={getFragmentProperty(
+				collectionFragment.item_meta,
+				collectionFragment,
+				collectionFragment.use_custom_fields,
+				'title'
+			)}
+			description={getFragmentProperty(
+				collectionFragment.item_meta,
+				collectionFragment,
+				collectionFragment.use_custom_fields,
+				'description'
+			)}
 			{...props}
 		/>
 	) : (

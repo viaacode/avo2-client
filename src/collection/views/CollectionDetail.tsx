@@ -272,7 +272,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Container mode="horizontal">
 						<FragmentListDetail
 							collectionFragments={collection_fragments}
-							showDescriptionNextToVideo
+							showDescription
 							history={history}
 							match={match}
 							user={user}

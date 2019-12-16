@@ -33,7 +33,10 @@ import './ItemVideoDescription.scss';
 interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	itemMetaData: Avo.Item.Item;
 	showTitleOnVideo?: boolean;
-	showDescriptionNextToVideo?: boolean;
+	showDescription?: boolean;
+	showTitle?: boolean;
+	title?: string;
+	description?: string;
 }
 
 const DEFAULT_VIDEO_HEIGHT = 421;
@@ -41,8 +44,10 @@ const DEFAULT_VIDEO_HEIGHT = 421;
 const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	itemMetaData,
 	location,
-	showTitleOnVideo = true,
-	showDescriptionNextToVideo = true,
+	showTitle = false,
+	showDescription = true,
+	title = itemMetaData.title,
+	description = itemMetaData.description,
 	user,
 }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
@@ -159,17 +164,17 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				overflowY: 'auto',
 			}}
 		>
-			<Heading type="h4">Beschrijving</Heading>
-			{/* "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
+			{showTitle ? <Heading type="h3">{title}</Heading> : <Heading type="h4">Beschrijving</Heading>}
+			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
 			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
-				<p>{formatTimestamps(convertToHtml(itemMetaData.description))}</p>
+				<p>{formatTimestamps(convertToHtml(description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>
 	);
 
 	return (
 		<Grid className="c-item-video-description">
-			{showDescriptionNextToVideo ? (
+			{showDescription ? (
 				<>
 					<Column size="2-7">{renderMedia()}</Column>
 					<Column size="2-5">{renderDescription()}</Column>
