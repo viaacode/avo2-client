@@ -5,6 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getFullName } from '../../shared/helpers';
 import { LoginMessage } from '../store/types';
+import { IdpType } from './redirects';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
@@ -12,6 +13,10 @@ export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''):
 	}
 	return get(user, 'first_name') || defaultName;
 };
+
+export function hasIdpLinked(user: Avo.User.User, idpType: IdpType): boolean {
+	return get(user, 'idpmaps', []).includes(idpType);
+}
 
 export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
