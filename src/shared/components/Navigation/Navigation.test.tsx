@@ -1,14 +1,13 @@
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
-import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
-import configureStore from 'redux-mock-store';
 
-import { LoginMessage, LoginState } from '../../../authentication/store/types';
+import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
-
-import Navigation from './Navigation';
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';
+import mockUser from '../../mocks/user-mock';
+
+import { Navigation } from './Navigation';
 
 const linkLoginState: {
 	[routePath: string]: { showWhenLoggedIn: boolean; showWhenLoggedOut: boolean };
@@ -48,31 +47,23 @@ function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
 	});
 }
 
-const mockStore = configureStore([]);
 const mockProps = getMockRouterProps({});
 
 describe('<Navigation />', () => {
 	it('Should be able to render', () => {
+		// Render unconnected navigation component (best practice according to react test docs:
+		// https://redux.js.org/recipes/writing-tests#connected-components
 		mount(
 			<MemoryRouter>
-				<Navigation {...mockProps} />
+				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_OUT} />
 			</MemoryRouter>
 		);
 	});
 
 	it('Should correctly render navbar links when logged out on desktop', () => {
-		const store = mockStore({
-			loginState: {
-				data: {
-					message: LoginMessage.LOGGED_OUT,
-				},
-			} as LoginState,
-		});
 		const navigationComponent = mount(
 			<Router>
-				<Provider store={store}>
-					<Navigation {...mockProps} />
-				</Provider>
+				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_OUT} />
 			</Router>
 		);
 
@@ -88,18 +79,9 @@ describe('<Navigation />', () => {
 	});
 
 	it('Should correctly render navbar links when logged in on desktop', () => {
-		const store = mockStore({
-			loginState: {
-				data: {
-					message: LoginMessage.LOGGED_IN,
-				},
-			} as LoginState,
-		});
 		const navigationComponent = mount(
 			<Router>
-				<Provider store={store}>
-					<Navigation {...mockProps} />
-				</Provider>
+				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_IN} user={mockUser} />
 			</Router>
 		);
 

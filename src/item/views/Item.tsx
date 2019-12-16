@@ -57,7 +57,7 @@ import './Item.scss';
 
 interface ItemProps extends DefaultSecureRouteProps {}
 
-const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ...props }) => {
+const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ...rest }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
@@ -239,7 +239,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 							location={location}
 							match={match}
 							user={user}
-							{...props}
+							{...rest}
 						/>
 						<Grid>
 							<Column size="2-7">

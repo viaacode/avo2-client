@@ -24,7 +24,7 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragment,
 	showDescription,
-	...props
+	...rest
 }) => {
 	return collectionFragment.item_meta ? (
 		<ItemVideoDescription
@@ -44,7 +44,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 				collectionFragment.use_custom_fields,
 				'description'
 			)}
-			{...props}
+			{...rest}
 		/>
 	) : (
 		<BlockIntro

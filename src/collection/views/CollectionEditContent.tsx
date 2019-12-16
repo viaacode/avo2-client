@@ -21,7 +21,7 @@ const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 	swapFragments,
 	updateCollection,
 	updateFragmentProperties,
-	...props
+	...rest
 }) => {
 	// State
 	const [openOptionsId, setOpenOptionsId] = useState<number | null>(null);
@@ -48,7 +48,7 @@ const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 							fragment={fragment}
 							reorderFragments={reorderFragments}
 							updateCollection={updateCollection}
-							{...props}
+							{...rest}
 						/>
 					)
 				)}

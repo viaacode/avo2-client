@@ -48,11 +48,11 @@ export interface NavigationProps extends RouteComponentProps {
  * @param loginMessage
  * @constructor
  */
-const Navigation: FunctionComponent<NavigationProps> = ({
+export const Navigation: FunctionComponent<NavigationProps> = ({
 	history,
 	loginMessage,
 	user,
-	...props
+	...rest
 }) => {
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -128,7 +128,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 		return [
 			{
 				label: 'Account aanmaken',
-				component: <PupilOrTeacherDropdown history={history} {...props} />,
+				component: <PupilOrTeacherDropdown history={history} {...rest} />,
 				key: 'createAccount',
 			},
 			{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN, key: 'login' },

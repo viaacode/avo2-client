@@ -50,7 +50,7 @@ import './AssignmentDetail.scss';
 
 interface AssignmentProps extends DefaultSecureRouteProps {}
 
-const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...props }) => {
+const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...rest }) => {
 	// State
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
@@ -285,7 +285,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						showDescription={assignment.content_layout === AssignmentLayout.PlayerAndText}
 						match={match}
 						user={user}
-						{...props}
+						{...rest}
 					/>
 				);
 			case 'ITEM':
@@ -295,7 +295,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						showDescription={content_layout === AssignmentLayout.PlayerAndText}
 						match={match}
 						user={user}
-						{...props}
+						{...rest}
 					/>
 				);
 			default:

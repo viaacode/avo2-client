@@ -41,12 +41,10 @@ export async function updateProfileInfo(
 		stamboek: profile.stamboek,
 		...variables, // Override current profile variables with the variables in the parameter
 	};
-	const response = await triggerProfileUpdate({
+	await triggerProfileUpdate({
 		variables: {
 			profileId: profile.id,
 			...completeVars,
 		},
 	});
-
-	console.log('response: ', response);
 }

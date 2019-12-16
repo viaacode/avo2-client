@@ -60,7 +60,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	match,
 	history,
 	user,
-	...props
+	...rest
 }) => {
 	// State
 	const [collectionId] = useState((match.params as any)['id'] as string);
@@ -276,7 +276,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							history={history}
 							match={match}
 							user={user}
-							{...props}
+							{...rest}
 						/>
 					</Container>
 				</Container>
@@ -335,7 +335,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						history={history}
 						match={match}
 						user={user}
-						{...props}
+						{...rest}
 					/>
 				)}
 				<DeleteObjectModal
