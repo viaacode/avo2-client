@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
@@ -6,7 +7,7 @@ import FragmentDetail from './FragmentDetail';
 
 interface FragmentDetailProps {
 	collectionFragments: Avo.Collection.Fragment[];
-	showDescriptionNextToVideo: boolean;
+	showDescription: boolean;
 }
 
 /**
@@ -17,10 +18,10 @@ interface FragmentDetailProps {
  */
 const FragmentListDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragments,
-	showDescriptionNextToVideo,
+	showDescription,
 }) => {
 	const renderCollectionFragments = () =>
-		collectionFragments.map((collectionFragment: Avo.Collection.Fragment) => {
+		sortBy(collectionFragments, 'position').map((collectionFragment: Avo.Collection.Fragment) => {
 			return (
 				<li
 					className="c-collection-list__item"
@@ -28,7 +29,7 @@ const FragmentListDetail: FunctionComponent<FragmentDetailProps> = ({
 				>
 					<FragmentDetail
 						collectionFragment={collectionFragment}
-						showDescriptionNextToVideo={showDescriptionNextToVideo}
+						showDescription={showDescription}
 					/>
 				</li>
 			);
