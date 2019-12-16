@@ -1,9 +1,17 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, isEqual, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
-import { Button, ButtonToolbar, Flex, IconName, Spacer, Table } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonToolbar,
+	Container,
+	Flex,
+	IconName,
+	Spacer,
+	Table,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
@@ -141,6 +149,13 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	};
 
 	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetch: () => void) => {
+		// Return to overview if menu is empty
+		if (!menu.length) {
+			toastService.danger('Er werden geen navigatie items gevonden');
+			handleNavigate(MENU_PATH.MENU);
+		}
+
+		// Reindex and set initial data
 		if (!hasInitialData.current) {
 			hasInitialData.current = true;
 			// Set items position property equal to index in array
@@ -160,62 +175,66 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				pageTitle={startCase(menuId)}
 			>
 				<AdminLayoutBody>
-					<Table align className="c-menu-detail__table" variant="styled">
-						<tbody>
-							{menuItems.map((item, index) => (
-								<tr
-									key={`nav-edit-${item.id}`}
-									className={activeRow === item.id ? 'c-menu-detail__table-row--active' : ''}
-								>
-									<td className="o-table-col-1">
-										<ButtonToolbar>
-											{!isFirst(index) && renderReorderButton('up', index, item.id)}
-											{!isLast(index) && renderReorderButton('down', index, item.id)}
-										</ButtonToolbar>
-									</td>
-									<td>{item.label}</td>
-									<td>
-										<ButtonToolbar>
-											<Button
-												icon="edit-2"
-												onClick={() =>
-													handleNavigate(MENU_PATH.MENU_ITEM_EDIT, {
-														menu: menuId,
-														id: String(item.id),
-													})
-												}
-												type="secondary"
-											/>
-											<Button
-												icon="delete"
-												onClick={() => openConfirmModal(item.id)}
-												type="secondary"
-											/>
-										</ButtonToolbar>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</Table>
-					<Spacer margin="top">
-						<Flex center>
-							<Button
-								icon="plus"
-								label="Voeg een item toe"
-								onClick={() =>
-									handleNavigate(MENU_PATH.MENU_ITEM_CREATE, {
-										menu: menuId,
-									})
-								}
-								type="borderless"
+					<Container mode="vertical" size="small">
+						<Container mode="horizontal">
+							<Table align className="c-menu-detail__table" variant="styled">
+								<tbody>
+									{menuItems.map((item, index) => (
+										<tr
+											key={`nav-edit-${item.id}`}
+											className={activeRow === item.id ? 'c-menu-detail__table-row--active' : ''}
+										>
+											<td className="o-table-col-1">
+												<ButtonToolbar>
+													{!isFirst(index) && renderReorderButton('up', index, item.id)}
+													{!isLast(index) && renderReorderButton('down', index, item.id)}
+												</ButtonToolbar>
+											</td>
+											<td>{item.label}</td>
+											<td>
+												<ButtonToolbar>
+													<Button
+														icon="edit-2"
+														onClick={() =>
+															handleNavigate(MENU_PATH.MENU_ITEM_EDIT, {
+																menu: menuId,
+																id: String(item.id),
+															})
+														}
+														type="secondary"
+													/>
+													<Button
+														icon="delete"
+														onClick={() => openConfirmModal(item.id)}
+														type="secondary"
+													/>
+												</ButtonToolbar>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</Table>
+							<Spacer margin="top">
+								<Flex center>
+									<Button
+										icon="plus"
+										label="Voeg een item toe"
+										onClick={() =>
+											handleNavigate(MENU_PATH.MENU_ITEM_CREATE, {
+												menu: menuId,
+											})
+										}
+										type="borderless"
+									/>
+								</Flex>
+							</Spacer>
+							<DeleteObjectModal
+								deleteObjectCallback={() => handleDelete(refetch)}
+								isOpen={isConfirmModalOpen}
+								onClose={() => setIsConfirmModalOpen(false)}
 							/>
-						</Flex>
-					</Spacer>
-					<DeleteObjectModal
-						deleteObjectCallback={() => handleDelete(refetch)}
-						isOpen={isConfirmModalOpen}
-						onClose={() => setIsConfirmModalOpen(false)}
-					/>
+						</Container>
+					</Container>
 				</AdminLayoutBody>
 				<AdminLayoutActions>
 					<Button
@@ -239,4 +258,4 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	);
 };
 
-export default withRouter(MenuDetail);
+export default MenuDetail;

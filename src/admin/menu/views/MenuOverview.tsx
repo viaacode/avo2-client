@@ -1,6 +1,6 @@
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
@@ -107,4 +107,4 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	);
 };
 
-export default withRouter(MenuOverview);
+export default MenuOverview;
