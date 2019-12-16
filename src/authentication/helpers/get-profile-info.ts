@@ -6,6 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getFullName } from '../../shared/helpers';
 import { LoginMessage } from '../store/types';
+import { IdpType } from './redirects';
 
 /**
  * Avoid using this function outside of secureRoutes like in the navbar
@@ -20,6 +21,10 @@ function getUserInfo(userState?: Avo.Auth.LoginResponse): Avo.User.User | null {
 	}
 	const state: Reducer<AppState, AnyAction> = store.getState();
 	return get(state, 'loginState.data.userInfo', null);
+}
+
+export function hasIdpLinked(loginState: Avo.Auth.LoginResponse | null, idpType: IdpType): boolean {
+	return get(loginState, 'userInfo.idpmaps', []).includes(idpType);
 }
 
 export const getFirstName = (userState?: Avo.Auth.LoginResponse, defaultName = ''): string => {

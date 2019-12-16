@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -13,13 +14,24 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { getProfileStamboekNumber } from '../../authentication/helpers/get-profile-info';
-import { redirectToServerSmartschoolLogin } from '../../authentication/helpers/redirects';
+import { Avo } from '@viaa/avo2-types';
+
+import {
+	getProfileStamboekNumber,
+	hasIdpLinked,
+} from '../../authentication/helpers/get-profile-info';
+import {
+	redirectToServerLinkAccount,
+	redirectToServerUnlinkAccount,
+} from '../../authentication/helpers/redirects';
+import { selectLogin } from '../../authentication/store/selectors';
 import toastService from '../../shared/services/toast-service';
 
-export interface AccountProps extends RouteComponentProps {}
+export interface AccountProps extends RouteComponentProps {
+	loginState: Avo.Auth.LoginResponse | null;
+}
 
-const Account: FunctionComponent<AccountProps> = ({ location }) => {
+const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
 	const [stamboekNumber, setStamboekNumber] = useState<string>(getProfileStamboekNumber() || '');
 
 	const getSsumAccountEditPage = () => {
@@ -85,12 +97,23 @@ const Account: FunctionComponent<AccountProps> = ({ location }) => {
 									<div className="c-hr" />
 
 									<FormGroup label="Koppel je account met andere platformen">
-										<Button
-											className="c-button-smartschool"
-											icon="smartschool"
-											label="Link je smartschool account"
-											onClick={() => redirectToServerSmartschoolLogin(location)}
-										/>
+										{hasIdpLinked(loginState, 'SMARTSCHOOL') ? (
+											<>
+												<span>Uw smartschool account is reeds gelinkt</span>
+												<Button
+													type="link"
+													label="unlink"
+													onClick={() => redirectToServerUnlinkAccount(location, 'SMARTSCHOOL')}
+												/>
+											</>
+										) : (
+											<Button
+												className="c-button-smartschool"
+												icon="smartschool"
+												label="Link je smartschool account"
+												onClick={() => redirectToServerLinkAccount(location, 'SMARTSCHOOL')}
+											/>
+										)}
 									</FormGroup>
 								</Form>
 							</Column>
@@ -105,4 +128,8 @@ const Account: FunctionComponent<AccountProps> = ({ location }) => {
 	);
 };
 
-export default withRouter(Account);
+const mapStateToProps = (state: any) => ({
+	loginState: selectLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps)(Account));

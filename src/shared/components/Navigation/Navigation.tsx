@@ -82,7 +82,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, userState, lo
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn()) {
+		if (isLoggedIn(loginMessage)) {
 			if (isMobileMenuOpen) {
 				return [
 					{ label: 'Instellingen', location: APP_PATH.SETTINGS, key: 'settings' },
