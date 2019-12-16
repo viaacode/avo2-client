@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
@@ -21,35 +22,38 @@ import { Avo } from '@viaa/avo2-types';
 
 import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
 import {
+	getFirstName,
 	getProfileInitials,
-	getProfileName,
 	isLoggedIn,
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { selectLogin } from '../../../authentication/store/selectors';
+import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 import { SETTINGS_PATH } from '../../../settings/settings.const';
 import toastService from '../../services/toast-service';
 import { NavigationItem } from '../../types';
 
-import { selectLogin } from '../../../authentication/store/selectors';
 import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
-	loginState: Avo.Auth.LoginResponse | null;
+	userState?: Avo.Auth.LoginResponse;
+	loginMessage: LoginMessage;
 }
 
 /**
  * Main navigation bar component
  * @param history
- * @param loginState
+ * @param userState
+ * @param loginMessage
  * @constructor
  */
-const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState }) => {
+const Navigation: FunctionComponent<NavigationProps> = ({ history, userState, loginMessage }) => {
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	const getPrimaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn(loginState)) {
+		if (isLoggedIn(loginMessage)) {
 			return [
 				{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME, key: 'teachers' },
 				{
@@ -78,7 +82,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState })
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn(loginState)) {
+		if (isLoggedIn(loginMessage)) {
 			if (isMobileMenuOpen) {
 				return [
 					{ label: 'Instellingen', location: APP_PATH.SETTINGS, key: 'settings' },
@@ -95,7 +99,10 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState })
 				{
 					label: (
 						<div className="c-navbar-profile-dropdown-button">
-							<Avatar initials={getProfileInitials()} name={getProfileName()} />
+							<Avatar
+								initials={getProfileInitials(userState)}
+								name={getFirstName(userState) || ''}
+							/>
 							<Icon name="caret-down" size="small" />
 						</div>
 					),
@@ -279,6 +286,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({ history, loginState })
 };
 
 const mapStateToProps = (state: any) => ({
+	loginMessage: get(state, 'data.loginMessage'),
 	loginState: selectLogin(state),
 });
 
