@@ -2,7 +2,7 @@ import { Action } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
-export enum LoginMessage {
+export enum LoginMessage { // TODO switch to typings type
 	LOGGED_IN = 'LOGGED_IN',
 	LOGGED_OUT = 'LOGGED_OUT',
 }
