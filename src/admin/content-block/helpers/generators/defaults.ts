@@ -1,5 +1,3 @@
-import { kebabCase } from 'lodash-es';
-
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
