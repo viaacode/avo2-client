@@ -1,7 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import { Button, Flex, Form, FormGroup, Heading, Spacer } from '@viaa/avo2-components';
+import { Accordion, Button, Flex, Form, FormGroup, Spacer } from '@viaa/avo2-components';
 
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
@@ -25,6 +25,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	length,
 	onSave,
 }) => {
+	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
 	const [formState, setFormState] = useState<ContentBlockFormStates>(config.initialState);
 	const [formErrors, setFormErrors] = useState<{ [key: string]: string[] }>({});
 
@@ -33,6 +34,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const updatedForm = { ...formState, [key]: value };
 
 		setFormState(updatedForm);
+		onSave(formState);
 	};
 
 	const handleValidation = () => {
@@ -86,14 +88,16 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	};
 
 	const renderFormGroups = (cb: ContentBlockConfig) => {
+		const formGroupId = `${cb.name}-${index}`;
+
 		return (
-			<>
-				<Heading type="h4">
-					{cb.name}{' '}
-					<span className="u-text-muted">
-						({index}/{length})
-					</span>
-				</Heading>
+			<Accordion
+				title={`${cb.name} (${index}/${length})`}
+				isOpen={accordionsOpenState[formGroupId] || false}
+				onToggle={() =>
+					setAccordionsOpenState({ [formGroupId]: !accordionsOpenState[formGroupId] })
+				}
+			>
 				{Object.keys(cb.fields).map((key: string) => (
 					<FormGroup
 						key={`${index}-${cb.name}-${key}`}
@@ -103,20 +107,16 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						{renderFieldEditor(key, cb.fields[key])}
 					</FormGroup>
 				))}
-			</>
+				{/* <Spacer margin="top">
+					<Flex justify="end">
+						<Button label={`${config.name} opslaan`} onClick={handleSave} size="small" />
+					</Flex>
+				</Spacer> */}
+			</Accordion>
 		);
 	};
 
-	return (
-		<Form className="c-content-block-form" type="horizontal">
-			{renderFormGroups(config)}
-			<Spacer margin="top">
-				<Flex justify="end">
-					<Button label={`${config.name} opslaan`} onClick={handleSave} size="small" />
-				</Flex>
-			</Spacer>
-		</Form>
-	);
+	return <Form className="c-content-block-form">{renderFormGroups(config)}</Form>;
 };
 
 export default ContentBlockForm;
