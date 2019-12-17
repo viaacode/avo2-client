@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
+import { compact } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import {
@@ -19,8 +19,8 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { compact } from 'lodash-es';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { ErrorView } from '../../error/views';
 import { SEARCH_PATH } from '../../search/search.const';
@@ -41,10 +41,9 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
-
 import './CollectionOverview.scss';
 
-interface CollectionOverviewProps extends RouteComponentProps {
+interface CollectionOverviewProps extends DefaultSecureRouteProps {
 	numberOfCollections: number;
 	refetchCount: () => void;
 }
@@ -53,6 +52,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	history,
 	numberOfCollections,
 	refetchCount,
+	user,
 }) => {
 	// State
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
@@ -287,7 +287,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		<DataQueryComponent
 			query={GET_COLLECTIONS_BY_OWNER}
 			variables={{
-				owner_profile_id: getProfileId(),
+				owner_profile_id: getProfileId(user),
 				offset: page * ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
 			}}
@@ -298,4 +298,4 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	);
 };
 
-export default withRouter(CollectionOverview);
+export default CollectionOverview;

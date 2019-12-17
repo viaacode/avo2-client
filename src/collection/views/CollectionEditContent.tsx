@@ -4,10 +4,12 @@ import React, { FunctionComponent, useState } from 'react';
 import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+
 import { FragmentPropertyUpdateInfo } from '../collection.types';
 import { FragmentAdd, FragmentEdit } from '../components';
 
-interface CollectionEditContentProps {
+interface CollectionEditContentProps extends DefaultSecureRouteProps {
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateCollection: (collection: Avo.Collection.Collection) => void;
@@ -19,6 +21,7 @@ const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 	swapFragments,
 	updateCollection,
 	updateFragmentProperties,
+	...rest
 }) => {
 	// State
 	const [openOptionsId, setOpenOptionsId] = useState<number | null>(null);
@@ -45,6 +48,7 @@ const CollectionEditContent: FunctionComponent<CollectionEditContentProps> = ({
 							fragment={fragment}
 							reorderFragments={reorderFragments}
 							updateCollection={updateCollection}
+							{...rest}
 						/>
 					)
 				)}
