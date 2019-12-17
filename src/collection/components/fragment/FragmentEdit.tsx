@@ -26,6 +26,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
+import { WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService from '../../../shared/services/toast-service';
@@ -231,6 +232,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 				<FormGroup label="Tekstblok beschrijving" labelFor={`description_${fragment.id}`}>
 					<WYSIWYG
 						id={`description_${fragment.id}`}
+						buttons={WYSIWYG_OPTIONS_DEFAULT}
 						placeholder="Geef hier de inhoud van je tekstblok in..."
 						data={convertToHtml(
 							getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
