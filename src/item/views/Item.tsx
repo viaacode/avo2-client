@@ -44,6 +44,7 @@ import {
 	generateSearchLink,
 	generateSearchLinks,
 	generateSearchLinkString,
+	navigate,
 	reorderDate,
 } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -51,7 +52,7 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
-import { RELATED_ITEMS_AMOUNT } from '../item.const';
+import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 
 import './Item.scss';
@@ -140,10 +141,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 				return (
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
-							title={relatedItem.dc_title}
-							href={`/item/${relatedItem.id}`}
 							category={englishContentType}
+							onClick={() => navigate(history, ITEM_PATH.ITEM, { id: relatedItem.id })}
 							orientation="horizontal"
+							title={relatedItem.dc_title}
 						>
 							<MediaCardThumbnail>
 								<Thumbnail category={englishContentType} src={relatedItem.thumbnail_path} />

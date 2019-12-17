@@ -35,12 +35,12 @@ import { selectLogin } from '../../authentication/store/selectors';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
-	buildLink,
 	createDropdownMenuItem,
 	formatDate,
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
+	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
@@ -168,10 +168,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<Grid className="c-media-card-list">
 					<Column size="3-6">
 						<MediaCard
-							title={dc_title}
-							href={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })}
 							category={category}
+							onClick={() => navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, { id })}
 							orientation="horizontal"
+							title={dc_title}
 						>
 							<MediaCardThumbnail>
 								<Thumbnail category={category} src={thumbnail_path} />
