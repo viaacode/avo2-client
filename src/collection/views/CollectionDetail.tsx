@@ -51,6 +51,7 @@ import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentListDetail, ShareCollectionModal } from '../components';
 import './CollectionDetail.scss';
+import { withRouter } from 'react-router';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
@@ -360,4 +361,4 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	);
 };
 
-export default CollectionDetail;
+export default withRouter(CollectionDetail);
