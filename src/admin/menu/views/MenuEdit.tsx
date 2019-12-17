@@ -46,7 +46,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				history.push(MENU_PATH.MENU);
 			}
 		});
-	}, [menuParentId]);
+	}, [history, menuName, menuParentId]);
 
 	// Fetch menu item by id
 	useEffect(() => {
