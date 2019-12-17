@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useState } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { get } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { RouteComponentProps } from 'react-router';
 
 import {
 	Alert,
@@ -12,36 +12,24 @@ import {
 	Grid,
 	Heading,
 	Spacer,
-	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import {
-	getProfileStamboekNumber,
-	hasIdpLinked,
-} from '../../authentication/helpers/get-profile-info';
+import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
 import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
-import { selectLogin } from '../../authentication/store/selectors';
-import toastService from '../../shared/services/toast-service';
 
 export interface AccountProps extends RouteComponentProps {
-	loginState: Avo.Auth.LoginResponse | null;
+	user: Avo.User.User;
 }
 
-const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
-	const [stamboekNumber, setStamboekNumber] = useState<string>(getProfileStamboekNumber() || '');
-
+const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const getSsumAccountEditPage = () => {
 		// TODO replace this with a call to a proxy server route that forwards to the ssum page
 		// with the user already logged in and a redirect url back to this webpage after the user saves their changes
 		return 'https://account.hetarchief.be/';
-	};
-
-	const saveStamboekNumber = () => {
-		toastService.info(`Nog niet geimplementeerd: ${stamboekNumber}`);
 	};
 
 	return (
@@ -55,14 +43,8 @@ const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
 									<Form type="standard">
 										<Heading type="h3">Account</Heading>
 										<FormGroup label="Email">
-											<span>test@testers.be</span>
+											<span>{get(user, 'mail')}</span>
 										</FormGroup>
-										{/*<FormGroup label="Wachtwoord">*/}
-										{/*	<span>123456</span>*/}
-										{/*</FormGroup>*/}
-										{/*<FormGroup label="Geldigheid">*/}
-										{/*	<span>Jouw account is nog 233 dagen geldig.</span>*/}
-										{/*</FormGroup>*/}
 										<Spacer margin="top-large">
 											<Alert type="info">
 												<span>
@@ -81,23 +63,8 @@ const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
 
 									<div className="c-hr" />
 
-									<FormGroup label="Stamboeknummer / Lerarenkaart nummer" labelFor="stamboekNumber">
-										<TextInput
-											placeholder="00000000000-000000"
-											value={stamboekNumber}
-											onChange={setStamboekNumber}
-										/>
-									</FormGroup>
-									<Button
-										label="Stamboek nummer opslaan"
-										type="primary"
-										onClick={saveStamboekNumber}
-									/>
-
-									<div className="c-hr" />
-
 									<FormGroup label="Koppel je account met andere platformen">
-										{hasIdpLinked(loginState, 'SMARTSCHOOL') ? (
+										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
 											<>
 												<span>Uw smartschool account is reeds gelinkt</span>
 												<Button
@@ -127,9 +94,4 @@ const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
 		</>
 	);
 };
-
-const mapStateToProps = (state: any) => ({
-	loginState: selectLogin(state),
-});
-
-export default withRouter(connect(mapStateToProps)(Account));
+export default Account;

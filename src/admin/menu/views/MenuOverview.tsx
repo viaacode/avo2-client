@@ -1,11 +1,11 @@
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
 
@@ -14,7 +14,7 @@ import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
 
-interface MenuOverviewProps extends RouteComponentProps {}
+interface MenuOverviewProps extends DefaultSecureRouteProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
@@ -72,4 +72,4 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	);
 };
 
-export default withRouter(MenuOverview);
+export default MenuOverview;

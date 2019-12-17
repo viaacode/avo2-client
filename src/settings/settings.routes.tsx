@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import { Route } from 'react-router';
 
 import { SecuredRoute } from '../authentication/components';
 import { Profile } from './components';
@@ -19,9 +18,10 @@ export const renderSettingsRoutes = (): ReactNode[] => [
 		path={SETTINGS_PATH.SETTINGS_TAB}
 		key={SETTINGS_PATH.SETTINGS_TAB}
 	/>,
-	<Route
+	<SecuredRoute
 		component={Profile}
 		exact
+		profileHasToBeComplete={false}
 		path={SETTINGS_PATH.COMPLETE_PROFILE}
 		key={SETTINGS_PATH.COMPLETE_PROFILE}
 	/>,

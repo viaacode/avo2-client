@@ -1,10 +1,10 @@
 import React, { FunctionComponent, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
@@ -14,7 +14,7 @@ import { CONTENT_OVERVIEW_TABLE_COLS, CONTENT_PATH, CONTENT_RESULT_PATH } from '
 import { GET_CONTENT } from '../content.gql';
 import { ContentOverviewTableCols } from '../content.types';
 
-interface ContentOverviewProps extends RouteComponentProps {}
+interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) => {
 	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
@@ -124,4 +124,4 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 	);
 };
 
-export default withRouter(ContentOverview);
+export default ContentOverview;
