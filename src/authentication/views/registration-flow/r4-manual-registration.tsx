@@ -1,3 +1,4 @@
+import { Tickets } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -19,6 +20,7 @@ import {
 
 import toastService from '../../../shared/services/toast-service';
 import { AUTH_PATH } from '../../authentication.const';
+import { createZendeskTicket } from '../../authentication.service';
 
 import './r4-manual-registration.scss';
 
@@ -54,14 +56,43 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 		return errors;
 	};
 
-	const createZendeskTicket = () => {
-		const errors = getValidationErrors();
-		if (errors.length) {
-			toastService.danger(errors);
-			return;
+	const onSend = async () => {
+		let ticket: Tickets.CreateModel | undefined;
+		try {
+			const errors = getValidationErrors();
+			if (errors.length) {
+				toastService.danger(errors);
+				return;
+			}
+			// create zendesk ticket
+			ticket = {
+				comment: {
+					url: window.location.href,
+					body: JSON.stringify({
+						name,
+						email,
+						organization,
+						profession,
+						reason,
+					}),
+					html_body: `<dl>
+  <dt>Naam</dt><dd>${name}</dd>
+  <dt>Email</dt><dd>${email}</dd>
+  <dt>School of organisatie</dt><dd>${organization}</dd>
+  <dt>Functie of beroep</dt><dd>${profession}</dd>
+  <dt>Reden voor aanvraag</dt><dd>${reason}</dd>
+</dl>`,
+					public: false,
+				},
+				subject: 'Manuele aanvraag account op AvO',
+			};
+			const response = await createZendeskTicket(ticket);
+			console.log(response);
+			toastService.success('Je aanvraag is verstuurt');
+		} catch (err) {
+			console.error('Failed to create zendesk ticket', err, ticket);
+			toastService.danger('Het versturen van je aanvraag is mislukt');
 		}
-		// create zendesk ticket
-		toastService.info('Nog niet geimplementeerd');
 	};
 
 	return (
@@ -110,7 +141,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 							<FormGroup label="Reden voor aanvraag *" labelFor="reason">
 								<TextArea height="small" id="reason" value={reason} onChange={setReason} />
 							</FormGroup>
-							<Button type="primary" onClick={createZendeskTicket}>
+							<Button type="primary" onClick={onSend}>
 								Vraag een account aan
 							</Button>
 						</Column>
