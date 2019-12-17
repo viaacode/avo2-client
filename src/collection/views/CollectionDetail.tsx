@@ -31,6 +31,7 @@ import { Avo } from '@viaa/avo2-types';
 import { PermissionGuard } from '../../authentication/components';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { selectLogin } from '../../authentication/store/selectors';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
@@ -169,7 +170,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Column size="3-6">
 						<MediaCard
 							title={dc_title}
-							href={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })}
+							onClick={() =>
+								redirectToClientPage(buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id }), history)
+							}
 							category={category}
 							orientation="horizontal"
 						>

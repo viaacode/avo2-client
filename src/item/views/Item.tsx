@@ -32,6 +32,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
@@ -40,6 +41,7 @@ import {
 import { DataQueryComponent } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
+	buildLink,
 	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
@@ -141,7 +143,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							title={relatedItem.dc_title}
-							href={`/item/${relatedItem.id}`}
+							onClick={() => redirectToClientPage(`/item/${relatedItem.id}`, history)}
 							category={englishContentType}
 							orientation="horizontal"
 						>
