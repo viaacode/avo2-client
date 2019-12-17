@@ -1,8 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
@@ -29,9 +26,9 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { PermissionGuard } from '../../authentication/components';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { getProfile, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
-import { selectLogin } from '../../authentication/store/selectors';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -48,23 +45,22 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
+
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentListDetail, ShareCollectionModal } from '../components';
-
 import './CollectionDetail.scss';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
-interface CollectionDetailProps extends RouteComponentProps {
-	loginState: Avo.Auth.LoginResponse | null;
-}
+interface CollectionDetailProps extends DefaultSecureRouteProps {}
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	match,
 	history,
-	loginState,
+	user,
+	...rest
 }) => {
 	// State
 	const [collectionId] = useState((match.params as any)['id'] as string);
@@ -81,12 +77,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
 	useEffect(() => {
-		trackEvents({
-			object: collectionId,
-			object_type: 'collections',
-			message: `Gebruiker ${getProfileName()} heeft de pagina voor collectie ${collectionId} bekeken`,
-			action: 'view',
-		});
+		trackEvents(
+			{
+				object: collectionId,
+				object_type: 'collections',
+				message: `Gebruiker ${getProfileName(
+					user
+				)} heeft de pagina voor collectie ${collectionId} bekeken`,
+				action: 'view',
+			},
+			user
+		);
 
 		if (!relatedCollections) {
 			getRelatedItems(collectionId, 'collections', 4)
@@ -100,19 +101,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					toastService.danger('Het ophalen van de gerelateerde collecties is mislukt');
 				});
 		}
-	}, [collectionId, relatedCollections]);
+	}, [collectionId, relatedCollections, user]);
 
 	const getPermission = (collection: Avo.Collection.Collection) => ({
-		canDeleteCollection: PermissionService.hasPermissions([
-			{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
-			{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
-		]),
+		canDeleteCollection: PermissionService.hasPermissions(
+			[
+				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
+				{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
+			],
+			user
+		),
 		canEditCollection: {
 			permissions: [
 				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
 				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
 			],
-			profile: get(loginState, 'userInfo.profile', null),
+			profile: getProfile(user),
 		},
 	});
 
@@ -215,7 +219,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		// Render functions
 		const renderHeaderButtons = () => (
 			<ButtonToolbar>
-				<PermissionGuard {...canEditCollection}>
+				<PermissionGuard {...canEditCollection} user={user}>
 					<Button
 						type="secondary"
 						label="Delen"
@@ -243,7 +247,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<MenuContent menuItems={COLLECTION_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
 					</DropdownContent>
 				</ControlledDropdown>
-				<PermissionGuard {...canEditCollection}>
+				<PermissionGuard {...canEditCollection} user={user}>
 					<Spacer margin="left-small">
 						<Button type="primary" icon="edit" label="Bewerken" onClick={onEditCollection} />
 					</Spacer>
@@ -266,7 +270,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<FragmentListDetail collectionFragments={collection_fragments} showDescription />
+						<FragmentListDetail
+							collectionFragments={collection_fragments}
+							showDescription
+							history={history}
+							match={match}
+							user={user}
+							{...rest}
+						/>
 					</Container>
 				</Container>
 				<Container mode="vertical">
@@ -321,6 +332,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						isOpen={isShareModalOpen}
 						onClose={() => setIsShareModalOpen(false)}
 						setIsPublic={setIsPublic}
+						history={history}
+						match={match}
+						user={user}
+						{...rest}
 					/>
 				)}
 				<DeleteObjectModal
@@ -345,8 +360,4 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	loginState: selectLogin(state),
-});
-
-export default withRouter(connect(mapStateToProps)(CollectionDetail));
+export default CollectionDetail;

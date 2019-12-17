@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
 import {
 	Alert,
@@ -24,15 +23,16 @@ import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
-import { selectLogin } from '../../authentication/store/selectors';
 import toastService from '../../shared/services/toast-service';
 
 export interface AccountProps extends RouteComponentProps {
-	loginState: Avo.Auth.LoginResponse | null;
+	user: Avo.User.User;
 }
 
-const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
-	const [stamboekNumber, setStamboekNumber] = useState<string>(getProfileStamboekNumber() || '');
+const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
+	const [stamboekNumber, setStamboekNumber] = useState<string>(
+		getProfileStamboekNumber(user) || ''
+	);
 
 	const getSsumAccountEditPage = () => {
 		// TODO replace this with a call to a proxy server route that forwards to the ssum page
@@ -97,7 +97,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
 									<div className="c-hr" />
 
 									<FormGroup label="Koppel je account met andere platformen">
-										{hasIdpLinked(loginState, 'SMARTSCHOOL') ? (
+										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
 											<>
 												<span>Uw smartschool account is reeds gelinkt</span>
 												<Button
@@ -127,9 +127,4 @@ const Account: FunctionComponent<AccountProps> = ({ location, loginState }) => {
 		</>
 	);
 };
-
-const mapStateToProps = (state: any) => ({
-	loginState: selectLogin(state),
-});
-
-export default withRouter(connect(mapStateToProps)(Account));
+export default Account;

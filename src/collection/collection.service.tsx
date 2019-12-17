@@ -249,12 +249,14 @@ export class CollectionService {
 		return omit(collection, propertiesToDelete);
 	}
 
-	public static async getCollectionTitlesByUser(): Promise<Partial<Avo.Collection.Collection>[]> {
+	public static async getCollectionTitlesByUser(
+		user: Avo.User.User | undefined
+	): Promise<Partial<Avo.Collection.Collection>[]> {
 		let queryInfo: any;
 		try {
 			queryInfo = {
 				query: GET_COLLECTION_TITLES_BY_OWNER,
-				variables: { owner_profile_id: getProfileId() },
+				variables: { owner_profile_id: getProfileId(user) },
 			};
 			const response = await dataService.query(queryInfo);
 			return get(response, 'data.app_collections', []);

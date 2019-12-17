@@ -1,7 +1,6 @@
-import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
 
 import {
 	Avatar,
@@ -27,10 +26,11 @@ import {
 	isLoggedIn,
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { selectLogin } from '../../../authentication/store/selectors';
+import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
 import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 import { SETTINGS_PATH } from '../../../settings/settings.const';
+import { AppState } from '../../../store';
 import toastService from '../../services/toast-service';
 import { NavigationItem } from '../../types';
 
@@ -38,7 +38,7 @@ import './Navigation.scss';
 import LoginOptionsDropdown from '../../../authentication/components/LoginOptionsDropdown';
 
 export interface NavigationProps extends RouteComponentProps {
-	userState?: Avo.Auth.LoginResponse;
+	user?: Avo.User.User;
 	loginMessage: LoginMessage;
 }
 
@@ -108,10 +108,7 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 				{
 					label: (
 						<div className="c-navbar-profile-dropdown-button">
-							<Avatar
-								initials={getProfileInitials(userState)}
-								name={getFirstName(userState) || ''}
-							/>
+							<Avatar initials={getProfileInitials(user)} name={getFirstName(user) || ''} />
 							<Icon name="caret-down" size="small" />
 						</div>
 					),
@@ -302,9 +299,9 @@ const Navigation: FunctionComponent<NavigationProps> = ({
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	loginMessage: get(state, 'data.loginMessage'),
-	loginState: selectLogin(state),
+const mapStateToProps = (state: AppState) => ({
+	loginMessage: selectLoginMessage(state),
+	user: selectUser(state),
 });
 
-export default withRouter(connect(mapStateToProps)(Navigation));
+export default connect(mapStateToProps)(Navigation);

@@ -1,8 +1,7 @@
 import { History, Location } from 'history';
 import queryString from 'querystring';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { match, withRouter } from 'react-router';
-import { RouteConfigComponentProps } from 'react-router-config';
+import { match, RouteComponentProps, withRouter } from 'react-router';
 
 import { Blankslate, Container, IconName } from '@viaa/avo2-components';
 
@@ -11,7 +10,7 @@ interface ErrorViewQueryParams {
 	icon?: IconName;
 }
 
-interface ErrorViewProps extends RouteConfigComponentProps {
+interface ErrorViewProps extends RouteComponentProps {
 	message?: string;
 	icon?: IconName;
 	children?: ReactNode;

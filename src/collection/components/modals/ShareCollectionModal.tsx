@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { connect } from 'react-redux';
 
 import {
 	Button,
@@ -17,13 +18,17 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { selectUser } from '../../../authentication/store/selectors';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService from '../../../shared/services/toast-service';
+import { AppState } from '../../../store';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 
-interface ShareCollectionModalProps {
+interface ShareCollectionModalProps extends DefaultSecureRouteProps {
 	isOpen: boolean;
 	onClose: (collection?: Avo.Collection.Collection) => void;
 	setIsPublic: (value: any) => void;
@@ -48,6 +53,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	isOpen,
 	collection,
 	setIsPublic,
+	user,
 }) => {
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
@@ -93,14 +99,17 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			closeModal(newCollection);
 
 			// Public status changed => log as event
-			trackEvents({
-				object: String(collection.id),
-				object_type: 'collections',
-				message: `Gebruiker ${getProfileName()} heeft de collectie ${collection.id} ${
-					isPublished ? 'gepubliceerd' : 'gedepubliceerd'
-				}`,
-				action: isPublished ? 'publish' : 'unpublish',
-			});
+			trackEvents(
+				{
+					object: String(collection.id),
+					object_type: 'collections',
+					message: `Gebruiker ${getProfileName(user)} heeft de collectie ${collection.id} ${
+						isPublished ? 'gepubliceerd' : 'gedepubliceerd'
+					}`,
+					action: isPublished ? 'publish' : 'unpublish',
+				},
+				user
+			);
 		} catch (err) {
 			toastService.danger('De aanpassingen kunnen niet worden opgeslagen');
 		}
