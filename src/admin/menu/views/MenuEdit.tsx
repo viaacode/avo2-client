@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { ValueType } from 'react-select';
 
 import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
@@ -19,7 +19,7 @@ import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 import { fetchMenuItemById, fetchMenuItemsByPlacement } from '../menu.services';
 import { MenuEditForm, MenuEditPageType, MenuEditParams } from '../menu.types';
 
-interface MenuEditProps extends RouteComponentProps<MenuEditParams> {}
+interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const { menu: menuParentId, id: menuItemId } = match.params;
@@ -208,4 +208,4 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	);
 };
 
-export default withRouter(MenuEdit);
+export default MenuEdit;

@@ -1,7 +1,6 @@
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useState } from 'react';
 import { withApollo } from 'react-apollo';
-import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
@@ -25,6 +24,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
 import { WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
@@ -35,7 +35,7 @@ import { CutFragmentModal, FragmentAdd } from '../';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
 import { getFragmentProperty, isMediaFragment } from '../../helpers';
 
-interface FragmentEditProps extends RouteComponentProps {
+interface FragmentEditProps extends DefaultSecureRouteProps {
 	index: number;
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
@@ -342,4 +342,4 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	);
 };
 
-export default withRouter(withApollo(FragmentEdit));
+export default withApollo(FragmentEdit);

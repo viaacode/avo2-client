@@ -2,7 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ClientEvent } from '@viaa/avo2-types/types/event-logging/types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { getEnv } from '../helpers/env';
+import { getEnv } from '../helpers';
 
 interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;
@@ -11,32 +11,39 @@ interface MinimalClientEvent {
 	message: any; // user played item xxx on avo
 }
 
-export function trackEvents(events: MinimalClientEvent[] | MinimalClientEvent) {
-	let eventsArray: MinimalClientEvent[];
-	if (Array.isArray(events)) {
-		eventsArray = events;
-	} else {
-		eventsArray = [events];
-	}
-	const eventLogEntries = eventsArray.map(
-		(event: MinimalClientEvent): ClientEvent => {
-			return {
-				occurred_at: new Date().toISOString(),
-				source_url: window.location.href, // url when the event was triggered
-				subject: getProfileId(), // Entity making causing the event
-				subject_type: 'user_uuid',
-				...event,
-			};
+export function trackEvents(
+	events: MinimalClientEvent[] | MinimalClientEvent,
+	user: Avo.User.User
+) {
+	try {
+		let eventsArray: MinimalClientEvent[];
+		if (Array.isArray(events)) {
+			eventsArray = events;
+		} else {
+			eventsArray = [events];
 		}
-	);
-	fetch(`${getEnv('PROXY_URL')}/event-logging`, {
-		method: 'POST',
-		body: JSON.stringify(eventLogEntries),
-		credentials: 'include',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	}).catch((err: any) => {
-		console.error('Failed to log events to database', { eventLogEntries, innerException: err });
-	});
+		const eventLogEntries = eventsArray.map(
+			(event: MinimalClientEvent): ClientEvent => {
+				return {
+					occurred_at: new Date().toISOString(),
+					source_url: window.location.href, // url when the event was triggered
+					subject: getProfileId(user), // Entity making causing the event
+					subject_type: 'user_uuid',
+					...event,
+				};
+			}
+		);
+		fetch(`${getEnv('PROXY_URL')}/event-logging`, {
+			method: 'POST',
+			body: JSON.stringify(eventLogEntries),
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}).catch((err: any) => {
+			console.error('Failed to log events to database', { eventLogEntries, innerException: err });
+		});
+	} catch (err) {
+		console.error('Failed to log event to the server', err, { events });
+	}
 }

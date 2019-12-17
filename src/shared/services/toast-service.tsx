@@ -2,8 +2,7 @@ import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { toast, ToastOptions } from 'react-toastify';
 
-import { Alert, Spacer } from '@viaa/avo2-components';
-import { AlertProps } from '@viaa/avo2-components/dist/components/Alert/Alert';
+import { Alert, AlertProps, Spacer } from '@viaa/avo2-components';
 
 export enum ToastType {
 	DANGER = 'danger',
