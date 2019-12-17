@@ -1,6 +1,6 @@
+import { useMutation } from '@apollo/react-hooks';
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import React, { ChangeEvent, FunctionComponent, ReactText, useEffect, useState } from 'react';
 
 import {
 	Alert,
@@ -12,7 +12,6 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	Heading,
 	Icon,
 	Select,
 	Spacer,
@@ -23,6 +22,12 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import {
+	getProfile,
+	getProfileAlias,
+	getProfileId,
+} from '../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { SEARCH_PATH } from '../../search/search.const';
@@ -36,26 +41,49 @@ import {
 import toastService from '../../shared/services/toast-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 
-export interface ProfileProps extends RouteComponentProps {}
+import { DELETE_PROFILE_OBJECTS, UPDATE_PROFILE_INFO } from '../settings.gql';
+import { updateProfileInfo } from '../settings.service';
 
-const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
-	const [profile, setProfile] = useState<any>({});
+export interface ProfileProps extends DefaultSecureRouteProps {}
+
+const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) => {
+	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
+		label: enumLabel,
+		value: enumLabel,
+	});
+	const gqlOrganizationToSelectOption = (org: {
+		organizationName: string;
+		unitAddress: string;
+	}): TagInfo => ({
+		label: `${org.organizationName} - ${org.unitAddress}`,
+		value: `${org.organizationName} - ${org.unitAddress}`,
+	});
 	const [cities, setCities] = useState<string[]>([]);
 	const [selectedCity, setSelectedCity] = useState<string>('');
 	const [organizations, setOrganizations] = useState<ClientEducationOrganization[]>([]);
 	const [organizationsLoadingState, setOrganizationsLoadingState] = useState<
 		'loading' | 'loaded' | 'error'
 	>('loaded');
-	const [selectedOrganizations, setSelectedOrganizations] = useState<ClientEducationOrganization[]>(
-		[]
-	);
-
 	// Cache organizations since the user will probably select multiple schools in the same city
 	const [organizationsCache, setOrganizationsCache] = useState<{
 		[cityAndZipCode: string]: ClientEducationOrganization[];
 	}>({});
-	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>([]);
-	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>([]);
+	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
+		get(user, 'profile.educationLevels', []).map(gqlEnumToSelectOption)
+	);
+	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>(
+		get(user, 'profile.subjects', []).map(gqlEnumToSelectOption)
+	);
+	const [selectedOrganizations, setSelectedOrganizations] = useState<ClientEducationOrganization[]>(
+		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)
+	);
+	const [alias, setAlias] = useState<string>(getProfileAlias(user));
+	const [avatar, setAvatar] = useState<string | null>(getProfile(user).avatar);
+	const [bio, setBio] = useState<string | null>((getProfile(user) as any).bio);
+	const [func, setFunc] = useState<string | null>((getProfile(user) as any).function);
+
+	const [triggerProfileUpdate] = useMutation(UPDATE_PROFILE_INFO);
+	const [triggerProfileObjectsDelete] = useMutation(DELETE_PROFILE_OBJECTS);
 
 	useEffect(() => {
 		fetchCities()
@@ -100,15 +128,37 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 		})();
 	}, [organizationsCache, selectedOrganizations, selectedCity]);
 
-	const updateProfileProp = (value: string, prop: string) => {
-		setProfile({ ...profile, [prop]: value });
-	};
+	const saveProfileChanges = async () => {
+		try {
+			const profileId: string = getProfileId(user);
+			await updateProfileInfo(triggerProfileObjectsDelete, triggerProfileUpdate, getProfile(user), {
+				alias,
+				avatar,
+				bio,
+				educationLevels: selectedEducationLevels.map(option => ({
+					profile_id: profileId,
+					key: option.value.toString(),
+				})),
+				subjects: selectedSubjects.map(option => ({
+					profile_id: profileId,
+					key: option.value.toString(),
+				})),
+				organizations: selectedOrganizations.map(option => ({
+					profile_id: profileId,
+					organization_id: option.organizationId,
+					unit_id: option.unitId || null,
+				})),
+				function: func, // This database field naming isn't ideal
+			});
 
-	const saveProfileChanges = () => {
-		toastService.info('Nog niet geimplementeerd');
-
-		if (isCompleteProfileStep()) {
-			redirectToClientPage(get(location, 'state.from.pathname', SEARCH_PATH.SEARCH), history);
+			if (isCompleteProfileStep()) {
+				redirectToClientPage(get(location, 'state.from.pathname', SEARCH_PATH.SEARCH), history);
+			} else {
+				toastService.success('Opgeslagen');
+			}
+		} catch (err) {
+			console.error(err);
+			toastService.danger('Het opslaan van de profiel information is mislukt.');
 		}
 	};
 
@@ -167,6 +217,11 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 		// );
 	};
 
+	const handleAvatarOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
+		setAvatar('');
+		toastService.info('Nog niet geïmplementeerd');
+	};
+
 	const renderProfile = (data: ContextAndClassificationData) => {
 		const educationLevels: string[] = (get(data, 'lookup_enum_lom_context', []) as {
 			description: string;
@@ -185,25 +240,42 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 									<Form type="standard">
 										{!isCompleteProfileStep() && (
 											<>
-												<FormGroup label="Functie" labelFor="function">
-													<TextInput id="functie" placeholder="bv: Leerkracht basis onderwijs" />
+												<FormGroup label="Nickname" labelFor="alias">
+													<TextInput
+														id="alias"
+														placeholder="Een unieke gebruikersnaam"
+														value={alias}
+														onChange={setAlias}
+													/>
+												</FormGroup>
+												<FormGroup label="Functie" labelFor="func">
+													<TextInput
+														id="func"
+														placeholder="bv: Leerkracht basis onderwijs"
+														value={func || undefined}
+														onChange={setFunc}
+													/>
 												</FormGroup>
 												<FormGroup label="Profielfoto" labelFor="profilePicture">
 													<Box>
 														{/* TODO replace with components from component repo */}
 														<Avatar initials="XX" />
 														<Icon name="user" size="large" />
-														<input type="file" placeholder="Profielfoto uploaden" />
+														<input
+															type="file"
+															placeholder="Profielfoto uploaden"
+															onChange={handleAvatarOnChange}
+														/>
 													</Box>
 												</FormGroup>
 												<FormGroup label="Bio" labelFor="bio">
 													<TextArea
 														name="bio"
-														value={profile.bio}
 														id="bio"
 														height="medium"
 														placeholder="Een korte beschrijving van jezelf..."
-														onChange={(value: string) => updateProfileProp(value, 'bio')}
+														value={bio || undefined}
+														onChange={setBio}
 													/>
 												</FormGroup>
 											</>
@@ -266,21 +338,6 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 												)}
 											</Spacer>
 										</FormGroup>
-										{/*<FormGroup label="Vakken" labelFor="subjectsId">*/}
-										{/*	<TagsInput*/}
-										{/*		options={[*/}
-										{/*			{*/}
-										{/*				label: 'Aardrijkskunde',*/}
-										{/*				value: 'aardrijkskunde',*/}
-										{/*			},*/}
-										{/*			{*/}
-										{/*				label: 'Wiskunde',*/}
-										{/*				value: 'wiskunde',*/}
-										{/*			},*/}
-										{/*		]}*/}
-										{/*		onChange={(values: TagInfo[]) => {}}*/}
-										{/*	/>*/}
-										{/*</FormGroup>*/}
 										<Button
 											label={isCompleteProfileStep() ? 'Inloggen' : 'Opslaan'}
 											type="primary"
@@ -299,11 +356,11 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 										</Box>
 									) : (
 										<>
-											<Box>
-												<Heading type="h4">Volledigheid profiel</Heading>
-												{/* TODO replace with components from component repo */}
-												<div className="c-progress-bar" />
-											</Box>
+											{/*<Box>*/}
+											{/*	<Heading type="h4">Volledigheid profiel</Heading>*/}
+											{/*	/!* TODO replace with components from component repo *!/*/}
+											{/*	<div className="c-progress-bar" />*/}
+											{/*</Box>*/}
 											<Spacer margin={['top', 'bottom']}>
 												<Box>
 													<p>
@@ -327,4 +384,4 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history }) => {
 	return <DataQueryComponent query={GET_CLASSIFICATIONS_AND_SUBJECTS} renderData={renderProfile} />;
 };
 
-export default withRouter(Profile);
+export default Profile;
