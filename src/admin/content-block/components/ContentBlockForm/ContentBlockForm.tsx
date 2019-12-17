@@ -16,7 +16,7 @@ interface ContentBlockFormProps {
 	config: ContentBlockConfig;
 	index: number;
 	length: number;
-	onSave: (formState: ContentBlockFormStates) => void;
+	onSave: (formState: ContentBlockFormStates | ContentBlockFormStates[]) => void;
 }
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
@@ -25,7 +25,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	length,
 	onSave,
 }) => {
-	const [formState, setFormState] = useState<ContentBlockFormStates>(config.initialState);
+	const [formState, setFormState] = useState<ContentBlockFormStates | ContentBlockFormStates[]>(
+		config.initialState
+	);
 	const [formErrors, setFormErrors] = useState<{ [key: string]: string[] }>({});
 
 	// Methods
@@ -45,7 +47,13 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			const validator = get(field, 'validator');
 
 			if (validator) {
-				const errorArray = validator(formState[fieldKey as keyof ContentBlockFormStates]);
+				const errorArray = [];
+
+				Array.isArray(formState)
+					? formState.map(singleFormState =>
+							errorArray.push(validator(singleFormState[fieldKey as keyof ContentBlockFormStates]))
+					  )
+					: errorArray.push(validator(formState[fieldKey as keyof ContentBlockFormStates]));
 
 				if (errorArray.length) {
 					errors[fieldKey] = errorArray;
@@ -69,7 +77,11 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	};
 
 	// Render
-	const renderFieldEditor = (fieldKey: string, cb: ContentBlockField) => {
+	const renderFieldEditor = (
+		fieldKey: string,
+		cb: ContentBlockField,
+		state: ContentBlockFormStates
+	) => {
 		const EditorComponent = EDITOR_TYPES_MAP[cb.editorType];
 
 		switch (cb.editorType) {
@@ -79,33 +91,44 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						{...cb.editorProps}
 						name={fieldKey}
 						onChange={(value: any) => handleChange(fieldKey, value)}
-						value={formState[fieldKey as keyof ContentBlockFormStates]}
+						value={state[fieldKey as keyof ContentBlockFormStates]}
 					/>
 				);
 		}
 	};
 
-	const renderFormGroups = (cb: ContentBlockConfig) => {
-		return (
-			<>
-				<Heading type="h4">
-					{cb.name}{' '}
-					<span className="u-text-muted">
-						({index}/{length})
-					</span>
-				</Heading>
-				{Object.keys(cb.fields).map((key: string) => (
-					<FormGroup
-						key={`${index}-${cb.name}-${key}`}
-						label={cb.fields[key].label}
-						error={formErrors[key]}
-					>
-						{renderFieldEditor(key, cb.fields[key])}
-					</FormGroup>
-				))}
-			</>
-		);
-	};
+	const renderFormGroups = (cb: ContentBlockConfig) => (
+		<>
+			<Heading type="h4">
+				{cb.name}{' '}
+				<span className="u-text-muted">
+					({index}/{length})
+				</span>
+			</Heading>
+			{Array.isArray(formState)
+				? formState.map(singleFormState =>
+						Object.keys(cb.fields).map((key: string) => (
+							<FormGroup
+								key={`${index}-${cb.name}-${key}`}
+								label={cb.fields[key].label}
+								error={formErrors[key]}
+							>
+								{renderFieldEditor(key, cb.fields[key], singleFormState)}
+							</FormGroup>
+						))
+				  )
+				: Object.keys(cb.fields).map((key: string) => (
+						<FormGroup
+							key={`${index}-${cb.name}-${key}`}
+							label={cb.fields[key].label}
+							error={formErrors[key]}
+						>
+							{renderFieldEditor(key, cb.fields[key], formState)}
+						</FormGroup>
+				  ))}
+			{Array.isArray(formState) && <Button icon="add" type="secondary" onClick={() => {}} />}
+		</>
+	);
 
 	return (
 		<Form className="c-content-block-form" type="horizontal">

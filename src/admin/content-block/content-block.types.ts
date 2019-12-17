@@ -74,7 +74,7 @@ export type ContentBlockField = {
 
 export interface ContentBlockConfig {
 	name: string;
-	initialState: () => ContentBlockFormStates;
+	initialState: () => ContentBlockFormStates | ContentBlockFormStates[];
 	fields: {
 		[key: string]: ContentBlockField;
 	};

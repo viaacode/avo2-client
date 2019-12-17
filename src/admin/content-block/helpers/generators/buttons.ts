@@ -12,10 +12,16 @@ import {
 	TEXT_FIELD,
 } from './defaults';
 
-export const INITIAL_BUTTONS_BLOCK_STATE = (): ButtonsBlockFormState => ({
-	label: '',
-	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons),
-});
+export const INITIAL_BUTTONS_BLOCK_STATE = (): ButtonsBlockFormState[] => [
+	{
+		label: '',
+		...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons),
+	},
+	{
+		label: '',
+		...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons),
+	},
+];
 
 export const BUTTONS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Knop(pen)',
