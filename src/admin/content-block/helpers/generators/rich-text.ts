@@ -9,7 +9,7 @@ import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS } from './defaults';
 
 export const INITIAL_RICH_TEXT_BLOCK_STATE = (): RichTextBlockFormState => ({
 	text: '',
-	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading),
+	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.RichText),
 });
 
 export const RICH_TEXT_BLOCK_CONFIG = (): ContentBlockConfig => ({
@@ -19,6 +19,9 @@ export const RICH_TEXT_BLOCK_CONFIG = (): ContentBlockConfig => ({
 		content: {
 			label: 'Tekst',
 			editorType: ContentBlockEditor.WYSIWYG,
+			editorProps: {
+				id: 'rte',
+			},
 			validator: (value: string) => {
 				const errorArray: string[] = [];
 
