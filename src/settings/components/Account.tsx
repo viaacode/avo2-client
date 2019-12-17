@@ -1,8 +1,5 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { compose } from 'redux';
-import React, { FunctionComponent, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -18,23 +15,17 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import {
-	getProfileStamboekNumber,
-	hasIdpLinked,
-} from '../../authentication/helpers/get-profile-info';
+import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
 import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
-import toastService from '../../shared/services/toast-service';
-import { redirectToServerSmartschoolLogin } from '../../authentication/helpers/redirects';
-import withUser from '../../shared/hocs/withUser';
 
 export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
 }
 
-const Account: FunctionComponent<AccountProps> = ({ location, user, ...props }) => {
+const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 	const getSsumAccountEditPage = () => {
 		// TODO replace this with a call to a proxy server route that forwards to the ssum page
 		// with the user already logged in and a redirect url back to this webpage after the user saves their changes

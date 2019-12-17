@@ -8,20 +8,12 @@ import {
 	Container,
 	FormGroup,
 	Heading,
-	Icon,
-	Grid,
-	RadioButton,
-	RadioButtonGroup,
 	Spacer,
 } from '@viaa/avo2-components';
 
-import { APP_PATH } from '../../../constants';
 import toastService from '../../../shared/services/toast-service';
 import { StamboekInput } from '../../components/StamboekInput';
-import {
-	redirectToClientPage,
-	redirectToServerArchiefRegistrationIdp,
-} from '../../helpers/redirects';
+import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
 export interface RegisterStamboekProps extends RouteComponentProps {}
 
@@ -42,9 +34,6 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 	...props
 }) => {
 	const [hasAcceptedConditions, setHasAcceptedConditions] = useState<boolean>(false);
-	const [intendsToHaveStamboekNumber, setIntendsToHaveStamboekNumber] = useState<
-		boolean | undefined
-	>(undefined);
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 
 	return (
@@ -68,47 +57,12 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 				</div>
 				<Spacer margin="top-large">
 					<FormGroup label="Lerarenkaart- of stamboeknummer" labelFor="stamboekInput">
-						<Spacer
-							className="m-stamboek-input-field-wrapper"
-							margin={['top-small', 'bottom-large']}
-						>
-							<TextInput
-								id="stamboekInput"
-								placeholder="00000000000-000000"
-								value={rawStamboekNumber}
-								onChange={setStamboekNumber}
-							/>
-							<Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
-								<TooltipTrigger>
-									<span>
-										<Icon className="a-info-icon" name="info" size="small" />
-									</span>
-								</TooltipTrigger>
-								<TooltipContent>
-									<Spacer margin={'small'}>
-										<Spacer margin="bottom-small">
-											<span>Je stamboek nummer staat op je lerarenkaart</span>
-										</Spacer>
-										<img
-											alt="Voorbeeld leeraren kaart"
-											className="a-stamboek-image"
-											src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
-										/>
-									</Spacer>
-								</TooltipContent>
-							</Tooltip>
-							<Spacer margin="top-small">
-								{STAMBOEK_MESSAGES[stamboekValidationStatus].status && (
-									<Alert type={STAMBOEK_MESSAGES[stamboekValidationStatus].status}>
-										<div>
-											<Spacer margin="bottom-small">
-												{STAMBOEK_MESSAGES[stamboekValidationStatus].message}
-											</Spacer>
-										</div>
-									</Alert>
-								)}
-							</Spacer>
-						</Spacer>
+						<StamboekInput
+							onChange={setValidStamboekNumber}
+							history={history}
+							location={location}
+							{...props}
+						/>
 					</FormGroup>
 				</Spacer>
 				<Spacer margin={['bottom-large', 'top-large']}>
@@ -124,7 +78,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 					<Button
 						label="Account aanmaken"
 						type="primary"
-						disabled={stamboekValidationStatus !== 'VALID' || !hasAcceptedConditions}
+						disabled={!validStamboekNumber || !hasAcceptedConditions}
 						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
 					/>
 				</FormGroup>
