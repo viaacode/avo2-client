@@ -1,11 +1,4 @@
-import {
-	BlockRichText,
-	Heading,
-	Select,
-	SelectOption,
-	TextInput,
-	WYSIWYG,
-} from '@viaa/avo2-components';
+import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
 
 import { AlignSelect, ColorSelect } from './components';
 import {
@@ -42,11 +35,6 @@ export const EDITOR_TYPES_MAP = {
 	Select,
 	TextInput,
 	WYSIWYG,
-};
-
-export const CONTENT_BLOCK_COMPONENT_MAP = {
-	Heading,
-	RichText: BlockRichText,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
