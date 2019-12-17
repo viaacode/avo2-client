@@ -50,4 +50,4 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 	);
 };
 
-export default withRouter(PupilOrTeacherDropdown);
+export default PupilOrTeacherDropdown;
