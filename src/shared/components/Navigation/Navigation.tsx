@@ -35,6 +35,7 @@ import toastService from '../../services/toast-service';
 import { NavigationItem } from '../../types';
 
 import './Navigation.scss';
+import LoginOptionsDropdown from '../../../authentication/components/LoginOptionsDropdown';
 
 export interface NavigationProps extends RouteComponentProps {
 	user?: Avo.User.User;
@@ -44,15 +45,18 @@ export interface NavigationProps extends RouteComponentProps {
 /**
  * Main navigation bar component
  * @param history
+ * @param location
+ * @param match
  * @param userState
  * @param loginMessage
  * @constructor
  */
-export const Navigation: FunctionComponent<NavigationProps> = ({
+const Navigation: FunctionComponent<NavigationProps> = ({
 	history,
+	location,
+	match,
+	userState,
 	loginMessage,
-	user,
-	...rest
 }) => {
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -128,10 +132,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		return [
 			{
 				label: 'Account aanmaken',
-				component: <PupilOrTeacherDropdown history={history} {...rest} />,
+				component: <PupilOrTeacherDropdown history={history} location={location} match={match} />,
 				key: 'createAccount',
 			},
-			{ label: 'Aanmelden', location: APP_PATH.REGISTER_OR_LOGIN, key: 'login' },
+			{
+				label: 'Inloggen',
+				component: <LoginOptionsDropdown history={history} location={location} match={match} />,
+				key: 'login',
+			},
 		];
 	};
 
