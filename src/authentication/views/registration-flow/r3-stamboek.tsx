@@ -32,8 +32,6 @@ import {
 	redirectToServerArchiefRegistrationIdp,
 } from '../../helpers/redirects';
 
-import './r3-stamboek.scss';
-
 export interface RegisterStamboekProps extends RouteComponentProps {}
 
 type validationStatuses =

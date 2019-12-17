@@ -38,6 +38,7 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
@@ -143,7 +144,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							title={relatedItem.dc_title}
-							onClick={() => redirectToClientPage(`/item/${relatedItem.id}`, history)}
+							onClick={() =>
+								redirectToClientPage(buildLink(APP_PATH.ITEM, { id: relatedItem.id }), history)
+							}
 							category={englishContentType}
 							orientation="horizontal"
 						>
