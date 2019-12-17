@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { startCase } from 'lodash-es';
+import { get, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
@@ -14,81 +14,71 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
-import { fetchMenuItemById, fetchMenuItems, fetchMenuItemsByPlacement } from '../menu.services';
-import { MenuEditFormState, MenuEditPageType, MenuEditParams } from '../menu.types';
+import { fetchMenuItemById, fetchMenuItems } from '../menu.services';
+import { MenuEditFormState, MenuEditParams } from '../menu.types';
 
 interface MenuEditProps extends RouteComponentProps<MenuEditParams> {}
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const { menu: menuParentId, id: menuItemId } = match.params;
+	const menuName = startCase(menuParentId);
 
 	// Hooks
-	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM);
-	const [pageType, setPageType] = useState<MenuEditPageType>(menuItemId ? 'edit' : 'create');
+	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
 	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
 	const [formErrors, setFormErrors] = useState<Partial<MenuEditFormState>>({});
-	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
 
 	// Fetch menu items depending on menu parent param
+	// This is necessary for populating the menu parent options for our form
 	useEffect(() => {
-		if (menuParentId) {
-			fetchMenuItemsByPlacement(menuParentId).then(menuItemsByPosition => {
-				if (menuItemsByPosition && menuItemsByPosition.length) {
-					setMenuItems(menuItemsByPosition);
-				}
-			});
-		} else {
-			fetchMenuItems().then(menuItemsData => {
-				if (menuItemsData && menuItemsData.length) {
-					setMenuItems(menuItemsData);
-				}
-			});
-		}
+		fetchMenuItems(menuParentId).then(menuItemsByPosition => {
+			if (menuItemsByPosition && menuItemsByPosition.length) {
+				setMenuItems(menuItemsByPosition);
+			} else {
+				// Go back to overview if no menu items are present
+				toastService.danger(`Er werden geen navigatie items gevonden voor ${menuName}`);
+				history.push(MENU_PATH.MENU);
+			}
+		});
 	}, [menuParentId]);
 
-	// Set correct page type based on menu item id param
+	// Fetch menu item by id
 	useEffect(() => {
 		if (menuItemId) {
-			setPageType('edit');
 			setIsLoading(true);
 			// Fetch menu item by id so we can populate our form for editing
-			fetchMenuItemById(Number(menuItemId)).then((menuItem: Avo.Menu.Menu | null) => {
-				if (menuItem) {
-					// Remove unnecessary props for saving
-					delete (menuItem as any).__typename;
+			fetchMenuItemById(Number(menuItemId))
+				.then((menuItem: Avo.Menu.Menu | null) => {
+					if (menuItem) {
+						// Remove unnecessary props for saving
+						delete (menuItem as any).__typename;
 
-					setInitialMenuItem(menuItem);
-					setMenuForm({
-						description: menuItem.description || '',
-						icon: menuItem.icon_name as IconName,
-						label: menuItem.label,
-						link: menuItem.link_target || '',
-						placement: menuItem.placement,
-					});
+						setInitialMenuItem(menuItem);
+						setMenuForm({
+							description: menuItem.description || '',
+							icon: menuItem.icon_name as IconName,
+							label: menuItem.label,
+							link: menuItem.link_target || '',
+							placement: menuItem.placement,
+						});
+					}
+				})
+				.finally(() => {
 					setIsLoading(false);
-				}
-			});
-		} else {
-			setPageType('create');
-			setIsLoading(false);
+				});
 		}
-	}, [menuItemId]);
-
-	// Retrigger form validation onChange when errors are present
-	useEffect(() => {
-		if (Object.keys(formErrors).length) {
-			handleValidation();
-		}
-	}, [menuForm]); // eslint-disable-line
+	}, [menuItemId, menuParentId]);
 
 	// Computed
+	const pageType = menuItemId ? 'edit' : 'create';
 	const pageTitle = menuParentId
-		? `${startCase(menuParentId)}: item ${PAGE_TYPES_LANG[pageType]}`
+		? `${menuName}: item ${PAGE_TYPES_LANG[pageType]}`
 		: 'Navigatie toevoegen';
 	const menuParentOptions = menuItems.reduce(
 		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
@@ -122,7 +112,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		const menuItem: Partial<Partial<Avo.Menu.Menu>> = {
+		const menuItem: Partial<Avo.Menu.Menu> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			link_target: menuForm.link,
@@ -134,7 +124,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				variables: {
 					menuItem: {
 						...menuItem,
-						description: menuForm.description,
+						// Get description from existing items or use form description field
+						description: get(menuItems, '[0].description', menuForm.description),
 						position: menuItems.length,
 					},
 				},
@@ -175,7 +166,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuForm.placement });
 	};
 
-	function handleValidation(): boolean {
+	const handleValidation = (): boolean => {
 		const errors: Partial<MenuEditFormState> = {};
 
 		if (!menuParentId && !menuForm.placement) {
@@ -193,9 +184,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		setFormErrors(errors);
 
 		return Object.keys(errors).length === 0;
-	}
+	};
 
-	const navigateBack = () => {
+	const navigateBack = (): void => {
 		if (menuParentId) {
 			navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
 		} else {

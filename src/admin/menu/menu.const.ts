@@ -26,13 +26,13 @@ export const MENU_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Objec
 	{ label: 'Zoek', value: 'search' },
 ]);
 
-export const INITIAL_MENU_FORM: MenuEditFormState = {
+export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => ({
+	placement,
 	description: '',
-	placement: '',
 	icon: '',
 	label: '',
 	link: '',
-};
+});
 
 export const PAGE_TYPES_LANG = {
 	create: 'toevoegen',

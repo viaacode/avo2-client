@@ -20,26 +20,13 @@ export const fetchMenuItemById = async (id: number): Promise<Avo.Menu.Menu | nul
 	}
 };
 
-export const fetchMenuItems = async (): Promise<Avo.Menu.Menu[] | null> => {
+export const fetchMenuItems = async (placement?: string): Promise<Avo.Menu.Menu[] | null> => {
 	try {
-		const response = await dataService.query({ query: GET_MENUS });
-		const menuItems: Avo.Menu.Menu[] | null = get(response, `data.${MENU_RESULT_PATH}`, null);
-
-		return menuItems;
-	} catch (err) {
-		console.error(`Failed to fetch menu items`);
-		return null;
-	}
-};
-
-export const fetchMenuItemsByPlacement = async (
-	placement: string
-): Promise<Avo.Menu.Menu[] | null> => {
-	try {
-		const response = await dataService.query({
-			query: GET_MENU_ITEMS_BY_PLACEMENT,
-			variables: { placement },
-		});
+		const queryOptions = {
+			query: placement ? GET_MENU_ITEMS_BY_PLACEMENT : GET_MENUS,
+			variables: placement ? { placement } : {},
+		};
+		const response = await dataService.query(queryOptions);
 		const menuItems: Avo.Menu.Menu[] | null = get(response, `data.${MENU_RESULT_PATH}`, null);
 
 		return menuItems;
