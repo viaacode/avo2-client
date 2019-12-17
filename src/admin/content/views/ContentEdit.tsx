@@ -6,6 +6,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
+	ButtonToolbar,
 	Container,
 	Flex,
 	Header,
@@ -209,8 +210,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 			<AdminLayoutHeader>
 				<Header category="audio" title={pageTitle} showMetaData={false}>
 					<HeaderButtons>
-						<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
-						<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
+						<ButtonToolbar>
+							<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
+							<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
+						</ButtonToolbar>
 					</HeaderButtons>
 				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
