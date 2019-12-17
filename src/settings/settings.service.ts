@@ -24,27 +24,38 @@ interface UpdateProfileValues {
 }
 
 export async function updateProfileInfo(
+	triggerProfileObjectsDelete: any,
 	triggerProfileUpdate: any,
 	profile: Avo.User.Profile,
 	variables: Partial<UpdateProfileValues>
 ): Promise<void> {
-	const completeVars = {
-		educationLevels: (profile as any).contexts || [],
-		subjects: (profile as any).classifications || [],
-		organizations: (profile as any).organizations || [],
-		alias: profile.alias,
-		alternativeEmail: profile.alternative_email,
-		avatar: profile.avatar,
-		bio: (profile as any).bio || null,
-		function: (profile as any).function || null,
-		location: profile.location || 'nvt',
-		stamboek: profile.stamboek,
-		...variables, // Override current profile variables with the variables in the parameter
-	};
-	await triggerProfileUpdate({
-		variables: {
-			profileId: profile.id,
-			...completeVars,
-		},
-	});
+	try {
+		const completeVars = {
+			educationLevels: (profile as any).contexts || [],
+			subjects: (profile as any).classifications || [],
+			organizations: (profile as any).organizations || [],
+			alias: profile.alias,
+			alternativeEmail: profile.alternative_email,
+			avatar: profile.avatar,
+			bio: (profile as any).bio || null,
+			function: (profile as any).function || null,
+			location: profile.location || 'nvt',
+			stamboek: profile.stamboek,
+			...variables, // Override current profile variables with the variables in the parameter
+		};
+		await triggerProfileObjectsDelete({
+			variables: {
+				profileId: profile.id,
+			},
+		});
+		await triggerProfileUpdate({
+			variables: {
+				profileId: profile.id,
+				...completeVars,
+			},
+		});
+	} catch (err) {
+		console.error('Failed to update profile information', err, { profile, variables });
+		throw err;
+	}
 }

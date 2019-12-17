@@ -19,6 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import LoginOptionsDropdown from '../../../authentication/components/LoginOptionsDropdown';
 import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
 import {
 	getFirstName,
@@ -35,7 +36,6 @@ import toastService from '../../services/toast-service';
 import { NavigationItem } from '../../types';
 
 import './Navigation.scss';
-import LoginOptionsDropdown from '../../../authentication/components/LoginOptionsDropdown';
 
 export interface NavigationProps extends RouteComponentProps {
 	user?: Avo.User.User;
@@ -51,12 +51,12 @@ export interface NavigationProps extends RouteComponentProps {
  * @param loginMessage
  * @constructor
  */
-const Navigation: FunctionComponent<NavigationProps> = ({
+export const Navigation: FunctionComponent<NavigationProps> = ({
 	history,
 	location,
 	match,
-	userState,
 	loginMessage,
+	user,
 }) => {
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
