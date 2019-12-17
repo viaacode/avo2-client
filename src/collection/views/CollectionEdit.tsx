@@ -1,10 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, eq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
 import { Prompt, withRouter } from 'react-router';
-import { compose } from 'redux';
 
 import {
 	Button,
