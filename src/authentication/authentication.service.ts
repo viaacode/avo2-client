@@ -1,13 +1,11 @@
 import { Tickets } from 'node-zendesk';
-import { getEnv } from '../shared/helpers';
 import queryString from 'query-string';
+import { getEnv } from '../shared/helpers';
 
 import {
 	StamboekValidationStatuses,
 	ValidateStamboekResponse,
 } from '@viaa/avo2-types/types/stamboek/types';
-
-import { getEnv } from '../shared/helpers';
 
 const stamboekValidationCache: {
 	[stamboekNumber: string]: boolean;

@@ -15,9 +15,6 @@ import toastService from '../../../shared/services/toast-service';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
-import './r3-stamboek.scss';
-import { Link } from 'react-router-dom';
-
 export interface RegisterStamboekProps extends RouteComponentProps {}
 
 export type StamboekValidationStatus =
