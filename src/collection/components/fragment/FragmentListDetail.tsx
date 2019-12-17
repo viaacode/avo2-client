@@ -23,7 +23,7 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
 const FragmentListDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragments,
 	showDescription,
-	...props
+	...rest
 }) => {
 	const renderCollectionFragments = () =>
 		sortBy(collectionFragments, 'position').map((collectionFragment: Avo.Collection.Fragment) => {
@@ -35,7 +35,7 @@ const FragmentListDetail: FunctionComponent<FragmentDetailProps> = ({
 					<FragmentDetail
 						collectionFragment={collectionFragment}
 						showDescription={showDescription}
-						{...props}
+						{...rest}
 					/>
 				</li>
 			);

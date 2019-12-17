@@ -1,6 +1,8 @@
 import { get } from 'lodash-es';
-import { getProfileId } from './get-profile-info';
+
 import { Avo } from '@viaa/avo2-types';
+
+import { getProfileId } from './get-profile-info';
 
 type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
 

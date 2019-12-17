@@ -69,7 +69,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 	history,
 	match,
 	user,
-	...props
+	...rest
 }) => {
 	// State
 	const [collectionId] = useState<string | undefined>(match.params.id);
@@ -406,7 +406,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 								history={history}
 								match={match}
 								user={user}
-								{...props}
+								{...rest}
 							/>
 						);
 					case 'metadata':
@@ -470,7 +470,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 					history={history}
 					match={match}
 					user={user}
-					{...props}
+					{...rest}
 				/>
 				<DeleteObjectModal
 					title={`Ben je zeker dat de collectie "${title}" wil verwijderen?`}
@@ -507,8 +507,4 @@ const mapStateToProps = (state: AppState) => ({
 	user: selectUser(state),
 });
 
-export default compose(
-	withRouter,
-	withApollo,
-	connect(mapStateToProps)
-)(CollectionEdit) as FunctionComponent<CollectionEditProps>;
+export default withRouter(connect(mapStateToProps)(CollectionEdit));

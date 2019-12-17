@@ -42,7 +42,7 @@ export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string 
 	collections: Avo.Collection.Collection | null;
 }
 
-const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ...props }) => {
+const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ...rest }) => {
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
 	const [tabId, setTabId] = useState<string>(match.params.tabId || COLLECTIONS_ID);
@@ -63,7 +63,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 					history={history}
 					match={match}
 					user={user}
-					{...props}
+					{...rest}
 				/>
 			),
 			// TODO: DISABLED_FEATURE filter
@@ -91,7 +91,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 					history={history}
 					match={match}
 					user={user}
-					{...props}
+					{...rest}
 				/>
 			),
 		},

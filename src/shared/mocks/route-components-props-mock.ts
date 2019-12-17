@@ -1,4 +1,4 @@
-import { Href, UnregisterCallback } from 'history';
+import { createBrowserHistory, Href, UnregisterCallback } from 'history';
 import { RouteComponentProps } from 'react-router';
 
 /**
@@ -14,33 +14,14 @@ export function getMockRouterProps<P>(data: P) {
 	};
 
 	const props: RouteComponentProps<P> = {
+		location,
 		match: {
 			isExact: true,
 			params: data,
 			path: '',
 			url: '',
 		},
-		location,
-		history: {
-			length: 2,
-			action: 'POP',
-			location,
-			push: () => {},
-			replace: () => {},
-			go: num => {},
-			goBack: () => {},
-			goForward: () => {},
-			block: t => {
-				return (null as unknown) as UnregisterCallback;
-			},
-			createHref: t => {
-				const temp: Href = '';
-				return temp;
-			},
-			listen: t => {
-				return (null as unknown) as UnregisterCallback;
-			},
-		},
+		history: createBrowserHistory(),
 		staticContext: {},
 	};
 

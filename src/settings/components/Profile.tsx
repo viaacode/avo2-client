@@ -132,7 +132,10 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 		try {
 			const profileId: string = getProfileId(user);
 			await updateProfileInfo(triggerProfileObjectsDelete, triggerProfileUpdate, getProfile(user), {
-				educationLevels: selectedEducationLevels.map((option: TagInfo) => ({
+				alias,
+				avatar,
+				bio,
+				educationLevels: selectedEducationLevels.map(option => ({
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
@@ -145,9 +148,6 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 					organization_id: option.organizationId,
 					unit_id: option.unitId || null,
 				})),
-				alias,
-				avatar,
-				bio,
 				function: func, // This database field naming isn't ideal
 			});
 

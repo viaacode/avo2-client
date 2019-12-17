@@ -2,6 +2,8 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
+import React, { FunctionComponent, useState } from 'react';
+import { RouteComponentProps } from 'react-router';
 
 import {
 	Alert,
@@ -16,11 +18,20 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import {
+	getProfileStamboekNumber,
+	hasIdpLinked,
+} from '../../authentication/helpers/get-profile-info';
+import {
+	redirectToServerLinkAccount,
+	redirectToServerUnlinkAccount,
+} from '../../authentication/helpers/redirects';
+import toastService from '../../shared/services/toast-service';
 import { redirectToServerSmartschoolLogin } from '../../authentication/helpers/redirects';
 import withUser from '../../shared/hocs/withUser';
 
 export interface AccountProps extends RouteComponentProps {
-	user?: Avo.User.User;
+	user: Avo.User.User;
 }
 
 const Account: FunctionComponent<AccountProps> = ({ location, user, ...props }) => {
@@ -62,12 +73,23 @@ const Account: FunctionComponent<AccountProps> = ({ location, user, ...props }) 
 									<div className="c-hr" />
 
 									<FormGroup label="Koppel je account met andere platformen">
-										<Button
-											className="c-button-smartschool"
-											icon="smartschool"
-											label="Link je smartschool account"
-											onClick={() => redirectToServerSmartschoolLogin(location)}
-										/>
+										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
+											<>
+												<span>Uw smartschool account is reeds gelinkt</span>
+												<Button
+													type="link"
+													label="unlink"
+													onClick={() => redirectToServerUnlinkAccount(location, 'SMARTSCHOOL')}
+												/>
+											</>
+										) : (
+											<Button
+												className="c-button-smartschool"
+												icon="smartschool"
+												label="Link je smartschool account"
+												onClick={() => redirectToServerLinkAccount(location, 'SMARTSCHOOL')}
+											/>
+										)}
 									</FormGroup>
 								</Form>
 							</Column>
@@ -81,7 +103,4 @@ const Account: FunctionComponent<AccountProps> = ({ location, user, ...props }) 
 		</>
 	);
 };
-export default compose(
-	withRouter,
-	withUser
-)(Account) as FunctionComponent<AccountProps>;
+export default Account;
