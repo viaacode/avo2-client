@@ -36,11 +36,20 @@ export interface HeadingBlockFormState extends DefaultContentBlock {
 }
 
 export interface RichTextBlockFormState extends DefaultContentBlock {
-	text: string;
+	content: string;
+}
+
+export interface RichTextTwoColumnsBlockFormState extends DefaultContentBlock {
+	firstColumnContent: string;
+	secondColumnContent: string;
 }
 
 // General config
-export type ContentBlockFormStates = HeadingBlockFormState | RichTextBlockFormState;
+export type ContentBlockFormStates =
+	| HeadingBlockFormState
+	| RichTextBlockFormState
+	| RichTextTwoColumnsBlockFormState;
+
 export type ContentBlockField = {
 	label: string;
 	editorType: ContentBlockEditor;
