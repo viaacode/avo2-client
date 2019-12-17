@@ -32,14 +32,17 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
+	buildLink,
 	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
@@ -145,7 +148,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							title={relatedItem.dc_title}
-							href={`/item/${relatedItem.id}`}
+							onClick={() =>
+								redirectToClientPage(buildLink(APP_PATH.ITEM, { id: relatedItem.id }), history)
+							}
 							category={englishContentType}
 							orientation="horizontal"
 						>
