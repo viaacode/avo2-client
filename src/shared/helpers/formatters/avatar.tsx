@@ -1,8 +1,7 @@
 import { get } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
-import { Avatar, AvatarList } from '@viaa/avo2-components';
-import { AvatarProps } from '@viaa/avo2-components/dist/components/Avatar/Avatar';
+import { Avatar, AvatarList, AvatarProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 const getProfile = (obj: Avo.User.Profile | Avo.User.User | null | undefined) => {
