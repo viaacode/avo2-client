@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Route } from 'react-router';
 
@@ -6,7 +7,7 @@ import { HOME_PATH } from './home.const';
 import { Home } from './views';
 
 export const renderHomeRoutes = (): ReactNode[] =>
-	window._ENV_.ENV === 'production'
+	get(window, '_ENV_.ENV') === 'production'
 		? [
 				<SecuredRoute
 					component={Home}

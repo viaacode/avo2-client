@@ -1,8 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
@@ -17,12 +14,12 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { selectLogin } from '../../../authentication/store/selectors';
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { getProfileId } from '../../../authentication/helpers/get-profile-info';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
-import { AppState } from '../../../store';
 import { INSERT_CONTENT_BLOCKS } from '../../content-block/content-block.gql';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
@@ -36,11 +33,9 @@ import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 import './ContentEdit.scss';
 
-interface ContentEditProps extends RouteComponentProps<{ id?: string }> {
-	loginState: Avo.Auth.LoginResponse | null;
-}
+interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
-const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState, match }) => {
+const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
 	const { id } = match.params;
 
 	// Hooks
@@ -140,7 +135,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 		if (pageType === PageType.Create) {
 			const insertedContent = await insertContent(triggerContentInsert, {
 				...contentItem,
-				user_profile_id: get(loginState, 'userInfo.profile.id', null),
+				user_profile_id: getProfileId(user),
 			});
 
 			handleResponse(insertedContent);
@@ -229,8 +224,4 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	loginState: selectLogin(state),
-});
-
-export default withRouter(connect(mapStateToProps)(ContentEdit));
+export default ContentEdit;

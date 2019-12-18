@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { cloneDeep, eq, get, isNil, omit, set } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useEffect, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import {
@@ -36,6 +35,7 @@ import { ApolloCacheManager, dataService } from '../../shared/services/data-serv
 import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import FragmentListDetail from '../../collection/components/fragment/FragmentListDetail';
 import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
@@ -48,11 +48,9 @@ import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
-interface AssignmentProps extends RouteComponentProps {
-	loginResponse: Avo.Auth.LoginResponse | null;
-}
+interface AssignmentProps extends DefaultSecureRouteProps {}
 
-const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
+const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...rest }) => {
 	// State
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
@@ -67,7 +65,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	const [triggerUpdateAssignmentResponse] = useMutation(UPDATE_ASSIGNMENT_RESPONSE);
 
 	const isOwnerOfAssignment = (tempAssignment: Avo.Assignment.Assignment) => {
-		return getProfileId() === tempAssignment.owner_profile_id;
+		return getProfileId(user) === tempAssignment.owner_profile_id;
 	};
 
 	/**
@@ -86,7 +84,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			if (!assignmentResponse) {
 				// Student has never viewed this assignment before, we should create a response object for him
 				assignmentResponse = {
-					owner_profile_ids: [getProfileId()],
+					owner_profile_ids: [getProfileId(user)],
 					assignment_id: tempAssignment.id,
 					collection: null,
 					collection_id: null,
@@ -126,7 +124,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 		const assignmentQuery = {
 			query: GET_ASSIGNMENT_WITH_RESPONSE,
 			variables: {
-				studentUuid: getProfileId(),
+				studentUuid: getProfileId(user),
 				assignmentId: (match.params as any).id,
 			},
 		};
@@ -285,6 +283,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 							(assignmentContent as Avo.Collection.Collection).collection_fragments
 						}
 						showDescription={assignment.content_layout === AssignmentLayout.PlayerAndText}
+						match={match}
+						user={user}
+						{...rest}
 					/>
 				);
 			case 'ITEM':
@@ -292,6 +293,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 					<ItemVideoDescription
 						itemMetaData={assignmentContent as Avo.Item.Item}
 						showDescription={content_layout === AssignmentLayout.PlayerAndText}
+						match={match}
+						user={user}
+						{...rest}
 					/>
 				);
 			default:
@@ -313,7 +317,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 			return null;
 		}
 
-		const isOwner = getProfileId() === assignment.owner_profile_id;
+		const isOwner = getProfileId(user) === assignment.owner_profile_id;
 		const backLink = isOwner
 			? buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assignment.id })
 			: buildLink(WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
@@ -430,4 +434,4 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match }) => {
 	);
 };
 
-export default withRouter(AssignmentDetail);
+export default AssignmentDetail;

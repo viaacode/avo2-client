@@ -4,7 +4,6 @@ import {
 	BlockIntroProps,
 	BlockLinksProps,
 	BlockQuoteProps,
-	BlockRichTextProps,
 	BlockSubtitleProps,
 	BlockTitleImageTextProps,
 	BlockTitleProps,
@@ -37,7 +36,6 @@ export type ContentBlockMetaData =
 	| BlockIntroProps
 	| BlockLinksProps
 	| BlockQuoteProps
-	| BlockRichTextProps
 	| BlockSubtitleProps
 	| BlockTitleProps
 	| BlockTitleImageTextProps

@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
 import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
 
@@ -29,4 +29,4 @@ const ForTeachers: FunctionComponent<ForTeachersProps> = ({ history }) => {
 	);
 };
 
-export default withRouter(ForTeachers);
+export default ForTeachers;

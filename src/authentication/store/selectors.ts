@@ -13,3 +13,11 @@ export const selectLoginLoading = ({ loginState }: AppState) => {
 export const selectLoginError = ({ loginState }: AppState) => {
 	return get(loginState, ['error']);
 };
+
+export const selectUser = ({ loginState }: AppState) => {
+	return get(loginState, ['data', 'userInfo']);
+};
+
+export const selectLoginMessage = ({ loginState }: AppState) => {
+	return get(loginState, ['data', 'loginMessage']);
+};

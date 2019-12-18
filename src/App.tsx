@@ -18,8 +18,8 @@ import './styles/main.scss';
 
 interface AppProps extends RouteComponentProps {}
 
-const App: FunctionComponent<AppProps> = ({ location }) => {
-	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(location.pathname);
+const App: FunctionComponent<AppProps> = props => {
+	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 
 	// Render
 	return (
@@ -38,9 +38,9 @@ const App: FunctionComponent<AppProps> = ({ location }) => {
 				<Admin />
 			) : (
 				<>
-					{location.pathname !== APP_PATH.LOGIN_AVO ? <Navigation /> : null}
+					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Navigation {...props} />}
 					{renderRoutes()}
-					<Footer />
+					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer />}
 				</>
 			)}
 		</div>

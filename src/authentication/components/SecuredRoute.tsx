@@ -1,6 +1,6 @@
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route } from 'react-router';
+import { Redirect, Route, RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
@@ -10,27 +10,35 @@ import { APP_PATH } from '../../constants';
 
 // import { isProfileComplete } from '../helpers/get-profile-info'; // TODO: uncomment once available
 import { getLoginStateAction } from '../store/actions';
-import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
+import { selectLogin, selectLoginError, selectLoginLoading, selectUser } from '../store/selectors';
 import { LoginMessage } from '../store/types';
 
 export interface SecuredRouteProps {
 	component: ComponentType<any>;
-	path?: string;
 	exact?: boolean;
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
 	getLoginState: () => Dispatch;
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateError: boolean;
+	loginStateLoading: boolean;
+	path?: string;
+	profileHasToBeComplete?: boolean;
+	user: Avo.User.User;
+}
+
+export interface DefaultSecureRouteProps<T = {}> extends RouteComponentProps<T> {
+	user: Avo.User.User;
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 	component,
-	path,
 	exact,
-	loginState,
-	loginStateLoading,
-	loginStateError,
 	getLoginState,
+	loginState,
+	loginStateError,
+	loginStateLoading,
+	path,
+	profileHasToBeComplete = true,
+	user,
 }) => {
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -55,9 +63,9 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 			exact={exact}
 			render={props => {
 				// Already logged in
-				if (loginState && loginState.message === LoginMessage.LOGGED_IN) {
+				if (loginState && loginState.message === LoginMessage.LOGGED_IN && user) {
 					// TODO enable this once we can save profile info
-					// if (isProfileComplete()) {
+					// if (profileHasToBeComplete && isProfileComplete()) {
 					const Component = component;
 					return <Component {...props} />;
 					// } else {
@@ -88,6 +96,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 };
 
 const mapStateToProps = (state: any) => ({
+	user: selectUser(state),
 	loginState: selectLogin(state),
 	loginStateLoading: selectLoginLoading(state),
 	loginStateError: selectLoginError(state),

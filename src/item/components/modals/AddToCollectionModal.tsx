@@ -3,7 +3,6 @@ import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { withRouter } from 'react-router';
 
 import {
 	Button,
@@ -29,6 +28,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
 import {
 	GET_COLLECTION_BY_ID,
@@ -45,7 +45,7 @@ import toastService from '../../../shared/services/toast-service';
 
 import './AddToCollectionModal.scss';
 
-interface AddToCollectionModalProps {
+interface AddToCollectionModalProps extends DefaultSecureRouteProps {
 	externalId: string;
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
@@ -57,6 +57,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	itemMetaData,
 	isOpen,
 	onClose,
+	user,
 }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -75,9 +76,22 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 
+	const fetchCollections = React.useCallback(
+		() =>
+			CollectionService.getCollectionTitlesByUser(user).then(
+				(collectionTitles: Partial<Avo.Collection.Collection>[]) => {
+					setCollections(collectionTitles);
+				}
+			),
+		[user]
+	);
+
 	useEffect(() => {
-		fetchCollections();
-	}, []);
+		fetchCollections().catch(err => {
+			console.error('Failed to fetch collections', err);
+			toastService.danger('Het ophalen van de collecties is mislukt');
+		});
+	}, [fetchCollections]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -90,13 +104,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
 		}
 	}, [isOpen, itemMetaData.duration]);
-
-	const fetchCollections = () =>
-		CollectionService.getCollectionTitlesByUser().then(
-			(collectionTitles: Partial<Avo.Collection.Collection>[]) => {
-				setCollections(collectionTitles);
-			}
-		);
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
@@ -159,15 +166,18 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			} else {
 				toastService.success('Het fragment is toegevoegd aan de collectie');
 				onClose();
-				trackEvents({
-					object: String(collection.id),
-					object_type: 'collections',
-					message: `Gebruiker ${getProfileName()} heeft fragment ${get(
-						response,
-						'data.insert_app_collection_fragments.returning[0].id'
-					)} toegevoegd aan collectie ${collection.id}`,
-					action: 'add_to_collection',
-				});
+				trackEvents(
+					{
+						object: String(collection.id),
+						object_type: 'collections',
+						message: `Gebruiker ${getProfileName(user)} heeft fragment ${get(
+							response,
+							'data.insert_app_collection_fragments.returning[0].id'
+						)} toegevoegd aan collectie ${collection.id}`,
+						action: 'add_to_collection',
+					},
+					user
+				);
 			}
 		} catch (err) {
 			console.error(err);
@@ -189,7 +199,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				title: newCollectionTitle,
 				thumbnail_path: null,
 				is_public: false,
-				owner_profile_id: getProfileId(),
+				owner_profile_id: getProfileId(user),
 				type_id: 3,
 			};
 			try {
@@ -417,6 +427,4 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	return renderAddToCollectionModal();
 };
 
-// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/31363#issuecomment-484542717
-// @ts-ignore
-export default withRouter(AddToCollectionModal);
+export default AddToCollectionModal;

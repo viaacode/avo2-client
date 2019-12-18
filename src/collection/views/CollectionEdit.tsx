@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, eq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { withApollo } from 'react-apollo';
-import { Prompt, RouteComponentProps, withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { Prompt, withRouter } from 'react-router';
 
 import {
 	Button,
@@ -24,6 +24,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import {
 	ControlledDropdown,
@@ -38,6 +39,8 @@ import toastService from '../../shared/services/toast-service';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { CollectionEditContent, CollectionEditMetaData } from '.';
+import { selectUser } from '../../authentication/store/selectors';
+import { AppState } from '../../store';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
@@ -55,12 +58,17 @@ import {
 } from '../components';
 import { swapFragmentsPositions } from '../helpers';
 
-interface CollectionEditProps extends RouteComponentProps<{ id: string }> {}
+interface CollectionEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 let currentCollection: Avo.Collection.Collection | undefined;
 let setCurrentCollection: (collection: Avo.Collection.Collection) => void;
 
-const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match }) => {
+const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
+	history,
+	match,
+	user,
+	...rest
+}) => {
 	// State
 	const [collectionId] = useState<string | undefined>(match.params.id);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
@@ -177,14 +185,17 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 				setCurrentCollection(newCollection);
 				setInitialCollection(cloneDeep(newCollection));
 				toastService.success('Collectie opgeslagen');
-				trackEvents({
-					object: String(newCollection.id),
-					object_type: 'collections',
-					message: `Gebruiker ${getProfileName()} heeft de collectie ${
-						newCollection.id
-					} bijgewerkt`,
-					action: 'edit',
-				});
+				trackEvents(
+					{
+						object: String(newCollection.id),
+						object_type: 'collections',
+						message: `Gebruiker ${getProfileName(user)} heeft de collectie ${
+							newCollection.id
+						} bijgewerkt`,
+						action: 'edit',
+					},
+					user
+				);
 			}
 		}
 
@@ -247,14 +258,17 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			trackEvents({
-				object: String(currentCollection.id),
-				object_type: 'collections',
-				message: `Gebruiker ${getProfileName()} heeft de collectie ${
-					currentCollection.id
-				} verwijderd`,
-				action: 'delete',
-			});
+			trackEvents(
+				{
+					object: String(currentCollection.id),
+					object_type: 'collections',
+					message: `Gebruiker ${getProfileName(user)} heeft de collectie ${
+						currentCollection.id
+					} verwijderd`,
+					action: 'delete',
+				},
+				user
+			);
 
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID });
 		} catch (err) {
@@ -387,6 +401,10 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 								swapFragments={swapFragments}
 								updateCollection={setCurrentCollection}
 								updateFragmentProperties={updateFragmentProperties}
+								history={history}
+								match={match}
+								user={user}
+								{...rest}
 							/>
 						);
 					case 'metadata':
@@ -447,6 +465,10 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 					isOpen={isShareModalOpen}
 					onClose={onCloseShareCollectionModal}
 					setIsPublic={(value: boolean) => updateCollectionProperty(value, 'is_public')}
+					history={history}
+					match={match}
+					user={user}
+					{...rest}
 				/>
 				<DeleteObjectModal
 					title={`Ben je zeker dat de collectie "${title}" wil verwijderen?`}
@@ -479,4 +501,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({ history, match
 	);
 };
 
-export default withRouter(withApollo(CollectionEdit));
+const mapStateToProps = (state: AppState) => ({
+	user: selectUser(state),
+});
+
+export default withRouter(connect(mapStateToProps)(CollectionEdit));

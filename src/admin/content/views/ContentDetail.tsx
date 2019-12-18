@@ -1,6 +1,5 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Avatar,
@@ -17,6 +16,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent } from '../../../shared/components';
 import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
@@ -26,7 +26,7 @@ import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../conte
 import { GET_CONTENT_BY_ID } from '../content.gql';
 import { ContentParams } from '../content.types';
 
-interface ContentDetailProps extends RouteComponentProps<ContentParams> {}
+interface ContentDetailProps extends DefaultSecureRouteProps<ContentParams> {}
 
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }) => {
 	const { id } = match.params;
@@ -136,4 +136,4 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 	);
 };
 
-export default withRouter(ContentDetail);
+export default ContentDetail;

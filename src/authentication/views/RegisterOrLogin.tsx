@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
 import {
 	Button,
@@ -16,7 +16,8 @@ import {
 
 import { APP_PATH } from '../../constants';
 
-import { redirectToClientPage, redirectToServerSmartschoolLogin } from '../helpers/redirects';
+import LoginOptions from '../components/LoginOptions';
+import { redirectToClientPage } from '../helpers/redirects';
 import './RegisterOrLogin.scss';
 
 export interface RegisterOrLoginProps extends RouteComponentProps {}
@@ -24,6 +25,7 @@ export interface RegisterOrLoginProps extends RouteComponentProps {}
 const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	history,
 	location,
+	match,
 }) => {
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
@@ -41,10 +43,19 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												van de klas.
 											</p>
 										</Spacer>
+										<Spacer margin={['top-small', 'bottom-small']}>
+											<Button
+												block
+												label="Account aanmaken als lesgever"
+												type="primary"
+												onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}
+											/>
+										</Spacer>
 										<Button
-											label="Account aanmaken"
+											block
+											label="Krijg toegang als leerling"
 											type="primary"
-											onClick={() => redirectToClientPage(APP_PATH.FOR_TEACHERS, history)}
+											onClick={() => redirectToClientPage(APP_PATH.FOR_PUPILS, history)}
 										/>
 									</FlexItem>
 								</Flex>
@@ -52,37 +63,12 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 							<Column size="3-6">
 								<Flex center orientation="horizontal">
 									<FlexItem>
-										<Spacer margin="bottom-large">
-											<Heading type="h2" className="u-m-0">
-												Reeds een account?
-												<br />
-												Log dan hier in.
-											</Heading>
-											<Spacer margin="top-small">
-												<Button
-													label="Inloggen met e-mailadres"
-													type="primary"
-													className="c-login-with-archief"
-													onClick={() => redirectToClientPage(APP_PATH.LOGIN_AVO, history)}
-												/>
-											</Spacer>
-										</Spacer>
-										<p>Of kies voor ...</p>
-										<Spacer margin={['top-small', 'bottom-small']}>
-											<Button
-												block
-												className="c-button-smartschool"
-												icon="smartschool"
-												label="Inloggen met Smartschool"
-												onClick={() => redirectToServerSmartschoolLogin(location)}
-											/>
-										</Spacer>
-										<Button
-											block
-											className="c-button-klascement"
-											icon="klascement"
-											label="Inloggen met KlasCement"
-										/>
+										<Heading type="h2" className="u-m-0">
+											Reeds een account?
+											<br />
+											Log dan hier in.
+										</Heading>
+										<LoginOptions history={history} location={location} match={match} />
 									</FlexItem>
 								</Flex>
 							</Column>
@@ -94,4 +80,4 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	);
 };
 
-export default withRouter(RegisterOrRegisterOrLogin);
+export default RegisterOrRegisterOrLogin;

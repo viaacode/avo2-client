@@ -41,7 +41,7 @@ export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
 				options: HEADING_LEVEL_OPTIONS,
 			},
 		},
-		...ALIGN_FIELD(),
+		align: ALIGN_FIELD(),
 		...CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });
