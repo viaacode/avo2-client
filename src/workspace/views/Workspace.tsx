@@ -1,6 +1,5 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Container,
@@ -20,6 +19,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { AssignmentOverview } from '../../assignment/views';
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { CollectionOverview } from '../../collection/views';
 import { ControlledDropdown, DataQueryComponent } from '../../shared/components';
@@ -36,14 +36,13 @@ import {
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabAggregates, TabViewMap } from '../workspace.types';
 import Bookmarks from './Bookmarks';
-
 import './Workspace.scss';
 
-export interface WorkspaceProps extends RouteComponentProps<{ tabId: string }> {
+export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
 }
 
-const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
+const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ...rest }) => {
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
 	const [tabId, setTabId] = useState<string>(match.params.tabId || COLLECTIONS_ID);
@@ -61,6 +60,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 				<CollectionOverview
 					numberOfCollections={counts[COLLECTIONS_ID]}
 					refetchCount={refetchCounts}
+					history={history}
+					match={match}
+					user={user}
+					{...rest}
 				/>
 			),
 			// TODO: DISABLED_FEATURE filter
@@ -82,7 +85,15 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 			},
 		},
 		[ASSIGNMENTS_ID]: {
-			component: (refetchCounts: () => void) => <AssignmentOverview refetchCount={refetchCounts} />,
+			component: (refetchCounts: () => void) => (
+				<AssignmentOverview
+					refetchCount={refetchCounts}
+					history={history}
+					match={match}
+					user={user}
+					{...rest}
+				/>
+			),
 		},
 		[BOOKMARKS_ID]: {
 			component: () => <Bookmarks />,
@@ -176,11 +187,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match }) => {
 	return tabId.includes('/') ? null : (
 		<DataQueryComponent
 			query={GET_WORKSPACE_TAB_COUNTS}
-			variables={{ owner_profile_id: getProfileId() }}
+			variables={{ owner_profile_id: getProfileId(user) }}
 			renderData={renderTabsAndContent}
 			notFoundMessage="Er zijn geen collecties gevonden"
 		/>
 	);
 };
 
-export default withRouter(Workspace);
+export default Workspace;

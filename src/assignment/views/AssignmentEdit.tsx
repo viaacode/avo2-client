@@ -4,8 +4,6 @@ import { DocumentNode } from 'graphql';
 import { get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import {
@@ -43,8 +41,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
-import { selectLogin } from '../../authentication/store/selectors';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
@@ -117,9 +115,7 @@ const CONTENT_LABEL_TO_QUERY: {
 	} as any,
 };
 
-interface AssignmentEditProps extends RouteComponentProps {
-	loginState: Avo.Auth.LoginResponse | null;
-}
+interface AssignmentEditProps extends DefaultSecureRouteProps {}
 
 let currentAssignment: Partial<Avo.Assignment.Assignment>;
 let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
@@ -130,7 +126,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	history,
 	location,
 	match,
-	loginState,
+	user,
 }) => {
 	[currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>({});
 	[initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>({});
@@ -355,7 +351,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	 * @param prefix
 	 */
 	const getCopyTitleForCollection = async (prefix: string): Promise<string> => {
-		const collections = await CollectionService.getCollectionTitlesByUser();
+		const collections = await CollectionService.getCollectionTitlesByUser(user);
 		const titles = collections.map(c => c.title);
 
 		let index = 0;
@@ -376,7 +372,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		collection: Avo.Collection.Collection
 	): Promise<Avo.Collection.Collection | null> => {
 		try {
-			collection.owner_profile_id = getProfileId();
+			collection.owner_profile_id = getProfileId(user);
 			collection.is_public = false;
 			delete collection.id;
 			try {
@@ -429,14 +425,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		toastService.success('De url is naar het klembord gekopieerd');
 
 		if (currentAssignment.id) {
-			trackEvents({
-				object: String(currentAssignment.id),
-				object_type: 'avo_assignment' as any, // TODO add this object type to the database
-				message: `Gebruiker ${getProfileName()} heeft de permalink voor opdracht ${
-					currentAssignment.id
-				} gekopieert`,
-				action: 'view',
-			});
+			trackEvents(
+				{
+					object: String(currentAssignment.id),
+					object_type: 'avo_assignment' as any, // TODO add this object type to the database
+					message: `Gebruiker ${getProfileName(user)} heeft de permalink voor opdracht ${
+						currentAssignment.id
+					} gekopieert`,
+					action: 'view',
+				},
+				user
+			);
 		}
 	};
 
@@ -534,14 +533,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		if (!assignment.content_label || !assignment.content_id) {
 			return;
 		}
-		trackEvents({
-			object: assignment.content_id,
-			object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
-			message: `User ${getProfileName()} heeft ${
-				CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
-			} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
-			action: 'view',
-		});
+		trackEvents(
+			{
+				object: assignment.content_id,
+				object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
+				message: `User ${getProfileName(user)} heeft ${
+					CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
+				} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
+				action: 'view',
+			},
+			user
+		);
 	};
 
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
@@ -552,7 +554,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// so your assignment can work after the other user deletes his collection
 				if (
 					assignment.content_label === 'COLLECTIE' &&
-					(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId()
+					(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId(user)
 				) {
 					const sourceCollection = assignmentContent as Avo.Collection.Collection;
 					const copy = await copyCollectionToCurrentUser(sourceCollection);
@@ -565,7 +567,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// create => insert into graphql
 				const newAssignment: Avo.Assignment.Assignment = {
 					...assignment,
-					owner_profile_id: get(loginState, 'userInfo.profile.id'),
+					owner_profile_id: getProfileId(user),
 				} as Avo.Assignment.Assignment;
 				const insertedAssignment = await insertAssignment(triggerAssignmentInsert, newAssignment);
 
@@ -675,7 +677,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		if (
 			pageType === 'create' &&
 			currentAssignment.content_label === 'COLLECTIE' &&
-			getProfileId() !== (content as Avo.Collection.Collection).owner_profile_id
+			getProfileId(user) !== (content as Avo.Collection.Collection).owner_profile_id
 		) {
 			// During create we do not allow linking to the collection if you do not own the collection,
 			// since we still need to make a copy when the user clicks on "save assignment" button
@@ -989,8 +991,4 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	loginState: selectLogin(state),
-});
-
-export default withRouter(connect(mapStateToProps)(AssignmentEdit));
+export default AssignmentEdit;

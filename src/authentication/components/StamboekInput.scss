@@ -1,6 +1,8 @@
-@import '../../../styles/settings/colors';
+@import '../../styles/settings/colors';
 
-.c-register-stamboek-view {
+.m-stamboek-input {
+	position: relative;
+
 	.a-info-icon {
 		pointer-events: none;
 	}
