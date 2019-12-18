@@ -1,8 +1,9 @@
+import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 
 import { BlockRichText } from '@viaa/avo2-components';
 
-import { ContentBlockFormStates } from '../../content-block.types';
+import { ContentBlockBackgroundColor, ContentBlockFormStates } from '../../content-block.types';
 import { HeadingBlockPreview } from './previews';
 
 interface ContentBlockPreviewProps {
@@ -18,7 +19,11 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({ stat
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[state.blockType];
 
 	return (
-		<div className={`u-bg-${state.backgroundColor} u-padding-top u-padding-bottom`}>
+		<div
+			className={classnames(`u-bg-${state.backgroundColor} u-padding`, {
+				'u-color-white': state.backgroundColor === ContentBlockBackgroundColor.NightBlue,
+			})}
+		>
 			<PreviewComponent {...state as any} />
 		</div>
 	);

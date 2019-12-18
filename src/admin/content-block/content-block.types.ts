@@ -14,9 +14,7 @@ export enum ContentBlockEditor {
 export enum ContentBlockBackgroundColor {
 	Gray50 = 'gray-50',
 	White = 'white',
-	OceanGreen = 'ocean-green',
-	SoftBlue = 'soft-blue',
-	TealBright = 'teal-bright',
+	NightBlue = 'night-blue',
 }
 
 export interface DefaultContentBlock {
@@ -36,7 +34,7 @@ export interface HeadingBlockFormState extends DefaultContentBlock {
 }
 
 export interface RichTextBlockFormState extends DefaultContentBlock {
-	text: string;
+	content: string;
 }
 
 // General config
@@ -50,7 +48,7 @@ export type ContentBlockField = {
 
 export interface ContentBlockConfig {
 	name: string;
-	initialState: () => ContentBlockFormStates;
+	formState: ContentBlockFormStates;
 	fields: {
 		[key: string]: ContentBlockField;
 	};

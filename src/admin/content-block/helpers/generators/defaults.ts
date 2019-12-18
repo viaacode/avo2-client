@@ -19,7 +19,7 @@ export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
 
 // Recurring fields
 export const BACKGROUND_COLOR_FIELD = (label: string = 'Achtergrondkleur') => ({
-	background: {
+	backgroundColor: {
 		label,
 		editorType: ContentBlockEditor.ColorSelect,
 		editorProps: {

@@ -12,9 +12,7 @@ import { HEADING_BLOCK_CONFIG, RICH_TEXT_BLOCK_CONFIG } from './helpers';
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
 	{ label: 'Wit', value: ContentBlockBackgroundColor.White },
 	{ label: 'Grijs', value: ContentBlockBackgroundColor.Gray50 },
-	{ label: 'Groen', value: ContentBlockBackgroundColor.OceanGreen },
-	{ label: 'Lichtblauw', value: ContentBlockBackgroundColor.SoftBlue },
-	{ label: 'Blauw', value: ContentBlockBackgroundColor.TealBright },
+	{ label: 'Blauw', value: ContentBlockBackgroundColor.NightBlue },
 ];
 
 export const ALIGN_OPTIONS: { label: string; value: Aligns }[] = [
@@ -23,9 +21,9 @@ export const ALIGN_OPTIONS: { label: string; value: Aligns }[] = [
 	{ label: 'Rechts', value: 'right' },
 ];
 
-export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption<string>[] = [
+export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{ label: 'Kies een content block', value: '', disabled: true },
-	{ label: 'Hoofding', value: ContentBlockType.Heading },
+	{ label: 'Titel', value: ContentBlockType.Heading },
 	{ label: 'Tekst (wysiwyg)', value: ContentBlockType.RichText },
 ];
 
