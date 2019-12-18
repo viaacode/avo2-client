@@ -16,7 +16,7 @@ export const FORM_STATE_DEFAULTS = (
 });
 
 export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
-	background: BACKGROUND_COLOR_FIELD(),
+	backgroundColor: BACKGROUND_COLOR_FIELD(),
 });
 
 // Recurring fields
