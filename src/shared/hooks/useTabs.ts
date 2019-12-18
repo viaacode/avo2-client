@@ -1,6 +1,6 @@
 import { Dispatch, ReactText, SetStateAction, useState } from 'react';
 
-import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
+import { TabProps } from '@viaa/avo2-components';
 
 type UseTabsTuple = [ReactText, Dispatch<SetStateAction<ReactText>>, TabProps[]];
 

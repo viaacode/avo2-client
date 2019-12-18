@@ -1,3 +1,5 @@
+import { isEmpty, isNil } from 'lodash-es';
+
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
@@ -15,7 +17,7 @@ export const FORM_STATE_DEFAULTS = (
 });
 
 export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
-	background: BACKGROUND_COLOR_FIELD(),
+	backgroundColor: BACKGROUND_COLOR_FIELD(),
 });
 
 // Recurring fields
@@ -42,15 +44,10 @@ export const TEXT_FIELD = (
 ) => ({
 	label: 'Tekst',
 	editorType: ContentBlockEditor.WYSIWYG,
-	editorProps: {
-		id: Math.random()
-			.toString()
-			.substring(2, 9),
-	},
 	validator: (value: string) => {
 		const errorArray: string[] = [];
 
-		if (!!value) {
+		if (isNil(value) || isEmpty(value)) {
 			errorArray.push(emptyFieldValidatorMessage);
 		}
 

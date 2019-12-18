@@ -4,7 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { dataService } from '../../shared/services/data-service';
 
-import { GET_MENU_ITEM_BY_ID, GET_MENU_ITEMS_BY_PLACEMENT } from './menu.gql';
+import { GET_MENU_ITEM_BY_ID, GET_MENU_ITEMS_BY_PLACEMENT, GET_MENUS } from './menu.gql';
 
 const MENU_RESULT_PATH = 'app_content_nav_elements';
 
@@ -20,14 +20,13 @@ export const fetchMenuItemById = async (id: number): Promise<Avo.Menu.Menu | nul
 	}
 };
 
-export const fetchMenuItemsByPlacement = async (
-	placement: string
-): Promise<Avo.Menu.Menu[] | null> => {
+export const fetchMenuItems = async (placement?: string): Promise<Avo.Menu.Menu[] | null> => {
 	try {
-		const response = await dataService.query({
-			query: GET_MENU_ITEMS_BY_PLACEMENT,
-			variables: { placement },
-		});
+		const queryOptions = {
+			query: placement ? GET_MENU_ITEMS_BY_PLACEMENT : GET_MENUS,
+			variables: placement ? { placement } : {},
+		};
+		const response = await dataService.query(queryOptions);
 		const menuItems: Avo.Menu.Menu[] | null = get(response, `data.${MENU_RESULT_PATH}`, null);
 
 		return menuItems;

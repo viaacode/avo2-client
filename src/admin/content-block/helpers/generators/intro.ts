@@ -21,7 +21,7 @@ export const INITIAL_INTRO_BLOCK_STATE = (): IntroBlockFormState => ({
 
 export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Intro',
-	initialState: INITIAL_INTRO_BLOCK_STATE,
+	formState: INITIAL_INTRO_BLOCK_STATE(),
 	fields: {
 		headingTitle: TEXT_FIELD('Titel is verplicht.', {
 			label: 'Titel',

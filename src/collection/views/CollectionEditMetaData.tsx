@@ -8,10 +8,10 @@ import {
 	FormGroup,
 	Grid,
 	Spacer,
+	TagInfo,
 	TagsInput,
 	TextArea,
 } from '@viaa/avo2-components';
-import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent } from '../../shared/components';
@@ -34,7 +34,10 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
-		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
+		updateCollectionProperty(
+			(selectedTagOptions || []).map(tag => tag.value as string),
+			fieldName
+		);
 	};
 
 	const renderCollectionMetaData = (data: ContextAndClassificationData) => {

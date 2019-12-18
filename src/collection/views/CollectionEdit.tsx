@@ -1,10 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, eq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
 import { Prompt, withRouter } from 'react-router';
-import { compose } from 'redux';
 
 import {
 	Button,
@@ -18,12 +16,12 @@ import {
 	MenuContent,
 	Navbar,
 	Spacer,
+	TabProps,
 	Tabs,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';

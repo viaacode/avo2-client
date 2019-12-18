@@ -51,12 +51,9 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 		label: enumLabel,
 		value: enumLabel,
 	});
-	const gqlOrganizationToSelectOption = (org: {
-		organizationName: string;
-		unitAddress: string;
-	}): TagInfo => ({
-		label: `${org.organizationName} - ${org.unitAddress}`,
-		value: `${org.organizationName} - ${org.unitAddress}`,
+	const gqlOrganizationToSelectOption = (org: ClientEducationOrganization): TagInfo => ({
+		label: `${org.label}`,
+		value: `${org.organizationId}:${org.unitId || ''}`,
 	});
 	const [cities, setCities] = useState<string[]>([]);
 	const [selectedCity, setSelectedCity] = useState<string>('');
@@ -74,7 +71,7 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>(
 		get(user, 'profile.subjects', []).map(gqlEnumToSelectOption)
 	);
-	const [selectedOrganizations, setSelectedOrganizations] = useState<ClientEducationOrganization[]>(
+	const [selectedOrganizations, setSelectedOrganizations] = useState<TagInfo[]>(
 		get(user, 'profile.organizations', []).map(gqlOrganizationToSelectOption)
 	);
 	const [alias, setAlias] = useState<string>(getProfileAlias(user));
@@ -145,8 +142,8 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 				})),
 				organizations: selectedOrganizations.map(option => ({
 					profile_id: profileId,
-					organization_id: option.organizationId,
-					unit_id: option.unitId || null,
+					organization_id: option.value.toString().split(':')[0],
+					unit_id: option.value.toString().split(':')[1] || null,
 				})),
 				function: func, // This database field naming isn't ideal
 			});
@@ -172,7 +169,9 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 			toastService.danger('De geselecteerde instelling kon niet worden gevonden');
 			return;
 		}
-		setSelectedOrganizations(uniq([...selectedOrganizations, selectedOrg]));
+		setSelectedOrganizations(
+			uniq([...selectedOrganizations, ...[selectedOrg].map(gqlOrganizationToSelectOption)])
+		);
 	};
 
 	const removeOrganization = async (orgLabel: ReactText) => {

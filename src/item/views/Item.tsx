@@ -38,7 +38,6 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { APP_PATH } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
@@ -54,7 +53,7 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
-import { RELATED_ITEMS_AMOUNT } from '../item.const';
+import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './Item.scss';
 
@@ -147,12 +146,12 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 				return (
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
-							title={relatedItem.dc_title}
-							onClick={() =>
-								redirectToClientPage(buildLink(APP_PATH.ITEM, { id: relatedItem.id }), history)
-							}
 							category={englishContentType}
+							onClick={() =>
+								redirectToClientPage(buildLink(ITEM_PATH.ITEM, { id: relatedItem.id }), history)
+							}
 							orientation="horizontal"
+							title={relatedItem.dc_title}
 						>
 							<MediaCardThumbnail>
 								<Thumbnail category={englishContentType} src={relatedItem.thumbnail_path} />

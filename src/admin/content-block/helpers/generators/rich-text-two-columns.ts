@@ -14,12 +14,12 @@ export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (): RichTextTwoColumnsB
 
 export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Tekst (2 kolommen)',
-	initialState: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
+	formState: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE(),
 	fields: {
 		firstColumnContent: TEXT_FIELD('Kolom 1 tekstveld moet verplicht ingevuld zijn.', {
 			label: 'Kolom 1',
 		}),
-		seconColumnContent: TEXT_FIELD('Kolom 2 tekstveld moet verplicht ingevuld zijn.', {
+		secondColumnContent: TEXT_FIELD('Kolom 2 tekstveld moet verplicht ingevuld zijn.', {
 			label: 'Kolom 2',
 		}),
 		...CONTENT_BLOCK_FIELD_DEFAULTS(),

@@ -21,8 +21,8 @@ export const INITIAL_HEADING_BLOCK_STATE = (): HeadingBlockFormState => ({
 });
 
 export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
-	name: 'Hoofding',
-	initialState: INITIAL_HEADING_BLOCK_STATE,
+	name: 'Titel',
+	formState: INITIAL_HEADING_BLOCK_STATE(),
 	fields: {
 		title: TEXT_FIELD('Titel is verplicht.', {
 			label: 'Titel',
