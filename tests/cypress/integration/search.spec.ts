@@ -114,7 +114,6 @@ context('Search', () => {
 				.find('.c-meta-data__item:first-child() p')
 				.should($dateEl => {
 					const dateString: string = $dateEl.text();
-					console.log('date: ', dateString);
 					const year: number = parseInt(dateString.split('/').pop() || '0', 10);
 					const fromYear: number = parseInt(fromDate.split('/').pop() || '0', 10);
 					const toYear: number = parseInt(toDate.split('/').pop() || '0', 10);

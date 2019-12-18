@@ -67,7 +67,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 					// TODO enable this once we can save profile info
 					// if (profileHasToBeComplete && isProfileComplete()) {
 					const Component = component;
-					return <Component {...props} />;
+					return <Component {...props} user={user} />;
 					// } else {
 					// 	// Force user to complete their profile before letting them in
 					// 	return (
