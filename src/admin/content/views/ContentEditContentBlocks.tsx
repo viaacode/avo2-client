@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useReducer, useState } from 'react';
 
 import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 
@@ -7,43 +7,42 @@ import {
 	CONTENT_BLOCK_CONFIG_MAP,
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
-import {
-	ContentBlockConfig,
-	ContentBlockFormStates,
-	ContentBlockType,
-} from '../../content-block/content-block.types';
+import { ContentBlockFormStates, ContentBlockType } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 
+import { ContentEditBlocksActionType } from '../content.types';
+import { CONTENT_EDIT_BLOCKS_INITIAL_STATE, contentEditBlocksReducer } from '../helpers/reducer';
+
 const ContentEditContentBlocks: FunctionComponent = () => {
+	const initialState = CONTENT_EDIT_BLOCKS_INITIAL_STATE();
+
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
-	const [cbConfigs, setCbConfigs] = useState<ContentBlockConfig[]>([]);
+	const [{ cbConfigs }, dispatch] = useReducer(
+		contentEditBlocksReducer(initialState),
+		initialState
+	);
 
 	// Methods
 	const getFormKey = (name: string, index: number) => `${name}-${index}`;
 
 	const handleCbAdd = (configType: ContentBlockType) => {
 		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
-		const updatedCbConfigs = [...cbConfigs, newConfig];
-		const cbFormKey = getFormKey(newConfig.name, updatedCbConfigs.length - 1);
+		const cbFormKey = getFormKey(newConfig.name, cbConfigs.length);
 		// Update content block configs
-		setCbConfigs(updatedCbConfigs);
+		dispatch({
+			type: ContentEditBlocksActionType.ADD_CB_CONFIG,
+			payload: newConfig,
+		});
 		// Set newly added config accordion as open
 		setAccordionsOpenState({ [cbFormKey]: true });
 	};
 
-	const handleSave = (index: number, formState: ContentBlockFormStates) => {
-		// Clone content block states array to prevent mutating state in place
-		const cbConfigsCopy = [...cbConfigs];
-		// Update item with new initialState
-		const updatedCbConfig = {
-			...cbConfigsCopy[index],
-			formState,
-		};
-		// Update item at given index
-		cbConfigsCopy.splice(index, 1, updatedCbConfig);
-
-		setCbConfigs(cbConfigsCopy);
+	const handleSave = (index: number, formState: Partial<ContentBlockFormStates>) => {
+		dispatch({
+			type: ContentEditBlocksActionType.SET_FORM_STATE,
+			payload: { index, formState },
+		});
 	};
 
 	// Render
@@ -61,7 +60,7 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 					setIsAccordionOpen={() =>
 						setAccordionsOpenState({ [cbFormKey]: !accordionsOpenState[cbFormKey] })
 					}
-					onSave={cbState => handleSave(index, cbState)}
+					onChange={cbFormState => handleSave(index, cbFormState)}
 				/>
 			);
 		});

@@ -3,6 +3,8 @@ import React, { FunctionComponent, useState } from 'react';
 
 import { Accordion, Form, FormGroup, SelectOption } from '@viaa/avo2-components';
 
+import { ValueOf } from '../../../../shared/types';
+
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
 	ContentBlockConfig,
@@ -18,7 +20,7 @@ interface ContentBlockFormProps {
 	index: number;
 	isAccordionOpen: boolean;
 	length: number;
-	onSave: (formState: ContentBlockFormStates) => void;
+	onChange: (formState: Partial<ContentBlockFormStates>) => void;
 	setIsAccordionOpen: () => void;
 }
 
@@ -27,24 +29,27 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	index,
 	isAccordionOpen,
 	length,
-	onSave,
+	onChange,
 	setIsAccordionOpen,
 }) => {
-	const [formState, setFormState] = useState<ContentBlockFormStates>(config.formState);
+	const { formState } = config;
+
+	// Hooks
 	const [formErrors, setFormErrors] = useState<{ [key: string]: string[] }>({});
 
 	// Methods
 	const handleChange = (key: keyof ContentBlockFormStates, value: any) => {
-		const updatedForm = { ...formState, [key]: get(value, 'value', value) };
+		// Get value from select option otherwise fallback to original
+		const parsedValue = get(value, 'value', value);
+		const updatedFormSet = { [key]: parsedValue };
 
-		setFormState(updatedForm);
-		handleValidation(key, updatedForm);
-		onSave(updatedForm);
+		handleValidation(key, parsedValue);
+		onChange(updatedFormSet);
 	};
 
 	const handleValidation = (
 		fieldKey: keyof ContentBlockFormStates,
-		updatedFormState: ContentBlockFormStates
+		updatedFormValue: Partial<ValueOf<ContentBlockFormStates>>
 	) => {
 		const errors: any = {};
 
@@ -52,7 +57,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const validator = get(field, 'validator');
 
 		if (validator) {
-			const errorArray = validator(updatedFormState[fieldKey]);
+			const errorArray = validator(updatedFormValue);
 
 			if (errorArray.length) {
 				errors[fieldKey] = errorArray;
@@ -110,7 +115,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					<FormGroup
 						key={`${index}-${cb.name}-${key}`}
 						label={cb.fields[key].label}
-						error={formErrors[key]}
+						error={formErrors[key as keyof ContentBlockFormStates]}
 					>
 						{renderFieldEditor(key as keyof ContentBlockFormStates, cb.fields[key])}
 					</FormGroup>
