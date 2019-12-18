@@ -41,7 +41,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 		}
 		if (!email) {
 			errors.push(`Email ${requiredError}`);
-		} else if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(email)) {
+		} else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(email)) {
 			errors.push(`Email is geen geldig email adres`);
 		}
 		if (!organization) {

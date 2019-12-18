@@ -1,4 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '../shared/services/education-organizations-service';
 
 interface UpdateProfileValues {
 	educationLevels: {
@@ -30,11 +31,17 @@ export async function updateProfileInfo(
 	variables: Partial<UpdateProfileValues>
 ): Promise<void> {
 	try {
-		const completeVars = {
+		const completeVars: UpdateProfileValues = {
 			educationLevels: (profile as any).contexts || [],
 			subjects: (profile as any).classifications || [],
-			organizations: (profile as any).organizations || [],
-			alias: profile.alias,
+			organizations: ((profile as any).organizations || []).map(
+				(org: ClientEducationOrganization) => ({
+					profile_id: profile.id,
+					organization_id: org.organizationId,
+					unit_id: org.unitId || null,
+				})
+			),
+			alias: profile.alias || profile.alternative_email,
 			alternativeEmail: profile.alternative_email,
 			avatar: profile.avatar,
 			bio: (profile as any).bio || null,
