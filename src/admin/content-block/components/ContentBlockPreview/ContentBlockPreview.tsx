@@ -19,12 +19,14 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({ stat
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[state.blockType];
 
 	return (
+		// TODO: Extend spacer with paddings in components lib
+		// This way we can easily set paddings from a content-blocks formState
 		<div
 			className={classnames(`u-bg-${state.backgroundColor} u-padding`, {
 				'u-color-white': state.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			<PreviewComponent {...state as any} />
+			<PreviewComponent {...(state as any)} />
 		</div>
 	);
 };
