@@ -9,7 +9,7 @@ import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from '.
 export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (): RichTextTwoColumnsBlockFormState => ({
 	firstColumnContent: '',
 	secondColumnContent: '',
-	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.RichText),
+	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.RichTextTwoCols),
 });
 
 export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (): ContentBlockConfig => ({
@@ -17,7 +17,7 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	formState: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE(),
 	fields: {
 		firstColumnContent: TEXT_FIELD('Kolom 1', 'Kolom 1 tekstveld moet verplicht ingevuld zijn.'),
-		seconColumnContent: TEXT_FIELD('Kolom 2', 'Kolom 2 tekstveld moet verplicht ingevuld zijn.'),
+		secondColumnContent: TEXT_FIELD('Kolom 2', 'Kolom 2 tekstveld moet verplicht ingevuld zijn.'),
 		...CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

@@ -28,7 +28,7 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 
 	const handleCbAdd = (configType: ContentBlockType) => {
 		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
-		const cbFormKey = getFormKey(newConfig.name, cbConfigs.length);
+		const cbFormKey = getFormKey(newConfig.formState.blockType, cbConfigs.length);
 		// Update content block configs
 		dispatch({
 			type: ContentEditBlocksActionType.ADD_CB_CONFIG,
@@ -48,7 +48,7 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 	// Render
 	const renderCbForms = () => {
 		return cbConfigs.map((cbConfig, index) => {
-			const cbFormKey = getFormKey(cbConfig.name, index);
+			const cbFormKey = getFormKey(cbConfig.formState.blockType, index);
 
 			return (
 				<ContentBlockForm
@@ -70,7 +70,10 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 		<Flex className="c-content-edit-view__content">
 			<FlexItem>
 				{cbConfigs.map((cbConfig, index) => (
-					<ContentBlockPreview key={getFormKey(cbConfig.name, index)} state={cbConfig.formState} />
+					<ContentBlockPreview
+						key={getFormKey(cbConfig.formState.blockType, index)}
+						state={cbConfig.formState}
+					/>
 				))}
 			</FlexItem>
 			<Sidebar className="c-content-edit-view__sidebar" light>

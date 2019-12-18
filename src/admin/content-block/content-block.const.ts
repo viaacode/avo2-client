@@ -7,7 +7,11 @@ import {
 	ContentBlockType,
 	HeadingLevels,
 } from './content-block.types';
-import { HEADING_BLOCK_CONFIG, RICH_TEXT_BLOCK_CONFIG } from './helpers';
+import {
+	HEADING_BLOCK_CONFIG,
+	RICH_TEXT_BLOCK_CONFIG,
+	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+} from './helpers';
 
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
 	{ label: 'Wit', value: ContentBlockBackgroundColor.White },
@@ -25,6 +29,7 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{ label: 'Kies een content block', value: '', disabled: true },
 	{ label: 'Titel', value: ContentBlockType.Heading },
 	{ label: 'Tekst (wysiwyg)', value: ContentBlockType.RichText },
+	{ label: 'Tekst 2 kolommen (wysiwyg)', value: ContentBlockType.RichTextTwoCols },
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -36,8 +41,9 @@ export const EDITOR_TYPES_MAP = {
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
-	Heading: HEADING_BLOCK_CONFIG,
-	RichText: RICH_TEXT_BLOCK_CONFIG,
+	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
+	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
+	[ContentBlockType.RichTextTwoCols]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 };
 
 // Heading

@@ -1,6 +1,7 @@
 export enum ContentBlockType {
 	Heading = 'Heading',
 	RichText = 'RichText',
+	RichTextTwoCols = 'RichTextTwoCols',
 }
 
 export enum ContentBlockEditor {

@@ -3,7 +3,12 @@ import React, { FunctionComponent } from 'react';
 
 import { BlockRichText } from '@viaa/avo2-components';
 
-import { ContentBlockBackgroundColor, ContentBlockFormStates } from '../../content-block.types';
+import {
+	ContentBlockBackgroundColor,
+	ContentBlockFormStates,
+	ContentBlockType,
+	RichTextTwoColumnsBlockFormState,
+} from '../../content-block.types';
 import { HeadingBlockPreview } from './previews';
 
 interface ContentBlockPreviewProps {
@@ -11,12 +16,20 @@ interface ContentBlockPreviewProps {
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
-	Heading: HeadingBlockPreview,
-	RichText: BlockRichText,
+	[ContentBlockType.Heading]: HeadingBlockPreview,
+	[ContentBlockType.RichText]: BlockRichText,
+	[ContentBlockType.RichTextTwoCols]: BlockRichText,
 });
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({ state }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[state.blockType];
+
+	// TODO: Not sure this is the best place to do this
+	if (state.blockType === ContentBlockType.RichTextTwoCols) {
+		// Map state values correctly for preview component
+		const { firstColumnContent, secondColumnContent } = state as RichTextTwoColumnsBlockFormState;
+		(state as any).content = [firstColumnContent, secondColumnContent];
+	}
 
 	return (
 		// TODO: Extend spacer with paddings in components lib

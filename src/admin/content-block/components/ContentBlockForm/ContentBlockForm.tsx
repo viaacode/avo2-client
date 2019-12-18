@@ -70,7 +70,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	// Render
 	const renderFieldEditor = (fieldKey: keyof ContentBlockFormStates, cb: ContentBlockField) => {
 		const EditorComponent = EDITOR_TYPES_MAP[cb.editorType];
-		const editorId = `${index}-${config.name}-${fieldKey}`;
+		const editorId = `${index}-${config.formState.blockType}-${fieldKey}`;
 		const defaultProps = {
 			...cb.editorProps,
 			id: editorId,
