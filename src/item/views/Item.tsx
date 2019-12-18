@@ -57,7 +57,6 @@ import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './Item.scss';
-import { APP_PATH } from '../../constants';
 
 interface ItemProps extends DefaultSecureRouteProps {}
 
