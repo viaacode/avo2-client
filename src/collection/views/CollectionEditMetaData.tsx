@@ -8,10 +8,10 @@ import {
 	FormGroup,
 	Grid,
 	Spacer,
+	TagInfo,
 	TagsInput,
 	TextArea,
 } from '@viaa/avo2-components';
-import { TagInfo } from '@viaa/avo2-components/dist/components/TagsInput/TagsInput';
 import { Avo } from '@viaa/avo2-types';
 
 import { DataQueryComponent } from '../../shared/components';
