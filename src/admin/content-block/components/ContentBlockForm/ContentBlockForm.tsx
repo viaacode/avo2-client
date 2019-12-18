@@ -1,11 +1,12 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import { Accordion, Button, Flex, Form, FormGroup, Spacer } from '@viaa/avo2-components';
+import { Accordion, Form, FormGroup, SelectOption } from '@viaa/avo2-components';
 
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
 	ContentBlockConfig,
+	ContentBlockEditor,
 	ContentBlockField,
 	ContentBlockFormStates,
 } from '../../content-block.types';
@@ -15,88 +16,95 @@ import './ContentBlockForm.scss';
 interface ContentBlockFormProps {
 	config: ContentBlockConfig;
 	index: number;
+	isAccordionOpen: boolean;
 	length: number;
 	onSave: (formState: ContentBlockFormStates) => void;
+	setIsAccordionOpen: () => void;
 }
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	config,
 	index,
+	isAccordionOpen,
 	length,
 	onSave,
+	setIsAccordionOpen,
 }) => {
-	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
-	const [formState, setFormState] = useState<ContentBlockFormStates>(config.initialState);
+	const [formState, setFormState] = useState<ContentBlockFormStates>(config.formState);
 	const [formErrors, setFormErrors] = useState<{ [key: string]: string[] }>({});
 
 	// Methods
-	const handleChange = (key: string, value: any) => {
-		const updatedForm = { ...formState, [key]: value };
+	const handleChange = (key: keyof ContentBlockFormStates, value: any) => {
+		const updatedForm = { ...formState, [key]: get(value, 'value', value) };
 
 		setFormState(updatedForm);
-		onSave(formState);
+		handleValidation(key, updatedForm);
+		onSave(updatedForm);
 	};
 
-	const handleValidation = () => {
+	const handleValidation = (
+		fieldKey: keyof ContentBlockFormStates,
+		updatedFormState: ContentBlockFormStates
+	) => {
 		const errors: any = {};
 
-		// Go over every field's validator if present
-		// to check if form is valid
-		Object.keys(config.fields).forEach((fieldKey: string) => {
-			const field = config.fields[fieldKey];
-			const validator = get(field, 'validator');
+		const field = config.fields[fieldKey];
+		const validator = get(field, 'validator');
 
-			if (validator) {
-				const errorArray = validator(formState[fieldKey as keyof ContentBlockFormStates]);
+		if (validator) {
+			const errorArray = validator(updatedFormState[fieldKey]);
 
-				if (errorArray.length) {
-					errors[fieldKey] = errorArray;
-				}
+			if (errorArray.length) {
+				errors[fieldKey] = errorArray;
 			}
-		});
-
-		setFormErrors(errors);
-
-		return Object.keys(errors).length === 0;
-	};
-
-	const handleSave = () => {
-		const isFormValid = handleValidation();
-
-		if (!isFormValid) {
-			return;
 		}
 
-		onSave(formState);
+		setFormErrors(errors);
 	};
 
 	// Render
-	const renderFieldEditor = (fieldKey: string, cb: ContentBlockField) => {
+	const renderFieldEditor = (fieldKey: keyof ContentBlockFormStates, cb: ContentBlockField) => {
 		const EditorComponent = EDITOR_TYPES_MAP[cb.editorType];
+		const editorId = `${index}-${config.name}-${fieldKey}`;
+		const defaultProps = {
+			...cb.editorProps,
+			id: editorId,
+			name: editorId,
+		};
+		let editorProps = {};
 
 		switch (cb.editorType) {
+			case ContentBlockEditor.ColorSelect:
+				editorProps = {
+					onChange: (option: SelectOption) => handleChange(fieldKey, get(option, 'value', '')),
+					value: defaultProps.options.find(
+						(opt: SelectOption) => opt.value === formState.backgroundColor
+					),
+				};
+				break;
+			case ContentBlockEditor.WYSIWYG:
+				editorProps = {
+					data: formState[fieldKey],
+					onChange: (value: any) => handleChange(fieldKey, value),
+				};
+				break;
 			default:
-				return (
-					<EditorComponent
-						{...cb.editorProps}
-						name={fieldKey}
-						onChange={(value: any) => handleChange(fieldKey, value)}
-						value={formState[fieldKey as keyof ContentBlockFormStates]}
-					/>
-				);
+				editorProps = {
+					onChange: (value: any) => handleChange(fieldKey, value),
+					value: formState[fieldKey],
+				};
+				break;
 		}
+
+		return <EditorComponent {...defaultProps} {...editorProps} />;
 	};
 
 	const renderFormGroups = (cb: ContentBlockConfig) => {
-		const formGroupId = `${cb.name}-${index}`;
-
 		return (
 			<Accordion
 				title={`${cb.name} (${index}/${length})`}
-				isOpen={accordionsOpenState[formGroupId] || false}
-				onToggle={() =>
-					setAccordionsOpenState({ [formGroupId]: !accordionsOpenState[formGroupId] })
-				}
+				isOpen={isAccordionOpen}
+				onToggle={setIsAccordionOpen}
 			>
 				{Object.keys(cb.fields).map((key: string) => (
 					<FormGroup
@@ -104,14 +112,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						label={cb.fields[key].label}
 						error={formErrors[key]}
 					>
-						{renderFieldEditor(key, cb.fields[key])}
+						{renderFieldEditor(key as keyof ContentBlockFormStates, cb.fields[key])}
 					</FormGroup>
 				))}
-				{/* <Spacer margin="top">
-					<Flex justify="end">
-						<Button label={`${config.name} opslaan`} onClick={handleSave} size="small" />
-					</Flex>
-				</Spacer> */}
 			</Accordion>
 		);
 	};

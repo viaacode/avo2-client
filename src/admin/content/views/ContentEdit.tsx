@@ -23,6 +23,7 @@ import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { AppState } from '../../../store';
+import { INSERT_CONTENT_BLOCKS } from '../../content-block/content-block.gql';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { ContentEditForm } from '../components';
@@ -54,6 +55,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, loginState,
 
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
 	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
+	const [triggerContentBlockInsert] = useMutation(INSERT_CONTENT_BLOCKS);
 
 	// Computed
 	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
