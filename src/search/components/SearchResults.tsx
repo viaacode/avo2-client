@@ -20,7 +20,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 					<Flex orientation="horizontal" center>
 						<Spinner size="large" />
 					</Flex>
-				) : data && data.count !== 0 ? (
+				) : data && data.results && data.count !== 0 ? (
 					<>
 						<ul className="c-search-result-list">
 							{data.results.map((result, index) => (
