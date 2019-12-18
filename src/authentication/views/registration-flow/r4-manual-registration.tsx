@@ -86,8 +86,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 				},
 				subject: 'Manuele aanvraag account op AvO',
 			};
-			const response = await createZendeskTicket(ticket);
-			console.log(response);
+			await createZendeskTicket(ticket);
 			toastService.success('Je aanvraag is verstuurt');
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);

@@ -52,8 +52,5 @@ export async function createZendeskTicket(
 	if (response.status < 200 && response.status >= 400) {
 		throw response;
 	}
-	const data = await response.json();
-
-	console.log(data);
-	return data;
+	return await response.json();
 }
