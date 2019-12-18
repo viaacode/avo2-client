@@ -1,4 +1,4 @@
-import { TabProps } from '@viaa/avo2-components/dist/components/Tabs/Tab/Tab';
+import { TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import { TableColumn } from '../../shared/types';

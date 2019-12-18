@@ -1,81 +1,99 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { ValueType } from 'react-select';
 
-import { Button, Flex, Form, FormGroup, IconName, Spinner, TextInput } from '@viaa/avo2-components';
+import { Button, Container, Flex, IconName, SelectOption, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
-import { ReactSelectOption } from '../../../shared/types';
 
-import { IconPicker } from '../../shared/components';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
-import { INITIAL_MENU_FORM, MENU_ICON_OPTIONS, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
+import { MenuEditForm } from '../components';
+import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
-import { fetchMenuItemById, fetchMenuItemsByPlacement } from '../menu.services';
-import { MenuEditForm, MenuEditPageType, MenuEditParams } from '../menu.types';
+import { fetchMenuItemById, fetchMenuItems } from '../menu.services';
+import { MenuEditFormState, MenuEditParams } from '../menu.types';
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const { menu: menuParentId, id: menuItemId } = match.params;
+	const menuName = startCase(menuParentId);
 
-	const [menuForm, setMenuForm] = useState<MenuEditForm>(INITIAL_MENU_FORM);
-	const [pageType, setPageType] = useState<MenuEditPageType>(menuItemId ? 'edit' : 'create');
+	// Hooks
+	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
 	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
-	const [formErrors, setFormErrors] = useState<Partial<MenuEditForm>>({});
-	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [formErrors, setFormErrors] = useState<Partial<MenuEditFormState>>({});
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
 
+	// Fetch menu items depending on menu parent param
+	// This is necessary for populating the menu parent options for our form
 	useEffect(() => {
-		if (menuParentId) {
-			fetchMenuItemsByPlacement(menuParentId).then(
-				(menuItemsByPosition: Avo.Menu.Menu[] | null) => {
-					if (menuItemsByPosition && menuItemsByPosition.length) {
-						setMenuItems(menuItemsByPosition);
-					}
-				}
-			);
-		}
-	}, [menuParentId]);
+		fetchMenuItems(menuParentId).then(menuItemsByPosition => {
+			if (menuItemsByPosition && menuItemsByPosition.length) {
+				setMenuItems(menuItemsByPosition);
+			} else {
+				// Go back to overview if no menu items are present
+				toastService.danger(`Er werden geen navigatie items gevonden voor ${menuName}`);
+				history.push(MENU_PATH.MENU);
+			}
+		});
+	}, [history, menuName, menuParentId]);
 
+	// Fetch menu item by id
 	useEffect(() => {
 		if (menuItemId) {
-			setPageType('edit');
 			setIsLoading(true);
-			fetchMenuItemById(Number(menuItemId)).then((menuItem: Avo.Menu.Menu | null) => {
-				if (menuItem) {
-					// Remove unnecessary props for saving
-					delete (menuItem as any).__typename;
+			// Fetch menu item by id so we can populate our form for editing
+			fetchMenuItemById(Number(menuItemId))
+				.then((menuItem: Avo.Menu.Menu | null) => {
+					if (menuItem) {
+						// Remove unnecessary props for saving
+						delete (menuItem as any).__typename;
 
-					setInitialMenuItem(menuItem);
-					setMenuForm({
-						icon: menuItem.icon_name as IconName,
-						label: menuItem.label,
-						link: menuItem.link_target || '',
-					});
+						setInitialMenuItem(menuItem);
+						setMenuForm({
+							description: menuItem.description || '',
+							icon: menuItem.icon_name as IconName,
+							label: menuItem.label,
+							link: menuItem.link_target || '',
+							placement: menuItem.placement,
+						});
+					}
+				})
+				.finally(() => {
 					setIsLoading(false);
-				}
-			});
-		} else {
-			setPageType('create');
-			setIsLoading(false);
+				});
 		}
-	}, [menuItemId]);
+	}, [menuItemId, menuParentId]);
 
 	// Computed
-	const pageTitle = `${startCase(menuParentId)}: item ${PAGE_TYPES_LANG[pageType]}`;
+	const pageType = menuItemId ? 'edit' : 'create';
+	const pageTitle = menuParentId
+		? `${menuName}: item ${PAGE_TYPES_LANG[pageType]}`
+		: 'Navigatie toevoegen';
+	const menuParentOptions = menuItems.reduce(
+		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
+			// Don't add duplicates to the options
+			if (acc.find(opt => opt.value === placement)) {
+				return acc;
+			}
+
+			return [...acc, { label: startCase(placement), value: placement }];
+		},
+		[]
+	);
 
 	// Methods
-	const handleChange = (key: keyof MenuEditForm, value: any): void => {
+	const handleChange = (key: keyof MenuEditFormState, value: any): void => {
 		setMenuForm({
 			...menuForm,
 			[key]: value,
@@ -94,12 +112,11 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		// Create
-		const menuItem: Partial<Partial<Avo.Menu.Menu>> = {
+		const menuItem: Partial<Avo.Menu.Menu> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			link_target: menuForm.link,
-			placement: menuParentId,
+			placement: menuForm.placement,
 		};
 
 		if (pageType === 'create') {
@@ -107,7 +124,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				variables: {
 					menuItem: {
 						...menuItem,
-						description: get(menuItems, '[0].description', ''),
+						// Get description from existing items or use form description field
+						description: get(menuItems, '[0].description', menuForm.description),
 						position: menuItems.length,
 					},
 				},
@@ -145,11 +163,15 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
+		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuForm.placement });
 	};
 
 	const handleValidation = (): boolean => {
-		const errors: Partial<MenuEditForm> = {};
+		const errors: Partial<MenuEditFormState> = {};
+
+		if (!menuParentId && !menuForm.placement) {
+			errors.placement = 'Navigatie naam is verplicht';
+		}
 
 		if (!menuForm.label) {
 			errors.label = 'Label is verplicht';
@@ -164,7 +186,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		return Object.keys(errors).length === 0;
 	};
 
-	const navigateBack = () => navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
+	const navigateBack = (): void => {
+		if (menuParentId) {
+			navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuParentId });
+		} else {
+			navigate(history, MENU_PATH.MENU);
+		}
+	};
 
 	// Render
 	return isLoading ? (
@@ -174,31 +202,17 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	) : (
 		<AdminLayout navigateBack={navigateBack} pageTitle={pageTitle}>
 			<AdminLayoutBody>
-				<Form>
-					<FormGroup label="Icoon">
-						<IconPicker
-							options={MENU_ICON_OPTIONS}
-							onChange={(e: ValueType<ReactSelectOption<string>>) =>
-								handleChange('icon', get(e, 'value', ''))
-							}
-							value={MENU_ICON_OPTIONS.find(
-								(option: ReactSelectOption<string>) => option.value === menuForm.icon
-							)}
+				<Container mode="vertical" size="small">
+					<Container mode="horizontal">
+						<MenuEditForm
+							formErrors={formErrors}
+							formState={menuForm}
+							menuParentId={menuParentId}
+							menuParentOptions={menuParentOptions}
+							onChange={handleChange}
 						/>
-					</FormGroup>
-					<FormGroup error={formErrors.label} label="Label" required>
-						<TextInput
-							onChange={(value: string) => handleChange('label', value)}
-							value={menuForm.label}
-						/>
-					</FormGroup>
-					<FormGroup error={formErrors.link} label="Link" required>
-						<TextInput
-							onChange={(value: string) => handleChange('link', value)}
-							value={menuForm.link}
-						/>
-					</FormGroup>
-				</Form>
+					</Container>
+				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
 				<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
