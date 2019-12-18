@@ -7,6 +7,8 @@ import { getEnv } from '../../shared/helpers';
 import { AUTH_PATH, SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
 
+export type IdpType = 'HETARCHIEF' | 'VIAA' | 'SMARTSCHOOL' | 'KLASCEMENT'; // TODO switch to typings type
+
 /**
  *
  * Client redirect functions
@@ -24,16 +26,14 @@ export function redirectToClientPage(path: string, history: History) {
 export function redirectToServerSmartschoolLogin(location: Location) {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl =
-		getBaseUrl(location) + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
 }
 
 export function redirectToServerArchiefRegistrationIdp(location: Location, stamboekNumber: string) {
-	const returnToUrl =
-		getBaseUrl(location) + get(location, 'state.from.pathname', AUTH_PATH.LOGIN_AVO);
+	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', AUTH_PATH.LOGIN_AVO);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify({
 		returnToUrl,
 		stamboekNumber,
@@ -43,8 +43,7 @@ export function redirectToServerArchiefRegistrationIdp(location: Location, stamb
 export function redirectToServerLoginPage(location: Location) {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl =
-		getBaseUrl(location) + get(location, 'state.from.pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/login?${queryString.stringify({
 		returnToUrl,
@@ -57,6 +56,26 @@ export function redirectToServerLogoutPage(location: Location) {
 	const returnToUrl = `${getBaseUrl(location)}/`;
 	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
 		returnToUrl,
+	})}`;
+}
+
+/**
+ * Redirect to server link accounts route
+ * @param location
+ * @param idpType
+ */
+export function redirectToServerLinkAccount(location: Location, idpType: IdpType) {
+	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+	window.location.href = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify({
+		returnToUrl,
+		idpType,
+	})}`;
+}
+export function redirectToServerUnlinkAccount(location: Location, idpType: IdpType) {
+	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+	window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify({
+		returnToUrl,
+		idpType,
 	})}`;
 }
 

@@ -1,11 +1,11 @@
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
@@ -15,7 +15,7 @@ import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
 
-interface MenuOverviewProps extends RouteComponentProps {}
+interface MenuOverviewProps extends DefaultSecureRouteProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const [menus, setMenus] = useState<any>([]);

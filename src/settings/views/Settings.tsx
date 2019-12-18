@@ -1,8 +1,8 @@
 import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Container, Heading, Navbar, Tabs, Toolbar, ToolbarLeft } from '@viaa/avo2-components';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { buildLink } from '../../shared/helpers';
 import toastService from '../../shared/services/toast-service';
@@ -17,10 +17,10 @@ import {
 	SettingsTab,
 } from '../settings.const';
 
-interface ForPupilsProps extends RouteComponentProps<{ tabId: string }> {}
+interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 
-const Settings: FunctionComponent<ForPupilsProps> = ({ history, match }) => {
-	const [activeTab, setActiveTab] = useState<SettingsTab>(match.params.tabId || PROFILE_ID);
+const Settings: FunctionComponent<ForPupilsProps> = props => {
+	const [activeTab, setActiveTab] = useState<SettingsTab>(props.match.params.tabId || PROFILE_ID);
 
 	const generateTabHeader = (id: string, label: string) => ({
 		id,
@@ -38,21 +38,21 @@ const Settings: FunctionComponent<ForPupilsProps> = ({ history, match }) => {
 
 	const tabContents = {
 		[PROFILE_ID]: {
-			component: <Profile />,
+			component: <Profile {...props} />,
 		},
 		[ACCOUNT_ID]: {
-			component: <Account />,
+			component: <Account {...props} />,
 		},
 		[EMAIL_ID]: {
-			component: <Email />,
+			component: <Email {...props} />,
 		},
 		[NOTIFICATIONS_ID]: {
-			component: <Notifications />,
+			component: <Notifications {...props} />,
 		},
 	};
 
 	const goToTab = (tabId: string | ReactText) => {
-		redirectToClientPage(buildLink(SETTINGS_PATH.SETTINGS_TAB, { tabId }), history);
+		redirectToClientPage(buildLink(SETTINGS_PATH.SETTINGS_TAB, { tabId }), props.history);
 		setActiveTab(tabId as SettingsTab);
 	};
 
@@ -92,4 +92,4 @@ const Settings: FunctionComponent<ForPupilsProps> = ({ history, match }) => {
 	);
 };
 
-export default withRouter(Settings);
+export default Settings;

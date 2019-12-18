@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, isEqual, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
-import { RouteComponentProps } from 'react-router';
 
 import {
 	Button,
@@ -14,6 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
@@ -25,7 +25,7 @@ import { DELETE_MENU_ITEM, GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID }
 
 import './MenuDetail.scss';
 
-interface MenuDetailProps extends RouteComponentProps<{ menu: string }> {}
+interface MenuDetailProps extends DefaultSecureRouteProps<{ menu: string }> {}
 
 const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [activeRow, setActiveRow] = useState<number | null>(null);

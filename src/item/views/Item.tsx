@@ -1,7 +1,6 @@
 import { get, isNull } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
@@ -31,15 +30,19 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
+	buildLink,
 	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
@@ -53,12 +56,11 @@ import toastService from '../../shared/services/toast-service';
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
-
 import './Item.scss';
 
-interface ItemProps extends RouteComponentProps {}
+interface ItemProps extends DefaultSecureRouteProps {}
 
-const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
+const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ...rest }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
@@ -95,14 +97,19 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 			}
 
 			// Log event of item page view
-			trackEvents({
-				object: itemId,
-				object_type: 'avo_item_pid',
-				message: `Gebruiker ${getProfileName()} heeft de pagina van fragment ${itemId} bezocht`,
-				action: 'view',
-			});
+			trackEvents(
+				{
+					object: itemId,
+					object_type: 'avo_item_pid',
+					message: `Gebruiker ${getProfileName(
+						user
+					)} heeft de pagina van fragment ${itemId} bezocht`,
+					action: 'view',
+				},
+				user
+			);
 		}
-	}, [time, history, videoRef, itemId, relatedItems]);
+	}, [time, history, videoRef, itemId, relatedItems, user]);
 
 	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
 		getRelatedItems(currentItemId, 'items', limit)
@@ -141,7 +148,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							title={relatedItem.dc_title}
-							href={`/item/${relatedItem.id}`}
+							onClick={() =>
+								redirectToClientPage(buildLink(APP_PATH.ITEM, { id: relatedItem.id }), history)
+							}
 							category={englishContentType}
 							orientation="horizontal"
 						>
@@ -229,7 +238,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 				</Container>
 				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">
-						<ItemVideoDescription itemMetaData={itemMetaData} />
+						<ItemVideoDescription
+							itemMetaData={itemMetaData}
+							history={history}
+							location={location}
+							match={match}
+							user={user}
+							{...rest}
+						/>
 						<Grid>
 							<Column size="2-7">
 								<Spacer margin="top-large">
@@ -401,6 +417,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 				</Container>
 				{typeof itemId !== undefined && (
 					<AddToCollectionModal
+						history={history}
+						location={location}
+						match={match}
+						user={user}
 						itemMetaData={itemMetaData}
 						externalId={itemId as string}
 						isOpen={isOpenAddToCollectionModal}
@@ -422,4 +442,4 @@ const Item: FunctionComponent<ItemProps> = ({ history, match }) => {
 	);
 };
 
-export default withRouter(Item);
+export default Item;

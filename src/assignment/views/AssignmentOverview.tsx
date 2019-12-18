@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import {
@@ -31,16 +30,15 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { connect } from 'react-redux';
-import { selectLogin } from '../../authentication/store/selectors';
+import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
-import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
@@ -59,14 +57,14 @@ import { AssignmentColumn } from '../assignment.types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
-interface AssignmentOverviewProps extends RouteComponentProps {
-	loginState: Avo.Auth.LoginResponse | null;
+interface AssignmentOverviewProps extends DefaultSecureRouteProps {
 	refetchCount: () => void;
 }
 
 const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	history,
 	refetchCount,
+	user,
 }) => {
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<Avo.Assignment.View>('assignments');
@@ -88,10 +86,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
 
-	const canEditAssignments = PermissionService.hasPermissions([
-		{ permissionName: PERMISSIONS.EDIT_OWN_ASSIGNMENTS },
-		{ permissionName: PERMISSIONS.EDIT_ALL_ASSIGNMENTS },
-	]);
+	const canEditAssignments = PermissionService.hasPermissions(
+		[
+			{ permissionName: PERMISSIONS.EDIT_OWN_ASSIGNMENTS },
+			{ permissionName: PERMISSIONS.EDIT_ALL_ASSIGNMENTS },
+		],
+		user
+	);
 
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
@@ -469,7 +470,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						canEditAssignments ? GET_ASSIGNMENTS_BY_OWNER_ID : GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID
 					}
 					variables={{
-						owner_profile_id: getProfileId(),
+						owner_profile_id: getProfileId(user),
 						archived: activeView === 'archived_assignments',
 						order: { [sortColumn]: sortOrder },
 						offset: page * ITEMS_PER_PAGE,
@@ -484,8 +485,4 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	loginState: selectLogin(state),
-});
-
-export default withRouter(connect(mapStateToProps)(AssignmentOverview));
+export default AssignmentOverview;
