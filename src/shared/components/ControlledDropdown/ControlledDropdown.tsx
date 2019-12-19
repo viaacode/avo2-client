@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { Dropdown } from '@viaa/avo2-components';
-import { DropdownProps } from '@viaa/avo2-components/dist/components/Dropdown/Dropdown';
+import { Dropdown, DropdownProps } from '@viaa/avo2-components';
 
 const ControlledDropdown = (props: DropdownProps) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false);

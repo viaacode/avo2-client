@@ -1,6 +1,6 @@
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
+import { Redirect, Route, RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
@@ -13,16 +13,16 @@ import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading, selectUser } from '../store/selectors';
 import { LoginMessage } from '../store/types';
 
-export interface SecuredRouteProps extends RouteComponentProps {
+export interface SecuredRouteProps {
 	component: ComponentType<any>;
-	path?: string;
 	exact?: boolean;
-	profileHasToBeComplete?: boolean;
-	user: Avo.User.User | undefined;
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
 	getLoginState: () => Dispatch;
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateError: boolean;
+	loginStateLoading: boolean;
+	path?: string;
+	profileHasToBeComplete?: boolean;
+	user: Avo.User.User;
 }
 
 export interface DefaultSecureRouteProps<T = {}> extends RouteComponentProps<T> {
@@ -31,17 +31,14 @@ export interface DefaultSecureRouteProps<T = {}> extends RouteComponentProps<T> 
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 	component,
-	path,
 	exact,
+	getLoginState,
+	loginState,
+	loginStateError,
+	loginStateLoading,
+	path,
 	profileHasToBeComplete = true,
 	user,
-	loginState,
-	loginStateLoading,
-	loginStateError,
-	getLoginState,
-	history,
-	location,
-	match,
 }) => {
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -70,7 +67,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 					// TODO enable this once we can save profile info
 					// if (profileHasToBeComplete && isProfileComplete()) {
 					const Component = component;
-					return <Component user={user} history={history} location={location} match={match} />;
+					return <Component {...props} user={user} />;
 					// } else {
 					// 	// Force user to complete their profile before letting them in
 					// 	return (
@@ -111,9 +108,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(SecuredRoute)
-);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(SecuredRoute);

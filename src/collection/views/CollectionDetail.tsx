@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
 
 import {
 	Button,
@@ -29,6 +30,7 @@ import { PermissionGuard } from '../../authentication/components';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfile, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -51,7 +53,6 @@ import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentListDetail, ShareCollectionModal } from '../components';
 import './CollectionDetail.scss';
-import { withRouter } from 'react-router';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
@@ -174,7 +175,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<Column size="3-6">
 						<MediaCard
 							title={dc_title}
-							href={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })}
+							onClick={() =>
+								redirectToClientPage(buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id }), history)
+							}
 							category={category}
 							orientation="horizontal"
 						>

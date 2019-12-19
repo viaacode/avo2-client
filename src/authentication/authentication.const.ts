@@ -1,4 +1,4 @@
-import { ROUTE_PARTS } from '../shared/constants/routes';
+import { ROUTE_PARTS } from '../shared/constants';
 import { UserState } from './authentication.types';
 
 export const INITIAL_USER_STATE: UserState = {
@@ -15,6 +15,7 @@ export const AUTH_PATH = Object.freeze({
 	LOGOUT: `/${ROUTE_PARTS.logout}`,
 	REGISTER_OR_LOGIN: `/${ROUTE_PARTS.registerOrLogin}`,
 	MANUAL_ACCESS_REQUEST: `/${ROUTE_PARTS.manualAccessRequest}`,
+	STUDENT_TEACHER: `/${ROUTE_PARTS.studentTeacher}`,
 	STAMBOEK: `/${ROUTE_PARTS.stamboek}`,
 });
 
