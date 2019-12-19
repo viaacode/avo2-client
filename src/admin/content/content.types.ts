@@ -28,16 +28,16 @@ export interface ContentEditFormState {
 
 export type ContentTypesResponse = { value: string };
 
-export interface ContentEditBlocksState {
-	cbConfigs: ContentBlockConfig[];
+export interface ContentEditState {
+	readonly cbConfigs: ContentBlockConfig[];
 }
 
-export enum ContentEditBlocksActionType {
+export enum ContentEditActionType {
 	SET_FORM_STATE = '@@admin-content-edit/SET_FORM_STATE',
 	ADD_CB_CONFIG = '@@admin-content-edit/ADD_CB_CONFIG',
 }
 
-export type ContentEditBlocksAction = {
-	type: ContentEditBlocksActionType;
+export type ContentEditAction = {
+	type: ContentEditActionType;
 	payload: any;
 };

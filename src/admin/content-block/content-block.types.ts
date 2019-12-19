@@ -1,3 +1,4 @@
+// Content block
 export enum ContentBlockType {
 	Heading = 'Heading',
 	RichText = 'RichText',
@@ -34,6 +35,7 @@ export interface HeadingBlockFormState extends DefaultContentBlock {
 	align: Aligns;
 }
 
+// Rich text block
 export interface RichTextBlockFormState extends DefaultContentBlock {
 	content: string;
 }

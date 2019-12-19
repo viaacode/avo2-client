@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useReducer, useState } from 'react';
 
 import {
 	Button,
@@ -20,13 +20,19 @@ import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
+import { INSERT_CONTENT_BLOCKS, UPDATE_CONTENT_BLOCK } from '../../content-block/content-block.gql';
+import {
+	ContentBlockConfig,
+	ContentBlockFormStates,
+} from '../../content-block/content-block.types';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { ContentEditForm } from '../components';
-import { CONTENT_DETAIL_TABS, CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
+import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
-import { fetchContentItemById, insertContent, updateContent } from '../content.services';
-import { ContentEditFormState, PageType } from '../content.types';
+import { insertContent, updateContent } from '../content.services';
+import { ContentEditActionType, ContentEditFormState, PageType } from '../content.types';
+import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducer';
 import { useContentItem, useContentTypes } from '../hooks';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 
@@ -36,9 +42,11 @@ interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
 	const { id } = match.params;
+	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
 	// Hooks
-	const [contentForm, setContentForm] = useState<ContentEditFormState>(INITIAL_CONTENT_FORM);
+	const [{ cbConfigs }, dispatch] = useReducer(contentEditReducer(initialState), initialState);
+
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -48,6 +56,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
 	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
+	const [triggerContentBlocksInsert] = useMutation(INSERT_CONTENT_BLOCKS);
+	const [triggerContentBlockUpdate] = useMutation(UPDATE_CONTENT_BLOCK);
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
@@ -61,10 +71,24 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	];
 
 	// Methods
+	const addCbConfig = (newConfig: ContentBlockConfig) => {
+		dispatch({
+			type: ContentEditActionType.ADD_CB_CONFIG,
+			payload: newConfig,
+		});
+	};
+
 	const handleChange = (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => {
 		setContentForm({
 			...contentForm,
 			[key]: value,
+		});
+	};
+
+	const handleCbConfigChange = (index: number, formState: Partial<ContentBlockFormStates>) => {
+		dispatch({
+			type: ContentEditActionType.SET_FORM_STATE,
+			payload: { formState, index },
 		});
 	};
 
@@ -150,7 +174,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const renderTabContent = () => {
 		switch (currentTab) {
 			case 'inhoud':
-				return <ContentEditContentBlocks />;
+				return (
+					<ContentEditContentBlocks
+						cbConfigs={cbConfigs}
+						onAdd={addCbConfig}
+						onChange={handleCbConfigChange}
+					/>
+				);
 			case 'metadata':
 				return (
 					<ContentEditForm

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useReducer, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
 import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 
@@ -7,21 +7,26 @@ import {
 	CONTENT_BLOCK_CONFIG_MAP,
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
-import { ContentBlockFormStates, ContentBlockType } from '../../content-block/content-block.types';
+import {
+	ContentBlockConfig,
+	ContentBlockFormStates,
+	ContentBlockType,
+} from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 
-import { ContentEditBlocksActionType } from '../content.types';
-import { CONTENT_EDIT_BLOCKS_INITIAL_STATE, contentEditBlocksReducer } from '../helpers/reducer';
+interface ContentEditContentBlocksProps {
+	cbConfigs: ContentBlockConfig[];
+	onAdd: (config: ContentBlockConfig) => void;
+	onChange: (index: number, formState: Partial<ContentBlockFormStates>) => void;
+}
 
-const ContentEditContentBlocks: FunctionComponent = () => {
-	const initialState = CONTENT_EDIT_BLOCKS_INITIAL_STATE();
-
+const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
+	cbConfigs,
+	onAdd,
+	onChange,
+}) => {
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
-	const [{ cbConfigs }, dispatch] = useReducer(
-		contentEditBlocksReducer(initialState),
-		initialState
-	);
 
 	// Methods
 	const getFormKey = (name: string, index: number) => `${name}-${index}`;
@@ -30,19 +35,9 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
 		const cbFormKey = getFormKey(newConfig.formState.blockType, cbConfigs.length);
 		// Update content block configs
-		dispatch({
-			type: ContentEditBlocksActionType.ADD_CB_CONFIG,
-			payload: newConfig,
-		});
+		onAdd(newConfig);
 		// Set newly added config accordion as open
 		setAccordionsOpenState({ [cbFormKey]: true });
-	};
-
-	const handleSave = (index: number, formState: Partial<ContentBlockFormStates>) => {
-		dispatch({
-			type: ContentEditBlocksActionType.SET_FORM_STATE,
-			payload: { index, formState },
-		});
 	};
 
 	// Render
@@ -60,7 +55,7 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 					setIsAccordionOpen={() =>
 						setAccordionsOpenState({ [cbFormKey]: !accordionsOpenState[cbFormKey] })
 					}
-					onChange={cbFormState => handleSave(index, cbFormState)}
+					onChange={cbFormState => onChange(index, cbFormState)}
 				/>
 			);
 		});
