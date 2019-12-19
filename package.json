@@ -11,7 +11,7 @@
 		"lint": "tslint -p .",
 		"format": "npm run lint -- --fix",
 		"build-extract-translations-script": "tsc --sourceMap --esModuleInterop --resolveJsonModule scripts/extract-and-replace-translations.ts",
-		"extract-translations": "npm run build-extract-translations-script && node scripts/extract-and-replace-translations.js"
+		"extract-translations": "npm run build-extract-translations-script && node scripts/extract-and-replace-translations.js && npm run format"
 	},
 	"contributors": [
 		"Bert Verhelst <bert.verhelst@studiohyperdrive.be>",

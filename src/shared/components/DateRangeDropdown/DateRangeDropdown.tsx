@@ -178,7 +178,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 						>
 							<RadioButtonGroup inline>
 								<RadioButton
-									label={t('shared/components/date-range-dropdown/date-range-dropdown___op-jaartal')}
+									label={t(
+										'shared/components/date-range-dropdown/date-range-dropdown___op-jaartal'
+									)}
 									name="year"
 									value="year"
 									checked={showYearControls}
@@ -189,7 +191,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									}}
 								/>
 								<RadioButton
-									label={t('shared/components/date-range-dropdown/date-range-dropdown___specifieke-datums')}
+									label={t(
+										'shared/components/date-range-dropdown/date-range-dropdown___specifieke-datums'
+									)}
 									name="year"
 									value="date"
 									checked={!showYearControls}

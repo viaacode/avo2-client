@@ -306,7 +306,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 											{!!itemMetaData.issued && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___publicatiedatum">Publicatiedatum</Trans>
+														<Trans i18nKey="item/views/item___publicatiedatum">
+															Publicatiedatum
+														</Trans>
 													</th>
 													<td>{reorderDate(itemMetaData.issued, '/')}</td>
 												</Column>

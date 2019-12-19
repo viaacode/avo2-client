@@ -168,7 +168,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		if (!relatedCollections || !relatedCollections.length) {
 			return (
 				<p className="c-body-1">
-					<Trans i18nKey="collection/views/collection-detail___de-gerelateerde-collecties-konden-niet-worden-opgehaald">De gerelateerde collecties konden niet worden opgehaald.</Trans>
+					<Trans i18nKey="collection/views/collection-detail___de-gerelateerde-collecties-konden-niet-worden-opgehaald">
+						De gerelateerde collecties konden niet worden opgehaald.
+					</Trans>
 				</p>
 			);
 		}
@@ -299,13 +301,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<Container mode="vertical">
 					<Container mode="horizontal">
 						<h3 className="c-h3">
-							<Trans i18nKey="collection/views/collection-detail___info-over-deze-collectie">Info over deze collectie</Trans>
+							<Trans i18nKey="collection/views/collection-detail___info-over-deze-collectie">
+								Info over deze collectie
+							</Trans>
 						</h3>
 						<Grid>
 							<Column size="3-3">
 								<Spacer margin="top">
 									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">Onderwijsniveau</Trans>
+										<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
+											Onderwijsniveau
+										</Trans>
 									</p>
 									<p className="c-body-1">
 										{lom_context && lom_context.length ? (
@@ -319,7 +325,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							<Column size="3-3">
 								<Spacer margin="top">
 									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">Laatst aangepast</Trans>
+										<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
+											Laatst aangepast
+										</Trans>
 									</p>
 									<p className="c-body-1">{formatDate(updated_at)}</p>
 								</Spacer>
@@ -330,10 +338,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								</p>
 								{/* TODO: add links */}
 								<p className="c-body-1">
-									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">Deze collectie is een kopie van:</Trans>
+									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+										Deze collectie is een kopie van:
+									</Trans>
 								</p>
 								<p className="c-body-1">
-									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">Deze collectie is deel van een map:</Trans>
+									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+										Deze collectie is deel van een map:
+									</Trans>
 								</p>
 							</Column>
 							<Column size="3-3">

@@ -169,7 +169,9 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 							</FormGroup>
 							<FormGroup>
 								<Button
-									label={t('shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen')}
+									label={t(
+										'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
+									)}
 									type="primary"
 									className="c-apply-filter-button"
 									block
@@ -221,13 +223,17 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 								<ToolbarItem>
 									<ButtonToolbar>
 										<Button
-											label={t('shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___annuleren')}
+											label={t(
+												'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___annuleren'
+											)}
 											type="secondary"
 											block
 											onClick={closeDropdownOrModal}
 										/>
 										<Button
-											label={t('shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen')}
+											label={t(
+												'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
+											)}
 											className="c-apply-filter-button"
 											type="primary"
 											block

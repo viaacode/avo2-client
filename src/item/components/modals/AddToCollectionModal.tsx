@@ -344,7 +344,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 										>
 											<Spacer margin="bottom">
 												<RadioButton
-													label={t('item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie')}
+													label={t(
+														'item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie'
+													)}
 													checked={!createNewCollection}
 													value="existing"
 													name="collection"
@@ -370,7 +372,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											</Spacer>
 											<Spacer margin="bottom">
 												<RadioButton
-													label={t('item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie')}
+													label={t(
+														'item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie'
+													)}
 													checked={createNewCollection}
 													value="new"
 													name="collection"

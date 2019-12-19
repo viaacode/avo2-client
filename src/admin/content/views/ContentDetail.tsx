@@ -62,7 +62,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 						{!!contentItem.description && (
 							<Spacer margin="bottom-large">
 								<Heading type="h4">
-									<Trans i18nKey="admin/content/views/content-detail___omschrijving">Omschrijving:</Trans>
+									<Trans i18nKey="admin/content/views/content-detail___omschrijving">
+										Omschrijving:
+									</Trans>
 								</Heading>
 								<p>{contentItem.description}</p>
 							</Spacer>
@@ -75,31 +77,41 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 							<tbody>
 								<tr>
 									<th>
-										<Trans i18nKey="admin/content/views/content-detail___content-type">Content type:</Trans>
+										<Trans i18nKey="admin/content/views/content-detail___content-type">
+											Content type:
+										</Trans>
 									</th>
 									<td>{contentItem.content_type}</td>
 								</tr>
 								<tr>
 									<th>
-										<Trans i18nKey="admin/content/views/content-detail___aangemaakt">Aangemaakt:</Trans>
+										<Trans i18nKey="admin/content/views/content-detail___aangemaakt">
+											Aangemaakt:
+										</Trans>
 									</th>
 									<td>{renderFormattedDate(contentItem.created_at)}</td>
 								</tr>
 								<tr>
 									<th>
-										<Trans i18nKey="admin/content/views/content-detail___laatst-bewerkt">Laatst bewerkt:</Trans>
+										<Trans i18nKey="admin/content/views/content-detail___laatst-bewerkt">
+											Laatst bewerkt:
+										</Trans>
 									</th>
 									<td>{renderFormattedDate(contentItem.updated_at)}</td>
 								</tr>
 								<tr>
 									<th>
-										<Trans i18nKey="admin/content/views/content-detail___gepubliceerd">Gepubliceerd:</Trans>
+										<Trans i18nKey="admin/content/views/content-detail___gepubliceerd">
+											Gepubliceerd:
+										</Trans>
 									</th>
 									<td>{renderFormattedDate(contentItem.publish_at)}</td>
 								</tr>
 								<tr>
 									<th>
-										<Trans i18nKey="admin/content/views/content-detail___gedepubliceerd">Gedepubliceerd:</Trans>
+										<Trans i18nKey="admin/content/views/content-detail___gedepubliceerd">
+											Gedepubliceerd:
+										</Trans>
 									</th>
 									<td>{renderFormattedDate(contentItem.depublish_at)}</td>
 								</tr>
