@@ -7,7 +7,7 @@ import {
 	Navbar,
 	Toolbar,
 	ToolbarItem,
-	ToolbarRight,
+	ToolbarLeft,
 } from '@viaa/avo2-components';
 
 import './ActionsBar.scss';
@@ -28,11 +28,11 @@ const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => 
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Toolbar>
-						<ToolbarRight>
+						<ToolbarLeft>
 							<ToolbarItem>
 								<ButtonToolbar>{children}</ButtonToolbar>
 							</ToolbarItem>
-						</ToolbarRight>
+						</ToolbarLeft>
 					</Toolbar>
 				</Container>
 			</Container>
