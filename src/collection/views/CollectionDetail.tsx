@@ -174,12 +174,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<Grid className="c-media-card-list">
 					<Column size="3-6">
 						<MediaCard
-							title={dc_title}
+							category={category}
 							onClick={() =>
 								redirectToClientPage(buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id }), history)
 							}
-							category={category}
 							orientation="horizontal"
+							title={dc_title}
 						>
 							<MediaCardThumbnail>
 								<Thumbnail category={category} src={thumbnail_path} />

@@ -1,4 +1,13 @@
 .c-content-block-form {
+	.o-form-group {
+		margin-bottom: 0.8rem;
+	}
+
+	.o-form-group__label {
+		padding: 0 0 0.4rem;
+		font-size: 1.3rem;
+	}
+
 	.o-form-group__controls {
 		flex-grow: 1;
 	}

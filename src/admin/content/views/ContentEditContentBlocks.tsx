@@ -1,35 +1,95 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useReducer, useState } from 'react';
 
-import { Container, Flex, FlexItem } from '@viaa/avo2-components';
+import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 
-import { ContentBlockForm } from '../../content-block/components';
+import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
 import {
-	HEADING_BLOCK_CONFIG,
-	RICH_TEXT_BLOCK_CONFIG,
-	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
-} from '../../content-block/helpers';
+	CONTENT_BLOCK_CONFIG_MAP,
+	CONTENT_BLOCK_TYPE_OPTIONS,
+} from '../../content-block/content-block.const';
+import { ContentBlockFormStates, ContentBlockType } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 
-const ContentEditContentBlocks: FunctionComponent = () => (
-	<Flex className="c-content-edit-view__content">
-		<FlexItem>
-			<Container mode="vertical">
-				<Container mode="horizontal">
-					<div>TODO: preview</div>
-				</Container>
-			</Container>
-		</FlexItem>
-		<Sidebar className="c-content-edit-view__sidebar" light>
-			<ContentBlockForm config={HEADING_BLOCK_CONFIG()} index={1} length={3} onSave={() => {}} />
-			<ContentBlockForm config={RICH_TEXT_BLOCK_CONFIG()} index={2} length={3} onSave={() => {}} />
-			<ContentBlockForm
-				config={RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG()}
-				index={3}
-				length={3}
-				onSave={() => {}}
-			/>
-		</Sidebar>
-	</Flex>
-);
+import { ContentEditBlocksActionType } from '../content.types';
+import { CONTENT_EDIT_BLOCKS_INITIAL_STATE, contentEditBlocksReducer } from '../helpers/reducer';
+
+const ContentEditContentBlocks: FunctionComponent = () => {
+	const initialState = CONTENT_EDIT_BLOCKS_INITIAL_STATE();
+
+	// Hooks
+	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
+	const [{ cbConfigs }, dispatch] = useReducer(
+		contentEditBlocksReducer(initialState),
+		initialState
+	);
+
+	// Methods
+	const getFormKey = (name: string, index: number) => `${name}-${index}`;
+
+	const handleCbAdd = (configType: ContentBlockType) => {
+		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
+		const cbFormKey = getFormKey(newConfig.formState.blockType, cbConfigs.length);
+		// Update content block configs
+		dispatch({
+			type: ContentEditBlocksActionType.ADD_CB_CONFIG,
+			payload: newConfig,
+		});
+		// Set newly added config accordion as open
+		setAccordionsOpenState({ [cbFormKey]: true });
+	};
+
+	const handleSave = (index: number, formState: Partial<ContentBlockFormStates>) => {
+		dispatch({
+			type: ContentEditBlocksActionType.SET_FORM_STATE,
+			payload: { index, formState },
+		});
+	};
+
+	// Render
+	const renderCbForms = () => {
+		return cbConfigs.map((cbConfig, index) => {
+			const cbFormKey = getFormKey(cbConfig.formState.blockType, index);
+
+			return (
+				<ContentBlockForm
+					key={cbFormKey}
+					config={cbConfig}
+					index={index + 1}
+					isAccordionOpen={accordionsOpenState[cbFormKey] || false}
+					length={cbConfigs.length}
+					setIsAccordionOpen={() =>
+						setAccordionsOpenState({ [cbFormKey]: !accordionsOpenState[cbFormKey] })
+					}
+					onChange={cbFormState => handleSave(index, cbFormState)}
+				/>
+			);
+		});
+	};
+
+	return (
+		<Flex className="c-content-edit-view__content">
+			<FlexItem>
+				{cbConfigs.map((cbConfig, index) => (
+					<ContentBlockPreview
+						key={getFormKey(cbConfig.formState.blockType, index)}
+						state={cbConfig.formState}
+					/>
+				))}
+			</FlexItem>
+			<Sidebar className="c-content-edit-view__sidebar" light>
+				{renderCbForms()}
+				<Form>
+					<FormGroup label="Voeg een content block toe">
+						<Select
+							options={CONTENT_BLOCK_TYPE_OPTIONS}
+							onChange={value => handleCbAdd(value as ContentBlockType)}
+							value={CONTENT_BLOCK_TYPE_OPTIONS[0].value}
+						/>
+					</FormGroup>
+				</Form>
+			</Sidebar>
+		</Flex>
+	);
+};
 
 export default ContentEditContentBlocks;
