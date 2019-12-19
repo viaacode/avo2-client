@@ -3,11 +3,14 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import { insertContentBlocks } from '../content-block/content-block.services';
+import { ContentBlockConfig } from '../content-block/content-block.types';
+
+import toastService from '../../shared/services/toast-service';
 import { CONTENT_RESULT_PATH } from './content.const';
 import { GET_CONTENT_BY_ID, GET_CONTENT_TYPES } from './content.gql';
 import { ContentTypesResponse } from './content.types';
-
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 
 export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
 	try {
@@ -17,6 +20,8 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 			`data.${CONTENT_RESULT_PATH.GET}[0]`,
 			null
 		);
+
+		// TODO: Add logic for fetching content-blocks
 
 		return contentItem;
 	} catch (err) {
@@ -44,17 +49,35 @@ export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null
 };
 
 export const insertContent = async (
-	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>,
-	contentItem: Partial<Avo.Content.Content>
+	contentItem: Partial<Avo.Content.Content>,
+	cbConfigs: ContentBlockConfig[],
+	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>
 ): Promise<Partial<Avo.Content.Content> | null> => {
 	try {
 		const response = await triggerContentInsert({
 			variables: { contentItem },
 			update: ApolloCacheManager.clearContentCache,
 		});
-		const id = get(response, `data.${CONTENT_RESULT_PATH.INSERT}.returning[0].id`, null);
+		const id: number | null = get(
+			response,
+			`data.${CONTENT_RESULT_PATH.INSERT}.returning[0].id`,
+			null
+		);
 
-		return id ? ({ ...contentItem, id } as Partial<Avo.Content.Content>) : null;
+		if (id) {
+			// Insert content-blocks
+			if (cbConfigs && cbConfigs.length) {
+				const contentBlocks = await insertContentBlocks(id, cbConfigs);
+
+				if (!contentBlocks) {
+					toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks');
+				}
+			}
+
+			return { ...contentItem, id } as Partial<Avo.Content.Content>;
+		}
+
+		return null;
 	} catch (err) {
 		console.error(err);
 		return null;
@@ -62,8 +85,9 @@ export const insertContent = async (
 };
 
 export const updateContent = async (
-	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>,
-	contentItem: Partial<Avo.Content.Content>
+	contentItem: Partial<Avo.Content.Content>,
+	cbConfigs: ContentBlockConfig[],
+	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>
 ): Promise<Partial<Avo.Content.Content> | null> => {
 	try {
 		const response = await triggerContentInsert({
@@ -74,6 +98,13 @@ export const updateContent = async (
 			update: ApolloCacheManager.clearContentCache,
 		});
 		const insertedContent = get(response, 'data', null);
+
+		if (cbConfigs && cbConfigs.length) {
+			// TODO: Add logic for:
+			// - inserting content-blocks
+			// - updating content-blocks
+			// - deleting content-blocks
+		}
 
 		if (!insertedContent) {
 			console.error('Content update returned empty response', response);

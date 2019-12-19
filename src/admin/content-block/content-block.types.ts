@@ -1,3 +1,14 @@
+// TODO: move these to avo2 typings repo
+export type ContentBlockSchema = {
+	id: number;
+	content_id: number;
+	variables: { [key: string]: any } | any[] | null;
+	position: number | null;
+	created_at: string;
+	updated_at: string;
+	content_block_type: string;
+};
+
 // Content block
 export enum ContentBlockType {
 	Heading = 'HEADING',

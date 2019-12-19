@@ -20,7 +20,6 @@ import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
-import { INSERT_CONTENT_BLOCKS, UPDATE_CONTENT_BLOCK } from '../../content-block/content-block.gql';
 import {
 	ContentBlockConfig,
 	ContentBlockFormStates,
@@ -30,7 +29,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/la
 import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
-import { insertContent, updateContent } from '../content.services';
+import * as ContentService from '../content.services';
 import { ContentEditActionType, ContentEditFormState, PageType } from '../content.types';
 import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducer';
 import { useContentItem, useContentTypes } from '../hooks';
@@ -56,8 +55,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
 	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
-	const [triggerContentBlocksInsert] = useMutation(INSERT_CONTENT_BLOCKS);
-	const [triggerContentBlockUpdate] = useMutation(UPDATE_CONTENT_BLOCK);
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
@@ -124,19 +121,26 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		};
 
 		if (pageType === PageType.Create) {
-			const insertedContent = await insertContent(triggerContentInsert, {
-				...contentItem,
-				user_profile_id: getProfileId(user),
-			});
+			const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
+			const insertedContent = await ContentService.insertContent(
+				contentBody,
+				cbConfigs,
+				triggerContentInsert
+			);
 
 			handleResponse(insertedContent);
 		} else {
 			if (id) {
-				const updatedContent = await updateContent(triggerContentUpdate, {
+				const contentBody = {
 					...contentItem,
 					updated_at: new Date().toISOString(),
 					id: parseInt(id, 10),
-				});
+				};
+				const updatedContent = await ContentService.updateContent(
+					contentBody,
+					cbConfigs,
+					triggerContentUpdate
+				);
 
 				handleResponse(updatedContent);
 			} else {
