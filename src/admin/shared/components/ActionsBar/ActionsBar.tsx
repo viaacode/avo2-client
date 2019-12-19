@@ -27,7 +27,7 @@ const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => 
 		>
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
-					<Toolbar>
+					<Toolbar autoHeight>
 						<ToolbarLeft>
 							<ToolbarItem>
 								<ButtonToolbar>{children}</ButtonToolbar>
