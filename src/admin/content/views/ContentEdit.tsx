@@ -27,7 +27,7 @@ import { CONTENT_DETAIL_TABS, CONTENT_PATH, INITIAL_CONTENT_FORM } from '../cont
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { fetchContentItemById, insertContent, updateContent } from '../content.services';
 import { ContentEditFormState, PageType } from '../content.types';
-import { useContentTypes } from '../hooks/useContentTypes';
+import { useContentItem, useContentTypes } from '../hooks';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 import './ContentEdit.scss';
@@ -40,17 +40,17 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	// Hooks
 	const [contentForm, setContentForm] = useState<ContentEditFormState>(INITIAL_CONTENT_FORM);
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [pageType, setPageType] = useState<PageType | undefined>();
 
-	const { contentTypes, isLoadingContentTypes } = useContentTypes();
+	const [contentForm, setContentForm, isLoading] = useContentItem(history, id);
+	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
 
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
 	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
 
 	// Computed
+	const pageType = id ? PageType.Edit : PageType.Create;
 	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
 	const contentTypeOptions = [
 		{ label: 'Kies een content type', value: '', disabled: true },
@@ -59,37 +59,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			value: contentType.value,
 		})),
 	];
-
-	useEffect(() => {
-		if (id) {
-			setPageType(PageType.Edit);
-			setIsLoading(true);
-
-			fetchContentItemById(Number(id))
-				.then((contentItem: Avo.Content.Content | null) => {
-					if (contentItem) {
-						setContentForm({
-							title: contentItem.title,
-							description: contentItem.description || '',
-							contentType: contentItem.content_type,
-							publishAt: contentItem.publish_at || '',
-							depublishAt: contentItem.depublish_at || '',
-						});
-					} else {
-						toastService.danger(
-							`Er ging iets mis tijdens het ophalen van de content met id: ${id}`,
-							false
-						);
-						history.push(CONTENT_PATH.CONTENT);
-					}
-				})
-				.finally(() => {
-					setIsLoading(false);
-				});
-		} else {
-			setPageType(PageType.Create);
-		}
-	}, [id, history]);
 
 	// Methods
 	const handleChange = (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => {
