@@ -79,11 +79,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 						reason,
 					}),
 					html_body: `<dl>
-  <dt>Naam</dt><dd>${name}</dd>
-  <dt>Email</dt><dd>${email}</dd>
-  <dt>School of organisatie</dt><dd>${organization}</dd>
-  <dt>Functie of beroep</dt><dd>${profession}</dd>
-  <dt>Reden voor aanvraag</dt><dd>${reason}</dd>
+  <dt><Trans>Naam</Trans></dt><dd>${name}</dd>
+  <dt><Trans>Email</Trans></dt><dd>${email}</dd>
+  <dt><Trans>School of organisatie</Trans></dt><dd>${organization}</dd>
+  <dt><Trans>Functie of beroep</Trans></dt><dd>${profession}</dd>
+  <dt><Trans>Reden voor aanvraag</Trans></dt><dd>${reason}</dd>
 </dl>`,
 					public: false,
 				},
@@ -101,15 +101,21 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
-					<Heading type="h2">Vraag een account aan op het Archief voor Onderwijs</Heading>
+					<Heading type="h2">
+						<Trans>Vraag een account aan op het Archief voor Onderwijs</Trans>
+					</Heading>
 					<p>
 						Het Archief voor Onderwijs is geweldig. Speciaal gemaakt voor lesgevers actief in het
 						Vlaamse Onderwijs. Natuurlijk wil jij toegang tot onze schat aan audiovisueel materiaal!
 						Denk je dat je in aanmerking komt voor een account? Dan kan je een aanvraag indienen. Je
 						aanvraag wordt verwerkt binnen de 5 werkdagen.{' '}
-						<Link to={AUTH_PATH.STUDENT_TEACHER}>Ben je student-leerkracht?</Link>
+						<Link to={AUTH_PATH.STUDENT_TEACHER}>
+							<Trans>Ben je student-leerkracht?</Trans>
+						</Link>
 					</p>
-					<Heading type="h3">Aanvraagformulier</Heading>
+					<Heading type="h3">
+						<Trans>Aanvraagformulier</Trans>
+					</Heading>
 					<Grid>
 						<Column size="2-6" className="m-manual-registration">
 							<FormGroup label={t('Naam *')} labelFor="name">
@@ -125,11 +131,13 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 									</TooltipTrigger>
 									<TooltipContent>
 										<p>
-											Gelieve in onderstaand formulier het professioneel e-mailadres dat je hebt
-											gekregen van je school of instelling in te geven, bv
-											jan.smit@basisschool-deklaver.be. Zo kunnen we je aanvraag sneller behandelen.
-											Voer dus enkel een privé-adres in indien je niet over een professioneel adres
-											beschikt.
+											<Trans>
+												Gelieve in onderstaand formulier het professioneel e-mailadres dat je hebt
+												gekregen van je school of instelling in te geven, bv
+												jan.smit@basisschool-deklaver.be. Zo kunnen we je aanvraag sneller
+												behandelen. Voer dus enkel een privé-adres in indien je niet over een
+												professioneel adres beschikt.
+											</Trans>
 										</p>
 									</TooltipContent>
 								</Tooltip>
@@ -144,7 +152,9 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 								<TextArea height="small" id="reason" value={reason} onChange={setReason} />
 							</FormGroup>
 							<Button type="primary" onClick={onSend}>
-								<Trans>Vraag een account aan</Trans>
+								<Trans>
+									<Trans>Vraag een account aan</Trans>
+								</Trans>
 							</Button>
 						</Column>
 						<Column size="2-5">

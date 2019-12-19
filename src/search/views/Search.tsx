@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { Dispatch } from 'redux';
@@ -315,7 +315,9 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 					<Toolbar>
 						<ToolbarLeft>
 							<ToolbarItem>
-								<ToolbarTitle>Zoekresultaten</ToolbarTitle>
+								<ToolbarTitle>
+									<Trans>Zoekresultaten</Trans>
+								</ToolbarTitle>
 							</ToolbarItem>
 							<ToolbarItem>
 								<p className="c-body-1 u-text-muted">

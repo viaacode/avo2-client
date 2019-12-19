@@ -16,6 +16,7 @@ import {
 	SETTINGS_PATH,
 	SettingsTab,
 } from '../settings.const';
+import { Trans } from 'react-i18next';
 
 interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 
@@ -70,7 +71,7 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 			<Container background="alt" mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Heading type="h2" className="u-m-0">
-						Instellingen
+						<Trans>Instellingen</Trans>
 					</Heading>
 				</Container>
 			</Container>

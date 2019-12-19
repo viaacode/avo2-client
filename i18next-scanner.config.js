@@ -11,7 +11,7 @@ const mainConfig = {
 	input: [
 		'src/**/*.{ts,tsx}',
 	],
-	output: 'src/translations',
+	output: 'src/shared/translations',
 	options: {
 		debug: true,
 		lngs: ['nl'],
@@ -121,8 +121,8 @@ function getFormattedKey(filePath, key) {
 		.toLowerCase()
 		.replace(/(^\/+|\/+$)/g, '')
 		.trim();
-	const formattedKey = _.kebabCase(key).replace(/-/g, '.');
-	return fileKey + '_' + formattedKey;
+	const formattedKey = _.kebabCase(key);
+	return fileKey + '___' + formattedKey;
 }
 
 function transform(file, enc, done) {
@@ -147,7 +147,7 @@ function transform(file, enc, done) {
 			this.parser.set(getFormattedKey(file.path, (key || options.defaultValue)), (key || options.defaultValue));
 		});
 	}
-	this.parser.parseFuncFromString(outputText, { list: ['t'] }, (key, options) => {
+	this.parser.parseFuncFromString(outputText, { list: ['t', 'i18n.t'] }, (key, options) => {
 		this.parser.set(getFormattedKey(file.path, (key || options.defaultValue)), (key || options.defaultValue));
 	});
 

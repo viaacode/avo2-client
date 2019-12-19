@@ -43,6 +43,7 @@ import { ContextAndClassificationData } from '../../shared/types/lookup';
 
 import { DELETE_PROFILE_OBJECTS, UPDATE_PROFILE_INFO } from '../settings.gql';
 import { updateProfileInfo } from '../settings.service';
+import { Trans } from 'react-i18next';
 
 export interface ProfileProps extends DefaultSecureRouteProps {}
 
@@ -349,23 +350,27 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 									{isCompleteProfileStep() ? (
 										<Box>
 											<p>
-												Vervolledig wat informatie over jezelf. We gebruiken deze informatie om je
-												gepersonaliseerde content te laten zien.
+												<Trans>
+													Vervolledig wat informatie over jezelf. We gebruiken deze informatie om je
+													gepersonaliseerde content te laten zien.
+												</Trans>
 											</p>
 										</Box>
 									) : (
 										<>
 											{/*<Box>*/}
-											{/*	<Heading type="h4">Volledigheid profiel</Heading>*/}
+											{/*	<Heading type="h4"><Trans>Volledigheid profiel</Trans></Heading>*/}
 											{/*	/!* TODO replace with components from component repo *!/*/}
 											{/*	<div className="c-progress-bar" />*/}
 											{/*</Box>*/}
 											<Spacer margin={['top', 'bottom']}>
 												<Box>
 													<p>
-														Vul hier wat info over jezelf in! Deze informatie wordt getoond op jouw
-														persoonlijk profiel. Je kan voor elk veld aanduiden of je deze
-														informatie wil delen of niet.
+														<Trans>
+															Vul hier wat info over jezelf in! Deze informatie wordt getoond op
+															jouw persoonlijk profiel. Je kan voor elk veld aanduiden of je deze
+															informatie wil delen of niet.
+														</Trans>
 													</p>
 												</Box>
 											</Spacer>

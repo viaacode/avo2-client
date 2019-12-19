@@ -5,6 +5,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { NavigationItem } from '../../../../shared/types';
 
 import './Sidebar.scss';
+import { Trans } from 'react-i18next';
 
 interface SidebarProps {
 	className?: string;
@@ -24,7 +25,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 		{headerLink && (
 			<div className="o-sidebar__header">
 				<Link className="u-remove-link-styling u-color-white" to={headerLink}>
-					Beheer
+					<Trans>Beheer</Trans>
 				</Link>
 			</div>
 		)}

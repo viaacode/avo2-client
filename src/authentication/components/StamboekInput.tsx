@@ -1,5 +1,5 @@
 import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -148,7 +148,9 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 				<TooltipContent>
 					<Spacer margin={'small'}>
 						<Spacer margin="bottom-small">
-							<span>Je stamboek nummer staat op je lerarenkaart</span>
+							<span>
+								<Trans>Je stamboek nummer staat op je lerarenkaart</Trans>
+							</span>
 						</Spacer>
 						<img
 							alt="Voorbeeld leeraren kaart"

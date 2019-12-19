@@ -14,6 +14,7 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
+import { Trans } from 'react-i18next';
 
 interface MenuOverviewProps extends DefaultSecureRouteProps {}
 
@@ -55,9 +56,11 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 			return (
 				<ErrorView message="Er zijn nog geen navigaties aangemaakt.">
 					<p>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
-						blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
-						ratione quas impedit repudiandae nisi corrupti quis eaque!
+						<Trans>
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
+							blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
+							ratione quas impedit repudiandae nisi corrupti quis eaque!
+						</Trans>
 					</p>
 					<Spacer margin="top">
 						<Button

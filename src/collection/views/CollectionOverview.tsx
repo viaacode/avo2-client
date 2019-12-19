@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { compact } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -254,10 +254,12 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const renderEmptyFallback = () => (
 		<ErrorView icon="collection" message="Je hebt nog geen collecties aangemaakt.">
 			<p>
-				Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
-				voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
-				gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen die
-				je dan hier terugvindt.
+				<Trans>
+					Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
+					voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
+					gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen
+					die je dan hier terugvindt.
+				</Trans>
 			</p>
 			<Spacer margin="top">
 				<Button

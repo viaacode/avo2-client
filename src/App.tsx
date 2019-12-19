@@ -12,7 +12,7 @@ import { renderRoutes } from './routes';
 import { Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
 import { dataService } from './shared/services/data-service';
-import './shared/services/i18n';
+import './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
 

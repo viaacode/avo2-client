@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -43,17 +43,21 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
-					<Heading type="h2">Geef hieronder je lerarenkaart- of stamboeknummer in.</Heading>
+					<Heading type="h2">
+						<Trans>Geef hieronder je lerarenkaart- of stamboeknummer in.</Trans>
+					</Heading>
 					<p>
-						Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende
-						onderwijsinstelling.
+						<Trans>
+							Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende
+							onderwijsinstelling.
+						</Trans>
 					</p>
 					<Spacer margin="top-small">
 						{/* TODO add links to help article */}
 						<Alert type="info">
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 							<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
-								Waarom hebben jullie mijn stamboeknummer nodig?
+								<Trans>Waarom hebben jullie mijn stamboeknummer nodig?</Trans>
 							</a>
 						</Alert>
 					</Spacer>

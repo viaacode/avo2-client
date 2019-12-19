@@ -25,6 +25,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/la
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
 import { GET_CONTENT_BY_ID } from '../content.gql';
 import { ContentParams } from '../content.types';
+import { Trans } from 'react-i18next';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentParams> {}
 
@@ -60,32 +61,46 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 					<div>
 						{!!contentItem.description && (
 							<Spacer margin="bottom-large">
-								<Heading type="h4">Omschrijving:</Heading>
+								<Heading type="h4">
+									<Trans>Omschrijving:</Trans>
+								</Heading>
 								<p>{contentItem.description}</p>
 							</Spacer>
 						)}
 
-						<Heading type="h4">Metadata:</Heading>
+						<Heading type="h4">
+							<Trans>Metadata:</Trans>
+						</Heading>
 						<Table horizontal variant="invisible">
 							<tbody>
 								<tr>
-									<th>Content type:</th>
+									<th>
+										<Trans>Content type:</Trans>
+									</th>
 									<td>{contentItem.content_type}</td>
 								</tr>
 								<tr>
-									<th>Aangemaakt:</th>
+									<th>
+										<Trans>Aangemaakt:</Trans>
+									</th>
 									<td>{renderFormattedDate(contentItem.created_at)}</td>
 								</tr>
 								<tr>
-									<th>Laatst bewerkt:</th>
+									<th>
+										<Trans>Laatst bewerkt:</Trans>
+									</th>
 									<td>{renderFormattedDate(contentItem.updated_at)}</td>
 								</tr>
 								<tr>
-									<th>Gepubliceerd:</th>
+									<th>
+										<Trans>Gepubliceerd:</Trans>
+									</th>
 									<td>{renderFormattedDate(contentItem.publish_at)}</td>
 								</tr>
 								<tr>
-									<th>Gedepubliceerd:</th>
+									<th>
+										<Trans>Gedepubliceerd:</Trans>
+									</th>
 									<td>{renderFormattedDate(contentItem.depublish_at)}</td>
 								</tr>
 							</tbody>

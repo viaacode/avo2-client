@@ -29,6 +29,7 @@ import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService from '../../shared/services/toast-service';
 
 import './ItemVideoDescription.scss';
+import { Trans } from 'react-i18next';
 
 interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	itemMetaData: Avo.Item.Item;
@@ -164,7 +165,13 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				overflowY: 'auto',
 			}}
 		>
-			{showTitle ? <Heading type="h3">{title}</Heading> : <Heading type="h4">Beschrijving</Heading>}
+			{showTitle ? (
+				<Heading type="h3">{title}</Heading>
+			) : (
+				<Heading type="h4">
+					<Trans>Beschrijving</Trans>
+				</Heading>
+			)}
 			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
 			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
 				<p>{formatTimestamps(convertToHtml(description))}</p>

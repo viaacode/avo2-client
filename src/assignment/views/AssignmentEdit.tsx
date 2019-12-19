@@ -4,7 +4,7 @@ import { DocumentNode } from 'graphql';
 import { get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -722,7 +722,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											})}
 										>
 											<Icon name="chevron-left" size="small" type="arrows" />
-											Mijn opdrachten
+											<Trans>Mijn opdrachten</Trans>
 										</Link>
 										<Heading className="u-m-0" type="h2">
 											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
@@ -871,8 +871,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									onChange={value => setAssignmentProp('answer_url', value)}
 								/>
 								<p className="c-form-help-text">
-									Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
-									platform toe.
+									<Trans>
+										Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
+										platform toe.
+									</Trans>
 								</p>
 							</FormGroup>
 							<FormGroup label={t('Beschikbaar vanaf')}>
@@ -906,13 +908,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								</Flex>
 								{isDeadlineInThePast() ? (
 									<div className="c-form-help-text c-form-help-text--error">
-										De deadline ligt in het verleden.
+										<Trans>De deadline ligt in het verleden.</Trans>
 										<br />
-										De leerlingen zullen dus geen toegang hebben tot deze opdracht
+										<Trans>De leerlingen zullen dus geen toegang hebben tot deze opdracht</Trans>
 									</div>
 								) : (
 									<p className="c-form-help-text">
-										Na deze datum kan de leerling de opdracht niet meer invullen.
+										<Trans>Na deze datum kan de leerling de opdracht niet meer invullen.</Trans>
 									</p>
 								)}
 							</FormGroup>
@@ -928,11 +930,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							<Alert type="info">
 								<div className="c-content c-content--no-m">
 									<p>
-										Hulp nodig bij het maken van opdrachten?
+										<Trans>Hulp nodig bij het maken van opdrachten?</Trans>
 										<br />
 										Bekijk onze{' '}
 										<a href="http://google.com" target="_blank" rel="noopener noreferrer">
-											screencast
+											<Trans>screencast</Trans>
 										</a>
 										.
 									</p>

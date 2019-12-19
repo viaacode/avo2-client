@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
 import {
@@ -166,7 +166,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// Render functions
 	const renderRelatedCollections = () => {
 		if (!relatedCollections || !relatedCollections.length) {
-			return <p className="c-body-1">De gerelateerde collecties konden niet worden opgehaald.</p>;
+			return (
+				<p className="c-body-1">
+					<Trans>De gerelateerde collecties konden niet worden opgehaald.</Trans>
+				</p>
+			);
 		}
 
 		relatedCollections.map((relatedCollection: Avo.Search.ResultItem) => {
@@ -289,11 +293,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</Container>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<h3 className="c-h3">Info over deze collectie</h3>
+						<h3 className="c-h3">
+							<Trans>Info over deze collectie</Trans>
+						</h3>
 						<Grid>
 							<Column size="3-3">
 								<Spacer margin="top">
-									<p className="u-text-bold">Onderwijsniveau</p>
+									<p className="u-text-bold">
+										<Trans>Onderwijsniveau</Trans>
+									</p>
 									<p className="c-body-1">
 										{lom_context && lom_context.length ? (
 											generateSearchLinks(`${id}`, 'educationLevel', lom_context)
@@ -305,19 +313,29 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
-									<p className="u-text-bold">Laatst aangepast</p>
+									<p className="u-text-bold">
+										<Trans>Laatst aangepast</Trans>
+									</p>
 									<p className="c-body-1">{formatDate(updated_at)}</p>
 								</Spacer>
 							</Column>
 							<Column size="3-6">
-								<p className="u-text-bold">Ordering</p>
+								<p className="u-text-bold">
+									<Trans>Ordering</Trans>
+								</p>
 								{/* TODO: add links */}
-								<p className="c-body-1">Deze collectie is een kopie van:</p>
-								<p className="c-body-1">Deze collectie is deel van een map:</p>
+								<p className="c-body-1">
+									<Trans>Deze collectie is een kopie van:</Trans>
+								</p>
+								<p className="c-body-1">
+									<Trans>Deze collectie is deel van een map:</Trans>
+								</p>
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
-									<p className="u-text-bold">Vakken</p>
+									<p className="u-text-bold">
+										<Trans>Vakken</Trans>
+									</p>
 									<p className="c-body-1">
 										{lom_classification && lom_classification.length ? (
 											generateSearchLinks(`${id}`, 'subject', lom_classification)
@@ -329,7 +347,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<Heading type="h3">Bekijk ook</Heading>
+						<Heading type="h3">
+							<Trans>Bekijk ook</Trans>
+						</Heading>
 						{renderRelatedCollections()}
 					</Container>
 				</Container>

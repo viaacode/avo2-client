@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -123,11 +123,13 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	return (
 		<Modal isOpen={isOpen} title="Deel deze collectie" size="large" onClose={onClose} scrollable>
 			<ModalBody>
-				<p>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</p>
+				<p>
+					<Trans>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</Trans>
+				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">
 						<Heading className="u-m-0" type="h4">
-							Zichtbaarheid
+							<Trans>Zichtbaarheid</Trans>
 						</Heading>
 					</Spacer>
 					<RadioButtonGroup>

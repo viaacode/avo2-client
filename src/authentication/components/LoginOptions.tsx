@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import { Button, Spacer } from '@viaa/avo2-components';
@@ -38,7 +38,9 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					/>
 				</Spacer>
 			</Spacer>
-			<p>Of kies voor ...</p>
+			<p>
+				<Trans>Of kies voor ...</Trans>
+			</p>
 			<Spacer margin={['top-small', 'bottom-small']}>
 				<Button
 					block

@@ -1,6 +1,6 @@
 import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -119,7 +119,7 @@ const Home: FunctionComponent<HomeProps> = ({
 				<Container mode="horizontal" size="medium">
 					<Spacer>
 						<Heading type="h2" className="u-text-center">
-							Vind alles wat je nodig hebt om je lessen te verrijken.
+							<Trans>Vind alles wat je nodig hebt om je lessen te verrijken.</Trans>
 						</Heading>
 						<div className="u-text-center">
 							<Spacer margin="large">
@@ -160,7 +160,9 @@ const Home: FunctionComponent<HomeProps> = ({
 								</Dropdown>
 							</Spacer>
 							<Spacer margin="large">
-								<p className="c-body-1">Vind inspiratie voor specifieke vakken en domeinen:</p>
+								<p className="c-body-1">
+									<Trans>Vind inspiratie voor specifieke vakken en domeinen:</Trans>
+								</p>
 								<Flex className="c-button-toolbar" orientation="horizontal" center>
 									{/* TODO discover/overview-basic.html */}
 									<Button label={t('Basisonderwijs')} type="secondary" />

@@ -20,6 +20,7 @@ import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
+import { Trans } from 'react-i18next';
 
 export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
@@ -41,21 +42,32 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 							<Column size="3-7">
 								<Form type="standard">
 									<Form type="standard">
-										<Heading type="h3">Account</Heading>
+										<Heading type="h3">
+											<Trans>Account</Trans>
+										</Heading>
 										<FormGroup label="Email">
 											<span>{get(user, 'mail')}</span>
 										</FormGroup>
 										<Spacer margin="top-large">
 											<Alert type="info">
 												<span>
-													<h4 className="c-h4">VIAA identiteitsmanagement systeem</h4>
-													Jouw account wordt beheerd in een centraal identiteitsmanagementsysteem
-													dat je toelaat om met dezelfde gegevens op meerdere VIAA-websites en
-													applicaties in te loggen. <br />
-													Wijzigingen aan deze gegevens worden dus doorgevoerd in al deze websites
-													en tools.
+													<h4 className="c-h4">
+														<Trans>VIAA identiteitsmanagement systeem</Trans>
+													</h4>
+													<Trans>
+														Jouw account wordt beheerd in een centraal identiteitsmanagementsysteem
+														dat je toelaat om met dezelfde gegevens op meerdere VIAA-websites en
+														applicaties in te loggen.{' '}
+													</Trans>
 													<br />
-													<a href={getSsumAccountEditPage()}>Beheer je account gegevens</a>
+													<Trans>
+														Wijzigingen aan deze gegevens worden dus doorgevoerd in al deze websites
+														en tools.
+													</Trans>
+													<br />
+													<a href={getSsumAccountEditPage()}>
+														<Trans>Beheer je account gegevens</Trans>
+													</a>
 												</span>
 											</Alert>
 										</Spacer>
@@ -66,7 +78,9 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 									<FormGroup label="Koppel je account met andere platformen">
 										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
 											<>
-												<span>Uw smartschool account is reeds gelinkt</span>
+												<span>
+													<Trans>Uw smartschool account is reeds gelinkt</Trans>
+												</span>
 												<Button
 													type="link"
 													label="unlink"

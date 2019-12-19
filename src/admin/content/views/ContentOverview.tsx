@@ -13,6 +13,7 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 import { CONTENT_OVERVIEW_TABLE_COLS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
 import { GET_CONTENT } from '../content.gql';
 import { ContentOverviewTableCols } from '../content.types';
+import { Trans } from 'react-i18next';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
@@ -71,9 +72,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 		return !data.length ? (
 			<ErrorView message="Er is nog geen content aangemaakt.">
 				<p>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
-					blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
-					ratione quas impedit repudiandae nisi corrupti quis eaque!
+					<Trans>
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
+						blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
+						ratione quas impedit repudiandae nisi corrupti quis eaque!
+					</Trans>
 				</p>
 				<Spacer margin="top">
 					<Button

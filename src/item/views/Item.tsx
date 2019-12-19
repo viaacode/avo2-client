@@ -1,7 +1,7 @@
 import { get, isNull } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -298,18 +298,24 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
-									<Heading type="h3">Metadata</Heading>
+									<Heading type="h3">
+										<Trans>Metadata</Trans>
+									</Heading>
 									<Table horizontal untable>
 										<Grid tag="tbody">
 											{!!itemMetaData.issued && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Publicatiedatum</th>
+													<th scope="row">
+														<Trans>Publicatiedatum</Trans>
+													</th>
 													<td>{reorderDate(itemMetaData.issued, '/')}</td>
 												</Column>
 											)}
 											{!!itemMetaData.published_at && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Toegevoegd op</th>
+													<th scope="row">
+														<Trans>Toegevoegd op</Trans>
+													</th>
 													<td>{reorderDate(itemMetaData.published_at, '/')}</td>
 												</Column>
 											)}
@@ -317,13 +323,17 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<Grid tag="tbody">
 											{!!itemMetaData.organisation && !!itemMetaData.organisation.name && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Aanbieder</th>
+													<th scope="row">
+														<Trans>Aanbieder</Trans>
+													</th>
 													<td>{generateSearchLink('provider', itemMetaData.organisation.name)}</td>
 												</Column>
 											)}
 											{!!itemMetaData.duration && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Speelduur</th>
+													<th scope="row">
+														<Trans>Speelduur</Trans>
+													</th>
 													<td>{itemMetaData.duration}</td>
 												</Column>
 											)}
@@ -331,13 +341,17 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<Grid tag="tbody">
 											{!!itemMetaData.series && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Reeks</th>
+													<th scope="row">
+														<Trans>Reeks</Trans>
+													</th>
 													<td>{generateSearchLink('serie', itemMetaData.series)}</td>
 												</Column>
 											)}
 											{!!itemMetaData.lom_languages && !!itemMetaData.lom_languages.length && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Taal</th>
+													<th scope="row">
+														<Trans>Taal</Trans>
+													</th>
 													<td>
 														{itemMetaData.lom_languages
 															.map(languageCode => LANGUAGES.nl[languageCode])
@@ -352,7 +366,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<tbody>
 											{!!itemMetaData.external_id && !!itemMetaData.lom_context && (
 												<tr>
-													<th scope="row">Geschikt voor</th>
+													<th scope="row">
+														<Trans>Geschikt voor</Trans>
+													</th>
 													<td>
 														{generateSearchLinks(
 															itemMetaData.external_id,
@@ -364,7 +380,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 											)}
 											{!!itemMetaData.external_id && !!itemMetaData.lom_classification && (
 												<tr>
-													<th scope="row">Vakken</th>
+													<th scope="row">
+														<Trans>Vakken</Trans>
+													</th>
 													<td>
 														{generateSearchLinks(
 															itemMetaData.external_id,
@@ -381,7 +399,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<tbody>
 											{!!itemMetaData.lom_keywords && !!itemMetaData.lom_keywords.length && (
 												<tr>
-													<th scope="row">Trefwoorden</th>
+													<th scope="row">
+														<Trans>Trefwoorden</Trans>
+													</th>
 													<td>
 														<TagList
 															tags={itemMetaData.lom_keywords.map(keyword => ({
@@ -397,7 +417,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 												</tr>
 											)}
 											{/*<tr>*/}
-											{/*<th scope="row">Klascement</th>*/}
+											{/*<th scope="row"><Trans>Klascement</Trans></th>*/}
 											{/*<td>*/}
 											{/*<a href={'http://www.klascement.be/link_item'}>*/}
 											{/*www.klascement.be/link_item*/}
@@ -410,7 +430,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 							</Column>
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
-									<Heading type="h3">Bekijk ook</Heading>
+									<Heading type="h3">
+										<Trans>Bekijk ook</Trans>
+									</Heading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>
 							</Column>

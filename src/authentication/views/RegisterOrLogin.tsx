@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -39,11 +39,15 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 							<Column size="3-6">
 								<Flex center orientation="horizontal">
 									<FlexItem>
-										<h2 className="c-h2 u-m-0">Welkom op Het Archief voor Onderwijs</h2>
+										<h2 className="c-h2 u-m-0">
+											<Trans>Welkom op Het Archief voor Onderwijs</Trans>
+										</h2>
 										<Spacer margin={['top-small', 'bottom']}>
 											<p>
-												Maak een gratis account aan en verrijk je lessen met beeld en geluid op maat
-												van de klas.
+												<Trans>
+													Maak een gratis account aan en verrijk je lessen met beeld en geluid op
+													maat van de klas.
+												</Trans>
 											</p>
 										</Spacer>
 										<Spacer margin={['top-small', 'bottom-small']}>
@@ -67,9 +71,9 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 								<Flex center orientation="horizontal">
 									<FlexItem>
 										<Heading type="h2" className="u-m-0">
-											Reeds een account?
+											<Trans>Reeds een account?</Trans>
 											<br />
-											Log dan hier in.
+											<Trans>Log dan hier in.</Trans>
 										</Heading>
 										<LoginOptions history={history} location={location} match={match} />
 									</FlexItem>

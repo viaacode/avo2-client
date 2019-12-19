@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
+import { Trans } from 'react-i18next';
 
 import {
 	Container,
@@ -159,7 +160,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Heading type="h2" className="u-m-0">
-							Mijn Werkruimte
+							<Trans>Mijn Werkruimte</Trans>
 						</Heading>
 					</Container>
 				</Container>
