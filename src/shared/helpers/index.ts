@@ -36,3 +36,4 @@ export {
 } from './link';
 export { parseDuration, toSeconds } from './parsers/duration';
 export { createReducer } from './redux/create-reducer';
+export { sanitize, sanitizePresets } from './sanitize';
