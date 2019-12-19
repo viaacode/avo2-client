@@ -18,14 +18,14 @@ interface ContentBlockPreviewProps {
 const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Heading]: HeadingBlockPreview,
 	[ContentBlockType.RichText]: BlockRichText,
-	[ContentBlockType.RichTextTwoCols]: BlockRichText,
+	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 });
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({ state }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[state.blockType];
 
 	// TODO: Not sure this is the best place to do this
-	if (state.blockType === ContentBlockType.RichTextTwoCols) {
+	if (state.blockType === ContentBlockType.RichTextTwoColumns) {
 		// Map state values correctly for preview component
 		const { firstColumnContent, secondColumnContent } = state as RichTextTwoColumnsBlockFormState;
 		(state as any).content = [firstColumnContent, secondColumnContent];

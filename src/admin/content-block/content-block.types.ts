@@ -1,8 +1,8 @@
 // Content block
 export enum ContentBlockType {
-	Heading = 'Heading',
-	RichText = 'RichText',
-	RichTextTwoCols = 'RichTextTwoCols',
+	Heading = 'HEADING',
+	RichText = 'RICH_TEXT',
+	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 }
 
 export enum ContentBlockEditor {

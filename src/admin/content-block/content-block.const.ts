@@ -29,7 +29,7 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{ label: 'Kies een content block', value: '', disabled: true },
 	{ label: 'Titel', value: ContentBlockType.Heading },
 	{ label: 'Tekst (wysiwyg)', value: ContentBlockType.RichText },
-	{ label: 'Tekst 2 kolommen (wysiwyg)', value: ContentBlockType.RichTextTwoCols },
+	{ label: 'Tekst 2 kolommen (wysiwyg)', value: ContentBlockType.RichTextTwoColumns },
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -43,7 +43,7 @@ export const EDITOR_TYPES_MAP = {
 export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
-	[ContentBlockType.RichTextTwoCols]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 };
 
 // Heading

@@ -9,7 +9,7 @@ import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from '.
 export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (): RichTextTwoColumnsBlockFormState => ({
 	firstColumnContent: '',
 	secondColumnContent: '',
-	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.RichTextTwoCols),
+	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.RichTextTwoColumns),
 });
 
 export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (): ContentBlockConfig => ({
