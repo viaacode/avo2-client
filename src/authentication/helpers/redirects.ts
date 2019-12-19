@@ -33,7 +33,7 @@ export function redirectToServerSmartschoolLogin(location: Location) {
 }
 
 export function redirectToServerArchiefRegistrationIdp(location: Location, stamboekNumber: string) {
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', AUTH_PATH.LOGIN_AVO);
+	const returnToUrl = getBaseUrl(location) + AUTH_PATH.LOGIN_AVO;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify({
 		returnToUrl,
 		stamboekNumber,
