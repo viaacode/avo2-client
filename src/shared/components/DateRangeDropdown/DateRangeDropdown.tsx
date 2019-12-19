@@ -173,10 +173,14 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 			<DropdownContent>
 				<div className="u-spacer">
 					<Form>
-						<FormGroup label={t('Hoe specifiek?')}>
+						<FormGroup
+							label={t('shared/components/date-range-dropdown/date-range-dropdown___hoe-specifiek')}
+						>
 							<RadioButtonGroup inline>
 								<RadioButton
-									label={t('Op jaartal')}
+									label={t(
+										'shared/components/date-range-dropdown/date-range-dropdown___op-jaartal'
+									)}
 									name="year"
 									value="year"
 									checked={showYearControls}
@@ -187,7 +191,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									}}
 								/>
 								<RadioButton
-									label={t('Specifieke datums')}
+									label={t(
+										'shared/components/date-range-dropdown/date-range-dropdown___specifieke-datums'
+									)}
 									name="year"
 									value="date"
 									checked={!showYearControls}
@@ -201,7 +207,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							{showYearControls && (
 								<Grid>
 									<Column size="6">
-										<FormGroup label={t('Van')}>
+										<FormGroup
+											label={t('shared/components/date-range-dropdown/date-range-dropdown___van')}
+										>
 											<TextInput
 												id="gte"
 												placeholder="JJJJ"
@@ -216,7 +224,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										</FormGroup>
 									</Column>
 									<Column size="6">
-										<FormGroup label={t('Tot')}>
+										<FormGroup
+											label={t('shared/components/date-range-dropdown/date-range-dropdown___tot')}
+										>
 											<TextInput
 												id="lte"
 												placeholder="JJJJ"
@@ -235,7 +245,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							{!showYearControls && (
 								<Grid>
 									<Column size="6">
-										<FormGroup label={t('Van')}>
+										<FormGroup
+											label={t('shared/components/date-range-dropdown/date-range-dropdown___van')}
+										>
 											<DatePicker
 												value={fromDate}
 												onChange={value =>
@@ -248,7 +260,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										</FormGroup>
 									</Column>
 									<Column size="6">
-										<FormGroup label={t('Tot')}>
+										<FormGroup
+											label={t('shared/components/date-range-dropdown/date-range-dropdown___tot')}
+										>
 											<DatePicker
 												value={tillDate}
 												onChange={value =>
@@ -265,7 +279,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 						</FormGroup>
 						<FormGroup>
 							<Button
-								label={t('Toepassen')}
+								label={t('shared/components/date-range-dropdown/date-range-dropdown___toepassen')}
 								type="primary"
 								className="c-apply-filter-button"
 								block

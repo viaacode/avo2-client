@@ -331,16 +331,22 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 										</Container>
 									</Column>
 									<Column size="2-5">
-										<FormGroup label={t('Titel')}>
+										<FormGroup label={t('item/components/modals/add-to-collection-modal___titel')}>
 											<span>{itemMetaData.title}</span>
 										</FormGroup>
-										<FormGroup label={t('Beschrijving')}>
+										<FormGroup
+											label={t('item/components/modals/add-to-collection-modal___beschrijving')}
+										>
 											<span>{itemMetaData.description}</span>
 										</FormGroup>
-										<FormGroup label={t('Collectie')}>
+										<FormGroup
+											label={t('item/components/modals/add-to-collection-modal___collectie')}
+										>
 											<Spacer margin="bottom">
 												<RadioButton
-													label={t('Voeg toe aan bestaande collectie')}
+													label={t(
+														'item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie'
+													)}
 													checked={!createNewCollection}
 													value="existing"
 													name="collection"
@@ -366,7 +372,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											</Spacer>
 											<Spacer margin="bottom">
 												<RadioButton
-													label={t('Voeg toe aan een nieuwe collectie')}
+													label={t(
+														'item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie'
+													)}
 													checked={createNewCollection}
 													value="new"
 													name="collection"
@@ -394,14 +402,14 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 								<ButtonToolbar>
 									{isProcessing && <Spinner />}
 									<Button
-										label={t('Annuleren')}
+										label={t('item/components/modals/add-to-collection-modal___annuleren')}
 										type="link"
 										block
 										onClick={onClose}
 										disabled={isProcessing}
 									/>
 									<Button
-										label={t('Toepassen')}
+										label={t('item/components/modals/add-to-collection-modal___toepassen')}
 										type="primary"
 										block
 										title={

@@ -40,11 +40,13 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 								<Flex center orientation="horizontal">
 									<FlexItem>
 										<h2 className="c-h2 u-m-0">
-											<Trans>Welkom op Het Archief voor Onderwijs</Trans>
+											<Trans key="authentication/views/register-or-login___welkom-op-het-archief-voor-onderwijs">
+												Welkom op Het Archief voor Onderwijs
+											</Trans>
 										</h2>
 										<Spacer margin={['top-small', 'bottom']}>
 											<p>
-												<Trans>
+												<Trans key="authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas">
 													Maak een gratis account aan en verrijk je lessen met beeld en geluid op
 													maat van de klas.
 												</Trans>
@@ -53,14 +55,18 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 										<Spacer margin={['top-small', 'bottom-small']}>
 											<Button
 												block
-												label={t('Account aanmaken als lesgever')}
+												label={t(
+													'authentication/views/register-or-login___account-aanmaken-als-lesgever'
+												)}
 												type="primary"
 												onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}
 											/>
 										</Spacer>
 										<Button
 											block
-											label={t('Krijg toegang als leerling')}
+											label={t(
+												'authentication/views/register-or-login___krijg-toegang-als-leerling'
+											)}
 											type="primary"
 											onClick={() => redirectToClientPage(APP_PATH.FOR_PUPILS, history)}
 										/>
@@ -71,9 +77,13 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 								<Flex center orientation="horizontal">
 									<FlexItem>
 										<Heading type="h2" className="u-m-0">
-											<Trans>Reeds een account?</Trans>
+											<Trans key="authentication/views/register-or-login___reeds-een-account">
+												Reeds een account?
+											</Trans>
 											<br />
-											<Trans>Log dan hier in.</Trans>
+											<Trans key="authentication/views/register-or-login___log-dan-hier-in">
+												Log dan hier in.
+											</Trans>
 										</Heading>
 										<LoginOptions history={history} location={location} match={match} />
 									</FlexItem>

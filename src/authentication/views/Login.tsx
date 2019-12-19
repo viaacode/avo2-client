@@ -97,7 +97,11 @@ const Login: FunctionComponent<LoginProps> = ({
 	if (loginStateError || hasRecentLoginAttempt()) {
 		return (
 			<ErrorView message="Het inloggen is mislukt" icon="lock">
-				<Button type="link" onClick={tryLoginAgainManually} label={t('Probeer opnieuw')} />
+				<Button
+					type="link"
+					onClick={tryLoginAgainManually}
+					label={t('authentication/views/login___probeer-opnieuw')}
+				/>
 			</ErrorView>
 		);
 	}

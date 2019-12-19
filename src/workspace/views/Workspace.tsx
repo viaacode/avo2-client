@@ -160,7 +160,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Heading type="h2" className="u-m-0">
-							<Trans>Mijn Werkruimte</Trans>
+							<Trans key="workspace/views/workspace___mijn-werkruimte">Mijn Werkruimte</Trans>
 						</Heading>
 					</Container>
 				</Container>

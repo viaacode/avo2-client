@@ -23,7 +23,7 @@ interface DeleteObjectModalProps {
 }
 
 const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
-	title = i18n.t('Bent u zeker?'),
+	title = i18n.t('shared/components/delete-object-modal/delete-object-modal___bent-u-zeker'),
 	body = '',
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Verwijder',

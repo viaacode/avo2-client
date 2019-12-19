@@ -28,8 +28,8 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService from '../../shared/services/toast-service';
 
-import './ItemVideoDescription.scss';
 import { Trans } from 'react-i18next';
+import './ItemVideoDescription.scss';
 
 interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	itemMetaData: Avo.Item.Item;
@@ -169,7 +169,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				<Heading type="h3">{title}</Heading>
 			) : (
 				<Heading type="h4">
-					<Trans>Beschrijving</Trans>
+					<Trans key="item/components/item-video-description___beschrijving">Beschrijving</Trans>
 				</Heading>
 			)}
 			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}

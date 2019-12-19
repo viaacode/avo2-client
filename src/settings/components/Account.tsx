@@ -15,12 +15,12 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { Trans } from 'react-i18next';
 import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
 import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
-import { Trans } from 'react-i18next';
 
 export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
@@ -43,7 +43,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 								<Form type="standard">
 									<Form type="standard">
 										<Heading type="h3">
-											<Trans>Account</Trans>
+											<Trans key="settings/components/account___account">Account</Trans>
 										</Heading>
 										<FormGroup label="Email">
 											<span>{get(user, 'mail')}</span>
@@ -52,21 +52,25 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 											<Alert type="info">
 												<span>
 													<h4 className="c-h4">
-														<Trans>VIAA identiteitsmanagement systeem</Trans>
+														<Trans key="settings/components/account___viaa-identiteitsmanagement-systeem">
+															VIAA identiteitsmanagement systeem
+														</Trans>
 													</h4>
-													<Trans>
+													<Trans key="settings/components/account___jouw-account-wordt-beheerd-in-een-centraal-identiteitsmanagementsysteem-dat-je-toelaat-om-met-dezelfde-gegevens-op-meerdere-viaa-websites-en-applicaties-in-te-loggen">
 														Jouw account wordt beheerd in een centraal identiteitsmanagementsysteem
 														dat je toelaat om met dezelfde gegevens op meerdere VIAA-websites en
 														applicaties in te loggen.{' '}
 													</Trans>
 													<br />
-													<Trans>
+													<Trans key="settings/components/account___wijzigingen-aan-deze-gegevens-worden-dus-doorgevoerd-in-al-deze-websites-en-tools">
 														Wijzigingen aan deze gegevens worden dus doorgevoerd in al deze websites
 														en tools.
 													</Trans>
 													<br />
 													<a href={getSsumAccountEditPage()}>
-														<Trans>Beheer je account gegevens</Trans>
+														<Trans key="settings/components/account___beheer-je-account-gegevens">
+															Beheer je account gegevens
+														</Trans>
 													</a>
 												</span>
 											</Alert>
@@ -79,7 +83,9 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
 											<>
 												<span>
-													<Trans>Uw smartschool account is reeds gelinkt</Trans>
+													<Trans key="settings/components/account___uw-smartschool-account-is-reeds-gelinkt">
+														Uw smartschool account is reeds gelinkt
+													</Trans>
 												</span>
 												<Button
 													type="link"

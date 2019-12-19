@@ -103,8 +103,18 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button label={t('Annuleren')} type="secondary" block onClick={onClose} />
-								<Button label={t('Opslaan')} type="primary" block onClick={saveCoverImage} />
+								<Button
+									label={t('collection/components/modals/collection-stills-modal___annuleren')}
+									type="secondary"
+									block
+									onClick={onClose}
+								/>
+								<Button
+									label={t('collection/components/modals/collection-stills-modal___opslaan')}
+									type="primary"
+									block
+									onClick={saveCoverImage}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

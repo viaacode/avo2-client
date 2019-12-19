@@ -208,8 +208,16 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label={t('Annuleren')} onClick={onCancelCut} />
-								<Button type="primary" label={t('Knippen')} onClick={onSaveCut} />
+								<Button
+									type="secondary"
+									label={t('collection/components/modals/cut-fragment-modal___annuleren')}
+									onClick={onCancelCut}
+								/>
+								<Button
+									type="primary"
+									label={t('collection/components/modals/cut-fragment-modal___knippen')}
+									onClick={onSaveCut}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

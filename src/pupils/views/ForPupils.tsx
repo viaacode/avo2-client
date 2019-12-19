@@ -18,7 +18,7 @@ const ForPupils: FunctionComponent<ForPupilsProps> = ({ location }) => {
 					<Button
 						className="c-button-smartschool"
 						icon="smartschool"
-						label={t('Inloggen met Smartschool')}
+						label={t('pupils/views/for-pupils___inloggen-met-smartschool')}
 						onClick={() => redirectToServerSmartschoolLogin(location)}
 					/>
 				</ButtonToolbar>

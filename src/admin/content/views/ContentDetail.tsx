@@ -22,10 +22,10 @@ import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
+import { Trans } from 'react-i18next';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
 import { GET_CONTENT_BY_ID } from '../content.gql';
 import { ContentParams } from '../content.types';
-import { Trans } from 'react-i18next';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentParams> {}
 
@@ -62,44 +62,54 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 						{!!contentItem.description && (
 							<Spacer margin="bottom-large">
 								<Heading type="h4">
-									<Trans>Omschrijving:</Trans>
+									<Trans key="admin/content/views/content-detail___omschrijving">
+										Omschrijving:
+									</Trans>
 								</Heading>
 								<p>{contentItem.description}</p>
 							</Spacer>
 						)}
 
 						<Heading type="h4">
-							<Trans>Metadata:</Trans>
+							<Trans key="admin/content/views/content-detail___metadata">Metadata:</Trans>
 						</Heading>
 						<Table horizontal variant="invisible">
 							<tbody>
 								<tr>
 									<th>
-										<Trans>Content type:</Trans>
+										<Trans key="admin/content/views/content-detail___content-type">
+											Content type:
+										</Trans>
 									</th>
 									<td>{contentItem.content_type}</td>
 								</tr>
 								<tr>
 									<th>
-										<Trans>Aangemaakt:</Trans>
+										<Trans key="admin/content/views/content-detail___aangemaakt">Aangemaakt:</Trans>
 									</th>
 									<td>{renderFormattedDate(contentItem.created_at)}</td>
 								</tr>
 								<tr>
 									<th>
-										<Trans>Laatst bewerkt:</Trans>
+										<Trans key="admin/content/views/content-detail___laatst-bewerkt">
+											Laatst bewerkt:
+										</Trans>
 									</th>
 									<td>{renderFormattedDate(contentItem.updated_at)}</td>
 								</tr>
 								<tr>
 									<th>
-										<Trans>Gepubliceerd:</Trans>
+										<Trans key="admin/content/views/content-detail___gepubliceerd">
+											Gepubliceerd:
+										</Trans>
 									</th>
 									<td>{renderFormattedDate(contentItem.publish_at)}</td>
 								</tr>
 								<tr>
 									<th>
-										<Trans>Gedepubliceerd:</Trans>
+										<Trans key="admin/content/views/content-detail___gedepubliceerd">
+											Gedepubliceerd:
+										</Trans>
 									</th>
 									<td>{renderFormattedDate(contentItem.depublish_at)}</td>
 								</tr>

@@ -41,9 +41,9 @@ import {
 import toastService from '../../shared/services/toast-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 
+import { Trans } from 'react-i18next';
 import { DELETE_PROFILE_OBJECTS, UPDATE_PROFILE_INFO } from '../settings.gql';
 import { updateProfileInfo } from '../settings.service';
-import { Trans } from 'react-i18next';
 
 export interface ProfileProps extends DefaultSecureRouteProps {}
 
@@ -350,7 +350,7 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 									{isCompleteProfileStep() ? (
 										<Box>
 											<p>
-												<Trans>
+												<Trans key="settings/components/profile___vervolledig-wat-informatie-over-jezelf-we-gebruiken-deze-informatie-om-je-gepersonaliseerde-content-te-laten-zien">
 													Vervolledig wat informatie over jezelf. We gebruiken deze informatie om je
 													gepersonaliseerde content te laten zien.
 												</Trans>
@@ -359,14 +359,14 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 									) : (
 										<>
 											{/*<Box>*/}
-											{/*	<Heading type="h4"><Trans>Volledigheid profiel</Trans></Heading>*/}
+											{/*	<Heading type="h4"><Trans key="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></Heading>*/}
 											{/*	/!* TODO replace with components from component repo *!/*/}
 											{/*	<div className="c-progress-bar" />*/}
 											{/*</Box>*/}
 											<Spacer margin={['top', 'bottom']}>
 												<Box>
 													<p>
-														<Trans>
+														<Trans key="settings/components/profile___vul-hier-wat-info-over-jezelf-in-deze-informatie-wordt-getoond-op-jouw-persoonlijk-profiel-je-kan-voor-elk-veld-aanduiden-of-je-deze-informatie-wil-delen-of-niet">
 															Vul hier wat info over jezelf in! Deze informatie wordt getoond op
 															jouw persoonlijk profiel. Je kan voor elk veld aanduiden of je deze
 															informatie wil delen of niet.

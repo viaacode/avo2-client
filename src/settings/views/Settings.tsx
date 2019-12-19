@@ -7,6 +7,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { buildLink } from '../../shared/helpers';
 import toastService from '../../shared/services/toast-service';
 
+import { Trans } from 'react-i18next';
 import { Account, Email, Notifications, Profile } from '../components';
 import {
 	ACCOUNT_ID,
@@ -16,7 +17,6 @@ import {
 	SETTINGS_PATH,
 	SettingsTab,
 } from '../settings.const';
-import { Trans } from 'react-i18next';
 
 interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 
@@ -71,7 +71,7 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 			<Container background="alt" mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Heading type="h2" className="u-m-0">
-						<Trans>Instellingen</Trans>
+						<Trans key="settings/views/settings___instellingen">Instellingen</Trans>
 					</Heading>
 				</Container>
 			</Container>

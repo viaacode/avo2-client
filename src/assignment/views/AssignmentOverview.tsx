@@ -444,13 +444,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							<ButtonGroup>
 								<Button
 									type="secondary"
-									label={t('Opdrachten')}
+									label={t('assignment/views/assignment-overview___opdrachten')}
 									active={activeView === 'assignments'}
 									onClick={() => setActiveView('assignments')}
 								/>
 								<Button
 									type="secondary"
-									label={t('Gearchiveerde opdrachten')}
+									label={t('assignment/views/assignment-overview___gearchiveerde-opdrachten')}
 									active={activeView === 'archived_assignments'}
 									onClick={() => setActiveView('archived_assignments')}
 								/>

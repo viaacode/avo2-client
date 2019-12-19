@@ -6,7 +6,7 @@ interface DiscoverProps {}
 const Discover: FunctionComponent<DiscoverProps> = () => {
 	return (
 		<div className="m-discover-page">
-			<Trans>The discover page</Trans>
+			<Trans key="discover/views/discover___the-discover-page">The discover page</Trans>
 		</div>
 	);
 };

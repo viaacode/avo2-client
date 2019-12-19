@@ -12,15 +12,21 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = () => {
 			<Container mode="horizontal" size="large">
 				<div className="c-content">
 					<Heading type="h2">
-						<Trans>Het Archief voor Onderwijs voor Student-leerkrachten</Trans>
+						<Trans key="authentication/views/registration-flow/r-10-student-teacher___het-archief-voor-onderwijs-voor-student-leerkrachten">
+							Het Archief voor Onderwijs voor Student-leerkrachten
+						</Trans>
 					</Heading>
 					<p>
-						<Trans>Jij zoekt meer en dat vinden wij top!</Trans>
+						<Trans key="authentication/views/registration-flow/r-10-student-teacher___jij-zoekt-meer-en-dat-vinden-wij-top">
+							Jij zoekt meer en dat vinden wij top!
+						</Trans>
 						<br />
 						<br />
 						Studenten lerarenopleiding{' '}
 						<b>
-							<Trans>kunnen via hun docent toegang krijgen</Trans>
+							<Trans key="authentication/views/registration-flow/r-10-student-teacher___kunnen-via-hun-docent-toegang-krijgen">
+								kunnen via hun docent toegang krijgen
+							</Trans>
 						</b>{' '}
 						tot onze beeldbank. De docenten moeten hiervoor een aanvraag sturen naar{' '}
 						<a href="mailto:support@viaa.be">support@viaa.be</a> met inbegrip van een lijst (excel
@@ -28,7 +34,7 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = () => {
 						onderwijsinstelling (geen privé-adressen).
 						<br />
 						<br />
-						<Trans>
+						<Trans key="authentication/views/registration-flow/r-10-student-teacher___in-die-mail-moet-ook-formeel-bevestigd-worden-dat-de-lijst-enkel-gegevens-bevat-van-studenten-in-een-vlaamse-lerarenopleiding-ingeschreven-bij-de-boven-vernoemde-onderwijsinstelling-hou-rekening-met-een-verwerkingstijd-van-gemiddeld-een-werkweek">
 							In die mail moet ook formeel bevestigd worden dat de lijst enkel gegevens bevat van
 							studenten in een Vlaamse lerarenopleiding ingeschreven bij de boven vernoemde
 							onderwijsinstelling. Hou rekening met een verwerkingstijd van gemiddeld een werkweek.

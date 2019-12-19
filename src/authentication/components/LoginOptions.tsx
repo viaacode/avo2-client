@@ -28,7 +28,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				<Spacer margin="top-small">
 					<Button
 						block
-						label={t('Inloggen met e-mailadres')}
+						label={t('authentication/components/login-options___inloggen-met-e-mailadres')}
 						type="primary"
 						className="c-login-with-archief"
 						onClick={() => {
@@ -39,14 +39,14 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				</Spacer>
 			</Spacer>
 			<p>
-				<Trans>Of kies voor ...</Trans>
+				<Trans key="authentication/components/login-options___of-kies-voor">Of kies voor ...</Trans>
 			</p>
 			<Spacer margin={['top-small', 'bottom-small']}>
 				<Button
 					block
 					className="c-button-smartschool"
 					icon="smartschool"
-					label={t('Inloggen met Smartschool')}
+					label={t('authentication/components/login-options___inloggen-met-smartschool')}
 					onClick={() => {
 						onOptionClicked();
 						redirectToServerSmartschoolLogin(location);
@@ -57,7 +57,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				block
 				className="c-button-klascement"
 				icon="klascement"
-				label={t('Inloggen met KlasCement')}
+				label={t('authentication/components/login-options___inloggen-met-klas-cement')}
 				onClick={() => {
 					onOptionClicked();
 					toastService.info('Nog niet geïmplementeerd');

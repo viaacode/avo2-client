@@ -49,7 +49,10 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 							<Spacer margin="bottom">
 								<Grid>
 									<Column size="3-7">
-										<FormGroup label={t('Onderwijsniveau')} labelFor="classificationId">
+										<FormGroup
+											label={t('collection/views/collection-edit-meta-data___onderwijsniveau')}
+											labelFor="classificationId"
+										>
 											<TagsInput
 												options={(data.lookup_enum_lom_context || []).map(item => ({
 													value: item.description,
@@ -64,7 +67,10 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 												}
 											/>
 										</FormGroup>
-										<FormGroup label={t('Vakken')} labelFor="subjectsId">
+										<FormGroup
+											label={t('collection/views/collection-edit-meta-data___vakken')}
+											labelFor="subjectsId"
+										>
 											<TagsInput
 												options={(data.lookup_enum_lom_classification || []).map(item => ({
 													value: item.description,
@@ -80,7 +86,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 											/>
 										</FormGroup>
 										<FormGroup
-											label={t('Korte omschrijving')}
+											label={t('collection/views/collection-edit-meta-data___korte-omschrijving')}
 											labelFor="shortDescriptionId"
 											error={getValidationFeedbackForShortDescription(collection.description, true)}
 										>
@@ -96,7 +102,9 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 											</label>
 										</FormGroup>
 										<FormGroup
-											label={t('Persoonlijke opmerkingen/notities')}
+											label={t(
+												'collection/views/collection-edit-meta-data___persoonlijke-opmerkingen-notities'
+											)}
 											labelFor="personalRemarkId"
 										>
 											<TextArea
@@ -110,16 +118,21 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 										</FormGroup>
 									</Column>
 									<Column size="3-5">
-										<FormGroup label={t('Cover afbeelding')} labelFor="coverImageId">
+										<FormGroup
+											label={t('collection/views/collection-edit-meta-data___cover-afbeelding')}
+											labelFor="coverImageId"
+										>
 											<Button
 												type="secondary"
-												label={t('Stel een afbeelding in...')}
+												label={t(
+													'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
+												)}
 												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
 										</FormGroup>
 										{/* TODO: DISABLED FEATURE
-											<FormGroup label={t('Map')} labelFor="mapId">
-												<Button type="secondary" icon="add" label={t('Voeg toe aan een map')} />
+											<FormGroup label={t('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
+												<Button type="secondary" icon="add" label={t('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
 											</FormGroup>
 										*/}
 									</Column>

@@ -3,9 +3,9 @@ import { RouteComponentProps } from 'react-router';
 
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 
+import { Trans } from 'react-i18next';
 import { APP_PATH } from '../../constants';
 import { redirectToClientPage } from '../helpers/redirects';
-import { Trans } from 'react-i18next';
 
 export interface PupilOrTeacherDropdownProps extends RouteComponentProps {
 	closeDropdown?: () => void;
@@ -19,10 +19,14 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 		<Container className="c-register-pupil-or-teacher-dropdown" mode="horizontal">
 			<Container mode="vertical">
 				<h4 className="c-h4">
-					<Trans>Ben je lesgever?</Trans>
+					<Trans key="authentication/components/pupil-or-teacher-dropdown___ben-je-lesgever">
+						Ben je lesgever?
+					</Trans>
 				</h4>
 				<p>
-					<Trans>Krijg toegang tot audiovisueel lesmateriaal, maak eigen collecties.</Trans>
+					<Trans key="authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-audiovisueel-lesmateriaal-maak-eigen-collecties">
+						Krijg toegang tot audiovisueel lesmateriaal, maak eigen collecties.
+					</Trans>
 				</p>
 				<Spacer margin={['bottom-large', 'top-small']}>
 					<Button
@@ -37,10 +41,14 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 				</Spacer>
 				<Spacer margin="top-large">
 					<h4 className="c-h4">
-						<Trans>Ben je leerling secundair?</Trans>
+						<Trans key="authentication/components/pupil-or-teacher-dropdown___ben-je-leerling-secundair">
+							Ben je leerling secundair?
+						</Trans>
 					</h4>
 					<p>
-						<Trans>Krijg toegang tot opdrachten klaargezet door jouw leerkrachten.</Trans>
+						<Trans key="authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-opdrachten-klaargezet-door-jouw-leerkrachten">
+							Krijg toegang tot opdrachten klaargezet door jouw leerkrachten.
+						</Trans>
 					</p>
 					<Spacer margin="top-small">
 						<Button

@@ -348,7 +348,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 		const renderSaveButton = () => (
 			<Button
 				type="primary"
-				label={t('Opslaan')}
+				label={t('collection/views/collection-edit___opslaan')}
 				onClick={() => onSaveCollection(refetchCollection)}
 				disabled={isSavingCollection}
 			/>
@@ -358,7 +358,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 			<ButtonToolbar>
 				<Button
 					type="secondary"
-					label={t('Delen')}
+					label={t('collection/views/collection-edit___delen')}
 					disabled={hasUnsavedChanged()}
 					title={
 						!eq(currentCollection, initialCollection) ? 'U moet uw wijzigingen eerst opslaan' : ''
@@ -366,12 +366,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 					onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 				/>
 				{/* TODO: DISABLED FEATURE
-					<Button type="secondary" label={t('Bekijk')} onClick={onPreviewCollection} disabled />
+					<Button type="secondary" label={t('collection/views/collection-edit___bekijk')} onClick={onPreviewCollection} disabled />
 				*/}
 				{/* TODO: DISABLED FEATURE
 					<Button
 						type = "secondary"
-						label={t('Herschik alle items')}
+						label={t('collection/views/collection-edit___herschik-alle-items')}
 						onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 						disabled
 					/>

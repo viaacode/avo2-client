@@ -10,11 +10,11 @@ import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
 
+import { Trans } from 'react-i18next';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
-import { Trans } from 'react-i18next';
 
 interface MenuOverviewProps extends DefaultSecureRouteProps {}
 
@@ -56,7 +56,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 			return (
 				<ErrorView message="Er zijn nog geen navigaties aangemaakt.">
 					<p>
-						<Trans>
+						<Trans key="admin/menu/views/menu-overview___lorem-ipsum-dolor-sit-amet-consectetur-adipisicing-elit-maiores-aliquid-ab-debitis-blanditiis-vitae-molestiae-delectus-earum-asperiores-mollitia-minima-laborum-expedita-ratione-quas-impedit-repudiandae-nisi-corrupti-quis-eaque">
 							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
 							blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
 							ratione quas impedit repudiandae nisi corrupti quis eaque!

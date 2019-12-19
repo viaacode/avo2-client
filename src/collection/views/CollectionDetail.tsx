@@ -168,7 +168,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		if (!relatedCollections || !relatedCollections.length) {
 			return (
 				<p className="c-body-1">
-					<Trans>De gerelateerde collecties konden niet worden opgehaald.</Trans>
+					<Trans key="collection/views/collection-detail___de-gerelateerde-collecties-konden-niet-worden-opgehaald">
+						De gerelateerde collecties konden niet worden opgehaald.
+					</Trans>
 				</p>
 			);
 		}
@@ -233,7 +235,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<PermissionGuard {...canEditCollection} user={user}>
 					<Button
 						type="secondary"
-						label={t('Delen')}
+						label={t('collection/views/collection-detail___delen')}
 						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 					/>
 				</PermissionGuard>
@@ -260,7 +262,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</ControlledDropdown>
 				<PermissionGuard {...canEditCollection} user={user}>
 					<Spacer margin="left-small">
-						<Button type="primary" icon="edit" label={t('Bewerken')} onClick={onEditCollection} />
+						<Button
+							type="primary"
+							icon="edit"
+							label={t('collection/views/collection-detail___bewerken')}
+							onClick={onEditCollection}
+						/>
 					</Spacer>
 				</PermissionGuard>
 			</ButtonToolbar>
@@ -294,13 +301,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<Container mode="vertical">
 					<Container mode="horizontal">
 						<h3 className="c-h3">
-							<Trans>Info over deze collectie</Trans>
+							<Trans key="collection/views/collection-detail___info-over-deze-collectie">
+								Info over deze collectie
+							</Trans>
 						</h3>
 						<Grid>
 							<Column size="3-3">
 								<Spacer margin="top">
 									<p className="u-text-bold">
-										<Trans>Onderwijsniveau</Trans>
+										<Trans key="collection/views/collection-detail___onderwijsniveau">
+											Onderwijsniveau
+										</Trans>
 									</p>
 									<p className="c-body-1">
 										{lom_context && lom_context.length ? (
@@ -314,27 +325,33 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							<Column size="3-3">
 								<Spacer margin="top">
 									<p className="u-text-bold">
-										<Trans>Laatst aangepast</Trans>
+										<Trans key="collection/views/collection-detail___laatst-aangepast">
+											Laatst aangepast
+										</Trans>
 									</p>
 									<p className="c-body-1">{formatDate(updated_at)}</p>
 								</Spacer>
 							</Column>
 							<Column size="3-6">
 								<p className="u-text-bold">
-									<Trans>Ordering</Trans>
+									<Trans key="collection/views/collection-detail___ordering">Ordering</Trans>
 								</p>
 								{/* TODO: add links */}
 								<p className="c-body-1">
-									<Trans>Deze collectie is een kopie van:</Trans>
+									<Trans key="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+										Deze collectie is een kopie van:
+									</Trans>
 								</p>
 								<p className="c-body-1">
-									<Trans>Deze collectie is deel van een map:</Trans>
+									<Trans key="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+										Deze collectie is deel van een map:
+									</Trans>
 								</p>
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
 									<p className="u-text-bold">
-										<Trans>Vakken</Trans>
+										<Trans key="collection/views/collection-detail___vakken">Vakken</Trans>
 									</p>
 									<p className="c-body-1">
 										{lom_classification && lom_classification.length ? (
@@ -348,7 +365,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						</Grid>
 						<hr className="c-hr" />
 						<Heading type="h3">
-							<Trans>Bekijk ook</Trans>
+							<Trans key="collection/views/collection-detail___bekijk-ook">Bekijk ook</Trans>
 						</Heading>
 						{renderRelatedCollections()}
 					</Container>

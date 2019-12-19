@@ -645,8 +645,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				<DropdownContent>
 					<Spacer>
 						<Form>
-							<Button type="borderless" block label={t('Geen')} />
-							<Button type="borderless" block label={t('Beheer vakken en projecten')} />
+							<Button
+								type="borderless"
+								block
+								label={t('assignment/views/assignment-edit___geen')}
+							/>
+							<Button
+								type="borderless"
+								block
+								label={t('assignment/views/assignment-edit___beheer-vakken-en-projecten')}
+							/>
 						</Form>
 					</Spacer>
 				</DropdownContent>
@@ -722,7 +730,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											})}
 										>
 											<Icon name="chevron-left" size="small" type="arrows" />
-											<Trans>Mijn opdrachten</Trans>
+											<Trans key="assignment/views/assignment-edit___mijn-opdrachten">
+												Mijn opdrachten
+											</Trans>
 										</Link>
 										<Heading className="u-m-0" type="h2">
 											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
@@ -730,7 +740,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">
-													<FormGroup label={t('URL')}>
+													<FormGroup label={t('assignment/views/assignment-edit___url')}>
 														<TextInput value={getAssignmentUrl()} disabled />
 													</FormGroup>
 													<Spacer margin="left-small">
@@ -753,7 +763,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												<Button
 													type="secondary"
 													onClick={() => history.goBack()}
-													label={t('Annuleren')}
+													label={t('assignment/views/assignment-edit___annuleren')}
 												/>
 											)}
 											{pageType === 'edit' && (
@@ -761,7 +771,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 													<Button
 														type="secondary"
 														onClick={viewAsStudent}
-														label={t('Bekijk als leerling')}
+														label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
 													/>
 													<Dropdown
 														isOpen={isExtraOptionsMenuOpen}
@@ -799,7 +809,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											)}
 											<Button
 												type="primary"
-												label={t('Opslaan')}
+												label={t('assignment/views/assignment-edit___opslaan')}
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
@@ -813,14 +823,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				<Container mode="horizontal" size="small" className="c-assignment-edit">
 					<Container mode="vertical" size="large">
 						<Form>
-							<FormGroup required label={t('Titel')}>
+							<FormGroup required label={t('assignment/views/assignment-edit___titel')}>
 								<TextInput
 									id="title"
 									value={currentAssignment.title}
 									onChange={title => setAssignmentProp('title', title)}
 								/>
 							</FormGroup>
-							<FormGroup label={t('Opdracht')} required>
+							<FormGroup label={t('assignment/views/assignment-edit___opdracht')} required>
 								<WYSIWYG
 									id="assignmentDescription"
 									autogrow
@@ -829,12 +839,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								/>
 							</FormGroup>
 							{assignmentContent && currentAssignment.content_label && (
-								<FormGroup label={t('Inhoud')}>{renderContentLink(assignmentContent)}</FormGroup>
+								<FormGroup label={t('assignment/views/assignment-edit___inhoud')}>
+									{renderContentLink(assignmentContent)}
+								</FormGroup>
 							)}
-							<FormGroup label={t('Weergave')} labelFor="only_player">
+							<FormGroup
+								label={t('assignment/views/assignment-edit___weergave')}
+								labelFor="only_player"
+							>
 								<RadioButtonGroup>
 									<RadioButton
-										label={t('mediaspeler met beschrijving')}
+										label={t('assignment/views/assignment-edit___mediaspeler-met-beschrijving')}
 										name="content_layout"
 										value={String(AssignmentLayout.PlayerAndText)}
 										checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
@@ -844,7 +859,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										}
 									/>
 									<RadioButton
-										label={t('enkel mediaspeler')}
+										label={t('assignment/views/assignment-edit___enkel-mediaspeler')}
 										name="content_layout"
 										value={String(AssignmentLayout.OnlyPlayer)}
 										checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
@@ -854,15 +869,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									/>
 								</RadioButtonGroup>
 							</FormGroup>
-							<FormGroup label={t('Klas of groep')} required>
+							<FormGroup label={t('assignment/views/assignment-edit___klas-of-groep')} required>
 								<TextInput
 									id="class_room"
 									value={currentAssignment.class_room || ''}
 									onChange={classRoom => setAssignmentProp('class_room', classRoom)}
 								/>
 							</FormGroup>
-							<FormGroup label={t('Vak of project')}>{renderTagsDropdown()}</FormGroup>
-							<FormGroup label={t('Antwoorden op')} labelFor="answer_url">
+							<FormGroup label={t('assignment/views/assignment-edit___vak-of-project')}>
+								{renderTagsDropdown()}
+							</FormGroup>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___antwoorden-op')}
+								labelFor="answer_url"
+							>
 								<TextInput
 									id="answer_url"
 									type="text"
@@ -871,13 +891,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									onChange={value => setAssignmentProp('answer_url', value)}
 								/>
 								<p className="c-form-help-text">
-									<Trans>
+									<Trans key="assignment/views/assignment-edit___waar-geeft-de-leerling-de-antwoorden-in-voeg-een-optionele-url-naar-een-ander-platform-toe">
 										Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
 										platform toe.
 									</Trans>
 								</p>
 							</FormGroup>
-							<FormGroup label={t('Beschikbaar vanaf')}>
+							<FormGroup label={t('assignment/views/assignment-edit___beschikbaar-vanaf')}>
 								<Flex>
 									<DatePicker
 										value={
@@ -892,7 +912,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									/>
 								</Flex>
 							</FormGroup>
-							<FormGroup label={t('Deadline')} required>
+							<FormGroup label={t('assignment/views/assignment-edit___deadline')} required>
 								<Flex>
 									<Spacer margin="right-small">
 										<DatePicker
@@ -908,18 +928,27 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								</Flex>
 								{isDeadlineInThePast() ? (
 									<div className="c-form-help-text c-form-help-text--error">
-										<Trans>De deadline ligt in het verleden.</Trans>
+										<Trans key="assignment/views/assignment-edit___de-deadline-ligt-in-het-verleden">
+											De deadline ligt in het verleden.
+										</Trans>
 										<br />
-										<Trans>De leerlingen zullen dus geen toegang hebben tot deze opdracht</Trans>
+										<Trans key="assignment/views/assignment-edit___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht">
+											De leerlingen zullen dus geen toegang hebben tot deze opdracht
+										</Trans>
 									</div>
 								) : (
 									<p className="c-form-help-text">
-										<Trans>Na deze datum kan de leerling de opdracht niet meer invullen.</Trans>
+										<Trans key="assignment/views/assignment-edit___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen">
+											Na deze datum kan de leerling de opdracht niet meer invullen.
+										</Trans>
 									</p>
 								)}
 							</FormGroup>
 							{currentAssignment.assignment_type === 'BOUW' && (
-								<FormGroup label={t('Groepswerk?')} labelFor="only_player">
+								<FormGroup
+									label={t('assignment/views/assignment-edit___groepswerk')}
+									labelFor="only_player"
+								>
 									<Toggle
 										checked={currentAssignment.is_collaborative}
 										onChange={checked => setAssignmentProp('is_collaborative', checked)}
@@ -930,11 +959,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							<Alert type="info">
 								<div className="c-content c-content--no-m">
 									<p>
-										<Trans>Hulp nodig bij het maken van opdrachten?</Trans>
+										<Trans key="assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten">
+											Hulp nodig bij het maken van opdrachten?
+										</Trans>
 										<br />
 										Bekijk onze{' '}
 										<a href="http://google.com" target="_blank" rel="noopener noreferrer">
-											<Trans>screencast</Trans>
+											<Trans key="assignment/views/assignment-edit___screencast">screencast</Trans>
 										</a>
 										.
 									</p>
@@ -951,7 +982,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									<ButtonToolbar>
 										<Button
 											type="primary"
-											label={t('Opslaan')}
+											label={t('assignment/views/assignment-edit___opslaan')}
 											onClick={() => saveAssignment(currentAssignment)}
 											disabled={isSaving}
 										/>

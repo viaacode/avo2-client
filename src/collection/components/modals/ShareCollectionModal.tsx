@@ -124,12 +124,16 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		<Modal isOpen={isOpen} title="Deel deze collectie" size="large" onClose={onClose} scrollable>
 			<ModalBody>
 				<p>
-					<Trans>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</Trans>
+					<Trans key="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen">
+						Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.
+					</Trans>
 				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">
 						<Heading className="u-m-0" type="h4">
-							<Trans>Zichtbaarheid</Trans>
+							<Trans key="collection/components/modals/share-collection-modal___zichtbaarheid">
+								Zichtbaarheid
+							</Trans>
 						</Heading>
 					</Spacer>
 					<RadioButtonGroup>
@@ -149,8 +153,16 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label={t('Annuleren')} onClick={() => onClose()} />
-								<Button type="primary" label={t('Opslaan')} onClick={onSave} />
+								<Button
+									type="secondary"
+									label={t('collection/components/modals/share-collection-modal___annuleren')}
+									onClick={() => onClose()}
+								/>
+								<Button
+									type="primary"
+									label={t('collection/components/modals/share-collection-modal___opslaan')}
+									onClick={onSave}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

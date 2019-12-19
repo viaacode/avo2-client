@@ -61,7 +61,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					kaart heeft ontvangen kan u via{' '}
 					<Button
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
-						label={t('een manuele aanvraag')}
+						label={t('authentication/components/stamboek-input___een-manuele-aanvraag')}
 						type="inline-link"
 					/>{' '}
 					toch al toegang krijgen.
@@ -82,7 +82,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 				<span>
 					Dit stamboek nummer is reeds in gebruik,{' '}
 					<Button
-						label={t('contacteer de helpdesk')}
+						label={t('authentication/components/stamboek-input___contacteer-de-helpdesk')}
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 						type="inline-link"
 					/>
@@ -149,7 +149,9 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					<Spacer margin={'small'}>
 						<Spacer margin="bottom-small">
 							<span>
-								<Trans>Je stamboek nummer staat op je lerarenkaart</Trans>
+								<Trans key="authentication/components/stamboek-input___je-stamboek-nummer-staat-op-je-lerarenkaart">
+									Je stamboek nummer staat op je lerarenkaart
+								</Trans>
 							</span>
 						</Spacer>
 						<img

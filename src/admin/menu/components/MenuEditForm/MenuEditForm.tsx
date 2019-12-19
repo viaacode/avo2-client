@@ -38,7 +38,11 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 
 	return (
 		<Form>
-			<FormGroup error={formErrors.placement} label={t('Navigatie naam')} required>
+			<FormGroup
+				error={formErrors.placement}
+				label={t('admin/menu/components/menu-edit-form/menu-edit-form___navigatie-naam')}
+				required
+			>
 				{/* TODO: Add CreatableSelect to compononents lib */}
 				<CreatableSelect
 					value={menuParentOptions.find(opt => opt.value === menuParentId)}
@@ -53,14 +57,17 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				/>
 			</FormGroup>
 			{!menuParentId && (
-				<FormGroup error={formErrors.description} label={t('Navigatie omschrijving')}>
+				<FormGroup
+					error={formErrors.description}
+					label={t('admin/menu/components/menu-edit-form/menu-edit-form___navigatie-omschrijving')}
+				>
 					<TextArea
 						onChange={(value: string) => onChange('description', value)}
 						value={formState.description}
 					/>
 				</FormGroup>
 			)}
-			<FormGroup label={t('Icoon')}>
+			<FormGroup label={t('admin/menu/components/menu-edit-form/menu-edit-form___icoon')}>
 				<IconPicker
 					options={MENU_ICON_OPTIONS}
 					onChange={(option: ValueType<ReactSelectOption<string>>) =>
@@ -71,10 +78,18 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 					)}
 				/>
 			</FormGroup>
-			<FormGroup error={formErrors.label} label={t('Label')} required>
+			<FormGroup
+				error={formErrors.label}
+				label={t('admin/menu/components/menu-edit-form/menu-edit-form___label')}
+				required
+			>
 				<TextInput onChange={(value: string) => onChange('label', value)} value={formState.label} />
 			</FormGroup>
-			<FormGroup error={formErrors.link} label={t('Link')} required>
+			<FormGroup
+				error={formErrors.link}
+				label={t('admin/menu/components/menu-edit-form/menu-edit-form___link')}
+				required
+			>
 				<TextInput onChange={(value: string) => onChange('link', value)} value={formState.link} />
 			</FormGroup>
 		</Form>

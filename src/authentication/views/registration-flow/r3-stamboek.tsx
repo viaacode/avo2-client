@@ -44,10 +44,12 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
 					<Heading type="h2">
-						<Trans>Geef hieronder je lerarenkaart- of stamboeknummer in.</Trans>
+						<Trans key="authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in">
+							Geef hieronder je lerarenkaart- of stamboeknummer in.
+						</Trans>
 					</Heading>
 					<p>
-						<Trans>
+						<Trans key="authentication/views/registration-flow/r-3-stamboek___zo-gaan-wij-na-of-jij-een-actieve-lesgever-bent-aan-een-vlaamse-erkende-onderwijsinstelling">
 							Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende
 							onderwijsinstelling.
 						</Trans>
@@ -57,13 +59,20 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						<Alert type="info">
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 							<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
-								<Trans>Waarom hebben jullie mijn stamboeknummer nodig?</Trans>
+								<Trans key="authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig">
+									Waarom hebben jullie mijn stamboeknummer nodig?
+								</Trans>
 							</a>
 						</Alert>
 					</Spacer>
 				</div>
 				<Spacer margin="top-large">
-					<FormGroup label={t('Lerarenkaart- of stamboeknummer')} labelFor="stamboekInput">
+					<FormGroup
+						label={t(
+							'authentication/views/registration-flow/r-3-stamboek___lerarenkaart-of-stamboeknummer'
+						)}
+						labelFor="stamboekInput"
+					>
 						<StamboekInput
 							onChange={setValidStamboekNumber}
 							history={history}
@@ -75,7 +84,9 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 				<Spacer margin={['bottom-large', 'top-large']}>
 					<FormGroup>
 						<Checkbox
-							label={t('Ik aanvaard de gebruiksvoorwaarden en privacyverklaring.')}
+							label={t(
+								'authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-gebruiksvoorwaarden-en-privacyverklaring'
+							)}
 							checked={hasAcceptedConditions}
 							onChange={setHasAcceptedConditions}
 						/>
