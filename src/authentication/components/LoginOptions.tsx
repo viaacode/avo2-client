@@ -39,9 +39,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				</Spacer>
 			</Spacer>
 			<p>
-				<Trans i18nKey="authentication/components/login-options___of-kies-voor">
-					Of kies voor ...
-				</Trans>
+				<Trans i18nKey="authentication/components/login-options___of-kies-voor">Of kies voor ...</Trans>
 			</p>
 			<Spacer margin={['top-small', 'bottom-small']}>
 				<Button

@@ -70,9 +70,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="12">
 								<FormGroup
 									error={formErrors.description}
-									label={t(
-										'admin/content/components/content-edit-form/content-edit-form___omschrijving'
-									)}
+									label={t('admin/content/components/content-edit-form/content-edit-form___omschrijving')}
 								>
 									<TextArea
 										onChange={(value: string) => onChange('description', value)}
@@ -84,9 +82,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="3-12">
 								<FormGroup
 									error={formErrors.contentType}
-									label={t(
-										'admin/content/components/content-edit-form/content-edit-form___content-type'
-									)}
+									label={t('admin/content/components/content-edit-form/content-edit-form___content-type')}
 								>
 									<Select
 										onChange={(value: string) => onChange('contentType', value)}
@@ -98,9 +94,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="3-6">
 								<FormGroup
 									error={formErrors.publishAt}
-									label={t(
-										'admin/content/components/content-edit-form/content-edit-form___publiceren-op'
-									)}
+									label={t('admin/content/components/content-edit-form/content-edit-form___publiceren-op')}
 								>
 									<DatePicker
 										onChange={(value: Date | null) => handleDateChange('publishAt', value)}
@@ -112,9 +106,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="3-6">
 								<FormGroup
 									error={formErrors.depublishAt}
-									label={t(
-										'admin/content/components/content-edit-form/content-edit-form___depubliceren-op'
-									)}
+									label={t('admin/content/components/content-edit-form/content-edit-form___depubliceren-op')}
 								>
 									<DatePicker
 										onChange={(value: Date | null) => handleDateChange('depublishAt', value)}

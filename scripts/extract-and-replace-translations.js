@@ -29,6 +29,9 @@ function getFormattedKey(filePath, key) {
     var formattedKey = _.kebabCase(key);
     return fileKey + "___" + formattedKey;
 }
+function getFormattedTranslation(translation) {
+    return translation.trim().replace(/\t\t\t+/g, ' ');
+}
 var options = {
     ignore: '**/*.d.ts',
     cwd: path.join(__dirname, '../src')
@@ -45,29 +48,29 @@ glob_1["default"]('**/*.@(ts|tsx)', options, function (err, files) {
             var absoluteFilePath = options.cwd + "/" + relativeFilePath;
             var content = fs.readFileSync(absoluteFilePath).toString();
             // Replace Trans objects
-            content = content.replace(/<Trans( i18nKey="([^"]+)")?>([\s\S]*?)<\/Trans>/g, function (match, keyAttribute, key, defaultString) {
+            content = content.replace(/<Trans( i18nKey="([^"]+)")?>([\s\S]*?)<\/Trans>/g, function (match, keyAttribute, key, translation) {
                 var formattedKey = key;
-                var trimmedDefaultString = defaultString.trim();
+                var formattedTranslation = getFormattedTranslation(translation);
                 if (!key) {
                     // new Trans without a key
-                    formattedKey = getFormattedKey(relativeFilePath, trimmedDefaultString);
+                    formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
                 }
-                newTranslations[formattedKey] = trimmedDefaultString.trim();
-                return "<Trans i18nKey=\"" + formattedKey + "\">" + trimmedDefaultString + "</Trans>";
+                newTranslations[formattedKey] = formattedTranslation;
+                return "<Trans i18nKey=\"" + formattedKey + "\">" + formattedTranslation + "</Trans>";
             });
             // Replace t() functions ( including i18n.t() )
             content = content.replace(
             // Match char before t function to make sure it isn't part of a bigger function name, eg: sent()
-            /([^a-zA-Z])t\('([^']+)'\)/g, function (match, prefix, defaultString) {
+            /([^a-zA-Z])t\(\s*'([\s\S]+?)'\s*\)/g, function (match, prefix, translation) {
                 var formattedKey;
-                var trimmedDefaultString = defaultString.trim();
-                if (trimmedDefaultString.includes('___')) {
-                    formattedKey = trimmedDefaultString;
+                var formattedTranslation = getFormattedTranslation(translation);
+                if (formattedTranslation.includes('___')) {
+                    formattedKey = formattedTranslation;
                 }
                 else {
-                    formattedKey = getFormattedKey(relativeFilePath, trimmedDefaultString);
+                    formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
                 }
-                newTranslations[formattedKey] = trimmedDefaultString;
+                newTranslations[formattedKey] = formattedTranslation;
                 return prefix + "t('" + formattedKey + "')";
             });
             fs.writeFileSync(absoluteFilePath, content);

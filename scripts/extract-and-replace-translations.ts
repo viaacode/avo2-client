@@ -19,6 +19,10 @@ function getFormattedKey(filePath: string, key: string) {
 	return `${fileKey}___${formattedKey}`;
 }
 
+function getFormattedTranslation(translation: string) {
+	return translation.trim().replace(/\\t\\t(\\t)+/g, ' ');
+}
+
 const options = {
 	ignore: '**/*.d.ts',
 	cwd: path.join(__dirname, '../src'),
@@ -41,31 +45,31 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 			// Replace Trans objects
 			content = content.replace(
 				/<Trans( i18nKey="([^"]+)")?>([\s\S]*?)<\/Trans>/g,
-				(match: string, keyAttribute: string, key: string, defaultString: string) => {
+				(match: string, keyAttribute: string, key: string, translation: string) => {
 					let formattedKey: string | undefined = key;
-					const trimmedDefaultString: string = defaultString.trim();
+					const formattedTranslation: string = getFormattedTranslation(translation);
 					if (!key) {
 						// new Trans without a key
-						formattedKey = getFormattedKey(relativeFilePath, trimmedDefaultString);
+						formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
 					}
-					newTranslations[formattedKey] = trimmedDefaultString.trim();
-					return `<Trans i18nKey="${formattedKey}">${trimmedDefaultString}</Trans>`;
+					newTranslations[formattedKey] = formattedTranslation;
+					return `<Trans i18nKey="${formattedKey}">${formattedTranslation}</Trans>`;
 				}
 			);
 
 			// Replace t() functions ( including i18n.t() )
 			content = content.replace(
 				// Match char before t function to make sure it isn't part of a bigger function name, eg: sent()
-				/([^a-zA-Z])t\('([^']+)'\)/g,
-				(match: string, prefix: string, defaultString: string) => {
+				/([^a-zA-Z])t\(\s*'([\s\S]+?)'\s*\)/g,
+				(match: string, prefix: string, translation: string) => {
 					let formattedKey: string | undefined;
-					const trimmedDefaultString: string = defaultString.trim();
-					if (trimmedDefaultString.includes('___')) {
-						formattedKey = trimmedDefaultString;
+					const formattedTranslation: string = getFormattedTranslation(translation);
+					if (formattedTranslation.includes('___')) {
+						formattedKey = formattedTranslation;
 					} else {
-						formattedKey = getFormattedKey(relativeFilePath, trimmedDefaultString);
+						formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
 					}
-					newTranslations[formattedKey] = trimmedDefaultString;
+					newTranslations[formattedKey] = formattedTranslation;
 					return `${prefix}t('${formattedKey}')`;
 				}
 			);

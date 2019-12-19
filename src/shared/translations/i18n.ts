@@ -6,8 +6,11 @@ console.log('translations: ', translations);
 i18n
 	.use(initReactI18next) // passes i18n down to react-i18next
 	.init({
+		debug: true,
 		resources: {
-			nl: translations,
+			nl: {
+				translation: translations,
+			},
 		},
 		lng: 'nl',
 		fallbackLng: 'nl',

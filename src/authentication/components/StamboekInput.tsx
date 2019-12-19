@@ -149,9 +149,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					<Spacer margin={'small'}>
 						<Spacer margin="bottom-small">
 							<span>
-								<Trans i18nKey="authentication/components/stamboek-input___je-stamboek-nummer-staat-op-je-lerarenkaart">
-									Je stamboek nummer staat op je lerarenkaart
-								</Trans>
+								<Trans i18nKey="authentication/components/stamboek-input___je-stamboek-nummer-staat-op-je-lerarenkaart">Je stamboek nummer staat op je lerarenkaart</Trans>
 							</span>
 						</Spacer>
 						<img

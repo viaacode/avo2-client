@@ -119,9 +119,7 @@ const Home: FunctionComponent<HomeProps> = ({
 				<Container mode="horizontal" size="medium">
 					<Spacer>
 						<Heading type="h2" className="u-text-center">
-							<Trans i18nKey="home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken">
-								Vind alles wat je nodig hebt om je lessen te verrijken.
-							</Trans>
+							<Trans i18nKey="home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken">Vind alles wat je nodig hebt om je lessen te verrijken.</Trans>
 						</Heading>
 						<div className="u-text-center">
 							<Spacer margin="large">
@@ -163,9 +161,7 @@ const Home: FunctionComponent<HomeProps> = ({
 							</Spacer>
 							<Spacer margin="large">
 								<p className="c-body-1">
-									<Trans i18nKey="home/views/home___vind-inspiratie-voor-specifieke-vakken-en-domeinen">
-										Vind inspiratie voor specifieke vakken en domeinen:
-									</Trans>
+									<Trans i18nKey="home/views/home___vind-inspiratie-voor-specifieke-vakken-en-domeinen">Vind inspiratie voor specifieke vakken en domeinen:</Trans>
 								</p>
 								<Flex className="c-button-toolbar" orientation="horizontal" center>
 									{/* TODO discover/overview-basic.html */}

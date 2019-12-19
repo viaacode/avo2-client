@@ -102,9 +102,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 											</label>
 										</FormGroup>
 										<FormGroup
-											label={t(
-												'collection/views/collection-edit-meta-data___persoonlijke-opmerkingen-notities'
-											)}
+											label={t('collection/views/collection-edit-meta-data___persoonlijke-opmerkingen-notities')}
 											labelFor="personalRemarkId"
 										>
 											<TextArea
@@ -124,9 +122,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 										>
 											<Button
 												type="secondary"
-												label={t(
-													'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
-												)}
+												label={t('collection/views/collection-edit-meta-data___stel-een-afbeelding-in')}
 												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
 										</FormGroup>

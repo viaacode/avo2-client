@@ -102,9 +102,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
 					<Heading type="h2">
-						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
-							Vraag een account aan op het Archief voor Onderwijs
-						</Trans>
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">Vraag een account aan op het Archief voor Onderwijs</Trans>
 					</Heading>
 					<p>
 						Het Archief voor Onderwijs is geweldig. Speciaal gemaakt voor lesgevers actief in het
@@ -112,15 +110,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 						Denk je dat je in aanmerking komt voor een account? Dan kan je een aanvraag indienen. Je
 						aanvraag wordt verwerkt binnen de 5 werkdagen.{' '}
 						<Link to={AUTH_PATH.STUDENT_TEACHER}>
-							<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___ben-je-student-leerkracht">
-								Ben je student-leerkracht?
-							</Trans>
+							<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___ben-je-student-leerkracht">Ben je student-leerkracht?</Trans>
 						</Link>
 					</p>
 					<Heading type="h3">
-						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">
-							Aanvraagformulier
-						</Trans>
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">Aanvraagformulier</Trans>
 					</Heading>
 					<Grid>
 						<Column size="2-6" className="m-manual-registration">
@@ -131,9 +125,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 								<TextInput id="name" value={name} onChange={setName} />
 							</FormGroup>
 							<FormGroup
-								label={t(
-									'authentication/views/registration-flow/r-4-manual-registration___professioneel-e-mailadres'
-								)}
+								label={t('authentication/views/registration-flow/r-4-manual-registration___professioneel-e-mailadres')}
 								labelFor="email"
 							>
 								<TextInput id="email *" value={email} onChange={setEmail} />
@@ -145,46 +137,36 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 									</TooltipTrigger>
 									<TooltipContent>
 										<p>
-											<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___gelieve-in-onderstaand-formulier-het-professioneel-e-mailadres-dat-je-hebt-gekregen-van-je-school-of-instelling-in-te-geven-bv-jan-smit-basisschool-deklaver-be-zo-kunnen-we-je-aanvraag-sneller-behandelen-voer-dus-enkel-een-prive-adres-in-indien-je-niet-over-een-professioneel-adres-beschikt">
-												Gelieve in onderstaand formulier het professioneel e-mailadres dat je hebt
-												gekregen van je school of instelling in te geven, bv
-												jan.smit@basisschool-deklaver.be. Zo kunnen we je aanvraag sneller
-												behandelen. Voer dus enkel een privé-adres in indien je niet over een
-												professioneel adres beschikt.
-											</Trans>
+											<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___gelieve-in-onderstaand-formulier-het-professioneel-e-mailadres-dat-je-hebt-gekregen-van-je-school-of-instelling-in-te-geven-bv-jan-smit-basisschool-deklaver-be-zo-kunnen-we-je-aanvraag-sneller-behandelen-voer-dus-enkel-een-prive-adres-in-indien-je-niet-over-een-professioneel-adres-beschikt">Gelieve in onderstaand formulier het professioneel e-mailadres dat je hebt
+ gekregen van je school of instelling in te geven, bv
+ jan.smit@basisschool-deklaver.be. Zo kunnen we je aanvraag sneller
+ behandelen. Voer dus enkel een privé-adres in indien je niet over een
+ professioneel adres beschikt.</Trans>
 										</p>
 									</TooltipContent>
 								</Tooltip>
 							</FormGroup>
 							<FormGroup
-								label={t(
-									'authentication/views/registration-flow/r-4-manual-registration___organisatie-of-onderwijsinstelling'
-								)}
+								label={t('authentication/views/registration-flow/r-4-manual-registration___organisatie-of-onderwijsinstelling')}
 								labelFor="organization"
 							>
 								<TextInput id="organization" value={organization} onChange={setOrganization} />
 							</FormGroup>
 							<FormGroup
-								label={t(
-									'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
-								)}
+								label={t('authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep')}
 								labelFor="function"
 							>
 								<TextInput id="function" value={profession} onChange={setProfession} />
 							</FormGroup>
 							<FormGroup
-								label={t(
-									'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
-								)}
+								label={t('authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag')}
 								labelFor="reason"
 							>
 								<TextArea height="small" id="reason" value={reason} onChange={setReason} />
 							</FormGroup>
 							<Button type="primary" onClick={onSend}>
-								<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___trans-i-18-n-key-authentication-views-registration-flow-r-4-manual-registration-vraag-een-account-aan-vraag-een-account-aan">
-									<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
-										Vraag een account aan
-									</Trans>
+								<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___trans-i-18-n-key-authentication-views-registration-flow-r-4-manual-registration-vraag-een-account-aan-vraag-een-account-aan"><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
+ Vraag een account aan</Trans>
 								</Trans>
 							</Button>
 						</Column>

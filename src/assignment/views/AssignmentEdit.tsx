@@ -730,9 +730,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											})}
 										>
 											<Icon name="chevron-left" size="small" type="arrows" />
-											<Trans i18nKey="assignment/views/assignment-edit___mijn-opdrachten">
-												Mijn opdrachten
-											</Trans>
+											<Trans i18nKey="assignment/views/assignment-edit___mijn-opdrachten">Mijn opdrachten</Trans>
 										</Link>
 										<Heading className="u-m-0" type="h2">
 											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
@@ -891,10 +889,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									onChange={value => setAssignmentProp('answer_url', value)}
 								/>
 								<p className="c-form-help-text">
-									<Trans i18nKey="assignment/views/assignment-edit___waar-geeft-de-leerling-de-antwoorden-in-voeg-een-optionele-url-naar-een-ander-platform-toe">
-										Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
-										platform toe.
-									</Trans>
+									<Trans i18nKey="assignment/views/assignment-edit___waar-geeft-de-leerling-de-antwoorden-in-voeg-een-optionele-url-naar-een-ander-platform-toe">Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
+ platform toe.</Trans>
 								</p>
 							</FormGroup>
 							<FormGroup label={t('assignment/views/assignment-edit___beschikbaar-vanaf')}>
@@ -928,19 +924,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								</Flex>
 								{isDeadlineInThePast() ? (
 									<div className="c-form-help-text c-form-help-text--error">
-										<Trans i18nKey="assignment/views/assignment-edit___de-deadline-ligt-in-het-verleden">
-											De deadline ligt in het verleden.
-										</Trans>
+										<Trans i18nKey="assignment/views/assignment-edit___de-deadline-ligt-in-het-verleden">De deadline ligt in het verleden.</Trans>
 										<br />
-										<Trans i18nKey="assignment/views/assignment-edit___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht">
-											De leerlingen zullen dus geen toegang hebben tot deze opdracht
-										</Trans>
+										<Trans i18nKey="assignment/views/assignment-edit___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht">De leerlingen zullen dus geen toegang hebben tot deze opdracht</Trans>
 									</div>
 								) : (
 									<p className="c-form-help-text">
-										<Trans i18nKey="assignment/views/assignment-edit___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen">
-											Na deze datum kan de leerling de opdracht niet meer invullen.
-										</Trans>
+										<Trans i18nKey="assignment/views/assignment-edit___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen">Na deze datum kan de leerling de opdracht niet meer invullen.</Trans>
 									</p>
 								)}
 							</FormGroup>
@@ -959,15 +949,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							<Alert type="info">
 								<div className="c-content c-content--no-m">
 									<p>
-										<Trans i18nKey="assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten">
-											Hulp nodig bij het maken van opdrachten?
-										</Trans>
+										<Trans i18nKey="assignment/views/assignment-edit___hulp-nodig-bij-het-maken-van-opdrachten">Hulp nodig bij het maken van opdrachten?</Trans>
 										<br />
 										Bekijk onze{' '}
 										<a href="http://google.com" target="_blank" rel="noopener noreferrer">
-											<Trans i18nKey="assignment/views/assignment-edit___screencast">
-												screencast
-											</Trans>
+											<Trans i18nKey="assignment/views/assignment-edit___screencast">screencast</Trans>
 										</a>
 										.
 									</p>

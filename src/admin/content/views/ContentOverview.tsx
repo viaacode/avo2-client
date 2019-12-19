@@ -72,11 +72,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 		return !data.length ? (
 			<ErrorView message="Er is nog geen content aangemaakt.">
 				<p>
-					<Trans i18nKey="admin/content/views/content-overview___lorem-ipsum-dolor-sit-amet-consectetur-adipisicing-elit-maiores-aliquid-ab-debitis-blanditiis-vitae-molestiae-delectus-earum-asperiores-mollitia-minima-laborum-expedita-ratione-quas-impedit-repudiandae-nisi-corrupti-quis-eaque">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
-						blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
-						ratione quas impedit repudiandae nisi corrupti quis eaque!
-					</Trans>
+					<Trans i18nKey="admin/content/views/content-overview___lorem-ipsum-dolor-sit-amet-consectetur-adipisicing-elit-maiores-aliquid-ab-debitis-blanditiis-vitae-molestiae-delectus-earum-asperiores-mollitia-minima-laborum-expedita-ratione-quas-impedit-repudiandae-nisi-corrupti-quis-eaque">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
+ blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
+ ratione quas impedit repudiandae nisi corrupti quis eaque!</Trans>
 				</p>
 				<Spacer margin="top">
 					<Button

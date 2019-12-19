@@ -11,7 +11,7 @@
 		"lint": "tslint -p .",
 		"format": "npm run lint -- --fix",
 		"build-extract-translations-script": "tsc --sourceMap --esModuleInterop --resolveJsonModule scripts/extract-and-replace-translations.ts",
-		"extract-translations": "npm run build-extract-translations-script && node scripts/extract-and-replace-translations.js && npm run format"
+		"extract-translations": "npm run build-extract-translations-script && node scripts/extract-and-replace-translations.js"
 	},
 	"contributors": [
 		"Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -50,7 +50,8 @@
 		"redux": "^4.0.1",
 		"redux-devtools-extension": "^2.13.8",
 		"redux-thunk": "^2.3.0",
-		"sanitize-html": "^1.20.1"
+		"sanitize-html": "^1.20.1",
+		"i18next": "^19.0.2"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^8.1.0",

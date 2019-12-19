@@ -19,14 +19,10 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 		<Container className="c-register-pupil-or-teacher-dropdown" mode="horizontal">
 			<Container mode="vertical">
 				<h4 className="c-h4">
-					<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___ben-je-lesgever">
-						Ben je lesgever?
-					</Trans>
+					<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___ben-je-lesgever">Ben je lesgever?</Trans>
 				</h4>
 				<p>
-					<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-audiovisueel-lesmateriaal-maak-eigen-collecties">
-						Krijg toegang tot audiovisueel lesmateriaal, maak eigen collecties.
-					</Trans>
+					<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-audiovisueel-lesmateriaal-maak-eigen-collecties">Krijg toegang tot audiovisueel lesmateriaal, maak eigen collecties.</Trans>
 				</p>
 				<Spacer margin={['bottom-large', 'top-small']}>
 					<Button
@@ -41,14 +37,10 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 				</Spacer>
 				<Spacer margin="top-large">
 					<h4 className="c-h4">
-						<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___ben-je-leerling-secundair">
-							Ben je leerling secundair?
-						</Trans>
+						<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___ben-je-leerling-secundair">Ben je leerling secundair?</Trans>
 					</h4>
 					<p>
-						<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-opdrachten-klaargezet-door-jouw-leerkrachten">
-							Krijg toegang tot opdrachten klaargezet door jouw leerkrachten.
-						</Trans>
+						<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-opdrachten-klaargezet-door-jouw-leerkrachten">Krijg toegang tot opdrachten klaargezet door jouw leerkrachten.</Trans>
 					</p>
 					<Spacer margin="top-small">
 						<Button
