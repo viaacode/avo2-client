@@ -320,7 +320,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 						<ToolbarLeft>
 							<ToolbarItem>
 								<ToolbarTitle>
-									<Trans key="search/views/search___zoekresultaten">Zoekresultaten</Trans>
+									<Trans i18nKey="search/views/search___zoekresultaten">Zoekresultaten</Trans>
 								</ToolbarTitle>
 							</ToolbarItem>
 							<ToolbarItem>

@@ -71,7 +71,7 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 			<Container background="alt" mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Heading type="h2" className="u-m-0">
-						<Trans key="settings/views/settings___instellingen">Instellingen</Trans>
+						<Trans i18nKey="settings/views/settings___instellingen">Instellingen</Trans>
 					</Heading>
 				</Container>
 			</Container>

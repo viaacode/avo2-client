@@ -43,7 +43,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 								<Form type="standard">
 									<Form type="standard">
 										<Heading type="h3">
-											<Trans key="settings/components/account___account">Account</Trans>
+											<Trans i18nKey="settings/components/account___account">Account</Trans>
 										</Heading>
 										<FormGroup label="Email">
 											<span>{get(user, 'mail')}</span>
@@ -52,23 +52,23 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 											<Alert type="info">
 												<span>
 													<h4 className="c-h4">
-														<Trans key="settings/components/account___viaa-identiteitsmanagement-systeem">
+														<Trans i18nKey="settings/components/account___viaa-identiteitsmanagement-systeem">
 															VIAA identiteitsmanagement systeem
 														</Trans>
 													</h4>
-													<Trans key="settings/components/account___jouw-account-wordt-beheerd-in-een-centraal-identiteitsmanagementsysteem-dat-je-toelaat-om-met-dezelfde-gegevens-op-meerdere-viaa-websites-en-applicaties-in-te-loggen">
+													<Trans i18nKey="settings/components/account___jouw-account-wordt-beheerd-in-een-centraal-identiteitsmanagementsysteem-dat-je-toelaat-om-met-dezelfde-gegevens-op-meerdere-viaa-websites-en-applicaties-in-te-loggen">
 														Jouw account wordt beheerd in een centraal identiteitsmanagementsysteem
 														dat je toelaat om met dezelfde gegevens op meerdere VIAA-websites en
 														applicaties in te loggen.{' '}
 													</Trans>
 													<br />
-													<Trans key="settings/components/account___wijzigingen-aan-deze-gegevens-worden-dus-doorgevoerd-in-al-deze-websites-en-tools">
+													<Trans i18nKey="settings/components/account___wijzigingen-aan-deze-gegevens-worden-dus-doorgevoerd-in-al-deze-websites-en-tools">
 														Wijzigingen aan deze gegevens worden dus doorgevoerd in al deze websites
 														en tools.
 													</Trans>
 													<br />
 													<a href={getSsumAccountEditPage()}>
-														<Trans key="settings/components/account___beheer-je-account-gegevens">
+														<Trans i18nKey="settings/components/account___beheer-je-account-gegevens">
 															Beheer je account gegevens
 														</Trans>
 													</a>
@@ -83,7 +83,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
 											<>
 												<span>
-													<Trans key="settings/components/account___uw-smartschool-account-is-reeds-gelinkt">
+													<Trans i18nKey="settings/components/account___uw-smartschool-account-is-reeds-gelinkt">
 														Uw smartschool account is reeds gelinkt
 													</Trans>
 												</span>

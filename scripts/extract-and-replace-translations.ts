@@ -3,6 +3,7 @@ import glob from 'glob';
 import * as _ from 'lodash';
 import * as path from 'path';
 import oldTranslations from '../src/shared/translations/nl.json';
+const sortObject = require('sort-object-keys');
 
 function getFormattedKey(filePath: string, key: string) {
 	const fileKey = filePath
@@ -39,15 +40,16 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 
 			// Replace Trans objects
 			content = content.replace(
-				/<Trans( key="([^"]+)")?>([^<]+)<\/Trans>/g,
+				/<Trans( i18nKey="([^"]+)")?>([\s\S]*?)<\/Trans>/g,
 				(match: string, keyAttribute: string, key: string, defaultString: string) => {
 					let formattedKey: string | undefined = key;
+					const trimmedDefaultString: string = defaultString.trim();
 					if (!key) {
 						// new Trans without a key
-						formattedKey = getFormattedKey(relativeFilePath, defaultString);
+						formattedKey = getFormattedKey(relativeFilePath, trimmedDefaultString);
 					}
-					newTranslations[formattedKey] = defaultString;
-					return `<Trans key="${formattedKey}">${defaultString}</Trans>`;
+					newTranslations[formattedKey] = trimmedDefaultString.trim();
+					return `<Trans i18nKey="${formattedKey}">${trimmedDefaultString}</Trans>`;
 				}
 			);
 
@@ -57,12 +59,13 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 				/([^a-zA-Z])t\('([^']+)'\)/g,
 				(match: string, prefix: string, defaultString: string) => {
 					let formattedKey: string | undefined;
-					if (defaultString.includes('___')) {
-						formattedKey = defaultString;
+					const trimmedDefaultString: string = defaultString.trim();
+					if (trimmedDefaultString.includes('___')) {
+						formattedKey = trimmedDefaultString;
 					} else {
-						formattedKey = getFormattedKey(relativeFilePath, defaultString);
+						formattedKey = getFormattedKey(relativeFilePath, trimmedDefaultString);
 					}
-					newTranslations[formattedKey] = defaultString;
+					newTranslations[formattedKey] = trimmedDefaultString;
 					return `${prefix}t('${formattedKey}')`;
 				}
 			);
@@ -94,14 +97,14 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 	addedTranslationKeys.forEach(key => (combinedTranslations[key] = newTranslations[key]));
 
 	fs.writeFileSync(
-		`${__dirname}src/shared/translations/nl.json`,
-		JSON.stringify(combinedTranslations, null, 2)
+		`${__dirname.replace(/\\/g, '/')}/../src/shared/translations/nl.json`,
+		JSON.stringify(sortObject(combinedTranslations), null, 2)
 	);
 
 	const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
 	console.log(
 		`Wrote ${totalTranslations} src/shared/translations/nl.json file
-\t${addedTranslationKeys.length} added
-\t${removedTranslationKeys.length} deleted`
+\t${addedTranslationKeys.length} translations added
+\t${removedTranslationKeys.length} translations deleted`
 	);
 });

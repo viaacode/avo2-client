@@ -11,7 +11,7 @@
 		"lint": "tslint -p .",
 		"format": "npm run lint -- --fix",
 		"build-extract-translations-script": "tsc --sourceMap --esModuleInterop --resolveJsonModule scripts/extract-and-replace-translations.ts",
-		"extract-translations": "node scripts/extract-and-replace-translations.js"
+		"extract-translations": "npm run build-extract-translations-script && node scripts/extract-and-replace-translations.js && npm run format"
 	},
 	"contributors": [
 		"Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -84,6 +84,7 @@
 		"lorem-ipsum": "^2.0.3",
 		"prettier": "^1.17.1",
 		"redux-mock-store": "^1.5.3",
+		"sort-object-keys": "^1.1.3",
 		"ts-jest": "^24.0.2",
 		"ts-loader": "^6.0.4",
 		"tslint": "^5.16.0",

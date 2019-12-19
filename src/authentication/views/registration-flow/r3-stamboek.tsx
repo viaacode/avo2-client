@@ -44,12 +44,12 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
 					<Heading type="h2">
-						<Trans key="authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in">
+						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in">
 							Geef hieronder je lerarenkaart- of stamboeknummer in.
 						</Trans>
 					</Heading>
 					<p>
-						<Trans key="authentication/views/registration-flow/r-3-stamboek___zo-gaan-wij-na-of-jij-een-actieve-lesgever-bent-aan-een-vlaamse-erkende-onderwijsinstelling">
+						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___zo-gaan-wij-na-of-jij-een-actieve-lesgever-bent-aan-een-vlaamse-erkende-onderwijsinstelling">
 							Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende
 							onderwijsinstelling.
 						</Trans>
@@ -59,7 +59,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						<Alert type="info">
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 							<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
-								<Trans key="authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig">
+								<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig">
 									Waarom hebben jullie mijn stamboeknummer nodig?
 								</Trans>
 							</a>

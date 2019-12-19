@@ -15,6 +15,7 @@ var glob_1 = __importDefault(require("glob"));
 var _ = __importStar(require("lodash"));
 var path = __importStar(require("path"));
 var nl_json_1 = __importDefault(require("../src/shared/translations/nl.json"));
+var sortObject = require('sort-object-keys');
 function getFormattedKey(filePath, key) {
     var fileKey = filePath
         .replace(/[\\\/]+/g, '/')
@@ -44,27 +45,29 @@ glob_1["default"]('**/*.@(ts|tsx)', options, function (err, files) {
             var absoluteFilePath = options.cwd + "/" + relativeFilePath;
             var content = fs.readFileSync(absoluteFilePath).toString();
             // Replace Trans objects
-            content = content.replace(/<Trans( key="([^"]+)")?>([^<]+)<\/Trans>/g, function (match, keyAttribute, key, defaultString) {
+            content = content.replace(/<Trans( i18nKey="([^"]+)")?>([\s\S]*?)<\/Trans>/g, function (match, keyAttribute, key, defaultString) {
                 var formattedKey = key;
+                var trimmedDefaultString = defaultString.trim();
                 if (!key) {
                     // new Trans without a key
-                    formattedKey = getFormattedKey(relativeFilePath, defaultString);
+                    formattedKey = getFormattedKey(relativeFilePath, trimmedDefaultString);
                 }
-                newTranslations[formattedKey] = defaultString;
-                return "<Trans key=\"" + formattedKey + "\">" + defaultString + "</Trans>";
+                newTranslations[formattedKey] = trimmedDefaultString.trim();
+                return "<Trans i18nKey=\"" + formattedKey + "\">" + trimmedDefaultString + "</Trans>";
             });
             // Replace t() functions ( including i18n.t() )
             content = content.replace(
             // Match char before t function to make sure it isn't part of a bigger function name, eg: sent()
             /([^a-zA-Z])t\('([^']+)'\)/g, function (match, prefix, defaultString) {
                 var formattedKey;
-                if (defaultString.includes('___')) {
-                    formattedKey = defaultString;
+                var trimmedDefaultString = defaultString.trim();
+                if (trimmedDefaultString.includes('___')) {
+                    formattedKey = trimmedDefaultString;
                 }
                 else {
-                    formattedKey = getFormattedKey(relativeFilePath, defaultString);
+                    formattedKey = getFormattedKey(relativeFilePath, trimmedDefaultString);
                 }
-                newTranslations[formattedKey] = defaultString;
+                newTranslations[formattedKey] = trimmedDefaultString;
                 return prefix + "t('" + formattedKey + "')";
             });
             fs.writeFileSync(absoluteFilePath, content);
@@ -85,8 +88,8 @@ glob_1["default"]('**/*.@(ts|tsx)', options, function (err, files) {
     var combinedTranslations = {};
     existingTranslationKeys.forEach(function (key) { return (combinedTranslations[key] = nl_json_1["default"][key]); });
     addedTranslationKeys.forEach(function (key) { return (combinedTranslations[key] = newTranslations[key]); });
-    fs.writeFileSync(__dirname + "src/shared/translations/nl.json", JSON.stringify(combinedTranslations, null, 2));
+    fs.writeFileSync(__dirname.replace(/\\/g, '/') + "/../src/shared/translations/nl.json", JSON.stringify(sortObject(combinedTranslations), null, 2));
     var totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
-    console.log("Wrote " + totalTranslations + " src/shared/translations/nl.json file\n\t" + addedTranslationKeys.length + " added\n\t" + removedTranslationKeys.length + " deleted");
+    console.log("Wrote " + totalTranslations + " src/shared/translations/nl.json file\n\t" + addedTranslationKeys.length + " translations added\n\t" + removedTranslationKeys.length + " translations deleted");
 });
 //# sourceMappingURL=extract-and-replace-translations.js.map

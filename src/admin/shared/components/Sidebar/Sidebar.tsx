@@ -25,7 +25,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 		{headerLink && (
 			<div className="o-sidebar__header">
 				<Link className="u-remove-link-styling u-color-white" to={headerLink}>
-					<Trans key="admin/shared/components/sidebar/sidebar___beheer">Beheer</Trans>
+					<Trans i18nKey="admin/shared/components/sidebar/sidebar___beheer">Beheer</Trans>
 				</Link>
 			</div>
 		)}

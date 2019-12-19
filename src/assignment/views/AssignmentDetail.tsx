@@ -407,7 +407,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 								{!!answer_url && (
 									<Box backgroundColor="soft-white" condensed>
 										<p>
-											<Trans key="assignment/views/assignment-detail___geef-je-antwoorden-in-op">
+											<Trans i18nKey="assignment/views/assignment-detail___geef-je-antwoorden-in-op">
 												Geef je antwoorden in op:
 											</Trans>
 										</p>

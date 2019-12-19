@@ -254,7 +254,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const renderEmptyFallback = () => (
 		<ErrorView icon="collection" message="Je hebt nog geen collecties aangemaakt.">
 			<p>
-				<Trans key="collection/views/collection-overview___een-collectie-is-een-verzameling-van-video-of-audiofragmenten-rond-een-bepaald-thema-of-voor-een-bepaalde-les-nadat-je-een-collectie-hebt-aangemaakt-kan-je-deze-delen-met-andere-gebruikers-om-samen-aan-te-werken-andere-gebruikers-kunnen-ook-collecties-met-jou-delen-die-je-dan-hier-terugvindt">
+				<Trans i18nKey="collection/views/collection-overview___een-collectie-is-een-verzameling-van-video-of-audiofragmenten-rond-een-bepaald-thema-of-voor-een-bepaalde-les-nadat-je-een-collectie-hebt-aangemaakt-kan-je-deze-delen-met-andere-gebruikers-om-samen-aan-te-werken-andere-gebruikers-kunnen-ook-collecties-met-jou-delen-die-je-dan-hier-terugvindt">
 					Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
 					voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
 					gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen

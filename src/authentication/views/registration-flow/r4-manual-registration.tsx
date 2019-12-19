@@ -79,11 +79,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 						reason,
 					}),
 					html_body: `<dl>
-  <dt><Trans key="authentication/views/registration-flow/r-4-manual-registration___naam">Naam</Trans></dt><dd>${name}</dd>
-  <dt><Trans key="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${email}</dd>
-  <dt><Trans key="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
-  <dt><Trans key="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
-  <dt><Trans key="authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag">Reden voor aanvraag</Trans></dt><dd>${reason}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___naam">Naam</Trans></dt><dd>${name}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${email}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag">Reden voor aanvraag</Trans></dt><dd>${reason}</dd>
 </dl>`,
 					public: false,
 				},
@@ -102,7 +102,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
 					<Heading type="h2">
-						<Trans key="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
 							Vraag een account aan op het Archief voor Onderwijs
 						</Trans>
 					</Heading>
@@ -112,13 +112,13 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 						Denk je dat je in aanmerking komt voor een account? Dan kan je een aanvraag indienen. Je
 						aanvraag wordt verwerkt binnen de 5 werkdagen.{' '}
 						<Link to={AUTH_PATH.STUDENT_TEACHER}>
-							<Trans key="authentication/views/registration-flow/r-4-manual-registration___ben-je-student-leerkracht">
+							<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___ben-je-student-leerkracht">
 								Ben je student-leerkracht?
 							</Trans>
 						</Link>
 					</p>
 					<Heading type="h3">
-						<Trans key="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">
 							Aanvraagformulier
 						</Trans>
 					</Heading>
@@ -145,7 +145,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 									</TooltipTrigger>
 									<TooltipContent>
 										<p>
-											<Trans key="authentication/views/registration-flow/r-4-manual-registration___gelieve-in-onderstaand-formulier-het-professioneel-e-mailadres-dat-je-hebt-gekregen-van-je-school-of-instelling-in-te-geven-bv-jan-smit-basisschool-deklaver-be-zo-kunnen-we-je-aanvraag-sneller-behandelen-voer-dus-enkel-een-prive-adres-in-indien-je-niet-over-een-professioneel-adres-beschikt">
+											<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___gelieve-in-onderstaand-formulier-het-professioneel-e-mailadres-dat-je-hebt-gekregen-van-je-school-of-instelling-in-te-geven-bv-jan-smit-basisschool-deklaver-be-zo-kunnen-we-je-aanvraag-sneller-behandelen-voer-dus-enkel-een-prive-adres-in-indien-je-niet-over-een-professioneel-adres-beschikt">
 												Gelieve in onderstaand formulier het professioneel e-mailadres dat je hebt
 												gekregen van je school of instelling in te geven, bv
 												jan.smit@basisschool-deklaver.be. Zo kunnen we je aanvraag sneller
@@ -181,8 +181,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 								<TextArea height="small" id="reason" value={reason} onChange={setReason} />
 							</FormGroup>
 							<Button type="primary" onClick={onSend}>
-								<Trans>
-									<Trans key="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
+								<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___trans-i-18-n-key-authentication-views-registration-flow-r-4-manual-registration-vraag-een-account-aan-vraag-een-account-aan">
+									<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
 										Vraag een account aan
 									</Trans>
 								</Trans>

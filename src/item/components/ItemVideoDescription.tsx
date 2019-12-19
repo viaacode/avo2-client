@@ -169,7 +169,9 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				<Heading type="h3">{title}</Heading>
 			) : (
 				<Heading type="h4">
-					<Trans key="item/components/item-video-description___beschrijving">Beschrijving</Trans>
+					<Trans i18nKey="item/components/item-video-description___beschrijving">
+						Beschrijving
+					</Trans>
 				</Heading>
 			)}
 			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
