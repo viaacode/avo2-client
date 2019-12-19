@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps } from 'react-router';
@@ -7,8 +8,9 @@ import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
+import { Profile } from '../../settings/components';
 
-// import { isProfileComplete } from '../helpers/get-profile-info'; // TODO: uncomment once available
+import { isProfileComplete } from '../helpers/get-profile-info';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading, selectUser } from '../store/selectors';
 import { LoginMessage } from '../store/types';
@@ -21,7 +23,6 @@ export interface SecuredRouteProps {
 	loginStateError: boolean;
 	loginStateLoading: boolean;
 	path?: string;
-	profileHasToBeComplete?: boolean;
 	user: Avo.User.User;
 }
 
@@ -37,7 +38,6 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 	loginStateError,
 	loginStateLoading,
 	path,
-	profileHasToBeComplete = true,
 	user,
 }) => {
 	useEffect(() => {
@@ -65,20 +65,32 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 				// Already logged in
 				if (loginState && loginState.message === LoginMessage.LOGGED_IN && user) {
 					// TODO enable this once we can save profile info
-					// if (profileHasToBeComplete && isProfileComplete()) {
-					const Component = component;
-					return <Component {...props} user={user} />;
-					// } else {
-					// 	// Force user to complete their profile before letting them in
-					// 	return (
-					// 		<Redirect
-					// 			to={{
-					// 				pathname: APP_PATH.COMPLETE_PROFILE,
-					// 				state: { from: props.location },
-					// 			}}
-					// 		/>
-					// 	);
-					// }
+					if (path === APP_PATH.COMPLETE_PROFILE) {
+						// Force user to complete their profile before letting them in
+						// This has to happen in the secure route component so we can pass the user object to the profile component
+						return (
+							<Profile
+								{...props}
+								user={user}
+								isCompleteProfileStep
+								redirectTo={get(props, 'location.from.path')}
+							/>
+						);
+					}
+					if (isProfileComplete(user)) {
+						const Component = component;
+						return <Component {...props} user={user} />;
+					}
+					// Redirect to the complete profile route
+					// So we can redirect to the originally requested route once the user completes their profile info
+					return (
+						<Redirect
+							to={{
+								pathname: APP_PATH.COMPLETE_PROFILE,
+								state: { from: props.location },
+							}}
+						/>
+					);
 				}
 
 				// On errors or not logged in => redirect to login or register page

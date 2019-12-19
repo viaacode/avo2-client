@@ -84,13 +84,20 @@ export function getProfileStamboekNumber(user: Avo.User.User | undefined): strin
 
 export function isProfileComplete(user: Avo.User.User): boolean {
 	const profile = get(user, 'profile');
-	if (!profile) {
-		return false;
-	}
-	return false; // TODO implement check based on user role
+
+	// TODO implement check based on user role
+	return (
+		profile &&
+		(profile as any).organizations &&
+		(profile as any).organizations.length &&
+		(profile as any).educationLevels &&
+		(profile as any).educationLevels.length &&
+		(profile as any).subjects &&
+		(profile as any).subjects.length
+	);
 }
 
-export function isLoggedIn(loginMessage?: LoginMessage): boolean {
+export function isLoggedIn(loginMessage: LoginMessage | undefined, user: Avo.User.User): boolean {
 	let message: LoginMessage | undefined = loginMessage;
 	if (!message) {
 		const state: any = store.getState();
@@ -98,5 +105,5 @@ export function isLoggedIn(loginMessage?: LoginMessage): boolean {
 	}
 
 	// TODO add once we can save profile info
-	return !!message && message === LoginMessage.LOGGED_IN; // && isProfileComplete();
+	return !!message && message === LoginMessage.LOGGED_IN && isProfileComplete(user);
 }
