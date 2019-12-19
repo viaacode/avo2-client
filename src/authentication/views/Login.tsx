@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -32,6 +33,8 @@ const Login: FunctionComponent<LoginProps> = ({
 	loginStateError,
 	getLoginState,
 }) => {
+	const [t] = useTranslation();
+
 	const getLastLoginAttempt = (): null | Date => {
 		try {
 			const lastLoginAttempt = localStorage.getItem(LOGIN_ATTEMPT_KEY) || '';
@@ -94,7 +97,7 @@ const Login: FunctionComponent<LoginProps> = ({
 	if (loginStateError || hasRecentLoginAttempt()) {
 		return (
 			<ErrorView message="Het inloggen is mislukt" icon="lock">
-				<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
+				<Button type="link" onClick={tryLoginAgainManually} label={t('Probeer opnieuw')} />
 			</ErrorView>
 		);
 	}

@@ -2,6 +2,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -66,6 +67,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	refetchCount,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	const [filterString, setFilterString] = useState<string>('');
 	const [activeView, setActiveView] = useState<Avo.Assignment.View>('assignments');
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<
@@ -441,13 +444,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							<ButtonGroup>
 								<Button
 									type="secondary"
-									label="Opdrachten"
+									label={t('Opdrachten')}
 									active={activeView === 'assignments'}
 									onClick={() => setActiveView('assignments')}
 								/>
 								<Button
 									type="secondary"
-									label="Gearchiveerde opdrachten"
+									label={t('Gearchiveerde opdrachten')}
 									active={activeView === 'archived_assignments'}
 									onClick={() => setActiveView('archived_assignments')}
 								/>

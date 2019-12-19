@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -27,6 +28,8 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 	location,
 	match,
 }) => {
+	const [t] = useTranslation();
+
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
@@ -46,14 +49,14 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 										<Spacer margin={['top-small', 'bottom-small']}>
 											<Button
 												block
-												label="Account aanmaken als lesgever"
+												label={t('Account aanmaken als lesgever')}
 												type="primary"
 												onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}
 											/>
 										</Spacer>
 										<Button
 											block
-											label="Krijg toegang als leerling"
+											label={t('Krijg toegang als leerling')}
 											type="primary"
 											onClick={() => redirectToClientPage(APP_PATH.FOR_PUPILS, history)}
 										/>

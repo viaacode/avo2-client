@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -33,6 +34,8 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 	location,
 	...props
 }) => {
+	const [t] = useTranslation();
+
 	const [hasAcceptedConditions, setHasAcceptedConditions] = useState<boolean>(false);
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 
@@ -56,7 +59,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 					</Spacer>
 				</div>
 				<Spacer margin="top-large">
-					<FormGroup label="Lerarenkaart- of stamboeknummer" labelFor="stamboekInput">
+					<FormGroup label={t('Lerarenkaart- of stamboeknummer')} labelFor="stamboekInput">
 						<StamboekInput
 							onChange={setValidStamboekNumber}
 							history={history}
@@ -68,7 +71,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 				<Spacer margin={['bottom-large', 'top-large']}>
 					<FormGroup>
 						<Checkbox
-							label="Ik aanvaard de gebruiksvoorwaarden en privacyverklaring."
+							label={t('Ik aanvaard de gebruiksvoorwaarden en privacyverklaring.')}
 							checked={hasAcceptedConditions}
 							onChange={setHasAcceptedConditions}
 						/>

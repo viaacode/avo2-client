@@ -1,5 +1,6 @@
 import { Tickets } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -27,6 +28,8 @@ import './r4-manual-registration.scss';
 export interface ManualRegistrationProps extends RouteComponentProps {}
 
 const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
+	const [t] = useTranslation();
+
 	const [name, setName] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 	const [organization, setOrganization] = useState<string>('');
@@ -109,10 +112,10 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 					<Heading type="h3">Aanvraagformulier</Heading>
 					<Grid>
 						<Column size="2-6" className="m-manual-registration">
-							<FormGroup label="Naam *" labelFor="name">
+							<FormGroup label={t('Naam *')} labelFor="name">
 								<TextInput id="name" value={name} onChange={setName} />
 							</FormGroup>
-							<FormGroup label="(Professioneel) e-mailadres *" labelFor="email">
+							<FormGroup label={t('(Professioneel) e-mailadres *')} labelFor="email">
 								<TextInput id="email *" value={email} onChange={setEmail} />
 								<Tooltip position="bottom" contentClassName="m-email-tooltip">
 									<TooltipTrigger>
@@ -131,17 +134,17 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 									</TooltipContent>
 								</Tooltip>
 							</FormGroup>
-							<FormGroup label="Organisatie of onderwijsinstelling *" labelFor="organization">
+							<FormGroup label={t('Organisatie of onderwijsinstelling *')} labelFor="organization">
 								<TextInput id="organization" value={organization} onChange={setOrganization} />
 							</FormGroup>
-							<FormGroup label="Functie of beroep *" labelFor="function">
+							<FormGroup label={t('Functie of beroep *')} labelFor="function">
 								<TextInput id="function" value={profession} onChange={setProfession} />
 							</FormGroup>
-							<FormGroup label="Reden voor aanvraag *" labelFor="reason">
+							<FormGroup label={t('Reden voor aanvraag *')} labelFor="reason">
 								<TextArea height="small" id="reason" value={reason} onChange={setReason} />
 							</FormGroup>
 							<Button type="primary" onClick={onSend}>
-								Vraag een account aan
+								<Trans>Vraag een account aan</Trans>
 							</Button>
 						</Column>
 						<Column size="2-5">

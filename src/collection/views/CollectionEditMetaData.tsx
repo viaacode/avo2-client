@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -30,6 +31,8 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 	collection,
 	updateCollectionProperty,
 }) => {
+	const [t] = useTranslation();
+
 	// State
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 
@@ -46,7 +49,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 							<Spacer margin="bottom">
 								<Grid>
 									<Column size="3-7">
-										<FormGroup label="Onderwijsniveau" labelFor="classificationId">
+										<FormGroup label={t('Onderwijsniveau')} labelFor="classificationId">
 											<TagsInput
 												options={(data.lookup_enum_lom_context || []).map(item => ({
 													value: item.description,
@@ -61,7 +64,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 												}
 											/>
 										</FormGroup>
-										<FormGroup label="Vakken" labelFor="subjectsId">
+										<FormGroup label={t('Vakken')} labelFor="subjectsId">
 											<TagsInput
 												options={(data.lookup_enum_lom_classification || []).map(item => ({
 													value: item.description,
@@ -77,7 +80,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 											/>
 										</FormGroup>
 										<FormGroup
-											label="Korte omschrijving"
+											label={t('Korte omschrijving')}
 											labelFor="shortDescriptionId"
 											error={getValidationFeedbackForShortDescription(collection.description, true)}
 										>
@@ -93,7 +96,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 											</label>
 										</FormGroup>
 										<FormGroup
-											label="Persoonlijke opmerkingen/notities"
+											label={t('Persoonlijke opmerkingen/notities')}
 											labelFor="personalRemarkId"
 										>
 											<TextArea
@@ -107,16 +110,16 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 										</FormGroup>
 									</Column>
 									<Column size="3-5">
-										<FormGroup label="Cover afbeelding" labelFor="coverImageId">
+										<FormGroup label={t('Cover afbeelding')} labelFor="coverImageId">
 											<Button
 												type="secondary"
-												label="Stel een afbeelding in..."
+												label={t('Stel een afbeelding in...')}
 												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
 										</FormGroup>
 										{/* TODO: DISABLED FEATURE
-											<FormGroup label="Map" labelFor="mapId">
-												<Button type="secondary" icon="add" label="Voeg toe aan een map" />
+											<FormGroup label={t('Map')} labelFor="mapId">
+												<Button type="secondary" icon="add" label={t('Voeg toe aan een map')} />
 											</FormGroup>
 										*/}
 									</Column>

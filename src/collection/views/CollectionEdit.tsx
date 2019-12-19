@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, eq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Prompt, withRouter } from 'react-router';
 
@@ -69,6 +70,8 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 	user,
 	...rest
 }) => {
+	const [t] = useTranslation();
+
 	// State
 	const [collectionId] = useState<string | undefined>(match.params.id);
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
@@ -345,7 +348,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 		const renderSaveButton = () => (
 			<Button
 				type="primary"
-				label="Opslaan"
+				label={t('Opslaan')}
 				onClick={() => onSaveCollection(refetchCollection)}
 				disabled={isSavingCollection}
 			/>
@@ -355,7 +358,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 			<ButtonToolbar>
 				<Button
 					type="secondary"
-					label="Delen"
+					label={t('Delen')}
 					disabled={hasUnsavedChanged()}
 					title={
 						!eq(currentCollection, initialCollection) ? 'U moet uw wijzigingen eerst opslaan' : ''
@@ -363,12 +366,12 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 					onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 				/>
 				{/* TODO: DISABLED FEATURE
-					<Button type="secondary" label="Bekijk" onClick={onPreviewCollection} disabled />
+					<Button type="secondary" label={t('Bekijk')} onClick={onPreviewCollection} disabled />
 				*/}
 				{/* TODO: DISABLED FEATURE
 					<Button
 						type = "secondary"
-						label="Herschik alle items"
+						label={t('Herschik alle items')}
 						onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 						disabled
 					/>

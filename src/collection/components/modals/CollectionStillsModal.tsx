@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Blankslate,
@@ -33,6 +34,8 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	isOpen,
 	collection,
 }) => {
+	const [t] = useTranslation();
+
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);
 	const [selectedCoverImages, setSelectedCoverImages] = useState<string[]>(
 		collection.thumbnail_path ? [collection.thumbnail_path] : []
@@ -100,8 +103,8 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button label="Annuleren" type="secondary" block onClick={onClose} />
-								<Button label="Opslaan" type="primary" block onClick={saveCoverImage} />
+								<Button label={t('Annuleren')} type="secondary" block onClick={onClose} />
+								<Button label={t('Opslaan')} type="primary" block onClick={saveCoverImage} />
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

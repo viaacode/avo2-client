@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -31,6 +32,8 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 	value = '',
 	history,
 }) => {
+	const [t] = useTranslation();
+
 	const [stamboekValidationStatus, setStamboekValidationStatus] = useState<
 		StamboekValidationStatus
 	>('INCOMPLETE');
@@ -58,7 +61,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					kaart heeft ontvangen kan u via{' '}
 					<Button
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
-						label="een manuele aanvraag"
+						label={t('een manuele aanvraag')}
 						type="inline-link"
 					/>{' '}
 					toch al toegang krijgen.
@@ -79,7 +82,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 				<span>
 					Dit stamboek nummer is reeds in gebruik,{' '}
 					<Button
-						label="contacteer de helpdesk"
+						label={t('contacteer de helpdesk')}
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 						type="inline-link"
 					/>

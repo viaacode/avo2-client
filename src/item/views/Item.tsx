@@ -1,6 +1,7 @@
 import { get, isNull } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -61,6 +62,8 @@ interface ItemProps extends DefaultSecureRouteProps {}
 
 const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ...rest }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
+
+	const [t] = useTranslation();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
 	// TODO: use setTime when adding logic for enabling timestamps in the URL
@@ -255,13 +258,13 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 													<Button
 														type="tertiary"
 														icon="add"
-														label="Voeg fragment toe aan collectie"
+														label={t('Voeg fragment toe aan collectie')}
 														onClick={() => setIsOpenAddToCollectionModal(true)}
 													/>
 													<Button
 														type="tertiary"
 														icon="clipboard"
-														label="Maak opdracht"
+														label={t('Maak opdracht')}
 														onClick={() =>
 															history.push(
 																generateAssignmentCreateLink(

@@ -1,4 +1,5 @@
 import React, { FunctionComponent, MouseEvent, ReactText, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -38,6 +39,8 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	range = DEFAULT_DATE_RANGE,
 	onChange,
 }) => {
+	const [t] = useTranslation();
+
 	// Internal range state (copied to external range state when the user clicks on the apply button
 	const [rangeState, setRangeState] = useState<DateRange>(range);
 	const [showYearControls, setShowYearControls] = useState<boolean>(true);
@@ -170,10 +173,10 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 			<DropdownContent>
 				<div className="u-spacer">
 					<Form>
-						<FormGroup label="Hoe specifiek?">
+						<FormGroup label={t('Hoe specifiek?')}>
 							<RadioButtonGroup inline>
 								<RadioButton
-									label="Op jaartal"
+									label={t('Op jaartal')}
 									name="year"
 									value="year"
 									checked={showYearControls}
@@ -184,7 +187,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									}}
 								/>
 								<RadioButton
-									label="Specifieke datums"
+									label={t('Specifieke datums')}
 									name="year"
 									value="date"
 									checked={!showYearControls}
@@ -198,7 +201,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							{showYearControls && (
 								<Grid>
 									<Column size="6">
-										<FormGroup label="Van">
+										<FormGroup label={t('Van')}>
 											<TextInput
 												id="gte"
 												placeholder="JJJJ"
@@ -213,7 +216,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										</FormGroup>
 									</Column>
 									<Column size="6">
-										<FormGroup label="Tot">
+										<FormGroup label={t('Tot')}>
 											<TextInput
 												id="lte"
 												placeholder="JJJJ"
@@ -232,7 +235,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 							{!showYearControls && (
 								<Grid>
 									<Column size="6">
-										<FormGroup label="Van">
+										<FormGroup label={t('Van')}>
 											<DatePicker
 												value={fromDate}
 												onChange={value =>
@@ -245,7 +248,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										</FormGroup>
 									</Column>
 									<Column size="6">
-										<FormGroup label="Tot">
+										<FormGroup label={t('Tot')}>
 											<DatePicker
 												value={tillDate}
 												onChange={value =>
@@ -262,7 +265,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 						</FormGroup>
 						<FormGroup>
 							<Button
-								label="Toepassen"
+								label={t('Toepassen')}
 								type="primary"
 								className="c-apply-filter-button"
 								block

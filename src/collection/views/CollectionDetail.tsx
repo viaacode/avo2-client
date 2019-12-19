@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
 import {
@@ -64,6 +65,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	user,
 	...rest
 }) => {
+	const [t] = useTranslation();
+
 	// State
 	const [collectionId] = useState((match.params as any)['id'] as string);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -226,7 +229,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<PermissionGuard {...canEditCollection} user={user}>
 					<Button
 						type="secondary"
-						label="Delen"
+						label={t('Delen')}
 						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 					/>
 				</PermissionGuard>
@@ -253,7 +256,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</ControlledDropdown>
 				<PermissionGuard {...canEditCollection} user={user}>
 					<Spacer margin="left-small">
-						<Button type="primary" icon="edit" label="Bewerken" onClick={onEditCollection} />
+						<Button type="primary" icon="edit" label={t('Bewerken')} onClick={onEditCollection} />
 					</Spacer>
 				</PermissionGuard>
 			</ButtonToolbar>

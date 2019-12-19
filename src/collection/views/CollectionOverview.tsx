@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { compact } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -54,6 +55,8 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	refetchCount,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	// State
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
@@ -260,7 +263,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				<Button
 					type="primary"
 					icon="add"
-					label="Maak je eerste collectie"
+					label={t('Maak je eerste collectie')}
 					onClick={onClickCreate}
 				/>
 			</Spacer>

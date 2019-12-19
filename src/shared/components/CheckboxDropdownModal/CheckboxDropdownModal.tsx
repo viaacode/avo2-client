@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import { clone, compact, fromPairs } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -62,7 +63,9 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 	disabled,
 	onChange,
 }) => {
-	// Computedd
+	const [t] = useTranslation();
+
+	// Computed
 	const optionsFromPairs = fromPairs(
 		options.map(({ checked, ...option }: CheckboxOption) => [option.id, checked])
 	);
@@ -166,7 +169,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 							</FormGroup>
 							<FormGroup>
 								<Button
-									label="Toepassen"
+									label={t('Toepassen')}
 									type="primary"
 									className="c-apply-filter-button"
 									block
@@ -218,13 +221,13 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 								<ToolbarItem>
 									<ButtonToolbar>
 										<Button
-											label="Annuleren"
+											label={t('Annuleren')}
 											type="secondary"
 											block
 											onClick={closeDropdownOrModal}
 										/>
 										<Button
-											label="Toepassen"
+											label={t('Toepassen')}
 											className="c-apply-filter-button"
 											type="primary"
 											block

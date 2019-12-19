@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
@@ -9,17 +10,19 @@ import { APP_PATH } from '../../constants';
 export interface ForTeachersProps extends RouteComponentProps {}
 
 const ForTeachers: FunctionComponent<ForTeachersProps> = ({ history }) => {
+	const [t] = useTranslation();
+
 	return (
 		<Container className="c-for-teachers-view" mode="vertical">
 			<Container mode="horizontal" size="small">
 				<ButtonToolbar>
 					<Button
-						label="Login"
+						label={t('Login')}
 						type="primary"
 						onClick={() => redirectToClientPage(APP_PATH.REGISTER_OR_LOGIN, history)}
 					/>
 					<Button
-						label="Maak je gratis account aan"
+						label={t('Maak je gratis account aan')}
 						type="secondary"
 						onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}
 					/>

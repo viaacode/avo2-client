@@ -1,5 +1,6 @@
 import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -53,6 +54,8 @@ const Home: FunctionComponent<HomeProps> = ({
 	search,
 	history,
 }) => {
+	const [t] = useTranslation();
+
 	const [searchTerms, setSearchTerms] = useState<string>('');
 	const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] = useState<boolean>(false);
 	const debouncedSearchTerms = useDebounce(searchTerms, 200);
@@ -160,9 +163,9 @@ const Home: FunctionComponent<HomeProps> = ({
 								<p className="c-body-1">Vind inspiratie voor specifieke vakken en domeinen:</p>
 								<Flex className="c-button-toolbar" orientation="horizontal" center>
 									{/* TODO discover/overview-basic.html */}
-									<Button label="Basisonderwijs" type="secondary" />
+									<Button label={t('Basisonderwijs')} type="secondary" />
 									{/* TODO discover/overview-secondary.html */}
-									<Button label="Secundair onderwijs" type="secondary" />
+									<Button label={t('Secundair onderwijs')} type="secondary" />
 								</Flex>
 							</Spacer>
 						</div>

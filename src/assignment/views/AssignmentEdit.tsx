@@ -4,6 +4,7 @@ import { DocumentNode } from 'graphql';
 import { get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -128,6 +129,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	match,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	[currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>({});
 	[initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>({});
 	const [pageType, setPageType] = useState<'create' | 'edit' | undefined>();
@@ -642,8 +645,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				<DropdownContent>
 					<Spacer>
 						<Form>
-							<Button type="borderless" block label="Geen" />
-							<Button type="borderless" block label="Beheer vakken en projecten" />
+							<Button type="borderless" block label={t('Geen')} />
+							<Button type="borderless" block label={t('Beheer vakken en projecten')} />
 						</Form>
 					</Spacer>
 				</DropdownContent>
@@ -727,7 +730,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">
-													<FormGroup label="URL">
+													<FormGroup label={t('URL')}>
 														<TextInput value={getAssignmentUrl()} disabled />
 													</FormGroup>
 													<Spacer margin="left-small">
@@ -750,7 +753,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												<Button
 													type="secondary"
 													onClick={() => history.goBack()}
-													label="Annuleren"
+													label={t('Annuleren')}
 												/>
 											)}
 											{pageType === 'edit' && (
@@ -758,7 +761,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 													<Button
 														type="secondary"
 														onClick={viewAsStudent}
-														label="Bekijk als leerling"
+														label={t('Bekijk als leerling')}
 													/>
 													<Dropdown
 														isOpen={isExtraOptionsMenuOpen}
@@ -796,7 +799,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											)}
 											<Button
 												type="primary"
-												label="Opslaan"
+												label={t('Opslaan')}
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
@@ -810,14 +813,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				<Container mode="horizontal" size="small" className="c-assignment-edit">
 					<Container mode="vertical" size="large">
 						<Form>
-							<FormGroup required label="Titel">
+							<FormGroup required label={t('Titel')}>
 								<TextInput
 									id="title"
 									value={currentAssignment.title}
 									onChange={title => setAssignmentProp('title', title)}
 								/>
 							</FormGroup>
-							<FormGroup label="Opdracht" required>
+							<FormGroup label={t('Opdracht')} required>
 								<WYSIWYG
 									id="assignmentDescription"
 									autogrow
@@ -826,12 +829,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								/>
 							</FormGroup>
 							{assignmentContent && currentAssignment.content_label && (
-								<FormGroup label="Inhoud">{renderContentLink(assignmentContent)}</FormGroup>
+								<FormGroup label={t('Inhoud')}>{renderContentLink(assignmentContent)}</FormGroup>
 							)}
-							<FormGroup label="Weergave" labelFor="only_player">
+							<FormGroup label={t('Weergave')} labelFor="only_player">
 								<RadioButtonGroup>
 									<RadioButton
-										label="mediaspeler met beschrijving"
+										label={t('mediaspeler met beschrijving')}
 										name="content_layout"
 										value={String(AssignmentLayout.PlayerAndText)}
 										checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
@@ -841,7 +844,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										}
 									/>
 									<RadioButton
-										label="enkel mediaspeler"
+										label={t('enkel mediaspeler')}
 										name="content_layout"
 										value={String(AssignmentLayout.OnlyPlayer)}
 										checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
@@ -851,15 +854,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									/>
 								</RadioButtonGroup>
 							</FormGroup>
-							<FormGroup label="Klas of groep" required>
+							<FormGroup label={t('Klas of groep')} required>
 								<TextInput
 									id="class_room"
 									value={currentAssignment.class_room || ''}
 									onChange={classRoom => setAssignmentProp('class_room', classRoom)}
 								/>
 							</FormGroup>
-							<FormGroup label="Vak of project">{renderTagsDropdown()}</FormGroup>
-							<FormGroup label="Antwoorden op" labelFor="answer_url">
+							<FormGroup label={t('Vak of project')}>{renderTagsDropdown()}</FormGroup>
+							<FormGroup label={t('Antwoorden op')} labelFor="answer_url">
 								<TextInput
 									id="answer_url"
 									type="text"
@@ -872,7 +875,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									platform toe.
 								</p>
 							</FormGroup>
-							<FormGroup label="Beschikbaar vanaf">
+							<FormGroup label={t('Beschikbaar vanaf')}>
 								<Flex>
 									<DatePicker
 										value={
@@ -887,7 +890,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									/>
 								</Flex>
 							</FormGroup>
-							<FormGroup label="Deadline" required>
+							<FormGroup label={t('Deadline')} required>
 								<Flex>
 									<Spacer margin="right-small">
 										<DatePicker
@@ -914,7 +917,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								)}
 							</FormGroup>
 							{currentAssignment.assignment_type === 'BOUW' && (
-								<FormGroup label="Groepswerk?" labelFor="only_player">
+								<FormGroup label={t('Groepswerk?')} labelFor="only_player">
 									<Toggle
 										checked={currentAssignment.is_collaborative}
 										onChange={checked => setAssignmentProp('is_collaborative', checked)}
@@ -946,7 +949,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									<ButtonToolbar>
 										<Button
 											type="primary"
-											label="Opslaan"
+											label={t('Opslaan')}
 											onClick={() => saveAssignment(currentAssignment)}
 											disabled={isSaving}
 										/>

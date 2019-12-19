@@ -1,5 +1,6 @@
 import { clamp, get } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -41,6 +42,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	fragment,
 	updateCuePoints,
 }) => {
+	const [t] = useTranslation();
+
 	// Save initial state for reusability purposess
 	const { start, end, startString, endString } = {
 		start: fragment.start_oc || 0,
@@ -205,8 +208,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label="Annuleren" onClick={onCancelCut} />
-								<Button type="primary" label="Knippen" onClick={onSaveCut} />
+								<Button type="secondary" label={t('Annuleren')} onClick={onCancelCut} />
+								<Button type="primary" label={t('Knippen')} onClick={onSaveCut} />
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

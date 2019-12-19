@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -52,6 +53,8 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	setIsPublic,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
@@ -144,8 +147,8 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label="Annuleren" onClick={() => onClose()} />
-								<Button type="primary" label="Opslaan" onClick={onSave} />
+								<Button type="secondary" label={t('Annuleren')} onClick={() => onClose()} />
+								<Button type="primary" label={t('Opslaan')} onClick={onSave} />
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>
