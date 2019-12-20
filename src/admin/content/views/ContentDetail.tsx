@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	Avatar,
@@ -22,7 +23,6 @@ import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { Trans } from 'react-i18next';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
 import { GET_CONTENT_BY_ID } from '../content.gql';
 import { ContentParams } from '../content.types';
@@ -30,6 +30,8 @@ import { ContentParams } from '../content.types';
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentParams> {}
 
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }) => {
+	const [t] = useTranslation();
+
 	const { id } = match.params;
 
 	// Hooks
@@ -136,7 +138,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 					)}
 					<HeaderButtons>
 						<Button
-							label="Bewerken"
+							label={t('admin/content/views/content-detail___bewerken')}
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 						/>
 					</HeaderButtons>

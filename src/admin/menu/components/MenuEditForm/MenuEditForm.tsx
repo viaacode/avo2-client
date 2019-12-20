@@ -52,7 +52,9 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 						onChange('placement', get(option, 'value', ''))
 					}
 					options={menuParentOptions}
-					placeholder="Selecteer of maak een navigatie aan"
+					placeholder={t(
+						'admin/menu/components/menu-edit-form/menu-edit-form___selecteer-of-maak-een-navigatie-aan'
+					)}
 					isDisabled={!!menuParentId}
 				/>
 			</FormGroup>

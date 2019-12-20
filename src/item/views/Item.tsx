@@ -283,10 +283,18 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 												type="tertiary"
 												icon="bookmark"
 												active={false}
-												ariaLabel="toggle bladwijzer"
+												ariaLabel={t('item/views/item___toggle-bladwijzer')}
 											/>
-											<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-											<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+											<Button
+												type="tertiary"
+												icon="share-2"
+												ariaLabel={t('item/views/item___share-item')}
+											/>
+											<Button
+												type="tertiary"
+												icon="flag"
+												ariaLabel={t('item/views/item___rapporteer-item')}
+											/>
 										</ButtonToolbar>
 									</Flex>
 								</Spacer>

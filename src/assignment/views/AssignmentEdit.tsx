@@ -693,7 +693,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			// During create we do not allow linking to the collection if you do not own the collection,
 			// since we still need to make a copy when the user clicks on "save assignment" button
 			return (
-				<div title="U kan pas doorklikken naar de collectie nadat u de opdracht hebt aangemaakt">
+				<div
+					title={t(
+						'assignment/views/assignment-edit___u-kan-pas-doorklikken-naar-de-collectie-nadat-u-de-opdracht-hebt-aangemaakt'
+					)}
+				>
 					{linkContent}
 				</div>
 			);
@@ -747,7 +751,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 														<Button
 															icon="copy"
 															type="secondary"
-															ariaLabel="Kopieer de opdracht url"
+															ariaLabel={t(
+																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
+															)}
 															onClick={copyAssignmentUrl}
 														/>
 													</Spacer>
@@ -784,8 +790,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 															<Button
 																type="secondary"
 																icon="more-horizontal"
-																ariaLabel="Meer opties"
-																title="Meer opties"
+																ariaLabel={t('assignment/views/assignment-edit___meer-opties')}
+																title={t('assignment/views/assignment-edit___meer-opties')}
 															/>
 														</DropdownButton>
 														<DropdownContent>
@@ -886,7 +892,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								<TextInput
 									id="answer_url"
 									type="text"
-									placeholder="http://..."
+									placeholder={t('assignment/views/assignment-edit___http')}
 									value={currentAssignment.answer_url || ''}
 									onChange={value => setAssignmentProp('answer_url', value)}
 								/>
@@ -1004,7 +1010,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				/>
 
 				<InputModal
-					title="Dupliceer taak"
+					title={t('assignment/views/assignment-edit___dupliceer-taak')}
 					inputLabel="Geef de nieuwe taak een naam:"
 					inputValue={currentAssignment.title}
 					inputPlaceholder="Titel van de nieuwe taak"

@@ -142,9 +142,13 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 
 	const renderActions = (collectionId: number) => {
 		const ROW_DROPDOWN_ITEMS = [
-			createDropdownMenuItem('edit', 'Bewerk', 'edit2'),
-			createDropdownMenuItem('createAssignment', 'Maak opdracht', 'clipboard'),
-			createDropdownMenuItem('delete', 'Verwijderen'),
+			createDropdownMenuItem('edit', t('collection/views/collection-overview___bewerk'), 'edit2'),
+			createDropdownMenuItem(
+				'createAssignment',
+				t('collection/views/collection-overview___maak-opdracht'),
+				'clipboard'
+			),
+			createDropdownMenuItem('delete', t('collection/views/collection-overview___verwijderen')),
 		];
 
 		// Listeners
@@ -228,14 +232,24 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			<Table
 				columns={[
 					{ id: 'thumbnail', label: '', col: '2' },
-					{ id: 'title', label: 'Titel', col: '6', sortable: true },
-					{ id: 'updated_at', label: 'Laatst bewerkt', col: '3', sortable: true },
-					{ id: 'inFolder', label: 'In map', col: '2' },
-					{ id: 'access', label: 'Toegang', col: '2' },
+					{
+						id: 'title',
+						label: t('collection/views/collection-overview___titel'),
+						col: '6',
+						sortable: true,
+					},
+					{
+						id: 'updated_at',
+						label: t('collection/views/collection-overview___laatst-bewerkt'),
+						col: '3',
+						sortable: true,
+					},
+					{ id: 'inFolder', label: t('collection/views/collection-overview___in-map'), col: '2' },
+					{ id: 'access', label: t('collection/views/collection-overview___toegang'), col: '2' },
 					{ id: 'actions', label: '', col: '1' },
 				]}
 				data={collections}
-				emptyStateMessage="Geen resultaten gevonden"
+				emptyStateMessage={t('collection/views/collection-overview___geen-resultaten-gevonden')}
 				renderCell={renderCell}
 				rowKey="id"
 				variant="styled"
@@ -252,7 +266,10 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	);
 
 	const renderEmptyFallback = () => (
-		<ErrorView icon="collection" message="Je hebt nog geen collecties aangemaakt.">
+		<ErrorView
+			icon="collection"
+			message={t('collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt')}
+		>
 			<p>
 				<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
 					Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
@@ -279,8 +296,10 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		<>
 			{collections.length ? renderTable(collections) : renderEmptyFallback()}
 			<DeleteObjectModal
-				title="Verwijder collectie?"
-				body="Bent u zeker, deze actie kan niet worden ongedaan gemaakt"
+				title={t('collection/views/collection-overview___verwijder-collectie')}
+				body={t(
+					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
+				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setIsDeleteModalOpen(false)}
 				deleteObjectCallback={() => onDeleteCollection(refetchCollections)}
@@ -298,7 +317,9 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
-			notFoundMessage="Er konden geen collecties worden gevonden"
+			notFoundMessage={t(
+				'collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden'
+			)}
 		/>
 	);
 };

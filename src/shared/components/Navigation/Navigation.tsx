@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactText, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
 
@@ -58,6 +59,8 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	loginMessage,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -256,7 +259,12 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 							</ToolbarItem>
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-very-little-space">
-									<Button icon="menu" type="borderless-i" ariaLabel="menu" onClick={onToggleMenu} />
+									<Button
+										icon="menu"
+										type="borderless-i"
+										ariaLabel={t('shared/components/navigation/navigation___menu')}
+										onClick={onToggleMenu}
+									/>
 								</div>
 							</ToolbarItem>
 						</ToolbarRight>

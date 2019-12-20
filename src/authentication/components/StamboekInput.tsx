@@ -135,7 +135,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 	return (
 		<Spacer className="m-stamboek-input" margin={['bottom-large']}>
 			<TextInput
-				placeholder="00000000000-000000"
+				placeholder={t('authentication/components/stamboek-input___00000000000-000000')}
 				value={rawStamboekNumber}
 				onChange={setStamboekNumber}
 			/>

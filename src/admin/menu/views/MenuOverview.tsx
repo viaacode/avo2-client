@@ -1,5 +1,6 @@
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
@@ -10,7 +11,6 @@ import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
 
-import { Trans } from 'react-i18next';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
@@ -19,6 +19,8 @@ import { MenuOverviewTableCols } from '../menu.types';
 interface MenuOverviewProps extends DefaultSecureRouteProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
+	const [t] = useTranslation();
+
 	const [menus, setMenus] = useState<any>([]);
 
 	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
@@ -34,14 +36,14 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 							icon="list"
 							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
 							size="small"
-							title="Bekijk alle navigatie items"
+							title={t('admin/menu/views/menu-overview___bekijk-alle-navigatie-items')}
 							type="tertiary"
 						/>
 						<Button
 							icon="plus"
 							onClick={() => navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu })}
 							size="small"
-							title="Voeg een navigatie item toe"
+							title={t('admin/menu/views/menu-overview___voeg-een-navigatie-item-toe')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -65,7 +67,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 					<Spacer margin="top">
 						<Button
 							icon="plus"
-							label="Navigatie toevoegen"
+							label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
 							onClick={() => history.push(MENU_PATH.MENU_CREATE)}
 						/>
 					</Spacer>
@@ -103,7 +105,10 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 			</AdminLayoutBody>
 			{!!menus.length && (
 				<AdminLayoutActions>
-					<Button label="Navigatie toevoegen" onClick={() => history.push(MENU_PATH.MENU_CREATE)} />
+					<Button
+						label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
+						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
+					/>
 				</AdminLayoutActions>
 			)}
 		</AdminLayout>

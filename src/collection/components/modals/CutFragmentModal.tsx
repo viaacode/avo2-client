@@ -169,7 +169,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	// TODO: Replace publisher, published_at by real publisher
 	return (
-		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable>
+		<Modal
+			isOpen={isOpen}
+			title={t('collection/components/modals/cut-fragment-modal___knip-fragment')}
+			size="medium"
+			onClose={onClose}
+			scrollable
+		>
 			<ModalBody>
 				<FlowPlayer
 					src={playerTicket ? playerTicket.toString() : null}

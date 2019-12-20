@@ -134,7 +134,7 @@ const Home: FunctionComponent<HomeProps> = ({
 								>
 									<DropdownButton>
 										<TextInput
-											placeholder="Vul een zoekterm in"
+											placeholder={t('home/views/home___vul-een-zoekterm-in')}
 											icon="search"
 											value={searchTerms}
 											onChange={searchTerm => handleSearchTermChanged(searchTerm)}

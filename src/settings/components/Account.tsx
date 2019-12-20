@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -15,7 +16,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { Trans } from 'react-i18next';
 import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
 import {
 	redirectToServerLinkAccount,
@@ -27,6 +27,8 @@ export interface AccountProps extends RouteComponentProps {
 }
 
 const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
+	const [t] = useTranslation();
+
 	const getSsumAccountEditPage = () => {
 		// TODO replace this with a call to a proxy server route that forwards to the ssum page
 		// with the user already logged in and a redirect url back to this webpage after the user saves their changes
@@ -45,7 +47,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 										<Heading type="h3">
 											<Trans i18nKey="settings/components/account___account">Account</Trans>
 										</Heading>
-										<FormGroup label="Email">
+										<FormGroup label={t('settings/components/account___email')}>
 											<span>{get(user, 'mail')}</span>
 										</FormGroup>
 										<Spacer margin="top-large">
@@ -77,7 +79,11 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 
 									<div className="c-hr" />
 
-									<FormGroup label="Koppel je account met andere platformen">
+									<FormGroup
+										label={t(
+											'settings/components/account___koppel-je-account-met-andere-platformen'
+										)}
+									>
 										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
 											<>
 												<span>
@@ -87,7 +93,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 												</span>
 												<Button
 													type="link"
-													label="unlink"
+													label={t('settings/components/account___unlink')}
 													onClick={() => redirectToServerUnlinkAccount(location, 'SMARTSCHOOL')}
 												/>
 											</>
@@ -95,7 +101,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 											<Button
 												className="c-button-smartschool"
 												icon="smartschool"
-												label="Link je smartschool account"
+												label={t('settings/components/account___link-je-smartschool-account')}
 												onClick={() => redirectToServerLinkAccount(location, 'SMARTSCHOOL')}
 											/>
 										)}

@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Blankslate, Container, Flex, Pagination, Spacer, Spinner } from '@viaa/avo2-components';
 
@@ -13,6 +14,8 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	setPage,
 	...resultProps
 }) => {
+	const [t] = useTranslation();
+
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal">
@@ -39,7 +42,9 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 					<Blankslate
 						body=""
 						icon="search"
-						title="Er zijn geen zoekresultaten die voldoen aan uw filters."
+						title={t(
+							'search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters'
+						)}
 					/>
 				)}
 			</Container>

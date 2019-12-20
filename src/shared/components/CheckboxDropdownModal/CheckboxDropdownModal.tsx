@@ -204,7 +204,12 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 				</div>
 				<Modal isOpen={isOpen} title={label} size="large" onClose={closeDropdownOrModal} scrollable>
 					<ModalHeaderRight>
-						<TextInput placeholder="Zoeken..." icon="search" />
+						<TextInput
+							placeholder={t(
+								'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___zoeken'
+							)}
+							icon="search"
+						/>
 					</ModalHeaderRight>
 					<ModalBody>
 						<Spacer>

@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 
-import { Trans } from 'react-i18next';
 import { APP_PATH } from '../../constants';
 import { redirectToClientPage } from '../helpers/redirects';
 
@@ -15,6 +15,8 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 	history,
 	closeDropdown = () => {},
 }) => {
+	const [t] = useTranslation();
+
 	return (
 		<Container className="c-register-pupil-or-teacher-dropdown" mode="horizontal">
 			<Container mode="vertical">
@@ -32,7 +34,9 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 					<Button
 						block
 						type="primary"
-						label="Maak je gratis account aan"
+						label={t(
+							'authentication/components/pupil-or-teacher-dropdown___maak-je-gratis-account-aan'
+						)}
 						onClick={() => {
 							closeDropdown();
 							redirectToClientPage(APP_PATH.FOR_TEACHERS, history);
@@ -54,7 +58,9 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 						<Button
 							block
 							type="primary"
-							label="Toegang voor leerlingen"
+							label={t(
+								'authentication/components/pupil-or-teacher-dropdown___toegang-voor-leerlingen'
+							)}
 							onClick={() => {
 								closeDropdown();
 								redirectToClientPage(APP_PATH.FOR_PUPILS, history);

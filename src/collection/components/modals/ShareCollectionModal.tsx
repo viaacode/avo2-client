@@ -121,7 +121,13 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} title="Deel deze collectie" size="large" onClose={onClose} scrollable>
+		<Modal
+			isOpen={isOpen}
+			title={t('collection/components/modals/share-collection-modal___deel-deze-collectie')}
+			size="large"
+			onClose={onClose}
+			scrollable
+		>
 			<ModalBody>
 				<p>
 					<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen">

@@ -239,8 +239,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 					/>
 				</PermissionGuard>
-				<Button title="Bladwijzer" type="secondary" icon="bookmark" ariaLabel="Bladwijzer" />
-				<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
+				<Button
+					title={t('collection/views/collection-detail___bladwijzer')}
+					type="secondary"
+					icon="bookmark"
+					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
+				/>
+				<Button
+					title={t('collection/views/collection-detail___deel')}
+					type="secondary"
+					icon="share-2"
+					ariaLabel={t('collection/views/collection-detail___deel')}
+				/>
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
@@ -252,8 +262,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<Button
 							type="secondary"
 							icon="more-horizontal"
-							ariaLabel="Meer opties"
-							title="Meer opties"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
 						/>
 					</DropdownButton>
 					<DropdownContent>

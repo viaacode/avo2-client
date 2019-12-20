@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { ChangeEvent, FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	Alert,
@@ -41,13 +42,14 @@ import {
 import toastService from '../../shared/services/toast-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 
-import { Trans } from 'react-i18next';
 import { DELETE_PROFILE_OBJECTS, UPDATE_PROFILE_INFO } from '../settings.gql';
 import { updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {}
 
 const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) => {
+	const [t] = useTranslation();
+
 	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
 		label: enumLabel,
 		value: enumLabel,
@@ -240,50 +242,70 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 									<Form type="standard">
 										{!isCompleteProfileStep() && (
 											<>
-												<FormGroup label="Nickname" labelFor="alias">
+												<FormGroup
+													label={t('settings/components/profile___nickname')}
+													labelFor="alias"
+												>
 													<TextInput
 														id="alias"
-														placeholder="Een unieke gebruikersnaam"
+														placeholder={t(
+															'settings/components/profile___een-unieke-gebruikersnaam'
+														)}
 														value={alias}
 														onChange={setAlias}
 													/>
 												</FormGroup>
-												<FormGroup label="Functie" labelFor="func">
+												<FormGroup
+													label={t('settings/components/profile___functie')}
+													labelFor="func"
+												>
 													<TextInput
 														id="func"
-														placeholder="bv: Leerkracht basis onderwijs"
+														placeholder={t(
+															'settings/components/profile___bv-leerkracht-basis-onderwijs'
+														)}
 														value={func || undefined}
 														onChange={setFunc}
 													/>
 												</FormGroup>
-												<FormGroup label="Profielfoto" labelFor="profilePicture">
+												<FormGroup
+													label={t('settings/components/profile___profielfoto')}
+													labelFor="profilePicture"
+												>
 													<Box>
 														{/* TODO replace with components from component repo */}
 														<Avatar initials="XX" />
 														<Icon name="user" size="large" />
 														<input
 															type="file"
-															placeholder="Profielfoto uploaden"
+															placeholder={t('settings/components/profile___profielfoto-uploaden')}
 															onChange={handleAvatarOnChange}
 														/>
 													</Box>
 												</FormGroup>
-												<FormGroup label="Bio" labelFor="bio">
+												<FormGroup label={t('settings/components/profile___bio')} labelFor="bio">
 													<TextArea
 														name="bio"
 														id="bio"
 														height="medium"
-														placeholder="Een korte beschrijving van jezelf..."
+														placeholder={t(
+															'settings/components/profile___een-korte-beschrijving-van-jezelf'
+														)}
 														value={bio || undefined}
 														onChange={setBio}
 													/>
 												</FormGroup>
 											</>
 										)}
-										<FormGroup label="Vakken" labelFor="subjects">
+										<FormGroup
+											label={t('settings/components/profile___vakken')}
+											labelFor="subjects"
+										>
 											<TagsInput
 												id="subjects"
-												placeholder="Selecteer de vakken die u geeft"
+												placeholder={t(
+													'settings/components/profile___selecteer-de-vakken-die-u-geeft'
+												)}
 												options={subjects.map(subject => ({
 													label: subject,
 													value: subject,
@@ -292,10 +314,15 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 												onChange={setSelectedSubjects}
 											/>
 										</FormGroup>
-										<FormGroup label="Onderwijsniveau" labelFor="educationLevel">
+										<FormGroup
+											label={t('settings/components/profile___onderwijsniveau')}
+											labelFor="educationLevel"
+										>
 											<TagsInput
 												id="educationLevel"
-												placeholder="Selecteer een opleidingsniveau"
+												placeholder={t(
+													'settings/components/profile___selecteer-een-opleidingsniveau'
+												)}
 												options={educationLevels.map(edLevel => ({
 													label: edLevel,
 													value: edLevel,
@@ -305,7 +332,10 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 											/>
 										</FormGroup>
 
-										<FormGroup label="School/organisatie" labelFor="organization">
+										<FormGroup
+											label={t('settings/components/profile___school-organisatie')}
+											labelFor="organization"
+										>
 											<TagList
 												closable
 												swatches={false}

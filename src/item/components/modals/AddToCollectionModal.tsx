@@ -288,7 +288,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 		return (
 			<Modal
-				title="Voeg fragment toe aan collectie"
+				title={t(
+					'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
+				)}
 				size="auto"
 				isOpen={isOpen}
 				onClose={onClose}
@@ -381,7 +383,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												/>
 												<div>
 													<TextInput
-														placeholder="Collectie titel"
+														placeholder={t(
+															'item/components/modals/add-to-collection-modal___collectie-titel'
+														)}
 														disabled={!createNewCollection}
 														value={newCollectionTitle}
 														onChange={setNewCollectionTitle}

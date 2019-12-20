@@ -68,7 +68,9 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title="Stel een cover afbeelding in"
+			title={t(
+				'collection/components/modals/collection-stills-modal___stel-een-cover-afbeelding-in'
+			)}
 			size="large"
 			onClose={onClose}
 			scrollable
@@ -84,7 +86,9 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 							<Blankslate
 								body=""
 								icon="search"
-								title="Er zijn geen thumbnails beschikbaar voor de fragmenten in de collectie"
+								title={t(
+									'collection/components/modals/collection-stills-modal___er-zijn-geen-thumbnails-beschikbaar-voor-de-fragmenten-in-de-collectie'
+								)}
 							/>
 						) : (
 							<ImageGrid

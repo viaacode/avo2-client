@@ -481,7 +481,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 					deleteObjectCallback={onDeleteCollection}
 				/>
 				<InputModal
-					title="Hernoem deze collectie"
+					title={t('collection/views/collection-edit___hernoem-deze-collectie')}
 					inputLabel="Naam collectie:"
 					inputValue={title}
 					isOpen={isRenameModalOpen}

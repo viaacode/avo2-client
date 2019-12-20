@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
@@ -10,7 +11,6 @@ import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { Trans } from 'react-i18next';
 import { CONTENT_OVERVIEW_TABLE_COLS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
 import { GET_CONTENT } from '../content.gql';
 import { ContentOverviewTableCols } from '../content.types';
@@ -18,6 +18,8 @@ import { ContentOverviewTableCols } from '../content.types';
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) => {
+	const [t] = useTranslation();
+
 	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
 
 	// Render
@@ -46,14 +48,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 							icon="info"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
 							size="small"
-							title="Bekijk content"
+							title={t('admin/content/views/content-overview___bekijk-content')}
 							type="tertiary"
 						/>
 						<Button
 							icon="edit"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 							size="small"
-							title="Pas content aan"
+							title={t('admin/content/views/content-overview___pas-content-aan')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -81,7 +83,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 				<Spacer margin="top">
 					<Button
 						icon="plus"
-						label="Content toevoegen"
+						label={t('admin/content/views/content-overview___content-toevoegen')}
 						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
 					/>
 				</Spacer>
@@ -118,7 +120,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 			<AdminLayoutActions>
 				{!!contentList.length ? (
 					<Button
-						label="Content toevoegen"
+						label={t('admin/content/views/content-overview___content-toevoegen')}
 						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
 					/>
 				) : null}

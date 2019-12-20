@@ -131,7 +131,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		const assignment = get(response, 'data.app_assignments[0]');
 
 		if (!assignment) {
-			toastService.danger('Het ophalen van de opdracht is mislukt');
+			toastService.danger(
+				t('assignment/views/assignment-overview___het-ophalen-van-de-opdracht-is-mislukt')
+			);
 			return;
 		}
 		return assignment;
@@ -154,7 +156,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 		refetchAssignments();
 		refetchCount();
-		toastService.success('De opdracht is gedupliceerd');
+		toastService.success(t('assignment/views/assignment-overview___de-opdracht-is-gedupliceerd'));
 	};
 
 	const archiveAssignment = async (
@@ -196,16 +198,22 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	) => {
 		try {
 			if (typeof assignmentId === 'undefined' || assignmentId === null) {
-				toastService.danger('De huidige opdracht is nog nooit opgeslagen (geen id)');
+				toastService.danger(
+					t(
+						'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
+					)
+				);
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, assignmentId);
 			refetchAssignments();
 			refetchCount();
-			toastService.success('De opdracht is verwijdert');
+			toastService.success(t('assignment/views/assignment-overview___de-opdracht-is-verwijdert'));
 		} catch (err) {
 			console.error(err);
-			toastService.danger('Het verwijderen van de opdracht is mislukt');
+			toastService.danger(
+				t('assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt')
+			);
 		}
 	};
 
@@ -215,7 +223,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		refetchAssignments: () => void
 	) => {
 		if (!dataRow.id) {
-			toastService.danger('Het opdracht id van de geselecteerde rij is niet ingesteld');
+			toastService.danger(
+				t(
+					'assignment/views/assignment-overview___het-opdracht-id-van-de-geselecteerde-rij-is-niet-ingesteld'
+				)
+			);
 			return;
 		}
 		switch (actionId) {
@@ -228,7 +240,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					setMarkedAssignment(assignment);
 					setDuplicateAssignmentModalOpen(true);
 				} else {
-					toastService.danger('Het ophalen van de details van de opdracht is mislukt');
+					toastService.danger(
+						t(
+							'assignment/views/assignment-overview___het-ophalen-van-de-details-van-de-opdracht-is-mislukt'
+						)
+					);
 				}
 				break;
 			case 'archive':
@@ -349,12 +365,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const columns: AssignmentColumn[] = [
-		{ id: 'title', label: 'Titel', sortable: true },
-		// { id: 'assignment_type', label: 'Type', sortable: true }, // https://district01.atlassian.net/browse/AVO2-421
-		{ id: 'assignment_assignment_tags', label: 'Vak of project' },
-		{ id: 'class_room', label: 'Klas', sortable: true },
-		{ id: 'deadline_at', label: 'Deadline', sortable: true },
-		// { id: 'assignment_responses', label: 'Indieningen' }, // https://district01.atlassian.net/browse/AVO2-421
+		{ id: 'title', label: t('assignment/views/assignment-overview___titel'), sortable: true },
+		// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true }, // https://district01.atlassian.net/browse/AVO2-421
+		{
+			id: 'assignment_assignment_tags',
+			label: t('assignment/views/assignment-overview___vak-of-project'),
+		},
+		{ id: 'class_room', label: t('assignment/views/assignment-overview___klas'), sortable: true },
+		{
+			id: 'deadline_at',
+			label: t('assignment/views/assignment-overview___deadline'),
+			sortable: true,
+		},
+		// { id: 'assignment_responses', label: t('assignment/views/assignment-overview___indieningen') }, // https://district01.atlassian.net/browse/AVO2-421
 		{ id: 'actions', label: '' },
 	];
 
@@ -376,10 +399,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					data={assignments}
 					emptyStateMessage={
 						filterString
-							? 'Er zijn geen opdrachten die voldoen aan de zoekopdracht'
+							? t(
+									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
+							  )
 							: activeView === 'archived_assignments'
-							? 'Er zijn nog geen opdrachten gearchiveerd'
-							: 'Er zijn nog geen opdrachten aangemaakt'
+							? t('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd')
+							: t('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt')
 					}
 					renderCell={(
 						rowData: Avo.Assignment.Assignment,
@@ -410,8 +435,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				</Spacer>
 
 				<DeleteObjectModal
-					title="Ben je zeker dat je deze opdracht wil verwijderen?"
-					body="Deze actie kan niet ongedaan gemaakt worden"
+					title={t(
+						'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
+					)}
+					body={t(
+						'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
 					deleteObjectCallback={() =>
@@ -420,16 +449,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				/>
 
 				<InputModal
-					title="Dupliceer taak"
-					inputLabel="Geef de nieuwe taak een naam:"
+					title={t('assignment/views/assignment-overview___dupliceer-taak')}
+					inputLabel={t('assignment/views/assignment-overview___geef-de-nieuwe-taak-een-naam')}
 					inputValue={get(markedAssignment, 'title', '')}
-					inputPlaceholder="Titel van de nieuwe taak"
+					inputPlaceholder={t('assignment/views/assignment-overview___titel-van-de-nieuwe-taak')}
 					isOpen={isDuplicateAssignmentModalOpen}
 					onClose={handleDuplicateModalClose}
 					inputCallback={(newTitle: string) =>
 						duplicateAssignment(newTitle, markedAssignment, refetchAssignments)
 					}
-					emptyMessage="Gelieve een opdracht-titel in te vullen."
+					emptyMessage={t(
+						'assignment/views/assignment-overview___gelieve-een-opdracht-titel-in-te-vullen'
+					)}
 				/>
 			</>
 		);
