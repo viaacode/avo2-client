@@ -1,3 +1,30 @@
+/**
+ This script runs over all the code and looks for either:
+ <Trans>Aanvraagformulier</Trans>
+ or
+ t('Aanvraagformulier')
+
+ and replaces them with:
+ <Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">Aanvraagformulier</Trans>
+ or
+ t('authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier')
+
+
+ and it also outputs a json file with the translatable strings:
+ {
+  "authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier": "Aanvraagformulier"
+ }
+
+ Every time the `npm run extract-translations` command is run, it will extract new translations that it finds
+ (without i18nKey or not containing "___")
+ and add them to the json file without overwriting the existing strings.
+
+ We can now give the src/shared/translations/nl.json file to claire to enter the final copy.
+
+ In the future we could add a build step to replace the translate tags with the actual translations,
+ so we don't have to load the translation framework anymore and do the bindings at runtime, but this is a nice to have.
+ */
+
 import * as fs from 'fs';
 import glob from 'glob';
 import * as _ from 'lodash';
