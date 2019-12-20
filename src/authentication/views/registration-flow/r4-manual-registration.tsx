@@ -145,7 +145,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 									</TooltipTrigger>
 									<TooltipContent>
 										<p>
-											<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___gelieve-in-onderstaand-formulier-het-professioneel-e-mailadres-dat-je-hebt-gekregen-van-je-school-of-instelling-in-te-geven-bv-jan-smit-basisschool-deklaver-be-zo-kunnen-we-je-aanvraag-sneller-behandelen-voer-dus-enkel-een-prive-adres-in-indien-je-niet-over-een-professioneel-adres-beschikt">
+											<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___tooltip-professioneel-email-adres">
 												Gelieve in onderstaand formulier het professioneel e-mailadres dat je hebt
 												gekregen van je school of instelling in te geven, bv
 												jan.smit@basisschool-deklaver.be. Zo kunnen we je aanvraag sneller
@@ -181,10 +181,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 								<TextArea height="small" id="reason" value={reason} onChange={setReason} />
 							</FormGroup>
 							<Button type="primary" onClick={onSend}>
-								<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___trans-i-18-n-key-authentication-views-registration-flow-r-4-manual-registration-vraag-een-account-aan-vraag-een-account-aan">
-									<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
-										Vraag een account aan
-									</Trans>
+								<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
+									Vraag een account aan
 								</Trans>
 							</Button>
 						</Column>

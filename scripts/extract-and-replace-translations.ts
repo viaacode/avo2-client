@@ -20,7 +20,7 @@ function getFormattedKey(filePath: string, key: string) {
 }
 
 function getFormattedTranslation(translation: string) {
-	return translation.trim().replace(/\\t\\t(\\t)+/g, ' ');
+	return translation.trim().replace(/\t\t(\t)+/g, ' ');
 }
 
 const options = {

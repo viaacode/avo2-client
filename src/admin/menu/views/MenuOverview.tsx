@@ -56,7 +56,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 			return (
 				<ErrorView message="Er zijn nog geen navigaties aangemaakt.">
 					<p>
-						<Trans i18nKey="admin/menu/views/menu-overview___lorem-ipsum-dolor-sit-amet-consectetur-adipisicing-elit-maiores-aliquid-ab-debitis-blanditiis-vitae-molestiae-delectus-earum-asperiores-mollitia-minima-laborum-expedita-ratione-quas-impedit-repudiandae-nisi-corrupti-quis-eaque">
+						<Trans i18nKey="admin/menu/views/menu-overview___beschrijving-hoe-navigatie-items-toe-te-voegen">
 							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
 							blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
 							ratione quas impedit repudiandae nisi corrupti quis eaque!
