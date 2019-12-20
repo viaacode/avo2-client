@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 
-import { BlockRichText } from '@viaa/avo2-components';
+import { BlockIntro, BlockRichText } from '@viaa/avo2-components';
 
 import {
 	ContentBlockBackgroundColor,
@@ -18,7 +18,7 @@ interface ContentBlockPreviewProps {
 const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Buttons]: BlockRichText,
 	[ContentBlockType.Heading]: HeadingBlockPreview,
-	[ContentBlockType.Intro]: BlockRichText,
+	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 });
@@ -41,7 +41,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({ stat
 				'u-color-white': state.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			<PreviewComponent {...(state as any)} />
+			<PreviewComponent {...state as any} />
 		</div>
 	);
 };

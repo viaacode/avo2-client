@@ -29,7 +29,7 @@ export interface ContentEditFormState {
 export type ContentTypesResponse = { value: string };
 
 export interface ContentEditBlocksState {
-	cbConfigs: ContentBlockConfig[];
+	contentBlockConfigs: ContentBlockConfig[];
 }
 
 export enum ContentEditBlocksActionType {

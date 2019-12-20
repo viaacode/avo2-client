@@ -32,6 +32,8 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{ label: 'Titel', value: ContentBlockType.Heading },
 	{ label: 'Tekst (wysiwyg)', value: ContentBlockType.RichText },
 	{ label: 'Tekst 2 kolommen (wysiwyg)', value: ContentBlockType.RichTextTwoColumns },
+	{ label: 'Knop(pen)', value: ContentBlockType.Buttons },
+	{ label: 'Intro', value: ContentBlockType.Intro },
 ];
 
 export const EDITOR_TYPES_MAP = {

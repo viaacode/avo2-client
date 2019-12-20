@@ -13,8 +13,8 @@ import {
 } from './defaults';
 
 export const INITIAL_INTRO_BLOCK_STATE = (): IntroBlockFormState => ({
-	headingTitle: '',
-	introContent: '',
+	title: '',
+	text: '',
 	align: 'left',
 	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro),
 });
@@ -23,12 +23,12 @@ export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Intro',
 	formState: INITIAL_INTRO_BLOCK_STATE(),
 	fields: {
-		headingTitle: TEXT_FIELD('Titel is verplicht.', {
+		title: TEXT_FIELD('Titel is verplicht.', {
 			label: 'Titel',
 			editorType: ContentBlockEditor.TextInput,
 		}),
-		introContent: TEXT_FIELD(),
-		align: ALIGN_FIELD(),
+		align: ALIGN_FIELD('Titel uitlijning'),
+		text: TEXT_FIELD(),
 		...CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

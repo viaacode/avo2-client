@@ -7,34 +7,34 @@ import {
 } from '../content.types';
 
 export const CONTENT_EDIT_BLOCKS_INITIAL_STATE = (): ContentEditBlocksState => ({
-	cbConfigs: [],
+	contentBlockConfigs: [],
 });
 
 export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =>
 	createReducer(initialState, {
 		[ContentEditBlocksActionType.ADD_CB_CONFIG]: (state, action: ContentEditBlocksAction) => ({
 			...state,
-			cbConfigs: [...state.cbConfigs, action.payload],
+			contentBlockConfigs: [...state.contentBlockConfigs, action.payload],
 		}),
 		[ContentEditBlocksActionType.SET_FORM_STATE]: (state, action: ContentEditBlocksAction) => {
 			const { index, formState } = action.payload;
 			// Clone content block states array to prevent mutating state in place
-			const cbConfigsCopy = [...state.cbConfigs];
+			const contentBlockConfigsCopy = [...state.contentBlockConfigs];
 			// Update item with new initialState
 			const updatedCbConfig = {
-				...cbConfigsCopy[index],
+				...contentBlockConfigsCopy[index],
 				formState: {
-					...cbConfigsCopy[index].formState,
+					...contentBlockConfigsCopy[index].formState,
 					...formState,
 				},
 			};
 
 			// Update item at given index
-			cbConfigsCopy.splice(index, 1, updatedCbConfig);
+			contentBlockConfigsCopy.splice(index, 1, updatedCbConfig);
 
 			return {
 				...state,
-				cbConfigs: cbConfigsCopy,
+				contentBlockConfigs: contentBlockConfigsCopy,
 			};
 		},
 	});

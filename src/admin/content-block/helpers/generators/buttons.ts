@@ -24,7 +24,7 @@ export const INITIAL_BUTTONS_BLOCK_STATE = (): ButtonsBlockFormState[] => [
 ];
 
 export const BUTTONS_BLOCK_CONFIG = (): ContentBlockConfig => ({
-	name: 'Knop(pen)',
+	name: 'Knoppen',
 	formState: INITIAL_BUTTONS_BLOCK_STATE(),
 	fields: {
 		label: TEXT_FIELD('Knoptekst is verplicht.', {

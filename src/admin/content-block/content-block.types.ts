@@ -50,8 +50,8 @@ export interface ButtonsBlockFormState extends DefaultContentBlock {
 }
 
 export interface IntroBlockFormState extends DefaultContentBlock {
-	headingTitle: string;
-	introContent: string;
+	title: string;
+	text: string;
 	align: Aligns;
 }
 

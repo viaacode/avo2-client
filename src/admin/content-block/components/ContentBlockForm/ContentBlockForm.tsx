@@ -1,7 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import { Accordion, Form, FormGroup, SelectOption } from '@viaa/avo2-components';
+import { Accordion, Button, Form, FormGroup, SelectOption } from '@viaa/avo2-components';
 
 import { ValueOf } from '../../../../shared/types';
 
@@ -41,6 +41,11 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 
 	// Methods
 	const handleChange = (key: keyof ContentBlockFormStates, value: any) => {
+		if (Array.isArray(formState)) {
+			// TODO: Handle change in array-based form states.
+			return;
+		}
+
 		// Get value from select option otherwise fallback to original
 		const parsedValue = get(value, 'value', value);
 		const updatedFormSet = { [key]: parsedValue };
@@ -70,109 +75,87 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	};
 
 	// Render
-	const renderFieldEditor = (fieldKey: keyof ContentBlockFormStates, cb: ContentBlockField) => {
-		if (Array.isArray(formState)) {
-			// Replace this with logic for arrays
-			return;
-		}
-
-		const EditorComponent = EDITOR_TYPES_MAP[cb.editorType];
-		const editorId = `${index}-${formState.blockType}-${fieldKey}`;
+	const renderFieldEditor = (
+		fieldKey: keyof ContentBlockFormStates,
+		contentBlock: ContentBlockField,
+		formGroupState: ContentBlockFormStates
+	) => {
+		const EditorComponent = EDITOR_TYPES_MAP[contentBlock.editorType];
+		const editorId = `${index}-${formGroupState.blockType}-${fieldKey}`;
 		const defaultProps = {
-			...cb.editorProps,
-			id: editorId,
+			...contentBlock.editorProps,
+			editorId,
 			name: editorId,
 		};
 		let editorProps = {};
 
-		switch (cb.editorType) {
+		switch (contentBlock.editorType) {
 			case ContentBlockEditor.ColorSelect:
 				editorProps = {
 					onChange: (option: SelectOption) => handleChange(fieldKey, get(option, 'value', '')),
 					value: defaultProps.options.find(
-						(opt: SelectOption) => opt.value === formState.backgroundColor
+						(opt: SelectOption) => opt.value === formGroupState.backgroundColor
 					),
 				};
 				break;
 			case ContentBlockEditor.WYSIWYG:
 				editorProps = {
-					data: formState[fieldKey],
+					data: formGroupState[fieldKey],
 					onChange: (value: any) => handleChange(fieldKey, value),
 				};
 				break;
 			default:
 				editorProps = {
 					onChange: (value: any) => handleChange(fieldKey, value),
-					value: formState[fieldKey],
+					value: formGroupState[fieldKey],
 				};
 				break;
 		}
 
-		// return (
-		// 	<EditorComponent
-		// 		{...cb.editorProps}
-		// 		name={fieldKey}
-		// 		onChange={(value: any) => handleChange(fieldKey, value)}
-		// 		value={state[fieldKey as keyof ContentBlockFormStates]}
-		// 	/>
-		// );
-
 		return <EditorComponent {...defaultProps} {...editorProps} />;
 	};
 
-	// const renderFormGroups = (cb: ContentBlockConfig) => (
-	// 	<>
-	// 		<Heading type="h4">
-	// 			{cb.name}{' '}
-	// 			<span className="u-text-muted">
-	// 				({index}/{length})
-	// 			</span>
-	// 		</Heading>
-	// 		{Array.isArray(formState)
-	// 			? formState.map(singleFormState =>
-	// 					Object.keys(cb.fields).map((key: string) => (
-	// 						<FormGroup
-	// 							key={`${index}-${cb.name}-${key}`}
-	// 							label={cb.fields[key].label}
-	// 							error={formErrors[key]}
-	// 						>
-	// 							{renderFieldEditor(key, cb.fields[key], singleFormState)}
-	// 						</FormGroup>
-	// 					))
-	// 			  )
-	// 			: Object.keys(cb.fields).map((key: string) => (
-	// 					<FormGroup
-	// 						key={`${index}-${cb.name}-${key}`}
-	// 						label={cb.fields[key].label}
-	// 						error={formErrors[key]}
-	// 					>
-	// 						{renderFieldEditor(key, cb.fields[key], formState)}
-	// 					</FormGroup>
-	// 			  ))}
-	// 		{Array.isArray(formState) && <Button icon="add" type="secondary" onClick={() => {}} />}
-	// 	</>
-	// );
-	const renderFormGroups = (cb: ContentBlockConfig) => {
-		return (
-			<Accordion
-				title={`${cb.name} (${index}/${length})`}
-				isOpen={isAccordionOpen}
-				onToggle={setIsAccordionOpen}
+	const renderFormGroup = (
+		contentBlock: ContentBlockConfig,
+		formGroupState: ContentBlockFormStates
+	) =>
+		Object.keys(contentBlock.fields).map((key: string, index: number) => (
+			<FormGroup
+				key={`${index}-${contentBlock.name}-${key}`}
+				label={contentBlock.fields[key].label}
+				error={formErrors[key as keyof ContentBlockFormStates]}
 			>
-				{Object.keys(cb.fields).map((key: string) => (
-					<FormGroup
-						key={`${index}-${cb.name}-${key}`}
-						label={cb.fields[key].label}
-						error={formErrors[key as keyof ContentBlockFormStates]}
-					>
-						{renderFieldEditor(key as keyof ContentBlockFormStates, cb.fields[key])}
-					</FormGroup>
-				))}
-			</Accordion>
-		);
-	};
+				{renderFieldEditor(
+					key as keyof ContentBlockFormStates,
+					contentBlock.fields[key],
+					formGroupState
+				)}
+			</FormGroup>
+		));
 
-	return <Form className="c-content-block-form">{renderFormGroups(config)}</Form>;
+	const renderFormGroups = (contentBlock: ContentBlockConfig) =>
+		Array.isArray(formState)
+			? formState.map(formGroupState => renderFormGroup(contentBlock, formGroupState))
+			: renderFormGroup(contentBlock, formState);
+
+	const renderBlockForm = (contentBlock: ContentBlockConfig) => (
+		<Accordion
+			title={`${contentBlock.name} (${index}/${length})`}
+			isOpen={isAccordionOpen}
+			onToggle={setIsAccordionOpen}
+		>
+			{renderFormGroups(contentBlock)}
+			{Array.isArray(formState) && (
+				<Button
+					icon="add"
+					type="secondary"
+					onClick={() => {} /* TODO: Add empty element to form state. */}
+				/>
+			)}
+		</Accordion>
+	);
+
+	return <Form className="c-content-block-form">{renderBlockForm(config)}</Form>;
 };
 
 export default ContentBlockForm;

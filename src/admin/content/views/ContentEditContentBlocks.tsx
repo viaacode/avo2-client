@@ -18,30 +18,27 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
-	const [{ cbConfigs }, dispatch] = useReducer(
+	const [{ contentBlockConfigs }, dispatch] = useReducer(
 		contentEditBlocksReducer(initialState),
 		initialState
 	);
 
 	// Methods
-	const getFormKey = (name: string, index: number) => `${name}-${index}`;
+	const getFormKey = (name: string, blockIndex: number, stateIndex: number = 0) =>
+		`${name}-${blockIndex}-${stateIndex}`;
 
-	const handleCbAdd = (configType: ContentBlockType) => {
+	const handleAddContentBlock = (configType: ContentBlockType) => {
 		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
+		const contentBlockFormKey = getFormKey(newConfig.name, contentBlockConfigs.length);
 
-		if (Array.isArray(newConfig.formState)) {
-			// Replace this with logic for arrays
-			return;
-		}
-
-		const cbFormKey = getFormKey(newConfig.formState.blockType, cbConfigs.length);
 		// Update content block configs
 		dispatch({
 			type: ContentEditBlocksActionType.ADD_CB_CONFIG,
 			payload: newConfig,
 		});
+
 		// Set newly added config accordion as open
-		setAccordionsOpenState({ [cbFormKey]: true });
+		setAccordionsOpenState({ [contentBlockFormKey]: true });
 	};
 
 	const handleSave = (
@@ -55,57 +52,57 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 	};
 
 	// Render
-	const renderCbForms = () => {
-		return cbConfigs.map((cbConfig, index) => {
-			if (Array.isArray(cbConfig.formState)) {
-				// Replace this with logic for arrays
-				return null;
-			}
-
-			const cbFormKey = getFormKey(cbConfig.formState.blockType, index);
+	const renderContentBlockForms = () =>
+		contentBlockConfigs.map((contentBlockConfig, index) => {
+			const contentBlockFormKey = getFormKey(contentBlockConfig.name, index);
 
 			return (
 				<ContentBlockForm
-					key={cbFormKey}
-					config={cbConfig}
+					key={contentBlockFormKey}
+					config={contentBlockConfig}
 					index={index + 1}
-					isAccordionOpen={accordionsOpenState[cbFormKey] || false}
-					length={cbConfigs.length}
+					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
+					length={contentBlockConfigs.length}
 					setIsAccordionOpen={() =>
-						setAccordionsOpenState({ [cbFormKey]: !accordionsOpenState[cbFormKey] })
+						setAccordionsOpenState({
+							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
+						})
 					}
-					onChange={cbFormState => handleSave(index, cbFormState)}
+					onChange={contentBlockFormState => handleSave(index, contentBlockFormState)}
 				/>
 			);
 		});
-	};
 
-	const renderCbPreviews = () => {
-		return cbConfigs.map((cbConfig, index) => {
-			if (Array.isArray(cbConfig.formState)) {
-				// Replace this with logic for arrays
-				return null;
-			}
+	const renderBlockPreview = (
+		formGroupState: ContentBlockFormStates,
+		blockIndex: number,
+		stateIndex?: number
+	) => (
+		<ContentBlockPreview
+			key={getFormKey(formGroupState.blockType, blockIndex, stateIndex)}
+			state={formGroupState}
+		/>
+	);
 
-			return (
-				<ContentBlockPreview
-					key={getFormKey(cbConfig.formState.blockType, index)}
-					state={cbConfig.formState}
-				/>
-			);
-		});
-	};
+	const renderBlockPreviews = () =>
+		contentBlockConfigs.map((contentBlockConfig, blockIndex) =>
+			Array.isArray(contentBlockConfig.formState)
+				? contentBlockConfig.formState.map((formGroupState, stateIndex) =>
+						renderBlockPreview(formGroupState, blockIndex, stateIndex)
+				  )
+				: renderBlockPreview(contentBlockConfig.formState, blockIndex)
+		);
 
 	return (
 		<Flex className="c-content-edit-view__content">
-			<FlexItem>{renderCbPreviews()}</FlexItem>
+			<FlexItem>{renderBlockPreviews()}</FlexItem>
 			<Sidebar className="c-content-edit-view__sidebar" light>
-				{renderCbForms()}
+				{renderContentBlockForms()}
 				<Form>
 					<FormGroup label="Voeg een content block toe">
 						<Select
 							options={CONTENT_BLOCK_TYPE_OPTIONS}
-							onChange={value => handleCbAdd(value as ContentBlockType)}
+							onChange={value => handleAddContentBlock(value as ContentBlockType)}
 							value={CONTENT_BLOCK_TYPE_OPTIONS[0].value}
 						/>
 					</FormGroup>
