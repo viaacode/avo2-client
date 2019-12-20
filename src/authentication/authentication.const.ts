@@ -19,4 +19,4 @@ export const AUTH_PATH = Object.freeze({
 	STAMBOEK: `/${ROUTE_PARTS.stamboek}`,
 });
 
-export const SERVER_LOGOUT_PAGE = 'auth/logout';
+export const SERVER_LOGOUT_PAGE = 'auth/global-logout';
