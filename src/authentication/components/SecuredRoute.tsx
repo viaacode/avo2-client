@@ -108,7 +108,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(SecuredRoute);
+export default connect(mapStateToProps, mapDispatchToProps)(SecuredRoute);
