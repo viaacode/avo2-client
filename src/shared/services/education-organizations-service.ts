@@ -1,13 +1,8 @@
 import queryString from 'query-string';
 
-import { getEnv } from '../helpers';
+import { Avo } from '@viaa/avo2-types';
 
-export interface ClientEducationOrganization {
-	// TODO move to typings repo
-	organizationId: string;
-	unitId: string;
-	label: string; // org.name + ' - ' + unit.address
-}
+import { getEnv } from '../helpers';
 
 export const fetchCities = async (): Promise<string[]> => {
 	let url: string | undefined = undefined;
@@ -32,7 +27,7 @@ export const fetchCities = async (): Promise<string[]> => {
 export const fetchEducationOrganizations = async (
 	city: string | null,
 	zipCode: string | null
-): Promise<ClientEducationOrganization[]> => {
+): Promise<Avo.EducationOrganization.Organization[]> => {
 	let url: string | undefined = undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/education-organizations/organizations?${queryString.stringify({
