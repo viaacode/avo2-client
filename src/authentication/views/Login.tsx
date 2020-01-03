@@ -13,7 +13,6 @@ import { APP_PATH } from '../../constants';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginMessage } from '../store/types';
 
 export interface LoginProps extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
@@ -61,14 +60,18 @@ const Login: FunctionComponent<LoginProps> = ({
 		}
 
 		// Redirect to previous requested path or home page
-		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
+		if (
+			loginState &&
+			loginState.message === Avo.Auth.LoginMessage.LOGGED_IN &&
+			!loginStateLoading
+		) {
 			history.push(get(location, 'state.from.pathname', APP_PATH.LOGGED_IN_HOME));
 			return;
 		}
 
 		if (
 			loginState &&
-			loginState.message === LoginMessage.LOGGED_OUT &&
+			loginState.message === Avo.Auth.LoginMessage.LOGGED_OUT &&
 			!loginStateLoading &&
 			!loginStateError &&
 			!hasRecentLoginAttempt()

@@ -4,8 +4,6 @@ import store from '../../store';
 import { Avo } from '@viaa/avo2-types';
 
 import { getFullName } from '../../shared/helpers';
-import { LoginMessage } from '../store/types';
-import { IdpType } from './redirects';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
@@ -14,8 +12,10 @@ export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''):
 	return get(user, 'first_name') || defaultName;
 };
 
-export function hasIdpLinked(user: Avo.User.User, idpType: IdpType): boolean {
-	return get(user, 'idpmaps', []).includes(idpType);
+export function hasIdpLinked(user: Avo.User.User, idpType: Avo.Auth.IdpType): boolean {
+	const idpMaps: Avo.Auth.IdpType[] = get(user, 'idpmaps', []);
+
+	return idpMaps.includes(idpType);
 }
 
 export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): string => {
@@ -90,13 +90,13 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 	return false; // TODO implement check based on user role
 }
 
-export function isLoggedIn(loginMessage?: LoginMessage): boolean {
-	let message: LoginMessage | undefined = loginMessage;
+export function isLoggedIn(loginMessage?: Avo.Auth.LoginMessage): boolean {
+	let message: Avo.Auth.LoginMessage | undefined = loginMessage;
 	if (!message) {
 		const state: any = store.getState();
 		message = get(state, 'loginState.data.message');
 	}
 
 	// TODO add once we can save profile info
-	return !!message && message === LoginMessage.LOGGED_IN; // && isProfileComplete();
+	return !!message && message === Avo.Auth.LoginMessage.LOGGED_IN; // && isProfileComplete();
 }

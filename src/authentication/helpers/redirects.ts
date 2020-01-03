@@ -2,12 +2,12 @@ import { History, Location } from 'history';
 import { get } from 'lodash-es';
 import queryString from 'query-string';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { SEARCH_PATH } from '../../search/search.const';
 import { getEnv } from '../../shared/helpers';
 import { AUTH_PATH, SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
-
-export type IdpType = 'HETARCHIEF' | 'VIAA' | 'SMARTSCHOOL' | 'KLASCEMENT'; // TODO switch to typings type
 
 /**
  *
@@ -64,14 +64,14 @@ export function redirectToServerLogoutPage(location: Location) {
  * @param location
  * @param idpType
  */
-export function redirectToServerLinkAccount(location: Location, idpType: IdpType) {
+export function redirectToServerLinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
 	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify({
 		returnToUrl,
 		idpType,
 	})}`;
 }
-export function redirectToServerUnlinkAccount(location: Location, idpType: IdpType) {
+export function redirectToServerUnlinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
 	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify({
 		returnToUrl,
