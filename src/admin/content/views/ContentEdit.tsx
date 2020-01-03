@@ -20,10 +20,12 @@ import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
+import { parseContentBlocks } from '../../content-block/content-block.services';
 import {
 	ContentBlockConfig,
 	ContentBlockFormStates,
 } from '../../content-block/content-block.types';
+import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { ContentEditForm } from '../components';
@@ -51,6 +53,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [contentForm, setContentForm, isLoading] = useContentItem(history, id);
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
+	const [isLoadingContentBlocks] = useContentBlocksByContentId(
+		contentBlocks =>
+			dispatch({
+				type: ContentEditActionType.SET_CB_CONFIGS,
+				payload: parseContentBlocks(contentBlocks),
+			}),
+		id
+	);
 	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
 
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
@@ -84,7 +94,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const handleCbConfigChange = (index: number, formState: Partial<ContentBlockFormStates>) => {
 		dispatch({
-			type: ContentEditActionType.SET_FORM_STATE,
+			type: ContentEditActionType.UPDATE_FORM_STATE,
 			payload: { formState, index },
 		});
 	};
@@ -199,7 +209,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	};
 
-	return isLoading || isLoadingContentTypes ? (
+	return isLoading || isLoadingContentTypes || isLoadingContentBlocks ? (
 		<Flex orientation="horizontal" center>
 			<Spinner size="large" />
 		</Flex>

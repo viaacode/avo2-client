@@ -1,9 +1,12 @@
 import { createReducer } from '../../../shared/helpers';
+import { ContentBlockConfig } from '../../content-block/content-block.types';
 
 import { ContentEditAction, ContentEditActionType, ContentEditState } from '../content.types';
 
-export const CONTENT_EDIT_INITIAL_STATE = (): ContentEditState => ({
-	cbConfigs: [],
+export const CONTENT_EDIT_INITIAL_STATE = (
+	cbConfigs: ContentBlockConfig[] = []
+): ContentEditState => ({
+	cbConfigs,
 });
 
 export const contentEditReducer = (initialState: ContentEditState) =>
@@ -12,7 +15,11 @@ export const contentEditReducer = (initialState: ContentEditState) =>
 			...state,
 			cbConfigs: [...state.cbConfigs, action.payload],
 		}),
-		[ContentEditActionType.SET_FORM_STATE]: (state, action: ContentEditAction) => {
+		[ContentEditActionType.SET_CB_CONFIGS]: (state, action: ContentEditAction) => ({
+			...state,
+			cbConfigs: action.payload,
+		}),
+		[ContentEditActionType.UPDATE_FORM_STATE]: (state, action: ContentEditAction) => {
 			const { index, formState } = action.payload;
 			// Clone content block states array to prevent mutating state in place
 			const cbConfigsCopy = [...state.cbConfigs];

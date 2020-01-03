@@ -1,10 +1,15 @@
 import { get } from 'lodash-es';
 
-import { dataService } from '../../shared/services/data-service';
+import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 
-import { CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
-import { INSERT_CONTENT_BLOCKS } from './content-block.gql';
-import { ContentBlockConfig, ContentBlockSchema } from './content-block.types';
+import { CONTENT_BLOCK_CONFIG_MAP, CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
+import { GET_CONTENT_BLOCKS_BY_CONTENT_ID, INSERT_CONTENT_BLOCKS } from './content-block.gql';
+import {
+	ContentBlockConfig,
+	ContentBlockFormStates,
+	ContentBlockSchema,
+	ContentBlockType,
+} from './content-block.types';
 
 // Parse content-block config to valid request body
 const parseCbConfigs = (
@@ -25,6 +30,42 @@ const parseCbConfigs = (
 	return contentBlocks;
 };
 
+// Parse content-blocks to configs
+export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): ContentBlockConfig[] => {
+	const cbConfigs = contentBlocks.map(contentBlock => {
+		const { content_block_type, variables } = contentBlock;
+		const cleanConfig = CONTENT_BLOCK_CONFIG_MAP[content_block_type as ContentBlockType]();
+		console.log(variables);
+
+		return {
+			...cleanConfig,
+			formState: {
+				...variables,
+				blockType: content_block_type,
+			} as ContentBlockFormStates,
+		};
+	});
+
+	return cbConfigs;
+};
+
+export const fetchContentBlocksByContentId = async (contentId: number) => {
+	try {
+		const response = await dataService.query({
+			query: GET_CONTENT_BLOCKS_BY_CONTENT_ID,
+			variables: { contentId },
+		});
+		console.log(response);
+
+		const contentBlocks = get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.GET}`, null);
+
+		return contentBlocks;
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+};
+
 export const insertContentBlocks = async (
 	contentId: number,
 	cbConfigs: ContentBlockConfig[]
@@ -34,6 +75,7 @@ export const insertContentBlocks = async (
 		const response = await dataService.mutate({
 			mutation: INSERT_CONTENT_BLOCKS,
 			variables: { contentBlocks },
+			update: ApolloCacheManager.clearContentBlocksCache,
 		});
 
 		return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`, null);
@@ -43,4 +85,11 @@ export const insertContentBlocks = async (
 	}
 };
 
-export const updateContentBlocks = async () => {};
+export const updateContentBlocks = async (cbConfigs: ContentBlockConfig[]) => {
+	try {
+		// TODO: Add update logic
+	} catch (err) {
+		console.error(err);
+		return null;
+	}
+};

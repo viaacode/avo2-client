@@ -20,6 +20,10 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { DataQueryComponent } from '../../../shared/components';
 import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
+import { ContentBlockPreview } from '../../content-block/components';
+import { parseContentBlocks } from '../../content-block/content-block.services';
+import { ContentBlockConfig } from '../../content-block/content-block.types';
+import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
@@ -33,7 +37,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 
 	// Hooks
 	const [content, setContent] = useState<Avo.Content.Content | null>(null);
+	const [cbConfigs, setCbConfigs] = useState<ContentBlockConfig[]>([]);
 	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
+
+	useContentBlocksByContentId(contentBlocks => setCbConfigs(parseContentBlocks(contentBlocks)), id);
 
 	// Computed
 	const avatarProps = getAvatarProps(get(content, 'profile', null));
@@ -54,7 +61,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 		switch (currentTab) {
 			case 'inhoud':
 				// TODO: here we can show the preview of the page with content-blocks
-				return null;
+				return cbConfigs.map(cbConfig => <ContentBlockPreview state={cbConfig.formState} />);
 			case 'metadata':
 				return (
 					<div>

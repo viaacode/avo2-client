@@ -14,6 +14,7 @@ import {
 } from './helpers';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
+	GET: 'app_content_blocks',
 	INSERT: 'insert_app_content_blocks',
 };
 
