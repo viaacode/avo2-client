@@ -1,5 +1,4 @@
 import { mount, ReactWrapper } from 'enzyme';
-import 'jest-expect-message';
 import React from 'react';
 import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
 
