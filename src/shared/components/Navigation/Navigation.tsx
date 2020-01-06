@@ -28,7 +28,6 @@ import {
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
-import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 import { SETTINGS_PATH } from '../../../settings/settings.const';
 import { AppState } from '../../../store';
@@ -39,7 +38,7 @@ import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
 	user?: Avo.User.User;
-	loginMessage: LoginMessage;
+	loginMessage: Avo.Auth.LoginMessage;
 }
 
 /**

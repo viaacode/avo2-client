@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { ClientEvent } from '@viaa/avo2-types/types/event-logging/types';
 
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { getEnv } from '../helpers';
@@ -23,7 +22,7 @@ export function trackEvents(
 			eventsArray = [events];
 		}
 		const eventLogEntries = eventsArray.map(
-			(event: MinimalClientEvent): ClientEvent => {
+			(event: MinimalClientEvent): Avo.EventLogging.Event => {
 				return {
 					occurred_at: new Date().toISOString(),
 					source_url: window.location.href, // url when the event was triggered
