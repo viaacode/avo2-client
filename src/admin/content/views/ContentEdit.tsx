@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { FunctionComponent, useReducer, useState } from 'react';
+import React, { FunctionComponent, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -56,15 +56,17 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [contentForm, setContentForm, isLoading] = useContentItem(history, id);
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
-	const [isLoadingContentBlocks] = useContentBlocksByContentId(
-		contentBlocks =>
+	const [contentBlocks, isLoadingContentBlocks] = useContentBlocksByContentId(id);
+	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
+
+	useEffect(() => {
+		if (contentBlocks.length) {
 			dispatch({
 				type: ContentEditActionType.SET_CB_CONFIGS,
 				payload: parseContentBlocks(contentBlocks),
-			}),
-		id
-	);
-	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
+			});
+		}
+	}, [contentBlocks]);
 
 	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
 	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
