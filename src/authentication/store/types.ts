@@ -9,7 +9,7 @@ export enum LoginActionTypes {
 }
 
 export interface SetLoginSuccessAction extends Action {
-	data: Avo.Auth.LoginResponse;
+	data: Avo.Auth.LoginResponse | null;
 }
 
 export interface SetLoginLoadingAction extends Action {
