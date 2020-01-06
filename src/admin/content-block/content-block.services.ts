@@ -35,7 +35,6 @@ export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): Content
 	const cbConfigs = contentBlocks.map(contentBlock => {
 		const { content_block_type, variables } = contentBlock;
 		const cleanConfig = CONTENT_BLOCK_CONFIG_MAP[content_block_type as ContentBlockType]();
-		console.log(variables);
 
 		return {
 			...cleanConfig,
@@ -49,15 +48,19 @@ export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): Content
 	return cbConfigs;
 };
 
-export const fetchContentBlocksByContentId = async (contentId: number) => {
+export const fetchContentBlocksByContentId = async (
+	contentId: number
+): Promise<ContentBlockSchema[] | null> => {
 	try {
 		const response = await dataService.query({
 			query: GET_CONTENT_BLOCKS_BY_CONTENT_ID,
 			variables: { contentId },
 		});
-		console.log(response);
-
-		const contentBlocks = get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.GET}`, null);
+		const contentBlocks: ContentBlockSchema[] | null = get(
+			response,
+			`data.${CONTENT_BLOCKS_RESULT_PATH.GET}`,
+			null
+		);
 
 		return contentBlocks;
 	} catch (err) {

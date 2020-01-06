@@ -21,8 +21,6 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 			null
 		);
 
-		// TODO: Add logic for fetching content-blocks
-
 		return contentItem;
 	} catch (err) {
 		console.error(`Failed to fetch menu item with id: ${id}`);

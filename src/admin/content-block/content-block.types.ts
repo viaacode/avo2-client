@@ -1,4 +1,4 @@
-// TODO: move these to avo2 typings repo
+// TODO: remove with typings 2.8.x update in favour of Avo.ContentBlock.ContentBlock
 export type ContentBlockSchema = {
 	id: number;
 	content_id: number;

@@ -1,31 +1,29 @@
-import { Dispatch, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { fetchContentBlocksByContentId } from '../content-block.services';
 import { ContentBlockSchema } from '../content-block.types';
 
-type UseContentBlocksByContentIdTuple = [boolean];
+type UseContentBlocksByContentIdTuple = [ContentBlockSchema[], boolean];
 
-export const useContentBlocksByContentId = (
-	setCbConfigs: Dispatch<ContentBlockSchema[]>,
-	id?: string
-): UseContentBlocksByContentIdTuple => {
-	const [isLoading, setIsLoading] = useState();
+export const useContentBlocksByContentId = (id?: string): UseContentBlocksByContentIdTuple => {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [contentBlocks, setContentBlocks] = useState<ContentBlockSchema[]>([]);
 
 	useEffect(() => {
 		if (id) {
 			setIsLoading(true);
 
 			fetchContentBlocksByContentId(Number(id))
-				.then(cbConfigs => {
-					if (cbConfigs && cbConfigs.length) {
-						setCbConfigs(cbConfigs);
+				.then(contentBlockResponse => {
+					if (contentBlockResponse && contentBlockResponse.length) {
+						setContentBlocks(contentBlockResponse);
 					}
 				})
 				.finally(() => {
 					setIsLoading(false);
 				});
 		}
-	}, [id, setCbConfigs]);
+	}, [id]);
 
-	return [isLoading];
+	return [contentBlocks, isLoading];
 };
