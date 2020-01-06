@@ -15,7 +15,6 @@ export const GET_CONTENT_BLOCKS_BY_CONTENT_ID = gql`
 export const INSERT_CONTENT_BLOCKS = gql`
 	mutation insertContentBlocks($contentBlocks: [app_content_blocks_insert_input!]!) {
 		insert_app_content_blocks(objects: $contentBlocks) {
-			affected_rows
 			returning {
 				id
 			}
