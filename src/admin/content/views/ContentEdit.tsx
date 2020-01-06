@@ -33,7 +33,13 @@ import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import * as ContentService from '../content.services';
-import { ContentEditActionType, ContentEditFormState, PageType } from '../content.types';
+import {
+	ContentEditAction,
+	ContentEditActionType,
+	ContentEditFormState,
+	ContentEditState,
+	PageType,
+} from '../content.types';
 import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducer';
 import { useContentItem, useContentTypes } from '../hooks';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
@@ -49,7 +55,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
 	// Hooks
-	const [{ cbConfigs }, dispatch] = useReducer(contentEditReducer(initialState), initialState);
+	const [{ cbConfigs }, dispatch] = useReducer<React.Reducer<ContentEditState, ContentEditAction>>(
+		contentEditReducer(initialState),
+		initialState
+	);
 
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
