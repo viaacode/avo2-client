@@ -13,7 +13,7 @@ import { MenuEditFormState } from '../../menu.types';
 
 interface MenuEditFormProps {
 	formErrors: Partial<MenuEditFormState>;
-	componentState: MenuEditFormState;
+	formState: MenuEditFormState;
 	menuParentId: string | undefined;
 	menuParentOptions: ReactSelectOption<string>[];
 	onChange: (key: keyof MenuEditFormState, value: ValueOf<MenuEditFormState>) => void;
@@ -21,7 +21,7 @@ interface MenuEditFormProps {
 
 const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 	formErrors,
-	componentState,
+	formState,
 	menuParentId,
 	menuParentOptions,
 	onChange,
@@ -53,7 +53,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				<FormGroup error={formErrors.description} label="Navigatie omschrijving">
 					<TextArea
 						onChange={(value: string) => onChange('description', value)}
-						value={componentState.description}
+						value={formState.description}
 					/>
 				</FormGroup>
 			)}
@@ -64,21 +64,15 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 						onChange('icon', get(option, 'value', ''))
 					}
 					value={MENU_ICON_OPTIONS.find(
-						(option: ReactSelectOption<string>) => option.value === componentState.icon
+						(option: ReactSelectOption<string>) => option.value === formState.icon
 					)}
 				/>
 			</FormGroup>
 			<FormGroup error={formErrors.label} label="Label" required>
-				<TextInput
-					onChange={(value: string) => onChange('label', value)}
-					value={componentState.label}
-				/>
+				<TextInput onChange={(value: string) => onChange('label', value)} value={formState.label} />
 			</FormGroup>
 			<FormGroup error={formErrors.link} label="Link" required>
-				<TextInput
-					onChange={(value: string) => onChange('link', value)}
-					value={componentState.link}
-				/>
+				<TextInput onChange={(value: string) => onChange('link', value)} value={formState.link} />
 			</FormGroup>
 		</Form>
 	);

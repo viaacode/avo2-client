@@ -206,7 +206,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					<Container mode="horizontal">
 						<MenuEditForm
 							formErrors={formErrors}
-							componentState={menuForm}
+							formState={menuForm}
 							menuParentId={menuParentId}
 							menuParentOptions={menuParentOptions}
 							onChange={handleChange}
