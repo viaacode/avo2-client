@@ -18,9 +18,10 @@ import { ContentOverviewTableCols } from '../content.types';
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) => {
-	const [t] = useTranslation();
-
+	// Hooks
 	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
+
+	const [t] = useTranslation();
 
 	// Render
 	const renderTableCell = (

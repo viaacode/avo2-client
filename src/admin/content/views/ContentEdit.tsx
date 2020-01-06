@@ -43,8 +43,6 @@ import './ContentEdit.scss';
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
-	const [t] = useTranslation();
-
 	const { id } = match.params;
 	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
@@ -53,6 +51,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+
+	const [t] = useTranslation();
 
 	const [contentForm, setContentForm, isLoading] = useContentItem(history, id);
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();

@@ -33,13 +33,13 @@ import { ContentParams } from '../content.types';
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentParams> {}
 
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }) => {
-	const [t] = useTranslation();
-
 	const { id } = match.params;
 
 	// Hooks
 	const [content, setContent] = useState<Avo.Content.Content | null>(null);
 	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
+
+	const [t] = useTranslation();
 
 	const [contentBlocks] = useContentBlocksByContentId(id);
 
