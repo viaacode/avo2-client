@@ -2,7 +2,7 @@ import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
 
-import { LoginMessage } from '../../../authentication/store/types';
+import { LoginMessage } from '../../../authentication/authentication.types';
 import { APP_PATH } from '../../../constants';
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';
 import mockUser from '../../mocks/user-mock';

@@ -1,9 +1,11 @@
 import { get } from 'lodash-es';
-import store from '../../store';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { getFullName } from '../../shared/helpers';
+import store from '../../store';
+
+import { LoginMessage } from '../authentication.types';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
@@ -98,5 +100,5 @@ export function isLoggedIn(loginMessage?: Avo.Auth.LoginMessage): boolean {
 	}
 
 	// TODO add once we can save profile info
-	return !!message && message === Avo.Auth.LoginMessage.LOGGED_IN; // && isProfileComplete();
+	return !!message && message === LoginMessage.LOGGED_IN; // && isProfileComplete();
 }
