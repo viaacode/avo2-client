@@ -13,7 +13,6 @@ import { Profile } from '../../settings/components';
 import { isProfileComplete } from '../helpers/get-profile-info';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading, selectUser } from '../store/selectors';
-import { LoginMessage } from '../store/types';
 
 export interface SecuredRouteProps {
 	component: ComponentType<any>;
@@ -63,7 +62,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 			exact={exact}
 			render={props => {
 				// Already logged in
-				if (loginState && loginState.message === LoginMessage.LOGGED_IN && user) {
+				if (loginState && loginState.message === 'LOGGED_IN' && user) {
 					// TODO enable this once we can save profile info
 					if (path === APP_PATH.COMPLETE_PROFILE) {
 						// Force user to complete their profile before letting them in

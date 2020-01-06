@@ -1,8 +1,8 @@
 import { mount, ReactWrapper } from 'enzyme';
+import 'jest-expect-message';
 import React from 'react';
 import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
 
-import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';
 import mockUser from '../../mocks/user-mock';
@@ -36,7 +36,10 @@ function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
 			expect(link.text()).toBeTruthy();
 			expect(Object.values(APP_PATH).includes(to.toString())).toEqual(true);
 			if (loggedIn) {
-				expect(linkLoginState[to.toString()].showWhenLoggedIn).toEqual(true);
+				expect(
+					linkLoginState[to.toString()].showWhenLoggedIn,
+					`Expected nav item to route ${to.toString()} to be visible when logged in`
+				).toEqual(true);
 			} else {
 				expect(linkLoginState[to.toString()].showWhenLoggedOut).toEqual(true);
 			}
@@ -55,7 +58,7 @@ describe('<Navigation />', () => {
 		// https://redux.js.org/recipes/writing-tests#connected-components
 		mount(
 			<MemoryRouter>
-				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_OUT} />
+				<Navigation {...mockProps} loginMessage={'LOGGED_OUT'} user={undefined} />
 			</MemoryRouter>
 		);
 	});
@@ -63,7 +66,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged out on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_OUT} />
+				<Navigation {...mockProps} loginMessage={'LOGGED_OUT'} user={undefined} />
 			</Router>
 		);
 
@@ -81,7 +84,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged in on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_IN} user={mockUser} />
+				<Navigation {...mockProps} loginMessage={'LOGGED_IN'} user={mockUser} />
 			</Router>
 		);
 
