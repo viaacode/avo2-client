@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import { Button, ButtonToolbar, Container } from '@viaa/avo2-components';
@@ -8,6 +9,8 @@ import { redirectToServerSmartschoolLogin } from '../../authentication/helpers/r
 interface ForPupilsProps extends RouteComponentProps {}
 
 const ForPupils: FunctionComponent<ForPupilsProps> = ({ location }) => {
+	const [t] = useTranslation();
+
 	return (
 		<Container className="c-for-pupils-view" mode="vertical">
 			<Container mode="horizontal" size="small">
@@ -15,7 +18,7 @@ const ForPupils: FunctionComponent<ForPupilsProps> = ({ location }) => {
 					<Button
 						className="c-button-smartschool"
 						icon="smartschool"
-						label="Inloggen met Smartschool"
+						label={t('pupils/views/for-pupils___inloggen-met-smartschool')}
 						onClick={() => redirectToServerSmartschoolLogin(location)}
 					/>
 				</ButtonToolbar>

@@ -1,5 +1,6 @@
 import { clamp, get } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -41,6 +42,8 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	fragment,
 	updateCuePoints,
 }) => {
+	const [t] = useTranslation();
+
 	// Save initial state for reusability purposess
 	const { start, end, startString, endString } = {
 		start: fragment.start_oc || 0,
@@ -166,7 +169,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 
 	// TODO: Replace publisher, published_at by real publisher
 	return (
-		<Modal isOpen={isOpen} title="Knip fragment" size="medium" onClose={onClose} scrollable>
+		<Modal
+			isOpen={isOpen}
+			title={t('collection/components/modals/cut-fragment-modal___knip-fragment')}
+			size="medium"
+			onClose={onClose}
+			scrollable
+		>
 			<ModalBody>
 				<FlowPlayer
 					src={playerTicket ? playerTicket.toString() : null}
@@ -205,8 +214,16 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label="Annuleren" onClick={onCancelCut} />
-								<Button type="primary" label="Knippen" onClick={onSaveCut} />
+								<Button
+									type="secondary"
+									label={t('collection/components/modals/cut-fragment-modal___annuleren')}
+									onClick={onCancelCut}
+								/>
+								<Button
+									type="primary"
+									label={t('collection/components/modals/cut-fragment-modal___knippen')}
+									onClick={onSaveCut}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

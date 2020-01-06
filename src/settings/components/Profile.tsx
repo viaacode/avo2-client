@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { ChangeEvent, FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -63,6 +64,8 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	isCompleteProfileStep = false,
 	redirectTo = APP_PATH.SEARCH,
 }) => {
+	const [t] = useTranslation();
+
 	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
 		label: enumLabel,
 		value: enumLabel,
@@ -242,10 +245,10 @@ const Profile: FunctionComponent<ProfileProps> = ({
 
 	const renderRequiredFields = (subjects: string[], educationLevels: string[]) => (
 		<>
-			<FormGroup label="Vakken" labelFor="subjects">
+			<FormGroup label={t('settings/components/profile___vakken')} labelFor="subjects">
 				<TagsInput
 					id="subjects"
-					placeholder="Selecteer de vakken die u geeft"
+					placeholder={t('settings/components/profile___selecteer-de-vakken-die-u-geeft')}
 					options={subjects.map(subject => ({
 						label: subject,
 						value: subject,
@@ -254,10 +257,13 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					onChange={setSelectedSubjects}
 				/>
 			</FormGroup>
-			<FormGroup label="Onderwijsniveau" labelFor="educationLevel">
+			<FormGroup
+				label={t('settings/components/profile___onderwijsniveau')}
+				labelFor="educationLevel"
+			>
 				<TagsInput
 					id="educationLevel"
-					placeholder="Selecteer een opleidingsniveau"
+					placeholder={t('settings/components/profile___selecteer-een-opleidingsniveau')}
 					options={educationLevels.map(edLevel => ({
 						label: edLevel,
 						value: edLevel,
@@ -266,7 +272,10 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					onChange={setSelectedEducationLevels}
 				/>
 			</FormGroup>
-			<FormGroup label="School/organisatie" labelFor="organization">
+			<FormGroup
+				label={t('settings/components/profile___school-organisatie')}
+				labelFor="organization"
+			>
 				<TagList
 					closable
 					swatches={false}
@@ -279,7 +288,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				<Spacer margin="top-small">
 					<Select
 						options={[
-							{ label: 'Voeg een organisatie toe', value: '' },
+							{ label: t('Voeg een organisatie toe'), value: '' },
 							...cities.map(c => ({ label: c, value: c })),
 						]}
 						value={selectedCity || ''}
@@ -288,7 +297,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				</Spacer>
 				<Spacer margin="top-small">
 					{organizationsLoadingState === 'loading' && (
-						<Alert type="spinner" message="Bezig met ophalen van organisaties..." />
+						<Alert type="spinner" message={t('Bezig met ophalen van organisaties...')} />
 					)}
 					{!!selectedCity && organizationsLoadingState === 'loaded' && (
 						<Select
@@ -315,10 +324,12 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			return (
 				<Container mode="horizontal" size="medium">
 					<Container mode="vertical">
-						<Heading type="h1">Je bent er bijna. Vervolledig nog je profiel.</Heading>
+						<Heading type="h1">
+							<Trans>Je bent er bijna. Vervolledig nog je profiel.</Trans>
+						</Heading>
 						<Spacer margin="top-large">
 							<Alert type="info">
-								We gebruiken deze info om je gepersonaliseerde content te tonen.
+								<Trans>We gebruiken deze info om je gepersonaliseerde content te tonen.</Trans>
 							</Alert>
 						</Spacer>
 						<Form type="standard">
@@ -327,7 +338,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 							</Spacer>
 						</Form>
 						<Button
-							label="Inloggen"
+							label={t('Inloggen')}
 							type="primary"
 							disabled={!areAllRequiredFieldFilledIn() || isSaving}
 							onClick={saveProfileChanges}
@@ -347,40 +358,50 @@ const Profile: FunctionComponent<ProfileProps> = ({
 								<Column size="3-7">
 									<Form type="standard">
 										<>
-											<FormGroup label="Nickname" labelFor="alias">
+											<FormGroup
+												label={t('settings/components/profile___nickname')}
+												labelFor="alias"
+											>
 												<TextInput
 													id="alias"
-													placeholder="Een unieke gebruikersnaam"
+													placeholder={t('settings/components/profile___een-unieke-gebruikersnaam')}
 													value={alias}
 													onChange={setAlias}
 												/>
 											</FormGroup>
-											<FormGroup label="Functie" labelFor="func">
+											<FormGroup label={t('settings/components/profile___functie')} labelFor="func">
 												<TextInput
 													id="func"
-													placeholder="bv: Leerkracht basis onderwijs"
+													placeholder={t(
+														'settings/components/profile___bv-leerkracht-basis-onderwijs'
+													)}
 													value={func || undefined}
 													onChange={setFunc}
 												/>
 											</FormGroup>
-											<FormGroup label="Profielfoto" labelFor="profilePicture">
+											<FormGroup
+												label={t('settings/components/profile___profielfoto')}
+												labelFor="profilePicture"
+											>
 												<Box>
 													{/* TODO replace with components from component repo */}
 													<Avatar initials="XX" />
 													<Icon name="user" size="large" />
 													<input
 														type="file"
-														placeholder="Profielfoto uploaden"
+														placeholder={t('settings/components/profile___profielfoto-uploaden')}
 														onChange={handleAvatarOnChange}
 													/>
 												</Box>
 											</FormGroup>
-											<FormGroup label="Bio" labelFor="bio">
+											<FormGroup label={t('settings/components/profile___bio')} labelFor="bio">
 												<TextArea
 													name="bio"
 													id="bio"
 													height="medium"
-													placeholder="Een korte beschrijving van jezelf..."
+													placeholder={t(
+														'settings/components/profile___een-korte-beschrijving-van-jezelf'
+													)}
 													value={bio || undefined}
 													onChange={setBio}
 												/>
@@ -388,7 +409,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 										</>
 										{renderRequiredFields(subjects, educationLevels)}
 										<Button
-											label="Opslaan"
+											label={t('Opslaan')}
 											type="primary"
 											disabled={!areAllRequiredFieldFilledIn() || isSaving}
 											onClick={saveProfileChanges}
@@ -398,16 +419,18 @@ const Profile: FunctionComponent<ProfileProps> = ({
 								<Column size="3-5">
 									<>
 										{/*<Box>*/}
-										{/*	<Heading type="h4">Volledigheid profiel</Heading>*/}
+										{/*	<Heading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></Heading>*/}
 										{/*	/!* TODO replace with components from component repo *!/*/}
 										{/*	<div className="c-progress-bar" />*/}
 										{/*</Box>*/}
 										<Spacer margin={['top', 'bottom']}>
 											<Box>
 												<p>
-													Vul hier wat info over jezelf in! Deze informatie wordt getoond op jouw
-													persoonlijk profiel. Je kan voor elk veld aanduiden of je deze informatie
-													wil delen of niet.
+													<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
+														Vul hier wat info over jezelf in! Deze informatie wordt getoond op jouw
+														persoonlijk profiel. Je kan voor elk veld aanduiden of je deze
+														informatie wil delen of niet.
+													</Trans>
 												</p>
 											</Box>
 										</Spacer>

@@ -1,6 +1,7 @@
 import { TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../shared/constants';
+import i18n from '../shared/translations/i18n';
 
 export const WORKSPACE_PATH = Object.freeze({
 	WORKSPACE: `/${ROUTE_PARTS.workspace}`,
@@ -14,22 +15,22 @@ export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 
 export const TABS: TabProps[] = [
 	{
-		label: 'Collecties',
+		label: i18n.t('workspace/workspace___collecties'),
 		icon: 'collection',
 		id: COLLECTIONS_ID,
 	},
 	{
-		label: 'Mappen',
+		label: i18n.t('workspace/workspace___mappen'),
 		icon: 'folder',
 		id: FOLDERS_ID,
 	},
 	{
-		label: 'Opdrachten',
+		label: i18n.t('workspace/workspace___opdrachten'),
 		icon: 'clipboard',
 		id: ASSIGNMENTS_ID,
 	},
 	{
-		label: 'Bladwijzers',
+		label: i18n.t('workspace/workspace___bladwijzers'),
 		icon: 'bookmark',
 		id: BOOKMARKS_ID,
 	},

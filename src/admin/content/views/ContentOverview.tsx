@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
@@ -17,6 +18,8 @@ import { ContentOverviewTableCols } from '../content.types';
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) => {
+	const [t] = useTranslation();
+
 	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
 
 	// Render
@@ -45,14 +48,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 							icon="info"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
 							size="small"
-							title="Bekijk content"
+							title={t('admin/content/views/content-overview___bekijk-content')}
 							type="tertiary"
 						/>
 						<Button
 							icon="edit"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 							size="small"
-							title="Pas content aan"
+							title={t('admin/content/views/content-overview___pas-content-aan')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -71,14 +74,16 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 		return !data.length ? (
 			<ErrorView message="Er is nog geen content aangemaakt.">
 				<p>
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
-					blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
-					ratione quas impedit repudiandae nisi corrupti quis eaque!
+					<Trans i18nKey="admin/content/views/content-overview___beschrijving-hoe-content-toe-te-voegen">
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
+						blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
+						ratione quas impedit repudiandae nisi corrupti quis eaque!
+					</Trans>
 				</p>
 				<Spacer margin="top">
 					<Button
 						icon="plus"
-						label="Content toevoegen"
+						label={t('admin/content/views/content-overview___content-toevoegen')}
 						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
 					/>
 				</Spacer>
@@ -115,7 +120,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 			<AdminLayoutActions>
 				{!!contentList.length ? (
 					<Button
-						label="Content toevoegen"
+						label={t('admin/content/views/content-overview___content-toevoegen')}
 						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
 					/>
 				) : null}
