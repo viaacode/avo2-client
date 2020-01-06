@@ -13,7 +13,6 @@ import { APP_PATH } from '../../constants';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginMessage } from '../store/types';
 
 export interface LoginProps extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
@@ -32,28 +31,6 @@ const Login: FunctionComponent<LoginProps> = ({
 	loginStateError,
 	getLoginState,
 }) => {
-	const getLastLoginAttempt = (): null | Date => {
-		try {
-			const lastLoginAttempt = localStorage.getItem(LOGIN_ATTEMPT_KEY) || '';
-			if (!lastLoginAttempt || lastLoginAttempt.trim().length < 3) {
-				return null;
-			}
-			return new Date(lastLoginAttempt);
-		} catch (err) {
-			console.error('Failed to check recent login attempts');
-			return null;
-		}
-	};
-
-	const addLoginAttempt = () => {
-		localStorage.setItem(LOGIN_ATTEMPT_KEY, new Date().toISOString());
-	};
-
-	const hasRecentLoginAttempt = React.useCallback(() => {
-		const lastAttempt = getLastLoginAttempt();
-		return lastAttempt && lastAttempt.getTime() > new Date().getTime() - 5 * 1000;
-	}, []);
-
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
@@ -61,37 +38,27 @@ const Login: FunctionComponent<LoginProps> = ({
 		}
 
 		// Redirect to previous requested path or home page
-		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
+		if (loginState && loginState.message === 'LOGGED_IN' && !loginStateLoading) {
 			history.push(get(location, 'state.from.pathname', APP_PATH.LOGGED_IN_HOME));
 			return;
 		}
 
 		if (
 			loginState &&
-			loginState.message === LoginMessage.LOGGED_OUT &&
+			loginState.message === 'LOGGED_OUT' &&
 			!loginStateLoading &&
-			!loginStateError &&
-			!hasRecentLoginAttempt()
+			!loginStateError
 		) {
-			addLoginAttempt();
 			redirectToServerLoginPage(location);
 		}
-	}, [
-		getLoginState,
-		loginState,
-		loginStateLoading,
-		loginStateError,
-		hasRecentLoginAttempt,
-		history,
-		location,
-	]);
+	}, [getLoginState, loginState, loginStateLoading, loginStateError, history, location]);
 
 	const tryLoginAgainManually = () => {
 		localStorage.removeItem(LOGIN_ATTEMPT_KEY);
 		getLoginState();
 	};
 
-	if (loginStateError || hasRecentLoginAttempt()) {
+	if (loginStateError) {
 		return (
 			<ErrorView message="Het inloggen is mislukt" icon="lock">
 				<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />

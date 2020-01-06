@@ -28,7 +28,6 @@ import {
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
-import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 import { SETTINGS_PATH } from '../../../settings/settings.const';
 import { AppState } from '../../../store';
@@ -38,8 +37,8 @@ import { NavigationItem } from '../../types';
 import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
-	user?: Avo.User.User;
-	loginMessage: LoginMessage;
+	user: Avo.User.User | undefined;
+	loginMessage: Avo.Auth.LoginMessage;
 }
 
 /**
@@ -62,7 +61,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	const getPrimaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn(loginMessage)) {
+		if (isLoggedIn(loginMessage, user)) {
 			return [
 				{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME, key: 'teachers' },
 				{
@@ -91,7 +90,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn(loginMessage)) {
+		if (isLoggedIn(loginMessage, user)) {
 			if (isMobileMenuOpen) {
 				return [
 					{ label: 'Instellingen', location: APP_PATH.SETTINGS, key: 'settings' },
