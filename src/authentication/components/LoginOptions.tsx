@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import { Button, Spacer } from '@viaa/avo2-components';
@@ -18,46 +19,54 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 	history,
 	location,
 	onOptionClicked = () => {},
-}) => (
-	<div className="m-login-options">
-		<Spacer margin="bottom-large">
-			<Spacer margin="top-small">
+}) => {
+	const [t] = useTranslation();
+
+	return (
+		<div className="m-login-options">
+			<Spacer margin="bottom-large">
+				<Spacer margin="top-small">
+					<Button
+						block
+						label={t('authentication/components/login-options___inloggen-met-e-mailadres')}
+						type="primary"
+						className="c-login-with-archief"
+						onClick={() => {
+							onOptionClicked();
+							redirectToClientPage(APP_PATH.LOGIN_AVO, history);
+						}}
+					/>
+				</Spacer>
+			</Spacer>
+			<p>
+				<Trans i18nKey="authentication/components/login-options___of-kies-voor">
+					Of kies voor ...
+				</Trans>
+			</p>
+			<Spacer margin={['top-small', 'bottom-small']}>
 				<Button
 					block
-					label="Inloggen met e-mailadres"
-					type="primary"
-					className="c-login-with-archief"
+					className="c-button-smartschool"
+					icon="smartschool"
+					label={t('authentication/components/login-options___inloggen-met-smartschool')}
 					onClick={() => {
 						onOptionClicked();
-						redirectToClientPage(APP_PATH.LOGIN_AVO, history);
+						redirectToServerSmartschoolLogin(location);
 					}}
 				/>
 			</Spacer>
-		</Spacer>
-		<p>Of kies voor ...</p>
-		<Spacer margin={['top-small', 'bottom-small']}>
 			<Button
 				block
-				className="c-button-smartschool"
-				icon="smartschool"
-				label="Inloggen met Smartschool"
+				className="c-button-klascement"
+				icon="klascement"
+				label={t('authentication/components/login-options___inloggen-met-klas-cement')}
 				onClick={() => {
 					onOptionClicked();
-					redirectToServerSmartschoolLogin(location);
+					toastService.info('Nog niet geïmplementeerd');
 				}}
 			/>
-		</Spacer>
-		<Button
-			block
-			className="c-button-klascement"
-			icon="klascement"
-			label="Inloggen met KlasCement"
-			onClick={() => {
-				onOptionClicked();
-				toastService.info('Nog niet geïmplementeerd');
-			}}
-		/>
-	</div>
-);
+		</div>
+	);
+};
 
 export default LoginOptions;

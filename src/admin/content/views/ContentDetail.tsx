@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	Avatar,
@@ -29,6 +30,8 @@ import { ContentParams } from '../content.types';
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentParams> {}
 
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }) => {
+	const [t] = useTranslation();
+
 	const { id } = match.params;
 
 	// Hooks
@@ -60,32 +63,58 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 					<div>
 						{!!contentItem.description && (
 							<Spacer margin="bottom-large">
-								<Heading type="h4">Omschrijving:</Heading>
+								<Heading type="h4">
+									<Trans i18nKey="admin/content/views/content-detail___omschrijving">
+										Omschrijving:
+									</Trans>
+								</Heading>
 								<p>{contentItem.description}</p>
 							</Spacer>
 						)}
 
-						<Heading type="h4">Metadata:</Heading>
+						<Heading type="h4">
+							<Trans i18nKey="admin/content/views/content-detail___metadata">Metadata:</Trans>
+						</Heading>
 						<Table horizontal variant="invisible">
 							<tbody>
 								<tr>
-									<th>Content type:</th>
+									<th>
+										<Trans i18nKey="admin/content/views/content-detail___content-type">
+											Content type:
+										</Trans>
+									</th>
 									<td>{contentItem.content_type}</td>
 								</tr>
 								<tr>
-									<th>Aangemaakt:</th>
+									<th>
+										<Trans i18nKey="admin/content/views/content-detail___aangemaakt">
+											Aangemaakt:
+										</Trans>
+									</th>
 									<td>{renderFormattedDate(contentItem.created_at)}</td>
 								</tr>
 								<tr>
-									<th>Laatst bewerkt:</th>
+									<th>
+										<Trans i18nKey="admin/content/views/content-detail___laatst-bewerkt">
+											Laatst bewerkt:
+										</Trans>
+									</th>
 									<td>{renderFormattedDate(contentItem.updated_at)}</td>
 								</tr>
 								<tr>
-									<th>Gepubliceerd:</th>
+									<th>
+										<Trans i18nKey="admin/content/views/content-detail___gepubliceerd">
+											Gepubliceerd:
+										</Trans>
+									</th>
 									<td>{renderFormattedDate(contentItem.publish_at)}</td>
 								</tr>
 								<tr>
-									<th>Gedepubliceerd:</th>
+									<th>
+										<Trans i18nKey="admin/content/views/content-detail___gedepubliceerd">
+											Gedepubliceerd:
+										</Trans>
+									</th>
 									<td>{renderFormattedDate(contentItem.depublish_at)}</td>
 								</tr>
 							</tbody>
@@ -109,7 +138,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 					)}
 					<HeaderButtons>
 						<Button
-							label="Bewerken"
+							label={t('admin/content/views/content-detail___bewerken')}
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 						/>
 					</HeaderButtons>

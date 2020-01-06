@@ -10,6 +10,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import i18n from '../../translations/i18n';
+
 interface DeleteObjectModalProps {
 	title?: string;
 	body?: string;
@@ -21,7 +23,7 @@ interface DeleteObjectModalProps {
 }
 
 const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
-	title = 'Bent u zeker?',
+	title = i18n.t('shared/components/delete-object-modal/delete-object-modal___bent-u-zeker'),
 	body = '',
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Verwijder',

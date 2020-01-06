@@ -7,4 +7,5 @@ module.exports = {
 	moduleNameMapper: {
 		'^lodash-es$': '<rootDir>/node_modules/lodash/index.js'
 	},
+	moduleDirectories: ['node_modules'],
 };

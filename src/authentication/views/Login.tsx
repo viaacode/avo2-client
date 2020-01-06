@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -31,6 +32,8 @@ const Login: FunctionComponent<LoginProps> = ({
 	loginStateError,
 	getLoginState,
 }) => {
+	const [t] = useTranslation();
+
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
@@ -61,7 +64,11 @@ const Login: FunctionComponent<LoginProps> = ({
 	if (loginStateError) {
 		return (
 			<ErrorView message="Het inloggen is mislukt" icon="lock">
-				<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
+				<Button
+					type="link"
+					onClick={tryLoginAgainManually}
+					label={t('authentication/views/login___probeer-opnieuw')}
+				/>
 			</ErrorView>
 		);
 	}

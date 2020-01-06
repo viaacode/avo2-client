@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -26,6 +27,8 @@ export interface AccountProps extends RouteComponentProps {
 }
 
 const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
+	const [t] = useTranslation();
+
 	const getSsumAccountEditPage = () => {
 		// TODO replace this with a call to a proxy server route that forwards to the ssum page
 		// with the user already logged in and a redirect url back to this webpage after the user saves their changes
@@ -41,21 +44,34 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 							<Column size="3-7">
 								<Form type="standard">
 									<Form type="standard">
-										<Heading type="h3">Account</Heading>
-										<FormGroup label="Email">
+										<Heading type="h3">
+											<Trans i18nKey="settings/components/account___account">Account</Trans>
+										</Heading>
+										<FormGroup label={t('settings/components/account___email')}>
 											<span>{get(user, 'mail')}</span>
 										</FormGroup>
 										<Spacer margin="top-large">
 											<Alert type="info">
 												<span>
-													<h4 className="c-h4">VIAA identiteitsmanagement systeem</h4>
-													Jouw account wordt beheerd in een centraal identiteitsmanagementsysteem
-													dat je toelaat om met dezelfde gegevens op meerdere VIAA-websites en
-													applicaties in te loggen. <br />
-													Wijzigingen aan deze gegevens worden dus doorgevoerd in al deze websites
-													en tools.
+													<h4 className="c-h4">
+														<Trans i18nKey="settings/components/account___viaa-identiteitsmanagement-systeem">
+															VIAA identiteitsmanagement systeem
+														</Trans>
+													</h4>
+													<Trans i18nKey="settings/components/account___beheerd-in-een-centraal-identiteitsmanagementsysteem">
+														Jouw account wordt beheerd in een centraal identiteitsmanagementsysteem
+														dat je toelaat om met dezelfde gegevens op meerdere VIAA-websites en
+														applicaties in te loggen.
+														<br />
+														Wijzigingen aan deze gegevens worden dus doorgevoerd in al deze websites
+														en tools.
+													</Trans>
 													<br />
-													<a href={getSsumAccountEditPage()}>Beheer je account gegevens</a>
+													<a href={getSsumAccountEditPage()}>
+														<Trans i18nKey="settings/components/account___beheer-je-account-gegevens">
+															Beheer je account gegevens
+														</Trans>
+													</a>
 												</span>
 											</Alert>
 										</Spacer>
@@ -63,13 +79,21 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 
 									<div className="c-hr" />
 
-									<FormGroup label="Koppel je account met andere platformen">
+									<FormGroup
+										label={t(
+											'settings/components/account___koppel-je-account-met-andere-platformen'
+										)}
+									>
 										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
 											<>
-												<span>Uw smartschool account is reeds gelinkt</span>
+												<span>
+													<Trans i18nKey="settings/components/account___uw-smartschool-account-is-reeds-gelinkt">
+														Uw smartschool account is reeds gelinkt
+													</Trans>
+												</span>
 												<Button
 													type="link"
-													label="unlink"
+													label={t('settings/components/account___unlink')}
 													onClick={() => redirectToServerUnlinkAccount(location, 'SMARTSCHOOL')}
 												/>
 											</>
@@ -77,7 +101,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 											<Button
 												className="c-button-smartschool"
 												icon="smartschool"
-												label="Link je smartschool account"
+												label={t('settings/components/account___link-je-smartschool-account')}
 												onClick={() => redirectToServerLinkAccount(location, 'SMARTSCHOOL')}
 											/>
 										)}
