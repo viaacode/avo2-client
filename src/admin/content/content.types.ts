@@ -18,7 +18,7 @@ export type ContentOverviewTableCols =
 
 export type ContentParams = { id: string };
 
-export interface ContentEditComponentState {
+export interface ContentEditFormState {
 	title: string;
 	description: string;
 	contentType: string;

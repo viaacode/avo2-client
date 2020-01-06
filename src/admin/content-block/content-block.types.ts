@@ -10,6 +10,11 @@ export type AlignOptions = 'left' | 'right' | 'center';
 export type HeadingLevelOptions = 'h1' | 'h2' | 'h3' | 'h4';
 
 // CONTENT BLOCK CONFIG
+export interface ContentBlockMeta {
+	index: number;
+	config: ContentBlockConfig;
+}
+
 export interface ContentBlockConfig {
 	name: string;
 	components: ContentBlockComponentsConfig;

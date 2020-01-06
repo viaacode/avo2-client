@@ -15,7 +15,7 @@ const languageCodeToLabel = (code: string): string => {
 };
 
 const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
-	componentState,
+	formState,
 	handleFilterFieldChange,
 	multiOptions,
 }) => {
@@ -36,7 +36,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 					label: checkboxLabel,
 					optionCount: option_count,
 					id: option_name,
-					checked: ((componentState[propertyName] as string[]) || []).includes(option_name),
+					checked: ((formState[propertyName] as string[]) || []).includes(option_name),
 				};
 			}
 		);
@@ -60,7 +60,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		label: string,
 		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
-		const range: Avo.Search.DateRange = get(componentState, 'broadcastDate') || {
+		const range: Avo.Search.DateRange = get(formState, 'broadcastDate') || {
 			gte: '',
 			lte: '',
 		};

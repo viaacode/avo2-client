@@ -2,7 +2,7 @@ import { TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import { TableColumn } from '../../shared/types';
-import { ContentEditComponentState } from './content.types';
+import { ContentEditFormState } from './content.types';
 
 export const CONTENT_RESULT_PATH = {
 	GET: 'app_content',
@@ -29,7 +29,7 @@ export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
 	{ id: 'actions', label: '' },
 ];
 
-export const INITIAL_CONTENT_FORM = (): ContentEditComponentState => ({
+export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	title: '',
 	description: '',
 	contentType: '',

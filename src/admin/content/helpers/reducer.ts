@@ -17,9 +17,11 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 		}),
 		[ContentEditBlocksActionType.SET_FORM_STATE]: (state, action: ContentEditBlocksAction) => {
 			const { index, formGroupType, formGroupState, stateIndex } = action.payload;
-			// Clone content block states array to prevent mutating state in place
+
+			// Clone config
 			const contentBlocks = [...state.contentBlockConfigs];
 
+			// Create update object
 			const stateToAdd: any = {
 				[formGroupType]: formGroupState,
 			};
@@ -27,6 +29,7 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 			if (stateIndex || stateIndex === 0) {
 				(contentBlocks[index].components.state as any)[stateIndex] = formGroupState;
 			} else {
+				// Convert update object to array if necessary
 				const componentState = Array.isArray(formGroupState)
 					? [...contentBlocks[index].components.state, ...stateToAdd.components]
 					: {
@@ -34,8 +37,8 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 							...(stateToAdd.components || {}),
 					  };
 
-				// Update item with new initialState
-				const updatedCbConfig = {
+				// Update single content block config
+				const updatedConfig = {
 					...contentBlocks[index],
 					components: {
 						state: componentState,
@@ -50,8 +53,8 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 					},
 				};
 
-				// Update item at given index
-				contentBlocks.splice(index, 1, updatedCbConfig);
+				// Apply update object to config
+				contentBlocks.splice(index, 1, updatedConfig);
 			}
 
 			return {

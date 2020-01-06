@@ -9,14 +9,14 @@ import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { IconPicker } from '../../../shared/components';
 
 import { MENU_ICON_OPTIONS } from '../../menu.const';
-import { MenuEditComponentState } from '../../menu.types';
+import { MenuEditFormState } from '../../menu.types';
 
 interface MenuEditFormProps {
-	formErrors: Partial<MenuEditComponentState>;
-	componentState: MenuEditComponentState;
+	formErrors: Partial<MenuEditFormState>;
+	componentState: MenuEditFormState;
 	menuParentId: string | undefined;
 	menuParentOptions: ReactSelectOption<string>[];
-	onChange: (key: keyof MenuEditComponentState, value: ValueOf<MenuEditComponentState>) => void;
+	onChange: (key: keyof MenuEditFormState, value: ValueOf<MenuEditFormState>) => void;
 }
 
 const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({

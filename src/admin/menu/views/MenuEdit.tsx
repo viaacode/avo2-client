@@ -15,7 +15,7 @@ import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 import { fetchMenuItemById, fetchMenuItems } from '../menu.services';
-import { MenuEditComponentState, MenuEditParams } from '../menu.types';
+import { MenuEditFormState, MenuEditParams } from '../menu.types';
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
@@ -24,10 +24,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const menuName = startCase(menuParentId);
 
 	// Hooks
-	const [menuForm, setMenuForm] = useState<MenuEditComponentState>(INITIAL_MENU_FORM(menuParentId));
+	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
 	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
-	const [formErrors, setFormErrors] = useState<Partial<MenuEditComponentState>>({});
+	const [formErrors, setFormErrors] = useState<Partial<MenuEditFormState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -93,7 +93,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	);
 
 	// Methods
-	const handleChange = (key: keyof MenuEditComponentState, value: any): void => {
+	const handleChange = (key: keyof MenuEditFormState, value: any): void => {
 		setMenuForm({
 			...menuForm,
 			[key]: value,
@@ -167,7 +167,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	};
 
 	const handleValidation = (): boolean => {
-		const errors: Partial<MenuEditComponentState> = {};
+		const errors: Partial<MenuEditFormState> = {};
 
 		if (!menuParentId && !menuForm.placement) {
 			errors.placement = 'Navigatie naam is verplicht';

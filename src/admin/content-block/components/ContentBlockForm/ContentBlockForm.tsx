@@ -1,20 +1,18 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import { Accordion, Button, Form, FormGroup, SelectOption } from '@viaa/avo2-components';
+import { Accordion, Button, Form, FormGroup } from '@viaa/avo2-components';
 
-import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
 	ContentBlockBlockConfig,
 	ContentBlockComponentsConfig,
 	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockEditor,
-	ContentBlockField,
 	ContentBlockState,
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../content-block.types';
+import { FieldEditor } from '../FieldEditor/FieldEditor';
 
 import './ContentBlockForm.scss';
 
@@ -38,6 +36,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	addComponentToState,
 }) => {
 	const { components, block } = config;
+	const isComponentsArray = Array.isArray(components.state);
 
 	// Hooks
 	const [formErrors, setFormErrors] = useState<{ [key: string]: string[] }>({});
@@ -50,20 +49,13 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		stateIndex?: number
 	) => {
 		const parsedValue = get(value, 'value', value);
+		const updateObject = {
+			[key]: parsedValue,
+		};
+		const stateUpdate = isComponentsArray ? [updateObject] : updateObject;
 
-		const updatedFormSet = Array.isArray(components.state)
-			? [
-					{
-						[key]: parsedValue,
-					},
-			  ]
-			: {
-					[key]: parsedValue,
-			  };
-
-		// Get value from select option otherwise fallback to original
 		handleValidation(key, formGroupType, parsedValue);
-		onChange(formGroupType, updatedFormSet, stateIndex);
+		onChange(formGroupType, stateUpdate, stateIndex);
 	};
 
 	const handleValidation = (
@@ -87,51 +79,6 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		setFormErrors(errors);
 	};
 
-	// Render
-	const renderFieldEditor = (
-		fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState,
-		contentBlock: ContentBlockField,
-		formGroupState: ContentBlockComponentState | ContentBlockState,
-		formGroupType: ContentBlockStateType,
-		stateIndex?: number
-	) => {
-		const EditorComponent = EDITOR_TYPES_MAP[contentBlock.editorType];
-		const editorId = `${index}-${block.state.blockType}-${fieldKey}`;
-		const defaultProps = {
-			...contentBlock.editorProps,
-			editorId,
-			name: editorId,
-		};
-		let editorProps = {};
-
-		switch (contentBlock.editorType) {
-			case ContentBlockEditor.ColorSelect:
-				editorProps = {
-					onChange: (option: SelectOption) =>
-						handleChange(formGroupType, fieldKey, get(option, 'value', ''), stateIndex),
-					value: defaultProps.options.find(
-						(opt: SelectOption) => opt.value === block.state.backgroundColor
-					),
-				};
-				break;
-			case ContentBlockEditor.WYSIWYG:
-				editorProps = {
-					id: `${index}-${block.state.blockType}-${fieldKey}`,
-					data: (formGroupState as any)[fieldKey],
-					onChange: (value: any) => handleChange(formGroupType, fieldKey, value, stateIndex),
-				};
-				break;
-			default:
-				editorProps = {
-					onChange: (value: any) => handleChange(formGroupType, fieldKey, value, stateIndex),
-					value: (formGroupState as any)[fieldKey],
-				};
-				break;
-		}
-
-		return <EditorComponent {...defaultProps} {...editorProps} />;
-	};
-
 	const renderFormGroup = (
 		blockType: ContentBlockType,
 		formGroup: ContentBlockComponentsConfig | ContentBlockBlockConfig,
@@ -149,13 +96,15 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				}
 				error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
 			>
-				{renderFieldEditor(
-					key as keyof ContentBlockComponentState | keyof ContentBlockState,
-					formGroup.fields[key],
-					formGroupState,
-					formGroupType,
-					stateIndex
-				)}
+				<FieldEditor
+					block={{ index, config }}
+					fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
+					field={formGroup.fields[key]}
+					state={formGroupState}
+					type={formGroupType}
+					stateIndex={stateIndex}
+					handleChange={handleChange}
+				/>
 			</FormGroup>
 		));
 	};
