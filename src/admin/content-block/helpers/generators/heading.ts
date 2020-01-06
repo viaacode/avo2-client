@@ -1,3 +1,5 @@
+import { isEmpty, isNil } from 'lodash-es';
+
 import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
@@ -16,8 +18,8 @@ export const INITIAL_HEADING_BLOCK_STATE = (): HeadingBlockFormState => ({
 });
 
 export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
-	name: 'Hoofding',
-	initialState: INITIAL_HEADING_BLOCK_STATE,
+	name: 'Titel',
+	formState: INITIAL_HEADING_BLOCK_STATE(),
 	fields: {
 		title: {
 			label: 'Titel',
@@ -25,7 +27,7 @@ export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
 			validator: (value: string) => {
 				const errorArray: string[] = [];
 
-				if (!!value) {
+				if (isNil(value) || isEmpty(value)) {
 					errorArray.push('Titel is verplicht');
 				}
 

@@ -102,11 +102,11 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 		<AdminLayout navigateBack={() => history.push(CONTENT_PATH.CONTENT)}>
 			<AdminLayoutHeader>
 				<Header category="audio" title={pageTitle} showMetaData={false}>
-					{avatarProps.name || avatarProps.initials ? (
+					{(avatarProps.name || avatarProps.initials) && (
 						<HeaderAvatar>
 							<Avatar {...avatarProps} />
 						</HeaderAvatar>
-					) : null}
+					)}
 					<HeaderButtons>
 						<Button
 							label="Bewerken"

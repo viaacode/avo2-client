@@ -26,7 +26,7 @@ export function redirectToClientPage(path: string, history: History) {
 export function redirectToServerSmartschoolLogin(location: Location) {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
@@ -43,7 +43,7 @@ export function redirectToServerArchiefRegistrationIdp(location: Location, stamb
 export function redirectToServerLoginPage(location: Location) {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/login?${queryString.stringify({
 		returnToUrl,
@@ -65,14 +65,14 @@ export function redirectToServerLogoutPage(location: Location) {
  * @param idpType
  */
 export function redirectToServerLinkAccount(location: Location, idpType: IdpType) {
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify({
 		returnToUrl,
 		idpType,
 	})}`;
 }
 export function redirectToServerUnlinkAccount(location: Location, idpType: IdpType) {
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify({
 		returnToUrl,
 		idpType,
@@ -88,6 +88,10 @@ export function redirectToExternalPage(returnToUrl: string) {
 	window.location.href = returnToUrl;
 }
 
-function getBaseUrl(location: Location) {
+function getBaseUrl(location: Location): string {
 	return window.location.href.split(location.pathname)[0];
+}
+
+function getFromPath(location: Location, defaultPath: string = SEARCH_PATH.SEARCH): string {
+	return get(location, 'state.from.pathname', defaultPath);
 }

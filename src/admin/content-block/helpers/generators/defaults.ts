@@ -1,4 +1,4 @@
-import { kebabCase } from 'lodash-es';
+import { isEmpty, isNil, kebabCase } from 'lodash-es';
 
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
@@ -16,7 +16,7 @@ export const FORM_STATE_DEFAULTS = (
 });
 
 export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
-	background: BACKGROUND_COLOR_FIELD(),
+	backgroundColor: BACKGROUND_COLOR_FIELD(),
 });
 
 // Recurring fields
@@ -49,7 +49,7 @@ export const TEXT_FIELD = (
 	validator: (value: string) => {
 		const errorArray: string[] = [];
 
-		if (!!value) {
+		if (isNil(value) || isEmpty(value)) {
 			errorArray.push(emptyFieldValidatorMessage);
 		}
 
