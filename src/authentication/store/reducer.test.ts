@@ -3,7 +3,7 @@ import { Avo } from '@viaa/avo2-types';
 import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
 import initialState from './initial-state';
 import loginReducer from './reducer';
-import { LoginActionTypes, LoginMessage } from './types';
+import { LoginActionTypes } from './types';
 
 describe('login > store > reducer', () => {
 	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_ERROR}`, () => {
@@ -20,7 +20,7 @@ describe('login > store > reducer', () => {
 
 	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_SUCCESS}`, () => {
 		const payload: Avo.Auth.LoginResponse = {
-			message: LoginMessage.LOGGED_IN,
+			message: 'LOGGED_IN',
 			userInfo: {} as any,
 		};
 
