@@ -25,7 +25,7 @@ interface ContentBlockFormProps {
 	length: number;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
 	setIsAccordionOpen: () => void;
-	addComponentState: () => void;
+	addComponentToState: () => void;
 }
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
@@ -35,7 +35,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	length,
 	onChange,
 	setIsAccordionOpen,
-	addComponentState,
+	addComponentToState,
 }) => {
 	const { components, block } = config;
 
@@ -49,24 +49,21 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		value: any,
 		stateIndex?: number
 	) => {
-		if (Array.isArray(components.state)) {
-			const parsedValuee = get(value, 'value', value);
-			const updatedFormSett = [
-				{
-					[key]: parsedValuee,
-				},
-			];
-			onChange(formGroupType, updatedFormSett, stateIndex);
-			return;
-		}
+		const parsedValue = get(value, 'value', value);
+
+		const updatedFormSet = Array.isArray(components.state)
+			? [
+					{
+						[key]: parsedValue,
+					},
+			  ]
+			: {
+					[key]: parsedValue,
+			  };
 
 		// Get value from select option otherwise fallback to original
-		const parsedValue = get(value, 'value', value);
-		const updatedFormSet = {
-			[key]: parsedValue,
-		};
 		handleValidation(key, formGroupType, parsedValue);
-		onChange(formGroupType, updatedFormSet);
+		onChange(formGroupType, updatedFormSet, stateIndex);
 	};
 
 	const handleValidation = (
@@ -184,7 +181,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
 			{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
 			{Array.isArray(components.state) && (
-				<Button icon="add" type="secondary" onClick={addComponentState} />
+				<Button icon="add" type="secondary" onClick={addComponentToState} />
 			)}
 		</Accordion>
 	);

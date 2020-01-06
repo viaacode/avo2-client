@@ -91,7 +91,7 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 					onChange={(formGroupType: ContentBlockStateType, input: any, stateIndex?: number) =>
 						handleSave(index, formGroupType, input, stateIndex)
 					}
-					addComponentState={() =>
+					addComponentToState={() =>
 						addComponentToState(index, contentBlockConfig.block.state.blockType)
 					}
 				/>
