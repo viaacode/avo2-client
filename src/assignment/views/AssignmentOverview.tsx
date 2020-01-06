@@ -90,10 +90,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
 
 	const canEditAssignments = PermissionService.hasPermissions(
-		[
-			{ permissionName: PERMISSIONS.EDIT_OWN_ASSIGNMENTS },
-			{ permissionName: PERMISSIONS.EDIT_ALL_ASSIGNMENTS },
-		],
+		[{ name: PERMISSIONS.EDIT_ASSIGNMENTS }],
 		user
 	);
 

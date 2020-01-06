@@ -42,8 +42,11 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
+import { PermissionGuardFail, PermissionGuardPass } from '../../authentication/components';
+import PermissionGuard from '../../authentication/components/PermissionGuard';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
+import { PERMISSIONS, Permissions } from '../../authentication/helpers/permission-service';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
@@ -80,6 +83,7 @@ import {
 } from '../assignment.services';
 import { AssignmentLayout } from '../assignment.types';
 
+import { ErrorView } from '../../error/views';
 import './AssignmentEdit.scss';
 
 const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
@@ -1023,15 +1027,26 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 	};
 
+	const permissions: Permissions = [{ name: PERMISSIONS.EDIT_ASSIGNMENTS, obj: currentAssignment }];
 	return (
-		<LoadingErrorLoadedComponent
-			loadingState={loadingState}
-			dataObject={currentAssignment}
-			render={renderAssignmentEditForm}
-			loadingError={loadingError && loadingError.error}
-			loadingErrorIcon={loadingError && loadingError.icon}
-			notFoundError="De opdracht is niet gevonden"
-		/>
+		<PermissionGuard permissions={permissions} user={user}>
+			<PermissionGuardPass>
+				<LoadingErrorLoadedComponent
+					loadingState={loadingState}
+					dataObject={currentAssignment}
+					render={renderAssignmentEditForm}
+					loadingError={loadingError && loadingError.error}
+					loadingErrorIcon={loadingError && loadingError.icon}
+					notFoundError="De opdracht is niet gevonden"
+				/>
+			</PermissionGuardPass>
+			<PermissionGuardFail>
+				<ErrorView
+					message={t('Je hebt niet genoeg rechten om deze opdracht te bewerken')}
+					icon="lock"
+				/>
+			</PermissionGuardFail>
+		</PermissionGuard>
 	);
 };
 

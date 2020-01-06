@@ -4,32 +4,57 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from './get-profile-info';
 
-type PermissionInfo = { permissionName: PermissionName; obj?: any | null };
+type PermissionInfo = { name: PermissionName; obj?: any | null };
 
 export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
 
-export const PERMISSIONS: { [permissionName: string]: string } = {
-	EDIT_OWN_ASSIGNMENTS: 'EDIT_OWN_ASSIGNMENTS',
-	EDIT_ALL_ASSIGNMENTS: 'EDIT_ALL_ASSIGNMENTS',
-	EDIT_OWN_COLLECTIONS: 'EDIT_OWN_COLLECTION',
-	EDIT_ALL_COLLECTIONS: 'EDIT_ALL_COLLECTIONS',
-	DELETE_OWN_COLLECTION: 'DELETE_OWN_COLLECTION',
-	DELETE_ALL_COLLECTIONS: 'DELETE_ALL_COLLECTIONS',
-};
+export enum PERMISSIONS {
+	ADD_HYPERLINK_COLLECTIONS = 'ADD_HYPERLINK_COLLECTIONS',
+	CREATE_ACCOUNT = 'CREATE_ACCOUNT',
+	CREATE_ASSIGNMENT_RESPONSE = 'CREATE_ASSIGNMENT_RESPONSE',
+	CREATE_ASSIGNMENTS = 'CREATE_ASSIGNMENTS',
+	CREATE_BUNDLES = 'CREATE_BUNDLES',
+	CREATE_COLLECTIONS = 'CREATE_COLLECTIONS',
+	CREATE_CONTENT_PAGES = 'CREATE_CONTENT_PAGES',
+	DELETE_ANY_ACCOUNTS = 'DELETE_ANY_ACCOUNTS',
+	DELETE_ANY_BUNDLES = 'DELETE_ANY_BUNDLES',
+	DELETE_ANY_COLLECTIONS = 'DELETE_ANY_COLLECTIONS',
+	DELETE_ANY_CONTENT_PAGES = 'DELETE_ANY_CONTENT_PAGES',
+	DELETE_ASSIGNMENTS = 'DELETE_ASSIGNMENTS',
+	DELETE_OWN_BUNDLES = 'DELETE_OWN_BUNDLES',
+	DELETE_OWN_COLLECTIONS = 'DELETE_OWN_COLLECTIONS',
+	DELETE_OWN_CONTENT_PAGES = 'DELETE_OWN_CONTENT_PAGES',
+	EDIT_ANY_ACCOUNTS = 'EDIT_ANY_ACCOUNTS',
+	EDIT_ANY_BUNDLES = 'EDIT_ANY_BUNDLES',
+	EDIT_ANY_COLLECTIONS = 'EDIT_ANY_COLLECTIONS',
+	EDIT_ANY_CONTENT_PAGES = 'EDIT_ANY_CONTENT_PAGES',
+	EDIT_ASSIGNMENTS = 'EDIT_ASSIGNMENTS',
+	EDIT_OWN_BUNDLES = 'EDIT_OWN_BUNDLES',
+	EDIT_OWN_COLLECTIONS = 'EDIT_OWN_COLLECTIONS',
+	EDIT_OWN_CONTENT_PAGES = 'EDIT_OWN_CONTENT_PAGES',
+	EDIT_SITE_SETTINGS = 'EDIT_SITE_SETTINGS',
+	PUBLISH_ALL_BUNDLES = 'PUBLISH_ALL_BUNDLES',
+	PUBLISH_ALL_COLLECTIONS = 'PUBLISH_ALL_COLLECTIONS',
+	PUBLISH_BUNDLES_WITH_LABEL = 'PUBLISH_BUNDLES_WITH_LABEL',
+	PUBLISH_COLLECTION_WITH_LABEL = 'PUBLISH_COLLECTION_WITH_LABEL',
+	PUBLISH_OWN_BUNDLES = 'PUBLISH_OWN_BUNDLES',
+	PUBLISH_OWN_COLLECTIONS = 'PUBLISH_OWN_COLLECTIONS',
+	SEARCH = 'SEARCH',
+	SHARE_BUNDLES_BY_LINK = 'SHARE_BUNDLES_BY_LINK',
+	SHARE_COLLECTIONS_BY_LINK = 'SHARE_COLLECTIONS_BY_LINK',
+	VIEW_CONTENT_FROM_ASSIGNMENT = 'VIEW_CONTENT_FROM_ASSIGNMENT',
+}
 
-type PermissionName = keyof typeof PERMISSIONS;
+export type PermissionName = keyof typeof PERMISSIONS;
 
 export class PermissionService {
-	// TODO: replace with userInfo.permissions
-	private static currentUserPermissions: PermissionName[] = Object.values(PERMISSIONS);
-
-	public static hasPermissions(permissions: Permissions, user: Avo.User.User) {
+	public static hasPermissions(permissions: Permissions, user: Avo.User.User): boolean {
 		// Reformat all permissions to format: PermissionInfo[]
 		let permissionList: PermissionInfo[];
 		if (typeof permissions === 'string') {
 			// Single permission by name
-			permissionList = [{ permissionName: permissions as PermissionName }];
-		} else if ((permissions as PermissionInfo).permissionName) {
+			permissionList = [{ name: permissions as PermissionName }];
+		} else if ((permissions as PermissionInfo).name) {
 			// Single permission by name and object
 			permissionList = [permissions as PermissionInfo];
 		} else {
@@ -38,7 +63,7 @@ export class PermissionService {
 				(permission: string | PermissionInfo): PermissionInfo => {
 					if (typeof permission === 'string') {
 						// Single permission by name
-						return { permissionName: permission as PermissionName };
+						return { name: permission as PermissionName };
 					}
 					// Single permission by name and object
 					return permission as PermissionInfo;
@@ -46,9 +71,8 @@ export class PermissionService {
 			);
 		}
 		// Check every permission and return true for the first permission that returns true (lazy eval)
-		const profileId = getProfileId(user);
 		for (const perm of permissionList) {
-			if (this.hasPermission(perm.permissionName, perm.obj, profileId)) {
+			if (this.hasPermission(perm.name, perm.obj, user)) {
 				return true;
 			}
 		}
@@ -58,16 +82,21 @@ export class PermissionService {
 	private static hasPermission(
 		permissionName: PermissionName,
 		obj: any | null | undefined,
-		profileId: string | null
+		user: Avo.User.User | null
 	) {
-		// Check if user has the requested permission
-		if (!this.currentUserPermissions.includes(permissionName)) {
+		const permissions = get(user, 'profile.permissions');
+		if (!user || !permissions) {
 			return false;
 		}
-		// Special checks on top of permissionName being in the permission list
+		// Check if user has the requested permission
+		const profileId = getProfileId(user);
+		if (!permissions.includes(permissionName)) {
+			return false;
+		}
+		// Special checks on top of name being in the permission list
 		switch (permissionName) {
 			// TODO: replace example permissions
-			case PERMISSIONS.EDIT_OWN_COLLECTION:
+			case 'EDIT_OWN_COLLECTIONS':
 				const ownerId = get(obj, 'owner_profile_id');
 				return profileId && ownerId && profileId === ownerId;
 

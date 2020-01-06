@@ -27,11 +27,20 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { PermissionGuard } from '../../authentication/components';
+import {
+	PermissionGuard,
+	PermissionGuardFail,
+	PermissionGuardPass,
+} from '../../authentication/components';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfile, getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import {
+	Permissions,
+	PERMISSIONS,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { ErrorView } from '../../error/views';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -109,19 +118,23 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	}, [collectionId, relatedCollections, user]);
 
 	const getPermission = (collection: Avo.Collection.Collection) => ({
-		canDeleteCollection: PermissionService.hasPermissions(
-			[
-				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
+		canDeleteCollection: {
+			permissions: [
+				{ name: PERMISSIONS.DELETE_OWN_COLLECTIONS, obj: collection },
+				{
+					name: PERMISSIONS.DELETE_ANY_COLLECTIONS,
+				},
 			],
-			user
-		),
+			user,
+		},
 		canEditCollection: {
 			permissions: [
-				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
+				{ name: PERMISSIONS.EDIT_OWN_COLLECTIONS, obj: collection },
+				{
+					name: PERMISSIONS.EDIT_ANY_COLLECTIONS,
+				},
 			],
-			profile: getProfile(user),
+			user,
 		},
 	});
 
@@ -221,7 +234,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
 			createDropdownMenuItem('createAssignment', 'Maak opdracht', 'clipboard'),
 			createDropdownMenuItem('duplicate', 'Dupliceer', 'copy'),
-			...(canDeleteCollection && [createDropdownMenuItem('delete', 'Verwijder')]),
+			...(PermissionService.hasPermissions(
+				canDeleteCollection.permissions,
+				canDeleteCollection.user
+			) && [createDropdownMenuItem('delete', 'Verwijder')]),
 		];
 
 		if (!isFirstRender) {
@@ -232,7 +248,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		// Render functions
 		const renderHeaderButtons = () => (
 			<ButtonToolbar>
-				<PermissionGuard {...canEditCollection} user={user}>
+				<PermissionGuard {...canEditCollection}>
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
@@ -403,14 +419,27 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
+	const permissions: Permissions = [
+		{ name: PERMISSIONS.VIEW_CONTENT_FROM_ASSIGNMENT, obj: collectionId },
+	];
 	return (
-		<DataQueryComponent
-			query={GET_COLLECTION_BY_ID}
-			variables={{ id: collectionId }}
-			resultPath="app_collections[0]"
-			renderData={renderCollection}
-			notFoundMessage="Deze collectie werd niet gevonden"
-		/>
+		<PermissionGuard permissions={permissions} user={user}>
+			<PermissionGuardPass>
+				<DataQueryComponent
+					query={GET_COLLECTION_BY_ID}
+					variables={{ id: collectionId }}
+					resultPath="app_collections[0]"
+					renderData={renderCollection}
+					notFoundMessage="Deze collectie werd niet gevonden"
+				/>
+			</PermissionGuardPass>
+			<PermissionGuardFail>
+				<ErrorView
+					message={t('Je hebt niet genoeg rechten om deze opdracht te bewerken')}
+					icon="lock"
+				/>
+			</PermissionGuardFail>
+		</PermissionGuard>
 	);
 };
 
