@@ -9,19 +9,19 @@ import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { IconPicker } from '../../../shared/components';
 
 import { MENU_ICON_OPTIONS } from '../../menu.const';
-import { MenuEditFormState } from '../../menu.types';
+import { MenuEditComponentState } from '../../menu.types';
 
 interface MenuEditFormProps {
-	formErrors: Partial<MenuEditFormState>;
-	formState: MenuEditFormState;
+	formErrors: Partial<MenuEditComponentState>;
+	componentState: MenuEditComponentState;
 	menuParentId: string | undefined;
 	menuParentOptions: ReactSelectOption<string>[];
-	onChange: (key: keyof MenuEditFormState, value: ValueOf<MenuEditFormState>) => void;
+	onChange: (key: keyof MenuEditComponentState, value: ValueOf<MenuEditComponentState>) => void;
 }
 
 const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 	formErrors,
-	formState,
+	componentState,
 	menuParentId,
 	menuParentOptions,
 	onChange,
@@ -53,7 +53,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				<FormGroup error={formErrors.description} label="Navigatie omschrijving">
 					<TextArea
 						onChange={(value: string) => onChange('description', value)}
-						value={formState.description}
+						value={componentState.description}
 					/>
 				</FormGroup>
 			)}
@@ -64,15 +64,21 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 						onChange('icon', get(option, 'value', ''))
 					}
 					value={MENU_ICON_OPTIONS.find(
-						(option: ReactSelectOption<string>) => option.value === formState.icon
+						(option: ReactSelectOption<string>) => option.value === componentState.icon
 					)}
 				/>
 			</FormGroup>
 			<FormGroup error={formErrors.label} label="Label" required>
-				<TextInput onChange={(value: string) => onChange('label', value)} value={formState.label} />
+				<TextInput
+					onChange={(value: string) => onChange('label', value)}
+					value={componentState.label}
+				/>
 			</FormGroup>
 			<FormGroup error={formErrors.link} label="Link" required>
-				<TextInput onChange={(value: string) => onChange('link', value)} value={formState.link} />
+				<TextInput
+					onChange={(value: string) => onChange('link', value)}
+					value={componentState.link}
+				/>
 			</FormGroup>
 		</Form>
 	);

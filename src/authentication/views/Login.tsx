@@ -61,14 +61,14 @@ const Login: FunctionComponent<LoginProps> = ({
 		}
 
 		// Redirect to previous requested path or home page
-		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
+		if (loginState && loginState.message === 'LOGGED_IN' && !loginStateLoading) {
 			history.push(get(location, 'state.from.pathname', APP_PATH.LOGGED_IN_HOME));
 			return;
 		}
 
 		if (
 			loginState &&
-			loginState.message === LoginMessage.LOGGED_OUT &&
+			loginState.message === 'LOGGED_OUT' &&
 			!loginStateLoading &&
 			!loginStateError &&
 			!hasRecentLoginAttempt()

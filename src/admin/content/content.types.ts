@@ -18,7 +18,7 @@ export type ContentOverviewTableCols =
 
 export type ContentParams = { id: string };
 
-export interface ContentEditFormState {
+export interface ContentEditComponentState {
 	title: string;
 	description: string;
 	contentType: string;
@@ -26,7 +26,9 @@ export interface ContentEditFormState {
 	depublishAt: string;
 }
 
-export type ContentTypesResponse = { value: string };
+export interface ContentTypesResponse {
+	value: string;
+}
 
 export interface ContentEditBlocksState {
 	contentBlockConfigs: ContentBlockConfig[];
@@ -37,7 +39,7 @@ export enum ContentEditBlocksActionType {
 	ADD_CB_CONFIG = '@@admin-content-edit/ADD_CB_CONFIG',
 }
 
-export type ContentEditBlocksAction = {
+export interface ContentEditBlocksAction {
 	type: ContentEditBlocksActionType;
 	payload: any;
-};
+}

@@ -14,19 +14,24 @@ import {
 
 import { ValueOf } from '../../../../shared/types';
 
-import { ContentEditFormState } from '../../content.types';
+import { ContentEditComponentState } from '../../content.types';
 
 import './ContentEditForm.scss';
 
+interface ContentTypeOptions {
+	label: string;
+	value: string;
+	disabled?: boolean;
+}
+
 interface ContentEditFormProps {
-	contentTypeOptions: {
-		label: string;
-		value: string;
-		disabled?: boolean;
-	}[];
-	formErrors: Partial<ContentEditFormState>;
-	formState: ContentEditFormState;
-	onChange: (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => void;
+	contentTypeOptions: ContentTypeOptions[];
+	formErrors: Partial<ContentEditComponentState>;
+	componentState: ContentEditComponentState;
+	onChange: (
+		key: keyof ContentEditComponentState,
+		value: ValueOf<ContentEditComponentState>
+	) => void;
 }
 
 type DateFormKeys = 'publishAt' | 'depublishAt';
@@ -34,7 +39,7 @@ type DateFormKeys = 'publishAt' | 'depublishAt';
 const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	contentTypeOptions = [],
 	formErrors,
-	formState,
+	componentState,
 	onChange,
 }) => {
 	// Methods
@@ -43,7 +48,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	};
 
 	const handleDateValue = (key: DateFormKeys) => {
-		return formState[key] ? new Date(formState[key] as string) : null;
+		return componentState[key] ? new Date(componentState[key] as string) : null;
 	};
 
 	// Render
@@ -57,7 +62,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								<FormGroup error={formErrors.title} label="Titel">
 									<TextInput
 										onChange={(value: string) => onChange('title', value)}
-										value={formState.title}
+										value={componentState.title}
 									/>
 								</FormGroup>
 							</Column>
@@ -66,7 +71,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									<TextArea
 										onChange={(value: string) => onChange('description', value)}
 										rows={3}
-										value={formState.description}
+										value={componentState.description}
 									/>
 								</FormGroup>
 							</Column>
@@ -75,7 +80,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									<Select
 										onChange={(value: string) => onChange('contentType', value)}
 										options={contentTypeOptions}
-										value={formState.contentType}
+										value={componentState.contentType}
 									/>
 								</FormGroup>
 							</Column>

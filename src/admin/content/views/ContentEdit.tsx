@@ -26,7 +26,7 @@ import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { fetchContentItemById, insertContent, updateContent } from '../content.services';
-import { ContentEditFormState, PageType } from '../content.types';
+import { ContentEditComponentState, PageType } from '../content.types';
 import { useContentTypes } from '../hooks/useContentTypes';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 
@@ -38,8 +38,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const { id } = match.params;
 
 	// Hooks
-	const [contentForm, setContentForm] = useState<ContentEditFormState>(INITIAL_CONTENT_FORM);
-	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
+	const [contentForm, setContentForm] = useState<ContentEditComponentState>(INITIAL_CONTENT_FORM);
+	const [formErrors, setFormErrors] = useState<Partial<ContentEditComponentState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [pageType, setPageType] = useState<PageType | undefined>();
@@ -92,7 +92,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	}, [id, history]);
 
 	// Methods
-	const handleChange = (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => {
+	const handleChange = (
+		key: keyof ContentEditComponentState,
+		value: ValueOf<ContentEditComponentState>
+	) => {
 		setContentForm({
 			...contentForm,
 			[key]: value,
@@ -154,7 +157,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	};
 
 	const handleValidation = () => {
-		const errors: Partial<ContentEditFormState> = {};
+		const errors: Partial<ContentEditComponentState> = {};
 
 		if (!contentForm.title) {
 			errors.title = 'Titel is verplicht';
@@ -187,7 +190,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditForm
 						contentTypeOptions={contentTypeOptions}
 						formErrors={formErrors}
-						formState={contentForm}
+						componentState={contentForm}
 						onChange={handleChange}
 					/>
 				);

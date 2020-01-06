@@ -5,9 +5,16 @@ import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
+	CONTENT_BLOCK_INITIAL_STATE_MAP,
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
-import { ContentBlockFormStates, ContentBlockType } from '../../content-block/content-block.types';
+import {
+	ContentBlockComponentState,
+	ContentBlockState,
+	ContentBlockStateOptions,
+	ContentBlockStateType,
+	ContentBlockType,
+} from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 
 import { ContentEditBlocksActionType } from '../content.types';
@@ -41,13 +48,26 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 		setAccordionsOpenState({ [contentBlockFormKey]: true });
 	};
 
+	const addComponentToState = (index: number, blockType: ContentBlockType) => {
+		dispatch({
+			type: ContentEditBlocksActionType.SET_FORM_STATE,
+			payload: {
+				index,
+				formGroupType: 'components',
+				formGroupState: [CONTENT_BLOCK_INITIAL_STATE_MAP[blockType]],
+			},
+		});
+	};
+
 	const handleSave = (
 		index: number,
-		formState: Partial<ContentBlockFormStates> | Partial<ContentBlockFormStates>[]
+		formGroupType: ContentBlockStateType,
+		formGroupState: ContentBlockStateOptions,
+		stateIndex?: number
 	) => {
 		dispatch({
 			type: ContentEditBlocksActionType.SET_FORM_STATE,
-			payload: { index, formState },
+			payload: { index, formGroupType, formGroupState, stateIndex },
 		});
 	};
 
@@ -68,30 +88,39 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
 						})
 					}
-					onChange={contentBlockFormState => handleSave(index, contentBlockFormState)}
+					onChange={(formGroupType: ContentBlockStateType, input: any, stateIndex?: number) =>
+						handleSave(index, formGroupType, input, stateIndex)
+					}
+					addComponentState={() =>
+						addComponentToState(index, contentBlockConfig.block.state.blockType)
+					}
 				/>
 			);
 		});
 
 	const renderBlockPreview = (
-		formGroupState: ContentBlockFormStates,
+		formGroupState: ContentBlockComponentState,
+		blockState: ContentBlockState,
 		blockIndex: number,
 		stateIndex?: number
 	) => (
 		<ContentBlockPreview
-			key={getFormKey(formGroupState.blockType, blockIndex, stateIndex)}
-			state={formGroupState}
+			key={getFormKey(blockState.blockType, blockIndex, stateIndex)}
+			componentState={formGroupState}
+			blockState={blockState}
 		/>
 	);
 
 	const renderBlockPreviews = () =>
-		contentBlockConfigs.map((contentBlockConfig, blockIndex) =>
-			Array.isArray(contentBlockConfig.formState)
-				? contentBlockConfig.formState.map((formGroupState, stateIndex) =>
-						renderBlockPreview(formGroupState, blockIndex, stateIndex)
+		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
+			const { components, block } = contentBlockConfig;
+
+			return Array.isArray(components.state)
+				? components.state.map((formGroupState, stateIndex) =>
+						renderBlockPreview(formGroupState, block.state, blockIndex, stateIndex)
 				  )
-				: renderBlockPreview(contentBlockConfig.formState, blockIndex)
-		);
+				: renderBlockPreview(components.state, block.state, blockIndex);
+		});
 
 	return (
 		<Flex className="c-content-edit-view__content">

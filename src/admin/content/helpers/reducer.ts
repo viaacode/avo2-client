@@ -1,5 +1,4 @@
 import { createReducer } from '../../../shared/helpers';
-
 import {
 	ContentEditBlocksAction,
 	ContentEditBlocksActionType,
@@ -17,24 +16,47 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 			contentBlockConfigs: [...state.contentBlockConfigs, action.payload],
 		}),
 		[ContentEditBlocksActionType.SET_FORM_STATE]: (state, action: ContentEditBlocksAction) => {
-			const { index, formState } = action.payload;
+			const { index, formGroupType, formGroupState, stateIndex } = action.payload;
 			// Clone content block states array to prevent mutating state in place
-			const contentBlockConfigsCopy = [...state.contentBlockConfigs];
-			// Update item with new initialState
-			const updatedCbConfig = {
-				...contentBlockConfigsCopy[index],
-				formState: {
-					...contentBlockConfigsCopy[index].formState,
-					...formState,
-				},
+			const contentBlocks = [...state.contentBlockConfigs];
+
+			const stateToAdd: any = {
+				[formGroupType]: formGroupState,
 			};
 
-			// Update item at given index
-			contentBlockConfigsCopy.splice(index, 1, updatedCbConfig);
+			if (stateIndex || stateIndex === 0) {
+				(contentBlocks[index].components.state as any)[stateIndex] = formGroupState;
+			} else {
+				const componentState = Array.isArray(formGroupState)
+					? [...contentBlocks[index].components.state, ...stateToAdd.components]
+					: {
+							...contentBlocks[index].components.state,
+							...(stateToAdd.components || {}),
+					  };
+
+				// Update item with new initialState
+				const updatedCbConfig = {
+					...contentBlocks[index],
+					components: {
+						state: componentState,
+						fields: contentBlocks[index].components.fields,
+					},
+					block: {
+						state: {
+							...contentBlocks[index].block.state,
+							...(stateToAdd.block || {}),
+						},
+						fields: contentBlocks[index].block.fields,
+					},
+				};
+
+				// Update item at given index
+				contentBlocks.splice(index, 1, updatedCbConfig);
+			}
 
 			return {
 				...state,
-				contentBlockConfigs: contentBlockConfigsCopy,
+				contentBlockConfigs: contentBlocks,
 			};
 		},
 	});

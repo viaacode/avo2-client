@@ -3,7 +3,8 @@ import {
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
-	IntroBlockFormState,
+	IntroBlockComponentState,
+	IntroBlockState,
 } from '../../content-block.types';
 import {
 	ALIGN_FIELD,
@@ -12,23 +13,32 @@ import {
 	TEXT_FIELD,
 } from './defaults';
 
-export const INITIAL_INTRO_BLOCK_STATE = (): IntroBlockFormState => ({
+export const INITIAL_INTRO_BLOCK_COMPONENT_STATE = (): IntroBlockComponentState => ({
 	title: '',
 	text: '',
 	align: 'left',
 	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro),
 });
 
+export const INITIAL_INTRO_BLOCK_STATE = (): IntroBlockState =>
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons);
+
 export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Intro',
-	formState: INITIAL_INTRO_BLOCK_STATE(),
-	fields: {
-		title: TEXT_FIELD('Titel is verplicht.', {
-			label: 'Titel',
-			editorType: ContentBlockEditor.TextInput,
-		}),
-		align: ALIGN_FIELD('Titel uitlijning'),
-		text: TEXT_FIELD(),
-		...CONTENT_BLOCK_FIELD_DEFAULTS(),
+	components: {
+		state: INITIAL_INTRO_BLOCK_COMPONENT_STATE(),
+		fields: {
+			title: TEXT_FIELD('Titel is verplicht.', {
+				label: 'Titel',
+				editorType: ContentBlockEditor.TextInput,
+			}),
+			align: ALIGN_FIELD('Titel uitlijning'),
+			text: TEXT_FIELD(),
+			...CONTENT_BLOCK_FIELD_DEFAULTS(),
+		},
+	},
+	block: {
+		state: INITIAL_INTRO_BLOCK_STATE(),
+		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

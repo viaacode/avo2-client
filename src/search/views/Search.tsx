@@ -84,7 +84,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	history,
 	location,
 }) => {
-	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
+	const [componentState, setComponentState] = useState(DEFAULT_FORM_STATE);
 	const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULT_SORT_ORDER);
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
 	const [currentPage, setCurrentPage] = useState(0);
@@ -93,13 +93,15 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	const [queryParamsAnalysed, setQueryParamsAnalysed] = useState(false);
 
 	/**
-	 * Update the search results when the formState, sortOrder or the currentPage changes
+	 * Update the search results when the componentState, sortOrder or the currentPage changes
 	 */
 	useEffect(() => {
 		// Only do initial search after query params have been analysed and have been added to the state
 		if (queryParamsAnalysed) {
-			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
+			// Parse values from componentState into a parsed object that we'll send to the proxy search endpoint
+			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
+				cloneDeep(componentState)
+			);
 
 			// TODO: do the search by dispatching a redux action
 			search(
@@ -111,17 +113,19 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				{}
 			);
 		}
-	}, [formState, sortOrder, currentPage, history, search, queryParamsAnalysed]);
+	}, [componentState, sortOrder, currentPage, history, search, queryParamsAnalysed]);
 
 	/**
 	 * display the search results on the page and in the url when the results change
 	 */
 	useEffect(() => {
 		if (searchResults) {
-			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
+			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
+				cloneDeep(componentState)
+			);
 
 			// Copy the searchterm to the search input field
-			setSearchTerms(formState.query);
+			setSearchTerms(componentState.query);
 
 			// Update the checkbox items and counts
 			setMultiOptions(searchResults.aggregations);
@@ -140,12 +144,12 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
 		}
-	}, [searchResults, currentPage, formState, history, sortOrder]);
+	}, [searchResults, currentPage, componentState, history, sortOrder]);
 
 	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
 		const queryParams = queryString.parse(location.search);
-		let newFormState: Avo.Search.Filters = cloneDeep(formState);
+		let newComponentState: Avo.Search.Filters = cloneDeep(componentState);
 		let newSortOrder: SortOrder = cloneDeep(sortOrder);
 		let newCurrentPage: number = currentPage;
 		try {
@@ -157,7 +161,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			) {
 				// Extract info from filter query params
 				if (queryParams.filters) {
-					newFormState = JSON.parse(queryParams.filters as string);
+					newComponentState = JSON.parse(queryParams.filters as string);
 				}
 				newSortOrder.orderProperty = (queryParams.orderProperty ||
 					'relevance') as Avo.Search.OrderProperty;
@@ -166,18 +170,18 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				newCurrentPage = parseInt((queryParams.page as string) || '1', 10) - 1;
 			} else {
 				// No filter query params present => reset state
-				newFormState = DEFAULT_FORM_STATE;
+				newComponentState = DEFAULT_FORM_STATE;
 				newSortOrder = DEFAULT_SORT_ORDER;
 				newCurrentPage = 0;
 			}
 
 			if (
-				!isEqual(newFormState, formState) ||
+				!isEqual(newComponentState, componentState) ||
 				!isEqual(newSortOrder, sortOrder) ||
 				!isEqual(newCurrentPage, currentPage)
 			) {
 				// Only rerender if query params actually changed
-				setFormState(newFormState);
+				setComponentState(newComponentState);
 				setSortOrder(newSortOrder);
 				setCurrentPage(newCurrentPage);
 			}
@@ -196,13 +200,13 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 		id: Avo.Search.FilterProp
 	) => {
 		if (value) {
-			setFormState({
-				...formState,
+			setComponentState({
+				...componentState,
 				[id]: value,
 			});
 		} else {
-			setFormState({
-				...formState,
+			setComponentState({
+				...componentState,
 				[id]: DEFAULT_FORM_STATE[id],
 			});
 		}
@@ -243,7 +247,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	};
 
 	const deleteAllFilters = () => {
-		setFormState({
+		setComponentState({
 			...DEFAULT_FORM_STATE,
 		});
 	};
@@ -257,7 +261,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {
-			setFormState({
+			setComponentState({
 				...DEFAULT_FORM_STATE,
 				provider: [originalCp],
 			});
@@ -268,16 +272,16 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	 * Only copy search terms when the user clicks the search button or when enter is pressed
 	 * Otherwise we would trigger a search for every letter that is typed
 	 */
-	const copySearchTermsToFormState = async () => {
-		setFormState({
-			...formState,
+	const copySearchTermsToComponentState = async () => {
+		setComponentState({
+			...componentState,
 			query: searchTerms,
 		});
 
 		// Reset to page 1 when search is triggered
 		setCurrentPage(0);
 	};
-	useKeyPress('Enter', copySearchTermsToFormState);
+	useKeyPress('Enter', copySearchTermsToComponentState);
 
 	const copySearchLink = () => {
 		copyToClipboard(window.location.href);
@@ -299,7 +303,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	];
 	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
 		'desc'}`;
-	const hasFilters = !isEqual(formState, DEFAULT_FORM_STATE);
+	const hasFilters = !isEqual(componentState, DEFAULT_FORM_STATE);
 	const resultsCount = get(searchResults, 'count', 0);
 	// elasticsearch can only handle 10000 results efficiently
 	const pageCount = Math.ceil(Math.min(resultsCount, 10000) / ITEMS_PER_PAGE);
@@ -389,7 +393,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 											label="Zoeken"
 											type="primary"
 											className="c-search-button"
-											onClick={copySearchTermsToFormState}
+											onClick={copySearchTermsToComponentState}
 										/>
 									</FormGroup>
 									{hasFilters && (
@@ -405,7 +409,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 							</div>
 						</Spacer>
 						<SearchFilterControls
-							formState={formState}
+							componentState={componentState}
 							handleFilterFieldChange={handleFilterFieldChange}
 							multiOptions={multiOptions}
 						/>

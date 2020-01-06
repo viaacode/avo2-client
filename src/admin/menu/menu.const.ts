@@ -5,7 +5,7 @@ import { IconName } from '@viaa/avo2-components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { ReactSelectOption, TableColumn } from '../../shared/types';
 
-import { MenuEditFormState } from './menu.types';
+import { MenuEditComponentState } from './menu.types';
 
 export const MENU_PATH = {
 	MENU: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}`,
@@ -26,7 +26,7 @@ export const MENU_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Objec
 	{ label: 'Zoek', value: 'search' },
 ]);
 
-export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => ({
+export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditComponentState => ({
 	placement,
 	description: '',
 	icon: '',

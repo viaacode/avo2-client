@@ -3,14 +3,17 @@ import React, { FunctionComponent, useState } from 'react';
 
 import { Accordion, Button, Form, FormGroup, SelectOption } from '@viaa/avo2-components';
 
-import { ValueOf } from '../../../../shared/types';
-
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
+	ContentBlockBlockConfig,
+	ContentBlockComponentsConfig,
+	ContentBlockComponentState,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockField,
-	ContentBlockFormStates,
+	ContentBlockState,
+	ContentBlockStateType,
+	ContentBlockType,
 } from '../../content-block.types';
 
 import './ContentBlockForm.scss';
@@ -20,10 +23,9 @@ interface ContentBlockFormProps {
 	index: number;
 	isAccordionOpen: boolean;
 	length: number;
-	onChange: (
-		formState: Partial<ContentBlockFormStates> | Partial<ContentBlockFormStates>[]
-	) => void;
+	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
 	setIsAccordionOpen: () => void;
+	addComponentState: () => void;
 }
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
@@ -33,34 +35,48 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	length,
 	onChange,
 	setIsAccordionOpen,
+	addComponentState,
 }) => {
-	const { formState } = config;
+	const { components, block } = config;
 
 	// Hooks
 	const [formErrors, setFormErrors] = useState<{ [key: string]: string[] }>({});
 
 	// Methods
-	const handleChange = (key: keyof ContentBlockFormStates, value: any) => {
-		if (Array.isArray(formState)) {
-			// TODO: Handle change in array-based form states.
+	const handleChange = (
+		formGroupType: ContentBlockStateType,
+		key: keyof ContentBlockComponentState | keyof ContentBlockState,
+		value: any,
+		stateIndex?: number
+	) => {
+		if (Array.isArray(components.state)) {
+			const parsedValuee = get(value, 'value', value);
+			const updatedFormSett = [
+				{
+					[key]: parsedValuee,
+				},
+			];
+			onChange(formGroupType, updatedFormSett, stateIndex);
 			return;
 		}
 
 		// Get value from select option otherwise fallback to original
 		const parsedValue = get(value, 'value', value);
-		const updatedFormSet = { [key]: parsedValue };
-
-		handleValidation(key, parsedValue);
-		onChange(updatedFormSet);
+		const updatedFormSet = {
+			[key]: parsedValue,
+		};
+		handleValidation(key, formGroupType, parsedValue);
+		onChange(formGroupType, updatedFormSet);
 	};
 
 	const handleValidation = (
-		fieldKey: keyof ContentBlockFormStates,
-		updatedFormValue: Partial<ValueOf<ContentBlockFormStates>>
+		fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState,
+		formGroupType: ContentBlockStateType,
+		updatedFormValue: any
 	) => {
 		const errors: any = {};
 
-		const field = config.fields[fieldKey];
+		const field = config[formGroupType].fields[fieldKey];
 		const validator = get(field, 'validator');
 
 		if (validator) {
@@ -76,12 +92,14 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 
 	// Render
 	const renderFieldEditor = (
-		fieldKey: keyof ContentBlockFormStates,
+		fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState,
 		contentBlock: ContentBlockField,
-		formGroupState: ContentBlockFormStates
+		formGroupState: ContentBlockComponentState | ContentBlockState,
+		formGroupType: ContentBlockStateType,
+		stateIndex?: number
 	) => {
 		const EditorComponent = EDITOR_TYPES_MAP[contentBlock.editorType];
-		const editorId = `${index}-${formGroupState.blockType}-${fieldKey}`;
+		const editorId = `${index}-${block.state.blockType}-${fieldKey}`;
 		const defaultProps = {
 			...contentBlock.editorProps,
 			editorId,
@@ -92,22 +110,24 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		switch (contentBlock.editorType) {
 			case ContentBlockEditor.ColorSelect:
 				editorProps = {
-					onChange: (option: SelectOption) => handleChange(fieldKey, get(option, 'value', '')),
+					onChange: (option: SelectOption) =>
+						handleChange(formGroupType, fieldKey, get(option, 'value', ''), stateIndex),
 					value: defaultProps.options.find(
-						(opt: SelectOption) => opt.value === formGroupState.backgroundColor
+						(opt: SelectOption) => opt.value === block.state.backgroundColor
 					),
 				};
 				break;
 			case ContentBlockEditor.WYSIWYG:
 				editorProps = {
-					data: formGroupState[fieldKey],
-					onChange: (value: any) => handleChange(fieldKey, value),
+					id: `${index}-${block.state.blockType}-${fieldKey}`,
+					data: (formGroupState as any)[fieldKey],
+					onChange: (value: any) => handleChange(formGroupType, fieldKey, value, stateIndex),
 				};
 				break;
 			default:
 				editorProps = {
-					onChange: (value: any) => handleChange(fieldKey, value),
-					value: formGroupState[fieldKey],
+					onChange: (value: any) => handleChange(formGroupType, fieldKey, value, stateIndex),
+					value: (formGroupState as any)[fieldKey],
 				};
 				break;
 		}
@@ -116,27 +136,44 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	};
 
 	const renderFormGroup = (
-		contentBlock: ContentBlockConfig,
-		formGroupState: ContentBlockFormStates
-	) =>
-		Object.keys(contentBlock.fields).map((key: string, index: number) => (
+		blockType: ContentBlockType,
+		formGroup: ContentBlockComponentsConfig | ContentBlockBlockConfig,
+		formGroupState: ContentBlockComponentState | ContentBlockState,
+		formGroupType: ContentBlockStateType,
+		stateIndex?: number
+	) => {
+		return Object.keys(formGroup.fields).map((key: string, index: number) => (
 			<FormGroup
-				key={`${index}-${contentBlock.name}-${key}`}
-				label={contentBlock.fields[key].label}
-				error={formErrors[key as keyof ContentBlockFormStates]}
+				key={`${index}-${blockType}-${key}`}
+				label={
+					stateIndex
+						? `${config.name} ${stateIndex}: ${formGroup.fields[key].label}`
+						: formGroup.fields[key].label
+				}
+				error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
 			>
 				{renderFieldEditor(
-					key as keyof ContentBlockFormStates,
-					contentBlock.fields[key],
-					formGroupState
+					key as keyof ContentBlockComponentState | keyof ContentBlockState,
+					formGroup.fields[key],
+					formGroupState,
+					formGroupType,
+					stateIndex
 				)}
 			</FormGroup>
 		));
+	};
 
-	const renderFormGroups = (contentBlock: ContentBlockConfig) =>
-		Array.isArray(formState)
-			? formState.map(formGroupState => renderFormGroup(contentBlock, formGroupState))
-			: renderFormGroup(contentBlock, formState);
+	const renderFormGroups = (
+		blockType: ContentBlockType,
+		formGroup: ContentBlockComponentsConfig | ContentBlockBlockConfig,
+		formGroupType: ContentBlockStateType
+	) => {
+		return Array.isArray(formGroup.state)
+			? formGroup.state.map((formGroupState, stateIndex = 0) =>
+					renderFormGroup(blockType, formGroup, formGroupState, formGroupType, stateIndex)
+			  )
+			: renderFormGroup(blockType, formGroup, formGroup.state, formGroupType);
+	};
 
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => (
 		<Accordion
@@ -144,13 +181,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			isOpen={isAccordionOpen}
 			onToggle={setIsAccordionOpen}
 		>
-			{renderFormGroups(contentBlock)}
-			{Array.isArray(formState) && (
-				<Button
-					icon="add"
-					type="secondary"
-					onClick={() => {} /* TODO: Add empty element to form state. */}
-				/>
+			{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
+			{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
+			{Array.isArray(components.state) && (
+				<Button icon="add" type="secondary" onClick={addComponentState} />
 			)}
 		</Accordion>
 	);

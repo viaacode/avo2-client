@@ -15,7 +15,7 @@ export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''):
 };
 
 export function hasIdpLinked(user: Avo.User.User, idpType: IdpType): boolean {
-	return get(user, 'idpmaps', []).includes(idpType);
+	return [...get(user, 'idpmaps', [])].includes(idpType);
 }
 
 export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): string => {

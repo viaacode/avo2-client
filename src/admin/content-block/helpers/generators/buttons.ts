@@ -1,5 +1,6 @@
 import {
-	ButtonsBlockFormState,
+	ButtonsBlockComponentState,
+	ButtonsBlockState,
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -12,25 +13,31 @@ import {
 	TEXT_FIELD,
 } from './defaults';
 
-export const INITIAL_BUTTONS_BLOCK_STATE = (): ButtonsBlockFormState[] => [
+export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentState[] => [
 	{
 		label: '',
-		...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons),
-	},
-	{
-		label: '',
-		...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons),
 	},
 ];
 
+export const INITIAL_BUTTONS_BLOCK_STATE = (): ButtonsBlockState =>
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons);
+
 export const BUTTONS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Knoppen',
-	formState: INITIAL_BUTTONS_BLOCK_STATE(),
-	fields: {
-		label: TEXT_FIELD('Knoptekst is verplicht.', {
-			editorType: ContentBlockEditor.TextInput,
-		}),
-		align: ALIGN_FIELD(),
-		...CONTENT_BLOCK_FIELD_DEFAULTS(),
+	components: {
+		name: 'Knop',
+		state: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES(),
+		fields: {
+			label: TEXT_FIELD('Knoptekst is verplicht.', {
+				editorType: ContentBlockEditor.TextInput,
+			}),
+		},
+	},
+	block: {
+		state: INITIAL_BUTTONS_BLOCK_STATE(),
+		fields: {
+			align: ALIGN_FIELD(),
+			...CONTENT_BLOCK_FIELD_DEFAULTS(),
+		},
 	},
 });

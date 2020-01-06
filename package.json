@@ -21,7 +21,7 @@
 		"@apollo/react-hooks": "^3.0.0",
 		"@types/sanitize-html": "^1.20.2",
 		"@viaa/avo2-components": "1.21.0",
-		"@viaa/avo2-types": "^2.6.1",
+		"@viaa/avo2-types": "^2.7.1",
 		"apollo-boost": "^0.4.3",
 		"classnames": "^2.2.6",
 		"date-fns": "^2.0.0-beta.1",

@@ -63,7 +63,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 			exact={exact}
 			render={props => {
 				// Already logged in
-				if (loginState && loginState.message === LoginMessage.LOGGED_IN && user) {
+				if (loginState && loginState.message === 'LOGGED_IN' && user) {
 					// TODO enable this once we can save profile info
 					// if (profileHasToBeComplete && isProfileComplete()) {
 					const Component = component;
@@ -108,4 +108,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SecuredRoute);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(SecuredRoute);

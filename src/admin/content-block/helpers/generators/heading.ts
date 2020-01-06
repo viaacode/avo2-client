@@ -4,7 +4,8 @@ import {
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
-	HeadingBlockFormState,
+	HeadingBlockComponentState,
+	HeadingBlockState,
 } from '../../content-block.types';
 import {
 	ALIGN_FIELD,
@@ -13,29 +14,36 @@ import {
 	TEXT_FIELD,
 } from './defaults';
 
-export const INITIAL_HEADING_BLOCK_STATE = (): HeadingBlockFormState => ({
+export const INITIAL_HEADING_BLOCK_COMPONENT_STATE = (): HeadingBlockComponentState => ({
 	title: '',
 	level: 'h1',
 	align: 'left',
-	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading),
 });
+
+export const INITIAL_HEADING_BLOCK_STATE = (): HeadingBlockState =>
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading);
 
 export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Titel',
-	formState: INITIAL_HEADING_BLOCK_STATE(),
-	fields: {
-		title: TEXT_FIELD('Titel is verplicht.', {
-			label: 'Titel',
-			editorType: ContentBlockEditor.TextInput,
-		}),
-		level: {
-			label: 'Stijl',
-			editorType: ContentBlockEditor.Select,
-			editorProps: {
-				options: HEADING_LEVEL_OPTIONS,
+	components: {
+		state: INITIAL_HEADING_BLOCK_COMPONENT_STATE(),
+		fields: {
+			title: TEXT_FIELD('Titel is verplicht.', {
+				label: 'Titel',
+				editorType: ContentBlockEditor.TextInput,
+			}),
+			level: {
+				label: 'Stijl',
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: HEADING_LEVEL_OPTIONS,
+				},
 			},
+			align: ALIGN_FIELD(),
 		},
-		align: ALIGN_FIELD(),
-		...CONTENT_BLOCK_FIELD_DEFAULTS(),
+	},
+	block: {
+		state: INITIAL_HEADING_BLOCK_STATE(),
+		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

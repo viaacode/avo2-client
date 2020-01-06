@@ -29,7 +29,7 @@ export interface SearchResults {
 }
 
 export interface SearchFilterControlsProps {
-	formState: Avo.Search.Filters;
+	componentState: Avo.Search.Filters;
 	handleFilterFieldChange: (
 		values: SearchFilterFieldValues,
 		propertyName: Avo.Search.FilterProp
