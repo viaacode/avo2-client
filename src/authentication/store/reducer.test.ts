@@ -1,9 +1,10 @@
 import { Avo } from '@viaa/avo2-types';
 
+import { LoginMessage } from '../authentication.types';
 import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
 import initialState from './initial-state';
 import loginReducer from './reducer';
-import { LoginActionTypes, LoginMessage } from './types';
+import { LoginActionTypes } from './types';
 
 describe('login > store > reducer', () => {
 	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_ERROR}`, () => {

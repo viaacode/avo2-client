@@ -2,10 +2,7 @@ import { Tickets } from 'node-zendesk';
 import queryString from 'query-string';
 import { getEnv } from '../shared/helpers';
 
-import {
-	StamboekValidationStatuses,
-	ValidateStamboekResponse,
-} from '@viaa/avo2-types/types/stamboek/types';
+import { Avo } from '@viaa/avo2-types';
 
 const stamboekValidationCache: {
 	[stamboekNumber: string]: boolean;
@@ -13,7 +10,7 @@ const stamboekValidationCache: {
 
 export async function verifyStamboekNumber(
 	stamboekNumber: string
-): Promise<StamboekValidationStatuses> {
+): Promise<Avo.Stamboek.ValidationStatuses> {
 	if (stamboekValidationCache[stamboekNumber]) {
 		return 'VALID';
 	}
@@ -30,7 +27,7 @@ export async function verifyStamboekNumber(
 		}
 	);
 
-	const data: ValidateStamboekResponse = await response.json();
+	const data: Avo.Stamboek.ValidateResponse = await response.json();
 	if (data.status === 'VALID') {
 		// Cache values as much as possible, to avoid multiple requests to the stamboek api
 		stamboekValidationCache[stamboekNumber] = true;

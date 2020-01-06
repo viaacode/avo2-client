@@ -155,8 +155,7 @@ export class CollectionService {
 				fragmentToUpdate = cloneDeep(fragmentToUpdate);
 
 				delete (fragmentToUpdate as any).__typename;
-				// TODO: remove type cast when next typings repo version is released (1.8.0)
-				delete (fragmentToUpdate as any).item_meta;
+				delete fragmentToUpdate.item_meta;
 
 				updatePromises.push(
 					triggerCollectionFragmentUpdate({
@@ -324,8 +323,7 @@ export class CollectionService {
 
 		delete fragmentToAdd.id;
 		delete (fragmentToAdd as any).__typename;
-		// TODO: remove type cast when next typings repo version is released (1.8.0)
-		delete (fragmentToAdd as any).item_meta;
+		delete fragmentToAdd.item_meta;
 
 		const response = await triggerCollectionFragmentInsert({
 			variables: {

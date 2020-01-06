@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -52,6 +53,8 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	setIsPublic,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
@@ -118,13 +121,25 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} title="Deel deze collectie" size="large" onClose={onClose} scrollable>
+		<Modal
+			isOpen={isOpen}
+			title={t('collection/components/modals/share-collection-modal___deel-deze-collectie')}
+			size="large"
+			onClose={onClose}
+			scrollable
+		>
 			<ModalBody>
-				<p>Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.</p>
+				<p>
+					<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen">
+						Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.
+					</Trans>
+				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">
 						<Heading className="u-m-0" type="h4">
-							Zichtbaarheid
+							<Trans i18nKey="collection/components/modals/share-collection-modal___zichtbaarheid">
+								Zichtbaarheid
+							</Trans>
 						</Heading>
 					</Spacer>
 					<RadioButtonGroup>
@@ -144,8 +159,16 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label="Annuleren" onClick={() => onClose()} />
-								<Button type="primary" label="Opslaan" onClick={onSave} />
+								<Button
+									type="secondary"
+									label={t('collection/components/modals/share-collection-modal___annuleren')}
+									onClick={() => onClose()}
+								/>
+								<Button
+									type="primary"
+									label={t('collection/components/modals/share-collection-modal___opslaan')}
+									onClick={onSave}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

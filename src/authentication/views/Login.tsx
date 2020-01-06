@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -7,13 +8,13 @@ import { Dispatch } from 'redux';
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 
-import { APP_PATH } from '../../constants';
+import { LoginMessage } from '../authentication.types';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
-import { LoginMessage } from '../store/types';
 
 export interface LoginProps extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
@@ -32,27 +33,7 @@ const Login: FunctionComponent<LoginProps> = ({
 	loginStateError,
 	getLoginState,
 }) => {
-	const getLastLoginAttempt = (): null | Date => {
-		try {
-			const lastLoginAttempt = localStorage.getItem(LOGIN_ATTEMPT_KEY) || '';
-			if (!lastLoginAttempt || lastLoginAttempt.trim().length < 3) {
-				return null;
-			}
-			return new Date(lastLoginAttempt);
-		} catch (err) {
-			console.error('Failed to check recent login attempts');
-			return null;
-		}
-	};
-
-	const addLoginAttempt = () => {
-		localStorage.setItem(LOGIN_ATTEMPT_KEY, new Date().toISOString());
-	};
-
-	const hasRecentLoginAttempt = React.useCallback(() => {
-		const lastAttempt = getLastLoginAttempt();
-		return lastAttempt && lastAttempt.getTime() > new Date().getTime() - 5 * 1000;
-	}, []);
+	const [t] = useTranslation();
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -70,31 +51,25 @@ const Login: FunctionComponent<LoginProps> = ({
 			loginState &&
 			loginState.message === LoginMessage.LOGGED_OUT &&
 			!loginStateLoading &&
-			!loginStateError &&
-			!hasRecentLoginAttempt()
+			!loginStateError
 		) {
-			addLoginAttempt();
 			redirectToServerLoginPage(location);
 		}
-	}, [
-		getLoginState,
-		loginState,
-		loginStateLoading,
-		loginStateError,
-		hasRecentLoginAttempt,
-		history,
-		location,
-	]);
+	}, [getLoginState, loginState, loginStateLoading, loginStateError, history, location]);
 
 	const tryLoginAgainManually = () => {
 		localStorage.removeItem(LOGIN_ATTEMPT_KEY);
 		getLoginState();
 	};
 
-	if (loginStateError || hasRecentLoginAttempt()) {
+	if (loginStateError) {
 		return (
 			<ErrorView message="Het inloggen is mislukt" icon="lock">
-				<Button type="link" onClick={tryLoginAgainManually} label="Probeer opnieuw" />
+				<Button
+					type="link"
+					onClick={tryLoginAgainManually}
+					label={t('authentication/views/login___probeer-opnieuw')}
+				/>
 			</ErrorView>
 		);
 	}
@@ -125,9 +100,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(Login)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

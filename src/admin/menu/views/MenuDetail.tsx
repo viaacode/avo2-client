@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, isEqual, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -28,6 +29,8 @@ import './MenuDetail.scss';
 interface MenuDetailProps extends DefaultSecureRouteProps<{ menu: string }> {}
 
 const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
+	const [t] = useTranslation();
+
 	const [activeRow, setActiveRow] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
@@ -218,7 +221,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 								<Flex center>
 									<Button
 										icon="plus"
-										label="Voeg een item toe"
+										label={t('admin/menu/views/menu-detail___voeg-een-item-toe')}
 										onClick={() =>
 											handleNavigate(MENU_PATH.MENU_ITEM_CREATE, {
 												menu: menuId,
@@ -239,10 +242,14 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				<AdminLayoutActions>
 					<Button
 						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
-						label="Opslaan"
+						label={t('admin/menu/views/menu-detail___opslaan')}
 						onClick={() => handleSave(refetch)}
 					/>
-					<Button label="Annuleer" onClick={() => handleNavigate(MENU_PATH.MENU)} type="tertiary" />
+					<Button
+						label={t('admin/menu/views/menu-detail___annuleer')}
+						onClick={() => handleNavigate(MENU_PATH.MENU)}
+						type="tertiary"
+					/>
 				</AdminLayoutActions>
 			</AdminLayout>
 		);

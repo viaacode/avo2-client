@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import { clone, compact, fromPairs } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -62,7 +63,9 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 	disabled,
 	onChange,
 }) => {
-	// Computedd
+	const [t] = useTranslation();
+
+	// Computed
 	const optionsFromPairs = fromPairs(
 		options.map(({ checked, ...option }: CheckboxOption) => [option.id, checked])
 	);
@@ -166,7 +169,9 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 							</FormGroup>
 							<FormGroup>
 								<Button
-									label="Toepassen"
+									label={t(
+										'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
+									)}
 									type="primary"
 									className="c-apply-filter-button"
 									block
@@ -199,7 +204,12 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 				</div>
 				<Modal isOpen={isOpen} title={label} size="large" onClose={closeDropdownOrModal} scrollable>
 					<ModalHeaderRight>
-						<TextInput placeholder="Zoeken..." icon="search" />
+						<TextInput
+							placeholder={t(
+								'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___zoeken'
+							)}
+							icon="search"
+						/>
 					</ModalHeaderRight>
 					<ModalBody>
 						<Spacer>
@@ -218,13 +228,17 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 								<ToolbarItem>
 									<ButtonToolbar>
 										<Button
-											label="Annuleren"
+											label={t(
+												'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___annuleren'
+											)}
 											type="secondary"
 											block
 											onClick={closeDropdownOrModal}
 										/>
 										<Button
-											label="Toepassen"
+											label={t(
+												'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
+											)}
 											className="c-apply-filter-button"
 											type="primary"
 											block

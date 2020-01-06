@@ -5,6 +5,8 @@ import { match, RouteComponentProps, withRouter } from 'react-router';
 
 import { Blankslate, Container, IconName } from '@viaa/avo2-components';
 
+import i18n from '../../shared/translations/i18n';
+
 interface ErrorViewQueryParams {
 	message?: string;
 	icon?: IconName;
@@ -28,7 +30,10 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	const queryParams = queryString.parse(
 		(location.search || '').substring(1)
 	) as ErrorViewQueryParams;
-	const errorMessage: string = queryParams.message || message || 'De pagina werd niet gevonden';
+	const errorMessage: string =
+		queryParams.message ||
+		message ||
+		i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden');
 	const errorIcon: IconName = queryParams.icon || icon || 'search';
 
 	return (

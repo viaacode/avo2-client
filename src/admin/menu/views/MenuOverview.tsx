@@ -1,5 +1,6 @@
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
@@ -18,6 +19,8 @@ import { MenuOverviewTableCols } from '../menu.types';
 interface MenuOverviewProps extends DefaultSecureRouteProps {}
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
+	const [t] = useTranslation();
+
 	const [menus, setMenus] = useState<any>([]);
 
 	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
@@ -33,14 +36,14 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 							icon="list"
 							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
 							size="small"
-							title="Bekijk alle navigatie items"
+							title={t('admin/menu/views/menu-overview___bekijk-alle-navigatie-items')}
 							type="tertiary"
 						/>
 						<Button
 							icon="plus"
 							onClick={() => navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu })}
 							size="small"
-							title="Voeg een navigatie item toe"
+							title={t('admin/menu/views/menu-overview___voeg-een-navigatie-item-toe')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -55,14 +58,16 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 			return (
 				<ErrorView message="Er zijn nog geen navigaties aangemaakt.">
 					<p>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
-						blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
-						ratione quas impedit repudiandae nisi corrupti quis eaque!
+						<Trans i18nKey="admin/menu/views/menu-overview___beschrijving-hoe-navigatie-items-toe-te-voegen">
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
+							blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
+							ratione quas impedit repudiandae nisi corrupti quis eaque!
+						</Trans>
 					</p>
 					<Spacer margin="top">
 						<Button
 							icon="plus"
-							label="Navigatie toevoegen"
+							label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
 							onClick={() => history.push(MENU_PATH.MENU_CREATE)}
 						/>
 					</Spacer>
@@ -100,7 +105,10 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 			</AdminLayoutBody>
 			{!!menus.length && (
 				<AdminLayoutActions>
-					<Button label="Navigatie toevoegen" onClick={() => history.push(MENU_PATH.MENU_CREATE)} />
+					<Button
+						label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
+						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
+					/>
 				</AdminLayoutActions>
 			)}
 		</AdminLayout>

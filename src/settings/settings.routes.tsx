@@ -21,7 +21,6 @@ export const renderSettingsRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		component={Profile}
 		exact
-		profileHasToBeComplete={false}
 		path={SETTINGS_PATH.COMPLETE_PROFILE}
 		key={SETTINGS_PATH.COMPLETE_PROFILE}
 	/>,

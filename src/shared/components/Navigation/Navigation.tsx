@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactText, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
 
@@ -28,7 +29,6 @@ import {
 } from '../../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
-import { LoginMessage } from '../../../authentication/store/types';
 import { APP_PATH } from '../../../constants';
 import { SETTINGS_PATH } from '../../../settings/settings.const';
 import { AppState } from '../../../store';
@@ -38,8 +38,8 @@ import { NavigationItem } from '../../types';
 import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
-	user?: Avo.User.User;
-	loginMessage: LoginMessage;
+	user: Avo.User.User | undefined;
+	loginMessage: Avo.Auth.LoginMessage;
 }
 
 /**
@@ -58,11 +58,13 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	loginMessage,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	const getPrimaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn(loginMessage)) {
+		if (isLoggedIn(loginMessage, user)) {
 			return [
 				{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME, key: 'teachers' },
 				{
@@ -91,7 +93,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn(loginMessage)) {
+		if (isLoggedIn(loginMessage, user)) {
 			if (isMobileMenuOpen) {
 				return [
 					{ label: 'Instellingen', location: APP_PATH.SETTINGS, key: 'settings' },
@@ -256,7 +258,12 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 							</ToolbarItem>
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-very-little-space">
-									<Button icon="menu" type="borderless-i" ariaLabel="menu" onClick={onToggleMenu} />
+									<Button
+										icon="menu"
+										type="borderless-i"
+										ariaLabel={t('shared/components/navigation/navigation___menu')}
+										onClick={onToggleMenu}
+									/>
 								</div>
 							</ToolbarItem>
 						</ToolbarRight>

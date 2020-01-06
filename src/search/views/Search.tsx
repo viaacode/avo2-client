@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { Dispatch } from 'redux';
@@ -84,6 +85,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	history,
 	location,
 }) => {
+	const [t] = useTranslation();
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
 	const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULT_SORT_ORDER);
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
@@ -182,7 +184,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
-			toastService.danger('Ongeldige zoek query');
+			toastService.danger(t('search/views/search___ongeldige-zoek-query'));
 			console.error(err);
 		}
 		setQueryParamsAnalysed(true);
@@ -286,16 +288,20 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	const onCopySearchLinkClicked = () => {
 		copySearchLink();
 		setIsOptionsMenuOpen(false);
-		toastService.success('De link is succesvol gekopieerd');
+		toastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
 	};
 
 	const orderOptions = [
-		{ label: 'Meest relevant', value: 'relevance_desc' },
-		{ label: 'Meest bekeken', value: 'views_desc', disabled: true },
-		{ label: 'Uitzenddatum aflopend', value: 'broadcastDate_desc' },
-		{ label: 'Uitzenddatum oplopend', value: 'broadcastDate_asc' },
-		{ label: 'Laatst toegevoegd', value: 'addedDate_desc', disabled: true },
-		{ label: 'Laatst gewijzigd', value: 'editDate_desc', disabled: true },
+		{ label: t('search/views/search___meest-relevant'), value: 'relevance_desc' },
+		{ label: t('search/views/search___meest-bekeken'), value: 'views_desc', disabled: true },
+		{ label: t('search/views/search___uitzenddatum-aflopend'), value: 'broadcastDate_desc' },
+		{ label: t('search/views/search___uitzenddatum-oplopend'), value: 'broadcastDate_asc' },
+		{
+			label: t('search/views/search___laatst-toegevoegd'),
+			value: 'addedDate_desc',
+			disabled: true,
+		},
+		{ label: t('search/views/search___laatst-gewijzigd'), value: 'editDate_desc', disabled: true },
 	];
 	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
 		'desc'}`;
@@ -313,7 +319,9 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 					<Toolbar>
 						<ToolbarLeft>
 							<ToolbarItem>
-								<ToolbarTitle>Zoekresultaten</ToolbarTitle>
+								<ToolbarTitle>
+									<Trans i18nKey="search/views/search___zoekresultaten">Zoekresultaten</Trans>
+								</ToolbarTitle>
 							</ToolbarItem>
 							<ToolbarItem>
 								<p className="c-body-1 u-text-muted">
@@ -324,7 +332,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 						<ToolbarRight>
 							<Flex spaced="regular">
 								<Form type="inline">
-									<FormGroup label="Sorteer op" labelFor="sortBy">
+									<FormGroup label={t('search/views/search___sorteer-op')} labelFor="sortBy">
 										<Select
 											className="c-search-view__sort-select"
 											id="sortBy"
@@ -348,14 +356,14 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 										<Button
 											type="link"
 											className="c-menu__item"
-											label="Kopieer vaste link naar deze zoekopdracht"
+											label={t('search/views/search___kopieer-vaste-link-naar-deze-zoekopdracht')}
 											onClick={onCopySearchLinkClicked}
 										/>
 										{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
 										{/* <Button
 											type="link"
 											className="c-menu__item"
-											label="Maak van deze zoekopdracht een opdracht"
+											label={t('search/views/search___maak-van-deze-zoekopdracht-een-opdracht')}
 											onClick={() => {
 												setIsOptionsMenuOpen(false);
 												toastService.info('Nog niet geïmplementeerd');
@@ -377,7 +385,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 									<FormGroup inlineMode="grow">
 										<TextInput
 											id="query"
-											placeholder="Vul uw zoekterm in..."
+											placeholder={t('search/views/search___vul-uw-zoekterm-in')}
 											value={searchTerms}
 											className="c-search-term-input-field"
 											icon="search"
@@ -386,7 +394,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 									</FormGroup>
 									<FormGroup inlineMode="shrink">
 										<Button
-											label="Zoeken"
+											label={t('search/views/search___zoeken')}
 											type="primary"
 											className="c-search-button"
 											onClick={copySearchTermsToFormState}
@@ -395,7 +403,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 									{hasFilters && (
 										<FormGroup inlineMode="shrink">
 											<Button
-												label="Verwijder alle filters"
+												label={t('search/views/search___verwijder-alle-filters')}
 												type="link"
 												onClick={deleteAllFilters}
 											/>
@@ -440,18 +448,17 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 			filters?: Partial<Avo.Search.Filters>,
 			filterOptionSearch?: Partial<Avo.Search.FilterOption>
 		) =>
-			dispatch(getSearchResults(
-				orderProperty,
-				orderDirection,
-				from,
-				size,
-				filters,
-				filterOptionSearch
-			) as any),
+			dispatch(
+				getSearchResults(
+					orderProperty,
+					orderDirection,
+					from,
+					size,
+					filters,
+					filterOptionSearch
+				) as any
+			),
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Search);
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

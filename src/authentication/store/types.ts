@@ -2,11 +2,6 @@ import { Action } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
-export enum LoginMessage { // TODO switch to typings type
-	LOGGED_IN = 'LOGGED_IN',
-	LOGGED_OUT = 'LOGGED_OUT',
-}
-
 export enum LoginActionTypes {
 	SET_LOGIN_LOADING = '@@login/SET_LOGIN_LOADING',
 	SET_LOGIN_SUCCESS = '@@login/SET_LOGIN_SUCCESS',
@@ -14,7 +9,7 @@ export enum LoginActionTypes {
 }
 
 export interface SetLoginSuccessAction extends Action {
-	data: Avo.Auth.LoginResponse;
+	data: Avo.Auth.LoginResponse | null;
 }
 
 export interface SetLoginLoadingAction extends Action {
