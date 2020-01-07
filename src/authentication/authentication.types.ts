@@ -15,3 +15,8 @@ export interface Action {
 	type: string;
 	payload: ActionPayload;
 }
+
+export enum LoginMessage {
+	LOGGED_IN = 'LOGGED_IN',
+	LOGGED_OUT = 'LOGGED_OUT',
+}

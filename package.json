@@ -21,14 +21,14 @@
 	],
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
-		"@types/sanitize-html": "^1.20.2",
 		"@viaa/avo2-components": "1.21.0",
-		"@viaa/avo2-types": "^2.7.1",
+		"@viaa/avo2-types": "^2.7.2",
 		"apollo-boost": "^0.4.3",
 		"classnames": "^2.2.6",
 		"date-fns": "^2.0.0-beta.1",
 		"glob": "^7.1.6",
 		"graphql": "^14.5.8",
+		"i18next": "^19.0.2",
 		"lodash-es": "^4.17.11",
 		"marked": "^0.7.0",
 		"moment": "^2.24.0",
@@ -50,8 +50,7 @@
 		"redux": "^4.0.1",
 		"redux-devtools-extension": "^2.13.8",
 		"redux-thunk": "^2.3.0",
-		"sanitize-html": "^1.20.1",
-		"i18next": "^19.0.2"
+		"sanitize-html": "^1.20.1"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^8.1.0",
@@ -62,7 +61,6 @@
 		"@types/enzyme": "^3.9.3",
 		"@types/enzyme-adapter-react-16": "^1.0.5",
 		"@types/glob": "^7.1.1",
-		"@types/graphql": "^14.2.3",
 		"@types/i18next": "^13.0.0",
 		"@types/jest": "^24.0.25",
 		"@types/jest-expect-message": "^1.0.1",
@@ -77,6 +75,7 @@
 		"@types/react-router-dom": "^4.3.3",
 		"@types/react-select": "^3.0.8",
 		"@types/redux-mock-store": "^1.0.1",
+		"@types/sanitize-html": "^1.20.2",
 		"@types/storybook__react": "^4.0.2",
 		"enzyme": "^3.10.0",
 		"enzyme-adapter-react-16": "^1.14.0",
