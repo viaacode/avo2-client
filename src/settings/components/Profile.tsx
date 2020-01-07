@@ -289,7 +289,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				<Spacer margin="top-small">
 					<Select
 						options={[
-							{ label: t('Voeg een organisatie toe'), value: '' },
+							{ label: t('settings/components/profile___voeg-een-organisatie-toe'), value: '' },
 							...cities.map(c => ({ label: c, value: c })),
 						]}
 						value={selectedCity || ''}
@@ -298,7 +298,10 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				</Spacer>
 				<Spacer margin="top-small">
 					{organizationsLoadingState === 'loading' && (
-						<Alert type="spinner" message={t('Bezig met ophalen van organisaties...')} />
+						<Alert
+							type="spinner"
+							message={t('settings/components/profile___bezig-met-ophalen-van-organisaties')}
+						/>
 					)}
 					{!!selectedCity && organizationsLoadingState === 'loaded' && (
 						<Select
@@ -326,11 +329,15 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				<Container mode="horizontal" size="medium">
 					<Container mode="vertical">
 						<Heading type="h1">
-							<Trans>Je bent er bijna. Vervolledig nog je profiel.</Trans>
+							<Trans i18nKey="settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel">
+								Je bent er bijna. Vervolledig nog je profiel.
+							</Trans>
 						</Heading>
 						<Spacer margin="top-large">
 							<Alert type="info">
-								<Trans>We gebruiken deze info om je gepersonaliseerde content te tonen.</Trans>
+								<Trans i18nKey="settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen">
+									We gebruiken deze info om je gepersonaliseerde content te tonen.
+								</Trans>
 							</Alert>
 						</Spacer>
 						<Form type="standard">
@@ -339,7 +346,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 							</Spacer>
 						</Form>
 						<Button
-							label={t('Inloggen')}
+							label={t('settings/components/profile___inloggen')}
 							type="primary"
 							disabled={!areAllRequiredFieldFilledIn() || isSaving}
 							onClick={saveProfileChanges}
@@ -410,7 +417,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 										</>
 										{renderRequiredFields(subjects, educationLevels)}
 										<Button
-											label={t('Opslaan')}
+											label={t('settings/components/profile___opslaan')}
 											type="primary"
 											disabled={!areAllRequiredFieldFilledIn() || isSaving}
 											onClick={saveProfileChanges}

@@ -40,7 +40,12 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 
 	const renderError = () => (
 		<ErrorView
-			message={loadingInfo.message || t('Er is iets mis gegaan bij het laden van de gegevens')}
+			message={
+				loadingInfo.message ||
+				t(
+					'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-is-iets-mis-gegaan-bij-het-laden-van-de-gegevens'
+				)
+			}
 			icon={loadingInfo.icon || 'alert-triangle'}
 		/>
 	);
@@ -56,7 +61,12 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 			}
 			return (
 				<ErrorView
-					message={notFoundError || t('Het gevraagde object is niet gevonden')}
+					message={
+						notFoundError ||
+						t(
+							'shared/components/loading-error-loaded-component/loading-error-loaded-component___het-gevraagde-object-is-niet-gevonden'
+						)
+					}
 					icon={'search'}
 				/>
 			);
@@ -81,7 +91,11 @@ export async function checkPermissions(
 		} else {
 			setLoadingInfo({
 				state: 'error',
-				message: noPermissionsMessage || t('Je hebt geen rechten voor deze pagina'),
+				message:
+					noPermissionsMessage ||
+					t(
+						'shared/components/loading-error-loaded-component/loading-error-loaded-component___je-hebt-geen-rechten-voor-deze-pagina'
+					),
 				icon: 'lock',
 			});
 		}
@@ -89,7 +103,9 @@ export async function checkPermissions(
 		console.error('Failed to check permissions', err, { permissions, user });
 		setLoadingInfo({
 			state: 'error',
-			message: t('Er ging iets mis tijdens het controleren van de rechten van je account'),
+			message: t(
+				'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
+			),
 			icon: 'alert-triangle',
 		});
 	}

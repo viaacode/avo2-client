@@ -349,7 +349,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			initAssignmentData,
 			setLoadingInfo,
 			t,
-			t('Je hebt geen rechten om deze opdracht te bewerken')
+			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
 		);
 	}, [loadingInfo, location, match.params, setLoadingInfo, assignmentContent, t, user]);
 

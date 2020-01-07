@@ -114,22 +114,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const getPermission = (collection: Avo.Collection.Collection) => ({
 		canDeleteCollection: {
+			user,
 			permissions: [
 				{ name: PERMISSIONS.DELETE_OWN_COLLECTIONS, obj: collection },
 				{
 					name: PERMISSIONS.DELETE_ANY_COLLECTIONS,
 				},
 			],
-			user,
 		},
 		canEditCollection: {
+			user,
 			permissions: [
 				{ name: PERMISSIONS.EDIT_OWN_COLLECTIONS, obj: collection },
 				{
 					name: PERMISSIONS.EDIT_ANY_COLLECTIONS,
 				},
 			],
-			user,
 		},
 	});
 
@@ -426,8 +426,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			renderData={renderCollection}
 			permissions={permissions}
 			user={user}
-			notFoundMessage={t('Deze collectie werd niet gevonden')}
-			noPermissionsMessage={t('Je hebt niet genoeg rechten om deze collectie te bekijken')}
+			notFoundMessage={t('collection/views/collection-detail___deze-collectie-werd-niet-gevonden')}
+			noPermissionsMessage={t(
+				'collection/views/collection-detail___je-hebt-niet-genoeg-rechten-om-deze-collectie-te-bekijken'
+			)}
 		/>
 	);
 };

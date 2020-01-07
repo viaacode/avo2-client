@@ -63,14 +63,23 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 
 							if (firstGraphQlError === 'DELETED') {
 								// TODO: show different message if a list of items was returned but only some were deleted
-								return <ErrorView message={t('Dit item is verwijderd')} icon="delete" />;
+								return (
+									<ErrorView
+										message={t(
+											'shared/components/data-query-component/data-query-component___dit-item-is-verwijderd'
+										)}
+										icon="delete"
+									/>
+								);
 							}
 
 							console.error(result.error);
 
 							return (
 								<ErrorView
-									message={t('Er ging iets mis tijdens het ophalen')}
+									message={t(
+										'shared/components/data-query-component/data-query-component___er-ging-iets-mis-tijdens-het-ophalen'
+									)}
 									icon="alert-triangle"
 								/>
 							);
@@ -89,7 +98,12 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 
 						return (
 							<ErrorView
-								message={notFoundMessage || t('Het opgevraagde object werd niet gevonden')}
+								message={
+									notFoundMessage ||
+									t(
+										'shared/components/data-query-component/data-query-component___het-opgevraagde-object-werd-niet-gevonden'
+									)
+								}
 							/>
 						);
 					}}
@@ -97,7 +111,12 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			</PermissionGuardPass>
 			<PermissionGuardFail>
 				<ErrorView
-					message={noPermissionsMessage || t('Je hebt geen rechten om deze pagina te bekijken')}
+					message={
+						noPermissionsMessage ||
+						t(
+							'shared/components/data-query-component/data-query-component___je-hebt-geen-rechten-om-deze-pagina-te-bekijken'
+						)
+					}
 					icon="lock"
 				/>
 			</PermissionGuardFail>

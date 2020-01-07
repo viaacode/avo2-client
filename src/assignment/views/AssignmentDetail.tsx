@@ -117,7 +117,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 						if (isNil(assignmentResponseId)) {
 							toastService.info(
-								t('Het aanmaken van de opdracht antwoord entry is mislukt (leeg id)')
+								t(
+									'assignment/views/assignment-detail___het-aanmaken-van-de-opdracht-antwoord-entry-is-mislukt-leeg-id'
+								)
 							);
 							return;
 						}
@@ -126,7 +128,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						tempAssignment.assignment_responses = [assignmentResponse as Avo.Assignment.Response];
 					} catch (err) {
 						console.error(err);
-						toastService.danger(t('Het aanmaken van een opdracht antwoord entry is mislukt'));
+						toastService.danger(
+							t(
+								'assignment/views/assignment-detail___het-aanmaken-van-een-opdracht-antwoord-entry-is-mislukt'
+							)
+						);
 					}
 				}
 			}
@@ -154,7 +160,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					if (!tempAssignment) {
 						setLoadingInfo({
 							state: 'error',
-							message: t('De opdracht werdt niet gevonden'),
+							message: t('assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden'),
 							icon: 'search',
 						});
 						return;
@@ -188,7 +194,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					switch (graphqlError) {
 						case DELETED:
 							errorObj = {
-								message: t('De opdracht werd verwijderd'),
+								message: t('assignment/views/assignment-detail___de-opdracht-werd-verwijderd'),
 								icon: 'delete' as IconName,
 							};
 							break;
@@ -202,14 +208,18 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 						case PAST_DEADLINE:
 							errorObj = {
-								message: t('De deadline voor deze opdracht is reeds verlopen'),
+								message: t(
+									'assignment/views/assignment-detail___de-deadline-voor-deze-opdracht-is-reeds-verlopen'
+								),
 								icon: 'clock' as IconName,
 							};
 							break;
 
 						default:
 							errorObj = {
-								message: t('Het ophalen van de opdracht is mislukt'),
+								message: t(
+									'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
+								),
 								icon: 'alert-triangle' as IconName,
 							};
 							break;
@@ -231,15 +241,17 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			retrieveAssignmentAndContent,
 			setLoadingInfo,
 			t,
-			t('Je hebt geen rechten om deze opdracht te bekijken')
+			t('assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken')
 		);
-	}, [match.params, user, isOwnerOfAssignment, loadingInfo, triggerInsertAssignmentResponse, t]);
+	}, [match.params, user, isOwnerOfAssignment, triggerInsertAssignmentResponse, t]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {
 			if (assignment && isOwnerOfAssignment(assignment)) {
 				toastService.info(
-					t('U kan deze opdracht niet archiveren want dit is slechts een voorbeeld')
+					t(
+						'assignment/views/assignment-detail___u-kan-deze-opdracht-niet-archiveren-want-dit-is-slechts-een-voorbeeld'
+					)
 				);
 				return;
 			}
@@ -276,13 +288,17 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 								id: assignmentResponse.id,
 							},
 						});
-						toastService.danger(t('Het archiveren van de opdracht is mislukt'));
+						toastService.danger(
+							t('assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt')
+						);
 					});
 			} else {
 				console.error("assignmentResponse object is null or doesn't have an id", {
 					assignmentResponse,
 				});
-				toastService.danger(t('Het archiveren van de opdracht is mislukt'));
+				toastService.danger(
+					t('assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt')
+				);
 			}
 		}
 	};
@@ -330,7 +346,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				return (
 					<ErrorView
 						icon="alert-triangle"
-						message={t('Onverwacht opdracht inhoud type: "{0}"', content_label || undefined)}
+						message={t('assignment/views/assignment-detail___onverwacht-opdracht-inhoud-type-0', {
+							type: content_label || undefined,
+						})}
 					/>
 				);
 		}
@@ -353,7 +371,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 		return (
 			<Link className="c-return" to={backLink}>
 				<Icon type="arrows" name="chevron-left" />
-				<span>{isOwner ? t('Terug naar opdracht bewerken') : t('Mijn opdrachten')}</span>
+				<span>
+					{isOwner
+						? t('assignment/views/assignment-detail___terug-naar-opdracht-bewerken')
+						: t('assignment/views/assignment-detail___mijn-opdrachten')}
+				</span>
 			</Link>
 		);
 	};
