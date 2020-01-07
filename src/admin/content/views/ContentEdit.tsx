@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { FunctionComponent, useEffect, useReducer, useState } from 'react';
+import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -55,7 +55,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
 	// Hooks
-	const [{ cbConfigs }, dispatch] = useReducer<React.Reducer<ContentEditState, ContentEditAction>>(
+	const [{ cbConfigs }, dispatch] = useReducer<Reducer<ContentEditState, ContentEditAction>>(
 		contentEditReducer(initialState),
 		initialState
 	);
@@ -119,8 +119,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		if (response) {
 			toastService.success('Het content item is succesvol opgeslagen', false);
 			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
-		} else {
-			toastService.danger('Er ging iets mis tijden het opslaan van het content item', false);
 		}
 	};
 
@@ -132,6 +130,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!isFormValid) {
 			setIsSaving(false);
+			toastService.danger('Er zijn nog fouten in het metadata formulier', false);
 
 			return;
 		}

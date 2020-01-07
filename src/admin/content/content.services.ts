@@ -24,6 +24,8 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 		return contentItem;
 	} catch (err) {
 		console.error(`Failed to fetch menu item with id: ${id}`);
+		toastService.danger('Er ging iets mis tijdens het ophalen van het content item', false);
+
 		return null;
 	}
 };
@@ -42,6 +44,8 @@ export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null
 		return contentTypes;
 	} catch (err) {
 		console.error('Failed to fetch content types');
+		toastService.danger('Er ging iets mis tijdens het ophalen van de content types', false);
+
 		return null;
 	}
 };
@@ -68,7 +72,9 @@ export const insertContent = async (
 				const contentBlocks = await insertContentBlocks(id, cbConfigs);
 
 				if (!contentBlocks) {
-					toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks');
+					toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+					// return null to prevent triggering success toast
+					return null;
 				}
 			}
 
@@ -112,6 +118,8 @@ export const updateContent = async (
 		return contentItem;
 	} catch (err) {
 		console.error(err);
+		toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+
 		return null;
 	}
 };

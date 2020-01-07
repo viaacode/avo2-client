@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import toastService from '../../shared/services/toast-service';
 
 import { CONTENT_BLOCK_CONFIG_MAP, CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
 import { GET_CONTENT_BLOCKS_BY_CONTENT_ID, INSERT_CONTENT_BLOCKS } from './content-block.gql';
@@ -65,6 +66,8 @@ export const fetchContentBlocksByContentId = async (
 		return contentBlocks;
 	} catch (err) {
 		console.error(err);
+		toastService.danger('Er ging iets mis tijdens het ophalen van de content blocks', false);
+
 		return null;
 	}
 };
@@ -84,6 +87,8 @@ export const insertContentBlocks = async (
 		return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`, null);
 	} catch (err) {
 		console.error(err);
+		toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+
 		return null;
 	}
 };
@@ -93,6 +98,8 @@ export const updateContentBlocks = async (cbConfigs: ContentBlockConfig[]) => {
 		// TODO: Add update logic
 	} catch (err) {
 		console.error(err);
+		toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+
 		return null;
 	}
 };
