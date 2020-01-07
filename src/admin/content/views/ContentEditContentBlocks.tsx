@@ -53,11 +53,10 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 
 	const addComponentToState = (index: number, blockType: ContentBlockType) => {
 		dispatch({
-			type: ContentEditBlocksActionType.SET_FORM_STATE,
+			type: ContentEditBlocksActionType.ADD_COMPONENTS_STATE,
 			payload: {
 				index,
-				formGroupType: 'components',
-				formGroupState: [CONTENT_BLOCK_INITIAL_STATE_MAP[blockType]],
+				formGroupState: CONTENT_BLOCK_INITIAL_STATE_MAP[blockType],
 			},
 		});
 	};
@@ -69,8 +68,16 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 		stateIndex?: number
 	) => {
 		dispatch({
-			type: ContentEditBlocksActionType.SET_FORM_STATE,
-			payload: { index, formGroupType, formGroupState, stateIndex },
+			type:
+				formGroupType === 'block'
+					? ContentEditBlocksActionType.SET_BLOCK_STATE
+					: ContentEditBlocksActionType.SET_COMPONENTS_STATE,
+			payload: {
+				index,
+				stateIndex,
+				formGroupType,
+				formGroupState: Array.isArray(formGroupState) ? formGroupState[0] : formGroupState,
+			},
 		});
 	};
 

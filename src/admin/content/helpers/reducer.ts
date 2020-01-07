@@ -15,47 +15,95 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 			...state,
 			contentBlockConfigs: [...state.contentBlockConfigs, action.payload],
 		}),
-		[ContentEditBlocksActionType.SET_FORM_STATE]: (state, action: ContentEditBlocksAction) => {
-			const { index, formGroupType, formGroupState, stateIndex } = action.payload;
+		[ContentEditBlocksActionType.ADD_COMPONENTS_STATE]: (
+			state,
+			action: ContentEditBlocksAction
+		) => {
+			const { index, formGroupState } = action.payload;
 
 			// Clone config
 			const contentBlocks = [...state.contentBlockConfigs];
 
-			// Create update object
-			const stateToAdd: any = {
-				[formGroupType]: formGroupState,
+			// Convert update object to array if necessary
+			const componentState = [...contentBlocks[index].components.state, formGroupState];
+
+			// Update single content block config
+			const updatedConfig = {
+				...contentBlocks[index],
+				components: {
+					...contentBlocks[index].components,
+					state: componentState,
+				},
 			};
+
+			// Apply update object to config
+			contentBlocks.splice(index, 1, updatedConfig);
+
+			return {
+				...state,
+				contentBlockConfigs: contentBlocks,
+			};
+		},
+		[ContentEditBlocksActionType.SET_COMPONENTS_STATE]: (
+			state,
+			action: ContentEditBlocksAction
+		) => {
+			const { index, formGroupState, stateIndex } = action.payload;
+
+			// Clone config
+			const contentBlocks = [...state.contentBlockConfigs];
 
 			if (stateIndex || stateIndex === 0) {
 				(contentBlocks[index].components.state as any)[stateIndex] = formGroupState;
 			} else {
 				// Convert update object to array if necessary
-				const componentState = Array.isArray(formGroupState)
-					? [...contentBlocks[index].components.state, ...stateToAdd.components]
+				const componentState = Array.isArray(contentBlocks[index].components.state)
+					? [...contentBlocks[index].components.state, formGroupState]
 					: {
 							...contentBlocks[index].components.state,
-							...(stateToAdd.components || {}),
+							...formGroupState,
 					  };
 
 				// Update single content block config
 				const updatedConfig = {
 					...contentBlocks[index],
 					components: {
+						...contentBlocks[index].components,
 						state: componentState,
 						fields: contentBlocks[index].components.fields,
-					},
-					block: {
-						state: {
-							...contentBlocks[index].block.state,
-							...(stateToAdd.block || {}),
-						},
-						fields: contentBlocks[index].block.fields,
 					},
 				};
 
 				// Apply update object to config
 				contentBlocks.splice(index, 1, updatedConfig);
 			}
+
+			return {
+				...state,
+				contentBlockConfigs: contentBlocks,
+			};
+		},
+		[ContentEditBlocksActionType.SET_BLOCK_STATE]: (state, action: ContentEditBlocksAction) => {
+			const { index, formGroupState } = action.payload;
+
+			// Clone config
+			const contentBlocks = [...state.contentBlockConfigs];
+
+			// Update single content block config
+			const updatedConfig = {
+				...contentBlocks[index],
+				block: {
+					...contentBlocks[index].block,
+					state: {
+						...contentBlocks[index].block.state,
+						...formGroupState,
+					},
+					fields: contentBlocks[index].block.fields,
+				},
+			};
+
+			// Apply update object to config
+			contentBlocks.splice(index, 1, updatedConfig);
 
 			return {
 				...state,

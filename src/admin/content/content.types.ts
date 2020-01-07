@@ -37,6 +37,9 @@ export interface ContentEditBlocksState {
 export enum ContentEditBlocksActionType {
 	SET_FORM_STATE = '@@admin-content-edit/SET_FORM_STATE',
 	ADD_CB_CONFIG = '@@admin-content-edit/ADD_CB_CONFIG',
+	ADD_COMPONENTS_STATE = '@@admin-content-edit/ADD_COMPONENTS_STATE',
+	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
+	SET_BLOCK_STATE = '@@admin-content-edit/SET_BLOCK_STATE',
 }
 
 export interface ContentEditBlocksAction {

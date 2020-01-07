@@ -90,8 +90,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			<FormGroup
 				key={`${index}-${blockType}-${key}`}
 				label={
-					stateIndex
-						? `${config.name} ${stateIndex}: ${formGroup.fields[key].label}`
+					stateIndex || stateIndex === 0
+						? `${config.components.name} ${stateIndex + 1}: ${formGroup.fields[key].label}`
 						: formGroup.fields[key].label
 				}
 				error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}

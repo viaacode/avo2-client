@@ -34,7 +34,6 @@ export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
 			}),
 			align: ALIGN_FIELD('Titel uitlijning'),
 			text: TEXT_FIELD(),
-			...CONTENT_BLOCK_FIELD_DEFAULTS(),
 		},
 	},
 	block: {
