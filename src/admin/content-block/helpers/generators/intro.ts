@@ -21,7 +21,7 @@ export const INITIAL_INTRO_BLOCK_COMPONENT_STATE = (): IntroBlockComponentState 
 });
 
 export const INITIAL_INTRO_BLOCK_STATE = (): IntroBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons);
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro);
 
 export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: 'Intro',
