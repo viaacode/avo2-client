@@ -40,7 +40,6 @@ import {
 	WYSIWYG,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
@@ -91,7 +90,7 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabe
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType
+	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
 } = {
 	ITEM: 'avo_item_pid',
 	COLLECTIE: 'collections',
@@ -99,7 +98,7 @@ const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
 };
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
+	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string };
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,
@@ -304,7 +303,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					queryParams
 				);
 
-				const assignmentContentResponse: AssignmentContent = get(
+				const assignmentContentResponse: Avo.Assignment.Content = get(
 					response,
 					`data.${
 						CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
@@ -662,7 +661,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 	};
 
-	const renderContentLink = (content: AssignmentContent) => {
+	const renderContentLink = (content: Avo.Assignment.Content) => {
 		const dutchLabel = (content.type.label ||
 			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
 		const linkContent = (

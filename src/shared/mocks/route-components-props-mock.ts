@@ -1,4 +1,4 @@
-import { createBrowserHistory, Href, UnregisterCallback } from 'history';
+import { createBrowserHistory } from 'history';
 import { RouteComponentProps } from 'react-router';
 
 /**

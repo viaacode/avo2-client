@@ -43,7 +43,6 @@ import { APP_PATH } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import {
-	ClientEducationOrganization,
 	fetchCities,
 	fetchEducationOrganizations,
 } from '../../shared/services/education-organizations-service';
@@ -71,19 +70,19 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		label: enumLabel,
 		value: enumLabel,
 	});
-	const gqlOrganizationToSelectOption = (org: ClientEducationOrganization): TagInfo => ({
+	const gqlOrganizationToSelectOption = (org: Avo.EducationOrganization.Organization): TagInfo => ({
 		label: `${org.label}`,
 		value: `${org.organizationId}:${org.unitId || ''}`,
 	});
 	const [cities, setCities] = useState<string[]>([]);
 	const [selectedCity, setSelectedCity] = useState<string>('');
-	const [organizations, setOrganizations] = useState<ClientEducationOrganization[]>([]);
+	const [organizations, setOrganizations] = useState<Avo.EducationOrganization.Organization[]>([]);
 	const [organizationsLoadingState, setOrganizationsLoadingState] = useState<
 		'loading' | 'loaded' | 'error'
 	>('loaded');
 	// Cache organizations since the user will probably select multiple schools in the same city
 	const [organizationsCache, setOrganizationsCache] = useState<{
-		[cityAndZipCode: string]: ClientEducationOrganization[];
+		[cityAndZipCode: string]: Avo.EducationOrganization.Organization[];
 	}>({});
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
 		get(user, 'profile.educationLevels', []).map(gqlEnumToSelectOption)
@@ -121,7 +120,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				}
 				setOrganizationsLoadingState('loading');
 				const [city, zipCode] = selectedCity.split(/[()]/g).map(s => s.trim());
-				let orgs: ClientEducationOrganization[] = [];
+				let orgs: Avo.EducationOrganization.Organization[] = [];
 				if (organizationsCache[selectedCity]) {
 					// get from cache
 					orgs = [...organizationsCache[selectedCity]];
@@ -224,7 +223,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		}
 		return [
 			{ label: 'selecteer een instelling', value: '', disabled: true },
-			...organizations.map((org: ClientEducationOrganization) => ({
+			...organizations.map((org: Avo.EducationOrganization.Organization) => ({
 				label: org.label,
 				value: org.label,
 			})),
