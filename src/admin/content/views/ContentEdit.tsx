@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import React, { FunctionComponent, useEffect, useReducer, useState } from 'react';
+import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -33,7 +33,13 @@ import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import * as ContentService from '../content.services';
-import { ContentEditActionType, ContentEditFormState, PageType } from '../content.types';
+import {
+	ContentEditAction,
+	ContentEditActionType,
+	ContentEditFormState,
+	ContentEditState,
+	PageType,
+} from '../content.types';
 import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducer';
 import { useContentItem, useContentTypes } from '../hooks';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
@@ -47,7 +53,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
 	// Hooks
-	const [{ cbConfigs }, dispatch] = useReducer(contentEditReducer(initialState), initialState);
+	const [{ cbConfigs }, dispatch] = useReducer<Reducer<ContentEditState, ContentEditAction>>(
+		contentEditReducer(initialState),
+		initialState
+	);
 
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -110,8 +119,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		if (response) {
 			toastService.success('Het content item is succesvol opgeslagen', false);
 			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
-		} else {
-			toastService.danger('Er ging iets mis tijden het opslaan van het content item', false);
 		}
 	};
 
@@ -123,6 +130,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!isFormValid) {
 			setIsSaving(false);
+			toastService.danger('Er zijn nog fouten in het metadata formulier', false);
 
 			return;
 		}
