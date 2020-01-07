@@ -112,9 +112,6 @@ export class PermissionService {
 				const ownerId = get(obj, 'owner_profile_id');
 				return profileId && ownerId && profileId === ownerId;
 
-			case PERMISSIONS.CREATE_ASSIGNMENT_RESPONSE:
-				return false;
-
 			default:
 				// The permission does not require any other checks besides is presence in the permission list
 				return true;
