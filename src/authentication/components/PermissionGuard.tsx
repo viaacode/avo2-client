@@ -9,7 +9,7 @@ import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slot
 export interface PermissionGuardProps {
 	children: ReactNode;
 	permissions: Permissions;
-	user: Avo.User.User;
+	user: Avo.User.User | null;
 }
 
 const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({

@@ -23,7 +23,6 @@ import {
 	FormGroup,
 	Heading,
 	Icon,
-	IconName,
 	MenuContent,
 	Navbar,
 	RadioButton,
@@ -42,11 +41,9 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { AssignmentContent } from '@viaa/avo2-types/types/assignment/types';
 
-import { PermissionGuardFail, PermissionGuardPass } from '../../authentication/components';
-import PermissionGuard from '../../authentication/components/PermissionGuard';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PERMISSIONS, Permissions } from '../../authentication/helpers/permission-service';
+import { PERMISSIONS } from '../../authentication/helpers/permission-service';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
@@ -68,6 +65,10 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import {
+	checkPermissions,
+	LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
@@ -82,8 +83,6 @@ import {
 	updateAssignment,
 } from '../assignment.services';
 import { AssignmentLayout } from '../assignment.types';
-
-import { ErrorView } from '../../error/views';
 import './AssignmentEdit.scss';
 
 const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
@@ -141,8 +140,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | undefined>(
 		undefined
 	);
-	const [loadingState, setLoadingState] = useState<'loading' | 'loaded' | 'error'>('loading');
-	const [loadingError, setLoadingError] = useState<{ error: string; icon: IconName } | null>(null);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -166,7 +164,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	useEffect(() => {
 		const initAssignmentData = async () => {
 			try {
-				if (loadingState === 'error') {
+				if (loadingInfo.state === 'error') {
 					// Do not keep trying to fetch the assignment when an error occurred
 					return;
 				}
@@ -189,8 +187,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// Fetch the content if the assignment has content
 				await fetchAssignmentContent(assignment);
 			} catch (err) {
-				setLoadingError({
-					error: 'Het ophalen/aanmaken van de opdracht is mislukt',
+				setLoadingInfo({
+					state: 'error',
+					message: 'Het ophalen/aanmaken van de opdracht is mislukt',
 					icon: 'alert-triangle',
 				});
 			}
@@ -261,22 +260,22 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					'data.app_assignments[0]'
 				);
 				if (!assignmentResponse) {
-					setLoadingState('error');
-					setLoadingError({
-						error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+					setLoadingInfo({
+						state: 'error',
+						message: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
 						icon: 'search',
 					});
 					return null;
 				}
 				setBothAssignments(assignmentResponse);
-				setLoadingState('loaded');
+				setLoadingInfo({ state: 'loaded' });
 				return assignmentResponse;
 			} catch (err) {
 				console.error(err);
 
-				setLoadingState('error');
-				setLoadingError({
-					error: 'Het ophalen van de opdracht is mislukt',
+				setLoadingInfo({
+					state: 'error',
+					message: 'Het ophalen van de opdracht is mislukt',
 					icon: 'alert-triangle',
 				});
 				return null;
@@ -294,7 +293,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 				if (!assignment.content_id || !assignment.content_label) {
 					// The assignment doesn't have content linked to it
-					setLoadingState('loaded');
+					setLoadingInfo({ state: 'loaded' });
 					return;
 				}
 
@@ -317,9 +316,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				);
 				if (!assignmentContentResponse) {
 					console.error('Failed to fetch the assignment content', { response, ...queryParams });
-					setLoadingState('error');
-					setLoadingError({
-						error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+					setLoadingInfo({
+						state: 'error',
+						message: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
 						icon: 'search',
 					});
 					return;
@@ -333,19 +332,26 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						(assignmentContentResponse && assignmentContentResponse.title) ||
 						'',
 				});
-				setLoadingState('loaded');
+				setLoadingInfo({ state: 'loaded' });
 			} catch (err) {
 				console.error(err);
-				setLoadingState('error');
-				setLoadingError({
-					error: 'Het ophalen van de opdracht inhoud is mislukt',
+				setLoadingInfo({
+					state: 'error',
+					message: 'Het ophalen van de opdracht inhoud is mislukt',
 					icon: 'alert-triangle',
 				});
 			}
 		};
 
-		initAssignmentData();
-	}, [loadingState, location, match.params, setLoadingState, assignmentContent]);
+		checkPermissions(
+			PERMISSIONS.EDIT_ASSIGNMENTS,
+			user,
+			initAssignmentData,
+			setLoadingInfo,
+			t,
+			t('Je hebt geen rechten om deze opdracht te bewerken')
+		);
+	}, [loadingInfo, location, match.params, setLoadingInfo, assignmentContent, t, user]);
 
 	/**
 	 * Find name that isn't a duplicate of an existing name of a collection of this user
@@ -1027,26 +1033,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 	};
 
-	const permissions: Permissions = [{ name: PERMISSIONS.EDIT_ASSIGNMENTS, obj: currentAssignment }];
 	return (
-		<PermissionGuard permissions={permissions} user={user}>
-			<PermissionGuardPass>
-				<LoadingErrorLoadedComponent
-					loadingState={loadingState}
-					dataObject={currentAssignment}
-					render={renderAssignmentEditForm}
-					loadingError={loadingError && loadingError.error}
-					loadingErrorIcon={loadingError && loadingError.icon}
-					notFoundError="De opdracht is niet gevonden"
-				/>
-			</PermissionGuardPass>
-			<PermissionGuardFail>
-				<ErrorView
-					message={t('Je hebt niet genoeg rechten om deze opdracht te bewerken')}
-					icon="lock"
-				/>
-			</PermissionGuardFail>
-		</PermissionGuard>
+		<LoadingErrorLoadedComponent
+			dataObject={currentAssignment}
+			render={renderAssignmentEditForm}
+			loadingInfo={loadingInfo}
+			notFoundError="De opdracht is niet gevonden"
+		/>
 	);
 };
 

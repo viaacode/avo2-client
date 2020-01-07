@@ -11,7 +11,7 @@ import { dataService } from '../shared/services/data-service';
 
 export const ASSIGNMENT_PATH = Object.freeze({
 	ASSIGNMENT_CREATE: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
-	ASSIGNMENT_DETAIL: `/${ROUTE_PARTS.assignment}/:id`,
+	ASSIGNMENT_DETAIL: `/${ROUTE_PARTS.assignments}/:id`,
 	ASSIGNMENT_EDIT: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}`,
 	ASSIGNMENT_RESPONSES: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${
 		ROUTE_PARTS.responses
@@ -35,8 +35,6 @@ const CONTENT_LABEL_TO_QUERY: {
 		// resultPath: 'app_item_meta[0]',
 	} as any,
 };
-
-export type LoadingState = 'loading' | 'loaded' | 'error';
 
 export const getAssignmentContent = async (
 	assignment: Avo.Assignment.Assignment

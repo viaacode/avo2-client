@@ -26,8 +26,6 @@ const CONTENT_LABEL_TO_QUERY: {
 	} as any,
 };
 
-export type LoadingState = 'loading' | 'loaded' | 'error';
-
 export const getAssignmentContent = async (
 	assignment: Avo.Assignment.Assignment
 ): Promise<string | Avo.Assignment.Content | null> => {

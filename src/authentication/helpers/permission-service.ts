@@ -43,12 +43,18 @@ export enum PERMISSIONS {
 	SHARE_BUNDLES_BY_LINK = 'SHARE_BUNDLES_BY_LINK',
 	SHARE_COLLECTIONS_BY_LINK = 'SHARE_COLLECTIONS_BY_LINK',
 	VIEW_CONTENT_FROM_ASSIGNMENT = 'VIEW_CONTENT_FROM_ASSIGNMENT',
+	VIEW_ITEMS = 'VIEW_ITEMS',
+	VIEW_COLLECTIONS = 'VIEW_COLLECTIONS',
+	VIEW_BUNDLES = 'VIEW_BUNDLES',
 }
 
 export type PermissionName = keyof typeof PERMISSIONS;
 
 export class PermissionService {
-	public static hasPermissions(permissions: Permissions, user: Avo.User.User): boolean {
+	public static async hasPermissions(
+		permissions: Permissions,
+		user: Avo.User.User | null
+	): Promise<boolean> {
 		// Reformat all permissions to format: PermissionInfo[]
 		let permissionList: PermissionInfo[];
 		if (typeof permissions === 'string') {
@@ -70,20 +76,27 @@ export class PermissionService {
 				}
 			);
 		}
+		if (!permissionList.length) {
+			return true; // If no required permissions are passed, then the user is allowed to see the item/page
+		}
+		if (!user) {
+			console.warn('Checking permissions without user object', { permissionList, user });
+			return false;
+		}
 		// Check every permission and return true for the first permission that returns true (lazy eval)
 		for (const perm of permissionList) {
-			if (this.hasPermission(perm.name, perm.obj, user)) {
+			if (await this.hasPermission(perm.name, perm.obj, user)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	private static hasPermission(
+	private static async hasPermission(
 		permissionName: PermissionName,
 		obj: any | null | undefined,
-		user: Avo.User.User | null
-	) {
+		user: Avo.User.User
+	): Promise<boolean> {
 		const permissions = get(user, 'profile.permissions');
 		if (!user || !permissions) {
 			return false;
@@ -95,10 +108,12 @@ export class PermissionService {
 		}
 		// Special checks on top of name being in the permission list
 		switch (permissionName) {
-			// TODO: replace example permissions
-			case 'EDIT_OWN_COLLECTIONS':
+			case PERMISSIONS.EDIT_OWN_COLLECTIONS:
 				const ownerId = get(obj, 'owner_profile_id');
 				return profileId && ownerId && profileId === ownerId;
+
+			case PERMISSIONS.CREATE_ASSIGNMENT_RESPONSE:
+				return false;
 
 			default:
 				// The permission does not require any other checks besides is presence in the permission list

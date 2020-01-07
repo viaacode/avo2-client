@@ -27,11 +27,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import {
-	PermissionGuard,
-	PermissionGuardFail,
-	PermissionGuardPass,
-} from '../../authentication/components';
+import { PermissionGuard } from '../../authentication/components';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import {
@@ -40,7 +36,6 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { ErrorView } from '../../error/views';
 import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -420,26 +415,20 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	const permissions: Permissions = [
+		{ name: PERMISSIONS.VIEW_COLLECTIONS },
 		{ name: PERMISSIONS.VIEW_CONTENT_FROM_ASSIGNMENT, obj: collectionId },
 	];
 	return (
-		<PermissionGuard permissions={permissions} user={user}>
-			<PermissionGuardPass>
-				<DataQueryComponent
-					query={GET_COLLECTION_BY_ID}
-					variables={{ id: collectionId }}
-					resultPath="app_collections[0]"
-					renderData={renderCollection}
-					notFoundMessage="Deze collectie werd niet gevonden"
-				/>
-			</PermissionGuardPass>
-			<PermissionGuardFail>
-				<ErrorView
-					message={t('Je hebt niet genoeg rechten om deze opdracht te bewerken')}
-					icon="lock"
-				/>
-			</PermissionGuardFail>
-		</PermissionGuard>
+		<DataQueryComponent
+			query={GET_COLLECTION_BY_ID}
+			variables={{ id: collectionId }}
+			resultPath="app_collections[0]"
+			renderData={renderCollection}
+			permissions={permissions}
+			user={user}
+			notFoundMessage={t('Deze collectie werd niet gevonden')}
+			noPermissionsMessage={t('Je hebt niet genoeg rechten om deze collectie te bekijken')}
+		/>
 	);
 };
 
