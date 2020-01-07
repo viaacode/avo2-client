@@ -30,6 +30,7 @@ import glob from 'glob';
 import * as _ from 'lodash';
 import * as path from 'path';
 import oldTranslations from '../src/shared/translations/nl.json';
+
 const sortObject = require('sort-object-keys');
 
 function getFormattedKey(filePath: string, key: string) {
@@ -87,8 +88,8 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 			// Replace t() functions ( including i18n.t() )
 			content = content.replace(
 				// Match char before t function to make sure it isn't part of a bigger function name, eg: sent()
-				/([^a-zA-Z])t\(\s*'([\s\S]+?)'\s*\)/g,
-				(match: string, prefix: string, translation: string) => {
+				/([^a-zA-Z])t\(\s*'([\s\S]+?)'([^)]*)\)/g,
+				(match: string, prefix: string, translation: string, translationParams: string) => {
 					let formattedKey: string | undefined;
 					const formattedTranslation: string = getFormattedTranslation(translation);
 					if (formattedTranslation.includes('___')) {
@@ -96,8 +97,22 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 					} else {
 						formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
 					}
+					if (translationParams.includes('(')) {
+						console.warn(
+							'WARNING: Translation params should not contain any function calls, ' +
+								'since the regex replacement cannot deal with brackets inside the t() function. ' +
+								'Store the translation params in a variable before calling the t() function.',
+							{
+								match,
+								prefix,
+								translation,
+								translationParams,
+								absoluteFilePath,
+							}
+						);
+					}
 					newTranslations[formattedKey] = formattedTranslation;
-					return `${prefix}t('${formattedKey}')`;
+					return `${prefix}t('${formattedKey}'${translationParams})`;
 				}
 			);
 
