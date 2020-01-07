@@ -8,9 +8,10 @@ import { Dispatch } from 'redux';
 import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 
-import { APP_PATH } from '../../constants';
+import { LoginMessage } from '../authentication.types';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
@@ -41,14 +42,14 @@ const Login: FunctionComponent<LoginProps> = ({
 		}
 
 		// Redirect to previous requested path or home page
-		if (loginState && loginState.message === 'LOGGED_IN' && !loginStateLoading) {
+		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
 			history.push(get(location, 'state.from.pathname', APP_PATH.LOGGED_IN_HOME));
 			return;
 		}
 
 		if (
 			loginState &&
-			loginState.message === 'LOGGED_OUT' &&
+			loginState.message === LoginMessage.LOGGED_OUT &&
 			!loginStateLoading &&
 			!loginStateError
 		) {
@@ -99,9 +100,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(Login)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

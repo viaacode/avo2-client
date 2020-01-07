@@ -1,5 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
+import { LoginMessage } from '../authentication.types';
 import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
 import initialState from './initial-state';
 import loginReducer from './reducer';
@@ -20,7 +21,7 @@ describe('login > store > reducer', () => {
 
 	it(`Correctly handle ${LoginActionTypes.SET_LOGIN_SUCCESS}`, () => {
 		const payload: Avo.Auth.LoginResponse = {
-			message: 'LOGGED_IN',
+			message: LoginMessage.LOGGED_IN,
 			userInfo: {} as any,
 		};
 

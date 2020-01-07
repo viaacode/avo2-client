@@ -9,7 +9,7 @@ import { GET_ITEM_BY_ID } from '../item/item.gql';
 import { dataService } from '../shared/services/data-service';
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
+	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string };
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,

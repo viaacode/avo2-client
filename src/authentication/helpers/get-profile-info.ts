@@ -1,10 +1,11 @@
 import { get } from 'lodash-es';
-import store from '../../store';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { getFullName } from '../../shared/helpers';
-import { IdpType } from './redirects';
+import store from '../../store';
+
+import { LoginMessage } from '../authentication.types';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
@@ -13,8 +14,8 @@ export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''):
 	return get(user, 'first_name') || defaultName;
 };
 
-export function hasIdpLinked(user: Avo.User.User, idpType: IdpType): boolean {
-	return get(user, 'idpmaps', [] as IdpType[]).includes(idpType);
+export function hasIdpLinked(user: Avo.User.User, idpType: Avo.Auth.IdpType): boolean {
+	return get(user, 'idpmaps', [] as Avo.Auth.IdpType[]).includes(idpType);
 }
 
 export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): string => {
@@ -106,5 +107,5 @@ export function isLoggedIn(
 		message = get(state, 'loginState.data.message');
 	}
 
-	return !!message && message === 'LOGGED_IN' && !!user && isProfileComplete(user);
+	return !!message && message === LoginMessage.LOGGED_IN && !!user && isProfileComplete(user);
 }

@@ -12,7 +12,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { StamboekValidationStatuses } from '@viaa/avo2-types/types/stamboek/types';
+import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { ToastType } from '../../shared/services/toast-service';
@@ -43,7 +43,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 		[status in StamboekValidationStatus]: {
 			message: string | ReactNode;
 			status: ToastType | undefined;
-		}
+		};
 	} = {
 		INCOMPLETE: {
 			message: '',
@@ -112,7 +112,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 			if (/^[0-9]{11}(-[0-9]*)?$/g.test(cleanedStamboekNumber)) {
 				const stamboekNumber = cleanedStamboekNumber.substring(0, 11);
 				setStamboekValidationStatus('VALID_FORMAT');
-				const validationStatus: StamboekValidationStatuses = await verifyStamboekNumber(
+				const validationStatus: Avo.Stamboek.ValidationStatuses = await verifyStamboekNumber(
 					stamboekNumber
 				);
 				if (validationStatus === 'VALID') {
