@@ -13,7 +13,7 @@ import {
 	ContentBlockStateType,
 } from '../../content-block.types';
 
-interface FieldEditorProps {
+interface ContentBlockFieldProps {
 	block: ContentBlockMeta;
 	fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState;
 	field: ContentBlockField;
@@ -28,7 +28,7 @@ interface FieldEditorProps {
 	) => void;
 }
 
-export const FieldEditor: FunctionComponent<FieldEditorProps> = ({
+export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 	block,
 	fieldKey,
 	field,

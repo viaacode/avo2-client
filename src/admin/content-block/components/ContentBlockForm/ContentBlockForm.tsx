@@ -1,7 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import { Accordion, Button, Form, FormGroup } from '@viaa/avo2-components';
+import { Accordion, Button, Form, FormGroup, Spacer } from '@viaa/avo2-components';
 
 import {
 	ContentBlockBlockConfig,
@@ -12,7 +12,7 @@ import {
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../content-block.types';
-import { FieldEditor } from '../FieldEditor/FieldEditor';
+import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 
 import './ContentBlockForm.scss';
 
@@ -96,7 +96,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				}
 				error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
 			>
-				<FieldEditor
+				<ContentBlockFieldEditor
 					block={{ index, config }}
 					fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
 					field={formGroup.fields[key]}
@@ -128,10 +128,17 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			onToggle={setIsAccordionOpen}
 		>
 			{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
-			{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
 			{Array.isArray(components.state) && (
-				<Button icon="add" type="secondary" onClick={addComponentToState} />
+				<Spacer margin="bottom">
+					<Button
+						label={`Voeg ${get(contentBlock.components, 'name', '').toLowerCase()} toe`}
+						icon="add"
+						type="secondary"
+						onClick={addComponentToState}
+					/>
+				</Spacer>
 			)}
+			{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
 		</Accordion>
 	);
 
