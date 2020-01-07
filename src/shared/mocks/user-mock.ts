@@ -30,7 +30,7 @@ const mockUser: Avo.User.User = {
 		// profile_user_group: null,
 		educationLevels: ['Lager onderwijs', 'Hoger onderwijs'],
 		subjects: ['lichamelijke opvoeding', 'sociale vaardigheden'],
-		organizations: [],
+		organizations: [{ organizationName: 'test school', unitAddress: 'test straat' }],
 		user: {} as any,
 		permissions: [],
 	},

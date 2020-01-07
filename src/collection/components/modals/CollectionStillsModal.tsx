@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Blankslate,
@@ -33,6 +34,8 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	isOpen,
 	collection,
 }) => {
+	const [t] = useTranslation();
+
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);
 	const [selectedCoverImages, setSelectedCoverImages] = useState<string[]>(
 		collection.thumbnail_path ? [collection.thumbnail_path] : []
@@ -65,7 +68,9 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title="Stel een cover afbeelding in"
+			title={t(
+				'collection/components/modals/collection-stills-modal___stel-een-cover-afbeelding-in'
+			)}
 			size="large"
 			onClose={onClose}
 			scrollable
@@ -81,7 +86,9 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 							<Blankslate
 								body=""
 								icon="search"
-								title="Er zijn geen thumbnails beschikbaar voor de fragmenten in de collectie"
+								title={t(
+									'collection/components/modals/collection-stills-modal___er-zijn-geen-thumbnails-beschikbaar-voor-de-fragmenten-in-de-collectie'
+								)}
 							/>
 						) : (
 							<ImageGrid
@@ -100,8 +107,18 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button label="Annuleren" type="secondary" block onClick={onClose} />
-								<Button label="Opslaan" type="primary" block onClick={saveCoverImage} />
+								<Button
+									label={t('collection/components/modals/collection-stills-modal___annuleren')}
+									type="secondary"
+									block
+									onClick={onClose}
+								/>
+								<Button
+									label={t('collection/components/modals/collection-stills-modal___opslaan')}
+									type="primary"
+									block
+									onClick={saveCoverImage}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

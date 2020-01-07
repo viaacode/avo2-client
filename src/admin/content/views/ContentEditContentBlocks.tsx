@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useReducer, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 
@@ -21,6 +22,8 @@ import { ContentEditBlocksActionType } from '../content.types';
 import { CONTENT_EDIT_BLOCKS_INITIAL_STATE, contentEditBlocksReducer } from '../helpers/reducer';
 
 const ContentEditContentBlocks: FunctionComponent = () => {
+	const [t] = useTranslation();
+
 	const initialState = CONTENT_EDIT_BLOCKS_INITIAL_STATE();
 
 	// Hooks
@@ -128,7 +131,11 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 			<Sidebar className="c-content-edit-view__sidebar" light>
 				{renderContentBlockForms()}
 				<Form>
-					<FormGroup label="Voeg een content block toe">
+					<FormGroup
+						label={t(
+							'admin/content/views/content-edit-content-blocks___voeg-een-content-block-toe'
+						)}
+					>
 						<Select
 							options={CONTENT_BLOCK_TYPE_OPTIONS}
 							onChange={value => handleAddContentBlock(value as ContentBlockType)}

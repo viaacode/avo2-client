@@ -1,6 +1,7 @@
 import { get, isNull } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -61,6 +62,8 @@ interface ItemProps extends DefaultSecureRouteProps {}
 
 const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ...rest }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
+
+	const [t] = useTranslation();
 
 	const [itemId] = useState<string | undefined>((match.params as any)['id']);
 	// TODO: use setTime when adding logic for enabling timestamps in the URL
@@ -255,13 +258,13 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 													<Button
 														type="tertiary"
 														icon="add"
-														label="Voeg fragment toe aan collectie"
+														label={t('item/views/item___voeg-fragment-toe-aan-collectie')}
 														onClick={() => setIsOpenAddToCollectionModal(true)}
 													/>
 													<Button
 														type="tertiary"
 														icon="clipboard"
-														label="Maak opdracht"
+														label={t('item/views/item___maak-opdracht')}
 														onClick={() =>
 															history.push(
 																generateAssignmentCreateLink(
@@ -280,10 +283,18 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 												type="tertiary"
 												icon="bookmark"
 												active={false}
-												ariaLabel="toggle bladwijzer"
+												ariaLabel={t('item/views/item___toggle-bladwijzer')}
 											/>
-											<Button type="tertiary" icon="share-2" ariaLabel="share item" />
-											<Button type="tertiary" icon="flag" ariaLabel="rapporteer item" />
+											<Button
+												type="tertiary"
+												icon="share-2"
+												ariaLabel={t('item/views/item___share-item')}
+											/>
+											<Button
+												type="tertiary"
+												icon="flag"
+												ariaLabel={t('item/views/item___rapporteer-item')}
+											/>
 										</ButtonToolbar>
 									</Flex>
 								</Spacer>
@@ -295,18 +306,26 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
-									<Heading type="h3">Metadata</Heading>
+									<Heading type="h3">
+										<Trans i18nKey="item/views/item___metadata">Metadata</Trans>
+									</Heading>
 									<Table horizontal untable>
 										<Grid tag="tbody">
 											{!!itemMetaData.issued && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Publicatiedatum</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___publicatiedatum">
+															Publicatiedatum
+														</Trans>
+													</th>
 													<td>{reorderDate(itemMetaData.issued, '/')}</td>
 												</Column>
 											)}
 											{!!itemMetaData.published_at && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Toegevoegd op</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___toegevoegd-op">Toegevoegd op</Trans>
+													</th>
 													<td>{reorderDate(itemMetaData.published_at, '/')}</td>
 												</Column>
 											)}
@@ -314,13 +333,17 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<Grid tag="tbody">
 											{!!itemMetaData.organisation && !!itemMetaData.organisation.name && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Aanbieder</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___aanbieder">Aanbieder</Trans>
+													</th>
 													<td>{generateSearchLink('provider', itemMetaData.organisation.name)}</td>
 												</Column>
 											)}
 											{!!itemMetaData.duration && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Speelduur</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___speelduur">Speelduur</Trans>
+													</th>
 													<td>{itemMetaData.duration}</td>
 												</Column>
 											)}
@@ -328,13 +351,17 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<Grid tag="tbody">
 											{!!itemMetaData.series && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Reeks</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___reeks">Reeks</Trans>
+													</th>
 													<td>{generateSearchLink('serie', itemMetaData.series)}</td>
 												</Column>
 											)}
 											{!!itemMetaData.lom_languages && !!itemMetaData.lom_languages.length && (
 												<Column size="2-5" tag="tr">
-													<th scope="row">Taal</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___taal">Taal</Trans>
+													</th>
 													<td>
 														{itemMetaData.lom_languages
 															.map(languageCode => LANGUAGES.nl[languageCode])
@@ -349,7 +376,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<tbody>
 											{!!itemMetaData.external_id && !!itemMetaData.lom_context && (
 												<tr>
-													<th scope="row">Geschikt voor</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___geschikt-voor">Geschikt voor</Trans>
+													</th>
 													<td>
 														{generateSearchLinks(
 															itemMetaData.external_id,
@@ -361,7 +390,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 											)}
 											{!!itemMetaData.external_id && !!itemMetaData.lom_classification && (
 												<tr>
-													<th scope="row">Vakken</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___vakken">Vakken</Trans>
+													</th>
 													<td>
 														{generateSearchLinks(
 															itemMetaData.external_id,
@@ -378,7 +409,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<tbody>
 											{!!itemMetaData.lom_keywords && !!itemMetaData.lom_keywords.length && (
 												<tr>
-													<th scope="row">Trefwoorden</th>
+													<th scope="row">
+														<Trans i18nKey="item/views/item___trefwoorden">Trefwoorden</Trans>
+													</th>
 													<td>
 														<TagList
 															tags={itemMetaData.lom_keywords.map(keyword => ({
@@ -394,7 +427,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 												</tr>
 											)}
 											{/*<tr>*/}
-											{/*<th scope="row">Klascement</th>*/}
+											{/*<th scope="row"><Trans i18nKey="item/views/item___klascement">Klascement</Trans></th>*/}
 											{/*<td>*/}
 											{/*<a href={'http://www.klascement.be/link_item'}>*/}
 											{/*www.klascement.be/link_item*/}
@@ -407,7 +440,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 							</Column>
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
-									<Heading type="h3">Bekijk ook</Heading>
+									<Heading type="h3">
+										<Trans i18nKey="item/views/item___bekijk-ook">Bekijk ook</Trans>
+									</Heading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>
 							</Column>

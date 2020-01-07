@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Column,
@@ -39,6 +40,8 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	formState,
 	onChange,
 }) => {
+	const [t] = useTranslation();
+
 	// Methods
 	const handleDateChange = (key: DateFormKeys, value: Date | null) => {
 		onChange(key, value ? value.toISOString() : '');
@@ -56,7 +59,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 					<Form className="c-content-edit-form">
 						<Grid>
 							<Column size="12">
-								<FormGroup error={formErrors.title} label="Titel">
+								<FormGroup
+									error={formErrors.title}
+									label={t('admin/content/components/content-edit-form/content-edit-form___titel')}
+								>
 									<TextInput
 										onChange={(value: string) => onChange('title', value)}
 										value={formState.title}
@@ -64,7 +70,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</FormGroup>
 							</Column>
 							<Column size="12">
-								<FormGroup error={formErrors.description} label="Omschrijving">
+								<FormGroup
+									error={formErrors.description}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___omschrijving'
+									)}
+								>
 									<TextArea
 										onChange={(value: string) => onChange('description', value)}
 										rows={3}
@@ -73,7 +84,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</FormGroup>
 							</Column>
 							<Column size="3-12">
-								<FormGroup error={formErrors.contentType} label="Content type">
+								<FormGroup
+									error={formErrors.contentType}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___content-type'
+									)}
+								>
 									<Select
 										onChange={(value: string) => onChange('contentType', value)}
 										options={contentTypeOptions}
@@ -82,7 +98,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</FormGroup>
 							</Column>
 							<Column size="3-6">
-								<FormGroup error={formErrors.publishAt} label="Publiceren op">
+								<FormGroup
+									error={formErrors.publishAt}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___publiceren-op'
+									)}
+								>
 									<DatePicker
 										onChange={(value: Date | null) => handleDateChange('publishAt', value)}
 										showTimeInput
@@ -91,7 +112,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</FormGroup>
 							</Column>
 							<Column size="3-6">
-								<FormGroup error={formErrors.depublishAt} label="Depubliceren op">
+								<FormGroup
+									error={formErrors.depublishAt}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___depubliceren-op'
+									)}
+								>
 									<DatePicker
 										onChange={(value: Date | null) => handleDateChange('depublishAt', value)}
 										showTimeInput

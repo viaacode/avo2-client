@@ -1,5 +1,6 @@
 import { orderBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -19,6 +20,8 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	updateCollection,
 	reorderFragments,
 }) => {
+	const [t] = useTranslation();
+
 	const { collection_fragments, id } = collection;
 	const TEXT_BLOCK_FRAGMENT: any = {
 		...NEW_FRAGMENT.text,
@@ -61,7 +64,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 						type="secondary"
 						icon="add"
 						onClick={handleAddFragmentClick}
-						ariaLabel="Sectie toevoegen"
+						ariaLabel={t('collection/components/fragment/fragment-add___sectie-toevoegen')}
 					/>
 				</ToolbarItem>
 				{renderDivider()}

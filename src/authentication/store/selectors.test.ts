@@ -2,12 +2,11 @@ import { Avo } from '@viaa/avo2-types';
 
 import { AppState } from '../../store';
 import { selectLogin, selectLoginError, selectLoginLoading } from './selectors';
-import { LoginMessage } from './types';
 
 describe('login > store > selectors', () => {
 	const store: AppState = {
 		loginState: {
-			data: { message: LoginMessage.LOGGED_IN, userInfo: {} as Avo.User.User },
+			data: { message: 'LOGGED_IN', userInfo: {} as Avo.User.User },
 			loading: false,
 			error: false,
 		},
