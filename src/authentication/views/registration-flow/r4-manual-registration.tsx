@@ -104,7 +104,9 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
 					<Button type="secondary" onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}>
-						<Trans>Terug</Trans>
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___terug">
+							Terug
+						</Trans>
 					</Button>
 					<Heading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
@@ -112,7 +114,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						</Trans>
 					</Heading>
 					<p>
-						<Trans>
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___intro">
 							Het Archief voor Onderwijs is geweldig. Speciaal gemaakt voor lesgevers actief in het
 							Vlaamse Onderwijs. Natuurlijk wil jij toegang tot onze schat aan audiovisueel
 							materiaal! Denk je dat je in aanmerking komt voor een account? Dan kan je een aanvraag
