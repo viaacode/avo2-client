@@ -129,7 +129,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			onToggle={setIsAccordionOpen}
 		>
 			{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
-			{Array.isArray(components.state) && (
+			{Array.isArray(components.state) && components.state.length < get(components, 'limits.max') && (
 				<Spacer margin="bottom">
 					<Button
 						label={i18n.t(`Voeg ${get(contentBlock.components, 'name', '').toLowerCase()} toe`)}
