@@ -61,10 +61,8 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 													<Trans i18nKey="settings/components/account___beheerd-in-een-centraal-identiteitsmanagementsysteem">
 														Jouw account wordt beheerd in een centraal identiteitsmanagementsysteem
 														dat je toelaat om met dezelfde gegevens op meerdere VIAA-websites en
-														applicaties in te loggen.
-														<br />
-														Wijzigingen aan deze gegevens worden dus doorgevoerd in al deze websites
-														en tools.
+														applicaties in te loggen. <br /> Wijzigingen aan deze gegevens worden
+														dus doorgevoerd in al deze websites en tools.
 													</Trans>
 													<br />
 													<a href={getSsumAccountEditPage()}>
