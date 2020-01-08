@@ -2,12 +2,12 @@ import React, { FunctionComponent } from 'react';
 
 import { Button, ButtonGroup, IconName } from '@viaa/avo2-components';
 
-import { Aligns } from '../../content-block.types';
+import { AlignOptions } from '../../content-block.types';
 
 interface AlignSelectProps {
 	onChange: (value: string) => void;
-	options: { label: string; value: Aligns }[];
-	value: Aligns;
+	options: { label: string; value: AlignOptions }[];
+	value: AlignOptions;
 }
 
 const AlignSelect: FunctionComponent<AlignSelectProps> = ({ onChange, options, value }) => {
