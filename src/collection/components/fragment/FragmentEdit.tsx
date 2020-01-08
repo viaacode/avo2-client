@@ -1,5 +1,5 @@
-import { get, orderBy } from 'lodash-es';
-import React, { FunctionComponent, ReactText, SetStateAction, useState } from 'react';
+import { get, isNil, orderBy } from 'lodash-es';
+import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
 
@@ -26,15 +26,19 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
-import { WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
+import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService from '../../../shared/services/toast-service';
-
-import { CutFragmentModal, FragmentAdd } from '../';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
 import { getFragmentProperty, isMediaFragment } from '../../helpers';
+
+import { CutFragmentModal, FragmentAdd } from '../';
 
 interface FragmentEditProps extends DefaultSecureRouteProps {
 	index: number;
@@ -58,6 +62,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	fragment,
 	reorderFragments,
 	updateCollection,
+	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -69,6 +74,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
 	});
+	const [allowedToAddLinks, setAllowedToAddLinks] = useState<boolean | null>(null);
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
@@ -84,6 +90,21 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		// createDropdownMenuItem('copyToCollection', 'Kopiëren naar andere collectie', 'copy'),
 		// createDropdownMenuItem('moveToCollection', 'Verplaatsen naar andere collectie', 'arrow-right'),
 	];
+
+	useEffect(() => {
+		PermissionService.hasPermission(PermissionNames.ADD_HYPERLINK_COLLECTIONS, null, user)
+			.then(hasPermission => {
+				setAllowedToAddLinks(hasPermission);
+			})
+			.catch(err => {
+				console.error(
+					'Failed to check permissions for adding hyperlinks in collection fragment editors',
+					err,
+					{ user, permission: PermissionNames.ADD_HYPERLINK_COLLECTIONS }
+				);
+				toastService.danger(t('Het controleren van je account rechten is mislukt'));
+			});
+	}, [user, t]);
 
 	const initFlowPlayer = () =>
 		!playerTicket &&
@@ -244,18 +265,20 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					label={t('collection/components/fragment/fragment-edit___tekstblok-beschrijving')}
 					labelFor={`description_${fragment.id}`}
 				>
-					<WYSIWYG
-						id={`description_${fragment.id}`}
-						buttons={WYSIWYG_OPTIONS_DEFAULT}
-						placeholder={t(
-							'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
-						)}
-						data={convertToHtml(
-							getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
-						)}
-						onChange={(value: string) => onChangeText('description', value)}
-						disabled={disableVideoFields}
-					/>
+					{!isNil(allowedToAddLinks) && (
+						<WYSIWYG
+							id={`description_${fragment.id}`}
+							buttons={allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT}
+							placeholder={t(
+								'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
+							)}
+							data={convertToHtml(
+								getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
+							)}
+							onChange={(value: string) => onChangeText('description', value)}
+							disabled={disableVideoFields}
+						/>
+					)}
 				</FormGroup>
 			</Form>
 		);
