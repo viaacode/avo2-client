@@ -19,15 +19,17 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 
+import { APP_PATH } from '../../../constants';
 import toastService from '../../../shared/services/toast-service';
 import { AUTH_PATH } from '../../authentication.const';
 import { createZendeskTicket } from '../../authentication.service';
+import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
 
 export interface ManualRegistrationProps extends RouteComponentProps {}
 
-const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
+const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ history }) => {
 	const [t] = useTranslation();
 
 	const [name, setName] = useState<string>('');
@@ -101,16 +103,23 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
+					<Button type="secondary" onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}>
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___terug">
+							Terug
+						</Trans>
+					</Button>
 					<Heading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
 							Vraag een account aan op het Archief voor Onderwijs
 						</Trans>
 					</Heading>
 					<p>
-						Het Archief voor Onderwijs is geweldig. Speciaal gemaakt voor lesgevers actief in het
-						Vlaamse Onderwijs. Natuurlijk wil jij toegang tot onze schat aan audiovisueel materiaal!
-						Denk je dat je in aanmerking komt voor een account? Dan kan je een aanvraag indienen. Je
-						aanvraag wordt verwerkt binnen de 5 werkdagen.{' '}
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___intro">
+							Het Archief voor Onderwijs is geweldig. Speciaal gemaakt voor lesgevers actief in het
+							Vlaamse Onderwijs. Natuurlijk wil jij toegang tot onze schat aan audiovisueel
+							materiaal! Denk je dat je in aanmerking komt voor een account? Dan kan je een aanvraag
+							indienen. Je aanvraag wordt verwerkt binnen de 5 werkdagen.
+						</Trans>{' '}
 						<Link to={AUTH_PATH.STUDENT_TEACHER}>
 							<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___ben-je-student-leerkracht">
 								Ben je student-leerkracht?

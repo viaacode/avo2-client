@@ -136,7 +136,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					components.state.length < get(components, 'limits.max') && (
 						<Spacer margin="bottom">
 							<Button
-								label={i18n.t('Voeg {{label}} to', { label })}
+								label={i18n.t(
+									'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
+									{ label }
+								)}
 								icon="add"
 								type="secondary"
 								onClick={addComponentToState}

@@ -7,4 +7,14 @@
 	.o-form-group {
 		margin-bottom: 20px;
 	}
+
+	.o-form-group__controls {
+		position: relative;
+
+		.c-tooltip-trigger {
+			position: absolute;
+			top: 5px;
+			right: -22px;
+		}
+	}
 }
