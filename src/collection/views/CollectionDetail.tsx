@@ -87,7 +87,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
-	const [permissions, setPermissions] = useState<{ [name: string]: boolean }>({});
+	const [permissions, setPermissions] = useState<
+		Partial<{
+			canViewCollections: boolean;
+			canEditCollections: boolean;
+			canDeleteCollections: boolean;
+			canCreateCollections: boolean;
+		}>
+	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	// Mutations
@@ -141,12 +148,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				],
 				user
 			),
+			PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
 		])
 			.then(permissions => {
 				setPermissions({
 					canViewCollections: permissions[0],
 					canEditCollections: permissions[1],
 					canDeleteCollections: permissions[2],
+					canCreateCollections: permissions[3],
 				});
 			})
 			.catch(err => {
@@ -247,33 +256,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		});
 	};
 
-	const renderCollection = (collection: Avo.Collection.Collection) => {
-		const {
-			id,
-			is_public,
-			profile,
-			collection_fragments,
-			lom_context,
-			updated_at,
-			title,
-			lom_classification,
-		} = collection;
+	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
 			createDropdownMenuItem('createAssignment', 'Maak opdracht', 'clipboard'),
-			createDropdownMenuItem('duplicate', 'Dupliceer', 'copy'),
-			...(permissions.canDeleteCollection && [createDropdownMenuItem('delete', 'Verwijder')]),
+			...(permissions.canCreateCollections
+				? [createDropdownMenuItem('duplicate', 'Dupliceer', 'copy')]
+				: []),
+			...(permissions.canDeleteCollections ? [createDropdownMenuItem('delete', 'Verwijder')] : []),
 		];
-
-		if (!isFirstRender) {
-			setIsPublic(is_public);
-			setIsFirstRender(true);
-		}
-
-		// Render functions
-		const renderHeaderButtons = () => (
+		return (
 			<ButtonToolbar>
-				{permissions.canEditCollection && (
+				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
@@ -311,7 +305,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<MenuContent menuItems={COLLECTION_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
 					</DropdownContent>
 				</ControlledDropdown>
-				{permissions.canEditCollection && (
+				{permissions.canEditCollections && (
 					<Spacer margin="left-small">
 						<Button
 							type="primary"
@@ -323,6 +317,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				)}
 			</ButtonToolbar>
 		);
+	};
+
+	const renderCollection = (collection: Avo.Collection.Collection) => {
+		const {
+			id,
+			is_public,
+			profile,
+			collection_fragments,
+			lom_context,
+			updated_at,
+			title,
+			lom_classification,
+		} = collection;
+
+		if (!isFirstRender) {
+			setIsPublic(is_public);
+			setIsFirstRender(true);
+		}
 
 		return (
 			<>
