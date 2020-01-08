@@ -1,11 +1,12 @@
 import { Avo } from '@viaa/avo2-types';
-import { RouteComponentProps } from 'react-router';
 import { Dispatch } from 'redux';
+
+import { DefaultSecureRouteProps } from '../authentication/components/SecuredRoute';
 
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };
 
-export interface SearchProps extends RouteComponentProps {
+export interface SearchProps extends DefaultSecureRouteProps {
 	searchResults: Avo.Search.Search | null;
 	searchResultsLoading: boolean;
 	search: (

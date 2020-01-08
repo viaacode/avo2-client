@@ -46,6 +46,7 @@ export enum PERMISSIONS {
 	VIEW_ITEMS = 'VIEW_ITEMS',
 	VIEW_COLLECTIONS = 'VIEW_COLLECTIONS',
 	VIEW_BUNDLES = 'VIEW_BUNDLES',
+	CREATE_BOOKMARKS = 'CREATE_BOOKMARKS',
 }
 
 export type PermissionName = keyof typeof PERMISSIONS;
@@ -92,7 +93,7 @@ export class PermissionService {
 		return false;
 	}
 
-	private static async hasPermission(
+	public static async hasPermission(
 		permissionName: PermissionName,
 		obj: any | null | undefined,
 		user: Avo.User.User

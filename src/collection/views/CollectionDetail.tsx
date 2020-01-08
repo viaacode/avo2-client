@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
+import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
@@ -27,16 +28,16 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { PermissionGuard } from '../../authentication/components';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	Permissions,
-	PERMISSIONS,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
+import {
+	ControlledDropdown,
+	DataQueryComponent,
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+} from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -53,11 +54,13 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentListDetail, ShareCollectionModal } from '../components';
 import './CollectionDetail.scss';
+import { ErrorView } from '../../error/views';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
@@ -81,6 +84,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
+	const [permissions, setPermissions] = useState<{ [name: string]: boolean }>({});
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -110,28 +115,52 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					toastService.danger('Het ophalen van de gerelateerde collecties is mislukt');
 				});
 		}
+
+		Promise.all([
+			PermissionService.hasPermissions(PERMISSIONS.VIEW_COLLECTIONS, user),
+			PermissionService.hasPermissions(
+				[
+					{ name: PERMISSIONS.EDIT_OWN_COLLECTIONS, obj: collectionId },
+					{
+						name: PERMISSIONS.EDIT_ANY_COLLECTIONS,
+					},
+				],
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{ name: PERMISSIONS.DELETE_OWN_COLLECTIONS, obj: collectionId },
+					{
+						name: PERMISSIONS.DELETE_ANY_COLLECTIONS,
+					},
+				],
+				user
+			),
+		])
+			.then(permissions => {
+				setPermissions({
+					canViewCollections: permissions[0],
+					canEditCollections: permissions[1],
+					canDeleteCollections: permissions[2],
+				});
+			})
+			.catch(err => {
+				console.error('Failed to get permissions for collection', err, { collectionId });
+				setLoadingInfo({
+					state: 'error',
+					message: t('Er ging iets mis tijdens het controleren van je account rechten'),
+					icon: 'alert-triangle',
+				});
+			});
 	}, [collectionId, relatedCollections, user]);
 
-	const getPermission = (collection: Avo.Collection.Collection) => ({
-		canDeleteCollection: {
-			user,
-			permissions: [
-				{ name: PERMISSIONS.DELETE_OWN_COLLECTIONS, obj: collection },
-				{
-					name: PERMISSIONS.DELETE_ANY_COLLECTIONS,
-				},
-			],
-		},
-		canEditCollection: {
-			user,
-			permissions: [
-				{ name: PERMISSIONS.EDIT_OWN_COLLECTIONS, obj: collection },
-				{
-					name: PERMISSIONS.EDIT_ANY_COLLECTIONS,
-				},
-			],
-		},
-	});
+	useEffect(() => {
+		if (!isEmpty(permissions)) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
+	}, [permissions, setLoadingInfo]);
 
 	// Listeners
 	const onEditCollection = () => {
@@ -224,15 +253,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			title,
 			lom_classification,
 		} = collection;
-		const { canDeleteCollection, canEditCollection } = getPermission(collection);
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
 			createDropdownMenuItem('createAssignment', 'Maak opdracht', 'clipboard'),
 			createDropdownMenuItem('duplicate', 'Dupliceer', 'copy'),
-			...(PermissionService.hasPermissions(
-				canDeleteCollection.permissions,
-				canDeleteCollection.user
-			) && [createDropdownMenuItem('delete', 'Verwijder')]),
+			...(permissions.canDeleteCollection && [createDropdownMenuItem('delete', 'Verwijder')]),
 		];
 
 		if (!isFirstRender) {
@@ -243,13 +268,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		// Render functions
 		const renderHeaderButtons = () => (
 			<ButtonToolbar>
-				<PermissionGuard {...canEditCollection}>
+				{permissions.canEditCollection && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
 						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 					/>
-				</PermissionGuard>
+				)}
 				<Button
 					title={t('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
@@ -281,7 +306,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<MenuContent menuItems={COLLECTION_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
 					</DropdownContent>
 				</ControlledDropdown>
-				<PermissionGuard {...canEditCollection} user={user}>
+				{permissions.canEditCollection && (
 					<Spacer margin="left-small">
 						<Button
 							type="primary"
@@ -290,7 +315,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							onClick={onEditCollection}
 						/>
 					</Spacer>
-				</PermissionGuard>
+				)}
 			</ButtonToolbar>
 		);
 
@@ -414,22 +439,31 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
-	const permissions: Permissions = [
-		{ name: PERMISSIONS.VIEW_COLLECTIONS },
-		{ name: PERMISSIONS.VIEW_CONTENT_FROM_ASSIGNMENT, obj: collectionId },
-	];
+	const getCollectionAndRender = () => {
+		if (!permissions.canViewCollections) {
+			return (
+				<ErrorView message={t('Je hebt geen rechten om deze collectie te bekijken')} icon="lock" />
+			);
+		}
+		return (
+			<DataQueryComponent
+				query={GET_COLLECTION_BY_ID}
+				variables={{ id: collectionId }}
+				resultPath="app_collections[0]"
+				renderData={renderCollection}
+				notFoundMessage={t(
+					'collection/views/collection-detail___deze-collectie-werd-niet-gevonden'
+				)}
+			/>
+		);
+	};
+
 	return (
-		<DataQueryComponent
-			query={GET_COLLECTION_BY_ID}
-			variables={{ id: collectionId }}
-			resultPath="app_collections[0]"
-			renderData={renderCollection}
-			permissions={permissions}
-			user={user}
-			notFoundMessage={t('collection/views/collection-detail___deze-collectie-werd-niet-gevonden')}
-			noPermissionsMessage={t(
-				'collection/views/collection-detail___je-hebt-niet-genoeg-rechten-om-deze-collectie-te-bekijken'
-			)}
+		<LoadingErrorLoadedComponent
+			render={getCollectionAndRender}
+			dataObject={permissions}
+			loadingInfo={loadingInfo}
+			showSpinner={true}
 		/>
 	);
 };

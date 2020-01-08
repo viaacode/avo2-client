@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useState } from 'react';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -58,15 +58,9 @@ import { AssignmentColumn } from '../assignment.types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
-interface AssignmentOverviewProps extends DefaultSecureRouteProps {
-	refetchCount: () => void;
-}
+interface AssignmentOverviewProps extends DefaultSecureRouteProps {}
 
-const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
-	history,
-	refetchCount,
-	user,
-}) => {
+const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ history, user }) => {
 	const [t] = useTranslation();
 
 	const [filterString, setFilterString] = useState<string>('');
@@ -84,15 +78,29 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Assignment.Assignment>('created_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
+	const [canEditAssignments, setCanEditAssignments] = useState<boolean>(false);
 
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
 
-	const canEditAssignments = PermissionService.hasPermissions(
-		[{ name: PERMISSIONS.EDIT_ASSIGNMENTS }],
-		user
-	);
+	useEffect(() => {
+		PermissionService.hasPermissions(PERMISSIONS.EDIT_ASSIGNMENTS, user)
+			.then((hasPermission: boolean) => {
+				setCanEditAssignments(hasPermission);
+			})
+			.catch(err => {
+				console.error('Failed to check permissions', err, {
+					user,
+					permissions: PERMISSIONS.EDIT_ASSIGNMENTS,
+				});
+				toastService.danger(
+					t(
+						'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
+					)
+				);
+			});
+	}, [user, t]);
 
 	const getFilterObject = () => {
 		const filter = filterString && filterString.trim();
@@ -152,7 +160,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 
 		refetchAssignments();
-		refetchCount();
 		toastService.success(t('assignment/views/assignment-overview___de-opdracht-is-gedupliceerd'));
 	};
 
@@ -171,7 +178,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 				if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 					refetchAssignments();
-					refetchCount();
 					toastService.success(
 						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`
 					);
@@ -204,7 +210,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}
 			await deleteAssignment(triggerAssignmentDelete, assignmentId);
 			refetchAssignments();
-			refetchCount();
 			toastService.success(t('assignment/views/assignment-overview___de-opdracht-is-verwijdert'));
 		} catch (err) {
 			console.error(err);
@@ -496,21 +501,25 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					</ToolbarRight>
 				</Toolbar>
 
-				<DataQueryComponent
-					query={
-						canEditAssignments ? GET_ASSIGNMENTS_BY_OWNER_ID : GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID
-					}
-					variables={{
-						owner_profile_id: getProfileId(user),
-						archived: activeView === 'archived_assignments',
-						order: { [sortColumn]: sortOrder },
-						offset: page * ITEMS_PER_PAGE,
-						filter: getFilterObject(),
-					}}
-					renderData={renderAssignmentsTable}
-					resultPath=""
-					ignoreNotFound
-				/>
+				{canEditAssignments !== null && (
+					<DataQueryComponent
+						query={
+							canEditAssignments
+								? GET_ASSIGNMENTS_BY_OWNER_ID
+								: GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID
+						}
+						variables={{
+							owner_profile_id: getProfileId(user),
+							archived: activeView === 'archived_assignments',
+							order: { [sortColumn]: sortOrder },
+							offset: page * ITEMS_PER_PAGE,
+							filter: getFilterObject(),
+						}}
+						renderData={renderAssignmentsTable}
+						resultPath=""
+						ignoreNotFound
+					/>
+				)}
 			</Container>
 		</Container>
 	);

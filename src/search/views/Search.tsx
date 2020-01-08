@@ -1,7 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
 import {
@@ -39,6 +38,11 @@ import {
 } from 'lodash-es';
 import queryString from 'query-string';
 
+import {
+	PermissionGuard,
+	PermissionGuardFail,
+	PermissionGuardPass,
+} from '../../authentication/components';
 import { copyToClipboard, navigate } from '../../shared/helpers';
 import toastService from '../../shared/services/toast-service';
 
@@ -53,6 +57,8 @@ import {
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
+import { PERMISSIONS } from '../../authentication/helpers/permission-service';
+import { ErrorView } from '../../error/views';
 import './Search.scss';
 
 const ITEMS_PER_PAGE = 10;
@@ -78,12 +84,13 @@ const DEFAULT_SORT_ORDER: SortOrder = {
 	orderDirection: 'desc',
 };
 
-const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
+const Search: FunctionComponent<SearchProps> = ({
 	searchResults,
 	searchResultsLoading,
 	search,
 	history,
 	location,
+	user,
 }) => {
 	const [t] = useTranslation();
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
@@ -312,7 +319,7 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 	const resultStart = currentPage * ITEMS_PER_PAGE + 1;
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
-	return (
+	const renderSearchPage = () => (
 		<Container className="c-search-view" mode="horizontal">
 			<Navbar>
 				<Container mode="horizontal">
@@ -430,6 +437,18 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 				setPage={setPage}
 			/>
 		</Container>
+	);
+
+	return (
+		<PermissionGuard permissions={PERMISSIONS.SEARCH} user={user}>
+			<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
+			<PermissionGuardFail>
+				<ErrorView
+					message={t('Je hebt geen rechten om de zoek pagina te bekijken')}
+					icon={'lock'}
+				/>
+			</PermissionGuardFail>
+		</PermissionGuard>
 	);
 };
 
