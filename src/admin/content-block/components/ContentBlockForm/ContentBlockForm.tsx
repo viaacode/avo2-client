@@ -1,5 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
+import i18n from '../../../../shared/translations/i18n';
 
 import { Accordion, Button, Form, FormGroup, Spacer } from '@viaa/avo2-components';
 
@@ -131,7 +132,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			{Array.isArray(components.state) && (
 				<Spacer margin="bottom">
 					<Button
-						label={`Voeg ${get(contentBlock.components, 'name', '').toLowerCase()} toe`}
+						label={i18n.t(`Voeg ${get(contentBlock.components, 'name', '').toLowerCase()} toe`)}
 						icon="add"
 						type="secondary"
 						onClick={addComponentToState}

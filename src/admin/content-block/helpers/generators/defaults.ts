@@ -1,4 +1,5 @@
 import { isEmpty, isNil } from 'lodash-es';
+import i18n from '../../../../shared/translations/i18n';
 
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
@@ -21,7 +22,9 @@ export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
 });
 
 // Recurring fields
-export const BACKGROUND_COLOR_FIELD = (label: string = 'Achtergrondkleur') => ({
+export const BACKGROUND_COLOR_FIELD = (
+	label: string = i18n.t('admin/content-block/helpers/generators/defaults___achtergrondkleur')
+) => ({
 	label,
 	editorType: ContentBlockEditor.ColorSelect,
 	editorProps: {
@@ -30,7 +33,9 @@ export const BACKGROUND_COLOR_FIELD = (label: string = 'Achtergrondkleur') => ({
 	},
 });
 
-export const ALIGN_FIELD = (label: string = 'Uitlijning') => ({
+export const ALIGN_FIELD = (
+	label: string = i18n.t('admin/content-block/helpers/generators/defaults___uitlijning')
+) => ({
 	label,
 	editorType: ContentBlockEditor.AlignSelect,
 	editorProps: {
@@ -39,10 +44,12 @@ export const ALIGN_FIELD = (label: string = 'Uitlijning') => ({
 });
 
 export const TEXT_FIELD = (
-	emptyFieldValidatorMessage = 'Tekst is verplicht.',
+	emptyFieldValidatorMessage = i18n.t(
+		'admin/content-block/helpers/generators/defaults___tekst-is-verplicht'
+	),
 	propOverride?: Partial<ContentBlockField>
 ) => ({
-	label: 'Tekst',
+	label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
 	editorType: ContentBlockEditor.WYSIWYG,
 	validator: (value: string) => {
 		const errorArray: string[] = [];

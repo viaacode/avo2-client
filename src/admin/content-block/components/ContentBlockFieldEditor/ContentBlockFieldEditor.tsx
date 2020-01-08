@@ -14,12 +14,12 @@ import {
 } from '../../content-block.types';
 
 interface ContentBlockFieldProps {
-	block: ContentBlockMeta;
+	block: ContentBlockMeta; // Block metadata
 	fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState;
-	field: ContentBlockField;
-	type: ContentBlockStateType;
-	state: ContentBlockComponentState | ContentBlockState;
-	stateIndex?: number;
+	field: ContentBlockField; // Field options
+	type: ContentBlockStateType; // State type
+	state: ContentBlockComponentState | ContentBlockState; // State object (within state array).
+	stateIndex?: number; // Index of state object (within state array).
 	handleChange: (
 		formGroupType: ContentBlockStateType,
 		fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState,

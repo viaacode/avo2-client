@@ -1,10 +1,12 @@
+import i18n from '../../../../shared/translations/i18n';
+
 import {
 	ButtonsBlockComponentState,
-	ButtonsBlockState,
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
+	DefaultContentBlockState,
 } from '../../content-block.types';
 import {
 	ALIGN_FIELD,
@@ -19,18 +21,21 @@ export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentS
 	},
 ];
 
-export const INITIAL_BUTTONS_BLOCK_STATE = (): ButtonsBlockState =>
+export const INITIAL_BUTTONS_BLOCK_STATE = (): DefaultContentBlockState =>
 	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons);
 
 export const BUTTONS_BLOCK_CONFIG = (): ContentBlockConfig => ({
-	name: 'Knoppen',
+	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
 	components: {
-		name: 'Knop',
+		name: i18n.t('admin/content-block/helpers/generators/buttons___knop'),
 		state: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES(),
 		fields: {
-			label: TEXT_FIELD('Knoptekst is verplicht.', {
-				editorType: ContentBlockEditor.TextInput,
-			}),
+			label: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/buttons___knoptekst-is-verplicht'),
+				{
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
 		},
 	},
 	block: {

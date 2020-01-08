@@ -43,12 +43,7 @@ export type ContentBlockComponentState =
 	| ButtonsBlockComponentState
 	| IntroBlockComponentState;
 
-export type ContentBlockState =
-	| HeadingBlockState
-	| RichTextBlockState
-	| RichTextTwoColumnsBlockState
-	| ButtonsBlockState
-	| IntroBlockState;
+export type ContentBlockState = DefaultContentBlockState;
 
 export interface ContentBlockField {
 	label: string;
@@ -66,7 +61,7 @@ export enum ContentBlockEditor {
 }
 
 // CONTENT BLOCKS
-export interface DefaultContentBlock {
+export interface DefaultContentBlockState {
 	backgroundColor: ContentBlockBackgroundColor;
 	blockType: ContentBlockType;
 }
@@ -84,16 +79,6 @@ export enum ContentBlockType {
 	RichText = 'RichText',
 	RichTextTwoColumns = 'RichTextTwoColumns',
 }
-
-export interface HeadingBlockState extends DefaultContentBlock {}
-
-export interface RichTextBlockState extends DefaultContentBlock {}
-
-export interface RichTextTwoColumnsBlockState extends DefaultContentBlock {}
-
-export interface ButtonsBlockState extends DefaultContentBlock {}
-
-export interface IntroBlockState extends DefaultContentBlock {}
 
 export interface HeadingBlockComponentState {
 	title: string;

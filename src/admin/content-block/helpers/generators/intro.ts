@@ -1,10 +1,12 @@
+import i18n from '../../../../shared/translations/i18n';
+
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
+	DefaultContentBlockState,
 	IntroBlockComponentState,
-	IntroBlockState,
 } from '../../content-block.types';
 import {
 	ALIGN_FIELD,
@@ -20,19 +22,22 @@ export const INITIAL_INTRO_BLOCK_COMPONENT_STATE = (): IntroBlockComponentState 
 	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro),
 });
 
-export const INITIAL_INTRO_BLOCK_STATE = (): IntroBlockState =>
+export const INITIAL_INTRO_BLOCK_STATE = (): DefaultContentBlockState =>
 	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro);
 
 export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
-	name: 'Intro',
+	name: i18n.t('admin/content-block/helpers/generators/intro___intro'),
 	components: {
 		state: INITIAL_INTRO_BLOCK_COMPONENT_STATE(),
 		fields: {
-			title: TEXT_FIELD('Titel is verplicht.', {
-				label: 'Titel',
-				editorType: ContentBlockEditor.TextInput,
-			}),
-			align: ALIGN_FIELD('Titel uitlijning'),
+			title: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/intro___titel-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/intro___titel'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
+			align: ALIGN_FIELD(i18n.t('admin/content-block/helpers/generators/intro___titel-uitlijning')),
 			text: TEXT_FIELD(),
 		},
 	},
