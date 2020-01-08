@@ -154,7 +154,7 @@ export class PermissionService {
 				type === 'COLLECTIE'
 					? {
 							idString: String(id), // TODO remove this special case once collection ids are uuids (merged with bundles)
-							idInt: id,
+							idInt: parseInt(id as string, 10),
 							userId: user.profile.id,
 					  }
 					: {

@@ -374,16 +374,16 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			? buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assignment.id })
 			: buildLink(WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
 
-		return (
+		return isOwner ? (
 			<Link className="c-return" to={backLink}>
 				<Icon type="arrows" name="chevron-left" />
 				<span>
-					{isOwner
-						? t('assignment/views/assignment-detail___terug-naar-opdracht-bewerken')
-						: t('assignment/views/assignment-detail___mijn-opdrachten')}
+					<Trans i18nKey="assignment/views/assignment-detail___terug-naar-opdracht-bewerken">
+						Terug naar opdracht bewerken
+					</Trans>
 				</span>
 			</Link>
-		);
+		) : null;
 	};
 
 	const renderAssignment = (): ReactElement | null => {
