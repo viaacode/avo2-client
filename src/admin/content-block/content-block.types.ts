@@ -23,10 +23,16 @@ export interface ContentBlockConfig {
 
 export interface ContentBlockComponentsConfig {
 	name?: string;
+	limits?: ContentBlockComponentsLimits;
 	state: ContentBlockComponentState | ContentBlockComponentState[];
 	fields: {
 		[key: string]: ContentBlockField;
 	};
+}
+
+export interface ContentBlockComponentsLimits {
+	min?: number;
+	max?: number;
 }
 
 export interface ContentBlockBlockConfig {
