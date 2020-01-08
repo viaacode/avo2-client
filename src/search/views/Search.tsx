@@ -57,7 +57,7 @@ import {
 import { getSearchResults } from '../store/actions';
 import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 
-import { PERMISSIONS } from '../../authentication/helpers/permission-service';
+import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { ErrorView } from '../../error/views';
 import './Search.scss';
 
@@ -440,7 +440,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	);
 
 	return (
-		<PermissionGuard permissions={PERMISSIONS.SEARCH} user={user}>
+		<PermissionGuard permissions={PermissionNames.SEARCH} user={user}>
 			<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
 			<PermissionGuardFail>
 				<ErrorView
@@ -467,17 +467,18 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 			filters?: Partial<Avo.Search.Filters>,
 			filterOptionSearch?: Partial<Avo.Search.FilterOption>
 		) =>
-			dispatch(
-				getSearchResults(
-					orderProperty,
-					orderDirection,
-					from,
-					size,
-					filters,
-					filterOptionSearch
-				) as any
-			),
+			dispatch(getSearchResults(
+				orderProperty,
+				orderDirection,
+				from,
+				size,
+				filters,
+				filterOptionSearch
+			) as any),
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Search);

@@ -2,13 +2,19 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { dataService } from '../../shared/services/data-service';
 import { getProfileId } from './get-profile-info';
+import {
+	GET_LINKED_COLLECTIONS,
+	GET_LINKED_ITEMS,
+	GET_LINKED_SEARCH_QUERIES,
+} from './permission-service.gql';
 
-type PermissionInfo = { name: PermissionName; obj?: any | null };
+type PermissionInfo = { name: PermissionNames; obj?: any | null };
 
-export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
+export type Permissions = PermissionNames | PermissionInfo | (PermissionNames | PermissionInfo)[];
 
-export enum PERMISSIONS {
+export enum PermissionNames {
 	ADD_HYPERLINK_COLLECTIONS = 'ADD_HYPERLINK_COLLECTIONS',
 	CREATE_ACCOUNT = 'CREATE_ACCOUNT',
 	CREATE_ASSIGNMENT_RESPONSE = 'CREATE_ASSIGNMENT_RESPONSE',
@@ -47,9 +53,10 @@ export enum PERMISSIONS {
 	VIEW_COLLECTIONS = 'VIEW_COLLECTIONS',
 	VIEW_BUNDLES = 'VIEW_BUNDLES',
 	CREATE_BOOKMARKS = 'CREATE_BOOKMARKS',
+	VIEW_ITEMS_LINKED_TO_ASSIGNMENT = 'VIEW_ITEMS_LINKED_TO_ASSIGNMENT',
+	VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT = 'VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT',
+	VIEW_SEARCH_QUERIES_LINKED_TO_ASSIGNMENT = 'VIEW_SEARCH_QUERIES_LINKED_TO_ASSIGNMENT',
 }
-
-export type PermissionName = keyof typeof PERMISSIONS;
 
 export class PermissionService {
 	public static async hasPermissions(
@@ -60,7 +67,7 @@ export class PermissionService {
 		let permissionList: PermissionInfo[];
 		if (typeof permissions === 'string') {
 			// Single permission by name
-			permissionList = [{ name: permissions as PermissionName }];
+			permissionList = [{ name: permissions as PermissionNames }];
 		} else if ((permissions as PermissionInfo).name) {
 			// Single permission by name and object
 			permissionList = [permissions as PermissionInfo];
@@ -70,7 +77,7 @@ export class PermissionService {
 				(permission: string | PermissionInfo): PermissionInfo => {
 					if (typeof permission === 'string') {
 						// Single permission by name
-						return { name: permission as PermissionName };
+						return { name: permission as PermissionNames };
 					}
 					// Single permission by name and object
 					return permission as PermissionInfo;
@@ -94,7 +101,7 @@ export class PermissionService {
 	}
 
 	public static async hasPermission(
-		permissionName: PermissionName,
+		permissionName: PermissionNames,
 		obj: any | null | undefined,
 		user: Avo.User.User
 	): Promise<boolean> {
@@ -109,13 +116,52 @@ export class PermissionService {
 		}
 		// Special checks on top of name being in the permission list
 		switch (permissionName) {
-			case PERMISSIONS.EDIT_OWN_COLLECTIONS:
+			case PermissionNames.EDIT_OWN_COLLECTIONS:
 				const ownerId = get(obj, 'owner_profile_id');
 				return profileId && ownerId && profileId === ownerId;
+
+			case PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT:
+				return this.checkViewItemsLinkedToAssignment(user, obj, 'ITEM');
+
+			case PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT:
+				return this.checkViewItemsLinkedToAssignment(user, obj, 'COLLECTIE');
+
+			case PermissionNames.VIEW_SEARCH_QUERIES_LINKED_TO_ASSIGNMENT:
+				return this.checkViewItemsLinkedToAssignment(user, obj, 'ZOEKOPDRACHT');
 
 			default:
 				// The permission does not require any other checks besides is presence in the permission list
 				return true;
 		}
+	}
+
+	private static async checkViewItemsLinkedToAssignment(
+		user: Avo.User.User,
+		id: string | number,
+		type: 'ITEM' | 'COLLECTIE' | 'ZOEKOPDRACHT'
+	): Promise<boolean> {
+		if (!user.profile) {
+			return false;
+		}
+		const queries = {
+			ITEM: GET_LINKED_ITEMS,
+			COLLECTIE: GET_LINKED_COLLECTIONS,
+			ZOEKOPDRACHT: GET_LINKED_SEARCH_QUERIES,
+		};
+		const response = await dataService.query({
+			query: queries[type],
+			variables:
+				type === 'COLLECTIE'
+					? {
+							idString: String(id), // TODO remove this special case once collection ids are uuids (merged with bundles)
+							isInt: id,
+							userId: user.profile.id,
+					  }
+					: {
+							id,
+							userId: user.profile.id,
+					  },
+		});
+		return get(response, 'data.app_assignment_responses', []).length;
 	}
 }

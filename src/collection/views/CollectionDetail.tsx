@@ -30,14 +30,19 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { ErrorView } from '../../error/views';
 import {
 	ControlledDropdown,
 	DataQueryComponent,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -54,13 +59,11 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentListDetail, ShareCollectionModal } from '../components';
 import './CollectionDetail.scss';
-import { ErrorView } from '../../error/views';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
@@ -117,22 +120,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 
 		Promise.all([
-			PermissionService.hasPermissions(PERMISSIONS.VIEW_COLLECTIONS, user),
 			PermissionService.hasPermissions(
 				[
-					{ name: PERMISSIONS.EDIT_OWN_COLLECTIONS, obj: collectionId },
-					{
-						name: PERMISSIONS.EDIT_ANY_COLLECTIONS,
-					},
+					{ name: PermissionNames.VIEW_COLLECTIONS },
+					{ name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT, obj: collectionId },
 				],
 				user
 			),
 			PermissionService.hasPermissions(
 				[
-					{ name: PERMISSIONS.DELETE_OWN_COLLECTIONS, obj: collectionId },
-					{
-						name: PERMISSIONS.DELETE_ANY_COLLECTIONS,
-					},
+					{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: collectionId },
+					{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
+				],
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: collectionId },
+					{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
 				],
 				user
 			),

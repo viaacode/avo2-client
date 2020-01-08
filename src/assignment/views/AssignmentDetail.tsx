@@ -29,7 +29,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { PERMISSIONS } from '../../authentication/helpers/permission-service';
+import { PermissionNames } from '../../authentication/helpers/permission-service';
 import FragmentListDetail from '../../collection/components/fragment/FragmentListDetail';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
@@ -234,7 +234,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 		checkPermissions(
 			{
-				name: PERMISSIONS.CREATE_ASSIGNMENT_RESPONSE,
+				name: PermissionNames.CREATE_ASSIGNMENT_RESPONSE,
 				obj: (match.params as any).id,
 			},
 			user,

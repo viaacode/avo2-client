@@ -26,7 +26,10 @@ import { CollectionOverview } from '../../collection/views';
 import { ControlledDropdown, LoadingErrorLoadedComponent } from '../../shared/components';
 import { navigate } from '../../shared/helpers';
 
-import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { dataService } from '../../shared/services/data-service';
 
@@ -52,7 +55,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
-	const [tabId, setTabId] = useState<string | null>(match.params.tabId);
+	const [tabId, setTabId] = useState<string | null>(match.params.tabId || null);
 	const [tabCounts, setTabCounts] = useState<{ [tabId: string]: number }>({});
 	const [permissions, setPermissions] = useState<{ [tabId: string]: boolean }>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -63,20 +66,16 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 		setTabId(String(id));
 	};
 
-	const isWorkspaceOverview = (): boolean => {
-		return !(tabId || '').includes('/');
-	};
-
 	useEffect(() => {
 		Promise.all([
 			dataService.query({
 				query: GET_WORKSPACE_TAB_COUNTS,
 				variables: { owner_profile_id: getProfileId(user) },
 			}),
-			PermissionService.hasPermission(PERMISSIONS.CREATE_COLLECTIONS, null, user),
-			PermissionService.hasPermission(PERMISSIONS.CREATE_BUNDLES, null, user),
-			PermissionService.hasPermission(PERMISSIONS.CREATE_ASSIGNMENTS, null, user),
-			PermissionService.hasPermission(PERMISSIONS.CREATE_BOOKMARKS, null, user),
+			PermissionService.hasPermission(PermissionNames.CREATE_COLLECTIONS, null, user),
+			PermissionService.hasPermission(PermissionNames.CREATE_BUNDLES, null, user),
+			PermissionService.hasPermission(PermissionNames.CREATE_ASSIGNMENTS, null, user),
+			PermissionService.hasPermission(PermissionNames.CREATE_BOOKMARKS, null, user),
 		])
 			.then(response => {
 				setTabCounts({
@@ -91,19 +90,6 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 					[ASSIGNMENTS_ID]: response[3],
 					[BOOKMARKS_ID]: response[4],
 				});
-
-				if (getActiveTab()) {
-					// Use has access to at least one tab
-					setLoadingInfo({
-						state: 'loaded',
-					});
-				} else {
-					setLoadingInfo({
-						state: 'error',
-						message: t('Je hebt geen rechten om je werkruimte te bekijken'),
-						icon: 'lock',
-					});
-				}
 			})
 			.catch(err => {
 				console.error(
@@ -117,6 +103,23 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 				});
 			});
 	}, [user, t]);
+
+	useEffect(() => {
+		if (!isEmpty(permissions)) {
+			if (getActiveTab()) {
+				// Use has access to at least one tab
+				setLoadingInfo({
+					state: 'loaded',
+				});
+			} else {
+				setLoadingInfo({
+					state: 'error',
+					message: t('Je hebt geen rechten om je werkruimte te bekijken'),
+					icon: 'lock',
+				});
+			}
+		}
+	}, [permissions]);
 
 	const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
 		if (permissions[tabId]) {
@@ -168,13 +171,19 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 		};
 	};
 
+	const getTabId = () => {
+		return tabId || Object.keys(getTabs())[0];
+	};
+
 	// Get active tab based on above map with tabId
-	const tabs = getTabs();
-	const getActiveTab = () => getTabs()[tabId || Object.keys(tabs)[0]];
+	const getActiveTab = () => {
+		return getTabs()[getTabId()];
+	};
+
 	const getNavTabs = () => {
 		return TABS.map(t => ({
 			...t,
-			active: tabId === t.id,
+			active: getTabId() === t.id,
 			label: tabCounts[t.id] ? `${t.label} (${tabCounts[t.id]})` : t.label,
 		}));
 	};

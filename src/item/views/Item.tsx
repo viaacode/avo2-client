@@ -31,14 +31,21 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import {
+	PermissionGuard,
+	PermissionGuardFail,
+	PermissionGuardPass,
+} from '../../authentication/components';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
+import { ErrorView } from '../../error/views';
 import { DataQueryComponent } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
@@ -465,14 +472,25 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 		);
 	};
 
+	const permissions = [
+		PermissionNames.VIEW_ITEMS,
+		{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: itemId },
+	];
 	return (
-		<DataQueryComponent
-			query={GET_ITEM_BY_ID}
-			variables={{ id: itemId }}
-			resultPath="app_item_meta[0]"
-			renderData={renderItem}
-			notFoundMessage="Dit item werd niet gevonden"
-		/>
+		<PermissionGuard permissions={permissions} user={user}>
+			<PermissionGuardPass>
+				<DataQueryComponent
+					query={GET_ITEM_BY_ID}
+					variables={{ id: itemId }}
+					resultPath="app_item_meta[0]"
+					renderData={renderItem}
+					notFoundMessage="Dit item werd niet gevonden"
+				/>
+			</PermissionGuardPass>
+			<PermissionGuardFail>
+				<ErrorView message={t('Je hebt geen rechten om dit item te bekijken')} icon="lock" />
+			</PermissionGuardFail>
+		</PermissionGuard>
 	);
 };
 

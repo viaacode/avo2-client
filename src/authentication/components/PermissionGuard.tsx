@@ -1,3 +1,4 @@
+import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -48,8 +49,10 @@ const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 	});
 
 	useEffect(() => {
-		setLoadingInfo({ state: 'loaded' });
-	}, [permissions]);
+		if (!isNil(hasPermission)) {
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [hasPermission]);
 
 	const renderPermissionGuard = () => {
 		return hasPermission ? (
@@ -62,7 +65,7 @@ const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			dataObject={permissions}
+			dataObject={{}} // Empty object so it doesn't wait for a valid object from the database
 			render={renderPermissionGuard}
 			showSpinner={true}
 		/>
