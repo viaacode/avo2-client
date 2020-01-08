@@ -99,7 +99,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het laden van de werkruimte is mislukt'),
+					message: t('workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'),
 				});
 			});
 	}, [user, t]);
@@ -114,7 +114,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 			} else {
 				setLoadingInfo({
 					state: 'error',
-					message: t('Je hebt geen rechten om je werkruimte te bekijken'),
+					message: t(
+						'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken'
+					),
 					icon: 'lock',
 				});
 			}
@@ -124,9 +126,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 	const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
 		if (permissions[tabId]) {
 			return { [tabId]: obj };
-		} else {
-			return {};
 		}
+		return {};
 	};
 
 	// Make map for available tab views
@@ -156,8 +157,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 			...addTabIfUserHasPerm(FOLDERS_ID, {
 				component: () => <span>TODO Mappen</span>,
 				filter: {
-					label: t('Filter op label'),
-					options: [{ id: 'all', label: t('Alle') }],
+					label: t('workspace/views/workspace___filter-op-label'),
+					options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
 				},
 			}),
 			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {

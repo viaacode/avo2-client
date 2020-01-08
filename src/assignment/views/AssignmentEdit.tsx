@@ -569,12 +569,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
-				toastService.success(t('De opdracht is succesvol geüpdatet'));
+				toastService.success(
+					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
+				);
 			}
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(t('Het opslaan van de opdracht is mislukt'));
+			toastService.danger(
+				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
+			);
 			setIsSaving(false);
 		}
 	};
@@ -625,7 +629,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				onClose={() => setTagsDropdownOpen(false)}
 			>
 				<DropdownButton>
-					{renderDropdownButton(tags.length ? '' : t('Geen'), false, tags, removeTag)}
+					{renderDropdownButton(
+						tags.length ? '' : t('assignment/views/assignment-edit___geen'),
+						false,
+						tags,
+						removeTag
+					)}
 				</DropdownButton>
 				<DropdownContent>
 					<Spacer>

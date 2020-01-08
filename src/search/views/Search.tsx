@@ -444,7 +444,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
 			<PermissionGuardFail>
 				<ErrorView
-					message={t('Je hebt geen rechten om de zoek pagina te bekijken')}
+					message={t('search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken')}
 					icon={'lock'}
 				/>
 			</PermissionGuardFail>

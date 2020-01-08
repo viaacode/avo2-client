@@ -43,7 +43,9 @@ const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 					state: 'error',
 					message:
 						noPermissionsMessage ||
-						t('Er ging iets mis tijdens het controleren van de rechten van je account'),
+						t(
+							'authentication/components/permission-guard___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
+						),
 				});
 			});
 	});

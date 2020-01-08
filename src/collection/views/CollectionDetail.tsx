@@ -162,7 +162,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				console.error('Failed to get permissions for collection', err, { collectionId });
 				setLoadingInfo({
 					state: 'error',
-					message: t('Er ging iets mis tijdens het controleren van je account rechten'),
+					message: t(
+						'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-controleren-van-je-account-rechten'
+					),
 					icon: 'alert-triangle',
 				});
 			});
@@ -459,7 +461,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const getCollectionAndRender = () => {
 		if (!permissions.canViewCollections) {
 			return (
-				<ErrorView message={t('Je hebt geen rechten om deze collectie te bekijken')} icon="lock" />
+				<ErrorView
+					message={t(
+						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
+					)}
+					icon="lock"
+				/>
 			);
 		}
 		return (

@@ -185,9 +185,17 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							// Show toast instead of showing error using the loadingInfo
 							// since we still want to show the assignment without the content if the content fails to load
 							if (err === 'NOT_FOUND') {
-								toastService.danger(t('De opdracht inhoud werdt niet terug gevonden'));
+								toastService.danger(
+									t(
+										'assignment/views/assignment-detail___de-opdracht-inhoud-werdt-niet-terug-gevonden'
+									)
+								);
 							} else {
-								toastService.danger(t('Het ophalen van de opdracht inhoud is mislukt'));
+								toastService.danger(
+									t(
+										'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
+									)
+								);
 							}
 						})
 						.finally(() => setLoadingInfo({ state: 'loaded' }));
