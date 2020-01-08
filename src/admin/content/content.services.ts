@@ -8,7 +8,7 @@ import { insertContentBlocks } from '../content-block/content-block.services';
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
 import toastService from '../../shared/services/toast-service';
-import { CONTENT_RESULT_PATH } from './content.const';
+import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import { GET_CONTENT_BY_ID, GET_CONTENT_TYPES } from './content.gql';
 import { ContentTypesResponse } from './content.types';
 
@@ -29,8 +29,6 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 		return null;
 	}
 };
-
-const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
 
 export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
 	try {
@@ -72,7 +70,6 @@ export const insertContent = async (
 				const contentBlocks = await insertContentBlocks(id, cbConfigs);
 
 				if (!contentBlocks) {
-					toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
 					// return null to prevent triggering success toast
 					return null;
 				}
@@ -84,6 +81,8 @@ export const insertContent = async (
 		return null;
 	} catch (err) {
 		console.error(err);
+		toastService.danger('Er ging iets mis tijdens het opslaan van de content', false);
+
 		return null;
 	}
 };
@@ -118,7 +117,7 @@ export const updateContent = async (
 		return contentItem;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+		toastService.danger('Er ging iets mis tijdens het opslaan van de content', false);
 
 		return null;
 	}

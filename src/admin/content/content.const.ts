@@ -10,6 +10,8 @@ export const CONTENT_RESULT_PATH = {
 	UPDATE: 'update_app_content',
 };
 
+export const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
+
 export const CONTENT_PATH = {
 	CONTENT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}`,
 	CONTENT_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/${ROUTE_PARTS.create}`,
