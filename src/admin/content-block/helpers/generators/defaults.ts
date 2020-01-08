@@ -62,8 +62,3 @@ export const TEXT_FIELD = (
 	},
 	...propOverride,
 });
-
-export const BLOCK_COMPONENT_LIMITS = () => ({
-	min: 1,
-	max: 1,
-});
