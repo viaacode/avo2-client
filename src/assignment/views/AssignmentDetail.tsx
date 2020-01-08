@@ -173,18 +173,24 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					await createAssignmentResponseObject(tempAssignment);
 
 					// Load content (collection, item or search query) according to assignment
-					getAssignmentContent(tempAssignment).then(
-						(response: Avo.Assignment.Content | string | null) => {
-							if (typeof response === 'string') {
-								toastService.info(response);
-								return;
-							}
-
+					getAssignmentContent(tempAssignment)
+						.then((response: Avo.Assignment.Content | null) => {
 							setAssigmentContent(response);
 							setAssignment(tempAssignment);
-							setLoadingInfo({ state: 'loaded' });
-						}
-					);
+						})
+						.catch(err => {
+							console.error('Failed to get assignment content', err, {
+								assignment: tempAssignment,
+							});
+							// Show toast instead of showing error using the loadingInfo
+							// since we still want to show the assignment without the content if the content fails to load
+							if (err === 'NOT_FOUND') {
+								toastService.danger(t('De opdracht inhoud werdt niet terug gevonden'));
+							} else {
+								toastService.danger(t('Het ophalen van de opdracht inhoud is mislukt'));
+							}
+						})
+						.finally(() => setLoadingInfo({ state: 'loaded' }));
 				})
 				.catch(err => {
 					const { DELETED, NOT_YET_AVAILABLE, PAST_DEADLINE } = AssignmentRetrieveError;

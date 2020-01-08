@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
-import { DocumentNode } from 'graphql';
 import { get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
@@ -43,14 +42,9 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
-import {
-	GET_COLLECTION_BY_ID,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/collection.gql';
+import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
-import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DeleteObjectModal,
 	InputModal,
@@ -68,7 +62,7 @@ import {
 	checkPermissions,
 	LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { ASSIGNMENT_PATH } from '../assignment.const';
+import { ASSIGNMENT_PATH, CONTENT_LABEL_TO_QUERY } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
@@ -88,7 +82,7 @@ const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: ROUTE_PARTS.item,
-	COLLECTIE: ROUTE_PARTS.collection,
+	COLLECTIE: ROUTE_PARTS.collections,
 	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
@@ -98,24 +92,6 @@ const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
 	ITEM: 'avo_item_pid',
 	COLLECTIE: 'collections',
 	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
-};
-
-const CONTENT_LABEL_TO_QUERY: {
-	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
-} = {
-	COLLECTIE: {
-		query: GET_COLLECTION_BY_ID,
-		resultPath: 'app_collections[0]',
-	},
-	ITEM: {
-		query: GET_ITEM_BY_ID,
-		resultPath: 'app_item_meta[0]',
-	},
-	ZOEKOPDRACHT: {
-		// TODO: implement search query saving and usage
-		// query: GET_SEARCH_QUERY_BY_ID,
-		// resultPath: 'app_item_meta[0]',
-	} as any,
 };
 
 interface AssignmentEditProps extends DefaultSecureRouteProps {}
@@ -427,7 +403,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	};
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
-		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignment}/${
+		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
 			currentAssignment.id
 		}`;
 	};
@@ -593,12 +569,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
-				toastService.success('De opdracht is succesvol geüpdatet');
+				toastService.success(t('De opdracht is succesvol geüpdatet'));
 			}
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
-			toastService.danger('Het opslaan van de opdracht is mislukt');
+			toastService.danger(t('Het opslaan van de opdracht is mislukt'));
 			setIsSaving(false);
 		}
 	};
@@ -649,7 +625,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				onClose={() => setTagsDropdownOpen(false)}
 			>
 				<DropdownButton>
-					{renderDropdownButton(tags.length ? '' : 'Geen', false, tags, removeTag)}
+					{renderDropdownButton(tags.length ? '' : t('Geen'), false, tags, removeTag)}
 				</DropdownButton>
 				<DropdownContent>
 					<Spacer>

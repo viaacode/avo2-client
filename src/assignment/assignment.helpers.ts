@@ -1,58 +1,33 @@
 import { ApolloQueryResult } from 'apollo-client';
-import { DocumentNode } from 'graphql';
 import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
-import { GET_ITEM_BY_ID } from '../item/item.gql';
 import { dataService } from '../shared/services/data-service';
-
-const CONTENT_LABEL_TO_QUERY: {
-	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string };
-} = {
-	COLLECTIE: {
-		query: GET_COLLECTION_BY_ID,
-		resultPath: 'app_collections[0]',
-	},
-	ITEM: {
-		query: GET_ITEM_BY_ID,
-		resultPath: 'app_item_meta[0]',
-	},
-	ZOEKOPDRACHT: {
-		// TODO: DISABLED FEATURE - search query saving and usage
-		// query: GET_SEARCH_QUERY_BY_ID,
-		// resultPath: 'app_item_meta[0]',
-	} as any,
-};
+import { CONTENT_LABEL_TO_QUERY } from './assignment.const';
 
 export const getAssignmentContent = async (
 	assignment: Avo.Assignment.Assignment
-): Promise<string | Avo.Assignment.Content | null> => {
-	try {
-		if (assignment.content_id && assignment.content_label) {
-			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
-				query: CONTENT_LABEL_TO_QUERY[assignment.content_label].query,
-				variables: { id: assignment.content_id },
-			});
+): Promise<Avo.Assignment.Content | null> => {
+	if (assignment.content_id && assignment.content_label) {
+		const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
+			query: CONTENT_LABEL_TO_QUERY[assignment.content_label].query,
+			variables: { id: assignment.content_id },
+		});
 
-			const newAssignmentContent = get(
-				response,
-				`data.${
-					CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].resultPath
-				}`
-			);
+		const newAssignmentContent = get(
+			response,
+			`data.${
+				CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].resultPath
+			}`
+		);
 
-			if (!newAssignmentContent) {
-				return 'De opdracht werdt niet gevonden';
-			}
-
-			return newAssignmentContent;
+		if (!newAssignmentContent) {
+			throw 'NOT_FOUND';
 		}
 
-		return null;
-	} catch (err) {
-		console.error(err);
-		return 'Het ophalen van de opdracht inhoud is mislukt';
+		return newAssignmentContent;
 	}
+
+	return null;
 };
