@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
 import {
@@ -64,6 +65,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	user,
 	...rest
 }) => {
+	const [t] = useTranslation();
+
 	// State
 	const [collectionId] = useState((match.params as any)['id'] as string);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -163,7 +166,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// Render functions
 	const renderRelatedCollections = () => {
 		if (!relatedCollections || !relatedCollections.length) {
-			return <p className="c-body-1">De gerelateerde collecties konden niet worden opgehaald.</p>;
+			return (
+				<p className="c-body-1">
+					<Trans i18nKey="collection/views/collection-detail___de-gerelateerde-collecties-konden-niet-worden-opgehaald">
+						De gerelateerde collecties konden niet worden opgehaald.
+					</Trans>
+				</p>
+			);
 		}
 
 		relatedCollections.map((relatedCollection: Avo.Search.ResultItem) => {
@@ -174,12 +183,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<Grid className="c-media-card-list">
 					<Column size="3-6">
 						<MediaCard
-							title={dc_title}
+							category={category}
 							onClick={() =>
 								redirectToClientPage(buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id }), history)
 							}
-							category={category}
 							orientation="horizontal"
+							title={dc_title}
 						>
 							<MediaCardThumbnail>
 								<Thumbnail category={category} src={thumbnail_path} />
@@ -226,12 +235,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				<PermissionGuard {...canEditCollection} user={user}>
 					<Button
 						type="secondary"
-						label="Delen"
+						label={t('collection/views/collection-detail___delen')}
 						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 					/>
 				</PermissionGuard>
-				<Button title="Bladwijzer" type="secondary" icon="bookmark" ariaLabel="Bladwijzer" />
-				<Button title="Deel" type="secondary" icon="share-2" ariaLabel="Deel" />
+				<Button
+					title={t('collection/views/collection-detail___bladwijzer')}
+					type="secondary"
+					icon="bookmark"
+					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
+				/>
+				<Button
+					title={t('collection/views/collection-detail___deel')}
+					type="secondary"
+					icon="share-2"
+					ariaLabel={t('collection/views/collection-detail___deel')}
+				/>
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
@@ -243,8 +262,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<Button
 							type="secondary"
 							icon="more-horizontal"
-							ariaLabel="Meer opties"
-							title="Meer opties"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
 						/>
 					</DropdownButton>
 					<DropdownContent>
@@ -253,7 +272,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</ControlledDropdown>
 				<PermissionGuard {...canEditCollection} user={user}>
 					<Spacer margin="left-small">
-						<Button type="primary" icon="edit" label="Bewerken" onClick={onEditCollection} />
+						<Button
+							type="primary"
+							icon="edit"
+							label={t('collection/views/collection-detail___bewerken')}
+							onClick={onEditCollection}
+						/>
 					</Spacer>
 				</PermissionGuard>
 			</ButtonToolbar>
@@ -286,11 +310,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</Container>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<h3 className="c-h3">Info over deze collectie</h3>
+						<h3 className="c-h3">
+							<Trans i18nKey="collection/views/collection-detail___info-over-deze-collectie">
+								Info over deze collectie
+							</Trans>
+						</h3>
 						<Grid>
 							<Column size="3-3">
 								<Spacer margin="top">
-									<p className="u-text-bold">Onderwijsniveau</p>
+									<p className="u-text-bold">
+										<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
+											Onderwijsniveau
+										</Trans>
+									</p>
 									<p className="c-body-1">
 										{lom_context && lom_context.length ? (
 											generateSearchLinks(`${id}`, 'educationLevel', lom_context)
@@ -302,19 +334,35 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
-									<p className="u-text-bold">Laatst aangepast</p>
+									<p className="u-text-bold">
+										<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
+											Laatst aangepast
+										</Trans>
+									</p>
 									<p className="c-body-1">{formatDate(updated_at)}</p>
 								</Spacer>
 							</Column>
 							<Column size="3-6">
-								<p className="u-text-bold">Ordering</p>
+								<p className="u-text-bold">
+									<Trans i18nKey="collection/views/collection-detail___ordering">Ordering</Trans>
+								</p>
 								{/* TODO: add links */}
-								<p className="c-body-1">Deze collectie is een kopie van:</p>
-								<p className="c-body-1">Deze collectie is deel van een map:</p>
+								<p className="c-body-1">
+									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-een-kopie-van">
+										Deze collectie is een kopie van:
+									</Trans>
+								</p>
+								<p className="c-body-1">
+									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
+										Deze collectie is deel van een map:
+									</Trans>
+								</p>
 							</Column>
 							<Column size="3-3">
 								<Spacer margin="top">
-									<p className="u-text-bold">Vakken</p>
+									<p className="u-text-bold">
+										<Trans i18nKey="collection/views/collection-detail___vakken">Vakken</Trans>
+									</p>
 									<p className="c-body-1">
 										{lom_classification && lom_classification.length ? (
 											generateSearchLinks(`${id}`, 'subject', lom_classification)
@@ -326,7 +374,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<Heading type="h3">Bekijk ook</Heading>
+						<Heading type="h3">
+							<Trans i18nKey="collection/views/collection-detail___bekijk-ook">Bekijk ook</Trans>
+						</Heading>
 						{renderRelatedCollections()}
 					</Container>
 				</Container>

@@ -1,8 +1,10 @@
 import { useMutation } from '@apollo/react-hooks';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
+	ButtonToolbar,
 	Container,
 	Flex,
 	Header,
@@ -34,6 +36,8 @@ import './ContentEdit.scss';
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
+	const [t] = useTranslation();
+
 	const { id } = match.params;
 
 	// Hooks
@@ -204,8 +208,18 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			<AdminLayoutHeader>
 				<Header category="audio" title={pageTitle} showMetaData={false}>
 					<HeaderButtons>
-						<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
-						<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
+						<ButtonToolbar>
+							<Button
+								disabled={isSaving}
+								label={t('admin/content/views/content-edit___opslaan')}
+								onClick={handleSave}
+							/>
+							<Button
+								label={t('admin/content/views/content-edit___annuleer')}
+								onClick={navigateBack}
+								type="tertiary"
+							/>
+						</ButtonToolbar>
 					</HeaderButtons>
 				</Header>
 				<Navbar background="alt" placement="top" autoHeight>

@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get, startCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Button, Container, Flex, IconName, SelectOption, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -20,6 +21,8 @@ import { MenuEditFormState, MenuEditParams } from '../menu.types';
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
+	const [t] = useTranslation();
+
 	const { menu: menuParentId, id: menuItemId } = match.params;
 	const menuName = startCase(menuParentId);
 
@@ -215,8 +218,16 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
-				<Button disabled={isSaving} label="Opslaan" onClick={handleSave} />
-				<Button label="Annuleer" onClick={navigateBack} type="tertiary" />
+				<Button
+					disabled={isSaving}
+					label={t('admin/menu/views/menu-edit___opslaan')}
+					onClick={handleSave}
+				/>
+				<Button
+					label={t('admin/menu/views/menu-edit___annuleer')}
+					onClick={navigateBack}
+					type="tertiary"
+				/>
 			</AdminLayoutActions>
 		</AdminLayout>
 	);

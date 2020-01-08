@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -59,6 +60,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	onClose,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
@@ -285,7 +288,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 		return (
 			<Modal
-				title="Voeg fragment toe aan collectie"
+				title={t(
+					'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
+				)}
 				size="auto"
 				isOpen={isOpen}
 				onClose={onClose}
@@ -328,16 +333,22 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 										</Container>
 									</Column>
 									<Column size="2-5">
-										<FormGroup label="Titel">
+										<FormGroup label={t('item/components/modals/add-to-collection-modal___titel')}>
 											<span>{itemMetaData.title}</span>
 										</FormGroup>
-										<FormGroup label="Beschrijving">
+										<FormGroup
+											label={t('item/components/modals/add-to-collection-modal___beschrijving')}
+										>
 											<span>{itemMetaData.description}</span>
 										</FormGroup>
-										<FormGroup label="Collectie">
+										<FormGroup
+											label={t('item/components/modals/add-to-collection-modal___collectie')}
+										>
 											<Spacer margin="bottom">
 												<RadioButton
-													label="Voeg toe aan bestaande collectie"
+													label={t(
+														'item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie'
+													)}
 													checked={!createNewCollection}
 													value="existing"
 													name="collection"
@@ -363,14 +374,18 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											</Spacer>
 											<Spacer margin="bottom">
 												<RadioButton
-													label="Voeg toe aan een nieuwe collectie"
+													label={t(
+														'item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie'
+													)}
 													checked={createNewCollection}
 													value="new"
 													name="collection"
 												/>
 												<div>
 													<TextInput
-														placeholder="Collectie titel"
+														placeholder={t(
+															'item/components/modals/add-to-collection-modal___collectie-titel'
+														)}
 														disabled={!createNewCollection}
 														value={newCollectionTitle}
 														onChange={setNewCollectionTitle}
@@ -391,14 +406,14 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 								<ButtonToolbar>
 									{isProcessing && <Spinner />}
 									<Button
-										label="Annuleren"
+										label={t('item/components/modals/add-to-collection-modal___annuleren')}
 										type="link"
 										block
 										onClick={onClose}
 										disabled={isProcessing}
 									/>
 									<Button
-										label="Toepassen"
+										label={t('item/components/modals/add-to-collection-modal___toepassen')}
 										type="primary"
 										block
 										title={

@@ -2,12 +2,12 @@ import { History, Location } from 'history';
 import { get } from 'lodash-es';
 import queryString from 'query-string';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { SEARCH_PATH } from '../../search/search.const';
 import { getEnv } from '../../shared/helpers';
 import { AUTH_PATH, SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
-
-export type IdpType = 'HETARCHIEF' | 'VIAA' | 'SMARTSCHOOL' | 'KLASCEMENT'; // TODO switch to typings type
 
 /**
  *
@@ -26,14 +26,14 @@ export function redirectToClientPage(path: string, history: History) {
 export function redirectToServerSmartschoolLogin(location: Location) {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
 }
 
 export function redirectToServerArchiefRegistrationIdp(location: Location, stamboekNumber: string) {
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', AUTH_PATH.LOGIN_AVO);
+	const returnToUrl = getBaseUrl(location) + AUTH_PATH.LOGIN_AVO;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify({
 		returnToUrl,
 		stamboekNumber,
@@ -43,7 +43,7 @@ export function redirectToServerArchiefRegistrationIdp(location: Location, stamb
 export function redirectToServerLoginPage(location: Location) {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
 	window.location.href = `${getEnv('PROXY_URL')}/auth/login?${queryString.stringify({
 		returnToUrl,
@@ -64,15 +64,15 @@ export function redirectToServerLogoutPage(location: Location) {
  * @param location
  * @param idpType
  */
-export function redirectToServerLinkAccount(location: Location, idpType: IdpType) {
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+export function redirectToServerLinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify({
 		returnToUrl,
 		idpType,
 	})}`;
 }
-export function redirectToServerUnlinkAccount(location: Location, idpType: IdpType) {
-	const returnToUrl = getBaseUrl(location) + get(location, 'pathname', SEARCH_PATH.SEARCH);
+export function redirectToServerUnlinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify({
 		returnToUrl,
 		idpType,
@@ -88,6 +88,10 @@ export function redirectToExternalPage(returnToUrl: string) {
 	window.location.href = returnToUrl;
 }
 
-function getBaseUrl(location: Location) {
+function getBaseUrl(location: Location): string {
 	return window.location.href.split(location.pathname)[0];
+}
+
+function getFromPath(location: Location, defaultPath: string = SEARCH_PATH.SEARCH): string {
+	return get(location, 'state.from.pathname', defaultPath);
 }

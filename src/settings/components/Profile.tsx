@@ -1,6 +1,9 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { ChangeEvent, FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 import {
 	Alert,
@@ -12,6 +15,7 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	Heading,
 	Icon,
 	Select,
 	Spacer,
@@ -21,6 +25,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import {
@@ -29,41 +34,55 @@ import {
 	getProfileId,
 } from '../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import {
+	getLoginResponse,
+	getLoginStateAction,
+	setLoginSuccess,
+} from '../../authentication/store/actions';
 import { APP_PATH } from '../../constants';
-import { SEARCH_PATH } from '../../search/search.const';
 import { DataQueryComponent } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import {
-	ClientEducationOrganization,
 	fetchCities,
 	fetchEducationOrganizations,
 } from '../../shared/services/education-organizations-service';
 import toastService from '../../shared/services/toast-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
+import store from '../../store';
 
 import { DELETE_PROFILE_OBJECTS, UPDATE_PROFILE_INFO } from '../settings.gql';
 import { updateProfileInfo } from '../settings.service';
 
-export interface ProfileProps extends DefaultSecureRouteProps {}
+export interface ProfileProps extends DefaultSecureRouteProps {
+	isCompleteProfileStep?: boolean;
+	redirectTo?: string;
+}
 
-const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) => {
+const Profile: FunctionComponent<ProfileProps> = ({
+	history,
+	user,
+	isCompleteProfileStep = false,
+	redirectTo = APP_PATH.SEARCH,
+}) => {
+	const [t] = useTranslation();
+
 	const gqlEnumToSelectOption = (enumLabel: string): TagInfo => ({
 		label: enumLabel,
 		value: enumLabel,
 	});
-	const gqlOrganizationToSelectOption = (org: ClientEducationOrganization): TagInfo => ({
+	const gqlOrganizationToSelectOption = (org: Avo.EducationOrganization.Organization): TagInfo => ({
 		label: `${org.label}`,
 		value: `${org.organizationId}:${org.unitId || ''}`,
 	});
 	const [cities, setCities] = useState<string[]>([]);
 	const [selectedCity, setSelectedCity] = useState<string>('');
-	const [organizations, setOrganizations] = useState<ClientEducationOrganization[]>([]);
+	const [organizations, setOrganizations] = useState<Avo.EducationOrganization.Organization[]>([]);
 	const [organizationsLoadingState, setOrganizationsLoadingState] = useState<
 		'loading' | 'loaded' | 'error'
 	>('loaded');
 	// Cache organizations since the user will probably select multiple schools in the same city
 	const [organizationsCache, setOrganizationsCache] = useState<{
-		[cityAndZipCode: string]: ClientEducationOrganization[];
+		[cityAndZipCode: string]: Avo.EducationOrganization.Organization[];
 	}>({});
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
 		get(user, 'profile.educationLevels', []).map(gqlEnumToSelectOption)
@@ -78,6 +97,7 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 	const [avatar, setAvatar] = useState<string | null>(getProfile(user).avatar);
 	const [bio, setBio] = useState<string | null>((getProfile(user) as any).bio);
 	const [func, setFunc] = useState<string | null>((getProfile(user) as any).function);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const [triggerProfileUpdate] = useMutation(UPDATE_PROFILE_INFO);
 	const [triggerProfileObjectsDelete] = useMutation(DELETE_PROFILE_OBJECTS);
@@ -100,7 +120,7 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 				}
 				setOrganizationsLoadingState('loading');
 				const [city, zipCode] = selectedCity.split(/[()]/g).map(s => s.trim());
-				let orgs: ClientEducationOrganization[] = [];
+				let orgs: Avo.EducationOrganization.Organization[] = [];
 				if (organizationsCache[selectedCity]) {
 					// get from cache
 					orgs = [...organizationsCache[selectedCity]];
@@ -127,20 +147,21 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 
 	const saveProfileChanges = async () => {
 		try {
+			setIsSaving(true);
 			const profileId: string = getProfileId(user);
 			await updateProfileInfo(triggerProfileObjectsDelete, triggerProfileUpdate, getProfile(user), {
 				alias,
 				avatar,
 				bio,
-				educationLevels: selectedEducationLevels.map(option => ({
+				educationLevels: (selectedEducationLevels || []).map(option => ({
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
-				subjects: selectedSubjects.map(option => ({
+				subjects: (selectedSubjects || []).map(option => ({
 					profile_id: profileId,
 					key: option.value.toString(),
 				})),
-				organizations: selectedOrganizations.map(option => ({
+				organizations: (selectedOrganizations || []).map(option => ({
 					profile_id: profileId,
 					organization_id: option.value.toString().split(':')[0],
 					unit_id: option.value.toString().split(':')[1] || null,
@@ -148,14 +169,24 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 				function: func, // This database field naming isn't ideal
 			});
 
-			if (isCompleteProfileStep()) {
-				redirectToClientPage(get(location, 'state.from.pathname', SEARCH_PATH.SEARCH), history);
+			// Refresh the login state, so the profile info will be up to date
+			const loginResponse: Avo.Auth.LoginResponse = await getLoginResponse();
+			store.dispatch(setLoginSuccess(loginResponse));
+
+			if (isCompleteProfileStep) {
+				// Wait for login response to be set into the store before redirecting
+				setTimeout(() => {
+					redirectToClientPage(redirectTo, history);
+					setIsSaving(false);
+				}, 0);
 			} else {
 				toastService.success('Opgeslagen');
+				setIsSaving(false);
 			}
 		} catch (err) {
 			console.error(err);
 			toastService.danger('Het opslaan van de profiel information is mislukt.');
+			setIsSaving(false);
 		}
 	};
 
@@ -192,34 +223,96 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 		}
 		return [
 			{ label: 'selecteer een instelling', value: '', disabled: true },
-			...organizations.map((org: ClientEducationOrganization) => ({
+			...organizations.map((org: Avo.EducationOrganization.Organization) => ({
 				label: org.label,
 				value: org.label,
 			})),
 		];
 	};
 
-	/**
-	 * Returns boolean to show if profile component was loaded to complete the required profile info,
-	 * or if it was loaded in the avo settings screen of a user that is already fully logged in
-	 */
-	const isCompleteProfileStep = (): boolean => {
-		return location.pathname === APP_PATH.COMPLETE_PROFILE;
-	};
-
-	const areAllRequiredFieldFilledIn = (): boolean => {
-		return true; // TODO switch this once we can save profile info
-		// return (
-		// 	selectedSubjects.length > 0 &&
-		// 	selectedEducationLevels.length > 0 &&
-		// 	selectedOrganizations.length > 0
-		// );
-	};
+	const areAllRequiredFieldFilledIn = (): boolean =>
+		selectedSubjects &&
+		selectedSubjects.length > 0 &&
+		selectedEducationLevels &&
+		selectedEducationLevels.length > 0 &&
+		selectedOrganizations &&
+		selectedOrganizations.length > 0;
 
 	const handleAvatarOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
 		setAvatar('');
 		toastService.info('Nog niet geïmplementeerd');
 	};
+
+	const renderRequiredFields = (subjects: string[], educationLevels: string[]) => (
+		<>
+			<FormGroup label={t('settings/components/profile___vakken')} labelFor="subjects">
+				<TagsInput
+					id="subjects"
+					placeholder={t('settings/components/profile___selecteer-de-vakken-die-u-geeft')}
+					options={subjects.map(subject => ({
+						label: subject,
+						value: subject,
+					}))}
+					value={selectedSubjects}
+					onChange={setSelectedSubjects}
+				/>
+			</FormGroup>
+			<FormGroup
+				label={t('settings/components/profile___onderwijsniveau')}
+				labelFor="educationLevel"
+			>
+				<TagsInput
+					id="educationLevel"
+					placeholder={t('settings/components/profile___selecteer-een-opleidingsniveau')}
+					options={educationLevels.map(edLevel => ({
+						label: edLevel,
+						value: edLevel,
+					}))}
+					value={selectedEducationLevels}
+					onChange={setSelectedEducationLevels}
+				/>
+			</FormGroup>
+			<FormGroup
+				label={t('settings/components/profile___school-organisatie')}
+				labelFor="organization"
+			>
+				<TagList
+					closable
+					swatches={false}
+					tags={selectedOrganizations.map(org => ({
+						label: org.label,
+						id: org.label,
+					}))}
+					onTagClosed={removeOrganization}
+				/>
+				<Spacer margin="top-small">
+					<Select
+						options={[
+							{ label: t('settings/components/profile___voeg-een-organisatie-toe'), value: '' },
+							...cities.map(c => ({ label: c, value: c })),
+						]}
+						value={selectedCity || ''}
+						onChange={onSelectedCityChanged}
+					/>
+				</Spacer>
+				<Spacer margin="top-small">
+					{organizationsLoadingState === 'loading' && (
+						<Alert
+							type="spinner"
+							message={t('settings/components/profile___bezig-met-ophalen-van-organisaties')}
+						/>
+					)}
+					{!!selectedCity && organizationsLoadingState === 'loaded' && (
+						<Select
+							options={getOrganizationOptions()}
+							value={''}
+							onChange={onSelectedOrganizationChanged}
+						/>
+					)}
+				</Spacer>
+			</FormGroup>
+		</>
+	);
 
 	const renderProfile = (data: ContextAndClassificationData) => {
 		const educationLevels: string[] = (get(data, 'lookup_enum_lom_context', []) as {
@@ -229,6 +322,40 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 			description: string;
 		}[]).map((item: { description: string }) => item.description);
 
+		if (isCompleteProfileStep) {
+			// Render profile for the complete profile step of the registration process
+			return (
+				<Container mode="horizontal" size="medium">
+					<Container mode="vertical">
+						<Heading type="h1">
+							<Trans i18nKey="settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel">
+								Je bent er bijna. Vervolledig nog je profiel.
+							</Trans>
+						</Heading>
+						<Spacer margin="top-large">
+							<Alert type="info">
+								<Trans i18nKey="settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen">
+									We gebruiken deze info om je gepersonaliseerde content te tonen.
+								</Trans>
+							</Alert>
+						</Spacer>
+						<Form type="standard">
+							<Spacer margin={['top-large', 'bottom-large']}>
+								{renderRequiredFields(subjects, educationLevels)}
+							</Spacer>
+						</Form>
+						<Button
+							label={t('settings/components/profile___inloggen')}
+							type="primary"
+							disabled={!areAllRequiredFieldFilledIn() || isSaving}
+							onClick={saveProfileChanges}
+						/>
+					</Container>
+				</Container>
+			);
+		}
+
+		// Render profile for the settings page
 		return (
 			<>
 				<Container mode="vertical">
@@ -237,140 +364,84 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 							<Grid>
 								<Column size="3-7">
 									<Form type="standard">
-										{!isCompleteProfileStep() && (
-											<>
-												<FormGroup label="Nickname" labelFor="alias">
-													<TextInput
-														id="alias"
-														placeholder="Een unieke gebruikersnaam"
-														value={alias}
-														onChange={setAlias}
-													/>
-												</FormGroup>
-												<FormGroup label="Functie" labelFor="func">
-													<TextInput
-														id="func"
-														placeholder="bv: Leerkracht basis onderwijs"
-														value={func || undefined}
-														onChange={setFunc}
-													/>
-												</FormGroup>
-												<FormGroup label="Profielfoto" labelFor="profilePicture">
-													<Box>
-														{/* TODO replace with components from component repo */}
-														<Avatar initials="XX" />
-														<Icon name="user" size="large" />
-														<input
-															type="file"
-															placeholder="Profielfoto uploaden"
-															onChange={handleAvatarOnChange}
-														/>
-													</Box>
-												</FormGroup>
-												<FormGroup label="Bio" labelFor="bio">
-													<TextArea
-														name="bio"
-														id="bio"
-														height="medium"
-														placeholder="Een korte beschrijving van jezelf..."
-														value={bio || undefined}
-														onChange={setBio}
-													/>
-												</FormGroup>
-											</>
-										)}
-										<FormGroup label="Vakken" labelFor="subjects">
-											<TagsInput
-												id="subjects"
-												placeholder="Selecteer de vakken die u geeft"
-												options={subjects.map(subject => ({
-													label: subject,
-													value: subject,
-												}))}
-												value={selectedSubjects}
-												onChange={setSelectedSubjects}
-											/>
-										</FormGroup>
-										<FormGroup label="Onderwijsniveau" labelFor="educationLevel">
-											<TagsInput
-												id="educationLevel"
-												placeholder="Selecteer een opleidingsniveau"
-												options={educationLevels.map(edLevel => ({
-													label: edLevel,
-													value: edLevel,
-												}))}
-												value={selectedEducationLevels}
-												onChange={setSelectedEducationLevels}
-											/>
-										</FormGroup>
-
-										<FormGroup label="School/organisatie" labelFor="organization">
-											<TagList
-												closable
-												swatches={false}
-												tags={selectedOrganizations.map(org => ({
-													label: org.label,
-													id: org.label,
-												}))}
-												onTagClosed={removeOrganization}
-											/>
-											<Spacer margin="top-small">
-												<Select
-													options={[
-														{ label: 'Voeg een organisatie toe', value: '' },
-														...cities.map(c => ({ label: c, value: c })),
-													]}
-													value={selectedCity || ''}
-													onChange={onSelectedCityChanged}
+										<>
+											<FormGroup
+												label={t('settings/components/profile___nickname')}
+												labelFor="alias"
+											>
+												<TextInput
+													id="alias"
+													placeholder={t('settings/components/profile___een-unieke-gebruikersnaam')}
+													value={alias}
+													onChange={setAlias}
 												/>
-											</Spacer>
-											<Spacer margin="top-small">
-												{organizationsLoadingState === 'loading' && (
-													<Alert type="spinner" message="Bezig met ophalen van organisaties..." />
-												)}
-												{!!selectedCity && organizationsLoadingState === 'loaded' && (
-													<Select
-														options={getOrganizationOptions()}
-														value={''}
-														onChange={onSelectedOrganizationChanged}
+											</FormGroup>
+											<FormGroup label={t('settings/components/profile___functie')} labelFor="func">
+												<TextInput
+													id="func"
+													placeholder={t(
+														'settings/components/profile___bv-leerkracht-basis-onderwijs'
+													)}
+													value={func || undefined}
+													onChange={setFunc}
+												/>
+											</FormGroup>
+											<FormGroup
+												label={t('settings/components/profile___profielfoto')}
+												labelFor="profilePicture"
+											>
+												<Box>
+													{/* TODO replace with components from component repo */}
+													<Avatar initials="XX" />
+													<Icon name="user" size="large" />
+													<input
+														type="file"
+														placeholder={t('settings/components/profile___profielfoto-uploaden')}
+														onChange={handleAvatarOnChange}
 													/>
-												)}
-											</Spacer>
-										</FormGroup>
+												</Box>
+											</FormGroup>
+											<FormGroup label={t('settings/components/profile___bio')} labelFor="bio">
+												<TextArea
+													name="bio"
+													id="bio"
+													height="medium"
+													placeholder={t(
+														'settings/components/profile___een-korte-beschrijving-van-jezelf'
+													)}
+													value={bio || undefined}
+													onChange={setBio}
+												/>
+											</FormGroup>
+										</>
+										{renderRequiredFields(subjects, educationLevels)}
 										<Button
-											label={isCompleteProfileStep() ? 'Inloggen' : 'Opslaan'}
+											label={t('settings/components/profile___opslaan')}
 											type="primary"
-											disabled={!areAllRequiredFieldFilledIn()}
+											disabled={!areAllRequiredFieldFilledIn() || isSaving}
 											onClick={saveProfileChanges}
 										/>
 									</Form>
 								</Column>
 								<Column size="3-5">
-									{isCompleteProfileStep() ? (
-										<Box>
-											<p>
-												Vervolledig wat informatie over jezelf. We gebruiken deze informatie om je
-												gepersonaliseerde content te laten zien.
-											</p>
-										</Box>
-									) : (
-										<>
-											{/*<Box>*/}
-											{/*	<Heading type="h4">Volledigheid profiel</Heading>*/}
-											{/*	/!* TODO replace with components from component repo *!/*/}
-											{/*	<div className="c-progress-bar" />*/}
-											{/*</Box>*/}
-											<Spacer margin={['top', 'bottom']}>
-												<Box>
-													<p>
+									<>
+										{/*<Box>*/}
+										{/*	<Heading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></Heading>*/}
+										{/*	/!* TODO replace with components from component repo *!/*/}
+										{/*	<div className="c-progress-bar" />*/}
+										{/*</Box>*/}
+										<Spacer margin={['top', 'bottom']}>
+											<Box>
+												<p>
+													<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
 														Vul hier wat info over jezelf in! Deze informatie wordt getoond op jouw
 														persoonlijk profiel. Je kan voor elk veld aanduiden of je deze
 														informatie wil delen of niet.
-													</p>
-												</Box>
-											</Spacer>
-										</>
-									)}
+													</Trans>
+												</p>
+											</Box>
+										</Spacer>
+									</>
 								</Column>
 							</Grid>
 						</Spacer>
@@ -383,4 +454,10 @@ const Profile: FunctionComponent<ProfileProps> = ({ location, history, user }) =
 	return <DataQueryComponent query={GET_CLASSIFICATIONS_AND_SUBJECTS} renderData={renderProfile} />;
 };
 
-export default Profile;
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getLoginState: () => dispatch(getLoginStateAction() as any),
+	};
+};
+
+export default connect(mapDispatchToProps)(Profile);

@@ -1,5 +1,6 @@
 import { Tickets } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -18,15 +19,19 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 
+import { APP_PATH } from '../../../constants';
 import toastService from '../../../shared/services/toast-service';
 import { AUTH_PATH } from '../../authentication.const';
 import { createZendeskTicket } from '../../authentication.service';
+import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
 
 export interface ManualRegistrationProps extends RouteComponentProps {}
 
-const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
+const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ history }) => {
+	const [t] = useTranslation();
+
 	const [name, setName] = useState<string>('');
 	const [email, setEmail] = useState<string>('');
 	const [organization, setOrganization] = useState<string>('');
@@ -76,11 +81,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 						reason,
 					}),
 					html_body: `<dl>
-  <dt>Naam</dt><dd>${name}</dd>
-  <dt>Email</dt><dd>${email}</dd>
-  <dt>School of organisatie</dt><dd>${organization}</dd>
-  <dt>Functie of beroep</dt><dd>${profession}</dd>
-  <dt>Reden voor aanvraag</dt><dd>${reason}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___naam">Naam</Trans></dt><dd>${name}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${email}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag">Reden voor aanvraag</Trans></dt><dd>${reason}</dd>
 </dl>`,
 					public: false,
 				},
@@ -98,21 +103,48 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
-					<Heading type="h2">Vraag een account aan op het Archief voor Onderwijs</Heading>
+					<Button type="secondary" onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}>
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___terug">
+							Terug
+						</Trans>
+					</Button>
+					<Heading type="h2">
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
+							Vraag een account aan op het Archief voor Onderwijs
+						</Trans>
+					</Heading>
 					<p>
-						Het Archief voor Onderwijs is geweldig. Speciaal gemaakt voor lesgevers actief in het
-						Vlaamse Onderwijs. Natuurlijk wil jij toegang tot onze schat aan audiovisueel materiaal!
-						Denk je dat je in aanmerking komt voor een account? Dan kan je een aanvraag indienen. Je
-						aanvraag wordt verwerkt binnen de 5 werkdagen.{' '}
-						<Link to={AUTH_PATH.STUDENT_TEACHER}>Ben je student-leerkracht?</Link>
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___intro">
+							Het Archief voor Onderwijs is geweldig. Speciaal gemaakt voor lesgevers actief in het
+							Vlaamse Onderwijs. Natuurlijk wil jij toegang tot onze schat aan audiovisueel
+							materiaal! Denk je dat je in aanmerking komt voor een account? Dan kan je een aanvraag
+							indienen. Je aanvraag wordt verwerkt binnen de 5 werkdagen.
+						</Trans>{' '}
+						<Link to={AUTH_PATH.STUDENT_TEACHER}>
+							<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___ben-je-student-leerkracht">
+								Ben je student-leerkracht?
+							</Trans>
+						</Link>
 					</p>
-					<Heading type="h3">Aanvraagformulier</Heading>
+					<Heading type="h3">
+						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">
+							Aanvraagformulier
+						</Trans>
+					</Heading>
 					<Grid>
 						<Column size="2-6" className="m-manual-registration">
-							<FormGroup label="Naam *" labelFor="name">
+							<FormGroup
+								label={t('authentication/views/registration-flow/r-4-manual-registration___naam')}
+								labelFor="name"
+							>
 								<TextInput id="name" value={name} onChange={setName} />
 							</FormGroup>
-							<FormGroup label="(Professioneel) e-mailadres *" labelFor="email">
+							<FormGroup
+								label={t(
+									'authentication/views/registration-flow/r-4-manual-registration___professioneel-e-mailadres'
+								)}
+								labelFor="email"
+							>
 								<TextInput id="email *" value={email} onChange={setEmail} />
 								<Tooltip position="bottom" contentClassName="m-email-tooltip">
 									<TooltipTrigger>
@@ -122,26 +154,45 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = () => {
 									</TooltipTrigger>
 									<TooltipContent>
 										<p>
-											Gelieve in onderstaand formulier het professioneel e-mailadres dat je hebt
-											gekregen van je school of instelling in te geven, bv
-											jan.smit@basisschool-deklaver.be. Zo kunnen we je aanvraag sneller behandelen.
-											Voer dus enkel een privé-adres in indien je niet over een professioneel adres
-											beschikt.
+											<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___tooltip-professioneel-email-adres">
+												Gelieve in onderstaand formulier het professioneel e-mailadres dat je hebt
+												gekregen van je school of instelling in te geven, bv
+												jan.smit@basisschool-deklaver.be. Zo kunnen we je aanvraag sneller
+												behandelen. Voer dus enkel een privé-adres in indien je niet over een
+												professioneel adres beschikt.
+											</Trans>
 										</p>
 									</TooltipContent>
 								</Tooltip>
 							</FormGroup>
-							<FormGroup label="Organisatie of onderwijsinstelling *" labelFor="organization">
+							<FormGroup
+								label={t(
+									'authentication/views/registration-flow/r-4-manual-registration___organisatie-of-onderwijsinstelling'
+								)}
+								labelFor="organization"
+							>
 								<TextInput id="organization" value={organization} onChange={setOrganization} />
 							</FormGroup>
-							<FormGroup label="Functie of beroep *" labelFor="function">
+							<FormGroup
+								label={t(
+									'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
+								)}
+								labelFor="function"
+							>
 								<TextInput id="function" value={profession} onChange={setProfession} />
 							</FormGroup>
-							<FormGroup label="Reden voor aanvraag *" labelFor="reason">
+							<FormGroup
+								label={t(
+									'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
+								)}
+								labelFor="reason"
+							>
 								<TextArea height="small" id="reason" value={reason} onChange={setReason} />
 							</FormGroup>
 							<Button type="primary" onClick={onSend}>
-								Vraag een account aan
+								<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
+									Vraag een account aan
+								</Trans>
 							</Button>
 						</Column>
 						<Column size="2-5">

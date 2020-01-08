@@ -1,6 +1,7 @@
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useState } from 'react';
 import { withApollo } from 'react-apollo';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -58,6 +59,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	reorderFragments,
 	updateCollection,
 }) => {
+	const [t] = useTranslation();
+
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
@@ -215,25 +218,38 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		return (
 			<Form>
 				{itemMetaData && (
-					<FormGroup label="Alternatieve tekst" labelFor="customFields">
+					<FormGroup
+						label={t('collection/components/fragment/fragment-edit___alternatieve-tekst')}
+						labelFor="customFields"
+					>
 						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
 					</FormGroup>
 				)}
-				<FormGroup label="Tekstblok titel" labelFor={`title_${fragment.id}`}>
+				<FormGroup
+					label={t('collection/components/fragment/fragment-edit___tekstblok-titel')}
+					labelFor={`title_${fragment.id}`}
+				>
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
 						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
-						placeholder="Geef hier de titel van je tekstblok in..."
+						placeholder={t(
+							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
+						)}
 						onChange={(value: string) => onChangeText('title', value)}
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
-				<FormGroup label="Tekstblok beschrijving" labelFor={`description_${fragment.id}`}>
+				<FormGroup
+					label={t('collection/components/fragment/fragment-edit___tekstblok-beschrijving')}
+					labelFor={`description_${fragment.id}`}
+				>
 					<WYSIWYG
 						id={`description_${fragment.id}`}
 						buttons={WYSIWYG_OPTIONS_DEFAULT}
-						placeholder="Geef hier de inhoud van je tekstblok in..."
+						placeholder={t(
+							'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
+						)}
 						data={convertToHtml(
 							getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
 						)}
@@ -258,7 +274,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									{itemMetaData && (
 										<Button
 											icon="scissors"
-											label="Knippen"
+											label={t('collection/components/fragment/fragment-edit___knippen')}
 											type="secondary"
 											onClick={() => setIsCutModalOpen(true)}
 										/>
@@ -276,7 +292,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 									placement="bottom-end"
 								>
 									<DropdownButton>
-										<Button type="secondary" icon="more-horizontal" ariaLabel="Meer opties" />
+										<Button
+											type="secondary"
+											icon="more-horizontal"
+											ariaLabel={t('collection/components/fragment/fragment-edit___meer-opties')}
+										/>
 									</DropdownButton>
 									<DropdownContent>
 										<MenuContent

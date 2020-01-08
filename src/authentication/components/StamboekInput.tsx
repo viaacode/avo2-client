@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactNode, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -11,7 +12,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { StamboekValidationStatuses } from '@viaa/avo2-types/types/stamboek/types';
+import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { ToastType } from '../../shared/services/toast-service';
@@ -31,6 +32,8 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 	value = '',
 	history,
 }) => {
+	const [t] = useTranslation();
+
 	const [stamboekValidationStatus, setStamboekValidationStatus] = useState<
 		StamboekValidationStatus
 	>('INCOMPLETE');
@@ -58,7 +61,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					kaart heeft ontvangen kan u via{' '}
 					<Button
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
-						label="een manuele aanvraag"
+						label={t('authentication/components/stamboek-input___een-manuele-aanvraag')}
 						type="inline-link"
 					/>{' '}
 					toch al toegang krijgen.
@@ -79,7 +82,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 				<span>
 					Dit stamboek nummer is reeds in gebruik,{' '}
 					<Button
-						label="contacteer de helpdesk"
+						label={t('authentication/components/stamboek-input___contacteer-de-helpdesk')}
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 						type="inline-link"
 					/>
@@ -109,7 +112,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 			if (/^[0-9]{11}(-[0-9]*)?$/g.test(cleanedStamboekNumber)) {
 				const stamboekNumber = cleanedStamboekNumber.substring(0, 11);
 				setStamboekValidationStatus('VALID_FORMAT');
-				const validationStatus: StamboekValidationStatuses = await verifyStamboekNumber(
+				const validationStatus: Avo.Stamboek.ValidationStatuses = await verifyStamboekNumber(
 					stamboekNumber
 				);
 				if (validationStatus === 'VALID') {
@@ -132,7 +135,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 	return (
 		<Spacer className="m-stamboek-input" margin={['bottom-large']}>
 			<TextInput
-				placeholder="00000000000-000000"
+				placeholder={t('authentication/components/stamboek-input___00000000000-000000')}
 				value={rawStamboekNumber}
 				onChange={setStamboekNumber}
 			/>
@@ -145,7 +148,11 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 				<TooltipContent>
 					<Spacer margin={'small'}>
 						<Spacer margin="bottom-small">
-							<span>Je stamboek nummer staat op je lerarenkaart</span>
+							<span>
+								<Trans i18nKey="authentication/components/stamboek-input___je-stamboek-nummer-staat-op-je-lerarenkaart">
+									Je stamboek nummer staat op je lerarenkaart
+								</Trans>
+							</span>
 						</Spacer>
 						<img
 							alt="Voorbeeld leeraren kaart"

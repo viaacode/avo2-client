@@ -1,9 +1,11 @@
-import { kebabCase } from 'lodash-es';
+import { isEmpty, isNil } from 'lodash-es';
+import i18n from '../../../../shared/translations/i18n';
 
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockEditor,
+	ContentBlockField,
 	ContentBlockType,
 } from '../../content-block.types';
 
@@ -16,11 +18,13 @@ export const FORM_STATE_DEFAULTS = (
 });
 
 export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
-	background: BACKGROUND_COLOR_FIELD(),
+	backgroundColor: BACKGROUND_COLOR_FIELD(),
 });
 
 // Recurring fields
-export const BACKGROUND_COLOR_FIELD = (label: string = 'Achtergrondkleur') => ({
+export const BACKGROUND_COLOR_FIELD = (
+	label: string = i18n.t('admin/content-block/helpers/generators/defaults___achtergrondkleur')
+) => ({
 	label,
 	editorType: ContentBlockEditor.ColorSelect,
 	editorProps: {
@@ -29,7 +33,9 @@ export const BACKGROUND_COLOR_FIELD = (label: string = 'Achtergrondkleur') => ({
 	},
 });
 
-export const ALIGN_FIELD = (label: string = 'Uitlijning') => ({
+export const ALIGN_FIELD = (
+	label: string = i18n.t('admin/content-block/helpers/generators/defaults___uitlijning')
+) => ({
 	label,
 	editorType: ContentBlockEditor.AlignSelect,
 	editorProps: {
@@ -38,21 +44,21 @@ export const ALIGN_FIELD = (label: string = 'Uitlijning') => ({
 });
 
 export const TEXT_FIELD = (
-	label = 'Tekst',
-	emptyFieldValidatorMessage = 'Tekstveld moet verplicht ingevuld zijn.'
+	emptyFieldValidatorMessage = i18n.t(
+		'admin/content-block/helpers/generators/defaults___tekst-is-verplicht'
+	),
+	propOverride?: Partial<ContentBlockField>
 ) => ({
-	label,
+	label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
 	editorType: ContentBlockEditor.WYSIWYG,
-	editorProps: {
-		id: kebabCase(label),
-	},
 	validator: (value: string) => {
 		const errorArray: string[] = [];
 
-		if (!!value) {
+		if (isNil(value) || isEmpty(value)) {
 			errorArray.push(emptyFieldValidatorMessage);
 		}
 
 		return errorArray;
 	},
+	...propOverride,
 });

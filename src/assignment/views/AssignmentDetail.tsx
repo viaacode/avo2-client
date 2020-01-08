@@ -46,6 +46,7 @@ import {
 import { getAssignmentContent, LoadingState } from '../assignment.helpers';
 import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
+import { Trans } from 'react-i18next';
 import './AssignmentDetail.scss';
 
 interface AssignmentProps extends DefaultSecureRouteProps {}
@@ -405,7 +406,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 								<div className="c-content" dangerouslySetInnerHTML={{ __html: description }} />
 								{!!answer_url && (
 									<Box backgroundColor="soft-white" condensed>
-										<p>Geef je antwoorden in op:</p>
+										<p>
+											<Trans i18nKey="assignment/views/assignment-detail___geef-je-antwoorden-in-op">
+												Geef je antwoorden in op:
+											</Trans>
+										</p>
 										<p>
 											<a href={answer_url}>{answer_url}</a>
 										</p>

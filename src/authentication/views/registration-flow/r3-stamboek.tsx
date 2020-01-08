@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -11,6 +12,8 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
+import { Link } from 'react-router-dom';
+import { APP_PATH } from '../../../constants';
 import toastService from '../../../shared/services/toast-service';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
@@ -33,6 +36,8 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 	location,
 	...props
 }) => {
+	const [t] = useTranslation();
+
 	const [hasAcceptedConditions, setHasAcceptedConditions] = useState<boolean>(false);
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 
@@ -40,23 +45,36 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
-					<Heading type="h2">Geef hieronder je lerarenkaart- of stamboeknummer in.</Heading>
+					<Heading type="h2">
+						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in">
+							Geef hieronder je lerarenkaart- of stamboeknummer in.
+						</Trans>
+					</Heading>
 					<p>
-						Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende
-						onderwijsinstelling.
+						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___zo-gaan-wij-na-of-jij-een-actieve-lesgever-bent-aan-een-vlaamse-erkende-onderwijsinstelling">
+							Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende
+							onderwijsinstelling.
+						</Trans>
 					</p>
 					<Spacer margin="top-small">
 						{/* TODO add links to help article */}
 						<Alert type="info">
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 							<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
-								Waarom hebben jullie mijn stamboeknummer nodig?
+								<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig">
+									Waarom hebben jullie mijn stamboeknummer nodig?
+								</Trans>
 							</a>
 						</Alert>
 					</Spacer>
 				</div>
 				<Spacer margin="top-large">
-					<FormGroup label="Lerarenkaart- of stamboeknummer" labelFor="stamboekInput">
+					<FormGroup
+						label={t(
+							'authentication/views/registration-flow/r-3-stamboek___lerarenkaart-of-stamboeknummer'
+						)}
+						labelFor="stamboekInput"
+					>
 						<StamboekInput
 							onChange={setValidStamboekNumber}
 							history={history}
@@ -68,7 +86,9 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 				<Spacer margin={['bottom-large', 'top-large']}>
 					<FormGroup>
 						<Checkbox
-							label="Ik aanvaard de gebruiksvoorwaarden en privacyverklaring."
+							label={t(
+								'authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-gebruiksvoorwaarden-en-privacyverklaring'
+							)}
 							checked={hasAcceptedConditions}
 							onChange={setHasAcceptedConditions}
 						/>
@@ -76,7 +96,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 				</Spacer>
 				<FormGroup>
 					<Button
-						label="Account aanmaken"
+						label={t('authentication/views/registration-flow/r-3-stamboek___account-aanmaken')}
 						type="primary"
 						disabled={!validStamboekNumber || !hasAcceptedConditions}
 						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
@@ -86,10 +106,9 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 				<Spacer margin="top-large">
 					{/* TODO add links to help article */}
 					<Alert type="info">
-						{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-						<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
+						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST}>
 							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
-						</a>
+						</Link>
 					</Alert>
 				</Spacer>
 			</Container>

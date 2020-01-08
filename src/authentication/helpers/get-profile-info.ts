@@ -1,11 +1,11 @@
 import { get } from 'lodash-es';
-import store from '../../store';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { getFullName } from '../../shared/helpers';
-import { LoginMessage } from '../store/types';
-import { IdpType } from './redirects';
+import store from '../../store';
+
+import { LoginMessage } from '../authentication.types';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
@@ -14,8 +14,8 @@ export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''):
 	return get(user, 'first_name') || defaultName;
 };
 
-export function hasIdpLinked(user: Avo.User.User, idpType: IdpType): boolean {
-	return get(user, 'idpmaps', []).includes(idpType);
+export function hasIdpLinked(user: Avo.User.User, idpType: Avo.Auth.IdpType): boolean {
+	return get(user, 'idpmaps', [] as Avo.Auth.IdpType[]).includes(idpType);
 }
 
 export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): string => {
@@ -84,19 +84,28 @@ export function getProfileStamboekNumber(user: Avo.User.User | undefined): strin
 
 export function isProfileComplete(user: Avo.User.User): boolean {
 	const profile = get(user, 'profile');
-	if (!profile) {
-		return false;
-	}
-	return false; // TODO implement check based on user role
+
+	// TODO implement check based on user role
+	return (
+		!!profile &&
+		!!profile.organizations &&
+		!!profile.organizations.length &&
+		!!profile.educationLevels &&
+		!!profile.educationLevels.length &&
+		!!profile.subjects &&
+		!!profile.subjects.length
+	);
 }
 
-export function isLoggedIn(loginMessage?: LoginMessage): boolean {
-	let message: LoginMessage | undefined = loginMessage;
+export function isLoggedIn(
+	loginMessage: Avo.Auth.LoginMessage | undefined,
+	user: Avo.User.User | undefined
+): boolean {
+	let message: Avo.Auth.LoginMessage | undefined = loginMessage;
 	if (!message) {
 		const state: any = store.getState();
 		message = get(state, 'loginState.data.message');
 	}
 
-	// TODO add once we can save profile info
-	return !!message && message === LoginMessage.LOGGED_IN; // && isProfileComplete();
+	return !!message && message === LoginMessage.LOGGED_IN && !!user && isProfileComplete(user);
 }

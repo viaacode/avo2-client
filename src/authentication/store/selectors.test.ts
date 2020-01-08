@@ -1,8 +1,9 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { AppState } from '../../store';
+
+import { LoginMessage } from '../authentication.types';
 import { selectLogin, selectLoginError, selectLoginLoading } from './selectors';
-import { LoginMessage } from './types';
 
 describe('login > store > selectors', () => {
 	const store: AppState = {

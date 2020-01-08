@@ -1,7 +1,8 @@
 import { Avo } from '@viaa/avo2-types';
 
+import { LoginMessage } from '../authentication.types';
 import { setLoginError, setLoginLoading, setLoginSuccess } from './actions';
-import { LoginActionTypes, LoginMessage } from './types';
+import { LoginActionTypes } from './types';
 
 describe('login > store > actions', () => {
 	it('Should create an action to set the loginState', () => {
