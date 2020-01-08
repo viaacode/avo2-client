@@ -28,6 +28,9 @@ export const BUTTONS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/buttons___knop'),
+		limits: {
+			max: 3,
+		},
 		state: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES(),
 		fields: {
 			label: TEXT_FIELD(
