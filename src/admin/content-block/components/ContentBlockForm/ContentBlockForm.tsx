@@ -122,26 +122,31 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			: renderFormGroup(blockType, formGroup, formGroup.state, formGroupType);
 	};
 
-	const renderBlockForm = (contentBlock: ContentBlockConfig) => (
-		<Accordion
-			title={`${contentBlock.name} (${index}/${length})`}
-			isOpen={isAccordionOpen}
-			onToggle={setIsAccordionOpen}
-		>
-			{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
-			{Array.isArray(components.state) && components.state.length < get(components, 'limits.max') && (
-				<Spacer margin="bottom">
-					<Button
-						label={i18n.t(`Voeg ${get(contentBlock.components, 'name', '').toLowerCase()} toe`)}
-						icon="add"
-						type="secondary"
-						onClick={addComponentToState}
-					/>
-				</Spacer>
-			)}
-			{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
-		</Accordion>
-	);
+	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
+		const label = get(contentBlock.components, 'name', '').toLowerCase();
+
+		return (
+			<Accordion
+				title={`${contentBlock.name} (${index}/${length})`}
+				isOpen={isAccordionOpen}
+				onToggle={setIsAccordionOpen}
+			>
+				{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
+				{Array.isArray(components.state) &&
+					components.state.length < get(components, 'limits.max') && (
+						<Spacer margin="bottom">
+							<Button
+								label={i18n.t(`Voeg ${get(contentBlock.components, 'name', '').toLowerCase()} toe`)}
+								icon="add"
+								type="secondary"
+								onClick={addComponentToState}
+							/>
+						</Spacer>
+					)}
+				{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
+			</Accordion>
+		);
+	};
 
 	return <Form className="c-content-block-form">{renderBlockForm(config)}</Form>;
 };
