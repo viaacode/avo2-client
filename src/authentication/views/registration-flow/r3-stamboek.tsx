@@ -12,9 +12,14 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
+import { APP_PATH } from '../../../constants';
 import toastService from '../../../shared/services/toast-service';
 import { StamboekInput } from '../../components/StamboekInput';
-import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
+import {
+	redirectToClientPage,
+	redirectToServerArchiefRegistrationIdp,
+} from '../../helpers/redirects';
+import { Link } from 'react-router-dom';
 
 export interface RegisterStamboekProps extends RouteComponentProps {}
 
@@ -105,9 +110,9 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 					{/* TODO add links to help article */}
 					<Alert type="info">
 						{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-						<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
+						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST}>
 							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
-						</a>
+						</Link>
 					</Alert>
 				</Spacer>
 			</Container>
