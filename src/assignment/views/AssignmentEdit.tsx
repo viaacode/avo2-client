@@ -90,7 +90,7 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabe
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
+	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType
 } = {
 	ITEM: 'avo_item_pid',
 	COLLECTIE: 'collections',
@@ -98,7 +98,7 @@ const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
 };
 
 const CONTENT_LABEL_TO_QUERY: {
-	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string };
+	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,

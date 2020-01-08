@@ -12,6 +12,7 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 
+import { Link } from 'react-router-dom';
 import { APP_PATH } from '../../../constants';
 import toastService from '../../../shared/services/toast-service';
 import { StamboekInput } from '../../components/StamboekInput';
@@ -19,7 +20,6 @@ import {
 	redirectToClientPage,
 	redirectToServerArchiefRegistrationIdp,
 } from '../../helpers/redirects';
-import { Link } from 'react-router-dom';
 
 export interface RegisterStamboekProps extends RouteComponentProps {}
 

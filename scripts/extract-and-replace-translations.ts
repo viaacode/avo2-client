@@ -74,7 +74,11 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 				/<Trans( i18nKey="([^"]+)")?>([\s\S]*?)<\/Trans>/g,
 				(match: string, keyAttribute: string, key: string, translation: string) => {
 					let formattedKey: string | undefined = key;
-					const formattedTranslation: string = getFormattedTranslation(translation);
+					// Replace new lines inside <Trans> value only, new lines inside t() value are possible
+					const formattedTranslation: string = getFormattedTranslation(translation).replace(
+						/[\n\r\s]+/g,
+						' '
+					);
 					if (!key) {
 						// new Trans without a key
 						formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);

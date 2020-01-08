@@ -18,7 +18,9 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 						type="secondary"
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 					>
-						<Trans>Terug</Trans>
+						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___terug">
+							Terug
+						</Trans>
 					</Button>
 					<Heading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___het-archief-voor-onderwijs-voor-student-leerkrachten">
