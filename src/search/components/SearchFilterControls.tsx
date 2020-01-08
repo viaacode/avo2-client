@@ -60,7 +60,10 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		label: string,
 		propertyName: Avo.Search.FilterProp
 	): ReactNode => {
-		const range: Avo.Search.DateRange = get(formState, 'broadcastDate') || { gte: '', lte: '' };
+		const range: Avo.Search.DateRange = get(formState, 'broadcastDate') || {
+			gte: '',
+			lte: '',
+		};
 		const correctRange: Avo.Search.DateRange = {
 			gte: range.gte || '',
 			lte: range.lte || '',

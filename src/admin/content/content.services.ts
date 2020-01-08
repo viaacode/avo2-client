@@ -50,7 +50,7 @@ export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null
 
 export const insertContent = async (
 	contentItem: Partial<Avo.Content.Content>,
-	cbConfigs: ContentBlockConfig[],
+	contentBlockConfigs: ContentBlockConfig[],
 	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>
 ): Promise<Partial<Avo.Content.Content> | null> => {
 	try {
@@ -66,8 +66,8 @@ export const insertContent = async (
 
 		if (id) {
 			// Insert content-blocks
-			if (cbConfigs && cbConfigs.length) {
-				const contentBlocks = await insertContentBlocks(id, cbConfigs);
+			if (contentBlockConfigs && contentBlockConfigs.length) {
+				const contentBlocks = await insertContentBlocks(id, contentBlockConfigs);
 
 				if (!contentBlocks) {
 					// return null to prevent triggering success toast
@@ -89,7 +89,7 @@ export const insertContent = async (
 
 export const updateContent = async (
 	contentItem: Partial<Avo.Content.Content>,
-	cbConfigs: ContentBlockConfig[],
+	contentBlockConfigs: ContentBlockConfig[],
 	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>
 ): Promise<Partial<Avo.Content.Content> | null> => {
 	try {
@@ -102,7 +102,7 @@ export const updateContent = async (
 		});
 		const insertedContent = get(response, 'data', null);
 
-		if (cbConfigs && cbConfigs.length) {
+		if (contentBlockConfigs && contentBlockConfigs.length) {
 			// TODO: Add logic for:
 			// - inserting content-blocks
 			// - updating content-blocks

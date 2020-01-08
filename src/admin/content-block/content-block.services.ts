@@ -6,8 +6,8 @@ import toastService from '../../shared/services/toast-service';
 import { CONTENT_BLOCK_CONFIG_MAP, CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
 import { GET_CONTENT_BLOCKS_BY_CONTENT_ID, INSERT_CONTENT_BLOCKS } from './content-block.gql';
 import {
+	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockFormStates,
 	ContentBlockSchema,
 	ContentBlockType,
 } from './content-block.types';
@@ -18,7 +18,7 @@ const parseCbConfigs = (
 	cbConfigs: ContentBlockConfig[]
 ): Partial<ContentBlockSchema>[] => {
 	const contentBlocks = cbConfigs.map((cbConfig, position) => {
-		const { blockType, ...variables } = cbConfig.formState;
+		const { blockType, ...variables } = cbConfig.block.state;
 
 		return {
 			position,
@@ -41,8 +41,8 @@ export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): Content
 			...cleanConfig,
 			formState: {
 				...variables,
-				blockType: content_block_type,
-			} as ContentBlockFormStates,
+				// blockType: content_block_type,
+			} as ContentBlockComponentState,
 		};
 	});
 

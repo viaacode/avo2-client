@@ -21,10 +21,14 @@ import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
+import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/content-block.services';
 import {
+	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockFormStates,
+	ContentBlockStateOptions,
+	ContentBlockStateType,
+	ContentBlockType,
 } from '../../content-block/content-block.types';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
@@ -55,10 +59,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
 	// Hooks
-	const [{ cbConfigs }, dispatch] = useReducer<Reducer<ContentEditState, ContentEditAction>>(
-		contentEditReducer(initialState),
-		initialState
-	);
+	const [{ contentBlockConfigs }, dispatch] = useReducer<
+		Reducer<ContentEditState, ContentEditAction>
+	>(contentEditReducer(initialState), initialState);
 
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -106,13 +109,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
-	const handleCbConfigChange = (index: number, formState: Partial<ContentBlockFormStates>) => {
-		dispatch({
-			type: ContentEditActionType.UPDATE_FORM_STATE,
-			payload: { formState, index },
-		});
-	};
-
 	const handleResponse = (response: Partial<Avo.Content.Content> | null) => {
 		setIsSaving(false);
 
@@ -147,7 +143,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 			const insertedContent = await ContentService.insertContent(
 				contentBody,
-				cbConfigs,
+				contentBlockConfigs,
 				triggerContentInsert
 			);
 
@@ -161,7 +157,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				};
 				const updatedContent = await ContentService.updateContent(
 					contentBody,
-					cbConfigs,
+					contentBlockConfigs,
 					triggerContentUpdate
 				);
 
@@ -197,15 +193,47 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	};
 
+	const addComponentToState = (index: number, blockType: ContentBlockType) => {
+		dispatch({
+			type: ContentEditActionType.ADD_COMPONENTS_STATE,
+			payload: {
+				index,
+				formGroupState: CONTENT_BLOCK_INITIAL_STATE_MAP[blockType],
+			},
+		});
+	};
+
+	const handleCSave = (
+		// TODO: FIX NAME
+		index: number,
+		formGroupType: ContentBlockStateType,
+		formGroupState: ContentBlockStateOptions,
+		stateIndex?: number
+	) => {
+		dispatch({
+			type:
+				formGroupType === 'block'
+					? ContentEditActionType.SET_BLOCK_STATE
+					: ContentEditActionType.SET_COMPONENTS_STATE,
+			payload: {
+				index,
+				stateIndex,
+				formGroupType,
+				formGroupState: Array.isArray(formGroupState) ? formGroupState[0] : formGroupState,
+			},
+		});
+	};
+
 	// Render
 	const renderTabContent = () => {
 		switch (currentTab) {
 			case 'inhoud':
 				return (
 					<ContentEditContentBlocks
-						cbConfigs={cbConfigs}
+						contentBlockConfigs={contentBlockConfigs}
 						onAdd={addCbConfig}
-						onChange={handleCbConfigChange}
+						onSave={handleCSave}
+						addComponentToState={addComponentToState}
 					/>
 				);
 			case 'metadata':

@@ -197,17 +197,18 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 			filters?: Partial<Avo.Search.Filters>,
 			filterOptionSearch?: Partial<Avo.Search.FilterOption>
 		) =>
-			dispatch(
-				getSearchResults(
-					orderProperty,
-					orderDirection,
-					from,
-					size,
-					filters,
-					filterOptionSearch
-				) as any
-			),
+			dispatch(getSearchResults(
+				orderProperty,
+				orderDirection,
+				from,
+				size,
+				filters,
+				filterOptionSearch
+			) as any),
 	};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(Home);

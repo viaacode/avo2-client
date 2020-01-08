@@ -26,19 +26,23 @@ export interface ContentEditFormState {
 	depublishAt: string;
 }
 
-export type ContentTypesResponse = { value: string };
+export interface ContentTypesResponse {
+	value: string;
+}
 
 export interface ContentEditState {
-	readonly cbConfigs: ContentBlockConfig[];
+	contentBlockConfigs: ContentBlockConfig[];
 }
 
 export enum ContentEditActionType {
 	ADD_CB_CONFIG = '@@admin-content-edit/ADD_CB_CONFIG',
 	SET_CB_CONFIGS = '@@admin-content-edit/SET_CB_CONFIGS',
-	UPDATE_FORM_STATE = '@@admin-content-edit/UPDATE_FORM_STATE',
+	ADD_COMPONENTS_STATE = '@@admin-content-edit/ADD_COMPONENTS_STATE',
+	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
+	SET_BLOCK_STATE = '@@admin-content-edit/SET_BLOCK_STATE',
 }
 
-export type ContentEditAction = {
+export interface ContentEditAction {
 	type: ContentEditActionType;
 	payload: any;
-};
+}
