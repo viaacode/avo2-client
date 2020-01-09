@@ -10,14 +10,14 @@ export const CONTENT_EDIT_INITIAL_STATE = (
 });
 
 export const contentEditReducer = (initialState: ContentEditState) =>
-	createReducer(initialState, {
-		[ContentEditActionType.ADD_CB_CONFIG]: (state, action: ContentEditAction) => ({
+	createReducer<ContentEditState>(initialState, {
+		[ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG]: (state, action: ContentEditAction) => ({
 			...state,
-			cbConfigs: [...state.contentBlockConfigs, action.payload],
+			contentBlockConfigs: [...state.contentBlockConfigs, action.payload],
 		}),
-		[ContentEditActionType.SET_CB_CONFIGS]: (state, action: ContentEditAction) => ({
+		[ContentEditActionType.SET_CONTENT_BLOCK_CONFIGS]: (state, action: ContentEditAction) => ({
 			...state,
-			cbConfigs: action.payload,
+			contentBlockConfigs: action.payload,
 		}),
 		[ContentEditActionType.ADD_COMPONENTS_STATE]: (state, action: ContentEditAction) => {
 			const { index, formGroupState } = action.payload;

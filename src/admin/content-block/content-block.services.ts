@@ -5,17 +5,12 @@ import toastService from '../../shared/services/toast-service';
 
 import { CONTENT_BLOCK_CONFIG_MAP, CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
 import { GET_CONTENT_BLOCKS_BY_CONTENT_ID, INSERT_CONTENT_BLOCKS } from './content-block.gql';
-import {
-	ContentBlockComponentState,
-	ContentBlockConfig,
-	ContentBlockSchema,
-	ContentBlockType,
-} from './content-block.types';
+import { ContentBlockConfig, ContentBlockSchema, ContentBlockType } from './content-block.types';
 
 // Parse content-block config to valid request body
 const parseCbConfigs = (
 	contentId: number,
-	cbConfigs: ContentBlockConfig[]
+	contentBlockConfigs: ContentBlockConfig[]
 ): Partial<ContentBlockSchema>[] => {
 	const contentBlocks = cbConfigs.map((cbConfig, position) => {
 		const { blockType, ...variables } = cbConfig.block.state;

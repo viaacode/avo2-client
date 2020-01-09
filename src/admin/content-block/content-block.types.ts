@@ -83,12 +83,14 @@ export enum ContentBlockBackgroundColor {
 	NightBlue = 'night-blue',
 }
 
+// These match the content_block_types enums from graphql
+// New values need to be added there as well or it won't save
 export enum ContentBlockType {
-	Buttons = 'Buttons',
-	Heading = 'Heading',
-	Intro = 'Intro',
-	RichText = 'RichText',
-	RichTextTwoColumns = 'RichTextTwoColumns',
+	Buttons = 'BUTTONS',
+	Heading = 'HEADING',
+	Intro = 'INTRO',
+	RichText = 'RICH_TEXT',
+	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 }
 
 export interface HeadingBlockComponentState {

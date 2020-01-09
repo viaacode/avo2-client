@@ -73,7 +73,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	useEffect(() => {
 		if (contentBlocks.length) {
 			dispatch({
-				type: ContentEditActionType.SET_CB_CONFIGS,
+				type: ContentEditActionType.SET_CONTENT_BLOCK_CONFIGS,
 				payload: parseContentBlocks(contentBlocks),
 			});
 		}
@@ -94,9 +94,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	];
 
 	// Methods
-	const addCbConfig = (newConfig: ContentBlockConfig) => {
+	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {
 		dispatch({
-			type: ContentEditActionType.ADD_CB_CONFIG,
+			type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
 			payload: newConfig,
 		});
 	};
@@ -230,7 +230,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				return (
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
-						onAdd={addCbConfig}
+						onAdd={addContentBlockConfig}
 						onSave={handleCSave}
 						addComponentToState={addComponentToState}
 					/>
