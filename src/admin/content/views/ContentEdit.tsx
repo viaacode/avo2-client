@@ -21,10 +21,13 @@ import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
+import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/content-block.services';
 import {
 	ContentBlockConfig,
-	ContentBlockFormStates,
+	ContentBlockStateOptions,
+	ContentBlockStateType,
+	ContentBlockType,
 } from '../../content-block/content-block.types';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
@@ -53,10 +56,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
 	// Hooks
-	const [{ cbConfigs }, dispatch] = useReducer<Reducer<ContentEditState, ContentEditAction>>(
-		contentEditReducer(initialState),
-		initialState
-	);
+	const [{ contentBlockConfigs }, dispatch] = useReducer<
+		Reducer<ContentEditState, ContentEditAction>
+	>(contentEditReducer(initialState), initialState);
 
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -71,7 +73,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	useEffect(() => {
 		if (contentBlocks.length) {
 			dispatch({
-				type: ContentEditActionType.SET_CB_CONFIGS,
+				type: ContentEditActionType.SET_CONTENT_BLOCK_CONFIGS,
 				payload: parseContentBlocks(contentBlocks),
 			});
 		}
@@ -92,9 +94,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	];
 
 	// Methods
-	const addCbConfig = (newConfig: ContentBlockConfig) => {
+	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {
 		dispatch({
-			type: ContentEditActionType.ADD_CB_CONFIG,
+			type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
 			payload: newConfig,
 		});
 	};
@@ -103,13 +105,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setContentForm({
 			...contentForm,
 			[key]: value,
-		});
-	};
-
-	const handleCbConfigChange = (index: number, formState: Partial<ContentBlockFormStates>) => {
-		dispatch({
-			type: ContentEditActionType.UPDATE_FORM_STATE,
-			payload: { formState, index },
 		});
 	};
 
@@ -147,7 +142,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 			const insertedContent = await ContentService.insertContent(
 				contentBody,
-				cbConfigs,
+				contentBlockConfigs,
 				triggerContentInsert
 			);
 
@@ -161,7 +156,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				};
 				const updatedContent = await ContentService.updateContent(
 					contentBody,
-					cbConfigs,
+					contentBlockConfigs,
 					triggerContentUpdate
 				);
 
@@ -175,6 +170,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const handleValidation = () => {
 		const errors: Partial<ContentEditFormState> = {};
+		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
 
 		if (!contentForm.title) {
 			errors.title = 'Titel is verplicht';
@@ -182,6 +178,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!contentForm.contentType) {
 			errors.contentType = 'Content type is verplicht';
+		}
+
+		if (
+			hasPublicationAndDePublicationDates &&
+			new Date(contentForm.depublishAt) < new Date(contentForm.publishAt)
+		) {
+			errors.depublishAt = 'Depublicatie moet na publicatie datum';
 		}
 
 		setFormErrors(errors);
@@ -197,15 +200,47 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	};
 
+	const addComponentToState = (index: number, blockType: ContentBlockType) => {
+		dispatch({
+			type: ContentEditActionType.ADD_COMPONENTS_STATE,
+			payload: {
+				index,
+				formGroupState: CONTENT_BLOCK_INITIAL_STATE_MAP[blockType],
+			},
+		});
+	};
+
+	const handleCSave = (
+		// TODO: FIX NAME
+		index: number,
+		formGroupType: ContentBlockStateType,
+		formGroupState: ContentBlockStateOptions,
+		stateIndex?: number
+	) => {
+		dispatch({
+			type:
+				formGroupType === 'block'
+					? ContentEditActionType.SET_BLOCK_STATE
+					: ContentEditActionType.SET_COMPONENTS_STATE,
+			payload: {
+				index,
+				stateIndex,
+				formGroupType,
+				formGroupState: Array.isArray(formGroupState) ? formGroupState[0] : formGroupState,
+			},
+		});
+	};
+
 	// Render
 	const renderTabContent = () => {
 		switch (currentTab) {
 			case 'inhoud':
 				return (
 					<ContentEditContentBlocks
-						cbConfigs={cbConfigs}
-						onAdd={addCbConfig}
-						onChange={handleCbConfigChange}
+						contentBlockConfigs={contentBlockConfigs}
+						onAdd={addContentBlockConfig}
+						onSave={handleCSave}
+						addComponentToState={addComponentToState}
 					/>
 				);
 			case 'metadata':

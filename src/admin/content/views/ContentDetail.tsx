@@ -45,7 +45,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 
 	// Computed
 	const avatarProps = getAvatarProps(get(content, 'profile', null));
-	const cbConfigs = parseContentBlocks(contentBlocks);
+	const contentBlockConfigs = parseContentBlocks(contentBlocks);
 	const pageTitle = `Content: ${get(content, 'title', '')}`;
 
 	// Render
@@ -62,8 +62,12 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 		// TODO: Move tab contents to separate views
 		switch (currentTab) {
 			case 'inhoud':
-				return cbConfigs.map((cbConfig, index) => (
-					<ContentBlockPreview key={contentBlocks[index].id} state={cbConfig.formState} />
+				return contentBlockConfigs.map((contentBlockConfig, index) => (
+					<ContentBlockPreview
+						key={contentBlocks[index].id}
+						componentState={contentBlockConfig.components.state}
+						blockState={contentBlockConfig.block.state}
+					/>
 				));
 			case 'metadata':
 				return (

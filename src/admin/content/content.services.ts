@@ -8,7 +8,7 @@ import { insertContentBlocks } from '../content-block/content-block.services';
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
 import toastService from '../../shared/services/toast-service';
-import { CONTENT_RESULT_PATH } from './content.const';
+import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import { GET_CONTENT_BY_ID, GET_CONTENT_TYPES } from './content.gql';
 import { ContentTypesResponse } from './content.types';
 
@@ -30,8 +30,6 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 	}
 };
 
-const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
-
 export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
@@ -52,7 +50,7 @@ export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null
 
 export const insertContent = async (
 	contentItem: Partial<Avo.Content.Content>,
-	cbConfigs: ContentBlockConfig[],
+	contentBlockConfigs: ContentBlockConfig[],
 	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>
 ): Promise<Partial<Avo.Content.Content> | null> => {
 	try {
@@ -68,11 +66,10 @@ export const insertContent = async (
 
 		if (id) {
 			// Insert content-blocks
-			if (cbConfigs && cbConfigs.length) {
-				const contentBlocks = await insertContentBlocks(id, cbConfigs);
+			if (contentBlockConfigs && contentBlockConfigs.length) {
+				const contentBlocks = await insertContentBlocks(id, contentBlockConfigs);
 
 				if (!contentBlocks) {
-					toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
 					// return null to prevent triggering success toast
 					return null;
 				}
@@ -84,13 +81,15 @@ export const insertContent = async (
 		return null;
 	} catch (err) {
 		console.error(err);
+		toastService.danger('Er ging iets mis tijdens het opslaan van de content', false);
+
 		return null;
 	}
 };
 
 export const updateContent = async (
 	contentItem: Partial<Avo.Content.Content>,
-	cbConfigs: ContentBlockConfig[],
+	contentBlockConfigs: ContentBlockConfig[],
 	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>
 ): Promise<Partial<Avo.Content.Content> | null> => {
 	try {
@@ -103,7 +102,7 @@ export const updateContent = async (
 		});
 		const insertedContent = get(response, 'data', null);
 
-		if (cbConfigs && cbConfigs.length) {
+		if (contentBlockConfigs && contentBlockConfigs.length) {
 			// TODO: Add logic for:
 			// - inserting content-blocks
 			// - updating content-blocks
@@ -118,7 +117,7 @@ export const updateContent = async (
 		return contentItem;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+		toastService.danger('Er ging iets mis tijdens het opslaan van de content', false);
 
 		return null;
 	}

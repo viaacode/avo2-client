@@ -5,24 +5,20 @@ import toastService from '../../shared/services/toast-service';
 
 import { CONTENT_BLOCK_CONFIG_MAP, CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
 import { GET_CONTENT_BLOCKS_BY_CONTENT_ID, INSERT_CONTENT_BLOCKS } from './content-block.gql';
-import {
-	ContentBlockConfig,
-	ContentBlockFormStates,
-	ContentBlockSchema,
-	ContentBlockType,
-} from './content-block.types';
+import { ContentBlockConfig, ContentBlockSchema, ContentBlockType } from './content-block.types';
 
 // Parse content-block config to valid request body
 const parseCbConfigs = (
 	contentId: number,
-	cbConfigs: ContentBlockConfig[]
+	contentBlockConfigs: ContentBlockConfig[]
 ): Partial<ContentBlockSchema>[] => {
-	const contentBlocks = cbConfigs.map((cbConfig, position) => {
-		const { blockType, ...variables } = cbConfig.formState;
+	const contentBlocks = contentBlockConfigs.map((contentBlockConfig, position) => {
+		const componentState = contentBlockConfig.components.state;
+		const { blockType, ...blockState } = contentBlockConfig.block.state;
 
 		return {
 			position,
-			variables,
+			variables: { componentState, blockState },
 			content_id: contentId,
 			content_block_type: blockType,
 		};
@@ -39,11 +35,18 @@ export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): Content
 
 		return {
 			...cleanConfig,
-			formState: {
-				...variables,
-				blockType: content_block_type,
-			} as ContentBlockFormStates,
-		};
+			components: {
+				...cleanConfig.components,
+				state: get(variables, 'componentState', cleanConfig.components.state),
+			},
+			block: {
+				...cleanConfig.block,
+				state: {
+					...cleanConfig.block.state,
+					...get(variables, 'blockState', {}),
+				},
+			},
+		} as ContentBlockConfig;
 	});
 
 	return cbConfigs;

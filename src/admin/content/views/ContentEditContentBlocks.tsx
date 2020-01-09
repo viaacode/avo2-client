@@ -9,22 +9,32 @@ import {
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
 import {
+	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockFormStates,
+	ContentBlockState,
+	ContentBlockStateOptions,
+	ContentBlockStateType,
 	ContentBlockType,
 } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 
 interface ContentEditContentBlocksProps {
-	cbConfigs: ContentBlockConfig[];
+	contentBlockConfigs: ContentBlockConfig[];
 	onAdd: (config: ContentBlockConfig) => void;
-	onChange: (index: number, formState: Partial<ContentBlockFormStates>) => void;
+	onSave: (
+		index: number,
+		formGroupType: ContentBlockStateType,
+		formGroupState: ContentBlockStateOptions,
+		stateIndex?: number
+	) => void;
+	addComponentToState: (index: number, blockType: ContentBlockType) => void;
 }
 
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
-	cbConfigs,
+	contentBlockConfigs,
 	onAdd,
-	onChange,
+	onSave,
+	addComponentToState,
 }) => {
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
@@ -32,50 +42,76 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	const [t] = useTranslation();
 
 	// Methods
-	const getFormKey = (name: string, index: number) => `${name}-${index}`;
+	const getFormKey = (name: string, blockIndex: number, stateIndex: number = 0) =>
+		`${name}-${blockIndex}-${stateIndex}`;
 
-	const handleCbAdd = (configType: ContentBlockType) => {
+	const handleAddContentBlock = (configType: ContentBlockType) => {
 		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
-		const cbFormKey = getFormKey(newConfig.formState.blockType, cbConfigs.length);
+		const contentBlockFormKey = getFormKey(newConfig.name, contentBlockConfigs.length);
+
 		// Update content block configs
 		onAdd(newConfig);
+
 		// Set newly added config accordion as open
-		setAccordionsOpenState({ [cbFormKey]: true });
+		setAccordionsOpenState({ [contentBlockFormKey]: true });
 	};
 
 	// Render
-	const renderCbForms = () => {
-		return cbConfigs.map((cbConfig, index) => {
-			const cbFormKey = getFormKey(cbConfig.formState.blockType, index);
+	const renderContentBlockForms = () =>
+		contentBlockConfigs.map((contentBlockConfig, index) => {
+			const contentBlockFormKey = getFormKey(contentBlockConfig.name, index);
 
 			return (
 				<ContentBlockForm
-					key={cbFormKey}
-					config={cbConfig}
+					key={contentBlockFormKey}
+					config={contentBlockConfig}
 					index={index + 1}
-					isAccordionOpen={accordionsOpenState[cbFormKey] || false}
-					length={cbConfigs.length}
+					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
+					length={contentBlockConfigs.length}
 					setIsAccordionOpen={() =>
-						setAccordionsOpenState({ [cbFormKey]: !accordionsOpenState[cbFormKey] })
+						setAccordionsOpenState({
+							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
+						})
 					}
-					onChange={cbFormState => onChange(index, cbFormState)}
+					onChange={(formGroupType: ContentBlockStateType, input: any, stateIndex?: number) =>
+						onSave(index, formGroupType, input, stateIndex)
+					}
+					addComponentToState={() =>
+						addComponentToState(index, contentBlockConfig.block.state.blockType)
+					}
 				/>
 			);
 		});
-	};
+
+	const renderBlockPreview = (
+		formGroupState: ContentBlockComponentState,
+		blockState: ContentBlockState,
+		blockIndex: number,
+		stateIndex?: number
+	) => (
+		<ContentBlockPreview
+			key={getFormKey(blockState.blockType, blockIndex, stateIndex)}
+			componentState={formGroupState}
+			blockState={blockState}
+		/>
+	);
+
+	const renderBlockPreviews = () =>
+		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
+			const { components, block } = contentBlockConfig;
+
+			return Array.isArray(components.state)
+				? components.state.map((formGroupState, stateIndex) =>
+						renderBlockPreview(formGroupState, block.state, blockIndex, stateIndex)
+				  )
+				: renderBlockPreview(components.state, block.state, blockIndex);
+		});
 
 	return (
 		<Flex className="c-content-edit-view__content">
-			<FlexItem>
-				{cbConfigs.map((cbConfig, index) => (
-					<ContentBlockPreview
-						key={getFormKey(cbConfig.formState.blockType, index)}
-						state={cbConfig.formState}
-					/>
-				))}
-			</FlexItem>
+			<FlexItem>{renderBlockPreviews()}</FlexItem>
 			<Sidebar className="c-content-edit-view__sidebar" light>
-				{renderCbForms()}
+				{renderContentBlockForms()}
 				<Form>
 					<FormGroup
 						label={t(
@@ -84,7 +120,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					>
 						<Select
 							options={CONTENT_BLOCK_TYPE_OPTIONS}
-							onChange={value => handleCbAdd(value as ContentBlockType)}
+							onChange={value => handleAddContentBlock(value as ContentBlockType)}
 							value={CONTENT_BLOCK_TYPE_OPTIONS[0].value}
 						/>
 					</FormGroup>

@@ -43,7 +43,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 		[status in StamboekValidationStatus]: {
 			message: string | ReactNode;
 			status: ToastType | undefined;
-		};
+		}
 	} = {
 		INCOMPLETE: {
 			message: '',

@@ -32,17 +32,17 @@ function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
 	const links = menuItems.find(Link);
 
 	links.forEach(link => {
-		const to = link.prop('to');
+		const to: Location = link.prop('to') as Location;
 		if (to) {
 			expect(link.text()).toBeTruthy();
-			expect(Object.values(APP_PATH).includes(to.toString())).toEqual(true);
+			expect(Object.values(APP_PATH).includes(to.pathname)).toEqual(true);
 			if (loggedIn) {
 				expect(
-					linkLoginState[to.toString()].showWhenLoggedIn,
-					`Expected nav item to route ${to.toString()} to be visible when logged in`
+					linkLoginState[to.pathname].showWhenLoggedIn,
+					`Expected nav item to route ${to.pathname} to be visible when logged in`
 				).toEqual(true);
 			} else {
-				expect(linkLoginState[to.toString()].showWhenLoggedOut).toEqual(true);
+				expect(linkLoginState[to.pathname].showWhenLoggedOut).toEqual(true);
 			}
 		} else {
 			expect(link.children()).toBeDefined();

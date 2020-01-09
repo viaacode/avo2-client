@@ -19,12 +19,14 @@ import { ContentEditFormState } from '../../content.types';
 
 import './ContentEditForm.scss';
 
+interface ContentTypeOptions {
+	label: string;
+	value: string;
+	disabled?: boolean;
+}
+
 interface ContentEditFormProps {
-	contentTypeOptions: {
-		label: string;
-		value: string;
-		disabled?: boolean;
-	}[];
+	contentTypeOptions: ContentTypeOptions[];
 	formErrors: Partial<ContentEditFormState>;
 	formState: ContentEditFormState;
 	onChange: (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => void;
