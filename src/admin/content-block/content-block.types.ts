@@ -27,6 +27,7 @@ export interface ContentBlockMeta {
 }
 
 export interface ContentBlockConfig {
+	id?: number;
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;

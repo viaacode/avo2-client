@@ -210,8 +210,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
-	const handleCSave = (
-		// TODO: FIX NAME
+	const handleStateSave = (
 		index: number,
 		formGroupType: ContentBlockStateType,
 		formGroupState: ContentBlockStateOptions,
@@ -239,7 +238,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
 						onAdd={addContentBlockConfig}
-						onSave={handleCSave}
+						onSave={handleStateSave}
 						addComponentToState={addComponentToState}
 					/>
 				);
