@@ -22,7 +22,7 @@ import { DataQueryComponent } from '../../../shared/components';
 import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ContentBlockPreview } from '../../content-block/components';
-import { parseContentBlocks } from '../../content-block/content-block.services';
+import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 

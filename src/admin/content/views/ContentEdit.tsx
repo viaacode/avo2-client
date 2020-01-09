@@ -22,13 +22,13 @@ import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
-import { parseContentBlocks } from '../../content-block/content-block.services';
 import {
 	ContentBlockConfig,
 	ContentBlockStateOptions,
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../content-block/content-block.types';
+import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
