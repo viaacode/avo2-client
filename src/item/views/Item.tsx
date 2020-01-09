@@ -4,6 +4,7 @@ import React, { createRef, FunctionComponent, RefObject, useEffect, useState } f
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
+	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Column,
@@ -11,7 +12,6 @@ import {
 	EnglishContentType,
 	Flex,
 	Grid,
-	Heading,
 	Icon,
 	IconName,
 	MediaCard,
@@ -306,9 +306,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 						<Grid>
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
-									<Heading type="h3">
+									<BlockHeading type="h3">
 										<Trans i18nKey="item/views/item___metadata">Metadata</Trans>
-									</Heading>
+									</BlockHeading>
 									<Table horizontal untable>
 										<Grid tag="tbody">
 											{!!itemMetaData.issued && (
@@ -440,9 +440,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 							</Column>
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
-									<Heading type="h3">
+									<BlockHeading type="h3">
 										<Trans i18nKey="item/views/item___bekijk-ook">Bekijk ook</Trans>
-									</Heading>
+									</BlockHeading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>
 							</Column>

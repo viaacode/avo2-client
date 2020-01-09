@@ -4,9 +4,7 @@ import {
 	BlockIntroProps,
 	BlockLinksProps,
 	BlockQuoteProps,
-	BlockSubtitleProps,
 	BlockTitleImageTextProps,
-	BlockTitleProps,
 	BlockVideoProps,
 	BlockVideoTitleTextButtonProps,
 	DutchContentType,
@@ -23,8 +21,6 @@ export enum ContentBlockType {
 	'Links',
 	'Quote',
 	'RichText',
-	'Subtitle',
-	'Title',
 	'TitleImageText',
 	'Video',
 	'VideoTitleTextButton',
@@ -36,8 +32,6 @@ export type ContentBlockMetaData =
 	| BlockIntroProps
 	| BlockLinksProps
 	| BlockQuoteProps
-	| BlockSubtitleProps
-	| BlockTitleProps
 	| BlockTitleImageTextProps
 	| BlockVideoProps
 	| BlockVideoTitleTextButtonProps;

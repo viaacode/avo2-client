@@ -4,6 +4,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
 import {
+	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Column,
@@ -15,7 +16,6 @@ import {
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
-	Heading,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -374,9 +374,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<Heading type="h3">
+						<BlockHeading type="h3">
 							<Trans i18nKey="collection/views/collection-detail___bekijk-ook">Bekijk ook</Trans>
-						</Heading>
+						</BlockHeading>
 						{renderRelatedCollections()}
 					</Container>
 				</Container>

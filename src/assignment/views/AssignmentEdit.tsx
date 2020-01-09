@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 import {
 	Alert,
+	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -21,7 +22,6 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
-	Heading,
 	Icon,
 	IconName,
 	MenuContent,
@@ -737,9 +737,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												Mijn opdrachten
 											</Trans>
 										</Link>
-										<Heading className="u-m-0" type="h2">
+										<BlockHeading className="u-m-0" type="h2">
 											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
-										</Heading>
+										</BlockHeading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">
