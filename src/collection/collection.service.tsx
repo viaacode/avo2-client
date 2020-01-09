@@ -9,6 +9,7 @@ import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
 import { GET_COLLECTION_TITLES_BY_OWNER } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
+import { CustomError } from '../shared/helpers/error';
 
 export class CollectionService {
 	public static async insertCollection(
@@ -261,7 +262,7 @@ export class CollectionService {
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			console.error('Failed to get collection titles by owner', err, queryInfo);
-			throw new Error('Het ophalen van de bestaande collecties is mislukt');
+			throw new CustomError('Het ophalen van de bestaande collecties is mislukt', err, { user });
 		}
 	}
 

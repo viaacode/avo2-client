@@ -1,4 +1,5 @@
-import { getEnv } from '../helpers/env';
+import { getEnv } from '../helpers';
+import { CustomError } from '../helpers/error';
 
 export type PlayerTicketResponse = {
 	url: string;
@@ -20,7 +21,6 @@ export const fetchPlayerTicket = async (externalId: string): Promise<string> => 
 
 		return data.url;
 	} catch (err) {
-		console.error(err);
-		throw new Error('Failed to get player ticket');
+		throw new CustomError('Failed to get player ticket', err, { externalId });
 	}
 };

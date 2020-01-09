@@ -3,6 +3,7 @@ import { stringify } from 'querystring';
 import { Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../helpers/env';
+import { CustomError } from '../helpers/error';
 
 export async function getRelatedItems(
 	id: string | number,
@@ -28,6 +29,10 @@ export async function getRelatedItems(
 		const results: Avo.Search.Search = await response.json();
 		return results.results;
 	} catch (err) {
-		throw new Error('Failed to get video stills');
+		throw new CustomError('Failed to get video stills', err, {
+			id,
+			index,
+			limit,
+		});
 	}
 }
