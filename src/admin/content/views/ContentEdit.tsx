@@ -170,6 +170,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const handleValidation = () => {
 		const errors: Partial<ContentEditFormState> = {};
+		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
 
 		if (!contentForm.title) {
 			errors.title = 'Titel is verplicht';
@@ -177,6 +178,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!contentForm.contentType) {
 			errors.contentType = 'Content type is verplicht';
+		}
+
+		if (
+			hasPublicationAndDePublicationDates &&
+			new Date(contentForm.depublishAt) < new Date(contentForm.publishAt)
+		) {
+			errors.depublishAt = 'Depublicatie moet na publicatie datum';
 		}
 
 		setFormErrors(errors);
