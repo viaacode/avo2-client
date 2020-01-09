@@ -29,8 +29,6 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
 	blockState,
 }) => {
-	console.log(componentState);
-	console.log(blockState);
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
 
 	// TODO: Not sure this is the best place to do this
