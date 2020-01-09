@@ -107,8 +107,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
-		const hasMax =
-			isArray(components.state) && components.state.length >= get(components, 'limits.max');
+		const notAtMax =
+			isArray(components.state) && components.state.length < get(components, 'limits.max');
 
 		return (
 			<Accordion
@@ -117,7 +117,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				onToggle={setIsAccordionOpen}
 			>
 				{renderFormGroups(components, 'components')}
-				{!hasMax && (
+				{notAtMax && (
 					<Spacer margin="bottom">
 						<Button
 							label={i18n.t(
