@@ -12,12 +12,13 @@ const parseCbConfigs = (
 	contentId: number,
 	contentBlockConfigs: ContentBlockConfig[]
 ): Partial<ContentBlockSchema>[] => {
-	const contentBlocks = cbConfigs.map((cbConfig, position) => {
-		const { blockType, ...variables } = cbConfig.block.state;
+	const contentBlocks = contentBlockConfigs.map((contentBlockConfig, position) => {
+		const componentState = contentBlockConfig.components.state;
+		const { blockType, ...blockState } = contentBlockConfig.block.state;
 
 		return {
 			position,
-			variables,
+			variables: { componentState, blockState },
 			content_id: contentId,
 			content_block_type: blockType,
 		};
@@ -34,11 +35,18 @@ export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): Content
 
 		return {
 			...cleanConfig,
-			formState: {
-				...variables,
-				// blockType: content_block_type,
-			} as ContentBlockComponentState,
-		};
+			components: {
+				...cleanConfig.components,
+				state: get(variables, 'componentState', cleanConfig.components.state),
+			},
+			block: {
+				...cleanConfig.block,
+				state: {
+					...cleanConfig.block.state,
+					...get(variables, 'blockState', {}),
+				},
+			},
+		} as ContentBlockConfig;
 	});
 
 	return cbConfigs;
