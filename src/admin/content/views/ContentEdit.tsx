@@ -24,7 +24,6 @@ import { ValueOf } from '../../../shared/types';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/content-block.services';
 import {
-	ContentBlockComponentState,
 	ContentBlockConfig,
 	ContentBlockStateOptions,
 	ContentBlockStateType,

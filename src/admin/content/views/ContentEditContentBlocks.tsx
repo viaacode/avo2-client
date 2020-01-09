@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useReducer, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
@@ -6,7 +6,6 @@ import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
-	CONTENT_BLOCK_INITIAL_STATE_MAP,
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
 import {
