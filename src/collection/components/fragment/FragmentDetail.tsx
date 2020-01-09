@@ -20,7 +20,6 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
  * @param props FragmentDetailProps
  * @constructor
  */
-// TODO: Split up in FragmentDetailList and FragmentDetail component.
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragment,
 	showDescription,
@@ -29,7 +28,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	return collectionFragment.item_meta ? (
 		<ItemVideoDescription
 			showDescription={showDescription}
-			showTitle={true}
+			showTitle
 			itemMetaData={collectionFragment.item_meta}
 			showTitleOnVideo={false}
 			title={getFragmentProperty(
