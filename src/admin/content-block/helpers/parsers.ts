@@ -6,11 +6,10 @@ import { ContentBlockConfig, ContentBlockSchema, ContentBlockType } from '../con
 // Parse content-block config to valid request body
 export const parseContentBlockConfig = (
 	contentBlockConfig: ContentBlockConfig,
-	position: number,
 	contentId?: number
 ) => {
 	const componentState = contentBlockConfig.components.state;
-	const { blockType, ...blockState } = contentBlockConfig.block.state;
+	const { blockType, position, ...blockState } = contentBlockConfig.block.state;
 
 	return {
 		position,
@@ -24,8 +23,8 @@ export const parseContentBlockConfigs = (
 	contentId: number,
 	contentBlockConfigs: ContentBlockConfig[]
 ): Partial<ContentBlockSchema>[] => {
-	const contentBlocks = contentBlockConfigs.map((contentBlockConfig, position) =>
-		parseContentBlockConfig(contentBlockConfig, position, contentId)
+	const contentBlocks = contentBlockConfigs.map(contentBlockConfig =>
+		parseContentBlockConfig(contentBlockConfig, contentId)
 	);
 
 	return contentBlocks;

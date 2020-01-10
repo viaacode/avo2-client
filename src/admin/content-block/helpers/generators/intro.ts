@@ -19,13 +19,12 @@ export const INITIAL_INTRO_BLOCK_COMPONENT_STATE = (): IntroBlockComponentState 
 	title: '',
 	text: '',
 	align: 'left',
-	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro),
 });
 
-export const INITIAL_INTRO_BLOCK_STATE = (): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro);
+export const INITIAL_INTRO_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro, position);
 
-export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
+export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/intro___intro'),
 	components: {
 		state: INITIAL_INTRO_BLOCK_COMPONENT_STATE(),
@@ -42,7 +41,7 @@ export const INTRO_BLOCK_CONFIG = (): ContentBlockConfig => ({
 		},
 	},
 	block: {
-		state: INITIAL_INTRO_BLOCK_STATE(),
+		state: INITIAL_INTRO_BLOCK_STATE(position),
 		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

@@ -37,11 +37,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 
 	// Hooks
 	const [content, setContent] = useState<Avo.Content.Content | null>(null);
-	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
-
 	const [t] = useTranslation();
 
 	const [contentBlocks] = useContentBlocksByContentId(id);
+	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
 
 	// Computed
 	const avatarProps = getAvatarProps(get(content, 'profile', null));
