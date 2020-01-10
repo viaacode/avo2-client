@@ -9,8 +9,10 @@ import {
 } from './content-block.types';
 import {
 	BUTTONS_BLOCK_CONFIG,
+	CTAS_BLOCK_CONFIG,
 	HEADING_BLOCK_CONFIG,
 	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
+	INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	INITIAL_HEADING_BLOCK_COMPONENT_STATE,
 	INITIAL_INTRO_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
@@ -39,6 +41,7 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{ label: 'Tekst (2 kolommen)', value: ContentBlockType.RichTextTwoColumns },
 	{ label: 'Knoppen', value: ContentBlockType.Buttons },
 	{ label: 'Intro', value: ContentBlockType.Intro },
+	{ label: '2 CTAs', value: ContentBlockType.CTAs },
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -50,6 +53,7 @@ export const EDITOR_TYPES_MAP = {
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
+	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
@@ -58,6 +62,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
+	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_COMPONENT_STATE,

@@ -10,8 +10,6 @@ import {
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
 import {
-	ContentBlockComponentState,
-	ContentBlockState,
 	ContentBlockStateOptions,
 	ContentBlockStateType,
 	ContentBlockType,

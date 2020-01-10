@@ -47,7 +47,8 @@ export type ContentBlockComponentState =
 	| RichTextBlockComponentState
 	| RichTextTwoColumnsBlockComponentState
 	| ButtonsBlockComponentState
-	| IntroBlockComponentState;
+	| IntroBlockComponentState
+	| CTAsBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -84,6 +85,7 @@ export enum ContentBlockBackgroundColor {
 
 export enum ContentBlockType {
 	Buttons = 'Buttons',
+	CTAs = 'CTAs',
 	Heading = 'Heading',
 	Intro = 'Intro',
 	RichText = 'RichText',
@@ -91,9 +93,9 @@ export enum ContentBlockType {
 }
 
 export interface HeadingBlockComponentState {
-	title: string;
-	level: HeadingLevelOptions;
-	align: AlignOptions;
+	children: string;
+	type: HeadingLevelOptions;
+	// align: AlignOptions;
 }
 
 export interface RichTextBlockComponentState {
@@ -113,4 +115,11 @@ export interface IntroBlockComponentState {
 	title: string;
 	text: string;
 	align: AlignOptions;
+}
+
+export interface CTAsBlockComponentState {
+	heading: string;
+	headingType: HeadingLevelOptions;
+	content: string | string[];
+	// button: Partial<ButtonsBlockComponentState>;
 }
