@@ -15,6 +15,30 @@ export const contentEditReducer = (initialState: ContentEditState) =>
 			...state,
 			contentBlockConfigs: [...state.contentBlockConfigs, action.payload],
 		}),
+		[ContentEditActionType.REMOVE_CONTENT_BLOCK_CONFIG]: (state, action: ContentEditAction) => {
+			// Clone config
+			const clonedConfigs = [...state.contentBlockConfigs];
+
+			// Remove item from array
+			clonedConfigs.splice(action.payload, 1);
+
+			// Update position properties with new index
+			const repositionedConfigs = clonedConfigs.map((config, position) => ({
+				...config,
+				block: {
+					...config.block,
+					state: {
+						...config.block.state,
+						position,
+					},
+				},
+			}));
+
+			return {
+				...state,
+				contentBlockConfigs: repositionedConfigs,
+			};
+		},
 		[ContentEditActionType.SET_CONTENT_BLOCK_CONFIGS]: (state, action: ContentEditAction) => ({
 			...state,
 			contentBlockConfigs: action.payload,
