@@ -2,7 +2,17 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import i18n from '../../../../shared/translations/i18n';
 
-import { Accordion, Button, Form, FormGroup, Spacer } from '@viaa/avo2-components';
+import {
+	Accordion,
+	AccordionActions,
+	AccordionBody,
+	AccordionTitle,
+	Button,
+	ButtonToolbar,
+	Form,
+	FormGroup,
+	Spacer,
+} from '@viaa/avo2-components';
 
 import {
 	ContentBlockBlockConfig,
@@ -18,23 +28,25 @@ import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlock
 import './ContentBlockForm.scss';
 
 interface ContentBlockFormProps {
+	addComponentToState: () => void;
 	config: ContentBlockConfig;
 	index: number;
 	isAccordionOpen: boolean;
 	length: number;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
+	onRemove: (configIndex: number) => void;
 	setIsAccordionOpen: () => void;
-	addComponentToState: () => void;
 }
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
+	addComponentToState,
 	config,
 	index,
 	isAccordionOpen,
 	length,
 	onChange,
+	onRemove,
 	setIsAccordionOpen,
-	addComponentToState,
 }) => {
 	const { components, block } = config;
 	const isComponentsArray = Array.isArray(components.state);
@@ -123,30 +135,48 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	};
 
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
+		const accordionTitle = `${contentBlock.name} (${index + 1}/${length})`;
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
 
 		return (
-			<Accordion
-				title={`${contentBlock.name} (${index}/${length})`}
-				isOpen={isAccordionOpen}
-				onToggle={setIsAccordionOpen}
-			>
-				{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
-				{Array.isArray(components.state) &&
-					components.state.length < get(components, 'limits.max') && (
-						<Spacer margin="bottom">
-							<Button
-								label={i18n.t(
-									'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
-									{ label }
-								)}
-								icon="add"
-								type="secondary"
-								onClick={addComponentToState}
-							/>
-						</Spacer>
-					)}
-				{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
+			<Accordion isOpen={isAccordionOpen}>
+				<AccordionTitle>{accordionTitle}</AccordionTitle>
+				<AccordionActions>
+					<ButtonToolbar>
+						<Button
+							icon="edit"
+							onClick={() => setIsAccordionOpen()}
+							size="small"
+							title="Bewerk content block"
+							type="tertiary"
+						/>
+						<Button
+							icon="delete"
+							onClick={() => onRemove(index)}
+							size="small"
+							title="Verwijder content block"
+							type="tertiary"
+						/>
+					</ButtonToolbar>
+				</AccordionActions>
+				<AccordionBody>
+					{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
+					{Array.isArray(components.state) &&
+						components.state.length < get(components, 'limits.max') && (
+							<Spacer margin="bottom">
+								<Button
+									label={i18n.t(
+										'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
+										{ label }
+									)}
+									icon="add"
+									type="secondary"
+									onClick={addComponentToState}
+								/>
+							</Spacer>
+						)}
+					{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
+				</AccordionBody>
 			</Accordion>
 		);
 	};
