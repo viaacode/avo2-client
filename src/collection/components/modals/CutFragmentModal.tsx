@@ -168,6 +168,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		fetchPlayerTicket(itemMetaData.external_id).then(data => setPlayerTicket(data));
 
 	// TODO: Replace publisher, published_at by real publisher
+	const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0;
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -196,10 +197,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					/>
 					<div className="m-multi-range-wrapper">
 						<MultiRange
-							values={[fragmentStart, fragmentEnd]}
+							values={[fragmentStart, Math.min(fragmentEnd, fragmentDuration)]}
 							onChange={onUpdateMultiRangeValues}
 							min={0}
-							max={toSeconds(itemMetaData.duration, true) || 0}
+							max={fragmentDuration}
 							step={1}
 						/>
 					</div>
