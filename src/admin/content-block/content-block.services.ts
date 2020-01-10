@@ -1,56 +1,17 @@
-import { get } from 'lodash-es';
+import { get, has, without } from 'lodash-es';
 
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 
-import { CONTENT_BLOCK_CONFIG_MAP, CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
-import { GET_CONTENT_BLOCKS_BY_CONTENT_ID, INSERT_CONTENT_BLOCKS } from './content-block.gql';
-import { ContentBlockConfig, ContentBlockSchema, ContentBlockType } from './content-block.types';
-
-// Parse content-block config to valid request body
-const parseCbConfigs = (
-	contentId: number,
-	contentBlockConfigs: ContentBlockConfig[]
-): Partial<ContentBlockSchema>[] => {
-	const contentBlocks = contentBlockConfigs.map((contentBlockConfig, position) => {
-		const componentState = contentBlockConfig.components.state;
-		const { blockType, ...blockState } = contentBlockConfig.block.state;
-
-		return {
-			position,
-			variables: { componentState, blockState },
-			content_id: contentId,
-			content_block_type: blockType,
-		};
-	});
-
-	return contentBlocks;
-};
-
-// Parse content-blocks to configs
-export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): ContentBlockConfig[] => {
-	const cbConfigs = contentBlocks.map(contentBlock => {
-		const { content_block_type, variables } = contentBlock;
-		const cleanConfig = CONTENT_BLOCK_CONFIG_MAP[content_block_type as ContentBlockType]();
-
-		return {
-			...cleanConfig,
-			components: {
-				...cleanConfig.components,
-				state: get(variables, 'componentState', cleanConfig.components.state),
-			},
-			block: {
-				...cleanConfig.block,
-				state: {
-					...cleanConfig.block.state,
-					...get(variables, 'blockState', {}),
-				},
-			},
-		} as ContentBlockConfig;
-	});
-
-	return cbConfigs;
-};
+import { CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
+import {
+	DELETE_CONTENT_BLOCK,
+	GET_CONTENT_BLOCKS_BY_CONTENT_ID,
+	INSERT_CONTENT_BLOCKS,
+	UPDATE_CONTENT_BLOCK,
+} from './content-block.gql';
+import { ContentBlockConfig, ContentBlockSchema } from './content-block.types';
+import { parseContentBlockConfig, parseContentBlockConfigs } from './helpers';
 
 export const fetchContentBlocksByContentId = async (
 	contentId: number
@@ -77,10 +38,10 @@ export const fetchContentBlocksByContentId = async (
 
 export const insertContentBlocks = async (
 	contentId: number,
-	cbConfigs: ContentBlockConfig[]
+	contentBlockConfigs: ContentBlockConfig[]
 ): Promise<Partial<ContentBlockSchema>[] | null> => {
 	try {
-		const contentBlocks = parseCbConfigs(contentId, cbConfigs);
+		const contentBlocks = parseContentBlockConfigs(contentId, contentBlockConfigs);
 		const response = await dataService.mutate({
 			mutation: INSERT_CONTENT_BLOCKS,
 			variables: { contentBlocks },
@@ -96,12 +57,85 @@ export const insertContentBlocks = async (
 	}
 };
 
-export const updateContentBlocks = async (cbConfigs: ContentBlockConfig[]) => {
+export const updateContentBlocks = async (
+	contentId: number,
+	initialContentBlocks: ContentBlockSchema[],
+	contentBlockConfigs: ContentBlockConfig[]
+) => {
 	try {
-		// TODO: Add update logic
+		const initialContentBlockIds = initialContentBlocks.map(contentBlock => contentBlock.id);
+		const currentContentBlockIds = contentBlockConfigs.reduce((acc: number[], curr) => {
+			if (has(curr, 'id')) {
+				return [...acc, curr.id as number];
+			}
+
+			return acc;
+		}, []);
+
+		// Inserted content-blocks
+		const insertPromises: Promise<any>[] = [];
+		const insertedConfigs = contentBlockConfigs.filter(config => !has(config, 'id'));
+
+		insertPromises.push(insertContentBlocks(contentId, insertedConfigs));
+
+		// Updated content-blocks
+		const updatePromises: Promise<any>[] = [];
+		const updatedConfigs = contentBlockConfigs.filter(
+			config => has(config, 'id') && initialContentBlockIds.includes(config.id as number)
+		);
+
+		updatedConfigs.forEach(config => updatePromises.push(updateContentBlock(config)));
+
+		// Deleted content-blocks
+		const deletePromises: Promise<any>[] = [];
+		const deletedIds = without(initialContentBlockIds, ...currentContentBlockIds);
+
+		deletedIds.forEach(id => deletePromises.push(deleteContentBlock(id)));
+
+		// Run requests in parallel
+		await Promise.all([
+			Promise.all(insertPromises),
+			Promise.all(updatePromises),
+			Promise.all(deletePromises),
+		]);
 	} catch (err) {
 		console.error(err);
 		toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+
+		return null;
+	}
+};
+
+export const deleteContentBlock = async (id: number) => {
+	try {
+		const response = dataService.mutate({
+			mutation: DELETE_CONTENT_BLOCK,
+			variables: { id },
+			update: ApolloCacheManager.clearContentBlocksCache,
+		});
+
+		return response;
+	} catch (err) {
+		console.error(err);
+		toastService.danger('Er ging iets mis tijdens het verwijderen van de content blocks', false);
+
+		return null;
+	}
+};
+
+export const updateContentBlock = async (contentBlockConfig: ContentBlockConfig) => {
+	try {
+		const contentBlock = parseContentBlockConfig(contentBlockConfig);
+		const response = dataService.mutate({
+			mutation: UPDATE_CONTENT_BLOCK,
+			variables: { contentBlock, id: contentBlockConfig.id },
+			update: ApolloCacheManager.clearContentBlocksCache,
+		});
+
+		return response;
+	} catch (err) {
+		console.error(err);
+		toastService.danger('Er ging iets mis tijdens het updaten van de content blocks', false);
 
 		return null;
 	}

@@ -82,6 +82,7 @@ export enum ContentBlockEditor {
 export interface DefaultContentBlockState {
 	backgroundColor: ContentBlockBackgroundColor;
 	blockType: ContentBlockType;
+	position: number;
 }
 
 export enum ContentBlockBackgroundColor {

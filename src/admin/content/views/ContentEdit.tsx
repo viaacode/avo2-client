@@ -156,6 +156,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				};
 				const updatedContent = await ContentService.updateContent(
 					contentBody,
+					contentBlocks,
 					contentBlockConfigs,
 					triggerContentUpdate
 				);
