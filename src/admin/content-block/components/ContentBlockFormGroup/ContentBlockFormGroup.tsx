@@ -11,11 +11,13 @@ import {
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../content-block.types';
+import { generateId } from '../../helpers/generate-id';
 
 import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 
 interface ContentBlockFormGroupProps {
 	config: ContentBlockConfig;
+	blockIndex: number;
 	formGroup: ContentBlockComponentsConfig | ContentBlockBlockConfig;
 	formGroupState: ContentBlockComponentState | ContentBlockState;
 	formGroupType: ContentBlockStateType;
@@ -31,6 +33,7 @@ interface ContentBlockFormGroupProps {
 
 export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
 	config,
+	blockIndex,
 	formGroup,
 	formGroupState,
 	formGroupType,
@@ -40,10 +43,8 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 }) => {
 	return (
 		<>
-			{Object.keys(formGroup.fields).map((key: string, index: number) => {
-				const formGroupKey = stateIndex
-					? `${index}-${config.block.state.blockType}_${key}-${stateIndex}`
-					: `${index}-${config.block.state.blockType}_${key}`;
+			{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
+				const formGroupKey = generateId(blockIndex, formGroupIndex, stateIndex);
 
 				return (
 					<FormGroup
@@ -56,7 +57,7 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 						error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
 					>
 						<ContentBlockFieldEditor
-							block={{ index, config }}
+							block={{ config, index: blockIndex }}
 							fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
 							field={formGroup.fields[key]}
 							state={formGroupState}

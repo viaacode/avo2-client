@@ -88,7 +88,7 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 				<ContentBlockForm
 					key={contentBlockFormKey}
 					config={contentBlockConfig}
-					index={index + 1}
+					blockIndex={index + 1}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
 					length={contentBlockConfigs.length}
 					setIsAccordionOpen={() =>

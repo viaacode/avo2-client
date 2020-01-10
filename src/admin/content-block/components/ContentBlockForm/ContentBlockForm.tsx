@@ -19,7 +19,7 @@ import './ContentBlockForm.scss';
 
 interface ContentBlockFormProps {
 	config: ContentBlockConfig;
-	index: number;
+	blockIndex: number;
 	isAccordionOpen: boolean;
 	length: number;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
@@ -29,7 +29,7 @@ interface ContentBlockFormProps {
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	config,
-	index,
+	blockIndex,
 	isAccordionOpen,
 	length,
 	onChange,
@@ -86,6 +86,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	) => {
 		const formGroupOptions = {
 			config,
+			blockIndex,
 			formGroup,
 			formGroupType,
 			handleChange,
@@ -127,7 +128,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 
 		return (
 			<Accordion
-				title={`${contentBlock.name} (${index}/${length})`}
+				title={`${contentBlock.name} (${blockIndex}/${length})`}
 				isOpen={isAccordionOpen}
 				onToggle={setIsAccordionOpen}
 			>
