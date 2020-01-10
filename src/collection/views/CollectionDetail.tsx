@@ -93,6 +93,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			canEditCollections: boolean;
 			canDeleteCollections: boolean;
 			canCreateCollections: boolean;
+			canViewItems: boolean;
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -149,6 +150,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				user
 			),
 			PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
+			PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
 		])
 			.then(permissions => {
 				setPermissions({
@@ -156,6 +158,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					canEditCollections: permissions[1],
 					canDeleteCollections: permissions[2],
 					canCreateCollections: permissions[3],
+					canViewItems: permissions[4],
 				});
 			})
 			.catch(err => {
@@ -356,6 +359,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<FragmentListDetail
 							collectionFragments={collection_fragments}
 							showDescription
+							linkToItems={permissions.canViewItems || false}
 							history={history}
 							match={match}
 							user={user}
