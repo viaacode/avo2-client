@@ -97,6 +97,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return isArray(formGroup.state) ? (
 			formGroup.state.map((formGroupState, stateIndex = 0) => (
 				<ContentBlockFormGroup
+					key={stateIndex}
 					{...formGroupOptions}
 					formGroupState={formGroupState}
 					stateIndex={stateIndex}

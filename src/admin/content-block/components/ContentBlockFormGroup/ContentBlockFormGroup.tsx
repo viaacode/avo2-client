@@ -44,7 +44,6 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 }) => (
 	<>
 		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
-			console.log('BLASH');
 			const formGroupOptions = {
 				key: createFieldEditorId(blockIndex, formGroupIndex, stateIndex),
 				label: createFieldEditorLabel(
@@ -53,8 +52,6 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 					stateIndex
 				),
 			};
-
-			console.log(formGroupOptions);
 
 			return (
 				<FormGroup

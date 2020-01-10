@@ -54,7 +54,10 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 			const contentBlocks = [...state.contentBlockConfigs];
 
 			if (stateIndex || stateIndex === 0) {
-				(contentBlocks[index].components.state as any)[stateIndex] = formGroupState;
+				(contentBlocks[index].components.state as any)[stateIndex] = {
+					...(contentBlocks[index].components.state as any)[stateIndex],
+					...formGroupState,
+				};
 			} else {
 				// Convert update object to array if necessary
 				const componentState = Array.isArray(contentBlocks[index].components.state)
