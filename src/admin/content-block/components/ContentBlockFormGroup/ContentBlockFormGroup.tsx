@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { FormGroup } from '@viaa/avo2-components';
@@ -11,7 +12,7 @@ import {
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../content-block.types';
-import { generateId } from '../../helpers/generate-id';
+import { createFieldEditorId, createFieldEditorLabel } from '../../helpers/field-editor';
 
 import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 
@@ -40,34 +41,37 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 	stateIndex,
 	handleChange,
 	formErrors,
-}) => {
-	return (
-		<>
-			{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
-				const formGroupKey = generateId(blockIndex, formGroupIndex, stateIndex);
+}) => (
+	<>
+		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
+			console.log('BLASH');
+			const formGroupOptions = {
+				key: createFieldEditorId(blockIndex, formGroupIndex, stateIndex),
+				label: createFieldEditorLabel(
+					get(config, 'components.name'),
+					formGroup.fields[key].label,
+					stateIndex
+				),
+			};
 
-				return (
-					<FormGroup
-						key={formGroupKey}
-						label={
-							stateIndex || stateIndex === 0
-								? `${config.components.name} ${stateIndex + 1}: ${formGroup.fields[key].label}`
-								: formGroup.fields[key].label
-						}
-						error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
-					>
-						<ContentBlockFieldEditor
-							block={{ config, index: blockIndex }}
-							fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
-							field={formGroup.fields[key]}
-							state={formGroupState}
-							type={formGroupType}
-							stateIndex={stateIndex}
-							handleChange={handleChange}
-						/>
-					</FormGroup>
-				);
-			})}
-		</>
-	);
-};
+			console.log(formGroupOptions);
+
+			return (
+				<FormGroup
+					{...formGroupOptions}
+					error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
+				>
+					<ContentBlockFieldEditor
+						block={{ config, index: blockIndex }}
+						fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
+						field={formGroup.fields[key]}
+						state={formGroupState}
+						type={formGroupType}
+						stateIndex={stateIndex}
+						handleChange={handleChange}
+					/>
+				</FormGroup>
+			);
+		})}
+	</>
+);
