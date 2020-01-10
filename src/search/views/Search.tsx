@@ -201,11 +201,13 @@ const Search: FunctionComponent<SearchProps & RouteComponentProps> = ({
 			setFormState({
 				...formState,
 				[id]: value,
+				query: searchTerms,
 			});
 		} else {
 			setFormState({
 				...formState,
 				[id]: DEFAULT_FORM_STATE[id],
+				query: searchTerms,
 			});
 		}
 
