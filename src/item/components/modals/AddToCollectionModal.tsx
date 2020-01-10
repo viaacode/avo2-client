@@ -285,6 +285,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const renderAddToCollectionModal = () => {
 		const initFlowPlayer = () =>
 			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
+		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
 
 		return (
 			<Modal
@@ -319,10 +320,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											/>
 											<div className="m-multi-range-wrapper">
 												<MultiRange
-													values={[fragmentStartTime, fragmentEndTime]}
+													values={[fragmentStartTime, Math.min(fragmentEndTime, fragmentDuration)]}
 													onChange={onUpdateMultiRangeValues}
 													min={0}
-													max={toSeconds(itemMetaData.duration) || 0}
+													max={fragmentDuration}
 													step={1}
 												/>
 											</div>
