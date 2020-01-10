@@ -341,6 +341,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							(assignmentContent as Avo.Collection.Collection).collection_fragments
 						}
 						showDescription={assignment.content_layout === AssignmentLayout.PlayerAndText}
+						linkToItems={false}
 						match={match}
 						user={user}
 						{...rest}
