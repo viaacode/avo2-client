@@ -118,7 +118,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		const menuItem: Partial<Avo.Menu.Menu> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
-			link_target: menuForm.link,
+			link_target: menuForm.link as any,
 			placement: menuForm.placement,
 		};
 
