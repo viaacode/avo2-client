@@ -92,6 +92,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			formErrors,
 		};
 
+		// Render each state individually in a ContentBlockFormGroup
 		return isArray(formGroup.state) ? (
 			formGroup.state.map((formGroupState, stateIndex = 0) => (
 				<ContentBlockFormGroup
@@ -105,6 +106,20 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		);
 	};
 
+	const renderAddButton = (label: string) => (
+		<Spacer margin="bottom">
+			<Button
+				label={i18n.t(
+					'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
+					{ label }
+				)}
+				icon="add"
+				type="secondary"
+				onClick={addComponentToState}
+			/>
+		</Spacer>
+	);
+
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
 		const notAtMax =
@@ -117,19 +132,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				onToggle={setIsAccordionOpen}
 			>
 				{renderFormGroups(components, 'components')}
-				{notAtMax && (
-					<Spacer margin="bottom">
-						<Button
-							label={i18n.t(
-								'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
-								{ label }
-							)}
-							icon="add"
-							type="secondary"
-							onClick={addComponentToState}
-						/>
-					</Spacer>
-				)}
+				{notAtMax && renderAddButton(label)}
 				{renderFormGroups(block, 'block')}
 			</Accordion>
 		);
