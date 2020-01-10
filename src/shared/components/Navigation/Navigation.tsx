@@ -1,23 +1,13 @@
-import queryString from 'query-string';
-import React, {
-	FunctionComponent,
-	ReactElement,
-	ReactNode,
-	ReactText,
-	useEffect,
-	useState,
-} from 'react';
+import { last } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
 import {
 	Avatar,
 	Button,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Icon,
 	MenuContent,
 	Navbar,
@@ -28,8 +18,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import LoginOptionsDropdown from '../../../authentication/components/LoginOptionsDropdown';
-import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
 import {
 	getFirstName,
 	getProfileInitials,
@@ -40,24 +28,21 @@ import {
 	redirectToExternalPage,
 } from '../../../authentication/helpers/redirects';
 import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
-import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
-import toastService from '../../services/toast-service';
-import { NavigationItem } from '../../types';
-
-import { get, isNil, kebabCase, last, sortBy } from 'lodash-es';
-import { buildLink } from '../../helpers';
+import {
+	getLocation,
+	mapNavElementsToNavigationItems,
+	renderNavLinkItem,
+} from '../../helpers/navigation';
 import {
 	AppContentNavElement,
 	getNavigationItems,
 	NavItemMap,
 } from '../../services/navigation-items-service';
-import './Navigation.scss';
+import toastService from '../../services/toast-service';
+import { NavigationItem } from '../../types';
 
-const NAVIGATION_COMPONENTS: { [componentLabel: string]: FunctionComponent<any> } = {
-	'<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,
-	'<LoginOptionsDropdown>': LoginOptionsDropdown,
-};
+import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
 	user: Avo.User.User | undefined;
@@ -68,14 +53,17 @@ export interface NavigationProps extends RouteComponentProps {
  * Main navigation bar component
  * @param history
  * @param location
+ * @param match
  * @param loginMessage
+ * @param user
  * @constructor
  */
 export const Navigation: FunctionComponent<NavigationProps> = ({
 	history,
+	location,
+	match,
 	loginMessage,
 	user,
-	...rest
 }) => {
 	const [t] = useTranslation();
 
@@ -91,61 +79,21 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		});
 	}, [user]);
 
-	const getLocation = (navItem: AppContentNavElement): string => {
-		if (!isNil(navItem.content_id)) {
-			// Link to content block page
-			return `/${navItem.content_id}/${kebabCase(navItem.label)}`;
-		} else if (navItem.external_link) {
-			return navItem.external_link;
-		} else {
-			console.error('Failed to generate navigation link for navigation item', { navItem });
-			return buildLink(
-				APP_PATH.ERROR,
-				{},
-				queryString.stringify({
-					message: t('De pagina voor dit navigatie item kon niet worden gevonden'),
-					icon: 'search',
-				})
-			);
-		}
-	};
-
-	const mapNavElementsToNavigationItems = (navItems: AppContentNavElement[]): NavigationItem[] => {
-		return sortBy(navItems, 'position').map(
-			(navItem: AppContentNavElement): NavigationItem => {
-				const location: string = getLocation(navItem);
-				if (NAVIGATION_COMPONENTS[location]) {
-					// Show component when clicking this nav item
-					const Component = NAVIGATION_COMPONENTS[location];
-					return {
-						label: navItem.label,
-						icon: navItem.icon_name,
-						component: <Component history={history} {...rest} />,
-						key: `nav-item-${navItem.id}`,
-					};
-				} else {
-					// Navigate to link
-					return {
-						label: navItem.label,
-						icon: navItem.icon_name,
-						location: getLocation(navItem),
-						target: navItem.link_target,
-						key: `nav-item-${navItem.id}`,
-					};
-				}
-			}
-		);
-	};
-
 	const getPrimaryNavigationItems = (): NavigationItem[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems);
+		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
 		if (!secondaryNavItems || !secondaryNavItems.length) {
 			return [];
 		}
-		const dynamicNavItems: NavigationItem[] = mapNavElementsToNavigationItems(secondaryNavItems);
+		const dynamicNavItems: NavigationItem[] = mapNavElementsToNavigationItems(
+			secondaryNavItems,
+			history,
+			location,
+			match,
+			t
+		);
 
 		const logoutNavItem = last(dynamicNavItems) as NavigationItem;
 
@@ -182,12 +130,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		return dynamicNavItems;
 	};
 
-	const setDropdownOpen = (label: string, isOpen: boolean): void => {
-		const openStates = { ...areDropdownsOpen };
-		openStates[label] = isOpen;
-		setDropdownsOpen(openStates);
-	};
-
 	const onToggleMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
 
 	const closeAllDropdowns = () => setDropdownsOpen({});
@@ -201,7 +143,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 				toastService.danger(t('Dit menu item kon niet worden geopend (1)'));
 				return;
 			}
-			const link = getLocation(navItem);
+			const link = getLocation(navItem, t);
 			if (link.includes('//')) {
 				// external link
 				redirectToExternalPage(link, navItem.link_target || '_blank');
@@ -216,51 +158,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			});
 			toastService.danger(t('Dit menu item kon niet worden geopend (2)'));
 		}
-	};
-
-	const renderNavLinkItem = (item: NavigationItem, className: string, exact: boolean) => {
-		return (
-			<li key={item.key}>
-				{!!item.location && !item.location.includes('//') && (
-					<NavLink
-						to={item.location}
-						className={className}
-						activeClassName="c-nav__item--active"
-						exact={exact}
-					>
-						{item.icon && <Icon name={item.icon} />}
-						{item.label}
-					</NavLink>
-				)}
-				{!!item.location && item.location.includes('//') && (
-					<a href={item.location} className={className} target={item.target || '_blank'}>
-						{item.icon && <Icon name={item.icon} />}
-						{item.label}
-					</a>
-				)}
-				{!!item.component && (
-					<Dropdown
-						menuWidth="fit-content"
-						placement="bottom-end"
-						isOpen={areDropdownsOpen[item.key] || false}
-						onOpen={() => setDropdownOpen(item.key, true)}
-						onClose={() => setDropdownOpen(item.key, false)}
-					>
-						<DropdownButton>
-							<div className={`${className} u-clickable`}>
-								{item.icon && <Icon name={item.icon} />}
-								{item.label}
-							</div>
-						</DropdownButton>
-						<DropdownContent>
-							{React.cloneElement(item.component, {
-								closeDropdown: () => setDropdownOpen(item.key, false),
-							})}
-						</DropdownContent>
-					</Dropdown>
-				)}
-			</li>
-		);
 	};
 
 	return (
@@ -284,7 +181,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								<div className="u-mq-switch-main-nav-has-space">
 									<ul className="c-nav">
 										{getPrimaryNavigationItems().map(item =>
-											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', item.location === '/')
+											renderNavLinkItem(
+												item,
+												'c-nav__item c-nav__item--i',
+												item.location === '/',
+												false,
+												areDropdownsOpen,
+												setDropdownsOpen
+											)
 										)}
 									</ul>
 								</div>
@@ -295,7 +199,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								<div className="u-mq-switch-main-nav-authentication">
 									<ul className="c-nav">
 										{getSecondaryNavigationItems().map(item =>
-											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
+											renderNavLinkItem(
+												item,
+												'c-nav__item c-nav__item--i',
+												false,
+												false,
+												areDropdownsOpen,
+												setDropdownsOpen
+											)
 										)}
 									</ul>
 								</div>
@@ -319,12 +230,26 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
 							{getPrimaryNavigationItems().map(item =>
-								renderNavLinkItem(item, 'c-nav-mobile__item', item.location === '/')
+								renderNavLinkItem(
+									item,
+									'c-nav-mobile__item',
+									item.location === '/',
+									false,
+									areDropdownsOpen,
+									setDropdownsOpen
+								)
 							)}
 						</ul>
 						<ul className="c-nav-mobile">
 							{getSecondaryNavigationItems().map(item =>
-								renderNavLinkItem(item, 'c-nav-mobile__item', false)
+								renderNavLinkItem(
+									item,
+									'c-nav-mobile__item',
+									false,
+									false,
+									areDropdownsOpen,
+									setDropdownsOpen
+								)
 							)}
 						</ul>
 					</Container>
@@ -337,7 +262,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								<div className="c-toolbar__item">
 									<ul className="c-nav">
 										{getPrimaryNavigationItems().map(item =>
-											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
+											renderNavLinkItem(
+												item,
+												'c-nav__item c-nav__item--i',
+												false,
+												false,
+												areDropdownsOpen,
+												setDropdownsOpen
+											)
 										)}
 									</ul>
 								</div>
