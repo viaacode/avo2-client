@@ -52,7 +52,7 @@ const Footer: FunctionComponent<FooterProps> = ({ history, location, match, user
 						renderNavLinkItem(
 							item,
 							'c-nav__item c-nav__item--i',
-							item.location === '/',
+							true,
 							false,
 							areDropdownsOpen,
 							setDropdownsOpen
@@ -64,7 +64,7 @@ const Footer: FunctionComponent<FooterProps> = ({ history, location, match, user
 						renderNavLinkItem(
 							item,
 							'c-nav__item c-nav__item--i',
-							item.location === '/',
+							true,
 							false,
 							areDropdownsOpen,
 							setDropdownsOpen

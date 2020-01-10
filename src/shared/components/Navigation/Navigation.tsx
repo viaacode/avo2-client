@@ -18,16 +18,13 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import {
-	getFirstName,
-	getProfileInitials,
-	isLoggedIn,
-} from '../../../authentication/helpers/get-profile-info';
+import { getFirstName, getProfileInitials } from '../../../authentication/helpers/get-profile-info';
 import {
 	redirectToClientPage,
 	redirectToExternalPage,
 } from '../../../authentication/helpers/redirects';
-import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
+import { selectUser } from '../../../authentication/store/selectors';
+import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
 import {
 	getLocation,
@@ -46,7 +43,6 @@ import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
 	user: Avo.User.User | undefined;
-	loginMessage: Avo.Auth.LoginMessage;
 }
 
 /**
@@ -62,7 +58,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	history,
 	location,
 	match,
-	loginMessage,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -97,7 +92,15 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 
 		const logoutNavItem = last(dynamicNavItems) as NavigationItem;
 
-		if (isLoggedIn(loginMessage, user)) {
+		if (
+			(user && logoutNavItem.location !== APP_PATH.LOGOUT) ||
+			(!user && logoutNavItem.location === APP_PATH.LOGOUT)
+		) {
+			// Avoid flashing the menu items for a second without them being in a dropdown menu
+			return [];
+		}
+
+		if (user) {
 			if (isMobileMenuOpen) {
 				return dynamicNavItems;
 			}
@@ -283,7 +286,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 };
 
 const mapStateToProps = (state: AppState) => ({
-	loginMessage: selectLoginMessage(state),
 	user: selectUser(state),
 });
 
