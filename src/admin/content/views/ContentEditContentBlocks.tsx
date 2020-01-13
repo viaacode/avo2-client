@@ -15,6 +15,7 @@ import {
 	ContentBlockType,
 } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
+import { createKey } from '../../shared/helpers/create-key';
 
 import { ContentEditBlocksActionType } from '../content.types';
 import { CONTENT_EDIT_BLOCKS_INITIAL_STATE, contentEditBlocksReducer } from '../helpers/reducer';
@@ -86,7 +87,7 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 
 			return (
 				<ContentBlockForm
-					key={contentBlockFormKey}
+					key={createKey('e', index)}
 					config={contentBlockConfig}
 					blockIndex={index + 1}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
@@ -110,11 +111,10 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 	const renderBlockPreviews = () => {
 		return contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
 			const { components, block } = contentBlockConfig;
-			const contentBlockPreviewKey = getFormKey(block.state.blockType, blockIndex);
 
 			return (
 				<ContentBlockPreview
-					key={contentBlockPreviewKey}
+					key={createKey('p', blockIndex)}
 					componentState={components.state}
 					blockState={block.state}
 				/>

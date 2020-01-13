@@ -3,6 +3,7 @@ import React, { FunctionComponent } from 'react';
 
 import { FormGroup } from '@viaa/avo2-components';
 
+import { createKey } from '../../../shared/helpers/create-key';
 import {
 	ContentBlockBlockConfig,
 	ContentBlockComponentsConfig,
@@ -12,7 +13,7 @@ import {
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../content-block.types';
-import { createFieldEditorId, createFieldEditorLabel } from '../../helpers/field-editor';
+import { createFieldEditorLabel } from '../../helpers/field-editor';
 
 import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 
@@ -45,7 +46,7 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 	<>
 		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
 			const formGroupOptions = {
-				key: createFieldEditorId(blockIndex, formGroupIndex, stateIndex),
+				key: createKey('e', blockIndex, formGroupIndex, stateIndex),
 				label: createFieldEditorLabel(
 					get(config, 'components.name'),
 					formGroup.fields[key].label,
@@ -64,6 +65,7 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 						field={formGroup.fields[key]}
 						state={formGroupState}
 						type={formGroupType}
+						formGroupIndex={formGroupIndex}
 						stateIndex={stateIndex}
 						handleChange={handleChange}
 					/>
