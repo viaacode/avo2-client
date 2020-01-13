@@ -47,7 +47,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				setMenuItems(menuItemsByPosition);
 			} else {
 				// Go back to overview if no menu items are present
-				toastService.danger(`Er werden geen navigatie items gevonden voor ${menuName}`);
+				toastService.danger(
+					t(`Er werden geen navigatie items gevonden voor {menuName}`, { menuName })
+				);
 				history.push(MENU_PATH.MENU);
 			}
 		});
@@ -89,7 +91,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const pageType: MenuEditPageType = menuItemId ? 'edit' : 'create';
 	const pageTitle = menuParentId
 		? `${menuName}: item ${PAGE_TYPES_LANG[pageType]}`
-		: 'Navigatie toevoegen';
+		: t('Navigatie toevoegen');
 	const menuParentOptions = menuItems.reduce(
 		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
 			// Don't add duplicates to the options
@@ -143,9 +145,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleResponse('Het navigatie item is succesvol aangemaakt'))
+				.then(() => handleResponse(t('Het navigatie item is succesvol aangemaakt')))
 				.catch(err =>
-					handleResponse('Het aanmaken van het navigatie item is mislukt', err || null)
+					handleResponse(t('Het aanmaken van het navigatie item is mislukt'), err || null)
 				);
 		} else {
 			triggerMenuItemUpdate({
@@ -159,8 +161,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleResponse('Het navigatie item is succesvol geüpdatet'))
-				.catch(err => handleResponse('Het updaten van het navigatie item is mislukt', err || null));
+				.then(() => handleResponse(t('Het navigatie item is succesvol geüpdatet')))
+				.catch(err =>
+					handleResponse(t('Het updaten van het navigatie item is mislukt'), err || null)
+				);
 		}
 	};
 
@@ -182,15 +186,15 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		const errors: Partial<MenuEditFormState> = {};
 
 		if (!menuParentId && !menuForm.placement) {
-			errors.placement = 'Navigatie naam is verplicht';
+			errors.placement = t('Navigatie naam is verplicht');
 		}
 
 		if (!menuForm.label) {
-			errors.label = 'Label is verplicht';
+			errors.label = t('Label is verplicht');
 		}
 
 		if (!menuForm.external_link) {
-			errors.external_link = 'Link is verplicht';
+			errors.external_link = t('Link is verplicht');
 		}
 
 		setFormErrors(errors);
