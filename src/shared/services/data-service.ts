@@ -43,6 +43,14 @@ export class ApolloCacheManager {
 	public static clearContentCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content');
 
+	/**
+	 * Clears all content blocks related items from the cache
+	 * eg: content
+	 * @param cache
+	 */
+	public static clearContentBlocksCache = (cache: ApolloCache) =>
+		ApolloCacheManager.deleteFromCache(cache, 'app_content_blocks');
+
 	private static deleteFromCache(cache: ApolloCache, keyPrefix: string) {
 		Object.keys(cache.data.data).forEach((key: string) => {
 			// Also match keys starting with $ROOT_QUERY. for clearing aggregates cache
