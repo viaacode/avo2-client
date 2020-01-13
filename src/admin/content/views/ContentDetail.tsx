@@ -21,6 +21,9 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { DataQueryComponent } from '../../../shared/components';
 import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
+import { ContentBlockPreview } from '../../content-block/components';
+import { parseContentBlocks } from '../../content-block/content-block.services';
+import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
@@ -38,8 +41,11 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 	const [content, setContent] = useState<Avo.Content.Content | null>(null);
 	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
 
+	const [contentBlocks] = useContentBlocksByContentId(id);
+
 	// Computed
 	const avatarProps = getAvatarProps(get(content, 'profile', null));
+	const contentBlockConfigs = parseContentBlocks(contentBlocks);
 	const pageTitle = `Content: ${get(content, 'title', '')}`;
 
 	// Render
@@ -56,70 +62,77 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 		// TODO: Move tab contents to separate views
 		switch (currentTab) {
 			case 'inhoud':
-				// TODO: here we can show the preview of the page with content-blocks
-				return null;
+				return contentBlockConfigs.map((contentBlockConfig, index) => (
+					<ContentBlockPreview
+						key={contentBlocks[index].id}
+						componentState={contentBlockConfig.components.state}
+						blockState={contentBlockConfig.block.state}
+					/>
+				));
 			case 'metadata':
 				return (
-					<div>
-						{!!contentItem.description && (
-							<Spacer margin="bottom-large">
-								<BlockHeading type="h4">
-									<Trans i18nKey="admin/content/views/content-detail___omschrijving">
-										Omschrijving:
-									</Trans>
-								</BlockHeading>
-								<p>{contentItem.description}</p>
-							</Spacer>
-						)}
+					<Container mode="vertical" size="small">
+						<Container mode="horizontal">
+							{!!contentItem.description && (
+								<Spacer margin="bottom-large">
+									<BlockHeading type="h4">
+										<Trans i18nKey="admin/content/views/content-detail___omschrijving">
+											Omschrijving:
+										</Trans>
+									</BlockHeading>
+									<p>{contentItem.description}</p>
+								</Spacer>
+							)}
 
-						<BlockHeading type="h4">
-							<Trans i18nKey="admin/content/views/content-detail___metadata">Metadata:</Trans>
-						</BlockHeading>
-						<Table horizontal variant="invisible">
-							<tbody>
-								<tr>
-									<th>
-										<Trans i18nKey="admin/content/views/content-detail___content-type">
-											Content type:
-										</Trans>
-									</th>
-									<td>{contentItem.content_type}</td>
-								</tr>
-								<tr>
-									<th>
-										<Trans i18nKey="admin/content/views/content-detail___aangemaakt">
-											Aangemaakt:
-										</Trans>
-									</th>
-									<td>{renderFormattedDate(contentItem.created_at)}</td>
-								</tr>
-								<tr>
-									<th>
-										<Trans i18nKey="admin/content/views/content-detail___laatst-bewerkt">
-											Laatst bewerkt:
-										</Trans>
-									</th>
-									<td>{renderFormattedDate(contentItem.updated_at)}</td>
-								</tr>
-								<tr>
-									<th>
-										<Trans i18nKey="admin/content/views/content-detail___gepubliceerd">
-											Gepubliceerd:
-										</Trans>
-									</th>
-									<td>{renderFormattedDate(contentItem.publish_at)}</td>
-								</tr>
-								<tr>
-									<th>
-										<Trans i18nKey="admin/content/views/content-detail___gedepubliceerd">
-											Gedepubliceerd:
-										</Trans>
-									</th>
-									<td>{renderFormattedDate(contentItem.depublish_at)}</td>
-								</tr>
-							</tbody>
-						</Table>
-					</div>
+							<BlockHeading type="h4">
+								<Trans i18nKey="admin/content/views/content-detail___metadata">Metadata:</Trans>
+							</BlockHeading>
+							<Table horizontal variant="invisible">
+								<tbody>
+									<tr>
+										<th>
+											<Trans i18nKey="admin/content/views/content-detail___content-type">
+												Content type:
+											</Trans>
+										</th>
+										<td>{contentItem.content_type}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans i18nKey="admin/content/views/content-detail___aangemaakt">
+												Aangemaakt:
+											</Trans>
+										</th>
+										<td>{renderFormattedDate(contentItem.created_at)}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans i18nKey="admin/content/views/content-detail___laatst-bewerkt">
+												Laatst bewerkt:
+											</Trans>
+										</th>
+										<td>{renderFormattedDate(contentItem.updated_at)}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans i18nKey="admin/content/views/content-detail___gepubliceerd">
+												Gepubliceerd:
+											</Trans>
+										</th>
+										<td>{renderFormattedDate(contentItem.publish_at)}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans i18nKey="admin/content/views/content-detail___gedepubliceerd">
+												Gedepubliceerd:
+											</Trans>
+										</th>
+										<td>{renderFormattedDate(contentItem.depublish_at)}</td>
+									</tr>
+								</tbody>
+							</Table>
+						</Container>
+					</Container>
 				);
 
 			default:
@@ -150,16 +163,12 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<DataQueryComponent
-							query={GET_CONTENT_BY_ID}
-							renderData={renderContentDetail}
-							resultPath={CONTENT_RESULT_PATH.GET}
-							variables={{ id }}
-						/>
-					</Container>
-				</Container>
+				<DataQueryComponent
+					query={GET_CONTENT_BY_ID}
+					renderData={renderContentDetail}
+					resultPath={CONTENT_RESULT_PATH.GET}
+					variables={{ id }}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

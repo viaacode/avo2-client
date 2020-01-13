@@ -1,3 +1,14 @@
+// TODO: remove with typings 2.8.x update in favour of Avo.ContentBlock.ContentBlock
+export type ContentBlockSchema = {
+	id: number;
+	content_id: number;
+	variables: { [key: string]: any } | any[] | null;
+	position: number | null;
+	created_at: string;
+	updated_at: string;
+	content_block_type: string;
+};
+
 export type ContentBlockStateType = 'components' | 'block';
 
 export type ContentBlockStateOptions =
@@ -83,13 +94,15 @@ export enum ContentBlockBackgroundColor {
 	NightBlue = 'night-blue',
 }
 
+// These match the content_block_types enums from graphql
+// New values need to be added there as well or it won't save
 export enum ContentBlockType {
-	Buttons = 'Buttons',
-	CTAs = 'CTAs',
-	Heading = 'Heading',
-	Intro = 'Intro',
-	RichText = 'RichText',
-	RichTextTwoColumns = 'RichTextTwoColumns',
+	Buttons = 'BUTTONS',
+	CTAs = 'CTAS',
+	Heading = 'HEADING',
+	Intro = 'INTRO',
+	RichText = 'RICH_TEXT',
+	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 }
 
 export interface HeadingBlockComponentState {

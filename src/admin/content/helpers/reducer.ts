@@ -1,24 +1,25 @@
 import { createReducer } from '../../../shared/helpers';
-import {
-	ContentEditBlocksAction,
-	ContentEditBlocksActionType,
-	ContentEditBlocksState,
-} from '../content.types';
+import { ContentBlockConfig } from '../../content-block/content-block.types';
 
-export const CONTENT_EDIT_BLOCKS_INITIAL_STATE = (): ContentEditBlocksState => ({
-	contentBlockConfigs: [],
+import { ContentEditAction, ContentEditActionType, ContentEditState } from '../content.types';
+
+export const CONTENT_EDIT_INITIAL_STATE = (
+	contentBlockConfigs: ContentBlockConfig[] = []
+): ContentEditState => ({
+	contentBlockConfigs,
 });
 
-export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =>
-	createReducer(initialState, {
-		[ContentEditBlocksActionType.ADD_CB_CONFIG]: (state, action: ContentEditBlocksAction) => ({
+export const contentEditReducer = (initialState: ContentEditState) =>
+	createReducer<ContentEditState>(initialState, {
+		[ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG]: (state, action: ContentEditAction) => ({
 			...state,
 			contentBlockConfigs: [...state.contentBlockConfigs, action.payload],
 		}),
-		[ContentEditBlocksActionType.ADD_COMPONENTS_STATE]: (
-			state,
-			action: ContentEditBlocksAction
-		) => {
+		[ContentEditActionType.SET_CONTENT_BLOCK_CONFIGS]: (state, action: ContentEditAction) => ({
+			...state,
+			contentBlockConfigs: action.payload,
+		}),
+		[ContentEditActionType.ADD_COMPONENTS_STATE]: (state, action: ContentEditAction) => {
 			const { index, formGroupState } = action.payload;
 
 			// Clone config
@@ -44,10 +45,7 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 				contentBlockConfigs: contentBlocks,
 			};
 		},
-		[ContentEditBlocksActionType.SET_COMPONENTS_STATE]: (
-			state,
-			action: ContentEditBlocksAction
-		) => {
+		[ContentEditActionType.SET_COMPONENTS_STATE]: (state, action: ContentEditAction) => {
 			const { index, formGroupState, stateIndex } = action.payload;
 
 			// Clone config
@@ -86,7 +84,7 @@ export const contentEditBlocksReducer = (initialState: ContentEditBlocksState) =
 				contentBlockConfigs: contentBlocks,
 			};
 		},
-		[ContentEditBlocksActionType.SET_BLOCK_STATE]: (state, action: ContentEditBlocksAction) => {
+		[ContentEditActionType.SET_BLOCK_STATE]: (state, action: ContentEditAction) => {
 			const { index, formGroupState } = action.payload;
 
 			// Clone config
