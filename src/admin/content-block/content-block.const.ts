@@ -20,6 +20,11 @@ import {
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
 
+export const CONTENT_BLOCKS_RESULT_PATH = {
+	GET: 'app_content_blocks',
+	INSERT: 'insert_app_content_blocks',
+};
+
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
 	{ label: 'Wit', value: ContentBlockBackgroundColor.White },
 	{ label: 'Grijs', value: ContentBlockBackgroundColor.Gray50 },

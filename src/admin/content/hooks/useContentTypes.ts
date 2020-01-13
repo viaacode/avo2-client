@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { fecthContentTypes } from '../content.services';
 import { ContentTypesResponse } from '../content.types';
 
-export const useContentTypes = () => {
+type UseContentTypesTuple = [ContentTypesResponse[], boolean];
+
+export const useContentTypes = (): UseContentTypesTuple => {
 	const [contentTypes, setContentTypes] = useState<ContentTypesResponse[]>([]);
-	const [isLoadingContentTypes, setIsLoadingContentTypes] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {
-		setIsLoadingContentTypes(true);
+		setIsLoading(true);
 
 		fecthContentTypes()
 			.then((data: ContentTypesResponse[] | null) => {
@@ -17,9 +19,9 @@ export const useContentTypes = () => {
 				}
 			})
 			.finally(() => {
-				setIsLoadingContentTypes(false);
+				setIsLoading(false);
 			});
 	}, []);
 
-	return { contentTypes, isLoadingContentTypes };
+	return [contentTypes, isLoading];
 };
