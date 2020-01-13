@@ -35,6 +35,7 @@ interface ContentBlockFormProps {
 	length: number;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
 	onRemove: (configIndex: number) => void;
+	onReorder: (configIndex: number, indexUpdate: number) => void;
 	setIsAccordionOpen: () => void;
 }
 
@@ -46,6 +47,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	length,
 	onChange,
 	onRemove,
+	onReorder,
 	setIsAccordionOpen,
 }) => {
 	const { components, block } = config;
@@ -143,6 +145,24 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				<AccordionTitle>{accordionTitle}</AccordionTitle>
 				<AccordionActions>
 					<ButtonToolbar>
+						{index > 0 && (
+							<Button
+								icon="chevron-up"
+								onClick={() => onReorder(index, -1)}
+								size="small"
+								title="Verplaats naar boven"
+								type="tertiary"
+							/>
+						)}
+						{index + 1 < length && (
+							<Button
+								icon="chevron-down"
+								onClick={() => onReorder(index, 1)}
+								size="small"
+								title="Verplaats naar onder"
+								type="tertiary"
+							/>
+						)}
 						<Button
 							icon="edit"
 							onClick={() => setIsAccordionOpen()}

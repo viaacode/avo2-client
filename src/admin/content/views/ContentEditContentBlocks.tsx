@@ -23,6 +23,7 @@ interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	onAdd: (config: ContentBlockConfig) => void;
 	onRemove: (configIndex: number) => void;
+	onReorder: (configIndex: number, indexUpdate: number) => void;
 	onSave: (
 		index: number,
 		formGroupType: ContentBlockStateType,
@@ -36,6 +37,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	contentBlockConfigs,
 	onAdd,
 	onRemove,
+	onReorder,
 	onSave,
 }) => {
 	// Hooks
@@ -56,6 +58,13 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 		// Set newly added config accordion as open
 		setAccordionsOpenState({ [contentBlockFormKey]: true });
+	};
+
+	const handleReorderContentBlock = (configIndex: number, indexUpdate: number) => {
+		// Close accordions
+		setAccordionsOpenState({});
+		// Trigger reorder
+		onReorder(configIndex, indexUpdate);
 	};
 
 	// Render
@@ -82,6 +91,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						onSave(index, formGroupType, input, stateIndex)
 					}
 					onRemove={onRemove}
+					onReorder={handleReorderContentBlock}
 				/>
 			);
 		});
