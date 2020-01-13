@@ -30,14 +30,8 @@ export class CustomError extends Error {
 	public toString(): string {
 		return JSON.stringify(
 			this,
-			(key, value) => {
-				if (key === 'request') {
-					// Avoid huge request object in error json
-					return '[request]';
-				}
-				return value;
-			},
-			2
+			// Avoid huge request object in error json
+			(key, value) => (key === 'request' ? '[request]' : value)
 		);
 	}
 }

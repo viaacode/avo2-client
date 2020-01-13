@@ -26,8 +26,7 @@ export async function getRelatedItems(
 			}
 		);
 
-		const results: Avo.Search.Search = await response.json();
-		return results.results;
+		return (await response.json()).results;
 	} catch (err) {
 		throw new CustomError('Failed to get video stills', err, {
 			id,

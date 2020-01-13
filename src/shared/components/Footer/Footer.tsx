@@ -8,7 +8,11 @@ import { Avo } from '@viaa/avo2-types';
 import { connect } from 'react-redux';
 import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
 import { AppState } from '../../../store';
-import { mapNavElementsToNavigationItems, renderNavLinkItem } from '../../helpers/navigation';
+import {
+	BooleanDictionary,
+	mapNavElementsToNavigationItems,
+	renderNavLinkItem,
+} from '../../helpers/navigation';
 import {
 	AppContentNavElement,
 	getNavigationItems,
@@ -25,7 +29,7 @@ export interface FooterProps extends RouteComponentProps {
 const Footer: FunctionComponent<FooterProps> = ({ history, location, match, user }) => {
 	const [t] = useTranslation();
 
-	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
+	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
 	const [primaryNavItems, setPrimaryNavItems] = useState<AppContentNavElement[]>([]);
 	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
 

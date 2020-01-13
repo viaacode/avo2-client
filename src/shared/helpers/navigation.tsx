@@ -20,6 +20,8 @@ const NAVIGATION_COMPONENTS: { [componentLabel: string]: FunctionComponent<any> 
 	'<LoginOptionsDropdown>': LoginOptionsDropdown,
 };
 
+export type BooleanDictionary = { [id: string]: boolean };
+
 export function getLocation(navItem: AppContentNavElement, t: TFunction): string {
 	if (!isNil(navItem.content_id)) {
 		// Link to content block page
@@ -75,8 +77,8 @@ export function mapNavElementsToNavigationItems(
 const setDropdownOpen = (
 	label: string,
 	isOpen: boolean,
-	areDropdownsOpen: { [id: string]: boolean },
-	setDropdownsOpen: (areDropdownsOpen: { [id: string]: boolean }) => void
+	areDropdownsOpen: BooleanDictionary,
+	setDropdownsOpen: (areDropdownsOpen: BooleanDictionary) => void
 ): void => {
 	const openStates = { ...areDropdownsOpen };
 	openStates[label] = isOpen;
@@ -88,8 +90,8 @@ export function renderNavLinkItem(
 	className: string,
 	exact: boolean,
 	showActive: boolean,
-	areDropdownsOpen: { [id: string]: boolean },
-	setDropdownsOpen: (areDropdownsOpen: { [id: string]: boolean }) => void
+	areDropdownsOpen: BooleanDictionary,
+	setDropdownsOpen: (areDropdownsOpen: BooleanDictionary) => void
 ) {
 	return (
 		<li key={item.key}>
