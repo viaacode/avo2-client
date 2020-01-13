@@ -27,6 +27,7 @@ interface ContentEditContentBlocksProps {
 		stateIndex?: number
 	) => void;
 	addComponentToState: (index: number, blockType: ContentBlockType) => void;
+	removeComponentFromState: (index: number, stateIndex: number) => void;
 }
 
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
@@ -34,6 +35,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	onAdd,
 	onSave,
 	addComponentToState,
+	removeComponentFromState,
 }) => {
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
@@ -77,6 +79,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					}
 					addComponentToState={() =>
 						addComponentToState(index, contentBlockConfig.block.state.blockType)
+					}
+					removeComponentFromState={(stateIndex: number) =>
+						removeComponentFromState(index, stateIndex)
 					}
 				/>
 			);

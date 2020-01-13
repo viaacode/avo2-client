@@ -18,7 +18,7 @@ export type ContentBlockStateOptions =
 
 export type AlignOptions = 'left' | 'right' | 'center';
 
-export type HeadingLevelOptions = 'h1' | 'h2' | 'h3' | 'h4';
+export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -98,8 +98,8 @@ export enum ContentBlockBackgroundColor {
 // New values need to be added there as well or it won't save
 export enum ContentBlockType {
 	Buttons = 'BUTTONS',
-	CTAs = 'CTAS',
 	Heading = 'HEADING',
+	CTAs = 'CTAS',
 	Intro = 'INTRO',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',

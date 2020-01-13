@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import i18n from '../../../../shared/translations/i18n';
 
-import { Accordion, Button, Form, Spacer } from '@viaa/avo2-components';
+import { Accordion, Button, Column, Form, Grid, Spacer } from '@viaa/avo2-components';
 
 import {
 	ContentBlockBlockConfig,
@@ -25,6 +25,7 @@ interface ContentBlockFormProps {
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
 	setIsAccordionOpen: () => void;
 	addComponentToState: () => void;
+	removeComponentFromState: (stateIndex: number) => void;
 }
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
@@ -35,6 +36,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	onChange,
 	setIsAccordionOpen,
 	addComponentToState,
+	removeComponentFromState,
 }) => {
 	const { components, block } = config;
 	const { isArray } = Array;
@@ -96,12 +98,25 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		// Render each state individually in a ContentBlockFormGroup
 		return isArray(formGroup.state) ? (
 			formGroup.state.map((formGroupState, stateIndex = 0) => (
-				<ContentBlockFormGroup
-					key={stateIndex}
-					{...formGroupOptions}
-					formGroupState={formGroupState}
-					stateIndex={stateIndex}
-				/>
+				<Grid>
+					<Column size="flex">
+						<ContentBlockFormGroup
+							key={stateIndex}
+							{...formGroupOptions}
+							formGroupState={formGroupState}
+							stateIndex={stateIndex}
+						/>
+					</Column>
+					{removeComponentFromState && (
+						<Column size="static">
+							<Button
+								icon="delete"
+								type="danger"
+								onClick={() => removeComponentFromState(stateIndex)}
+							/>
+						</Column>
+					)}
+				</Grid>
 			))
 		) : (
 			<ContentBlockFormGroup {...formGroupOptions} formGroupState={formGroup.state} />

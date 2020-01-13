@@ -210,6 +210,16 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
+	const removeComponentFromState = (index: number, stateIndex: number) => {
+		dispatch({
+			type: ContentEditActionType.REMOVE_COMPONENTS_STATE,
+			payload: {
+				index,
+				stateIndex,
+			},
+		});
+	};
+
 	const handleCSave = (
 		// TODO: FIX NAME
 		index: number,
@@ -241,6 +251,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						onAdd={addContentBlockConfig}
 						onSave={handleCSave}
 						addComponentToState={addComponentToState}
+						removeComponentFromState={removeComponentFromState}
 					/>
 				);
 			case 'metadata':
