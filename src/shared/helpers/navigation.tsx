@@ -27,21 +27,22 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 		// Link to content block page
 		return `/${navItem.content_id}/${kebabCase(navItem.label)}`;
 	}
+
 	if (navItem.external_link) {
 		return navItem.external_link;
-	} else {
-		console.error('Failed to generate navigation link for navigation item', { navItem });
-		return buildLink(
-			APP_PATH.ERROR,
-			{},
-			queryString.stringify({
-				message: t(
-					'shared/helpers/navigation___de-pagina-voor-dit-navigatie-item-kon-niet-worden-gevonden'
-				),
-				icon: 'search',
-			})
-		);
 	}
+
+	console.error('Failed to generate navigation link for navigation item', { navItem });
+	return buildLink(
+		APP_PATH.ERROR,
+		{},
+		queryString.stringify({
+			message: t(
+				'shared/helpers/navigation___de-pagina-voor-dit-navigatie-item-kon-niet-worden-gevonden'
+			),
+			icon: 'search',
+		})
+	);
 }
 
 export function mapNavElementsToNavigationItems(
