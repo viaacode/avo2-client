@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useReducer, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
@@ -6,11 +6,11 @@ import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
-	CONTENT_BLOCK_INITIAL_STATE_MAP,
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
 import {
 	ContentBlockComponentState,
+	ContentBlockConfig,
 	ContentBlockState,
 	ContentBlockStateOptions,
 	ContentBlockStateType,
@@ -18,20 +18,28 @@ import {
 } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 
-import { ContentEditBlocksActionType } from '../content.types';
-import { CONTENT_EDIT_BLOCKS_INITIAL_STATE, contentEditBlocksReducer } from '../helpers/reducer';
+interface ContentEditContentBlocksProps {
+	contentBlockConfigs: ContentBlockConfig[];
+	onAdd: (config: ContentBlockConfig) => void;
+	onSave: (
+		index: number,
+		formGroupType: ContentBlockStateType,
+		formGroupState: ContentBlockStateOptions,
+		stateIndex?: number
+	) => void;
+	addComponentToState: (index: number, blockType: ContentBlockType) => void;
+}
 
-const ContentEditContentBlocks: FunctionComponent = () => {
-	const [t] = useTranslation();
-
-	const initialState = CONTENT_EDIT_BLOCKS_INITIAL_STATE();
-
+const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
+	contentBlockConfigs,
+	onAdd,
+	onSave,
+	addComponentToState,
+}) => {
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
-	const [{ contentBlockConfigs }, dispatch] = useReducer(
-		contentEditBlocksReducer(initialState),
-		initialState
-	);
+
+	const [t] = useTranslation();
 
 	// Methods
 	const getFormKey = (name: string, blockIndex: number, stateIndex: number = 0) =>
@@ -42,43 +50,10 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 		const contentBlockFormKey = getFormKey(newConfig.name, contentBlockConfigs.length);
 
 		// Update content block configs
-		dispatch({
-			type: ContentEditBlocksActionType.ADD_CB_CONFIG,
-			payload: newConfig,
-		});
+		onAdd(newConfig);
 
 		// Set newly added config accordion as open
 		setAccordionsOpenState({ [contentBlockFormKey]: true });
-	};
-
-	const addComponentToState = (index: number, blockType: ContentBlockType) => {
-		dispatch({
-			type: ContentEditBlocksActionType.ADD_COMPONENTS_STATE,
-			payload: {
-				index,
-				formGroupState: CONTENT_BLOCK_INITIAL_STATE_MAP[blockType],
-			},
-		});
-	};
-
-	const handleSave = (
-		index: number,
-		formGroupType: ContentBlockStateType,
-		formGroupState: ContentBlockStateOptions,
-		stateIndex?: number
-	) => {
-		dispatch({
-			type:
-				formGroupType === 'block'
-					? ContentEditBlocksActionType.SET_BLOCK_STATE
-					: ContentEditBlocksActionType.SET_COMPONENTS_STATE,
-			payload: {
-				index,
-				stateIndex,
-				formGroupType,
-				formGroupState: Array.isArray(formGroupState) ? formGroupState[0] : formGroupState,
-			},
-		});
 	};
 
 	// Render
@@ -99,7 +74,7 @@ const ContentEditContentBlocks: FunctionComponent = () => {
 						})
 					}
 					onChange={(formGroupType: ContentBlockStateType, input: any, stateIndex?: number) =>
-						handleSave(index, formGroupType, input, stateIndex)
+						onSave(index, formGroupType, input, stateIndex)
 					}
 					addComponentToState={() =>
 						addComponentToState(index, contentBlockConfig.block.state.blockType)
