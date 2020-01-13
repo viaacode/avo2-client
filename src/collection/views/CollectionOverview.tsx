@@ -46,13 +46,11 @@ import './CollectionOverview.scss';
 
 interface CollectionOverviewProps extends DefaultSecureRouteProps {
 	numberOfCollections: number;
-	refetchCount: () => void;
 }
 
 const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	history,
 	numberOfCollections,
-	refetchCount,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -85,7 +83,6 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			});
 
 			toastService.success('Collectie is verwijderd');
-			refetchCount();
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
