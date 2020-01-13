@@ -143,7 +143,9 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			const navItem = secondaryNavItems.find(navItem => navItem.id === navItemId);
 			if (!navItem) {
 				console.error('Could not find navigation item by id', { menuItemId });
-				toastService.danger(t('Dit menu item kon niet worden geopend (1)'));
+				toastService.danger(
+					t('shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-1')
+				);
 				return;
 			}
 			const link = getLocation(navItem, t);
@@ -159,7 +161,9 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			console.error('Failed to handle menu item click because it is not a number', err, {
 				menuItemId,
 			});
-			toastService.danger(t('Dit menu item kon niet worden geopend (2)'));
+			toastService.danger(
+				t('shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-2')
+			);
 		}
 	};
 

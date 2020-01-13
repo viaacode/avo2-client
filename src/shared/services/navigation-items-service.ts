@@ -47,4 +47,3 @@ async function getNavItems(): Promise<NavItemMap> {
 }
 
 export const getNavigationItems: () => Promise<NavItemMap> = memoize(getNavItems);
-

@@ -91,7 +91,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const pageType: MenuEditPageType = menuItemId ? 'edit' : 'create';
 	const pageTitle = menuParentId
 		? `${menuName}: item ${PAGE_TYPES_LANG[pageType]}`
-		: t('Navigatie toevoegen');
+		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
 	const menuParentOptions = menuItems.reduce(
 		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
 			// Don't add duplicates to the options
@@ -145,9 +145,16 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleResponse(t('Het navigatie item is succesvol aangemaakt')))
+				.then(() =>
+					handleResponse(
+						t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt')
+					)
+				)
 				.catch(err =>
-					handleResponse(t('Het aanmaken van het navigatie item is mislukt'), err || null)
+					handleResponse(
+						t('admin/menu/views/menu-edit___het-aanmaken-van-het-navigatie-item-is-mislukt'),
+						err || null
+					)
 				);
 		} else {
 			triggerMenuItemUpdate({
@@ -161,9 +168,16 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleResponse(t('Het navigatie item is succesvol geüpdatet')))
+				.then(() =>
+					handleResponse(
+						t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet')
+					)
+				)
 				.catch(err =>
-					handleResponse(t('Het updaten van het navigatie item is mislukt'), err || null)
+					handleResponse(
+						t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
+						err || null
+					)
 				);
 		}
 	};
@@ -186,15 +200,15 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		const errors: Partial<MenuEditFormState> = {};
 
 		if (!menuParentId && !menuForm.placement) {
-			errors.placement = t('Navigatie naam is verplicht');
+			errors.placement = t('admin/menu/views/menu-edit___navigatie-naam-is-verplicht');
 		}
 
 		if (!menuForm.label) {
-			errors.label = t('Label is verplicht');
+			errors.label = t('admin/menu/views/menu-edit___label-is-verplicht');
 		}
 
 		if (!menuForm.external_link) {
-			errors.external_link = t('Link is verplicht');
+			errors.external_link = t('admin/menu/views/menu-edit___link-is-verplicht');
 		}
 
 		setFormErrors(errors);

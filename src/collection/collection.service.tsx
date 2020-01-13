@@ -4,12 +4,12 @@ import { cloneDeep, get, isNil, omit, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
+import { CustomError } from '../shared/helpers/error';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
 import { GET_COLLECTION_TITLES_BY_OWNER } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
-import { CustomError } from '../shared/helpers/error';
 
 export class CollectionService {
 	public static async insertCollection(

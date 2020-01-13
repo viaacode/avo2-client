@@ -26,7 +26,8 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 	if (!isNil(navItem.content_id)) {
 		// Link to content block page
 		return `/${navItem.content_id}/${kebabCase(navItem.label)}`;
-	} else if (navItem.external_link) {
+	}
+	if (navItem.external_link) {
 		return navItem.external_link;
 	} else {
 		console.error('Failed to generate navigation link for navigation item', { navItem });
@@ -34,7 +35,9 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 			APP_PATH.ERROR,
 			{},
 			queryString.stringify({
-				message: t('De pagina voor dit navigatie item kon niet worden gevonden'),
+				message: t(
+					'shared/helpers/navigation___de-pagina-voor-dit-navigatie-item-kon-niet-worden-gevonden'
+				),
 				icon: 'search',
 			})
 		);
@@ -60,16 +63,15 @@ export function mapNavElementsToNavigationItems(
 					component: <Component history={history} location={location} match={match} />,
 					key: `nav-item-${navItem.id}`,
 				};
-			} else {
-				// Navigate to link
-				return {
-					label: navItem.label,
-					icon: navItem.icon_name,
-					location: getLocation(navItem, t),
-					target: navItem.link_target,
-					key: `nav-item-${navItem.id}`,
-				};
 			}
+			// Navigate to link
+			return {
+				label: navItem.label,
+				icon: navItem.icon_name,
+				location: getLocation(navItem, t),
+				target: navItem.link_target,
+				key: `nav-item-${navItem.id}`,
+			};
 		}
 	);
 }

@@ -5,8 +5,8 @@ import { Avo } from '@viaa/avo2-types';
 import { isMediaFragment } from '../../collection/collection.helpers';
 import { ContentTypeString } from '../../collection/collection.types';
 import { getEnv } from '../helpers/env';
-import { toSeconds } from '../helpers/parsers/duration';
 import { CustomError } from '../helpers/error';
+import { toSeconds } from '../helpers/parsers/duration';
 
 /**
  * Get the first video still after the provided start times for all provided videos

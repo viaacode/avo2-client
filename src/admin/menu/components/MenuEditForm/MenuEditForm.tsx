@@ -49,8 +49,14 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 
 	const userGroupOptions: TagInfo[] = sortBy(
 		[
-			{ label: t('Niet ingelogde gebruikers'), value: -1 },
-			{ label: t('Ingelogde gebruikers'), value: -2 },
+			{
+				label: t('admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'),
+				value: -1,
+			},
+			{
+				label: t('admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'),
+				value: -2,
+			},
 			...userGroups.map(
 				(userGroup): TagInfo => ({ label: capitalize(userGroup.label), value: userGroup.id })
 			),
@@ -124,19 +130,33 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				/>
 				{/* TODO replace by content picker widget that can pick internal pages, external urls and content block pages */}
 			</FormGroup>
-			<FormGroup error={formErrors.link_target} label={t('Openen in')} required>
+			<FormGroup
+				error={formErrors.link_target}
+				label={t('admin/menu/components/menu-edit-form/menu-edit-form___openen-in')}
+				required
+			>
 				<Select
 					options={[
-						{ label: t('Nieuw venster'), value: '_blank' },
-						{ label: t('Hetzelfde venster'), value: '_self' },
+						{
+							label: t('admin/menu/components/menu-edit-form/menu-edit-form___nieuw-venster'),
+							value: '_blank',
+						},
+						{
+							label: t('admin/menu/components/menu-edit-form/menu-edit-form___hetzelfde-venster'),
+							value: '_self',
+						},
 					]}
 					onChange={(value: string) => onChange('link_target', value)}
 					value={formState.link_target || '_self'}
 				/>
 			</FormGroup>
-			<FormGroup error={formErrors.link_target} label={t('Zichtbaar voor')} required>
+			<FormGroup
+				error={formErrors.link_target}
+				label={t('admin/menu/components/menu-edit-form/menu-edit-form___zichtbaar-voor')}
+				required
+			>
 				<TagsInput
-					placeholder={t('Niemand')}
+					placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
 					options={userGroupOptions}
 					onChange={handleUserGroupChange}
 					value={userGroupOptions.filter((userGroupOption: TagInfo) =>
