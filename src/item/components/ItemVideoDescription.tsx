@@ -38,6 +38,7 @@ interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
 	showTitle?: boolean;
 	title?: string;
 	description?: string;
+	onTitleClicked?: () => void;
 }
 
 const DEFAULT_VIDEO_HEIGHT = 421;
@@ -49,6 +50,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	showDescription = true,
 	title = itemMetaData.title,
 	description = itemMetaData.description,
+	onTitleClicked,
 	user,
 }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
@@ -166,7 +168,13 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			}}
 		>
 			{showTitle ? (
-				<Heading type="h3">{title}</Heading>
+				<Heading
+					type="h3"
+					className={onTitleClicked ? 'u-clickable' : ''}
+					onClick={onTitleClicked || (() => {})}
+				>
+					{title}
+				</Heading>
 			) : (
 				<Heading type="h4">
 					<Trans i18nKey="item/components/item-video-description___beschrijving">

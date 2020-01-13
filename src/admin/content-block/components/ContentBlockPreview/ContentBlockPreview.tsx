@@ -13,7 +13,7 @@ import {
 import { HeadingBlockPreview } from './previews';
 
 interface ContentBlockPreviewProps {
-	componentState: ContentBlockComponentState;
+	componentState: ContentBlockComponentState | ContentBlockComponentState[];
 	blockState: ContentBlockState;
 }
 

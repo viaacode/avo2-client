@@ -67,7 +67,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							description: menuItem.description || '',
 							icon: menuItem.icon_name as IconName,
 							label: menuItem.label,
-							link: menuItem.link_target || '',
+							link: menuItem.link_target || '_self',
 							placement: menuItem.placement,
 						});
 					}
@@ -118,7 +118,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		const menuItem: Partial<Avo.Menu.Menu> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
-			link_target: menuForm.link,
+			link_target: menuForm.link as ('_blank' | '_self' | null),
 			placement: menuForm.placement,
 		};
 
