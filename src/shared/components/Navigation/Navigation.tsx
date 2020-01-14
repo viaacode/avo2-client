@@ -1,15 +1,13 @@
-import React, { FunctionComponent, ReactText, useState } from 'react';
+import { last } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
 import {
 	Avatar,
 	Button,
 	Container,
-	Dropdown,
-	DropdownButton,
-	DropdownContent,
 	Icon,
 	MenuContent,
 	Navbar,
@@ -20,18 +18,24 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import LoginOptionsDropdown from '../../../authentication/components/LoginOptionsDropdown';
-import PupilOrTeacherDropdown from '../../../authentication/components/PupilOrTeacherDropdown';
+import { getFirstName, getProfileInitials } from '../../../authentication/helpers/get-profile-info';
 import {
-	getFirstName,
-	getProfileInitials,
-	isLoggedIn,
-} from '../../../authentication/helpers/get-profile-info';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
+	redirectToClientPage,
+	redirectToExternalPage,
+} from '../../../authentication/helpers/redirects';
+import { selectUser } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
-import { SETTINGS_PATH } from '../../../settings/settings.const';
 import { AppState } from '../../../store';
+import {
+	getLocation,
+	mapNavElementsToNavigationItems,
+	renderNavLinkItem,
+} from '../../helpers/navigation';
+import {
+	AppContentNavElement,
+	getNavigationItems,
+	NavItemMap,
+} from '../../services/navigation-items-service';
 import toastService from '../../services/toast-service';
 import { NavigationItem } from '../../types';
 
@@ -39,7 +43,6 @@ import './Navigation.scss';
 
 export interface NavigationProps extends RouteComponentProps {
 	user: Avo.User.User | undefined;
-	loginMessage: Avo.Auth.LoginMessage;
 }
 
 /**
@@ -47,64 +50,61 @@ export interface NavigationProps extends RouteComponentProps {
  * @param history
  * @param location
  * @param match
- * @param userState
  * @param loginMessage
+ * @param user
  * @constructor
  */
 export const Navigation: FunctionComponent<NavigationProps> = ({
 	history,
 	location,
 	match,
-	loginMessage,
 	user,
 }) => {
 	const [t] = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [primaryNavItems, setPrimaryNavItems] = useState<AppContentNavElement[]>([]);
+	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
+
+	useEffect(() => {
+		getNavigationItems().then((navItems: NavItemMap) => {
+			setPrimaryNavItems(navItems['hoofdnavigatie-links']);
+			setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
+		});
+	}, [user]);
 
 	const getPrimaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn(loginMessage, user)) {
-			return [
-				{ label: 'Home', location: APP_PATH.LOGGED_IN_HOME, key: 'teachers' },
-				{
-					label: 'Zoeken',
-					location: APP_PATH.SEARCH,
-					icon: 'search',
-					key: 'pupils',
-				},
-				{
-					label: 'Mijn Werkruimte',
-					location: APP_PATH.WORKSPACE,
-					icon: 'briefcase',
-					key: 'search',
-				},
-				{ label: 'Projecten', location: APP_PATH.PROJECTS, key: 'discover' },
-				{ label: 'Nieuws', location: APP_PATH.NEWS, key: 'workspace' },
-			];
-		}
-		return [
-			{ label: 'Voor leerkrachten', location: APP_PATH.FOR_TEACHERS, key: 'teachers' },
-			{ label: 'Voor leerlingen', location: APP_PATH.FOR_PUPILS, key: 'pupils' },
-			{ label: 'Projecten', location: APP_PATH.PROJECTS, key: 'projects' },
-			{ label: 'Nieuws', location: APP_PATH.NEWS, key: 'news' },
-		];
+		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItem[] => {
-		if (isLoggedIn(loginMessage, user)) {
+		if (!secondaryNavItems || !secondaryNavItems.length) {
+			return [];
+		}
+		const dynamicNavItems: NavigationItem[] = mapNavElementsToNavigationItems(
+			secondaryNavItems,
+			history,
+			location,
+			match,
+			t
+		);
+
+		const logoutNavItem = last(dynamicNavItems) as NavigationItem;
+
+		if (
+			(user && logoutNavItem.location !== APP_PATH.LOGOUT) ||
+			(!user && logoutNavItem.location === APP_PATH.LOGOUT)
+		) {
+			// Avoid flashing the menu items for a second without them being in a dropdown menu
+			return [];
+		}
+
+		if (user) {
 			if (isMobileMenuOpen) {
-				return [
-					{ label: 'Instellingen', location: APP_PATH.SETTINGS, key: 'settings' },
-					{ label: 'Hulp', location: APP_PATH.HELP, key: 'help' },
-					{
-						label: 'Rapporteer feedback of probleem',
-						location: APP_PATH.FEEDBACK,
-						key: 'feedback',
-					},
-					{ label: 'Logout', location: APP_PATH.LOGOUT, key: 'logout' },
-				];
+				return dynamicNavItems;
 			}
+			// Navigatie items voor ingelogde gebruikers (dropdown onder profile avatar)
 			return [
 				{
 					label: (
@@ -116,12 +116,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					component: (
 						<MenuContent
 							menuItems={[
-								[
-									{ id: 'settings', label: 'Instellingen' },
-									{ id: 'help', label: 'Hulp' },
-									{ id: 'feedback', label: 'Rapporteer feedback of probleem' },
-								],
-								[{ id: 'logout', label: 'Logout' }],
+								dynamicNavItems
+									.slice(0, dynamicNavItems.length - 1)
+									.map(navItem => ({ id: navItem.key as string, label: navItem.label as string })),
+								[{ id: logoutNavItem.key as string, label: logoutNavItem.label as string }],
 							]}
 							onClick={handleMenuClick}
 						/>
@@ -130,24 +128,9 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 				},
 			];
 		}
-		return [
-			{
-				label: 'Account aanmaken',
-				component: <PupilOrTeacherDropdown history={history} location={location} match={match} />,
-				key: 'createAccount',
-			},
-			{
-				label: 'Inloggen',
-				component: <LoginOptionsDropdown history={history} location={location} match={match} />,
-				key: 'login',
-			},
-		];
-	};
 
-	const setDropdownOpen = (label: string, isOpen: boolean): void => {
-		const openStates = { ...areDropdownsOpen };
-		openStates[label] = isOpen;
-		setDropdownsOpen(openStates);
+		// Navigatie items voor niet ingelogde gebruikers: items naast elkaar
+		return dynamicNavItems;
 	};
 
 	const onToggleMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
@@ -155,67 +138,33 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	const closeAllDropdowns = () => setDropdownsOpen({});
 
 	const handleMenuClick = (menuItemId: string | ReactText) => {
-		switch (menuItemId) {
-			case 'settings':
-				redirectToClientPage(SETTINGS_PATH.SETTINGS, history);
-				break;
-
-			case 'help':
-				toastService.info('Nog niet geimplementeerd');
-				break;
-
-			case 'feedback':
-				toastService.info('Nog niet geimplementeerd');
-				break;
-
-			case 'logout':
-				redirectToClientPage(APP_PATH.LOGOUT, history);
-				break;
-
-			default:
-				toastService.info('Nog niet geimplementeerd');
-				break;
+		try {
+			const navItemId: number = parseInt(menuItemId.toString().substring('nav-item-'.length), 10);
+			const navItem = secondaryNavItems.find(navItem => navItem.id === navItemId);
+			if (!navItem) {
+				console.error('Could not find navigation item by id', { menuItemId });
+				toastService.danger(
+					t('shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-1')
+				);
+				return;
+			}
+			const link = getLocation(navItem, t);
+			if (link.includes('//')) {
+				// external link
+				redirectToExternalPage(link, navItem.link_target || '_blank');
+			} else {
+				// Internal link to react page or to content block page
+				redirectToClientPage(link, history);
+			}
+			closeAllDropdowns();
+		} catch (err) {
+			console.error('Failed to handle menu item click because it is not a number', err, {
+				menuItemId,
+			});
+			toastService.danger(
+				t('shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-2')
+			);
 		}
-		closeAllDropdowns();
-	};
-
-	const renderNavLinkItem = (item: NavigationItem, className: string, exact: boolean) => {
-		return (
-			<li key={`${item.location}-${item.key}`}>
-				{!!item.location && (
-					<NavLink
-						to={item.location}
-						className={className}
-						activeClassName="c-nav__item--active"
-						exact={exact}
-					>
-						{item.icon && <Icon name={item.icon} />}
-						{item.label}
-					</NavLink>
-				)}
-				{!!item.component && (
-					<Dropdown
-						menuWidth="fit-content"
-						placement="bottom-end"
-						isOpen={areDropdownsOpen[item.key] || false}
-						onOpen={() => setDropdownOpen(item.key, true)}
-						onClose={() => setDropdownOpen(item.key, false)}
-					>
-						<DropdownButton>
-							<div className={`${className} u-clickable`}>
-								{item.icon && <Icon name={item.icon} />}
-								{item.label}
-							</div>
-						</DropdownButton>
-						<DropdownContent>
-							{React.cloneElement(item.component, {
-								closeDropdown: () => setDropdownOpen(item.key, false),
-							})}
-						</DropdownContent>
-					</Dropdown>
-				)}
-			</li>
-		);
 	};
 
 	return (
@@ -239,7 +188,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								<div className="u-mq-switch-main-nav-has-space">
 									<ul className="c-nav">
 										{getPrimaryNavigationItems().map(item =>
-											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', item.location === '/')
+											renderNavLinkItem(
+												item,
+												'c-nav__item c-nav__item--i',
+												item.location === '/',
+												false,
+												areDropdownsOpen,
+												setDropdownsOpen
+											)
 										)}
 									</ul>
 								</div>
@@ -250,7 +206,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								<div className="u-mq-switch-main-nav-authentication">
 									<ul className="c-nav">
 										{getSecondaryNavigationItems().map(item =>
-											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
+											renderNavLinkItem(
+												item,
+												'c-nav__item c-nav__item--i',
+												false,
+												false,
+												areDropdownsOpen,
+												setDropdownsOpen
+											)
 										)}
 									</ul>
 								</div>
@@ -274,12 +237,26 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
 							{getPrimaryNavigationItems().map(item =>
-								renderNavLinkItem(item, 'c-nav-mobile__item', item.location === '/')
+								renderNavLinkItem(
+									item,
+									'c-nav-mobile__item',
+									item.location === '/',
+									false,
+									areDropdownsOpen,
+									setDropdownsOpen
+								)
 							)}
 						</ul>
 						<ul className="c-nav-mobile">
 							{getSecondaryNavigationItems().map(item =>
-								renderNavLinkItem(item, 'c-nav-mobile__item', false)
+								renderNavLinkItem(
+									item,
+									'c-nav-mobile__item',
+									false,
+									false,
+									areDropdownsOpen,
+									setDropdownsOpen
+								)
 							)}
 						</ul>
 					</Container>
@@ -292,7 +269,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 								<div className="c-toolbar__item">
 									<ul className="c-nav">
 										{getPrimaryNavigationItems().map(item =>
-											renderNavLinkItem(item, 'c-nav__item c-nav__item--i', false)
+											renderNavLinkItem(
+												item,
+												'c-nav__item c-nav__item--i',
+												false,
+												false,
+												areDropdownsOpen,
+												setDropdownsOpen
+											)
 										)}
 									</ul>
 								</div>
@@ -306,7 +290,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 };
 
 const mapStateToProps = (state: AppState) => ({
-	loginMessage: selectLoginMessage(state),
 	user: selectUser(state),
 });
 

@@ -40,7 +40,7 @@ const App: FunctionComponent<AppProps> = props => {
 				<>
 					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Navigation {...props} />}
 					{renderRoutes()}
-					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer />}
+					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer {...props} />}
 				</>
 			)}
 		</div>

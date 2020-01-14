@@ -5,6 +5,7 @@ export type NavigationItem = {
 	label: string | ReactElement;
 	key: string;
 	location?: string;
+	target?: string;
 	component?: ReactElement;
 	icon?: IconName;
 };

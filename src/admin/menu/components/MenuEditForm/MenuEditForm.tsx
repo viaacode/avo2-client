@@ -1,11 +1,20 @@
-import { get, kebabCase } from 'lodash-es';
+import { capitalize, get, kebabCase, sortBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValueType } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
-import { Form, FormGroup, TextArea, TextInput } from '@viaa/avo2-components';
+import {
+	Form,
+	FormGroup,
+	Select,
+	TagInfo,
+	TagsInput,
+	TextArea,
+	TextInput,
+} from '@viaa/avo2-components';
 
+import { UserGroup } from '../../../../shared/services/user-groups-service';
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { IconPicker } from '../../../shared/components';
 
@@ -17,6 +26,7 @@ interface MenuEditFormProps {
 	formState: MenuEditFormState;
 	menuParentId: string | undefined;
 	menuParentOptions: ReactSelectOption<string>[];
+	userGroups: UserGroup[];
 	onChange: (key: keyof MenuEditFormState, value: ValueOf<MenuEditFormState>) => void;
 }
 
@@ -25,6 +35,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 	formState,
 	menuParentId,
 	menuParentOptions,
+	userGroups,
 	onChange,
 }) => {
 	const [t] = useTranslation();
@@ -34,6 +45,27 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			label,
 			value: kebabCase(label),
 		};
+	};
+
+	const userGroupOptions: TagInfo[] = sortBy(
+		[
+			{
+				label: t('admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'),
+				value: -1,
+			},
+			{
+				label: t('admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'),
+				value: -2,
+			},
+			...userGroups.map(
+				(userGroup): TagInfo => ({ label: capitalize(userGroup.label), value: userGroup.id })
+			),
+		],
+		'label'
+	);
+
+	const handleUserGroupChange = (selectedValues: TagInfo[]) => {
+		onChange('group_access', (selectedValues || []).map(val => val.value as number));
 	};
 
 	return (
@@ -88,11 +120,49 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				<TextInput onChange={(value: string) => onChange('label', value)} value={formState.label} />
 			</FormGroup>
 			<FormGroup
-				error={formErrors.link}
+				error={formErrors.external_link}
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___link')}
 				required
 			>
-				<TextInput onChange={(value: string) => onChange('link', value)} value={formState.link} />
+				<TextInput
+					onChange={(value: string) => onChange('external_link', value)}
+					value={formState.external_link}
+				/>
+				{/* TODO replace by content picker widget that can pick internal pages, external urls and content block pages */}
+			</FormGroup>
+			<FormGroup
+				error={formErrors.link_target}
+				label={t('admin/menu/components/menu-edit-form/menu-edit-form___openen-in')}
+				required
+			>
+				<Select
+					options={[
+						{
+							label: t('admin/menu/components/menu-edit-form/menu-edit-form___nieuw-venster'),
+							value: '_blank',
+						},
+						{
+							label: t('admin/menu/components/menu-edit-form/menu-edit-form___hetzelfde-venster'),
+							value: '_self',
+						},
+					]}
+					onChange={(value: string) => onChange('link_target', value)}
+					value={formState.link_target || '_self'}
+				/>
+			</FormGroup>
+			<FormGroup
+				error={formErrors.link_target}
+				label={t('admin/menu/components/menu-edit-form/menu-edit-form___zichtbaar-voor')}
+				required
+			>
+				<TagsInput
+					placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
+					options={userGroupOptions}
+					onChange={handleUserGroupChange}
+					value={userGroupOptions.filter((userGroupOption: TagInfo) =>
+						formState.group_access.includes(userGroupOption.value as number)
+					)}
+				/>
 			</FormGroup>
 		</Form>
 	);

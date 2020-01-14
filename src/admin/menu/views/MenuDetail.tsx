@@ -61,13 +61,13 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const menuId = match.params.menu;
 
 	// Methods
-	const handleDelete = (refetch: () => void): void => {
+	const handleDelete = (refetchMenuItems: () => void): void => {
 		triggerMenuItemDelete({
 			variables: { id: idToDelete },
 			update: ApolloCacheManager.clearNavElementsCache,
 		})
 			.then(() => {
-				refetch();
+				setTimeout(refetchMenuItems); // Wait for cache to be fully cleared
 				toastService.success('Het navigatie item is succesvol verwijderd', false);
 			})
 			.catch(err => {
@@ -151,7 +151,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetch: () => void) => {
+	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetchMenuItems: () => void) => {
 		// Return to overview if menu is empty
 		if (!menu.length) {
 			toastService.danger('Er werden geen navigatie items gevonden');
@@ -232,7 +232,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 								</Flex>
 							</Spacer>
 							<DeleteObjectModal
-								deleteObjectCallback={() => handleDelete(refetch)}
+								deleteObjectCallback={() => handleDelete(refetchMenuItems)}
 								isOpen={isConfirmModalOpen}
 								onClose={() => setIsConfirmModalOpen(false)}
 							/>
@@ -243,7 +243,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 					<Button
 						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
 						label={t('admin/menu/views/menu-detail___opslaan')}
-						onClick={() => handleSave(refetch)}
+						onClick={() => handleSave(refetchMenuItems)}
 					/>
 					<Button
 						label={t('admin/menu/views/menu-detail___annuleer')}

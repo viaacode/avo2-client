@@ -4,6 +4,7 @@ import { cloneDeep, get, isNil, omit, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
+import { CustomError } from '../shared/helpers/error';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
@@ -261,7 +262,7 @@ export class CollectionService {
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			console.error('Failed to get collection titles by owner', err, queryInfo);
-			throw new Error('Het ophalen van de bestaande collecties is mislukt');
+			throw new CustomError('Het ophalen van de bestaande collecties is mislukt', err, { user });
 		}
 	}
 

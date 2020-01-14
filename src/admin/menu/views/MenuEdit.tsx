@@ -10,13 +10,14 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
-
+import { getUserGroups, UserGroup } from '../../../shared/services/user-groups-service';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 import { fetchMenuItemById, fetchMenuItems } from '../menu.services';
-import { MenuEditFormState, MenuEditParams } from '../menu.types';
+import { MenuEditFormState, MenuEditPageType, MenuEditParams } from '../menu.types';
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
@@ -33,6 +34,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [formErrors, setFormErrors] = useState<Partial<MenuEditFormState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
 
 	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -45,7 +47,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				setMenuItems(menuItemsByPosition);
 			} else {
 				// Go back to overview if no menu items are present
-				toastService.danger(`Er werden geen navigatie items gevonden voor ${menuName}`);
+				toastService.danger(
+					t(`Er werden geen navigatie items gevonden voor {menuName}`, { menuName })
+				);
 				history.push(MENU_PATH.MENU);
 			}
 		});
@@ -67,7 +71,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							description: menuItem.description || '',
 							icon: menuItem.icon_name as IconName,
 							label: menuItem.label,
-							link: menuItem.link_target || '_self',
+							external_link: menuItem.external_link || '', // TODO add content block link
+							link_target: menuItem.link_target || '_self',
+							group_access: (menuItem.group_access || []) as number[],
 							placement: menuItem.placement,
 						});
 					}
@@ -76,13 +82,16 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					setIsLoading(false);
 				});
 		}
+
+		// fetch user groups for giving permissions to view a certain navigation item
+		getUserGroups().then(setUserGroups);
 	}, [menuItemId, menuParentId]);
 
 	// Computed
-	const pageType = menuItemId ? 'edit' : 'create';
+	const pageType: MenuEditPageType = menuItemId ? 'edit' : 'create';
 	const pageTitle = menuParentId
 		? `${menuName}: item ${PAGE_TYPES_LANG[pageType]}`
-		: 'Navigatie toevoegen';
+		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
 	const menuParentOptions = menuItems.reduce(
 		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
 			// Don't add duplicates to the options
@@ -118,7 +127,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		const menuItem: Partial<Avo.Menu.Menu> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
-			link_target: menuForm.link as ('_blank' | '_self' | null),
+			external_link: menuForm.external_link,
+			link_target: menuForm.link_target,
+			group_access: menuForm.group_access,
 			placement: menuForm.placement,
 		};
 
@@ -134,9 +145,16 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleResponse('Het navigatie item is succesvol aangemaakt'))
+				.then(() =>
+					handleResponse(
+						t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt')
+					)
+				)
 				.catch(err =>
-					handleResponse('Het aanmaken van het navigatie item is mislukt', err || null)
+					handleResponse(
+						t('admin/menu/views/menu-edit___het-aanmaken-van-het-navigatie-item-is-mislukt'),
+						err || null
+					)
 				);
 		} else {
 			triggerMenuItemUpdate({
@@ -150,8 +168,17 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			})
-				.then(() => handleResponse('Het navigatie item is succesvol geüpdatet'))
-				.catch(err => handleResponse('Het updaten van het navigatie item is mislukt', err || null));
+				.then(() =>
+					handleResponse(
+						t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet')
+					)
+				)
+				.catch(err =>
+					handleResponse(
+						t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
+						err || null
+					)
+				);
 		}
 	};
 
@@ -173,15 +200,15 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		const errors: Partial<MenuEditFormState> = {};
 
 		if (!menuParentId && !menuForm.placement) {
-			errors.placement = 'Navigatie naam is verplicht';
+			errors.placement = t('admin/menu/views/menu-edit___navigatie-naam-is-verplicht');
 		}
 
 		if (!menuForm.label) {
-			errors.label = 'Label is verplicht';
+			errors.label = t('admin/menu/views/menu-edit___label-is-verplicht');
 		}
 
-		if (!menuForm.link) {
-			errors.link = 'Link is verplicht';
+		if (!menuForm.external_link) {
+			errors.external_link = t('admin/menu/views/menu-edit___link-is-verplicht');
 		}
 
 		setFormErrors(errors);
@@ -212,6 +239,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							formState={menuForm}
 							menuParentId={menuParentId}
 							menuParentOptions={menuParentOptions}
+							userGroups={userGroups}
 							onChange={handleChange}
 						/>
 					</Container>

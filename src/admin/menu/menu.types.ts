@@ -14,5 +14,7 @@ export interface MenuEditFormState {
 	placement?: string;
 	icon: IconName | '';
 	label: string;
-	link: string;
+	external_link: string;
+	link_target: '_blank' | '_self';
+	group_access: number[];
 }
