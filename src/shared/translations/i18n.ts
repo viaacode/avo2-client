@@ -1,12 +1,13 @@
 import i18n from 'i18next';
+import { get } from 'lodash-es';
 import { initReactI18next } from 'react-i18next';
+
 import translations from './nl.json';
 
-console.log('translations: ', translations);
 i18n
 	.use(initReactI18next) // passes i18n down to react-i18next
 	.init({
-		debug: true,
+		debug: get(window, '_ENV_.ENV') === 'local',
 		resources: {
 			nl: {
 				translation: translations,
