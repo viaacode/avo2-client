@@ -1,6 +1,6 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useState } from 'react';
-import { Trans } from 'react-i18next';
+import { get, isEmpty } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	BlockHeading,
@@ -23,8 +23,15 @@ import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { CollectionOverview } from '../../collection/views';
-import { ControlledDropdown, DataQueryComponent } from '../../shared/components';
+import { ControlledDropdown, LoadingErrorLoadedComponent } from '../../shared/components';
 import { navigate } from '../../shared/helpers';
+
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { dataService } from '../../shared/services/data-service';
 
 import {
 	ASSIGNMENTS_ID,
@@ -35,7 +42,7 @@ import {
 	WORKSPACE_PATH,
 } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
-import { TabAggregates, TabViewMap } from '../workspace.types';
+import { TabFilter, TabViewMap } from '../workspace.types';
 import Bookmarks from './Bookmarks';
 import './Workspace.scss';
 
@@ -44,9 +51,14 @@ export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string 
 }
 
 const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ...rest }) => {
+	const [t] = useTranslation();
+
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
-	const [tabId, setTabId] = useState<string>(match.params.tabId || COLLECTIONS_ID);
+	const [tabId, setTabId] = useState<string | null>(match.params.tabId || null);
+	const [tabCounts, setTabCounts] = useState<{ [tabId: string]: number }>({});
+	const [permissions, setPermissions] = useState<{ [tabId: string]: boolean }>({});
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	// Methods
 	const goToTab = (id: ReactText) => {
@@ -54,67 +66,133 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 		setTabId(String(id));
 	};
 
+	useEffect(() => {
+		Promise.all([
+			dataService.query({
+				query: GET_WORKSPACE_TAB_COUNTS,
+				variables: { owner_profile_id: getProfileId(user) },
+			}),
+			PermissionService.hasPermission(PermissionNames.CREATE_COLLECTIONS, null, user),
+			PermissionService.hasPermission(PermissionNames.CREATE_BUNDLES, null, user),
+			PermissionService.hasPermission(PermissionNames.CREATE_ASSIGNMENTS, null, user),
+			PermissionService.hasPermission(PermissionNames.CREATE_BOOKMARKS, null, user),
+		])
+			.then(response => {
+				setTabCounts({
+					[COLLECTIONS_ID]: get(response[0], 'data.app_collections_aggregate.aggregate.count'),
+					[FOLDERS_ID]: 0, // TODO: get from database once the table exists
+					[ASSIGNMENTS_ID]: get(response[0], 'data.app_assignments_aggregate.aggregate.count'),
+					[BOOKMARKS_ID]: 0, // TODO: get from database once the table exists
+				});
+				setPermissions({
+					[COLLECTIONS_ID]: response[1],
+					[FOLDERS_ID]: response[2],
+					[ASSIGNMENTS_ID]: response[3],
+					[BOOKMARKS_ID]: response[4],
+				});
+			})
+			.catch(err => {
+				console.error(
+					'Failed to check permissions or get tab counts for workspace overview page',
+					err,
+					{ user }
+				);
+				setLoadingInfo({
+					state: 'error',
+					message: t('workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'),
+				});
+			});
+	}, [user, t]);
+
+	useEffect(() => {
+		if (!isEmpty(permissions)) {
+			if (getActiveTab()) {
+				// Use has access to at least one tab
+				setLoadingInfo({
+					state: 'loaded',
+				});
+			} else {
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken'
+					),
+					icon: 'lock',
+				});
+			}
+		}
+	}, [permissions]);
+
+	const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
+		if (permissions[tabId]) {
+			return { [tabId]: obj };
+		}
+		return {};
+	};
+
 	// Make map for available tab views
-	const getTabs = (counts: { [tabId: string]: number }): TabViewMap => ({
-		[COLLECTIONS_ID]: {
-			component: (refetchCounts: () => void) => (
-				<CollectionOverview
-					numberOfCollections={counts[COLLECTIONS_ID]}
-					refetchCount={refetchCounts}
-					history={history}
-					match={match}
-					user={user}
-					{...rest}
-				/>
-			),
-			// TODO: DISABLED_FEATURE filter
-			// filter: {
-			// 	label: 'Auteur',
-			// 	options: [
-			// 		{ id: 'all', label: 'Alles' },
-			// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
-			// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
-			// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
-			// 	],
-			// },
-		},
-		[FOLDERS_ID]: {
-			component: () => <span>TODO Mappen</span>,
-			filter: {
-				label: 'Filter op label',
-				options: [{ id: 'all', label: 'Alle' }],
-			},
-		},
-		[ASSIGNMENTS_ID]: {
-			component: (refetchCounts: () => void) => (
-				<AssignmentOverview
-					refetchCount={refetchCounts}
-					history={history}
-					match={match}
-					user={user}
-					{...rest}
-				/>
-			),
-		},
-		[BOOKMARKS_ID]: {
-			component: () => <Bookmarks />,
-		},
-	});
+	const getTabs = (): TabViewMap => {
+		return {
+			...addTabIfUserHasPerm(COLLECTIONS_ID, {
+				component: () => (
+					<CollectionOverview
+						numberOfCollections={tabCounts[COLLECTIONS_ID]}
+						history={history}
+						match={match}
+						user={user}
+						{...rest}
+					/>
+				),
+				// TODO: DISABLED_FEATURE filter
+				// filter: {
+				// 	label: 'Auteur',
+				// 	options: [
+				// 		{ id: 'all', label: 'Alles' },
+				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
+				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
+				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
+				// 	],
+				// },
+			}),
+			...addTabIfUserHasPerm(FOLDERS_ID, {
+				component: () => <span>TODO Mappen</span>,
+				filter: {
+					label: t('workspace/views/workspace___filter-op-label'),
+					options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
+				},
+			}),
+			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
+				component: () => (
+					<AssignmentOverview history={history} match={match} user={user} {...rest} />
+				),
+			}),
+			...addTabIfUserHasPerm(BOOKMARKS_ID, {
+				component: () => <Bookmarks />,
+			}),
+		};
+	};
+
+	const getTabId = () => {
+		return tabId || Object.keys(getTabs())[0];
+	};
 
 	// Get active tab based on above map with tabId
-	const getActiveTab = (counts: { [tabId: string]: number }) => getTabs(counts)[tabId];
-	const getNavTabs = (counts: { [tabId: string]: number }) => {
+	const getActiveTab = () => {
+		return getTabs()[getTabId()];
+	};
+
+	const getNavTabs = () => {
 		return TABS.map(t => ({
 			...t,
-			active: tabId === t.id,
-			label: counts[t.id] ? `${t.label} (${counts[t.id]})` : t.label,
+			active: getTabId() === t.id,
+			label: tabCounts[t.id] ? `${t.label} (${tabCounts[t.id]})` : t.label,
 		}));
 	};
 
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
-	const renderFilter = (counts: { [tabId: string]: number }) => {
-		const filter = getActiveTab(counts).filter;
+	const renderFilter = () => {
+		const filter: TabFilter | null = get(getActiveTab(), 'filter', null);
 
 		if (filter) {
 			if (!activeFilter) {
@@ -147,14 +225,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 		}
 	};
 
-	const renderTabsAndContent = (data: TabAggregates, refetchCounts: () => void) => {
-		const counts = {
-			[COLLECTIONS_ID]: get(data, 'app_collections_aggregate.aggregate.count'),
-			[FOLDERS_ID]: 0, // TODO: get from database once the table exists
-			[ASSIGNMENTS_ID]: get(data, 'app_assignments_aggregate.aggregate.count'),
-			[BOOKMARKS_ID]: 0, // TODO: get from database once the table exists
-		};
-
+	const renderTabsAndContent = () => {
 		return (
 			<>
 				<Container background="alt" mode="vertical" size="small">
@@ -169,28 +240,28 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarLeft>
-								<Tabs tabs={getNavTabs(counts)} onClick={goToTab} />
+								<Tabs tabs={getNavTabs()} onClick={goToTab} />
 							</ToolbarLeft>
 							<ToolbarRight>
-								<span>{renderFilter(counts)}</span>
+								<span>{renderFilter()}</span>
 							</ToolbarRight>
 						</Toolbar>
 					</Container>
 				</Navbar>
 
 				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{getActiveTab(counts).component(refetchCounts)}</Container>
+					<Container mode="horizontal">{getActiveTab().component()}</Container>
 				</Container>
 			</>
 		);
 	};
 
-	return tabId.includes('/') ? null : (
-		<DataQueryComponent
-			query={GET_WORKSPACE_TAB_COUNTS}
-			variables={{ owner_profile_id: getProfileId(user) }}
-			renderData={renderTabsAndContent}
-			notFoundMessage="Er zijn geen collecties gevonden"
+	return (
+		<LoadingErrorLoadedComponent
+			loadingInfo={loadingInfo}
+			render={renderTabsAndContent}
+			dataObject={permissions}
+			showSpinner
 		/>
 	);
 };

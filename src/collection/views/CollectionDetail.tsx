@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
+import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
@@ -27,12 +28,21 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { PermissionGuard } from '../../authentication/components';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfile, getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PERMISSIONS, PermissionService } from '../../authentication/helpers/permission-service';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { ControlledDropdown, DataQueryComponent, DeleteObjectModal } from '../../shared/components';
+import { ErrorView } from '../../error/views';
+import {
+	ControlledDropdown,
+	DataQueryComponent,
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+} from '../../shared/components';
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -77,6 +87,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
+	const [permissions, setPermissions] = useState<
+		Partial<{
+			canViewCollections: boolean;
+			canEditCollections: boolean;
+			canDeleteCollections: boolean;
+			canCreateCollections: boolean;
+			canViewItems: boolean;
+		}>
+	>({});
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -106,24 +126,60 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					toastService.danger('Het ophalen van de gerelateerde collecties is mislukt');
 				});
 		}
+
+		Promise.all([
+			PermissionService.hasPermissions(
+				[
+					{ name: PermissionNames.VIEW_COLLECTIONS },
+					{ name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT, obj: collectionId },
+				],
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: collectionId },
+					{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
+				],
+				user
+			),
+			PermissionService.hasPermissions(
+				[
+					{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: collectionId },
+					{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
+				],
+				user
+			),
+			PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
+			PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+		])
+			.then(permissions => {
+				setPermissions({
+					canViewCollections: permissions[0],
+					canEditCollections: permissions[1],
+					canDeleteCollections: permissions[2],
+					canCreateCollections: permissions[3],
+					canViewItems: permissions[4],
+				});
+			})
+			.catch(err => {
+				console.error('Failed to get permissions for collection', err, { collectionId });
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-controleren-van-je-account-rechten'
+					),
+					icon: 'alert-triangle',
+				});
+			});
 	}, [collectionId, relatedCollections, user]);
 
-	const getPermission = (collection: Avo.Collection.Collection) => ({
-		canDeleteCollection: PermissionService.hasPermissions(
-			[
-				{ permissionName: PERMISSIONS.DELETE_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.DELETE_ALL_COLLECTIONS },
-			],
-			user
-		),
-		canEditCollection: {
-			permissions: [
-				{ permissionName: PERMISSIONS.EDIT_OWN_COLLECTION, obj: collection },
-				{ permissionName: PERMISSIONS.EDIT_ALL_COLLECTIONS },
-			],
-			profile: getProfile(user),
-		},
-	});
+	useEffect(() => {
+		if (!isEmpty(permissions)) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
+	}, [permissions, setLoadingInfo]);
 
 	// Listeners
 	const onEditCollection = () => {
@@ -205,40 +261,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		});
 	};
 
-	const renderCollection = (collection: Avo.Collection.Collection) => {
-		const {
-			id,
-			is_public,
-			profile,
-			collection_fragments,
-			lom_context,
-			updated_at,
-			title,
-			lom_classification,
-		} = collection;
-		const { canDeleteCollection, canEditCollection } = getPermission(collection);
+	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
 			createDropdownMenuItem('createAssignment', 'Maak opdracht', 'clipboard'),
-			createDropdownMenuItem('duplicate', 'Dupliceer', 'copy'),
-			...(canDeleteCollection && [createDropdownMenuItem('delete', 'Verwijder')]),
+			...(permissions.canCreateCollections
+				? [createDropdownMenuItem('duplicate', 'Dupliceer', 'copy')]
+				: []),
+			...(permissions.canDeleteCollections ? [createDropdownMenuItem('delete', 'Verwijder')] : []),
 		];
-
-		if (!isFirstRender) {
-			setIsPublic(is_public);
-			setIsFirstRender(true);
-		}
-
-		// Render functions
-		const renderHeaderButtons = () => (
+		return (
 			<ButtonToolbar>
-				<PermissionGuard {...canEditCollection} user={user}>
+				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
 						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 					/>
-				</PermissionGuard>
+				)}
 				<Button
 					title={t('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
@@ -270,7 +310,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<MenuContent menuItems={COLLECTION_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
 					</DropdownContent>
 				</ControlledDropdown>
-				<PermissionGuard {...canEditCollection} user={user}>
+				{permissions.canEditCollections && (
 					<Spacer margin="left-small">
 						<Button
 							type="primary"
@@ -279,9 +319,27 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							onClick={onEditCollection}
 						/>
 					</Spacer>
-				</PermissionGuard>
+				)}
 			</ButtonToolbar>
 		);
+	};
+
+	const renderCollection = (collection: Avo.Collection.Collection) => {
+		const {
+			id,
+			is_public,
+			profile,
+			collection_fragments,
+			lom_context,
+			updated_at,
+			title,
+			lom_classification,
+		} = collection;
+
+		if (!isFirstRender) {
+			setIsPublic(is_public);
+			setIsFirstRender(true);
+		}
 
 		return (
 			<>
@@ -301,6 +359,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<FragmentListDetail
 							collectionFragments={collection_fragments}
 							showDescription
+							linkToItems={permissions.canViewItems || false}
 							history={history}
 							match={match}
 							user={user}
@@ -403,13 +462,36 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
+	const getCollectionAndRender = () => {
+		if (!permissions.canViewCollections) {
+			return (
+				<ErrorView
+					message={t(
+						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
+					)}
+					icon="lock"
+				/>
+			);
+		}
+		return (
+			<DataQueryComponent
+				query={GET_COLLECTION_BY_ID}
+				variables={{ id: collectionId }}
+				resultPath="app_collections[0]"
+				renderData={renderCollection}
+				notFoundMessage={t(
+					'collection/views/collection-detail___deze-collectie-werd-niet-gevonden'
+				)}
+			/>
+		);
+	};
+
 	return (
-		<DataQueryComponent
-			query={GET_COLLECTION_BY_ID}
-			variables={{ id: collectionId }}
-			resultPath="app_collections[0]"
-			renderData={renderCollection}
-			notFoundMessage="Deze collectie werd niet gevonden"
+		<LoadingErrorLoadedComponent
+			render={getCollectionAndRender}
+			dataObject={permissions}
+			loadingInfo={loadingInfo}
+			showSpinner={true}
 		/>
 	);
 };

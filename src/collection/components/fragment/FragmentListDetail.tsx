@@ -10,6 +10,7 @@ import FragmentDetail from './FragmentDetail';
 interface FragmentDetailProps extends DefaultSecureRouteProps {
 	collectionFragments: Avo.Collection.Fragment[];
 	showDescription: boolean;
+	linkToItems: boolean;
 }
 
 /**
@@ -17,12 +18,12 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
  * The bottom meta data is not included in the component
  * @param collectionFragments
  * @param showDescriptionNextToVideo
- * @param props FragmentDetailProps
  * @constructor
  */
 const FragmentListDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragments,
 	showDescription,
+	linkToItems,
 	...rest
 }) => {
 	const renderCollectionFragments = () =>
@@ -35,6 +36,7 @@ const FragmentListDetail: FunctionComponent<FragmentDetailProps> = ({
 					<FragmentDetail
 						collectionFragment={collectionFragment}
 						showDescription={showDescription}
+						linkToItems={linkToItems}
 						{...rest}
 					/>
 				</li>

@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
-import { DocumentNode } from 'graphql';
 import { get, isEmpty, remove } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
@@ -23,7 +22,6 @@ import {
 	Form,
 	FormGroup,
 	Icon,
-	IconName,
 	MenuContent,
 	Navbar,
 	RadioButton,
@@ -43,14 +41,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	GET_COLLECTION_BY_ID,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/collection.gql';
+import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
-import { GET_ITEM_BY_ID } from '../../item/item.gql';
 import {
 	DeleteObjectModal,
 	InputModal,
@@ -64,7 +58,11 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { ASSIGNMENT_PATH } from '../assignment.const';
+import {
+	checkPermissions,
+	LoadingInfo,
+} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { ASSIGNMENT_PATH, CONTENT_LABEL_TO_QUERY } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
@@ -78,41 +76,22 @@ import {
 	updateAssignment,
 } from '../assignment.services';
 import { AssignmentLayout } from '../assignment.types';
-
 import './AssignmentEdit.scss';
 
 const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: ROUTE_PARTS.item,
-	COLLECTIE: ROUTE_PARTS.collection,
+	COLLECTIE: ROUTE_PARTS.collections,
 	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType
+	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
 } = {
 	ITEM: 'avo_item_pid',
 	COLLECTIE: 'collections',
 	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
-};
-
-const CONTENT_LABEL_TO_QUERY: {
-	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
-} = {
-	COLLECTIE: {
-		query: GET_COLLECTION_BY_ID,
-		resultPath: 'app_collections[0]',
-	},
-	ITEM: {
-		query: GET_ITEM_BY_ID,
-		resultPath: 'app_item_meta[0]',
-	},
-	ZOEKOPDRACHT: {
-		// TODO: implement search query saving and usage
-		// query: GET_SEARCH_QUERY_BY_ID,
-		// resultPath: 'app_item_meta[0]',
-	} as any,
 };
 
 interface AssignmentEditProps extends DefaultSecureRouteProps {}
@@ -136,8 +115,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | undefined>(
 		undefined
 	);
-	const [loadingState, setLoadingState] = useState<'loading' | 'loaded' | 'error'>('loading');
-	const [loadingError, setLoadingError] = useState<{ error: string; icon: IconName } | null>(null);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -161,7 +139,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	useEffect(() => {
 		const initAssignmentData = async () => {
 			try {
-				if (loadingState === 'error') {
+				if (loadingInfo.state === 'error') {
 					// Do not keep trying to fetch the assignment when an error occurred
 					return;
 				}
@@ -184,8 +162,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// Fetch the content if the assignment has content
 				await fetchAssignmentContent(assignment);
 			} catch (err) {
-				setLoadingError({
-					error: 'Het ophalen/aanmaken van de opdracht is mislukt',
+				setLoadingInfo({
+					state: 'error',
+					message: 'Het ophalen/aanmaken van de opdracht is mislukt',
 					icon: 'alert-triangle',
 				});
 			}
@@ -256,22 +235,22 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					'data.app_assignments[0]'
 				);
 				if (!assignmentResponse) {
-					setLoadingState('error');
-					setLoadingError({
-						error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+					setLoadingInfo({
+						state: 'error',
+						message: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
 						icon: 'search',
 					});
 					return null;
 				}
 				setBothAssignments(assignmentResponse);
-				setLoadingState('loaded');
+				setLoadingInfo({ state: 'loaded' });
 				return assignmentResponse;
 			} catch (err) {
 				console.error(err);
 
-				setLoadingState('error');
-				setLoadingError({
-					error: 'Het ophalen van de opdracht is mislukt',
+				setLoadingInfo({
+					state: 'error',
+					message: 'Het ophalen van de opdracht is mislukt',
 					icon: 'alert-triangle',
 				});
 				return null;
@@ -289,7 +268,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 				if (!assignment.content_id || !assignment.content_label) {
 					// The assignment doesn't have content linked to it
-					setLoadingState('loaded');
+					setLoadingInfo({ state: 'loaded' });
 					return;
 				}
 
@@ -312,9 +291,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				);
 				if (!assignmentContentResponse) {
 					console.error('Failed to fetch the assignment content', { response, ...queryParams });
-					setLoadingState('error');
-					setLoadingError({
-						error: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+					setLoadingInfo({
+						state: 'error',
+						message: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
 						icon: 'search',
 					});
 					return;
@@ -328,19 +307,26 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						(assignmentContentResponse && assignmentContentResponse.title) ||
 						'',
 				});
-				setLoadingState('loaded');
+				setLoadingInfo({ state: 'loaded' });
 			} catch (err) {
 				console.error(err);
-				setLoadingState('error');
-				setLoadingError({
-					error: 'Het ophalen van de opdracht inhoud is mislukt',
+				setLoadingInfo({
+					state: 'error',
+					message: 'Het ophalen van de opdracht inhoud is mislukt',
 					icon: 'alert-triangle',
 				});
 			}
 		};
 
-		initAssignmentData();
-	}, [loadingState, location, match.params, setLoadingState, assignmentContent]);
+		checkPermissions(
+			PermissionNames.EDIT_ASSIGNMENTS,
+			user,
+			initAssignmentData,
+			setLoadingInfo,
+			t,
+			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
+		);
+	}, [loadingInfo, location, match.params, setLoadingInfo, assignmentContent, t, user]);
 
 	/**
 	 * Find name that isn't a duplicate of an existing name of a collection of this user
@@ -417,7 +403,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	};
 
 	const getAssignmentUrl = (absolute: boolean = true) => {
-		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignment}/${
+		return `${absolute ? window.location.origin : ''}/${ROUTE_PARTS.assignments}/${
 			currentAssignment.id
 		}`;
 	};
@@ -583,12 +569,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				// edit => update graphql
 				await updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
-				toastService.success('De opdracht is succesvol geüpdatet');
+				toastService.success(
+					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
+				);
 			}
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
-			toastService.danger('Het opslaan van de opdracht is mislukt');
+			toastService.danger(
+				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
+			);
 			setIsSaving(false);
 		}
 	};
@@ -639,7 +629,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				onClose={() => setTagsDropdownOpen(false)}
 			>
 				<DropdownButton>
-					{renderDropdownButton(tags.length ? '' : 'Geen', false, tags, removeTag)}
+					{renderDropdownButton(
+						tags.length ? '' : t('assignment/views/assignment-edit___geen'),
+						false,
+						tags,
+						removeTag
+					)}
 				</DropdownButton>
 				<DropdownContent>
 					<Spacer>
@@ -1024,11 +1019,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	return (
 		<LoadingErrorLoadedComponent
-			loadingState={loadingState}
 			dataObject={currentAssignment}
 			render={renderAssignmentEditForm}
-			loadingError={loadingError && loadingError.error}
-			loadingErrorIcon={loadingError && loadingError.icon}
+			loadingInfo={loadingInfo}
 			notFoundError="De opdracht is niet gevonden"
 		/>
 	);
