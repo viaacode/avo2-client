@@ -733,7 +733,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											</Trans>
 										</Link>
 										<BlockHeading className="u-m-0" type="h2">
-											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
+											{pageType === 'create'
+												? t('assignment/views/assignment-edit___nieuwe-opdracht')
+												: currentAssignment.title}
 										</BlockHeading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
