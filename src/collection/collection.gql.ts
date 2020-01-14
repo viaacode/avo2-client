@@ -92,14 +92,6 @@ export const GET_COLLECTION_BY_ID = gql`
 				created_at
 				alt_label
 			}
-			collection_permissions {
-				collection_id
-				created_at
-				id
-				permission_type
-				updated_at
-				user_id
-			}
 			lom_classification
 			lom_context
 			lom_intendedenduserrole
@@ -232,14 +224,6 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			depublish_at
 			created_at
 			thumbnail_path
-			collection_permissions {
-				collection_id
-				created_at
-				id
-				permission_type
-				updated_at
-				user_id
-			}
 		}
 	}
 `;

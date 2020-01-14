@@ -18,6 +18,7 @@ import { ValueOf } from '../../../../shared/types';
 import { ContentEditFormState } from '../../content.types';
 
 import './ContentEditForm.scss';
+import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
 interface ContentTypeOptions {
 	label: string;
@@ -104,6 +105,18 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										value={formState.contentType}
 									/>
 								</FormGroup>
+							</Column>
+							<Column size="12">
+								<UserGroupSelect
+									label={t('Zichtbaar voor')}
+									error={'' /* formErrors.group_access */}
+									placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
+									values={[1]}
+									required={false}
+									onChange={
+										() => {} /* (userGroupIds: number[]) => onChange('group_access', userGroupIds) */
+									}
+								/>
 							</Column>
 							<Column size="3-6">
 								<FormGroup

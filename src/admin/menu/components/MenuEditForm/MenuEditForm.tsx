@@ -1,32 +1,24 @@
-import { capitalize, get, kebabCase, sortBy } from 'lodash-es';
+import { get, kebabCase } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ValueType } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
-import {
-	Form,
-	FormGroup,
-	Select,
-	TagInfo,
-	TagsInput,
-	TextArea,
-	TextInput,
-} from '@viaa/avo2-components';
+import { Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
 
 import { UserGroup } from '../../../../shared/services/user-groups-service';
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { IconPicker } from '../../../shared/components';
 
+import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 import { MENU_ICON_OPTIONS } from '../../menu.const';
-import { MenuEditFormState } from '../../menu.types';
+import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
 
 interface MenuEditFormProps {
-	formErrors: Partial<MenuEditFormState>;
+	formErrors: MenuEditFormErrorState;
 	formState: MenuEditFormState;
 	menuParentId: string | undefined;
 	menuParentOptions: ReactSelectOption<string>[];
-	userGroups: UserGroup[];
 	onChange: (key: keyof MenuEditFormState, value: ValueOf<MenuEditFormState>) => void;
 }
 
@@ -35,7 +27,6 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 	formState,
 	menuParentId,
 	menuParentOptions,
-	userGroups,
 	onChange,
 }) => {
 	const [t] = useTranslation();
@@ -47,27 +38,6 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 		};
 	};
 
-	const userGroupOptions: TagInfo[] = sortBy(
-		[
-			{
-				label: t('admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'),
-				value: -1,
-			},
-			{
-				label: t('admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'),
-				value: -2,
-			},
-			...userGroups.map(
-				(userGroup): TagInfo => ({ label: capitalize(userGroup.label), value: userGroup.id })
-			),
-		],
-		'label'
-	);
-
-	const handleUserGroupChange = (selectedValues: TagInfo[]) => {
-		onChange('group_access', (selectedValues || []).map(val => val.value as number));
-	};
-
 	return (
 		<Form>
 			<FormGroup
@@ -75,7 +45,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___navigatie-naam')}
 				required
 			>
-				{/* TODO: Add CreatableSelect to compononents lib */}
+				{/* TODO: Add CreatableSelect to components lib */}
 				<CreatableSelect
 					value={menuParentOptions.find(opt => opt.value === menuParentId)}
 					formatCreateLabel={inputValue => `Aanmaken: ${inputValue}`}
@@ -150,20 +120,14 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 					value={formState.link_target || '_self'}
 				/>
 			</FormGroup>
-			<FormGroup
-				error={formErrors.link_target}
+			<UserGroupSelect
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___zichtbaar-voor')}
-				required
-			>
-				<TagsInput
-					placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
-					options={userGroupOptions}
-					onChange={handleUserGroupChange}
-					value={userGroupOptions.filter((userGroupOption: TagInfo) =>
-						formState.group_access.includes(userGroupOption.value as number)
-					)}
-				/>
-			</FormGroup>
+				error={formErrors.group_access}
+				placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
+				values={formState.group_access}
+				required={false}
+				onChange={(userGroupIds: number[]) => onChange('group_access', userGroupIds)}
+			/>
 		</Form>
 	);
 };

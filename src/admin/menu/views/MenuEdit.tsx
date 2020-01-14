@@ -10,14 +10,18 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
-import { getUserGroups, UserGroup } from '../../../shared/services/user-groups-service';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 import { fetchMenuItemById, fetchMenuItems } from '../menu.services';
-import { MenuEditFormState, MenuEditPageType, MenuEditParams } from '../menu.types';
+import {
+	MenuEditFormErrorState,
+	MenuEditFormState,
+	MenuEditPageType,
+	MenuEditParams,
+} from '../menu.types';
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
@@ -31,10 +35,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
 	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
-	const [formErrors, setFormErrors] = useState<Partial<MenuEditFormState>>({});
+	const [formErrors, setFormErrors] = useState<Partial<MenuEditFormErrorState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
 
 	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -82,9 +85,6 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					setIsLoading(false);
 				});
 		}
-
-		// fetch user groups for giving permissions to view a certain navigation item
-		getUserGroups().then(setUserGroups);
 	}, [menuItemId, menuParentId]);
 
 	// Computed
@@ -197,7 +197,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	};
 
 	const handleValidation = (): boolean => {
-		const errors: Partial<MenuEditFormState> = {};
+		const errors: Partial<MenuEditFormErrorState> = {};
 
 		if (!menuParentId && !menuForm.placement) {
 			errors.placement = t('admin/menu/views/menu-edit___navigatie-naam-is-verplicht');
@@ -239,7 +239,6 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							formState={menuForm}
 							menuParentId={menuParentId}
 							menuParentOptions={menuParentOptions}
-							userGroups={userGroups}
 							onChange={handleChange}
 						/>
 					</Container>

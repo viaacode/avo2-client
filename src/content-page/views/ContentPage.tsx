@@ -38,7 +38,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match, user })
 	return (
 		<DataQueryComponent
 			query={GET_CONTENT_PAGE_BY_PATH}
-			variables={{ path, userGroups: get(user, 'profile.userGroups') }}
+			variables={{ path }} //  userGroupIds: get(user, 'profile.userGroupIds')
 			resultPath="app_content[0]"
 			renderData={renderContentPage}
 			notFoundMessage={t('Deze pagina is niet gevonden of u hebt geen rechten om hem te bekijken')}

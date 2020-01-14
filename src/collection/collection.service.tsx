@@ -240,7 +240,6 @@ export class CollectionService {
 		const propertiesToDelete = [
 			'collection_fragments',
 			'label_redactie',
-			'collection_permissions',
 			'__typename',
 			'type',
 			'profile',

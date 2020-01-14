@@ -18,3 +18,13 @@ export interface MenuEditFormState {
 	link_target: '_blank' | '_self';
 	group_access: number[];
 }
+
+export interface MenuEditFormErrorState {
+	description?: string;
+	placement?: string;
+	icon?: string;
+	label?: string;
+	external_link?: string;
+	link_target?: string;
+	group_access?: string;
+}
