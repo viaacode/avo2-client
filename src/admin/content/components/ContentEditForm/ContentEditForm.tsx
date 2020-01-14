@@ -83,6 +83,14 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									/>
 								</FormGroup>
 							</Column>
+							<Column size="12">
+								<FormGroup error={formErrors.path} label={t('Url')}>
+									<TextInput
+										onChange={(value: string) => onChange('path', value)}
+										value={formState.path}
+									/>
+								</FormGroup>
+							</Column>
 							<Column size="3-12">
 								<FormGroup
 									error={formErrors.contentType}

@@ -52,9 +52,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 	const renderFormattedDate = (date: string | null | undefined) =>
 		!!date ? formatDate(date) : '-';
 
-	const renderContentDetail = (data: Avo.Content.Content[]) => {
-		const contentItem: Avo.Content.Content = get(data, '[0]');
-
+	const renderContentDetail = (contentItem: Avo.Content.Content) => {
 		if (contentItem) {
 			setContent(contentItem);
 		}
@@ -166,7 +164,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 				<DataQueryComponent
 					query={GET_CONTENT_BY_ID}
 					renderData={renderContentDetail}
-					resultPath={CONTENT_RESULT_PATH.GET}
+					resultPath={`${CONTENT_RESULT_PATH.GET}[0]`}
 					variables={{ id }}
 				/>
 			</AdminLayoutBody>

@@ -15,7 +15,6 @@ const linkLoginState: {
 } = {
 	[APP_PATH.LOGGED_IN_HOME]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
 	[APP_PATH.SEARCH]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.DISCOVER]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
 	[APP_PATH.WORKSPACE]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
 	[APP_PATH.PROJECTS]: { showWhenLoggedIn: true, showWhenLoggedOut: true },
 	[APP_PATH.NEWS]: { showWhenLoggedIn: true, showWhenLoggedOut: true },

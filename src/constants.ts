@@ -3,7 +3,6 @@ import { Avo } from '@viaa/avo2-types';
 import { ASSIGNMENT_PATH } from './assignment/assignment.const';
 import { AUTH_PATH } from './authentication/authentication.const';
 import { COLLECTION_PATH } from './collection/collection.const';
-import { DISCOVER_PATH } from './discover/discover.const';
 import { HOME_PATH } from './home/home.const';
 import { ITEM_PATH } from './item/item.const';
 import { PUPILS_PATH } from './pupils/pupils.const';
@@ -17,7 +16,6 @@ export const APP_PATH = Object.freeze({
 	...ASSIGNMENT_PATH,
 	...AUTH_PATH,
 	...COLLECTION_PATH,
-	...DISCOVER_PATH,
 	...TEACHERS_PATH,
 	...PUPILS_PATH,
 	...HOME_PATH,

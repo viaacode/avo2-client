@@ -73,7 +73,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					icon: 'search',
 					key: 'pupils',
 				},
-				{ label: 'Ontdek', location: APP_PATH.DISCOVER, key: 'home' },
 				{
 					label: 'Mijn Werkruimte',
 					location: APP_PATH.WORKSPACE,
