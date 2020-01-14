@@ -82,6 +82,24 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		setFormErrors(errors);
 	};
 
+	const renderRemoveButton = (stateIndex: number) => {
+		const aboveMin =
+			isArray(components.state) && components.state.length > get(components, 'limits.min', 1);
+
+		return (
+			removeComponentFromState &&
+			aboveMin && (
+				<Column className="u-flex-bottom" size="static">
+					<Button
+						icon="delete"
+						type="danger"
+						onClick={() => removeComponentFromState(stateIndex)}
+					/>
+				</Column>
+			)
+		);
+	};
+
 	const renderFormGroups = (
 		formGroup: ContentBlockComponentsConfig | ContentBlockBlockConfig,
 		formGroupType: ContentBlockStateType
@@ -96,30 +114,28 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		};
 
 		// Render each state individually in a ContentBlockFormGroup
-		return isArray(formGroup.state) ? (
-			formGroup.state.map((formGroupState, stateIndex = 0) => (
-				<Grid>
-					<Column size="flex">
-						<ContentBlockFormGroup
-							key={stateIndex}
-							{...formGroupOptions}
-							formGroupState={formGroupState}
-							stateIndex={stateIndex}
-						/>
-					</Column>
-					{removeComponentFromState && (
-						<Column size="static">
-							<Button
-								icon="delete"
-								type="danger"
-								onClick={() => removeComponentFromState(stateIndex)}
-							/>
-						</Column>
-					)}
-				</Grid>
-			))
-		) : (
-			<ContentBlockFormGroup {...formGroupOptions} formGroupState={formGroup.state} />
+		return (
+			<Spacer margin="top-small">
+				{isArray(formGroup.state) ? (
+					formGroup.state.map((formGroupState, stateIndex = 0) => (
+						<Spacer margin="bottom-small">
+							<Grid>
+								<Column size="flex">
+									<ContentBlockFormGroup
+										key={stateIndex}
+										{...formGroupOptions}
+										formGroupState={formGroupState}
+										stateIndex={stateIndex}
+									/>
+								</Column>
+								{renderRemoveButton(stateIndex)}
+							</Grid>
+						</Spacer>
+					))
+				) : (
+					<ContentBlockFormGroup {...formGroupOptions} formGroupState={formGroup.state} />
+				)}
+			</Spacer>
 		);
 	};
 
@@ -139,7 +155,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
-		const notAtMax =
+		const underLimit =
 			isArray(components.state) && components.state.length < get(components, 'limits.max');
 
 		return (
@@ -149,7 +165,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				onToggle={setIsAccordionOpen}
 			>
 				{renderFormGroups(components, 'components')}
-				{notAtMax && renderAddButton(label)}
+				{underLimit && renderAddButton(label)}
 				{renderFormGroups(block, 'block')}
 			</Accordion>
 		);
