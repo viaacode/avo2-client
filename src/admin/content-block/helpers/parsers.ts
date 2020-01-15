@@ -22,20 +22,18 @@ export const parseContentBlockConfig = (
 export const parseContentBlockConfigs = (
 	contentId: number,
 	contentBlockConfigs: ContentBlockConfig[]
-): Partial<ContentBlockSchema>[] => {
-	const contentBlocks = contentBlockConfigs.map(contentBlockConfig =>
+): Partial<ContentBlockSchema>[] =>
+	contentBlockConfigs.map(contentBlockConfig =>
 		parseContentBlockConfig(contentBlockConfig, contentId)
 	);
-
-	return contentBlocks;
-};
 
 // Parse content-blocks to configs
 export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): ContentBlockConfig[] => {
 	const sortedContentBlocks = contentBlocks.sort(
 		(a, b) => (a.position as number) - (b.position as number)
 	);
-	const contentBlockConfigs = sortedContentBlocks.map(contentBlock => {
+
+	return sortedContentBlocks.map(contentBlock => {
 		const { content_block_type, id, variables } = contentBlock;
 		const cleanConfig = CONTENT_BLOCK_CONFIG_MAP[content_block_type as ContentBlockType](
 			contentBlock.position as number
@@ -57,6 +55,4 @@ export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): Content
 			},
 		} as ContentBlockConfig;
 	});
-
-	return contentBlockConfigs;
 };
