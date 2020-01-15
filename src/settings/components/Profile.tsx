@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { ChangeEvent, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -50,7 +49,6 @@ import toastService from '../../shared/services/toast-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 import store from '../../store';
 
-import { DELETE_PROFILE_OBJECTS, UPDATE_PROFILE_INFO } from '../settings.gql';
 import { updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {
@@ -99,9 +97,6 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const [func, setFunc] = useState<string | null>((getProfile(user) as any).function);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
-	const [triggerProfileUpdate] = useMutation(UPDATE_PROFILE_INFO);
-	const [triggerProfileObjectsDelete] = useMutation(DELETE_PROFILE_OBJECTS);
-
 	useEffect(() => {
 		fetchCities()
 			.then(setCities)
@@ -149,7 +144,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		try {
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
-			await updateProfileInfo(triggerProfileObjectsDelete, triggerProfileUpdate, getProfile(user), {
+			await updateProfileInfo(getProfile(user), {
 				alias,
 				avatar,
 				bio,
@@ -254,7 +249,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 						value: subject,
 					}))}
 					value={selectedSubjects}
-					onChange={setSelectedSubjects}
+					onChange={selectedValues => setSelectedSubjects(selectedValues || [])}
 				/>
 			</FormGroup>
 			<FormGroup
@@ -269,7 +264,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 						value: edLevel,
 					}))}
 					value={selectedEducationLevels}
-					onChange={setSelectedEducationLevels}
+					onChange={selectedValues => setSelectedEducationLevels(selectedValues || [])}
 				/>
 			</FormGroup>
 			<FormGroup
@@ -372,7 +367,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												<TextInput
 													id="alias"
 													placeholder={t('settings/components/profile___een-unieke-gebruikersnaam')}
-													value={alias}
+													value={alias || ''}
 													onChange={setAlias}
 												/>
 											</FormGroup>
@@ -382,7 +377,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 													placeholder={t(
 														'settings/components/profile___bv-leerkracht-basis-onderwijs'
 													)}
-													value={func || undefined}
+													value={func || ''}
 													onChange={setFunc}
 												/>
 											</FormGroup>
@@ -409,7 +404,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 													placeholder={t(
 														'settings/components/profile___een-korte-beschrijving-van-jezelf'
 													)}
-													value={bio || undefined}
+													value={bio || ''}
 													onChange={setBio}
 												/>
 											</FormGroup>
