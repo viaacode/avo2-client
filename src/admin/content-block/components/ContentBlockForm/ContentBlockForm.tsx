@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import i18n from '../../../../shared/translations/i18n';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Accordion,
@@ -53,6 +53,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 
 	// Hooks
 	const [formErrors, setFormErrors] = useState<{ [key: string]: string[] }>({});
+
+	const [t] = useTranslation();
 
 	// Methods
 	const handleChange = (
@@ -137,6 +139,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
 		const accordionTitle = `${contentBlock.name} (${index + 1}/${length})`;
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
+		const showStateAddButton =
+			isComponentsArray &&
+			(components.state as ContentBlockComponentState[]).length < get(components, 'limits.max');
 
 		return (
 			<Accordion isOpen={isAccordionOpen}>
@@ -145,36 +150,39 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					<ButtonToolbar>
 						<Button
 							icon="edit"
-							onClick={() => setIsAccordionOpen()}
+							onClick={setIsAccordionOpen}
 							size="small"
-							title="Bewerk content block"
+							title={t(
+								'admin/content-block/components/content-block-form/content-block-form___bewerk-content-block'
+							)}
 							type="tertiary"
 						/>
 						<Button
 							icon="delete"
 							onClick={() => onRemove(index)}
 							size="small"
-							title="Verwijder content block"
+							title={t(
+								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
+							)}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
 				</AccordionActions>
 				<AccordionBody>
 					{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
-					{Array.isArray(components.state) &&
-						components.state.length < get(components, 'limits.max') && (
-							<Spacer margin="bottom">
-								<Button
-									label={i18n.t(
-										'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
-										{ label }
-									)}
-									icon="add"
-									type="secondary"
-									onClick={addComponentToState}
-								/>
-							</Spacer>
-						)}
+					{showStateAddButton && (
+						<Spacer margin="bottom">
+							<Button
+								label={t(
+									'admin/content-block/components/content-block-form/content-block-form___voeg-label-toe',
+									{ label }
+								)}
+								icon="add"
+								type="secondary"
+								onClick={addComponentToState}
+							/>
+						</Spacer>
+					)}
 					{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
 				</AccordionBody>
 			</Accordion>
