@@ -15,9 +15,9 @@ import {
 	ContentBlockType,
 } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
+import { createKey } from '../../shared/helpers/create-key';
 
 interface ContentEditContentBlocksProps {
-	addComponentToState: (index: number, blockType: ContentBlockType) => void;
 	contentBlockConfigs: ContentBlockConfig[];
 	onAdd: (config: ContentBlockConfig) => void;
 	onRemove: (configIndex: number) => void;
@@ -28,15 +28,18 @@ interface ContentEditContentBlocksProps {
 		formGroupState: ContentBlockStateOptions,
 		stateIndex?: number
 	) => void;
+	addComponentToState: (index: number, blockType: ContentBlockType) => void;
+	removeComponentFromState: (index: number, stateIndex: number) => void;
 }
 
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
-	addComponentToState,
 	contentBlockConfigs,
 	onAdd,
 	onRemove,
 	onReorder,
 	onSave,
+	addComponentToState,
+	removeComponentFromState,
 }) => {
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
@@ -72,14 +75,11 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 			return (
 				<ContentBlockForm
-					key={contentBlockFormKey}
+					key={createKey('e', index)}
 					config={contentBlockConfig}
-					index={index}
+					blockIndex={index}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
 					length={contentBlockConfigs.length}
-					addComponentToState={() =>
-						addComponentToState(index, contentBlockConfig.block.state.blockType)
-					}
 					setIsAccordionOpen={() =>
 						setAccordionsOpenState({
 							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
@@ -87,6 +87,12 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					}
 					onChange={(formGroupType: ContentBlockStateType, input: any, stateIndex?: number) =>
 						onSave(index, formGroupType, input, stateIndex)
+					}
+					addComponentToState={() =>
+						addComponentToState(index, contentBlockConfig.block.state.blockType)
+					}
+					removeComponentFromState={(stateIndex: number) =>
+						removeComponentFromState(index, stateIndex)
 					}
 					onRemove={onRemove}
 					onReorder={handleReorderContentBlock}
@@ -98,11 +104,10 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	const renderBlockPreviews = () => {
 		return contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
 			const { components, block } = contentBlockConfig;
-			const contentBlockPreviewKey = getFormKey(block.state.blockType, blockIndex);
 
 			return (
 				<ContentBlockPreview
-					key={contentBlockPreviewKey}
+					key={createKey('p', blockIndex)}
 					componentState={components.state}
 					blockState={block.state}
 				/>

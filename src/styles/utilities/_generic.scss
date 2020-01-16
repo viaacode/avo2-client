@@ -68,7 +68,7 @@
 	height: 1px;
 	overflow: hidden;
 	padding: 0 !important;
-	background: #FFF;
+	background: #fff;
 	margin: 0 !important;
 }
 
@@ -108,6 +108,12 @@
 
 .u-flex-auto {
 	flex: 1 1 auto;
+}
+
+.u-flex-align-end {
+	display: flex;
+
+	align-items: flex-end;
 }
 
 // Sticky footer with flexbox

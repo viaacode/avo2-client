@@ -9,7 +9,9 @@ import {
 	AccordionTitle,
 	Button,
 	ButtonToolbar,
+	Column,
 	Form,
+	Grid,
 	Spacer,
 } from '@viaa/avo2-components';
 
@@ -27,27 +29,29 @@ import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockForm
 import './ContentBlockForm.scss';
 
 interface ContentBlockFormProps {
-	addComponentToState: () => void;
 	config: ContentBlockConfig;
-	index: number;
+	blockIndex: number;
 	isAccordionOpen: boolean;
 	length: number;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
 	setIsAccordionOpen: () => void;
+	addComponentToState: () => void;
+	removeComponentFromState: (stateIndex: number) => void;
 }
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
-	addComponentToState,
 	config,
-	index,
+	blockIndex,
 	isAccordionOpen,
 	length,
 	onChange,
 	onRemove,
 	onReorder,
 	setIsAccordionOpen,
+	addComponentToState,
+	removeComponentFromState,
 }) => {
 	const { components, block } = config;
 	const { isArray } = Array;
@@ -95,12 +99,31 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		setFormErrors(errors);
 	};
 
+	const renderRemoveButton = (stateIndex: number) => {
+		const aboveMin =
+			isArray(components.state) && components.state.length > get(components, 'limits.min', 1);
+
+		return (
+			removeComponentFromState &&
+			aboveMin && (
+				<Column className="u-flex-align-end" size="static">
+					<Button
+						icon="delete"
+						type="danger"
+						onClick={() => removeComponentFromState(stateIndex)}
+					/>
+				</Column>
+			)
+		);
+	};
+
 	const renderFormGroups = (
 		formGroup: ContentBlockComponentsConfig | ContentBlockBlockConfig,
 		formGroupType: ContentBlockStateType
 	) => {
 		const formGroupOptions = {
 			config,
+			blockIndex,
 			formGroup,
 			formGroupType,
 			handleChange,
@@ -108,16 +131,28 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		};
 
 		// Render each state individually in a ContentBlockFormGroup
-		return isArray(formGroup.state) ? (
-			formGroup.state.map((formGroupState, stateIndex = 0) => (
-				<ContentBlockFormGroup
-					{...formGroupOptions}
-					formGroupState={formGroupState}
-					stateIndex={stateIndex}
-				/>
-			))
-		) : (
-			<ContentBlockFormGroup {...formGroupOptions} formGroupState={formGroup.state} />
+		return (
+			<Spacer margin="top-small">
+				{isArray(formGroup.state) ? (
+					formGroup.state.map((formGroupState, stateIndex = 0) => (
+						<Spacer margin="bottom-small">
+							<Grid>
+								<Column size="flex">
+									<ContentBlockFormGroup
+										key={stateIndex}
+										{...formGroupOptions}
+										formGroupState={formGroupState}
+										stateIndex={stateIndex}
+									/>
+								</Column>
+								{renderRemoveButton(stateIndex)}
+							</Grid>
+						</Spacer>
+					))
+				) : (
+					<ContentBlockFormGroup {...formGroupOptions} formGroupState={formGroup.state} />
+				)}
+			</Spacer>
 		);
 	};
 
@@ -136,9 +171,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	);
 
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
-		const accordionTitle = `${contentBlock.name} (${index + 1}/${length})`;
+		const accordionTitle = `${contentBlock.name} (${blockIndex + 1}/${length})`;
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
-		const notAtMax =
+		const underLimit =
 			isArray(components.state) && components.state.length < get(components, 'limits.max');
 
 		return (
@@ -146,19 +181,19 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				<AccordionTitle>{accordionTitle}</AccordionTitle>
 				<AccordionActions>
 					<ButtonToolbar>
-						{index > 0 && (
+						{blockIndex > 0 && (
 							<Button
 								icon="chevron-up"
-								onClick={() => onReorder(index, -1)}
+								onClick={() => onReorder(blockIndex, -1)}
 								size="small"
 								title="Verplaats naar boven"
 								type="tertiary"
 							/>
 						)}
-						{index + 1 < length && (
+						{blockIndex + 1 < length && (
 							<Button
 								icon="chevron-down"
-								onClick={() => onReorder(index, 1)}
+								onClick={() => onReorder(blockIndex, 1)}
 								size="small"
 								title="Verplaats naar onder"
 								type="tertiary"
@@ -175,7 +210,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						/>
 						<Button
 							icon="delete"
-							onClick={() => onRemove(index)}
+							onClick={() => onRemove(blockIndex)}
 							size="small"
 							title={t(
 								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
@@ -186,7 +221,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				</AccordionActions>
 				<AccordionBody>
 					{renderFormGroups(components, 'components')}
-					{notAtMax && renderAddButton(label)}
+					{underLimit && renderAddButton(label)}
 					{renderFormGroups(block, 'block')}
 				</AccordionBody>
 			</Accordion>

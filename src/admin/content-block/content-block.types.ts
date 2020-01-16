@@ -18,7 +18,7 @@ export type ContentBlockStateOptions =
 
 export type AlignOptions = 'left' | 'right' | 'center';
 
-export type HeadingLevelOptions = 'h1' | 'h2' | 'h3' | 'h4';
+export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -59,7 +59,8 @@ export type ContentBlockComponentState =
 	| RichTextBlockComponentState
 	| RichTextTwoColumnsBlockComponentState
 	| ButtonsBlockComponentState
-	| IntroBlockComponentState;
+	| IntroBlockComponentState
+	| CTAsBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -100,15 +101,16 @@ export enum ContentBlockBackgroundColor {
 export enum ContentBlockType {
 	Buttons = 'BUTTONS',
 	Heading = 'HEADING',
+	CTAs = 'CTAS',
 	Intro = 'INTRO',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 }
 
 export interface HeadingBlockComponentState {
-	title: string;
-	level: HeadingLevelOptions;
-	align: AlignOptions;
+	children: string;
+	type: HeadingLevelOptions;
+	// TODO: align: AlignOptions;
 }
 
 export interface RichTextBlockComponentState {
@@ -128,4 +130,11 @@ export interface IntroBlockComponentState {
 	title: string;
 	text: string;
 	align: AlignOptions;
+}
+
+export interface CTAsBlockComponentState {
+	heading: string;
+	headingType: HeadingLevelOptions;
+	content: string | string[];
+	// TODO: button: Partial<ButtonsBlockComponentState>;
 }

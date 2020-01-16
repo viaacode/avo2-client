@@ -3,6 +3,7 @@ import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
 
+import { createKey } from '../../../shared/helpers/create-key';
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
 	ContentBlockComponentState,
@@ -19,6 +20,7 @@ interface ContentBlockFieldProps {
 	field: ContentBlockField; // Field options
 	type: ContentBlockStateType; // State type
 	state: ContentBlockComponentState | ContentBlockState; // State object (within state array).
+	formGroupIndex?: number; // Index of form group.
 	stateIndex?: number; // Index of state object (within state array).
 	handleChange: (
 		formGroupType: ContentBlockStateType,
@@ -31,6 +33,7 @@ interface ContentBlockFieldProps {
 export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 	block,
 	fieldKey,
+	formGroupIndex,
 	field,
 	type,
 	state,
@@ -39,7 +42,7 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 }) => {
 	const { index, config } = block;
 	const EditorComponent = EDITOR_TYPES_MAP[field.editorType];
-	const editorId = `${index}-${config.block.state.blockType}-${fieldKey}`;
+	const editorId = createKey('e', index, formGroupIndex, stateIndex);
 	const defaultProps = {
 		...field.editorProps,
 		editorId,

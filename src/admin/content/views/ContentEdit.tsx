@@ -234,6 +234,16 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
+	const removeComponentFromState = (index: number, stateIndex: number) => {
+		dispatch({
+			type: ContentEditActionType.REMOVE_COMPONENTS_STATE,
+			payload: {
+				index,
+				stateIndex,
+			},
+		});
+	};
+
 	const handleStateSave = (
 		index: number,
 		formGroupType: ContentBlockStateType,
@@ -260,9 +270,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			case 'inhoud':
 				return (
 					<ContentEditContentBlocks
-						addComponentToState={addComponentToState}
 						contentBlockConfigs={contentBlockConfigs}
 						onAdd={addContentBlockConfig}
+						addComponentToState={addComponentToState}
+						removeComponentFromState={removeComponentFromState}
 						onRemove={openDeleteModal}
 						onReorder={reorderContentBlockConfig}
 						onSave={handleStateSave}
