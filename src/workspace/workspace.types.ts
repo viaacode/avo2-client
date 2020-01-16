@@ -3,11 +3,13 @@ import { ReactElement } from 'react';
 import { MenuItemInfo } from '@viaa/avo2-components';
 
 type TabView = {
-	component: (refetch: () => void) => ReactElement;
-	filter?: {
-		label: string;
-		options: MenuItemInfo[];
-	};
+	component: () => ReactElement;
+	filter?: TabFilter;
+};
+
+export type TabFilter = {
+	label: string;
+	options: MenuItemInfo[];
 };
 
 export type TabViewMap = {

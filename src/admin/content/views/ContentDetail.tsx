@@ -40,7 +40,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 	const [t] = useTranslation();
 
 	const [contentBlocks] = useContentBlocksByContentId(id);
-	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
+	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, CONTENT_DETAIL_TABS[0].id);
 
 	// Computed
 	const avatarProps = getAvatarProps(get(content, 'profile', null));

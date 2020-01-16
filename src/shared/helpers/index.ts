@@ -2,6 +2,7 @@ export { copyToClipboard } from './clipboard';
 export { useDebounce } from './debounce';
 export { createDropdownMenuItem } from './dropdown';
 export { getEnv } from './env';
+export { default as CustomError } from './error';
 export {
 	getAbbreviatedFullName,
 	getAvatarProps,

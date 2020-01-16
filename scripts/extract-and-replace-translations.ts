@@ -100,8 +100,8 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 					if (translationParams.includes('(')) {
 						console.warn(
 							'WARNING: Translation params should not contain any function calls, ' +
-							'since the regex replacement cannot deal with brackets inside the t() function. ' +
-							'Store the translation params in a variable before calling the t() function.',
+								'since the regex replacement cannot deal with brackets inside the t() function. ' +
+								'Store the translation params in a variable before calling the t() function.',
 							{
 								match,
 								prefix,

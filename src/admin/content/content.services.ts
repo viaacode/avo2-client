@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
 import { ContentBlockConfig, ContentBlockSchema } from '../content-block/content-block.types';
@@ -112,9 +113,7 @@ export const updateContent = async (
 		}
 
 		if (!updatedContent) {
-			console.error('Content update returned empty response', response);
-
-			return null;
+			throw new CustomError('Content update returned empty response', null, response);
 		}
 
 		return contentItem;
