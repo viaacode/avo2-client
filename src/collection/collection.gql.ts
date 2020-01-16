@@ -23,11 +23,13 @@ export const GET_COLLECTION_BY_ID = gql`
 					title
 					description
 					thumbnail_path
+					issued
 					type {
 						id
 						label
 					}
 					organisation {
+						name
 						logo_url
 					}
 				}
@@ -91,14 +93,6 @@ export const GET_COLLECTION_BY_ID = gql`
 				id
 				created_at
 				alt_label
-			}
-			collection_permissions {
-				collection_id
-				created_at
-				id
-				permission_type
-				updated_at
-				user_id
 			}
 			lom_classification
 			lom_context
@@ -177,11 +171,13 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 					title
 					description
 					thumbnail_path
+					issued
 					type {
 						id
 						label
 					}
 					organisation {
+						name
 						logo_url
 					}
 				}
@@ -232,14 +228,6 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 			depublish_at
 			created_at
 			thumbnail_path
-			collection_permissions {
-				collection_id
-				created_at
-				id
-				permission_type
-				updated_at
-				user_id
-			}
 		}
 	}
 `;

@@ -9,18 +9,19 @@ import {
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
 import {
-	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockState,
 	ContentBlockStateOptions,
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
+import { createKey } from '../../shared/helpers/create-key';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	onAdd: (config: ContentBlockConfig) => void;
+	onRemove: (configIndex: number) => void;
+	onReorder: (configIndex: number, indexUpdate: number) => void;
 	onSave: (
 		index: number,
 		formGroupType: ContentBlockStateType,
@@ -28,13 +29,17 @@ interface ContentEditContentBlocksProps {
 		stateIndex?: number
 	) => void;
 	addComponentToState: (index: number, blockType: ContentBlockType) => void;
+	removeComponentFromState: (index: number, stateIndex: number) => void;
 }
 
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
 	contentBlockConfigs,
 	onAdd,
+	onRemove,
+	onReorder,
 	onSave,
 	addComponentToState,
+	removeComponentFromState,
 }) => {
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
@@ -46,7 +51,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		`${name}-${blockIndex}-${stateIndex}`;
 
 	const handleAddContentBlock = (configType: ContentBlockType) => {
-		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
+		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](contentBlockConfigs.length);
 		const contentBlockFormKey = getFormKey(newConfig.name, contentBlockConfigs.length);
 
 		// Update content block configs
@@ -56,16 +61,23 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		setAccordionsOpenState({ [contentBlockFormKey]: true });
 	};
 
+	const handleReorderContentBlock = (configIndex: number, indexUpdate: number) => {
+		// Close accordions
+		setAccordionsOpenState({});
+		// Trigger reorder
+		onReorder(configIndex, indexUpdate);
+	};
+
 	// Render
-	const renderContentBlockForms = () =>
-		contentBlockConfigs.map((contentBlockConfig, index) => {
+	const renderContentBlockForms = () => {
+		return contentBlockConfigs.map((contentBlockConfig, index) => {
 			const contentBlockFormKey = getFormKey(contentBlockConfig.name, index);
 
 			return (
 				<ContentBlockForm
-					key={contentBlockFormKey}
+					key={createKey('e', index)}
 					config={contentBlockConfig}
-					index={index + 1}
+					blockIndex={index}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
 					length={contentBlockConfigs.length}
 					setIsAccordionOpen={() =>
@@ -79,33 +91,29 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					addComponentToState={() =>
 						addComponentToState(index, contentBlockConfig.block.state.blockType)
 					}
+					removeComponentFromState={(stateIndex: number) =>
+						removeComponentFromState(index, stateIndex)
+					}
+					onRemove={onRemove}
+					onReorder={handleReorderContentBlock}
 				/>
 			);
 		});
+	};
 
-	const renderBlockPreview = (
-		formGroupState: ContentBlockComponentState,
-		blockState: ContentBlockState,
-		blockIndex: number,
-		stateIndex?: number
-	) => (
-		<ContentBlockPreview
-			key={getFormKey(blockState.blockType, blockIndex, stateIndex)}
-			componentState={formGroupState}
-			blockState={blockState}
-		/>
-	);
-
-	const renderBlockPreviews = () =>
-		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
+	const renderBlockPreviews = () => {
+		return contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
 			const { components, block } = contentBlockConfig;
 
-			return Array.isArray(components.state)
-				? components.state.map((formGroupState, stateIndex) =>
-						renderBlockPreview(formGroupState, block.state, blockIndex, stateIndex)
-				  )
-				: renderBlockPreview(components.state, block.state, blockIndex);
+			return (
+				<ContentBlockPreview
+					key={createKey('p', blockIndex)}
+					componentState={components.state}
+					blockState={block.state}
+				/>
+			);
 		});
+	};
 
 	return (
 		<Flex className="c-content-edit-view__content">

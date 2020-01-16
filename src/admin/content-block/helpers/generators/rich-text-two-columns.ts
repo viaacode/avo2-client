@@ -12,13 +12,18 @@ import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from '.
 export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE = (): RichTextTwoColumnsBlockComponentState => ({
 	firstColumnContent: '',
 	secondColumnContent: '',
-	...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.RichTextTwoColumns),
 });
 
-export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.RichTextTwoColumns);
+export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (
+	position: number
+): DefaultContentBlockState =>
+	FORM_STATE_DEFAULTS(
+		ContentBlockBackgroundColor.White,
+		ContentBlockType.RichTextTwoColumns,
+		position
+	);
 
-export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (): ContentBlockConfig => ({
+export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/rich-text-two-columns___tekst-2-kolommen'),
 	components: {
 		state: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE(),
@@ -42,7 +47,7 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 		},
 	},
 	block: {
-		state: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE(),
+		state: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE(position),
 		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

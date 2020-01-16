@@ -2,7 +2,7 @@ import { gql } from 'apollo-boost';
 
 export const GET_MENUS = gql`
 	{
-		app_content_nav_elements(distinct_on: placement, order_by: { placement: desc }) {
+		app_content_nav_elements(distinct_on: placement, order_by: { placement: asc }) {
 			id
 			description
 			placement

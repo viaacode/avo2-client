@@ -21,6 +21,7 @@ export type ContentParams = { id: string };
 export interface ContentEditFormState {
 	title: string;
 	description: string;
+	path: string;
 	contentType: string;
 	publishAt: string;
 	depublishAt: string;
@@ -35,10 +36,13 @@ export interface ContentEditState {
 }
 
 export enum ContentEditActionType {
-	ADD_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/ADD_CONTENT_BLCOK_CONFIG',
-	SET_CONTENT_BLOCK_CONFIGS = '@@admin-content-edit/SET_CONTENT_BLCOK_CONFIGS',
+	ADD_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/ADD_CONTENT_BLOCK_CONFIG',
+	REMOVE_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/REMOVE_CONTENT_BLOCK_CONFIG',
+	REORDER_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/REORDER_CONTENT_BLOCK_CONFIG',
+	SET_CONTENT_BLOCK_CONFIGS = '@@admin-content-edit/SET_CONTENT_BLOCK_CONFIGS',
 	ADD_COMPONENTS_STATE = '@@admin-content-edit/ADD_COMPONENTS_STATE',
 	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
+	REMOVE_COMPONENTS_STATE = '@@admin-content-edit/REMOVE_COMPONENTS_STATE',
 	SET_BLOCK_STATE = '@@admin-content-edit/SET_BLOCK_STATE',
 }
 

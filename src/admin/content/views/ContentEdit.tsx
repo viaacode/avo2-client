@@ -17,18 +17,19 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-info';
+import { DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
-import { parseContentBlocks } from '../../content-block/content-block.services';
 import {
 	ContentBlockConfig,
 	ContentBlockStateOptions,
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../content-block/content-block.types';
+import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
@@ -52,8 +53,6 @@ import './ContentEdit.scss';
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
-	const [t] = useTranslation();
-
 	const { id } = match.params;
 	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
@@ -63,7 +62,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	>(contentEditReducer(initialState), initialState);
 
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
+	const [configToDelete, setConfigToDelete] = useState<number>();
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+
+	const [t] = useTranslation();
 
 	const [contentForm, setContentForm, isLoading] = useContentItem(history, id);
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
@@ -101,6 +104,25 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
+	const removeContentBlockConfig = () => {
+		dispatch({
+			type: ContentEditActionType.REMOVE_CONTENT_BLOCK_CONFIG,
+			payload: configToDelete,
+		});
+	};
+
+	const reorderContentBlockConfig = (configIndex: number, indexUpdate: number) => {
+		dispatch({
+			type: ContentEditActionType.REORDER_CONTENT_BLOCK_CONFIG,
+			payload: { configIndex, indexUpdate },
+		});
+	};
+
+	const openDeleteModal = (configIndex: number) => {
+		setIsDeleteModalOpen(true);
+		setConfigToDelete(configIndex);
+	};
+
 	const handleChange = (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => {
 		setContentForm({
 			...contentForm,
@@ -133,6 +155,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const contentItem: Partial<Avo.Content.Content> = {
 			title: contentForm.title,
 			description: contentForm.description || null,
+			path: contentForm.path,
 			content_type: contentForm.contentType,
 			publish_at: contentForm.publishAt || null,
 			depublish_at: contentForm.depublishAt || null,
@@ -156,6 +179,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				};
 				const updatedContent = await ContentService.updateContent(
 					contentBody,
+					contentBlocks,
 					contentBlockConfigs,
 					triggerContentUpdate
 				);
@@ -210,8 +234,17 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
-	const handleCSave = (
-		// TODO: FIX NAME
+	const removeComponentFromState = (index: number, stateIndex: number) => {
+		dispatch({
+			type: ContentEditActionType.REMOVE_COMPONENTS_STATE,
+			payload: {
+				index,
+				stateIndex,
+			},
+		});
+	};
+
+	const handleStateSave = (
 		index: number,
 		formGroupType: ContentBlockStateType,
 		formGroupState: ContentBlockStateOptions,
@@ -239,8 +272,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
 						onAdd={addContentBlockConfig}
-						onSave={handleCSave}
 						addComponentToState={addComponentToState}
+						removeComponentFromState={removeComponentFromState}
+						onRemove={openDeleteModal}
+						onReorder={reorderContentBlockConfig}
+						onSave={handleStateSave}
 					/>
 				);
 			case 'metadata':
@@ -286,7 +322,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					</Container>
 				</Navbar>
 			</AdminLayoutHeader>
-			<AdminLayoutBody>{renderTabContent()}</AdminLayoutBody>
+			<AdminLayoutBody>
+				{renderTabContent()}
+				<DeleteObjectModal
+					deleteObjectCallback={removeContentBlockConfig}
+					isOpen={isDeleteModalOpen}
+					onClose={() => setIsDeleteModalOpen(false)}
+				/>
+			</AdminLayoutBody>
 		</AdminLayout>
 	);
 };

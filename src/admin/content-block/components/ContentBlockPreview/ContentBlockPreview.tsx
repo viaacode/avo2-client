@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 
-import { BlockIntro, BlockRichText } from '@viaa/avo2-components';
+import { BlockButtons, BlockHeading, BlockIntro, BlockRichText } from '@viaa/avo2-components';
 
 import {
 	ContentBlockBackgroundColor,
@@ -10,7 +10,6 @@ import {
 	ContentBlockType,
 	RichTextTwoColumnsBlockComponentState,
 } from '../../content-block.types';
-import { HeadingBlockPreview } from './previews';
 
 interface ContentBlockPreviewProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
@@ -18,8 +17,9 @@ interface ContentBlockPreviewProps {
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
-	[ContentBlockType.Buttons]: BlockRichText,
-	[ContentBlockType.Heading]: HeadingBlockPreview,
+	[ContentBlockType.CTAs]: BlockButtons, // TODO: Change to BlockCTAs
+	[ContentBlockType.Buttons]: BlockButtons,
+	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
@@ -31,6 +31,11 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
 
+	// TODO: Make more generic and reusable for other components
+	if (blockState.blockType === ContentBlockType.CTAs) {
+		return null;
+	}
+
 	// TODO: Not sure this is the best place to do this
 	if (blockState.blockType === ContentBlockType.RichTextTwoColumns) {
 		// Map componentState values correctly for preview component
@@ -41,6 +46,11 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		(componentState as any).content = [firstColumnContent, secondColumnContent];
 	}
 
+	// TODO: Make more generic and reusable for other components
+	if (blockState.blockType === ContentBlockType.Buttons) {
+		(componentState as any).buttons = componentState;
+	}
+
 	return (
 		// TODO: Extend spacer with paddings in components lib
 		// This way we can easily set paddings from a content-blocks componentState
@@ -49,7 +59,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			<PreviewComponent {...componentState as any} />
+			<PreviewComponent {...(componentState as any)} />
 		</div>
 	);
 };

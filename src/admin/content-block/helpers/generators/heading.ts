@@ -10,45 +10,45 @@ import {
 	HeadingBlockComponentState,
 } from '../../content-block.types';
 import {
-	ALIGN_FIELD,
+	// ALIGN_FIELD,
 	CONTENT_BLOCK_FIELD_DEFAULTS,
 	FORM_STATE_DEFAULTS,
 	TEXT_FIELD,
 } from './defaults';
 
 export const INITIAL_HEADING_BLOCK_COMPONENT_STATE = (): HeadingBlockComponentState => ({
-	title: '',
-	level: 'h1',
-	align: 'left',
+	children: '',
+	type: 'h2',
+	// TODO: align: 'left',
 });
 
-export const INITIAL_HEADING_BLOCK_STATE = (): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading);
+export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading, position);
 
-export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
+export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/heading___titel'),
 	components: {
 		state: INITIAL_HEADING_BLOCK_COMPONENT_STATE(),
 		fields: {
-			title: TEXT_FIELD(
+			children: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
 				{
 					label: i18n.t('admin/content-block/helpers/generators/heading___titel'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
-			level: {
+			type: {
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: HEADING_LEVEL_OPTIONS,
 				},
 			},
-			align: ALIGN_FIELD(),
+			// TODO: align: ALIGN_FIELD(),
 		},
 	},
 	block: {
-		state: INITIAL_HEADING_BLOCK_STATE(),
+		state: INITIAL_HEADING_BLOCK_STATE(position),
 		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

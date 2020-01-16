@@ -3,9 +3,10 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import { insertContentBlocks } from '../content-block/content-block.services';
-import { ContentBlockConfig } from '../content-block/content-block.types';
+import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
+import { ContentBlockConfig, ContentBlockSchema } from '../content-block/content-block.types';
 
 import toastService from '../../shared/services/toast-service';
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
@@ -30,7 +31,7 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 	}
 };
 
-export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
+export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
 		const contentTypes: ContentTypesResponse[] | null = get(
@@ -89,29 +90,30 @@ export const insertContent = async (
 
 export const updateContent = async (
 	contentItem: Partial<Avo.Content.Content>,
+	initialContentBlocks: ContentBlockSchema[],
 	contentBlockConfigs: ContentBlockConfig[],
-	triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>
+	triggerContentUpdate: MutationFunction<Partial<Avo.Content.Content>>
 ): Promise<Partial<Avo.Content.Content> | null> => {
 	try {
-		const response = await triggerContentInsert({
+		const response = await triggerContentUpdate({
 			variables: {
 				contentItem,
 				id: contentItem.id,
 			},
 			update: ApolloCacheManager.clearContentCache,
 		});
-		const insertedContent = get(response, 'data', null);
+		const updatedContent = get(response, 'data', null);
 
 		if (contentBlockConfigs && contentBlockConfigs.length) {
-			// TODO: Add logic for:
-			// - inserting content-blocks
-			// - updating content-blocks
-			// - deleting content-blocks
+			await updateContentBlocks(
+				contentItem.id as number,
+				initialContentBlocks,
+				contentBlockConfigs
+			);
 		}
 
-		if (!insertedContent) {
-			console.error('Content update returned empty response', response);
-			return null;
+		if (!updatedContent) {
+			throw new CustomError('Content update returned empty response', null, response);
 		}
 
 		return contentItem;

@@ -38,7 +38,8 @@ import toastService from '../../../shared/services/toast-service';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
 import { getFragmentProperty, isMediaFragment } from '../../helpers';
 
-import { CutFragmentModal, FragmentAdd } from '../';
+import CutFragmentModal from '../modals/CutFragmentModal';
+import FragmentAdd from './FragmentAdd';
 
 interface FragmentEditProps extends DefaultSecureRouteProps {
 	index: number;
@@ -102,7 +103,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					err,
 					{ user, permission: PermissionNames.ADD_HYPERLINK_COLLECTIONS }
 				);
-				toastService.danger(t('Het controleren van je account rechten is mislukt'));
+				toastService.danger(
+					t(
+						'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt'
+					)
+				);
 			});
 	}, [user, t]);
 

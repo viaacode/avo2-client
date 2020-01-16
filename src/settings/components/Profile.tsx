@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { ChangeEvent, FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -8,6 +7,7 @@ import { Dispatch } from 'redux';
 import {
 	Alert,
 	Avatar,
+	BlockHeading,
 	Box,
 	Button,
 	Column,
@@ -15,7 +15,6 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	Heading,
 	Icon,
 	Select,
 	Spacer,
@@ -26,7 +25,6 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import {
 	getProfile,
@@ -50,7 +48,6 @@ import toastService from '../../shared/services/toast-service';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 import store from '../../store';
 
-import { DELETE_PROFILE_OBJECTS, UPDATE_PROFILE_INFO } from '../settings.gql';
 import { updateProfileInfo } from '../settings.service';
 
 export interface ProfileProps extends DefaultSecureRouteProps {
@@ -99,9 +96,6 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const [func, setFunc] = useState<string | null>((getProfile(user) as any).function);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
-	const [triggerProfileUpdate] = useMutation(UPDATE_PROFILE_INFO);
-	const [triggerProfileObjectsDelete] = useMutation(DELETE_PROFILE_OBJECTS);
-
 	useEffect(() => {
 		fetchCities()
 			.then(setCities)
@@ -149,7 +143,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		try {
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
-			await updateProfileInfo(triggerProfileObjectsDelete, triggerProfileUpdate, getProfile(user), {
+			await updateProfileInfo(getProfile(user), {
 				alias,
 				avatar,
 				bio,
@@ -254,7 +248,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 						value: subject,
 					}))}
 					value={selectedSubjects}
-					onChange={setSelectedSubjects}
+					onChange={selectedValues => setSelectedSubjects(selectedValues || [])}
 				/>
 			</FormGroup>
 			<FormGroup
@@ -269,7 +263,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 						value: edLevel,
 					}))}
 					value={selectedEducationLevels}
-					onChange={setSelectedEducationLevels}
+					onChange={selectedValues => setSelectedEducationLevels(selectedValues || [])}
 				/>
 			</FormGroup>
 			<FormGroup
@@ -327,11 +321,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			return (
 				<Container mode="horizontal" size="medium">
 					<Container mode="vertical">
-						<Heading type="h1">
+						<BlockHeading type="h1">
 							<Trans i18nKey="settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel">
 								Je bent er bijna. Vervolledig nog je profiel.
 							</Trans>
-						</Heading>
+						</BlockHeading>
 						<Spacer margin="top-large">
 							<Alert type="info">
 								<Trans i18nKey="settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen">
@@ -372,7 +366,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												<TextInput
 													id="alias"
 													placeholder={t('settings/components/profile___een-unieke-gebruikersnaam')}
-													value={alias}
+													value={alias || ''}
 													onChange={setAlias}
 												/>
 											</FormGroup>
@@ -382,7 +376,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 													placeholder={t(
 														'settings/components/profile___bv-leerkracht-basis-onderwijs'
 													)}
-													value={func || undefined}
+													value={func || ''}
 													onChange={setFunc}
 												/>
 											</FormGroup>
@@ -409,7 +403,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 													placeholder={t(
 														'settings/components/profile___een-korte-beschrijving-van-jezelf'
 													)}
-													value={bio || undefined}
+													value={bio || ''}
 													onChange={setBio}
 												/>
 											</FormGroup>
@@ -426,7 +420,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 								<Column size="3-5">
 									<>
 										{/*<Box>*/}
-										{/*	<Heading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></Heading>*/}
+										{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
 										{/*	/!* TODO replace with components from component repo *!/*/}
 										{/*	<div className="c-progress-bar" />*/}
 										{/*</Box>*/}

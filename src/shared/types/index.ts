@@ -1,10 +1,11 @@
 import { IconName } from '@viaa/avo2-components';
 import { ReactElement } from 'react';
 
-export type NavigationItem = {
+export type NavigationItemInfo = {
 	label: string | ReactElement;
 	key: string;
 	location?: string;
+	target?: string;
 	component?: ReactElement;
 	icon?: IconName;
 };

@@ -8,7 +8,6 @@ export const ROUTE_PARTS = Object.freeze({
 	content: 'content',
 	create: 'maak',
 	detail: 'detail',
-	discover: 'ontdek',
 	edit: 'bewerk',
 	folder: 'map',
 	folders: 'mappen',

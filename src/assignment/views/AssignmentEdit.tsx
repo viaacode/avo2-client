@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 
 import {
 	Alert,
+	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -20,7 +21,6 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
-	Heading,
 	Icon,
 	MenuContent,
 	Navbar,
@@ -87,7 +87,7 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabe
 };
 
 const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType
+	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
 } = {
 	ITEM: 'avo_item_pid',
 	COLLECTIE: 'collections',
@@ -732,9 +732,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												Mijn opdrachten
 											</Trans>
 										</Link>
-										<Heading className="u-m-0" type="h2">
-											{pageType === 'create' ? 'Nieuwe opdracht' : currentAssignment.title}
-										</Heading>
+										<BlockHeading className="u-m-0" type="h2">
+											{pageType === 'create'
+												? t('assignment/views/assignment-edit___nieuwe-opdracht')
+												: currentAssignment.title}
+										</BlockHeading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">
