@@ -44,24 +44,48 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		const requiredError = 'is verplicht';
 		const errors = [];
 		if (!firstName) {
-			errors.push(`${t('Voornaam')} ${requiredError}`);
+			errors.push(
+				`${t(
+					'authentication/views/registration-flow/r-4-manual-registration___voornaam'
+				)} ${requiredError}`
+			);
 		}
 		if (!lastName) {
-			errors.push(`${t('Achternaam')} ${requiredError}`);
+			errors.push(
+				`${t(
+					'authentication/views/registration-flow/r-4-manual-registration___achternaam'
+				)} ${requiredError}`
+			);
 		}
 		if (!email) {
 			errors.push(`Email ${requiredError}`);
 		} else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(email)) {
-			errors.push(t('Email is geen geldig email adres'));
+			errors.push(
+				t(
+					'authentication/views/registration-flow/r-4-manual-registration___email-is-geen-geldig-email-adres'
+				)
+			);
 		}
 		if (!organization) {
-			errors.push(`${t('Organisatie')} ${requiredError}`);
+			errors.push(
+				`${t(
+					'authentication/views/registration-flow/r-4-manual-registration___organisatie'
+				)} ${requiredError}`
+			);
 		}
 		if (!profession) {
-			errors.push(`${t('Functie of beroep')} ${requiredError}`);
+			errors.push(
+				`${t(
+					'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
+				)} ${requiredError}`
+			);
 		}
 		if (!reason) {
-			errors.push(`${t('Reden van aanvraag')} ${requiredError}`);
+			errors.push(
+				`${t(
+					'authentication/views/registration-flow/r-4-manual-registration___reden-van-aanvraag'
+				)} ${requiredError}`
+			);
 		}
 		return errors;
 	};
@@ -87,8 +111,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						reason,
 					}),
 					html_body: `<dl>
-  <dt><Trans>Voornaam</Trans></dt><dd>${firstName}</dd>
-  <dt><Trans>Achternaam</Trans></dt><dd>${lastName}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___voornaam">Voornaam</Trans></dt><dd>${firstName}</dd>
+  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___achternaam">Achternaam</Trans></dt><dd>${lastName}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${email}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${organization}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep">Functie of beroep</Trans></dt><dd>${profession}</dd>
@@ -96,14 +120,24 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 </dl>`,
 					public: false,
 				},
-				subject: t('Manuele aanvraag account op AvO'),
+				subject: t(
+					'authentication/views/registration-flow/r-4-manual-registration___manuele-aanvraag-account-op-av-o'
+				),
 			};
 			await createZendeskTicket(ticket);
-			toastService.success(t('Je aanvraag is verstuurt'));
+			toastService.success(
+				t(
+					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
+				)
+			);
 			setHasBeenSent(true);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
-			toastService.danger(t('Het versturen van je aanvraag is mislukt'));
+			toastService.danger(
+				t(
+					'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -121,7 +155,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					</Trans>
 				</BlockHeading>
 				<p>
-					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___intro">
+					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___todo-link-naar-faq-bp-toegang-zonder-lerarenkaartnummer-br-het-archief-voor-onderwijs-biedt-op-een-eenvoudige-manier-toegang-tot-vlaams-audiovisueel-materiaal-van-meer-dan-30-partners-dit-materiaal-is-beschikbaar-voor-ul-li-leerkrachten-aan-een-vlaamse-erkende-onderwijsinstelling-li-li-studenten-aan-een-vlaamse-lerarenopleiding-li-li-leerlingen-van-een-vlaamse-erkende-secundaire-school-li-ul-strong-hoe-krijg-je-toegang-strong-ol-li-strong-je-bent-student-aan-een-vlaamse-lerarenopleiding-strong-br-dan-krijg-je-via-je-docent-of-hogeschool-toegang-tot-onze-beeldbank-hoe-ontdek-het-op-link-to-app-path-student-teacher-deze-pagina-link-li-li-strong-je-bent-leerling-in-een-vlaamse-erkende-secundaire-school-strong-br-vraag-een-account-via-een-van-je-leerkrachten-lees-meer-over-het-archief-voor-onderwijs-voor-leerlingen-op-link-to-app-path-for-pupils-deze-pagina-link-br-wil-je-als-leerkracht-je-leerlingen-toegang-geven-alle-info-vind-je-link-to-leerlingen-toegang-versie-leerkrachten-hier-link-li-li-strong-je-bent-lesgever-in-een-vlaamse-erkende-onderwijsinstelling-strong-br-ul-li-je-hebt-een-lerarenkaart-of-stamboeknummer-maak-dan-link-to-app-path-stamboek-hier-link-je-gratis-een-account-aan-li-li-je-hebt-geen-lerarenkaart-of-stamboeknummer-of-je-vraagt-je-af-of-je-als-lesgever-zonder-nummer-in-aanmerking-komt-voor-een-account-vraag-je-toegang-aan-via-onderstaand-formulier-we-verwerken-je-aanvraag-binnen-de-vijf-werkdagen-na-ontvangst-li-ul-li-ol">
 						TODO: link naar FAQ BP toegang zonder lerarenkaartnummer
 						<br />
 						Het Archief voor Onderwijs biedt op een eenvoudige manier toegang tot Vlaams
@@ -176,10 +210,18 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				</BlockHeading>
 				<Grid>
 					<Column size="2-6" className="m-manual-registration">
-						<FormGroup label={t('Voornaam')} labelFor="firstName">
+						<FormGroup
+							label={t('authentication/views/registration-flow/r-4-manual-registration___voornaam')}
+							labelFor="firstName"
+						>
 							<TextInput id="firstName" value={firstName} onChange={setFirstName} />
 						</FormGroup>
-						<FormGroup label={t('Achternaam')} labelFor="lastName">
+						<FormGroup
+							label={t(
+								'authentication/views/registration-flow/r-4-manual-registration___achternaam'
+							)}
+							labelFor="lastName"
+						>
 							<TextInput id="lastName" value={lastName} onChange={setLastName} />
 						</FormGroup>
 						<FormGroup
@@ -246,7 +288,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 
 	const renderConfirmation = () => {
 		return (
-			<Trans>
+			<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bedankt-voor-je-aanvraag-onze-helpdesk-bekijkt-deze-binnen-de-vijf-werkdagen-heb-je-ondertussen-nog-vragen-of-toevoegingen-met-betrekking-tot-je-aanvraag-formuleer-deze-dan-in-een-reply-op-automatische-bevestigingsmail-die-je-krijgt-van-onze-helpdesk">
 				Bedankt voor je aanvraag. Onze helpdesk bekijkt deze binnen de vijf werkdagen. Heb je
 				ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze dan in
 				een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
