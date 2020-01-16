@@ -1,8 +1,17 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import i18n from '../../../../shared/translations/i18n';
+import { useTranslation } from 'react-i18next';
 
-import { Accordion, Button, Form, Spacer } from '@viaa/avo2-components';
+import {
+	Accordion,
+	AccordionActions,
+	AccordionBody,
+	AccordionTitle,
+	Button,
+	ButtonToolbar,
+	Form,
+	Spacer,
+} from '@viaa/avo2-components';
 
 import {
 	ContentBlockBlockConfig,
@@ -18,29 +27,35 @@ import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockForm
 import './ContentBlockForm.scss';
 
 interface ContentBlockFormProps {
+	addComponentToState: () => void;
 	config: ContentBlockConfig;
 	index: number;
 	isAccordionOpen: boolean;
 	length: number;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
+	onRemove: (configIndex: number) => void;
+	onReorder: (configIndex: number, indexUpdate: number) => void;
 	setIsAccordionOpen: () => void;
-	addComponentToState: () => void;
 }
 
 const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
+	addComponentToState,
 	config,
 	index,
 	isAccordionOpen,
 	length,
 	onChange,
+	onRemove,
+	onReorder,
 	setIsAccordionOpen,
-	addComponentToState,
 }) => {
 	const { components, block } = config;
 	const { isArray } = Array;
 
 	// Hooks
 	const [formErrors, setFormErrors] = useState<ContentBlockFormError>({});
+
+	const [t] = useTranslation();
 
 	// Methods
 	const handleChange = (
@@ -109,7 +124,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	const renderAddButton = (label: string) => (
 		<Spacer margin="bottom">
 			<Button
-				label={i18n.t(
+				label={t(
 					'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
 					{ label }
 				)}
@@ -121,19 +136,59 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	);
 
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
+		const accordionTitle = `${contentBlock.name} (${index + 1}/${length})`;
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
 		const notAtMax =
 			isArray(components.state) && components.state.length < get(components, 'limits.max');
 
 		return (
-			<Accordion
-				title={`${contentBlock.name} (${index}/${length})`}
-				isOpen={isAccordionOpen}
-				onToggle={setIsAccordionOpen}
-			>
-				{renderFormGroups(components, 'components')}
-				{notAtMax && renderAddButton(label)}
-				{renderFormGroups(block, 'block')}
+			<Accordion isOpen={isAccordionOpen}>
+				<AccordionTitle>{accordionTitle}</AccordionTitle>
+				<AccordionActions>
+					<ButtonToolbar>
+						{index > 0 && (
+							<Button
+								icon="chevron-up"
+								onClick={() => onReorder(index, -1)}
+								size="small"
+								title="Verplaats naar boven"
+								type="tertiary"
+							/>
+						)}
+						{index + 1 < length && (
+							<Button
+								icon="chevron-down"
+								onClick={() => onReorder(index, 1)}
+								size="small"
+								title="Verplaats naar onder"
+								type="tertiary"
+							/>
+						)}
+						<Button
+							icon="edit"
+							onClick={setIsAccordionOpen}
+							size="small"
+							title={t(
+								'admin/content-block/components/content-block-form/content-block-form___bewerk-content-block'
+							)}
+							type="tertiary"
+						/>
+						<Button
+							icon="delete"
+							onClick={() => onRemove(index)}
+							size="small"
+							title={t(
+								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
+							)}
+							type="tertiary"
+						/>
+					</ButtonToolbar>
+				</AccordionActions>
+				<AccordionBody>
+					{renderFormGroups(components, 'components')}
+					{notAtMax && renderAddButton(label)}
+					{renderFormGroups(block, 'block')}
+				</AccordionBody>
 			</Accordion>
 		);
 	};

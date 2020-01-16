@@ -1,4 +1,4 @@
-export default class CustomError {
+export class CustomError {
 	public message: string;
 	public innerException: any | null;
 	public additionalInfo: any | null;
