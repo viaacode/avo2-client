@@ -155,6 +155,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const contentItem: Partial<Avo.Content.Content> = {
 			title: contentForm.title,
 			description: contentForm.description || null,
+			path: contentForm.path,
 			content_type: contentForm.contentType,
 			publish_at: contentForm.publishAt || null,
 			depublish_at: contentForm.depublishAt || null,

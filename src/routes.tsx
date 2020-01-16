@@ -4,7 +4,7 @@ import { Switch } from 'react-router';
 import { renderAssignmentRoutes } from './assignment/assignment.routes';
 import { renderAuthenticationRoutes } from './authentication/authentication.routes';
 import { renderCollectionRoutes } from './collection/collection.routes';
-import { renderDiscoverRoutes } from './discover/discover.routes';
+import { renderContentPageRoutes } from './content-page/content-page.routes';
 import { renderErrorRoutes } from './error/error.routes';
 import { renderHomeRoutes } from './home/home.routes';
 import { renderItemRoutes } from './item/item.routes';
@@ -19,7 +19,6 @@ export const renderRoutes = () => (
 		{renderHomeRoutes()}
 		{renderSearchRoutes()}
 		{renderItemRoutes()}
-		{renderDiscoverRoutes()}
 		{renderTeacherRoutes()}
 		{renderPupilRoutes()}
 		{renderCollectionRoutes()}
@@ -27,6 +26,7 @@ export const renderRoutes = () => (
 		{renderWorkspaceRoutes()}
 		{renderAuthenticationRoutes()}
 		{renderSettingsRoutes()}
+		{renderContentPageRoutes()}
 		{renderErrorRoutes()}
 	</Switch>
 );

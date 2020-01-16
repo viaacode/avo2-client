@@ -1,6 +1,5 @@
-/* ==========================================================================
-   Component: Footer
-   ========================================================================== */
+@import '../../../styles/settings/colors';
+@import '../../../styles/settings/variables';
 
 .c-global-footer {
 	border-top: 1px solid $color-gray-100;
@@ -12,9 +11,13 @@
 	a {
 		color: $color-gray-500;
 		text-decoration: none;
+		padding: 0;
+		box-sizing: border-box;
+		margin-bottom: 1px;
 
 		&:hover {
 			border-bottom: 1px solid $color-gray-200;
+			margin-bottom: 0;
 		}
 	}
 
@@ -23,6 +26,16 @@
 			padding: 0.4rem;
 			display: inline-block;
 			margin-right: 0.8rem;
+		}
+	}
+
+	.c-nav__item--i {
+		color: $color-gray-500;
+
+		&:hover,
+		&:focus {
+			background: transparent;
+			color: $color-gray-500;
 		}
 	}
 }

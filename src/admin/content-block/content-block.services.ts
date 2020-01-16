@@ -4,6 +4,7 @@ import { ApolloCacheManager, dataService } from '../../shared/services/data-serv
 import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 
+import { FetchResult } from 'apollo-link';
 import { CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
 import {
 	DELETE_CONTENT_BLOCK,
@@ -22,13 +23,7 @@ export const fetchContentBlocksByContentId = async (
 			query: GET_CONTENT_BLOCKS_BY_CONTENT_ID,
 			variables: { contentId },
 		});
-		const contentBlocks: ContentBlockSchema[] | null = get(
-			response,
-			`data.${CONTENT_BLOCKS_RESULT_PATH.GET}`,
-			null
-		);
-
-		return contentBlocks;
+		return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.GET}`, null);
 	} catch (err) {
 		console.error(err);
 		toastService.danger(
@@ -124,13 +119,11 @@ export const updateContentBlocks = async (
 
 export const deleteContentBlock = async (id: number) => {
 	try {
-		const response = dataService.mutate({
+		return await dataService.mutate({
 			mutation: DELETE_CONTENT_BLOCK,
 			variables: { id },
 			update: ApolloCacheManager.clearContentBlocksCache,
 		});
-
-		return response;
 	} catch (err) {
 		console.error(err);
 		toastService.danger(
@@ -144,16 +137,16 @@ export const deleteContentBlock = async (id: number) => {
 	}
 };
 
-export const updateContentBlock = async (contentBlockConfig: ContentBlockConfig) => {
+export const updateContentBlock = async (
+	contentBlockConfig: ContentBlockConfig
+): Promise<FetchResult<any> | null> => {
 	try {
 		const contentBlock = parseContentBlockConfig(contentBlockConfig);
-		const response = dataService.mutate({
+		return await dataService.mutate({
 			mutation: UPDATE_CONTENT_BLOCK,
 			variables: { contentBlock, id: contentBlockConfig.id },
 			update: ApolloCacheManager.clearContentBlocksCache,
 		});
-
-		return response;
 	} catch (err) {
 		console.error(err);
 		toastService.danger(

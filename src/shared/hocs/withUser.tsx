@@ -15,7 +15,4 @@ const mapStateToProps = (state: AppState) => ({
 	user: selectUser(state),
 });
 
-export default compose(
-	connect(mapStateToProps),
-	withUser
-);
+export default compose(connect(mapStateToProps), withUser);

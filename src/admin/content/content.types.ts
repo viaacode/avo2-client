@@ -21,6 +21,7 @@ export type ContentParams = { id: string };
 export interface ContentEditFormState {
 	title: string;
 	description: string;
+	path: string;
 	contentType: string;
 	publishAt: string;
 	depublishAt: string;

@@ -6,11 +6,13 @@ import Footer from './Footer';
 
 describe('<Footer />', () => {
 	it('Should be able to render', () => {
-		shallow(<Footer />);
+		shallow(<Footer history={{} as any} match={{} as any} location={{} as any} />);
 	});
 
 	it('Should correctly render the VIAA-link', () => {
-		const footerComponent = shallow(<Footer />);
+		const footerComponent = shallow(
+			<Footer history={{} as any} match={{} as any} location={{} as any} />
+		);
 
 		const listItem = footerComponent
 			.find('ul')
@@ -26,7 +28,7 @@ describe('<Footer />', () => {
 	it('Should correctly render the terms-and-conditions-link', () => {
 		const footerComponent = mount(
 			<Router>
-				<Footer />
+				<Footer history={{} as any} match={{} as any} location={{} as any} />
 			</Router>
 		);
 
@@ -45,7 +47,7 @@ describe('<Footer />', () => {
 	it('Should correctly render the privacy-policy-link', () => {
 		const footerComponent = mount(
 			<Router>
-				<Footer />
+				<Footer history={{} as any} match={{} as any} location={{} as any} />
 			</Router>
 		);
 
@@ -63,7 +65,7 @@ describe('<Footer />', () => {
 	it('Should correctly render the cookies-link', () => {
 		const footerComponent = mount(
 			<Router>
-				<Footer />
+				<Footer history={{} as any} match={{} as any} location={{} as any} />
 			</Router>
 		);
 
@@ -81,7 +83,7 @@ describe('<Footer />', () => {
 	it('Should correctly render the help-link', () => {
 		const footerComponent = mount(
 			<Router>
-				<Footer />
+				<Footer history={{} as any} match={{} as any} location={{} as any} />
 			</Router>
 		);
 
