@@ -10,7 +10,6 @@ import {
 	Button,
 	ButtonToolbar,
 	Form,
-	FormGroup,
 	Spacer,
 } from '@viaa/avo2-components';
 
@@ -19,11 +18,11 @@ import {
 	ContentBlockComponentsConfig,
 	ContentBlockComponentState,
 	ContentBlockConfig,
+	ContentBlockFormError,
 	ContentBlockState,
 	ContentBlockStateType,
-	ContentBlockType,
 } from '../../content-block.types';
-import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
+import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockFormGroup';
 
 import './ContentBlockForm.scss';
 
@@ -51,10 +50,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	setIsAccordionOpen,
 }) => {
 	const { components, block } = config;
-	const isComponentsArray = Array.isArray(components.state);
+	const { isArray } = Array;
 
 	// Hooks
-	const [formErrors, setFormErrors] = useState<{ [key: string]: string[] }>({});
+	const [formErrors, setFormErrors] = useState<ContentBlockFormError>({});
 
 	const [t] = useTranslation();
 
@@ -69,7 +68,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const updateObject = {
 			[key]: parsedValue,
 		};
-		const stateUpdate = isComponentsArray ? [updateObject] : updateObject;
+		const stateUpdate = isArray(components.state) ? [updateObject] : updateObject;
 
 		handleValidation(key, formGroupType, parsedValue);
 		onChange(formGroupType, stateUpdate, stateIndex);
@@ -96,54 +95,51 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		setFormErrors(errors);
 	};
 
-	const renderFormGroup = (
-		blockType: ContentBlockType,
-		formGroup: ContentBlockComponentsConfig | ContentBlockBlockConfig,
-		formGroupState: ContentBlockComponentState | ContentBlockState,
-		formGroupType: ContentBlockStateType,
-		stateIndex?: number
-	) => {
-		return Object.keys(formGroup.fields).map((key: string, index: number) => (
-			<FormGroup
-				key={`${index}-${blockType}-${key}`}
-				label={
-					stateIndex || stateIndex === 0
-						? `${config.components.name} ${stateIndex + 1}: ${formGroup.fields[key].label}`
-						: formGroup.fields[key].label
-				}
-				error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
-			>
-				<ContentBlockFieldEditor
-					block={{ index, config }}
-					fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
-					field={formGroup.fields[key]}
-					state={formGroupState}
-					type={formGroupType}
-					stateIndex={stateIndex}
-					handleChange={handleChange}
-				/>
-			</FormGroup>
-		));
-	};
-
 	const renderFormGroups = (
-		blockType: ContentBlockType,
 		formGroup: ContentBlockComponentsConfig | ContentBlockBlockConfig,
 		formGroupType: ContentBlockStateType
 	) => {
-		return Array.isArray(formGroup.state)
-			? formGroup.state.map((formGroupState, stateIndex = 0) =>
-					renderFormGroup(blockType, formGroup, formGroupState, formGroupType, stateIndex)
-			  )
-			: renderFormGroup(blockType, formGroup, formGroup.state, formGroupType);
+		const formGroupOptions = {
+			config,
+			formGroup,
+			formGroupType,
+			handleChange,
+			formErrors,
+		};
+
+		// Render each state individually in a ContentBlockFormGroup
+		return isArray(formGroup.state) ? (
+			formGroup.state.map((formGroupState, stateIndex = 0) => (
+				<ContentBlockFormGroup
+					{...formGroupOptions}
+					formGroupState={formGroupState}
+					stateIndex={stateIndex}
+				/>
+			))
+		) : (
+			<ContentBlockFormGroup {...formGroupOptions} formGroupState={formGroup.state} />
+		);
 	};
+
+	const renderAddButton = (label: string) => (
+		<Spacer margin="bottom">
+			<Button
+				label={t(
+					'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
+					{ label }
+				)}
+				icon="add"
+				type="secondary"
+				onClick={addComponentToState}
+			/>
+		</Spacer>
+	);
 
 	const renderBlockForm = (contentBlock: ContentBlockConfig) => {
 		const accordionTitle = `${contentBlock.name} (${index + 1}/${length})`;
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
-		const showStateAddButton =
-			isComponentsArray &&
-			(components.state as ContentBlockComponentState[]).length < get(components, 'limits.max');
+		const notAtMax =
+			isArray(components.state) && components.state.length < get(components, 'limits.max');
 
 		return (
 			<Accordion isOpen={isAccordionOpen}>
@@ -189,21 +185,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					</ButtonToolbar>
 				</AccordionActions>
 				<AccordionBody>
-					{renderFormGroups(contentBlock.block.state.blockType, components, 'components')}
-					{showStateAddButton && (
-						<Spacer margin="bottom">
-							<Button
-								label={t(
-									'admin/content-block/components/content-block-form/content-block-form___voeg-label-toe',
-									{ label }
-								)}
-								icon="add"
-								type="secondary"
-								onClick={addComponentToState}
-							/>
-						</Spacer>
-					)}
-					{renderFormGroups(contentBlock.block.state.blockType, block, 'block')}
+					{renderFormGroups(components, 'components')}
+					{notAtMax && renderAddButton(label)}
+					{renderFormGroups(block, 'block')}
 				</AccordionBody>
 			</Accordion>
 		);

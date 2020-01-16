@@ -5,12 +5,12 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import {
+	BlockHeading,
 	Button,
 	Column,
 	Container,
 	FormGroup,
 	Grid,
-	Heading,
 	Icon,
 	TextArea,
 	TextInput,
@@ -108,11 +108,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							Terug
 						</Trans>
 					</Button>
-					<Heading type="h2">
+					<BlockHeading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
 							Vraag een account aan op het Archief voor Onderwijs
 						</Trans>
-					</Heading>
+					</BlockHeading>
 					<p>
 						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___intro">
 							Het Archief voor Onderwijs is geweldig. Speciaal gemaakt voor lesgevers actief in het
@@ -126,11 +126,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							</Trans>
 						</Link>
 					</p>
-					<Heading type="h3">
+					<BlockHeading type="h3">
 						<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">
 							Aanvraagformulier
 						</Trans>
-					</Heading>
+					</BlockHeading>
 					<Grid>
 						<Column size="2-6" className="m-manual-registration">
 							<FormGroup

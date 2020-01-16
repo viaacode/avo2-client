@@ -5,13 +5,13 @@ import { RouteComponentProps } from 'react-router';
 
 import {
 	Alert,
+	BlockHeading,
 	Button,
 	Column,
 	Container,
 	Form,
 	FormGroup,
 	Grid,
-	Heading,
 	Spacer,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -44,9 +44,9 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 							<Column size="3-7">
 								<Form type="standard">
 									<Form type="standard">
-										<Heading type="h3">
+										<BlockHeading type="h3">
 											<Trans i18nKey="settings/components/account___account">Account</Trans>
-										</Heading>
+										</BlockHeading>
 										<FormGroup label={t('settings/components/account___email')}>
 											<span>{get(user, 'mail')}</span>
 										</FormGroup>

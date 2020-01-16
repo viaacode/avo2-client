@@ -6,13 +6,13 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
+	BlockHeading,
 	Box,
 	Button,
 	Container,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
-	Heading,
 	Icon,
 	IconName,
 	MenuContent,
@@ -419,9 +419,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}
-										<Heading className="u-m-0" type="h2">
+										<BlockHeading className="u-m-0" type="h2">
 											{title}
-										</Heading>
+										</BlockHeading>
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>
