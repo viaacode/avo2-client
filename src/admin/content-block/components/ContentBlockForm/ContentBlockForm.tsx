@@ -89,7 +89,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return (
 			removeComponentFromState &&
 			aboveMin && (
-				<Column className="u-flex-bottom" size="static">
+				<Column className="u-flex-align-end" size="static">
 					<Button
 						icon="delete"
 						type="danger"
