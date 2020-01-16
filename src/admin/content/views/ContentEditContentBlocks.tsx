@@ -46,7 +46,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		`${name}-${blockIndex}-${stateIndex}`;
 
 	const handleAddContentBlock = (configType: ContentBlockType) => {
-		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
+		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](contentBlockConfigs.length);
 		const contentBlockFormKey = getFormKey(newConfig.name, contentBlockConfigs.length);
 
 		// Update content block configs

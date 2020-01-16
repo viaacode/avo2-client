@@ -22,7 +22,7 @@ import { DataQueryComponent } from '../../../shared/components';
 import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ContentBlockPreview } from '../../content-block/components';
-import { parseContentBlocks } from '../../content-block/content-block.services';
+import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
@@ -33,15 +33,14 @@ import { ContentParams } from '../content.types';
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentParams> {}
 
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }) => {
-	const [t] = useTranslation();
-
 	const { id } = match.params;
 
 	// Hooks
 	const [content, setContent] = useState<Avo.Content.Content | null>(null);
-	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
+	const [t] = useTranslation();
 
 	const [contentBlocks] = useContentBlocksByContentId(id);
+	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, CONTENT_DETAIL_TABS[0].id);
 
 	// Computed
 	const avatarProps = getAvatarProps(get(content, 'profile', null));

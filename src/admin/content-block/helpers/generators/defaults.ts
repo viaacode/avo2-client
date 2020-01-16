@@ -11,10 +11,12 @@ import {
 
 export const FORM_STATE_DEFAULTS = (
 	backgroundColor: ContentBlockBackgroundColor,
-	blockType: ContentBlockType
+	blockType: ContentBlockType,
+	position: number
 ) => ({
 	backgroundColor,
 	blockType,
+	position,
 });
 
 export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
