@@ -19,6 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import ModalWrapper from '../../../shared/components/ModalWrapper/ModalWrapper';
 import { getThumbnailsForCollection } from '../../../shared/services/stills-service';
 import toastService from '../../../shared/services/toast-service';
 import { STILL_DIMENSIONS } from '../../collection.const';
@@ -66,65 +67,67 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	};
 
 	return (
-		<Modal
-			isOpen={isOpen}
-			title={t(
-				'collection/components/modals/collection-stills-modal___stel-een-cover-afbeelding-in'
-			)}
-			size="large"
-			onClose={onClose}
-			scrollable
-		>
-			<ModalBody>
-				<Spacer>
-					<Form>
-						{!videoStills ? (
-							<Flex center orientation="horizontal">
-								<Spinner size="large" />
-							</Flex>
-						) : !videoStills.length ? (
-							<Blankslate
-								body=""
-								icon="search"
-								title={t(
-									'collection/components/modals/collection-stills-modal___er-zijn-geen-thumbnails-beschikbaar-voor-de-fragmenten-in-de-collectie'
-								)}
-							/>
-						) : (
-							<ImageGrid
-								images={videoStills}
-								allowSelect
-								value={selectedCoverImages}
-								onChange={setSelectedCoverImages}
-								{...STILL_DIMENSIONS}
-							/>
-						)}
-					</Form>
-				</Spacer>
-			</ModalBody>
-			<ModalFooterRight>
-				<Toolbar spaced>
-					<ToolbarRight>
-						<ToolbarItem>
-							<ButtonToolbar>
-								<Button
-									label={t('collection/components/modals/collection-stills-modal___annuleren')}
-									type="secondary"
-									block
-									onClick={onClose}
+		<ModalWrapper isOpen={isOpen}>
+			<Modal
+				isOpen={isOpen}
+				title={t(
+					'collection/components/modals/collection-stills-modal___stel-een-cover-afbeelding-in'
+				)}
+				size="large"
+				onClose={onClose}
+				scrollable
+			>
+				<ModalBody>
+					<Spacer>
+						<Form>
+							{!videoStills ? (
+								<Flex center orientation="horizontal">
+									<Spinner size="large" />
+								</Flex>
+							) : !videoStills.length ? (
+								<Blankslate
+									body=""
+									icon="search"
+									title={t(
+										'collection/components/modals/collection-stills-modal___er-zijn-geen-thumbnails-beschikbaar-voor-de-fragmenten-in-de-collectie'
+									)}
 								/>
-								<Button
-									label={t('collection/components/modals/collection-stills-modal___opslaan')}
-									type="primary"
-									block
-									onClick={saveCoverImage}
+							) : (
+								<ImageGrid
+									images={videoStills}
+									allowSelect
+									value={selectedCoverImages}
+									onChange={setSelectedCoverImages}
+									{...STILL_DIMENSIONS}
 								/>
-							</ButtonToolbar>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
-			</ModalFooterRight>
-		</Modal>
+							)}
+						</Form>
+					</Spacer>
+				</ModalBody>
+				<ModalFooterRight>
+					<Toolbar spaced>
+						<ToolbarRight>
+							<ToolbarItem>
+								<ButtonToolbar>
+									<Button
+										label={t('collection/components/modals/collection-stills-modal___annuleren')}
+										type="secondary"
+										block
+										onClick={onClose}
+									/>
+									<Button
+										label={t('collection/components/modals/collection-stills-modal___opslaan')}
+										type="primary"
+										block
+										onClick={saveCoverImage}
+									/>
+								</ButtonToolbar>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
+				</ModalFooterRight>
+			</Modal>
+		</ModalWrapper>
 	);
 };
 

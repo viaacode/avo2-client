@@ -14,6 +14,7 @@ import {
 } from '@viaa/avo2-components';
 
 import toastService from '../../services/toast-service';
+import ModalWrapper from '../ModalWrapper/ModalWrapper';
 
 interface InputModalProps {
 	title?: string;
@@ -60,30 +61,32 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 
 	// Render
 	return (
-		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
-			<ModalBody>
-				<Spacer margin="bottom-large">
-					<FormGroup label={inputLabel} labelFor="collectionNameId">
-						<TextInput
-							type="text"
-							value={input}
-							onChange={setInput}
-							placeholder={inputPlaceholder}
-						/>
-					</FormGroup>
-				</Spacer>
-				<Toolbar>
-					<ToolbarRight>
-						<ToolbarItem>
-							<ButtonToolbar>
-								<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
-								<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
-							</ButtonToolbar>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
-			</ModalBody>
-		</Modal>
+		<ModalWrapper isOpen={isOpen}>
+			<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
+				<ModalBody>
+					<Spacer margin="bottom-large">
+						<FormGroup label={inputLabel} labelFor="collectionNameId">
+							<TextInput
+								type="text"
+								value={input}
+								onChange={setInput}
+								placeholder={inputPlaceholder}
+							/>
+						</FormGroup>
+					</Spacer>
+					<Toolbar>
+						<ToolbarRight>
+							<ToolbarItem>
+								<ButtonToolbar>
+									<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
+									<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
+								</ButtonToolbar>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
+				</ModalBody>
+			</Modal>
+		</ModalWrapper>
 	);
 };
 

@@ -100,9 +100,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(
-	connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(Login)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));

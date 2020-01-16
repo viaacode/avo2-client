@@ -37,6 +37,7 @@ import {
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../../../collection/collection.gql';
 import { CollectionService } from '../../../collection/collection.service';
+import ModalWrapper from '../../../shared/components/ModalWrapper/ModalWrapper';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
@@ -288,155 +289,162 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
 
 		return (
-			<Modal
-				title={t(
-					'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
-				)}
-				size="auto"
-				isOpen={isOpen}
-				onClose={onClose}
-				scrollable
-			>
-				<ModalBody>
-					<div className="c-modal__body-add-fragment">
-						<Spacer>
-							<Form>
-								<Grid>
-									<Column size="2-7">
-										<FlowPlayer
-											src={playerTicket ? playerTicket.toString() : null}
-											poster={itemMetaData.thumbnail_path}
-											title={itemMetaData.title}
-											onInit={initFlowPlayer}
-											subtitles={['30-12-2011', 'VRT']}
-											token={getEnv('FLOW_PLAYER_TOKEN')}
-											dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-											logo={get(itemMetaData, 'organisation.logo_url')}
-										/>
-										<Container mode="vertical" className="m-time-crop-controls">
-											<TextInput
-												value={formatDurationHoursMinutesSeconds(fragmentStartTime)}
-												onChange={timeString => setFragmentTime(timeString, 'start')}
+			<ModalWrapper isOpen={isOpen}>
+				<Modal
+					title={t(
+						'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
+					)}
+					size="auto"
+					isOpen={isOpen}
+					onClose={onClose}
+					scrollable
+				>
+					<ModalBody>
+						<div className="c-modal__body-add-fragment">
+							<Spacer>
+								<Form>
+									<Grid>
+										<Column size="2-7">
+											<FlowPlayer
+												src={playerTicket ? playerTicket.toString() : null}
+												poster={itemMetaData.thumbnail_path}
+												title={itemMetaData.title}
+												onInit={initFlowPlayer}
+												subtitles={['30-12-2011', 'VRT']}
+												token={getEnv('FLOW_PLAYER_TOKEN')}
+												dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+												logo={get(itemMetaData, 'organisation.logo_url')}
 											/>
-											<div className="m-multi-range-wrapper">
-												<MultiRange
-													values={[fragmentStartTime, Math.min(fragmentEndTime, fragmentDuration)]}
-													onChange={onUpdateMultiRangeValues}
-													min={0}
-													max={fragmentDuration}
-													step={1}
+											<Container mode="vertical" className="m-time-crop-controls">
+												<TextInput
+													value={formatDurationHoursMinutesSeconds(fragmentStartTime)}
+													onChange={timeString => setFragmentTime(timeString, 'start')}
 												/>
-											</div>
-											<TextInput
-												value={formatDurationHoursMinutesSeconds(fragmentEndTime)}
-												onChange={timeString => setFragmentTime(timeString, 'end')}
-											/>
-										</Container>
-									</Column>
-									<Column size="2-5">
-										<FormGroup label={t('item/components/modals/add-to-collection-modal___titel')}>
-											<span>{itemMetaData.title}</span>
-										</FormGroup>
-										<FormGroup
-											label={t('item/components/modals/add-to-collection-modal___beschrijving')}
-										>
-											<span>{itemMetaData.description}</span>
-										</FormGroup>
-										<FormGroup
-											label={t('item/components/modals/add-to-collection-modal___collectie')}
-										>
-											<Spacer margin="bottom">
-												<RadioButton
-													label={t(
-														'item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie'
-													)}
-													checked={!createNewCollection}
-													value="existing"
-													name="collection"
-													onChange={checked => setCreateNewCollection(!checked)}
-												/>
-												<div>
-													<Select
-														id="existingCollection"
-														options={[
-															{ label: 'Kies collectie', value: '', disabled: true },
-															...collections.map(
-																(collection: Partial<Avo.Collection.Collection>) => ({
-																	label: collection.title || '',
-																	value: String(collection.id),
-																})
-															),
+												<div className="m-multi-range-wrapper">
+													<MultiRange
+														values={[
+															fragmentStartTime,
+															Math.min(fragmentEndTime, fragmentDuration),
 														]}
-														value={selectedCollectionId}
-														onChange={setSelectedCollectionIdAndGetCollectionInfo}
-														disabled={createNewCollection}
+														onChange={onUpdateMultiRangeValues}
+														min={0}
+														max={fragmentDuration}
+														step={1}
 													/>
 												</div>
-											</Spacer>
-											<Spacer margin="bottom">
-												<RadioButton
-													label={t(
-														'item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie'
-													)}
-													checked={createNewCollection}
-													value="new"
-													name="collection"
+												<TextInput
+													value={formatDurationHoursMinutesSeconds(fragmentEndTime)}
+													onChange={timeString => setFragmentTime(timeString, 'end')}
 												/>
-												<div>
-													<TextInput
-														placeholder={t(
-															'item/components/modals/add-to-collection-modal___collectie-titel'
+											</Container>
+										</Column>
+										<Column size="2-5">
+											<FormGroup
+												label={t('item/components/modals/add-to-collection-modal___titel')}
+											>
+												<span>{itemMetaData.title}</span>
+											</FormGroup>
+											<FormGroup
+												label={t('item/components/modals/add-to-collection-modal___beschrijving')}
+											>
+												<span>{itemMetaData.description}</span>
+											</FormGroup>
+											<FormGroup
+												label={t('item/components/modals/add-to-collection-modal___collectie')}
+											>
+												<Spacer margin="bottom">
+													<RadioButton
+														label={t(
+															'item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie'
 														)}
-														disabled={!createNewCollection}
-														value={newCollectionTitle}
-														onChange={setNewCollectionTitle}
+														checked={!createNewCollection}
+														value="existing"
+														name="collection"
+														onChange={checked => setCreateNewCollection(!checked)}
 													/>
-												</div>
-											</Spacer>
-										</FormGroup>
-									</Column>
-								</Grid>
-							</Form>
-						</Spacer>
-					</div>
-				</ModalBody>
-				<ModalFooterRight>
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									{isProcessing && <Spinner />}
-									<Button
-										label={t('item/components/modals/add-to-collection-modal___annuleren')}
-										type="link"
-										block
-										onClick={onClose}
-										disabled={isProcessing}
-									/>
-									<Button
-										label={t('item/components/modals/add-to-collection-modal___toepassen')}
-										type="primary"
-										block
-										title={
-											createNewCollection && !newCollectionTitle
-												? 'U moet een collectie titel opgeven'
-												: !createNewCollection && !selectedCollection
-												? 'bezig met collectie detail op te halen'
-												: ''
-										}
-										disabled={
-											(createNewCollection && !newCollectionTitle) ||
-											(!createNewCollection && !selectedCollection) ||
-											isProcessing
-										}
-										onClick={onApply}
-									/>
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</ModalFooterRight>
-			</Modal>
+													<div>
+														<Select
+															id="existingCollection"
+															options={[
+																{ label: 'Kies collectie', value: '', disabled: true },
+																...collections.map(
+																	(collection: Partial<Avo.Collection.Collection>) => ({
+																		label: collection.title || '',
+																		value: String(collection.id),
+																	})
+																),
+															]}
+															value={selectedCollectionId}
+															onChange={setSelectedCollectionIdAndGetCollectionInfo}
+															disabled={createNewCollection}
+														/>
+													</div>
+												</Spacer>
+												<Spacer margin="bottom">
+													<RadioButton
+														label={t(
+															'item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie'
+														)}
+														checked={createNewCollection}
+														value="new"
+														name="collection"
+													/>
+													<div>
+														<TextInput
+															placeholder={t(
+																'item/components/modals/add-to-collection-modal___collectie-titel'
+															)}
+															disabled={!createNewCollection}
+															value={newCollectionTitle}
+															onChange={setNewCollectionTitle}
+														/>
+													</div>
+												</Spacer>
+											</FormGroup>
+										</Column>
+									</Grid>
+								</Form>
+							</Spacer>
+						</div>
+					</ModalBody>
+					<ModalFooterRight>
+						<Toolbar spaced>
+							<ToolbarRight>
+								<ToolbarItem>
+									<ButtonToolbar>
+										{isProcessing && <Spinner />}
+										<Button
+											label={t('item/components/modals/add-to-collection-modal___annuleren')}
+											type="link"
+											block
+											onClick={onClose}
+											disabled={isProcessing}
+										/>
+										<Button
+											label={t('item/components/modals/add-to-collection-modal___toepassen')}
+											type="primary"
+											block
+											title={
+												createNewCollection && !newCollectionTitle
+													? 'U moet een collectie titel opgeven'
+													: !createNewCollection && !selectedCollection
+													? 'bezig met collectie detail op te halen'
+													: ''
+											}
+											disabled={
+												(createNewCollection && !newCollectionTitle) ||
+												(!createNewCollection && !selectedCollection) ||
+												isProcessing
+											}
+											onClick={onApply}
+										/>
+									</ButtonToolbar>
+								</ToolbarItem>
+							</ToolbarRight>
+						</Toolbar>
+					</ModalFooterRight>
+				</Modal>
+			</ModalWrapper>
 		);
 	};
 

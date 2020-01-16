@@ -1,0 +1,4 @@
+/* Hide zendesk widget when a modal is open */
+body.modal-open .zEWidget-launcher {
+	display: none;
+}

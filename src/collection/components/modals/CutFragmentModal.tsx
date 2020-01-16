@@ -17,6 +17,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import ModalWrapper from '../../../shared/components/ModalWrapper/ModalWrapper';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
@@ -44,7 +45,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	// Save initial state for reusability purposess
+	// Save initial state for re-usability purposes
 	const { start, end, startString, endString } = {
 		start: fragment.start_oc || 0,
 		end: fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0,
@@ -170,67 +171,69 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	// TODO: Replace publisher, published_at by real publisher
 	const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0;
 	return (
-		<Modal
-			isOpen={isOpen}
-			title={t('collection/components/modals/cut-fragment-modal___knip-fragment')}
-			size="medium"
-			onClose={onClose}
-			scrollable
-		>
-			<ModalBody>
-				<FlowPlayer
-					src={playerTicket ? playerTicket.toString() : null}
-					poster={itemMetaData.thumbnail_path}
-					title={itemMetaData.title}
-					onInit={initFlowPlayer}
-					subtitles={['30-12-2011', 'VRT']}
-					token={getEnv('FLOW_PLAYER_TOKEN')}
-					dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-					logo={get(itemMetaData, 'organisation.logo_url')}
-				/>
-				<Container mode="vertical" className="m-time-crop-controls">
-					<TextInput
-						value={fragmentStartString}
-						onChange={setFragmentStartString}
-						onBlur={parseTimes}
-						onKeyUp={handleOnKeyUp}
+		<ModalWrapper isOpen={isOpen}>
+			<Modal
+				isOpen={isOpen}
+				title={t('collection/components/modals/cut-fragment-modal___knip-fragment')}
+				size="medium"
+				onClose={onClose}
+				scrollable
+			>
+				<ModalBody>
+					<FlowPlayer
+						src={playerTicket ? playerTicket.toString() : null}
+						poster={itemMetaData.thumbnail_path}
+						title={itemMetaData.title}
+						onInit={initFlowPlayer}
+						subtitles={['30-12-2011', 'VRT']}
+						token={getEnv('FLOW_PLAYER_TOKEN')}
+						dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+						logo={get(itemMetaData, 'organisation.logo_url')}
 					/>
-					<div className="m-multi-range-wrapper">
-						<MultiRange
-							values={[fragmentStart, Math.min(fragmentEnd, fragmentDuration)]}
-							onChange={onUpdateMultiRangeValues}
-							min={0}
-							max={fragmentDuration}
-							step={1}
+					<Container mode="vertical" className="m-time-crop-controls">
+						<TextInput
+							value={fragmentStartString}
+							onChange={setFragmentStartString}
+							onBlur={parseTimes}
+							onKeyUp={handleOnKeyUp}
 						/>
-					</div>
-					<TextInput
-						value={fragmentEndString}
-						onChange={setFragmentEndString}
-						onBlur={parseTimes}
-						onKeyUp={handleOnKeyUp}
-					/>
-				</Container>
-				<Toolbar spaced>
-					<ToolbarRight>
-						<ToolbarItem>
-							<ButtonToolbar>
-								<Button
-									type="secondary"
-									label={t('collection/components/modals/cut-fragment-modal___annuleren')}
-									onClick={onCancelCut}
-								/>
-								<Button
-									type="primary"
-									label={t('collection/components/modals/cut-fragment-modal___knippen')}
-									onClick={onSaveCut}
-								/>
-							</ButtonToolbar>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
-			</ModalBody>
-		</Modal>
+						<div className="m-multi-range-wrapper">
+							<MultiRange
+								values={[fragmentStart, Math.min(fragmentEnd, fragmentDuration)]}
+								onChange={onUpdateMultiRangeValues}
+								min={0}
+								max={fragmentDuration}
+								step={1}
+							/>
+						</div>
+						<TextInput
+							value={fragmentEndString}
+							onChange={setFragmentEndString}
+							onBlur={parseTimes}
+							onKeyUp={handleOnKeyUp}
+						/>
+					</Container>
+					<Toolbar spaced>
+						<ToolbarRight>
+							<ToolbarItem>
+								<ButtonToolbar>
+									<Button
+										type="secondary"
+										label={t('collection/components/modals/cut-fragment-modal___annuleren')}
+										onClick={onCancelCut}
+									/>
+									<Button
+										type="primary"
+										label={t('collection/components/modals/cut-fragment-modal___knippen')}
+										onClick={onSaveCut}
+									/>
+								</ButtonToolbar>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
+				</ModalBody>
+			</Modal>
+		</ModalWrapper>
 	);
 };
 

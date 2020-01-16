@@ -21,8 +21,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
+import ModalWrapper from '../../../shared/components/ModalWrapper/ModalWrapper';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import toastService from '../../../shared/services/toast-service';
+
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 
@@ -121,60 +123,62 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	};
 
 	return (
-		<Modal
-			isOpen={isOpen}
-			title={t('collection/components/modals/share-collection-modal___deel-deze-collectie')}
-			size="large"
-			onClose={onClose}
-			scrollable
-		>
-			<ModalBody>
-				<p>
-					<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen">
-						Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.
-					</Trans>
-				</p>
-				<FormGroup error={validationError}>
-					<Spacer margin="top-large">
-						<BlockHeading className="u-m-0" type="h4">
-							<Trans i18nKey="collection/components/modals/share-collection-modal___zichtbaarheid">
-								Zichtbaarheid
-							</Trans>
-						</BlockHeading>
-					</Spacer>
-					<RadioButtonGroup>
-						{shareOptions.map((shareOption, index) => (
-							<RadioButton
-								key={index}
-								name={shareOption.value}
-								label={shareOption.label}
-								value={shareOption.value}
-								onChange={() => setIsCollectionPublic(shareOption.isPublic)}
-								checked={isCollectionPublic === shareOption.isPublic}
-							/>
-						))}
-					</RadioButtonGroup>
-				</FormGroup>
-				<Toolbar spaced>
-					<ToolbarRight>
-						<ToolbarItem>
-							<ButtonToolbar>
-								<Button
-									type="secondary"
-									label={t('collection/components/modals/share-collection-modal___annuleren')}
-									onClick={() => onClose()}
+		<ModalWrapper isOpen={isOpen}>
+			<Modal
+				isOpen={isOpen}
+				title={t('collection/components/modals/share-collection-modal___deel-deze-collectie')}
+				size="large"
+				onClose={onClose}
+				scrollable
+			>
+				<ModalBody>
+					<p>
+						<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen">
+							Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.
+						</Trans>
+					</p>
+					<FormGroup error={validationError}>
+						<Spacer margin="top-large">
+							<BlockHeading className="u-m-0" type="h4">
+								<Trans i18nKey="collection/components/modals/share-collection-modal___zichtbaarheid">
+									Zichtbaarheid
+								</Trans>
+							</BlockHeading>
+						</Spacer>
+						<RadioButtonGroup>
+							{shareOptions.map((shareOption, index) => (
+								<RadioButton
+									key={index}
+									name={shareOption.value}
+									label={shareOption.label}
+									value={shareOption.value}
+									onChange={() => setIsCollectionPublic(shareOption.isPublic)}
+									checked={isCollectionPublic === shareOption.isPublic}
 								/>
-								<Button
-									type="primary"
-									label={t('collection/components/modals/share-collection-modal___opslaan')}
-									onClick={onSave}
-								/>
-							</ButtonToolbar>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
-			</ModalBody>
-		</Modal>
+							))}
+						</RadioButtonGroup>
+					</FormGroup>
+					<Toolbar spaced>
+						<ToolbarRight>
+							<ToolbarItem>
+								<ButtonToolbar>
+									<Button
+										type="secondary"
+										label={t('collection/components/modals/share-collection-modal___annuleren')}
+										onClick={() => onClose()}
+									/>
+									<Button
+										type="primary"
+										label={t('collection/components/modals/share-collection-modal___opslaan')}
+										onClick={onSave}
+									/>
+								</ButtonToolbar>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
+				</ModalBody>
+			</Modal>
+		</ModalWrapper>
 	);
 };
 

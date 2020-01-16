@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 
 import {
 	Button,
@@ -11,6 +11,7 @@ import {
 } from '@viaa/avo2-components';
 
 import i18n from '../../translations/i18n';
+import ModalWrapper from '../ModalWrapper/ModalWrapper';
 
 interface DeleteObjectModalProps {
 	title?: string;
@@ -37,21 +38,23 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable>
-			<ModalBody>
-				{!!body && <p>{body}</p>}
-				<Toolbar spaced>
-					<ToolbarRight>
-						<ToolbarItem>
-							<ButtonToolbar>
-								<Button type="secondary" label={cancelLabel} onClick={onClose} />
-								<Button type="danger" label={confirmLabel} onClick={handleDelete} />
-							</ButtonToolbar>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
-			</ModalBody>
-		</Modal>
+		<ModalWrapper isOpen={isOpen}>
+			<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable>
+				<ModalBody>
+					{!!body && <p>{body}</p>}
+					<Toolbar spaced>
+						<ToolbarRight>
+							<ToolbarItem>
+								<ButtonToolbar>
+									<Button type="secondary" label={cancelLabel} onClick={onClose} />
+									<Button type="danger" label={confirmLabel} onClick={handleDelete} />
+								</ButtonToolbar>
+							</ToolbarItem>
+						</ToolbarRight>
+					</Toolbar>
+				</ModalBody>
+			</Modal>
+		</ModalWrapper>
 	);
 };
 
