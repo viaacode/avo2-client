@@ -6,7 +6,6 @@ import CreatableSelect from 'react-select/creatable';
 
 import { Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
 
-import { UserGroup } from '../../../../shared/services/user-groups-service';
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { IconPicker } from '../../../shared/components';
 

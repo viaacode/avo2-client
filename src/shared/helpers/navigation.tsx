@@ -3,7 +3,7 @@ import { TFunction } from 'i18next';
 import { isNil, kebabCase, sortBy } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent } from 'react';
-import { match } from 'react-router';
+import { match as Match } from 'react-router';
 
 import LoginOptionsDropdown from '../../authentication/components/LoginOptionsDropdown';
 import PupilOrTeacherDropdown from '../../authentication/components/PupilOrTeacherDropdown';
@@ -11,7 +11,6 @@ import { APP_PATH } from '../../constants';
 import { AppContentNavElement } from '../services/navigation-items-service';
 import { NavigationItemInfo } from '../types';
 import { buildLink } from './link';
-import NavigationItem from '../components/Navigation/NavigationItem';
 
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: FunctionComponent<any> } = {
 	'<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,
@@ -47,7 +46,7 @@ export function mapNavElementsToNavigationItems(
 	navItems: AppContentNavElement[],
 	history: H.History,
 	location: H.Location,
-	match: match<any>,
+	match: Match<any>,
 	t: TFunction
 ): NavigationItemInfo[] {
 	return sortBy(navItems, 'position').map(
