@@ -27,6 +27,7 @@ export interface ContentBlockMeta {
 }
 
 export interface ContentBlockConfig {
+	id?: number;
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
@@ -86,6 +87,7 @@ export interface ContentBlockFormError {
 export interface DefaultContentBlockState {
 	backgroundColor: ContentBlockBackgroundColor;
 	blockType: ContentBlockType;
+	position: number;
 }
 
 export enum ContentBlockBackgroundColor {

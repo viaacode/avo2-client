@@ -59,7 +59,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			<PreviewComponent {...componentState as any} />
+			<PreviewComponent {...(componentState as any)} />
 		</div>
 	);
 };

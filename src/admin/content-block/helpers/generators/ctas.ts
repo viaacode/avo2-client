@@ -26,10 +26,10 @@ export const INITIAL_CTAS_BLOCK_COMPONENT_STATES = (): CTAsBlockComponentState[]
 	EMPTY_CTA,
 ];
 
-export const INITIAL_CTAS_BLOCK_STATE = (): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.CTAs);
+export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.CTAs, position);
 
-export const CTAS_BLOCK_CONFIG = (): ContentBlockConfig => ({
+export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t("CTA's"),
 	components: {
 		name: i18n.t('CTA'),
@@ -54,7 +54,7 @@ export const CTAS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 		},
 	},
 	block: {
-		state: INITIAL_CTAS_BLOCK_STATE(),
+		state: INITIAL_CTAS_BLOCK_STATE(position),
 		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });

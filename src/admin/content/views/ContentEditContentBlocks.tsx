@@ -20,6 +20,8 @@ import { createKey } from '../../shared/helpers/create-key';
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	onAdd: (config: ContentBlockConfig) => void;
+	onRemove: (configIndex: number) => void;
+	onReorder: (configIndex: number, indexUpdate: number) => void;
 	onSave: (
 		index: number,
 		formGroupType: ContentBlockStateType,
@@ -33,6 +35,8 @@ interface ContentEditContentBlocksProps {
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
 	contentBlockConfigs,
 	onAdd,
+	onRemove,
+	onReorder,
 	onSave,
 	addComponentToState,
 	removeComponentFromState,
@@ -47,7 +51,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		`${name}-${blockIndex}-${stateIndex}`;
 
 	const handleAddContentBlock = (configType: ContentBlockType) => {
-		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
+		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](contentBlockConfigs.length);
 		const contentBlockFormKey = getFormKey(newConfig.name, contentBlockConfigs.length);
 
 		// Update content block configs
@@ -55,6 +59,13 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 		// Set newly added config accordion as open
 		setAccordionsOpenState({ [contentBlockFormKey]: true });
+	};
+
+	const handleReorderContentBlock = (configIndex: number, indexUpdate: number) => {
+		// Close accordions
+		setAccordionsOpenState({});
+		// Trigger reorder
+		onReorder(configIndex, indexUpdate);
 	};
 
 	// Render
@@ -66,7 +77,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 				<ContentBlockForm
 					key={createKey('e', index)}
 					config={contentBlockConfig}
-					blockIndex={index + 1}
+					blockIndex={index}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
 					length={contentBlockConfigs.length}
 					setIsAccordionOpen={() =>
@@ -83,6 +94,8 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					removeComponentFromState={(stateIndex: number) =>
 						removeComponentFromState(index, stateIndex)
 					}
+					onRemove={onRemove}
+					onReorder={handleReorderContentBlock}
 				/>
 			);
 		});

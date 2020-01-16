@@ -21,10 +21,10 @@ export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentS
 	},
 ];
 
-export const INITIAL_BUTTONS_BLOCK_STATE = (): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons);
+export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons, position);
 
-export const BUTTONS_BLOCK_CONFIG = (): ContentBlockConfig => ({
+export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/buttons___knop'),
@@ -42,7 +42,7 @@ export const BUTTONS_BLOCK_CONFIG = (): ContentBlockConfig => ({
 		},
 	},
 	block: {
-		state: INITIAL_BUTTONS_BLOCK_STATE(),
+		state: INITIAL_BUTTONS_BLOCK_STATE(position),
 		fields: {
 			align: ALIGN_FIELD(),
 			...CONTENT_BLOCK_FIELD_DEFAULTS(),

@@ -4,6 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../../shared/helpers';
 
+import { LoginMessage } from '../authentication.types';
 import {
 	LoginActionTypes,
 	SetLoginErrorAction,
@@ -16,7 +17,7 @@ export const getLoginStateAction = () => {
 		const { loginMessage } = getState();
 
 		// don't fetch login state if we already logged in
-		if (loginMessage && loginMessage.message === 'LOGGED_IN') {
+		if (loginMessage && loginMessage.message === LoginMessage.LOGGED_IN) {
 			return null;
 		}
 
