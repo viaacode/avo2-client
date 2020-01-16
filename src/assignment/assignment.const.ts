@@ -10,13 +10,11 @@ export const ASSIGNMENT_PATH = Object.freeze({
 	ASSIGNMENT_CREATE: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
 	ASSIGNMENT_DETAIL: `/${ROUTE_PARTS.assignments}/:id`,
 	ASSIGNMENT_EDIT: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}`,
-	ASSIGNMENT_RESPONSES: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${
-		ROUTE_PARTS.responses
-	}`,
+	ASSIGNMENT_RESPONSES: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.responses}`,
 });
 
 export const CONTENT_LABEL_TO_QUERY: {
-	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string }
+	[contentType in Avo.Assignment.ContentLabel]: { query: DocumentNode; resultPath: string };
 } = {
 	COLLECTIE: {
 		query: GET_COLLECTION_BY_ID,

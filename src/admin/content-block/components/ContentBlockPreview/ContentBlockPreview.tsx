@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 
-import { BlockIntro, BlockRichText } from '@viaa/avo2-components';
+import { BlockButtons, BlockIntro, BlockRichText } from '@viaa/avo2-components';
 
 import {
 	ContentBlockBackgroundColor,
@@ -18,7 +18,7 @@ interface ContentBlockPreviewProps {
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
-	[ContentBlockType.Buttons]: BlockRichText,
+	[ContentBlockType.Buttons]: BlockButtons,
 	[ContentBlockType.Heading]: HeadingBlockPreview,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.RichText]: BlockRichText,
@@ -39,6 +39,11 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			secondColumnContent,
 		} = componentState as RichTextTwoColumnsBlockComponentState;
 		(componentState as any).content = [firstColumnContent, secondColumnContent];
+	}
+
+	// TODO: Make more generic and reusable for other components
+	if (blockState.blockType === ContentBlockType.Buttons) {
+		(componentState as any).buttons = componentState;
 	}
 
 	return (

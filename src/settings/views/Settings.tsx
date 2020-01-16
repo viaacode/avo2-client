@@ -1,6 +1,6 @@
 import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
 
-import { Container, Heading, Navbar, Tabs, Toolbar, ToolbarLeft } from '@viaa/avo2-components';
+import { BlockHeading, Container, Navbar, Tabs, Toolbar, ToolbarLeft } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -70,9 +70,9 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 		<>
 			<Container background="alt" mode="vertical" size="small">
 				<Container mode="horizontal">
-					<Heading type="h2" className="u-m-0">
+					<BlockHeading type="h2" className="u-m-0">
 						<Trans i18nKey="settings/views/settings___instellingen">Instellingen</Trans>
-					</Heading>
+					</BlockHeading>
 				</Container>
 			</Container>
 

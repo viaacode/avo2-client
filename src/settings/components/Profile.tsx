@@ -7,6 +7,7 @@ import { Dispatch } from 'redux';
 import {
 	Alert,
 	Avatar,
+	BlockHeading,
 	Box,
 	Button,
 	Column,
@@ -14,7 +15,6 @@ import {
 	Form,
 	FormGroup,
 	Grid,
-	Heading,
 	Icon,
 	Select,
 	Spacer,
@@ -25,7 +25,6 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import {
 	getProfile,
@@ -322,11 +321,11 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			return (
 				<Container mode="horizontal" size="medium">
 					<Container mode="vertical">
-						<Heading type="h1">
+						<BlockHeading type="h1">
 							<Trans i18nKey="settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel">
 								Je bent er bijna. Vervolledig nog je profiel.
 							</Trans>
-						</Heading>
+						</BlockHeading>
 						<Spacer margin="top-large">
 							<Alert type="info">
 								<Trans i18nKey="settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen">
@@ -421,7 +420,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 								<Column size="3-5">
 									<>
 										{/*<Box>*/}
-										{/*	<Heading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></Heading>*/}
+										{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
 										{/*	/!* TODO replace with components from component repo *!/*/}
 										{/*	<div className="c-progress-bar" />*/}
 										{/*</Box>*/}

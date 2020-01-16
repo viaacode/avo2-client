@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { Heading } from '@viaa/avo2-components';
+import { BlockHeading } from '@viaa/avo2-components';
 
 import { HeadingBlockComponentState } from '../../../content-block.types';
 
@@ -12,9 +12,9 @@ const HeadingBlockPreview: FunctionComponent<HeadingBlockComponentState> = ({
 	title,
 }) => {
 	return (
-		<Heading className={`u-text-${align}`} type={level}>
+		<BlockHeading className={`u-text-${align}`} type={level}>
 			{title}
-		</Heading>
+		</BlockHeading>
 	);
 };
 

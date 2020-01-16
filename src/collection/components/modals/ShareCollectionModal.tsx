@@ -4,10 +4,10 @@ import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
+	BlockHeading,
 	Button,
 	ButtonToolbar,
 	FormGroup,
-	Heading,
 	Modal,
 	ModalBody,
 	RadioButton,
@@ -136,11 +136,11 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">
-						<Heading className="u-m-0" type="h4">
+						<BlockHeading className="u-m-0" type="h4">
 							<Trans i18nKey="collection/components/modals/share-collection-modal___zichtbaarheid">
 								Zichtbaarheid
 							</Trans>
-						</Heading>
+						</BlockHeading>
 					</Spacer>
 					<RadioButtonGroup>
 						{shareOptions.map((shareOption, index) => (

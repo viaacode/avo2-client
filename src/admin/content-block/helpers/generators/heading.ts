@@ -22,10 +22,10 @@ export const INITIAL_HEADING_BLOCK_COMPONENT_STATE = (): HeadingBlockComponentSt
 	align: 'left',
 });
 
-export const INITIAL_HEADING_BLOCK_STATE = (): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading);
+export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading, position);
 
-export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
+export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/heading___titel'),
 	components: {
 		state: INITIAL_HEADING_BLOCK_COMPONENT_STATE(),
@@ -48,7 +48,7 @@ export const HEADING_BLOCK_CONFIG = (): ContentBlockConfig => ({
 		},
 	},
 	block: {
-		state: INITIAL_HEADING_BLOCK_STATE(),
+		state: INITIAL_HEADING_BLOCK_STATE(position),
 		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
 	},
 });
