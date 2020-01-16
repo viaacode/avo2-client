@@ -158,6 +158,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___todo-link-naar-faq-bp-toegang-zonder-lerarenkaartnummer-br-het-archief-voor-onderwijs-biedt-op-een-eenvoudige-manier-toegang-tot-vlaams-audiovisueel-materiaal-van-meer-dan-30-partners-dit-materiaal-is-beschikbaar-voor-ul-li-leerkrachten-aan-een-vlaamse-erkende-onderwijsinstelling-li-li-studenten-aan-een-vlaamse-lerarenopleiding-li-li-leerlingen-van-een-vlaamse-erkende-secundaire-school-li-ul-strong-hoe-krijg-je-toegang-strong-ol-li-strong-je-bent-student-aan-een-vlaamse-lerarenopleiding-strong-br-dan-krijg-je-via-je-docent-of-hogeschool-toegang-tot-onze-beeldbank-hoe-ontdek-het-op-link-to-app-path-student-teacher-deze-pagina-link-li-li-strong-je-bent-leerling-in-een-vlaamse-erkende-secundaire-school-strong-br-vraag-een-account-via-een-van-je-leerkrachten-lees-meer-over-het-archief-voor-onderwijs-voor-leerlingen-op-link-to-app-path-for-pupils-deze-pagina-link-br-wil-je-als-leerkracht-je-leerlingen-toegang-geven-alle-info-vind-je-link-to-leerlingen-toegang-versie-leerkrachten-hier-link-li-li-strong-je-bent-lesgever-in-een-vlaamse-erkende-onderwijsinstelling-strong-br-ul-li-je-hebt-een-lerarenkaart-of-stamboeknummer-maak-dan-link-to-app-path-stamboek-hier-link-je-gratis-een-account-aan-li-li-je-hebt-geen-lerarenkaart-of-stamboeknummer-of-je-vraagt-je-af-of-je-als-lesgever-zonder-nummer-in-aanmerking-komt-voor-een-account-vraag-je-toegang-aan-via-onderstaand-formulier-we-verwerken-je-aanvraag-binnen-de-vijf-werkdagen-na-ontvangst-li-ul-li-ol">
 						TODO: link naar FAQ BP toegang zonder lerarenkaartnummer
 						<br />
+						<br />
 						Het Archief voor Onderwijs biedt op een eenvoudige manier toegang tot Vlaams
 						audiovisueel materiaal van meer dan 30 partners. Dit materiaal is beschikbaar voor:
 						<ul>
@@ -171,7 +172,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								<strong>Je bent student aan een Vlaamse lerarenopleiding?</strong>
 								<br />
 								Dan krijg je via je docent of hogeschool toegang tot onze beeldbank. Hoe? Ontdek het
-								op <Link to={APP_PATH.STUDENT_TEACHER}>deze pagina</Link>.
+								op <Link to={APP_PATH.STUDENT_TEACHER}>deze pagina</Link>.<br />
+								<br />
 							</li>
 							<li>
 								<strong>Je bent leerling in een Vlaamse erkende secundaire school?</strong>
@@ -180,7 +182,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								Onderwijs voor leerlingen op <Link to={APP_PATH.FOR_PUPILS}>deze pagina</Link>.
 								<br />
 								Wil je als leerkracht je leerlingen toegang geven? Alle info vind je{' '}
-								<Link to={'/leerlingen-toegang-versie-leerkrachten'}>hier</Link>.
+								<Link to={'/leerlingen-toegang-versie-leerkrachten'}>hier</Link>.<br />
+								<br />
 							</li>
 							<li>
 								<strong>Je bent lesgever in een Vlaamse erkende onderwijsinstelling?</strong>
