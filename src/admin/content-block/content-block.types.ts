@@ -108,7 +108,7 @@ export enum ContentBlockType {
 export interface HeadingBlockComponentState {
 	children: string;
 	type: HeadingLevelOptions;
-	// align: AlignOptions;
+	// TODO: align: AlignOptions;
 }
 
 export interface RichTextBlockComponentState {
@@ -134,5 +134,5 @@ export interface CTAsBlockComponentState {
 	heading: string;
 	headingType: HeadingLevelOptions;
 	content: string | string[];
-	// button: Partial<ButtonsBlockComponentState>;
+	// TODO: button: Partial<ButtonsBlockComponentState>;
 }
