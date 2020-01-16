@@ -2,6 +2,7 @@ import { get, has, without } from 'lodash-es';
 
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
+import i18n from '../../shared/translations/i18n';
 
 import { CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
 import {
@@ -30,7 +31,12 @@ export const fetchContentBlocksByContentId = async (
 		return contentBlocks;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het ophalen van de content blocks', false);
+		toastService.danger(
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-blocks'
+			),
+			false
+		);
 
 		return null;
 	}
@@ -51,7 +57,12 @@ export const insertContentBlocks = async (
 		return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`, null);
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+		toastService.danger(
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
+			),
+			false
+		);
 
 		return null;
 	}
@@ -100,7 +111,12 @@ export const updateContentBlocks = async (
 		]);
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het opslaan van de content blocks', false);
+		toastService.danger(
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
+			),
+			false
+		);
 
 		return null;
 	}
@@ -117,7 +133,12 @@ export const deleteContentBlock = async (id: number) => {
 		return response;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het verwijderen van de content blocks', false);
+		toastService.danger(
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
+			),
+			false
+		);
 
 		return null;
 	}
@@ -135,7 +156,12 @@ export const updateContentBlock = async (contentBlockConfig: ContentBlockConfig)
 		return response;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het updaten van de content blocks', false);
+		toastService.danger(
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
+			),
+			false
+		);
 
 		return null;
 	}

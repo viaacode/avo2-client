@@ -1,6 +1,7 @@
 export * from './clipboard';
 export * from './dropdown';
 export * from './env';
+export * from './error';
 export * from './formatters';
 export * from './link';
 export * from './parsers/duration';
