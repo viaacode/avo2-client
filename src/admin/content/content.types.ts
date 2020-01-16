@@ -41,6 +41,7 @@ export enum ContentEditActionType {
 	SET_CONTENT_BLOCK_CONFIGS = '@@admin-content-edit/SET_CONTENT_BLOCK_CONFIGS',
 	ADD_COMPONENTS_STATE = '@@admin-content-edit/ADD_COMPONENTS_STATE',
 	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
+	REMOVE_COMPONENTS_STATE = '@@admin-content-edit/REMOVE_COMPONENTS_STATE',
 	SET_BLOCK_STATE = '@@admin-content-edit/SET_BLOCK_STATE',
 }
 

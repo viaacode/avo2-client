@@ -89,6 +89,18 @@ export const contentEditReducer = (initialState: ContentEditState) =>
 				contentBlockConfigs: contentBlocks,
 			};
 		},
+		[ContentEditActionType.REMOVE_COMPONENTS_STATE]: (state, action: ContentEditAction) => {
+			const { index, stateIndex } = action.payload;
+
+			const contentBlocks = [...state.contentBlockConfigs];
+
+			(contentBlocks[index].components.state as any).splice(stateIndex, 1);
+
+			return {
+				state,
+				contentBlockConfigs: contentBlocks,
+			};
+		},
 		[ContentEditActionType.SET_COMPONENTS_STATE]: (state, action: ContentEditAction) => {
 			const { index, formGroupState, stateIndex } = action.payload;
 
@@ -96,7 +108,10 @@ export const contentEditReducer = (initialState: ContentEditState) =>
 			const contentBlocks = [...state.contentBlockConfigs];
 
 			if (stateIndex || stateIndex === 0) {
-				(contentBlocks[index].components.state as any)[stateIndex] = formGroupState;
+				(contentBlocks[index].components.state as any)[stateIndex] = {
+					...(contentBlocks[index].components.state as any)[stateIndex],
+					...formGroupState,
+				};
 			} else {
 				// Convert update object to array if necessary
 				const componentState = Array.isArray(contentBlocks[index].components.state)
