@@ -37,7 +37,10 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
-		updateCollectionProperty((selectedTagOptions || []).map(tag => tag.value as string), fieldName);
+		updateCollectionProperty(
+			(selectedTagOptions || []).map(tag => tag.value as string),
+			fieldName
+		);
 	};
 
 	const renderCollectionMetaData = (data: ContextAndClassificationData) => {

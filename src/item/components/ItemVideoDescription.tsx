@@ -11,19 +11,19 @@ import React, {
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
+	BlockHeading,
 	Button,
 	Column,
 	convertToHtml,
 	ExpandableContainer,
 	FlowPlayer,
 	Grid,
-	Heading,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { getEnv, parseDuration } from '../../shared/helpers';
+import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService from '../../shared/services/toast-service';
@@ -151,7 +151,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				poster={itemMetaData.thumbnail_path}
 				title={itemMetaData.title}
 				onInit={initFlowPlayer}
-				subtitles={['Publicatiedatum', 'Aanbieder']}
+				subtitles={[reorderDate(itemMetaData.issued || null, '.'), itemMetaData.organisation.name]}
 				token={getEnv('FLOW_PLAYER_TOKEN')}
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
@@ -168,19 +168,19 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			}}
 		>
 			{showTitle ? (
-				<Heading
+				<BlockHeading
 					type="h3"
 					className={onTitleClicked ? 'u-clickable' : ''}
 					onClick={onTitleClicked || (() => {})}
 				>
 					{title}
-				</Heading>
+				</BlockHeading>
 			) : (
-				<Heading type="h4">
+				<BlockHeading type="h4">
 					<Trans i18nKey="item/components/item-video-description___beschrijving">
 						Beschrijving
 					</Trans>
-				</Heading>
+				</BlockHeading>
 			)}
 			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
 			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>

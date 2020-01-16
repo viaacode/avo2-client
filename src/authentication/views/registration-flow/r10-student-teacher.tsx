@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { Trans } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
-import { Button, Container, Heading } from '@viaa/avo2-components';
+import { BlockHeading, Button, Container } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
 import { redirectToClientPage } from '../../helpers/redirects';
@@ -22,11 +22,11 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 							Terug
 						</Trans>
 					</Button>
-					<Heading type="h2">
+					<BlockHeading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___het-archief-voor-onderwijs-voor-student-leerkrachten">
 							Het Archief voor Onderwijs voor Student-leerkrachten
 						</Trans>
-					</Heading>
+					</BlockHeading>
 					<p>
 						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___student-teacher-description">
 							Jij zoekt meer en dat vinden wij top! Studenten lerarenopleiding{' '}

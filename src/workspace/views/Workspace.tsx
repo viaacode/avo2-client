@@ -3,12 +3,12 @@ import React, { FunctionComponent, ReactText, useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
+	BlockHeading,
 	Container,
 	DropdownButton,
 	DropdownContent,
 	Form,
 	FormGroup,
-	Heading,
 	Icon,
 	MenuContent,
 	Navbar,
@@ -230,9 +230,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 			<>
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
-						<Heading type="h2" className="u-m-0">
+						<BlockHeading type="h2" className="u-m-0">
 							<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">Mijn Werkruimte</Trans>
-						</Heading>
+						</BlockHeading>
 					</Container>
 				</Container>
 
