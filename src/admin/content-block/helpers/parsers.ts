@@ -30,12 +30,14 @@ export const parseContentBlockConfigs = (
 // Parse content-blocks to configs
 export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): ContentBlockConfig[] => {
 	const sortedContentBlocks = contentBlocks.sort(
+		// TODO: remove as number after types update
 		(a, b) => (a.position as number) - (b.position as number)
 	);
 
 	return sortedContentBlocks.map(contentBlock => {
 		const { content_block_type, id, variables } = contentBlock;
 		const cleanConfig = CONTENT_BLOCK_CONFIG_MAP[content_block_type as ContentBlockType](
+			// TODO: remove as number after types update
 			contentBlock.position as number
 		);
 

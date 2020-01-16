@@ -32,7 +32,9 @@ export const fetchContentBlocksByContentId = async (
 	} catch (err) {
 		console.error(err);
 		toastService.danger(
-			i18n.t('Er ging iets mis tijdens het ophalen van de content blocks'),
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-blocks'
+			),
 			false
 		);
 
@@ -56,7 +58,9 @@ export const insertContentBlocks = async (
 	} catch (err) {
 		console.error(err);
 		toastService.danger(
-			i18n.t('Er ging iets mis tijdens het opslaan van de content blocks'),
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
+			),
 			false
 		);
 
@@ -108,7 +112,9 @@ export const updateContentBlocks = async (
 	} catch (err) {
 		console.error(err);
 		toastService.danger(
-			i18n.t('Er ging iets mis tijdens het opslaan van de content blocks'),
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
+			),
 			false
 		);
 
@@ -128,7 +134,9 @@ export const deleteContentBlock = async (id: number) => {
 	} catch (err) {
 		console.error(err);
 		toastService.danger(
-			i18n.t('Er ging iets mis tijdens het verwijderen van de content blocks'),
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
+			),
 			false
 		);
 
@@ -149,7 +157,9 @@ export const updateContentBlock = async (contentBlockConfig: ContentBlockConfig)
 	} catch (err) {
 		console.error(err);
 		toastService.danger(
-			i18n.t('Er ging iets mis tijdens het updaten van de content blocks'),
+			i18n.t(
+				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
+			),
 			false
 		);
 
