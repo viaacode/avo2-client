@@ -1,7 +1,10 @@
-export class CustomError {
+export class CustomError extends Error {
 	public message: string;
 	public innerException: any | null;
 	public additionalInfo: any | null;
+	public identifier: string = Math.random()
+		.toString()
+		.substring(2, 9);
 	public name: string = 'Error';
 	public stack: string;
 	public timestamp: string = new Date().toISOString();
@@ -11,10 +14,10 @@ export class CustomError {
 		innerException: any = null,
 		additionalInfo: any = null
 	) {
+		super(message);
 		this.message = message;
 		this.innerException = innerException;
 		this.additionalInfo = additionalInfo;
-
 		Error.captureStackTrace(this, this.constructor);
 
 		if (innerException && typeof innerException.stack === 'string') {
@@ -27,14 +30,8 @@ export class CustomError {
 	public toString(): string {
 		return JSON.stringify(
 			this,
-			(key, value) => {
-				if (key === 'request') {
-					// Avoid huge request object in error json
-					return '[request]';
-				}
-				return value;
-			},
-			2
+			// Avoid huge request object in error json
+			(key, value) => (key === 'request' ? '[request]' : value)
 		);
 	}
 }

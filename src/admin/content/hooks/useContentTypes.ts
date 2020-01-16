@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fecthContentTypes } from '../content.services';
+import { fetchContentTypes } from '../content.services';
 import { ContentTypesResponse } from '../content.types';
 
 type UseContentTypesTuple = [ContentTypesResponse[], boolean];
@@ -12,7 +12,7 @@ export const useContentTypes = (): UseContentTypesTuple => {
 	useEffect(() => {
 		setIsLoading(true);
 
-		fecthContentTypes()
+		fetchContentTypes()
 			.then((data: ContentTypesResponse[] | null) => {
 				if (data) {
 					setContentTypes(data);

@@ -49,7 +49,7 @@ const App: FunctionComponent<AppProps> = props => {
 				<>
 					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Navigation {...props} />}
 					{renderRoutes()}
-					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer />}
+					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer {...props} />}
 					<Zendesk zendeskKey="2aae0d3b-eb63-48ee-89ef-a7adcfacc410" />
 				</>
 			)}

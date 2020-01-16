@@ -2,7 +2,6 @@ import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
 import { BrowserRouter as Router, Link, MemoryRouter } from 'react-router-dom';
 
-import { LoginMessage } from '../../../authentication/authentication.types';
 import { APP_PATH } from '../../../constants';
 
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';
@@ -15,7 +14,6 @@ const linkLoginState: {
 } = {
 	[APP_PATH.LOGGED_IN_HOME]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
 	[APP_PATH.SEARCH]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.DISCOVER]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
 	[APP_PATH.WORKSPACE]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
 	[APP_PATH.PROJECTS]: { showWhenLoggedIn: true, showWhenLoggedOut: true },
 	[APP_PATH.NEWS]: { showWhenLoggedIn: true, showWhenLoggedOut: true },
@@ -59,7 +57,7 @@ describe('<Navigation />', () => {
 		// https://redux.js.org/recipes/writing-tests#connected-components
 		mount(
 			<MemoryRouter>
-				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_OUT} user={undefined} />
+				<Navigation {...mockProps} user={undefined} />
 			</MemoryRouter>
 		);
 	});
@@ -67,7 +65,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged out on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_OUT} user={undefined} />
+				<Navigation {...mockProps} user={undefined} />
 			</Router>
 		);
 
@@ -85,7 +83,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged in on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} loginMessage={LoginMessage.LOGGED_IN} user={mockUser} />
+				<Navigation {...mockProps} user={mockUser} />
 			</Router>
 		);
 
