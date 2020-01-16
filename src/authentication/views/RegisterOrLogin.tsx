@@ -3,13 +3,13 @@ import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
+	BlockHeading,
 	Button,
 	Column,
 	Container,
 	Flex,
 	FlexItem,
 	Grid,
-	Heading,
 	Modal,
 	ModalBody,
 	Spacer,
@@ -76,7 +76,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 							<Column size="3-6">
 								<Flex center orientation="horizontal">
 									<FlexItem>
-										<Heading type="h2" className="u-m-0">
+										<BlockHeading type="h2" className="u-m-0">
 											<Trans i18nKey="authentication/views/register-or-login___reeds-een-account">
 												Reeds een account?
 											</Trans>
@@ -84,7 +84,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 											<Trans i18nKey="authentication/views/register-or-login___log-dan-hier-in">
 												Log dan hier in.
 											</Trans>
-										</Heading>
+										</BlockHeading>
 										<LoginOptions history={history} location={location} match={match} />
 									</FlexItem>
 								</Flex>

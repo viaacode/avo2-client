@@ -78,6 +78,10 @@ export enum ContentBlockEditor {
 	WYSIWYG = 'WYSIWYG',
 }
 
+export interface ContentBlockFormError {
+	[key: string]: string[];
+}
+
 // CONTENT BLOCKS
 export interface DefaultContentBlockState {
 	backgroundColor: ContentBlockBackgroundColor;

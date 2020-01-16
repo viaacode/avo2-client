@@ -4,11 +4,11 @@ import { RouteComponentProps } from 'react-router';
 
 import {
 	Alert,
+	BlockHeading,
 	Button,
 	Checkbox,
 	Container,
 	FormGroup,
-	Heading,
 	Spacer,
 } from '@viaa/avo2-components';
 
@@ -45,11 +45,11 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
 				<div className="c-content">
-					<Heading type="h2">
+					<BlockHeading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in">
 							Geef hieronder je lerarenkaart- of stamboeknummer in.
 						</Trans>
-					</Heading>
+					</BlockHeading>
 					<p>
 						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___zo-gaan-wij-na-of-jij-een-actieve-lesgever-bent-aan-een-vlaamse-erkende-onderwijsinstelling">
 							Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende

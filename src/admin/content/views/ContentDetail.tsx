@@ -4,12 +4,12 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import {
 	Avatar,
+	BlockHeading,
 	Button,
 	Container,
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
-	Heading,
 	Navbar,
 	Spacer,
 	Table,
@@ -74,18 +74,18 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 						<Container mode="horizontal">
 							{!!contentItem.description && (
 								<Spacer margin="bottom-large">
-									<Heading type="h4">
+									<BlockHeading type="h4">
 										<Trans i18nKey="admin/content/views/content-detail___omschrijving">
 											Omschrijving:
 										</Trans>
-									</Heading>
+									</BlockHeading>
 									<p>{contentItem.description}</p>
 								</Spacer>
 							)}
 
-							<Heading type="h4">
+							<BlockHeading type="h4">
 								<Trans i18nKey="admin/content/views/content-detail___metadata">Metadata:</Trans>
-							</Heading>
+							</BlockHeading>
 							<Table horizontal variant="invisible">
 								<tbody>
 									<tr>

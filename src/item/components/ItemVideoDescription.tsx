@@ -11,13 +11,13 @@ import React, {
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
+	BlockHeading,
 	Button,
 	Column,
 	convertToHtml,
 	ExpandableContainer,
 	FlowPlayer,
 	Grid,
-	Heading,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -168,19 +168,19 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			}}
 		>
 			{showTitle ? (
-				<Heading
+				<BlockHeading
 					type="h3"
 					className={onTitleClicked ? 'u-clickable' : ''}
 					onClick={onTitleClicked || (() => {})}
 				>
 					{title}
-				</Heading>
+				</BlockHeading>
 			) : (
-				<Heading type="h4">
+				<BlockHeading type="h4">
 					<Trans i18nKey="item/components/item-video-description___beschrijving">
 						Beschrijving
 					</Trans>
-				</Heading>
+				</BlockHeading>
 			)}
 			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
 			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
