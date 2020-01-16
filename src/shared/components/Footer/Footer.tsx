@@ -8,18 +8,15 @@ import { Avo } from '@viaa/avo2-types';
 import { connect } from 'react-redux';
 import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
 import { AppState } from '../../../store';
-import {
-	BooleanDictionary,
-	mapNavElementsToNavigationItems,
-	renderNavLinkItem,
-} from '../../helpers/navigation';
+import { BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import {
 	AppContentNavElement,
 	getNavigationItems,
 	NavItemMap,
 } from '../../services/navigation-items-service';
-import { NavigationItem } from '../../types';
+import { NavigationItemInfo } from '../../types';
 
+import NavigationItem from '../Navigation/NavigationItem';
 import './Footer.scss';
 
 export interface FooterProps extends RouteComponentProps {
@@ -40,41 +37,36 @@ const Footer: FunctionComponent<FooterProps> = ({ history, location, match, user
 		});
 	}, [user]);
 
-	const getPrimaryNavigationItems = (): NavigationItem[] => {
+	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
 		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);
 	};
 
-	const getSecondaryNavigationItems = (): NavigationItem[] => {
+	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
 		return mapNavElementsToNavigationItems(secondaryNavItems, history, location, match, t);
+	};
+
+	const mapNavItems = (navItems: NavigationItemInfo[]) => {
+		return navItems.map(item => (
+			<NavigationItem
+				key={item.key}
+				item={item}
+				className="c-nav__item c-nav__item--i"
+				exact={item.location === '/'}
+				showActive={false}
+				areDropdownsOpen={areDropdownsOpen}
+				setDropdownsOpen={setDropdownsOpen}
+				history={history}
+				location={location}
+				match={match}
+			/>
+		));
 	};
 
 	return (
 		<footer className="c-global-footer">
 			<Container mode="horizontal" className="c-global-footer__inner">
-				<ul>
-					{getPrimaryNavigationItems().map(item =>
-						renderNavLinkItem(
-							item,
-							'c-nav__item c-nav__item--i',
-							true,
-							false,
-							areDropdownsOpen,
-							setDropdownsOpen
-						)
-					)}
-				</ul>
-				<ul>
-					{getSecondaryNavigationItems().map(item =>
-						renderNavLinkItem(
-							item,
-							'c-nav__item c-nav__item--i',
-							true,
-							false,
-							areDropdownsOpen,
-							setDropdownsOpen
-						)
-					)}
-				</ul>
+				<ul>{mapNavItems(getPrimaryNavigationItems())}</ul>
+				<ul>{mapNavItems(getSecondaryNavigationItems())}</ul>
 			</Container>
 		</footer>
 	);

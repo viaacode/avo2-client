@@ -2,8 +2,7 @@ import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { getEnv } from '../helpers';
-import { CustomError } from '../helpers/error';
+import { CustomError, getEnv } from '../helpers';
 
 export const fetchCities = async (): Promise<string[]> => {
 	let url: string | undefined = undefined;

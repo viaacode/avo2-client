@@ -26,20 +26,17 @@ import {
 import { selectUser } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
-import {
-	getLocation,
-	mapNavElementsToNavigationItems,
-	renderNavLinkItem,
-} from '../../helpers/navigation';
+import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import {
 	AppContentNavElement,
 	getNavigationItems,
 	NavItemMap,
 } from '../../services/navigation-items-service';
 import toastService from '../../services/toast-service';
-import { NavigationItem } from '../../types';
+import { NavigationItemInfo } from '../../types';
 
 import './Navigation.scss';
+import NavigationItem from './NavigationItem';
 
 export interface NavigationProps extends RouteComponentProps {
 	user: Avo.User.User | undefined;
@@ -74,15 +71,32 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		});
 	}, [user]);
 
-	const getPrimaryNavigationItems = (): NavigationItem[] => {
+	const mapNavItems = (navItems: NavigationItemInfo[]) => {
+		return navItems.map(item => (
+			<NavigationItem
+				key={item.key}
+				item={item}
+				className="c-nav__item c-nav__item--i"
+				exact={item.location === '/'}
+				showActive={false}
+				areDropdownsOpen={areDropdownsOpen}
+				setDropdownsOpen={setDropdownsOpen}
+				history={history}
+				location={location}
+				match={match}
+			/>
+		));
+	};
+
+	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
 		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);
 	};
 
-	const getSecondaryNavigationItems = (): NavigationItem[] => {
+	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
 		if (!secondaryNavItems || !secondaryNavItems.length) {
 			return [];
 		}
-		const dynamicNavItems: NavigationItem[] = mapNavElementsToNavigationItems(
+		const dynamicNavItems: NavigationItemInfo[] = mapNavElementsToNavigationItems(
 			secondaryNavItems,
 			history,
 			location,
@@ -90,7 +104,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			t
 		);
 
-		const logoutNavItem = last(dynamicNavItems) as NavigationItem;
+		const logoutNavItem = last(dynamicNavItems) as NavigationItemInfo;
 
 		if (
 			(user && logoutNavItem.location !== APP_PATH.LOGOUT) ||
@@ -186,36 +200,14 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 							</ToolbarItem>
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-has-space">
-									<ul className="c-nav">
-										{getPrimaryNavigationItems().map(item =>
-											renderNavLinkItem(
-												item,
-												'c-nav__item c-nav__item--i',
-												item.location === '/',
-												false,
-												areDropdownsOpen,
-												setDropdownsOpen
-											)
-										)}
-									</ul>
+									<ul className="c-nav">{mapNavItems(getPrimaryNavigationItems())}</ul>
 								</div>
 							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-authentication">
-									<ul className="c-nav">
-										{getSecondaryNavigationItems().map(item =>
-											renderNavLinkItem(
-												item,
-												'c-nav__item c-nav__item--i',
-												false,
-												false,
-												areDropdownsOpen,
-												setDropdownsOpen
-											)
-										)}
-									</ul>
+									<ul className="c-nav">{mapNavItems(getSecondaryNavigationItems())}</ul>
 								</div>
 							</ToolbarItem>
 							<ToolbarItem>
@@ -235,30 +227,8 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			{isMobileMenuOpen ? (
 				<Container mode="horizontal">
 					<Container mode="vertical">
-						<ul className="c-nav-mobile">
-							{getPrimaryNavigationItems().map(item =>
-								renderNavLinkItem(
-									item,
-									'c-nav-mobile__item',
-									item.location === '/',
-									false,
-									areDropdownsOpen,
-									setDropdownsOpen
-								)
-							)}
-						</ul>
-						<ul className="c-nav-mobile">
-							{getSecondaryNavigationItems().map(item =>
-								renderNavLinkItem(
-									item,
-									'c-nav-mobile__item',
-									false,
-									false,
-									areDropdownsOpen,
-									setDropdownsOpen
-								)
-							)}
-						</ul>
+						<ul className="c-nav-mobile">{mapNavItems(getPrimaryNavigationItems())}</ul>
+						<ul className="c-nav-mobile">{mapNavItems(getSecondaryNavigationItems())}</ul>
 					</Container>
 				</Container>
 			) : (
@@ -267,18 +237,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 						<Toolbar>
 							<ToolbarLeft>
 								<div className="c-toolbar__item">
-									<ul className="c-nav">
-										{getPrimaryNavigationItems().map(item =>
-											renderNavLinkItem(
-												item,
-												'c-nav__item c-nav__item--i',
-												false,
-												false,
-												areDropdownsOpen,
-												setDropdownsOpen
-											)
-										)}
-									</ul>
+									<ul className="c-nav">{mapNavItems(getPrimaryNavigationItems())}</ul>
 								</div>
 							</ToolbarLeft>
 						</Toolbar>

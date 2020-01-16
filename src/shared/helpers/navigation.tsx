@@ -4,16 +4,14 @@ import { isNil, kebabCase, sortBy } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent } from 'react';
 import { match } from 'react-router';
-import { NavLink } from 'react-router-dom';
-
-import { Dropdown, DropdownButton, DropdownContent, Icon } from '@viaa/avo2-components';
 
 import LoginOptionsDropdown from '../../authentication/components/LoginOptionsDropdown';
 import PupilOrTeacherDropdown from '../../authentication/components/PupilOrTeacherDropdown';
 import { APP_PATH } from '../../constants';
 import { AppContentNavElement } from '../services/navigation-items-service';
-import { NavigationItem } from '../types';
+import { NavigationItemInfo } from '../types';
 import { buildLink } from './link';
+import NavigationItem from '../components/Navigation/NavigationItem';
 
 const NAVIGATION_COMPONENTS: { [componentLabel: string]: FunctionComponent<any> } = {
 	'<PupilOrTeacherDropdown>': PupilOrTeacherDropdown,
@@ -51,9 +49,9 @@ export function mapNavElementsToNavigationItems(
 	location: H.Location,
 	match: match<any>,
 	t: TFunction
-): NavigationItem[] {
+): NavigationItemInfo[] {
 	return sortBy(navItems, 'position').map(
-		(navItem: AppContentNavElement): NavigationItem => {
+		(navItem: AppContentNavElement): NavigationItemInfo => {
 			const location: string = getLocation(navItem, t);
 			if (NAVIGATION_COMPONENTS[location]) {
 				// Show component when clicking this nav item
@@ -74,69 +72,5 @@ export function mapNavElementsToNavigationItems(
 				key: `nav-item-${navItem.id}`,
 			};
 		}
-	);
-}
-
-const setDropdownOpen = (
-	label: string,
-	isOpen: boolean,
-	areDropdownsOpen: BooleanDictionary,
-	setDropdownsOpen: (areDropdownsOpen: BooleanDictionary) => void
-): void => {
-	const openStates = { ...areDropdownsOpen };
-	openStates[label] = isOpen;
-	setDropdownsOpen(openStates);
-};
-
-export function renderNavLinkItem(
-	item: NavigationItem,
-	className: string,
-	exact: boolean,
-	showActive: boolean,
-	areDropdownsOpen: BooleanDictionary,
-	setDropdownsOpen: (areDropdownsOpen: BooleanDictionary) => void
-) {
-	return (
-		<li key={item.key}>
-			{!!item.location && !item.location.includes('//') && (
-				<NavLink
-					to={item.location}
-					className={className}
-					activeClassName={showActive ? 'c-nav__item--active' : undefined}
-					exact={exact}
-				>
-					{item.icon && <Icon name={item.icon} />}
-					{item.label}
-				</NavLink>
-			)}
-			{!!item.location && item.location.includes('//') && (
-				<a href={item.location} className={className} target={item.target || '_blank'}>
-					{item.icon && <Icon name={item.icon} />}
-					{item.label}
-				</a>
-			)}
-			{!!item.component && (
-				<Dropdown
-					menuWidth="fit-content"
-					placement="bottom-end"
-					isOpen={areDropdownsOpen[item.key] || false}
-					onOpen={() => setDropdownOpen(item.key, true, areDropdownsOpen, setDropdownsOpen)}
-					onClose={() => setDropdownOpen(item.key, false, areDropdownsOpen, setDropdownsOpen)}
-				>
-					<DropdownButton>
-						<div className={`${className} u-clickable`}>
-							{item.icon && <Icon name={item.icon} />}
-							{item.label}
-						</div>
-					</DropdownButton>
-					<DropdownContent>
-						{React.cloneElement(item.component, {
-							closeDropdown: () =>
-								setDropdownOpen(item.key, false, areDropdownsOpen, setDropdownsOpen),
-						})}
-					</DropdownContent>
-				</Dropdown>
-			)}
-		</li>
 	);
 }

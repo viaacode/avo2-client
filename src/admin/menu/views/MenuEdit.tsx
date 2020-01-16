@@ -35,7 +35,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
 	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
 	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
-	const [formErrors, setFormErrors] = useState<Partial<MenuEditFormErrorState>>({});
+	const [formErrors, setFormErrors] = useState<MenuEditFormErrorState>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
@@ -51,7 +51,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			} else {
 				// Go back to overview if no menu items are present
 				toastService.danger(
-					t(`Er werden geen navigatie items gevonden voor {menuName}`, { menuName })
+					t(`Er werden geen navigatie items gevonden voor {{menuName}}`, { menuName })
 				);
 				history.push(MENU_PATH.MENU);
 			}
@@ -197,7 +197,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	};
 
 	const handleValidation = (): boolean => {
-		const errors: Partial<MenuEditFormErrorState> = {};
+		const errors: MenuEditFormErrorState = {};
 
 		if (!menuParentId && !menuForm.placement) {
 			errors.placement = t('admin/menu/views/menu-edit___navigatie-naam-is-verplicht');

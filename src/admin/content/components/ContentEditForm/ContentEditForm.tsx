@@ -14,11 +14,10 @@ import {
 } from '@viaa/avo2-components';
 
 import { ValueOf } from '../../../../shared/types';
+import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
 import { ContentEditFormState } from '../../content.types';
-
 import './ContentEditForm.scss';
-import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
 interface ContentTypeOptions {
 	label: string;

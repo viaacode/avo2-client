@@ -86,7 +86,7 @@ export function redirectToServerUnlinkAccount(location: Location, idpType: Avo.A
  **/
 export function redirectToExternalPage(link: string, target: '_blank' | string | null | undefined) {
 	if (target === '_blank') {
-		window.open(link, '_blank');
+		window.open(link, '_blank', 'noopener,noreferrer');
 	} else {
 		window.location.href = link;
 	}

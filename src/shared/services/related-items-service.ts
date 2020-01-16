@@ -2,8 +2,7 @@ import { stringify } from 'querystring';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { getEnv } from '../helpers/env';
-import { CustomError } from '../helpers/error';
+import { CustomError, getEnv } from '../helpers';
 
 export async function getRelatedItems(
 	id: string | number,

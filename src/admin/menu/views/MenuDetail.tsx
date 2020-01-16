@@ -67,7 +67,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			update: ApolloCacheManager.clearNavElementsCache,
 		})
 			.then(() => {
-				setTimeout(refetchMenuItems); // Wait for cache to be fully cleared
+				refetchMenuItems();
 				toastService.success('Het navigatie item is succesvol verwijderd', false);
 			})
 			.catch(err => {

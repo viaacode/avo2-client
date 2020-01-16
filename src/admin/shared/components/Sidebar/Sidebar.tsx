@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 
-import { NavigationItem } from '../../../../shared/types';
+import { NavigationItemInfo } from '../../../../shared/types';
 
 import { Trans } from 'react-i18next';
 import './Sidebar.scss';
@@ -11,7 +11,7 @@ interface SidebarProps {
 	className?: string;
 	headerLink?: string;
 	light?: boolean;
-	navItems?: NavigationItem[];
+	navItems?: NavigationItemInfo[];
 }
 
 const Sidebar: FunctionComponent<SidebarProps> = ({

@@ -1,5 +1,4 @@
-import { getEnv } from '../helpers';
-import { CustomError } from '../helpers/error';
+import { CustomError, getEnv } from '../helpers';
 
 export type PlayerTicketResponse = {
 	url: string;

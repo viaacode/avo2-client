@@ -1,4 +1,3 @@
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
@@ -10,8 +9,8 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { DataQueryComponent } from '../../shared/components';
 import { GET_CONTENT_PAGE_BY_PATH } from '../content-page.gql';
 
-import { parseContentBlocks } from '../../admin/content-block/content-block.services';
 import { ContentBlockConfig } from '../../admin/content-block/content-block.types';
+import { parseContentBlocks } from '../../admin/content-block/helpers';
 import './ContentPage.scss';
 
 interface ContentPageDetailProps extends DefaultSecureRouteProps {}
