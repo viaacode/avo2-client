@@ -102,7 +102,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					err,
 					{ user, permission: PermissionNames.ADD_HYPERLINK_COLLECTIONS }
 				);
-				toastService.danger(t('Het controleren van je account rechten is mislukt'));
+				toastService.danger(
+					t(
+						'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt'
+					)
+				);
 			});
 	}, [user, t]);
 

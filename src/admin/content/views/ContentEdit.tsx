@@ -22,13 +22,13 @@ import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
-import { parseContentBlocks } from '../../content-block/content-block.services';
 import {
 	ContentBlockConfig,
 	ContentBlockStateOptions,
 	ContentBlockStateType,
 	ContentBlockType,
 } from '../../content-block/content-block.types';
+import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
@@ -52,8 +52,6 @@ import './ContentEdit.scss';
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
-	const [t] = useTranslation();
-
 	const { id } = match.params;
 	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
@@ -64,6 +62,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+
+	const [t] = useTranslation();
 
 	const [contentForm, setContentForm, isLoading] = useContentItem(history, id);
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
@@ -157,6 +157,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				};
 				const updatedContent = await ContentService.updateContent(
 					contentBody,
+					contentBlocks,
 					contentBlockConfigs,
 					triggerContentUpdate
 				);
@@ -211,8 +212,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
-	const handleCSave = (
-		// TODO: FIX NAME
+	const handleStateSave = (
 		index: number,
 		formGroupType: ContentBlockStateType,
 		formGroupState: ContentBlockStateOptions,
@@ -240,7 +240,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
 						onAdd={addContentBlockConfig}
-						onSave={handleCSave}
+						onSave={handleStateSave}
 						addComponentToState={addComponentToState}
 					/>
 				);

@@ -5,13 +5,13 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
 import {
+	BlockHeading,
 	Button,
 	Container,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
 	Flex,
-	Heading,
 	MenuSearchResultContent,
 	MenuSearchResultItemInfo,
 	Spacer,
@@ -118,11 +118,11 @@ const Home: FunctionComponent<HomeProps> = ({
 			<Container mode="vertical" background="alt">
 				<Container mode="horizontal" size="medium">
 					<Spacer>
-						<Heading type="h2" className="u-text-center">
+						<BlockHeading type="h2" className="u-text-center">
 							<Trans i18nKey="home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken">
 								Vind alles wat je nodig hebt om je lessen te verrijken.
 							</Trans>
-						</Heading>
+						</BlockHeading>
 						<div className="u-text-center">
 							<Spacer margin="large">
 								<Dropdown
@@ -197,18 +197,17 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 			filters?: Partial<Avo.Search.Filters>,
 			filterOptionSearch?: Partial<Avo.Search.FilterOption>
 		) =>
-			dispatch(getSearchResults(
-				orderProperty,
-				orderDirection,
-				from,
-				size,
-				filters,
-				filterOptionSearch
-			) as any),
+			dispatch(
+				getSearchResults(
+					orderProperty,
+					orderDirection,
+					from,
+					size,
+					filters,
+					filterOptionSearch
+				) as any
+			),
 	};
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

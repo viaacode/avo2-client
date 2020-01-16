@@ -9,9 +9,7 @@ import {
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
 import {
-	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockState,
 	ContentBlockStateOptions,
 	ContentBlockStateType,
 	ContentBlockType,
@@ -46,7 +44,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		`${name}-${blockIndex}-${stateIndex}`;
 
 	const handleAddContentBlock = (configType: ContentBlockType) => {
-		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]();
+		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](contentBlockConfigs.length);
 		const contentBlockFormKey = getFormKey(newConfig.name, contentBlockConfigs.length);
 
 		// Update content block configs
@@ -57,8 +55,8 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	};
 
 	// Render
-	const renderContentBlockForms = () =>
-		contentBlockConfigs.map((contentBlockConfig, index) => {
+	const renderContentBlockForms = () => {
+		return contentBlockConfigs.map((contentBlockConfig, index) => {
 			const contentBlockFormKey = getFormKey(contentBlockConfig.name, index);
 
 			return (
@@ -82,30 +80,22 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 				/>
 			);
 		});
+	};
 
-	const renderBlockPreview = (
-		formGroupState: ContentBlockComponentState,
-		blockState: ContentBlockState,
-		blockIndex: number,
-		stateIndex?: number
-	) => (
-		<ContentBlockPreview
-			key={getFormKey(blockState.blockType, blockIndex, stateIndex)}
-			componentState={formGroupState}
-			blockState={blockState}
-		/>
-	);
-
-	const renderBlockPreviews = () =>
-		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
+	const renderBlockPreviews = () => {
+		return contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
 			const { components, block } = contentBlockConfig;
+			const contentBlockPreviewKey = getFormKey(block.state.blockType, blockIndex);
 
-			return Array.isArray(components.state)
-				? components.state.map((formGroupState, stateIndex) =>
-						renderBlockPreview(formGroupState, block.state, blockIndex, stateIndex)
-				  )
-				: renderBlockPreview(components.state, block.state, blockIndex);
+			return (
+				<ContentBlockPreview
+					key={contentBlockPreviewKey}
+					componentState={components.state}
+					blockState={block.state}
+				/>
+			);
 		});
+	};
 
 	return (
 		<Flex className="c-content-edit-view__content">

@@ -23,7 +23,6 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-// TODO: Split up in FragmentDetailList and FragmentDetail component.
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragment,
 	showDescription,
@@ -53,7 +52,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	return collectionFragment.item_meta ? (
 		<ItemVideoDescription
 			showDescription={showDescription}
-			showTitle={true}
+			showTitle
 			itemMetaData={collectionFragment.item_meta}
 			showTitleOnVideo={false}
 			title={getFragmentProperty(
@@ -75,7 +74,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	) : (
 		<BlockIntro
 			text={collectionFragment.custom_description || ''}
-			subtitle={collectionFragment.custom_title || ''}
+			title={collectionFragment.custom_title || ''}
 		/>
 	);
 };

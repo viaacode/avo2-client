@@ -23,11 +23,13 @@ export const GET_COLLECTION_BY_ID = gql`
 					title
 					description
 					thumbnail_path
+					issued
 					type {
 						id
 						label
 					}
 					organisation {
+						name
 						logo_url
 					}
 				}
@@ -169,11 +171,13 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 					title
 					description
 					thumbnail_path
+					issued
 					type {
 						id
 						label
 					}
 					organisation {
+						name
 						logo_url
 					}
 				}

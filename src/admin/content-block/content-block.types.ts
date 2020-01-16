@@ -27,6 +27,7 @@ export interface ContentBlockMeta {
 }
 
 export interface ContentBlockConfig {
+	id?: number;
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
@@ -77,10 +78,15 @@ export enum ContentBlockEditor {
 	WYSIWYG = 'WYSIWYG',
 }
 
+export interface ContentBlockFormError {
+	[key: string]: string[];
+}
+
 // CONTENT BLOCKS
 export interface DefaultContentBlockState {
 	backgroundColor: ContentBlockBackgroundColor;
 	blockType: ContentBlockType;
+	position: number;
 }
 
 export enum ContentBlockBackgroundColor {
