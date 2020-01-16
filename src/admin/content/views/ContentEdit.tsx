@@ -111,6 +111,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
+	const reorderContentBlockConfig = (configIndex: number, indexUpdate: number) => {
+		dispatch({
+			type: ContentEditActionType.REORDER_CONTENT_BLOCK_CONFIG,
+			payload: { configIndex, indexUpdate },
+		});
+	};
+
 	const openDeleteModal = (configIndex: number) => {
 		setIsDeleteModalOpen(true);
 		setConfigToDelete(configIndex);
@@ -256,6 +263,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						contentBlockConfigs={contentBlockConfigs}
 						onAdd={addContentBlockConfig}
 						onRemove={openDeleteModal}
+						onReorder={reorderContentBlockConfig}
 						onSave={handleStateSave}
 					/>
 				);

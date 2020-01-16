@@ -9,6 +9,19 @@ export const CONTENT_EDIT_INITIAL_STATE = (
 	contentBlockConfigs,
 });
 
+const repositionContentBlockConfigs = (updatedConfigs: ContentBlockConfig[]) => {
+	return updatedConfigs.map((config, position) => ({
+		...config,
+		block: {
+			...config.block,
+			state: {
+				...config.block.state,
+				position,
+			},
+		},
+	}));
+};
+
 export const contentEditReducer = (initialState: ContentEditState) =>
 	createReducer<ContentEditState>(initialState, {
 		[ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG]: (state, action: ContentEditAction) => ({
@@ -18,21 +31,28 @@ export const contentEditReducer = (initialState: ContentEditState) =>
 		[ContentEditActionType.REMOVE_CONTENT_BLOCK_CONFIG]: (state, action: ContentEditAction) => {
 			// Clone config
 			const clonedConfigs = [...state.contentBlockConfigs];
-
 			// Remove item from array
 			clonedConfigs.splice(action.payload, 1);
-
 			// Update position properties with new index
-			const repositionedConfigs = clonedConfigs.map((config, position) => ({
-				...config,
-				block: {
-					...config.block,
-					state: {
-						...config.block.state,
-						position,
-					},
-				},
-			}));
+			const repositionedConfigs = repositionContentBlockConfigs(clonedConfigs);
+
+			return {
+				...state,
+				contentBlockConfigs: repositionedConfigs,
+			};
+		},
+		[ContentEditActionType.REORDER_CONTENT_BLOCK_CONFIG]: (state, action: ContentEditAction) => {
+			const { configIndex, indexUpdate } = action.payload;
+			const newIndex = configIndex + indexUpdate;
+
+			// Clone config
+			const clonedConfigs = [...state.contentBlockConfigs];
+			// Get updated item and remove it from copy
+			const updatedConfig = clonedConfigs.splice(configIndex, 1)[0];
+			// Add item back at new index
+			clonedConfigs.splice(newIndex, 0, updatedConfig);
+			// Update position properties with new index
+			const repositionedConfigs = repositionContentBlockConfigs(clonedConfigs);
 
 			return {
 				...state,
