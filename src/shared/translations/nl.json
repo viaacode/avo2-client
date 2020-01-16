@@ -1,5 +1,7 @@
 {
-  "admin/content-block/components/content-block-form/content-block-form___voeg-label-to": "Voeg {{label}} to",
+  "admin/content-block/components/content-block-form/content-block-form___bewerk-content-block": "Bewerk content block",
+  "admin/content-block/components/content-block-form/content-block-form___verwijder-content-block": "Verwijder content block",
+  "admin/content-block/components/content-block-form/content-block-form___voeg-label-toe": "Voeg {{label}} toe",
   "admin/content-block/content-block___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-blocks": "Er ging iets mis tijdens het ophalen van de content blocks",
   "admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks": "Er ging iets mis tijdens het opslaan van de content blocks",
   "admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks": "Er ging iets mis tijdens het updaten van de content blocks",

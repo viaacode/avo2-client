@@ -24,11 +24,8 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { toEnglishContentType } from '../../collection/collection.types';
 import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
-import {
-	generateContentLinkString,
-	generateSearchLinkString,
-	useDebounce,
-} from '../../shared/helpers';
+import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
+import { useDebounce } from '../../shared/hooks';
 import toastService from '../../shared/services/toast-service';
 
 import './Home.scss';
