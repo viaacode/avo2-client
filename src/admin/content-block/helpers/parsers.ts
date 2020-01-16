@@ -46,7 +46,10 @@ export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): Content
 			id,
 			components: {
 				...cleanConfig.components,
-				state: get(variables, 'componentState', cleanConfig.components.state),
+				state: {
+					...cleanConfig.components.state,
+					...get(variables, 'componentState', {}),
+				},
 			},
 			block: {
 				...cleanConfig.block,
