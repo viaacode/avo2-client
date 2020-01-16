@@ -23,7 +23,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { getEnv, parseDuration } from '../../shared/helpers';
+import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService from '../../shared/services/toast-service';
@@ -151,7 +151,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				poster={itemMetaData.thumbnail_path}
 				title={itemMetaData.title}
 				onInit={initFlowPlayer}
-				subtitles={['Publicatiedatum', 'Aanbieder']}
+				subtitles={[reorderDate(itemMetaData.issued || null, '.'), itemMetaData.organisation.name]}
 				token={getEnv('FLOW_PLAYER_TOKEN')}
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
