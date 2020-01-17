@@ -4,8 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { isMediaFragment } from '../../collection/collection.helpers';
 import { ContentTypeString } from '../../collection/collection.types';
-import { getEnv } from '../helpers/env';
-import { toSeconds } from '../helpers/parsers/duration';
+import { CustomError, getEnv, toSeconds } from '../helpers';
 
 /**
  * Get the first video still after the provided start times for all provided videos
@@ -29,7 +28,7 @@ export const getVideoStills = async (
 
 		return await response.json();
 	} catch (err) {
-		throw new Error('Failed to get video stills');
+		throw new CustomError('Failed to get video stills', err, { stillRequests });
 	}
 };
 

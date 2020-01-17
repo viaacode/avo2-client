@@ -31,7 +31,9 @@ export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => 
 	description: '',
 	icon: '',
 	label: '',
-	link: '',
+	external_link: '',
+	link_target: '_self',
+	group_access: [],
 });
 
 export const PAGE_TYPES_LANG = {

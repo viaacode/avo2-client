@@ -171,7 +171,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					icon: 'alert-triangle',
 				});
 			});
-	}, [collectionId, relatedCollections, user]);
+	}, [collectionId, relatedCollections, t, user]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions)) {

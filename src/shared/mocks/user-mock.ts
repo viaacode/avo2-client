@@ -32,6 +32,7 @@ const mockUser: Avo.User.User = {
 		subjects: ['lichamelijke opvoeding', 'sociale vaardigheden'],
 		organizations: [{ organizationName: 'test school', unitAddress: 'test straat' }],
 		user: {} as any,
+		userGroupIds: [],
 		permissions: [],
 	},
 };

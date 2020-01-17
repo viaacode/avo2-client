@@ -49,7 +49,7 @@ export const fetchContentItems = async (limit: number): Promise<Avo.Content.Cont
 	}
 };
 
-export const fecthContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
+export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
 		const contentTypes: ContentTypesResponse[] | null = get(

@@ -2,6 +2,8 @@
  * Converts a duration in the form: 00:00:00 to number of seconds
  * @param duration
  */
+import { CustomError } from '../error';
+
 export function parseDuration(duration: string) {
 	const parts = duration.split(':');
 	return parseInt(parts[0], 10) * 3600 + parseInt(parts[1], 10) * 60 + parseInt(parts[2], 10);
@@ -28,7 +30,7 @@ export function toSeconds(
 	const durationParts = duration.split(':');
 	try {
 		if (durationParts.length !== 3) {
-			throw new Error(
+			throw new CustomError(
 				`Kon het tijdsinterval niet analyseren: "${duration}". Verwacht formaat: uu:mm:ss`
 			);
 		}
@@ -41,8 +43,10 @@ export function toSeconds(
 		if (silent) {
 			return null;
 		}
-		throw new Error(
-			`Kon het tijdsinterval niet analyseren: "${duration}". Verwacht formaat: uu:mm:ss`
+		throw new CustomError(
+			`Kon het tijdsinterval niet analyseren: "${duration}". Verwacht formaat: uu:mm:ss`,
+			err,
+			{ duration }
 		);
 	}
 }

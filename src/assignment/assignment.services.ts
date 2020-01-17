@@ -3,8 +3,10 @@ import { cloneDeep, get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { CustomError } from '../shared/helpers/error';
 import { ApolloCacheManager } from '../shared/services/data-service';
 import toastService from '../shared/services/toast-service';
+
 import { AssignmentLayout } from './assignment.types';
 
 interface AssignmentProperty {
@@ -76,7 +78,7 @@ export const deleteAssignment = async (triggerAssignmentDelete: any, id: number 
 		});
 	} catch (err) {
 		console.error(err);
-		throw new Error('Failed to delete assignment');
+		throw new CustomError('Failed to delete assignment', err, { id });
 	}
 };
 
@@ -106,7 +108,7 @@ export const updateAssignment = async (
 
 		if (!response || !response.data) {
 			console.error('assignment update returned empty response', response);
-			throw new Error('Het opslaan van de opdracht is mislukt');
+			throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
 		}
 
 		return assignment as Avo.Assignment.Assignment;

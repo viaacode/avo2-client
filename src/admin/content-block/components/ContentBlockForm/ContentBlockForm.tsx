@@ -222,7 +222,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				<AccordionBody>
 					{renderFormGroups(components, 'components')}
 					{underLimit && renderAddButton(label)}
-					{renderFormGroups(block, 'block')}/>
+					{renderFormGroups(block, 'block')}
 				</AccordionBody>
 			</Accordion>
 		);

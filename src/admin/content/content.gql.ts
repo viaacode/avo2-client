@@ -22,6 +22,7 @@ export const GET_CONTENT = gql`
 			is_protected
 			is_public
 			is_published
+			path
 			profile {
 				user: usersByuserId {
 					first_name
@@ -50,6 +51,7 @@ export const GET_CONTENT_BY_ID = gql`
 			is_protected
 			is_public
 			is_published
+			path
 			profile {
 				user: usersByuserId {
 					first_name

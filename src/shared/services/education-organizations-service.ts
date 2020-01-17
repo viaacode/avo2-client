@@ -2,7 +2,7 @@ import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { getEnv } from '../helpers';
+import { CustomError, getEnv } from '../helpers';
 
 export const fetchCities = async (): Promise<string[]> => {
 	let url: string | undefined = undefined;
@@ -19,8 +19,7 @@ export const fetchCities = async (): Promise<string[]> => {
 
 		return await response.json();
 	} catch (err) {
-		console.error('Failed to get cities', err, { url });
-		throw new Error('Failed to get cities');
+		throw new CustomError('Failed to get cities', err, { url });
 	}
 };
 
@@ -45,8 +44,6 @@ export const fetchEducationOrganizations = async (
 
 		return await response.json();
 	} catch (err) {
-		const message = 'Failed to get educational organizations';
-		console.error(message, err, { url });
-		throw new Error(message);
+		throw new CustomError('Failed to get educational organizations', err, { url });
 	}
 };

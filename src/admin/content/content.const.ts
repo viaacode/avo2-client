@@ -35,6 +35,7 @@ export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
 export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	title: '',
 	description: '',
+	path: '',
 	contentType: '',
 	publishAt: '',
 	depublishAt: '',
