@@ -1,5 +1,7 @@
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
+export type ContentType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
+
 export enum PageType {
 	Create = 'create',
 	Edit = 'edit',
@@ -48,4 +50,16 @@ export enum ContentEditActionType {
 export interface ContentEditAction {
 	type: ContentEditActionType;
 	payload: any;
+}
+
+export interface PickerTypeOption<T = string> {
+	value: T;
+	label: string;
+	disabled?: boolean;
+	fetch: (limit: number) => any;
+}
+
+export interface PickerItem {
+	type: ContentType;
+	value: string;
 }

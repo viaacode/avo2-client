@@ -26,6 +26,8 @@ import {
 } from '../../content-block.types';
 import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockFormGroup';
 
+import { ContentPicker } from '../../../content/components/ContentPicker/ContentPicker';
+
 import './ContentBlockForm.scss';
 
 interface ContentBlockFormProps {
@@ -223,6 +225,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					{renderFormGroups(components, 'components')}
 					{underLimit && renderAddButton(label)}
 					{renderFormGroups(block, 'block')}
+					<ContentPicker selectableTypes={['content']} onSelect={value => console.log(value)} />
 				</AccordionBody>
 			</Accordion>
 		);
