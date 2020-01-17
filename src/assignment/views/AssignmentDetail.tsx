@@ -184,7 +184,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							});
 							// Show toast instead of showing error using the loadingInfo
 							// since we still want to show the assignment without the content if the content fails to load
-							if (err === 'NOT_FOUND') {
+							if (err.message === 'NOT_FOUND') {
 								toastService.danger(
 									t(
 										'assignment/views/assignment-detail___de-opdracht-inhoud-werdt-niet-terug-gevonden'
@@ -257,7 +257,15 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			t,
 			t('assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken')
 		);
-	}, [match.params, user, isOwnerOfAssignment, triggerInsertAssignmentResponse, t]);
+	}, [
+		loadingInfo.message,
+		loadingInfo.state,
+		match.params,
+		user,
+		isOwnerOfAssignment,
+		triggerInsertAssignmentResponse,
+		t,
+	]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {

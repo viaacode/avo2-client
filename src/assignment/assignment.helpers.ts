@@ -23,7 +23,7 @@ export const getAssignmentContent = async (
 		);
 
 		if (!newAssignmentContent) {
-			throw 'NOT_FOUND';
+			throw new Error('NOT_FOUND');
 		}
 
 		return newAssignmentContent;

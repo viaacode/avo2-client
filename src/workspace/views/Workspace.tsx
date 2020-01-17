@@ -1,5 +1,5 @@
 import { get, isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -60,12 +60,69 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 	const [permissions, setPermissions] = useState<{ [tabId: string]: boolean }>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
-	// Methods
-	const goToTab = (id: ReactText) => {
-		navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: id });
-		setTabId(String(id));
-	};
+	// Memoized callbacks
+	const addTabIfUserHasPerm = useCallback(
+		(tabId: string, obj: any): any => {
+			if (permissions[tabId]) {
+				return { [tabId]: obj };
+			}
+			return {};
+		},
+		[permissions]
+	);
 
+	// Make map for available tab views
+	const getTabs = useCallback((): TabViewMap => {
+		return {
+			...addTabIfUserHasPerm(COLLECTIONS_ID, {
+				component: () => (
+					<CollectionOverview
+						numberOfCollections={tabCounts[COLLECTIONS_ID]}
+						history={history}
+						match={match}
+						user={user}
+						{...rest}
+					/>
+				),
+				// TODO: DISABLED_FEATURE filter
+				// filter: {
+				// 	label: 'Auteur',
+				// 	options: [
+				// 		{ id: 'all', label: 'Alles' },
+				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
+				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
+				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
+				// 	],
+				// },
+			}),
+			...addTabIfUserHasPerm(FOLDERS_ID, {
+				component: () => <span>TODO Mappen</span>,
+				filter: {
+					label: t('workspace/views/workspace___filter-op-label'),
+					options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
+				},
+			}),
+			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
+				component: () => (
+					<AssignmentOverview history={history} match={match} user={user} {...rest} />
+				),
+			}),
+			...addTabIfUserHasPerm(BOOKMARKS_ID, {
+				component: () => <Bookmarks />,
+			}),
+		};
+	}, [addTabIfUserHasPerm, history, match, rest, t, tabCounts, user]);
+
+	const getTabId = useCallback(() => {
+		return tabId || Object.keys(getTabs())[0];
+	}, [getTabs, tabId]);
+
+	// Get active tab based on above map with tabId
+	const getActiveTab = useCallback(() => {
+		return getTabs()[getTabId()];
+	}, [getTabId, getTabs]);
+
+	// Effects
 	useEffect(() => {
 		Promise.all([
 			dataService.query({
@@ -121,64 +178,12 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 				});
 			}
 		}
-	}, [permissions]);
+	}, [getActiveTab, permissions, t]);
 
-	const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
-		if (permissions[tabId]) {
-			return { [tabId]: obj };
-		}
-		return {};
-	};
-
-	// Make map for available tab views
-	const getTabs = (): TabViewMap => {
-		return {
-			...addTabIfUserHasPerm(COLLECTIONS_ID, {
-				component: () => (
-					<CollectionOverview
-						numberOfCollections={tabCounts[COLLECTIONS_ID]}
-						history={history}
-						match={match}
-						user={user}
-						{...rest}
-					/>
-				),
-				// TODO: DISABLED_FEATURE filter
-				// filter: {
-				// 	label: 'Auteur',
-				// 	options: [
-				// 		{ id: 'all', label: 'Alles' },
-				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
-				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
-				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
-				// 	],
-				// },
-			}),
-			...addTabIfUserHasPerm(FOLDERS_ID, {
-				component: () => <span>TODO Mappen</span>,
-				filter: {
-					label: t('workspace/views/workspace___filter-op-label'),
-					options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
-				},
-			}),
-			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
-				component: () => (
-					<AssignmentOverview history={history} match={match} user={user} {...rest} />
-				),
-			}),
-			...addTabIfUserHasPerm(BOOKMARKS_ID, {
-				component: () => <Bookmarks />,
-			}),
-		};
-	};
-
-	const getTabId = () => {
-		return tabId || Object.keys(getTabs())[0];
-	};
-
-	// Get active tab based on above map with tabId
-	const getActiveTab = () => {
-		return getTabs()[getTabId()];
+	// Methods
+	const goToTab = (id: ReactText) => {
+		navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: id });
+		setTabId(String(id));
 	};
 
 	const getNavTabs = () => {
@@ -191,6 +196,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
+	// Render
 	const renderFilter = () => {
 		const filter: TabFilter | null = get(getActiveTab(), 'filter', null);
 
