@@ -27,10 +27,10 @@ export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
 	{ id: 'content_type', label: 'Content type' },
 	{ id: 'author', label: 'Auteur' },
 	{ id: 'role', label: 'Rol' },
-	{ id: 'publish_at', label: 'Publicatiedatum' },
-	{ id: 'depublish_at', label: 'Depublicatiedatum' },
-	{ id: 'created_at', label: 'Aangemaakt' },
-	{ id: 'updated_at', label: 'Laatst bewerkt' },
+	{ id: 'publish_at', label: 'Publicatiedatum', sortable: true },
+	{ id: 'depublish_at', label: 'Depublicatiedatum', sortable: true },
+	{ id: 'created_at', label: 'Aangemaakt', sortable: true },
+	{ id: 'updated_at', label: 'Laatst bewerkt', sortable: true },
 	{ id: 'actions', label: '' },
 ];
 
