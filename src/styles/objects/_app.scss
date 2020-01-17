@@ -13,4 +13,8 @@
 // Modifiers
 .o-app--admin {
 	padding-top: 0;
+
+	&__main {
+		height: 100vh;
+	}
 }
