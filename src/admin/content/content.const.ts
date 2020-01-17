@@ -3,7 +3,7 @@ import { TabProps } from '@viaa/avo2-components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { TableColumn } from '../../shared/types';
 import { ContentEditFormState } from './content.types';
-import { fetchContent } from './helpers/content-types';
+import { fetchContent, fetchStatic } from './helpers/content-types';
 
 export const CONTENT_RESULT_PATH = {
 	GET: 'app_content',
@@ -54,34 +54,16 @@ export const CONTENT_DETAIL_TABS: TabProps[] = [
 ];
 
 export const CONTENT_TYPES = [
-	// {
-	// 	value: 'collection',
-	// 	label: 'Collectie',
-	// 	disabled: false,
-	// 	fetch: TODO,
-	// },
-	// {
-	// 	value: 'item',
-	// 	label: 'Item',
-	// 	disabled: false,
-	// 	fetch: TODO,
-	// },
-	// {
-	// 	value: 'bundel',
-	// 	label: 'Bundel',
-	// 	disabled: false,
-	// 	fetch: TODO,
-	// },
 	{
 		value: 'content',
 		label: 'Content',
 		disabled: false,
 		fetch: fetchContent,
 	},
-	// {
-	// 	value: 'static',
-	// 	label: "Statische Pagina's",
-	// 	disabled: false,
-	// 	fetch: TODO,
-	// },
+	{
+		value: 'static',
+		label: 'Statisch',
+		disabled: false,
+		fetch: fetchStatic,
+	},
 ];

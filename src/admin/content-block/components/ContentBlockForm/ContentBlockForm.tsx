@@ -225,7 +225,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					{renderFormGroups(components, 'components')}
 					{underLimit && renderAddButton(label)}
 					{renderFormGroups(block, 'block')}
-					<ContentPicker selectableTypes={['content']} onSelect={value => console.log(value)} />
+					<ContentPicker onSelect={value => console.log(value)} />
 				</AccordionBody>
 			</Accordion>
 		);
