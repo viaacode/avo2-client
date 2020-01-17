@@ -9,8 +9,6 @@ import { Column, Grid } from '@viaa/avo2-components';
 import { CONTENT_TYPES } from '../../content.const';
 import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../content.types';
 
-import './ContentPicker.scss';
-
 const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
 	classNamePrefix: 'c-select',
