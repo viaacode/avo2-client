@@ -143,7 +143,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 				<Header category="audio" title={pageTitle} showMetaData={false}>
 					{(avatarProps.name || avatarProps.initials) && (
 						<HeaderAvatar>
-							<Avatar {...avatarProps} />
+							<Avatar {...avatarProps} dark />
 						</HeaderAvatar>
 					)}
 					<HeaderButtons>
