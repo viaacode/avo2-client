@@ -9,6 +9,8 @@ import { insertContentBlocks, updateContentBlocks } from '../content-block/conte
 import { ContentBlockConfig, ContentBlockSchema } from '../content-block/content-block.types';
 
 import toastService from '../../shared/services/toast-service';
+import i18n from '../../shared/translations/i18n';
+
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import { GET_CONTENT_BY_ID, GET_CONTENT_COUNT, GET_CONTENT_TYPES } from './content.gql';
 import { ContentTypesResponse } from './content.types';
@@ -28,16 +30,14 @@ export const fetchContentCount = async (): Promise<number | null> => {
 export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_BY_ID, variables: { id } });
-		const contentItem: Avo.Content.Content | null = get(
-			response,
-			`data.${CONTENT_RESULT_PATH.GET}[0]`,
-			null
-		);
 
-		return contentItem;
+		return get(response, `data.${CONTENT_RESULT_PATH.GET}[0]`, null) as Avo.Content.Content | null;
 	} catch (err) {
 		console.error(`Failed to fetch menu item with id: ${id}`);
-		toastService.danger('Er ging iets mis tijdens het ophalen van het content item', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item'),
+			false
+		);
 
 		return null;
 	}
@@ -46,16 +46,14 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
-		const contentTypes: ContentTypesResponse[] | null = get(
-			response,
-			`data.${CONTENT_TYPES_LOOKUP_PATH}`,
-			null
-		);
 
-		return contentTypes;
+		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, null);
 	} catch (err) {
 		console.error('Failed to fetch content types');
-		toastService.danger('Er ging iets mis tijdens het ophalen van de content types', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'),
+			false
+		);
 
 		return null;
 	}
@@ -94,7 +92,10 @@ export const insertContent = async (
 		return null;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het opslaan van de content', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
+			false
+		);
 
 		return null;
 	}
@@ -131,7 +132,10 @@ export const updateContent = async (
 		return contentItem;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het opslaan van de content', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
+			false
+		);
 
 		return null;
 	}
