@@ -7,6 +7,7 @@ import CreatableSelect from 'react-select/creatable';
 import { Form, FormGroup, TextArea, TextInput } from '@viaa/avo2-components';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
+import { ContentPicker } from '../../../content/components/ContentPicker/ContentPicker';
 import { IconPicker } from '../../../shared/components';
 
 import { MENU_ICON_OPTIONS } from '../../menu.const';
@@ -93,6 +94,9 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				required
 			>
 				<TextInput onChange={(value: string) => onChange('link', value)} value={formState.link} />
+			</FormGroup>
+			<FormGroup label={t('Content')}>
+				<ContentPicker onSelect={value => console.log(value)} />
 			</FormGroup>
 		</Form>
 	);
