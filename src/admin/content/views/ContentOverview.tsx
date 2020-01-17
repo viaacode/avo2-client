@@ -9,8 +9,10 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
+import { useTableSort } from '../../../shared/hooks';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
+import { ContentFilters } from '../components';
 import {
 	CONTENT_OVERVIEW_TABLE_COLS,
 	CONTENT_PATH,
@@ -29,6 +31,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 	const [page, setPage] = useState<number>(0);
 
 	const [contentCount] = useContentCount();
+	const [sortColumn, sortOrder, handleSortClick] = useTableSort<ContentOverviewTableCols>(
+		'updated_at'
+	);
 
 	const [t] = useTranslation();
 
@@ -100,6 +105,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 			</ErrorView>
 		) : (
 			<>
+				<ContentFilters />
 				<div className="c-table-responsive u-spacer-bottom">
 					<Table
 						columns={CONTENT_OVERVIEW_TABLE_COLS}
@@ -107,9 +113,12 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 						renderCell={(rowData: Partial<Avo.Content.Content>, columnId: string) =>
 							renderTableCell(rowData, columnId as ContentOverviewTableCols)
 						}
-						rowKey="id"
-						variant="bordered"
 						emptyStateMessage="Er is nog geen content beschikbaar"
+						onColumnClick={columId => handleSortClick(columId as ContentOverviewTableCols)}
+						rowKey="id"
+						sortColumn={sortColumn}
+						sortOrder={sortOrder}
+						variant="bordered"
 					/>
 				</div>
 				<Pagination
@@ -132,6 +141,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 							query={GET_CONTENT}
 							variables={{
 								offset: page * ITEMS_PER_PAGE,
+								order: { [sortColumn]: sortOrder },
 							}}
 						/>
 					</Container>
