@@ -5,6 +5,7 @@ import { TableColumn } from '../../shared/types';
 import { ContentEditFormState } from './content.types';
 
 export const CONTENT_RESULT_PATH = {
+	COUNT: 'app_content_aggregate',
 	GET: 'app_content',
 	INSERT: 'insert_app_content',
 	UPDATE: 'update_app_content',
@@ -18,6 +19,8 @@ export const CONTENT_PATH = {
 	CONTENT_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id`,
 	CONTENT_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id/${ROUTE_PARTS.edit}`,
 };
+
+export const ITEMS_PER_PAGE = 10;
 
 export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
 	{ id: 'title', label: 'Titel' },

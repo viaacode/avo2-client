@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, Pagination, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -11,15 +11,24 @@ import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { CONTENT_OVERVIEW_TABLE_COLS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
+import {
+	CONTENT_OVERVIEW_TABLE_COLS,
+	CONTENT_PATH,
+	CONTENT_RESULT_PATH,
+	ITEMS_PER_PAGE,
+} from '../content.const';
 import { GET_CONTENT } from '../content.gql';
 import { ContentOverviewTableCols } from '../content.types';
+import { useContentCount } from '../hooks';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) => {
 	// Hooks
 	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
+	const [page, setPage] = useState<number>(0);
+
+	const [contentCount] = useContentCount();
 
 	const [t] = useTranslation();
 
@@ -90,18 +99,25 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 				</Spacer>
 			</ErrorView>
 		) : (
-			<div className="c-table-responsive">
-				<Table
-					columns={CONTENT_OVERVIEW_TABLE_COLS}
-					data={data}
-					renderCell={(rowData: Partial<Avo.Content.Content>, columnId: string) =>
-						renderTableCell(rowData, columnId as ContentOverviewTableCols)
-					}
-					rowKey="id"
-					variant="bordered"
-					emptyStateMessage="Er is nog geen content beschikbaar"
+			<>
+				<div className="c-table-responsive u-spacer-bottom">
+					<Table
+						columns={CONTENT_OVERVIEW_TABLE_COLS}
+						data={data}
+						renderCell={(rowData: Partial<Avo.Content.Content>, columnId: string) =>
+							renderTableCell(rowData, columnId as ContentOverviewTableCols)
+						}
+						rowKey="id"
+						variant="bordered"
+						emptyStateMessage="Er is nog geen content beschikbaar"
+					/>
+				</div>
+				<Pagination
+					pageCount={Math.ceil(contentCount / ITEMS_PER_PAGE)}
+					onPageChange={setPage}
+					currentPage={page}
 				/>
-			</div>
+			</>
 		);
 	};
 
@@ -114,6 +130,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 							renderData={renderContentOverview}
 							resultPath={CONTENT_RESULT_PATH.GET}
 							query={GET_CONTENT}
+							variables={{
+								offset: page * ITEMS_PER_PAGE,
+							}}
 						/>
 					</Container>
 				</Container>

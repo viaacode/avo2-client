@@ -10,8 +10,20 @@ import { ContentBlockConfig, ContentBlockSchema } from '../content-block/content
 
 import toastService from '../../shared/services/toast-service';
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
-import { GET_CONTENT_BY_ID, GET_CONTENT_TYPES } from './content.gql';
+import { GET_CONTENT_BY_ID, GET_CONTENT_COUNT, GET_CONTENT_TYPES } from './content.gql';
 import { ContentTypesResponse } from './content.types';
+
+export const fetchContentCount = async (): Promise<number | null> => {
+	try {
+		const response = await dataService.query({ query: GET_CONTENT_COUNT });
+
+		return get(response, `data.${CONTENT_RESULT_PATH.COUNT}.aggregate.count`, null);
+	} catch (err) {
+		console.error('Failed to fetch content count');
+
+		return null;
+	}
+};
 
 export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
 	try {
