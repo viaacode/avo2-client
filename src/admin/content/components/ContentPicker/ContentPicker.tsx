@@ -1,15 +1,20 @@
 import { get } from 'lodash';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import { ValueType } from 'react-select/src/types';
 
 import { Column, Grid } from '@viaa/avo2-components';
 
 import { CONTENT_TYPES } from '../../content.const';
-import { PickerItem, PickerTypeOption } from '../../content.types';
+import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../content.types';
 
 import './ContentPicker.scss';
+
+const REACT_SELECT_DEFAULT_OPTIONS = {
+	className: 'c-select',
+	classNamePrefix: 'c-select',
+};
 
 export interface ContentPickerProps {
 	selectableTypes?: string[];
@@ -24,7 +29,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	const [loading, setLoading] = useState<boolean>(false);
 	const [currentTypes, setCurrentTypes] = useState<PickerTypeOption[]>([]);
-	const [groupedOptions, setGroupedOptions] = useState<any[]>([]);
+	const [groupedOptions, setGroupedOptions] = useState<PickerSelectItemGroup[]>([]);
 
 	const typeOptions = CONTENT_TYPES.filter((option: PickerTypeOption) =>
 		selectableTypes ? selectableTypes.includes(option.value) : option.value
@@ -39,7 +44,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			const fetchChain = currentTypes.map(type => type.fetch(maxPerType));
 
 			// Retrieve items for selected types.
-			Promise.all(fetchChain).then((data: any) => {
+			Promise.all(fetchChain).then((data: PickerSelectItemGroup[]) => {
 				setGroupedOptions(data);
 				setLoading(false);
 			});
@@ -50,34 +55,33 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		setCurrentTypes((currentValues as PickerTypeOption[]) || []);
 	};
 
-	// TODO: Translations
+	const renderGroupLabel = (data: any) => <span>{data.label}</span>;
+
 	return (
 		<Grid>
 			<Column size="1">
 				<ReactSelect
-					className="c-select"
-					classNamePrefix="c-select"
-					id="content-picker"
+					{...REACT_SELECT_DEFAULT_OPTIONS}
+					id="content-picker-type"
+					placeholder={t('Type')}
 					options={typeOptions}
 					isMulti={true}
 					isSearchable={false}
 					isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
 					onChange={onTypeChange}
-					placeholder={t('Type')}
 				/>
 			</Column>
 			<Column size="3">
 				<ReactSelect
-					className="c-select"
-					classNamePrefix="c-select"
-					id="content-picker"
-					formatGroupLabel={data => <span>{data.label}</span>}
-					options={groupedOptions}
+					{...REACT_SELECT_DEFAULT_OPTIONS}
+					id="content-picker-query"
+					placeholder={t('Item')}
+					formatGroupLabel={renderGroupLabel}
+					options={groupedOptions as any}
 					isSearchable={false}
 					isDisabled={!currentTypes.length}
 					isLoading={loading}
 					onChange={(selectedItem: ValueType<PickerItem>) => onSelect(get(selectedItem, 'value'))}
-					placeholder={t('Item')}
 				/>
 			</Column>
 		</Grid>
