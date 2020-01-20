@@ -25,7 +25,7 @@ import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { ContentFilters } from '../components';
+// import { ContentFilters } from '../components';
 import {
 	CONTENT_OVERVIEW_TABLE_COLS,
 	CONTENT_PATH,
@@ -176,7 +176,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			</ErrorView>
 		) : (
 			<>
-				<ContentFilters />
+				{/* <ContentFilters /> */}
 				<div className="c-table-responsive u-spacer-bottom">
 					<Table
 						columns={CONTENT_OVERVIEW_TABLE_COLS}

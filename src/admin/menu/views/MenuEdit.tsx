@@ -15,7 +15,7 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
-import { fetchMenuItemById, fetchMenuItems } from '../menu.services';
+import { fetchMenuItemById, fetchMenuItems } from '../menu.service';
 import {
 	MenuEditFormErrorState,
 	MenuEditFormState,

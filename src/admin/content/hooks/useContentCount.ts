@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fetchContentCount } from '../content.services';
+import { fetchContentCount } from '../content.service';
 
 type UseContentCountTuple = [number];
 

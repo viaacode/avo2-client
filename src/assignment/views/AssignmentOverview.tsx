@@ -57,7 +57,7 @@ import {
 	deleteAssignment,
 	insertDuplicateAssignment,
 	updateAssignment,
-} from '../assignment.services';
+} from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';

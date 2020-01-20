@@ -6,7 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 import toastService from '../../../shared/services/toast-service';
 
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
-import { fetchContentItemById } from '../content.services';
+import { fetchContentItemById } from '../content.service';
 import { ContentEditFormState } from '../content.types';
 
 type UseContentItemTuple = [

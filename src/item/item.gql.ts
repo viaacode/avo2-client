@@ -1,5 +1,14 @@
 import { gql } from 'apollo-boost';
 
+export const GET_ITEMS = gql`
+	query getItems($limit: Int!) {
+		app_item_meta(limit: 10) {
+			id
+			title
+		}
+	}
+`;
+
 export const GET_ITEM_BY_ID = gql`
 	query getItemById($id: bpchar!) {
 		app_item_meta(where: { external_id: { _eq: $id } }) {

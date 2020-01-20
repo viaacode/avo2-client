@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fetchContentTypes } from '../content.services';
+import { fetchContentTypes } from '../content.service';
 import { ContentTypesResponse } from '../content.types';
 
 type UseContentTypesTuple = [ContentTypesResponse[], boolean];

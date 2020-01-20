@@ -5,14 +5,18 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import toastService from '../../shared/services/toast-service';
+import i18n from '../../shared/translations/i18n';
 import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
 import { ContentBlockConfig, ContentBlockSchema } from '../content-block/content-block.types';
 
-import toastService from '../../shared/services/toast-service';
-import i18n from '../../shared/translations/i18n';
-
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
-import { GET_CONTENT_BY_ID, GET_CONTENT_COUNT, GET_CONTENT_TYPES } from './content.gql';
+import {
+	GET_CONTENT,
+	GET_CONTENT_BY_ID,
+	GET_CONTENT_COUNT,
+	GET_CONTENT_TYPES,
+} from './content.gql';
 import { ContentTypesResponse } from './content.types';
 
 export const fetchContentCount = async (): Promise<number | null> => {
@@ -43,13 +47,29 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 	}
 };
 
+export const fetchContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
+	try {
+		const response = await dataService.query({ query: GET_CONTENT, variables: { limit } });
+
+		return get(response, `data.${CONTENT_RESULT_PATH.GET}`, null);
+	} catch (err) {
+		console.error(`Failed to fetch content items`);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items'),
+			false
+		);
+
+		return null;
+	}
+};
+
 export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
 
 		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, null);
 	} catch (err) {
-		console.error('Failed to fetch content types');
+		console.error('Failed to fetch content types', err);
 		toastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'),
 			false
@@ -91,7 +111,7 @@ export const insertContent = async (
 
 		return null;
 	} catch (err) {
-		console.error(err);
+		console.error('Failed to insert content blocks', err);
 		toastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
 			false
@@ -131,7 +151,7 @@ export const updateContent = async (
 
 		return contentItem;
 	} catch (err) {
-		console.error(err);
+		console.error('Failed to save content', err);
 		toastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
 			false

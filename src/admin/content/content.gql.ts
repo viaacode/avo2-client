@@ -1,7 +1,5 @@
 import { gql } from 'apollo-boost';
 
-import { ITEMS_PER_PAGE } from './content.const';
-
 export const GET_AVAILABLE_CONTENT_TYPES = gql`
 	{
 		app_content(distinct_on: content_type) {
@@ -14,7 +12,7 @@ export const GET_AVAILABLE_CONTENT_TYPES = gql`
 // - filter on: title, description, author, role, all dates and content type
 // - order by
 export const GET_CONTENT = gql`
-	query getContent($offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}, $order: [app_content_order_by!] = {}) {
+	query getContent($offset: Int = 0, $limit: Int = 10, $order: [app_content_order_by!] = {}) {
 		app_content(limit: $limit, offset: $offset, order_by: $order) {
 			content_type
 			created_at

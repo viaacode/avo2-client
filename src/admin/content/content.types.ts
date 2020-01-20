@@ -1,5 +1,7 @@
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
+export type ContentType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
+
 export enum PageType {
 	Create = 'create',
 	Edit = 'edit',

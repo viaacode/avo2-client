@@ -47,9 +47,13 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	}
 
 	// TODO: Make more generic and reusable for other components
-	if (blockState.blockType === ContentBlockType.Buttons) {
-		(componentState as any).buttons = componentState;
-	}
+	const renderPreview = () => {
+		if (blockState.blockType === ContentBlockType.Buttons) {
+			return <PreviewComponent {...({ buttons: componentState } as any)} />;
+		}
+
+		return <PreviewComponent {...(componentState as any)} />;
+	};
 
 	return (
 		// TODO: Extend spacer with paddings in components lib
@@ -59,7 +63,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			<PreviewComponent {...(componentState as any)} />
+			{renderPreview()}
 		</div>
 	);
 };
