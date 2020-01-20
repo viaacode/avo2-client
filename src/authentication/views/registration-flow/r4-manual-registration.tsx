@@ -154,7 +154,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					</Trans>
 				</BlockHeading>
 				<p>
-					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___todo-link-naar-faq-bp-toegang-zonder-lerarenkaartnummer-br-het-archief-voor-onderwijs-biedt-op-een-eenvoudige-manier-toegang-tot-vlaams-audiovisueel-materiaal-van-meer-dan-30-partners-dit-materiaal-is-beschikbaar-voor-ul-li-leerkrachten-aan-een-vlaamse-erkende-onderwijsinstelling-li-li-studenten-aan-een-vlaamse-lerarenopleiding-li-li-leerlingen-van-een-vlaamse-erkende-secundaire-school-li-ul-strong-hoe-krijg-je-toegang-strong-ol-li-strong-je-bent-student-aan-een-vlaamse-lerarenopleiding-strong-br-dan-krijg-je-via-je-docent-of-hogeschool-toegang-tot-onze-beeldbank-hoe-ontdek-het-op-link-to-app-path-student-teacher-deze-pagina-link-li-li-strong-je-bent-leerling-in-een-vlaamse-erkende-secundaire-school-strong-br-vraag-een-account-via-een-van-je-leerkrachten-lees-meer-over-het-archief-voor-onderwijs-voor-leerlingen-op-link-to-app-path-for-pupils-deze-pagina-link-br-wil-je-als-leerkracht-je-leerlingen-toegang-geven-alle-info-vind-je-link-to-leerlingen-toegang-versie-leerkrachten-hier-link-li-li-strong-je-bent-lesgever-in-een-vlaamse-erkende-onderwijsinstelling-strong-br-ul-li-je-hebt-een-lerarenkaart-of-stamboeknummer-maak-dan-link-to-app-path-stamboek-hier-link-je-gratis-een-account-aan-li-li-je-hebt-geen-lerarenkaart-of-stamboeknummer-of-je-vraagt-je-af-of-je-als-lesgever-zonder-nummer-in-aanmerking-komt-voor-een-account-vraag-je-toegang-aan-via-onderstaand-formulier-we-verwerken-je-aanvraag-binnen-de-vijf-werkdagen-na-ontvangst-li-ul-li-ol">
+					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___intro">
 						TODO: link naar FAQ BP toegang zonder lerarenkaartnummer
 						<br />
 						<br />
@@ -289,7 +289,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	};
 
 	const renderConfirmation = () => (
-		<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bedankt-voor-je-aanvraag-onze-helpdesk-bekijkt-deze-binnen-de-vijf-werkdagen-heb-je-ondertussen-nog-vragen-of-toevoegingen-met-betrekking-tot-je-aanvraag-formuleer-deze-dan-in-een-reply-op-automatische-bevestigingsmail-die-je-krijgt-van-onze-helpdesk">
+		<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bevestiging">
 			Bedankt voor je aanvraag. Onze helpdesk bekijkt deze binnen de vijf werkdagen. Heb je
 			ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze dan in
 			een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
