@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/react-hooks';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -7,12 +8,14 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ErrorView } from '../../../error/views';
-import { DataQueryComponent } from '../../../shared/components';
+import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
+import { ApolloCacheManager } from '../../../shared/services/data-service';
+import toastService from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { CONTENT_OVERVIEW_TABLE_COLS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
-import { GET_CONTENT } from '../content.gql';
+import { DELETE_CONTENT, GET_CONTENT } from '../content.gql';
 import { ContentOverviewTableCols } from '../content.types';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
@@ -20,14 +23,35 @@ interface ContentOverviewProps extends DefaultSecureRouteProps {}
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) => {
 	// Hooks
 	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
+	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
+	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
+	// Methods
+	const handleDelete = (refetchContentItems: () => void) => {
+		triggerContentDelete({
+			variables: { id: idToDelete },
+			update: ApolloCacheManager.clearContentCache,
+		})
+			.then(() => {
+				refetchContentItems();
+				toastService.success('Het content item is succesvol verwijderd.', false);
+			})
+			.catch(err => {
+				console.error(err);
+				toastService.danger('Het verwijderen van het content item is mislukt.', false);
+			});
+	};
+
+	const openConfirmModal = (id: number): void => {
+		setIdToDelete(id);
+		setIsConfirmModalOpen(true);
+	};
+
 	// Render
-	const renderTableCell = (
-		rowData: Partial<Avo.Content.Content>,
-		columnId: ContentOverviewTableCols
-	) => {
+	const renderTableCell = (rowData: Avo.Content.Content, columnId: ContentOverviewTableCols) => {
 		const { id, profile, title } = rowData;
 
 		switch (columnId) {
@@ -59,6 +83,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 							title={t('admin/content/views/content-overview___pas-content-aan')}
 							type="tertiary"
 						/>
+						<Button
+							icon="delete"
+							onClick={() => openConfirmModal(id)}
+							size="small"
+							title={t('Verwijder content')}
+							type="tertiary"
+						/>
 					</ButtonToolbar>
 				);
 
@@ -67,13 +98,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 		}
 	};
 
-	const renderContentOverview = (data: Partial<Avo.Content.Content>[]) => {
+	const renderContentOverview = (data: Avo.Content.Content[], refetchContentItems: () => void) => {
 		if (data.length) {
 			setContentList(data);
 		}
 
 		return !data.length ? (
-			<ErrorView message="Er is nog geen content aangemaakt.">
+			<ErrorView message={t('Er is nog geen content aangemaakt.')}>
 				<p>
 					<Trans i18nKey="admin/content/views/content-overview___beschrijving-hoe-content-toe-te-voegen">
 						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
@@ -94,12 +125,17 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 				<Table
 					columns={CONTENT_OVERVIEW_TABLE_COLS}
 					data={data}
-					renderCell={(rowData: Partial<Avo.Content.Content>, columnId: string) =>
+					renderCell={(rowData: Avo.Content.Content, columnId: string) =>
 						renderTableCell(rowData, columnId as ContentOverviewTableCols)
 					}
 					rowKey="id"
 					variant="bordered"
-					emptyStateMessage="Er is nog geen content beschikbaar"
+					emptyStateMessage={t('Er is nog geen content beschikbaar')}
+				/>
+				<DeleteObjectModal
+					deleteObjectCallback={() => handleDelete(refetchContentItems)}
+					isOpen={isConfirmModalOpen}
+					onClose={() => setIsConfirmModalOpen(false)}
 				/>
 			</div>
 		);

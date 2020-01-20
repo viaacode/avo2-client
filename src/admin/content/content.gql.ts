@@ -92,3 +92,11 @@ export const INSERT_CONTENT = gql`
 		}
 	}
 `;
+
+export const DELETE_CONTENT = gql`
+	mutation deleteContent($id: Int!) {
+		delete_app_content(where: { id: { _eq: $id } }) {
+			affected_rows
+		}
+	}
+`;
