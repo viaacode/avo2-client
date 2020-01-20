@@ -32,17 +32,17 @@ export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockS
 export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t("CTA's"),
 	components: {
-		name: i18n.t('CTA'),
+		name: i18n.t('admin/content-block/helpers/generators/ctas___cta'),
 		limits: {
 			min: 2,
 			max: 2,
 		},
 		state: INITIAL_CTAS_BLOCK_COMPONENT_STATES(),
 		fields: {
-			heading: TEXT_FIELD(i18n.t('Knoptekst'), {
+			heading: TEXT_FIELD(i18n.t('admin/content-block/helpers/generators/ctas___knoptekst'), {
 				editorType: ContentBlockEditor.TextInput,
 			}),
-			content: TEXT_FIELD(i18n.t('Knoptekst')),
+			content: TEXT_FIELD(i18n.t('admin/content-block/helpers/generators/ctas___knoptekst')),
 			level: {
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,

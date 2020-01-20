@@ -84,7 +84,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</FormGroup>
 							</Column>
 							<Column size="12">
-								<FormGroup error={formErrors.path} label={t('Url')}>
+								<FormGroup
+									error={formErrors.path}
+									label={t('admin/content/components/content-edit-form/content-edit-form___url')}
+								>
 									<TextInput
 										onChange={(value: string) => onChange('path', value)}
 										value={formState.path}
@@ -107,7 +110,9 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							</Column>
 							<Column size="12">
 								<UserGroupSelect
-									label={t('Zichtbaar voor')}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___zichtbaar-voor'
+									)}
 									error={'' /* formErrors.group_access */}
 									placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
 									values={[1]}

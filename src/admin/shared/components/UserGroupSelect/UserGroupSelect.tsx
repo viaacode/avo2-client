@@ -59,7 +59,11 @@ const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 			})
 			.catch((err: any) => {
 				console.error('Failed to get user groups', err);
-				toastService.danger(t('Het controleren van je account rechten is mislukt'));
+				toastService.danger(
+					t(
+						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
+					)
+				);
 			});
 	}, []);
 
