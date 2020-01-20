@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -40,6 +41,7 @@ import * as ContentService from '../content.services';
 import {
 	ContentEditAction,
 	ContentEditActionType,
+	ContentEditFormErrors,
 	ContentEditFormState,
 	ContentEditState,
 	PageType,
@@ -61,7 +63,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		Reducer<ContentEditState, ContentEditAction>
 	>(contentEditReducer(initialState), initialState);
 
-	const [formErrors, setFormErrors] = useState<Partial<ContentEditFormState>>({});
+	const [formErrors, setFormErrors] = useState<ContentEditFormErrors>({});
 	const [configToDelete, setConfigToDelete] = useState<number>();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -95,6 +97,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			value: contentType.value,
 		})),
 	];
+	// TODO: clean up admin check
+	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
 	// Methods
 	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {
@@ -155,6 +159,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const contentItem: Partial<Avo.Content.Content> = {
 			title: contentForm.title,
 			description: contentForm.description || null,
+			is_protected: contentForm.isProtected,
 			path: contentForm.path,
 			content_type: contentForm.contentType,
 			publish_at: contentForm.publishAt || null,
@@ -193,7 +198,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	};
 
 	const handleValidation = () => {
-		const errors: Partial<ContentEditFormState> = {};
+		const errors: ContentEditFormErrors = {};
 		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
 
 		if (!contentForm.title) {
@@ -285,6 +290,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						contentTypeOptions={contentTypeOptions}
 						formErrors={formErrors}
 						formState={contentForm}
+						isAdminUser={isAdminUser}
 						onChange={handleChange}
 					/>
 				);

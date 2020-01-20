@@ -21,11 +21,14 @@ export type ContentParams = { id: string };
 export interface ContentEditFormState {
 	title: string;
 	description: string;
+	isProtected: boolean;
 	path: string;
 	contentType: string;
 	publishAt: string;
 	depublishAt: string;
 }
+
+export type ContentEditFormErrors = Partial<{ [key in keyof ContentEditFormState]: string }>;
 
 export interface ContentTypesResponse {
 	value: string;
