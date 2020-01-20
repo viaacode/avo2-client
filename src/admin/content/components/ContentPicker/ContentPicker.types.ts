@@ -1,10 +1,12 @@
+import { OptionsType } from 'react-select/src/types';
+
 import { ContentType } from '../../content.types';
 
 export interface PickerTypeOption<T = string> {
 	value: T;
 	label: string;
 	disabled?: boolean;
-	fetch: (limit: number) => any;
+	fetch: (limit: number) => Promise<PickerSelectItemGroup>;
 }
 
 export interface PickerSelectItemGroup {

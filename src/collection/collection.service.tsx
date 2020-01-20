@@ -250,7 +250,7 @@ export class CollectionService {
 	}
 
 	// TODO: Merge the following two get collections functions.
-	public static async getCollections(limit: number): Promise<Partial<Avo.Collection.Collection>[]> {
+	public static async getCollections(limit: number): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_COLLECTIONS,

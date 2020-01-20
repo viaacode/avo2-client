@@ -6,6 +6,8 @@ import { ValueType } from 'react-select/src/types';
 
 import { Column, Grid } from '@viaa/avo2-components';
 
+import { CustomError } from '../../../../shared/helpers/error';
+
 import { CONTENT_TYPES } from '../../content.const';
 import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from './ContentPicker.types';
 
@@ -42,10 +44,15 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			const fetchChain = currentTypes.map(type => type.fetch(maxPerType));
 
 			// Retrieve items for selected types.
-			Promise.all(fetchChain).then((data: PickerSelectItemGroup[]) => {
-				setGroupedOptions(data);
-				setLoading(false);
-			});
+			Promise.all(fetchChain)
+				.then((data: PickerSelectItemGroup[]) => {
+					setGroupedOptions(data);
+					setLoading(false);
+				})
+				.catch(err => {
+					console.error('Failed to inflate content picker.', err);
+					throw new CustomError('Het ophalen van de content items is mislukt.', err);
+				});
 		}
 	}, [currentTypes]);
 

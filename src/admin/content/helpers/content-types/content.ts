@@ -1,29 +1,29 @@
 import { Avo } from '@viaa/avo2-types';
 
+import {
+	PickerSelectItem,
+	PickerSelectItemGroup,
+} from '../../components/ContentPicker/ContentPicker.types';
 import { fetchContentItems } from '../../content.services';
 
 // Fetch content items from GQL
-export const fetchContent = (limit: number = 5) => {
-	return fetchContentItems(limit).then((contentItems: Avo.Content.Content[] | null) => {
-		return new Promise(resolve => {
-			if (!contentItems) {
-				return;
-			}
+export const fetchContent = async (limit: number = 5): Promise<PickerSelectItemGroup> => {
+	const contentItems: Avo.Content.Content[] | null = await fetchContentItems(limit);
 
-			resolve(parseContentItems(contentItems));
-		});
-	});
+	return parseContentItems(contentItems || []);
 };
 
 // Parse raw content items to react-select options
-const parseContentItems = (raw: Avo.Content.Content[]) => {
-	const parsedContentItems = raw.map((item: Avo.Content.Content) => ({
-		label: item.title,
-		value: {
-			type: 'content',
-			value: item.path,
-		},
-	}));
+const parseContentItems = (raw: Avo.Content.Content[]): PickerSelectItemGroup => {
+	const parsedContentItems = raw.map(
+		(item: Avo.Content.Content): PickerSelectItem => ({
+			label: item.title,
+			value: {
+				type: 'content',
+				value: item.path,
+			},
+		})
+	);
 
 	return {
 		label: 'content',
