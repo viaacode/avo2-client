@@ -105,7 +105,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							icon="delete"
 							onClick={() => openModal(id)}
 							size="small"
-							title={t('Verwijder content')}
+							title={t('admin/content/views/content-overview___verwijder-content')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -122,7 +122,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		}
 
 		return !data.length ? (
-			<ErrorView message={t('Er is nog geen content aangemaakt.')}>
+			<ErrorView
+				message={t('admin/content/views/content-overview___er-is-nog-geen-content-aangemaakt')}
+			>
 				<p>
 					<Trans i18nKey="admin/content/views/content-overview___beschrijving-hoe-content-toe-te-voegen">
 						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
@@ -148,7 +150,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					}
 					rowKey="id"
 					variant="bordered"
-					emptyStateMessage={t('Er is nog geen content beschikbaar')}
+					emptyStateMessage={t(
+						'admin/content/views/content-overview___er-is-nog-geen-content-beschikbaar'
+					)}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={() => handleDelete(refetchContentItems)}
@@ -158,11 +162,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				<Modal
 					isOpen={isNotAdminModalOpen}
 					onClose={() => setIsNotAdminModalOpen(false)}
-					title={t('U heeft niet de juiste rechten')}
+					title={t('admin/content/views/content-overview___u-heeft-niet-de-juiste-rechten')}
 				>
 					<ModalBody>
 						<p>
-							<Trans>Contacteer een van de admins om deze pagina te kunnen verwijderen.</Trans>
+							<Trans i18nKey="admin/content/views/content-overview___contacteer-een-van-de-admins-om-deze-pagina-te-kunnen-verwijderen">
+								Contacteer een van de admins om deze pagina te kunnen verwijderen.
+							</Trans>
 						</p>
 					</ModalBody>
 				</Modal>

@@ -92,7 +92,9 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										{/* TODO: Should be disabled based on persmission/role */}
 										<Checkbox
 											checked={formState.isProtected}
-											label={t('Beschermde pagina')}
+											label={t(
+												'admin/content/components/content-edit-form/content-edit-form___beschermde-pagina'
+											)}
 											onChange={value => onChange('isProtected', value)}
 										/>
 									</FormGroup>

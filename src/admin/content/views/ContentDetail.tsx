@@ -96,7 +96,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 									</tr>
 									<tr>
 										<th>
-											<Trans>Beschermde pagina:</Trans>
+											<Trans i18nKey="admin/content/views/content-detail___beschermde-pagina">
+												Beschermde pagina:
+											</Trans>
 										</th>
 										<td>{contentItem.is_protected ? 'Ja' : 'Nee'}</td>
 									</tr>
