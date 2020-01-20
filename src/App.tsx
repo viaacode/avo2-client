@@ -2,7 +2,7 @@ import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { connect, Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import Zendesk from 'react-zendesk';
@@ -13,24 +13,16 @@ import { renderRoutes } from './routes';
 import { Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
 import { dataService } from './shared/services/data-service';
-import { selectIsModalOpen } from './shared/store/selectors';
 import './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
 
-interface AppProps extends RouteComponentProps {
-	isModalOpen: boolean;
-}
+interface AppProps extends RouteComponentProps {}
 
 const App: FunctionComponent<AppProps> = props => {
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 
 	// Render
-	if (props.isModalOpen) {
-		document.body.classList.add('modal-open');
-	} else {
-		document.body.classList.remove('modal-open');
-	}
 	return (
 		<div className={classnames('o-app', { 'o-app--admin': isAdminRoute })}>
 			<ToastContainer
@@ -57,11 +49,7 @@ const App: FunctionComponent<AppProps> = props => {
 	);
 };
 
-const mapStateToProps = (state: any) => ({
-	isModalOpen: selectIsModalOpen(state),
-});
-
-const AppWithRouter = withRouter(connect(mapStateToProps)(App));
+const AppWithRouter = withRouter(App);
 
 const Root: FunctionComponent = () => (
 	<ApolloProvider client={dataService}>
