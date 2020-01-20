@@ -55,11 +55,19 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		})
 			.then(() => {
 				refetchContentItems();
-				toastService.success('Het content item is succesvol verwijderd.', false);
+				toastService.success(
+					t('admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'),
+					false
+				);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger('Het verwijderen van het content item is mislukt.', false);
+				toastService.danger(
+					t(
+						'admin/content/views/content-overview___het-verwijderen-van-het-content-item-is-mislukt'
+					),
+					false
+				);
 			});
 	};
 

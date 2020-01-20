@@ -28,9 +28,7 @@ export interface ContentEditFormState {
 	depublishAt: string;
 }
 
-export interface ContentEditFormErrors extends Partial<Omit<ContentEditFormState, 'isProtected'>> {
-	isProtected?: string;
-}
+export type ContentEditFormErrors = Partial<{ [key in keyof ContentEditFormState]: string }>;
 
 export interface ContentTypesResponse {
 	value: string;
