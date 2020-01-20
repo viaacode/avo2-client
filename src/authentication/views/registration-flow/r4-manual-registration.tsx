@@ -21,7 +21,6 @@ import {
 
 import { APP_PATH } from '../../../constants';
 import toastService from '../../../shared/services/toast-service';
-import { AUTH_PATH } from '../../authentication.const';
 import { createZendeskTicket } from '../../authentication.service';
 import { redirectToClientPage } from '../../helpers/redirects';
 
@@ -289,15 +288,13 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		);
 	};
 
-	const renderConfirmation = () => {
-		return (
-			<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bedankt-voor-je-aanvraag-onze-helpdesk-bekijkt-deze-binnen-de-vijf-werkdagen-heb-je-ondertussen-nog-vragen-of-toevoegingen-met-betrekking-tot-je-aanvraag-formuleer-deze-dan-in-een-reply-op-automatische-bevestigingsmail-die-je-krijgt-van-onze-helpdesk">
-				Bedankt voor je aanvraag. Onze helpdesk bekijkt deze binnen de vijf werkdagen. Heb je
-				ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze dan in
-				een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
-			</Trans>
-		);
-	};
+	const renderConfirmation = () => (
+		<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bedankt-voor-je-aanvraag-onze-helpdesk-bekijkt-deze-binnen-de-vijf-werkdagen-heb-je-ondertussen-nog-vragen-of-toevoegingen-met-betrekking-tot-je-aanvraag-formuleer-deze-dan-in-een-reply-op-automatische-bevestigingsmail-die-je-krijgt-van-onze-helpdesk">
+			Bedankt voor je aanvraag. Onze helpdesk bekijkt deze binnen de vijf werkdagen. Heb je
+			ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze dan in
+			een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
+		</Trans>
+	);
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
