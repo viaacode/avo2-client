@@ -74,7 +74,7 @@ import {
 	insertAssignment,
 	insertDuplicateAssignment,
 	updateAssignment,
-} from '../assignment.services';
+} from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
 

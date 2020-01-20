@@ -3,6 +3,7 @@ import { OptionsType } from 'react-select';
 import { IconName } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
+import i18n from '../../shared/translations/i18n';
 import { ReactSelectOption, TableColumn } from '../../shared/types';
 
 import { MenuEditFormState } from './menu.types';
@@ -16,14 +17,14 @@ export const MENU_PATH = {
 };
 
 export const MENU_OVERVIEW_TABLE_COLS: TableColumn[] = [
-	{ id: 'placement', label: 'Naam' },
-	{ id: 'description', label: 'Omschrijving' },
+	{ id: 'placement', label: i18n.t('admin/menu/menu___naam') },
+	{ id: 'description', label: i18n.t('admin/menu/menu___omschrijving') },
 	{ id: 'actions', label: '' },
 ];
 
 export const MENU_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Object.freeze([
-	{ label: 'Aktetas', value: 'briefcase' },
-	{ label: 'Zoek', value: 'search' },
+	{ label: i18n.t('admin/menu/menu___aktetas'), value: 'briefcase' },
+	{ label: i18n.t('admin/menu/menu___zoek'), value: 'search' },
 ]);
 
 export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => ({
@@ -37,6 +38,6 @@ export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => 
 });
 
 export const PAGE_TYPES_LANG = {
-	create: 'toevoegen',
-	edit: 'aanpassen',
+	create: i18n.t('admin/menu/menu___toevoegen'),
+	edit: i18n.t('admin/menu/menu___aanpassen'),
 };

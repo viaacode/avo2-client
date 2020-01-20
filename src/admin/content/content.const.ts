@@ -1,8 +1,11 @@
 import { TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
+import i18n from '../../shared/translations/i18n';
 import { TableColumn } from '../../shared/types';
+
 import { ContentEditFormState } from './content.types';
+import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers/content-types';
 
 export const CONTENT_RESULT_PATH = {
 	GET: 'app_content',
@@ -20,14 +23,14 @@ export const CONTENT_PATH = {
 };
 
 export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
-	{ id: 'title', label: 'Titel' },
-	{ id: 'content_type', label: 'Content type' },
-	{ id: 'author', label: 'Auteur' },
-	{ id: 'role', label: 'Rol' },
-	{ id: 'publish_at', label: 'Publicatiedatum' },
-	{ id: 'depublish_at', label: 'Depublicatiedatum' },
-	{ id: 'created_at', label: 'Aangemaakt' },
-	{ id: 'updated_at', label: 'Laatst bewerkt' },
+	{ id: 'title', label: i18n.t('admin/content/content___titel') },
+	{ id: 'content_type', label: i18n.t('admin/content/content___content-type') },
+	{ id: 'author', label: i18n.t('admin/content/content___auteur') },
+	{ id: 'role', label: i18n.t('admin/content/content___rol') },
+	{ id: 'publish_at', label: i18n.t('admin/content/content___publicatiedatum') },
+	{ id: 'depublish_at', label: i18n.t('admin/content/content___depublicatiedatum') },
+	{ id: 'created_at', label: i18n.t('admin/content/content___aangemaakt') },
+	{ id: 'updated_at', label: i18n.t('admin/content/content___laatst-bewerkt') },
 	{ id: 'actions', label: '' },
 ];
 
@@ -44,12 +47,39 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 export const CONTENT_DETAIL_TABS: TabProps[] = [
 	{
 		id: 'inhoud',
-		label: 'Inhoud',
+		label: i18n.t('admin/content/content___inhoud'),
 		icon: 'layout',
 	},
 	{
 		id: 'metadata',
-		label: 'Metadata',
+		label: i18n.t('admin/content/content___metadata'),
 		icon: 'file-text',
+	},
+];
+
+export const CONTENT_TYPES = [
+	{
+		value: 'content',
+		label: i18n.t('admin/content/content___content'),
+		disabled: false,
+		fetch: fetchContent,
+	},
+	{
+		value: 'static',
+		label: i18n.t('admin/content/content___statisch'),
+		disabled: false,
+		fetch: fetchStatic,
+	},
+	{
+		value: 'collection',
+		label: i18n.t('admin/content/content___collecties'),
+		disabled: false,
+		fetch: fetchCollections,
+	},
+	{
+		value: 'item',
+		label: i18n.t('admin/content/content___items'),
+		disabled: false,
+		fetch: fetchItems,
 	},
 ];
