@@ -42,7 +42,7 @@ export const fetchContentItems = async (limit: number): Promise<Avo.Content.Cont
 
 		return contentItems;
 	} catch (err) {
-		console.error(`Failed to fetch menu items`);
+		console.error(`Failed to fetch content items`);
 		toastService.danger('Er ging iets mis tijdens het ophalen van het content-items.', false);
 
 		return null;

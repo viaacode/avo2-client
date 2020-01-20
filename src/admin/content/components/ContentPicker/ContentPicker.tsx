@@ -38,7 +38,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		if (currentTypes && currentTypes.length) {
 			setLoading(true);
 
-			const maxPerType = 20 / currentTypes.length;
+			const maxPerType = Math.floor(20 / currentTypes.length);
 			const fetchChain = currentTypes.map(type => type.fetch(maxPerType));
 
 			// Retrieve items for selected types.

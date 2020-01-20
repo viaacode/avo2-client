@@ -3,7 +3,7 @@ import { TabProps } from '@viaa/avo2-components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { TableColumn } from '../../shared/types';
 import { ContentEditFormState } from './content.types';
-import { fetchContent, fetchStatic } from './helpers/content-types';
+import { fetchCollections, fetchContent, fetchStatic } from './helpers/content-types';
 
 export const CONTENT_RESULT_PATH = {
 	GET: 'app_content',
@@ -66,5 +66,11 @@ export const CONTENT_TYPES = [
 		label: 'Statisch',
 		disabled: false,
 		fetch: fetchStatic,
+	},
+	{
+		value: 'collection',
+		label: 'Collecties',
+		disabled: false,
+		fetch: fetchCollections,
 	},
 ];

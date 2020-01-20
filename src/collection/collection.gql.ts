@@ -232,6 +232,15 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 	}
 `;
 
+export const GET_COLLECTIONS = gql`
+	query getCollections($limit: Int!) {
+		app_collections(limit: $limit) {
+			id
+			title
+		}
+	}
+`;
+
 export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 	query getCollectionNamesByOwner($owner_profile_id: uuid) {
 		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }) {

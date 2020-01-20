@@ -8,9 +8,10 @@ import { CustomError } from '../shared/helpers/error';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
-import { GET_COLLECTION_TITLES_BY_OWNER } from './collection.gql';
+import { GET_COLLECTION_TITLES_BY_OWNER, GET_COLLECTIONS } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
 
+// TODO: Translations in errors.
 export class CollectionService {
 	public static async insertCollection(
 		newCollection: Partial<Avo.Collection.Collection>,
@@ -248,6 +249,21 @@ export class CollectionService {
 		return omit(collection, propertiesToDelete);
 	}
 
+	// TODO: Merge the following two get collections functions.
+	public static async getCollections(limit: number): Promise<Partial<Avo.Collection.Collection>[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTIONS,
+				variables: { limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			console.error('Failed to fetch collections.', err);
+			throw new CustomError('Het ophalen van de collecties is mislukt.', err);
+		}
+	}
+
 	public static async getCollectionTitlesByUser(
 		user: Avo.User.User | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
@@ -261,7 +277,9 @@ export class CollectionService {
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			console.error('Failed to get collection titles by owner', err, queryInfo);
-			throw new CustomError('Het ophalen van de bestaande collecties is mislukt', err, { user });
+			throw new CustomError('Het ophalen van de bestaande collecties is mislukt', err, {
+				user,
+			});
 		}
 	}
 
