@@ -89,7 +89,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							{isAdminUser && (
 								<Column size="12">
 									<FormGroup error={formErrors.isProtected}>
-										{/* TODO: Should be disabled based on persmission/role */}
 										<Checkbox
 											checked={formState.isProtected}
 											label={t(
