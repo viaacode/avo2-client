@@ -1,9 +1,18 @@
 import { useMutation } from '@apollo/react-hooks';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
+import {
+	Button,
+	ButtonToolbar,
+	Container,
+	Modal,
+	ModalBody,
+	Spacer,
+	Table,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -20,14 +29,19 @@ import { ContentOverviewTableCols } from '../content.types';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
-const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) => {
+const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, user }) => {
 	// Hooks
 	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+	const [isNotAdminModalOpen, setIsNotAdminModalOpen] = useState<boolean>(false);
 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
+
+	// Computed
+	// TODO: clean up admin check
+	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
 	// Methods
 	const handleDelete = (refetchContentItems: () => void) => {
@@ -45,9 +59,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 			});
 	};
 
-	const openConfirmModal = (id: number): void => {
-		setIdToDelete(id);
-		setIsConfirmModalOpen(true);
+	const openModal = (id: number): void => {
+		if (isAdminUser) {
+			setIdToDelete(id);
+			setIsConfirmModalOpen(true);
+		} else {
+			setIsNotAdminModalOpen(true);
+		}
 	};
 
 	// Render
@@ -85,7 +103,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 						/>
 						<Button
 							icon="delete"
-							onClick={() => openConfirmModal(id)}
+							onClick={() => openModal(id)}
 							size="small"
 							title={t('Verwijder content')}
 							type="tertiary"
@@ -137,6 +155,17 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history }) =
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>
+				<Modal
+					isOpen={isNotAdminModalOpen}
+					onClose={() => setIsNotAdminModalOpen(false)}
+					title={t('U heeft niet de juiste rechten')}
+				>
+					<ModalBody>
+						<p>
+							<Trans>Contacteer een van de admins om deze pagina te kunnen verwijderen.</Trans>
+						</p>
+					</ModalBody>
+				</Modal>
 			</div>
 		);
 	};

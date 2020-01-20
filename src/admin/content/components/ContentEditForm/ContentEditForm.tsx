@@ -30,6 +30,7 @@ interface ContentEditFormProps {
 	contentTypeOptions: ContentTypeOptions[];
 	formErrors: ContentEditFormErrors;
 	formState: ContentEditFormState;
+	isAdminUser: boolean;
 	onChange: (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => void;
 }
 
@@ -39,6 +40,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	contentTypeOptions = [],
 	formErrors,
 	formState,
+	isAdminUser,
 	onChange,
 }) => {
 	const [t] = useTranslation();
@@ -84,16 +86,18 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									/>
 								</FormGroup>
 							</Column>
-							<Column size="12">
-								<FormGroup error={formErrors.isProtected}>
-									{/* TODO: Should be disabled based on persmission/role */}
-									<Checkbox
-										checked={formState.isProtected}
-										label={t('Beschermde pagina')}
-										onChange={value => onChange('isProtected', value)}
-									/>
-								</FormGroup>
-							</Column>
+							{isAdminUser && (
+								<Column size="12">
+									<FormGroup error={formErrors.isProtected}>
+										{/* TODO: Should be disabled based on persmission/role */}
+										<Checkbox
+											checked={formState.isProtected}
+											label={t('Beschermde pagina')}
+											onChange={value => onChange('isProtected', value)}
+										/>
+									</FormGroup>
+								</Column>
+							)}
 							<Column size="12">
 								<FormGroup
 									error={formErrors.path}

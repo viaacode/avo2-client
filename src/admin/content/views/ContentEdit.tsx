@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -96,6 +97,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			value: contentType.value,
 		})),
 	];
+	// TODO: clean up admin check
+	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
 	// Methods
 	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {
@@ -287,6 +290,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						contentTypeOptions={contentTypeOptions}
 						formErrors={formErrors}
 						formState={contentForm}
+						isAdminUser={isAdminUser}
 						onChange={handleChange}
 					/>
 				);
