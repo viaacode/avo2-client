@@ -6,8 +6,8 @@ import { ValueType } from 'react-select/src/types';
 
 import { Column, Grid } from '@viaa/avo2-components';
 
-import { CustomError } from '../../../../shared/helpers/error';
-
+import toastService from '../../../../shared/services/toast-service';
+import i18n from '../../../../shared/translations/i18n';
 import { CONTENT_TYPES } from '../../content.const';
 import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from './ContentPicker.types';
 
@@ -51,7 +51,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				})
 				.catch(err => {
 					console.error('Failed to inflate content picker.', err);
-					throw new CustomError('Het ophalen van de content items is mislukt.', err);
+					toastService.danger(i18n.t('Het ophalen van de content items is mislukt.'), false);
 				});
 		}
 	}, [currentTypes]);

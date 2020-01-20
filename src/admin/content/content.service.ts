@@ -62,7 +62,7 @@ export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null
 
 		return contentTypes;
 	} catch (err) {
-		console.error('Failed to fetch content types');
+		console.error('Failed to fetch content types', err);
 		toastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'),
 			false
@@ -104,7 +104,7 @@ export const insertContent = async (
 
 		return null;
 	} catch (err) {
-		console.error(err);
+		console.error('Failed to insert content blocks', err);
 		toastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
 			false
@@ -144,7 +144,7 @@ export const updateContent = async (
 
 		return contentItem;
 	} catch (err) {
-		console.error(err);
+		console.error('Failed to save content', err);
 		toastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
 			false
