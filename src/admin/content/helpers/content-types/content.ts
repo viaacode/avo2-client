@@ -4,7 +4,7 @@ import {
 	PickerSelectItem,
 	PickerSelectItemGroup,
 } from '../../components/ContentPicker/ContentPicker.types';
-import { fetchContentItems } from '../../content.services';
+import { fetchContentItems } from '../../content.service';
 
 // Fetch content items from GQL
 export const fetchContent = async (limit: number = 5): Promise<PickerSelectItemGroup> => {
