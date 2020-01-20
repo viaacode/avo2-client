@@ -31,8 +31,8 @@ interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, user }) => {
 	// Hooks
-	const [contentList, setContentList] = useState<Partial<Avo.Content.Content>[]>([]);
-	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [contentList, setContentList] = useState<Avo.Content.Content[]>([]);
+	const [contentToDelete, setContentToDelete] = useState<Avo.Content.Content | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [isNotAdminModalOpen, setIsNotAdminModalOpen] = useState<boolean>(false);
 
@@ -45,8 +45,12 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 	// Methods
 	const handleDelete = (refetchContentItems: () => void) => {
+		if (!contentToDelete) {
+			return;
+		}
+
 		triggerContentDelete({
-			variables: { id: idToDelete },
+			variables: { id: contentToDelete.id },
 			update: ApolloCacheManager.clearContentCache,
 		})
 			.then(() => {
@@ -59,12 +63,19 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			});
 	};
 
-	const openModal = (id: number): void => {
-		if (isAdminUser) {
-			setIdToDelete(id);
-			setIsConfirmModalOpen(true);
+	const openModal = (content: Avo.Content.Content): void => {
+		if (content.is_protected) {
+			// Only allow admins to delete protected content
+			if (isAdminUser) {
+				setContentToDelete(content);
+				setIsConfirmModalOpen(true);
+			} else {
+				setIsNotAdminModalOpen(true);
+			}
 		} else {
-			setIsNotAdminModalOpen(true);
+			// TODO: check permissions for deleting content
+			setContentToDelete(content);
+			setIsConfirmModalOpen(true);
 		}
 	};
 
@@ -103,7 +114,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						/>
 						<Button
 							icon="delete"
-							onClick={() => openModal(id)}
+							onClick={() => openModal(rowData)}
 							size="small"
 							title={t('admin/content/views/content-overview___verwijder-content')}
 							type="tertiary"
@@ -158,6 +169,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					deleteObjectCallback={() => handleDelete(refetchContentItems)}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
+					body={
+						get(contentToDelete, 'is_protected', null)
+							? t('admin/content/views/content-overview___opgelet-dit-is-een-beschermde-pagina')
+							: ''
+					}
 				/>
 				<Modal
 					isOpen={isNotAdminModalOpen}
