@@ -21,7 +21,7 @@ const parseContentItems = (raw: Avo.Content.Content[]) => {
 		label: item.title,
 		value: {
 			type: 'content',
-			value: item.id,
+			value: item.path,
 		},
 	}));
 

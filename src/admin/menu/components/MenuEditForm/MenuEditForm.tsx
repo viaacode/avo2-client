@@ -1,13 +1,14 @@
 import { get, kebabCase } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ValueType } from 'react-select';
 import CreatableSelect from 'react-select/creatable';
+import { ValueType } from 'react-select/src/types';
 
 import { Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { ContentPicker } from '../../../content/components/ContentPicker/ContentPicker';
+import { PickerItem } from '../../../content/content.types';
 import { IconPicker } from '../../../shared/components';
 
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
@@ -94,11 +95,11 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___link')}
 				required
 			>
-				<TextInput
-					onChange={(value: string) => onChange('external_link', value)}
-					value={formState.external_link}
+				<ContentPicker
+					onSelect={(item: ValueType<PickerItem>) =>
+						onChange('external_link', (item as PickerItem).value)
+					}
 				/>
-				{/* TODO replace by content picker widget that can pick internal pages, external urls and content block pages */}
 			</FormGroup>
 			<FormGroup
 				error={formErrors.link_target}
@@ -128,9 +129,6 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				required={false}
 				onChange={(userGroupIds: number[]) => onChange('group_access', userGroupIds)}
 			/>
-			<FormGroup label={t('Content')}>
-				<ContentPicker onSelect={value => console.log(value)} />
-			</FormGroup>
 		</Form>
 	);
 };

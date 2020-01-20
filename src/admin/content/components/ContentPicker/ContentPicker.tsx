@@ -61,7 +61,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				<ReactSelect
 					{...REACT_SELECT_DEFAULT_OPTIONS}
 					id="content-picker-type"
-					placeholder={t('Type')}
+					placeholder={t('admin/content/components/content-picker/content-picker___type')}
 					options={typeOptions}
 					isMulti={true}
 					isSearchable={false}
@@ -73,7 +73,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				<ReactSelect
 					{...REACT_SELECT_DEFAULT_OPTIONS}
 					id="content-picker-query"
-					placeholder={t('Item')}
+					placeholder={t('admin/content/components/content-picker/content-picker___item')}
 					formatGroupLabel={renderGroupLabel}
 					options={groupedOptions as any}
 					isSearchable={false}

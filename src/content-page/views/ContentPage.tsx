@@ -40,7 +40,9 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match, user })
 			variables={{ path }} //  userGroupIds: get(user, 'profile.userGroupIds')
 			resultPath="app_content[0]"
 			renderData={renderContentPage}
-			notFoundMessage={t('Deze pagina is niet gevonden of u hebt geen rechten om hem te bekijken')}
+			notFoundMessage={t(
+				'content-page/views/content-page___deze-pagina-is-niet-gevonden-of-u-hebt-geen-rechten-om-hem-te-bekijken'
+			)}
 		/>
 	);
 };
