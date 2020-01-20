@@ -12,6 +12,7 @@ import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import { Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
+import { getEnv } from './shared/helpers';
 import { dataService } from './shared/services/data-service';
 import './shared/translations/i18n';
 import store from './store';
@@ -42,7 +43,7 @@ const App: FunctionComponent<AppProps> = props => {
 					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Navigation {...props} />}
 					{renderRoutes()}
 					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer {...props} />}
-					<Zendesk zendeskKey="2aae0d3b-eb63-48ee-89ef-a7adcfacc410" />
+					<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} />
 				</>
 			)}
 		</div>
