@@ -5,7 +5,7 @@ import i18n from '../../shared/translations/i18n';
 import { TableColumn } from '../../shared/types';
 
 import { ContentEditFormState } from './content.types';
-import { fetchCollections, fetchContent, fetchStatic } from './helpers/content-types';
+import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers/content-types';
 
 export const CONTENT_RESULT_PATH = {
 	GET: 'app_content',
@@ -74,5 +74,11 @@ export const CONTENT_TYPES = [
 		label: i18n.t('admin/content/content___collecties'),
 		disabled: false,
 		fetch: fetchCollections,
+	},
+	{
+		value: 'item',
+		label: i18n.t('Items'),
+		disabled: false,
+		fetch: fetchItems,
 	},
 ];
