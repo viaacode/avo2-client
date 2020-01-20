@@ -1,0 +1,6 @@
+@import '../../styles/settings/variables';
+
+/* Ensure the Zendesk widget stays behind the modals */
+.zEWidget-launcher {
+	z-index: $g-c-global-navbar-z !important;
+}

@@ -6,6 +6,7 @@ const CI_ENV_VARIABLES = {
 	PROXY_URL: process.env.PROXY_URL,
 	FLOW_PLAYER_TOKEN: process.env.FLOW_PLAYER_TOKEN,
 	FLOW_PLAYER_ID: process.env.FLOW_PLAYER_ID,
+	ZENDESK_KEY: process.env.ZENDESK_KEY,
 };
 
 let envVariables = {};

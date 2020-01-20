@@ -37,6 +37,7 @@ export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
 export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	title: '',
 	description: '',
+	isProtected: false,
 	path: '',
 	contentType: '',
 	publishAt: '',
@@ -77,7 +78,7 @@ export const CONTENT_TYPES = [
 	},
 	{
 		value: 'item',
-		label: i18n.t('Items'),
+		label: i18n.t('admin/content/content___items'),
 		disabled: false,
 		fetch: fetchItems,
 	},

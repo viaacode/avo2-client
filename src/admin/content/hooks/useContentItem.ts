@@ -29,6 +29,7 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 						setContentForm({
 							title: contentItem.title,
 							description: contentItem.description || '',
+							isProtected: contentItem.is_protected,
 							path: contentItem.path,
 							contentType: contentItem.content_type,
 							publishAt: contentItem.publish_at || '',

@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+	Checkbox,
 	Column,
 	Container,
 	DatePicker,
@@ -16,7 +17,7 @@ import {
 import { ValueOf } from '../../../../shared/types';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
-import { ContentEditFormState } from '../../content.types';
+import { ContentEditFormErrors, ContentEditFormState } from '../../content.types';
 import './ContentEditForm.scss';
 
 interface ContentTypeOptions {
@@ -27,8 +28,9 @@ interface ContentTypeOptions {
 
 interface ContentEditFormProps {
 	contentTypeOptions: ContentTypeOptions[];
-	formErrors: Partial<ContentEditFormState>;
+	formErrors: ContentEditFormErrors;
 	formState: ContentEditFormState;
+	isAdminUser: boolean;
 	onChange: (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => void;
 }
 
@@ -38,6 +40,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	contentTypeOptions = [],
 	formErrors,
 	formState,
+	isAdminUser,
 	onChange,
 }) => {
 	const [t] = useTranslation();
@@ -83,6 +86,19 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									/>
 								</FormGroup>
 							</Column>
+							{isAdminUser && (
+								<Column size="12">
+									<FormGroup error={formErrors.isProtected}>
+										<Checkbox
+											checked={formState.isProtected}
+											label={t(
+												'admin/content/components/content-edit-form/content-edit-form___beschermde-pagina'
+											)}
+											onChange={value => onChange('isProtected', value)}
+										/>
+									</FormGroup>
+								</Column>
+							)}
 							<Column size="12">
 								<FormGroup
 									error={formErrors.path}
