@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
+	Checkbox,
 	Column,
 	Container,
 	DatePicker,
@@ -16,7 +17,7 @@ import {
 import { ValueOf } from '../../../../shared/types';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
-import { ContentEditFormState } from '../../content.types';
+import { ContentEditFormErrors, ContentEditFormState } from '../../content.types';
 import './ContentEditForm.scss';
 
 interface ContentTypeOptions {
@@ -27,7 +28,7 @@ interface ContentTypeOptions {
 
 interface ContentEditFormProps {
 	contentTypeOptions: ContentTypeOptions[];
-	formErrors: Partial<ContentEditFormState>;
+	formErrors: ContentEditFormErrors;
 	formState: ContentEditFormState;
 	onChange: (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => void;
 }
@@ -80,6 +81,16 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										onChange={(value: string) => onChange('description', value)}
 										rows={3}
 										value={formState.description}
+									/>
+								</FormGroup>
+							</Column>
+							<Column size="12">
+								<FormGroup error={formErrors.isProtected}>
+									{/* TODO: Should be disabled based on persmission/role */}
+									<Checkbox
+										checked={formState.isProtected}
+										label={t('Beschermde pagina')}
+										onChange={value => onChange('isProtected', value)}
 									/>
 								</FormGroup>
 							</Column>

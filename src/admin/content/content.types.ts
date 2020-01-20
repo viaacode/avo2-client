@@ -21,10 +21,15 @@ export type ContentParams = { id: string };
 export interface ContentEditFormState {
 	title: string;
 	description: string;
+	isProtected: boolean;
 	path: string;
 	contentType: string;
 	publishAt: string;
 	depublishAt: string;
+}
+
+export interface ContentEditFormErrors extends Partial<Omit<ContentEditFormState, 'isProtected'>> {
+	isProtected?: string;
 }
 
 export interface ContentTypesResponse {

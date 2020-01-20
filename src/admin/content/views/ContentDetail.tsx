@@ -96,6 +96,12 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 									</tr>
 									<tr>
 										<th>
+											<Trans>Beschermde pagina:</Trans>
+										</th>
+										<td>{contentItem.is_protected ? 'Ja' : 'Nee'}</td>
+									</tr>
+									<tr>
+										<th>
 											<Trans i18nKey="admin/content/views/content-detail___aangemaakt">
 												Aangemaakt:
 											</Trans>
@@ -143,7 +149,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match }
 				<Header category="audio" title={pageTitle} showMetaData={false}>
 					{(avatarProps.name || avatarProps.initials) && (
 						<HeaderAvatar>
-							<Avatar {...avatarProps} />
+							<Avatar {...avatarProps} dark />
 						</HeaderAvatar>
 					)}
 					<HeaderButtons>
