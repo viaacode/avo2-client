@@ -64,11 +64,17 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		})
 			.then(() => {
 				history.push(CONTENT_PATH.CONTENT);
-				toastService.success('Het content item is succesvol verwijderd.', false);
+				toastService.success(
+					t('admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'),
+					false
+				);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger('Het verwijderen van het content item is mislukt.', false);
+				toastService.danger(
+					t('admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'),
+					false
+				);
 			});
 	};
 
