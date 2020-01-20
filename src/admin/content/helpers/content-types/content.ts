@@ -25,10 +25,8 @@ const parseContentItems = (raw: Avo.Content.Content[]) => {
 		},
 	}));
 
-	const contentOptions = {
+	return {
 		label: 'content',
 		options: parsedContentItems,
 	};
-
-	return contentOptions;
 };

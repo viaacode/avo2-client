@@ -19,10 +19,8 @@ export const parseStaticItems = (raw: any, limit: number) => {
 		},
 	}));
 
-	const staticOptions = {
+	return {
 		label: 'static',
 		options: parsedStaticItems,
 	};
-
-	return staticOptions;
 };

@@ -7,7 +7,7 @@ import { ValueType } from 'react-select/src/types';
 import { Column, Grid } from '@viaa/avo2-components';
 
 import { CONTENT_TYPES } from '../../content.const';
-import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../content.types';
+import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from './ContentPicker.types';
 
 const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',

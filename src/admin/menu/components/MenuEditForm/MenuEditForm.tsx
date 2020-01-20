@@ -8,7 +8,7 @@ import { Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-compone
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { ContentPicker } from '../../../content/components/ContentPicker/ContentPicker';
-import { PickerItem } from '../../../content/content.types';
+import { PickerItem } from '../../../content/components/ContentPicker/ContentPicker.types';
 import { IconPicker } from '../../../shared/components';
 
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';

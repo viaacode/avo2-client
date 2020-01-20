@@ -27,10 +27,8 @@ const parseCollections = (raw: Partial<Avo.Collection.Collection>[]) => {
 		},
 	}));
 
-	const collectionOptions = {
+	return {
 		label: 'collections',
 		options: parsedCollections,
 	};
-
-	return collectionOptions;
 };

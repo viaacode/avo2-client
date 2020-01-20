@@ -12,7 +12,7 @@ export const GET_AVAILABLE_CONTENT_TYPES = gql`
 // - filter on: title, description, author, role, all dates and content type
 // - order by
 export const GET_CONTENT = gql`
-	query getContent($limit: Int) {
+	query getContent($limit: Int!) {
 		app_content(limit: $limit) {
 			content_type
 			created_at

@@ -5,10 +5,11 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import toastService from '../../shared/services/toast-service';
+import i18n from '../../shared/translations/i18n';
 import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
 import { ContentBlockConfig, ContentBlockSchema } from '../content-block/content-block.types';
 
-import toastService from '../../shared/services/toast-service';
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import { GET_CONTENT, GET_CONTENT_BY_ID, GET_CONTENT_TYPES } from './content.gql';
 import { ContentTypesResponse } from './content.types';
@@ -25,7 +26,10 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 		return contentItem;
 	} catch (err) {
 		console.error(`Failed to fetch menu item with id: ${id}`);
-		toastService.danger('Er ging iets mis tijdens het ophalen van het content-item.', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item'),
+			false
+		);
 
 		return null;
 	}
@@ -34,16 +38,14 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 export const fetchContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT, variables: { limit } });
-		const contentItems: Avo.Content.Content[] | null = get(
-			response,
-			`data.${CONTENT_RESULT_PATH.GET}`,
-			null
-		);
 
-		return contentItems;
+		return get(response, `data.${CONTENT_RESULT_PATH.GET}`, null);
 	} catch (err) {
 		console.error(`Failed to fetch content items`);
-		toastService.danger('Er ging iets mis tijdens het ophalen van het content-items.', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items'),
+			false
+		);
 
 		return null;
 	}
@@ -61,7 +63,10 @@ export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null
 		return contentTypes;
 	} catch (err) {
 		console.error('Failed to fetch content types');
-		toastService.danger('Er ging iets mis tijdens het ophalen van de content types.', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'),
+			false
+		);
 
 		return null;
 	}
@@ -100,7 +105,10 @@ export const insertContent = async (
 		return null;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het opslaan van de content.', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
+			false
+		);
 
 		return null;
 	}
@@ -137,7 +145,10 @@ export const updateContent = async (
 		return contentItem;
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Er ging iets mis tijdens het opslaan van de content.', false);
+		toastService.danger(
+			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
+			false
+		);
 
 		return null;
 	}
