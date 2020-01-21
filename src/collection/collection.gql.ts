@@ -192,8 +192,18 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 `;
 
 export const GET_COLLECTIONS_BY_OWNER = gql`
-	query getCollectionsByOwner($owner_profile_id: uuid, $offset: Int = 0, $limit: Int = ${ITEMS_PER_PAGE}, $order: [app_collections_order_by!] = { updated_at: desc }) {
-		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }, offset: $offset, limit: $limit, order_by: $order) {
+	query getCollectionsByOwner(
+		$owner_profile_id: uuid
+		$offset: Int = 0
+		$limit: Int
+		$order: [app_collections_order_by!] = { updated_at: desc }
+	) {
+		app_collections(
+			where: { owner_profile_id: { _eq: $owner_profile_id } }
+			offset: $offset
+			limit: $limit
+			order_by: $order
+		) {
 			id
 			updated_at
 			type_id
@@ -214,7 +224,7 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				updated_at
 				user_id
 				user: usersByuserId {
-				  id
+					id
 					first_name
 					last_name
 					role {
