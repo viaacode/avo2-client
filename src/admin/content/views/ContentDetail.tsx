@@ -32,9 +32,9 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/la
 
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
 import { DELETE_CONTENT, GET_CONTENT_BY_ID } from '../content.gql';
-import { ContentParams } from '../content.types';
+import { ContentDetailParams } from '../content.types';
 
-interface ContentDetailProps extends DefaultSecureRouteProps<ContentParams> {}
+interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
 const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, user }) => {
 	const { id } = match.params;
