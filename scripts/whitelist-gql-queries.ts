@@ -7,8 +7,6 @@ import glob from 'glob';
 import _ from 'lodash';
 import * as path from 'path';
 
-import { getEnv } from '../src/shared/helpers';
-
 if (!process.env.GRAPHQL_URL) {
 	console.error(
 		'Failed to whitelist graphql queries because environment variable GRAPHQL_URL is not set'
@@ -21,7 +19,7 @@ if (!process.env.GRAPHQL_SECRET) {
 }
 
 async function fetchPost(body: any) {
-	const url = `${getEnv('GRAPHQL_URL')}/v1/query`;
+	const url = `${process.env.GRAPHQL_URL}/v1/query`;
 	const response: AxiosResponse<any> = await axios(url, {
 		method: 'post',
 		headers: {
@@ -39,7 +37,7 @@ async function fetchPost(body: any) {
 	return response.data;
 }
 
-function whitelistQueries(collectionName: string, gqlRegex: RegExp) {
+function whitelistQueries(collectionName: string, collectionDescription: string, gqlRegex: RegExp) {
 	const options = {
 		cwd: path.join(__dirname, '../src'),
 	};
@@ -116,7 +114,7 @@ function whitelistQueries(collectionName: string, gqlRegex: RegExp) {
 				type: 'create_query_collection',
 				args: {
 					name: collectionName,
-					comment: 'All queries the avo2 client is allowed to execute',
+					comment: collectionDescription,
 					definition: {
 						queries: _.map(queries, (query: string, name: string) => ({
 							name,
@@ -147,4 +145,8 @@ function whitelistQueries(collectionName: string, gqlRegex: RegExp) {
 	});
 }
 
-whitelistQueries('avo_client_queries', /const ([^\s]+) = gql`([^`]+?)`/gm);
+whitelistQueries(
+	'avo_client_queries',
+	'All queries the avo2 client is allowed to execute',
+	/const ([^\s]+) = gql`([^`]+?)`/gm
+);
