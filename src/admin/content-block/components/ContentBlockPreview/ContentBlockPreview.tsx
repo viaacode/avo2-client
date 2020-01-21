@@ -1,7 +1,13 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 
-import { BlockButtons, BlockHeading, BlockIntro, BlockRichText } from '@viaa/avo2-components';
+import {
+	BlockButtons,
+	BlockCTAs,
+	BlockHeading,
+	BlockIntro,
+	BlockRichText,
+} from '@viaa/avo2-components';
 
 import {
 	ContentBlockBackgroundColor,
@@ -17,7 +23,7 @@ interface ContentBlockPreviewProps {
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
-	[ContentBlockType.CTAs]: BlockButtons, // TODO: Change to BlockCTAs
+	[ContentBlockType.CTAs]: BlockCTAs, // TODO: Change to BlockCTAs
 	[ContentBlockType.Buttons]: BlockButtons,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.Intro]: BlockIntro,
@@ -31,11 +37,6 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
 
-	// TODO: Make more generic and reusable for other components
-	if (blockState.blockType === ContentBlockType.CTAs) {
-		return null;
-	}
-
 	// TODO: Not sure this is the best place to do this
 	if (blockState.blockType === ContentBlockType.RichTextTwoColumns) {
 		// Map componentState values correctly for preview component
@@ -48,8 +49,11 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 
 	// TODO: Make more generic and reusable for other components
 	const renderPreview = () => {
-		if (blockState.blockType === ContentBlockType.Buttons) {
-			return <PreviewComponent {...({ buttons: componentState } as any)} />;
+		if (
+			blockState.blockType === ContentBlockType.Buttons ||
+			blockState.blockType === ContentBlockType.CTAs
+		) {
+			return <PreviewComponent {...({ elements: componentState } as any)} />;
 		}
 
 		return <PreviewComponent {...(componentState as any)} />;
