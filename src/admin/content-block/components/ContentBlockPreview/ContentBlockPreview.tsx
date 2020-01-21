@@ -23,7 +23,7 @@ interface ContentBlockPreviewProps {
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
-	[ContentBlockType.CTAs]: BlockCTAs, // TODO: Change to BlockCTAs
+	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.Intro]: BlockIntro,
