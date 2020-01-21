@@ -5,12 +5,14 @@ import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
+import Zendesk from 'react-zendesk';
 
 import Admin from './admin/Admin';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import { Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
+import { getEnv } from './shared/helpers';
 import { dataService } from './shared/services/data-service';
 import './shared/translations/i18n';
 import store from './store';
@@ -41,6 +43,7 @@ const App: FunctionComponent<AppProps> = props => {
 					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Navigation {...props} />}
 					{renderRoutes()}
 					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer {...props} />}
+					<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} />
 				</>
 			)}
 		</div>

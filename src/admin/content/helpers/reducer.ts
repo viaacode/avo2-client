@@ -70,7 +70,7 @@ export const contentEditReducer = (initialState: ContentEditState) =>
 			const contentBlocks = [...state.contentBlockConfigs];
 
 			// Convert update object to array if necessary
-			const componentState = [...contentBlocks[index].components.state, formGroupState];
+			const componentState = [...contentBlocks[index].components.state, ...formGroupState];
 
 			// Update single content block config
 			const updatedConfig = {

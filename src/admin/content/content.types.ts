@@ -1,5 +1,7 @@
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
+export type ContentType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
+
 export enum PageType {
 	Create = 'create',
 	Edit = 'edit',
@@ -21,11 +23,14 @@ export type ContentParams = { id: string };
 export interface ContentEditFormState {
 	title: string;
 	description: string;
+	isProtected: boolean;
 	path: string;
 	contentType: string;
 	publishAt: string;
 	depublishAt: string;
 }
+
+export type ContentEditFormErrors = Partial<{ [key in keyof ContentEditFormState]: string }>;
 
 export interface ContentTypesResponse {
 	value: string;
