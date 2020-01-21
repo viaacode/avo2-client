@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, eq } from 'lodash-es';
+import { cloneDeep, eq, get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -33,7 +33,7 @@ import {
 	DeleteObjectModal,
 	InputModal,
 } from '../../shared/components';
-import { createDropdownMenuItem, navigate, renderAvatar } from '../../shared/helpers';
+import { buildLink, createDropdownMenuItem, navigate, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
@@ -58,6 +58,8 @@ import {
 	ShareCollectionModal,
 } from '../components';
 import { swapFragmentsPositions } from '../helpers';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { APP_PATH } from '../../constants';
 
 interface CollectionEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -361,9 +363,22 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 					label={t('collection/views/collection-edit___delen')}
 					disabled={hasUnsavedChanged()}
 					title={
-						!eq(currentCollection, initialCollection) ? 'U moet uw wijzigingen eerst opslaan' : ''
+						!eq(currentCollection, initialCollection)
+							? t('U moet uw wijzigingen eerst opslaan')
+							: ''
 					}
 					onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+				/>
+				<Button
+					type="secondary"
+					label={t('Bekijk')}
+					title={t('Bekijk hoe de collectie er zal uit zien')}
+					onClick={() =>
+						redirectToClientPage(
+							buildLink(APP_PATH.COLLECTION_DETAIL, { id: match.params.id }),
+							history
+						)
+					}
 				/>
 				{/* TODO: DISABLED FEATURE
 					<Button type="secondary" label={t('collection/views/collection-edit___bekijk')} onClick={onPreviewCollection} disabled />
