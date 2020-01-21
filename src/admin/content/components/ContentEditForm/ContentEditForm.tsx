@@ -17,17 +17,15 @@ import {
 import { ValueOf } from '../../../../shared/types';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
-import { ContentEditFormErrors, ContentEditFormState } from '../../content.types';
+import {
+	ContentEditFormErrors,
+	ContentEditFormState,
+	ContentTypesResponse,
+} from '../../content.types';
 import './ContentEditForm.scss';
 
-interface ContentTypeOptions {
-	label: string;
-	value: string;
-	disabled?: boolean;
-}
-
 interface ContentEditFormProps {
-	contentTypeOptions: ContentTypeOptions[];
+	contentTypes: ContentTypesResponse[];
 	formErrors: ContentEditFormErrors;
 	formState: ContentEditFormState;
 	isAdminUser: boolean;
@@ -37,13 +35,22 @@ interface ContentEditFormProps {
 type DateFormKeys = 'publishAt' | 'depublishAt';
 
 const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
-	contentTypeOptions = [],
+	contentTypes = [],
 	formErrors,
 	formState,
 	isAdminUser,
 	onChange,
 }) => {
 	const [t] = useTranslation();
+
+	// Computed
+	const contentTypeOptions = [
+		{ label: 'Kies een content type', value: '', disabled: true },
+		...contentTypes.map(contentType => ({
+			label: contentType.value,
+			value: contentType.value,
+		})),
+	];
 
 	// Methods
 	const handleDateChange = (key: DateFormKeys, value: Date | null) => {

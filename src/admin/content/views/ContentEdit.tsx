@@ -90,13 +90,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
 	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
-	const contentTypeOptions = [
-		{ label: 'Kies een content type', value: '', disabled: true },
-		...contentTypes.map(contentType => ({
-			label: contentType.value,
-			value: contentType.value,
-		})),
-	];
 	// TODO: clean up admin check
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
@@ -287,7 +280,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			case 'metadata':
 				return (
 					<ContentEditForm
-						contentTypeOptions={contentTypeOptions}
+						contentTypes={contentTypes}
 						formErrors={formErrors}
 						formState={contentForm}
 						isAdminUser={isAdminUser}
