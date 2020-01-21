@@ -39,9 +39,12 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { CollectionEditContent, CollectionEditMetaData } from '.';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { selectUser } from '../../authentication/store/selectors';
+import { APP_PATH } from '../../constants';
 import { AppState } from '../../store';
+
+import { CollectionEditContent, CollectionEditMetaData } from '.';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
