@@ -36,6 +36,7 @@
   "admin/content/components/content-edit-form/content-edit-form___titel": "Titel",
   "admin/content/components/content-edit-form/content-edit-form___url": "Url",
   "admin/content/components/content-edit-form/content-edit-form___zichtbaar-voor": "Zichtbaar voor",
+  "admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt": "Het ophalen van de content items is mislukt.",
   "admin/content/components/content-picker/content-picker___item": "Item",
   "admin/content/components/content-picker/content-picker___type": "Type",
   "admin/content/content___aangemaakt": "Aangemaakt",
