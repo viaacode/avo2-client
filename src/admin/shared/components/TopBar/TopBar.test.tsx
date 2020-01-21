@@ -4,11 +4,10 @@ import React from 'react';
 import TopBar from './TopBar';
 
 describe('<TopBar />', () => {
-	const navigateBack = jest.fn();
-	const topBarComponent = shallow(<TopBar navigateBack={navigateBack} />);
+	const topBarComponent = shallow(<TopBar showBackButton />);
 
 	it('Should be able to render', () => {
-		shallow(<TopBar navigateBack={navigateBack} />);
+		shallow(<TopBar showBackButton />);
 	});
 
 	it('Should set the correct className', () => {
