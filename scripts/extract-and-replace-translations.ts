@@ -31,7 +31,9 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import localTranslations from '../src/shared/translations/nl.json';
 
-const oldTranslations: { [key: string]: string } = localTranslations;
+type keyMap = { [key: string]: string };
+
+const oldTranslations: keyMap = localTranslations;
 
 const sortObject = require('sort-object-keys');
 
@@ -70,7 +72,7 @@ async function getFilesByGlob(globPattern: string): Promise<string[]> {
 }
 
 function extractTranslationsFromCodeFiles(codeFiles: string[]) {
-	const newTranslations: { [key: string]: string } = {};
+	const newTranslations: keyMap = {};
 	// Find and extract translations, replace strings with translation keys
 	codeFiles.forEach((relativeFilePath: string) => {
 		try {
@@ -121,7 +123,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					// If translation contains '___', use original translation, otherwise use translation found by the regexp
 					newTranslations[formattedKey] =
 						(formattedTranslation.includes('___')
-							? (oldTranslations as { [key: string]: string })[formattedKey]
+							? (oldTranslations as keyMap)[formattedKey]
 							: formattedTranslation) || '';
 					return `${prefix}t('${formattedKey}'${translationParams})`;
 				}
@@ -174,7 +176,7 @@ async function updateTranslations() {
 
 	// Extract translations from code and replace code by reference to translation key
 	const codeFiles = await getFilesByGlob('**/*.@(ts|tsx)');
-	const newTranslations: { [key: string]: string } = extractTranslationsFromCodeFiles(codeFiles);
+	const newTranslations: keyMap = extractTranslationsFromCodeFiles(codeFiles);
 
 	// Compare existing translations to the new translations
 	const oldTranslationKeys: string[] = _.keys(oldTranslations);
@@ -190,7 +192,7 @@ async function updateTranslations() {
 	);
 
 	// Combine the translations in the json with the freshly extracted translations from the code
-	const combinedTranslations: { [key: string]: string } = {};
+	const combinedTranslations: keyMap = {};
 	existingTranslationKeys.forEach((key: string) => {
 		combinedTranslations[key] = onlineTranslations[key] || oldTranslations[key];
 	});
