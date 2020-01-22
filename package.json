@@ -12,7 +12,7 @@
 		"format": "npm run lint -- --fix",
 		"build-extract-translations-script": "tsc --sourceMap --esModuleInterop --resolveJsonModule scripts/extract-and-replace-translations.ts",
 		"extract-translations": "npm run build-extract-translations-script && node scripts/extract-and-replace-translations.js && npm run format",
-		"licenses": "npx license-checker --csv --out licenses.csv"
+		"licenses": "license-checker --csv --out licenses.csv"
 	},
 	"contributors": [
 		"Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -83,6 +83,7 @@
 		"enzyme-adapter-react-16": "^1.14.0",
 		"husky": "^2.3.0",
 		"jest-expect-message": "^1.0.2",
+		"license-checker": "^25.0.1",
 		"lint-staged": "^8.1.7",
 		"lodash": "^4.17.15",
 		"lorem-ipsum": "^2.0.3",
