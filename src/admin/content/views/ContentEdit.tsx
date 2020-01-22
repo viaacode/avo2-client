@@ -304,7 +304,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout navigateBack={navigateBack}>
+		<AdminLayout showBackButton>
 			<AdminLayoutHeader>
 				<Header category="audio" title={pageTitle} showMetaData={false}>
 					<HeaderButtons>
