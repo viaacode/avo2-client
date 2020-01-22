@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
@@ -18,7 +18,7 @@ interface ContentPageDetailProps extends DefaultSecureRouteProps<{ path: string 
 const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
 	const [t] = useTranslation();
 
-	const getCurrentPath = () => `/${match.params.path}`;
+	const getCurrentPath = useCallback(() => `/${match.params.path}`, [match]);
 
 	// State
 	const [path, setPath] = useState<string>(getCurrentPath());
@@ -27,7 +27,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
 		if (path !== getCurrentPath()) {
 			setPath(getCurrentPath());
 		}
-	}, [match]);
+	}, [getCurrentPath, path]);
 
 	const renderContentPage = (contentPage: Avo.Content.Content) => {
 		const contentBlockConfig: ContentBlockConfig[] = parseContentBlocks(
