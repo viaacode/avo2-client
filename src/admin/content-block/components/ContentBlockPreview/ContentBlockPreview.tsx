@@ -1,7 +1,15 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 
-import { BlockButtons, BlockHeading, BlockIntro, BlockRichText } from '@viaa/avo2-components';
+import {
+	BlockButtons,
+	BlockHeading,
+	BlockIntro,
+	BlockRichText,
+	Container,
+} from '@viaa/avo2-components';
+
+import { ContentWidth } from '../../../content/content.types';
 
 import {
 	ContentBlockBackgroundColor,
@@ -13,6 +21,7 @@ import {
 
 interface ContentBlockPreviewProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
+	contentWidth: ContentWidth;
 	blockState: ContentBlockState;
 }
 
@@ -27,6 +36,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
+	contentWidth = 'default',
 	blockState,
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
@@ -63,7 +73,9 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			{renderPreview()}
+			<Container mode="horizontal" size={contentWidth === 'default' ? undefined : contentWidth}>
+				{renderPreview()}
+			</Container>
 		</div>
 	);
 };
