@@ -5,6 +5,13 @@ export enum PageType {
 	Edit = 'edit',
 }
 
+export enum ContentPageType {
+	FAQ = 'FAQ',
+	News = 'NIEUWS',
+	Page = 'PAGINA',
+	Project = 'PROJECT',
+}
+
 export type ContentPickerType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
 export type ContentWidth = 'medium' | 'large' | 'default';
 
