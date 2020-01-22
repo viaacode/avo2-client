@@ -134,7 +134,7 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 					collection: collectionName,
 				},
 			});
-			console.log('[QUERY WHITELISTING]: Readded collection to whitelist');
+			console.log('[QUERY WHITELISTING]: Re-added collection to whitelist');
 
 			console.log(
 				`[QUERY WHITELISTING]: Whitelisted ${
