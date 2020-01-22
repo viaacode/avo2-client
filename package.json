@@ -10,8 +10,9 @@
 		"unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
 		"lint": "tslint -p .",
 		"format": "npm run lint -- --fix",
+		"fetch-translations-from-poeditor": "fetch-poeditor ./src/shared/translations/poeditor",
 		"build-extract-translations-script": "tsc --sourceMap --esModuleInterop --resolveJsonModule scripts/extract-and-replace-translations.ts",
-		"extract-translations": "npm run build-extract-translations-script && node scripts/extract-and-replace-translations.js && npm run format"
+		"extract-translations": "npm run fetch-translations-from-poeditor && npm run build-extract-translations-script && node scripts/extract-and-replace-translations.js && npm run format"
 	},
 	"contributors": [
 		"Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -80,6 +81,7 @@
 		"@types/storybook__react": "^4.0.2",
 		"enzyme": "^3.10.0",
 		"enzyme-adapter-react-16": "^1.14.0",
+		"fetch-poeditor": "bertyhell/fetch-poeditor",
 		"husky": "^2.3.0",
 		"jest-expect-message": "^1.0.2",
 		"lint-staged": "^8.1.7",
