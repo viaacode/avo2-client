@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useReducer, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -25,21 +25,32 @@ import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-// import { ContentFilters } from '../components';
+import { ContentFilters } from '../components';
 import {
 	CONTENT_OVERVIEW_TABLE_COLS,
 	CONTENT_PATH,
 	CONTENT_RESULT_PATH,
+	INITIAL_CONTENT_OVERVIEW_STATE,
 	ITEMS_PER_PAGE,
 } from '../content.const';
 import { DELETE_CONTENT, GET_CONTENT } from '../content.gql';
-import { ContentOverviewTableCols } from '../content.types';
-import { useContentCount } from '../hooks';
+import { ContentFilterFormState, ContentOverviewTableCols } from '../content.types';
+import {
+	ContentOverviewActionType,
+	ContentOverviewReducer,
+	contentOverviewReducer,
+} from '../helpers/reducers';
+import { useContentCount, useContentTypes } from '../hooks';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, user }) => {
 	// Hooks
+	const [{ filterForm }, dispatch] = useReducer<ContentOverviewReducer>(
+		contentOverviewReducer,
+		INITIAL_CONTENT_OVERVIEW_STATE()
+	);
+
 	const [contentList, setContentList] = useState<Avo.Content.Content[]>([]);
 	const [contentToDelete, setContentToDelete] = useState<Avo.Content.Content | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
@@ -47,6 +58,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [page, setPage] = useState<number>(0);
 
 	const [contentCount] = useContentCount();
+	const [contentTypes] = useContentTypes();
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<ContentOverviewTableCols>(
 		'updated_at'
 	);
@@ -59,6 +71,16 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
 	// Methods
+	const handleFilterChange = <K extends keyof ContentFilterFormState>(
+		key: K,
+		value: ContentFilterFormState[K]
+	) => {
+		dispatch({
+			type: ContentOverviewActionType.UPDATE_FILTER_FORM,
+			payload: { [key]: value },
+		});
+	};
+
 	const handleDelete = (refetchContentItems: () => void) => {
 		if (!contentToDelete) {
 			return;
@@ -176,7 +198,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			</ErrorView>
 		) : (
 			<>
-				{/* <ContentFilters /> */}
+				<ContentFilters
+					contentTypes={contentTypes}
+					formState={filterForm}
+					onChange={handleFilterChange}
+				/>
 				<div className="c-table-responsive u-spacer-bottom">
 					<Table
 						columns={CONTENT_OVERVIEW_TABLE_COLS}

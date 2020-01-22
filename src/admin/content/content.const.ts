@@ -4,7 +4,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { TableColumn } from '../../shared/types';
 
-import { ContentEditFormState } from './content.types';
+import { ContentEditFormState, ContentFilterFormState } from './content.types';
 import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers/content-types';
 
 export const CONTENT_RESULT_PATH = {
@@ -40,6 +40,21 @@ export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
 	{ id: 'updated_at', label: i18n.t('admin/content/content___laatst-bewerkt'), sortable: true },
 	{ id: 'actions', label: '' },
 ];
+
+export const INITIAL_FILTER_FORM = (): ContentFilterFormState => ({
+	contentType: [],
+	dateRanges: {
+		created: { gte: '', lte: '' },
+		updated: { gte: '', lte: '' },
+		publish: { gte: '', lte: '' },
+		depublish: { gte: '', lte: '' },
+	},
+	text: '',
+});
+
+export const INITIAL_CONTENT_OVERVIEW_STATE = () => ({
+	filterForm: INITIAL_FILTER_FORM(),
+});
 
 export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	title: '',
