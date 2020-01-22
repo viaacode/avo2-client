@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { withRouter } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
@@ -10,9 +10,8 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 } from '@viaa/avo2-components';
-import { RouteConfigComponentProps } from 'react-router-config';
 
-interface TopbarProps extends RouteConfigComponentProps {
+interface TopbarProps extends RouteComponentProps {
 	showBackButton?: boolean;
 }
 
