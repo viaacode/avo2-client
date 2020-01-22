@@ -42,6 +42,8 @@ import {
 } from '../helpers/reducers';
 import { useContentCount, useContentTypes } from '../hooks';
 
+import './ContentOverview.scss';
+
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, user }) => {
@@ -205,6 +207,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				/>
 				<div className="c-table-responsive u-spacer-bottom">
 					<Table
+						className="c-content-overview__table"
 						columns={CONTENT_OVERVIEW_TABLE_COLS}
 						data={data}
 						emptyStateMessage={t(
