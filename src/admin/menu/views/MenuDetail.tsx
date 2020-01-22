@@ -172,11 +172,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		const isLast = (i: number) => i === menuItems.length - 1;
 
 		return (
-			<AdminLayout
-				className="c-menu-detail"
-				navigateBack={() => handleNavigate(MENU_PATH.MENU)}
-				pageTitle={startCase(menuId)}
-			>
+			<AdminLayout className="c-menu-detail" showBackButton pageTitle={startCase(menuId)}>
 				<AdminLayoutBody>
 					<Container mode="vertical" size="small">
 						<Container mode="horizontal">
