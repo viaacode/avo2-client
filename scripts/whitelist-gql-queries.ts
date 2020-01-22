@@ -7,6 +7,8 @@ import glob from 'glob';
 import _ from 'lodash';
 import * as path from 'path';
 
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+
 if (!process.env.GRAPHQL_URL) {
 	console.error(
 		'Failed to whitelist graphql queries because environment variable GRAPHQL_URL is not set'
@@ -107,7 +109,7 @@ function whitelistQueries(collectionName: string, collectionDescription: string,
 					throw err;
 				}
 			}
-			console.log('[QUERY WHITELISTING]: deleted collection');
+			console.log('[QUERY WHITELISTING]: Deleted collection');
 
 			// Recreate the client whitelist collection in graphql
 			await fetchPost({
