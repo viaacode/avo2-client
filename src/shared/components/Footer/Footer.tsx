@@ -23,7 +23,7 @@ export interface FooterProps extends RouteComponentProps {
 	user: Avo.User.User | undefined;
 }
 
-const Footer: FunctionComponent<FooterProps> = ({ history, location, match, user }) => {
+export const Footer: FunctionComponent<FooterProps> = ({ history, location, match, user }) => {
 	const [t] = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});

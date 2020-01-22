@@ -54,7 +54,7 @@ import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
-interface AssignmentProps extends DefaultSecureRouteProps {}
+interface AssignmentProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...rest }) => {
 	// State
@@ -184,7 +184,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							});
 							// Show toast instead of showing error using the loadingInfo
 							// since we still want to show the assignment without the content if the content fails to load
-							if (err === 'NOT_FOUND') {
+							if (err && err.message === 'NOT_FOUND') {
 								toastService.danger(
 									t(
 										'assignment/views/assignment-detail___de-opdracht-inhoud-werdt-niet-terug-gevonden'
@@ -249,7 +249,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 		checkPermissions(
 			{
 				name: PermissionNames.CREATE_ASSIGNMENT_RESPONSE,
-				obj: (match.params as any).id,
+				obj: match.params.id,
 			},
 			user,
 			retrieveAssignmentAndContent,

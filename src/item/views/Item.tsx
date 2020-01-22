@@ -65,14 +65,14 @@ import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './Item.scss';
 
-interface ItemProps extends DefaultSecureRouteProps {}
+interface ItemProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ...rest }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [t] = useTranslation();
 
-	const [itemId] = useState<string | undefined>((match.params as any)['id']);
+	const [itemId] = useState<string | undefined>(match.params.id);
 	// TODO: use setTime when adding logic for enabling timestamps in the URL
 	const [time] = useState<number>(0);
 	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);

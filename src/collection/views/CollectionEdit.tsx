@@ -27,21 +27,22 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { selectUser } from '../../authentication/store/selectors';
+import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
 	DataQueryComponent,
 	DeleteObjectModal,
 	InputModal,
 } from '../../shared/components';
-import { createDropdownMenuItem, navigate, renderAvatar } from '../../shared/helpers';
+import { buildLink, createDropdownMenuItem, navigate, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
+import { AppState } from '../../store';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { CollectionEditContent, CollectionEditMetaData } from '.';
-import { selectUser } from '../../authentication/store/selectors';
-import { AppState } from '../../store';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
@@ -58,6 +59,8 @@ import {
 	ShareCollectionModal,
 } from '../components';
 import { swapFragmentsPositions } from '../helpers';
+import CollectionEditContent from './CollectionEditContent';
+import CollectionEditMetaData from './CollectionEditMetaData';
 
 interface CollectionEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -361,9 +364,22 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 					label={t('collection/views/collection-edit___delen')}
 					disabled={hasUnsavedChanged()}
 					title={
-						!eq(currentCollection, initialCollection) ? 'U moet uw wijzigingen eerst opslaan' : ''
+						!eq(currentCollection, initialCollection)
+							? t('U moet uw wijzigingen eerst opslaan')
+							: ''
 					}
 					onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+				/>
+				<Button
+					type="secondary"
+					label={t('Bekijk')}
+					title={t('Bekijk hoe de collectie er zal uit zien')}
+					onClick={() =>
+						redirectToClientPage(
+							buildLink(APP_PATH.COLLECTION_DETAIL, { id: match.params.id }),
+							history
+						)
+					}
 				/>
 				{/* TODO: DISABLED FEATURE
 					<Button type="secondary" label={t('collection/views/collection-edit___bekijk')} onClick={onPreviewCollection} disabled />

@@ -230,7 +230,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout navigateBack={navigateBack} pageTitle={pageTitle}>
+		<AdminLayout showBackButton pageTitle={pageTitle}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
