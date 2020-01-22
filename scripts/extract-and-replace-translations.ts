@@ -142,15 +142,31 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 	);
 	addedTranslationKeys.forEach(key => (combinedTranslations[key] = newTranslations[key]));
 
-	fs.writeFileSync(
-		`${__dirname.replace(/\\/g, '/')}/../src/shared/translations/nl.json`,
-		JSON.stringify(sortObject(combinedTranslations), null, 2)
-	);
+	// Identify  if any translations contain "___", then something went wrong with the translations
+	const nlJsonContent = JSON.stringify(sortObject(combinedTranslations), null, 2);
+	const faultyTranslations = [];
+	const faultyTranslationRegexp = /"(.*___.*)": ".*___/g;
+	let matches: RegExpExecArray | null;
+	do {
+		matches = faultyTranslationRegexp.exec(nlJsonContent);
+		if (matches) {
+			faultyTranslations.push(matches[1]);
+		}
+	} while (matches);
+	if (faultyTranslations.length) {
+		console.error(`Failed to extract translations, the following translations would be overridden by their key:
+\t${faultyTranslations.join('\n\t')}`);
+	} else {
+		fs.writeFileSync(
+			`${__dirname.replace(/\\/g, '/')}/../src/shared/translations/nl.json`,
+			nlJsonContent
+		);
 
-	const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
-	console.log(
-		`Wrote ${totalTranslations} src/shared/translations/nl.json file
+		const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
+		console.log(
+			`Wrote ${totalTranslations} src/shared/translations/nl.json file
 \t${addedTranslationKeys.length} translations added
 \t${removedTranslationKeys.length} translations deleted`
-	);
+		);
+	}
 });
