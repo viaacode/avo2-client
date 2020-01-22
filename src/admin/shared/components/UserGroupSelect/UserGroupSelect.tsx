@@ -65,7 +65,7 @@ const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 					)
 				);
 			});
-	}, []);
+	}, [t]);
 
 	const handleSelectOnChange = (values: TagInfo[] | null) => {
 		onChange((values || []).map(val => val.value as number));

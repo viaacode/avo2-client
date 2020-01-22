@@ -121,7 +121,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 				});
 			}
 		}
-	}, [permissions]);
+	}, [permissions, t]);
 
 	const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
 		if (permissions[tabId]) {
