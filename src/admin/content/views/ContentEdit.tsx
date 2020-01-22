@@ -155,6 +155,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			is_protected: contentForm.isProtected,
 			path: contentForm.path,
 			content_type: contentForm.contentType,
+			// TODO: add once available
+			// content_width: contentForm.contentWidth
 			publish_at: contentForm.publishAt || null,
 			depublish_at: contentForm.depublishAt || null,
 		};
@@ -269,6 +271,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				return (
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
+						contentWidth={contentForm.contentWidth}
 						onAdd={addContentBlockConfig}
 						addComponentToState={addComponentToState}
 						removeComponentFromState={removeComponentFromState}

@@ -17,6 +17,7 @@ import {
 import { ValueOf } from '../../../../shared/types';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
+import { CONTENT_WIDTH_OPTIONS } from '../../content.const';
 import {
 	ContentEditFormErrors,
 	ContentEditFormState,
@@ -117,7 +118,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									/>
 								</FormGroup>
 							</Column>
-							<Column size="3-12">
+							<Column size="3-6">
 								<FormGroup
 									error={formErrors.contentType}
 									label={t(
@@ -127,6 +128,15 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									<Select
 										onChange={(value: string) => onChange('contentType', value)}
 										options={contentTypeOptions}
+										value={formState.contentType}
+									/>
+								</FormGroup>
+							</Column>
+							<Column size="3-6">
+								<FormGroup error={formErrors.contentType} label={t('Content breedte')}>
+									<Select
+										onChange={(value: string) => onChange('contentWidth', value)}
+										options={CONTENT_WIDTH_OPTIONS}
 										value={formState.contentType}
 									/>
 								</FormGroup>

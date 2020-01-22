@@ -40,6 +40,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	isProtected: false,
 	path: '',
 	contentType: '',
+	contentWidth: 'default',
 	publishAt: '',
 	depublishAt: '',
 });
@@ -82,4 +83,11 @@ export const CONTENT_TYPES = [
 		disabled: false,
 		fetch: fetchItems,
 	},
+];
+
+export const CONTENT_WIDTH_OPTIONS = [
+	{ label: 'Kies een content breedte', value: '', disabled: true },
+	{ label: 'Max. (1300px)', value: 'default' },
+	{ label: 'Breed (940px)', value: 'large' },
+	{ label: 'Medium (720px)', value: 'medium' },
 ];

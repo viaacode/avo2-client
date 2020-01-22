@@ -6,6 +6,7 @@ export enum PageType {
 }
 
 export type ContentPickerType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
+export type ContentWidth = 'medium' | 'large' | 'default';
 
 export interface ContentTypesResponse {
 	value: string;
@@ -30,6 +31,7 @@ export interface ContentEditFormState {
 	isProtected: boolean;
 	path: string;
 	contentType: string;
+	contentWidth: ContentWidth;
 	publishAt: string;
 	depublishAt: string;
 }

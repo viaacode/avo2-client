@@ -29,6 +29,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match, user })
 			<ContentBlockPreview
 				key={contentPage.contentBlockssBycontentId[index].id}
 				componentState={contentBlockConfig.components.state}
+				contentWidth={/*contentPage.content_width */ 'default'} // TODO: add correct value
 				blockState={contentBlockConfig.block.state}
 			/>
 		));
