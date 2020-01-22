@@ -13,13 +13,11 @@ describe('<TopBar />', () => {
 	});
 
 	it('Should set the correct className', () => {
-		console.log(`topbar html: ${topBarComponent.html()}`);
 		expect(topBarComponent.hasClass('c-top-bar')).toBeTruthy();
 	});
 
 	it('Should render a back button based on `showBackButton` prop', () => {
 		expect(topBarComponent.find('.c-top-bar__back')).toHaveLength(1);
-
 		topBarComponent.setProps({ showBackButton: false });
 		expect(topBarComponent.find('.c-top-bar__back')).toHaveLength(0);
 	});
