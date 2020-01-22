@@ -46,7 +46,7 @@ import {
 	ContentEditState,
 	PageType,
 } from '../content.types';
-import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducer';
+import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducers';
 import { useContentItem, useContentTypes } from '../hooks';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 

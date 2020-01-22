@@ -1,3 +1,4 @@
+import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
 export type ContentType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
@@ -19,6 +20,20 @@ export type ContentOverviewTableCols =
 	| 'actions';
 
 export type ContentParams = { id: string };
+
+export type ContentFilterDateRangeKeys = 'created' | 'updated' | 'publish' | 'depublish';
+
+export interface ContentFilterFormState {
+	contentType: string[];
+	dateRanges: {
+		[key in ContentFilterDateRangeKeys]: DateRange;
+	};
+	text: string;
+}
+
+export interface ContentOverviewState {
+	filterForm: ContentFilterFormState;
+}
 
 export interface ContentEditFormState {
 	title: string;
