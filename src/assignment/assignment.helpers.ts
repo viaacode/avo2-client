@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { CustomError } from '../shared/helpers';
 import { dataService } from '../shared/services/data-service';
 import { CONTENT_LABEL_TO_QUERY } from './assignment.const';
 
@@ -23,7 +24,7 @@ export const getAssignmentContent = async (
 		);
 
 		if (!newAssignmentContent) {
-			throw new Error('NOT_FOUND');
+			throw new CustomError('NOT_FOUND');
 		}
 
 		return newAssignmentContent;

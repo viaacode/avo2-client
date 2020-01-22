@@ -1,7 +1,7 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Flex, IconName, Spinner } from '@viaa/avo2-components';
+import { Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { Permissions, PermissionService } from '../../../authentication/helpers/permission-service';
@@ -33,9 +33,11 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 	const [t] = useTranslation();
 
 	const renderSpinner = () => (
-		<Flex orientation="horizontal" center>
-			<Spinner size="large" />
-		</Flex>
+		<Container mode="vertical">
+			<Flex orientation="horizontal" center>
+				<Spinner size="large" />
+			</Flex>
+		</Container>
 	);
 
 	const renderError = () => (
