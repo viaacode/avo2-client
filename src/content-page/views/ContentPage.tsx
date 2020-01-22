@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
@@ -13,13 +13,21 @@ import { ContentBlockConfig } from '../../admin/content-block/content-block.type
 import { parseContentBlocks } from '../../admin/content-block/helpers';
 import './ContentPage.scss';
 
-interface ContentPageDetailProps extends DefaultSecureRouteProps {}
+interface ContentPageDetailProps extends DefaultSecureRouteProps<{ path: string }> {}
 
-const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match, user }) => {
+const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
 	const [t] = useTranslation();
 
+	const getCurrentPath = useCallback(() => `/${match.params.path}`, [match]);
+
 	// State
-	const [path] = useState<string>(`/${(match.params as any)['path']}`);
+	const [path, setPath] = useState<string>(getCurrentPath());
+
+	useEffect(() => {
+		if (path !== getCurrentPath()) {
+			setPath(getCurrentPath());
+		}
+	}, [getCurrentPath, path]);
 
 	const renderContentPage = (contentPage: Avo.Content.Content) => {
 		const contentBlockConfig: ContentBlockConfig[] = parseContentBlocks(
