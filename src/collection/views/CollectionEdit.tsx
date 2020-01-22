@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, eq, get } from 'lodash-es';
+import { cloneDeep, eq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -27,7 +27,9 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { selectUser } from '../../authentication/store/selectors';
+import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
 	DataQueryComponent,
@@ -59,8 +61,6 @@ import {
 import { swapFragmentsPositions } from '../helpers';
 import CollectionEditContent from './CollectionEditContent';
 import CollectionEditMetaData from './CollectionEditMetaData';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { APP_PATH } from '../../constants';
 
 interface CollectionEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
