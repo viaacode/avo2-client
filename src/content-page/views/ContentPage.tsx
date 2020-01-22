@@ -13,12 +13,12 @@ import { ContentBlockConfig } from '../../admin/content-block/content-block.type
 import { parseContentBlocks } from '../../admin/content-block/helpers';
 import './ContentPage.scss';
 
-interface ContentPageDetailProps extends DefaultSecureRouteProps {}
+interface ContentPageDetailProps extends DefaultSecureRouteProps<{ path: string }> {}
 
-const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match, user }) => {
+const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
 	const [t] = useTranslation();
 
-	const getCurrentPath = () => `/${(match.params as any).path}`;
+	const getCurrentPath = () => `/${match.params.path}`;
 
 	// State
 	const [path, setPath] = useState<string>(getCurrentPath());
