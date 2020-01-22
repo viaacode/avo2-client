@@ -68,9 +68,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 			value: contentType.value,
 		})),
 	];
-	const isContentWidthDisabled = Object.values(FIXED_WIDTH_PAGES)
-		.reduce((acc, curr) => acc.concat(curr), []) // Flat array
-		.includes(formState.contentType);
 
 	// Methods
 	const handleDateChange = (key: DateFormKeys, value: Date | null) => {
@@ -148,7 +145,6 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="3-6">
 								<FormGroup error={formErrors.contentWidth} label={t('Content breedte')}>
 									<Select
-										disabled={isContentWidthDisabled}
 										onChange={value => onChange('contentWidth', value)}
 										options={CONTENT_WIDTH_OPTIONS}
 										value={formState.contentWidth}

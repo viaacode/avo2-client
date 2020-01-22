@@ -22,7 +22,6 @@ import { DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
-import { ValueOf } from '../../../shared/types';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import {
 	ContentBlockConfig,
@@ -42,7 +41,6 @@ import {
 	ContentEditAction,
 	ContentEditActionType,
 	ContentEditFormErrors,
-	ContentEditFormState,
 	ContentEditState,
 	PageType,
 } from '../content.types';
@@ -118,13 +116,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const openDeleteModal = (configIndex: number) => {
 		setIsDeleteModalOpen(true);
 		setConfigToDelete(configIndex);
-	};
-
-	const handleChange = (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => {
-		setContentForm({
-			...contentForm,
-			[key]: value,
-		});
 	};
 
 	const handleResponse = (response: Partial<Avo.Content.Content> | null) => {
@@ -287,7 +278,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						formErrors={formErrors}
 						formState={contentForm}
 						isAdminUser={isAdminUser}
-						onChange={handleChange}
+						onChange={setContentForm}
 					/>
 				);
 			default:

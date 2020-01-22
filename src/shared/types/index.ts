@@ -15,6 +15,11 @@ export type ReactSelectOption<T = any> = {
 	value: T;
 };
 
+export type ReactAction<T, P = any> = {
+	type: T;
+	payload: P;
+};
+
 // TODO: remove this once available from @viaa/avo2-components
 export type TableColumn = {
 	col?:
