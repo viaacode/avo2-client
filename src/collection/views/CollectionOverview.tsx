@@ -311,6 +311,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				owner_profile_id: getProfileId(user),
 				offset: page * ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
+				type_id: 3,
 			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
