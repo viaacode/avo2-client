@@ -31,7 +31,6 @@ export const IFRAME_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =>
 				label: i18n.t('URL'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
-			// TODO: align: ALIGN_FIELD(),
 		},
 	},
 	block: {
