@@ -3,8 +3,11 @@ import queryString from 'querystring';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { match, RouteComponentProps, withRouter } from 'react-router';
 
-import { Blankslate, Container, IconName } from '@viaa/avo2-components';
+import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
 
+import { useTranslation } from 'react-i18next';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { APP_PATH } from '../../constants';
 import i18n from '../../shared/translations/i18n';
 
 interface ErrorViewQueryParams {
@@ -25,8 +28,11 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	message,
 	icon,
 	children = null,
+	history,
 	location,
 }) => {
+	const [t] = useTranslation();
+
 	const queryParams = queryString.parse(
 		(location.search || '').substring(1)
 	) as ErrorViewQueryParams;
@@ -41,6 +47,10 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 			<Container size="medium" mode="horizontal">
 				<Blankslate body="" icon={errorIcon} title={errorMessage}>
 					{children}
+					<Button
+						onClick={() => redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)}
+						label={t('Ga terug naar de homepagina')}
+					/>
 				</Blankslate>
 			</Container>
 		</Container>
