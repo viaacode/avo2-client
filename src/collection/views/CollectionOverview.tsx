@@ -310,6 +310,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			variables={{
 				owner_profile_id: getProfileId(user),
 				offset: page * ITEMS_PER_PAGE,
+				limit: ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
 				type_id: 3,
 			}}
