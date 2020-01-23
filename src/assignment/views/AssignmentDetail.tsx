@@ -30,7 +30,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
-import FragmentListDetail from '../../collection/components/fragment/FragmentListDetail';
+import FragmentList from '../../collection/components/fragment/FragmentListDetail';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
@@ -336,7 +336,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 		switch (content_label) {
 			case 'COLLECTIE':
 				return (
-					<FragmentListDetail
+					<FragmentList
 						collectionFragments={
 							(assignmentContent as Avo.Collection.Collection).collection_fragments
 						}

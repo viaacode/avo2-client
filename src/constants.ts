@@ -11,11 +11,13 @@ import { SETTINGS_PATH } from './settings/settings.const';
 import { ROUTE_PARTS } from './shared/constants';
 import { TEACHERS_PATH } from './teachers/teachers.const';
 import { WORKSPACE_PATH } from './workspace/workspace.const';
+import { BUNDLE_PATH } from './bundle/bundle.const';
 
 export const APP_PATH = Object.freeze({
 	...ASSIGNMENT_PATH,
 	...AUTH_PATH,
 	...COLLECTION_PATH,
+	...BUNDLE_PATH,
 	...TEACHERS_PATH,
 	...PUPILS_PATH,
 	...HOME_PATH,
