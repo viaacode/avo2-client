@@ -5,6 +5,7 @@ import {
 	BlockButtons,
 	BlockCTAs,
 	BlockHeading,
+	BlockIframe,
 	BlockIntro,
 	BlockRichText,
 	Container,
@@ -34,6 +35,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
+	[ContentBlockType.IFrame]: BlockIframe,
 });
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
