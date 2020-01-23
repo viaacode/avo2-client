@@ -5,21 +5,22 @@ import {
 	BlockButtons,
 	BlockCTAs,
 	BlockHeading,
-	BlockIframe,
+	BlockIFrame,
 	BlockIntro,
 	BlockRichText,
 	Container,
 } from '@viaa/avo2-components';
 
 import { ContentWidth } from '../../../content/content.types';
-
-import { CONTENT_BLOCKS_WITH_ELEMENTS_PROP } from '../../content-block.const';
+import {
+	BLOCK_STATE_INHERITING_PROPS,
+	CONTENT_BLOCKS_WITH_ELEMENTS_PROP,
+} from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockComponentState,
 	ContentBlockState,
 	ContentBlockType,
-	RichTextTwoColumnsBlockComponentState,
 } from '../../content-block.types';
 
 interface ContentBlockPreviewProps {
@@ -35,7 +36,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
-	[ContentBlockType.IFrame]: BlockIframe,
+	[ContentBlockType.IFrame]: BlockIFrame,
 });
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
@@ -47,19 +48,15 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const needsElements = CONTENT_BLOCKS_WITH_ELEMENTS_PROP.includes(blockState.blockType);
 	const stateToSpread: any = needsElements ? { elements: componentState } : componentState;
 
-	// TODO: Convert to array-based content block
-	if (blockState.blockType === ContentBlockType.RichTextTwoColumns) {
-		// Map componentState values correctly for preview component
-		const {
-			firstColumnContent,
-			secondColumnContent,
-		} = componentState as RichTextTwoColumnsBlockComponentState;
-		(componentState as any).content = [firstColumnContent, secondColumnContent];
-	}
+	BLOCK_STATE_INHERITING_PROPS.forEach((prop: string) => {
+		if ((blockState as any)[prop]) {
+			stateToSpread[prop] = (blockState as any)[prop];
+		}
+	});
 
 	return (
 		// TODO: Extend spacer with paddings in components lib
-		// This way we can easily set paddings from a content-blocks componentState
+		// This way we can easily set paddings from a content-blocks blockState
 		<div
 			className={classnames(`u-bg-${blockState.backgroundColor} u-padding`, {
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,

@@ -10,7 +10,7 @@ import {
 	HeadingBlockComponentState,
 } from '../../content-block.types';
 import {
-	// ALIGN_FIELD,
+	ALIGN_FIELD,
 	CONTENT_BLOCK_FIELD_DEFAULTS,
 	FORM_STATE_DEFAULTS,
 	TEXT_FIELD,
@@ -19,7 +19,7 @@ import {
 export const INITIAL_HEADING_BLOCK_COMPONENT_STATE = (): HeadingBlockComponentState => ({
 	children: '',
 	type: 'h2',
-	// TODO: align: 'left',
+	align: 'left',
 });
 
 export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
@@ -44,7 +44,7 @@ export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 					options: HEADING_LEVEL_OPTIONS,
 				},
 			},
-			// TODO: align: ALIGN_FIELD(),
+			align: ALIGN_FIELD(),
 		},
 	},
 	block: {
