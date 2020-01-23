@@ -499,7 +499,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						user={user}
 					/>
 				)}
-				{typeof collectionId !== undefined && (
+				{collectionId !== undefined && (
 					<AddToBundleModal
 						history={history}
 						location={location}
