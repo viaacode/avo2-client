@@ -84,8 +84,16 @@ Steps to deploy:
     * https://do-prd-okp-m0.do.viaa.be:8443/console/project/ci-cd/browse/pipelines
     * Same login as jenkins
 
-### Troubleshoot deploy    
-If the deploy completes succesfully but the version on the server doesn't seem to update,
+### Deploy to production
+Install openshift-origin-client-tools
+oc login https://do-prd-okp-m0.do.viaa.be:8443
+login met de avodev openshift credentials
+oc project sc-avo2
+oc get imagestreamtags
+oc tag sc-avo2/avo2-client:0.24.0 sc-avo2/avo2-client:prd
+
+### Troubleshoot deploy
+If the deploy completes successfully but the version on the server doesn't seem to update,
 this could be an issue with the image not automatically being selected by openshift
 
 Steps:
