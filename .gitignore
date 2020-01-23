@@ -260,3 +260,4 @@ tests/cypress.env.json
 tests/dist
 scripts/extract-and-replace-translations.js.map
 scripts/extract-and-replace-translations.js
+licenses.csv
