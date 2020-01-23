@@ -22,7 +22,6 @@ import { DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import toastService from '../../../shared/services/toast-service';
-import { ValueOf } from '../../../shared/types';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import {
 	ContentBlockConfig,
@@ -42,7 +41,6 @@ import {
 	ContentEditAction,
 	ContentEditActionType,
 	ContentEditFormErrors,
-	ContentEditFormState,
 	ContentEditState,
 	PageType,
 } from '../content.types';
@@ -90,13 +88,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
 	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
-	const contentTypeOptions = [
-		{ label: 'Kies een content type', value: '', disabled: true },
-		...contentTypes.map(contentType => ({
-			label: contentType.value,
-			value: contentType.value,
-		})),
-	];
 	// TODO: clean up admin check
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
@@ -127,13 +118,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setConfigToDelete(configIndex);
 	};
 
-	const handleChange = (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => {
-		setContentForm({
-			...contentForm,
-			[key]: value,
-		});
-	};
-
 	const handleResponse = (response: Partial<Avo.Content.Content> | null) => {
 		setIsSaving(false);
 
@@ -162,6 +146,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			is_protected: contentForm.isProtected,
 			path: contentForm.path,
 			content_type: contentForm.contentType,
+			// TODO: add once available
+			// content_width: contentForm.contentWidth
 			publish_at: contentForm.publishAt || null,
 			depublish_at: contentForm.depublishAt || null,
 		};
@@ -276,6 +262,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				return (
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
+						contentWidth={contentForm.contentWidth}
 						onAdd={addContentBlockConfig}
 						addComponentToState={addComponentToState}
 						removeComponentFromState={removeComponentFromState}
@@ -287,11 +274,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			case 'metadata':
 				return (
 					<ContentEditForm
-						contentTypeOptions={contentTypeOptions}
+						contentTypes={contentTypes}
 						formErrors={formErrors}
 						formState={contentForm}
 						isAdminUser={isAdminUser}
-						onChange={handleChange}
+						onChange={setContentForm}
 					/>
 				);
 			default:

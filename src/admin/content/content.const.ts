@@ -4,7 +4,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { TableColumn } from '../../shared/types';
 
-import { ContentEditFormState } from './content.types';
+import { ContentEditFormState, ContentPageType, ContentWidth } from './content.types';
 import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers/content-types';
 
 export const CONTENT_RESULT_PATH = {
@@ -40,6 +40,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	isProtected: false,
 	path: '',
 	contentType: '',
+	contentWidth: 'default',
 	publishAt: '',
 	depublishAt: '',
 });
@@ -83,3 +84,16 @@ export const CONTENT_TYPES = [
 		fetch: fetchItems,
 	},
 ];
+
+export const CONTENT_WIDTH_OPTIONS = [
+	{ label: 'Kies een content breedte', value: '', disabled: true },
+	{ label: 'Max. (1300px)', value: 'default' },
+	{ label: 'Breed (940px)', value: 'large' },
+	{ label: 'Medium (720px)', value: 'medium' },
+];
+
+export const FIXED_WIDTH_PAGES: { [key in ContentWidth]: string[] } = {
+	default: [ContentPageType.Project],
+	large: [],
+	medium: [ContentPageType.News],
+};

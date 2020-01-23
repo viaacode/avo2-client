@@ -1,6 +1,4 @@
-import { OptionsType } from 'react-select/src/types';
-
-import { ContentType } from '../../content.types';
+import { ContentPickerType } from '../../content.types';
 
 export interface PickerTypeOption<T = string> {
 	value: T;
@@ -20,6 +18,6 @@ export interface PickerSelectItem {
 }
 
 export interface PickerItem {
-	type: ContentType;
+	type: ContentPickerType;
 	value: string;
 }
