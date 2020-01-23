@@ -516,6 +516,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 							archived: activeView === 'archived_assignments',
 							order: { [sortColumn]: sortOrder },
 							offset: page * ITEMS_PER_PAGE,
+							limit: ITEMS_PER_PAGE,
 							filter: getFilterObject(),
 						}}
 						renderData={renderAssignmentsTable}

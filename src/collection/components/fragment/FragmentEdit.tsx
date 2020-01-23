@@ -273,7 +273,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					{!isNil(allowedToAddLinks) && (
 						<WYSIWYG
 							id={`description_${fragment.id}`}
-							buttons={allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT}
+							btns={allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT}
 							placeholder={t(
 								'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 							)}

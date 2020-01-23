@@ -1,10 +1,22 @@
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
-export type ContentType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
-
 export enum PageType {
 	Create = 'create',
 	Edit = 'edit',
+}
+
+export enum ContentPageType {
+	FAQ = 'FAQ',
+	News = 'NIEUWS',
+	Page = 'PAGINA',
+	Project = 'PROJECT',
+}
+
+export type ContentPickerType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
+export type ContentWidth = 'medium' | 'large' | 'default';
+
+export interface ContentTypesResponse {
+	value: string;
 }
 
 export type ContentOverviewTableCols =
@@ -18,7 +30,7 @@ export type ContentOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
-export type ContentParams = { id: string };
+export type ContentDetailParams = { id: string };
 
 export interface ContentEditFormState {
 	title: string;
@@ -26,19 +38,16 @@ export interface ContentEditFormState {
 	isProtected: boolean;
 	path: string;
 	contentType: string;
+	contentWidth: ContentWidth;
 	publishAt: string;
 	depublishAt: string;
-}
-
-export type ContentEditFormErrors = Partial<{ [key in keyof ContentEditFormState]: string }>;
-
-export interface ContentTypesResponse {
-	value: string;
 }
 
 export interface ContentEditState {
 	readonly contentBlockConfigs: ContentBlockConfig[];
 }
+
+export type ContentEditFormErrors = Partial<{ [key in keyof ContentEditFormState]: string }>;
 
 export enum ContentEditActionType {
 	ADD_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/ADD_CONTENT_BLOCK_CONFIG',

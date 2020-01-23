@@ -1,8 +1,19 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 
-import { BlockButtons, BlockHeading, BlockIntro, BlockRichText } from '@viaa/avo2-components';
+import {
+	BlockButtons,
+	BlockCTAs,
+	BlockHeading,
+	BlockIframe,
+	BlockIntro,
+	BlockRichText,
+	Container,
+} from '@viaa/avo2-components';
 
+import { ContentWidth } from '../../../content/content.types';
+
+import { CONTENT_BLOCKS_WITH_ELEMENTS_PROP } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockComponentState,
@@ -13,30 +24,30 @@ import {
 
 interface ContentBlockPreviewProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
+	contentWidth: ContentWidth;
 	blockState: ContentBlockState;
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
-	[ContentBlockType.CTAs]: BlockButtons, // TODO: Change to BlockCTAs
+	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
+	[ContentBlockType.IFrame]: BlockIframe,
 });
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
+	contentWidth = 'default',
 	blockState,
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
+	const needsElements = CONTENT_BLOCKS_WITH_ELEMENTS_PROP.includes(blockState.blockType);
+	const stateToSpread: any = needsElements ? { elements: componentState } : componentState;
 
-	// TODO: Make more generic and reusable for other components
-	if (blockState.blockType === ContentBlockType.CTAs) {
-		return null;
-	}
-
-	// TODO: Not sure this is the best place to do this
+	// TODO: Convert to array-based content block
 	if (blockState.blockType === ContentBlockType.RichTextTwoColumns) {
 		// Map componentState values correctly for preview component
 		const {
@@ -46,15 +57,6 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		(componentState as any).content = [firstColumnContent, secondColumnContent];
 	}
 
-	// TODO: Make more generic and reusable for other components
-	const renderPreview = () => {
-		if (blockState.blockType === ContentBlockType.Buttons) {
-			return <PreviewComponent {...({ buttons: componentState } as any)} />;
-		}
-
-		return <PreviewComponent {...(componentState as any)} />;
-	};
-
 	return (
 		// TODO: Extend spacer with paddings in components lib
 		// This way we can easily set paddings from a content-blocks componentState
@@ -63,7 +65,9 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			{renderPreview()}
+			<Container mode="horizontal" size={contentWidth === 'default' ? undefined : contentWidth}>
+				<PreviewComponent {...stateToSpread} />
+			</Container>
 		</div>
 	);
 };
