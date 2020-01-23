@@ -1,4 +1,5 @@
 import { last } from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -26,6 +27,7 @@ import {
 import { selectUser } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
+import { buildLink } from '../../helpers';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import {
 	AppContentNavElement,
@@ -65,10 +67,24 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
 
 	useEffect(() => {
-		getNavigationItems().then((navItems: NavItemMap) => {
-			setPrimaryNavItems(navItems['hoofdnavigatie-links']);
-			setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
-		});
+		getNavigationItems()
+			.then((navItems: NavItemMap) => {
+				setPrimaryNavItems(navItems['hoofdnavigatie-links']);
+				setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
+			})
+			.catch(err => {
+				console.error('Failed to get navigation items', err);
+				redirectToClientPage(
+					buildLink(
+						APP_PATH.ERROR,
+						{},
+						queryString.stringify({
+							message: t('Het ophalen van de navigatie items is mislukt, probeer later opnieuw'),
+						})
+					),
+					history
+				);
+			});
 	}, [user]);
 
 	const mapNavItems = (navItems: NavigationItemInfo[]) => {
