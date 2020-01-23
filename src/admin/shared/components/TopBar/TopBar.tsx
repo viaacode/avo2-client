@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Button,
@@ -10,11 +11,11 @@ import {
 	ToolbarLeft,
 } from '@viaa/avo2-components';
 
-interface TopbarProps {
-	navigateBack: (() => void) | null;
+interface TopbarProps extends RouteComponentProps {
+	showBackButton?: boolean;
 }
 
-const TopBar: FunctionComponent<TopbarProps> = ({ navigateBack }) => {
+export const TopBar: FunctionComponent<TopbarProps> = ({ showBackButton = false, history }) => {
 	const [t] = useTranslation();
 
 	return (
@@ -23,12 +24,12 @@ const TopBar: FunctionComponent<TopbarProps> = ({ navigateBack }) => {
 				<Toolbar>
 					<ToolbarLeft>
 						<ToolbarItem>
-							{navigateBack && (
+							{showBackButton && (
 								<Button
 									className="c-top-bar__back"
 									icon="chevron-left"
 									label={t('admin/shared/components/top-bar/top-bar___terug')}
-									onClick={navigateBack}
+									onClick={history.goBack}
 									type="link"
 								/>
 							)}
@@ -40,4 +41,4 @@ const TopBar: FunctionComponent<TopbarProps> = ({ navigateBack }) => {
 	);
 };
 
-export default TopBar;
+export default withRouter(TopBar);

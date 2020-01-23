@@ -54,7 +54,7 @@ import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
-interface AssignmentProps extends DefaultSecureRouteProps {}
+interface AssignmentProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...rest }) => {
 	// State
@@ -249,7 +249,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 		checkPermissions(
 			{
 				name: PermissionNames.CREATE_ASSIGNMENT_RESPONSE,
-				obj: (match.params as any).id,
+				obj: match.params.id,
 			},
 			user,
 			retrieveAssignmentAndContent,

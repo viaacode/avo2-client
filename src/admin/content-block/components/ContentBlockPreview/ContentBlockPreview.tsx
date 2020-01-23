@@ -7,7 +7,10 @@ import {
 	BlockHeading,
 	BlockIntro,
 	BlockRichText,
+	Container,
 } from '@viaa/avo2-components';
+
+import { ContentWidth } from '../../../content/content.types';
 
 import { CONTENT_BLOCKS_WITH_ELEMENTS_PROP } from '../../content-block.const';
 import {
@@ -20,6 +23,7 @@ import {
 
 interface ContentBlockPreviewProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
+	contentWidth: ContentWidth;
 	blockState: ContentBlockState;
 }
 
@@ -34,6 +38,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
+	contentWidth = 'default',
 	blockState,
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
@@ -58,7 +63,9 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			<PreviewComponent {...stateToSpread} />
+			<Container mode="horizontal" size={contentWidth === 'default' ? undefined : contentWidth}>
+				<PreviewComponent {...stateToSpread} />
+			</Container>
 		</div>
 	);
 };
