@@ -9,6 +9,7 @@ import {
 	BlockRichText,
 } from '@viaa/avo2-components';
 
+import { CONTENT_BLOCKS_WITH_ELEMENTS_PROP } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockComponentState,
@@ -36,8 +37,10 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	blockState,
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
+	const needsElements = CONTENT_BLOCKS_WITH_ELEMENTS_PROP.includes(blockState.blockType);
+	const stateToSpread: any = needsElements ? { elements: componentState } : componentState;
 
-	// TODO: Not sure this is the best place to do this
+	// TODO: Convert to array-based content block
 	if (blockState.blockType === ContentBlockType.RichTextTwoColumns) {
 		// Map componentState values correctly for preview component
 		const {
@@ -47,18 +50,6 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		(componentState as any).content = [firstColumnContent, secondColumnContent];
 	}
 
-	// TODO: Make more generic and reusable for other components
-	const renderPreview = () => {
-		if (
-			blockState.blockType === ContentBlockType.Buttons ||
-			blockState.blockType === ContentBlockType.CTAs
-		) {
-			return <PreviewComponent {...({ elements: componentState } as any)} />;
-		}
-
-		return <PreviewComponent {...(componentState as any)} />;
-	};
-
 	return (
 		// TODO: Extend spacer with paddings in components lib
 		// This way we can easily set paddings from a content-blocks componentState
@@ -67,7 +58,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			{renderPreview()}
+			<PreviewComponent {...stateToSpread} />
 		</div>
 	);
 };
