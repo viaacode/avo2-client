@@ -94,7 +94,7 @@ const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
 	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
 };
 
-interface AssignmentEditProps extends DefaultSecureRouteProps {}
+interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 let currentAssignment: Partial<Avo.Assignment.Assignment>;
 let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
@@ -151,7 +151,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					assignment = initAssignmentsByQueryParams();
 				} else {
 					setPageType('edit');
-					assignment = await fetchAssignment((match.params as any).id);
+					assignment = await fetchAssignment(match.params.id);
 				}
 
 				if (!assignment) {

@@ -5,3 +5,4 @@ export * from './rich-text-two-columns';
 export * from './buttons';
 export * from './intro';
 export * from './ctas';
+export * from './iframe';

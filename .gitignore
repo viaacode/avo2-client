@@ -260,3 +260,4 @@ tests/cypress.env.json
 tests/dist
 scripts/*.js
 scripts/*.js.map
+licenses.csv

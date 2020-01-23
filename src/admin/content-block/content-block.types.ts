@@ -60,7 +60,8 @@ export type ContentBlockComponentState =
 	| RichTextTwoColumnsBlockComponentState
 	| ButtonsBlockComponentState
 	| IntroBlockComponentState
-	| CTAsBlockComponentState;
+	| CTAsBlockComponentState
+	| IFrameBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -105,6 +106,7 @@ export enum ContentBlockType {
 	Intro = 'INTRO',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
+	IFrame = 'IFRAME',
 }
 
 export interface HeadingBlockComponentState {
@@ -124,6 +126,7 @@ export interface RichTextTwoColumnsBlockComponentState {
 
 export interface ButtonsBlockComponentState {
 	label: string;
+	// TODO: button actions;
 }
 
 export interface IntroBlockComponentState {
@@ -137,4 +140,9 @@ export interface CTAsBlockComponentState {
 	headingType: HeadingLevelOptions;
 	content: string | string[];
 	// TODO: button: Partial<ButtonsBlockComponentState>;
+}
+
+export interface IFrameBlockComponentState {
+	title: string;
+	src: string;
 }
