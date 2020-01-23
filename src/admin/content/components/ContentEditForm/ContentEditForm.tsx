@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -17,17 +17,16 @@ import {
 import { ValueOf } from '../../../../shared/types';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
-import { ContentEditFormErrors, ContentEditFormState } from '../../content.types';
+import { CONTENT_WIDTH_OPTIONS, FIXED_WIDTH_PAGES } from '../../content.const';
+import {
+	ContentEditFormErrors,
+	ContentEditFormState,
+	ContentTypesResponse,
+} from '../../content.types';
 import './ContentEditForm.scss';
 
-interface ContentTypeOptions {
-	label: string;
-	value: string;
-	disabled?: boolean;
-}
-
 interface ContentEditFormProps {
-	contentTypeOptions: ContentTypeOptions[];
+	contentTypes: ContentTypesResponse[];
 	formErrors: ContentEditFormErrors;
 	formState: ContentEditFormState;
 	isAdminUser: boolean;
@@ -37,13 +36,38 @@ interface ContentEditFormProps {
 type DateFormKeys = 'publishAt' | 'depublishAt';
 
 const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
-	contentTypeOptions = [],
+	contentTypes = [],
 	formErrors,
 	formState,
 	isAdminUser,
 	onChange,
 }) => {
+	// Hooks
 	const [t] = useTranslation();
+
+	useEffect(() => {
+		// Set fixed content width for specific page types
+		if (
+			FIXED_WIDTH_PAGES.medium.includes(formState.contentType) &&
+			formState.contentWidth !== 'medium'
+		) {
+			onChange('contentWidth', 'medium');
+		} else if (
+			FIXED_WIDTH_PAGES.default.includes(formState.contentType) &&
+			formState.contentWidth !== 'default'
+		) {
+			onChange('contentWidth', 'default');
+		}
+	}, [formState.contentType, formState.contentWidth, onChange]);
+
+	// Computed
+	const contentTypeOptions = [
+		{ label: 'Kies een content type', value: '', disabled: true },
+		...contentTypes.map(contentType => ({
+			label: contentType.value,
+			value: contentType.value,
+		})),
+	];
 
 	// Methods
 	const handleDateChange = (key: DateFormKeys, value: Date | null) => {
@@ -66,10 +90,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									error={formErrors.title}
 									label={t('admin/content/components/content-edit-form/content-edit-form___titel')}
 								>
-									<TextInput
-										onChange={(value: string) => onChange('title', value)}
-										value={formState.title}
-									/>
+									<TextInput onChange={value => onChange('title', value)} value={formState.title} />
 								</FormGroup>
 							</Column>
 							<Column size="12">
@@ -104,13 +125,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									error={formErrors.path}
 									label={t('admin/content/components/content-edit-form/content-edit-form___url')}
 								>
-									<TextInput
-										onChange={(value: string) => onChange('path', value)}
-										value={formState.path}
-									/>
+									<TextInput onChange={value => onChange('path', value)} value={formState.path} />
 								</FormGroup>
 							</Column>
-							<Column size="3-12">
+							<Column size="3-6">
 								<FormGroup
 									error={formErrors.contentType}
 									label={t(
@@ -118,9 +136,18 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									)}
 								>
 									<Select
-										onChange={(value: string) => onChange('contentType', value)}
+										onChange={value => onChange('contentType', value)}
 										options={contentTypeOptions}
 										value={formState.contentType}
+									/>
+								</FormGroup>
+							</Column>
+							<Column size="3-6">
+								<FormGroup error={formErrors.contentWidth} label={t('Content breedte')}>
+									<Select
+										onChange={value => onChange('contentWidth', value)}
+										options={CONTENT_WIDTH_OPTIONS}
+										value={formState.contentWidth}
 									/>
 								</FormGroup>
 							</Column>
@@ -146,7 +173,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									)}
 								>
 									<DatePicker
-										onChange={(value: Date | null) => handleDateChange('publishAt', value)}
+										onChange={value => handleDateChange('publishAt', value)}
 										showTimeInput
 										value={handleDateValue('publishAt')}
 									/>
@@ -160,7 +187,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									)}
 								>
 									<DatePicker
-										onChange={(value: Date | null) => handleDateChange('depublishAt', value)}
+										onChange={value => handleDateChange('depublishAt', value)}
 										showTimeInput
 										value={handleDateValue('depublishAt')}
 									/>

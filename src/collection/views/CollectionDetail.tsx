@@ -67,7 +67,7 @@ import './CollectionDetail.scss';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
-interface CollectionDetailProps extends DefaultSecureRouteProps {}
+interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	match,
@@ -78,7 +78,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [t] = useTranslation();
 
 	// State
-	const [collectionId] = useState((match.params as any)['id'] as string);
+	const [collectionId] = useState(match.params.id);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);

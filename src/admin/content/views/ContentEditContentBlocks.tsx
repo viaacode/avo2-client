@@ -16,9 +16,11 @@ import {
 } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers/create-key';
+import { ContentWidth } from '../content.types';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
+	contentWidth: ContentWidth;
 	onAdd: (config: ContentBlockConfig) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
@@ -34,6 +36,7 @@ interface ContentEditContentBlocksProps {
 
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
 	contentBlockConfigs,
+	contentWidth,
 	onAdd,
 	onRemove,
 	onReorder,
@@ -101,19 +104,19 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		});
 	};
 
-	const renderBlockPreviews = () => {
-		return contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
+	const renderBlockPreviews = () =>
+		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
 			const { components, block } = contentBlockConfig;
 
 			return (
 				<ContentBlockPreview
 					key={createKey('p', blockIndex)}
 					componentState={components.state}
+					contentWidth={contentWidth}
 					blockState={block.state}
 				/>
 			);
 		});
-	};
 
 	return (
 		<Flex className="c-content-edit-view__content">
