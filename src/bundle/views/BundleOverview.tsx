@@ -23,6 +23,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../../collection/collection.gql';
 import { ErrorView } from '../../error/views';
 import { SEARCH_PATH } from '../../search/search.const';
 import { DataQueryComponent, DeleteObjectModal } from '../../shared/components';
@@ -40,17 +41,16 @@ import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
-import { COLLECTION_PATH } from '../collection.const';
-import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
-import './CollectionOverview.scss';
+import { BUNDLE_PATH } from '../bundle.const';
+import './BundleOverview.scss';
 
-interface CollectionOverviewProps extends DefaultSecureRouteProps {
-	numberOfCollections: number;
+interface BundleOverviewProps extends DefaultSecureRouteProps {
+	numberOfBundles: number;
 }
 
-const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
+const BundleOverview: FunctionComponent<BundleOverviewProps> = ({
 	history,
-	numberOfCollections,
+	numberOfBundles,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -108,10 +108,10 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 
 	// Render functions
 	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
-		<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
+		<Link to={buildLink(BUNDLE_PATH.BUNDLES_DETAIL, { id })} title={title}>
 			<Thumbnail
 				alt="thumbnail"
-				category="collection"
+				category="bundle"
 				className="m-collection-overview-thumbnail"
 				src={thumbnail_path || undefined}
 			/>
@@ -121,14 +121,16 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
+				<Link to={buildLink(BUNDLE_PATH.BUNDLES_DETAIL, { id })} title={title}>
 					{title}
 				</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category="collection">
 					<MetaDataItem>
-						<span title={`Aangemaakt: ${formatDate(created_at)}`}>{fromNow(created_at)}</span>
+						<span title={`${t('Aangemaakt')}: ${formatDate(created_at)}`}>
+							{fromNow(created_at)}
+						</span>
 					</MetaDataItem>
 					{/* TODO: Views from GQL */}
 					<MetaDataItem icon="eye" label="0" />
@@ -140,11 +142,6 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const renderActions = (collectionId: number) => {
 		const ROW_DROPDOWN_ITEMS = [
 			createDropdownMenuItem('edit', t('collection/views/collection-overview___bewerk'), 'edit2'),
-			createDropdownMenuItem(
-				'createAssignment',
-				t('collection/views/collection-overview___maak-opdracht'),
-				'clipboard'
-			),
 			createDropdownMenuItem('delete', t('collection/views/collection-overview___verwijderen')),
 		];
 
@@ -152,7 +149,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		const onClickDropdownItem = (item: ReactText) => {
 			switch (item) {
 				case 'edit':
-					navigate(history, COLLECTION_PATH.COLLECTION_EDIT, { id: collectionId });
+					navigate(history, BUNDLE_PATH.BUNDLES_EDIT, { id: collectionId });
 					break;
 				case 'createAssignment':
 					history.push(generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'));
@@ -184,7 +181,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 
 				<Button
 					icon="chevron-right"
-					onClick={() => navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, { id: collectionId })}
+					onClick={() => navigate(history, BUNDLE_PATH.BUNDLES_DETAIL, { id: collectionId })}
 					type="borderless"
 				/>
 			</ButtonToolbar>
@@ -197,34 +194,33 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		switch (colKey) {
 			case 'thumbnail':
 				return renderThumbnail(collection);
+
 			case 'title':
 				return renderTitle(collection);
-			case 'inFolder':
-				const isInFolder = true; // TODO: Check if collection is in bundle
 
-				return isInFolder && <Button icon="folder" type="borderless" />;
 			case 'access':
 				const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
 				const avatarProps = userProfiles.map(userProfile => {
 					const props = getAvatarProps(userProfile);
-					(props as any).subtitle = 'mag bewerken'; // TODO: Check permissions for all users
+					(props as any).subtitle = t('mag bewerken'); // TODO: Check permissions for all users
 					return props;
 				});
-
 				return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
+
 			case 'actions':
 				return renderActions(id);
+
 			case 'created_at':
 			case 'updated_at':
 				const cellData = collection[colKey as 'created_at' | 'updated_at'];
-
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+
 			default:
 				return null;
 		}
 	};
 
-	const renderTable = (collections: Avo.Collection.Collection[]) => (
+	const renderTable = (bundles: Avo.Collection.Collection[]) => (
 		<>
 			<Table
 				columns={[
@@ -241,11 +237,10 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 						col: '3',
 						sortable: true,
 					},
-					{ id: 'inFolder', label: t('collection/views/collection-overview___in-map'), col: '2' },
 					{ id: 'access', label: t('collection/views/collection-overview___toegang'), col: '2' },
 					{ id: 'actions', label: '', col: '1' },
 				]}
-				data={collections}
+				data={bundles}
 				emptyStateMessage={t('collection/views/collection-overview___geen-resultaten-gevonden')}
 				renderCell={renderCell}
 				rowKey="id"
@@ -255,7 +250,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				sortOrder={sortOrder}
 			/>
 			<Pagination
-				pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
+				pageCount={Math.ceil(numberOfBundles / ITEMS_PER_PAGE)}
 				currentPage={page}
 				onPageChange={setPage}
 			/>
@@ -263,23 +258,20 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	);
 
 	const renderEmptyFallback = () => (
-		<ErrorView
-			icon="collection"
-			message={t('collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt')}
-		>
+		<ErrorView icon="folder" message={t('Je hebt nog geen bundels aangemaakt')}>
 			<p>
-				<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
-					Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
-					voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
-					gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen
-					die je dan hier terugvindt.
+				<Trans>
+					Een bundel is een verzameling van collecties rond een bepaald thema of voor een bepaalde
+					les. Nadat je een bundel hebt aangemaakt kan je deze delen met andere gebruikers om samen
+					aan te werken. Andere gebruikers kunnen ook bundels met jou delen die je dan hier
+					terugvindt.
 				</Trans>
 			</p>
 			<Spacer margin="top">
 				<Button
 					type="primary"
 					icon="search"
-					label={t('collection/views/collection-overview___maak-je-eerste-collectie')}
+					label={t('Zoek een collectie en maak je eerste bundel')}
 					onClick={onClickCreate}
 				/>
 			</Spacer>
@@ -312,15 +304,13 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
-				type_id: 3,
+				type_id: 4,
 			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
-			notFoundMessage={t(
-				'collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden'
-			)}
+			notFoundMessage={t('Er konden geen bundels worden gevonden')}
 		/>
 	);
 };
 
-export default CollectionOverview;
+export default BundleOverview;

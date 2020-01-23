@@ -26,7 +26,7 @@ export const APP_PATH = Object.freeze({
 	// TODO: Replace once available
 	NEWS: `/${ROUTE_PARTS.news}`,
 	PROJECTS: `/${ROUTE_PARTS.projects}`,
-	FOLDER_DETAIL: `/${ROUTE_PARTS.folders}`,
+	FOLDER_DETAIL: `/${ROUTE_PARTS.bundles}`,
 	SETTINGS: `/${ROUTE_PARTS.settings}`,
 	HELP: `/${ROUTE_PARTS.help}`,
 	FEEDBACK: `/${ROUTE_PARTS.feedback}`,
