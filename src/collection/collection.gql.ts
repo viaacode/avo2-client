@@ -1,7 +1,5 @@
 import { gql } from 'apollo-boost';
 
-import { ITEMS_PER_PAGE } from '../workspace/workspace.const';
-
 // TODO: Reduce to only what we need.
 export const GET_COLLECTION_BY_ID = gql`
 	query getCollectionById($id: Int!) {

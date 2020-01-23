@@ -212,7 +212,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 
 		checkPermissions();
-	}, [collectionId, relatedCollections, t, user]);
+	}, [collectionId, relatedCollections, t, user, checkPermissions]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {

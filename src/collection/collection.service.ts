@@ -3,7 +3,7 @@ import { cloneDeep, get, isNil, omit, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { getProfileId, getProfileName } from '../authentication/helpers/get-profile-info';
+import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { CustomError } from '../shared/helpers/error';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
@@ -14,8 +14,6 @@ import {
 	GET_COLLECTIONS,
 } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
-import { trackEvents } from '../shared/services/event-logging-service';
-import { toSeconds } from '../shared/helpers';
 
 // TODO: Translations in errors.
 export class CollectionService {
