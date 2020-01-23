@@ -81,6 +81,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 										'shared/components/data-query-component/data-query-component___er-ging-iets-mis-tijdens-het-ophalen'
 									)}
 									icon="alert-triangle"
+									actionButtons={['home']}
 								/>
 							);
 						}
@@ -104,6 +105,8 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 										'shared/components/data-query-component/data-query-component___het-opgevraagde-object-werd-niet-gevonden'
 									)
 								}
+								icon="search"
+								actionButtons={['home']}
 							/>
 						);
 					}}

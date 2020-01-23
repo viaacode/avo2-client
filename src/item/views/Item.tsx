@@ -491,6 +491,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 				<ErrorView
 					message={t('item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken')}
 					icon="lock"
+					actionButtons={['home']}
 				/>
 			</PermissionGuardFail>
 		</PermissionGuard>

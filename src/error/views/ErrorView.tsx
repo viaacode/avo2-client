@@ -10,6 +10,8 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import i18n from '../../shared/translations/i18n';
 
+export type ErrorActionButton = 'home';
+
 interface ErrorViewQueryParams {
 	message?: string;
 	icon?: IconName;
@@ -22,6 +24,7 @@ interface ErrorViewProps extends RouteComponentProps {
 	history: History;
 	match: match<ErrorViewQueryParams>;
 	location: Location;
+	actionButtons?: ErrorActionButton[];
 }
 
 const ErrorView: FunctionComponent<ErrorViewProps> = ({
@@ -30,6 +33,7 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	children = null,
 	history,
 	location,
+	actionButtons = [],
 }) => {
 	const [t] = useTranslation();
 
@@ -47,10 +51,12 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 			<Container size="medium" mode="horizontal">
 				<Blankslate body="" icon={errorIcon} title={errorMessage}>
 					{children}
-					<Button
-						onClick={() => redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)}
-						label={t('Ga terug naar de homepagina')}
-					/>
+					{actionButtons.includes('home') && (
+						<Button
+							onClick={() => redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)}
+							label={t('Ga terug naar de homepagina')}
+						/>
+					)}
 				</Blankslate>
 			</Container>
 		</Container>
