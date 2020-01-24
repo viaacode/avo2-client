@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { fetchContentBlocksByContentId } from '../content-block.services';
-import { ContentBlockSchema } from '../content-block.types';
+import { Avo } from '@viaa/avo2-types';
 
-type UseContentBlocksByContentIdTuple = [ContentBlockSchema[], boolean];
+import { fetchContentBlocksByContentId } from '../content-block.services';
+
+type UseContentBlocksByContentIdTuple = [Avo.ContentBlocks.ContentBlocks[], boolean];
 
 export const useContentBlocksByContentId = (id?: string): UseContentBlocksByContentIdTuple => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [contentBlocks, setContentBlocks] = useState<ContentBlockSchema[]>([]);
+	const [contentBlocks, setContentBlocks] = useState<Avo.ContentBlocks.ContentBlocks[]>([]);
 
 	useEffect(() => {
 		if (id) {
