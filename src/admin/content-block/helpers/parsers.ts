@@ -1,7 +1,9 @@
 import { get } from 'lodash-es';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { CONTENT_BLOCK_CONFIG_MAP } from '../content-block.const';
-import { ContentBlockConfig, ContentBlockSchema, ContentBlockType } from '../content-block.types';
+import { ContentBlockConfig, ContentBlockType } from '../content-block.types';
 
 // Parse content-block config to valid request body
 export const parseContentBlockConfig = (
@@ -22,34 +24,34 @@ export const parseContentBlockConfig = (
 export const parseContentBlockConfigs = (
 	contentId: number,
 	contentBlockConfigs: ContentBlockConfig[]
-): Partial<ContentBlockSchema>[] =>
+): Partial<Avo.ContentBlocks.ContentBlocks>[] =>
 	contentBlockConfigs.map(contentBlockConfig =>
 		parseContentBlockConfig(contentBlockConfig, contentId)
 	);
 
 // Parse content-blocks to configs
-export const parseContentBlocks = (contentBlocks: ContentBlockSchema[]): ContentBlockConfig[] => {
-	const sortedContentBlocks = contentBlocks.sort(
-		// TODO: remove as number after types update
-		(a, b) => (a.position as number) - (b.position as number)
-	);
+export const parseContentBlocks = (
+	contentBlocks: Avo.ContentBlocks.ContentBlocks[]
+): ContentBlockConfig[] => {
+	const sortedContentBlocks = contentBlocks.sort((a, b) => a.position - b.position);
 
 	return sortedContentBlocks.map(contentBlock => {
 		const { content_block_type, id, variables } = contentBlock;
 		const cleanConfig = CONTENT_BLOCK_CONFIG_MAP[content_block_type as ContentBlockType](
-			// TODO: remove as number after types update
-			contentBlock.position as number
+			contentBlock.position
 		);
+
+		const rawComponentState = get(variables, 'componentState', null);
+		const componentState = Array.isArray(rawComponentState)
+			? rawComponentState
+			: { ...cleanConfig.components.state, ...rawComponentState };
 
 		return {
 			...cleanConfig,
 			id,
 			components: {
 				...cleanConfig.components,
-				state: {
-					...cleanConfig.components.state,
-					...get(variables, 'componentState', {}),
-				},
+				state: componentState,
 			},
 			block: {
 				...cleanConfig.block,
