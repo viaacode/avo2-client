@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get, isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
@@ -103,7 +103,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
-	const checkPermissions = async () => {
+	const checkPermissions = useCallback(async () => {
 		try {
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
@@ -183,7 +183,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				icon: 'alert-triangle',
 			});
 		}
-	};
+	}, [collectionId, t, user]);
 
 	useEffect(() => {
 		trackEvents(
@@ -212,7 +212,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 
 		checkPermissions();
-	}, [collectionId, relatedCollections, t, user]);
+	}, [checkPermissions, collectionId, relatedCollections, t, user]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {
