@@ -53,7 +53,7 @@ export const Footer: FunctionComponent<FooterProps> = ({ history, location, matc
 					history
 				);
 			});
-	}, [user]);
+	}, [history, t, user]);
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
 		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);

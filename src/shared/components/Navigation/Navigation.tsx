@@ -85,7 +85,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					history
 				);
 			});
-	}, [user]);
+	}, [history, t, user]);
 
 	const mapNavItems = (navItems: NavigationItemInfo[]) => {
 		return navItems.map(item => (
