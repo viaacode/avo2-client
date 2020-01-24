@@ -258,5 +258,6 @@ tests/cypress-report*xml
 tests/ci-results
 tests/cypress.env.json
 tests/dist
-scripts/extract-and-replace-translations.js.map
-scripts/extract-and-replace-translations.js
+scripts/*.js
+scripts/*.js.map
+licenses.csv

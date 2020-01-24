@@ -11,15 +11,15 @@ import './AdminLayout.scss';
 interface AdminLayoutProps {
 	children?: ReactNode;
 	className?: string;
-	navigateBack?: (() => void) | null;
 	pageTitle?: string;
+	showBackButton?: boolean;
 }
 
 const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 	children,
 	className,
-	navigateBack = null,
 	pageTitle,
+	showBackButton,
 }) => {
 	const actions = useSlot(AdminLayoutActions, children);
 	const body = useSlot(AdminLayoutBody, children);
@@ -27,7 +27,7 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 
 	return (
 		<div className={classnames({ 'l-admin--with-actions': !!actions })}>
-			<TopBar navigateBack={navigateBack} />
+			<TopBar showBackButton={showBackButton} />
 			{header}
 			{(pageTitle || (children && !body)) && (
 				<Container className={className} mode="vertical" size="small">
