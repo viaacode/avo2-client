@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,7 +5,6 @@ import { Button, Flex, Form, FormGroup, Spacer, TextInput } from '@viaa/avo2-com
 
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
 
-import { INITIAL_FILTER_FORM } from '../../content.const';
 import { ContentFilterFormState, ContentTypesResponse } from '../../content.types';
 import './ContentFilters.scss';
 
