@@ -1,110 +1,111 @@
+import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TextInput, Toolbar, ToolbarItem, ToolbarLeft, ToolbarRight } from '@viaa/avo2-components';
+import { Button, Flex, Form, FormGroup, Spacer, TextInput } from '@viaa/avo2-components';
 
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
-import { DateRange } from '../../../../shared/components/DateRangeDropdown/DateRangeDropdown';
 
-import {
-	ContentFilterDateRangeKeys,
-	ContentFilterFormState,
-	ContentTypesResponse,
-} from '../../content.types';
+import { INITIAL_FILTER_FORM } from '../../content.const';
+import { ContentFilterFormState, ContentTypesResponse } from '../../content.types';
+import './ContentFilters.scss';
 
 interface ContentFiltersProps {
 	contentTypes: ContentTypesResponse[];
 	formState: ContentFilterFormState;
-	onChange: <K extends keyof ContentFilterFormState>(
+	hasFilters: boolean;
+	onClearFilters: () => void;
+	onFilterChange: <K extends keyof ContentFilterFormState>(
 		key: K,
 		value: ContentFilterFormState[K]
 	) => void;
+	onQueryChange: (query: string) => void;
+	query: string;
 }
-
-// TODO: this query should be able to
-// - filter on: title, description, author, role, all dates and content type
-// - order by
 
 const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 	contentTypes,
 	formState,
-	onChange,
+	hasFilters,
+	onClearFilters,
+	onFilterChange,
+	onQueryChange,
+	query,
 }) => {
 	// Hooks
 	const [t] = useTranslation();
+
 	// Computed
 	const contentTypeOptions = contentTypes.map(({ value }) => ({
-		checked: false,
+		checked: formState.contentType.includes(value),
 		id: value,
 		label: value,
 	}));
 
-	// Methods
-	const handleDateRangeChange = (key: ContentFilterDateRangeKeys, range: DateRange) => {
-		const updatedDateRanges = {
-			...formState.dateRanges,
-			[key]: range,
-		};
-
-		onChange('dateRanges', updatedDateRanges);
-	};
-
 	// Render
 	return (
-		<Toolbar>
-			<ToolbarLeft>
-				<ToolbarItem>
-					<CheckboxDropdownModal
-						id="content-filter-type"
-						label={t('Type')}
-						onChange={value => onChange('contentType', value)}
-						options={contentTypeOptions}
-					/>
-				</ToolbarItem>
-				<ToolbarItem>
-					<DateRangeDropdown
-						id="content-filter-created-date"
-						label={t('Aanmaakdatum')}
-						onChange={value => handleDateRangeChange('created', value)}
-						range={formState.dateRanges.created}
-					/>
-				</ToolbarItem>
-				<ToolbarItem>
-					<DateRangeDropdown
-						id="content-filter-updated-date"
-						label={t('Bewerkdatum')}
-						onChange={value => handleDateRangeChange('updated', value)}
-						range={formState.dateRanges.updated}
-					/>
-				</ToolbarItem>
-				<ToolbarItem>
-					<DateRangeDropdown
-						id="content-filter-publish-date"
-						label={t('Publiceerdatum')}
-						onChange={value => handleDateRangeChange('publish', value)}
-						range={formState.dateRanges.publish}
-					/>
-				</ToolbarItem>
-				<ToolbarItem>
-					<DateRangeDropdown
-						id="content-filter-depublish-date"
-						label={t('Depubliceerdatum')}
-						onChange={value => handleDateRangeChange('depublish', value)}
-						range={formState.dateRanges.depublish}
-					/>
-				</ToolbarItem>
-			</ToolbarLeft>
-			<ToolbarRight>
-				<ToolbarItem>
-					<TextInput
-						placeholder="Zoek op auteur, titel"
-						icon="search"
-						onChange={value => onChange('text', value)}
-						value={formState.text}
-					/>
-				</ToolbarItem>
-			</ToolbarRight>
-		</Toolbar>
+		<Spacer className="c-content-filters" margin="bottom-small">
+			<Spacer margin="bottom">
+				<Form type="inline">
+					<FormGroup className="c-content-filters__search" inlineMode="grow">
+						<TextInput
+							placeholder="Zoek op auteur, titel"
+							icon="search"
+							onChange={onQueryChange}
+							value={query}
+						/>
+					</FormGroup>
+					<FormGroup inlineMode="shrink">
+						<Button
+							label={t('Zoeken')}
+							type="primary"
+							onClick={() => onFilterChange('query', query)}
+						/>
+					</FormGroup>
+					{hasFilters && (
+						<FormGroup inlineMode="shrink">
+							<Button
+								label={t('search/views/search___verwijder-alle-filters')}
+								type="link"
+								onClick={onClearFilters}
+							/>
+						</FormGroup>
+					)}
+				</Form>
+			</Spacer>
+			<Flex spaced="regular" wrap>
+				<CheckboxDropdownModal
+					id="content-filter-type"
+					label={t('Type')}
+					onChange={value => onFilterChange('contentType', value)}
+					options={contentTypeOptions}
+				/>
+				<DateRangeDropdown
+					id="content-filter-created-date"
+					label={t('Aanmaakdatum')}
+					onChange={value => onFilterChange('createdDate', value)}
+					range={formState.createdDate}
+				/>
+				<DateRangeDropdown
+					id="content-filter-updated-date"
+					label={t('Bewerkdatum')}
+					onChange={value => onFilterChange('updatedDate', value)}
+					range={formState.updatedDate}
+				/>
+				<DateRangeDropdown
+					id="content-filter-publish-date"
+					label={t('Publiceerdatum')}
+					onChange={value => onFilterChange('publishDate', value)}
+					range={formState.publishDate}
+				/>
+				<DateRangeDropdown
+					id="content-filter-depublish-date"
+					label={t('Depubliceerdatum')}
+					onChange={value => onFilterChange('depublishDate', value)}
+					range={formState.depublishDate}
+				/>
+			</Flex>
+		</Spacer>
 	);
 };
 

@@ -8,12 +8,14 @@ export const GET_AVAILABLE_CONTENT_TYPES = gql`
 	}
 `;
 
-// TODO: this query should be able to
-// - filter on: title, description, author, role, all dates and content type
-// - order by
 export const GET_CONTENT = gql`
-	query getContent($offset: Int = 0, $limit: Int = 10, $order: [app_content_order_by!] = {}) {
-		app_content(limit: $limit, offset: $offset, order_by: $order) {
+	query getContent(
+		$where: app_content_bool_exp
+		$offset: Int = 0
+		$limit: Int = 10
+		$order: [app_content_order_by!] = {}
+	) {
+		app_content(where: $where, limit: $limit, offset: $offset, order_by: $order) {
 			content_type
 			created_at
 			depublish_at

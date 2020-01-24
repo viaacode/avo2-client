@@ -21,14 +21,19 @@ export type ContentOverviewTableCols =
 
 export type ContentParams = { id: string };
 
-export type ContentFilterDateRangeKeys = 'created' | 'updated' | 'publish' | 'depublish';
+export type DateRangeKeys = 'createdDate' | 'updatedDate' | 'publishDate' | 'depublishDate';
+export type FilterRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
+export type RangeFilters = {
+	[key in FilterRangeKeys]?: { _gte?: string; _lte?: string };
+};
 
 export interface ContentFilterFormState {
 	contentType: string[];
-	dateRanges: {
-		[key in ContentFilterDateRangeKeys]: DateRange;
-	};
-	text: string;
+	createdDate: DateRange;
+	updatedDate: DateRange;
+	publishDate: DateRange;
+	depublishDate: DateRange;
+	query: string;
 }
 
 export interface ContentOverviewState {

@@ -43,13 +43,11 @@ export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
 
 export const INITIAL_FILTER_FORM = (): ContentFilterFormState => ({
 	contentType: [],
-	dateRanges: {
-		created: { gte: '', lte: '' },
-		updated: { gte: '', lte: '' },
-		publish: { gte: '', lte: '' },
-		depublish: { gte: '', lte: '' },
-	},
-	text: '',
+	createdDate: { gte: '', lte: '' },
+	updatedDate: { gte: '', lte: '' },
+	publishDate: { gte: '', lte: '' },
+	depublishDate: { gte: '', lte: '' },
+	query: '',
 });
 
 export const INITIAL_CONTENT_OVERVIEW_STATE = () => ({
