@@ -482,6 +482,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				notFoundMessage={t(
 					'collection/views/collection-detail___deze-collectie-werd-niet-gevonden'
 				)}
+				actionButtons={['home']}
 			/>
 		);
 	};

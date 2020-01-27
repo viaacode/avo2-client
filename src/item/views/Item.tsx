@@ -485,6 +485,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 					resultPath="app_item_meta[0]"
 					renderData={renderItem}
 					notFoundMessage="Dit item werd niet gevonden"
+					actionButtons={['home']}
 				/>
 			</PermissionGuardPass>
 			<PermissionGuardFail>
