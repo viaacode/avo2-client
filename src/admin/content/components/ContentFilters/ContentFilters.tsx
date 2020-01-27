@@ -47,7 +47,7 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 				<Form type="inline">
 					<FormGroup className="c-content-filters__search" inlineMode="grow">
 						<TextInput
-							placeholder="Zoek op auteur, titel"
+							placeholder={t('Zoek op auteur, titel')}
 							icon="search"
 							onChange={onQueryChange}
 							value={query}
