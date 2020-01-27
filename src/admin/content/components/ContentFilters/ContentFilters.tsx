@@ -1,9 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Flex, Form, FormGroup, Spacer, TextInput } from '@viaa/avo2-components';
 
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
+import { KeyCode } from '../../../../shared/types';
 
 import { ContentFilterFormState, ContentTypesResponse } from '../../content.types';
 import './ContentFilters.scss';
@@ -40,6 +41,13 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 		label: value,
 	}));
 
+	// Methods
+	const handleKeyUp = (e: KeyboardEvent) => {
+		if (e.keyCode === KeyCode.Enter) {
+			onFilterChange('query', query);
+		}
+	};
+
 	// Render
 	return (
 		<Spacer className="c-content-filters" margin="bottom-small">
@@ -50,6 +58,7 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 							placeholder={t('Zoek op auteur, titel')}
 							icon="search"
 							onChange={onQueryChange}
+							onKeyUp={handleKeyUp}
 							value={query}
 						/>
 					</FormGroup>
