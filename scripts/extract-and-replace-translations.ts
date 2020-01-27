@@ -29,7 +29,11 @@ import * as fs from 'fs';
 import glob from 'glob';
 import * as _ from 'lodash';
 import * as path from 'path';
-import oldTranslations from '../src/shared/translations/nl.json';
+import localTranslations from '../src/shared/translations/nl.json';
+
+type keyMap = { [key: string]: string };
+
+const oldTranslations: keyMap = localTranslations;
 
 const sortObject = require('sort-object-keys');
 
@@ -51,23 +55,28 @@ function getFormattedTranslation(translation: string) {
 	return translation.trim().replace(/\t\t(\t)+/g, ' ');
 }
 
-const options = {
-	ignore: '**/*.d.ts',
-	cwd: path.join(__dirname, '../src'),
-};
+async function getFilesByGlob(globPattern: string): Promise<string[]> {
+	return new Promise<string[]>((resolve, reject) => {
+		const options = {
+			ignore: '**/*.d.ts',
+			cwd: path.join(__dirname, '../src'),
+		};
+		glob(globPattern, options, (err, files) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(files);
+			}
+		});
+	});
+}
 
-glob('**/*.@(ts|tsx)', options, (err, files) => {
-	if (err) {
-		console.error('Failed to extract translations', err);
-		return;
-	}
-
-	const newTranslations: { [key: string]: string } = {};
-
+function extractTranslationsFromCodeFiles(codeFiles: string[]) {
+	const newTranslations: keyMap = {};
 	// Find and extract translations, replace strings with translation keys
-	files.forEach((relativeFilePath: string) => {
+	codeFiles.forEach((relativeFilePath: string) => {
 		try {
-			const absoluteFilePath = `${options.cwd}/${relativeFilePath}`;
+			const absoluteFilePath = path.resolve(__dirname, '../src', relativeFilePath);
 			let content: string = fs.readFileSync(absoluteFilePath).toString();
 
 			// Replace Trans objects
@@ -114,7 +123,7 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 					// If translation contains '___', use original translation, otherwise use translation found by the regexp
 					newTranslations[formattedKey] =
 						(formattedTranslation.includes('___')
-							? (oldTranslations as { [key: string]: string })[formattedKey]
+							? (oldTranslations as keyMap)[formattedKey]
 							: formattedTranslation) || '';
 					return `${prefix}t('${formattedKey}'${translationParams})`;
 				}
@@ -125,6 +134,50 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 			console.error(`Failed to find translations in file: ${relativeFilePath}`, err);
 		}
 	});
+	return newTranslations;
+}
+
+async function getOnlineTranslations() {
+	// Read file from poeditor website under /src/shared/translations/poeditor/project-id/nl.json
+	const poEditorFiles = await getFilesByGlob('shared/translations/poeditor/*/nl.json');
+	const poEditorFile: string = poEditorFiles[0];
+	if (!poEditorFile) {
+		throw new Error(
+			'File fetched from poEditor website could not be found: /src/shared/translations/poeditor/*/nl.json'
+		);
+	}
+	try {
+		const filePath = path.resolve(__dirname, '../src/', poEditorFile);
+		return JSON.parse(fs.readFileSync(filePath).toString());
+	} catch (err) {
+		throw new Error(`Failed to parse json file from poeditor: ${JSON.stringify(err, null, 2)}`);
+	}
+}
+
+function checkTranslationsForKeysAsValue(translationJson: string) {
+	// Identify  if any translations contain "___", then something went wrong with the translations
+	const faultyTranslations = [];
+	const faultyTranslationRegexp = /"(.*___.*)": ".*___/g;
+	let matches: RegExpExecArray | null;
+	do {
+		matches = faultyTranslationRegexp.exec(translationJson);
+		if (matches) {
+			faultyTranslations.push(matches[1]);
+		}
+	} while (matches);
+
+	if (faultyTranslations.length) {
+		throw new Error(`Failed to extract translations, the following translations would be overridden by their key:
+\t${faultyTranslations.join('\n\t')}`);
+	}
+}
+
+async function updateTranslations() {
+	const onlineTranslations = await getOnlineTranslations();
+
+	// Extract translations from code and replace code by reference to translation key
+	const codeFiles = await getFilesByGlob('**/*.@(ts|tsx)');
+	const newTranslations: keyMap = extractTranslationsFromCodeFiles(codeFiles);
 
 	// Compare existing translations to the new translations
 	const oldTranslationKeys: string[] = _.keys(oldTranslations);
@@ -140,37 +193,28 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 	);
 
 	// Combine the translations in the json with the freshly extracted translations from the code
-	const combinedTranslations: { [key: string]: string } = {};
-	existingTranslationKeys.forEach(
-		key => (combinedTranslations[key] = (oldTranslations as { [key: string]: string })[key])
-	);
-	addedTranslationKeys.forEach(key => (combinedTranslations[key] = newTranslations[key]));
+	const combinedTranslations: keyMap = {};
+	existingTranslationKeys.forEach((key: string) => {
+		combinedTranslations[key] = onlineTranslations[key] || oldTranslations[key];
+	});
+	addedTranslationKeys.forEach((key: string) => {
+		combinedTranslations[key] = onlineTranslations[key] || newTranslations[key];
+	});
 
-	// Identify  if any translations contain "___", then something went wrong with the translations
 	const nlJsonContent = JSON.stringify(sortObject(combinedTranslations), null, 2);
-	const faultyTranslations = [];
-	const faultyTranslationRegexp = /"(.*___.*)": ".*___/g;
-	let matches: RegExpExecArray | null;
-	do {
-		matches = faultyTranslationRegexp.exec(nlJsonContent);
-		if (matches) {
-			faultyTranslations.push(matches[1]);
-		}
-	} while (matches);
-	if (faultyTranslations.length) {
-		console.error(`Failed to extract translations, the following translations would be overridden by their key:
-\t${faultyTranslations.join('\n\t')}`);
-	} else {
-		fs.writeFileSync(
-			`${__dirname.replace(/\\/g, '/')}/../src/shared/translations/nl.json`,
-			nlJsonContent
-		);
+	checkTranslationsForKeysAsValue(nlJsonContent); // Throws error if any key is found as a value
 
-		const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
-		console.log(
-			`Wrote ${totalTranslations} src/shared/translations/nl.json file
+	fs.writeFileSync(
+		`${__dirname.replace(/\\/g, '/')}/../src/shared/translations/nl.json`,
+		nlJsonContent
+	);
+
+	const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
+	console.log(
+		`Wrote ${totalTranslations} src/shared/translations/nl.json file
 \t${addedTranslationKeys.length} translations added
 \t${removedTranslationKeys.length} translations deleted`
-		);
-	}
-});
+	);
+}
+
+updateTranslations().catch(err => console.error('Update of translations failed: ', err));
