@@ -259,14 +259,10 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 										<div>
 											<Select
 												id="existingCollection"
+												placeholder={
+													bundles.length ? t('Kies bundel') : t('Je hebt nog geen bundels')
+												}
 												options={[
-													{
-														label: bundles.length
-															? t('Kies bundel')
-															: t('Je hebt nog geen bundels'),
-														value: '',
-														disabled: true,
-													},
 													...bundles.map((bundle: Partial<Avo.Collection.Collection>) => ({
 														label: bundle.title || '',
 														value: String(bundle.id),
