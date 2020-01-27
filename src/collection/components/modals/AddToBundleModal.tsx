@@ -82,7 +82,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			console.error('Failed to fetch bundles', err);
 			toastService.danger(t('Het ophalen van de bundels is mislukt'));
 		});
-	}, [fetchBundles]);
+	}, [fetchBundles, t]);
 
 	const setSelectedBundleIdAndGetBundleInfo = async (id: string) => {
 		try {
