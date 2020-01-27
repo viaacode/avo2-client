@@ -94,7 +94,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			console.error('Failed to fetch collections', err);
 			toastService.danger(t('Het ophalen van de collecties is mislukt'));
 		});
-	}, [fetchCollections]);
+	}, [fetchCollections, t]);
 
 	useEffect(() => {
 		if (isOpen) {
