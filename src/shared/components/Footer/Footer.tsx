@@ -1,4 +1,3 @@
-import queryString from 'query-string';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router-dom';
@@ -7,11 +6,8 @@ import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { connect } from 'react-redux';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
-import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
-import { buildLink } from '../../helpers';
 import { BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import {
 	AppContentNavElement,
@@ -42,16 +38,8 @@ export const Footer: FunctionComponent<FooterProps> = ({ history, location, matc
 			})
 			.catch(err => {
 				console.error('Failed to get navigation items', err);
-				redirectToClientPage(
-					buildLink(
-						APP_PATH.ERROR,
-						{},
-						queryString.stringify({
-							message: t('Het ophalen van de navigatie items is mislukt, probeer later opnieuw'),
-						})
-					),
-					history
-				);
+				// Do not notify the user, since this will happen in the header navigation component already
+				// And we don't want to show 2 error toast messages
 			});
 	}, [user]);
 
