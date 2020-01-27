@@ -41,7 +41,7 @@ export const Footer: FunctionComponent<FooterProps> = ({ history, location, matc
 				// Do not notify the user, since this will happen in the header navigation component already
 				// And we don't want to show 2 error toast messages
 			});
-	}, [user]);
+	}, [history, t, user]);
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
 		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);

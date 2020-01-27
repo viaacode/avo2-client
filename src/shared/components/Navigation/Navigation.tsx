@@ -76,7 +76,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 					t('Het ophalen van de navigatie items is mislukt, probeer later opnieuw')
 				);
 			});
-	}, [user]);
+	}, [history, t, user]);
 
 	const mapNavItems = (navItems: NavigationItemInfo[]) => {
 		return navItems.map(item => (
