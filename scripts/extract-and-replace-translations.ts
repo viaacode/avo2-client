@@ -139,7 +139,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 
 async function getOnlineTranslations() {
 	// Read file from poeditor website under /src/shared/translations/poeditor/project-id/nl.json
-	const poEditorFiles = await getFilesByGlob('/src/shared/translations/poeditor/*/nl.json');
+	const poEditorFiles = await getFilesByGlob('shared/translations/poeditor/*/nl.json');
 	const poEditorFile: string = poEditorFiles[0];
 	if (!poEditorFile) {
 		throw new Error(
