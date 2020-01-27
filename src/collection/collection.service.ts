@@ -7,7 +7,7 @@ import { TFunction } from 'i18next';
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { LoadingInfo } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { CustomError } from '../shared/helpers/error';
+import { CustomError } from '../shared/helpers';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
@@ -26,7 +26,7 @@ export class CollectionService {
 		newCollection: Partial<Avo.Collection.Collection>,
 		triggerCollectionInsert: any | undefined, // can be undefined when saving an existing collection
 		triggerCollectionFragmentsInsert: any
-	): Promise<Avo.Collection.Collection | null> {
+	): Promise<Avo.Collection.Collection> {
 		try {
 			newCollection.created_at = new Date().toISOString();
 			newCollection.updated_at = newCollection.created_at;
@@ -46,12 +46,16 @@ export class CollectionService {
 			);
 
 			if (!response || response.errors) {
-				toastService.danger('De collectie kon niet worden aangemaakt');
-				return null;
+				throw new CustomError('Failed to create the collection in the database', null, {
+					response,
+				});
 			}
 			if (!insertedCollection || isNil(insertedCollection.id)) {
-				toastService.danger('De aangemaakte collectie kon niet worden opgehaald');
-				return null;
+				throw new CustomError(
+					'Failed to fetch the newly created collection from the database',
+					null,
+					{ response }
+				);
 			}
 			newCollection.id = insertedCollection.id;
 
@@ -67,8 +71,7 @@ export class CollectionService {
 
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
-			console.error('Failed to insert collection', err, { newCollection });
-			return null;
+			throw new CustomError('Failed to insert collection', err, { newCollection });
 		}
 	}
 
@@ -239,6 +242,65 @@ export class CollectionService {
 		collection: Partial<Avo.Collection.Collection> | null | undefined
 	): Avo.Collection.Fragment[] {
 		return get(collection, 'collection_fragments') || [];
+	}
+
+	/**
+	 * Find name that isn't a duplicate of an existing name of a collection of this user
+	 * eg if these collections exist:
+	 * copy 1: test
+	 * copy 2: test
+	 * copy 4: test
+	 *
+	 * Then the algorithm will propose: copy 3: test
+	 * @param prefix
+	 * @param existingTitle
+	 * @param user
+	 */
+	public static getCopyTitleForCollection = async (
+		prefix: string,
+		existingTitle: string,
+		user: Avo.User.User
+	): Promise<string> => {
+		const collections = await CollectionService.getCollectionTitlesByUser('collection', user);
+		const titles = collections.map(c => c.title);
+
+		let index = 0;
+		let candidateTitle: string;
+		do {
+			index += 1;
+			candidateTitle = prefix.replace('%index%', String(index)) + existingTitle;
+		} while (titles.includes(candidateTitle));
+
+		return candidateTitle;
+	};
+
+	public static async duplicateCollection(
+		collection: Avo.Collection.Collection,
+		user: Avo.User.User,
+		prefix: string,
+		triggerCollectionInsert: any,
+		triggerCollectionFragmentsInsert: any
+	): Promise<Avo.Collection.Collection> {
+		collection.owner_profile_id = getProfileId(user);
+		collection.is_public = false;
+		delete collection.id;
+		try {
+			collection.title = await CollectionService.getCopyTitleForCollection(
+				prefix,
+				collection.title,
+				user
+			);
+		} catch (err) {
+			console.error('Failed to get good copy title for collection', err, { collection });
+			// Fallback to simple copy title
+			collection.title = `${prefix.replace(' %index%', '')}${collection.title}`;
+		}
+
+		return await CollectionService.insertCollection(
+			collection,
+			triggerCollectionInsert,
+			triggerCollectionFragmentsInsert
+		);
 	}
 
 	/**

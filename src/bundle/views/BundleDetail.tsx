@@ -16,7 +16,6 @@ import {
 	Flex,
 	FlexItem,
 	Grid,
-	Header,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -41,7 +40,11 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { DELETE_COLLECTION } from '../../collection/collection.gql';
+import {
+	DELETE_COLLECTION,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENTS,
+} from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
 import { ShareCollectionModal } from '../../collection/components';
 import { APP_PATH } from '../../constants';
@@ -59,6 +62,7 @@ import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import './BundleDetail.scss';
+import { COLLECTION_COPY } from '../../collection/views/CollectionDetail';
 
 interface BundleDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -87,6 +91,8 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
+	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
 		trackEvents(
@@ -195,11 +201,44 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}
 	};
 
-	const onClickDropdownItem = (item: ReactText) => {
+	const onClickDropdownItem = async (item: ReactText) => {
+		setIsOptionsMenuOpen(false);
+
 		switch (item) {
 			case 'delete':
 				setIsDeleteModalOpen(true);
 				break;
+
+			case 'duplicate':
+				try {
+					if (!bundle) {
+						toastService.danger(
+							t(
+								'De bundel kan niet gekopieerd worden omdat deze nog niet is opgehaald van de database'
+							)
+						);
+						return;
+					}
+					const duplicateCollection = await CollectionService.duplicateCollection(
+						bundle,
+						user,
+						COLLECTION_COPY,
+						triggerCollectionInsert,
+						triggerCollectionFragmentsInsert
+					);
+					setTimeout(() =>
+						redirectToClientPage(
+							buildLink(APP_PATH.BUNDLES_DETAIL, { id: duplicateCollection.id }),
+							history
+						)
+					);
+					toastService.success(t('De bundel is gekopieerd, u kijkt nu naar de kopie.'));
+				} catch (err) {
+					console.error('Failed to copy bundle', err, { originalBundle: bundle });
+					toastService.danger(t('Het kopieren van de bundel is mislukt'));
+				}
+				break;
+
 			default:
 				return null;
 		}
