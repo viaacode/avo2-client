@@ -159,6 +159,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 		<DataQueryComponent
 			query={GET_CLASSIFICATIONS_AND_SUBJECTS}
 			renderData={renderCollectionMetaData}
+			actionButtons={['home']}
 		/>
 	);
 };
