@@ -5,6 +5,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
 import {
+	Avatar,
 	BlockHeading,
 	Button,
 	ButtonToolbar,
@@ -12,11 +13,10 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
-	DutchContentType,
+	Flex,
+	FlexItem,
 	Grid,
 	Header,
-	HeaderAvatar,
-	HeaderButtons,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -24,7 +24,13 @@ import {
 	MetaData,
 	MetaDataItem,
 	Spacer,
+	TagList,
+	TagOption,
 	Thumbnail,
+	Toolbar,
+	ToolbarItem,
+	ToolbarLeft,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -35,45 +41,28 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../../collection/collection.gql';
-import { ContentTypeString, toEnglishContentType } from '../../collection/collection.types';
+import { DELETE_COLLECTION } from '../../collection/collection.gql';
+import { CollectionService } from '../../collection/collection.service';
+import { ShareCollectionModal } from '../../collection/components';
+import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { ROUTE_PARTS } from '../../shared/constants';
-import {
-	buildLink,
-	createDropdownMenuItem,
-	CustomError,
-	formatDate,
-	generateAssignmentCreateLink,
-	generateContentLinkString,
-	generateSearchLinks,
-	renderAvatar,
-} from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import { buildLink, createDropdownMenuItem, fromNow } from '../../shared/helpers';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { BUNDLE_PATH } from '../bundle.const';
-import CollectionList from '../components/CollectionList';
-import './CollectionDetail.scss';
+import './BundleDetail.scss';
 
-const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
+interface BundleDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
-
-const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
-	history,
-	location,
-	match,
-	user,
-}) => {
+const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location, match, user }) => {
 	const [t] = useTranslation();
 
 	// State
@@ -82,16 +71,15 @@ const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
-	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedBundles, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
+	const [relatedBundles, setRelatedBundles] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
-			canViewCollections: boolean;
-			canEditCollections: boolean;
-			canDeleteCollections: boolean;
-			canCreateCollections: boolean;
+			canViewBundles: boolean;
+			canEditBundles: boolean;
+			canDeleteBundles: boolean;
+			canCreateBundles: boolean;
 			canViewItems: boolean;
 		}>
 	>({});
@@ -100,93 +88,11 @@ const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
-	const checkPermissions = async () => {
-		try {
-			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionNames.VIEW_COLLECTIONS },
-						{ name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT, obj: bundleId },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: bundleId },
-						{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: bundleId },
-						{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
-					],
-					user
-				),
-				PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
-				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
-			]);
-			const permissionObj = {
-				canViewCollections: rawPermissions[0],
-				canEditCollections: rawPermissions[1],
-				canDeleteCollections: rawPermissions[2],
-				canCreateCollections: rawPermissions[3],
-				canViewItems: rawPermissions[4],
-			};
-			const response = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id: bundleId },
-			});
-
-			if (response.errors) {
-				console.error(
-					new CustomError('Failed to  get collection from database', null, {
-						collectionId: bundleId,
-						errors: response.errors,
-					})
-				);
-				setLoadingInfo({
-					state: 'error',
-					message: 'Het ophalen van de collectie is mislukt',
-					icon: 'alert-triangle',
-				});
-			}
-
-			const collectionObj = get(response, 'data.app_collections[0]');
-
-			if (!collectionObj) {
-				console.error('query for collection returned empty result', null, {
-					collectionId: bundleId,
-					response,
-				});
-				setLoadingInfo({
-					state: 'error',
-					message: t('Deze collectie werdt niet gevonden'),
-					icon: 'search',
-				});
-			} else {
-				// Collection loaded successfully
-				setPermissions(permissionObj);
-				setBundle(collectionObj);
-			}
-		} catch (err) {
-			console.error('Failed to check permissions or get collection from the database', err, {
-				collectionId: bundleId,
-			});
-			setLoadingInfo({
-				state: 'error',
-				message: t('Er ging iets mis tijdens het ophalen van de collectie'),
-				icon: 'alert-triangle',
-			});
-		}
-	};
-
 	useEffect(() => {
 		trackEvents(
 			{
 				object: bundleId,
-				object_type: 'collections',
+				object_type: 'bundles' as any, // TODO remove cast after update typings
 				message: `Gebruiker ${getProfileName(
 					user
 				)} heeft de pagina voor collectie ${bundleId} bekeken`,
@@ -196,20 +102,69 @@ const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 
 		if (!relatedBundles) {
-			getRelatedItems(bundleId, 'collections', 4)
-				.then(relatedItems => setRelatedCollections(relatedItems))
-				.catch(err => {
+			getRelatedItems(bundleId, 'bundles', 4)
+				.then((relatedBundles: Avo.Search.ResultItem[]) => setRelatedBundles(relatedBundles))
+				.catch((err: any) => {
 					console.error('Failed to get related items', err, {
-						collectionId: bundleId,
-						index: 'collections',
+						bundleId,
+						index: 'bundles',
 						limit: 4,
 					});
-					toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
+					toastService.danger(t('Het ophalen van de gerelateerde bundels is mislukt'));
 				});
 		}
+	}, [bundleId, relatedBundles, t, user]);
 
-		checkPermissions();
-	}, [bundleId, relatedBundles, t, user, checkPermissions]);
+	useEffect(() => {
+		const checkPermissionsAndGetBundle = async () => {
+			const rawPermissions = await Promise.all([
+				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_BUNDLES }], user),
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionNames.EDIT_OWN_BUNDLES, obj: bundleId },
+						{ name: PermissionNames.EDIT_ANY_BUNDLES },
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionNames.DELETE_OWN_BUNDLES, obj: bundleId },
+						{ name: PermissionNames.DELETE_ANY_BUNDLES },
+					],
+					user
+				),
+				PermissionService.hasPermissions([{ name: PermissionNames.CREATE_BUNDLES }], user),
+				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+			]);
+			const permissionObj = {
+				canViewBundles: rawPermissions[0],
+				canEditBundles: rawPermissions[1],
+				canDeleteBundles: rawPermissions[2],
+				canCreateBundles: rawPermissions[3],
+				canViewItems: rawPermissions[4],
+			};
+			const bundleObj = await CollectionService.getCollectionWithItems(
+				bundleId,
+				'bundle',
+				setLoadingInfo,
+				t
+			);
+
+			setPermissions(permissionObj);
+			setBundle(bundleObj || null);
+		};
+
+		checkPermissionsAndGetBundle().catch(err => {
+			console.error('Failed to check permissions or get bundle from the database', err, {
+				bundleId,
+			});
+			setLoadingInfo({
+				state: 'error',
+				message: t('Er ging iets mis tijdens het ophalen van de collectie'),
+				icon: 'alert-triangle',
+			});
+		});
+	}, [user, bundleId, setLoadingInfo, t]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && bundle) {
@@ -220,12 +175,8 @@ const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
 	}, [permissions, bundle, setLoadingInfo]);
 
 	// Listeners
-	const onEditCollection = () => {
-		history.push(
-			`${generateContentLinkString(ContentTypeString.collection, `${bundleId}`)}/${
-				ROUTE_PARTS.edit
-			}`
-		);
+	const onEditBundle = () => {
+		redirectToClientPage(buildLink(APP_PATH.BUNDLES_EDIT, { id: bundleId }), history);
 	};
 
 	const onDeleteBundle = async () => {
@@ -246,15 +197,6 @@ const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	const onClickDropdownItem = (item: ReactText) => {
 		switch (item) {
-			case 'createAssignment':
-				redirectToClientPage(
-					generateAssignmentCreateLink('KIJK', `${bundleId}`, 'COLLECTIE'),
-					history
-				);
-				break;
-			case 'addToBundle':
-				setIsAddToBundleModalOpen(true);
-				break;
 			case 'delete':
 				setIsDeleteModalOpen(true);
 				break;
@@ -267,112 +209,94 @@ const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderRelatedBundles = () => {
 		if (!relatedBundles || !relatedBundles.length) {
 			return (
-				<p className="c-body-1">
-					<Trans>De gerelateerde bundels konden niet worden opgehaald.</Trans>
-				</p>
+				<Spacer margin="left-small">
+					<p className="c-body-1">
+						<Trans>De gerelateerde bundels konden niet worden opgehaald.</Trans>
+					</p>
+				</Spacer>
 			);
 		}
 
 		relatedBundles.map((relatedBundle: Avo.Search.ResultItem) => {
-			const { id, dc_title, thumbnail_path = undefined, original_cp = '' } = relatedBundle;
-			const category = toEnglishContentType(CONTENT_TYPE);
-
 			return (
-				<Grid className="c-media-card-list">
-					<Column size="3-6">
-						<MediaCard
-							category={category}
-							onClick={() =>
-								redirectToClientPage(buildLink(BUNDLE_PATH.BUNDLES_DETAIL, { id }), history)
-							}
-							orientation="horizontal"
-							title={dc_title}
-						>
-							<MediaCardThumbnail>
-								<Thumbnail category={category} src={thumbnail_path} />
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category={category}>
-									<MetaDataItem label={original_cp} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
-					</Column>
-				</Grid>
+				<Column size="3-3" key={`related-bundle-${relatedBundle.id}`}>
+					<MediaCard
+						category="bundle"
+						onClick={() =>
+							redirectToClientPage(
+								buildLink(APP_PATH.BUNDLES_DETAIL, { id: relatedBundle.id }),
+								history
+							)
+						}
+						orientation="vertical"
+						title={relatedBundle.dc_title}
+					>
+						<MediaCardThumbnail>
+							<Thumbnail
+								category="bundle"
+								src={relatedBundle.thumbnail_path}
+								meta={t('{{numOfCollectionFragments}} items', {
+									numOfCollectionFragments: 3 /*relatedBundle.numOfCollectionFragments*/,
+								})}
+							/>
+						</MediaCardThumbnail>
+						<MediaCardMetaData>
+							<MetaData category="bundle">
+								<MetaDataItem label={'370'} icon="eye" />
+								{/*<MetaDataItem label={fromNow(relatedBundle.updated_at)} />*/}
+								<MetaDataItem label={fromNow(relatedBundle.original_cp)} />
+							</MetaData>
+						</MediaCardMetaData>
+					</MediaCard>
+				</Column>
 			);
 		});
 	};
 
-	const renderHeaderButtons = () => {
-		const BUNDLE_DROPDOWN_ITEMS = [
-			...(permissions.canCreateCollections
-				? [createDropdownMenuItem('duplicate', 'Dupliceer', 'copy')]
-				: []),
-			...(permissions.canDeleteCollections ? [createDropdownMenuItem('delete', 'Verwijder')] : []),
-		];
-		return (
-			<ButtonToolbar>
-				{permissions.canEditCollections && (
-					<Button
-						type="secondary"
-						label={t('collection/views/collection-detail___delen')}
-						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
-					/>
-				)}
-				<Button
-					title={t('collection/views/collection-detail___bladwijzer')}
-					type="secondary"
-					icon="bookmark"
-					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
-				/>
-				<Button
-					title={t('collection/views/collection-detail___deel')}
-					type="secondary"
-					icon="share-2"
-					ariaLabel={t('collection/views/collection-detail___deel')}
-				/>
-				<ControlledDropdown
-					isOpen={isOptionsMenuOpen}
-					menuWidth="fit-content"
-					onOpen={() => setIsOptionsMenuOpen(true)}
-					onClose={() => setIsOptionsMenuOpen(false)}
-					placement="bottom-end"
-				>
-					<DropdownButton>
-						<Button
-							type="secondary"
-							icon="more-horizontal"
-							ariaLabel={t('collection/views/collection-detail___meer-opties')}
-							title={t('collection/views/collection-detail___meer-opties')}
-						/>
-					</DropdownButton>
-					<DropdownContent>
-						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
-					</DropdownContent>
-				</ControlledDropdown>
-				{permissions.canEditCollections && (
-					<Spacer margin="left-small">
-						<Button
-							type="primary"
-							icon="edit"
-							label={t('collection/views/collection-detail___bewerken')}
-							onClick={onEditCollection}
-						/>
-					</Spacer>
-				)}
-			</ButtonToolbar>
-		);
-	};
+	function renderCollectionFragments() {
+		if (!bundle) {
+			return null;
+		}
+		return (bundle.collection_fragments || []).map((fragment: Avo.Collection.Fragment) => {
+			const collection: Avo.Collection.Collection = (fragment.item_meta as unknown) as Avo.Collection.Collection; // TODO update with new typings type
+			if (!collection) {
+				return null;
+			}
+			return (
+				<Column size="3-4" key={`bundle-fragment-${fragment.id}`}>
+					<MediaCard
+						category="bundle"
+						onClick={() =>
+							redirectToClientPage(
+								buildLink(APP_PATH.COLLECTION_DETAIL, { id: collection.id }),
+								history
+							)
+						}
+						orientation="vertical"
+						title={collection.title}
+					>
+						<MediaCardThumbnail>
+							<Thumbnail category="collection" src={collection.thumbnail_path || undefined} />
+						</MediaCardThumbnail>
+						<MediaCardMetaData>
+							<MetaData category="collection">
+								<MetaDataItem label={'370'} icon="eye" />
+								<MetaDataItem label={fromNow(collection.updated_at)} />
+							</MetaData>
+						</MediaCardMetaData>
+					</MediaCard>
+				</Column>
+			);
+		});
+	}
 
-	const renderCollection = () => {
+	const renderBundle = () => {
 		const {
-			id,
 			is_public,
-			profile,
-			collection_fragments,
-			lom_context,
-			updated_at,
+			thumbnail_path,
 			title,
+			description,
+			lom_context,
 			lom_classification,
 		} = bundle as Avo.Collection.Collection;
 
@@ -381,105 +305,120 @@ const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
 			setIsFirstRender(true);
 		}
 
+		const tags = [
+			...(lom_classification || []).map(
+				(classification): TagOption => ({ id: classification, label: classification })
+			),
+			...(lom_context || []).map((context): TagOption => ({ id: context, label: context })),
+		];
+
+		const BUNDLE_DROPDOWN_ITEMS = [
+			...(permissions.canCreateBundles
+				? [createDropdownMenuItem('duplicate', t('Dupliceer'), 'copy')]
+				: []),
+			...(permissions.canDeleteBundles ? [createDropdownMenuItem('delete', t('Verwijder'))] : []),
+		];
+
+		const organisationName = get(bundle, 'organisation.name', t('Onbekende uitgever'));
+		const organisationLogo = get(bundle, 'organisation.logo_url', null);
+
 		return (
 			<>
-				<Header
-					title={title}
-					onClickTitle={() => null}
-					category="collection"
-					showMetaData
-					bookmarks="0" // TODO: Real bookmark count
-					views="0" // TODO: Real view count
-				>
-					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-					<HeaderAvatar>{profile && renderAvatar(profile, { includeRole: true })}</HeaderAvatar>
-				</Header>
-				<Container mode="vertical">
+				<Container mode="vertical" background="alt">
 					<Container mode="horizontal">
-						<CollectionList
-							collectionFragments={collection_fragments}
-							history={history}
-							location={location}
-							match={match}
-							user={user}
-						/>
-					</Container>
-				</Container>
-				<Container mode="vertical">
-					<Container mode="horizontal">
-						<h3 className="c-h3">
-							<Trans>Info over deze bundel</Trans>
-						</h3>
 						<Grid>
-							<Column size="3-3">
-								<Spacer margin="top">
-									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
-											Onderwijsniveau
-										</Trans>
-									</p>
-									<p className="c-body-1">
-										{lom_context && lom_context.length ? (
-											generateSearchLinks(`${id}`, 'educationLevel', lom_context)
-										) : (
-											<span className="u-d-block">-</span>
-										)}
-									</p>
+							<Column size="3-2">
+								<Spacer margin="right-large">
+									<Thumbnail category="bundle" src={thumbnail_path || undefined} />
 								</Spacer>
 							</Column>
-							<Column size="3-3">
-								<Spacer margin="top">
-									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
-											Laatst aangepast
-										</Trans>
-									</p>
-									<p className="c-body-1">{formatDate(updated_at)}</p>
-								</Spacer>
-							</Column>
-							<Column size="3-6">
-								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___ordering">Ordering</Trans>
-								</p>
-								{/* TODO: add links */}
-								<p className="c-body-1">
-									<Trans>Deze bundel is een kopie van:</Trans>
-								</p>
-							</Column>
-							<Column size="3-3">
-								<Spacer margin="top">
-									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___vakken">Vakken</Trans>
-									</p>
-									<p className="c-body-1">
-										{lom_classification && lom_classification.length ? (
-											generateSearchLinks(`${id}`, 'subject', lom_classification)
-										) : (
-											<span className="u-d-block">-</span>
-										)}
-									</p>
-								</Spacer>
+							<Column size="3-10">
+								<Toolbar autoHeight>
+									<ToolbarLeft>
+										<ToolbarItem>
+											<span className="c-overline u-text-muted">
+												{is_public ? t('Openbare bundel') : t('Prive bundel')}
+											</span>
+											<Spacer margin="top-small">
+												<h1 className="c-h1 u-m-0">{title}</h1>
+											</Spacer>
+										</ToolbarItem>
+									</ToolbarLeft>
+									<ToolbarRight>
+										<ToolbarItem>
+											<ButtonToolbar>
+												<Button
+													label={t('Delen')}
+													onClick={() => setIsShareModalOpen(true)}
+													type="secondary"
+												/>
+												<Button label={t('Bewerken')} onClick={onEditBundle} type="primary" />
+												<ControlledDropdown
+													isOpen={isOptionsMenuOpen}
+													menuWidth="fit-content"
+													onOpen={() => setIsOptionsMenuOpen(true)}
+													onClose={() => setIsOptionsMenuOpen(false)}
+													placement="bottom-end"
+												>
+													<DropdownButton>
+														<Button
+															type="secondary"
+															icon="more-horizontal"
+															ariaLabel={t('collection/views/collection-detail___meer-opties')}
+															title={t('collection/views/collection-detail___meer-opties')}
+														/>
+													</DropdownButton>
+													<DropdownContent>
+														<MenuContent
+															menuItems={BUNDLE_DROPDOWN_ITEMS}
+															onClick={onClickDropdownItem}
+														/>
+													</DropdownContent>
+												</ControlledDropdown>
+											</ButtonToolbar>
+										</ToolbarItem>
+									</ToolbarRight>
+								</Toolbar>
+								<p className="c-body-1">{description}</p>
+								<Flex spaced="regular" wrap>
+									<FlexItem className="c-avatar-and-text">
+										<Avatar image={organisationLogo} title={organisationName} />
+									</FlexItem>
+									<TagList tags={tags} />
+								</Flex>
 							</Column>
 						</Grid>
-						<hr className="c-hr" />
-						<BlockHeading type="h3">
-							<Trans i18nKey="collection/views/collection-detail___bekijk-ook">Bekijk ook</Trans>
-						</BlockHeading>
-						{renderRelatedBundles()}
 					</Container>
 				</Container>
-				{/*{isPublic !== null && (*/}
-				{/*	<ShareCollectionModal*/}
-				{/*		collection={{ ...(collection as Avo.Collection.Collection), is_public: isPublic }}*/}
-				{/*		isOpen={isShareModalOpen}*/}
-				{/*		onClose={() => setIsShareModalOpen(false)}*/}
-				{/*		setIsPublic={setIsPublic}*/}
-				{/*		history={history}*/}
-				{/*		location={location}*/}
-				{/*		match={match}*/}
-				{/*		user={user}*/}
-				{/*	/>*/}
-				{/*)}*/}
+				<Container mode="vertical">
+					<Container mode="horizontal">
+						<div className="c-media-card-list">
+							<Grid>{renderCollectionFragments()}</Grid>
+						</div>
+					</Container>
+				</Container>
+				<Container mode="vertical" background="alt">
+					<Container mode="horizontal">
+						<BlockHeading type="h3">
+							<Trans>Aanbevolen bundels</Trans>
+						</BlockHeading>
+						<div className="c-media-card-list">
+							<Grid>{renderRelatedBundles()}</Grid>
+						</div>
+					</Container>
+				</Container>
+				{isPublic !== null && (
+					<ShareCollectionModal
+						collection={{ ...(bundle as Avo.Collection.Collection), is_public: isPublic }}
+						isOpen={isShareModalOpen}
+						onClose={() => setIsShareModalOpen(false)}
+						setIsPublic={setIsPublic}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+					/>
+				)}
 				<DeleteObjectModal
 					title={t('Ben je zeker dat de bundel {{title}} wil verwijderen?', { title })}
 					body={t('Deze actie kan niet ongedaan gemaakt worden')}
@@ -493,7 +432,7 @@ const BundleDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	return (
 		<LoadingErrorLoadedComponent
-			render={renderCollection}
+			render={renderBundle}
 			dataObject={permissions}
 			loadingInfo={loadingInfo}
 			showSpinner={true}

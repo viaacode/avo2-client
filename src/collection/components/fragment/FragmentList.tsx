@@ -5,7 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 
-import FragmentListDetail from './FragmentDetail';
+import FragmentListDetail from './FragmentListDetail';
 
 interface FragmentListDetailProps extends DefaultSecureRouteProps {
 	collectionFragments: Avo.Collection.Fragment[];

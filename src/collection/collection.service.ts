@@ -1,17 +1,22 @@
 import { ExecutionResult } from '@apollo/react-common';
-import { cloneDeep, get, isNil, omit, without } from 'lodash-es';
+import { cloneDeep, compact, get, isNil, omit, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { TFunction } from 'i18next';
 import { getProfileId } from '../authentication/helpers/get-profile-info';
+import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
+import { LoadingInfo } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers/error';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
+	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
+	GET_ITEMS_BY_IDS,
 } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
 
@@ -285,6 +290,89 @@ export class CollectionService {
 			throw new CustomError('Het ophalen van de bestaande collecties is mislukt', err, {
 				user,
 			});
+		}
+	}
+
+	public static async getCollectionWithItems(
+		collectionId: string,
+		type: 'collection' | 'bundle',
+		setLoadingInfo: (info: LoadingInfo) => void,
+		t: TFunction
+	): Promise<Avo.Collection.Collection | undefined> {
+		const response = await dataService.query({
+			query: GET_COLLECTION_BY_ID,
+			variables: { id: collectionId },
+		});
+
+		if (response.errors) {
+			console.error(
+				new CustomError(`Failed to  get ${type} from database`, null, {
+					collectionId,
+					errors: response.errors,
+				})
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het ophalen van de {{collectionOrBundle}} is mislukt', {
+					collectionOrBundle: type === 'collection' ? t('collectie') : t('bundel'),
+				}),
+				icon: 'alert-triangle',
+			});
+		}
+
+		const collectionObj: Avo.Collection.Collection | null = get(
+			response,
+			'data.app_collections[0]'
+		);
+
+		if (!collectionObj) {
+			console.error(`query for ${type} returned empty result`, null, {
+				collectionId,
+				response,
+			});
+			setLoadingInfo({
+				state: 'error',
+				message: t('Deze {{collectionOrBundle}} werd niet gevonden', {
+					collectionOrBundle: type === 'collection' ? t('collectie') : t('bundel'),
+				}),
+				icon: 'search',
+			});
+		} else {
+			// Collection/bundle loaded successfully
+			// Get items/collections for each collection_fragment that has an external_id set
+			const ids: string[] = compact(
+				(collectionObj.collection_fragments || []).map(
+					(collectionFragment: Avo.Collection.Fragment) => {
+						if (collectionFragment.external_id !== '-1') {
+							return collectionFragment.external_id;
+						}
+						return null;
+					}
+				)
+			);
+			try {
+				const response = await dataService.query({
+					query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
+					variables: { ids },
+				});
+				// Add infos to each fragment under the item_meta property
+				const itemInfos: any[] = get(response, 'data.items', []);
+				itemInfos.forEach((itemInfo: any) => {
+					const collectionFragment:
+						| Avo.Collection.Fragment
+						| undefined = collectionObj.collection_fragments.find(
+						fragment =>
+							fragment.external_id ===
+							String(type === 'collection' ? itemInfo.external_id : itemInfo.id)
+					);
+					if (collectionFragment) {
+						collectionFragment.item_meta = itemInfo;
+					}
+				});
+				return collectionObj;
+			} catch (err) {
+				throw new CustomError('Failed to get fragments inside the collection', err, { ids });
+			}
 		}
 	}
 

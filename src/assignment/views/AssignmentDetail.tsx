@@ -30,7 +30,6 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
-import FragmentList from '../../collection/components/fragment/FragmentListDetail';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
@@ -53,6 +52,7 @@ import { getAssignmentContent } from '../assignment.helpers';
 import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
+import { FragmentList } from '../../collection/components';
 
 interface AssignmentProps extends DefaultSecureRouteProps<{ id: string }> {}
 

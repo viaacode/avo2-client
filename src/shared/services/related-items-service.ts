@@ -6,7 +6,7 @@ import { CustomError, getEnv } from '../helpers';
 
 export async function getRelatedItems(
 	id: string | number,
-	index: 'both' | 'items' | 'collections',
+	index: 'both' | 'items' | 'collections' | 'bundles',
 	limit: number = 5
 ): Promise<Avo.Search.ResultItem[]> {
 	try {

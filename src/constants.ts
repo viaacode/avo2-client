@@ -2,6 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ASSIGNMENT_PATH } from './assignment/assignment.const';
 import { AUTH_PATH } from './authentication/authentication.const';
+import { BUNDLE_PATH } from './bundle/bundle.const';
 import { COLLECTION_PATH } from './collection/collection.const';
 import { HOME_PATH } from './home/home.const';
 import { ITEM_PATH } from './item/item.const';
@@ -11,7 +12,6 @@ import { SETTINGS_PATH } from './settings/settings.const';
 import { ROUTE_PARTS } from './shared/constants';
 import { TEACHERS_PATH } from './teachers/teachers.const';
 import { WORKSPACE_PATH } from './workspace/workspace.const';
-import { BUNDLE_PATH } from './bundle/bundle.const';
 
 export const APP_PATH = Object.freeze({
 	...ASSIGNMENT_PATH,
