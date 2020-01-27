@@ -111,7 +111,11 @@ glob('**/*.@(ts|tsx)', options, (err, files) => {
 							}
 						);
 					}
-					newTranslations[formattedKey] = formattedTranslation;
+					// If translation contains '___', use original translation, otherwise use translation found by the regexp
+					newTranslations[formattedKey] =
+						(formattedTranslation.includes('___')
+							? (oldTranslations as { [key: string]: string })[formattedKey]
+							: formattedTranslation) || '';
 					return `${prefix}t('${formattedKey}'${translationParams})`;
 				}
 			);
