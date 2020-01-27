@@ -151,7 +151,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: 'Het ophalen van de collectie is mislukt',
+					message: t('Het ophalen van de collectie is mislukt'),
 					icon: 'alert-triangle',
 				});
 			}
@@ -165,7 +165,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				});
 				setLoadingInfo({
 					state: 'error',
-					message: 'Deze collectie werdt niet gevonden',
+					message: t('Deze collectie werd niet gevonden'),
 					icon: 'search',
 				});
 			} else {
@@ -207,7 +207,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						index: 'collections',
 						limit: 4,
 					});
-					toastService.danger('Het ophalen van de gerelateerde collecties is mislukt');
+					toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
 				});
 		}
 
@@ -240,10 +240,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService.success('De collectie werd succesvol verwijderd.');
+			toastService.success(t('De collectie werd succesvol verwijderd.'));
 		} catch (err) {
 			console.error(err);
-			toastService.danger('Het verwijderen van de collectie is mislukt.');
+			toastService.danger(t('Het verwijderen van de collectie is mislukt.'));
 		}
 	};
 
@@ -311,12 +311,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
-			createDropdownMenuItem('createAssignment', 'Maak opdracht', 'clipboard'),
-			createDropdownMenuItem('addToBundle', 'Voeg toe aan bundel', 'plus'),
+			createDropdownMenuItem('createAssignment', t('Maak opdracht'), 'clipboard'),
+			createDropdownMenuItem('addToBundle', t('Voeg toe aan bundel'), 'plus'),
 			...(permissions.canCreateCollections
-				? [createDropdownMenuItem('duplicate', 'Dupliceer', 'copy')]
+				? [createDropdownMenuItem('duplicate', t('Dupliceer'), 'copy')]
 				: []),
-			...(permissions.canDeleteCollections ? [createDropdownMenuItem('delete', 'Verwijder')] : []),
+			...(permissions.canDeleteCollections
+				? [createDropdownMenuItem('delete', t('Verwijder'))]
+				: []),
 		];
 		return (
 			<ButtonToolbar>
@@ -509,7 +511,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						collectionId={collectionId as string}
 						isOpen={isAddToBundleModalOpen}
 						onClose={() => {
-							console.log(collection);
 							setIsAddToBundleModalOpen(false);
 						}}
 					/>
