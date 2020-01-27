@@ -147,7 +147,8 @@ async function getOnlineTranslations() {
 		);
 	}
 	try {
-		return JSON.parse(fs.readFileSync(poEditorFile).toString());
+		const filePath = path.resolve(__dirname, '../src/', poEditorFile);
+		return JSON.parse(fs.readFileSync(filePath).toString());
 	} catch (err) {
 		throw new Error(`Failed to parse json file from poeditor: ${JSON.stringify(err, null, 2)}`);
 	}
