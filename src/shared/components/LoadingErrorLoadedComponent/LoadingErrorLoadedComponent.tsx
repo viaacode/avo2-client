@@ -49,6 +49,7 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 				)
 			}
 			icon={loadingInfo.icon || 'alert-triangle'}
+			actionButtons={['home']}
 		/>
 	);
 
@@ -70,6 +71,7 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 						)
 					}
 					icon={'search'}
+					actionButtons={['home']}
 				/>
 			);
 

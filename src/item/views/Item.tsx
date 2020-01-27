@@ -485,12 +485,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 					resultPath="app_item_meta[0]"
 					renderData={renderItem}
 					notFoundMessage="Dit item werd niet gevonden"
+					actionButtons={['home']}
 				/>
 			</PermissionGuardPass>
 			<PermissionGuardFail>
 				<ErrorView
 					message={t('item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken')}
 					icon="lock"
+					actionButtons={['home']}
 				/>
 			</PermissionGuardFail>
 		</PermissionGuard>

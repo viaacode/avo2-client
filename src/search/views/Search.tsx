@@ -430,6 +430,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				<ErrorView
 					message={t('search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken')}
 					icon={'lock'}
+					actionButtons={['home']}
 				/>
 			</PermissionGuardFail>
 		</PermissionGuard>

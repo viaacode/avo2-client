@@ -501,6 +501,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						renderData={renderAssignmentsTable}
 						resultPath=""
 						ignoreNotFound
+						actionButtons={['home']}
 					/>
 				)}
 			</Container>
