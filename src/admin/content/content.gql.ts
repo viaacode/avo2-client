@@ -39,11 +39,6 @@ export const GET_CONTENT = gql`
 			title
 			updated_at
 		}
-	}
-`;
-
-export const GET_CONTENT_COUNT = gql`
-	{
 		app_content_aggregate {
 			aggregate {
 				count

@@ -43,7 +43,7 @@ import {
 	ContentOverviewReducer,
 	contentOverviewReducer,
 } from '../helpers/reducers';
-import { useContentCount, useContentTypes } from '../hooks';
+import { useContentTypes } from '../hooks';
 
 import './ContentOverview.scss';
 
@@ -66,7 +66,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 
 	const hasFilters = useMemo(() => !isEqual(filterForm, INITIAL_FILTER_FORM()), [filterForm]);
 
-	const [contentCount] = useContentCount();
 	const [contentTypes] = useContentTypes();
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<ContentOverviewTableCols>(
 		'updated_at'
@@ -232,12 +231,21 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 		}
 	};
 
-	const renderContentOverview = (data: Avo.Content.Content[], refetchContentItems: () => void) => {
-		if (data.length) {
-			setContentList(data);
+	const renderContentOverview = (
+		data: {
+			app_content: Avo.Content.Content[];
+			app_content_aggregate: { aggregate: { count: number } };
+		},
+		refetchContentItems: () => void
+	) => {
+		const contentData: Avo.Content.Content[] = get(data, CONTENT_RESULT_PATH.GET, []);
+		const countData: number = get(data, `${CONTENT_RESULT_PATH.COUNT}.aggregate.count`, 0);
+
+		if (contentData.length) {
+			setContentList(contentData);
 		}
 
-		return !data.length && !hasFilters ? (
+		return !contentData.length && !hasFilters ? (
 			<ErrorView
 				message={t('admin/content/views/content-overview___er-is-nog-geen-content-aangemaakt')}
 			>
@@ -262,7 +270,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 					<Table
 						className="c-content-overview__table"
 						columns={CONTENT_OVERVIEW_TABLE_COLS}
-						data={data}
+						data={contentData}
 						emptyStateMessage={
 							hasFilters
 								? t('Er is geen content gevonden die voldoen aan uw filters')
@@ -279,7 +287,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 					/>
 				</div>
 				<Pagination
-					pageCount={Math.ceil(contentCount / ITEMS_PER_PAGE)}
+					pageCount={Math.ceil(countData / ITEMS_PER_PAGE)}
 					onPageChange={setPage}
 					currentPage={page}
 				/>
@@ -326,7 +334,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 						/>
 						<DataQueryComponent
 							renderData={renderContentOverview}
-							resultPath={CONTENT_RESULT_PATH.GET}
 							query={GET_CONTENT}
 							variables={{
 								offset: page * ITEMS_PER_PAGE,
