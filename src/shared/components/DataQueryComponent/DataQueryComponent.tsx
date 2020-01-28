@@ -14,6 +14,7 @@ import {
 } from '../../../authentication/components';
 import { Permissions } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
+import { ErrorActionButton } from '../../../error/views/ErrorView';
 
 export interface DataQueryComponentProps {
 	query: DocumentNode;
@@ -26,6 +27,7 @@ export interface DataQueryComponentProps {
 	noPermissionsMessage?: string;
 	permissions?: Permissions;
 	user?: Avo.User.User;
+	actionButtons?: ErrorActionButton[];
 }
 
 const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
@@ -39,6 +41,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	permissions = [] as Permissions,
 	user = null,
 	noPermissionsMessage,
+	actionButtons = [],
 }) => {
 	const [t] = useTranslation();
 
@@ -81,6 +84,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 										'shared/components/data-query-component/data-query-component___er-ging-iets-mis-tijdens-het-ophalen'
 									)}
 									icon="alert-triangle"
+									actionButtons={actionButtons}
 								/>
 							);
 						}
@@ -104,6 +108,8 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 										'shared/components/data-query-component/data-query-component___het-opgevraagde-object-werd-niet-gevonden'
 									)
 								}
+								icon="search"
+								actionButtons={actionButtons}
 							/>
 						);
 					}}

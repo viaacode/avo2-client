@@ -51,7 +51,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				})
 				.catch(err => {
 					console.error('Failed to inflate content picker.', err);
-					toastService.danger(i18n.t('Het ophalen van de content items is mislukt.'), false);
+					toastService.danger(i18n.t('admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'), false);
 				});
 		}
 	}, [currentTypes]);

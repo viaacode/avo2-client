@@ -260,4 +260,5 @@ tests/cypress.env.json
 tests/dist
 scripts/*.js
 scripts/*.js.map
+src/shared/translations/poeditor
 licenses.csv
