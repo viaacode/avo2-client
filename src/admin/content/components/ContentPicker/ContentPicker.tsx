@@ -54,6 +54,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			setLoading(true);
 			const maxPerType = Math.floor(20 / currentTypes.length);
 			const fetchChain = currentTypes.map(type => type.fetch(maxPerType));
+
 			// Retrieve items for selected types.
 			Promise.all(fetchChain)
 				.then((data: PickerSelectItemGroup[]) => {
