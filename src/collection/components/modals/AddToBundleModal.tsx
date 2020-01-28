@@ -38,6 +38,7 @@ import {
 import { CollectionService } from '../../collection.service';
 
 import './AddToBundleModal.scss';
+import { ContentTypeNumber } from '../../collection.types';
 
 interface AddToBundleModalProps extends DefaultSecureRouteProps {
 	collectionId: string;
@@ -171,13 +172,13 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 		let newBundle: Partial<Avo.Collection.Collection> | null = null;
 		try {
-			// Create new collection with one fragment in it
+			// Create new bundle with one fragment in it
 			newBundle = {
 				title: newBundleTitle,
 				thumbnail_path: null,
 				is_public: false,
 				owner_profile_id: getProfileId(user),
-				type_id: 4,
+				type_id: ContentTypeNumber.bundle,
 			};
 			try {
 				newBundle.thumbnail_path = await getThumbnailForCollection({

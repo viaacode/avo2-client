@@ -44,6 +44,7 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
+import { ContentTypeNumber } from '../collection.types';
 import './CollectionOrBundleOverview.scss.scss';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
@@ -361,7 +362,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
-				type_id: 3,
+				type_id: ContentTypeNumber.collection,
 			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
