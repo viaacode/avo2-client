@@ -52,6 +52,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
 			notFoundMessage={t(
 				'content-page/views/content-page___deze-pagina-is-niet-gevonden-of-u-hebt-geen-rechten-om-hem-te-bekijken'
 			)}
+			actionButtons={['home']}
 		/>
 	);
 };

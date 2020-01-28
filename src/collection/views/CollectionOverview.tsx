@@ -319,6 +319,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			notFoundMessage={t(
 				'collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden'
 			)}
+			actionButtons={['home']}
 		/>
 	);
 };

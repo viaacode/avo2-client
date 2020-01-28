@@ -112,7 +112,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 										>
 											<TextArea
 												name="personalRemarkId"
-												value={(collection as any).note || ''} // TODO: cleanup when note is available from types repo
+												value={collection.note || ''}
 												id="personalRemarkId"
 												height="medium"
 												placeholder={t(
@@ -159,6 +159,7 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 		<DataQueryComponent
 			query={GET_CLASSIFICATIONS_AND_SUBJECTS}
 			renderData={renderCollectionMetaData}
+			actionButtons={['home']}
 		/>
 	);
 };

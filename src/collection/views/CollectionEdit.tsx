@@ -516,6 +516,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 			resultPath="app_collections[0]"
 			renderData={renderCollectionEdit}
 			notFoundMessage="Deze collectie werd niet gevonden"
+			actionButtons={['home']}
 		/>
 	);
 };

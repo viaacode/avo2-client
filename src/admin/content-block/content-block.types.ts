@@ -1,14 +1,3 @@
-// TODO: remove with typings 2.8.x update in favour of Avo.ContentBlock.ContentBlock
-export type ContentBlockSchema = {
-	id: number;
-	content_id: number;
-	variables: { [key: string]: any } | any[] | null;
-	position: number | null;
-	created_at: string;
-	updated_at: string;
-	content_block_type: string;
-};
-
 export type ContentBlockStateType = 'components' | 'block';
 
 export type ContentBlockStateOptions =
