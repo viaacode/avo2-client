@@ -45,7 +45,7 @@ import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { ContentTypeNumber } from '../collection.types';
-import './CollectionOrBundleOverview.scss.scss';
+import './CollectionOrBundleOverview.scss';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
