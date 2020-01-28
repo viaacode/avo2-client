@@ -39,7 +39,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	isProtected: false,
 	path: '',
 	contentType: '',
-	contentWidth: 'regular',
+	contentWidth: 'REGULAR',
 	publishAt: '',
 	depublishAt: '',
 });
@@ -86,13 +86,13 @@ export const CONTENT_TYPES = [
 
 export const CONTENT_WIDTH_OPTIONS = [
 	{ label: 'Kies een content breedte', value: '', disabled: true },
-	{ label: 'Max. (1300px)', value: 'regular' },
-	{ label: 'Breed (940px)', value: 'large' },
-	{ label: 'Medium (720px)', value: 'medium' },
+	{ label: 'Max. (1300px)', value: 'REGULAR' },
+	{ label: 'Breed (940px)', value: 'LARGE' },
+	{ label: 'Medium (720px)', value: 'MEDIUM' },
 ];
 
 export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: string[] } = {
-	regular: [ContentPageType.Project],
-	large: [],
-	medium: [ContentPageType.News],
+	REGULAR: [ContentPageType.Project],
+	LARGE: [],
+	MEDIUM: [ContentPageType.News],
 };

@@ -27,6 +27,11 @@ interface ContentBlockPreviewProps {
 	blockState: ContentBlockState;
 }
 
+const CONTENT_WIDTH_MAP: { [key in ContentWidth]: 'regular' | 'large' | 'medium' } = {
+	REGULAR: 'regular',
+	LARGE: 'large',
+	MEDIUM: 'medium',
+};
 const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
@@ -40,9 +45,10 @@ const REPEATABLE_CONTENT_BLOCKS = [ContentBlockType.Buttons, ContentBlockType.CT
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
-	contentWidth = 'regular',
+	contentWidth = 'REGULAR',
 	blockState,
 }) => {
+	const containerSize = CONTENT_WIDTH_MAP[contentWidth];
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
 	const stateToSpread: any = needsElements ? { elements: componentState } : componentState;
@@ -65,7 +71,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			<Container mode="horizontal" size={contentWidth === 'regular' ? undefined : contentWidth}>
+			<Container mode="horizontal" size={containerSize === 'regular' ? undefined : containerSize}>
 				<PreviewComponent {...stateToSpread} />
 			</Container>
 		</div>
