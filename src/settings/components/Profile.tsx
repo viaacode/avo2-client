@@ -445,7 +445,13 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		);
 	};
 
-	return <DataQueryComponent query={GET_CLASSIFICATIONS_AND_SUBJECTS} renderData={renderProfile} />;
+	return (
+		<DataQueryComponent
+			query={GET_CLASSIFICATIONS_AND_SUBJECTS}
+			renderData={renderProfile}
+			actionButtons={['home']}
+		/>
+	);
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
