@@ -15,6 +15,7 @@ import {
 	Navbar,
 	Select,
 	Spacer,
+	Spinner,
 	TextInput,
 	Toolbar,
 	ToolbarItem,
@@ -55,7 +56,7 @@ import {
 	SortOrder,
 } from '../search.types';
 import { getSearchResults } from '../store/actions';
-import { selectSearchLoading, selectSearchResults } from '../store/selectors';
+import { selectSearchError, selectSearchLoading, selectSearchResults } from '../store/selectors';
 
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { ErrorView } from '../../error/views';
@@ -87,6 +88,7 @@ const DEFAULT_SORT_ORDER: SortOrder = {
 const Search: FunctionComponent<SearchProps> = ({
 	searchResults,
 	searchResultsLoading,
+	searchResultsError,
 	search,
 	history,
 	location,
@@ -429,15 +431,24 @@ const Search: FunctionComponent<SearchProps> = ({
 					</Spacer>
 				</Container>
 			</Navbar>
-			<SearchResults
-				currentPage={currentPage}
-				data={searchResults}
-				handleBookmarkToggle={handleBookmarkToggle}
-				handleOriginalCpLinkClicked={handleOriginalCpLinkClicked}
-				loading={searchResultsLoading}
-				pageCount={pageCount}
-				setPage={setPage}
-			/>
+			{searchResultsError ? (
+				<ErrorView
+					message={t(
+						'Er ging iets mis tijdens het ophalen van de zoek resultaten,<br/>Probeer later opnieuw of rapporteer het probleem via de feedback knop'
+					)}
+					actionButtons={['home']}
+				/>
+			) : (
+				<SearchResults
+					currentPage={currentPage}
+					data={searchResults}
+					handleBookmarkToggle={handleBookmarkToggle}
+					handleOriginalCpLinkClicked={handleOriginalCpLinkClicked}
+					loading={searchResultsLoading}
+					pageCount={pageCount}
+					setPage={setPage}
+				/>
+			)}
 		</Container>
 	);
 
@@ -458,6 +469,7 @@ const Search: FunctionComponent<SearchProps> = ({
 const mapStateToProps = (state: any) => ({
 	searchResults: selectSearchResults(state),
 	searchResultsLoading: selectSearchLoading(state),
+	searchResultsError: selectSearchError(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
