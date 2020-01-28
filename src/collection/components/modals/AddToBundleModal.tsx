@@ -234,109 +234,105 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		? addCollectionToNewBundle
 		: () => addCollectionToExistingBundle(selectedBundle as Partial<Avo.Collection.Collection>);
 
-	const renderAddToBundleModal = () => {
-		return (
-			<Modal
-				title={t('Voeg collectie toe aan bundel')}
-				size="medium"
-				isOpen={isOpen}
-				onClose={onClose}
-				scrollable
-			>
-				<ModalBody>
-					<div className="c-modal__body-add-collection">
-						<Spacer>
-							<Form>
-								<FormGroup>
-									<Spacer margin="bottom">
-										<RadioButton
-											label={t('Bestaande bundel')}
-											checked={!createNewBundle}
-											value="existing"
-											name="collection"
-											onChange={checked => checked && setCreateNewBundle(false)}
-										/>
-										<div>
-											<Select
-												id="existingCollection"
-												placeholder={
-													bundles.length ? t('Kies bundel') : t('Je hebt nog geen bundels')
-												}
-												options={[
-													...bundles.map((bundle: Partial<Avo.Collection.Collection>) => ({
-														label: bundle.title || '',
-														value: String(bundle.id),
-													})),
-												]}
-												value={selectedBundleId}
-												onChange={setSelectedBundleIdAndGetBundleInfo}
-												disabled={createNewBundle}
-											/>
-										</div>
-									</Spacer>
-									<Spacer margin="bottom">
-										<RadioButton
-											label={t('Nieuwe bundel')}
-											checked={createNewBundle}
-											value="new"
-											name="bundle"
-											onChange={checked => checked && setCreateNewBundle(true)}
-										/>
-										<div>
-											<TextInput
-												placeholder={t('Bundel titel')}
-												disabled={!createNewBundle}
-												value={newBundleTitle}
-												onChange={setNewBundleTitle}
-											/>
-										</div>
-									</Spacer>
-								</FormGroup>
-							</Form>
-						</Spacer>
-					</div>
-				</ModalBody>
-				<ModalFooterRight>
-					<Toolbar spaced>
-						<ToolbarRight>
-							<ToolbarItem>
-								<ButtonToolbar>
-									{isProcessing && <Spinner />}
-									<Button
-										label={t('item/components/modals/add-to-collection-modal___annuleren')}
-										type="link"
-										block
-										onClick={onClose}
-										disabled={isProcessing}
+	return (
+		<Modal
+			title={t('Voeg collectie toe aan bundel')}
+			size="medium"
+			isOpen={isOpen}
+			onClose={onClose}
+			scrollable
+		>
+			<ModalBody>
+				<div className="c-modal__body-add-collection">
+					<Spacer>
+						<Form>
+							<FormGroup>
+								<Spacer margin="bottom">
+									<RadioButton
+										label={t('Bestaande bundel')}
+										checked={!createNewBundle}
+										value="existing"
+										name="collection"
+										onChange={checked => checked && setCreateNewBundle(false)}
 									/>
-									<Button
-										label={t('item/components/modals/add-to-collection-modal___toepassen')}
-										type="primary"
-										block
-										title={
-											createNewBundle && !newBundleTitle
-												? t('U moet een bundel titel opgeven')
-												: !createNewBundle && !selectedBundle
-												? t('bezig met bundel detail op te halen')
-												: ''
-										}
-										disabled={
-											(createNewBundle && !newBundleTitle) ||
-											(!createNewBundle && !selectedBundle) ||
-											isProcessing
-										}
-										onClick={onApply}
+									<div>
+										<Select
+											id="existingCollection"
+											placeholder={
+												bundles.length ? t('Kies bundel') : t('Je hebt nog geen bundels')
+											}
+											options={[
+												...bundles.map((bundle: Partial<Avo.Collection.Collection>) => ({
+													label: bundle.title || '',
+													value: String(bundle.id),
+												})),
+											]}
+											value={selectedBundleId}
+											onChange={setSelectedBundleIdAndGetBundleInfo}
+											disabled={createNewBundle}
+										/>
+									</div>
+								</Spacer>
+								<Spacer margin="bottom">
+									<RadioButton
+										label={t('Nieuwe bundel')}
+										checked={createNewBundle}
+										value="new"
+										name="bundle"
+										onChange={checked => checked && setCreateNewBundle(true)}
 									/>
-								</ButtonToolbar>
-							</ToolbarItem>
-						</ToolbarRight>
-					</Toolbar>
-				</ModalFooterRight>
-			</Modal>
-		);
-	};
-
-	return renderAddToBundleModal();
+									<div>
+										<TextInput
+											placeholder={t('Bundel titel')}
+											disabled={!createNewBundle}
+											value={newBundleTitle}
+											onChange={setNewBundleTitle}
+										/>
+									</div>
+								</Spacer>
+							</FormGroup>
+						</Form>
+					</Spacer>
+				</div>
+			</ModalBody>
+			<ModalFooterRight>
+				<Toolbar spaced>
+					<ToolbarRight>
+						<ToolbarItem>
+							<ButtonToolbar>
+								{isProcessing && <Spinner />}
+								<Button
+									label={t('item/components/modals/add-to-collection-modal___annuleren')}
+									type="link"
+									block
+									onClick={onClose}
+									disabled={isProcessing}
+								/>
+								<Button
+									label={t('item/components/modals/add-to-collection-modal___toepassen')}
+									type="primary"
+									block
+									title={
+										createNewBundle && !newBundleTitle
+											? t('U moet een bundel titel opgeven')
+											: !createNewBundle && !selectedBundle
+											? t('bezig met bundel detail op te halen')
+											: ''
+									}
+									disabled={
+										(createNewBundle && !newBundleTitle) ||
+										(!createNewBundle && !selectedBundle) ||
+										isProcessing
+									}
+									onClick={onApply}
+								/>
+							</ButtonToolbar>
+						</ToolbarItem>
+					</ToolbarRight>
+				</Toolbar>
+			</ModalFooterRight>
+		</Modal>
+	);
 };
 
 export default AddToBundleModal;
