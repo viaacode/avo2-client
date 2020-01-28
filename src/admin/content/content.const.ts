@@ -1,8 +1,7 @@
-import { TabProps } from '@viaa/avo2-components';
+import { TableColumn, TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
-import { TableColumn } from '../../shared/types';
 
 import { ContentEditFormState, ContentPageType, ContentWidth } from './content.types';
 import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers/content-types';

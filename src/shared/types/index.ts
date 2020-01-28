@@ -20,29 +20,6 @@ export type ReactAction<T, P = any> = {
 	payload: P;
 };
 
-// TODO: remove this once available from @viaa/avo2-components
-export type TableColumn = {
-	col?:
-		| '1'
-		| '2'
-		| '3'
-		| '4'
-		| '5'
-		| '6'
-		| '7'
-		| '8'
-		| '9'
-		| '10'
-		| '11'
-		| '12'
-		| '13'
-		| '14'
-		| '15';
-	id: string;
-	label: string;
-	sortable?: boolean;
-};
-
 // Helpers
 
 // Get all possible values from object
