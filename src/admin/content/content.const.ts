@@ -3,7 +3,12 @@ import { TableColumn, TabProps } from '@viaa/avo2-components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 
-import { ContentEditFormState, ContentPageType, ContentWidth } from './content.types';
+import {
+	ContentEditFormState,
+	ContentPageType,
+	ContentWidth,
+	PickerTypeOption,
+} from './content.types';
 import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers/content-types';
 
 export const CONTENT_RESULT_PATH = {
@@ -57,7 +62,7 @@ export const CONTENT_DETAIL_TABS: TabProps[] = [
 	},
 ];
 
-export const CONTENT_TYPES = [
+export const CONTENT_TYPES: PickerTypeOption[] = [
 	{
 		value: 'content',
 		label: i18n.t('admin/content/content___content'),

@@ -1,5 +1,6 @@
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
+// Pages
 export enum PageType {
 	Create = 'create',
 	Edit = 'edit',
@@ -12,13 +13,44 @@ export enum ContentPageType {
 	Project = 'PROJECT',
 }
 
-export type ContentPickerType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
-export type ContentWidth = 'medium' | 'large' | 'default';
-
 export interface ContentTypesResponse {
 	value: string;
 }
 
+export type ContentWidth = 'medium' | 'large' | 'default';
+
+// Picker
+export type ContentPickerType =
+	| 'collection'
+	| 'item'
+	| 'bundle'
+	| 'content'
+	| 'static'
+	| 'external-url';
+
+export interface PickerTypeOption<T = string> {
+	value: T;
+	label: string;
+	disabled?: boolean;
+	fetch: (limit: number) => Promise<PickerSelectItemGroup>;
+}
+
+export interface PickerSelectItem {
+	label: string;
+	value: PickerItem;
+}
+
+export interface PickerItem {
+	type: ContentPickerType;
+	value: string;
+}
+
+export interface PickerSelectItemGroup {
+	label: string;
+	options: PickerSelectItem[];
+}
+
+// Content Overview
 export type ContentOverviewTableCols =
 	| 'title'
 	| 'content_type'
@@ -30,8 +62,10 @@ export type ContentOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
+// Content Detail
 export type ContentDetailParams = { id: string };
 
+// Content Edit
 export interface ContentEditFormState {
 	title: string;
 	description: string;

@@ -1,10 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { getItems } from '../../../../item/item.service';
-import {
-	PickerSelectItem,
-	PickerSelectItemGroup,
-} from '../../components/ContentPicker/ContentPicker.types';
+import { PickerSelectItem, PickerSelectItemGroup } from '../../content.types';
 
 // Fetch content items from GQL
 export const fetchItems = async (limit: number = 5): Promise<PickerSelectItemGroup> => {

@@ -8,7 +8,7 @@ import { Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-compone
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { ContentPicker } from '../../../content/components/ContentPicker/ContentPicker';
-import { PickerItem } from '../../../content/components/ContentPicker/ContentPicker.types';
+import { PickerItem } from '../../../content/content.types';
 import { IconPicker } from '../../../shared/components';
 
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
@@ -90,6 +90,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			>
 				<TextInput onChange={(value: string) => onChange('label', value)} value={formState.label} />
 			</FormGroup>
+			{/* TODO: ContentPicker validations like URL regex */}
 			<FormGroup
 				error={formErrors.external_link}
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___link')}
