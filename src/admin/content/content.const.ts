@@ -9,7 +9,7 @@ import {
 	ContentWidth,
 	PickerTypeOption,
 } from './content.types';
-import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers/content-types';
+import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers';
 
 export const CONTENT_RESULT_PATH = {
 	GET: 'app_content',

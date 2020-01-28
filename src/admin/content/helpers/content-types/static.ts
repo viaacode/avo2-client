@@ -1,3 +1,4 @@
+import { parsePickerItem } from '..';
 import { APP_PATH } from '../../../../constants';
 import { PickerSelectItemGroup } from '../../content.types';
 
@@ -12,10 +13,7 @@ export const parseStaticItems = (raw: any, limit: number) => {
 
 	const parsedStaticItems = filteredItems.map((item: any) => ({
 		label: item[1],
-		value: {
-			type: 'content',
-			value: item[1],
-		},
+		value: parsePickerItem('content', item[1]),
 	}));
 
 	return {

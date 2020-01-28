@@ -16,7 +16,7 @@ import {
 import toastService from '../../../../shared/services/toast-service';
 import { CONTENT_TYPES } from '../../content.const';
 import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../content.types';
-import { parseURLToPickerItem } from '../../helpers/content-types';
+import { parsePickerItem } from '../../helpers';
 
 type ContentPickerControls = 'content' | 'external-url';
 
@@ -70,11 +70,11 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					);
 				});
 		}
-	}, [currentTypes]);
+	}, [currentTypes, t]);
 
 	const onChangeText = (value: string) => {
 		setInput(value);
-		onSelect(parseURLToPickerItem(value));
+		onSelect(parsePickerItem('external-url', value));
 	};
 
 	const onChangeType = (currentValues: ValueType<PickerTypeOption>) => {

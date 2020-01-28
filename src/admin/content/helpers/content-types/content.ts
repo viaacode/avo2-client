@@ -1,5 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
+import { parsePickerItem } from '..';
 import { fetchContentItems } from '../../content.service';
 import { PickerSelectItem, PickerSelectItemGroup } from '../../content.types';
 
@@ -15,10 +16,7 @@ const parseContentItems = (raw: Avo.Content.Content[]): PickerSelectItemGroup =>
 	const parsedContentItems = raw.map(
 		(item: Avo.Content.Content): PickerSelectItem => ({
 			label: item.title,
-			value: {
-				type: 'content',
-				value: item.path,
-			},
+			value: parsePickerItem('content', item.path),
 		})
 	);
 
