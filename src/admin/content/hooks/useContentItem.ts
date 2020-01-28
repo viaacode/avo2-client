@@ -74,7 +74,8 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 								isProtected: contentItem.is_protected,
 								path: contentItem.path,
 								contentType: contentItem.content_type,
-								contentWidth: 'default', // TODO: replace this with correct value
+								// TODO: remove any when updating typings
+								contentWidth: (contentItem as any).content_width || 'regular',
 								publishAt: contentItem.publish_at || '',
 								depublishAt: contentItem.depublish_at || '',
 							},
