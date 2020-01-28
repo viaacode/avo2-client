@@ -9,7 +9,7 @@ import {
 	ContentWidth,
 	PickerTypeOption,
 } from './content.types';
-import { fetchCollections, fetchContent, fetchItems, fetchStatic } from './helpers';
+import { fetchCollections, fetchContentPages, fetchInternalLinks, fetchItems } from './helpers';
 
 export const CONTENT_RESULT_PATH = {
 	GET: 'app_content',
@@ -64,25 +64,25 @@ export const CONTENT_DETAIL_TABS: TabProps[] = [
 
 export const CONTENT_TYPES: PickerTypeOption[] = [
 	{
-		value: 'content',
+		value: 'CONTENT_PAGE',
 		label: i18n.t('admin/content/content___content'),
 		disabled: false,
-		fetch: fetchContent,
+		fetch: fetchContentPages,
 	},
 	{
-		value: 'static',
+		value: 'INTERNAL_LINK',
 		label: i18n.t('admin/content/content___statisch'),
 		disabled: false,
-		fetch: fetchStatic,
+		fetch: fetchInternalLinks,
 	},
 	{
-		value: 'collection',
+		value: 'COLLECTION',
 		label: i18n.t('admin/content/content___collecties'),
 		disabled: false,
 		fetch: fetchCollections,
 	},
 	{
-		value: 'item',
+		value: 'ITEM',
 		label: i18n.t('admin/content/content___items'),
 		disabled: false,
 		fetch: fetchItems,

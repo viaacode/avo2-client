@@ -25,8 +25,8 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 		return `/${navItem.content_id}/${kebabCase(navItem.label)}`;
 	}
 
-	if (navItem.external_link) {
-		return navItem.external_link;
+	if (navItem.content_path) {
+		return navItem.content_path;
 	}
 
 	console.error('Failed to generate navigation link for navigation item', { navItem });

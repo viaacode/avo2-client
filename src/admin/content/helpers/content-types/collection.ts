@@ -18,12 +18,12 @@ const parseCollections = (raw: Avo.Collection.Collection[]): PickerSelectItemGro
 	const parsedCollections = raw.map(
 		(item: Avo.Collection.Collection): PickerSelectItem => ({
 			label: item.title,
-			value: parsePickerItem('collection', item.id.toString()),
+			value: parsePickerItem('COLLECTION', item.id.toString()),
 		})
 	);
 
 	return {
-		label: 'collections',
+		label: 'Collecties',
 		options: parsedCollections,
 	};
 };

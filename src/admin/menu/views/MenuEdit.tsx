@@ -21,6 +21,7 @@ import {
 	MenuEditFormState,
 	MenuEditPageType,
 	MenuEditParams,
+	MenuSchema,
 } from '../menu.types';
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
@@ -33,8 +34,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Hooks
 	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
-	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
-	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
+	const [initialMenuItem, setInitialMenuItem] = useState<MenuSchema | null>(null);
+	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
 	const [formErrors, setFormErrors] = useState<MenuEditFormErrorState>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -64,7 +65,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			setIsLoading(true);
 			// Fetch menu item by id so we can populate our form for editing
 			fetchMenuItemById(Number(menuItemId))
-				.then((menuItem: Avo.Menu.Menu | null) => {
+				.then((menuItem: MenuSchema | null) => {
 					if (menuItem) {
 						// Remove unnecessary props for saving
 						delete (menuItem as any).__typename;
@@ -74,9 +75,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							description: menuItem.description || '',
 							icon: menuItem.icon_name as IconName,
 							label: menuItem.label,
-							external_link: menuItem.external_link || '', // TODO add content block link
+							content_type: menuItem.content_type || 'COLLECTION',
+							content_path: menuItem.content_path || '',
 							link_target: menuItem.link_target || '_self',
-							group_access: (menuItem.group_access || []) as number[],
+							user_group_ids: (menuItem.user_group_ids || []) as number[],
 							placement: menuItem.placement,
 						});
 					}
@@ -93,7 +95,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		? `${menuName}: item ${PAGE_TYPES_LANG[pageType]}`
 		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
 	const menuParentOptions = menuItems.reduce(
-		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
+		(acc: SelectOption<string>[], { placement }: MenuSchema) => {
 			// Don't add duplicates to the options
 			if (acc.find(opt => opt.value === placement)) {
 				return acc;
@@ -124,12 +126,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		const menuItem: Partial<Avo.Menu.Menu> = {
+		const menuItem: Partial<MenuSchema> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
-			external_link: menuForm.external_link,
+			content_path: menuForm.content_path,
+			content_type: menuForm.content_type,
 			link_target: menuForm.link_target,
-			group_access: menuForm.group_access,
+			user_group_ids: menuForm.user_group_ids,
 			placement: menuForm.placement,
 		};
 
@@ -207,8 +210,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			errors.label = t('admin/menu/views/menu-edit___label-is-verplicht');
 		}
 
-		if (!menuForm.external_link) {
-			errors.external_link = t('admin/menu/views/menu-edit___link-is-verplicht');
+		if (!menuForm.content_path) {
+			errors.content_path = t('admin/menu/views/menu-edit___link-is-verplicht');
 		}
 
 		setFormErrors(errors);
