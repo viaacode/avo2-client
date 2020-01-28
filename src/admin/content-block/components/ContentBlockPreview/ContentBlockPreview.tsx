@@ -40,7 +40,7 @@ const REPEATABLE_CONTENT_BLOCKS = [ContentBlockType.Buttons, ContentBlockType.CT
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
-	contentWidth = 'default',
+	contentWidth = 'regular',
 	blockState,
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
@@ -65,7 +65,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
 			})}
 		>
-			<Container mode="horizontal" size={contentWidth === 'default' ? undefined : contentWidth}>
+			<Container mode="horizontal" size={contentWidth === 'regular' ? undefined : contentWidth}>
 				<PreviewComponent {...stateToSpread} />
 			</Container>
 		</div>

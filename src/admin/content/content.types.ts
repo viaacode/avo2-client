@@ -13,7 +13,7 @@ export enum ContentPageType {
 }
 
 export type ContentPickerType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
-export type ContentWidth = 'medium' | 'large' | 'default';
+export type ContentWidth = 'medium' | 'large' | 'regular'; // TODO: replace this when updating typings
 
 export interface ContentTypesResponse {
 	value: string;
