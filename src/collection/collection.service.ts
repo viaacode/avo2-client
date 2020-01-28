@@ -425,7 +425,7 @@ export class CollectionService {
 						| undefined = collectionObj.collection_fragments.find(
 						fragment =>
 							fragment.external_id ===
-							String(type === 'collection' ? itemInfo.external_id : itemInfo.id)
+							String(type === 'collection' ? itemInfo.external_id : itemInfo.avo1_id)
 					);
 					if (collectionFragment) {
 						collectionFragment.item_meta = itemInfo;

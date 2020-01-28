@@ -17,7 +17,6 @@ import {
 	Pagination,
 	Spacer,
 	Table,
-	TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -132,7 +131,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
+				<Link
+					to={buildLink(
+						isCollection ? COLLECTION_PATH.COLLECTION_DETAIL : BUNDLE_PATH.BUNDLE_DETAIL,
+						{ id }
+					)}
+					title={title}
+				>
 					{title}
 				</Link>
 			</h3>
@@ -362,7 +367,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
-				type_id: ContentTypeNumber.collection,
+				type_id: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
 			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
