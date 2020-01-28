@@ -13,7 +13,6 @@ import {
 
 import { ContentWidth } from '../../../content/content.types';
 
-import { CONTENT_BLOCKS_WITH_ELEMENTS_PROP } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockComponentState,
@@ -37,6 +36,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.IFrame]: BlockIframe,
 });
+const REPEATABLE_CONTENT_BLOCKS = [ContentBlockType.Buttons, ContentBlockType.CTAs];
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
@@ -44,7 +44,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	blockState,
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
-	const needsElements = CONTENT_BLOCKS_WITH_ELEMENTS_PROP.includes(blockState.blockType);
+	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
 	const stateToSpread: any = needsElements ? { elements: componentState } : componentState;
 
 	// TODO: Convert to array-based content block
