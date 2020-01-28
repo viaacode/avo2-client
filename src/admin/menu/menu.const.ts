@@ -1,10 +1,10 @@
 import { OptionsType } from 'react-select';
 
-import { IconName } from '@viaa/avo2-components';
+import { IconName, TableColumn } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
-import { ReactSelectOption, TableColumn } from '../../shared/types';
+import { ReactSelectOption } from '../../shared/types';
 
 import { MenuEditFormState } from './menu.types';
 

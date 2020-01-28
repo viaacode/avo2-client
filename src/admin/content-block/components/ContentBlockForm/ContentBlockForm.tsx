@@ -134,8 +134,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return (
 			<Spacer margin="top-small">
 				{isArray(formGroup.state) ? (
-					formGroup.state.map((formGroupState, stateIndex = 0) => (
-						<Spacer margin="bottom-small">
+					formGroup.state.map((formGroupState, stateIndex) => (
+						<Spacer key={stateIndex} margin="bottom-small">
 							<Grid>
 								<Column size="flex">
 									<ContentBlockFormGroup
