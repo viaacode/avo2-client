@@ -43,7 +43,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			content: TEXT_FIELD(i18n.t('admin/content-block/helpers/generators/ctas___knoptekst')),
-			level: {
+			headingType: {
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {

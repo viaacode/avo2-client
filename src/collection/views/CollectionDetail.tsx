@@ -526,6 +526,31 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
+	const getCollectionAndRender = () => {
+		if (!permissions.canViewCollections) {
+			return (
+				<ErrorView
+					message={t(
+						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
+					)}
+					icon="lock"
+				/>
+			);
+		}
+		return (
+			<DataQueryComponent
+				query={GET_COLLECTION_BY_ID}
+				variables={{ id: collectionId }}
+				resultPath="app_collections[0]"
+				renderData={renderCollection}
+				notFoundMessage={t(
+					'collection/views/collection-detail___deze-collectie-werd-niet-gevonden'
+				)}
+				actionButtons={['home']}
+			/>
+		);
+	};
+
 	return (
 		<LoadingErrorLoadedComponent
 			render={renderCollection}
