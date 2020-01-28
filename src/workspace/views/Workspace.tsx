@@ -22,7 +22,6 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { CollectionOverview } from '../../collection/views';
 import { ControlledDropdown, LoadingErrorLoadedComponent } from '../../shared/components';
 import { navigate } from '../../shared/helpers';
 
@@ -30,10 +29,10 @@ import {
 	PermissionNames,
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
+import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { dataService } from '../../shared/services/data-service';
 
-import BundleOverview from '../../bundle/views/BundleOverview';
 import {
 	ASSIGNMENTS_ID,
 	BOOKMARKS_ID,
@@ -138,8 +137,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 		return {
 			...addTabIfUserHasPerm(COLLECTIONS_ID, {
 				component: () => (
-					<CollectionOverview
-						numberOfCollections={tabCounts[COLLECTIONS_ID]}
+					<CollectionOrBundleOverview
+						numberOfItems={tabCounts[COLLECTIONS_ID]}
+						type="collection"
 						history={history}
 						match={match}
 						user={user}
@@ -159,8 +159,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 			}),
 			...addTabIfUserHasPerm(BUNDLES_ID, {
 				component: () => (
-					<BundleOverview
-						numberOfBundles={tabCounts[BUNDLES_ID]}
+					<CollectionOrBundleOverview
+						numberOfItems={tabCounts[BUNDLES_ID]}
+						type="bundle"
 						history={history}
 						match={match}
 						user={user}

@@ -17,6 +17,7 @@ import {
 	Pagination,
 	Spacer,
 	Table,
+	TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -40,17 +41,20 @@ import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
+import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
-import './CollectionOverview.scss';
+import './CollectionOrBundleOverview.scss.scss';
 
-interface CollectionOverviewProps extends DefaultSecureRouteProps {
-	numberOfCollections: number;
+interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
+	numberOfItems: number;
+	type: 'collection' | 'bundle';
 }
 
-const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
+const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewProps> = ({
+	numberOfItems,
+	type,
 	history,
-	numberOfCollections,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -73,6 +77,8 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		setIsDeleteModalOpen(true);
 	};
 
+	const isCollection = type === 'collection';
+
 	const onDeleteCollection = async (refetchCollections: () => void) => {
 		try {
 			await triggerCollectionDelete({
@@ -82,11 +88,15 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			toastService.success('Collectie is verwijderd');
+			toastService.success(isCollection ? t('Collectie is verwijderd') : t('Bundel is verwijderd'));
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
-			toastService.danger('Collectie kon niet verwijderd worden');
+			toastService.danger(
+				isCollection
+					? t('Collectie kon niet verwijderd worden')
+					: t('Bundel kon niet verwijderd worden')
+			);
 		}
 
 		setIdToDelete(null);
@@ -111,7 +121,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
 			<Thumbnail
 				alt="thumbnail"
-				category="collection"
+				category={type}
 				className="m-collection-overview-thumbnail"
 				src={thumbnail_path || undefined}
 			/>
@@ -126,7 +136,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
-				<MetaData category="collection">
+				<MetaData category={type}>
 					<MetaDataItem>
 						<span title={`Aangemaakt: ${formatDate(created_at)}`}>{fromNow(created_at)}</span>
 					</MetaDataItem>
@@ -140,11 +150,15 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const renderActions = (collectionId: number) => {
 		const ROW_DROPDOWN_ITEMS = [
 			createDropdownMenuItem('edit', t('collection/views/collection-overview___bewerk'), 'edit2'),
-			createDropdownMenuItem(
-				'createAssignment',
-				t('collection/views/collection-overview___maak-opdracht'),
-				'clipboard'
-			),
+			...(isCollection
+				? [
+						createDropdownMenuItem(
+							'createAssignment',
+							t('collection/views/collection-overview___maak-opdracht'),
+							'clipboard'
+						),
+				  ]
+				: []),
 			createDropdownMenuItem('delete', t('collection/views/collection-overview___verwijderen')),
 		];
 
@@ -184,7 +198,13 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 
 				<Button
 					icon="chevron-right"
-					onClick={() => navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, { id: collectionId })}
+					onClick={() =>
+						navigate(
+							history,
+							isCollection ? COLLECTION_PATH.COLLECTION_DETAIL : BUNDLE_PATH.BUNDLE_DETAIL,
+							{ id: collectionId }
+						)
+					}
 					type="borderless"
 				/>
 			</ButtonToolbar>
@@ -241,7 +261,15 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 						col: '3',
 						sortable: true,
 					},
-					{ id: 'inFolder', label: t('collection/views/collection-overview___in-map'), col: '2' },
+					...(isCollection
+						? [
+								{
+									id: 'inFolder',
+									label: t('collection/views/collection-overview___in-map'),
+									col: '2' as any,
+								},
+						  ]
+						: []),
 					{ id: 'access', label: t('collection/views/collection-overview___toegang'), col: '2' },
 					{ id: 'actions', label: '', col: '1' },
 				]}
@@ -255,7 +283,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				sortOrder={sortOrder}
 			/>
 			<Pagination
-				pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
+				pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
 				currentPage={page}
 				onPageChange={setPage}
 			/>
@@ -265,21 +293,38 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const renderEmptyFallback = () => (
 		<ErrorView
 			icon="collection"
-			message={t('collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt')}
+			message={
+				isCollection
+					? t('collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt')
+					: t('Je hebt nog geen bundels aangemaakt')
+			}
 		>
 			<p>
-				<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
-					Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
-					voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
-					gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen
-					die je dan hier terugvindt.
-				</Trans>
+				{isCollection ? (
+					<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
+						Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
+						voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met
+						andere gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met
+						jou delen die je dan hier terugvindt.
+					</Trans>
+				) : (
+					<Trans>
+						Een bundel is een verzameling van collecties rond een bepaald thema of voor een bepaalde
+						les. Nadat je een bundel hebt aangemaakt kan je deze delen met andere gebruikers om
+						samen aan te werken. Andere gebruikers kunnen ook bundels met jou delen die je dan hier
+						terugvindt.
+					</Trans>
+				)}
 			</p>
 			<Spacer margin="top">
 				<Button
 					type="primary"
 					icon="search"
-					label={t('collection/views/collection-overview___maak-je-eerste-collectie')}
+					label={
+						isCollection
+							? t('collection/views/collection-overview___maak-je-eerste-collectie')
+							: t('Zoek een collectie en maak je eerste bundel')
+					}
 					onClick={onClickCreate}
 				/>
 			</Spacer>
@@ -293,7 +338,11 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		<>
 			{collections.length ? renderTable(collections) : renderEmptyFallback()}
 			<DeleteObjectModal
-				title={t('collection/views/collection-overview___verwijder-collectie')}
+				title={
+					isCollection
+						? t('collection/views/collection-overview___verwijder-collectie')
+						: t('Verwijder bundel')
+				}
 				body={t(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
 				)}
@@ -316,12 +365,14 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
-			notFoundMessage={t(
-				'collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden'
-			)}
+			notFoundMessage={
+				isCollection
+					? t('collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden')
+					: t('Er konden geen bundels worden gevonden')
+			}
 			actionButtons={['home']}
 		/>
 	);
 };
 
-export default CollectionOverview;
+export default CollectionOrBundleOverview;

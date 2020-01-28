@@ -47,6 +47,7 @@ import {
 } from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
 import { ShareCollectionModal } from '../../collection/components';
+import { COLLECTION_COPY } from '../../collection/views/CollectionDetail';
 import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
@@ -62,7 +63,6 @@ import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import './BundleDetail.scss';
-import { COLLECTION_COPY } from '../../collection/views/CollectionDetail';
 
 interface BundleDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -182,7 +182,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	// Listeners
 	const onEditBundle = () => {
-		redirectToClientPage(buildLink(APP_PATH.BUNDLES_EDIT, { id: bundleId }), history);
+		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT, { id: bundleId }), history);
 	};
 
 	const onDeleteBundle = async () => {
@@ -228,7 +228,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					);
 					setTimeout(() =>
 						redirectToClientPage(
-							buildLink(APP_PATH.BUNDLES_DETAIL, { id: duplicateCollection.id }),
+							buildLink(APP_PATH.BUNDLE_DETAIL, { id: duplicateCollection.id }),
 							history
 						)
 					);
@@ -263,7 +263,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.BUNDLES_DETAIL, { id: relatedBundle.id }),
+								buildLink(APP_PATH.BUNDLE_DETAIL, { id: relatedBundle.id }),
 								history
 							)
 						}

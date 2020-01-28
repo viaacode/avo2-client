@@ -38,5 +38,5 @@ export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: str
 	video: APP_PATH.ITEM,
 	audio: APP_PATH.ITEM,
 	collectie: APP_PATH.COLLECTION_DETAIL,
-	bundel: APP_PATH.BUNDLES_DETAIL,
+	bundel: APP_PATH.BUNDLE_DETAIL,
 };

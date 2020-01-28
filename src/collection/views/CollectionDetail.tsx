@@ -36,8 +36,10 @@ import {
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views';
 import {
 	ControlledDropdown,
+	DataQueryComponent,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
@@ -61,6 +63,7 @@ import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 import { COLLECTION_PATH } from '../collection.const';
 import {
 	DELETE_COLLECTION,
+	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../collection.gql';
