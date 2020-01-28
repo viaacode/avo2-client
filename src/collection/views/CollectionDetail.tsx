@@ -529,8 +529,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					/>
 				)}
 				<DeleteObjectModal
-					title={`Ben je zeker dat de collectie "${title}" wil verwijderen?`}
-					body="Deze actie kan niet ongedaan gemaakt worden"
+					title={t('Ben je zeker dat je deze collectie wil verwijderen?')}
+					body={t('Deze actie kan niet ongedaan gemaakt worden')}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => onDeleteCollection()}

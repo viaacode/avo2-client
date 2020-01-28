@@ -958,8 +958,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				</Container>
 
 				<DeleteObjectModal
-					title={`Ben je zeker dat de opdracht "${currentAssignment.title}" wil verwijderen?`}
-					body="Deze actie kan niet ongedaan gemaakt worden"
+					title={t('Ben je zeker dat je deze opdracht wil verwijderen?')}
+					body={t('Deze actie kan niet ongedaan gemaakt worden')}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCurrentAssignment}
@@ -967,13 +967,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				<InputModal
 					title={t('assignment/views/assignment-edit___dupliceer-taak')}
-					inputLabel="Geef de nieuwe taak een naam:"
+					inputLabel={t('Geef de nieuwe taak een naam:')}
 					inputValue={currentAssignment.title}
-					inputPlaceholder="Titel van de nieuwe taak"
+					inputPlaceholder={t('Titel van de nieuwe taak')}
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
-					emptyMessage="Gelieve een opdracht-titel in te geven."
+					emptyMessage={t('Gelieve een opdracht-titel in te geven.')}
 				/>
 			</>
 		);
@@ -984,7 +984,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			dataObject={currentAssignment}
 			render={renderAssignmentEditForm}
 			loadingInfo={loadingInfo}
-			notFoundError="De opdracht is niet gevonden"
+			notFoundError={t('De opdracht is niet gevonden')}
 		/>
 	);
 };

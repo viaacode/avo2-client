@@ -459,7 +459,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					/>
 				)}
 				<DeleteObjectModal
-					title={t('Ben je zeker dat de bundel {{title}} wil verwijderen?', { title })}
+					title={t('Ben je zeker dat je deze bundel wil verwijderen?')}
 					body={t('Deze actie kan niet ongedaan gemaakt worden')}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
