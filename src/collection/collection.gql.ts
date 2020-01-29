@@ -14,7 +14,7 @@ export const GET_COLLECTION_BY_ID = gql`
 		app_collections(where: { id: { _eq: $id } }) {
 			id
 			description
-			collection_fragments {
+			collection_fragments(order_by: { position: asc }) {
 				use_custom_fields
 				updated_at
 				start_oc
@@ -130,7 +130,7 @@ export const INSERT_COLLECTION = gql`
 			returning {
 				id
 				title
-				collection_fragments {
+				collection_fragments(order_by: { position: asc }) {
 					id
 				}
 			}

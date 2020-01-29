@@ -387,14 +387,18 @@ export class CollectionService {
 			// Collection/bundle loaded successfully
 			// Get items/collections for each collection_fragment that has an external_id set
 			const ids: string[] = compact(
-				(collectionObj.collection_fragments || []).map(
-					(collectionFragment: Avo.Collection.Fragment) => {
-						if (collectionFragment.external_id !== '-1') {
-							return collectionFragment.external_id;
-						}
-						return null;
+				(collectionObj.collection_fragments || []).map((collectionFragment, index) => {
+					// Reset the positions to be a nice list of integers in order
+					// The database ensures that they are sorted by their previous position
+					collectionFragment.position = index;
+
+					// Return the external id if it is set
+					// TODO replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
+					if (collectionFragment.external_id !== '-1') {
+						return collectionFragment.external_id;
 					}
-				)
+					return null;
+				})
 			);
 			try {
 				const response = await dataService.query({
