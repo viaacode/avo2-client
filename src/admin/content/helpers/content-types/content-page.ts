@@ -5,23 +5,23 @@ import { fetchContentItems } from '../../content.service';
 import { PickerSelectItem, PickerSelectItemGroup } from '../../content.types';
 
 // Fetch content items from GQL
-export const fetchContent = async (limit: number = 5): Promise<PickerSelectItemGroup> => {
+export const fetchContentPages = async (limit: number = 5): Promise<PickerSelectItemGroup> => {
 	const contentItems: Avo.Content.Content[] | null = await fetchContentItems(limit);
 
-	return parseContentItems(contentItems || []);
+	return parseContentPages(contentItems || []);
 };
 
 // Parse raw content items to react-select options
-const parseContentItems = (raw: Avo.Content.Content[]): PickerSelectItemGroup => {
+const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItemGroup => {
 	const parsedContentItems = raw.map(
 		(item: Avo.Content.Content): PickerSelectItem => ({
 			label: item.title,
-			value: parsePickerItem('content', item.path),
+			value: parsePickerItem('CONTENT_PAGE', item.path),
 		})
 	);
 
 	return {
-		label: 'content',
+		label: "Content pagina's",
 		options: parsedContentItems,
 	};
 };

@@ -32,9 +32,10 @@ export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => 
 	description: '',
 	icon: '',
 	label: '',
-	external_link: '',
+	content_type: 'COLLECTION',
+	content_path: '',
 	link_target: '_self',
-	group_access: [],
+	user_group_ids: [],
 });
 
 export const PAGE_TYPES_LANG = {

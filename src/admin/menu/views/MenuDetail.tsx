@@ -23,6 +23,7 @@ import toastService from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
 import { DELETE_MENU_ITEM, GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
+import { MenuSchema } from '../menu.types';
 
 import './MenuDetail.scss';
 
@@ -34,8 +35,8 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [activeRow, setActiveRow] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [initialMenuItems, setInitialMenuItems] = useState<Avo.Menu.Menu[]>([]);
-	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
+	const [initialMenuItems, setInitialMenuItems] = useState<MenuSchema[]>([]);
+	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const [triggerMenuItemDelete] = useMutation(DELETE_MENU_ITEM);
@@ -115,7 +116,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		setIsConfirmModalOpen(true);
 	};
 
-	const reindexMenuitems = (items: Avo.Menu.Menu[]): Avo.Menu.Menu[] =>
+	const reindexMenuitems = (items: MenuSchema[]): MenuSchema[] =>
 		items.map((item, index) => {
 			item.position = index;
 			// Remove properties that we don't need for save
@@ -151,7 +152,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetchMenuItems: () => void) => {
+	const renderMenuDetail = (menu: MenuSchema[], refetchMenuItems: () => void) => {
 		// Return to overview if menu is empty
 		if (!menu.length) {
 			toastService.danger('Er werden geen navigatie items gevonden');

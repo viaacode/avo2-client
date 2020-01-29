@@ -92,15 +92,16 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			</FormGroup>
 			{/* TODO: ContentPicker validations like URL regex */}
 			<FormGroup
-				error={formErrors.external_link}
+				error={formErrors.content_path}
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___link')}
 				required
 			>
 				<ContentPicker
-					selectableTypes={['content', 'static']}
-					onSelect={(item: ValueType<PickerItem>) =>
-						onChange('external_link', (item as PickerItem).value)
-					}
+					selectableTypes={['CONTENT_PAGE', 'INTERNAL_LINK']}
+					onSelect={(item: ValueType<PickerItem>) => {
+						onChange('content_type', (item as PickerItem).type);
+						onChange('content_path', (item as PickerItem).value);
+					}}
 				/>
 			</FormGroup>
 			<FormGroup
@@ -125,11 +126,11 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			</FormGroup>
 			<UserGroupSelect
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___zichtbaar-voor')}
-				error={formErrors.group_access}
+				error={formErrors.user_group_ids}
 				placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
-				values={formState.group_access}
+				values={formState.user_group_ids}
 				required={false}
-				onChange={(userGroupIds: number[]) => onChange('group_access', userGroupIds)}
+				onChange={(userGroupIds: number[]) => onChange('user_group_ids', userGroupIds)}
 			/>
 		</Form>
 	);

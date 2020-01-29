@@ -22,12 +22,12 @@ export type ContentWidth = 'medium' | 'large' | 'default';
 
 // Picker
 export type ContentPickerType =
-	| 'collection'
-	| 'item'
-	| 'bundle'
-	| 'content'
-	| 'static'
-	| 'external-url';
+	| 'CONTENT_PAGE'
+	| 'COLLECTION'
+	| 'ITEM'
+	| 'DROPDOWN'
+	| 'INTERNAL_LINK'
+	| 'EXTERNAL_LINK';
 
 export interface PickerTypeOption<T = string> {
 	value: T;

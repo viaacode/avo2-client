@@ -75,7 +75,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	const onChangeText = (value: string) => {
 		setInput(value);
-		onSelect(parsePickerItem('external-url', value));
+		onSelect(parsePickerItem('EXTERNAL_LINK', value));
 	};
 
 	const onChangeType = (currentValues: ValueType<PickerTypeOption>) => {
