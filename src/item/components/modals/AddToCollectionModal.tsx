@@ -81,7 +81,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const fetchCollections = React.useCallback(
 		() =>
-			CollectionService.getCollectionTitlesByUser(user).then(
+			CollectionService.getCollectionTitlesByUser('collection', user).then(
 				(collectionTitles: Partial<Avo.Collection.Collection>[]) => {
 					setCollections(collectionTitles);
 				}
@@ -92,9 +92,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	useEffect(() => {
 		fetchCollections().catch(err => {
 			console.error('Failed to fetch collections', err);
-			toastService.danger('Het ophalen van de collecties is mislukt');
+			toastService.danger(t('Het ophalen van de collecties is mislukt'));
 		});
-	}, [fetchCollections]);
+	}, [fetchCollections, t]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -121,10 +121,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			if (collection) {
 				setSelectedCollection(collection);
 			} else {
-				toastService.danger('Het ophalen van de collectie details is mislukt');
+				toastService.danger(t('Het ophalen van de collectie details is mislukt'));
 			}
 		} catch (err) {
-			toastService.danger('Het ophalen van de collectie details is mislukt');
+			toastService.danger(t('Het ophalen van de collectie details is mislukt'));
 		}
 	};
 
@@ -147,7 +147,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	};
 
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {
-		// Disable "Toepassen" button
+		// Disable apply button
 		setIsProcessing(true);
 
 		try {
@@ -165,9 +165,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
-				toastService.danger('Het fragment kon niet worden toegevoegd aan de collectie');
+				toastService.danger(t('Het fragment kon niet worden toegevoegd aan de collectie'));
 			} else {
-				toastService.success('Het fragment is toegevoegd aan de collectie');
+				toastService.success(t('Het fragment is toegevoegd aan de collectie'));
 				onClose();
 				trackEvents(
 					{
@@ -184,7 +184,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger('Het fragment kon niet worden toegevoegd aan de collectie');
+			toastService.danger(t('Het fragment kon niet worden toegevoegd aan de collectie'));
 		}
 
 		// Re-enable apply button
@@ -231,9 +231,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			);
 
 			if (!response || response.errors) {
-				toastService.danger('De collectie kon niet worden aangemaakt');
+				toastService.danger(t('De collectie kon niet worden aangemaakt'));
 			} else if (!insertedCollection || isNil(insertedCollection.id)) {
-				toastService.danger('De aangemaakte collectie kon niet worden opgehaald');
+				toastService.danger(t('De aangemaakte collectie kon niet worden opgehaald'));
 			} else {
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
@@ -249,7 +249,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					collection: newCollection,
 				},
 			});
-			toastService.danger('De collectie kon niet worden aangemaakt');
+			toastService.danger(t('De collectie kon niet worden aangemaakt'));
 
 			// Re-enable apply button
 			setIsProcessing(false);
@@ -359,7 +359,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 													<Select
 														id="existingCollection"
 														options={[
-															{ label: 'Kies collectie', value: '', disabled: true },
+															{
+																label: collections.length
+																	? t('Kies collectie')
+																	: t('Je hebt nog geen collecties'),
+																value: '',
+																disabled: true,
+															},
 															...collections.map(
 																(collection: Partial<Avo.Collection.Collection>) => ({
 																	label: collection.title || '',
@@ -419,9 +425,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 										block
 										title={
 											createNewCollection && !newCollectionTitle
-												? 'U moet een collectie titel opgeven'
+												? t('U moet een collectie titel opgeven')
 												: !createNewCollection && !selectedCollection
-												? 'bezig met collectie detail op te halen'
+												? t('bezig met collectie detail op te halen')
 												: ''
 										}
 										disabled={

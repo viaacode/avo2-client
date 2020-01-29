@@ -47,7 +47,12 @@ import { copyToClipboard, navigate } from '../../shared/helpers';
 import toastService from '../../shared/services/toast-service';
 
 import { SearchFilterControls, SearchResults } from '../components';
-import { SEARCH_PATH } from '../search.const';
+import {
+	DEFAULT_FORM_STATE,
+	DEFAULT_SORT_ORDER,
+	ITEMS_PER_PAGE,
+	SEARCH_PATH,
+} from '../search.const';
 import {
 	SearchFilterFieldValues,
 	SearchFilterMultiOptions,
@@ -60,29 +65,6 @@ import { selectSearchLoading, selectSearchResults } from '../store/selectors';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { ErrorView } from '../../error/views';
 import './Search.scss';
-
-const ITEMS_PER_PAGE = 10;
-
-const DEFAULT_FORM_STATE: Avo.Search.Filters = {
-	query: '',
-	type: [],
-	educationLevel: [],
-	domain: [],
-	broadcastDate: {
-		gte: '',
-		lte: '',
-	},
-	language: [],
-	keyword: [],
-	subject: [],
-	serie: [],
-	provider: [],
-};
-
-const DEFAULT_SORT_ORDER: SortOrder = {
-	orderProperty: 'relevance',
-	orderDirection: 'desc',
-};
 
 const Search: FunctionComponent<SearchProps> = ({
 	searchResults,

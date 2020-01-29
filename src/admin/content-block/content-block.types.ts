@@ -46,7 +46,6 @@ export interface ContentBlockBlockConfig {
 export type ContentBlockComponentState =
 	| HeadingBlockComponentState
 	| RichTextBlockComponentState
-	| RichTextTwoColumnsBlockComponentState
 	| ButtonsBlockComponentState
 	| IntroBlockComponentState
 	| CTAsBlockComponentState
@@ -101,16 +100,11 @@ export enum ContentBlockType {
 export interface HeadingBlockComponentState {
 	children: string;
 	type: HeadingLevelOptions;
-	// TODO: align: AlignOptions;
+	align: AlignOptions;
 }
 
 export interface RichTextBlockComponentState {
 	content: string;
-}
-
-export interface RichTextTwoColumnsBlockComponentState {
-	firstColumnContent: string;
-	secondColumnContent: string;
 }
 
 export interface ButtonsBlockComponentState {
@@ -120,7 +114,7 @@ export interface ButtonsBlockComponentState {
 
 export interface IntroBlockComponentState {
 	title: string;
-	text: string;
+	content: string;
 	align: AlignOptions;
 }
 

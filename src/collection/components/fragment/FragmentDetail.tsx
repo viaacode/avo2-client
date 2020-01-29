@@ -73,7 +73,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 		/>
 	) : (
 		<BlockIntro
-			text={collectionFragment.custom_description || ''}
+			content={collectionFragment.custom_description || ''}
 			title={collectionFragment.custom_title || ''}
 		/>
 	);

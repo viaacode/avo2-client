@@ -8,7 +8,11 @@ import { CustomError } from '../shared/helpers/error';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
-import { GET_COLLECTION_TITLES_BY_OWNER, GET_COLLECTIONS } from './collection.gql';
+import {
+	GET_BUNDLE_TITLES_BY_OWNER,
+	GET_COLLECTION_TITLES_BY_OWNER,
+	GET_COLLECTIONS,
+} from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
 
 // TODO: Translations in errors.
@@ -265,12 +269,13 @@ export class CollectionService {
 	}
 
 	public static async getCollectionTitlesByUser(
+		type: 'collection' | 'bundle',
 		user: Avo.User.User | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
 		let queryInfo: any;
 		try {
 			queryInfo = {
-				query: GET_COLLECTION_TITLES_BY_OWNER,
+				query: type === 'collection' ? GET_COLLECTION_TITLES_BY_OWNER : GET_BUNDLE_TITLES_BY_OWNER,
 				variables: { owner_profile_id: getProfileId(user) },
 			};
 			const response = await dataService.query(queryInfo);

@@ -15,7 +15,7 @@ const Admin = () => {
 	return (
 		<Flex>
 			<Sidebar headerLink={ADMIN_PATH.DASHBOARD} navItems={NAV_ITEMS} />
-			<Flex className="u-flex-auto u-scroll" orientation="vertical">
+			<Flex className="o-app--admin__main u-flex-auto u-scroll" orientation="vertical">
 				{renderAdminRoutes()}
 			</Flex>
 		</Flex>
