@@ -61,7 +61,6 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { ErrorView } from '../../error/views';
 import { COLLECTION_PATH } from '../collection.const';
 import {
 	DELETE_COLLECTION,
