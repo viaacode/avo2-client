@@ -7,9 +7,6 @@ export const COLLECTION_PATH = Object.freeze({
 	COLLECTION_EDIT: `/${ROUTE_PARTS.collections}/:id/${ROUTE_PARTS.edit}`,
 });
 
-// TODO: get these from the api once the database is filled up
-export const USER_GROUPS: string[] = ['Docent', 'Leering', 'VIAA medewerker', 'Uitgever'];
-
 export const COLLECTION_EDIT_TABS: TabProps[] = [
 	{
 		id: 'inhoud',
