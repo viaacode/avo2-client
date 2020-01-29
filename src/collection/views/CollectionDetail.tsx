@@ -37,6 +37,7 @@ import {
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ControlledDropdown,
+	DataQueryComponent,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
@@ -57,12 +58,14 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import { ErrorView } from '../../error/views';
 import { COLLECTION_PATH } from '../collection.const';
-import { DELETE_COLLECTION } from '../collection.gql';
+import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
+
 import './CollectionDetail.scss';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
