@@ -44,7 +44,7 @@ import {
 	ContentEditState,
 	PageType,
 } from '../content.types';
-import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducer';
+import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducers';
 import { useContentItem, useContentTypes } from '../hooks';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 
@@ -140,14 +140,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			return;
 		}
 
-		const contentItem: Partial<Avo.Content.Content> = {
+		// TODO: remove any for content_width with typings update
+		const contentItem: Partial<Avo.Content.Content> | any = {
 			title: contentForm.title,
 			description: contentForm.description || null,
 			is_protected: contentForm.isProtected,
 			path: contentForm.path,
 			content_type: contentForm.contentType,
-			// TODO: add once available
-			// content_width: contentForm.contentWidth
+			content_width: contentForm.contentWidth,
 			publish_at: contentForm.publishAt || null,
 			depublish_at: contentForm.depublishAt || null,
 		};

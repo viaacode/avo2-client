@@ -9,6 +9,7 @@ export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] 
 export interface SearchProps extends DefaultSecureRouteProps {
 	searchResults: Avo.Search.Search | null;
 	searchResultsLoading: boolean;
+	searchResultsError: boolean;
 	search: (
 		orderProperty: Avo.Search.OrderProperty,
 		orderDirection: Avo.Search.OrderDirection,

@@ -51,8 +51,8 @@ import {
 import { getAssignmentContent } from '../assignment.helpers';
 import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
-import './AssignmentDetail.scss';
 import { FragmentList } from '../../collection/components';
+import './AssignmentDetail.scss';
 
 interface AssignmentProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -257,7 +257,15 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			t,
 			t('assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken')
 		);
-	}, [match.params, user, isOwnerOfAssignment, triggerInsertAssignmentResponse, t]);
+	}, [
+		loadingInfo.message,
+		loadingInfo.state,
+		match.params,
+		user,
+		isOwnerOfAssignment,
+		triggerInsertAssignmentResponse,
+		t,
+	]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {
