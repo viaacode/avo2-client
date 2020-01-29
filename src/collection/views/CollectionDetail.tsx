@@ -70,6 +70,7 @@ import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
+
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
