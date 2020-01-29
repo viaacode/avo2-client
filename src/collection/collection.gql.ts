@@ -282,3 +282,14 @@ export const GET_BUNDLE_TITLES_BY_OWNER = gql`
 		}
 	}
 `;
+
+export const GET_BUNDLES_CONTAINING_COLLECTION = gql`
+	query getPublishedBundlesContainingCollection($id: String!) {
+		app_collections(
+			where: { is_public: { _eq: true }, collection_fragments: { external_id: { _eq: $id } } }
+		) {
+			id
+			title
+		}
+	}
+`;

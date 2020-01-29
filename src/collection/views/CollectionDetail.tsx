@@ -72,6 +72,7 @@ import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 
 import './CollectionDetail.scss';
+import { Link } from 'react-router-dom';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -90,6 +91,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// State
 	const [collectionId, setCollectionId] = useState(match.params.id);
 	const [collection, setCollection] = useState<Avo.Collection.Collection | null>(null);
+	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -202,11 +204,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						message: t('De collectie kon niet worden gevonden'),
 						icon: 'search',
 					});
+					return;
 				}
+
+				// Get published bundles that contain this collection
+				const publishedBundlesList = await CollectionService.getPublishedBundlesContainingCollection(
+					collectionObj.id
+				);
 
 				setCollectionId(uuid);
 				setPermissions(permissionObj);
 				setCollection(collectionObj || null);
+				setPublishedBundles(publishedBundlesList);
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to check permissions or get collection from the database', err, {
@@ -522,8 +531,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								</p>
 								<p className="c-body-1">
 									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-										Deze collectie is deel van een map:
-									</Trans>
+										Deze collectie is deel van een bundel:
+									</Trans>{' '}
+									{publishedBundles.map((bundle, index) => {
+										return (
+											<>
+												{index !== 0 && !!publishedBundles.length && ', '}
+												<Link to={buildLink(APP_PATH.BUNDLE_DETAIL, { id: bundle.id })}>
+													{bundle.title}
+												</Link>
+											</>
+										);
+									})}
 								</p>
 							</Column>
 							<Column size="3-3">
