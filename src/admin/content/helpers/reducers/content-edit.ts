@@ -1,7 +1,7 @@
-import { createReducer } from '../../../shared/helpers';
-import { ContentBlockConfig } from '../../content-block/content-block.types';
+import { createReducer } from '../../../../shared/helpers';
+import { ContentBlockConfig } from '../../../content-block/content-block.types';
 
-import { ContentEditAction, ContentEditActionType, ContentEditState } from '../content.types';
+import { ContentEditAction, ContentEditActionType, ContentEditState } from '../../content.types';
 
 export const CONTENT_EDIT_INITIAL_STATE = (
 	contentBlockConfigs: ContentBlockConfig[] = []

@@ -1,6 +1,10 @@
 import { IconName } from '@viaa/avo2-components';
 import { ReactElement } from 'react';
 
+export enum KeyCode {
+	Enter = 13,
+}
+
 export type NavigationItemInfo = {
 	label: string | ReactElement;
 	key: string;

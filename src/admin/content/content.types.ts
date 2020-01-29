@@ -1,5 +1,7 @@
+import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
+// Pages
 export enum PageType {
 	Create = 'create',
 	Edit = 'edit',
@@ -12,13 +14,44 @@ export enum ContentPageType {
 	Project = 'PROJECT',
 }
 
-export type ContentPickerType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
-export type ContentWidth = 'medium' | 'large' | 'default';
-
 export interface ContentTypesResponse {
 	value: string;
 }
 
+export type ContentWidth = 'medium' | 'large' | 'default';
+
+// Picker
+export type ContentPickerType =
+	| 'CONTENT_PAGE'
+	| 'COLLECTION'
+	| 'ITEM'
+	| 'DROPDOWN'
+	| 'INTERNAL_LINK'
+	| 'EXTERNAL_LINK';
+
+export interface PickerTypeOption<T = string> {
+	value: T;
+	label: string;
+	disabled?: boolean;
+	fetch: (limit: number) => Promise<PickerSelectItemGroup>;
+}
+
+export interface PickerSelectItem {
+	label: string;
+	value: PickerItem;
+}
+
+export interface PickerItem {
+	type: ContentPickerType;
+	value: string;
+}
+
+export interface PickerSelectItemGroup {
+	label: string;
+	options: PickerSelectItem[];
+}
+
+// Content Overview
 export type ContentOverviewTableCols =
 	| 'title'
 	| 'content_type'
@@ -30,8 +63,29 @@ export type ContentOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
+export type DateRangeKeys = 'createdDate' | 'updatedDate' | 'publishDate' | 'depublishDate';
+export type FilterRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
+export type RangeFilters = {
+	[key in FilterRangeKeys]?: { _gte?: string; _lte?: string };
+};
+
+export interface ContentFilterFormState {
+	contentType: string[];
+	createdDate: DateRange;
+	updatedDate: DateRange;
+	publishDate: DateRange;
+	depublishDate: DateRange;
+	query: string;
+}
+
+export interface ContentOverviewState {
+	filterForm: ContentFilterFormState;
+}
+
+// Content Detail
 export type ContentDetailParams = { id: string };
 
+// Content Edit
 export interface ContentEditFormState {
 	title: string;
 	description: string;

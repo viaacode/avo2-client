@@ -4,12 +4,21 @@ import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import { ValueType } from 'react-select/src/types';
 
-import { Column, Grid } from '@viaa/avo2-components';
-
+import {
+	Column,
+	Flex,
+	FormGroup,
+	Grid,
+	RadioButton,
+	RadioButtonGroup,
+	TextInput,
+} from '@viaa/avo2-components';
 import toastService from '../../../../shared/services/toast-service';
-import i18n from '../../../../shared/translations/i18n';
 import { CONTENT_TYPES } from '../../content.const';
-import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from './ContentPicker.types';
+import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../content.types';
+import { parsePickerItem } from '../../helpers';
+
+type ContentPickerControls = 'content' | 'external-url';
 
 const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
@@ -19,17 +28,21 @@ const REACT_SELECT_DEFAULT_OPTIONS = {
 export interface ContentPickerProps {
 	selectableTypes?: string[];
 	onSelect: (value: ValueType<PickerItem>) => void;
+	errors?: string | string[];
 }
 
 export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	selectableTypes,
 	onSelect,
+	errors = [],
 }) => {
 	const [t] = useTranslation();
 
+	const [controls, setControls] = useState<ContentPickerControls>('content');
 	const [loading, setLoading] = useState<boolean>(false);
 	const [currentTypes, setCurrentTypes] = useState<PickerTypeOption[]>([]);
 	const [groupedOptions, setGroupedOptions] = useState<PickerSelectItemGroup[]>([]);
+	const [input, setInput] = useState<string>();
 
 	const typeOptions = CONTENT_TYPES.filter((option: PickerTypeOption) =>
 		selectableTypes ? selectableTypes.includes(option.value) : option.value
@@ -39,7 +52,6 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	useEffect(() => {
 		if (currentTypes && currentTypes.length) {
 			setLoading(true);
-
 			const maxPerType = Math.floor(20 / currentTypes.length);
 			const fetchChain = currentTypes.map(type => type.fetch(maxPerType));
 
@@ -52,22 +64,27 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				.catch(err => {
 					console.error('Failed to inflate content picker.', err);
 					toastService.danger(
-						i18n.t(
+						t(
 							'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
 						),
 						false
 					);
 				});
 		}
-	}, [currentTypes]);
+	}, [currentTypes, t]);
 
-	const onTypeChange = (currentValues: ValueType<PickerTypeOption>) => {
+	const onChangeText = (value: string) => {
+		setInput(value);
+		onSelect(parsePickerItem('EXTERNAL_LINK', value));
+	};
+
+	const onChangeType = (currentValues: ValueType<PickerTypeOption>) => {
 		setCurrentTypes((currentValues as PickerTypeOption[]) || []);
 	};
 
 	const renderGroupLabel = (data: any) => <span>{data.label}</span>;
 
-	return (
+	const renderSelectPicker = () => (
 		<Grid>
 			<Column size="1">
 				<ReactSelect
@@ -75,10 +92,10 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					id="content-picker-type"
 					placeholder={t('admin/content/components/content-picker/content-picker___type')}
 					options={typeOptions}
-					isMulti={true}
 					isSearchable={false}
+					isMulti={true}
 					isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
-					onChange={onTypeChange}
+					onChange={onChangeType}
 				/>
 			</Column>
 			<Column size="3">
@@ -95,5 +112,42 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				/>
 			</Column>
 		</Grid>
+	);
+
+	const renderInputPicker = () => <TextInput value={input} onChange={onChangeText} />;
+
+	const renderEditor = () => {
+		switch (controls) {
+			case 'content':
+				return renderSelectPicker();
+			case 'external-url':
+				return renderInputPicker();
+			default:
+				return null;
+		}
+	};
+
+	return (
+		<>
+			<RadioButtonGroup>
+				<Flex orientation="horizontal" spaced="wide">
+					<RadioButton
+						label="Content"
+						name="content"
+						value="content"
+						checked={controls === 'content'}
+						onChange={() => setControls('content')}
+					/>
+					<RadioButton
+						label="Externe URL"
+						name="external-url"
+						value="external-url"
+						checked={controls === 'external-url'}
+						onChange={() => setControls('external-url')}
+					/>
+				</Flex>
+			</RadioButtonGroup>
+			<FormGroup error={errors}>{renderEditor()}</FormGroup>
+		</>
 	);
 };

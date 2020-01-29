@@ -5,13 +5,14 @@ import { getEnv } from '../helpers';
 import { CustomError } from '../helpers/error';
 
 export interface AppContentNavElement {
-	external_link: any;
+	content_path: any;
+	content_type: any;
 	link_target: string;
 	placement: string;
 	position: number;
 	id: number;
 	icon_name: IconName;
-	group_access: number[];
+	user_group_ids: number[];
 	label: string;
 	updated_at: string;
 	description: string;
@@ -23,7 +24,7 @@ export type NavItemMap = { [navBarName: string]: AppContentNavElement[] };
 
 /**
  * Gets navigation items that the current user can see
- * AppContentNavElement.group_access can contain any userGroup ids and also -1, -2
+ * AppContentNavElement.user_group_ids can contain any userGroup ids and also -1, -2
  *    -1 is a special group: logged out users
  *    -2 is a special group: logged in users
  *        since you can have a user that isn't a member of any userGroups
