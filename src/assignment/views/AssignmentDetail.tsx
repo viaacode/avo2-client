@@ -255,7 +255,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			user,
 			retrieveAssignmentAndContent,
 			setLoadingInfo,
-			t,
 			t('assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken')
 		);
 	}, [

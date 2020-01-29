@@ -36,7 +36,13 @@ import {
 	InputModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
-import { buildLink, createDropdownMenuItem, navigate, renderAvatar } from '../../shared/helpers';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	navigate,
+	renderAvatar,
+} from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
@@ -174,12 +180,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				canCreate: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const collectionObj = await CollectionService.getCollectionWithItems(
-				collectionId,
-				type,
-				setLoadingInfo,
-				t
-			);
+			const collectionObj = await CollectionService.getCollectionWithItems(collectionId, type);
 
 			setPermissions(permissionObj);
 			setCurrentCollection(collectionObj || null);
@@ -187,9 +188,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		};
 
 		checkPermissionsAndGetBundle().catch(err => {
-			console.error(`Failed to check permissions or get ${type} from the database`, err, {
-				collectionId,
-			});
+			console.error(
+				new CustomError(`Failed to check permissions or get ${type} from the database`, err, {
+					collectionId,
+				})
+			);
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection

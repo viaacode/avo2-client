@@ -46,6 +46,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
+	CustomError,
 	formatDate,
 	generateAssignmentCreateLink,
 	generateContentLinkString,
@@ -191,20 +192,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					canCreateCollections: rawPermissions[3],
 					canViewItems: rawPermissions[4],
 				};
-				const collectionObj = await CollectionService.getCollectionWithItems(
-					uuid,
-					'collection',
-					setLoadingInfo,
-					t
-				);
+				const collectionObj = await CollectionService.getCollectionWithItems(uuid, 'collection');
 
 				setCollectionId(uuid);
 				setPermissions(permissionObj);
 				setCollection(collectionObj || null);
 			} catch (err) {
-				console.error('Failed to check permissions or get collection from the database', err, {
-					collectionId,
-				});
+				console.error(
+					new CustomError('Failed to check permissions or get collection from the database', err, {
+						collectionId,
+					})
+				);
 				setLoadingInfo({
 					state: 'error',
 					message: t('Er ging iets mis tijdens het ophalen van de collectie'),

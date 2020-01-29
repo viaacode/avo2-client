@@ -55,7 +55,7 @@ import {
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink, createDropdownMenuItem, fromNow } from '../../shared/helpers';
+import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
@@ -148,21 +148,18 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				canCreateBundles: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const bundleObj = await CollectionService.getCollectionWithItems(
-				bundleId,
-				'bundle',
-				setLoadingInfo,
-				t
-			);
+			const bundleObj = await CollectionService.getCollectionWithItems(bundleId, 'bundle');
 
 			setPermissions(permissionObj);
 			setBundle(bundleObj || null);
 		};
 
 		checkPermissionsAndGetBundle().catch(err => {
-			console.error('Failed to check permissions or get bundle from the database', err, {
-				bundleId,
-			});
+			console.error(
+				new CustomError('Failed to check permissions or get bundle from the database', err, {
+					bundleId,
+				})
+			);
 			setLoadingInfo({
 				state: 'error',
 				message: t('Er ging iets mis tijdens het ophalen van de bundel'),

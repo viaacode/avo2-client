@@ -3,7 +3,6 @@ import { cloneDeep, compact, get, isNil, omit, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { TFunction } from 'i18next';
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { LoadingInfo } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
@@ -11,6 +10,7 @@ import { CustomError } from '../shared/helpers';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
+import i18n from '../shared/translations/i18n';
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_COLLECTION_BY_ID,
@@ -352,9 +352,7 @@ export class CollectionService {
 
 	public static async getCollectionWithItems(
 		collectionId: string,
-		type: 'collection' | 'bundle',
-		setLoadingInfo: (info: LoadingInfo) => void,
-		t: TFunction
+		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
 		const response = await dataService.query({
 			query: GET_COLLECTION_BY_ID,
@@ -362,19 +360,14 @@ export class CollectionService {
 		});
 
 		if (response.errors) {
-			console.error(
-				new CustomError(`Failed to  get ${type} from database`, null, {
+			throw new CustomError(
+				`Failed to  get ${type} from database because of graphql errors`,
+				null,
+				{
 					collectionId,
 					errors: response.errors,
-				})
+				}
 			);
-			setLoadingInfo({
-				state: 'error',
-				message: t('Het ophalen van de {{collectionOrBundle}} is mislukt', {
-					collectionOrBundle: type === 'collection' ? t('collectie') : t('bundel'),
-				}),
-				icon: 'alert-triangle',
-			});
 		}
 
 		const collectionObj: Avo.Collection.Collection | null = get(
@@ -383,16 +376,9 @@ export class CollectionService {
 		);
 
 		if (!collectionObj) {
-			console.error(`query for ${type} returned empty result`, null, {
+			throw new CustomError('query for ${type} returned empty result', null, {
 				collectionId,
 				response,
-			});
-			setLoadingInfo({
-				state: 'error',
-				message: t('Deze {{collectionOrBundle}} werd niet gevonden', {
-					collectionOrBundle: type === 'collection' ? t('collectie') : t('bundel'),
-				}),
-				icon: 'search',
 			});
 		} else {
 			// Collection/bundle loaded successfully
@@ -472,7 +458,7 @@ export class CollectionService {
 		triggerCollectionFragmentInsert: any
 	) {
 		if (!collection) {
-			toastService.danger('De collectie was niet ingesteld');
+			toastService.danger(i18n.t('De collectie was niet ingesteld'));
 			return;
 		}
 
@@ -481,7 +467,9 @@ export class CollectionService {
 		);
 
 		if (!tempFragment) {
-			toastService.info(`Fragment om toe te voegen is niet gevonden (id: ${tempId})`);
+			toastService.info(
+				i18n.t(`Fragment om toe te voegen is niet gevonden (id: {{id}})`, { id: tempId })
+			);
 			return;
 		}
 
@@ -524,8 +512,8 @@ export class CollectionService {
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
 			toastService.danger([
-				'Het ophalen van de eerste video thumbnail is mislukt.',
-				'De collectie zal opgeslagen worden zonder thumbnail.',
+				i18n.t('Het ophalen van de eerste video thumbnail is mislukt.'),
+				i18n.t('De collectie zal opgeslagen worden zonder thumbnail.'),
 			]);
 			return null;
 		}

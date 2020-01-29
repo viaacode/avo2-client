@@ -202,10 +202,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 	}, [setLoadingInfo, getActiveTab, t, permissions, tabs]);
 
 	const getNavTabs = () => {
-		return TABS.map(t => ({
-			...t,
-			active: getTabId() === t.id,
-			label: tabCounts[t.id] ? `${t.label} (${tabCounts[t.id]})` : t.label,
+		return TABS.map(tab => ({
+			...tab,
+			active: getTabId() === tab.id,
+			label: tabCounts[tab.id] ? `${tab.label} (${tabCounts[tab.id]})` : tab.label,
 		}));
 	};
 
