@@ -111,7 +111,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		return {
 			use_custom_fields: false,
 			start_oc: null,
-			position: (collection.collection_fragments || []).length,
+			position: (bundle.collection_fragments || []).length,
 			external_id: collectionId,
 			end_oc: null,
 			custom_title: null,
