@@ -407,7 +407,8 @@ export class CollectionService {
 					const collectionFragment:
 						| Avo.Collection.Fragment
 						| undefined = collectionObj.collection_fragments.find(
-						fragment => fragment.external_id === itemInfo.id
+						fragment =>
+							fragment.external_id === (type === 'collection' ? itemInfo.external_id : itemInfo.id)
 					);
 					if (collectionFragment) {
 						collectionFragment.item_meta = itemInfo;
