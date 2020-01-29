@@ -1,14 +1,3 @@
-// TODO: remove with typings 2.8.x update in favour of Avo.ContentBlock.ContentBlock
-export type ContentBlockSchema = {
-	id: number;
-	content_id: number;
-	variables: { [key: string]: any } | any[] | null;
-	position: number | null;
-	created_at: string;
-	updated_at: string;
-	content_block_type: string;
-};
-
 export type ContentBlockStateType = 'components' | 'block';
 
 export type ContentBlockStateOptions =
@@ -57,7 +46,6 @@ export interface ContentBlockBlockConfig {
 export type ContentBlockComponentState =
 	| HeadingBlockComponentState
 	| RichTextBlockComponentState
-	| RichTextTwoColumnsBlockComponentState
 	| ButtonsBlockComponentState
 	| IntroBlockComponentState
 	| CTAsBlockComponentState
@@ -112,16 +100,11 @@ export enum ContentBlockType {
 export interface HeadingBlockComponentState {
 	children: string;
 	type: HeadingLevelOptions;
-	// TODO: align: AlignOptions;
+	align: AlignOptions;
 }
 
 export interface RichTextBlockComponentState {
 	content: string;
-}
-
-export interface RichTextTwoColumnsBlockComponentState {
-	firstColumnContent: string;
-	secondColumnContent: string;
 }
 
 export interface ButtonsBlockComponentState {
@@ -131,7 +114,7 @@ export interface ButtonsBlockComponentState {
 
 export interface IntroBlockComponentState {
 	title: string;
-	text: string;
+	content: string;
 	align: AlignOptions;
 }
 

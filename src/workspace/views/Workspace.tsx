@@ -1,5 +1,5 @@
 import { get, isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -62,10 +62,80 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	// Methods
+	// Memoized callbacks
+	const addTabIfUserHasPerm = useCallback(
+		(tabId: string, obj: any): any => {
+			if (permissions[tabId]) {
+				return { [tabId]: obj };
+			}
+			return {};
+		},
+		[permissions]
+	);
+
+	// Make map for available tab views
+	const getTabs = useCallback((): TabViewMap => {
+		return {
+			...addTabIfUserHasPerm(COLLECTIONS_ID, {
+				component: () => (
+					<CollectionOverview
+						numberOfCollections={tabCounts[COLLECTIONS_ID]}
+						history={history}
+						match={match}
+						user={user}
+						{...rest}
+					/>
+				),
+				// TODO: DISABLED_FEATURE filter
+				// filter: {
+				// 	label: 'Auteur',
+				// 	options: [
+				// 		{ id: 'all', label: 'Alles' },
+				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
+				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
+				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
+				// 	],
+				// },
+			}),
+			...addTabIfUserHasPerm(BUNDLES_ID, {
+				component: () => (
+					<BundleOverview
+						numberOfBundles={tabCounts[BUNDLES_ID]}
+						history={history}
+						match={match}
+						user={user}
+						{...rest}
+					/>
+				),
+				filter: {
+					label: t('workspace/views/workspace___filter-op-label'),
+					options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
+				},
+			}),
+			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
+				component: () => (
+					<AssignmentOverview history={history} match={match} user={user} {...rest} />
+				),
+			}),
+			...addTabIfUserHasPerm(BOOKMARKS_ID, {
+				component: () => <Bookmarks />,
+			}),
+		};
+	}, [addTabIfUserHasPerm, history, match, rest, t, tabCounts, user]);
+
 	const goToTab = (id: ReactText) => {
 		navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: id });
 		setTabId(String(id));
 	};
+
+	const getTabId = useCallback(() => {
+		return tabId || Object.keys(getTabs())[0];
+	}, [getTabs, tabId]);
+
+	// Get active tab based on above map with tabId
+	const getActiveTab = useCallback(() => {
+		return getTabs()[getTabId()];
+	}, [getTabId, getTabs]);
 
 	useEffect(() => {
 		Promise.all([
@@ -124,73 +194,67 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 				});
 			}
 		}
-	}, [permissions, t]);
+	}, [setLoadingInfo, getActiveTab, t]);
 
-	const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
-		if (permissions[tabId]) {
-			return { [tabId]: obj };
+	// Effects
+	useEffect(() => {
+		if (isEmpty(permissions)) {
+			Promise.all([
+				dataService.query({
+					query: GET_WORKSPACE_TAB_COUNTS,
+					variables: { owner_profile_id: getProfileId(user) },
+				}),
+				PermissionService.hasPermission(PermissionNames.CREATE_COLLECTIONS, null, user),
+				PermissionService.hasPermission(PermissionNames.CREATE_BUNDLES, null, user),
+				PermissionService.hasPermission(PermissionNames.CREATE_ASSIGNMENTS, null, user),
+				PermissionService.hasPermission(PermissionNames.CREATE_BOOKMARKS, null, user),
+			])
+				.then(response => {
+					setTabCounts({
+						[COLLECTIONS_ID]: get(response[0], 'data.app_collections_aggregate.aggregate.count'),
+						[BUNDLES_ID]: 0, // TODO: get from database once the table exists
+						[ASSIGNMENTS_ID]: get(response[0], 'data.app_assignments_aggregate.aggregate.count'),
+						[BOOKMARKS_ID]: 0, // TODO: get from database once the table exists
+					});
+					setPermissions({
+						[COLLECTIONS_ID]: response[1],
+						[BUNDLES_ID]: response[2],
+						[ASSIGNMENTS_ID]: response[3],
+						[BOOKMARKS_ID]: response[4],
+					});
+				})
+				.catch(err => {
+					console.error(
+						'Failed to check permissions or get tab counts for workspace overview page',
+						err,
+						{ user }
+					);
+					setLoadingInfo({
+						state: 'error',
+						message: t('workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'),
+					});
+				});
 		}
-		return {};
-	};
+	}, [permissions, t, user]);
 
-	// Make map for available tab views
-	const getTabs = (): TabViewMap => {
-		return {
-			...addTabIfUserHasPerm(COLLECTIONS_ID, {
-				component: () => (
-					<CollectionOverview
-						numberOfCollections={tabCounts[COLLECTIONS_ID]}
-						history={history}
-						match={match}
-						user={user}
-						{...rest}
-					/>
-				),
-				// TODO: DISABLED_FEATURE filter
-				// filter: {
-				// 	label: 'Auteur',
-				// 	options: [
-				// 		{ id: 'all', label: 'Alles' },
-				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
-				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
-				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
-				// 	],
-				// },
-			}),
-			...addTabIfUserHasPerm(BUNDLES_ID, {
-				component: () => (
-					<BundleOverview
-						numberOfBundles={tabCounts[BUNDLES_ID]}
-						history={history}
-						match={match}
-						user={user}
-						{...rest}
-					/>
-				),
-				filter: {
-					label: t('workspace/views/workspace___filter-op-label'),
-					options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
-				},
-			}),
-			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
-				component: () => (
-					<AssignmentOverview history={history} match={match} user={user} {...rest} />
-				),
-			}),
-			...addTabIfUserHasPerm(BOOKMARKS_ID, {
-				component: () => <Bookmarks />,
-			}),
-		};
-	};
-
-	const getTabId = () => {
-		return tabId || Object.keys(getTabs())[0];
-	};
-
-	// Get active tab based on above map with tabId
-	const getActiveTab = () => {
-		return getTabs()[getTabId()];
-	};
+	useEffect(() => {
+		if (!isEmpty(permissions) && loadingInfo.state === 'loading') {
+			if (getActiveTab()) {
+				// User has access to at least one tab
+				setLoadingInfo({
+					state: 'loaded',
+				});
+			} else {
+				setLoadingInfo({
+					state: 'error',
+					message: t(
+						'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken'
+					),
+					icon: 'lock',
+				});
+			}
+		}
+	}, [getActiveTab, loadingInfo.state, permissions, t]);
 
 	const getNavTabs = () => {
 		return TABS.map(t => ({
@@ -202,6 +266,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
+	// Render
 	const renderFilter = () => {
 		const filter: TabFilter | null = get(getActiveTab(), 'filter', null);
 

@@ -94,7 +94,7 @@ const BundleOverview: FunctionComponent<BundleOverviewProps> = ({
 
 	const onClickCreate = () => history.push(SEARCH_PATH.SEARCH);
 
-	// TODO: Make shared function because also used in assignments
+	// TODO: When #340 is merged, we can use the useTableSort hook for this
 	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
