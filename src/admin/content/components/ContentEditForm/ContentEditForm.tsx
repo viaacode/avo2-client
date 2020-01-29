@@ -17,11 +17,12 @@ import {
 import { ValueOf } from '../../../../shared/types';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
-import { CONTENT_WIDTH_OPTIONS, FIXED_WIDTH_PAGES } from '../../content.const';
+import { CONTENT_WIDTH_OPTIONS, DEFAULT_PAGES_WIDTH } from '../../content.const';
 import {
 	ContentEditFormErrors,
 	ContentEditFormState,
 	ContentTypesResponse,
+	ContentWidth,
 } from '../../content.types';
 import './ContentEditForm.scss';
 
@@ -47,17 +48,14 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	useEffect(() => {
 		// Set fixed content width for specific page types
-		if (
-			FIXED_WIDTH_PAGES.medium.includes(formState.contentType) &&
-			formState.contentWidth !== 'medium'
-		) {
-			onChange('contentWidth', 'medium');
-		} else if (
-			FIXED_WIDTH_PAGES.default.includes(formState.contentType) &&
-			formState.contentWidth !== 'default'
-		) {
-			onChange('contentWidth', 'default');
-		}
+		Object.keys(DEFAULT_PAGES_WIDTH).forEach(key => {
+			if (
+				DEFAULT_PAGES_WIDTH[key as ContentWidth].includes(formState.contentType) &&
+				formState.contentWidth !== key
+			) {
+				onChange('contentWidth', key);
+			}
+		});
 	}, [formState.contentType, formState.contentWidth, onChange]);
 
 	// Computed
