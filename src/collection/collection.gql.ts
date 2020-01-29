@@ -14,23 +14,6 @@ export const GET_COLLECTION_BY_ID = gql`
 				position
 				id
 				external_id
-				item_meta {
-					id
-					external_id
-					duration
-					title
-					description
-					thumbnail_path
-					issued
-					type {
-						id
-						label
-					}
-					organisation {
-						name
-						logo_url
-					}
-				}
 				end_oc
 				custom_title
 				custom_description
@@ -98,6 +81,28 @@ export const GET_COLLECTION_BY_ID = gql`
 			lom_keywords
 			lom_languages
 			lom_typicalagerange
+		}
+	}
+`;
+
+export const GET_ITEMS_BY_IDS = gql`
+	query getCollectionsByIds($ids: [bpchar!]!) {
+		items: app_item_meta(where: { external_id: { _in: $ids } }) {
+			id
+			external_id
+			duration
+			title
+			description
+			thumbnail_path
+			issued
+			type {
+				id
+				label
+			}
+			organisation {
+				name
+				logo_url
+			}
 		}
 	}
 `;

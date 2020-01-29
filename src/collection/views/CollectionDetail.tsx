@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isEmpty } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
@@ -37,6 +37,7 @@ import {
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ControlledDropdown,
+	DataQueryComponent,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
@@ -45,24 +46,26 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
-	CustomError,
 	formatDate,
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
 	renderAvatar,
 } from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
-import AddToBundleModal from '../components/modals/AddToBundleModal';
 
+import { ErrorView } from '../../error/views';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
+import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
-import { FragmentListDetail, ShareCollectionModal } from '../components';
+import { FragmentList, ShareCollectionModal } from '../components';
+import AddToBundleModal from '../components/modals/AddToBundleModal';
+
 import './CollectionDetail.scss';
 
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
@@ -103,7 +106,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
-	const checkPermissions = useCallback(async () => {
+	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
 			const rawPermissions = await Promise.all([
 				PermissionService.hasPermissions(
@@ -137,42 +140,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				canCreateCollections: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const response = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id: collectionId },
-			});
+			const collectionObj = await CollectionService.getCollectionWithItems(
+				collectionId,
+				'collection',
+				setLoadingInfo,
+				t
+			);
 
-			if (response.errors) {
-				console.error(
-					new CustomError('Failed to  get collection from database', null, {
-						collectionId,
-						errors: response.errors,
-					})
-				);
-				setLoadingInfo({
-					state: 'error',
-					message: t('Het ophalen van de collectie is mislukt'),
-					icon: 'alert-triangle',
-				});
-			}
-
-			const collectionObj = get(response, 'data.app_collections[0]');
-
-			if (!collectionObj) {
-				console.error('query for collection returned empty result', null, {
-					collectionId,
-					response,
-				});
-				setLoadingInfo({
-					state: 'error',
-					message: t('Deze collectie werd niet gevonden'),
-					icon: 'search',
-				});
-			} else {
-				// Collection loaded successfully
-				setPermissions(permissionObj);
-				setCollection(collectionObj);
-			}
+			setPermissions(permissionObj);
+			setCollection(collectionObj || null);
 		} catch (err) {
 			console.error('Failed to check permissions or get collection from the database', err, {
 				collectionId,
@@ -211,8 +187,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				});
 		}
 
-		checkPermissions();
-	}, [checkPermissions, collectionId, relatedCollections, t, user]);
+		checkPermissionsAndGetCollection();
+	}, [checkPermissionsAndGetCollection, collectionId, relatedCollections, t, user]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {
@@ -406,7 +382,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<FragmentListDetail
+						<FragmentList
 							collectionFragments={collection_fragments}
 							showDescription
 							linkToItems={permissions.canViewItems || false}
