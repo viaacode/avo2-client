@@ -1,7 +1,14 @@
-import { Avo } from '@viaa/avo2-types';
+export type AssignmentOverviewTableColumns =
+	| 'title'
+	| 'assignment_type'
+	| 'assignment_assignment_tags'
+	| 'class_room'
+	| 'deadline_at'
+	| 'assignment_responses'
+	| 'actions';
 
 export interface AssignmentColumn {
-	id: keyof Avo.Assignment.Assignment | 'actions';
+	id: AssignmentOverviewTableColumns;
 	label: string;
 	sortable?: boolean;
 }
