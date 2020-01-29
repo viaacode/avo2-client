@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, eq } from 'lodash-es';
+import { cloneDeep, eq, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -204,9 +204,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	}, [user, collectionId, setLoadingInfo, t, isCollection, type]);
 
 	useEffect(() => {
-		setLoadingInfo({
-			state: 'loaded',
-		});
+		if (currentCollection && initialCollection && !isEmpty(permissions)) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
 	}, [currentCollection, initialCollection, permissions]);
 
 	// Change page on tab selection
@@ -302,7 +304,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			if (newCollection) {
 				setCurrentCollection(newCollection);
 				setInitialCollection(cloneDeep(newCollection));
-				toastService.success('Collectie opgeslagen');
+				toastService.success(isCollection ? t(`Collectie opgeslagen`) : t('Bundle opgeslagen'));
 				trackEvents(
 					{
 						object: String(newCollection.id),

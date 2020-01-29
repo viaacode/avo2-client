@@ -19,6 +19,7 @@ import {
 	GET_ITEMS_BY_IDS,
 } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
+import { ContentTypeNumber } from './collection.types';
 
 // TODO: Translations in errors.
 export class CollectionService {
@@ -203,8 +204,10 @@ export class CollectionService {
 				};
 			});
 
-			// Determine new thumbnail path since videos could have changed order / been deleted
-			newCollection.thumbnail_path = await this.getThumbnailPathForCollection(newCollection);
+			if (newCollection.type_id === ContentTypeNumber.collection) {
+				// Determine new thumbnail path since videos could have changed order / been deleted
+				newCollection.thumbnail_path = await this.getThumbnailPathForCollection(newCollection);
+			}
 
 			// Trigger collection update
 			const cleanedCollection: Partial<Avo.Collection.Collection> = this.cleanCollectionBeforeSave(
