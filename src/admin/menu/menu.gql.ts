@@ -18,16 +18,16 @@ export const GET_MENU_ITEMS_BY_PLACEMENT = gql`
 		) {
 			id
 			created_at
-			content_id
 			description
-			external_link
-			group_access
+			user_group_ids
 			icon_name
 			label
 			link_target
 			placement
 			position
 			updated_at
+			content_type
+			content_path
 		}
 	}
 `;
@@ -37,16 +37,16 @@ export const GET_MENU_ITEM_BY_ID = gql`
 		app_content_nav_elements(where: { id: { _eq: $id } }) {
 			id
 			created_at
-			content_id
 			description
-			external_link
-			group_access
+			user_group_ids
 			icon_name
 			label
 			link_target
 			placement
 			position
 			updated_at
+			content_type
+			content_path
 		}
 	}
 `;

@@ -258,7 +258,15 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			t,
 			t('assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken')
 		);
-	}, [match.params, user, isOwnerOfAssignment, triggerInsertAssignmentResponse, t]);
+	}, [
+		loadingInfo.message,
+		loadingInfo.state,
+		match.params,
+		user,
+		isOwnerOfAssignment,
+		triggerInsertAssignmentResponse,
+		t,
+	]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {

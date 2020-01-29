@@ -21,6 +21,7 @@ import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../s
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
 import toastService from '../../../shared/services/toast-service';
+import { KeyCode } from '../../../shared/types';
 
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
 import { FragmentPropertyUpdateInfo } from '../../collection.types';
@@ -158,7 +159,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
-		if (evt.keyCode === 13 || evt.which === 13) {
+		if (evt.keyCode === KeyCode.Enter) {
 			parseTimes();
 		}
 	};

@@ -43,6 +43,11 @@ import toastService from '../../shared/services/toast-service';
 import { AppState } from '../../store';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
@@ -57,11 +62,6 @@ import { ShareCollectionModal } from '../components';
 import { swapFragmentsPositions } from '../helpers';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
 
 interface CollectionOrBundleEditProps extends DefaultSecureRouteProps<{ id: string }> {
 	type: 'collection' | 'bundle';

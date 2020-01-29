@@ -14,6 +14,14 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ValueOf } from '../shared/types';
 
+export type CollectionOverviewTableColumns =
+	| 'thumbnail'
+	| 'title'
+	| 'updated_at'
+	| 'inFolder'
+	| 'access'
+	| 'actions';
+
 export enum ContentBlockType {
 	'Image',
 	'ImageTitleTextButton',

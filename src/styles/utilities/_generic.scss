@@ -116,6 +116,22 @@
 	align-items: flex-end;
 }
 
+.u-content-flex {
+	display: flex;
+
+	&--left {
+		justify-content: flex-start;
+	}
+
+	&--center {
+		justify-content: center;
+	}
+
+	&--right {
+		justify-content: flex-end;
+	}
+}
+
 // Sticky footer with flexbox
 // https://css-tricks.com/couple-takes-sticky-footer/#article-header-id-3
 
