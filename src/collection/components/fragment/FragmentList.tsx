@@ -5,7 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 
-import FragmentListDetail from './FragmentListDetail';
+import FragmentDetail from './FragmentDetail';
 
 interface FragmentListDetailProps extends DefaultSecureRouteProps {
 	collectionFragments: Avo.Collection.Fragment[];
@@ -33,7 +33,7 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 					className="c-collection-list__item"
 					key={`collection-fragment-${collectionFragment.id}`}
 				>
-					<FragmentListDetail
+					<FragmentDetail
 						collectionFragment={collectionFragment}
 						showDescription={showDescription}
 						linkToItems={linkToItems}

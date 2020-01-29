@@ -10,7 +10,7 @@ import { ItemVideoDescription } from '../../../item/components';
 import { buildLink } from '../../../shared/helpers';
 import { getFragmentProperty } from '../../helpers';
 
-interface FragmentListDetailProps extends DefaultSecureRouteProps {
+interface FragmentDetailProps extends DefaultSecureRouteProps {
 	collectionFragment: Avo.Collection.Fragment;
 	showDescription: boolean;
 	linkToItems: boolean;
@@ -23,7 +23,7 @@ interface FragmentListDetailProps extends DefaultSecureRouteProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentListDetail: FunctionComponent<FragmentListDetailProps> = ({
+const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragment,
 	showDescription,
 	linkToItems,
@@ -73,10 +73,10 @@ const FragmentListDetail: FunctionComponent<FragmentListDetailProps> = ({
 		/>
 	) : (
 		<BlockIntro
-			text={collectionFragment.custom_description || ''}
+			content={collectionFragment.custom_description || ''}
 			title={collectionFragment.custom_title || ''}
 		/>
 	);
 };
 
-export default FragmentListDetail;
+export default FragmentDetail;

@@ -61,6 +61,7 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import { ErrorView } from '../../error/views';
 import { COLLECTION_PATH } from '../collection.const';
 import {
 	DELETE_COLLECTION,
@@ -73,6 +74,7 @@ import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
+
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
