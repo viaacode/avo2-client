@@ -65,7 +65,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	isProtected: false,
 	path: '',
 	contentType: '',
-	contentWidth: 'REGULAR',
+	contentWidth: ContentWidth.REGULAR,
 	publishAt: '',
 	depublishAt: '',
 });
@@ -118,7 +118,7 @@ export const CONTENT_WIDTH_OPTIONS = [
 ];
 
 export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: string[] } = {
-	REGULAR: [ContentPageType.Project],
-	LARGE: [],
-	MEDIUM: [ContentPageType.News],
+	[ContentWidth.REGULAR]: [ContentPageType.Project],
+	[ContentWidth.LARGE]: [],
+	[ContentWidth.MEDIUM]: [ContentPageType.News],
 };

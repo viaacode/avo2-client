@@ -8,7 +8,7 @@ import { ReactAction } from '../../../shared/types';
 
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
 import { fetchContentItemById } from '../content.service';
-import { ContentEditFormState } from '../content.types';
+import { ContentEditFormState, ContentWidth } from '../content.types';
 
 type SetContentFormParams = Parameters<
 	<K extends keyof ContentEditFormState>(key: K, value: ContentEditFormState[K]) => void
@@ -75,7 +75,7 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 								path: contentItem.path,
 								contentType: contentItem.content_type,
 								// TODO: remove any when updating typings
-								contentWidth: (contentItem as any).content_width || 'regular',
+								contentWidth: (contentItem as any).content_width || ContentWidth.REGULAR,
 								publishAt: contentItem.publish_at || '',
 								depublishAt: contentItem.depublish_at || '',
 							},

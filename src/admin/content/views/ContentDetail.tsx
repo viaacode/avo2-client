@@ -94,7 +94,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<ContentBlockPreview
 						key={contentBlocks[index].id}
 						componentState={contentBlockConfig.components.state}
-						contentWidth={(content as any).content_width} // TODO: remove any with typings update
+						contentWidth={get(content, 'content_width')}
 						blockState={contentBlockConfig.block.state}
 					/>
 				));

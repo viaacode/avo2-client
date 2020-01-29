@@ -18,8 +18,11 @@ export interface ContentTypesResponse {
 	value: string;
 }
 
-export type ContentPickerType = 'collection' | 'item' | 'bundle' | 'content' | 'static';
-export type ContentWidth = 'MEDIUM' | 'LARGE' | 'REGULAR'; // TODO: replace this when updating typings
+export enum ContentWidth {
+	MEDIUM = 'MEDIUM',
+	LARGE = 'LARGE',
+	REGULAR = 'REGULAR',
+}
 
 // Picker
 export type ContentPickerType =
