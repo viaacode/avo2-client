@@ -42,8 +42,8 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 				{orderBy(collection.collection_fragments, ['position'], ['asc']).map(
 					(fragment: Avo.Collection.Fragment, index: number) => (
 						<FragmentEdit
-							// If the parent is a collection so the fragment is an item or text
-							// If the parent is a bundle then the fragment is a collection
+							// If the parent is a collection then the fragment is an ITEM or TEXT
+							// If the parent is a bundle then the fragment is a COLLECTION
 							type={isCollection ? 'itemOrText' : 'collection'}
 							key={`fragment_${fragment.id}`}
 							index={index}

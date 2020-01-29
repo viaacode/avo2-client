@@ -347,7 +347,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					</Toolbar>
 				</div>
 				<div className="c-panel__body">
-					{(isMediaFragment(fragment) && itemMetaData) || isCollection ? ( // TODO: Replace publisher, published_at by real publisher
+					{(isMediaFragment(fragment) && itemMetaData) || isCollection ? (
 						<Grid>
 							<Column size="3-6">
 								{!isCollection ? (
@@ -356,7 +356,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 										poster={itemMetaData.thumbnail_path}
 										title={itemMetaData.title}
 										onInit={initFlowPlayer}
-										subtitles={['30-12-2011', 'VRT']}
+										subtitles={[itemMetaData.issued, itemMetaData.organiser.name]}
 										token={getEnv('FLOW_PLAYER_TOKEN')}
 										dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 										logo={get(itemMetaData, 'organisation.logo_url')}
