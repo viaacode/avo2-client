@@ -154,12 +154,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___zichtbaar-voor'
 									)}
-									error={'' /* formErrors.group_access */}
+									error={'' /* formErrors.user_group_ids */}
 									placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
 									values={[1]}
 									required={false}
 									onChange={
-										() => {} /* (userGroupIds: number[]) => onChange('group_access', userGroupIds) */
+										() => {} /* (userGroupIds: number[]) => onChange('user_group_ids', userGroupIds) */
 									}
 								/>
 							</Column>

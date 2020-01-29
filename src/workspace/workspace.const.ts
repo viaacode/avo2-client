@@ -9,7 +9,7 @@ export const WORKSPACE_PATH = Object.freeze({
 });
 
 export const COLLECTIONS_ID = ROUTE_PARTS.collections;
-export const FOLDERS_ID = ROUTE_PARTS.folders;
+export const BUNDLES_ID = ROUTE_PARTS.bundles;
 export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
 export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 
@@ -20,9 +20,9 @@ export const TABS: TabProps[] = [
 		id: COLLECTIONS_ID,
 	},
 	{
-		label: i18n.t('workspace/workspace___mappen'),
+		label: i18n.t('workspace/workspace___bundels'),
 		icon: 'folder',
-		id: FOLDERS_ID,
+		id: BUNDLES_ID,
 	},
 	{
 		label: i18n.t('workspace/workspace___opdrachten'),
