@@ -192,12 +192,13 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 export const GET_COLLECTIONS_BY_OWNER = gql`
 	query getCollectionsByOwner(
 		$owner_profile_id: uuid
+		$type_id: Int
 		$offset: Int = 0
 		$limit: Int
 		$order: [app_collections_order_by!] = { updated_at: desc }
 	) {
 		app_collections(
-			where: { owner_profile_id: { _eq: $owner_profile_id } }
+			where: { type_id: { _eq: $type_id }, owner_profile_id: { _eq: $owner_profile_id } }
 			offset: $offset
 			limit: $limit
 			order_by: $order
@@ -251,7 +252,16 @@ export const GET_COLLECTIONS = gql`
 
 export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 	query getCollectionNamesByOwner($owner_profile_id: uuid) {
-		app_collections(where: { owner_profile_id: { _eq: $owner_profile_id } }) {
+		app_collections(where: { type_id: { _eq: 3 }, owner_profile_id: { _eq: $owner_profile_id } }) {
+			id
+			title
+		}
+	}
+`;
+
+export const GET_BUNDLE_TITLES_BY_OWNER = gql`
+	query getCollectionNamesByOwner($owner_profile_id: uuid) {
+		app_collections(where: { type_id: { _eq: 4 }, owner_profile_id: { _eq: $owner_profile_id } }) {
 			id
 			title
 		}
