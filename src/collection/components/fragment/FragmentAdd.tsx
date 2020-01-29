@@ -27,6 +27,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 		...NEW_FRAGMENT.text,
 		id: -collection_fragments.length,
 		collection_uuid: id,
+		collection_id: (collection as any).avo1_id || '', // TODO remove once database allows it
 	};
 
 	// Listeners

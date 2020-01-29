@@ -31,6 +31,7 @@ export const NEW_FRAGMENT = {
 	text: {
 		id: null,
 		collection_uuid: null,
+		collection_id: '', // TODO make this null or remove it once database allows it
 		position: 1,
 		external_id: '',
 		custom_description: '',

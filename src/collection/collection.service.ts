@@ -445,6 +445,7 @@ export class CollectionService {
 		triggerCollectionFragmentsInsert: any
 	): Promise<Avo.Collection.Fragment[]> {
 		fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
+		fragments.forEach(fragment => ((fragment as any).collection_id = '')); // TODO remove once database allows it
 		const cleanedFragments = cloneDeep(fragments).map(fragment => {
 			delete fragment.id;
 			delete (fragment as any).__typename;

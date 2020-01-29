@@ -143,6 +143,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			custom_title: null,
 			custom_description: null,
 			collection_uuid: collection.id, // TODO Remove conversion once update to typings 2.8
+			collection_id: String((collection as any).avo1_id),
 			item_meta: itemMetaData,
 		} as any; // TODO Remove cast once update to typings 2.8
 	};
