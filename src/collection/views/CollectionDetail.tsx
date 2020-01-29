@@ -74,6 +74,7 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
+export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -295,6 +296,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						collection,
 						user,
 						COLLECTION_COPY,
+						COLLECTION_COPY_REGEX,
 						triggerCollectionInsert,
 						triggerCollectionFragmentsInsert
 					);

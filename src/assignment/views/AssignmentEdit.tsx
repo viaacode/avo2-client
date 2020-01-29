@@ -78,7 +78,8 @@ import {
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
 
-const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
+const ASSIGNMENT_COPY_PREFIX = 'Opdracht kopie %index%: ';
+const ASSIGNMENT_COPY_REGEX = /^Opdracht kopie [0-9]+: /gi;
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: ROUTE_PARTS.item,
@@ -406,7 +407,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		return await CollectionService.duplicateCollection(
 			assignmentContent as Avo.Collection.Collection,
 			user,
-			ASSIGNMENT_COPY,
+			ASSIGNMENT_COPY_PREFIX,
+			ASSIGNMENT_COPY_REGEX,
 			triggerCollectionInsert,
 			triggerCollectionFragmentsInsert
 		);
@@ -501,7 +503,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					const copy = await CollectionService.duplicateCollection(
 						sourceCollection,
 						user,
-						ASSIGNMENT_COPY,
+						ASSIGNMENT_COPY_PREFIX,
+						ASSIGNMENT_COPY_REGEX,
 						triggerCollectionInsert,
 						triggerCollectionFragmentsInsert
 					);

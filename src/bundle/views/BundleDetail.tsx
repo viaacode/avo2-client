@@ -47,7 +47,7 @@ import {
 } from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
 import { ShareCollectionModal } from '../../collection/components';
-import { COLLECTION_COPY } from '../../collection/views/CollectionDetail';
+import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
@@ -227,6 +227,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						bundle,
 						user,
 						COLLECTION_COPY,
+						COLLECTION_COPY_REGEX,
 						triggerCollectionInsert,
 						triggerCollectionFragmentsInsert
 					);

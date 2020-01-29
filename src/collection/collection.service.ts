@@ -32,7 +32,9 @@ export class CollectionService {
 			newCollection.created_at = new Date().toISOString();
 			newCollection.updated_at = newCollection.created_at;
 			const cleanedCollection = this.cleanCollectionBeforeSave(newCollection);
-			const response: void | ExecutionResult<Avo.Collection.Collection> = await triggerCollectionInsert({
+			const response: void | ExecutionResult<
+				Avo.Collection.Collection
+			> = await triggerCollectionInsert({
 				variables: {
 					collection: cleanedCollection,
 				},
@@ -248,12 +250,14 @@ export class CollectionService {
 	 * copy 4: test
 	 *
 	 * Then the algorithm will propose: copy 3: test
-	 * @param prefix
+	 * @param copyPrefix
+	 * @param copyRegex
 	 * @param existingTitle
 	 * @param user
 	 */
 	public static getCopyTitleForCollection = async (
-		prefix: string,
+		copyPrefix: string,
+		copyRegex: RegExp,
 		existingTitle: string,
 		user: Avo.User.User
 	): Promise<string> => {
@@ -262,9 +266,10 @@ export class CollectionService {
 
 		let index = 0;
 		let candidateTitle: string;
+		const titleWithoutCopy = existingTitle.replace(copyRegex, '');
 		do {
 			index += 1;
-			candidateTitle = prefix.replace('%index%', String(index)) + existingTitle;
+			candidateTitle = copyPrefix.replace('%index%', String(index)) + titleWithoutCopy;
 		} while (titles.includes(candidateTitle));
 
 		return candidateTitle;
@@ -273,7 +278,8 @@ export class CollectionService {
 	public static async duplicateCollection(
 		collection: Avo.Collection.Collection,
 		user: Avo.User.User,
-		prefix: string,
+		copyPrefix: string,
+		copyRegex: RegExp,
 		triggerCollectionInsert: any,
 		triggerCollectionFragmentsInsert: any
 	): Promise<Avo.Collection.Collection> {
@@ -283,14 +289,15 @@ export class CollectionService {
 		delete collectionToInsert.id;
 		try {
 			collectionToInsert.title = await CollectionService.getCopyTitleForCollection(
-				prefix,
+				copyPrefix,
+				copyRegex,
 				collectionToInsert.title,
 				user
 			);
 		} catch (err) {
 			console.error('Failed to get good copy title for collection', err, { collectionToInsert });
 			// Fallback to simple copy title
-			collectionToInsert.title = `${prefix.replace(' %index%', '')}${collectionToInsert.title}`;
+			collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${collectionToInsert.title}`;
 		}
 
 		return await CollectionService.insertCollection(
