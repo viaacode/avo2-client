@@ -222,12 +222,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						triggerCollectionInsert,
 						triggerCollectionFragmentsInsert
 					);
-					setTimeout(() =>
-						redirectToClientPage(
-							buildLink(APP_PATH.BUNDLE_DETAIL, { id: duplicateCollection.id }),
-							history
-						)
+					redirectToClientPage(
+						buildLink(APP_PATH.BUNDLE_DETAIL, { id: duplicateCollection.id }),
+						history
 					);
+					setBundle(duplicateCollection);
 					toastService.success(t('De bundel is gekopieerd, u kijkt nu naar de kopie.'));
 				} catch (err) {
 					console.error('Failed to copy bundle', err, { originalBundle: bundle });

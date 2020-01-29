@@ -294,7 +294,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						buildLink(APP_PATH.COLLECTION_DETAIL, { id: duplicateCollection.id }),
 						history
 					);
-					setIsOptionsMenuOpen(false);
+					setCollection(duplicateCollection);
 					toastService.success(t('De collectie is gekopieerd, u kijkt nu naar de kopie.'));
 				} catch (err) {
 					console.error('Failed to copy collection', err, { originalCollection: collection });

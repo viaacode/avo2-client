@@ -32,9 +32,7 @@ export class CollectionService {
 			newCollection.created_at = new Date().toISOString();
 			newCollection.updated_at = newCollection.created_at;
 			const cleanedCollection = this.cleanCollectionBeforeSave(newCollection);
-			const response: void | ExecutionResult<
-				Avo.Collection.Collection
-			> = await triggerCollectionInsert({
+			const response: void | ExecutionResult<Avo.Collection.Collection> = await triggerCollectionInsert({
 				variables: {
 					collection: cleanedCollection,
 				},
@@ -279,23 +277,24 @@ export class CollectionService {
 		triggerCollectionInsert: any,
 		triggerCollectionFragmentsInsert: any
 	): Promise<Avo.Collection.Collection> {
-		collection.owner_profile_id = getProfileId(user);
-		collection.is_public = false;
-		delete collection.id;
+		const collectionToInsert = { ...collection };
+		collectionToInsert.owner_profile_id = getProfileId(user);
+		collectionToInsert.is_public = false;
+		delete collectionToInsert.id;
 		try {
-			collection.title = await CollectionService.getCopyTitleForCollection(
+			collectionToInsert.title = await CollectionService.getCopyTitleForCollection(
 				prefix,
-				collection.title,
+				collectionToInsert.title,
 				user
 			);
 		} catch (err) {
-			console.error('Failed to get good copy title for collection', err, { collection });
+			console.error('Failed to get good copy title for collection', err, { collectionToInsert });
 			// Fallback to simple copy title
-			collection.title = `${prefix.replace(' %index%', '')}${collection.title}`;
+			collectionToInsert.title = `${prefix.replace(' %index%', '')}${collectionToInsert.title}`;
 		}
 
 		return await CollectionService.insertCollection(
-			collection,
+			collectionToInsert,
 			triggerCollectionInsert,
 			triggerCollectionFragmentsInsert
 		);
