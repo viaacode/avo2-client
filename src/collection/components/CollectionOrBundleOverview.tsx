@@ -172,7 +172,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		const onClickDropdownItem = (item: ReactText) => {
 			switch (item) {
 				case 'edit':
-					navigate(history, COLLECTION_PATH.COLLECTION_EDIT, { id: collectionId });
+					navigate(
+						history,
+						isCollection ? COLLECTION_PATH.COLLECTION_EDIT : BUNDLE_PATH.BUNDLE_EDIT,
+						{ id: collectionId }
+					);
 					break;
 				case 'createAssignment':
 					history.push(generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'));
