@@ -54,6 +54,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0
 		),
 	};
+	const itemMeta: Avo.Item.Item = fragment.item_meta as Avo.Item.Item;
 
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [fragmentStart, setFragmentStart] = useState<number>(start);
@@ -134,11 +135,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		// Limit start end and times between 0 and fragment duration
 		let startTime = toSeconds(fragmentStartString, true) as number;
 		let endTime = toSeconds(fragmentEndString, true) as number;
-		const duration =
-			(fragment.item_meta &&
-				fragment.item_meta.duration &&
-				toSeconds(fragment.item_meta.duration)) ||
-			0;
+		const duration = (itemMeta && itemMeta.duration && toSeconds(itemMeta.duration)) || 0;
 		if (startTime) {
 			startTime = clamp(startTime, 0, duration);
 			setFragmentStart(startTime);

@@ -59,7 +59,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 
 	// State
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
-	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [idToDelete, setIdToDelete] = useState<string | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 
@@ -71,7 +71,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
 	// Listeners
-	const onClickDelete = (collectionId: number) => {
+	const onClickDelete = (collectionId: string) => {
 		setDropdownOpen({ [collectionId]: false });
 		setIdToDelete(collectionId);
 		setIsDeleteModalOpen(true);
@@ -129,7 +129,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		</div>
 	);
 
-	const renderActions = (collectionId: number) => {
+	const renderActions = (collectionId: string) => {
 		const ROW_DROPDOWN_ITEMS = [
 			createDropdownMenuItem('edit', t('collection/views/collection-overview___bewerk'), 'edit2'),
 			createDropdownMenuItem(

@@ -175,7 +175,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 					message: t('workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'),
 				});
 			});
-	}, [user, t]);
+	}, [user, t, permissions]);
 
 	useEffect(() => {
 		if (
@@ -199,26 +199,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 				});
 			}
 		}
-	}, [setLoadingInfo, getActiveTab, t]);
-
-	useEffect(() => {
-		if (!isEmpty(permissions) && !isEmpty(tabs) && loadingInfo.state === 'loading') {
-			if (getActiveTab()) {
-				// User has access to at least one tab
-				setLoadingInfo({
-					state: 'loaded',
-				});
-			} else {
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken'
-					),
-					icon: 'lock',
-				});
-			}
-		}
-	}, [getActiveTab, loadingInfo.state, permissions, t]);
+	}, [setLoadingInfo, getActiveTab, t, permissions, tabs]);
 
 	const getNavTabs = () => {
 		return TABS.map(t => ({

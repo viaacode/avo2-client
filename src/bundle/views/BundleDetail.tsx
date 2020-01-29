@@ -58,7 +58,6 @@ import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent
 import { buildLink, createDropdownMenuItem, fromNow } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -283,7 +282,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							<MetaData category="bundle">
 								<MetaDataItem label={'370'} icon="eye" />
 								{/*<MetaDataItem label={fromNow(relatedBundle.updated_at)} />*/}
-								<MetaDataItem label={fromNow(relatedBundle.original_cp)} />
+								<MetaDataItem label={fromNow(relatedBundle.original_cp || '')} />
 							</MetaData>
 						</MediaCardMetaData>
 					</MediaCard>

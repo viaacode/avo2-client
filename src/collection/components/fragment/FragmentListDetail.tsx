@@ -34,13 +34,16 @@ const FragmentListDetail: FunctionComponent<FragmentListDetailProps> = ({
 		if (
 			linkToItems &&
 			collectionFragment.item_meta &&
+			collectionFragment.item_meta.type &&
 			(collectionFragment.item_meta.type.label === 'video' ||
 				collectionFragment.item_meta.type.label === 'audio')
 		) {
 			return () => {
 				if (collectionFragment.item_meta) {
 					redirectToClientPage(
-						buildLink(APP_PATH.ITEM, { id: collectionFragment.item_meta.external_id }),
+						buildLink(APP_PATH.ITEM, {
+							id: (collectionFragment.item_meta as Avo.Item.Item).external_id,
+						}),
 						history
 					);
 				}
@@ -53,16 +56,16 @@ const FragmentListDetail: FunctionComponent<FragmentListDetailProps> = ({
 		<ItemVideoDescription
 			showDescription={showDescription}
 			showTitle
-			itemMetaData={collectionFragment.item_meta}
+			itemMetaData={collectionFragment.item_meta as Avo.Item.Item}
 			showTitleOnVideo={false}
 			title={getFragmentProperty(
-				collectionFragment.item_meta,
+				collectionFragment.item_meta as Avo.Item.Item,
 				collectionFragment,
 				collectionFragment.use_custom_fields,
 				'title'
 			)}
 			description={getFragmentProperty(
-				collectionFragment.item_meta,
+				collectionFragment.item_meta as Avo.Item.Item,
 				collectionFragment,
 				collectionFragment.use_custom_fields,
 				'description'

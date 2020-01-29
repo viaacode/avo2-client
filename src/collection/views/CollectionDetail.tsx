@@ -36,10 +36,8 @@ import {
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
 import {
 	ControlledDropdown,
-	DataQueryComponent,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
@@ -64,7 +62,6 @@ import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 import { COLLECTION_PATH } from '../collection.const';
 import {
 	DELETE_COLLECTION,
-	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_ID_BY_AVO1_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
@@ -218,7 +215,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		};
 
 		checkPermissionsAndGetCollection();
-	}, [collectionId, t, user]);
+	}, [collectionId, t, user, history]);
 
 	useEffect(() => {
 		if (!relatedCollections) {
@@ -233,7 +230,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
 				});
 		}
-	}, [relatedCollections, t]);
+	}, [relatedCollections, t, collectionId]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {
@@ -351,7 +348,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</MediaCardThumbnail>
 							<MediaCardMetaData>
 								<MetaData category={category}>
-									<MetaDataItem label={original_cp} />
+									<MetaDataItem label={original_cp || undefined} />
 								</MetaData>
 							</MediaCardMetaData>
 						</MediaCard>

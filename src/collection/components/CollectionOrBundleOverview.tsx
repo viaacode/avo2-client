@@ -61,7 +61,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	// State
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
-	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [idToDelete, setIdToDelete] = useState<string | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -71,7 +71,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
 	// Listeners
-	const onClickDelete = (collectionId: number) => {
+	const onClickDelete = (collectionId: string) => {
 		setDropdownOpen({ [collectionId]: false });
 		setIdToDelete(collectionId);
 		setIsDeleteModalOpen(true);
@@ -153,7 +153,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		</div>
 	);
 
-	const renderActions = (collectionId: number) => {
+	const renderActions = (collectionId: string) => {
 		const ROW_DROPDOWN_ITEMS = [
 			createDropdownMenuItem('edit', t('collection/views/collection-overview___bewerk'), 'edit2'),
 			...(isCollection

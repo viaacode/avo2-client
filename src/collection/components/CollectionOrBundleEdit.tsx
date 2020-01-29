@@ -198,7 +198,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				icon: 'alert-triangle',
 			});
 		});
-	}, [user, collectionId, setLoadingInfo, t]);
+	}, [user, collectionId, setLoadingInfo, t, isCollection, type]);
 
 	useEffect(() => {
 		setLoadingInfo({

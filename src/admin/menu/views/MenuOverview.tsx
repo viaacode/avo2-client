@@ -14,7 +14,7 @@ import { buildLink, navigate } from '../../../shared/helpers';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
-import { MenuOverviewTableCols, MenuSchema } from '../menu.types';
+import { MenuOverviewTableCols } from '../menu.types';
 
 interface MenuOverviewProps extends DefaultSecureRouteProps {}
 
@@ -23,7 +23,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 
 	const [menus, setMenus] = useState<any>([]);
 
-	const renderTableCell = (rowData: Partial<MenuSchema>, columnId: MenuOverviewTableCols) => {
+	const renderTableCell = (rowData: Partial<Avo.Menu.Menu>, columnId: MenuOverviewTableCols) => {
 		const { placement: menu } = rowData;
 
 		switch (columnId) {
@@ -53,7 +53,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 		}
 	};
 
-	const renderMenuOverview = (data: Partial<MenuSchema>[]) => {
+	const renderMenuOverview = (data: Partial<Avo.Menu.Menu>[]) => {
 		if (!data.length) {
 			return (
 				<ErrorView message={t('Er zijn nog geen navigaties aangemaakt.')}>
@@ -81,7 +81,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 			<Table
 				columns={MENU_OVERVIEW_TABLE_COLS}
 				data={data}
-				renderCell={(rowData: Partial<MenuSchema>, columnId: string) =>
+				renderCell={(rowData: Partial<Avo.Menu.Menu>, columnId: string) =>
 					renderTableCell(rowData, columnId as MenuOverviewTableCols)
 				}
 				rowKey="id"

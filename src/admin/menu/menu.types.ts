@@ -32,20 +32,3 @@ export interface MenuEditFormErrorState {
 	link_target?: string;
 	user_group_ids?: string;
 }
-
-// TODO: Remove with next typings release 0.2.8.
-export interface MenuSchema {
-	id: number;
-	label: string;
-	icon_name: string;
-	description: string | null;
-	// tslint:disable-next-line: prefer-array-literal
-	user_group_ids: Array<number | string> | { [key: string]: string } | null;
-	content_type: ContentPickerType | null;
-	content_path: string | null;
-	link_target: '_blank' | '_self' | null;
-	position: number;
-	placement: string;
-	created_at: string;
-	updated_at: string;
-}

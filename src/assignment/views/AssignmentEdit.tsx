@@ -617,8 +617,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	};
 
 	const renderContentLink = (content: Avo.Assignment.Content) => {
-		const dutchLabel = (content.type.label ||
-			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
+		const dutchLabel = get(
+			content,
+			'type.label',
+			(currentAssignment.content_label || '').toLowerCase()
+		) as DutchContentType;
 		const linkContent = (
 			<div className="c-box c-box--padding-small">
 				<Flex orientation="vertical" center>
