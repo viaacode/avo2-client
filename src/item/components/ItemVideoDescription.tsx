@@ -151,7 +151,10 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				poster={itemMetaData.thumbnail_path}
 				title={itemMetaData.title}
 				onInit={initFlowPlayer}
-				subtitles={[reorderDate(itemMetaData.issued || null, '.'), itemMetaData.organisation.name]}
+				subtitles={[
+					reorderDate(itemMetaData.issued || null, '.'),
+					get(itemMetaData, 'organisation.name', ''),
+				]}
 				token={getEnv('FLOW_PLAYER_TOKEN')}
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}

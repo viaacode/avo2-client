@@ -382,45 +382,48 @@ export class CollectionService {
 				collectionId,
 				response,
 			});
-		} else {
-			// Collection/bundle loaded successfully
-			// Get items/collections for each collection_fragment that has an external_id set
-			const ids: string[] = compact(
-				(collectionObj.collection_fragments || []).map((collectionFragment, index) => {
-					// Reset the positions to be a nice list of integers in order
-					// The database ensures that they are sorted by their previous position
-					collectionFragment.position = index;
+		}
+		// Collection/bundle loaded successfully
+		if (collectionObj.type_id !== ContentTypeNumber[type]) {
+			return undefined;
+		}
 
-					// Return the external id if it is set
-					// TODO replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
-					if (collectionFragment.external_id !== '-1') {
-						return collectionFragment.external_id;
-					}
-					return null;
-				})
-			);
-			try {
-				const response = await dataService.query({
-					query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
-					variables: { ids },
-				});
-				// Add infos to each fragment under the item_meta property
-				const itemInfos: any[] = get(response, 'data.items', []);
-				itemInfos.forEach((itemInfo: any) => {
-					const collectionFragment:
-						| Avo.Collection.Fragment
-						| undefined = collectionObj.collection_fragments.find(
-						fragment =>
-							fragment.external_id === (type === 'collection' ? itemInfo.external_id : itemInfo.id)
-					);
-					if (collectionFragment) {
-						collectionFragment.item_meta = itemInfo;
-					}
-				});
-				return collectionObj;
-			} catch (err) {
-				throw new CustomError('Failed to get fragments inside the collection', err, { ids });
-			}
+		// Get items/collections for each collection_fragment that has an external_id set
+		const ids: string[] = compact(
+			(collectionObj.collection_fragments || []).map((collectionFragment, index) => {
+				// Reset the positions to be a nice list of integers in order
+				// The database ensures that they are sorted by their previous position
+				collectionFragment.position = index;
+
+				// Return the external id if it is set
+				// TODO replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
+				if (collectionFragment.external_id !== '-1') {
+					return collectionFragment.external_id;
+				}
+				return null;
+			})
+		);
+		try {
+			const response = await dataService.query({
+				query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
+				variables: { ids },
+			});
+			// Add infos to each fragment under the item_meta property
+			const itemInfos: any[] = get(response, 'data.items', []);
+			itemInfos.forEach((itemInfo: any) => {
+				const collectionFragment:
+					| Avo.Collection.Fragment
+					| undefined = collectionObj.collection_fragments.find(
+					fragment =>
+						fragment.external_id === (type === 'collection' ? itemInfo.external_id : itemInfo.id)
+				);
+				if (collectionFragment) {
+					collectionFragment.item_meta = itemInfo;
+				}
+			});
+			return collectionObj;
+		} catch (err) {
+			throw new CustomError('Failed to get fragments inside the collection', err, { ids });
 		}
 	}
 

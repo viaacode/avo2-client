@@ -182,6 +182,16 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			};
 			const collectionObj = await CollectionService.getCollectionWithItems(collectionId, type);
 
+			if (!collectionObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: isCollection
+						? t('De collectie kon niet worden gevonden')
+						: t('De bundel kon niet worden gevonden'),
+					icon: 'search',
+				});
+			}
+
 			setPermissions(permissionObj);
 			setCurrentCollection(collectionObj || null);
 			setInitialCollection(collectionObj || null);

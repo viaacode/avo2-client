@@ -195,6 +195,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				};
 				const collectionObj = await CollectionService.getCollectionWithItems(uuid, 'collection');
 
+				if (!collectionObj) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('De collectie kon niet worden gevonden'),
+						icon: 'search',
+					});
+				}
+
 				setCollectionId(uuid);
 				setPermissions(permissionObj);
 				setCollection(collectionObj || null);

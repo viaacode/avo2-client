@@ -150,6 +150,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			};
 			const bundleObj = await CollectionService.getCollectionWithItems(bundleId, 'bundle');
 
+			if (!bundleObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('De bundel kon niet worden gevonden'),
+					icon: 'search',
+				});
+			}
+
 			setPermissions(permissionObj);
 			setBundle(bundleObj || null);
 		};
