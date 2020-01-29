@@ -1,7 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 import { Action, Dispatch } from 'redux';
 
-import { getEnv } from '../../shared/helpers';
+import { CustomError, getEnv } from '../../shared/helpers';
 
 import {
 	SearchActionTypes,
@@ -39,6 +39,24 @@ const getSearchResults = (
 			});
 
 			const data = await response.json();
+
+			if (data.statusCode) {
+				console.error(
+					JSON.stringify(
+						new CustomError('Failed to get search results from elasticsearch', data, {
+							orderProperty,
+							orderDirection,
+							from,
+							size,
+							filters,
+							filterOptionSearch,
+						}),
+						null,
+						2
+					)
+				);
+				return dispatch(setSearchResultsError());
+			}
 
 			return dispatch(setSearchResultsSuccess(data as Avo.Search.Search));
 		} catch (e) {
