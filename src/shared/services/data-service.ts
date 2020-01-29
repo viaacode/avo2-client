@@ -51,12 +51,14 @@ export class ApolloCacheManager {
 	public static clearContentBlocksCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content_blocks');
 
-	private static deleteFromCache(cache: ApolloCache, keyPrefix: string) {
+	private static deleteFromCache(cache: ApolloCache, substring: string) {
 		Object.keys(cache.data.data).forEach((key: string) => {
 			// Also match keys starting with $ROOT_QUERY. for clearing aggregates cache
-			if (key.match(new RegExp(`^\\$root_query\\.${keyPrefix}|^${keyPrefix}`, 'gmi'))) {
+			if (key.match(new RegExp(substring, 'gi'))) {
 				cache.data.delete(key);
 			}
 		});
+		// Always delete the cache items that are stored under the miscellaneous label (ROOT_QUERY)
+		cache.data.delete('ROOT_QUERY');
 	}
 }
