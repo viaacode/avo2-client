@@ -94,7 +94,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<ContentBlockPreview
 						key={contentBlocks[index].id}
 						componentState={contentBlockConfig.components.state}
-						contentWidth={/* content.content_width */ 'default'} // TODO: add once available
+						contentWidth={get(content, 'content_width')}
 						blockState={contentBlockConfig.block.state}
 					/>
 				));
