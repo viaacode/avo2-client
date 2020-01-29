@@ -1,3 +1,4 @@
+import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
 // Pages
@@ -61,6 +62,25 @@ export type ContentOverviewTableCols =
 	| 'created_at'
 	| 'updated_at'
 	| 'actions';
+
+export type DateRangeKeys = 'createdDate' | 'updatedDate' | 'publishDate' | 'depublishDate';
+export type FilterRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
+export type RangeFilters = {
+	[key in FilterRangeKeys]?: { _gte?: string; _lte?: string };
+};
+
+export interface ContentFilterFormState {
+	contentType: string[];
+	createdDate: DateRange;
+	updatedDate: DateRange;
+	publishDate: DateRange;
+	depublishDate: DateRange;
+	query: string;
+}
+
+export interface ContentOverviewState {
+	filterForm: ContentFilterFormState;
+}
 
 // Content Detail
 export type ContentDetailParams = { id: string };

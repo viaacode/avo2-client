@@ -339,7 +339,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	 * @param prefix
 	 */
 	const getCopyTitleForCollection = async (prefix: string): Promise<string> => {
-		const collections = await CollectionService.getCollectionTitlesByUser(user);
+		const collections = await CollectionService.getCollectionTitlesByUser('collection', user);
 		const titles = collections.map(c => c.title);
 
 		let index = 0;
