@@ -86,12 +86,3 @@ export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
 	{ label: 'H3', value: 'h3' },
 	{ label: 'H4', value: 'h4' },
 ];
-
-export const CONTENT_BLOCKS_WITH_ELEMENTS_PROP = [
-	ContentBlockType.Buttons,
-	ContentBlockType.CTAs,
-	ContentBlockType.RichText,
-	ContentBlockType.RichTextTwoColumns,
-];
-
-export const BLOCK_STATE_INHERITING_PROPS = ['align'];

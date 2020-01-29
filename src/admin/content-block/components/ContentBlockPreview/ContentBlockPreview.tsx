@@ -12,10 +12,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { ContentWidth } from '../../../content/content.types';
-import {
-	BLOCK_STATE_INHERITING_PROPS,
-	CONTENT_BLOCKS_WITH_ELEMENTS_PROP,
-} from '../../content-block.const';
+
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockComponentState,
@@ -39,13 +36,22 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 });
 
+const REPEATABLE_CONTENT_BLOCKS = [
+	ContentBlockType.Buttons,
+	ContentBlockType.CTAs,
+	ContentBlockType.RichText,
+	ContentBlockType.RichTextTwoColumns,
+];
+
+export const BLOCK_STATE_INHERITING_PROPS = ['align'];
+
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
 	contentWidth = 'default',
 	blockState,
 }) => {
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
-	const needsElements = CONTENT_BLOCKS_WITH_ELEMENTS_PROP.includes(blockState.blockType);
+	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
 	const stateToSpread: any = needsElements ? { elements: componentState } : componentState;
 
 	BLOCK_STATE_INHERITING_PROPS.forEach((prop: string) => {

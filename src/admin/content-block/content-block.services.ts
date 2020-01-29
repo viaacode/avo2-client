@@ -1,10 +1,12 @@
+import { FetchResult } from 'apollo-link';
 import { get, has, without } from 'lodash-es';
+
+import { Avo } from '@viaa/avo2-types';
 
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 
-import { FetchResult } from 'apollo-link';
 import { CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
 import {
 	DELETE_CONTENT_BLOCK,
@@ -12,12 +14,12 @@ import {
 	INSERT_CONTENT_BLOCKS,
 	UPDATE_CONTENT_BLOCK,
 } from './content-block.gql';
-import { ContentBlockConfig, ContentBlockSchema } from './content-block.types';
+import { ContentBlockConfig } from './content-block.types';
 import { parseContentBlockConfig, parseContentBlockConfigs } from './helpers';
 
 export const fetchContentBlocksByContentId = async (
 	contentId: number
-): Promise<ContentBlockSchema[] | null> => {
+): Promise<Avo.ContentBlocks.ContentBlocks[] | null> => {
 	try {
 		const response = await dataService.query({
 			query: GET_CONTENT_BLOCKS_BY_CONTENT_ID,
@@ -40,7 +42,7 @@ export const fetchContentBlocksByContentId = async (
 export const insertContentBlocks = async (
 	contentId: number,
 	contentBlockConfigs: ContentBlockConfig[]
-): Promise<Partial<ContentBlockSchema>[] | null> => {
+): Promise<Partial<Avo.ContentBlocks.ContentBlocks>[] | null> => {
 	try {
 		const contentBlocks = parseContentBlockConfigs(contentId, contentBlockConfigs);
 		const response = await dataService.mutate({
@@ -65,7 +67,7 @@ export const insertContentBlocks = async (
 
 export const updateContentBlocks = async (
 	contentId: number,
-	initialContentBlocks: ContentBlockSchema[],
+	initialContentBlocks: Avo.ContentBlocks.ContentBlocks[],
 	contentBlockConfigs: ContentBlockConfig[]
 ) => {
 	try {
