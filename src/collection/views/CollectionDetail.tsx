@@ -55,7 +55,6 @@ import {
 import { isUuid } from '../../shared/helpers/uuid';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -217,20 +216,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		checkPermissionsAndGetCollection();
 	}, [collectionId, t, user, history]);
 
-	useEffect(() => {
-		if (!relatedCollections) {
-			getRelatedItems(collectionId, 'collections', 4)
-				.then(relatedItems => setRelatedCollections(relatedItems))
-				.catch(err => {
-					console.error('Failed to get related items', err, {
-						collectionId,
-						index: 'collections',
-						limit: 4,
-					});
-					toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
-				});
-		}
-	}, [relatedCollections, t, collectionId]);
+	// Waiting for ES index for bundles
+	// useEffect(() => {
+	// 	if (!relatedCollections) {
+	// 		getRelatedItems(collectionId, 'collections', 4)
+	// 			.then(relatedItems => setRelatedCollections(relatedItems))
+	// 			.catch(err => {
+	// 				console.error('Failed to get related items', err, {
+	// 					collectionId,
+	// 					index: 'collections',
+	// 					limit: 4,
+	// 				});
+	// 				toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
+	// 			});
+	// 	}
+	// }, [relatedCollections, t, collectionId]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {
