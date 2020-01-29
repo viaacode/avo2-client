@@ -137,7 +137,7 @@ export class PermissionService {
 
 	private static async checkViewItemsLinkedToAssignment(
 		user: Avo.User.User,
-		id: string | number,
+		id: string,
 		type: 'ITEM' | 'COLLECTIE' | 'ZOEKOPDRACHT'
 	): Promise<boolean> {
 		if (!user.profile) {
@@ -153,8 +153,8 @@ export class PermissionService {
 			variables:
 				type === 'COLLECTIE'
 					? {
-							idString: String(id), // TODO remove this special case once collection ids are uuids (merged with bundles)
-							idInt: parseInt(id as string, 10),
+							idString: id,
+							idUuid: id,
 							userId: user.profile.id,
 					  }
 					: {

@@ -149,6 +149,20 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	useEffect(() => {
 		const checkPermissionsAndGetCollection = async () => {
 			try {
+				const uuid = await getCollectionIdByAvo1Id(collectionId);
+				if (!uuid) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('De collectie kon niet worden gevonden'),
+						icon: 'alert-triangle',
+					});
+					return;
+				}
+				if (collectionId !== uuid) {
+					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
+					// and continue loading the collection
+					redirectToClientPage(buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }), history);
+				}
 				const rawPermissions = await Promise.all([
 					PermissionService.hasPermissions(
 						[
@@ -181,20 +195,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					canCreateCollections: rawPermissions[3],
 					canViewItems: rawPermissions[4],
 				};
-				const uuid = await getCollectionIdByAvo1Id(collectionId);
-				if (!uuid) {
-					setLoadingInfo({
-						state: 'error',
-						message: t('De collectie kon niet worden gevonden'),
-						icon: 'alert-triangle',
-					});
-					return;
-				}
-				if (collectionId !== uuid) {
-					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
-					// and continue loading the collection
-					redirectToClientPage(buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }), history);
-				}
 				const collectionObj = await CollectionService.getCollectionWithItems(
 					uuid,
 					'collection',

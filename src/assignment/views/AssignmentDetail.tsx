@@ -98,9 +98,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						owner_profile_ids: [getProfileId(user)],
 						assignment_id: tempAssignment.id,
 						collection: null,
-						collection_id: null,
+						collection_uuid: null,
 						submitted_at: null,
-					};
+					} as any; // TODO Remove cast once update to typings 2.8
 
 					try {
 						const reply = await triggerInsertAssignmentResponse({

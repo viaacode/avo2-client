@@ -13,7 +13,6 @@ export const GET_COLLECTION_BY_ID = gql`
 	query getCollectionById($id: uuid!) {
 		app_collections(where: { id: { _eq: $id } }) {
 			id
-			collection_fragment_ids
 			description
 			collection_fragments {
 				use_custom_fields
@@ -26,7 +25,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				custom_title
 				custom_description
 				created_at
-				collection_id
+				collection_uuid
 			}
 			updated_at
 			type_id
@@ -196,7 +195,7 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 				custom_title
 				custom_description
 				created_at
-				collection_id
+				collection_uuid
 			}
 		}
 	}

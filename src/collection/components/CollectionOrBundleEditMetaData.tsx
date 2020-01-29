@@ -22,12 +22,14 @@ import { ContextAndClassificationData } from '../../shared/types/lookup';
 import { getValidationFeedbackForShortDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
 
-interface CollectionEditMetaDataProps {
+interface CollectionOrBundleEditMetaDataProps {
+	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
 	updateCollectionProperty: (value: string | string[], fieldName: string) => void;
 }
 
-const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = ({
+const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMetaDataProps> = ({
+	type,
 	collection,
 	updateCollectionProperty,
 }) => {
@@ -35,6 +37,8 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 
 	// State
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
+
+	const isCollection = type === 'collection';
 
 	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
 		updateCollectionProperty(
@@ -127,13 +131,16 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 											label={t('collection/views/collection-edit-meta-data___cover-afbeelding')}
 											labelFor="coverImageId"
 										>
-											<Button
-												type="secondary"
-												label={t(
-													'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
-												)}
-												onClick={() => setCollectionsStillsModalOpen(true)}
-											/>
+											{isCollection ? (
+												<Button
+													type="secondary"
+													label={t(
+														'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
+													)}
+													onClick={() => setCollectionsStillsModalOpen(true)}
+												/>
+											) : null}
+											{/* TODO add upload cover image for bundle */}
 										</FormGroup>
 										{/* TODO: DISABLED FEATURE
 											<FormGroup label={t('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
@@ -164,4 +171,4 @@ const CollectionEditMetaData: FunctionComponent<CollectionEditMetaDataProps> = (
 	);
 };
 
-export default CollectionEditMetaData;
+export default CollectionOrBundleEditMetaData;

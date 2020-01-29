@@ -142,9 +142,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			end_oc: hasCut ? fragmentEndTime : null,
 			custom_title: null,
 			custom_description: null,
-			collection_id: collection.id,
+			collection_uuid: collection.id, // TODO Remove conversion once update to typings 2.8
 			item_meta: itemMetaData,
-		};
+		} as any; // TODO Remove cast once update to typings 2.8
 	};
 
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {

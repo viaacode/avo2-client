@@ -63,7 +63,7 @@ export class CollectionService {
 			if (fragments && fragments.length) {
 				// Insert fragments
 				newCollection.collection_fragments = await this.insertFragments(
-					newCollection.id,
+					String(newCollection.id), // TODO remove conversion once typings is updated to 2.8
 					fragments,
 					triggerCollectionFragmentsInsert
 				);
@@ -76,13 +76,12 @@ export class CollectionService {
 	}
 
 	public static async updateCollection(
-		initialCollection: Avo.Collection.Collection | undefined,
+		initialCollection: Avo.Collection.Collection | null,
 		updatedCollection: Avo.Collection.Collection,
 		triggerCollectionUpdate: any,
 		triggerCollectionFragmentInsert: any,
 		triggerCollectionFragmentDelete: any,
-		triggerCollectionFragmentUpdate: any,
-		refetchCollection: () => void
+		triggerCollectionFragmentUpdate: any
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
@@ -200,7 +199,6 @@ export class CollectionService {
 				];
 				newCollection = {
 					...newCollection,
-					collection_fragment_ids: newFragments.map(fragment => fragment.id),
 					collection_fragments: newFragments,
 				};
 			});
@@ -221,8 +219,6 @@ export class CollectionService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			// refetch collection:
-			refetchCollection();
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
 			console.error('Failed to update collection or its fragments', err, {
@@ -232,7 +228,6 @@ export class CollectionService {
 				triggerCollectionFragmentInsert,
 				triggerCollectionFragmentDelete,
 				triggerCollectionFragmentUpdate,
-				refetchCollection,
 			});
 			return null;
 		}
@@ -439,17 +434,17 @@ export class CollectionService {
 	}
 
 	private static getFragmentIdsFromCollection(
-		collection: Partial<Avo.Collection.Collection> | undefined
+		collection: Partial<Avo.Collection.Collection> | null
 	): number[] {
 		return this.getFragments(collection).map((fragment: Avo.Collection.Fragment) => fragment.id);
 	}
 
 	private static async insertFragments(
-		collectionId: number,
+		collectionId: string,
 		fragments: Avo.Collection.Fragment[],
 		triggerCollectionFragmentsInsert: any
 	): Promise<Avo.Collection.Fragment[]> {
-		fragments.forEach(fragment => (fragment.collection_id = collectionId));
+		fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
 		const cleanedFragments = cloneDeep(fragments).map(fragment => {
 			delete fragment.id;
 			delete (fragment as any).__typename;

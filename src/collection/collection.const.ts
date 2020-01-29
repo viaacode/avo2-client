@@ -30,7 +30,7 @@ export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
 export const NEW_FRAGMENT = {
 	text: {
 		id: null,
-		collection_id: null,
+		collection_uuid: null,
 		position: 1,
 		external_id: '',
 		custom_description: '',

@@ -116,9 +116,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			end_oc: null,
 			custom_title: null,
 			custom_description: null,
-			collection_id: bundle.id,
+			collection_uuid: String(bundle.id), // TODO Remove conversion once update to typings 2.8
 			item_meta: collection as any, // TODO remove once typings has item_meta?: ItemSchema | CollectionSchema;
-		};
+		} as any; // TODO Remove conversion once update to typings 2.8
 	};
 
 	const addCollectionToExistingBundle = async (bundle: Partial<Avo.Collection.Collection>) => {
