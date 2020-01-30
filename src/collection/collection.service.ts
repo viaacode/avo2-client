@@ -1,4 +1,4 @@
-import { ExecutionResult } from '@apollo/react-common';
+import { ExecutionResult, MutationFunction } from '@apollo/react-common';
 import { cloneDeep, compact, get, isNil, omit, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
@@ -64,7 +64,7 @@ export class CollectionService {
 			if (fragments && fragments.length) {
 				// Insert fragments
 				newCollection.collection_fragments = await this.insertFragments(
-					String(newCollection.id), // TODO remove conversion once typings is updated to 2.8
+					newCollection.id,
 					fragments,
 					triggerCollectionFragmentsInsert
 				);
@@ -79,10 +79,10 @@ export class CollectionService {
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
 		updatedCollection: Avo.Collection.Collection,
-		triggerCollectionUpdate: any,
-		triggerCollectionFragmentInsert: any,
-		triggerCollectionFragmentDelete: any,
-		triggerCollectionFragmentUpdate: any
+		triggerCollectionUpdate: MutationFunction<any>,
+		triggerCollectionFragmentInsert: MutationFunction<any>,
+		triggerCollectionFragmentDelete: MutationFunction<any>,
+		triggerCollectionFragmentUpdate: MutationFunction<any>
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
@@ -385,7 +385,7 @@ export class CollectionService {
 		);
 
 		if (!collectionObj) {
-			throw new CustomError('query for ${type} returned empty result', null, {
+			throw new CustomError(`query for ${type} returned empty result`, null, {
 				collectionId,
 				response,
 			});
