@@ -1,4 +1,4 @@
-import { get, isNil, orderBy } from 'lodash-es';
+import { get, isNil, isNull, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,6 @@ import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService from '../../../shared/services/toast-service';
-import { FragmentPropertyUpdateInfo } from '../../collection.types';
 import { getFragmentProperty, isMediaFragment } from '../../helpers';
 
 import CutFragmentModal from '../modals/CutFragmentModal';
@@ -47,7 +46,7 @@ interface FragmentEditProps extends DefaultSecureRouteProps {
 	index: number;
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
+	onFragmentChanged: (fragment: Avo.Collection.Fragment) => void;
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
@@ -60,7 +59,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	index,
 	collection,
 	swapFragments,
-	updateFragmentProperties,
+	onFragmentChanged,
 	openOptionsId,
 	setOpenOptionsId,
 	fragment,
@@ -71,7 +70,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const [t] = useTranslation();
 
 	const [playerTicket, setPlayerTicket] = useState<string>();
-	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [cuePoints, setCuePoints] = useState({
@@ -127,41 +125,35 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	// Listeners
 	const onChangeToggle = () => {
-		const propsToUpdate = [
-			{
-				value: !useCustomFields,
-				fieldName: 'use_custom_fields' as keyof Avo.Collection.Fragment,
-				fragmentId: fragment.id,
-			},
-		];
-
-		// If empty title or description, apply item title and description
-		const propsToTransfer: string[] = ['title', 'description'];
-
-		propsToTransfer.forEach((prop: string) => {
-			const customProp = `custom_${prop}` as keyof Avo.Collection.Fragment;
-
-			if (!fragment[customProp] && itemMetaData[prop]) {
-				propsToUpdate.push({
-					value: itemMetaData[prop],
-					fieldName: customProp,
-					fragmentId: fragment.id,
-				});
-			}
-		});
-
-		updateFragmentProperties(propsToUpdate);
-		setUseCustomFields(!useCustomFields);
+		if (fragment.use_custom_fields) {
+			// user wants to disable custom fields
+			onFragmentChanged({
+				...fragment,
+				custom_title: null,
+				custom_description: null,
+				use_custom_fields: false,
+			});
+		} else {
+			// user wants to enable custom fields
+			onFragmentChanged({
+				...fragment,
+				custom_title: '',
+				custom_description: '',
+				use_custom_fields: true,
+			});
+		}
 	};
 
-	const onChangeText = (field: 'title' | 'description', value: string) =>
-		updateFragmentProperties([
-			{
-				value,
-				fieldName: `custom_${field}` as 'custom_title' | 'custom_description',
-				fragmentId: fragment.id,
-			},
-		]);
+	const onChangeText = (field: 'title' | 'description', value: string) => {
+		const oldValue: string =
+			fragment[`custom_${field}` as 'custom_title' | 'custom_description'] || '';
+		if (oldValue !== value) {
+			onFragmentChanged({
+				...fragment,
+				[`custom_${field}`]: value,
+			});
+		}
+	};
 
 	const onDeleteFragment = (fragmentId: number) => {
 		setOpenOptionsId(null);
@@ -248,7 +240,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	);
 
 	const renderForm = () => {
-		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
+		const disableVideoFields: boolean = !fragment.use_custom_fields && !!isMediaFragment(fragment);
 
 		return (
 			<Form>
@@ -257,7 +249,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						label={t('collection/components/fragment/fragment-edit___alternatieve-tekst')}
 						labelFor="customFields"
 					>
-						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
+						<Toggle
+							id="customFields"
+							checked={fragment.use_custom_fields}
+							onChange={onChangeToggle}
+						/>
 					</FormGroup>
 				)}
 				<FormGroup
@@ -267,7 +263,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
-						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
+						value={getFragmentProperty(itemMetaData, fragment, fragment.use_custom_fields, 'title')}
 						placeholder={t(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
@@ -287,7 +283,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 								'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 							)}
 							data={convertToHtml(
-								getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
+								getFragmentProperty(
+									itemMetaData,
+									fragment,
+									fragment.use_custom_fields,
+									'description'
+								)
 							)}
 							onChange={(value: string) => onChangeText('description', value)}
 							disabled={disableVideoFields}
@@ -400,7 +401,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}
 					itemMetaData={itemMetaData}
-					updateFragmentProperties={updateFragmentProperties}
+					onFragmentChanged={onFragmentChanged}
 					fragment={fragment}
 					updateCuePoints={setCuePoints}
 				/>

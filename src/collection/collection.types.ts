@@ -76,9 +76,3 @@ export function toEnglishContentType(label: DutchContentType): EnglishContentTyp
 		zoekopdracht: 'searchquery',
 	}[label] as EnglishContentType;
 }
-
-export interface FragmentPropertyUpdateInfo {
-	value: Partial<ValueOf<Avo.Collection.Fragment>>;
-	fieldName: keyof Avo.Collection.Fragment;
-	fragmentId: number;
-}

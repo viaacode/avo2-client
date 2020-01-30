@@ -63,7 +63,6 @@ import {
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../collection.gql';
 import { CollectionService } from '../collection.service';
-import { FragmentPropertyUpdateInfo } from '../collection.types';
 import { ShareCollectionModal } from '../components';
 import { swapFragmentsPositions } from '../helpers';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
@@ -241,7 +240,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	};
 
 	// Update individual property of fragment
-	const updateFragmentProperties = (updateInfos: FragmentPropertyUpdateInfo[]) => {
+	const onFragmentChanged = (fragment: Avo.Collection.Fragment) => {
+		console.log('fragment props updated: ', fragment);
 		const tempCollection: Avo.Collection.Collection | null = cloneDeep(currentCollection);
 
 		if (!tempCollection) {
@@ -253,15 +253,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			return;
 		}
 
-		updateInfos.forEach((updateInfo: FragmentPropertyUpdateInfo) => {
-			const fragmentToUpdate = tempCollection.collection_fragments.find(
-				(item: Avo.Collection.Fragment) => item.id === updateInfo.fragmentId
-			);
-
-			if (fragmentToUpdate) {
-				(fragmentToUpdate as any)[updateInfo.fieldName] = updateInfo.value;
-			}
-		});
+		const fragmentToUpdateIndex = tempCollection.collection_fragments.findIndex(
+			(item: Avo.Collection.Fragment) => item.id === fragment.id
+		);
+		tempCollection.collection_fragments[fragmentToUpdateIndex] = fragment;
 
 		setCurrentCollection(tempCollection);
 	};
@@ -488,7 +483,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 							collection={currentCollection}
 							swapFragments={swapFragments}
 							updateCollection={setCurrentCollection}
-							updateFragmentProperties={updateFragmentProperties}
+							onFragmentChanged={onFragmentChanged}
 							history={history}
 							match={match}
 							user={user}

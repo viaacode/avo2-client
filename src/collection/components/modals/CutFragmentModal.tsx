@@ -24,13 +24,12 @@ import toastService from '../../../shared/services/toast-service';
 import { KeyCode } from '../../../shared/types';
 
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
-import { FragmentPropertyUpdateInfo } from '../../collection.types';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	itemMetaData: Avo.Item.Item;
 	fragment: Avo.Collection.Fragment;
-	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
+	onFragmentChanged: (fragment: Avo.Collection.Fragment) => void;
 	updateCuePoints: (cuepoints: any) => void;
 	onClose: () => void;
 }
@@ -39,7 +38,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	onClose,
 	isOpen,
 	itemMetaData,
-	updateFragmentProperties,
+	onFragmentChanged,
 	fragment,
 	updateCuePoints,
 }) => {
@@ -94,22 +93,15 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			{ externalId: fragment.external_id, startTime: startTime || 0 },
 		]);
 
-		updateFragmentProperties([
-			{ value: startTime, fieldName: 'start_oc' as const, fragmentId: fragment.id },
-			{ value: endTime, fieldName: 'end_oc' as const, fragmentId: fragment.id },
-			...(videoStills && videoStills.length > 0
-				? [
-						{
-							value: {
-								...(fragment.item_meta || {}),
-								thumbnail_path: videoStills[0].thumbnailImagePath,
-							},
-							fieldName: 'item_meta' as const,
-							fragmentId: fragment.id,
-						},
-				  ]
-				: []),
-		]);
+		onFragmentChanged({
+			...fragment,
+			start_oc: startTime,
+			end_oc: endTime,
+			...(videoStills && videoStills.length
+				? { thumbnail_path: videoStills[0].thumbnailImagePath }
+				: {}),
+		});
+
 		updateCuePoints({
 			start: startTime,
 			end: endTime,

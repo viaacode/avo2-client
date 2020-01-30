@@ -402,6 +402,12 @@ export class CollectionService {
 				// The database ensures that they are sorted by their previous position
 				collectionFragment.position = index;
 
+				// If the fragment doesn't use custom fields, then custom fields should be null
+				if (!collectionFragment.use_custom_fields) {
+					collectionFragment.custom_title = null;
+					collectionFragment.custom_description = null;
+				}
+
 				// Return the external id if it is set
 				// TODO replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
 				if (collectionFragment.external_id !== '-1') {
