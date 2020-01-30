@@ -15,7 +15,6 @@ import {
 	Navbar,
 	Select,
 	Spacer,
-	Spinner,
 	TextInput,
 	Toolbar,
 	ToolbarItem,

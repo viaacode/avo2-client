@@ -47,7 +47,7 @@ import {
 } from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
 import { ShareCollectionModal } from '../../collection/components';
-import { COLLECTION_COPY } from '../../collection/views/CollectionDetail';
+import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
@@ -55,10 +55,9 @@ import {
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink, createDropdownMenuItem, fromNow } from '../../shared/helpers';
+import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -149,21 +148,26 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				canCreateBundles: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const bundleObj = await CollectionService.getCollectionWithItems(
-				bundleId,
-				'bundle',
-				setLoadingInfo,
-				t
-			);
+			const bundleObj = await CollectionService.getCollectionWithItems(bundleId, 'bundle');
+
+			if (!bundleObj) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('De bundel kon niet worden gevonden'),
+					icon: 'search',
+				});
+			}
 
 			setPermissions(permissionObj);
 			setBundle(bundleObj || null);
 		};
 
 		checkPermissionsAndGetBundle().catch(err => {
-			console.error('Failed to check permissions or get bundle from the database', err, {
-				bundleId,
-			});
+			console.error(
+				new CustomError('Failed to check permissions or get bundle from the database', err, {
+					bundleId,
+				})
+			);
 			setLoadingInfo({
 				state: 'error',
 				message: t('Er ging iets mis tijdens het ophalen van de bundel'),
@@ -223,15 +227,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						bundle,
 						user,
 						COLLECTION_COPY,
+						COLLECTION_COPY_REGEX,
 						triggerCollectionInsert,
 						triggerCollectionFragmentsInsert
 					);
-					setTimeout(() =>
-						redirectToClientPage(
-							buildLink(APP_PATH.BUNDLE_DETAIL, { id: duplicateCollection.id }),
-							history
-						)
+					redirectToClientPage(
+						buildLink(APP_PATH.BUNDLE_DETAIL, { id: duplicateCollection.id }),
+						history
 					);
+					setBundle(duplicateCollection);
 					toastService.success(t('De bundel is gekopieerd, u kijkt nu naar de kopie.'));
 				} catch (err) {
 					console.error('Failed to copy bundle', err, { originalBundle: bundle });
@@ -260,6 +264,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			return (
 				<Column size="3-3" key={`related-bundle-${relatedBundle.id}`}>
 					<MediaCard
+						className="u-clickable"
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
@@ -283,7 +288,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							<MetaData category="bundle">
 								<MetaDataItem label={'370'} icon="eye" />
 								{/*<MetaDataItem label={fromNow(relatedBundle.updated_at)} />*/}
-								<MetaDataItem label={fromNow(relatedBundle.original_cp)} />
+								<MetaDataItem label={fromNow(relatedBundle.original_cp || '')} />
 							</MetaData>
 						</MediaCardMetaData>
 					</MediaCard>
@@ -304,6 +309,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			return (
 				<Column size="3-4" key={`bundle-fragment-${fragment.id}`}>
 					<MediaCard
+						className="u-clickable"
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(

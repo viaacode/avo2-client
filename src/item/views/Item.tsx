@@ -204,7 +204,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
 									<MetaData category={toEnglishContentType(get(itemMetaData, 'type.label'))} spaced>
-										{!!itemMetaData.organisation && !!itemMetaData.organisation.name && (
+										{!!get(itemMetaData, 'organisation.name') && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
 													{generateSearchLink('provider', itemMetaData.organisation.name)}
@@ -338,7 +338,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 											)}
 										</Grid>
 										<Grid tag="tbody">
-											{!!itemMetaData.organisation && !!itemMetaData.organisation.name && (
+											{!!get(itemMetaData, 'organisation.name') && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
 														<Trans i18nKey="item/views/item___aanbieder">Aanbieder</Trans>

@@ -16,6 +16,7 @@ import {
 	IconName,
 	MenuContent,
 	TextInput,
+	Thumbnail,
 	Toggle,
 	Toolbar,
 	ToolbarItem,
@@ -42,6 +43,7 @@ import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
 
 interface FragmentEditProps extends DefaultSecureRouteProps {
+	type: 'itemOrText' | 'collection';
 	index: number;
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
@@ -54,6 +56,7 @@ interface FragmentEditProps extends DefaultSecureRouteProps {
 }
 
 const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
+	type,
 	index,
 	collection,
 	swapFragments,
@@ -76,6 +79,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		end: fragment.end_oc,
 	});
 	const [allowedToAddLinks, setAllowedToAddLinks] = useState<boolean | null>(null);
+
+	const isCollection = type === 'collection';
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
@@ -113,6 +118,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	const initFlowPlayer = () =>
 		!playerTicket &&
+		!isCollection &&
 		fetchPlayerTicket(fragment.external_id)
 			.then(data => setPlayerTicket(data))
 			.catch(() => toastService.danger('Play ticket kon niet opgehaald worden.'));
@@ -175,10 +181,13 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: positionedFragments.map(positionedFragment => positionedFragment.id),
 		});
 
-		toastService.success('Fragment is succesvol verwijderd');
+		toastService.success(
+			!isCollection
+				? t('Fragment is succesvol verwijderd uit de collectie')
+				: t('Collectie is succesvol verwijderd uit de bundel')
+		);
 	};
 
 	// TODO: DISABLED FEATURE
@@ -299,7 +308,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 								<div className="c-button-toolbar">
 									{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
 									{!isLast(index) && renderReorderButton(fragment.position, 'down')}
-									{itemMetaData && (
+									{itemMetaData && !isCollection && (
 										<Button
 											icon="scissors"
 											label={t('collection/components/fragment/fragment-edit___knippen')}
@@ -338,20 +347,24 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					</Toolbar>
 				</div>
 				<div className="c-panel__body">
-					{isMediaFragment(fragment) && itemMetaData ? ( // TODO: Replace publisher, published_at by real publisher
+					{(isMediaFragment(fragment) && itemMetaData) || isCollection ? (
 						<Grid>
 							<Column size="3-6">
-								<FlowPlayer
-									src={playerTicket ? playerTicket.toString() : null}
-									poster={itemMetaData.thumbnail_path}
-									title={itemMetaData.title}
-									onInit={initFlowPlayer}
-									subtitles={['30-12-2011', 'VRT']}
-									token={getEnv('FLOW_PLAYER_TOKEN')}
-									dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-									logo={get(itemMetaData, 'organisation.logo_url')}
-									{...cuePoints}
-								/>
+								{!isCollection ? (
+									<FlowPlayer
+										src={playerTicket ? playerTicket.toString() : null}
+										poster={itemMetaData.thumbnail_path}
+										title={itemMetaData.title}
+										onInit={initFlowPlayer}
+										subtitles={[itemMetaData.issued, get(itemMetaData, 'organisation.name', '')]}
+										token={getEnv('FLOW_PLAYER_TOKEN')}
+										dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+										logo={get(itemMetaData, 'organisation.logo_url')}
+										{...cuePoints}
+									/>
+								) : (
+									<Thumbnail category="collection" src={itemMetaData.thumbnail_path} />
+								)}
 							</Column>
 							<Column size="3-6">{renderForm()}</Column>
 						</Grid>
@@ -361,22 +374,28 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 				</div>
 			</div>
 
-			<FragmentAdd
-				index={index}
-				collection={collection}
-				updateCollection={updateCollection}
-				reorderFragments={reorderFragments}
-			/>
+			{!isCollection && (
+				<FragmentAdd
+					index={index}
+					collection={collection}
+					updateCollection={updateCollection}
+					reorderFragments={reorderFragments}
+				/>
+			)}
 
 			<DeleteObjectModal
-				title={t('Ben je zeker dat je dit fragment wil verwijderen?')}
+				title={
+					!isCollection
+						? t('Ben je zeker dat je dit fragment wil verwijderen uit deze collectie?')
+						: t('Ben je zeker dat je de collectie wil verwijderen uit deze bundel?')
+				}
 				body={t('Deze actie kan niet ongedaan gemaakt worden')}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setDeleteModalOpen(false)}
 				deleteObjectCallback={() => onDeleteFragment(fragment.id)}
 			/>
 
-			{itemMetaData && (
+			{itemMetaData && !isCollection && (
 				<CutFragmentModal
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}

@@ -36,25 +36,23 @@ import {
 	getAvatarProps,
 	navigate,
 } from '../../shared/helpers';
+import { useTableSort } from '../../shared/hooks';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
-import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
-import { ContentTypeNumber } from '../collection.types';
-import './CollectionOrBundleOverview.scss';
+import { CollectionOverviewTableColumns } from '../collection.types';
+import './CollectionOverview.scss';
 
-interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
-	numberOfItems: number;
-	type: 'collection' | 'bundle';
+interface CollectionOverviewProps extends DefaultSecureRouteProps {
+	numberOfCollections: number;
 }
 
-const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewProps> = ({
-	numberOfItems,
-	type,
+const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	history,
+	numberOfCollections,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -63,9 +61,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
 	const [idToDelete, setIdToDelete] = useState<string | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
+
+	const [sortColumn, sortOrder, onClickColumn] = useTableSort<CollectionOverviewTableColumns>(
+		'updated_at'
+	);
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -77,8 +77,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		setIsDeleteModalOpen(true);
 	};
 
-	const isCollection = type === 'collection';
-
 	const onDeleteCollection = async (refetchCollections: () => void) => {
 		try {
 			await triggerCollectionDelete({
@@ -88,15 +86,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			toastService.success(isCollection ? t('Collectie is verwijderd') : t('Bundel is verwijderd'));
+			toastService.success('Collectie is verwijderd');
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
-				isCollection
-					? t('Collectie kon niet verwijderd worden')
-					: t('Bundel kon niet verwijderd worden')
-			);
+			toastService.danger('Collectie kon niet verwijderd worden');
 		}
 
 		setIdToDelete(null);
@@ -104,24 +98,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const onClickCreate = () => history.push(SEARCH_PATH.SEARCH);
 
-	// TODO: Make shared function because also used in assignments
-	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {
-		if (sortColumn === columnId) {
-			// Change column sort order
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-		} else {
-			// Initial column sort order
-			setSortColumn(columnId);
-			setSortOrder('asc');
-		}
-	};
-
 	// Render functions
 	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
 		<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
 			<Thumbnail
 				alt="thumbnail"
-				category={type}
+				category="collection"
 				className="m-collection-overview-thumbnail"
 				src={thumbnail_path || undefined}
 			/>
@@ -131,18 +113,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link
-					to={buildLink(
-						isCollection ? COLLECTION_PATH.COLLECTION_DETAIL : BUNDLE_PATH.BUNDLE_DETAIL,
-						{ id }
-					)}
-					title={title}
-				>
+				<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
 					{title}
 				</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
-				<MetaData category={type}>
+				<MetaData category="collection">
 					<MetaDataItem>
 						<span title={`Aangemaakt: ${formatDate(created_at)}`}>{fromNow(created_at)}</span>
 					</MetaDataItem>
@@ -156,15 +132,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderActions = (collectionId: string) => {
 		const ROW_DROPDOWN_ITEMS = [
 			createDropdownMenuItem('edit', t('collection/views/collection-overview___bewerk'), 'edit2'),
-			...(isCollection
-				? [
-						createDropdownMenuItem(
-							'createAssignment',
-							t('collection/views/collection-overview___maak-opdracht'),
-							'clipboard'
-						),
-				  ]
-				: []),
+			createDropdownMenuItem(
+				'createAssignment',
+				t('collection/views/collection-overview___maak-opdracht'),
+				'clipboard'
+			),
 			createDropdownMenuItem('delete', t('collection/views/collection-overview___verwijderen')),
 		];
 
@@ -172,11 +144,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		const onClickDropdownItem = (item: ReactText) => {
 			switch (item) {
 				case 'edit':
-					navigate(
-						history,
-						isCollection ? COLLECTION_PATH.COLLECTION_EDIT : BUNDLE_PATH.BUNDLE_EDIT,
-						{ id: collectionId }
-					);
+					navigate(history, COLLECTION_PATH.COLLECTION_EDIT, { id: collectionId });
 					break;
 				case 'createAssignment':
 					history.push(generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'));
@@ -208,20 +176,17 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 				<Button
 					icon="chevron-right"
-					onClick={() =>
-						navigate(
-							history,
-							isCollection ? COLLECTION_PATH.COLLECTION_DETAIL : BUNDLE_PATH.BUNDLE_DETAIL,
-							{ id: collectionId }
-						)
-					}
+					onClick={() => navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, { id: collectionId })}
 					type="borderless"
 				/>
 			</ButtonToolbar>
 		);
 	};
 
-	const renderCell = (collection: Avo.Collection.Collection, colKey: string) => {
+	const renderCell = (
+		collection: Avo.Collection.Collection,
+		colKey: CollectionOverviewTableColumns
+	) => {
 		const { id, profile } = collection;
 
 		switch (colKey) {
@@ -244,9 +209,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
 			case 'actions':
 				return renderActions(id);
-			case 'created_at':
 			case 'updated_at':
-				const cellData = collection[colKey as 'created_at' | 'updated_at'];
+				const cellData = collection[colKey];
 
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
 			default:
@@ -271,29 +235,23 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						col: '3',
 						sortable: true,
 					},
-					...(isCollection
-						? [
-								{
-									id: 'inFolder',
-									label: t('collection/views/collection-overview___in-map'),
-									col: '2' as any,
-								},
-						  ]
-						: []),
+					{ id: 'inFolder', label: t('collection/views/collection-overview___in-map'), col: '2' },
 					{ id: 'access', label: t('collection/views/collection-overview___toegang'), col: '2' },
 					{ id: 'actions', label: '', col: '1' },
 				]}
 				data={collections}
 				emptyStateMessage={t('collection/views/collection-overview___geen-resultaten-gevonden')}
-				renderCell={renderCell}
+				renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
+					renderCell(rowData, colKey as CollectionOverviewTableColumns)
+				}
 				rowKey="id"
 				variant="styled"
-				onColumnClick={onClickColumn as any}
+				onColumnClick={columnId => onClickColumn(columnId as CollectionOverviewTableColumns)}
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
 			/>
 			<Pagination
-				pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
+				pageCount={Math.ceil(numberOfCollections / ITEMS_PER_PAGE)}
 				currentPage={page}
 				onPageChange={setPage}
 			/>
@@ -303,38 +261,21 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderEmptyFallback = () => (
 		<ErrorView
 			icon="collection"
-			message={
-				isCollection
-					? t('collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt')
-					: t('Je hebt nog geen bundels aangemaakt')
-			}
+			message={t('collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt')}
 		>
 			<p>
-				{isCollection ? (
-					<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
-						Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
-						voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met
-						andere gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met
-						jou delen die je dan hier terugvindt.
-					</Trans>
-				) : (
-					<Trans>
-						Een bundel is een verzameling van collecties rond een bepaald thema of voor een bepaalde
-						les. Nadat je een bundel hebt aangemaakt kan je deze delen met andere gebruikers om
-						samen aan te werken. Andere gebruikers kunnen ook bundels met jou delen die je dan hier
-						terugvindt.
-					</Trans>
-				)}
+				<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
+					Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
+					voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met andere
+					gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met jou delen
+					die je dan hier terugvindt.
+				</Trans>
 			</p>
 			<Spacer margin="top">
 				<Button
 					type="primary"
 					icon="search"
-					label={
-						isCollection
-							? t('collection/views/collection-overview___maak-je-eerste-collectie')
-							: t('Zoek een collectie en maak je eerste bundel')
-					}
+					label={t('collection/views/collection-overview___maak-je-eerste-collectie')}
 					onClick={onClickCreate}
 				/>
 			</Spacer>
@@ -348,11 +289,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		<>
 			{collections.length ? renderTable(collections) : renderEmptyFallback()}
 			<DeleteObjectModal
-				title={
-					isCollection
-						? t('collection/views/collection-overview___verwijder-collectie')
-						: t('Verwijder bundel')
-				}
+				title={t('collection/views/collection-overview___verwijder-collectie')}
 				body={t(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
 				)}
@@ -371,18 +308,16 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				offset: page * ITEMS_PER_PAGE,
 				limit: ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
-				type_id: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
+				type_id: 3,
 			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
-			notFoundMessage={
-				isCollection
-					? t('collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden')
-					: t('Er konden geen bundels worden gevonden')
-			}
+			notFoundMessage={t(
+				'collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden'
+			)}
 			actionButtons={['home']}
 		/>
 	);
 };
 
-export default CollectionOrBundleOverview;
+export default CollectionOverview;

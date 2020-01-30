@@ -1,9 +1,8 @@
-import { ExecutionResult } from '@apollo/react-common';
+import { ExecutionResult, MutationFunction } from '@apollo/react-common';
 import { cloneDeep, compact, get, isNil, omit, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { TFunction } from 'i18next';
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { LoadingInfo } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
@@ -11,14 +10,17 @@ import { CustomError } from '../shared/helpers';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
+import i18n from '../shared/translations/i18n';
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
+	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_ITEMS_BY_IDS,
 } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
+import { ContentTypeNumber } from './collection.types';
 
 // TODO: Translations in errors.
 export class CollectionService {
@@ -76,13 +78,12 @@ export class CollectionService {
 	}
 
 	public static async updateCollection(
-		initialCollection: Avo.Collection.Collection | undefined,
+		initialCollection: Avo.Collection.Collection | null,
 		updatedCollection: Avo.Collection.Collection,
-		triggerCollectionUpdate: any,
-		triggerCollectionFragmentInsert: any,
-		triggerCollectionFragmentDelete: any,
-		triggerCollectionFragmentUpdate: any,
-		refetchCollection: () => void
+		triggerCollectionUpdate: MutationFunction<any>,
+		triggerCollectionFragmentInsert: MutationFunction<any>,
+		triggerCollectionFragmentDelete: MutationFunction<any>,
+		triggerCollectionFragmentUpdate: MutationFunction<any>
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
@@ -200,13 +201,14 @@ export class CollectionService {
 				];
 				newCollection = {
 					...newCollection,
-					collection_fragment_ids: newFragments.map(fragment => fragment.id),
 					collection_fragments: newFragments,
 				};
 			});
 
-			// Determine new thumbnail path since videos could have changed order / been deleted
-			newCollection.thumbnail_path = await this.getThumbnailPathForCollection(newCollection);
+			if (newCollection.type_id === ContentTypeNumber.collection) {
+				// Determine new thumbnail path since videos could have changed order / been deleted
+				newCollection.thumbnail_path = await this.getThumbnailPathForCollection(newCollection);
+			}
 
 			// Trigger collection update
 			const cleanedCollection: Partial<Avo.Collection.Collection> = this.cleanCollectionBeforeSave(
@@ -221,8 +223,6 @@ export class CollectionService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			// refetch collection:
-			refetchCollection();
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
 			console.error('Failed to update collection or its fragments', err, {
@@ -232,7 +232,6 @@ export class CollectionService {
 				triggerCollectionFragmentInsert,
 				triggerCollectionFragmentDelete,
 				triggerCollectionFragmentUpdate,
-				refetchCollection,
 			});
 			return null;
 		}
@@ -252,12 +251,14 @@ export class CollectionService {
 	 * copy 4: test
 	 *
 	 * Then the algorithm will propose: copy 3: test
-	 * @param prefix
+	 * @param copyPrefix
+	 * @param copyRegex
 	 * @param existingTitle
 	 * @param user
 	 */
 	public static getCopyTitleForCollection = async (
-		prefix: string,
+		copyPrefix: string,
+		copyRegex: RegExp,
 		existingTitle: string,
 		user: Avo.User.User
 	): Promise<string> => {
@@ -266,9 +267,10 @@ export class CollectionService {
 
 		let index = 0;
 		let candidateTitle: string;
+		const titleWithoutCopy = existingTitle.replace(copyRegex, '');
 		do {
 			index += 1;
-			candidateTitle = prefix.replace('%index%', String(index)) + existingTitle;
+			candidateTitle = copyPrefix.replace('%index%', String(index)) + titleWithoutCopy;
 		} while (titles.includes(candidateTitle));
 
 		return candidateTitle;
@@ -277,27 +279,30 @@ export class CollectionService {
 	public static async duplicateCollection(
 		collection: Avo.Collection.Collection,
 		user: Avo.User.User,
-		prefix: string,
+		copyPrefix: string,
+		copyRegex: RegExp,
 		triggerCollectionInsert: any,
 		triggerCollectionFragmentsInsert: any
 	): Promise<Avo.Collection.Collection> {
-		collection.owner_profile_id = getProfileId(user);
-		collection.is_public = false;
-		delete collection.id;
+		const collectionToInsert = { ...collection };
+		collectionToInsert.owner_profile_id = getProfileId(user);
+		collectionToInsert.is_public = false;
+		delete collectionToInsert.id;
 		try {
-			collection.title = await CollectionService.getCopyTitleForCollection(
-				prefix,
-				collection.title,
+			collectionToInsert.title = await CollectionService.getCopyTitleForCollection(
+				copyPrefix,
+				copyRegex,
+				collectionToInsert.title,
 				user
 			);
 		} catch (err) {
-			console.error('Failed to get good copy title for collection', err, { collection });
+			console.error('Failed to get good copy title for collection', err, { collectionToInsert });
 			// Fallback to simple copy title
-			collection.title = `${prefix.replace(' %index%', '')}${collection.title}`;
+			collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${collectionToInsert.title}`;
 		}
 
 		return await CollectionService.insertCollection(
-			collection,
+			collectionToInsert,
 			triggerCollectionInsert,
 			triggerCollectionFragmentsInsert
 		);
@@ -357,9 +362,7 @@ export class CollectionService {
 
 	public static async getCollectionWithItems(
 		collectionId: string,
-		type: 'collection' | 'bundle',
-		setLoadingInfo: (info: LoadingInfo) => void,
-		t: TFunction
+		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
 		const response = await dataService.query({
 			query: GET_COLLECTION_BY_ID,
@@ -367,19 +370,14 @@ export class CollectionService {
 		});
 
 		if (response.errors) {
-			console.error(
-				new CustomError(`Failed to  get ${type} from database`, null, {
+			throw new CustomError(
+				`Failed to  get ${type} from database because of graphql errors`,
+				null,
+				{
 					collectionId,
 					errors: response.errors,
-				})
+				}
 			);
-			setLoadingInfo({
-				state: 'error',
-				message: t('Het ophalen van de {{collectionOrBundle}} is mislukt', {
-					collectionOrBundle: type === 'collection' ? t('collectie') : t('bundel'),
-				}),
-				icon: 'alert-triangle',
-			});
 		}
 
 		const collectionObj: Avo.Collection.Collection | null = get(
@@ -388,68 +386,90 @@ export class CollectionService {
 		);
 
 		if (!collectionObj) {
-			console.error(`query for ${type} returned empty result`, null, {
+			throw new CustomError(`query for ${type} returned empty result`, null, {
 				collectionId,
 				response,
 			});
-			setLoadingInfo({
-				state: 'error',
-				message: t('Deze {{collectionOrBundle}} werd niet gevonden', {
-					collectionOrBundle: type === 'collection' ? t('collectie') : t('bundel'),
-				}),
-				icon: 'search',
+		}
+		// Collection/bundle loaded successfully
+		if (collectionObj.type_id !== ContentTypeNumber[type]) {
+			return undefined;
+		}
+
+		// Get items/collections for each collection_fragment that has an external_id set
+		const ids: string[] = compact(
+			(collectionObj.collection_fragments || []).map((collectionFragment, index) => {
+				// Reset the positions to be a nice list of integers in order
+				// The database ensures that they are sorted by their previous position
+				collectionFragment.position = index;
+
+				// Return the external id if it is set
+				// TODO replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
+				if (collectionFragment.external_id !== '-1') {
+					return collectionFragment.external_id;
+				}
+				return null;
+			})
+		);
+		try {
+			const response = await dataService.query({
+				query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
+				variables: { ids },
 			});
-		} else {
-			// Collection/bundle loaded successfully
-			// Get items/collections for each collection_fragment that has an external_id set
-			const ids: string[] = compact(
-				(collectionObj.collection_fragments || []).map(
-					(collectionFragment: Avo.Collection.Fragment) => {
-						if (collectionFragment.external_id !== '-1') {
-							return collectionFragment.external_id;
-						}
-						return null;
-					}
-				)
-			);
-			try {
-				const response = await dataService.query({
-					query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
-					variables: { ids },
-				});
-				// Add infos to each fragment under the item_meta property
-				const itemInfos: any[] = get(response, 'data.items', []);
-				itemInfos.forEach((itemInfo: any) => {
-					const collectionFragment:
-						| Avo.Collection.Fragment
-						| undefined = collectionObj.collection_fragments.find(
-						fragment =>
-							fragment.external_id ===
-							String(type === 'collection' ? itemInfo.external_id : itemInfo.avo1_id)
-					);
-					if (collectionFragment) {
-						collectionFragment.item_meta = itemInfo;
-					}
-				});
-				return collectionObj;
-			} catch (err) {
-				throw new CustomError('Failed to get fragments inside the collection', err, { ids });
-			}
+			// Add infos to each fragment under the item_meta property
+			const itemInfos: any[] = get(response, 'data.items', []);
+			itemInfos.forEach((itemInfo: any) => {
+				const collectionFragment:
+					| Avo.Collection.Fragment
+					| undefined = collectionObj.collection_fragments.find(
+					fragment =>
+						fragment.external_id === (type === 'collection' ? itemInfo.external_id : itemInfo.id)
+				);
+				if (collectionFragment) {
+					collectionFragment.item_meta = itemInfo;
+				}
+			});
+			return collectionObj;
+		} catch (err) {
+			throw new CustomError('Failed to get fragments inside the collection', err, { ids });
 		}
 	}
 
+	public static async getPublishedBundlesContainingCollection(
+		id: string
+	): Promise<Avo.Collection.Collection[]> {
+		const response = await dataService.query({
+			query: GET_BUNDLES_CONTAINING_COLLECTION,
+			variables: { id },
+		});
+
+		if (response.errors) {
+			throw new CustomError(
+				`Failed to  get bundles from database because of graphql errors`,
+				null,
+				{
+					collectionId: id,
+					errors: response.errors,
+				}
+			);
+		}
+
+		return get(response, 'data.app_collections', []);
+	}
+
 	private static getFragmentIdsFromCollection(
-		collection: Partial<Avo.Collection.Collection> | undefined
+		collection: Partial<Avo.Collection.Collection> | null
 	): number[] {
 		return this.getFragments(collection).map((fragment: Avo.Collection.Fragment) => fragment.id);
 	}
 
 	private static async insertFragments(
-		collectionId: number,
+		collectionId: string,
 		fragments: Avo.Collection.Fragment[],
 		triggerCollectionFragmentsInsert: any
 	): Promise<Avo.Collection.Fragment[]> {
-		fragments.forEach(fragment => (fragment.collection_id = collectionId));
+		fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
+		fragments.forEach(fragment => ((fragment as any).collection_id = '')); // TODO remove once database allows it
 		const cleanedFragments = cloneDeep(fragments).map(fragment => {
 			delete fragment.id;
 			delete (fragment as any).__typename;
@@ -478,7 +498,7 @@ export class CollectionService {
 		triggerCollectionFragmentInsert: any
 	) {
 		if (!collection) {
-			toastService.danger('De collectie was niet ingesteld');
+			toastService.danger(i18n.t('De collectie was niet ingesteld'));
 			return;
 		}
 
@@ -487,7 +507,9 @@ export class CollectionService {
 		);
 
 		if (!tempFragment) {
-			toastService.info(`Fragment om toe te voegen is niet gevonden (id: ${tempId})`);
+			toastService.info(
+				i18n.t(`Fragment om toe te voegen is niet gevonden (id: {{id}})`, { id: tempId })
+			);
 			return;
 		}
 
@@ -530,8 +552,8 @@ export class CollectionService {
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
 			toastService.danger([
-				'Het ophalen van de eerste video thumbnail is mislukt.',
-				'De collectie zal opgeslagen worden zonder thumbnail.',
+				i18n.t('Het ophalen van de eerste video thumbnail is mislukt.'),
+				i18n.t('De collectie zal opgeslagen worden zonder thumbnail.'),
 			]);
 			return null;
 		}

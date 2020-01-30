@@ -111,14 +111,15 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		return {
 			use_custom_fields: false,
 			start_oc: null,
-			position: (collection.collection_fragments || []).length,
+			position: (bundle.collection_fragments || []).length,
 			external_id: collectionId,
 			end_oc: null,
 			custom_title: null,
 			custom_description: null,
-			collection_id: bundle.id,
+			collection_uuid: String(bundle.id), // TODO Remove conversion once update to typings 2.8
+			collection_id: String((bundle as any).avo1_id),
 			item_meta: collection as any, // TODO remove once typings has item_meta?: ItemSchema | CollectionSchema;
-		};
+		} as any; // TODO Remove conversion once update to typings 2.8
 	};
 
 	const addCollectionToExistingBundle = async (bundle: Partial<Avo.Collection.Collection>) => {
