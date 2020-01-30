@@ -21,7 +21,6 @@ import {
 	MenuEditFormState,
 	MenuEditPageType,
 	MenuEditParams,
-	MenuSchema,
 } from '../menu.types';
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
@@ -34,8 +33,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Hooks
 	const [menuForm, setMenuForm] = useState<MenuEditFormState>(INITIAL_MENU_FORM(menuParentId));
-	const [initialMenuItem, setInitialMenuItem] = useState<MenuSchema | null>(null);
-	const [menuItems, setMenuItems] = useState<MenuSchema[]>([]);
+	const [initialMenuItem, setInitialMenuItem] = useState<Avo.Menu.Menu | null>(null);
+	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
 	const [formErrors, setFormErrors] = useState<MenuEditFormErrorState>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -65,7 +64,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			setIsLoading(true);
 			// Fetch menu item by id so we can populate our form for editing
 			fetchMenuItemById(Number(menuItemId))
-				.then((menuItem: MenuSchema | null) => {
+				.then((menuItem: Avo.Menu.Menu | null) => {
 					if (menuItem) {
 						// Remove unnecessary props for saving
 						delete (menuItem as any).__typename;
@@ -76,7 +75,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							icon: menuItem.icon_name as IconName,
 							label: menuItem.label,
 							content_type: menuItem.content_type || 'COLLECTION',
-							content_path: menuItem.content_path || '',
+							content_path: (menuItem.content_path || '').toString(),
 							link_target: menuItem.link_target || '_self',
 							user_group_ids: (menuItem.user_group_ids || []) as number[],
 							placement: menuItem.placement,
@@ -95,7 +94,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		? `${menuName}: item ${PAGE_TYPES_LANG[pageType]}`
 		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
 	const menuParentOptions = menuItems.reduce(
-		(acc: SelectOption<string>[], { placement }: MenuSchema) => {
+		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {
 			// Don't add duplicates to the options
 			if (acc.find(opt => opt.value === placement)) {
 				return acc;
@@ -126,7 +125,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		const menuItem: Partial<MenuSchema> = {
+		const menuItem: Partial<Avo.Menu.Menu> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			content_path: menuForm.content_path,

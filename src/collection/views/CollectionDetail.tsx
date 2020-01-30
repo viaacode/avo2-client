@@ -36,10 +36,8 @@ import {
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
-import { ErrorView } from '../../error/views';
 import {
 	ControlledDropdown,
-	DataQueryComponent,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
@@ -48,6 +46,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
+	CustomError,
 	formatDate,
 	generateAssignmentCreateLink,
 	generateContentLinkString,
@@ -57,14 +56,12 @@ import {
 import { isUuid } from '../../shared/helpers/uuid';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { COLLECTION_PATH } from '../collection.const';
 import {
 	DELETE_COLLECTION,
-	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_ID_BY_AVO1_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
@@ -77,6 +74,7 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
+export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -150,6 +148,20 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	useEffect(() => {
 		const checkPermissionsAndGetCollection = async () => {
 			try {
+				const uuid = await getCollectionIdByAvo1Id(collectionId);
+				if (!uuid) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('De collectie kon niet worden gevonden'),
+						icon: 'alert-triangle',
+					});
+					return;
+				}
+				if (collectionId !== uuid) {
+					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
+					// and continue loading the collection
+					redirectToClientPage(buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }), history);
+				}
 				const rawPermissions = await Promise.all([
 					PermissionService.hasPermissions(
 						[
@@ -182,34 +194,25 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					canCreateCollections: rawPermissions[3],
 					canViewItems: rawPermissions[4],
 				};
-				const uuid = await getCollectionIdByAvo1Id(collectionId);
-				if (!uuid) {
+				const collectionObj = await CollectionService.getCollectionWithItems(uuid, 'collection');
+
+				if (!collectionObj) {
 					setLoadingInfo({
 						state: 'error',
 						message: t('De collectie kon niet worden gevonden'),
-						icon: 'alert-triangle',
+						icon: 'search',
 					});
-					return;
 				}
-				if (collectionId !== uuid) {
-					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
-					// and continue loading the collection
-					redirectToClientPage(buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }), history);
-				}
-				const collectionObj = await CollectionService.getCollectionWithItems(
-					uuid,
-					'collection',
-					setLoadingInfo,
-					t
-				);
 
 				setCollectionId(uuid);
 				setPermissions(permissionObj);
 				setCollection(collectionObj || null);
 			} catch (err) {
-				console.error('Failed to check permissions or get collection from the database', err, {
-					collectionId,
-				});
+				console.error(
+					new CustomError('Failed to check permissions or get collection from the database', err, {
+						collectionId,
+					})
+				);
 				setLoadingInfo({
 					state: 'error',
 					message: t('Er ging iets mis tijdens het ophalen van de collectie'),
@@ -219,22 +222,23 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		};
 
 		checkPermissionsAndGetCollection();
-	}, [collectionId, t, user]);
+	}, [collectionId, t, user, history]);
 
-	useEffect(() => {
-		if (!relatedCollections) {
-			getRelatedItems(collectionId, 'collections', 4)
-				.then(relatedItems => setRelatedCollections(relatedItems))
-				.catch(err => {
-					console.error('Failed to get related items', err, {
-						collectionId,
-						index: 'collections',
-						limit: 4,
-					});
-					toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
-				});
-		}
-	}, [relatedCollections, t]);
+	// Waiting for ES index for bundles
+	// useEffect(() => {
+	// 	if (!relatedCollections) {
+	// 		getRelatedItems(collectionId, 'collections', 4)
+	// 			.then(relatedItems => setRelatedCollections(relatedItems))
+	// 			.catch(err => {
+	// 				console.error('Failed to get related items', err, {
+	// 					collectionId,
+	// 					index: 'collections',
+	// 					limit: 4,
+	// 				});
+	// 				toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
+	// 			});
+	// 	}
+	// }, [relatedCollections, t, collectionId]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {
@@ -292,6 +296,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						collection,
 						user,
 						COLLECTION_COPY,
+						COLLECTION_COPY_REGEX,
 						triggerCollectionInsert,
 						triggerCollectionFragmentsInsert
 					);
@@ -299,7 +304,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						buildLink(APP_PATH.COLLECTION_DETAIL, { id: duplicateCollection.id }),
 						history
 					);
-					setIsOptionsMenuOpen(false);
+					setCollection(duplicateCollection);
 					toastService.success(t('De collectie is gekopieerd, u kijkt nu naar de kopie.'));
 				} catch (err) {
 					console.error('Failed to copy collection', err, { originalCollection: collection });
@@ -352,7 +357,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</MediaCardThumbnail>
 							<MediaCardMetaData>
 								<MetaData category={category}>
-									<MetaDataItem label={original_cp} />
+									<MetaDataItem label={original_cp || undefined} />
 								</MetaData>
 							</MediaCardMetaData>
 						</MediaCard>
@@ -577,31 +582,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					deleteObjectCallback={() => onDeleteCollection()}
 				/>
 			</>
-		);
-	};
-
-	const getCollectionAndRender = () => {
-		if (!permissions.canViewCollections) {
-			return (
-				<ErrorView
-					message={t(
-						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
-					)}
-					icon="lock"
-				/>
-			);
-		}
-		return (
-			<DataQueryComponent
-				query={GET_COLLECTION_BY_ID}
-				variables={{ id: collectionId }}
-				resultPath="app_collections[0]"
-				renderData={renderCollection}
-				notFoundMessage={t(
-					'collection/views/collection-detail___deze-collectie-werd-niet-gevonden'
-				)}
-				actionButtons={['home']}
-			/>
 		);
 	};
 

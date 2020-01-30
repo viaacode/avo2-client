@@ -98,9 +98,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						owner_profile_ids: [getProfileId(user)],
 						assignment_id: tempAssignment.id,
 						collection: null,
-						collection_id: null,
+						collection_uuid: null,
+						collection_id: '', // TODO make this null or remove once database allows it
 						submitted_at: null,
-					};
+					} as any; // TODO Remove cast once update to typings 2.8
 
 					try {
 						const reply = await triggerInsertAssignmentResponse({
@@ -254,7 +255,6 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			user,
 			retrieveAssignmentAndContent,
 			setLoadingInfo,
-			t,
 			t('assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken')
 		);
 	}, [

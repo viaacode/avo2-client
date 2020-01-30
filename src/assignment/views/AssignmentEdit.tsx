@@ -78,7 +78,8 @@ import {
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
 
-const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
+const ASSIGNMENT_COPY_PREFIX = 'Opdracht kopie %index%: ';
+const ASSIGNMENT_COPY_REGEX = /^Opdracht kopie [0-9]+: /gi;
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: ROUTE_PARTS.item,
@@ -323,7 +324,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			user,
 			initAssignmentData,
 			setLoadingInfo,
-			t,
 			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
 		);
 	}, [loadingInfo, location, match.params, setLoadingInfo, assignmentContent, t, user]);
@@ -407,7 +407,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		return await CollectionService.duplicateCollection(
 			assignmentContent as Avo.Collection.Collection,
 			user,
-			ASSIGNMENT_COPY,
+			ASSIGNMENT_COPY_PREFIX,
+			ASSIGNMENT_COPY_REGEX,
 			triggerCollectionInsert,
 			triggerCollectionFragmentsInsert
 		);
@@ -502,7 +503,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					const copy = await CollectionService.duplicateCollection(
 						sourceCollection,
 						user,
-						ASSIGNMENT_COPY,
+						ASSIGNMENT_COPY_PREFIX,
+						ASSIGNMENT_COPY_REGEX,
 						triggerCollectionInsert,
 						triggerCollectionFragmentsInsert
 					);
@@ -617,8 +619,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	};
 
 	const renderContentLink = (content: Avo.Assignment.Content) => {
-		const dutchLabel = (content.type.label ||
-			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
+		const dutchLabel = get(
+			content,
+			'type.label',
+			(currentAssignment.content_label || '').toLowerCase()
+		) as DutchContentType;
 		const linkContent = (
 			<div className="c-box c-box--padding-small">
 				<Flex orientation="vertical" center>

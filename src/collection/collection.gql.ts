@@ -13,9 +13,8 @@ export const GET_COLLECTION_BY_ID = gql`
 	query getCollectionById($id: uuid!) {
 		app_collections(where: { id: { _eq: $id } }) {
 			id
-			collection_fragment_ids
 			description
-			collection_fragments {
+			collection_fragments(order_by: { position: asc }) {
 				use_custom_fields
 				updated_at
 				start_oc
@@ -26,6 +25,7 @@ export const GET_COLLECTION_BY_ID = gql`
 				custom_title
 				custom_description
 				created_at
+				collection_uuid
 				collection_id
 			}
 			updated_at
@@ -116,7 +116,7 @@ export const GET_ITEMS_BY_IDS = gql`
 `;
 
 export const UPDATE_COLLECTION = gql`
-	mutation updateCollectionById($id: Int!, $collection: app_collections_set_input!) {
+	mutation updateCollectionById($id: uuid!, $collection: app_collections_set_input!) {
 		update_app_collections(where: { id: { _eq: $id } }, _set: $collection) {
 			affected_rows
 		}
@@ -130,7 +130,7 @@ export const INSERT_COLLECTION = gql`
 			returning {
 				id
 				title
-				collection_fragments {
+				collection_fragments(order_by: { position: asc }) {
 					id
 				}
 			}
@@ -139,15 +139,16 @@ export const INSERT_COLLECTION = gql`
 `;
 
 export const DELETE_COLLECTION = gql`
-	mutation deleteCollectionById($id: Int!) {
+	mutation deleteCollectionById($id: uuid!) {
 		delete_app_collections(where: { id: { _eq: $id } }) {
 			affected_rows
+			__typename
 		}
 	}
 `;
 
 export const UPDATE_COLLECTION_FRAGMENT = gql`
-	mutation updateCollectionById($id: Int!, $fragment: app_collection_fragments_set_input!) {
+	mutation updateCollectionFragmentById($id: Int!, $fragment: app_collection_fragments_set_input!) {
 		update_app_collection_fragments(where: { id: { _eq: $id } }, _set: $fragment) {
 			affected_rows
 		}
@@ -196,6 +197,7 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 				custom_title
 				custom_description
 				created_at
+				collection_uuid
 				collection_id
 			}
 		}

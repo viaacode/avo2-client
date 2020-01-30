@@ -39,7 +39,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			{!!result.original_cp && (
 				<SearchResultSubtitle>
 					{generateSearchLink('provider', result.original_cp, 'c-body-2', () =>
-						handleOriginalCpLinkClicked(result.id, result.original_cp)
+						handleOriginalCpLinkClicked(result.id, result.original_cp || '')
 					)}
 				</SearchResultSubtitle>
 			)}
