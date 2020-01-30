@@ -40,22 +40,27 @@ export const getThumbnailsForCollection = async (
 		fragment => isMediaFragment(fragment) && fragment.item_meta
 	);
 	const videoFragments = mediaFragments.filter(
-		fragment => fragment.item_meta && fragment.item_meta.type.label === ContentTypeString.video
+		fragment =>
+			fragment.item_meta &&
+			(fragment.item_meta as Avo.Item.Item).type.label === ContentTypeString.video
 	);
 	const audioFragments = mediaFragments.filter(
-		fragment => fragment.item_meta && fragment.item_meta.type.label === ContentTypeString.audio
+		fragment =>
+			fragment.item_meta &&
+			(fragment.item_meta as Avo.Item.Item).type.label === ContentTypeString.audio
 	);
 	const cutVideoFragments = videoFragments.filter(
 		fragment =>
 			fragment.start_oc !== 0 ||
-			(fragment.item_meta && fragment.end_oc !== toSeconds(fragment.item_meta.duration))
+			(fragment.item_meta &&
+				fragment.end_oc !== toSeconds((fragment.item_meta as Avo.Item.Item).duration))
 	);
 	const uncutVideoFragments = videoFragments.filter(
 		fragment =>
 			(!fragment.start_oc && !fragment.end_oc) ||
 			(fragment.start_oc === 0 &&
 				fragment.item_meta &&
-				fragment.end_oc === toSeconds(fragment.item_meta.duration))
+				fragment.end_oc === toSeconds((fragment.item_meta as Avo.Item.Item).duration))
 	);
 	const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
 		cutVideoFragments.map(fragment => ({

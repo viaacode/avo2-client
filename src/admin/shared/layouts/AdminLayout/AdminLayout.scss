@@ -1,0 +1,6 @@
+$admin-actions-bar-height: 8.4rem;
+
+.l-admin--with-actions {
+	// Prevent overlap with admin actions bar when present
+	padding-bottom: $admin-actions-bar-height;
+}

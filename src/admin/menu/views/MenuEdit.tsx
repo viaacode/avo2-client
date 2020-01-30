@@ -74,9 +74,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							description: menuItem.description || '',
 							icon: menuItem.icon_name as IconName,
 							label: menuItem.label,
-							external_link: menuItem.external_link || '', // TODO add content block link
+							content_type: menuItem.content_type || 'COLLECTION',
+							content_path: (menuItem.content_path || '').toString(),
 							link_target: menuItem.link_target || '_self',
-							group_access: (menuItem.group_access || []) as number[],
+							user_group_ids: (menuItem.user_group_ids || []) as number[],
 							placement: menuItem.placement,
 						});
 					}
@@ -127,9 +128,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		const menuItem: Partial<Avo.Menu.Menu> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
-			external_link: menuForm.external_link,
+			content_path: menuForm.content_path,
+			content_type: menuForm.content_type,
 			link_target: menuForm.link_target,
-			group_access: menuForm.group_access,
+			user_group_ids: menuForm.user_group_ids,
 			placement: menuForm.placement,
 		};
 
@@ -207,8 +209,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			errors.label = t('admin/menu/views/menu-edit___label-is-verplicht');
 		}
 
-		if (!menuForm.external_link) {
-			errors.external_link = t('admin/menu/views/menu-edit___link-is-verplicht');
+		if (!menuForm.content_path) {
+			errors.content_path = t('admin/menu/views/menu-edit___link-is-verplicht');
 		}
 
 		setFormErrors(errors);

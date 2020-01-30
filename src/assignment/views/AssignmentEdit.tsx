@@ -78,7 +78,8 @@ import {
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
 
-const ASSIGNMENT_COPY = 'Opdracht kopie %index%: ';
+const ASSIGNMENT_COPY_PREFIX = 'Opdracht kopie %index%: ';
+const ASSIGNMENT_COPY_REGEX = /^Opdracht kopie [0-9]+: /gi;
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: ROUTE_PARTS.item,
@@ -323,69 +324,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			user,
 			initAssignmentData,
 			setLoadingInfo,
-			t,
 			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
 		);
 	}, [loadingInfo, location, match.params, setLoadingInfo, assignmentContent, t, user]);
-
-	/**
-	 * Find name that isn't a duplicate of an existing name of a collection of this user
-	 * eg if these collections exist:
-	 * copy 1: test
-	 * copy 2: test
-	 * copy 4: test
-	 *
-	 * Then the algorithm will propose: copy 3: test
-	 * @param prefix
-	 */
-	const getCopyTitleForCollection = async (prefix: string): Promise<string> => {
-		const collections = await CollectionService.getCollectionTitlesByUser(user);
-		const titles = collections.map(c => c.title);
-
-		let index = 0;
-		let candidateTitle: string;
-		do {
-			index += 1;
-			candidateTitle = prefix.replace('%index%', String(index));
-		} while (titles.includes(candidateTitle));
-
-		return candidateTitle;
-	};
-
-	/**
-	 * Makes a copy of the collection where the current user is the owner and the collection is set to be non public
-	 * @param collection
-	 */
-	const copyCollectionToCurrentUser = async (
-		collection: Avo.Collection.Collection
-	): Promise<Avo.Collection.Collection | null> => {
-		try {
-			collection.owner_profile_id = getProfileId(user);
-			collection.is_public = false;
-			delete collection.id;
-			try {
-				collection.title = await getCopyTitleForCollection(ASSIGNMENT_COPY);
-			} catch (err) {
-				console.error('Failed to get good copy title for collection', err, { collection });
-				// Fallback to simple copy title
-				collection.title = `${ASSIGNMENT_COPY.replace(' %index%', '')}${collection.title}`;
-			}
-
-			return await CollectionService.insertCollection(
-				collection,
-				triggerCollectionInsert,
-				triggerCollectionFragmentsInsert
-			);
-		} catch (err) {
-			console.error('Failed to insert copy of a collection for current user', err, {
-				collection,
-			});
-			toastService.danger(
-				'De collectie kon niet worden gekopieert om te gebruiken bij de nieuwe opdracht'
-			);
-			return null;
-		}
-	};
 
 	const deleteCurrentAssignment = async () => {
 		try {
@@ -463,29 +404,45 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			return null;
 		}
 
-		return await copyCollectionToCurrentUser(assignmentContent as Avo.Collection.Collection);
+		return await CollectionService.duplicateCollection(
+			assignmentContent as Avo.Collection.Collection,
+			user,
+			ASSIGNMENT_COPY_PREFIX,
+			ASSIGNMENT_COPY_REGEX,
+			triggerCollectionInsert,
+			triggerCollectionFragmentsInsert
+		);
 	};
 
 	const duplicateAssignment = async (title: string) => {
-		// Copy collection if not own collection
-		const collectionCopy = await triggerCollectionCopy(initialAssignment.content_label || '');
+		try {
+			// Copy collection if not own collection
+			const collectionCopy = await triggerCollectionCopy(initialAssignment.content_label || '');
 
-		if (!collectionCopy) {
-			return;
+			if (!collectionCopy) {
+				return;
+			}
+
+			// Duplicate assignment with new content identifier
+			const duplicatedAssigment = await insertDuplicateAssignment(triggerAssignmentInsert, title, {
+				...initialAssignment,
+				content_id: String(collectionCopy.id),
+			});
+
+			if (!duplicatedAssigment) {
+				return;
+			}
+
+			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
+			toastService.success('De opdracht is succesvol gedupliceerd. U kijkt nu naar het duplicaat');
+		} catch (err) {
+			console.error('Failed to copy collection for the current assignment', err, {
+				assignmentContent,
+			});
+			toastService.danger(
+				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
+			);
 		}
-
-		// Duplicate assignment with new content identifier
-		const duplicatedAssigment = await insertDuplicateAssignment(triggerAssignmentInsert, title, {
-			...initialAssignment,
-			content_id: String(collectionCopy.id),
-		});
-
-		if (!duplicatedAssigment) {
-			return;
-		}
-
-		navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
-		toastService.success('De opdracht is succesvol gedupliceerd. U kijkt nu naar het duplicaat');
 	};
 
 	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {
@@ -545,7 +502,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId(user)
 				) {
 					const sourceCollection = assignmentContent as Avo.Collection.Collection;
-					const copy = await copyCollectionToCurrentUser(sourceCollection);
+					const copy = await CollectionService.duplicateCollection(
+						sourceCollection,
+						user,
+						ASSIGNMENT_COPY_PREFIX,
+						ASSIGNMENT_COPY_REGEX,
+						triggerCollectionInsert,
+						triggerCollectionFragmentsInsert
+					);
 					if (!copy) {
 						return; // Creating the copy failed, error has already been shown to the user
 					}
@@ -657,8 +621,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	};
 
 	const renderContentLink = (content: Avo.Assignment.Content) => {
-		const dutchLabel = (content.type.label ||
-			(currentAssignment.content_label || '').toLowerCase()) as DutchContentType;
+		const dutchLabel = get(
+			content,
+			'type.label',
+			(currentAssignment.content_label || '').toLowerCase()
+		) as DutchContentType;
 		const linkContent = (
 			<div className="c-box c-box--padding-small">
 				<Flex orientation="vertical" center>
@@ -998,8 +965,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				</Container>
 
 				<DeleteObjectModal
-					title={`Ben je zeker dat de opdracht "${currentAssignment.title}" wil verwijderen?`}
-					body="Deze actie kan niet ongedaan gemaakt worden"
+					title={t(
+						'assignment/views/assignment-edit___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
+					)}
+					body={t('assignment/views/assignment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden')}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCurrentAssignment}
@@ -1007,13 +976,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				<InputModal
 					title={t('assignment/views/assignment-edit___dupliceer-taak')}
-					inputLabel="Geef de nieuwe taak een naam:"
+					inputLabel={t('assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam')}
 					inputValue={currentAssignment.title}
-					inputPlaceholder="Titel van de nieuwe taak"
+					inputPlaceholder={t('assignment/views/assignment-edit___titel-van-de-nieuwe-taak')}
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
-					emptyMessage="Gelieve een opdracht-titel in te geven."
+					emptyMessage={t(
+						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
+					)}
 				/>
 			</>
 		);
@@ -1024,7 +995,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			dataObject={currentAssignment}
 			render={renderAssignmentEditForm}
 			loadingInfo={loadingInfo}
-			notFoundError="De opdracht is niet gevonden"
+			notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 		/>
 	);
 };

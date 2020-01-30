@@ -1,10 +1,10 @@
 import { OptionsType } from 'react-select';
 
-import { IconName } from '@viaa/avo2-components';
+import { IconName, TableColumn } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
-import { ReactSelectOption, TableColumn } from '../../shared/types';
+import { ReactSelectOption } from '../../shared/types';
 
 import { MenuEditFormState } from './menu.types';
 
@@ -32,9 +32,10 @@ export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => 
 	description: '',
 	icon: '',
 	label: '',
-	external_link: '',
+	content_type: 'COLLECTION',
+	content_path: '',
 	link_target: '_self',
-	group_access: [],
+	user_group_ids: [],
 });
 
 export const PAGE_TYPES_LANG = {

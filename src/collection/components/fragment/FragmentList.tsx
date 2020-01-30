@@ -7,7 +7,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 
 import FragmentDetail from './FragmentDetail';
 
-interface FragmentDetailProps extends DefaultSecureRouteProps {
+interface FragmentListDetailProps extends DefaultSecureRouteProps {
 	collectionFragments: Avo.Collection.Fragment[];
 	showDescription: boolean;
 	linkToItems: boolean;
@@ -20,7 +20,7 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentListDetail: FunctionComponent<FragmentDetailProps> = ({
+const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 	collectionFragments,
 	showDescription,
 	linkToItems,
@@ -46,4 +46,4 @@ const FragmentListDetail: FunctionComponent<FragmentDetailProps> = ({
 	return <ul className="c-collection-list">{renderCollectionFragments()}</ul>;
 };
 
-export default FragmentListDetail;
+export default FragmentList;

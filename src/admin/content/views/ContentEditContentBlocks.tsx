@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
 import {
@@ -16,11 +17,10 @@ import {
 } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers/create-key';
-import { ContentWidth } from '../content.types';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
-	contentWidth: ContentWidth;
+	contentWidth: Avo.Content.ContentWidth;
 	onAdd: (config: ContentBlockConfig) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;

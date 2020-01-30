@@ -6,6 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { Permissions, PermissionService } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
+import i18n from '../../translations/i18n';
 
 export type LoadingState = 'loading' | 'loaded' | 'error';
 
@@ -49,6 +50,7 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 				)
 			}
 			icon={loadingInfo.icon || 'alert-triangle'}
+			actionButtons={['home']}
 		/>
 	);
 
@@ -70,6 +72,7 @@ const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponent
 						)
 					}
 					icon={'search'}
+					actionButtons={['home']}
 				/>
 			);
 
@@ -84,7 +87,6 @@ export async function checkPermissions(
 	user: Avo.User.User,
 	successFunc: () => void,
 	setLoadingInfo: (info: LoadingInfo) => void,
-	t: (key: string) => string,
 	noPermissionsMessage?: string
 ) {
 	try {
@@ -95,7 +97,7 @@ export async function checkPermissions(
 				state: 'error',
 				message:
 					noPermissionsMessage ||
-					t(
+					i18n.t(
 						'shared/components/loading-error-loaded-component/loading-error-loaded-component___je-hebt-geen-rechten-voor-deze-pagina'
 					),
 				icon: 'lock',
@@ -105,7 +107,7 @@ export async function checkPermissions(
 		console.error('Failed to check permissions', err, { permissions, user });
 		setLoadingInfo({
 			state: 'error',
-			message: t(
+			message: i18n.t(
 				'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
 			),
 			icon: 'alert-triangle',

@@ -151,7 +151,10 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				poster={itemMetaData.thumbnail_path}
 				title={itemMetaData.title}
 				onInit={initFlowPlayer}
-				subtitles={[reorderDate(itemMetaData.issued || null, '.'), itemMetaData.organisation.name]}
+				subtitles={[
+					reorderDate(itemMetaData.issued || null, '.'),
+					get(itemMetaData, 'organisation.name', ''),
+				]}
 				token={getEnv('FLOW_PLAYER_TOKEN')}
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
@@ -182,8 +185,8 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 					</Trans>
 				</BlockHeading>
 			)}
-			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
-			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
+			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (18) */}
+			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 18}>
 				<p>{formatTimestamps(convertToHtml(description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>

@@ -17,8 +17,8 @@ import {
 
 export const INITIAL_INTRO_BLOCK_COMPONENT_STATE = (): IntroBlockComponentState => ({
 	title: '',
-	text: '',
-	align: 'left',
+	content: '',
+	align: 'center',
 });
 
 export const INITIAL_INTRO_BLOCK_STATE = (position: number): DefaultContentBlockState =>
@@ -36,8 +36,8 @@ export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
+			content: TEXT_FIELD(),
 			align: ALIGN_FIELD(i18n.t('admin/content-block/helpers/generators/intro___titel-uitlijning')),
-			text: TEXT_FIELD(),
 		},
 	},
 	block: {

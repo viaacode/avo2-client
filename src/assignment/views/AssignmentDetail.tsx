@@ -30,7 +30,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
-import FragmentListDetail from '../../collection/components/fragment/FragmentListDetail';
+import { FragmentList } from '../../collection/components';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
@@ -98,9 +98,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						owner_profile_ids: [getProfileId(user)],
 						assignment_id: tempAssignment.id,
 						collection: null,
-						collection_id: null,
+						collection_uuid: null,
+						collection_id: '', // TODO make this null or remove once database allows it
 						submitted_at: null,
-					};
+					} as any; // TODO Remove cast once update to typings 2.8
 
 					try {
 						const reply = await triggerInsertAssignmentResponse({
@@ -254,10 +255,17 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			user,
 			retrieveAssignmentAndContent,
 			setLoadingInfo,
-			t,
 			t('assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken')
 		);
-	}, [match.params, user, isOwnerOfAssignment, triggerInsertAssignmentResponse, t]);
+	}, [
+		loadingInfo.message,
+		loadingInfo.state,
+		match.params,
+		user,
+		isOwnerOfAssignment,
+		triggerInsertAssignmentResponse,
+		t,
+	]);
 
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {
@@ -336,7 +344,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 		switch (content_label) {
 			case 'COLLECTIE':
 				return (
-					<FragmentListDetail
+					<FragmentList
 						collectionFragments={
 							(assignmentContent as Avo.Collection.Collection).collection_fragments
 						}

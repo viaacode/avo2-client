@@ -1,14 +1,3 @@
-// TODO: remove with typings 2.8.x update in favour of Avo.ContentBlock.ContentBlock
-export type ContentBlockSchema = {
-	id: number;
-	content_id: number;
-	variables: { [key: string]: any } | any[] | null;
-	position: number | null;
-	created_at: string;
-	updated_at: string;
-	content_block_type: string;
-};
-
 export type ContentBlockStateType = 'components' | 'block';
 
 export type ContentBlockStateOptions =
@@ -57,10 +46,10 @@ export interface ContentBlockBlockConfig {
 export type ContentBlockComponentState =
 	| HeadingBlockComponentState
 	| RichTextBlockComponentState
-	| RichTextTwoColumnsBlockComponentState
 	| ButtonsBlockComponentState
 	| IntroBlockComponentState
-	| CTAsBlockComponentState;
+	| CTAsBlockComponentState
+	| IFrameBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -105,30 +94,27 @@ export enum ContentBlockType {
 	Intro = 'INTRO',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
+	IFrame = 'IFRAME',
 }
 
 export interface HeadingBlockComponentState {
 	children: string;
 	type: HeadingLevelOptions;
-	// TODO: align: AlignOptions;
+	align: AlignOptions;
 }
 
 export interface RichTextBlockComponentState {
 	content: string;
 }
 
-export interface RichTextTwoColumnsBlockComponentState {
-	firstColumnContent: string;
-	secondColumnContent: string;
-}
-
 export interface ButtonsBlockComponentState {
 	label: string;
+	// TODO: button actions;
 }
 
 export interface IntroBlockComponentState {
 	title: string;
-	text: string;
+	content: string;
 	align: AlignOptions;
 }
 
@@ -137,4 +123,9 @@ export interface CTAsBlockComponentState {
 	headingType: HeadingLevelOptions;
 	content: string | string[];
 	// TODO: button: Partial<ButtonsBlockComponentState>;
+}
+
+export interface IFrameBlockComponentState {
+	title: string;
+	src: string;
 }

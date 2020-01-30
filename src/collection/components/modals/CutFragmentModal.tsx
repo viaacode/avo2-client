@@ -21,15 +21,15 @@ import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../s
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
 import toastService from '../../../shared/services/toast-service';
+import { KeyCode } from '../../../shared/types';
 
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
-import { FragmentPropertyUpdateInfo } from '../../collection.types';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	itemMetaData: Avo.Item.Item;
 	fragment: Avo.Collection.Fragment;
-	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
+	onFragmentChanged: (fragment: Avo.Collection.Fragment) => void;
 	updateCuePoints: (cuepoints: any) => void;
 	onClose: () => void;
 }
@@ -38,7 +38,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	onClose,
 	isOpen,
 	itemMetaData,
-	updateFragmentProperties,
+	onFragmentChanged,
 	fragment,
 	updateCuePoints,
 }) => {
@@ -53,6 +53,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0
 		),
 	};
+	const itemMeta = fragment.item_meta as Avo.Item.Item;
 
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [fragmentStart, setFragmentStart] = useState<number>(start);
@@ -92,22 +93,15 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			{ externalId: fragment.external_id, startTime: startTime || 0 },
 		]);
 
-		updateFragmentProperties([
-			{ value: startTime, fieldName: 'start_oc' as const, fragmentId: fragment.id },
-			{ value: endTime, fieldName: 'end_oc' as const, fragmentId: fragment.id },
-			...(videoStills && videoStills.length > 0
-				? [
-						{
-							value: {
-								...(fragment.item_meta || {}),
-								thumbnail_path: videoStills[0].thumbnailImagePath,
-							},
-							fieldName: 'item_meta' as const,
-							fragmentId: fragment.id,
-						},
-				  ]
-				: []),
-		]);
+		onFragmentChanged({
+			...fragment,
+			start_oc: startTime,
+			end_oc: endTime,
+			...(videoStills && videoStills.length
+				? { thumbnail_path: videoStills[0].thumbnailImagePath }
+				: {}),
+		});
+
 		updateCuePoints({
 			start: startTime,
 			end: endTime,
@@ -133,11 +127,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		// Limit start end and times between 0 and fragment duration
 		let startTime = toSeconds(fragmentStartString, true) as number;
 		let endTime = toSeconds(fragmentEndString, true) as number;
-		const duration =
-			(fragment.item_meta &&
-				fragment.item_meta.duration &&
-				toSeconds(fragment.item_meta.duration)) ||
-			0;
+		const duration = (itemMeta && itemMeta.duration && toSeconds(itemMeta.duration)) || 0;
 		if (startTime) {
 			startTime = clamp(startTime, 0, duration);
 			setFragmentStart(startTime);
@@ -158,7 +148,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
-		if (evt.keyCode === 13 || evt.which === 13) {
+		if (evt.keyCode === KeyCode.Enter) {
 			parseTimes();
 		}
 	};

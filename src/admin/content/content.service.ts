@@ -8,7 +8,7 @@ import { ApolloCacheManager, dataService } from '../../shared/services/data-serv
 import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
-import { ContentBlockConfig, ContentBlockSchema } from '../content-block/content-block.types';
+import { ContentBlockConfig } from '../content-block/content-block.types';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import { GET_CONTENT, GET_CONTENT_BY_ID, GET_CONTENT_TYPES } from './content.gql';
@@ -17,13 +17,8 @@ import { ContentTypesResponse } from './content.types';
 export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_BY_ID, variables: { id } });
-		const contentItem: Avo.Content.Content | null = get(
-			response,
-			`data.${CONTENT_RESULT_PATH.GET}[0]`,
-			null
-		);
 
-		return contentItem;
+		return get(response, `data.${CONTENT_RESULT_PATH.GET}[0]`, null) as Avo.Content.Content | null;
 	} catch (err) {
 		console.error(`Failed to fetch menu item with id: ${id}`);
 		toastService.danger(
@@ -54,13 +49,8 @@ export const fetchContentItems = async (limit: number): Promise<Avo.Content.Cont
 export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
-		const contentTypes: ContentTypesResponse[] | null = get(
-			response,
-			`data.${CONTENT_TYPES_LOOKUP_PATH}`,
-			null
-		);
 
-		return contentTypes;
+		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, null);
 	} catch (err) {
 		console.error('Failed to fetch content types', err);
 		toastService.danger(
@@ -116,7 +106,7 @@ export const insertContent = async (
 
 export const updateContent = async (
 	contentItem: Partial<Avo.Content.Content>,
-	initialContentBlocks: ContentBlockSchema[],
+	initialContentBlocks: Avo.ContentBlocks.ContentBlocks[],
 	contentBlockConfigs: ContentBlockConfig[],
 	triggerContentUpdate: MutationFunction<Partial<Avo.Content.Content>>
 ): Promise<Partial<Avo.Content.Content> | null> => {

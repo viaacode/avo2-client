@@ -11,9 +11,7 @@ const MENU_RESULT_PATH = 'app_content_nav_elements';
 export const fetchMenuItemById = async (id: number): Promise<Avo.Menu.Menu | null> => {
 	try {
 		const response = await dataService.query({ query: GET_MENU_ITEM_BY_ID, variables: { id } });
-		const menuItem: Avo.Menu.Menu | null = get(response, `data.${MENU_RESULT_PATH}[0]`, null);
-
-		return menuItem;
+		return get(response, `data.${MENU_RESULT_PATH}[0]`, null);
 	} catch (err) {
 		console.error(`Failed to fetch menu item with id: ${id}`);
 		return null;
@@ -27,9 +25,7 @@ export const fetchMenuItems = async (placement?: string): Promise<Avo.Menu.Menu[
 			variables: placement ? { placement } : {},
 		};
 		const response = await dataService.query(queryOptions);
-		const menuItems: Avo.Menu.Menu[] | null = get(response, `data.${MENU_RESULT_PATH}`, null);
-
-		return menuItems;
+		return get(response, `data.${MENU_RESULT_PATH}`, null);
 	} catch (err) {
 		console.error(`Failed to fetch menu items`);
 		return null;

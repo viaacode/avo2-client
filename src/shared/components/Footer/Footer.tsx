@@ -15,8 +15,8 @@ import {
 	NavItemMap,
 } from '../../services/navigation-items-service';
 import { NavigationItemInfo } from '../../types';
-
 import NavigationItem from '../Navigation/NavigationItem';
+
 import './Footer.scss';
 
 export interface FooterProps extends RouteComponentProps {
@@ -31,11 +31,17 @@ export const Footer: FunctionComponent<FooterProps> = ({ history, location, matc
 	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
 
 	useEffect(() => {
-		getNavigationItems().then((navItems: NavItemMap) => {
-			setPrimaryNavItems(navItems['footer-links']);
-			setSecondaryNavItems(navItems['footer-rechts']);
-		});
-	}, [user]);
+		getNavigationItems()
+			.then((navItems: NavItemMap) => {
+				setPrimaryNavItems(navItems['footer-links']);
+				setSecondaryNavItems(navItems['footer-rechts']);
+			})
+			.catch(err => {
+				console.error('Failed to get navigation items', err);
+				// Do not notify the user, since this will happen in the header navigation component already
+				// And we don't want to show 2 error toast messages
+			});
+	}, [history, t, user]);
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
 		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);

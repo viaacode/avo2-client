@@ -39,6 +39,7 @@ import {
 } from '../../authentication/helpers/permission-service';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
+import { useTableSort } from '../../shared/hooks';
 import { dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
@@ -57,7 +58,7 @@ import {
 	insertDuplicateAssignment,
 	updateAssignment,
 } from '../assignment.service';
-import { AssignmentColumn } from '../assignment.types';
+import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -78,10 +79,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	const [markedAssignment, setMarkedAssignment] = useState<null | Partial<
 		Avo.Assignment.Assignment
 	>>(null);
-	const [sortColumn, setSortColumn] = useState<keyof Avo.Assignment.Assignment>('created_at');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean>(false);
+
+	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<
+		AssignmentOverviewTableColumns | 'created_at'
+	>('created_at');
 
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
@@ -118,17 +121,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			{ class_room: { _ilike: `%${filter}%` } },
 			{ assignment_type: { _ilike: `%${filter}%` } },
 		];
-	};
-
-	const handleColumnClick = (columnId: keyof Avo.Assignment.Assignment) => {
-		if (sortColumn === columnId) {
-			// Flip previous ordering
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-		} else {
-			// Set initial ordering for new column
-			setSortColumn(columnId);
-			setSortOrder('asc');
-		}
 	};
 
 	const getAssigmentById = async (assignmentId: number | string) => {
@@ -278,9 +270,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 	const renderCell = (
 		rowData: Avo.Assignment.Assignment,
-		colKey: keyof Avo.Assignment.Assignment | 'actions',
-		rowIndex: number,
-		colIndex: number,
+		colKey: AssignmentOverviewTableColumns,
 		refetchAssignments: () => void
 	) => {
 		const cellData: any = (rowData as any)[colKey];
@@ -411,23 +401,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 							? t('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd')
 							: t('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt')
 					}
-					renderCell={(
-						rowData: Avo.Assignment.Assignment,
-						colKey: string,
-						rowIndex: number,
-						colIndex: number
-					) =>
-						renderCell(
-							rowData,
-							colKey as keyof Avo.Assignment.Assignment | 'actions',
-							rowIndex,
-							colIndex,
-							refetchAssignments
-						)
+					renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
+						renderCell(rowData, colKey as AssignmentOverviewTableColumns, refetchAssignments)
 					}
 					rowKey="id"
 					variant="styled"
-					onColumnClick={handleColumnClick as any}
+					onColumnClick={columnId => handleColumnClick(columnId as AssignmentOverviewTableColumns)}
 					sortColumn={sortColumn}
 					sortOrder={sortOrder}
 				/>
@@ -516,11 +495,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 							archived: activeView === 'archived_assignments',
 							order: { [sortColumn]: sortOrder },
 							offset: page * ITEMS_PER_PAGE,
+							limit: ITEMS_PER_PAGE,
 							filter: getFilterObject(),
 						}}
 						renderData={renderAssignmentsTable}
 						resultPath=""
 						ignoreNotFound
+						actionButtons={['home']}
 					/>
 				)}
 			</Container>

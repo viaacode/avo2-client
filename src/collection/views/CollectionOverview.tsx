@@ -36,12 +36,14 @@ import {
 	getAvatarProps,
 	navigate,
 } from '../../shared/helpers';
+import { useTableSort } from '../../shared/hooks';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
+import { CollectionOverviewTableColumns } from '../collection.types';
 import './CollectionOverview.scss';
 
 interface CollectionOverviewProps extends DefaultSecureRouteProps {
@@ -57,17 +59,19 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 
 	// State
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
-	const [idToDelete, setIdToDelete] = useState<number | null>(null);
+	const [idToDelete, setIdToDelete] = useState<string | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
+
+	const [sortColumn, sortOrder, onClickColumn] = useTableSort<CollectionOverviewTableColumns>(
+		'updated_at'
+	);
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
 
 	// Listeners
-	const onClickDelete = (collectionId: number) => {
+	const onClickDelete = (collectionId: string) => {
 		setDropdownOpen({ [collectionId]: false });
 		setIdToDelete(collectionId);
 		setIsDeleteModalOpen(true);
@@ -93,18 +97,6 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 	};
 
 	const onClickCreate = () => history.push(SEARCH_PATH.SEARCH);
-
-	// TODO: Make shared function because also used in assignments
-	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {
-		if (sortColumn === columnId) {
-			// Change column sort order
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-		} else {
-			// Initial column sort order
-			setSortColumn(columnId);
-			setSortOrder('asc');
-		}
-	};
 
 	// Render functions
 	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
@@ -137,7 +129,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		</div>
 	);
 
-	const renderActions = (collectionId: number) => {
+	const renderActions = (collectionId: string) => {
 		const ROW_DROPDOWN_ITEMS = [
 			createDropdownMenuItem('edit', t('collection/views/collection-overview___bewerk'), 'edit2'),
 			createDropdownMenuItem(
@@ -191,7 +183,10 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 		);
 	};
 
-	const renderCell = (collection: Avo.Collection.Collection, colKey: string) => {
+	const renderCell = (
+		collection: Avo.Collection.Collection,
+		colKey: CollectionOverviewTableColumns
+	) => {
 		const { id, profile } = collection;
 
 		switch (colKey) {
@@ -200,7 +195,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			case 'title':
 				return renderTitle(collection);
 			case 'inFolder':
-				const isInFolder = true; // TODO: Check if collection is in folder
+				const isInFolder = true; // TODO: Check if collection is in bundle
 
 				return isInFolder && <Button icon="folder" type="borderless" />;
 			case 'access':
@@ -214,9 +209,8 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
 			case 'actions':
 				return renderActions(id);
-			case 'created_at':
 			case 'updated_at':
-				const cellData = collection[colKey as 'created_at' | 'updated_at'];
+				const cellData = collection[colKey];
 
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
 			default:
@@ -247,10 +241,12 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 				]}
 				data={collections}
 				emptyStateMessage={t('collection/views/collection-overview___geen-resultaten-gevonden')}
-				renderCell={renderCell}
+				renderCell={(rowData: Avo.Collection.Collection, colKey: string) =>
+					renderCell(rowData, colKey as CollectionOverviewTableColumns)
+				}
 				rowKey="id"
 				variant="styled"
-				onColumnClick={onClickColumn as any}
+				onColumnClick={columnId => onClickColumn(columnId as CollectionOverviewTableColumns)}
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
 			/>
@@ -278,7 +274,7 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			<Spacer margin="top">
 				<Button
 					type="primary"
-					icon="add"
+					icon="search"
 					label={t('collection/views/collection-overview___maak-je-eerste-collectie')}
 					onClick={onClickCreate}
 				/>
@@ -310,13 +306,16 @@ const CollectionOverview: FunctionComponent<CollectionOverviewProps> = ({
 			variables={{
 				owner_profile_id: getProfileId(user),
 				offset: page * ITEMS_PER_PAGE,
+				limit: ITEMS_PER_PAGE,
 				order: { [sortColumn]: sortOrder },
+				type_id: 3,
 			}}
 			resultPath="app_collections"
 			renderData={renderCollections}
 			notFoundMessage={t(
 				'collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden'
 			)}
+			actionButtons={['home']}
 		/>
 	);
 };

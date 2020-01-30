@@ -1,8 +1,9 @@
 import { useMutation } from '@apollo/react-hooks';
-import { isEmpty } from 'lodash-es';
+import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -35,10 +36,9 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { ErrorView } from '../../error/views';
+import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
-	DataQueryComponent,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
@@ -47,41 +47,55 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
+	CustomError,
 	formatDate,
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
 	renderAvatar,
 } from '../../shared/helpers';
-import { ApolloCacheManager } from '../../shared/services/data-service';
+import { isUuid } from '../../shared/helpers/uuid';
+import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { COLLECTION_PATH } from '../collection.const';
-import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
+import {
+	DELETE_COLLECTION,
+	GET_COLLECTION_ID_BY_AVO1_ID,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENTS,
+} from '../collection.gql';
+import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
-import { FragmentListDetail, ShareCollectionModal } from '../components';
+import { FragmentList, ShareCollectionModal } from '../components';
+import AddToBundleModal from '../components/modals/AddToBundleModal';
+
 import './CollectionDetail.scss';
 
+export const COLLECTION_COPY = 'Kopie %index%: ';
+export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
-	match,
 	history,
+	location,
+	match,
 	user,
-	...rest
 }) => {
 	const [t] = useTranslation();
 
 	// State
-	const [collectionId] = useState(match.params.id);
+	const [collectionId, setCollectionId] = useState(match.params.id);
+	const [collection, setCollection] = useState<Avo.Collection.Collection | null>(null);
+	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
@@ -100,6 +114,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
+	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
+
+	const getCollectionIdByAvo1Id = async (id: string) => {
+		if (isUuid(id)) {
+			return id;
+		}
+		const response = await dataService.query({
+			query: GET_COLLECTION_ID_BY_AVO1_ID,
+			variables: {
+				avo1Id: id,
+			},
+		});
+		if (!response) {
+			return null;
+		}
+		return get(response, 'data.app_collections[0].id', null);
+	};
 
 	useEffect(() => {
 		trackEvents(
@@ -113,73 +145,123 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			},
 			user
 		);
+	});
 
-		if (!relatedCollections) {
-			getRelatedItems(collectionId, 'collections', 4)
-				.then(relatedItems => setRelatedCollections(relatedItems))
-				.catch(err => {
-					console.error('Failed to get related items', err, {
-						collectionId,
-						index: 'collections',
-						limit: 4,
+	useEffect(() => {
+		const checkPermissionsAndGetCollection = async () => {
+			try {
+				const uuid = await getCollectionIdByAvo1Id(collectionId);
+				if (!uuid) {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+						),
+						icon: 'alert-triangle',
 					});
-					toastService.danger('Het ophalen van de gerelateerde collecties is mislukt');
-				});
-		}
+					return;
+				}
+				if (collectionId !== uuid) {
+					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
+					// and continue loading the collection
+					redirectToClientPage(buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }), history);
+				}
+				const rawPermissions = await Promise.all([
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionNames.VIEW_COLLECTIONS },
+							{ name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT, obj: collectionId },
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: collectionId },
+							{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: collectionId },
+							{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
+						],
+						user
+					),
+					PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
+					PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+				]);
+				const permissionObj = {
+					canViewCollections: rawPermissions[0],
+					canEditCollections: rawPermissions[1],
+					canDeleteCollections: rawPermissions[2],
+					canCreateCollections: rawPermissions[3],
+					canViewItems: rawPermissions[4],
+				};
+				const collectionObj = await CollectionService.getCollectionWithItems(uuid, 'collection');
 
-		Promise.all([
-			PermissionService.hasPermissions(
-				[
-					{ name: PermissionNames.VIEW_COLLECTIONS },
-					{ name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT, obj: collectionId },
-				],
-				user
-			),
-			PermissionService.hasPermissions(
-				[
-					{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: collectionId },
-					{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
-				],
-				user
-			),
-			PermissionService.hasPermissions(
-				[
-					{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: collectionId },
-					{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
-				],
-				user
-			),
-			PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
-			PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
-		])
-			.then(permissions => {
-				setPermissions({
-					canViewCollections: permissions[0],
-					canEditCollections: permissions[1],
-					canDeleteCollections: permissions[2],
-					canCreateCollections: permissions[3],
-					canViewItems: permissions[4],
-				});
-			})
-			.catch(err => {
-				console.error('Failed to get permissions for collection', err, { collectionId });
+				if (!collectionObj) {
+					setLoadingInfo({
+						state: 'error',
+						message: t(
+							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+						),
+						icon: 'search',
+					});
+					return;
+				}
+
+				// Get published bundles that contain this collection
+				const publishedBundlesList = await CollectionService.getPublishedBundlesContainingCollection(
+					collectionObj.id
+				);
+
+				setCollectionId(uuid);
+				setPermissions(permissionObj);
+				setCollection(collectionObj || null);
+				setPublishedBundles(publishedBundlesList);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to check permissions or get collection from the database', err, {
+						collectionId,
+					})
+				);
 				setLoadingInfo({
 					state: 'error',
 					message: t(
-						'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-controleren-van-je-account-rechten'
+						'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
 					),
 					icon: 'alert-triangle',
 				});
-			});
-	}, [collectionId, relatedCollections, t, user]);
+			}
+		};
+
+		checkPermissionsAndGetCollection();
+	}, [collectionId, t, user, history]);
+
+	// Waiting for ES index for bundles
+	// useEffect(() => {
+	// 	if (!relatedCollections) {
+	// 		getRelatedItems(collectionId, 'collections', 4)
+	// 			.then(relatedItems => setRelatedCollections(relatedItems))
+	// 			.catch(err => {
+	// 				console.error('Failed to get related items', err, {
+	// 					collectionId,
+	// 					index: 'collections',
+	// 					limit: 4,
+	// 				});
+	// 				toastService.danger(t('collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'));
+	// 			});
+	// 	}
+	// }, [relatedCollections, t, collectionId]);
 
 	useEffect(() => {
-		if (!isEmpty(permissions)) {
+		if (!isEmpty(permissions) && collection) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [permissions, setLoadingInfo]);
+	}, [permissions, collection, setLoadingInfo]);
 
 	// Listeners
 	const onEditCollection = () => {
@@ -199,21 +281,70 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService.success('De collectie werd succesvol verwijderd.');
+			toastService.success(
+				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
+			);
 		} catch (err) {
 			console.error(err);
-			toastService.danger('Het verwijderen van de collectie is mislukt.');
+			toastService.danger(
+				t('collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt')
+			);
 		}
 	};
 
-	const onClickDropdownItem = (item: ReactText) => {
+	const onClickDropdownItem = async (item: ReactText) => {
 		switch (item) {
 			case 'createAssignment':
-				history.push(generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'));
+				redirectToClientPage(
+					generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'),
+					history
+				);
 				break;
+
+			case 'duplicate':
+				try {
+					if (!collection) {
+						toastService.danger(
+							t(
+								'collection/views/collection-detail___de-collectie-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
+							)
+						);
+						return;
+					}
+					const duplicateCollection = await CollectionService.duplicateCollection(
+						collection,
+						user,
+						COLLECTION_COPY,
+						COLLECTION_COPY_REGEX,
+						triggerCollectionInsert,
+						triggerCollectionFragmentsInsert
+					);
+					redirectToClientPage(
+						buildLink(APP_PATH.COLLECTION_DETAIL, { id: duplicateCollection.id }),
+						history
+					);
+					setCollection(duplicateCollection);
+					toastService.success(
+						t(
+							'collection/views/collection-detail___de-collectie-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
+						)
+					);
+				} catch (err) {
+					console.error('Failed to copy collection', err, { originalCollection: collection });
+					toastService.danger(
+						t('collection/views/collection-detail___het-kopieren-van-de-collectie-is-mislukt')
+					);
+				}
+				break;
+
+			case 'addToBundle':
+				setIsAddToBundleModalOpen(true);
+				break;
+
 			case 'delete':
 				setIsDeleteModalOpen(true);
 				break;
+
 			default:
 				return null;
 		}
@@ -251,7 +382,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</MediaCardThumbnail>
 							<MediaCardMetaData>
 								<MetaData category={category}>
-									<MetaDataItem label={original_cp} />
+									<MetaDataItem label={original_cp || undefined} />
 								</MetaData>
 							</MediaCardMetaData>
 						</MediaCard>
@@ -264,11 +395,28 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
-			createDropdownMenuItem('createAssignment', 'Maak opdracht', 'clipboard'),
+			createDropdownMenuItem(
+				'createAssignment',
+				t('collection/views/collection-detail___maak-opdracht'),
+				'clipboard'
+			),
+			createDropdownMenuItem(
+				'addToBundle',
+				t('collection/views/collection-detail___voeg-toe-aan-bundel'),
+				'plus'
+			),
 			...(permissions.canCreateCollections
-				? [createDropdownMenuItem('duplicate', 'Dupliceer', 'copy')]
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('collection/views/collection-detail___dupliceer'),
+							'copy'
+						),
+				  ]
 				: []),
-			...(permissions.canDeleteCollections ? [createDropdownMenuItem('delete', 'Verwijder')] : []),
+			...(permissions.canDeleteCollections
+				? [createDropdownMenuItem('delete', t('collection/views/collection-detail___verwijder'))]
+				: []),
 		];
 		return (
 			<ButtonToolbar>
@@ -324,7 +472,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
-	const renderCollection = (collection: Avo.Collection.Collection) => {
+	const renderCollection = () => {
 		const {
 			id,
 			is_public,
@@ -334,7 +482,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			updated_at,
 			title,
 			lom_classification,
-		} = collection;
+		} = collection as Avo.Collection.Collection;
 
 		if (!isFirstRender) {
 			setIsPublic(is_public);
@@ -356,14 +504,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						<FragmentListDetail
+						<FragmentList
 							collectionFragments={collection_fragments}
 							showDescription
 							linkToItems={permissions.canViewItems || false}
 							history={history}
+							location={location}
 							match={match}
 							user={user}
-							{...rest}
 						/>
 					</Container>
 				</Container>
@@ -413,8 +561,18 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 								</p>
 								<p className="c-body-1">
 									<Trans i18nKey="collection/views/collection-detail___deze-collectie-is-deel-van-een-map">
-										Deze collectie is deel van een map:
-									</Trans>
+										Deze collectie is deel van een bundel:
+									</Trans>{' '}
+									{publishedBundles.map((bundle, index) => {
+										return (
+											<>
+												{index !== 0 && !!publishedBundles.length && ', '}
+												<Link to={buildLink(APP_PATH.BUNDLE_DETAIL, { id: bundle.id })}>
+													{bundle.title}
+												</Link>
+											</>
+										);
+									})}
 								</p>
 							</Column>
 							<Column size="3-3">
@@ -441,19 +599,37 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				</Container>
 				{isPublic !== null && (
 					<ShareCollectionModal
-						collection={{ ...collection, is_public: isPublic }}
+						collection={{ ...(collection as Avo.Collection.Collection), is_public: isPublic }}
 						isOpen={isShareModalOpen}
 						onClose={() => setIsShareModalOpen(false)}
 						setIsPublic={setIsPublic}
 						history={history}
+						location={location}
 						match={match}
 						user={user}
-						{...rest}
+					/>
+				)}
+				{collectionId !== undefined && (
+					<AddToBundleModal
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						collection={collection as Avo.Collection.Collection}
+						collectionId={collectionId as string}
+						isOpen={isAddToBundleModalOpen}
+						onClose={() => {
+							setIsAddToBundleModalOpen(false);
+						}}
 					/>
 				)}
 				<DeleteObjectModal
-					title={`Ben je zeker dat de collectie "${title}" wil verwijderen?`}
-					body="Deze actie kan niet ongedaan gemaakt worden"
+					title={t(
+						'collection/views/collection-detail___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
+					)}
+					body={t(
+						'collection/views/collection-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => onDeleteCollection()}
@@ -462,33 +638,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
-	const getCollectionAndRender = () => {
-		if (!permissions.canViewCollections) {
-			return (
-				<ErrorView
-					message={t(
-						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
-					)}
-					icon="lock"
-				/>
-			);
-		}
-		return (
-			<DataQueryComponent
-				query={GET_COLLECTION_BY_ID}
-				variables={{ id: collectionId }}
-				resultPath="app_collections[0]"
-				renderData={renderCollection}
-				notFoundMessage={t(
-					'collection/views/collection-detail___deze-collectie-werd-niet-gevonden'
-				)}
-			/>
-		);
-	};
-
 	return (
 		<LoadingErrorLoadedComponent
-			render={getCollectionAndRender}
+			render={renderCollection}
 			dataObject={permissions}
 			loadingInfo={loadingInfo}
 			showSpinner={true}

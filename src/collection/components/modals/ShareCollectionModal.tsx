@@ -59,6 +59,10 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
 	const [triggerCollectionPropertyUpdate] = useMutation(UPDATE_COLLECTION);
 
+	const isCollection = () => {
+		return collection.type_id === 3;
+	};
+
 	const onSave = async () => {
 		try {
 			const isPublished = isCollectionPublic && !collection.is_public;
@@ -94,7 +98,19 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			});
 			setValidationError(undefined);
 			toastService.success(
-				`De collectie staat nu ${isCollectionPublic ? 'publiek' : 'niet meer publiek'}.`
+				isCollection()
+					? isCollectionPublic
+						? t(
+								'collection/components/modals/share-collection-modal___de-collectie-staat-nu-publiek'
+						  )
+						: t(
+								'collection/components/modals/share-collection-modal___de-collectie-staat-nu-niet-meer-publiek'
+						  )
+					: isCollectionPublic
+					? t('collection/components/modals/share-collection-modal___de-bundel-staat-nu-publiek')
+					: t(
+							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-niet-meer-publiek'
+					  )
 			);
 			closeModal(newCollection);
 
@@ -103,15 +119,19 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				{
 					object: String(collection.id),
 					object_type: 'collections',
-					message: `Gebruiker ${getProfileName(user)} heeft de collectie ${collection.id} ${
-						isPublished ? 'gepubliceerd' : 'gedepubliceerd'
-					}`,
+					message: `Gebruiker ${getProfileName(user)} heeft de ${
+						isCollection() ? 'collectie' : 'bundel'
+					} ${collection.id} ${isPublished ? 'gepubliceerd' : 'gedepubliceerd'}`,
 					action: isPublished ? 'publish' : 'unpublish',
 				},
 				user
 			);
 		} catch (err) {
-			toastService.danger('De aanpassingen kunnen niet worden opgeslagen');
+			toastService.danger(
+				t(
+					'collection/components/modals/share-collection-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'
+				)
+			);
 		}
 	};
 
@@ -130,9 +150,15 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 		>
 			<ModalBody>
 				<p>
-					<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen">
-						Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.
-					</Trans>
+					{isCollection() ? (
+						<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen">
+							Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.
+						</Trans>
+					) : (
+						<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-bundel-toegankelijk-is-voor-andere-personen">
+							Bepaal in hoeverre jouw bundel toegankelijk is voor andere personen.
+						</Trans>
+					)}
 				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">

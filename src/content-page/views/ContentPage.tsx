@@ -37,7 +37,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
 			<ContentBlockPreview
 				key={contentPage.contentBlockssBycontentId[index].id}
 				componentState={contentBlockConfig.components.state}
-				contentWidth={/*contentPage.content_width */ 'default'} // TODO: add correct value
+				contentWidth={(contentPage as any).content_width} // TODO: remove any with typings update
 				blockState={contentBlockConfig.block.state}
 			/>
 		));
@@ -52,6 +52,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
 			notFoundMessage={t(
 				'content-page/views/content-page___deze-pagina-is-niet-gevonden-of-u-hebt-geen-rechten-om-hem-te-bekijken'
 			)}
+			actionButtons={['home']}
 		/>
 	);
 };

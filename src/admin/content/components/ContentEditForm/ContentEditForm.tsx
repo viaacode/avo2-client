@@ -17,11 +17,12 @@ import {
 import { ValueOf } from '../../../../shared/types';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 
-import { CONTENT_WIDTH_OPTIONS, FIXED_WIDTH_PAGES } from '../../content.const';
+import { CONTENT_WIDTH_OPTIONS, DEFAULT_PAGES_WIDTH } from '../../content.const';
 import {
 	ContentEditFormErrors,
 	ContentEditFormState,
 	ContentTypesResponse,
+	ContentWidth,
 } from '../../content.types';
 import './ContentEditForm.scss';
 
@@ -47,17 +48,14 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	useEffect(() => {
 		// Set fixed content width for specific page types
-		if (
-			FIXED_WIDTH_PAGES.medium.includes(formState.contentType) &&
-			formState.contentWidth !== 'medium'
-		) {
-			onChange('contentWidth', 'medium');
-		} else if (
-			FIXED_WIDTH_PAGES.default.includes(formState.contentType) &&
-			formState.contentWidth !== 'default'
-		) {
-			onChange('contentWidth', 'default');
-		}
+		Object.keys(DEFAULT_PAGES_WIDTH).forEach(key => {
+			if (
+				DEFAULT_PAGES_WIDTH[key as ContentWidth].includes(formState.contentType) &&
+				formState.contentWidth !== key
+			) {
+				onChange('contentWidth', key);
+			}
+		});
 	}, [formState.contentType, formState.contentWidth, onChange]);
 
 	// Computed
@@ -143,7 +141,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</FormGroup>
 							</Column>
 							<Column size="3-6">
-								<FormGroup error={formErrors.contentWidth} label={t('Content breedte')}>
+								<FormGroup
+									error={formErrors.contentWidth}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___content-breedte'
+									)}
+								>
 									<Select
 										onChange={value => onChange('contentWidth', value)}
 										options={CONTENT_WIDTH_OPTIONS}
@@ -156,12 +159,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___zichtbaar-voor'
 									)}
-									error={'' /* formErrors.group_access */}
+									error={'' /* formErrors.user_group_ids */}
 									placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
 									values={[1]}
 									required={false}
 									onChange={
-										() => {} /* (userGroupIds: number[]) => onChange('group_access', userGroupIds) */
+										() => {} /* (userGroupIds: number[]) => onChange('user_group_ids', userGroupIds) */
 									}
 								/>
 							</Column>

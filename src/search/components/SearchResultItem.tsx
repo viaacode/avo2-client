@@ -30,17 +30,19 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			// tags={[{ label: 'Redactiekeuze', id: 'redactiekeuze' }, { label: 'Partner', id: 'partner' }]}
 			viewCount={412}
 			bookmarkCount={85}
-			description={result.dcterms_abstract}
+			description={result.dcterms_abstract || ''}
 			onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.id, active)}
 		>
 			<SearchResultTitle>
 				<Link to={contentLink}>{result.dc_title}</Link>
 			</SearchResultTitle>
-			<SearchResultSubtitle>
-				{generateSearchLink('provider', result.original_cp, 'c-body-2', () =>
-					handleOriginalCpLinkClicked(result.id, result.original_cp)
-				)}
-			</SearchResultSubtitle>
+			{!!result.original_cp && (
+				<SearchResultSubtitle>
+					{generateSearchLink('provider', result.original_cp, 'c-body-2', () =>
+						handleOriginalCpLinkClicked(result.id, result.original_cp || '')
+					)}
+				</SearchResultSubtitle>
+			)}
 			<SearchResultThumbnail>
 				<Link to={contentLink}>
 					<Thumbnail

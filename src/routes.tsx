@@ -3,6 +3,7 @@ import { Switch } from 'react-router';
 
 import { renderAssignmentRoutes } from './assignment/assignment.routes';
 import { renderAuthenticationRoutes } from './authentication/authentication.routes';
+import { renderBundleRoutes } from './bundle/bundle.routes';
 import { renderCollectionRoutes } from './collection/collection.routes';
 import { renderContentPageRoutes } from './content-page/content-page.routes';
 import { renderErrorRoutes } from './error/error.routes';
@@ -22,6 +23,7 @@ export const renderRoutes = () => (
 		{renderTeacherRoutes()}
 		{renderPupilRoutes()}
 		{renderCollectionRoutes()}
+		{renderBundleRoutes()}
 		{renderAssignmentRoutes()}
 		{renderWorkspaceRoutes()}
 		{renderAuthenticationRoutes()}

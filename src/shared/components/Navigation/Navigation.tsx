@@ -65,11 +65,20 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
 
 	useEffect(() => {
-		getNavigationItems().then((navItems: NavItemMap) => {
-			setPrimaryNavItems(navItems['hoofdnavigatie-links']);
-			setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
-		});
-	}, [user]);
+		getNavigationItems()
+			.then((navItems: NavItemMap) => {
+				setPrimaryNavItems(navItems['hoofdnavigatie-links']);
+				setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
+			})
+			.catch(err => {
+				console.error('Failed to get navigation items', err);
+				toastService.danger(
+					t(
+						'shared/components/navigation/navigation___het-ophalen-van-de-navigatie-items-is-mislukt-probeer-later-opnieuw'
+					)
+				);
+			});
+	}, [history, t, user]);
 
 	const mapNavItems = (navItems: NavigationItemInfo[]) => {
 		return navItems.map(item => (

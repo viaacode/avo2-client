@@ -2,6 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ASSIGNMENT_PATH } from './assignment/assignment.const';
 import { AUTH_PATH } from './authentication/authentication.const';
+import { BUNDLE_PATH } from './bundle/bundle.const';
 import { COLLECTION_PATH } from './collection/collection.const';
 import { HOME_PATH } from './home/home.const';
 import { ITEM_PATH } from './item/item.const';
@@ -16,6 +17,7 @@ export const APP_PATH = Object.freeze({
 	...ASSIGNMENT_PATH,
 	...AUTH_PATH,
 	...COLLECTION_PATH,
+	...BUNDLE_PATH,
 	...TEACHERS_PATH,
 	...PUPILS_PATH,
 	...HOME_PATH,
@@ -26,7 +28,6 @@ export const APP_PATH = Object.freeze({
 	// TODO: Replace once available
 	NEWS: `/${ROUTE_PARTS.news}`,
 	PROJECTS: `/${ROUTE_PARTS.projects}`,
-	FOLDER_DETAIL: `/${ROUTE_PARTS.folders}`,
 	SETTINGS: `/${ROUTE_PARTS.settings}`,
 	HELP: `/${ROUTE_PARTS.help}`,
 	FEEDBACK: `/${ROUTE_PARTS.feedback}`,
@@ -37,5 +38,5 @@ export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: str
 	video: APP_PATH.ITEM,
 	audio: APP_PATH.ITEM,
 	collectie: APP_PATH.COLLECTION_DETAIL,
-	bundel: APP_PATH.FOLDER_DETAIL,
+	bundel: APP_PATH.BUNDLE_DETAIL,
 };
