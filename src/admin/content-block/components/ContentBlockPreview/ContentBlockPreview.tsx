@@ -10,8 +10,7 @@ import {
 	BlockRichText,
 	Container,
 } from '@viaa/avo2-components';
-
-import { ContentWidth } from '../../../content/content.types';
+import { Avo } from '@viaa/avo2-types';
 
 import {
 	ContentBlockBackgroundColor,
@@ -22,7 +21,7 @@ import {
 
 interface ContentBlockPreviewProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
-	contentWidth: ContentWidth;
+	contentWidth?: Avo.Content.ContentWidth;
 	blockState: ContentBlockState;
 }
 

@@ -173,6 +173,7 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 				submitted_at
 				owner_profile_ids
 				assignment_id
+				collection_uuid
 				collection_id
 			}
 			assignment_type

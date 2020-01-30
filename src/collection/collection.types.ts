@@ -10,9 +10,6 @@ import {
 	DutchContentType,
 	EnglishContentType,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
-import { ValueOf } from '../shared/types';
 
 export type CollectionOverviewTableColumns =
 	| 'thumbnail'
@@ -75,10 +72,4 @@ export function toEnglishContentType(label: DutchContentType): EnglishContentTyp
 		zoek: 'search',
 		zoekopdracht: 'searchquery',
 	}[label] as EnglishContentType;
-}
-
-export interface FragmentPropertyUpdateInfo {
-	value: Partial<ValueOf<Avo.Collection.Fragment>>;
-	fieldName: keyof Avo.Collection.Fragment;
-	fragmentId: number;
 }

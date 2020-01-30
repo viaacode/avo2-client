@@ -16,6 +16,7 @@ import {
 	IconName,
 	MenuContent,
 	TextInput,
+	Thumbnail,
 	Toggle,
 	Toolbar,
 	ToolbarItem,
@@ -35,17 +36,17 @@ import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService from '../../../shared/services/toast-service';
-import { FragmentPropertyUpdateInfo } from '../../collection.types';
 import { getFragmentProperty, isMediaFragment } from '../../helpers';
 
 import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
 
 interface FragmentEditProps extends DefaultSecureRouteProps {
+	type: 'itemOrText' | 'collection';
 	index: number;
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
+	onFragmentChanged: (fragment: Avo.Collection.Fragment) => void;
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
@@ -54,10 +55,11 @@ interface FragmentEditProps extends DefaultSecureRouteProps {
 }
 
 const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
+	type,
 	index,
 	collection,
 	swapFragments,
-	updateFragmentProperties,
+	onFragmentChanged,
 	openOptionsId,
 	setOpenOptionsId,
 	fragment,
@@ -68,7 +70,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const [t] = useTranslation();
 
 	const [playerTicket, setPlayerTicket] = useState<string>();
-	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [cuePoints, setCuePoints] = useState({
@@ -76,6 +77,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		end: fragment.end_oc,
 	});
 	const [allowedToAddLinks, setAllowedToAddLinks] = useState<boolean | null>(null);
+
+	const isCollection = type === 'collection';
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
@@ -113,6 +116,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	const initFlowPlayer = () =>
 		!playerTicket &&
+		!isCollection &&
 		fetchPlayerTicket(fragment.external_id)
 			.then(data => setPlayerTicket(data))
 			.catch(() => toastService.danger('Play ticket kon niet opgehaald worden.'));
@@ -121,41 +125,35 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	// Listeners
 	const onChangeToggle = () => {
-		const propsToUpdate = [
-			{
-				value: !useCustomFields,
-				fieldName: 'use_custom_fields' as keyof Avo.Collection.Fragment,
-				fragmentId: fragment.id,
-			},
-		];
-
-		// If empty title or description, apply item title and description
-		const propsToTransfer: string[] = ['title', 'description'];
-
-		propsToTransfer.forEach((prop: string) => {
-			const customProp = `custom_${prop}` as keyof Avo.Collection.Fragment;
-
-			if (!fragment[customProp] && itemMetaData[prop]) {
-				propsToUpdate.push({
-					value: itemMetaData[prop],
-					fieldName: customProp,
-					fragmentId: fragment.id,
-				});
-			}
-		});
-
-		updateFragmentProperties(propsToUpdate);
-		setUseCustomFields(!useCustomFields);
+		if (fragment.use_custom_fields) {
+			// user wants to disable custom fields
+			onFragmentChanged({
+				...fragment,
+				custom_title: null,
+				custom_description: null,
+				use_custom_fields: false,
+			});
+		} else {
+			// user wants to enable custom fields
+			onFragmentChanged({
+				...fragment,
+				custom_title: '',
+				custom_description: '',
+				use_custom_fields: true,
+			});
+		}
 	};
 
-	const onChangeText = (field: 'title' | 'description', value: string) =>
-		updateFragmentProperties([
-			{
-				value,
-				fieldName: `custom_${field}` as 'custom_title' | 'custom_description',
-				fragmentId: fragment.id,
-			},
-		]);
+	const onChangeText = (field: 'title' | 'description', value: string) => {
+		const oldValue: string =
+			fragment[`custom_${field}` as 'custom_title' | 'custom_description'] || '';
+		if (oldValue !== value) {
+			onFragmentChanged({
+				...fragment,
+				[`custom_${field}`]: value,
+			});
+		}
+	};
 
 	const onDeleteFragment = (fragmentId: number) => {
 		setOpenOptionsId(null);
@@ -175,10 +173,17 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: positionedFragments,
-			collection_fragment_ids: positionedFragments.map(positionedFragment => positionedFragment.id),
 		});
 
-		toastService.success('Fragment is succesvol verwijderd');
+		toastService.success(
+			!isCollection
+				? t(
+						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
+				  )
+				: t(
+						'collection/components/fragment/fragment-edit___collectie-is-succesvol-verwijderd-uit-de-bundel'
+				  )
+		);
 	};
 
 	// TODO: DISABLED FEATURE
@@ -239,7 +244,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	);
 
 	const renderForm = () => {
-		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
+		const disableVideoFields: boolean = !fragment.use_custom_fields && !!isMediaFragment(fragment);
 
 		return (
 			<Form>
@@ -248,7 +253,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						label={t('collection/components/fragment/fragment-edit___alternatieve-tekst')}
 						labelFor="customFields"
 					>
-						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
+						<Toggle
+							id="customFields"
+							checked={fragment.use_custom_fields}
+							onChange={onChangeToggle}
+						/>
 					</FormGroup>
 				)}
 				<FormGroup
@@ -258,7 +267,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
-						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
+						value={getFragmentProperty(itemMetaData, fragment, fragment.use_custom_fields, 'title')}
 						placeholder={t(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
@@ -278,7 +287,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 								'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 							)}
 							data={convertToHtml(
-								getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
+								getFragmentProperty(
+									itemMetaData,
+									fragment,
+									fragment.use_custom_fields,
+									'description'
+								)
 							)}
 							onChange={(value: string) => onChangeText('description', value)}
 							disabled={disableVideoFields}
@@ -299,7 +313,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 								<div className="c-button-toolbar">
 									{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
 									{!isLast(index) && renderReorderButton(fragment.position, 'down')}
-									{itemMetaData && (
+									{itemMetaData && !isCollection && (
 										<Button
 											icon="scissors"
 											label={t('collection/components/fragment/fragment-edit___knippen')}
@@ -338,20 +352,24 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					</Toolbar>
 				</div>
 				<div className="c-panel__body">
-					{isMediaFragment(fragment) && itemMetaData ? ( // TODO: Replace publisher, published_at by real publisher
+					{(isMediaFragment(fragment) && itemMetaData) || isCollection ? (
 						<Grid>
 							<Column size="3-6">
-								<FlowPlayer
-									src={playerTicket ? playerTicket.toString() : null}
-									poster={itemMetaData.thumbnail_path}
-									title={itemMetaData.title}
-									onInit={initFlowPlayer}
-									subtitles={['30-12-2011', 'VRT']}
-									token={getEnv('FLOW_PLAYER_TOKEN')}
-									dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-									logo={get(itemMetaData, 'organisation.logo_url')}
-									{...cuePoints}
-								/>
+								{!isCollection ? (
+									<FlowPlayer
+										src={playerTicket ? playerTicket.toString() : null}
+										poster={itemMetaData.thumbnail_path}
+										title={itemMetaData.title}
+										onInit={initFlowPlayer}
+										subtitles={[itemMetaData.issued, get(itemMetaData, 'organisation.name', '')]}
+										token={getEnv('FLOW_PLAYER_TOKEN')}
+										dataPlayerId={getEnv('FLOW_PLAYER_ID')}
+										logo={get(itemMetaData, 'organisation.logo_url')}
+										{...cuePoints}
+									/>
+								) : (
+									<Thumbnail category="collection" src={itemMetaData.thumbnail_path} />
+								)}
 							</Column>
 							<Column size="3-6">{renderForm()}</Column>
 						</Grid>
@@ -361,27 +379,39 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 				</div>
 			</div>
 
-			<FragmentAdd
-				index={index}
-				collection={collection}
-				updateCollection={updateCollection}
-				reorderFragments={reorderFragments}
-			/>
+			{!isCollection && (
+				<FragmentAdd
+					index={index}
+					collection={collection}
+					updateCollection={updateCollection}
+					reorderFragments={reorderFragments}
+				/>
+			)}
 
 			<DeleteObjectModal
-				title={t('Ben je zeker dat je dit fragment wil verwijderen?')}
-				body={t('Deze actie kan niet ongedaan gemaakt worden')}
+				title={
+					!isCollection
+						? t(
+								'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen-uit-deze-collectie'
+						  )
+						: t(
+								'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-collectie-wil-verwijderen-uit-deze-bundel'
+						  )
+				}
+				body={t(
+					'collection/components/fragment/fragment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setDeleteModalOpen(false)}
 				deleteObjectCallback={() => onDeleteFragment(fragment.id)}
 			/>
 
-			{itemMetaData && (
+			{itemMetaData && !isCollection && (
 				<CutFragmentModal
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}
 					itemMetaData={itemMetaData}
-					updateFragmentProperties={updateFragmentProperties}
+					onFragmentChanged={onFragmentChanged}
 					fragment={fragment}
 					updateCuePoints={setCuePoints}
 				/>

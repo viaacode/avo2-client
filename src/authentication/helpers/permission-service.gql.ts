@@ -16,11 +16,11 @@ export const GET_LINKED_ITEMS = gql`
 `;
 
 export const GET_LINKED_COLLECTIONS = gql`
-	query GetLinkedCollections($idString: String!, $idInt: Int!, $userId: String!) {
+	query GetLinkedCollections($idString: String!, $idUuid: uuid!, $userId: String!) {
 		app_assignment_responses(
 			where: {
 				_or: [
-					{ collection_id: { _eq: $idInt } }
+					{ collection_uuid: { _eq: $idInt } }
 					{ assignment: { content_id: { _eq: $idString }, content_label: { _eq: COLLECTIE } } }
 				]
 				owner_profile_ids: { _has_key: $userId }

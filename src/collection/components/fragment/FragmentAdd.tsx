@@ -26,7 +26,8 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	const TEXT_BLOCK_FRAGMENT: any = {
 		...NEW_FRAGMENT.text,
 		id: -collection_fragments.length,
-		collection_id: id,
+		collection_uuid: id,
+		collection_id: (collection as any).avo1_id || '', // TODO remove once database allows it
 	};
 
 	// Listeners
@@ -44,7 +45,6 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 		updateCollection({
 			...collection,
 			collection_fragments: generatedFragments,
-			collection_fragment_ids: generatedFragments.map(({ id: fragmentId }) => fragmentId),
 		});
 	};
 

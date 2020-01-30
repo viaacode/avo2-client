@@ -1,3 +1,5 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
@@ -96,7 +98,7 @@ export interface ContentEditFormState {
 	isProtected: boolean;
 	path: string;
 	contentType: string;
-	contentWidth: ContentWidth;
+	contentWidth: Avo.Content.ContentWidth;
 	publishAt: string;
 	depublishAt: string;
 }
