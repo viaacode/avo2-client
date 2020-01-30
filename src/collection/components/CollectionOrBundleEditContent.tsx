@@ -6,7 +6,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 
-import { FragmentPropertyUpdateInfo } from '../collection.types';
 import { FragmentAdd, FragmentEdit } from '../components';
 
 interface CollectionOrBundleEditContentProps extends DefaultSecureRouteProps {
@@ -14,7 +13,7 @@ interface CollectionOrBundleEditContentProps extends DefaultSecureRouteProps {
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
 	updateCollection: (collection: Avo.Collection.Collection) => void;
-	updateFragmentProperties: (updateInfo: FragmentPropertyUpdateInfo[]) => void;
+	onFragmentChanged: (fragment: Avo.Collection.Fragment) => void;
 }
 
 const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditContentProps> = ({
@@ -22,7 +21,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	collection,
 	swapFragments,
 	updateCollection,
-	updateFragmentProperties,
+	onFragmentChanged,
 	...rest
 }) => {
 	// State
@@ -49,7 +48,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 							index={index}
 							collection={collection}
 							swapFragments={swapFragments}
-							updateFragmentProperties={updateFragmentProperties}
+							onFragmentChanged={onFragmentChanged}
 							openOptionsId={openOptionsId}
 							setOpenOptionsId={setOpenOptionsId}
 							fragment={fragment}
