@@ -33,7 +33,7 @@ import {
 } from '../../../authentication/helpers/permission-service';
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
-import { createDropdownMenuItem, getEnv, stripHtml } from '../../../shared/helpers';
+import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService from '../../../shared/services/toast-service';
 import { isMediaFragment } from '../../helpers';

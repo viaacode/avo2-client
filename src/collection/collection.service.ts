@@ -5,7 +5,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
-import { LoadingInfo } from '../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { CustomError } from '../shared/helpers';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
@@ -105,7 +104,7 @@ export class CollectionService {
 
 			let newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
 
-			// Remove custom_title and custom_description for the fragments that have use_custom_fields === true
+			// Remove custom_title and custom_description if user wants to use the item's original title and description
 			(newCollection.collection_fragments || []).forEach((fragment: Avo.Collection.Fragment) => {
 				if (!fragment.use_custom_fields) {
 					delete fragment.custom_title;
