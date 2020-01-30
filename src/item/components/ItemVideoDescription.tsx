@@ -185,8 +185,8 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 					</Trans>
 				</BlockHeading>
 			)}
-			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
-			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 8}>
+			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (18) */}
+			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 18}>
 				<p>{formatTimestamps(convertToHtml(description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>
