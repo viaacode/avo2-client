@@ -241,7 +241,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 
 	// Update individual property of fragment
 	const onFragmentChanged = (fragment: Avo.Collection.Fragment) => {
-		console.log('fragment props updated: ', fragment);
 		const tempCollection: Avo.Collection.Collection | null = cloneDeep(currentCollection);
 
 		if (!tempCollection) {
