@@ -3,6 +3,7 @@ import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import {
 	BlockHeading,
@@ -72,7 +73,6 @@ import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 
 import './CollectionDetail.scss';
-import { Link } from 'react-router-dom';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
