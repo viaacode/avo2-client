@@ -264,6 +264,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			return (
 				<Column size="3-3" key={`related-bundle-${relatedBundle.id}`}>
 					<MediaCard
+						className="u-clickable"
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
@@ -308,6 +309,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			return (
 				<Column size="3-4" key={`bundle-fragment-${fragment.id}`}>
 					<MediaCard
+						className="u-clickable"
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(

@@ -13,6 +13,7 @@ import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
+	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
@@ -438,6 +439,28 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to get fragments inside the collection', err, { ids });
 		}
+	}
+
+	public static async getPublishedBundlesContainingCollection(
+		id: string
+	): Promise<Avo.Collection.Collection[]> {
+		const response = await dataService.query({
+			query: GET_BUNDLES_CONTAINING_COLLECTION,
+			variables: { id },
+		});
+
+		if (response.errors) {
+			throw new CustomError(
+				`Failed to  get bundles from database because of graphql errors`,
+				null,
+				{
+					collectionId: id,
+					errors: response.errors,
+				}
+			);
+		}
+
+		return get(response, 'data.app_collections', []);
 	}
 
 	private static getFragmentIdsFromCollection(
