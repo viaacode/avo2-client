@@ -15,10 +15,7 @@ const EMPTY_CTA: CTAsBlockComponentState = {
 	heading: '',
 	content: '',
 	headingType: 'h2',
-	// TODO: Add Button Props
-	// button: {
-	// 	label: '',
-	// },
+	buttonLabel: '',
 };
 
 export const INITIAL_CTAS_BLOCK_COMPONENT_STATES = (): CTAsBlockComponentState[] => [
@@ -39,10 +36,6 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 		},
 		state: INITIAL_CTAS_BLOCK_COMPONENT_STATES(),
 		fields: {
-			heading: TEXT_FIELD(i18n.t('admin/content-block/helpers/generators/ctas___knoptekst'), {
-				editorType: ContentBlockEditor.TextInput,
-			}),
-			content: TEXT_FIELD(i18n.t('admin/content-block/helpers/generators/ctas___knoptekst')),
 			headingType: {
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
@@ -50,7 +43,15 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 					options: HEADING_LEVEL_OPTIONS,
 				},
 			},
-			// TODO: Add Button Fields
+			heading: TEXT_FIELD(i18n.t('Titel is verplicht'), {
+				label: i18n.t('Titel'),
+				editorType: ContentBlockEditor.TextInput,
+			}),
+			content: TEXT_FIELD(),
+			buttonLabel: TEXT_FIELD(i18n.t('Knoptekst is verplicht'), {
+				label: i18n.t('Knoptekst'),
+				editorType: ContentBlockEditor.TextInput,
+			}),
 		},
 	},
 	block: {

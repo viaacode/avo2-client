@@ -122,7 +122,7 @@ export interface CTAsBlockComponentState {
 	heading: string;
 	headingType: HeadingLevelOptions;
 	content: string | string[];
-	// TODO: button: Partial<ButtonsBlockComponentState>;
+	buttonLabel: string;
 }
 
 export interface IFrameBlockComponentState {
