@@ -1,4 +1,10 @@
-import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
+import { OptionsType } from 'react-select';
+
+import { IconName, Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
+
+import { IconPicker } from '../../admin/shared/components';
+import i18n from '../../shared/translations/i18n';
+import { ReactSelectOption } from '../../shared/types';
 
 import { AlignSelect, ColorSelect } from './components';
 import {
@@ -58,6 +64,7 @@ export const EDITOR_TYPES_MAP = {
 	Select,
 	TextInput,
 	WYSIWYG,
+	IconPicker,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -80,9 +87,14 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
 };
 
-// Heading
+// Options
 export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
 	{ label: 'H2', value: 'h2' },
 	{ label: 'H3', value: 'h3' },
 	{ label: 'H4', value: 'h4' },
 ];
+
+export const CTA_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Object.freeze([
+	{ label: i18n.t('admin/menu/menu___aktetas'), value: 'briefcase' },
+	// TODO: Fix icon list
+]);

@@ -1,6 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
+import { CTA_ICON_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -16,6 +16,7 @@ const EMPTY_CTA: CTAsBlockComponentState = {
 	content: '',
 	headingType: 'h2',
 	buttonLabel: '',
+	buttonOnClick: () => {},
 };
 
 export const INITIAL_CTAS_BLOCK_COMPONENT_STATES = (): CTAsBlockComponentState[] => [
@@ -49,9 +50,16 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 			}),
 			content: TEXT_FIELD(),
 			buttonLabel: TEXT_FIELD(i18n.t('Knoptekst is verplicht'), {
-				label: i18n.t('Knoptekst'),
+				label: i18n.t('Knop tekst'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
+			buttonIcon: {
+				label: i18n.t('Knop icoon'),
+				editorType: ContentBlockEditor.IconPicker,
+				editorProps: {
+					options: CTA_ICON_OPTIONS,
+				},
+			},
 		},
 	},
 	block: {

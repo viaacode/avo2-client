@@ -51,12 +51,13 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 	let editorProps = {};
 
 	switch (field.editorType) {
+		case ContentBlockEditor.IconPicker:
 		case ContentBlockEditor.ColorSelect:
 			editorProps = {
 				onChange: (option: SelectOption) =>
 					handleChange(type, fieldKey, get(option, 'value', ''), stateIndex),
 				value: defaultProps.options.find(
-					(opt: SelectOption) => opt.value === config.block.state.backgroundColor
+					(opt: SelectOption) => opt.value === (state as any)[fieldKey]
 				),
 			};
 			break;

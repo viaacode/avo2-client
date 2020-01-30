@@ -1,3 +1,9 @@
+import { MouseEvent } from 'react';
+
+import { IconName } from '@viaa/avo2-components';
+// TODO: Import from components lib when exported there.
+import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
+
 export type ContentBlockStateType = 'components' | 'block';
 
 export type ContentBlockStateOptions =
@@ -66,6 +72,7 @@ export enum ContentBlockEditor {
 	Select = 'Select',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
+	IconPicker = 'IconPicker',
 }
 
 export interface ContentBlockFormError {
@@ -123,6 +130,9 @@ export interface CTAsBlockComponentState {
 	headingType: HeadingLevelOptions;
 	content: string | string[];
 	buttonLabel: string;
+	buttonOnClick: (event: MouseEvent<HTMLElement>) => void;
+	buttonIcon?: IconName;
+	buttonType?: ButtonType;
 }
 
 export interface IFrameBlockComponentState {

@@ -25,6 +25,7 @@ export const MENU_OVERVIEW_TABLE_COLS: TableColumn[] = [
 export const MENU_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Object.freeze([
 	{ label: i18n.t('admin/menu/menu___aktetas'), value: 'briefcase' },
 	{ label: i18n.t('admin/menu/menu___zoek'), value: 'search' },
+	// TODO: Add more icons
 ]);
 
 export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => ({
