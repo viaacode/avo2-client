@@ -81,7 +81,11 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 	useEffect(() => {
 		fetchBundles().catch(err => {
 			console.error('Failed to fetch bundles', err);
-			toastService.danger(t('Het ophalen van de bundels is mislukt'));
+			toastService.danger(
+				t(
+					'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bundels-is-mislukt'
+				)
+			);
 		});
 	}, [fetchBundles, t]);
 
@@ -98,10 +102,18 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			if (collection) {
 				setSelectedBundle(collection);
 			} else {
-				toastService.danger(t('Het ophalen van de collectie details is mislukt'));
+				toastService.danger(
+					t(
+						'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-collectie-details-is-mislukt'
+					)
+				);
 			}
 		} catch (err) {
-			toastService.danger(t('Het ophalen van de collectie details is mislukt'));
+			toastService.danger(
+				t(
+					'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-collectie-details-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -141,9 +153,17 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
-				toastService.danger(t('De collectie kon niet worden toegevoegd aan de bundel'));
+				toastService.danger(
+					t(
+						'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
+					)
+				);
 			} else {
-				toastService.success(t('De collectie is toegevoegd aan de bundel'));
+				toastService.success(
+					t(
+						'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
+					)
+				);
 				onClose();
 				trackEvents(
 					{
@@ -160,7 +180,11 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(t('De collectie kon niet worden toegevoegd aan de bundel'));
+			toastService.danger(
+				t(
+					'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
+				)
+			);
 		}
 
 		// Re-enable apply button
@@ -207,9 +231,17 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			);
 
 			if (!response || response.errors) {
-				toastService.danger(t('De bundel kon niet worden aangemaakt'));
+				toastService.danger(
+					t(
+						'collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt'
+					)
+				);
 			} else if (!insertedBundle || isNil(insertedBundle.id)) {
-				toastService.danger(t('De aangemaakte bundel kon niet worden opgehaald'));
+				toastService.danger(
+					t(
+						'collection/components/modals/add-to-bundle-modal___de-aangemaakte-bundel-kon-niet-worden-opgehaald'
+					)
+				);
 			} else {
 				// Add collection to bundle
 				await addCollectionToExistingBundle(insertedBundle);
@@ -225,7 +257,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 					bundle: newBundle,
 				},
 			});
-			toastService.danger(t('De bundel kon niet worden aangemaakt'));
+			toastService.danger(
+				t('collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt')
+			);
 
 			// Re-enable apply button
 			setIsProcessing(false);
@@ -238,7 +272,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	return (
 		<Modal
-			title={t('Voeg collectie toe aan bundel')}
+			title={t('collection/components/modals/add-to-bundle-modal___voeg-collectie-toe-aan-bundel')}
 			size="medium"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -251,7 +285,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 							<FormGroup>
 								<Spacer margin="bottom">
 									<RadioButton
-										label={t('Bestaande bundel')}
+										label={t('collection/components/modals/add-to-bundle-modal___bestaande-bundel')}
 										checked={!createNewBundle}
 										value="existing"
 										name="collection"
@@ -261,7 +295,11 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 										<Select
 											id="existingCollection"
 											placeholder={
-												bundles.length ? t('Kies bundel') : t('Je hebt nog geen bundels')
+												bundles.length
+													? t('collection/components/modals/add-to-bundle-modal___kies-bundel')
+													: t(
+															'collection/components/modals/add-to-bundle-modal___je-hebt-nog-geen-bundels'
+													  )
 											}
 											options={[
 												...bundles.map((bundle: Partial<Avo.Collection.Collection>) => ({
@@ -277,7 +315,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 								</Spacer>
 								<Spacer margin="bottom">
 									<RadioButton
-										label={t('Nieuwe bundel')}
+										label={t('collection/components/modals/add-to-bundle-modal___nieuwe-bundel')}
 										checked={createNewBundle}
 										value="new"
 										name="bundle"
@@ -285,7 +323,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 									/>
 									<div>
 										<TextInput
-											placeholder={t('Bundel titel')}
+											placeholder={t(
+												'collection/components/modals/add-to-bundle-modal___bundel-titel'
+											)}
 											disabled={!createNewBundle}
 											value={newBundleTitle}
 											onChange={setNewBundleTitle}
@@ -316,9 +356,13 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 									block
 									title={
 										createNewBundle && !newBundleTitle
-											? t('U moet een bundel titel opgeven')
+											? t(
+													'collection/components/modals/add-to-bundle-modal___u-moet-een-bundel-titel-opgeven'
+											  )
 											: !createNewBundle && !selectedBundle
-											? t('bezig met bundel detail op te halen')
+											? t(
+													'collection/components/modals/add-to-bundle-modal___bezig-met-bundel-detail-op-te-halen'
+											  )
 											: ''
 									}
 									disabled={
