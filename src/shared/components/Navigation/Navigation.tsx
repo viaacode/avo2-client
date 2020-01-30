@@ -73,7 +73,9 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			.catch(err => {
 				console.error('Failed to get navigation items', err);
 				toastService.danger(
-					t('Het ophalen van de navigatie items is mislukt, probeer later opnieuw')
+					t(
+						'shared/components/navigation/navigation___het-ophalen-van-de-navigatie-items-is-mislukt-probeer-later-opnieuw'
+					)
 				);
 			});
 	}, [history, t, user]);

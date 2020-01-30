@@ -403,6 +403,12 @@ export class CollectionService {
 				// The database ensures that they are sorted by their previous position
 				collectionFragment.position = index;
 
+				// If the fragment doesn't use custom fields, then custom fields should be null
+				if (!collectionFragment.use_custom_fields) {
+					collectionFragment.custom_title = null;
+					collectionFragment.custom_description = null;
+				}
+
 				// Return the external id if it is set
 				// TODO replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
 				if (collectionFragment.external_id !== '-1') {
@@ -498,7 +504,7 @@ export class CollectionService {
 		triggerCollectionFragmentInsert: any
 	) {
 		if (!collection) {
-			toastService.danger(i18n.t('De collectie was niet ingesteld'));
+			toastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
 			return;
 		}
 
@@ -552,8 +558,8 @@ export class CollectionService {
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
 			toastService.danger([
-				i18n.t('Het ophalen van de eerste video thumbnail is mislukt.'),
-				i18n.t('De collectie zal opgeslagen worden zonder thumbnail.'),
+				i18n.t('collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'),
+				i18n.t('collection/collection___de-collectie-zal-opgeslagen-worden-zonder-thumbnail'),
 			]);
 			return null;
 		}

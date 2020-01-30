@@ -415,7 +415,7 @@ const Search: FunctionComponent<SearchProps> = ({
 			{searchResultsError ? (
 				<ErrorView
 					message={t(
-						'Er ging iets mis tijdens het ophalen van de zoek resultaten,<br/>Probeer later opnieuw of rapporteer het probleem via de feedback knop'
+						'search/views/search___er-ging-iets-mis-tijdens-het-ophalen-van-de-zoek-resultaten-br-probeer-later-opnieuw-of-rapporteer-het-probleem-via-de-feedback-knop'
 					)}
 					actionButtons={['home']}
 				/>

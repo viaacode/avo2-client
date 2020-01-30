@@ -141,7 +141,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</FormGroup>
 							</Column>
 							<Column size="3-6">
-								<FormGroup error={formErrors.contentWidth} label={t('Content breedte')}>
+								<FormGroup
+									error={formErrors.contentWidth}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___content-breedte'
+									)}
+								>
 									<Select
 										onChange={value => onChange('contentWidth', value)}
 										options={CONTENT_WIDTH_OPTIONS}

@@ -100,11 +100,17 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			toastService.success(
 				isCollection()
 					? isCollectionPublic
-						? t('De collectie staat nu publiek')
-						: t('De collectie staat nu niet meer publiek.')
+						? t(
+								'collection/components/modals/share-collection-modal___de-collectie-staat-nu-publiek'
+						  )
+						: t(
+								'collection/components/modals/share-collection-modal___de-collectie-staat-nu-niet-meer-publiek'
+						  )
 					: isCollectionPublic
-					? t('De bundel staat nu publiek')
-					: t('De bundel staat nu niet meer publiek.')
+					? t('collection/components/modals/share-collection-modal___de-bundel-staat-nu-publiek')
+					: t(
+							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-niet-meer-publiek'
+					  )
 			);
 			closeModal(newCollection);
 
@@ -121,7 +127,11 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				user
 			);
 		} catch (err) {
-			toastService.danger(t('De aanpassingen kunnen niet worden opgeslagen'));
+			toastService.danger(
+				t(
+					'collection/components/modals/share-collection-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'
+				)
+			);
 		}
 	};
 
@@ -145,7 +155,9 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 							Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.
 						</Trans>
 					) : (
-						<Trans>Bepaal in hoeverre jouw bundel toegankelijk is voor andere personen.</Trans>
+						<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-bundel-toegankelijk-is-voor-andere-personen">
+							Bepaal in hoeverre jouw bundel toegankelijk is voor andere personen.
+						</Trans>
 					)}
 				</p>
 				<FormGroup error={validationError}>

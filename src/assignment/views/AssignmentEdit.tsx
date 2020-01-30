@@ -439,7 +439,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			console.error('Failed to copy collection for the current assignment', err, {
 				assignmentContent,
 			});
-			toastService.danger(t('Het kopieren van de opdracht is mislukt'));
+			toastService.danger(
+				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
+			);
 		}
 	};
 
@@ -963,8 +965,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				</Container>
 
 				<DeleteObjectModal
-					title={t('Ben je zeker dat je deze opdracht wil verwijderen?')}
-					body={t('Deze actie kan niet ongedaan gemaakt worden')}
+					title={t(
+						'assignment/views/assignment-edit___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
+					)}
+					body={t('assignment/views/assignment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden')}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCurrentAssignment}
@@ -972,13 +976,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				<InputModal
 					title={t('assignment/views/assignment-edit___dupliceer-taak')}
-					inputLabel={t('Geef de nieuwe taak een naam:')}
+					inputLabel={t('assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam')}
 					inputValue={currentAssignment.title}
-					inputPlaceholder={t('Titel van de nieuwe taak')}
+					inputPlaceholder={t('assignment/views/assignment-edit___titel-van-de-nieuwe-taak')}
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
-					emptyMessage={t('Gelieve een opdracht-titel in te geven.')}
+					emptyMessage={t(
+						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
+					)}
 				/>
 			</>
 		);
@@ -989,7 +995,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			dataObject={currentAssignment}
 			render={renderAssignmentEditForm}
 			loadingInfo={loadingInfo}
-			notFoundError={t('De opdracht is niet gevonden')}
+			notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
 		/>
 	);
 };

@@ -154,7 +154,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				if (!uuid) {
 					setLoadingInfo({
 						state: 'error',
-						message: t('De collectie kon niet worden gevonden'),
+						message: t(
+							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+						),
 						icon: 'alert-triangle',
 					});
 					return;
@@ -201,7 +203,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				if (!collectionObj) {
 					setLoadingInfo({
 						state: 'error',
-						message: t('De collectie kon niet worden gevonden'),
+						message: t(
+							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+						),
 						icon: 'search',
 					});
 					return;
@@ -224,7 +228,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Er ging iets mis tijdens het ophalen van de collectie'),
+					message: t(
+						'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
+					),
 					icon: 'alert-triangle',
 				});
 			}
@@ -244,7 +250,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// 					index: 'collections',
 	// 					limit: 4,
 	// 				});
-	// 				toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
+	// 				toastService.danger(t('collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'));
 	// 			});
 	// 	}
 	// }, [relatedCollections, t, collectionId]);
@@ -275,10 +281,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService.success(t('De collectie werd succesvol verwijderd.'));
+			toastService.success(
+				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
+			);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(t('Het verwijderen van de collectie is mislukt.'));
+			toastService.danger(
+				t('collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt')
+			);
 		}
 	};
 
@@ -296,7 +306,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					if (!collection) {
 						toastService.danger(
 							t(
-								'De collectie kan niet gekopieerd worden omdat deze nog niet is opgehaald van de database'
+								'collection/views/collection-detail___de-collectie-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 							)
 						);
 						return;
@@ -314,10 +324,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						history
 					);
 					setCollection(duplicateCollection);
-					toastService.success(t('De collectie is gekopieerd, u kijkt nu naar de kopie.'));
+					toastService.success(
+						t(
+							'collection/views/collection-detail___de-collectie-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
+						)
+					);
 				} catch (err) {
 					console.error('Failed to copy collection', err, { originalCollection: collection });
-					toastService.danger(t('Het kopieren van de collectie is mislukt'));
+					toastService.danger(
+						t('collection/views/collection-detail___het-kopieren-van-de-collectie-is-mislukt')
+					);
 				}
 				break;
 
@@ -379,13 +395,27 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
-			createDropdownMenuItem('createAssignment', t('Maak opdracht'), 'clipboard'),
-			createDropdownMenuItem('addToBundle', t('Voeg toe aan bundel'), 'plus'),
+			createDropdownMenuItem(
+				'createAssignment',
+				t('collection/views/collection-detail___maak-opdracht'),
+				'clipboard'
+			),
+			createDropdownMenuItem(
+				'addToBundle',
+				t('collection/views/collection-detail___voeg-toe-aan-bundel'),
+				'plus'
+			),
 			...(permissions.canCreateCollections
-				? [createDropdownMenuItem('duplicate', t('Dupliceer'), 'copy')]
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('collection/views/collection-detail___dupliceer'),
+							'copy'
+						),
+				  ]
 				: []),
 			...(permissions.canDeleteCollections
-				? [createDropdownMenuItem('delete', t('Verwijder'))]
+				? [createDropdownMenuItem('delete', t('collection/views/collection-detail___verwijder'))]
 				: []),
 		];
 		return (
@@ -594,8 +624,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					/>
 				)}
 				<DeleteObjectModal
-					title={t('Ben je zeker dat je deze collectie wil verwijderen?')}
-					body={t('Deze actie kan niet ongedaan gemaakt worden')}
+					title={t(
+						'collection/views/collection-detail___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
+					)}
+					body={t(
+						'collection/views/collection-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => onDeleteCollection()}

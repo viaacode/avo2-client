@@ -115,7 +115,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		// 				index: 'bundles',
 		// 				limit: 4,
 		// 			});
-		// 			toastService.danger(t('Het ophalen van de gerelateerde bundels is mislukt'));
+		// 			toastService.danger(t('bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'));
 		// 		});
 		// }
 	}, [bundleId, relatedBundles, t, user]);
@@ -153,7 +153,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			if (!bundleObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: t('De bundel kon niet worden gevonden'),
+					message: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
 					icon: 'search',
 				});
 			}
@@ -170,7 +170,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Er ging iets mis tijdens het ophalen van de bundel'),
+				message: t(
+					'bundle/views/bundle-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-bundel'
+				),
 				icon: 'alert-triangle',
 			});
 		});
@@ -198,10 +200,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService.success(t('De bundel werd succesvol verwijderd.'));
+			toastService.success(t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd'));
 		} catch (err) {
 			console.error(err);
-			toastService.danger(t('Het verwijderen van de bundel is mislukt.'));
+			toastService.danger(
+				t('bundle/views/bundle-detail___het-verwijderen-van-de-bundel-is-mislukt')
+			);
 		}
 	};
 
@@ -218,7 +222,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					if (!bundle) {
 						toastService.danger(
 							t(
-								'De bundel kan niet gekopieerd worden omdat deze nog niet is opgehaald van de database'
+								'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 							)
 						);
 						return;
@@ -236,10 +240,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						history
 					);
 					setBundle(duplicateCollection);
-					toastService.success(t('De bundel is gekopieerd, u kijkt nu naar de kopie.'));
+					toastService.success(
+						t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
+					);
 				} catch (err) {
 					console.error('Failed to copy bundle', err, { originalBundle: bundle });
-					toastService.danger(t('Het kopieren van de bundel is mislukt'));
+					toastService.danger(
+						t('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
+					);
 				}
 				break;
 
@@ -254,7 +262,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			return (
 				<Spacer margin="left-small">
 					<p className="c-body-1">
-						<Trans>De gerelateerde bundels konden niet worden opgehaald.</Trans>
+						<Trans i18nKey="bundle/views/bundle-detail___de-gerelateerde-bundels-konden-niet-worden-opgehaald">
+							De gerelateerde bundels konden niet worden opgehaald.
+						</Trans>
 					</p>
 				</Spacer>
 			);
@@ -279,7 +289,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							<Thumbnail
 								category="bundle"
 								src={relatedBundle.thumbnail_path}
-								meta={t('{{numOfCollectionFragments}} items', {
+								meta={t('bundle/views/bundle-detail___num-of-collection-fragments-items', {
 									numOfCollectionFragments: 3 /*relatedBundle.numOfCollectionFragments*/,
 								})}
 							/>
@@ -359,12 +369,18 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 		const BUNDLE_DROPDOWN_ITEMS = [
 			...(permissions.canCreateBundles
-				? [createDropdownMenuItem('duplicate', t('Dupliceer'), 'copy')]
+				? [createDropdownMenuItem('duplicate', t('bundle/views/bundle-detail___dupliceer'), 'copy')]
 				: []),
-			...(permissions.canDeleteBundles ? [createDropdownMenuItem('delete', t('Verwijder'))] : []),
+			...(permissions.canDeleteBundles
+				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
+				: []),
 		];
 
-		const organisationName = get(bundle, 'organisation.name', t('Onbekende uitgever'));
+		const organisationName = get(
+			bundle,
+			'organisation.name',
+			t('bundle/views/bundle-detail___onbekende-uitgever')
+		);
 		const organisationLogo = get(bundle, 'organisation.logo_url', null);
 
 		return (
@@ -382,7 +398,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 									<ToolbarLeft>
 										<ToolbarItem>
 											<span className="c-overline u-text-muted">
-												{is_public ? t('Openbare bundel') : t('Prive bundel')}
+												{is_public
+													? t('bundle/views/bundle-detail___openbare-bundel')
+													: t('bundle/views/bundle-detail___prive-bundel')}
 											</span>
 											<Spacer margin="top-small">
 												<h1 className="c-h1 u-m-0">{title}</h1>
@@ -393,11 +411,15 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										<ToolbarItem>
 											<ButtonToolbar>
 												<Button
-													label={t('Delen')}
+													label={t('bundle/views/bundle-detail___delen')}
 													onClick={() => setIsShareModalOpen(true)}
 													type="secondary"
 												/>
-												<Button label={t('Bewerken')} onClick={onEditBundle} type="primary" />
+												<Button
+													label={t('bundle/views/bundle-detail___bewerken')}
+													onClick={onEditBundle}
+													type="primary"
+												/>
 												<ControlledDropdown
 													isOpen={isOptionsMenuOpen}
 													menuWidth="fit-content"
@@ -445,7 +467,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				<Container mode="vertical" background="alt">
 					<Container mode="horizontal">
 						<BlockHeading type="h3">
-							<Trans>Aanbevolen bundels</Trans>
+							<Trans i18nKey="bundle/views/bundle-detail___aanbevolen-bundels">
+								Aanbevolen bundels
+							</Trans>
 						</BlockHeading>
 						<div className="c-media-card-list">
 							<Grid>{renderRelatedBundles()}</Grid>
@@ -465,8 +489,8 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					/>
 				)}
 				<DeleteObjectModal
-					title={t('Ben je zeker dat je deze bundel wil verwijderen?')}
-					body={t('Deze actie kan niet ongedaan gemaakt worden')}
+					title={t('bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen')}
+					body={t('bundle/views/bundle-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden')}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => onDeleteBundle()}

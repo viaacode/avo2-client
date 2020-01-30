@@ -19,16 +19,19 @@ export const INITIAL_IFRAME_BLOCK_STATE = (position: number): DefaultContentBloc
 	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.IFrame, position);
 
 export const IFRAME_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('IFrame'),
+	name: i18n.t('admin/content-block/helpers/generators/iframe___i-frame'),
 	components: {
 		state: INITIAL_IFRAME_BLOCK_COMPONENT_STATE(),
 		fields: {
-			title: TEXT_FIELD(i18n.t('Titel is verplicht'), {
-				label: i18n.t('Titel'),
-				editorType: ContentBlockEditor.TextInput,
-			}),
-			src: TEXT_FIELD(i18n.t('URL is verplicht'), {
-				label: i18n.t('URL'),
+			title: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/iframe___titel-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/iframe___titel'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
+			src: TEXT_FIELD(i18n.t('admin/content-block/helpers/generators/iframe___url-is-verplicht'), {
+				label: i18n.t('admin/content-block/helpers/generators/iframe___url'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 		},
