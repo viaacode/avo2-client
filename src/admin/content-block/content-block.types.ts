@@ -15,6 +15,8 @@ export type AlignOptions = 'left' | 'right' | 'center';
 
 export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 
+export type ButtonTypeOptions = 'primary' | 'secondary';
+
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
 	index: number;
@@ -73,6 +75,7 @@ export enum ContentBlockEditor {
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
 	IconPicker = 'IconPicker',
+	ContentPicker = 'ContentPicker',
 }
 
 export interface ContentBlockFormError {
@@ -116,7 +119,8 @@ export interface RichTextBlockComponentState {
 
 export interface ButtonsBlockComponentState {
 	label: string;
-	// TODO: button actions;
+	icon?: IconName;
+	type?: ButtonType;
 }
 
 export interface IntroBlockComponentState {
@@ -130,7 +134,6 @@ export interface CTAsBlockComponentState {
 	headingType: HeadingLevelOptions;
 	content: string | string[];
 	buttonLabel: string;
-	buttonOnClick: (event: MouseEvent<HTMLElement>) => void;
 	buttonIcon?: IconName;
 	buttonType?: ButtonType;
 }

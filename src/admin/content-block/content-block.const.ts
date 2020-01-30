@@ -5,10 +5,13 @@ import { IconName, Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-c
 import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
 import { ReactSelectOption } from '../../shared/types';
+// TODO: Move to shared components folder for admin.
+import { ContentPicker } from '../content/components/ContentPicker/ContentPicker';
 
 import { AlignSelect, ColorSelect } from './components';
 import {
 	AlignOptions,
+	ButtonTypeOptions,
 	ContentBlockBackgroundColor,
 	ContentBlockType,
 	HeadingLevelOptions,
@@ -65,6 +68,7 @@ export const EDITOR_TYPES_MAP = {
 	TextInput,
 	WYSIWYG,
 	IconPicker,
+	ContentPicker,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -98,3 +102,8 @@ export const CTA_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Object
 	{ label: i18n.t('admin/menu/menu___aktetas'), value: 'briefcase' },
 	// TODO: Fix icon list
 ]);
+
+export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
+	{ label: i18n.t('Primair'), value: 'primary' },
+	{ label: i18n.t('Secundair'), value: 'secondary' },
+];

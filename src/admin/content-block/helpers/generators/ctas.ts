@@ -1,6 +1,10 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { CTA_ICON_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
+import {
+	BUTTON_TYPE_OPTIONS,
+	CTA_ICON_OPTIONS,
+	HEADING_LEVEL_OPTIONS,
+} from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -12,11 +16,11 @@ import {
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
+	headingType: 'h2',
 	heading: '',
 	content: '',
-	headingType: 'h2',
+	buttonType: 'secondary',
 	buttonLabel: '',
-	buttonOnClick: () => {},
 };
 
 export const INITIAL_CTAS_BLOCK_COMPONENT_STATES = (): CTAsBlockComponentState[] => [
@@ -38,23 +42,30 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 		state: INITIAL_CTAS_BLOCK_COMPONENT_STATES(),
 		fields: {
 			headingType: {
-				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
+				label: i18n.t('Titel: Stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: HEADING_LEVEL_OPTIONS,
 				},
 			},
 			heading: TEXT_FIELD(i18n.t('Titel is verplicht'), {
-				label: i18n.t('Titel'),
+				label: i18n.t('Titel: Tekst'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			content: TEXT_FIELD(),
+			buttonType: {
+				label: i18n.t('Knop: Type'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: BUTTON_TYPE_OPTIONS,
+				},
+			},
 			buttonLabel: TEXT_FIELD(i18n.t('Knoptekst is verplicht'), {
-				label: i18n.t('Knop tekst'),
+				label: i18n.t('Knop: Tekst'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			buttonIcon: {
-				label: i18n.t('Knop icoon'),
+				label: i18n.t('Knop: Icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
 					options: CTA_ICON_OPTIONS,

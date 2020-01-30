@@ -1,5 +1,7 @@
 import i18n from '../../../../shared/translations/i18n';
 
+import { BUTTON_TYPE_OPTIONS, CTA_ICON_OPTIONS } from '../../content-block.const';
+
 import {
 	ButtonsBlockComponentState,
 	ContentBlockBackgroundColor,
@@ -18,6 +20,7 @@ import {
 export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentState[] => [
 	{
 		label: '',
+		type: 'primary',
 	},
 ];
 
@@ -33,12 +36,24 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		},
 		state: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES(),
 		fields: {
-			label: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/buttons___knoptekst-is-verplicht'),
-				{
-					editorType: ContentBlockEditor.TextInput,
-				}
-			),
+			type: {
+				label: i18n.t('Type'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: BUTTON_TYPE_OPTIONS,
+				},
+			},
+			label: TEXT_FIELD(i18n.t('Knoptekst is verplicht'), {
+				label: i18n.t('Tekst'),
+				editorType: ContentBlockEditor.TextInput,
+			}),
+			icon: {
+				label: i18n.t('Icoon'),
+				editorType: ContentBlockEditor.IconPicker,
+				editorProps: {
+					options: CTA_ICON_OPTIONS,
+				},
+			},
 		},
 	},
 	block: {
