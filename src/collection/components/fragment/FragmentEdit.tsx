@@ -1,4 +1,4 @@
-import { get, isNil, orderBy } from 'lodash-es';
+import { debounce, get, isNil, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
@@ -33,10 +33,10 @@ import {
 } from '../../../authentication/helpers/permission-service';
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
-import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
+import { createDropdownMenuItem, getEnv, stripHtml } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService from '../../../shared/services/toast-service';
-import { getFragmentProperty, isMediaFragment } from '../../helpers';
+import { isMediaFragment } from '../../helpers';
 
 import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
@@ -69,6 +69,18 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 }) => {
 	const [t] = useTranslation();
 
+	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
+	const [title, setTitle] = useState<string>(
+		fragment.use_custom_fields ? fragment.custom_title : get(fragment, 'item_meta.title', '')
+	);
+	const [description, setDescription] = useState<string>(
+		convertToHtml(
+			fragment.use_custom_fields
+				? fragment.custom_description
+				: get(fragment, 'item_meta.description', '')
+		)
+	);
+	const [] = useState<string>();
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -114,6 +126,35 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			});
 	}, [user, t]);
 
+	const setUseCustomFieldsWithTextFields = (useCustom: boolean) => {
+		if (!useCustom) {
+			// Do not use custom fields => reset the value back to the original item fields
+			setDescription(get(fragment, 'item_meta.description', ''));
+			setTitle(get(fragment, 'item_meta.title', ''));
+		} else {
+			setDescription(fragment.custom_description || '');
+			setTitle(fragment.custom_title || '');
+		}
+		setUseCustomFields(useCustom);
+	};
+
+	const debouncedOnFragmentChanged = debounce(
+		() => {
+			onFragmentChanged({
+				...fragment,
+				use_custom_fields: useCustomFields,
+				custom_title: title,
+				custom_description: description,
+			});
+		},
+		10,
+		{ leading: false, trailing: true }
+	);
+
+	useEffect(() => {
+		debouncedOnFragmentChanged();
+	}, [useCustomFields, title, description]);
+
 	const initFlowPlayer = () =>
 		!playerTicket &&
 		!isCollection &&
@@ -122,38 +163,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			.catch(() => toastService.danger('Play ticket kon niet opgehaald worden.'));
 
 	const itemMetaData = (fragment as any).item_meta;
-
-	// Listeners
-	const onChangeToggle = () => {
-		if (fragment.use_custom_fields) {
-			// user wants to disable custom fields
-			onFragmentChanged({
-				...fragment,
-				custom_title: null,
-				custom_description: null,
-				use_custom_fields: false,
-			});
-		} else {
-			// user wants to enable custom fields
-			onFragmentChanged({
-				...fragment,
-				custom_title: '',
-				custom_description: '',
-				use_custom_fields: true,
-			});
-		}
-	};
-
-	const onChangeText = (field: 'title' | 'description', value: string) => {
-		const oldValue: string =
-			fragment[`custom_${field}` as 'custom_title' | 'custom_description'] || '';
-		if (oldValue !== value) {
-			onFragmentChanged({
-				...fragment,
-				[`custom_${field}`]: value,
-			});
-		}
-	};
 
 	const onDeleteFragment = (fragmentId: number) => {
 		setOpenOptionsId(null);
@@ -255,8 +264,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					>
 						<Toggle
 							id="customFields"
-							checked={fragment.use_custom_fields}
-							onChange={onChangeToggle}
+							checked={useCustomFields}
+							onChange={setUseCustomFieldsWithTextFields}
 						/>
 					</FormGroup>
 				)}
@@ -267,11 +276,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
-						value={getFragmentProperty(itemMetaData, fragment, fragment.use_custom_fields, 'title')}
+						value={title}
 						placeholder={t(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
-						onChange={(value: string) => onChangeText('title', value)}
+						onChange={setTitle}
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
@@ -286,15 +295,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 							placeholder={t(
 								'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 							)}
-							data={convertToHtml(
-								getFragmentProperty(
-									itemMetaData,
-									fragment,
-									fragment.use_custom_fields,
-									'description'
-								)
-							)}
-							onChange={(value: string) => onChangeText('description', value)}
+							data={description}
+							onChange={setDescription}
 							disabled={disableVideoFields}
 						/>
 					)}
