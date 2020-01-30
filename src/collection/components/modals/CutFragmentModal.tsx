@@ -53,7 +53,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			fragment.end_oc || toSeconds(itemMetaData.duration, true) || 0
 		),
 	};
-	const itemMeta: Avo.Item.Item = fragment.item_meta as Avo.Item.Item;
+	const itemMeta = fragment.item_meta as Avo.Item.Item;
 
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [fragmentStart, setFragmentStart] = useState<number>(start);

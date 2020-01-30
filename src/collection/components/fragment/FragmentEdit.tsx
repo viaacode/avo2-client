@@ -178,7 +178,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		toastService.success(
 			!isCollection
 				? t('Fragment is succesvol verwijderd uit de collectie')
-				: t('Collectie is succesvol verwijdert uit de bundel')
+				: t('Collectie is succesvol verwijderd uit de bundel')
 		);
 	};
 
