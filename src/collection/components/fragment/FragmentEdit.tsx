@@ -369,8 +369,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			/>
 
 			<DeleteObjectModal
-				title={`Ben je zeker dat je dit fragment wil verwijderen?`}
-				body="Deze actie kan niet ongedaan gemaakt worden"
+				title={t('Ben je zeker dat je dit fragment wil verwijderen?')}
+				body={t('Deze actie kan niet ongedaan gemaakt worden')}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setDeleteModalOpen(false)}
 				deleteObjectCallback={() => onDeleteFragment(fragment.id)}

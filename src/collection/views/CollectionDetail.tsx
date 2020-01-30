@@ -35,6 +35,8 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views';
 import {
 	ControlledDropdown,
 	DataQueryComponent,
@@ -60,7 +62,12 @@ import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { ErrorView } from '../../error/views';
 import { COLLECTION_PATH } from '../collection.const';
-import { DELETE_COLLECTION, GET_COLLECTION_BY_ID } from '../collection.gql';
+import {
+	DELETE_COLLECTION,
+	GET_COLLECTION_BY_ID,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENTS,
+} from '../collection.gql';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
@@ -68,6 +75,7 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 
 import './CollectionDetail.scss';
 
+export const COLLECTION_COPY = 'Kopie %index%: ';
 const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -105,6 +113,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
+	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
+	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
@@ -223,7 +233,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
-	const onClickDropdownItem = (item: ReactText) => {
+	const onClickDropdownItem = async (item: ReactText) => {
 		switch (item) {
 			case 'createAssignment':
 				redirectToClientPage(
@@ -231,12 +241,44 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					history
 				);
 				break;
+
+			case 'duplicate':
+				try {
+					if (!collection) {
+						toastService.danger(
+							t(
+								'De collectie kan niet gekopieerd worden omdat deze nog niet is opgehaald van de database'
+							)
+						);
+						return;
+					}
+					const duplicateCollection = await CollectionService.duplicateCollection(
+						collection,
+						user,
+						COLLECTION_COPY,
+						triggerCollectionInsert,
+						triggerCollectionFragmentsInsert
+					);
+					redirectToClientPage(
+						buildLink(APP_PATH.COLLECTION_DETAIL, { id: duplicateCollection.id }),
+						history
+					);
+					setIsOptionsMenuOpen(false);
+					toastService.success(t('De collectie is gekopieerd, u kijkt nu naar de kopie.'));
+				} catch (err) {
+					console.error('Failed to copy collection', err, { originalCollection: collection });
+					toastService.danger(t('Het kopieren van de collectie is mislukt'));
+				}
+				break;
+
 			case 'addToBundle':
 				setIsAddToBundleModalOpen(true);
 				break;
+
 			case 'delete':
 				setIsDeleteModalOpen(true);
 				break;
+
 			default:
 				return null;
 		}
@@ -492,8 +534,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					/>
 				)}
 				<DeleteObjectModal
-					title={`Ben je zeker dat de collectie "${title}" wil verwijderen?`}
-					body="Deze actie kan niet ongedaan gemaakt worden"
+					title={t('Ben je zeker dat je deze collectie wil verwijderen?')}
+					body={t('Deze actie kan niet ongedaan gemaakt worden')}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => onDeleteCollection()}

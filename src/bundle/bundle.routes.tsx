@@ -9,8 +9,8 @@ export const renderBundleRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		component={BundleDetail}
 		exact
-		path={BUNDLE_PATH.BUNDLES_DETAIL}
-		key={BUNDLE_PATH.BUNDLES_DETAIL}
+		path={BUNDLE_PATH.BUNDLE_DETAIL}
+		key={BUNDLE_PATH.BUNDLE_DETAIL}
 	/>,
 ];
 

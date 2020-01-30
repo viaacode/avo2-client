@@ -37,6 +37,7 @@ import {
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../../../collection/collection.gql';
 import { CollectionService } from '../../../collection/collection.service';
+import { ContentTypeNumber } from '../../../collection/collection.types';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
@@ -203,7 +204,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				thumbnail_path: null,
 				is_public: false,
 				owner_profile_id: getProfileId(user),
-				type_id: 3,
+				type_id: ContentTypeNumber.collection,
 			};
 			try {
 				newCollection.thumbnail_path = await getThumbnailForCollection({

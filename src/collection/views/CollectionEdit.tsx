@@ -490,20 +490,20 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 					{...rest}
 				/>
 				<DeleteObjectModal
-					title={`Ben je zeker dat de collectie "${title}" wil verwijderen?`}
-					body="Deze actie kan niet ongedaan gemaakt worden"
+					title={t('Ben je zeker dat je deze collectie wil verwijderen?')}
+					body={t('Deze actie kan niet ongedaan gemaakt worden')}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
 				/>
 				<InputModal
 					title={t('collection/views/collection-edit___hernoem-deze-collectie')}
-					inputLabel="Naam collectie:"
+					inputLabel={t('Naam collectie:')}
 					inputValue={title}
 					isOpen={isRenameModalOpen}
 					onClose={() => setIsRenameModalOpen(false)}
 					inputCallback={onRenameCollection}
-					emptyMessage="Gelieve een collectie-titel in te vullen."
+					emptyMessage={t('Gelieve een collectie-titel in te vullen.')}
 				/>
 			</>
 		);
@@ -515,7 +515,7 @@ const CollectionEdit: FunctionComponent<CollectionEditProps> = ({
 			variables={{ id: collectionId }}
 			resultPath="app_collections[0]"
 			renderData={renderCollectionEdit}
-			notFoundMessage="Deze collectie werd niet gevonden"
+			notFoundMessage={t('Deze collectie werd niet gevonden')}
 			actionButtons={['home']}
 		/>
 	);
