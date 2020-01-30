@@ -185,8 +185,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 		toastService.success(
 			!isCollection
-				? t('Fragment is succesvol verwijderd uit de collectie')
-				: t('Collectie is succesvol verwijderd uit de bundel')
+				? t(
+						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
+				  )
+				: t(
+						'collection/components/fragment/fragment-edit___collectie-is-succesvol-verwijderd-uit-de-bundel'
+				  )
 		);
 	};
 
@@ -386,10 +390,16 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			<DeleteObjectModal
 				title={
 					!isCollection
-						? t('Ben je zeker dat je dit fragment wil verwijderen uit deze collectie?')
-						: t('Ben je zeker dat je de collectie wil verwijderen uit deze bundel?')
+						? t(
+								'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen-uit-deze-collectie'
+						  )
+						: t(
+								'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-collectie-wil-verwijderen-uit-deze-bundel'
+						  )
 				}
-				body={t('Deze actie kan niet ongedaan gemaakt worden')}
+				body={t(
+					'collection/components/fragment/fragment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setDeleteModalOpen(false)}
 				deleteObjectCallback={() => onDeleteFragment(fragment.id)}

@@ -54,7 +54,7 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 					{actionButtons.includes('home') && (
 						<Button
 							onClick={() => redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)}
-							label={t('Ga terug naar de homepagina')}
+							label={t('error/views/error-view___ga-terug-naar-de-homepagina')}
 						/>
 					)}
 				</Blankslate>

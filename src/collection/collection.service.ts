@@ -498,7 +498,7 @@ export class CollectionService {
 		triggerCollectionFragmentInsert: any
 	) {
 		if (!collection) {
-			toastService.danger(i18n.t('De collectie was niet ingesteld'));
+			toastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
 			return;
 		}
 
@@ -552,8 +552,8 @@ export class CollectionService {
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
 			toastService.danger([
-				i18n.t('Het ophalen van de eerste video thumbnail is mislukt.'),
-				i18n.t('De collectie zal opgeslagen worden zonder thumbnail.'),
+				i18n.t('collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'),
+				i18n.t('collection/collection___de-collectie-zal-opgeslagen-worden-zonder-thumbnail'),
 			]);
 			return null;
 		}
