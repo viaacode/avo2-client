@@ -8,10 +8,12 @@ import {
 	HeadingLevelOptions,
 } from './content-block.types';
 import {
+	ACCORDIONS_BLOCK_CONFIG,
 	BUTTONS_BLOCK_CONFIG,
 	CTAS_BLOCK_CONFIG,
 	HEADING_BLOCK_CONFIG,
 	IFRAME_BLOCK_CONFIG,
+	INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
 	INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	INITIAL_HEADING_BLOCK_COMPONENT_STATE,
@@ -50,6 +52,7 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{ label: 'Intro', value: ContentBlockType.Intro },
 	{ label: '2 CTAs', value: ContentBlockType.CTAs },
 	{ label: 'IFrame', value: ContentBlockType.IFrame },
+	{ label: 'Accordions', value: ContentBlockType.Accordions },
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -68,6 +71,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
@@ -78,6 +82,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 };
 
 // Heading
