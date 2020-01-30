@@ -10,9 +10,6 @@ import {
 	DutchContentType,
 	EnglishContentType,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
-import { ValueOf } from '../shared/types';
 
 export type CollectionOverviewTableColumns =
 	| 'thumbnail'

@@ -1,4 +1,4 @@
-import { get, isNil, isNull, orderBy } from 'lodash-es';
+import { get, isNil, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
