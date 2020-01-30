@@ -351,7 +351,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService.success('De url is naar het klembord gekopieerd');
+		toastService.success(t('De url is naar het klembord gekopieerd'));
 
 		if (currentAssignment.id) {
 			trackEvents(
