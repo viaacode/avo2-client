@@ -98,7 +98,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		trackEvents(
 			{
 				object: bundleId,
-				object_type: 'bundles' as any, // TODO remove cast after update typings
+				object_type: 'bundels' as any, // TODO remove cast after update typings
 				message: `Gebruiker ${getProfileName(
 					user
 				)} heeft de pagina voor collectie ${bundleId} bekeken`,
@@ -107,18 +107,18 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			user
 		);
 
-		if (!relatedBundles) {
-			getRelatedItems(bundleId, 'bundles', 4)
-				.then((relatedBundles: Avo.Search.ResultItem[]) => setRelatedBundles(relatedBundles))
-				.catch((err: any) => {
-					console.error('Failed to get related items', err, {
-						bundleId,
-						index: 'bundles',
-						limit: 4,
-					});
-					toastService.danger(t('Het ophalen van de gerelateerde bundels is mislukt'));
-				});
-		}
+		// if (!relatedBundles) {
+		// 	getRelatedItems(bundleId, 'bundles', 4)
+		// 		.then((relatedBundles: Avo.Search.ResultItem[]) => setRelatedBundles(relatedBundles))
+		// 		.catch((err: any) => {
+		// 			console.error('Failed to get related items', err, {
+		// 				bundleId,
+		// 				index: 'bundles',
+		// 				limit: 4,
+		// 			});
+		// 			toastService.danger(t('Het ophalen van de gerelateerde bundels is mislukt'));
+		// 		});
+		// }
 	}, [bundleId, relatedBundles, t, user]);
 
 	useEffect(() => {
@@ -166,7 +166,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			});
 			setLoadingInfo({
 				state: 'error',
-				message: t('Er ging iets mis tijdens het ophalen van de collectie'),
+				message: t('Er ging iets mis tijdens het ophalen van de bundel'),
 				icon: 'alert-triangle',
 			});
 		});

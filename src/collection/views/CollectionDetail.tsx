@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
-import { isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import { get, isEmpty } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 
@@ -54,17 +54,18 @@ import {
 	generateSearchLinks,
 	renderAvatar,
 } from '../../shared/helpers';
-import { ApolloCacheManager } from '../../shared/services/data-service';
+import { isUuid } from '../../shared/helpers/uuid';
+import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { ErrorView } from '../../error/views';
 import { COLLECTION_PATH } from '../collection.const';
 import {
 	DELETE_COLLECTION,
 	GET_COLLECTION_BY_ID,
+	GET_COLLECTION_ID_BY_AVO1_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../collection.gql';
@@ -89,7 +90,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [t] = useTranslation();
 
 	// State
-	const [collectionId] = useState(match.params.id);
+	const [collectionId, setCollectionId] = useState(match.params.id);
 	const [collection, setCollection] = useState<Avo.Collection.Collection | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -116,60 +117,21 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
-	const checkPermissionsAndGetCollection = useCallback(async () => {
-		try {
-			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionNames.VIEW_COLLECTIONS },
-						{ name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT, obj: collectionId },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: collectionId },
-						{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: collectionId },
-						{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
-					],
-					user
-				),
-				PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
-				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
-			]);
-			const permissionObj = {
-				canViewCollections: rawPermissions[0],
-				canEditCollections: rawPermissions[1],
-				canDeleteCollections: rawPermissions[2],
-				canCreateCollections: rawPermissions[3],
-				canViewItems: rawPermissions[4],
-			};
-			const collectionObj = await CollectionService.getCollectionWithItems(
-				collectionId,
-				'collection',
-				setLoadingInfo,
-				t
-			);
-
-			setPermissions(permissionObj);
-			setCollection(collectionObj || null);
-		} catch (err) {
-			console.error('Failed to check permissions or get collection from the database', err, {
-				collectionId,
-			});
-			setLoadingInfo({
-				state: 'error',
-				message: t('Er ging iets mis tijdens het ophalen van de collectie'),
-				icon: 'alert-triangle',
-			});
+	const getCollectionIdByAvo1Id = async (id: string) => {
+		if (isUuid(id)) {
+			return id;
 		}
-	}, [collectionId, t, user]);
+		const response = await dataService.query({
+			query: GET_COLLECTION_ID_BY_AVO1_ID,
+			variables: {
+				avo1Id: id,
+			},
+		});
+		if (!response) {
+			return null;
+		}
+		return get(response, 'data.app_collections[0].id', null);
+	};
 
 	useEffect(() => {
 		trackEvents(
@@ -183,7 +145,83 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			},
 			user
 		);
+	});
 
+	useEffect(() => {
+		const checkPermissionsAndGetCollection = async () => {
+			try {
+				const rawPermissions = await Promise.all([
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionNames.VIEW_COLLECTIONS },
+							{ name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT, obj: collectionId },
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: collectionId },
+							{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: collectionId },
+							{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
+						],
+						user
+					),
+					PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
+					PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+				]);
+				const permissionObj = {
+					canViewCollections: rawPermissions[0],
+					canEditCollections: rawPermissions[1],
+					canDeleteCollections: rawPermissions[2],
+					canCreateCollections: rawPermissions[3],
+					canViewItems: rawPermissions[4],
+				};
+				const uuid = await getCollectionIdByAvo1Id(collectionId);
+				if (!uuid) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('De collectie kon niet worden gevonden'),
+						icon: 'alert-triangle',
+					});
+					return;
+				}
+				if (collectionId !== uuid) {
+					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
+					// and continue loading the collection
+					redirectToClientPage(buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }), history);
+				}
+				const collectionObj = await CollectionService.getCollectionWithItems(
+					uuid,
+					'collection',
+					setLoadingInfo,
+					t
+				);
+
+				setCollectionId(uuid);
+				setPermissions(permissionObj);
+				setCollection(collectionObj || null);
+			} catch (err) {
+				console.error('Failed to check permissions or get collection from the database', err, {
+					collectionId,
+				});
+				setLoadingInfo({
+					state: 'error',
+					message: t('Er ging iets mis tijdens het ophalen van de collectie'),
+					icon: 'alert-triangle',
+				});
+			}
+		};
+
+		checkPermissionsAndGetCollection();
+	}, [collectionId, t, user]);
+
+	useEffect(() => {
 		if (!relatedCollections) {
 			getRelatedItems(collectionId, 'collections', 4)
 				.then(relatedItems => setRelatedCollections(relatedItems))
@@ -196,9 +234,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					toastService.danger(t('Het ophalen van de gerelateerde collecties is mislukt'));
 				});
 		}
-
-		checkPermissionsAndGetCollection();
-	}, [checkPermissionsAndGetCollection, collectionId, relatedCollections, t, user]);
+	}, [relatedCollections, t]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {

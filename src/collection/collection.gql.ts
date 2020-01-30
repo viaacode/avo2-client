@@ -1,8 +1,16 @@
 import { gql } from 'apollo-boost';
 
 // TODO: Reduce to only what we need.
+export const GET_COLLECTION_ID_BY_AVO1_ID = gql`
+	query getCollectionIdByAvo1Id($avo1Id: String!) {
+		app_collections(where: { avo1_id: { _eq: $avo1Id } }) {
+			id
+		}
+	}
+`;
+
 export const GET_COLLECTION_BY_ID = gql`
-	query getCollectionById($id: Int!) {
+	query getCollectionById($id: uuid!) {
 		app_collections(where: { id: { _eq: $id } }) {
 			id
 			collection_fragment_ids

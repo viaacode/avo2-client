@@ -36,9 +36,9 @@ import {
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../../collection.gql';
 import { CollectionService } from '../../collection.service';
+import { ContentTypeNumber } from '../../collection.types';
 
 import './AddToBundleModal.scss';
-import { ContentTypeNumber } from '../../collection.types';
 
 interface AddToBundleModalProps extends DefaultSecureRouteProps {
 	collectionId: string;

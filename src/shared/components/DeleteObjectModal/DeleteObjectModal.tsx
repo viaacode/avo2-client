@@ -10,9 +10,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import i18n from '../../translations/i18n';
 import { sanitize } from '../../helpers/sanitize';
-import sanitizePresets from '../../helpers/sanitize/presets';
+import i18n from '../../translations/i18n';
 
 interface DeleteObjectModalProps {
 	title?: string;
