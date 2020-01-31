@@ -10,7 +10,13 @@ import {
 	ContentWidth,
 	PickerTypeOption,
 } from './content.types';
-import { fetchCollections, fetchContentPages, fetchInternalLinks, fetchItems } from './helpers';
+import {
+	fetchBundles,
+	fetchCollections,
+	fetchContentPages,
+	fetchInternalLinks,
+	fetchItems,
+} from './helpers';
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
@@ -107,6 +113,12 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 		label: i18n.t('admin/content/content___items'),
 		disabled: false,
 		fetch: fetchItems,
+	},
+	{
+		value: 'BUNDLE',
+		label: i18n.t('Bundels'),
+		disabled: false,
+		fetch: fetchBundles,
 	},
 ];
 

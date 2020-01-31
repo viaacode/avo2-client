@@ -13,6 +13,12 @@ export const fetchCollections = async (limit: number = 5): Promise<PickerSelectI
 	return parseCollections(collections || []);
 };
 
+export const fetchBundles = async (limit: number = 5): Promise<PickerSelectItemGroup> => {
+	const bundles: Avo.Collection.Collection[] | null = await CollectionService.getBundles(limit);
+
+	return parseCollections(bundles || []);
+};
+
 // Parse raw content items to react-select options
 const parseCollections = (raw: Avo.Collection.Collection[]): PickerSelectItemGroup => {
 	const parsedCollections = raw.map(

@@ -23,6 +23,32 @@ import {
 	MenuEditParams,
 } from '../menu.types';
 
+// TODO: Remove once typings 2.10.0 is released.
+export type ContentPickerTypeSchema =
+	| 'CONTENT_PAGE'
+	| 'COLLECTION'
+	| 'ITEM'
+	| 'BUNDLE'
+	| 'DROPDOWN'
+	| 'INTERNAL_LINK'
+	| 'EXTERNAL_LINK';
+
+export interface MenuSchema {
+	id: number;
+	label: string;
+	icon_name: string;
+	description: string | null;
+	// tslint:disable-next-line: prefer-array-literal
+	user_group_ids: Array<number | string> | { [key: string]: string } | null;
+	content_type: ContentPickerTypeSchema | null;
+	content_path: string | number | null;
+	link_target: '_blank' | '_self' | null;
+	position: number;
+	placement: string;
+	created_at: string;
+	updated_at: string;
+}
+
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
@@ -125,7 +151,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		const menuItem: Partial<Avo.Menu.Menu> = {
+		const menuItem: Partial<MenuSchema> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			content_path: menuForm.content_path,

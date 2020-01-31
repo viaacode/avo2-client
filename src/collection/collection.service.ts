@@ -13,6 +13,7 @@ import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
+	GET_BUNDLES,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
@@ -22,7 +23,6 @@ import {
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
 import { ContentTypeNumber } from './collection.types';
 
-// TODO: Translations in errors.
 export class CollectionService {
 	public static async insertCollection(
 		newCollection: Partial<Avo.Collection.Collection>,
@@ -296,7 +296,9 @@ export class CollectionService {
 				user
 			);
 		} catch (err) {
-			console.error('Failed to get good copy title for collection', err, { collectionToInsert });
+			console.error('Failed to get good copy title for collection', err, {
+				collectionToInsert,
+			});
 			// Fallback to simple copy title
 			collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${collectionToInsert.title}`;
 		}
@@ -323,6 +325,19 @@ export class CollectionService {
 		];
 
 		return omit(collection, propertiesToDelete);
+	}
+	public static async getBundles(limit: number): Promise<Avo.Collection.Collection[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_BUNDLES,
+				variables: { limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			console.error('Failed to fetch bundles.', err);
+			throw new CustomError('Het ophalen van de bundels is mislukt.', err);
+		}
 	}
 
 	// TODO: Merge the following two get collections functions.
