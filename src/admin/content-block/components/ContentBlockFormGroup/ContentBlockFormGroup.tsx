@@ -46,7 +46,7 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 	<>
 		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
 			const formGroupOptions = {
-				key: createKey('e', blockIndex, formGroupIndex, stateIndex),
+				key: createKey('form-group', blockIndex, formGroupIndex, stateIndex),
 				label: createFieldEditorLabel(
 					get(config, 'components.name'),
 					formGroup.fields[key].label,
