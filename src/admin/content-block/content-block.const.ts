@@ -93,9 +93,9 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 
 // Options
 export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
-	{ label: 'H2', value: 'h2' },
-	{ label: 'H3', value: 'h3' },
-	{ label: 'H4', value: 'h4' },
+	{ label: i18n.t('H2'), value: 'h2' },
+	{ label: i18n.t('H3'), value: 'h3' },
+	{ label: i18n.t('H4'), value: 'h4' },
 ];
 
 export const CTA_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Object.freeze([
