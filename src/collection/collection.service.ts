@@ -105,6 +105,14 @@ export class CollectionService {
 
 			let newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
 
+			// Remove custom_title and custom_description if user wants to use the item's original title and description
+			(newCollection.collection_fragments || []).forEach((fragment: Avo.Collection.Fragment) => {
+				if (!fragment.use_custom_fields) {
+					delete fragment.custom_title;
+					delete fragment.custom_description;
+				}
+			});
+
 			// Not using lodash default value parameter since the value an be null and
 			// that doesn't default to the default value
 			// only undefined defaults to the default value
@@ -403,12 +411,6 @@ export class CollectionService {
 				// The database ensures that they are sorted by their previous position
 				collectionFragment.position = index;
 
-				// If the fragment doesn't use custom fields, then custom fields should be null
-				if (!collectionFragment.use_custom_fields) {
-					collectionFragment.custom_title = null;
-					collectionFragment.custom_description = null;
-				}
-
 				// Return the external id if it is set
 				// TODO replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
 				if (collectionFragment.external_id !== '-1') {
@@ -433,6 +435,10 @@ export class CollectionService {
 				);
 				if (collectionFragment) {
 					collectionFragment.item_meta = itemInfo;
+					if (!collectionFragment.use_custom_fields) {
+						collectionFragment.custom_description = itemInfo.description;
+						collectionFragment.custom_title = itemInfo.title;
+					}
 				}
 			});
 			return collectionObj;
