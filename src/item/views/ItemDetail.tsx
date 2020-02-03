@@ -47,6 +47,7 @@ import {
 } from '../../collection/collection.types';
 import { ErrorView } from '../../error/views';
 import { DataQueryComponent } from '../../shared/components';
+import ShareThroughEmailModal from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -63,12 +64,17 @@ import toastService from '../../shared/services/toast-service';
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
-import './Item.scss';
-import ShareThroughEmailModal from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
+import './ItemDetail.scss';
 
-interface ItemProps extends DefaultSecureRouteProps<{ id: string }> {}
+interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ...rest }) => {
+const ItemDetail: FunctionComponent<ItemDetailProps> = ({
+	history,
+	match,
+	location,
+	user,
+	...rest
+}) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [t] = useTranslation();
@@ -472,9 +478,10 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 					/>
 				)}
 				<ShareThroughEmailModal
-					title={t('Deel dit item')}
+					modalTitle={t('Deel dit item')}
 					type="item"
-					link={window.location.href}
+					emailLinkHref={window.location.href}
+					emailLinkTitle={itemMetaData.title}
 					isOpen={isShareThroughEmailModalOpen}
 					onClose={() => setIsShareThroughEmailModalOpen(false)}
 				/>
@@ -509,4 +516,4 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	);
 };
 
-export default Item;
+export default ItemDetail;

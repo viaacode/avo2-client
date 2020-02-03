@@ -28,8 +28,11 @@ export async function shareThroughEmail(
 			body: JSON.stringify(body),
 			credentials: 'include',
 		});
-		const reply = await response.json();
-		console.log(reply);
+		if (response.status < 200 || response.status >= 400) {
+			throw new CustomError('Failed to share item through email', null, {
+				response,
+			});
+		}
 		return;
 	} catch (err) {
 		throw new CustomError('Failed to get player ticket', err, {

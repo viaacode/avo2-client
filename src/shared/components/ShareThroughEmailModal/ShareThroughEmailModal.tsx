@@ -9,6 +9,7 @@ import {
 	FlexItem,
 	Modal,
 	ModalBody,
+	Spacer,
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
@@ -20,17 +21,19 @@ import { shareThroughEmail } from '../../helpers/share-through-email';
 import './ShareThroughEmailModal.scss';
 
 interface AddToCollectionModalProps {
-	title: string;
+	modalTitle: string;
 	type: 'item' | 'collection' | 'bundle';
-	link: string;
+	emailLinkHref: string;
+	emailLinkTitle: string;
 	isOpen: boolean;
 	onClose: () => void;
 }
 
 const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
-	title,
+	modalTitle,
 	type,
-	link,
+	emailLinkHref,
+	emailLinkTitle,
 	isOpen,
 	onClose,
 }) => {
@@ -42,13 +45,13 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const sendEmail = async () => {
 		try {
 			setIsProcessing(true);
-			await shareThroughEmail(emailAddress, title, link, type);
+			await shareThroughEmail(emailAddress, emailLinkTitle, emailLinkHref, type);
 			toastService.success(t('De email is verstuurd'));
 		} catch (err) {
 			console.error('Failed to send email to share item', err, {
 				emailAddress,
-				title,
-				link,
+				emailLinkTitle,
+				emailLinkHref,
 				type,
 			});
 			toastService.danger('Het versturen van de email is mislukt');
@@ -57,7 +60,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 	};
 
 	return (
-		<Modal title={title} size="auto" isOpen={isOpen} onClose={onClose} scrollable>
+		<Modal className="m-share-through-email-modal" title={modalTitle} size="medium" isOpen={isOpen} onClose={onClose} scrollable>
 			<ModalBody>
 				<BlockHeading type="h4">
 					<Trans>Kopieer deze publieke link</Trans>
@@ -68,44 +71,55 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 						openen.
 					</Trans>
 				</p>
-				<Box backgroundColor="soft-white">
-					<Flex wrap justify="between" align="baseline">
-						<FlexItem>
-							<a href={link}>{link}</a>
-						</FlexItem>
-						<FlexItem>
-							<Button
-								label={t('Kopieer link')}
-								onClick={() => {
-									copyToClipboard(link);
-									toastService.success(t('De url is naar het klembord gekopieerd'));
-								}}
-							/>
-						</FlexItem>
-					</Flex>
-				</Box>
+				<Spacer margin="top-large">
+					<Box backgroundColor="gray" condensed>
+						<Flex wrap justify="between" align="baseline">
+							<FlexItem className="c-ellipsis">
+								<a href={emailLinkHref}>{emailLinkHref}</a>
+							</FlexItem>
+							<FlexItem shrink>
+								<Spacer margin="left-small">
+									<Button
+										label={t('Kopieer link')}
+										onClick={() => {
+											copyToClipboard(emailLinkHref);
+											toastService.success(t('De url is naar het klembord gekopieerd'));
+										}}
+									/>
+								</Spacer>
+							</FlexItem>
+						</Flex>
+					</Box>
+				</Spacer>
 				<BlockHeading type="h4">
 					<Trans>Stuur een link via email</Trans>
 				</BlockHeading>
 				<p>
 					<Trans>Wij sturen voor jou een mailtje met deze link.</Trans>
 				</p>
-				<Box backgroundColor="soft-white">
-					<Flex wrap justify="between" align="baseline">
-						<FlexItem>
-							<TextInput
-								placeholder={t('Uw e-mailadres...')}
-								value={emailAddress}
-								onChange={setEmailAddress}
-							/>
-						</FlexItem>
-						<FlexItem>
-							<Button type="primary" onClick={sendEmail}>
-								{isProcessing ? <Spinner /> : t('Verzenden')}
-							</Button>
-						</FlexItem>
-					</Flex>
-				</Box>
+				<Spacer margin="top-large">
+					<Box backgroundColor="gray" condensed>
+						<Flex wrap justify="between">
+							<FlexItem>
+								<TextInput
+									placeholder={t('Uw e-mailadres...')}
+									value={emailAddress}
+									onChange={setEmailAddress}
+								/>
+							</FlexItem>
+							<FlexItem shrink>
+								<Spacer margin="left-small">
+									<Button
+										type="primary"
+										onClick={sendEmail}
+										disabled={isProcessing}
+										label={isProcessing ? t('Versturen...') : t('Verzenden')}
+									/>
+								</Spacer>
+							</FlexItem>
+						</Flex>
+					</Box>
+				</Spacer>
 			</ModalBody>
 		</Modal>
 	);

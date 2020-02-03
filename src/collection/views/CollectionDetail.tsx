@@ -73,6 +73,7 @@ import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 
 import './CollectionDetail.scss';
+import ShareThroughEmailModal from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -95,6 +96,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
@@ -438,6 +440,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					type="secondary"
 					icon="share-2"
 					ariaLabel={t('collection/views/collection-detail___deel')}
+					onClick={() => setIsShareThroughEmailModalOpen(true)}
 				/>
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
@@ -633,6 +636,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => onDeleteCollection()}
+				/>
+				<ShareThroughEmailModal
+					modalTitle={t('Deel deze collectie')}
+					type="collection"
+					emailLinkHref={window.location.href}
+					emailLinkTitle={(collection as Avo.Collection.Collection).title}
+					isOpen={isShareThroughEmailModalOpen}
+					onClose={() => setIsShareThroughEmailModalOpen(false)}
 				/>
 			</>
 		);

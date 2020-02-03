@@ -1,25 +1,8 @@
-$multiRangeMargin: 15px;
-$multiRangeInputWidth: 87px;
-
-.c-modal__body-add-fragment {
-	.c-radio + div {
-		padding-left: 2.2rem;
+.m-share-through-email-modal {
+	.c-ellipsis {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }
 
-.m-time-crop-controls {
-	.c-input {
-		width: $multiRangeInputWidth;
-		display: inline-block;
-	}
-
-	.m-multi-range-wrapper {
-		width: calc(100% - #{$multiRangeInputWidth} - #{$multiRangeInputWidth} - #{$multiRangeMargin} - #{$multiRangeMargin});
-		display: inline-block;
-		margin: 0 $multiRangeMargin;
-	}
-
-	.c-multi-range {
-		display: inline-block;
-	}
-}
