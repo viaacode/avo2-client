@@ -40,12 +40,11 @@ const reorderConfigs = (
 	{ configIndex, indexUpdate }: { configIndex: number; indexUpdate: number }
 ): ContentBlockConfig[] => {
 	const newIndex = configIndex + indexUpdate;
-
 	// Get updated item and remove it from copy
 	const updatedConfig = configs.splice(configIndex, 1)[0];
 	// Add item back at new index
 	configs.splice(newIndex, 0, updatedConfig);
-	// Update position properties with new index
+
 	return repositionConfigs(configs);
 };
 
@@ -146,45 +145,21 @@ export const contentEditReducer = (
 
 	switch (type) {
 		case ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG:
-			return {
-				...state,
-				contentBlockConfigs: [...contentBlockConfigs, payload],
-			};
+			return { contentBlockConfigs: [...contentBlockConfigs, payload] };
 		case ContentEditActionType.REMOVE_CONTENT_BLOCK_CONFIG:
-			return {
-				...state,
-				contentBlockConfigs: removeConfig([...contentBlockConfigs], payload),
-			};
+			return { contentBlockConfigs: removeConfig([...contentBlockConfigs], payload) };
 		case ContentEditActionType.REORDER_CONTENT_BLOCK_CONFIG:
-			return {
-				...state,
-				contentBlockConfigs: reorderConfigs([...contentBlockConfigs], payload),
-			};
+			return { contentBlockConfigs: reorderConfigs([...contentBlockConfigs], payload) };
 		case ContentEditActionType.SET_CONTENT_BLOCK_CONFIGS:
-			return {
-				...state,
-				contentBlockConfigs: payload,
-			};
+			return { contentBlockConfigs: payload };
 		case ContentEditActionType.ADD_COMPONENTS_STATE:
-			return {
-				...state,
-				contentBlockConfigs: addComponentState([...contentBlockConfigs], payload),
-			};
+			return { contentBlockConfigs: addComponentState([...contentBlockConfigs], payload) };
 		case ContentEditActionType.REMOVE_COMPONENTS_STATE:
-			return {
-				...state,
-				contentBlockConfigs: removeComponentState([...contentBlockConfigs], payload),
-			};
+			return { contentBlockConfigs: removeComponentState([...contentBlockConfigs], payload) };
 		case ContentEditActionType.SET_COMPONENTS_STATE:
-			return {
-				...state,
-				contentBlockConfigs: setComponentState([...contentBlockConfigs], payload),
-			};
+			return { contentBlockConfigs: setComponentState([...contentBlockConfigs], payload) };
 		case ContentEditActionType.SET_BLOCK_STATE:
-			return {
-				...state,
-				contentBlockConfigs: setBlockState([...contentBlockConfigs], payload),
-			};
+			return { contentBlockConfigs: setBlockState([...contentBlockConfigs], payload) };
 
 		default:
 			return state;
