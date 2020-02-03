@@ -52,7 +52,7 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{ label: 'Intro', value: ContentBlockType.Intro },
 	{ label: '2 CTAs', value: ContentBlockType.CTAs },
 	{ label: 'IFrame', value: ContentBlockType.IFrame },
-	{ label: 'Accordions', value: ContentBlockType.Accordions },
+	{ label: 'Accordeons', value: ContentBlockType.Accordions },
 ];
 
 export const EDITOR_TYPES_MAP = {
