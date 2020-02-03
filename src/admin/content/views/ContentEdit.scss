@@ -2,8 +2,7 @@
 
 .c-content-edit-view__sidebar {
 	max-width: 45%;
-	height: calc(100vh - 22.3rem);
+	height: auto;
 	padding: 0 1.6rem 1.6rem;
 	border-left: 2px solid $color-gray-50;
-	overflow-y: scroll;
 }
