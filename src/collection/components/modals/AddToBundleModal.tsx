@@ -245,7 +245,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			} else {
 				// Add collection to bundle
 				await addCollectionToExistingBundle(insertedBundle);
-				fetchBundles();
+				await fetchBundles();
 				onClose();
 			}
 

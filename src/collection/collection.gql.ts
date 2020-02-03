@@ -266,7 +266,7 @@ export const GET_COLLECTIONS = gql`
 `;
 
 export const GET_BUNDLES = gql`
-	query getCollections($limit: Int!) {
+	query getBundles($limit: Int!) {
 		app_collections(where: { type_id: { _eq: 4 } }, limit: $limit) {
 			id
 			title
