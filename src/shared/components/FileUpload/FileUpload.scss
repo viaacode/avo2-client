@@ -1,0 +1,19 @@
+.c-file-upload {
+	position: relative;
+
+	input[type="file"] {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		opacity: 0.00001;
+	}
+
+	.a-upload-image-preview {
+		height: 300px;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: contain;
+	}
+}
