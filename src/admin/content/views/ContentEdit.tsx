@@ -59,7 +59,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	// Hooks
 	const [{ contentBlockConfigs }, dispatch] = useReducer<
 		Reducer<ContentEditState, ContentEditAction>
-	>(contentEditReducer(initialState), initialState);
+	>(contentEditReducer, CONTENT_EDIT_INITIAL_STATE());
 
 	const [formErrors, setFormErrors] = useState<ContentEditFormErrors>({});
 	const [configToDelete, setConfigToDelete] = useState<number>();
