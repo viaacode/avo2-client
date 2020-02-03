@@ -1,5 +1,3 @@
-import { MouseEvent } from 'react';
-
 import { IconName } from '@viaa/avo2-components';
 // TODO: Import from components lib when exported there.
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
