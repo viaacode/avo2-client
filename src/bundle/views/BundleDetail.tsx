@@ -78,7 +78,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedBundles, setRelatedBundles] = useState<Avo.Search.ResultItem[] | null>(null);
+	const [relatedBundles /*, setRelatedBundles */] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewBundles: boolean;
