@@ -32,9 +32,13 @@ export const ACCORDIONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		},
 		state: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES(),
 		fields: {
-			title: TEXT_FIELD(i18n.t('Titel'), {
-				editorType: ContentBlockEditor.TextInput,
-			}),
+			title: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/defaults___tekst-is-verplicht'),
+				{
+					label: i18n.t('Titel'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
 			content: TEXT_FIELD(),
 		},
 	},
