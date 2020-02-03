@@ -1,5 +1,9 @@
 @import '../../../styles/settings/colors';
 
+.c-content-edit-view__content {
+	flex: 1 1 auto;
+}
+
 .c-content-edit-view__sidebar {
 	max-width: 45%;
 	height: auto;
