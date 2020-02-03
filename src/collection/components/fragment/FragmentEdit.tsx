@@ -80,7 +80,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 				: get(fragment, 'item_meta.description', '')
 		)
 	);
-	const [] = useState<string>();
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
