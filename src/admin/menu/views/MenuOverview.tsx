@@ -56,7 +56,9 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	const renderMenuOverview = (data: Partial<Avo.Menu.Menu>[]) => {
 		if (!data.length) {
 			return (
-				<ErrorView message={t('Er zijn nog geen navigaties aangemaakt.')}>
+				<ErrorView
+					message={t('admin/menu/views/menu-overview___er-zijn-nog-geen-navigaties-aangemaakt')}
+				>
 					<p>
 						<Trans i18nKey="admin/menu/views/menu-overview___beschrijving-hoe-navigatie-items-toe-te-voegen">
 							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis

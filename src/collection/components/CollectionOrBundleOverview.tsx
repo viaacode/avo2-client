@@ -88,14 +88,22 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			toastService.success(isCollection ? t('Collectie is verwijderd') : t('Bundel is verwijderd'));
+			toastService.success(
+				isCollection
+					? t('collection/components/collection-or-bundle-overview___collectie-is-verwijderd')
+					: t('collection/components/collection-or-bundle-overview___bundel-is-verwijderd')
+			);
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
 			toastService.danger(
 				isCollection
-					? t('Collectie kon niet verwijderd worden')
-					: t('Bundel kon niet verwijderd worden')
+					? t(
+							'collection/components/collection-or-bundle-overview___collectie-kon-niet-verwijderd-worden'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-overview___bundel-kon-niet-verwijderd-worden'
+					  )
 			);
 		}
 
@@ -306,7 +314,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			message={
 				isCollection
 					? t('collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt')
-					: t('Je hebt nog geen bundels aangemaakt')
+					: t(
+							'collection/components/collection-or-bundle-overview___je-hebt-nog-geen-bundels-aangemaakt'
+					  )
 			}
 		>
 			<p>
@@ -318,7 +328,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						jou delen die je dan hier terugvindt.
 					</Trans>
 				) : (
-					<Trans>
+					<Trans i18nKey="collection/components/collection-or-bundle-overview___een-bundel-is-een-verzameling-van-collecties-rond-een-bepaald-thema-of-voor-een-bepaalde-les-nadat-je-een-bundel-hebt-aangemaakt-kan-je-deze-delen-met-andere-gebruikers-om-samen-aan-te-werken-andere-gebruikers-kunnen-ook-bundels-met-jou-delen-die-je-dan-hier-terugvindt">
 						Een bundel is een verzameling van collecties rond een bepaald thema of voor een bepaalde
 						les. Nadat je een bundel hebt aangemaakt kan je deze delen met andere gebruikers om
 						samen aan te werken. Andere gebruikers kunnen ook bundels met jou delen die je dan hier
@@ -333,7 +343,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					label={
 						isCollection
 							? t('collection/views/collection-overview___maak-je-eerste-collectie')
-							: t('Zoek een collectie en maak je eerste bundel')
+							: t(
+									'collection/components/collection-or-bundle-overview___zoek-een-collectie-en-maak-je-eerste-bundel'
+							  )
 					}
 					onClick={onClickCreate}
 				/>
@@ -351,7 +363,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				title={
 					isCollection
 						? t('collection/views/collection-overview___verwijder-collectie')
-						: t('Verwijder bundel')
+						: t('collection/components/collection-or-bundle-overview___verwijder-bundel')
 				}
 				body={t(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
@@ -378,7 +390,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			notFoundMessage={
 				isCollection
 					? t('collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden')
-					: t('Er konden geen bundels worden gevonden')
+					: t(
+							'collection/components/collection-or-bundle-overview___er-konden-geen-bundels-worden-gevonden'
+					  )
 			}
 			actionButtons={['home']}
 		/>

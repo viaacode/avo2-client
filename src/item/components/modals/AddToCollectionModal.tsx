@@ -93,7 +93,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	useEffect(() => {
 		fetchCollections().catch(err => {
 			console.error('Failed to fetch collections', err);
-			toastService.danger(t('Het ophalen van de collecties is mislukt'));
+			toastService.danger(
+				t(
+					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collecties-is-mislukt'
+				)
+			);
 		});
 	}, [fetchCollections, t]);
 
@@ -122,10 +126,18 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			if (collection) {
 				setSelectedCollection(collection);
 			} else {
-				toastService.danger(t('Het ophalen van de collectie details is mislukt'));
+				toastService.danger(
+					t(
+						'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collectie-details-is-mislukt'
+					)
+				);
 			}
 		} catch (err) {
-			toastService.danger(t('Het ophalen van de collectie details is mislukt'));
+			toastService.danger(
+				t(
+					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collectie-details-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -167,9 +179,17 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
-				toastService.danger(t('Het fragment kon niet worden toegevoegd aan de collectie'));
+				toastService.danger(
+					t(
+						'item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie'
+					)
+				);
 			} else {
-				toastService.success(t('Het fragment is toegevoegd aan de collectie'));
+				toastService.success(
+					t(
+						'item/components/modals/add-to-collection-modal___het-fragment-is-toegevoegd-aan-de-collectie'
+					)
+				);
 				onClose();
 				trackEvents(
 					{
@@ -186,7 +206,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(t('Het fragment kon niet worden toegevoegd aan de collectie'));
+			toastService.danger(
+				t(
+					'item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie'
+				)
+			);
 		}
 
 		// Re-enable apply button
@@ -233,9 +257,17 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			);
 
 			if (!response || response.errors) {
-				toastService.danger(t('De collectie kon niet worden aangemaakt'));
+				toastService.danger(
+					t(
+						'item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt'
+					)
+				);
 			} else if (!insertedCollection || isNil(insertedCollection.id)) {
-				toastService.danger(t('De aangemaakte collectie kon niet worden opgehaald'));
+				toastService.danger(
+					t(
+						'item/components/modals/add-to-collection-modal___de-aangemaakte-collectie-kon-niet-worden-opgehaald'
+					)
+				);
 			} else {
 				// Add fragment to collection
 				await addItemToExistingCollection(insertedCollection);
@@ -251,7 +283,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					collection: newCollection,
 				},
 			});
-			toastService.danger(t('De collectie kon niet worden aangemaakt'));
+			toastService.danger(
+				t(
+					'item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt'
+				)
+			);
 
 			// Re-enable apply button
 			setIsProcessing(false);
@@ -363,8 +399,12 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 														options={[
 															{
 																label: collections.length
-																	? t('Kies collectie')
-																	: t('Je hebt nog geen collecties'),
+																	? t(
+																			'item/components/modals/add-to-collection-modal___kies-collectie'
+																	  )
+																	: t(
+																			'item/components/modals/add-to-collection-modal___je-hebt-nog-geen-collecties'
+																	  ),
 																value: '',
 																disabled: true,
 															},
@@ -427,9 +467,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 										block
 										title={
 											createNewCollection && !newCollectionTitle
-												? t('U moet een collectie titel opgeven')
+												? t(
+														'item/components/modals/add-to-collection-modal___u-moet-een-collectie-titel-opgeven'
+												  )
 												: !createNewCollection && !selectedCollection
-												? t('bezig met collectie detail op te halen')
+												? t(
+														'item/components/modals/add-to-collection-modal___bezig-met-collectie-detail-op-te-halen'
+												  )
 												: ''
 										}
 										disabled={

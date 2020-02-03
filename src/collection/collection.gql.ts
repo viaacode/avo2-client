@@ -171,34 +171,7 @@ export const INSERT_COLLECTION_FRAGMENTS = gql`
 		insert_app_collection_fragments(objects: $fragments) {
 			affected_rows
 			returning {
-				use_custom_fields
-				updated_at
-				start_oc
-				position
 				id
-				external_id
-				item_meta {
-					id
-					duration
-					title
-					description
-					thumbnail_path
-					issued
-					type {
-						id
-						label
-					}
-					organisation {
-						name
-						logo_url
-					}
-				}
-				end_oc
-				custom_title
-				custom_description
-				created_at
-				collection_uuid
-				collection_id
 			}
 		}
 	}

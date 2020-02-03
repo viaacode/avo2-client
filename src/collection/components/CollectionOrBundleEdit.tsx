@@ -63,7 +63,6 @@ import {
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../collection.gql';
 import { CollectionService } from '../collection.service';
-import { FragmentPropertyUpdateInfo } from '../collection.types';
 import { ShareCollectionModal } from '../components';
 import { swapFragmentsPositions } from '../helpers';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
@@ -186,8 +185,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				setLoadingInfo({
 					state: 'error',
 					message: isCollection
-						? t('De collectie kon niet worden gevonden')
-						: t('De bundel kon niet worden gevonden'),
+						? t(
+								'collection/components/collection-or-bundle-edit___de-collectie-kon-niet-worden-gevonden'
+						  )
+						: t(
+								'collection/components/collection-or-bundle-edit___de-bundel-kon-niet-worden-gevonden'
+						  ),
 					icon: 'search',
 				});
 			}
@@ -206,8 +209,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t('Er ging iets mis tijdens het ophalen van de collectie')
-					: t('Er ging iets mis tijdens het ophalen van de bundel'),
+					? t(
+							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-tijdens-het-ophalen-van-de-bundel'
+					  ),
 				icon: 'alert-triangle',
 			});
 		});
@@ -241,27 +248,26 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	};
 
 	// Update individual property of fragment
-	const updateFragmentProperties = (updateInfos: FragmentPropertyUpdateInfo[]) => {
+	const onFragmentChanged = (fragment: Avo.Collection.Fragment) => {
 		const tempCollection: Avo.Collection.Collection | null = cloneDeep(currentCollection);
 
 		if (!tempCollection) {
 			toastService.danger(
 				isCollection
-					? t('De collectie updaten is mislukt, kon geen kopie maken van de bestaande collectie')
-					: t('De bundel updaten is mislukt, kon geen kopie maken van de bestaande bundel')
+					? t(
+							'collection/components/collection-or-bundle-edit___de-collectie-updaten-is-mislukt-kon-geen-kopie-maken-van-de-bestaande-collectie'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___de-bundel-updaten-is-mislukt-kon-geen-kopie-maken-van-de-bestaande-bundel'
+					  )
 			);
 			return;
 		}
 
-		updateInfos.forEach((updateInfo: FragmentPropertyUpdateInfo) => {
-			const fragmentToUpdate = tempCollection.collection_fragments.find(
-				(item: Avo.Collection.Fragment) => item.id === updateInfo.fragmentId
-			);
-
-			if (fragmentToUpdate) {
-				(fragmentToUpdate as any)[updateInfo.fieldName] = updateInfo.value;
-			}
-		});
+		const fragmentToUpdateIndex = tempCollection.collection_fragments.findIndex(
+			(item: Avo.Collection.Fragment) => item.id === fragment.id
+		);
+		tempCollection.collection_fragments[fragmentToUpdateIndex] = fragment;
 
 		setCurrentCollection(tempCollection);
 	};
@@ -270,7 +276,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	const swapFragments = (currentFragmentId: number, direction: 'up' | 'down') => {
 		if (!currentCollection) {
 			toastService.danger(
-				isCollection ? t('De collectie is nog niet geladen') : t('De bundel is nog niet geladen')
+				isCollection
+					? t('collection/components/collection-or-bundle-edit___de-collectie-is-nog-niet-geladen')
+					: t('collection/components/collection-or-bundle-edit___de-bundel-is-nog-niet-geladen')
 			);
 			return;
 		}
@@ -278,8 +286,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		if (!currentCollection.collection_fragments || !currentCollection.collection_fragments.length) {
 			toastService.danger(
 				isCollection
-					? t('De collectie lijkt geen fragmenten te bevatten')
-					: t('Deze bundel lijkt geen collecties te bevatten')
+					? t(
+							'collection/components/collection-or-bundle-edit___de-collectie-lijkt-geen-fragmenten-te-bevatten'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___deze-bundel-lijkt-geen-collecties-te-bevatten'
+					  )
 			);
 			return;
 		}
@@ -314,7 +326,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			if (newCollection) {
 				setCurrentCollection(newCollection);
 				setInitialCollection(cloneDeep(newCollection));
-				toastService.success(isCollection ? t(`Collectie opgeslagen`) : t('Bundle opgeslagen'));
+				toastService.success(
+					isCollection
+						? t(`Collectie opgeslagen`)
+						: t('collection/components/collection-or-bundle-edit___bundle-opgeslagen')
+				);
 				trackEvents(
 					{
 						object: String(newCollection.id),
@@ -342,8 +358,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			if (!initialCollection) {
 				toastService.info(
 					isCollection
-						? t('De collectie naam kon niet geupdate worden (collectie is niet gedefinieerd)')
-						: t('De bundel naam kon niet geupdate worden (bundel is niet gedefinieerd)')
+						? t(
+								'collection/components/collection-or-bundle-edit___de-collectie-naam-kon-niet-geupdate-worden-collectie-is-niet-gedefinieerd'
+						  )
+						: t(
+								'collection/components/collection-or-bundle-edit___de-bundel-naam-kon-niet-geupdate-worden-bundel-is-niet-gedefinieerd'
+						  )
 				);
 				return;
 			}
@@ -369,8 +389,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			console.error(err);
 			toastService.info(
 				isCollection
-					? t('Het hernoemen van de collectie is mislukt')
-					: t('Het hernoemen van de bundel is mislukt')
+					? t(
+							'collection/components/collection-or-bundle-edit___het-hernoemen-van-de-collectie-is-mislukt'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___het-hernoemen-van-de-bundel-is-mislukt'
+					  )
 			);
 		}
 	};
@@ -386,8 +410,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				console.error(`Failed to delete ${type} since currentCollection is undefined`);
 				toastService.info(
 					isCollection
-						? t('Het verwijderen van de collectie is mislukt (collectie niet ingesteld)')
-						: t('Het verwijderen van de bundel is mislukt (bundel niet ingesteld)')
+						? t(
+								'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt-collectie-niet-ingesteld'
+						  )
+						: t(
+								'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-bundel-is-mislukt-bundel-niet-ingesteld'
+						  )
 				);
 				return;
 			}
@@ -415,8 +443,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			console.error(err);
 			toastService.info(
 				isCollection
-					? t('Het verwijderen van de collectie is mislukt')
-					: t('Het verwijderen van de bundel is mislukt')
+					? t(
+							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-bundel-is-mislukt'
+					  )
 			);
 		}
 	};
@@ -488,7 +520,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 							collection={currentCollection}
 							swapFragments={swapFragments}
 							updateCollection={setCurrentCollection}
-							updateFragmentProperties={updateFragmentProperties}
+							onFragmentChanged={onFragmentChanged}
 							history={history}
 							match={match}
 							user={user}
@@ -513,7 +545,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		const COLLECTION_DROPDOWN_ITEMS = [
 			createDropdownMenuItem(
 				'rename',
-				isCollection ? 'Collectie hernoemen' : t('Bundel hernoemen'),
+				isCollection
+					? 'Collectie hernoemen'
+					: t('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
 				'folder'
 			),
 			createDropdownMenuItem('delete', 'Verwijderen'),
@@ -526,18 +560,24 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					disabled={hasUnsavedChanged()}
 					title={
 						!eq(currentCollection, initialCollection)
-							? t('U moet uw wijzigingen eerst opslaan')
+							? t(
+									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
+							  )
 							: ''
 					}
 					onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 				/>
 				<Button
 					type="secondary"
-					label={t('Bekijk')}
+					label={t('collection/components/collection-or-bundle-edit___bekijk')}
 					title={
 						isCollection
-							? t('Bekijk hoe de collectie er zal uit zien')
-							: t('Bekijk hoe de bundel er zal uit zien')
+							? t(
+									'collection/components/collection-or-bundle-edit___bekijk-hoe-de-collectie-er-zal-uit-zien'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___bekijk-hoe-de-bundel-er-zal-uit-zien'
+							  )
 					}
 					onClick={() =>
 						redirectToClientPage(
@@ -583,7 +623,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				<Prompt
 					when={hasUnsavedChanged()}
 					message={t(
-						'Er zijn nog niet opgeslagen wijzigingen, weet u zeker dat u de pagina wil verlaten?'
+						'collection/components/collection-or-bundle-edit___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
 					)}
 				/>
 				<Header
@@ -633,10 +673,16 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				<DeleteObjectModal
 					title={
 						isCollection
-							? t('Ben je zeker dat je deze collectie wil verwijderen?')
-							: t('Ben je zeker dat je deze bundel wil verwijderen')
+							? t(
+									'collection/components/collection-or-bundle-edit___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen'
+							  )
 					}
-					body={t('Deze actie kan niet ongedaan gemaakt worden')}
+					body={t(
+						'collection/components/collection-or-bundle-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
@@ -645,17 +691,25 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					title={
 						isCollection
 							? t('collection/views/collection-edit___hernoem-deze-collectie')
-							: t('Hernoem deze bundel')
+							: t('collection/components/collection-or-bundle-edit___hernoem-deze-bundel')
 					}
-					inputLabel={isCollection ? t('Naam collectie:') : t('Naam bundel:')}
+					inputLabel={
+						isCollection
+							? t('collection/components/collection-or-bundle-edit___naam-collectie')
+							: t('collection/components/collection-or-bundle-edit___naam-bundel')
+					}
 					inputValue={title}
 					isOpen={isRenameModalOpen}
 					onClose={() => setIsRenameModalOpen(false)}
 					inputCallback={onRenameCollection}
 					emptyMessage={
 						isCollection
-							? t('Gelieve een collectie titel in te vullen.')
-							: t('Gelieve een bundel titel in te vullen')
+							? t(
+									'collection/components/collection-or-bundle-edit___gelieve-een-collectie-titel-in-te-vullen'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
+							  )
 					}
 				/>
 			</>

@@ -97,7 +97,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 					});
 				} catch (err) {
 					console.error(err);
-					toastService.danger(t('Ongeldige zoek query'), false);
+					toastService.danger(
+						t('admin/content/views/content-overview___ongeldige-zoek-query'),
+						false
+					);
 				}
 			}
 
@@ -273,7 +276,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 						data={contentData}
 						emptyStateMessage={
 							hasFilters
-								? t('Er is geen content gevonden die voldoen aan uw filters')
+								? t(
+										'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
+								  )
 								: t('admin/content/views/content-overview___er-is-nog-geen-content-beschikbaar')
 						}
 						onColumnClick={columId => handleSortClick(columId as ContentOverviewTableCols)}

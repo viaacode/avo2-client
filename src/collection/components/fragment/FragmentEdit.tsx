@@ -1,4 +1,4 @@
-import { get, isNil, orderBy } from 'lodash-es';
+import { debounce, get, isNil, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
@@ -36,8 +36,7 @@ import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import toastService from '../../../shared/services/toast-service';
-import { FragmentPropertyUpdateInfo } from '../../collection.types';
-import { getFragmentProperty, isMediaFragment } from '../../helpers';
+import { isMediaFragment } from '../../helpers';
 
 import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
@@ -47,7 +46,7 @@ interface FragmentEditProps extends DefaultSecureRouteProps {
 	index: number;
 	collection: Avo.Collection.Collection;
 	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	updateFragmentProperties: (updateInfos: FragmentPropertyUpdateInfo[]) => void;
+	onFragmentChanged: (fragment: Avo.Collection.Fragment) => void;
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
@@ -60,7 +59,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	index,
 	collection,
 	swapFragments,
-	updateFragmentProperties,
+	onFragmentChanged,
 	openOptionsId,
 	setOpenOptionsId,
 	fragment,
@@ -70,8 +69,19 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
+	const [title, setTitle] = useState<string>(
+		fragment.use_custom_fields ? fragment.custom_title : get(fragment, 'item_meta.title', '')
+	);
+	const [description, setDescription] = useState<string>(
+		convertToHtml(
+			fragment.use_custom_fields
+				? fragment.custom_description
+				: get(fragment, 'item_meta.description', '')
+		)
+	);
+	const [] = useState<string>();
+	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [cuePoints, setCuePoints] = useState({
@@ -116,6 +126,35 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			});
 	}, [user, t]);
 
+	const setUseCustomFieldsWithTextFields = (useCustom: boolean) => {
+		if (!useCustom) {
+			// Do not use custom fields => reset the value back to the original item fields
+			setDescription(get(fragment, 'item_meta.description', ''));
+			setTitle(get(fragment, 'item_meta.title', ''));
+		} else {
+			setDescription(fragment.custom_description || '');
+			setTitle(fragment.custom_title || '');
+		}
+		setUseCustomFields(useCustom);
+	};
+
+	const debouncedOnFragmentChanged = debounce(
+		() => {
+			onFragmentChanged({
+				...fragment,
+				use_custom_fields: useCustomFields,
+				custom_title: title,
+				custom_description: description,
+			});
+		},
+		10,
+		{ leading: false, trailing: true }
+	);
+
+	useEffect(() => {
+		debouncedOnFragmentChanged();
+	}, [useCustomFields, title, description]);
+
 	const initFlowPlayer = () =>
 		!playerTicket &&
 		!isCollection &&
@@ -124,44 +163,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			.catch(() => toastService.danger('Play ticket kon niet opgehaald worden.'));
 
 	const itemMetaData = (fragment as any).item_meta;
-
-	// Listeners
-	const onChangeToggle = () => {
-		const propsToUpdate = [
-			{
-				value: !useCustomFields,
-				fieldName: 'use_custom_fields' as keyof Avo.Collection.Fragment,
-				fragmentId: fragment.id,
-			},
-		];
-
-		// If empty title or description, apply item title and description
-		const propsToTransfer: string[] = ['title', 'description'];
-
-		propsToTransfer.forEach((prop: string) => {
-			const customProp = `custom_${prop}` as keyof Avo.Collection.Fragment;
-
-			if (!fragment[customProp] && itemMetaData[prop]) {
-				propsToUpdate.push({
-					value: itemMetaData[prop],
-					fieldName: customProp,
-					fragmentId: fragment.id,
-				});
-			}
-		});
-
-		updateFragmentProperties(propsToUpdate);
-		setUseCustomFields(!useCustomFields);
-	};
-
-	const onChangeText = (field: 'title' | 'description', value: string) =>
-		updateFragmentProperties([
-			{
-				value,
-				fieldName: `custom_${field}` as 'custom_title' | 'custom_description',
-				fragmentId: fragment.id,
-			},
-		]);
 
 	const onDeleteFragment = (fragmentId: number) => {
 		setOpenOptionsId(null);
@@ -185,8 +186,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 		toastService.success(
 			!isCollection
-				? t('Fragment is succesvol verwijderd uit de collectie')
-				: t('Collectie is succesvol verwijderd uit de bundel')
+				? t(
+						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
+				  )
+				: t(
+						'collection/components/fragment/fragment-edit___collectie-is-succesvol-verwijderd-uit-de-bundel'
+				  )
 		);
 	};
 
@@ -248,7 +253,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	);
 
 	const renderForm = () => {
-		const disableVideoFields: boolean = !useCustomFields && !!isMediaFragment(fragment);
+		const disableVideoFields: boolean = !fragment.use_custom_fields && !!isMediaFragment(fragment);
 
 		return (
 			<Form>
@@ -257,7 +262,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						label={t('collection/components/fragment/fragment-edit___alternatieve-tekst')}
 						labelFor="customFields"
 					>
-						<Toggle id="customFields" checked={useCustomFields} onChange={onChangeToggle} />
+						<Toggle
+							id="customFields"
+							checked={useCustomFields}
+							onChange={setUseCustomFieldsWithTextFields}
+						/>
 					</FormGroup>
 				)}
 				<FormGroup
@@ -267,11 +276,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
-						value={getFragmentProperty(itemMetaData, fragment, useCustomFields, 'title')}
+						value={title}
 						placeholder={t(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
-						onChange={(value: string) => onChangeText('title', value)}
+						onChange={setTitle}
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
@@ -286,10 +295,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 							placeholder={t(
 								'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 							)}
-							data={convertToHtml(
-								getFragmentProperty(itemMetaData, fragment, useCustomFields, 'description')
-							)}
-							onChange={(value: string) => onChangeText('description', value)}
+							data={description}
+							onChange={setDescription}
 							disabled={disableVideoFields}
 						/>
 					)}
@@ -386,10 +393,16 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			<DeleteObjectModal
 				title={
 					!isCollection
-						? t('Ben je zeker dat je dit fragment wil verwijderen uit deze collectie?')
-						: t('Ben je zeker dat je de collectie wil verwijderen uit deze bundel?')
+						? t(
+								'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen-uit-deze-collectie'
+						  )
+						: t(
+								'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-collectie-wil-verwijderen-uit-deze-bundel'
+						  )
 				}
-				body={t('Deze actie kan niet ongedaan gemaakt worden')}
+				body={t(
+					'collection/components/fragment/fragment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setDeleteModalOpen(false)}
 				deleteObjectCallback={() => onDeleteFragment(fragment.id)}
@@ -400,7 +413,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}
 					itemMetaData={itemMetaData}
-					updateFragmentProperties={updateFragmentProperties}
+					onFragmentChanged={onFragmentChanged}
 					fragment={fragment}
 					updateCuePoints={setCuePoints}
 				/>
