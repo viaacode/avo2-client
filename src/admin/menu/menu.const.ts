@@ -1,10 +1,7 @@
-import { OptionsType } from 'react-select';
-
-import { IconName, TableColumn } from '@viaa/avo2-components';
+import { TableColumn } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
-import { ReactSelectOption } from '../../shared/types';
 
 import { MenuEditFormState } from './menu.types';
 
@@ -21,11 +18,6 @@ export const MENU_OVERVIEW_TABLE_COLS: TableColumn[] = [
 	{ id: 'description', label: i18n.t('admin/menu/menu___omschrijving') },
 	{ id: 'actions', label: '' },
 ];
-
-export const MENU_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Object.freeze([
-	{ label: i18n.t('admin/menu/menu___aktetas'), value: 'briefcase' },
-	{ label: i18n.t('admin/menu/menu___zoek'), value: 'search' },
-]);
 
 export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => ({
 	placement,

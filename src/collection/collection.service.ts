@@ -10,6 +10,7 @@ import { ApolloCacheManager, dataService } from '../shared/services/data-service
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
+
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_BUNDLES_CONTAINING_COLLECTION,
