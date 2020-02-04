@@ -7,6 +7,7 @@ import {
 	AccordionActions,
 	AccordionBody,
 	AccordionTitle,
+	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Flex,
@@ -136,6 +137,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				{isArray(formGroup.state) ? (
 					formGroup.state.map((formGroupState, stateIndex) => (
 						<Spacer key={stateIndex} margin="bottom-small">
+							<BlockHeading type="h4" className="u-m-t-0">
+								{`${get(config, 'components.name')} ${stateIndex + 1}`}
+							</BlockHeading>
 							<Flex spaced="regular" wrap>
 								<FlexItem>
 									<ContentBlockFormGroup
@@ -220,7 +224,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				<AccordionBody>
 					{renderFormGroups(components, 'components')}
 					{underLimit && renderAddButton(label)}
-					{renderFormGroups(block, 'block')}
+					<Spacer margin="top">
+						<BlockHeading type="h4" className="u-m-t-0">
+							Blok-opties
+						</BlockHeading>
+					</Spacer>
+					<Spacer margin="bottom-small">{renderFormGroups(block, 'block')}</Spacer>
 				</AccordionBody>
 			</Accordion>
 		);

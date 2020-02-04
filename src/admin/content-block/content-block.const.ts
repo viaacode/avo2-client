@@ -1,10 +1,14 @@
 import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
 
+import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
+
+import { ContentPicker } from '../shared/components';
 
 import { AlignSelect, ColorSelect } from './components';
 import {
 	AlignOptions,
+	ButtonTypeOptions,
 	ContentBlockBackgroundColor,
 	ContentBlockType,
 	HeadingLevelOptions,
@@ -63,6 +67,8 @@ export const EDITOR_TYPES_MAP = {
 	Select,
 	TextInput,
 	WYSIWYG,
+	IconPicker,
+	ContentPicker,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -87,9 +93,14 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 };
 
-// Heading
+// Options
 export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
-	{ label: 'H2', value: 'h2' },
-	{ label: 'H3', value: 'h3' },
-	{ label: 'H4', value: 'h4' },
+	{ label: i18n.t('H2'), value: 'h2' },
+	{ label: i18n.t('H3'), value: 'h3' },
+	{ label: i18n.t('H4'), value: 'h4' },
+];
+
+export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
+	{ label: i18n.t('Primair'), value: 'primary' },
+	{ label: i18n.t('Secundair'), value: 'secondary' },
 ];

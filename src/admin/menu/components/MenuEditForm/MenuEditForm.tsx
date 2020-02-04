@@ -7,12 +7,10 @@ import { ValueType } from 'react-select/src/types';
 import { Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
-import { ContentPicker } from '../../../content/components/ContentPicker/ContentPicker';
-import { PickerItem } from '../../../content/content.types';
-import { IconPicker } from '../../../shared/components';
-import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
-
+import { ContentPicker, IconPicker } from '../../../shared/components';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
+import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { PickerItem } from '../../../shared/types/content-picker';
 import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
 
 interface MenuEditFormProps {

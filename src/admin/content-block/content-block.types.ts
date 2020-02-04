@@ -1,3 +1,7 @@
+import { IconName } from '@viaa/avo2-components';
+// TODO: Import from components lib when exported there.
+import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
+
 export type ContentBlockStateType = 'components' | 'block';
 
 export type ContentBlockStateOptions =
@@ -8,6 +12,8 @@ export type ContentBlockStateOptions =
 export type AlignOptions = 'left' | 'right' | 'center';
 
 export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
+
+export type ButtonTypeOptions = 'primary' | 'secondary';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -67,6 +73,8 @@ export enum ContentBlockEditor {
 	Select = 'Select',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
+	IconPicker = 'IconPicker',
+	ContentPicker = 'ContentPicker',
 }
 
 export interface ContentBlockFormError {
@@ -111,7 +119,8 @@ export interface RichTextBlockComponentState {
 
 export interface ButtonsBlockComponentState {
 	label: string;
-	// TODO: button actions;
+	icon?: IconName;
+	type?: ButtonType;
 }
 
 export interface IntroBlockComponentState {
@@ -124,7 +133,9 @@ export interface CTAsBlockComponentState {
 	heading: string;
 	headingType: HeadingLevelOptions;
 	content: string | string[];
-	// TODO: button: Partial<ButtonsBlockComponentState>;
+	buttonLabel: string;
+	buttonIcon?: IconName;
+	buttonType?: ButtonType;
 }
 
 export interface IFrameBlockComponentState {
