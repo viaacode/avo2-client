@@ -1,6 +1,7 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { BUTTON_TYPE_OPTIONS, CTA_ICON_OPTIONS } from '../../content-block.const';
+import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { BUTTON_TYPE_OPTIONS } from '../../content-block.const';
 
 import {
 	ButtonsBlockComponentState,
@@ -51,7 +52,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				label: i18n.t('Icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
-					options: CTA_ICON_OPTIONS,
+					options: ADMIN_ICON_OPTIONS,
 				},
 			},
 		},

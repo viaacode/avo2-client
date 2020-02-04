@@ -1,6 +1,7 @@
-import { parsePickerItem } from '..';
 import { APP_PATH } from '../../../../constants';
-import { PickerSelectItemGroup } from '../../content.types';
+
+import { PickerSelectItemGroup } from '../../types';
+import { parsePickerItem } from './parse-picker';
 
 const APP_PATH_ARRAY = Object.entries(APP_PATH);
 

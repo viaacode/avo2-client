@@ -1,12 +1,9 @@
-import { OptionsType } from 'react-select';
-
-import { IconName, Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
+import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
 
 import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
-import { ReactSelectOption } from '../../shared/types';
 // TODO: Move to shared components folder for admin.
-import { ContentPicker } from '../content/components/ContentPicker/ContentPicker';
+import { ContentPicker } from '../shared/components';
 
 import { AlignSelect, ColorSelect } from './components';
 import {
@@ -97,11 +94,6 @@ export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
 	{ label: i18n.t('H3'), value: 'h3' },
 	{ label: i18n.t('H4'), value: 'h4' },
 ];
-
-export const CTA_ICON_OPTIONS: OptionsType<ReactSelectOption<IconName>> = Object.freeze([
-	{ label: i18n.t('admin/menu/menu___aktetas'), value: 'briefcase' },
-	// TODO: Fix icon list
-]);
 
 export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
 	{ label: i18n.t('Primair'), value: 'primary' },

@@ -1,10 +1,7 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import {
-	BUTTON_TYPE_OPTIONS,
-	CTA_ICON_OPTIONS,
-	HEADING_LEVEL_OPTIONS,
-} from '../../content-block.const';
+import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -68,7 +65,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('Knop: Icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
-					options: CTA_ICON_OPTIONS,
+					options: ADMIN_ICON_OPTIONS,
 				},
 			},
 		},
