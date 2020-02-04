@@ -1,7 +1,8 @@
+import { capitalize, get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Avo } from '@viaa/avo2-types';
-import { capitalize, get } from 'lodash-es';
 
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../shared/components';
 import { CheckboxOption } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
@@ -19,6 +20,8 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	handleFilterFieldChange,
 	multiOptions,
 }) => {
+	const [t] = useTranslation();
+
 	const renderCheckboxDropdownModal = (
 		label: string,
 		propertyName: Avo.Search.FilterProp,
@@ -85,15 +88,35 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 
 	return (
 		<ul className="c-filter-dropdown-list">
-			{renderCheckboxDropdownModal('Type', 'type')}
-			{renderCheckboxDropdownModal('Onderwijsniveau', 'educationLevel')}
-			{renderCheckboxDropdownModal('Domein', 'domain', true)}
-			{renderCheckboxDropdownModal('Vak', 'subject')}
-			{renderCheckboxDropdownModal('Trefwoord', 'keyword')}
-			{renderCheckboxDropdownModal('Serie', 'serie')}
-			{renderDateRangeDropdown('Uitzenddatum', 'broadcastDate')}
-			{renderCheckboxDropdownModal('Taal', 'language')}
-			{renderCheckboxDropdownModal('Aanbieder', 'provider', false)}
+			{renderCheckboxDropdownModal(t('search/components/search-filter-controls___type'), 'type')}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___onderwijsniveau'),
+				'educationLevel'
+			)}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___domein'),
+				'domain',
+				true
+			)}
+			{renderCheckboxDropdownModal(t('search/components/search-filter-controls___vak'), 'subject')}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___trefwoord'),
+				'keyword'
+			)}
+			{renderCheckboxDropdownModal(t('search/components/search-filter-controls___serie'), 'serie')}
+			{renderDateRangeDropdown(
+				t('search/components/search-filter-controls___uitzenddatum'),
+				'broadcastDate'
+			)}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___taal'),
+				'language'
+			)}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___aanbieder'),
+				'provider',
+				false
+			)}
 		</ul>
 	);
 };

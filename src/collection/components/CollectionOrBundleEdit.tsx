@@ -185,12 +185,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				setLoadingInfo({
 					state: 'error',
 					message: isCollection
-						? t(
-								'collection/components/collection-or-bundle-edit___de-collectie-kon-niet-worden-gevonden'
-						  )
-						: t(
-								'collection/components/collection-or-bundle-edit___de-bundel-kon-niet-worden-gevonden'
-						  ),
+						? t('collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden')
+						: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
 					icon: 'search',
 				});
 			}
