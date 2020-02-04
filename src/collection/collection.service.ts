@@ -343,8 +343,11 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			console.error('Failed to fetch bundles.', err);
-			throw new CustomError('Het ophalen van de bundels is mislukt.', err);
+			const error = new CustomError('Het ophalen van de bundels is mislukt.', err, {
+				query: 'GET_BUNDLES',
+			});
+			console.error(error);
+			throw error;
 		}
 	}
 
@@ -358,8 +361,11 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			console.error('Failed to fetch collections.', err);
-			throw new CustomError('Het ophalen van de collecties is mislukt.', err);
+			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
+				query: 'GET_COLLECTIONS',
+			});
+			console.error(error);
+			throw error;
 		}
 	}
 

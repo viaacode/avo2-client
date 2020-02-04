@@ -10,6 +10,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
+import { ContentPickerType } from '../../content/content.types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { MenuEditForm } from '../components';
@@ -23,23 +24,13 @@ import {
 	MenuEditParams,
 } from '../menu.types';
 
-// TODO: Remove once typings 2.10.0 is released.
-export type ContentPickerTypeSchema =
-	| 'CONTENT_PAGE'
-	| 'COLLECTION'
-	| 'ITEM'
-	| 'BUNDLE'
-	| 'DROPDOWN'
-	| 'INTERNAL_LINK'
-	| 'EXTERNAL_LINK';
-
 export interface MenuSchema {
 	id: number;
 	label: string;
 	icon_name: string;
 	description: string | null;
 	user_group_ids: number[];
-	content_type: ContentPickerTypeSchema | null;
+	content_type: ContentPickerType | null;
 	content_path: string | number | null;
 	link_target: '_blank' | '_self' | null;
 	position: number;
