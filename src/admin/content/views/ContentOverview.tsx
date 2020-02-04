@@ -324,7 +324,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 	};
 
 	return (
-		<AdminLayout pageTitle="Content overzicht">
+		<AdminLayout pageTitle={t('Content overzicht')}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">

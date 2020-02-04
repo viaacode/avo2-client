@@ -3,10 +3,11 @@ import { Trans } from 'react-i18next';
 
 import { Container } from '@viaa/avo2-components';
 
+import i18n from '../../../shared/translations/i18n';
 import { AdminLayout } from '../../shared/layouts';
 
 const Dashboard = () => (
-	<AdminLayout pageTitle="Dashboard">
+	<AdminLayout pageTitle={i18n.t('Dashboard')}>
 		<Container className="u-spacer-top-l" mode="vertical" size="small">
 			<p>
 				<Trans i18nKey="admin/dashboard/views/dashboard___introductie-beheer-dashboard">

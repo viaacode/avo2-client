@@ -6,6 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError } from '../shared/helpers/error';
 import { ApolloCacheManager } from '../shared/services/data-service';
 import toastService from '../shared/services/toast-service';
+import i18n from '../shared/translations/i18n';
 
 import { AssignmentLayout } from './assignment.types';
 
@@ -47,7 +48,7 @@ const validateAssignment = (
 	// Validate obligatory fields
 	OBLIGATORY_PROPERTIES.forEach((prop: AssignmentProperty) => {
 		if (!(assignmentToSave as any)[prop.name]) {
-			errors.push(`Een ${prop.label} is verplicht`);
+			errors.push(i18n.t('Een {{eigenschap}} is verplicht', { eigenschap: prop.label }));
 		}
 	});
 
@@ -150,8 +151,9 @@ export const insertAssignment = async (
 			} as Avo.Assignment.Assignment;
 		}
 
-		console.error('assignment insert returned empty response', response);
-		throw Error('Het opslaan van de opdracht is mislukt');
+		throw new CustomError('Saving the assignment failed, response id was undefined', null, {
+			response,
+		});
 	} catch (err) {
 		console.error(err);
 		throw err;
@@ -164,7 +166,7 @@ export const insertDuplicateAssignment = async (
 	assignment: Partial<Avo.Assignment.Assignment> | null
 ) => {
 	if (!assignment) {
-		toastService.danger('De opdracht is niet beschikbaar om te dupliceren');
+		toastService.danger(i18n.t('De opdracht is niet beschikbaar om te dupliceren'));
 		return;
 	}
 
@@ -179,7 +181,7 @@ export const insertDuplicateAssignment = async (
 		return await insertAssignment(triggerAssignmentInsert, newAssignment);
 	} catch (err) {
 		console.error(err);
-		toastService.danger('Het dupliceren van de opdracht is mislukt');
+		toastService.danger(i18n.t('Het dupliceren van de opdracht is mislukt'));
 	}
 };
 
@@ -187,8 +189,8 @@ function warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
 	// Validate if deadline_at is not in the past
 	if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
 		toastService.info([
-			'De ingestelde deadline ligt in het verleden',
-			'De leerlingen zullen dus geen toegang hebben tot deze opdracht.',
+			i18n.t('De ingestelde deadline ligt in het verleden'),
+			i18n.t('De leerlingen zullen dus geen toegang hebben tot deze opdracht.'),
 		]);
 	}
 }

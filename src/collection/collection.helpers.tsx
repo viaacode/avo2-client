@@ -3,6 +3,8 @@ import { compact, isNil } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { stripHtml } from '../shared/helpers/formatters/strip-html';
+import i18n from '../shared/translations/i18n';
+
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
 
 export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
@@ -13,12 +15,14 @@ export const getValidationFeedbackForShortDescription = (
 	description: string | null,
 	isError?: boolean | null
 ): string => {
-	const count = `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+	const count: string = `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
 
 	const exceedsSize: boolean = (description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH;
 
 	if (isError) {
-		return exceedsSize ? `De korte omschrijving is te lang. ${count}` : '';
+		return exceedsSize
+			? i18n.t('De korte omschrijving is te lang. {{count}}', { count } as any)
+			: '';
 	}
 
 	return exceedsSize ? '' : `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
@@ -32,7 +36,7 @@ type ValidationRule<T> = {
 
 const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collection>>[] = [
 	{
-		error: 'De collectie beschrijving is te lang',
+		error: i18n.t('De collectie beschrijving is te lang'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.description || collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
 	},
@@ -40,36 +44,36 @@ const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collectio
 
 const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collection>>[] = [
 	{
-		error: 'De collectie heeft geen titel.',
+		error: i18n.t('De collectie heeft geen titel.'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.title,
 	},
 	{
-		error: 'De collectie heeft geen beschrijving.',
+		error: i18n.t('De collectie heeft geen beschrijving.'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.description,
 	},
 	{
-		error: "De collectie heeft geen onderwijsniveau's.",
+		error: i18n.t("De collectie heeft geen onderwijsniveau's."),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.lom_context && collection.lom_context.length),
 	},
 	{
-		error: 'De collectie heeft geen vakken.',
+		error: i18n.t('De collectie heeft geen vakken.'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.lom_classification && collection.lom_classification.length),
 	},
 	{
-		error: 'De collectie heeft geen items.',
+		error: i18n.t('De collectie heeft geen items.'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.collection_fragments && collection.collection_fragments.length),
 	},
 	{
-		error: 'De video-items moeten een titel en beschrijving bevatten.',
+		error: i18n.t('De video-items moeten een titel en beschrijving bevatten.'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.collection_fragments ||
 			validateFragments(collection.collection_fragments, 'video'),
 	},
 	{
-		error: 'Uw tekst-items moeten een titel of beschrijving bevatten.',
+		error: i18n.t('Uw tekst-items moeten een titel of beschrijving bevatten.'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.collection_fragments ||
 			validateFragments(collection.collection_fragments, 'text'),
@@ -81,19 +85,19 @@ const VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: ValidationRule<
 	Avo.Collection.Fragment
 >[] = [
 	{
-		error: 'De starttijd heeft geen geldig formaat (uu:mm:ss)',
+		error: i18n.t('De starttijd heeft geen geldig formaat (uu:mm:ss)'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return !isNil(collectionFragment.start_oc);
 		},
 	},
 	{
-		error: 'De eindtijd heeft geen geldig formaat (uu:mm:ss)',
+		error: i18n.t('De eindtijd heeft geen geldig formaat (uu:mm:ss)'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return !isNil(collectionFragment.end_oc);
 		},
 	},
 	{
-		error: 'De starttijd moet voor de eindtijd vallen',
+		error: i18n.t('De starttijd moet voor de eindtijd vallen'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return (
 				!collectionFragment.start_oc ||

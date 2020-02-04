@@ -174,7 +174,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 					refetchAssignments();
 					toastService.success(
-						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`
+						archivedAssigment.is_archived
+							? t('De opdracht is gearchiveerd')
+							: t(`De opdracht is gedearchiveerd`)
 					);
 				}
 				// else: assignment was not valid and could not be saved yet
@@ -183,9 +185,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		} catch (err) {
 			console.error(err);
 			toastService.danger(
-				`Het ${
-					activeView === 'archived_assignments' ? 'de' : ''
-				}archiveren van de opdracht is mislukt`
+				activeView === 'archived_assignments'
+					? t(`Het dearchiveren van de opdracht is mislukt`)
+					: t('Het archiveren van de opdracht is mislukt')
 			);
 		}
 	};
@@ -327,14 +329,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 							<DropdownContent>
 								<MenuContent
 									menuItems={[
-										{ icon: 'edit2' as IconName, id: 'edit', label: 'Bewerk' },
+										{ icon: 'edit2' as IconName, id: 'edit', label: t('Bewerk') },
 										{
 											icon: 'archive' as IconName,
 											id: 'archive',
-											label: activeView === 'archived_assignments' ? 'Dearchiveer' : 'Archiveer',
+											label:
+												activeView === 'archived_assignments' ? t('Dearchiveer') : t('Archiveer'),
 										},
-										{ icon: 'copy' as IconName, id: 'duplicate', label: 'Dupliceer' },
-										{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' },
+										{ icon: 'copy' as IconName, id: 'duplicate', label: t('Dupliceer') },
+										{ icon: 'delete' as IconName, id: 'delete', label: t('Verwijder') },
 									]}
 									onClick={(actionId: ReactText) =>
 										handleExtraOptionsItemClicked(

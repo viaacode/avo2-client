@@ -70,11 +70,14 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	const fetchBundles = React.useCallback(
 		() =>
-			CollectionService.getCollectionTitlesByUser('bundle', user).then(
-				(bundleTitles: Partial<Avo.Collection.Collection>[]) => {
+			CollectionService.getCollectionTitlesByUser('bundle', user)
+				.then((bundleTitles: Partial<Avo.Collection.Collection>[]) => {
 					setBundles(bundleTitles);
-				}
-			),
+				})
+				.catch(err => {
+					console.log(err);
+					toastService.danger(t('Het ophalen van de bestaande bundels is mislukt'));
+				}),
 		[user]
 	);
 

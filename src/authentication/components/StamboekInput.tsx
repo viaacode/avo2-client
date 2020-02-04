@@ -50,37 +50,40 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 			status: undefined,
 		},
 		INVALID_FORMAT: {
-			message:
-				'Het stamboek nummer heeft een ongeldig formaat. Geldige formaten: 00000000000 of 00000000000-000000',
+			message: t(
+				'Het stamboek nummer heeft een ongeldig formaat. Geldige formaten: 00000000000 of 00000000000-000000'
+			),
 			status: ToastType.DANGER,
 		},
 		INVALID_NUMBER: {
 			message: (
 				<span>
-					Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog maar recent uw
-					kaart heeft ontvangen kan u via{' '}
+					<Trans>
+						Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog maar recent uw
+						kaart heeft ontvangen kan u via
+					</Trans>{' '}
 					<Button
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
 						label={t('authentication/components/stamboek-input___een-manuele-aanvraag')}
 						type="inline-link"
 					/>{' '}
-					toch al toegang krijgen.
+					<Trans>toch al toegang krijgen.</Trans>
 				</span>
 			),
 			status: ToastType.DANGER,
 		},
 		VALID_FORMAT: {
-			message: 'Bezig met valideren',
+			message: t('Bezig met valideren'),
 			status: ToastType.SPINNER,
 		},
 		VALID: {
-			message: 'Het stamboek nummer is geldig',
+			message: t('Het stamboek nummer is geldig'),
 			status: ToastType.SUCCESS,
 		},
 		ALREADY_IN_USE: {
 			message: (
 				<span>
-					Dit stamboek nummer is reeds in gebruik,{' '}
+					<Trans>Dit stamboek nummer is reeds in gebruik,</Trans>{' '}
 					<Button
 						label={t('authentication/components/stamboek-input___contacteer-de-helpdesk')}
 						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
@@ -92,8 +95,9 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 			status: ToastType.SUCCESS,
 		},
 		SERVER_ERROR: {
-			message:
-				'Er ging iets mis bij het valideren van het stamboek nummer. Probeer later eens opnieuw.',
+			message: t(
+				'Er ging iets mis bij het valideren van het stamboek nummer. Probeer later eens opnieuw.'
+			),
 			status: ToastType.DANGER,
 		},
 	};
@@ -155,7 +159,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 							</span>
 						</Spacer>
 						<img
-							alt="Voorbeeld leeraren kaart"
+							alt={t('Voorbeeld leeraren kaart')}
 							className="a-stamboek-image"
 							src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
 						/>

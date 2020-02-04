@@ -159,7 +159,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		!isCollection &&
 		fetchPlayerTicket(fragment.external_id)
 			.then(data => setPlayerTicket(data))
-			.catch(() => toastService.danger('Play ticket kon niet opgehaald worden.'));
+			.catch(() => toastService.danger(t('Play ticket kon niet opgehaald worden.')));
 
 	const itemMetaData = (fragment as any).item_meta;
 
@@ -197,22 +197,22 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	// TODO: DISABLED FEATURE
 	// const onDuplicateFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success('Fragment is succesvol gedupliceerd');
+	// 	toastService.success(t('Fragment is succesvol gedupliceerd'));
 	// };
 
 	// const onMoveFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success('Fragment is succesvol verplaatst');
+	// 	toastService.success(t('Fragment is succesvol verplaatst'));
 	// };
 
 	// const onCopyFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success('Fragment is succesvol gekopiëerd naar collectie');
+	// 	toastService.success(t('Fragment is succesvol gekopiëerd naar collectie'));
 	// };
 
 	// const onMoveFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success('Fragment is succesvol verplaatst naar collectie');
+	// 	toastService.success(t('Fragment is succesvol verplaatst naar collectie'));
 	// };
 
 	const onClickDropdownItem = (item: ReactText) => {

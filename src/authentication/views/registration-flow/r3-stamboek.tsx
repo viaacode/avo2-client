@@ -60,7 +60,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 						{/* TODO add links to help article */}
 						<Alert type="info">
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-							<a onClick={() => toastService.info('Nog niet geimplementeerd')}>
+							<a onClick={() => toastService.info(t('Nog niet geimplementeerd'))}>
 								<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig">
 									Waarom hebben jullie mijn stamboeknummer nodig?
 								</Trans>

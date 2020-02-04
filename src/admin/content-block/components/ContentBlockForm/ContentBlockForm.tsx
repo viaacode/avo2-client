@@ -186,7 +186,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								icon="chevron-up"
 								onClick={() => onReorder(blockIndex, -1)}
 								size="small"
-								title="Verplaats naar boven"
+								title={t('Verplaats naar boven')}
 								type="tertiary"
 							/>
 						)}
@@ -195,7 +195,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								icon="chevron-down"
 								onClick={() => onReorder(blockIndex, 1)}
 								size="small"
-								title="Verplaats naar onder"
+								title={t('Verplaats naar onder')}
 								type="tertiary"
 							/>
 						)}

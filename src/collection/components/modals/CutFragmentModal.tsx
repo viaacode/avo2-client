@@ -148,8 +148,13 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	};
 
 	const handleOnKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
-		if (evt.keyCode === KeyCode.Enter) {
-			parseTimes();
+		try {
+			if (evt.keyCode === KeyCode.Enter) {
+				parseTimes();
+			}
+		} catch (err) {
+			console.error('');
+			toastService.danger(t('De ingevulde tijd heeft geen geldig formaat'));
 		}
 	};
 

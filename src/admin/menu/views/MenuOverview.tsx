@@ -93,7 +93,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 	};
 
 	return (
-		<AdminLayout pageTitle="Navigatie overzicht">
+		<AdminLayout pageTitle={t('Navigatie overzicht')}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">

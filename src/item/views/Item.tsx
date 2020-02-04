@@ -129,7 +129,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 					limit,
 					index: 'items',
 				});
-				toastService.danger('Het ophalen van de gerelateerde items is mislukt');
+				toastService.danger(t('Het ophalen van de gerelateerde items is mislukt'));
 			});
 	};
 
@@ -484,7 +484,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 					variables={{ id: itemId }}
 					resultPath="app_item_meta[0]"
 					renderData={renderItem}
-					notFoundMessage="Dit item werd niet gevonden"
+					notFoundMessage={t('Dit item werd niet gevonden')}
 					actionButtons={['home']}
 				/>
 			</PermissionGuardPass>

@@ -1,5 +1,4 @@
 import i18n from '../../../../shared/translations/i18n';
-
 import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,

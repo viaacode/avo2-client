@@ -8,6 +8,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { Scrollbar } from 'react-scrollbars-custom';
 
 import {
@@ -28,7 +29,6 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService from '../../shared/services/toast-service';
 
-import { Trans } from 'react-i18next';
 import './ItemVideoDescription.scss';
 
 interface ItemVideoDescriptionProps extends DefaultSecureRouteProps {
@@ -53,6 +53,8 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	onTitleClicked,
 	user,
 }) => {
+	const [t] = useTranslation();
+
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [playerTicket, setPlayerTicket] = useState<string>();
@@ -140,7 +142,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService.danger('Het ophalen van de mediaplayer ticket is mislukt');
+				toastService.danger(t('Het ophalen van de mediaplayer ticket is mislukt'));
 			});
 
 	const renderMedia = () => (

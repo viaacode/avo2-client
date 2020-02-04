@@ -87,7 +87,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
-	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
+	const pageTitle = pageType === PageType.Create ? t('Content toevoegen') : t('Content aanpassen');
 	// TODO: clean up admin check
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
@@ -122,7 +122,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setIsSaving(false);
 
 		if (response) {
-			toastService.success('Het content item is succesvol opgeslagen', false);
+			toastService.success(t('Het content item is succesvol opgeslagen'), false);
 			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
 		}
 	};
@@ -135,7 +135,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!isFormValid) {
 			setIsSaving(false);
-			toastService.danger('Er zijn nog fouten in het metadata formulier', false);
+			toastService.danger(t('Er zijn nog fouten in het metadata formulier'), false);
 
 			return;
 		}
@@ -177,7 +177,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 				handleResponse(updatedContent);
 			} else {
-				toastService.danger(`Het content id: ${id} is ongeldig.`, false);
+				toastService.danger(t('Het content id: {{id}} is ongeldig.', { id }), false);
 				history.push(CONTENT_PATH.CONTENT);
 			}
 		}
@@ -188,18 +188,18 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
 
 		if (!contentForm.title) {
-			errors.title = 'Titel is verplicht';
+			errors.title = t('Titel is verplicht');
 		}
 
 		if (!contentForm.contentType) {
-			errors.contentType = 'Content type is verplicht';
+			errors.contentType = t('Content type is verplicht');
 		}
 
 		if (
 			hasPublicationAndDePublicationDates &&
 			new Date(contentForm.depublishAt) < new Date(contentForm.publishAt)
 		) {
-			errors.depublishAt = 'Depublicatie moet na publicatie datum';
+			errors.depublishAt = t('Depublicatie moet na publicatie datum');
 		}
 
 		setFormErrors(errors);

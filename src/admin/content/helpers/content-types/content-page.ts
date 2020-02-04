@@ -1,5 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
+import i18n from '../../../../shared/translations/i18n';
+
 import { parsePickerItem } from '..';
 import { fetchContentItems } from '../../content.service';
 import { PickerSelectItem, PickerSelectItemGroup } from '../../content.types';
@@ -21,7 +23,7 @@ const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItemGroup =>
 	);
 
 	return {
-		label: "Content pagina's",
+		label: i18n.t("Content pagina's"),
 		options: parsedContentItems,
 	};
 };

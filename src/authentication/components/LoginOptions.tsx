@@ -6,6 +6,7 @@ import { Button, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
 import toastService from '../../shared/services/toast-service';
+import i18n from '../../shared/translations/i18n';
 
 import { redirectToClientPage, redirectToServerSmartschoolLogin } from '../helpers/redirects';
 
@@ -62,7 +63,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				label={t('authentication/components/login-options___inloggen-met-klas-cement')}
 				onClick={() => {
 					onOptionClicked();
-					toastService.info('Nog niet geïmplementeerd');
+					toastService.info(i18n.t('Nog niet geïmplementeerd'));
 				}}
 			/>
 		</div>
