@@ -55,7 +55,8 @@ export type ContentBlockComponentState =
 	| ButtonsBlockComponentState
 	| IntroBlockComponentState
 	| CTAsBlockComponentState
-	| IFrameBlockComponentState;
+	| IFrameBlockComponentState
+	| AccordionsBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -103,6 +104,7 @@ export enum ContentBlockType {
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 	IFrame = 'IFRAME',
+	Accordions = 'ACCORDIONS',
 }
 
 export interface HeadingBlockComponentState {
@@ -139,4 +141,9 @@ export interface CTAsBlockComponentState {
 export interface IFrameBlockComponentState {
 	title: string;
 	src: string;
+}
+
+export interface AccordionsBlockComponentState {
+	title: string;
+	content: string;
 }
