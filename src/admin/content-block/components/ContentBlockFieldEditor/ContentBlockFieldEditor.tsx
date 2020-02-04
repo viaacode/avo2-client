@@ -42,7 +42,7 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 }) => {
 	const { index, config } = block;
 	const EditorComponent = EDITOR_TYPES_MAP[field.editorType];
-	const editorId = createKey('e', index, formGroupIndex, stateIndex);
+	const editorId = createKey('editor', index, formGroupIndex, stateIndex);
 	const defaultProps = {
 		...field.editorProps,
 		editorId,
