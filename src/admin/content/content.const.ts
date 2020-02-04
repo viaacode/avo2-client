@@ -5,6 +5,7 @@ import i18n from '../../shared/translations/i18n';
 import { PickerTypeOption } from '../shared/types';
 
 import {
+	fetchBundles,
 	fetchCollections,
 	fetchContentPages,
 	fetchInternalLinks,
@@ -112,6 +113,12 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 		label: i18n.t('admin/content/content___items'),
 		disabled: false,
 		fetch: fetchItems,
+	},
+	{
+		value: 'BUNDLE',
+		label: i18n.t('Bundels'),
+		disabled: false,
+		fetch: fetchBundles,
 	},
 ];
 
