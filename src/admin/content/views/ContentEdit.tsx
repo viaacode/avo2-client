@@ -54,7 +54,6 @@ interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
 const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
 	const { id } = match.params;
-	const initialState = CONTENT_EDIT_INITIAL_STATE();
 
 	// Hooks
 	const [{ contentBlockConfigs }, dispatch] = useReducer<

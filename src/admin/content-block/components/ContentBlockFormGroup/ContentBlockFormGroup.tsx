@@ -41,10 +41,10 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 	handleChange,
 	formErrors,
 }) => (
-	<>
+	<div className="c-content-block-form-group">
 		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
 			const formGroupOptions = {
-				key: createKey('e', blockIndex, formGroupIndex, stateIndex),
+				key: createKey('form-group', blockIndex, formGroupIndex, stateIndex),
 				label: formGroup.fields[key].label,
 			};
 
@@ -68,5 +68,5 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 				</Spacer>
 			);
 		})}
-	</>
+	</div>
 );

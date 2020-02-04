@@ -185,24 +185,22 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				<AccordionTitle>{accordionTitle}</AccordionTitle>
 				<AccordionActions>
 					<ButtonToolbar>
-						{blockIndex > 0 && (
-							<Button
-								icon="chevron-up"
-								onClick={() => onReorder(blockIndex, -1)}
-								size="small"
-								title="Verplaats naar boven"
-								type="tertiary"
-							/>
-						)}
-						{blockIndex + 1 < length && (
-							<Button
-								icon="chevron-down"
-								onClick={() => onReorder(blockIndex, 1)}
-								size="small"
-								title="Verplaats naar onder"
-								type="tertiary"
-							/>
-						)}
+						<Button
+							disabled={blockIndex === 0}
+							icon="chevron-up"
+							onClick={() => onReorder(blockIndex, -1)}
+							size="small"
+							title="Verplaats naar boven"
+							type="tertiary"
+						/>
+						<Button
+							disabled={blockIndex + 1 === length}
+							icon="chevron-down"
+							onClick={() => onReorder(blockIndex, 1)}
+							size="small"
+							title="Verplaats naar onder"
+							type="tertiary"
+						/>
 						<Button
 							icon="edit"
 							onClick={setIsAccordionOpen}
