@@ -20,6 +20,13 @@ import './FileUpload.scss';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
+export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
+	jpeg: 'image/jpeg',
+	jpg: 'image/jpeg',
+	png: 'image/png',
+	gif: 'image/gif',
+};
+
 interface FileUploadProps {
 	icon?: IconName;
 	label: string;
@@ -105,7 +112,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				</Spacer>
 			) : (
 				<>
-					{url.endsWith('jpg') || url.endsWith('png') || url.endsWith('gif') ? (
+					{allowedTypes.includes(EXTENSION_TO_TYPE[url.split('.').pop() || '']) ? (
 						<div className="a-upload-image-preview" style={{ backgroundImage: `url(${url})` }} />
 					) : (
 						<Blankslate title={url.split('/').pop() || ''} body="" icon="file" />
