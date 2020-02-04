@@ -1,8 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
-
 import {
 	Blankslate,
 	Box,
@@ -19,6 +17,8 @@ import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-se
 import toastService from '../../services/toast-service';
 
 import './FileUpload.scss';
+
+export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
 interface FileUploadProps {
 	icon?: IconName;
@@ -89,14 +89,15 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 										<Icon size="large" name={icon} />
 									</FlexItem>
 								)}
-								<FlexItem>
+								<FlexItem className="c-file-upload-button-and-input">
 									<Button label={label} ariaLabel={label} type="secondary" autoHeight />
+									<input
+										type="file"
+										title={t('Kies een bestand')}
+										onChange={evt => !!evt.target.files && uploadSelectedFile(evt.target.files[0])}
+									/>
 								</FlexItem>
 							</Flex>
-							<input
-								type="file"
-								onChange={evt => !!evt.target.files && uploadSelectedFile(evt.target.files[0])}
-							/>
 						</>
 					) : (
 						<Spinner size="large" />
