@@ -1,6 +1,8 @@
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
 import {
 	Blankslate,
 	Box,
@@ -31,7 +33,7 @@ interface FileUploadProps {
 const FileUpload: FunctionComponent<FileUploadProps> = ({
 	icon,
 	label,
-	allowedTypes = ['image/jpeg', 'image/png', 'image/gif'],
+	allowedTypes = PHOTO_TYPES,
 	assetType,
 	ownerId,
 	url,
@@ -93,9 +95,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 							</Flex>
 							<input
 								type="file"
-								onChange={evt =>
-									uploadSelectedFile(!!evt.target.files ? evt.target.files[0] : null)
-								}
+								onChange={evt => !!evt.target.files && uploadSelectedFile(evt.target.files[0])}
 							/>
 						</>
 					) : (

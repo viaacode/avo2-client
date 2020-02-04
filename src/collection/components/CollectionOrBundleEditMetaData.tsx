@@ -15,8 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DataQueryComponent } from '../../shared/components';
-import FileUpload from '../../shared/components/FileUpload/FileUpload';
+import { DataQueryComponent, FileUpload } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 
