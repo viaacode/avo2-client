@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { compact } from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent, ReactText, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -110,7 +111,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		setIdToDelete(null);
 	};
 
-	const onClickCreate = () => history.push(SEARCH_PATH.SEARCH);
+	const onClickCreate = () =>
+		history.push(buildLink(SEARCH_PATH.SEARCH, {}, `filters={"type":["collectie"]}`));
 
 	// TODO: Make shared function because also used in assignments
 	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {
