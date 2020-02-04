@@ -7,11 +7,12 @@ import {
 	AccordionActions,
 	AccordionBody,
 	AccordionTitle,
+	BlockHeading,
 	Button,
 	ButtonToolbar,
-	Column,
+	Flex,
+	FlexItem,
 	Form,
-	Grid,
 	Spacer,
 } from '@viaa/avo2-components';
 
@@ -106,13 +107,13 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return (
 			removeComponentFromState &&
 			aboveMin && (
-				<Column className="u-flex-align-end" size="static">
+				<FlexItem className="u-flex-align-end" shrink>
 					<Button
 						icon="delete"
 						type="danger"
 						onClick={() => removeComponentFromState(stateIndex)}
 					/>
-				</Column>
+				</FlexItem>
 			)
 		);
 	};
@@ -136,17 +137,20 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				{isArray(formGroup.state) ? (
 					formGroup.state.map((formGroupState, stateIndex) => (
 						<Spacer key={stateIndex} margin="bottom-small">
-							<Grid>
-								<Column size="flex">
+							<BlockHeading type="h4" className="u-m-t-0">
+								{`${get(config, 'components.name')} ${stateIndex + 1}`}
+							</BlockHeading>
+							<Flex spaced="regular" wrap>
+								<FlexItem>
 									<ContentBlockFormGroup
 										key={stateIndex}
 										{...formGroupOptions}
 										formGroupState={formGroupState}
 										stateIndex={stateIndex}
 									/>
-								</Column>
+								</FlexItem>
 								{renderRemoveButton(stateIndex)}
-							</Grid>
+							</Flex>
 						</Spacer>
 					))
 				) : (
@@ -181,24 +185,22 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				<AccordionTitle>{accordionTitle}</AccordionTitle>
 				<AccordionActions>
 					<ButtonToolbar>
-						{blockIndex > 0 && (
-							<Button
-								icon="chevron-up"
-								onClick={() => onReorder(blockIndex, -1)}
-								size="small"
-								title="Verplaats naar boven"
-								type="tertiary"
-							/>
-						)}
-						{blockIndex + 1 < length && (
-							<Button
-								icon="chevron-down"
-								onClick={() => onReorder(blockIndex, 1)}
-								size="small"
-								title="Verplaats naar onder"
-								type="tertiary"
-							/>
-						)}
+						<Button
+							disabled={blockIndex === 0}
+							icon="chevron-up"
+							onClick={() => onReorder(blockIndex, -1)}
+							size="small"
+							title="Verplaats naar boven"
+							type="tertiary"
+						/>
+						<Button
+							disabled={blockIndex + 1 === length}
+							icon="chevron-down"
+							onClick={() => onReorder(blockIndex, 1)}
+							size="small"
+							title="Verplaats naar onder"
+							type="tertiary"
+						/>
 						<Button
 							icon="edit"
 							onClick={setIsAccordionOpen}
@@ -222,7 +224,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				<AccordionBody>
 					{renderFormGroups(components, 'components')}
 					{underLimit && renderAddButton(label)}
-					{renderFormGroups(block, 'block')}
+					<Spacer margin="top">
+						<BlockHeading type="h4" className="u-m-t-0">
+							Blok-opties
+						</BlockHeading>
+					</Spacer>
+					<Spacer margin="bottom-small">{renderFormGroups(block, 'block')}</Spacer>
 				</AccordionBody>
 			</Accordion>
 		);

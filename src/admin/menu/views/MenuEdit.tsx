@@ -11,6 +11,7 @@ import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { ContentPickerType } from '../../shared/types';
 
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
@@ -22,6 +23,21 @@ import {
 	MenuEditPageType,
 	MenuEditParams,
 } from '../menu.types';
+
+export interface MenuSchema {
+	id: number;
+	label: string;
+	icon_name: string;
+	description: string | null;
+	user_group_ids: number[];
+	content_type: ContentPickerType | null;
+	content_path: string | number | null;
+	link_target: '_blank' | '_self' | null;
+	position: number;
+	placement: string;
+	created_at: string;
+	updated_at: string;
+}
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
@@ -125,7 +141,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			return;
 		}
 
-		const menuItem: Partial<Avo.Menu.Menu> = {
+		const menuItem: Partial<MenuSchema> = {
 			icon_name: menuForm.icon,
 			label: menuForm.label,
 			content_path: menuForm.content_path,

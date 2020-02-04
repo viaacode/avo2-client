@@ -26,7 +26,7 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 	const header = useSlot(AdminLayoutHeader, children);
 
 	return (
-		<div className={classnames({ 'l-admin--with-actions': !!actions })}>
+		<div className={classnames('l-admin', { 'l-admin--with-actions': !!actions })}>
 			<TopBar showBackButton={showBackButton} />
 			{header}
 			{(pageTitle || (children && !body)) && (

@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 
 import {
+	BlockAccordions,
 	BlockButtons,
 	BlockCTAs,
 	BlockHeading,
@@ -39,9 +40,11 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.IFrame]: BlockIFrame,
+	[ContentBlockType.Accordions]: BlockAccordions,
 });
 
 const REPEATABLE_CONTENT_BLOCKS = [
+	ContentBlockType.Accordions,
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
 	ContentBlockType.RichText,

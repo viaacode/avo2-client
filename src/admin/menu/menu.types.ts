@@ -1,6 +1,6 @@
 import { IconName } from '@viaa/avo2-components';
 
-import { ContentPickerType } from '../content/content.types';
+import { ContentPickerType } from '../shared/types';
 
 export type MenuOverviewTableCols = 'placement' | 'description' | 'actions';
 
