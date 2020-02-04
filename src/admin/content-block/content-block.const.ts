@@ -1,5 +1,7 @@
 import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
 
+import i18n from '../../shared/translations/i18n';
+
 import { AlignSelect, ColorSelect } from './components';
 import {
 	AlignOptions,
@@ -44,15 +46,15 @@ export const ALIGN_OPTIONS: { label: string; value: AlignOptions }[] = [
 ];
 
 export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
-	{ label: 'Kies een content block', value: '', disabled: true },
-	{ label: 'Titel', value: ContentBlockType.Heading },
-	{ label: 'Tekst', value: ContentBlockType.RichText },
-	{ label: 'Tekst (2 kolommen)', value: ContentBlockType.RichTextTwoColumns },
-	{ label: 'Knoppen', value: ContentBlockType.Buttons },
-	{ label: 'Intro', value: ContentBlockType.Intro },
-	{ label: '2 CTAs', value: ContentBlockType.CTAs },
-	{ label: 'IFrame', value: ContentBlockType.IFrame },
-	{ label: 'Accordeons', value: ContentBlockType.Accordions },
+	{ label: i18n.t('Kies een content block'), value: '', disabled: true },
+	{ label: i18n.t('Titel'), value: ContentBlockType.Heading },
+	{ label: i18n.t('Tekst'), value: ContentBlockType.RichText },
+	{ label: i18n.t('Tekst (2 kolommen)'), value: ContentBlockType.RichTextTwoColumns },
+	{ label: i18n.t('Knoppen'), value: ContentBlockType.Buttons },
+	{ label: i18n.t('Intro'), value: ContentBlockType.Intro },
+	{ label: i18n.t('2 CTAs'), value: ContentBlockType.CTAs },
+	{ label: i18n.t('IFrame'), value: ContentBlockType.IFrame },
+	{ label: i18n.t('Accordeons'), value: ContentBlockType.Accordions },
 ];
 
 export const EDITOR_TYPES_MAP = {
