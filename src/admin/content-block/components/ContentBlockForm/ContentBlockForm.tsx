@@ -9,9 +9,9 @@ import {
 	AccordionTitle,
 	Button,
 	ButtonToolbar,
-	Column,
+	Flex,
+	FlexItem,
 	Form,
-	Grid,
 	Spacer,
 } from '@viaa/avo2-components';
 
@@ -106,13 +106,13 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return (
 			removeComponentFromState &&
 			aboveMin && (
-				<Column className="u-flex-align-end" size="static">
+				<FlexItem className="u-flex-align-end" shrink>
 					<Button
 						icon="delete"
 						type="danger"
 						onClick={() => removeComponentFromState(stateIndex)}
 					/>
-				</Column>
+				</FlexItem>
 			)
 		);
 	};
@@ -136,17 +136,17 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				{isArray(formGroup.state) ? (
 					formGroup.state.map((formGroupState, stateIndex) => (
 						<Spacer key={stateIndex} margin="bottom-small">
-							<Grid>
-								<Column size="flex">
+							<Flex spaced="regular" wrap>
+								<FlexItem>
 									<ContentBlockFormGroup
 										key={stateIndex}
 										{...formGroupOptions}
 										formGroupState={formGroupState}
 										stateIndex={stateIndex}
 									/>
-								</Column>
+								</FlexItem>
 								{renderRemoveButton(stateIndex)}
-							</Grid>
+							</Flex>
 						</Spacer>
 					))
 				) : (

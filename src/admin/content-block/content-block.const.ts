@@ -1,5 +1,7 @@
 import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
 
+import i18n from '../../shared/translations/i18n';
+
 import { AlignSelect, ColorSelect } from './components';
 import {
 	AlignOptions,
@@ -8,10 +10,12 @@ import {
 	HeadingLevelOptions,
 } from './content-block.types';
 import {
+	ACCORDIONS_BLOCK_CONFIG,
 	BUTTONS_BLOCK_CONFIG,
 	CTAS_BLOCK_CONFIG,
 	HEADING_BLOCK_CONFIG,
 	IFRAME_BLOCK_CONFIG,
+	INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
 	INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	INITIAL_HEADING_BLOCK_COMPONENT_STATE,
@@ -42,14 +46,15 @@ export const ALIGN_OPTIONS: { label: string; value: AlignOptions }[] = [
 ];
 
 export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
-	{ label: 'Kies een content block', value: '', disabled: true },
-	{ label: 'Titel', value: ContentBlockType.Heading },
-	{ label: 'Tekst', value: ContentBlockType.RichText },
-	{ label: 'Tekst (2 kolommen)', value: ContentBlockType.RichTextTwoColumns },
-	{ label: 'Knoppen', value: ContentBlockType.Buttons },
-	{ label: 'Intro', value: ContentBlockType.Intro },
-	{ label: '2 CTAs', value: ContentBlockType.CTAs },
-	{ label: 'IFrame', value: ContentBlockType.IFrame },
+	{ label: i18n.t('Kies een content block'), value: '', disabled: true },
+	{ label: i18n.t('Titel'), value: ContentBlockType.Heading },
+	{ label: i18n.t('Tekst'), value: ContentBlockType.RichText },
+	{ label: i18n.t('Tekst (2 kolommen)'), value: ContentBlockType.RichTextTwoColumns },
+	{ label: i18n.t('Knoppen'), value: ContentBlockType.Buttons },
+	{ label: i18n.t('Intro'), value: ContentBlockType.Intro },
+	{ label: i18n.t('2 CTAs'), value: ContentBlockType.CTAs },
+	{ label: i18n.t('IFrame'), value: ContentBlockType.IFrame },
+	{ label: i18n.t('Accordeons'), value: ContentBlockType.Accordions },
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -68,6 +73,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
@@ -78,6 +84,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 };
 
 // Heading
