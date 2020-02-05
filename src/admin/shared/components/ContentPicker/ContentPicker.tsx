@@ -14,9 +14,9 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import toastService from '../../../../shared/services/toast-service';
-import { CONTENT_TYPES } from '../../content.const';
-import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../content.types';
-import { parsePickerItem } from '../../helpers';
+import { CONTENT_TYPES } from '../../../content/content.const';
+import { parsePickerItem } from '../../../shared/helpers';
+import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../../shared/types';
 
 type ContentPickerControls = 'content' | 'external-url';
 
@@ -31,7 +31,7 @@ export interface ContentPickerProps {
 	errors?: string | string[];
 }
 
-export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
+const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	selectableTypes,
 	onSelect,
 	errors = [],
@@ -151,3 +151,5 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		</>
 	);
 };
+
+export default ContentPicker;

@@ -1,10 +1,9 @@
 import { Avo } from '@viaa/avo2-types';
 
-import i18n from '../../../../shared/translations/i18n';
+import { fetchContentItems } from '../../../content/content.service';
 
-import { parsePickerItem } from '..';
-import { fetchContentItems } from '../../content.service';
-import { PickerSelectItem, PickerSelectItemGroup } from '../../content.types';
+import { PickerSelectItem, PickerSelectItemGroup } from '../../types';
+import { parsePickerItem } from './parse-picker';
 
 // Fetch content items from GQL
 export const fetchContentPages = async (limit: number = 5): Promise<PickerSelectItemGroup> => {
@@ -23,7 +22,7 @@ const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItemGroup =>
 	);
 
 	return {
-		label: i18n.t("Content pagina's"),
+		label: "Content pagina's",
 		options: parsedContentItems,
 	};
 };

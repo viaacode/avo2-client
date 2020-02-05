@@ -78,7 +78,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 			return (
 				<ContentBlockForm
-					key={createKey('e', index)}
+					key={createKey('form', index)}
 					config={contentBlockConfig}
 					blockIndex={index}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
@@ -110,7 +110,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 			return (
 				<ContentBlockPreview
-					key={createKey('p', blockIndex)}
+					key={createKey('preview', blockIndex)}
 					componentState={components.state}
 					contentWidth={contentWidth}
 					blockState={block.state}
