@@ -75,7 +75,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [permissionWarning, setPermissionWarning] = useState<ReactNode | null>(null);
-	const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
+	const [userGroups, setUserGroups] = useState<TagInfo[]>([]);
 
 	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -149,7 +149,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 		if (faultyUserGroupIds.length) {
 			const faultyUserGroups = compact(
 				faultyUserGroupIds.map(faultyUserGroupId => {
-					const faultyUserGroup = userGroups.find(userGroup => userGroup.id === faultyUserGroupId);
+					const faultyUserGroup = userGroups.find(
+						userGroup => userGroup.value === faultyUserGroupId
+					);
 					return faultyUserGroup ? faultyUserGroup.label : null;
 				})
 			);
