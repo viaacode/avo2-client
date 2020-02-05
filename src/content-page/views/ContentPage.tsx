@@ -43,7 +43,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ history, match
 
 	const renderContentPage = (contentPage: Avo.Content.Content) => {
 		const pageUserGroups: number[] = (contentPage as any).user_group_ids || []; // TODO remove cast to any when typings v2.10.0 is released
-		const userUserGroups: number[] = get(user, 'profile.userGroupIds', []);
+		const userUserGroups: number[] = [...get(user, 'profile.userGroupIds', []), user ? -2 : -1]; // Ingelogde gebruiker en niet ingelogde gebruiker
 		if (!intersection(pageUserGroups, userUserGroups).length) {
 			// User isn't allowed to see this page (this will in the future also be checked by the graphql instance
 			setErrorInfo({

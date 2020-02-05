@@ -17,7 +17,7 @@ const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItemGroup =>
 	const parsedContentItems = raw.map(
 		(item: Avo.Content.Content): PickerSelectItem => ({
 			label: item.title,
-			value: parsePickerItem('CONTENT_PAGE', String(item.id)),
+			value: parsePickerItem('CONTENT_PAGE', item.path),
 		})
 	);
 

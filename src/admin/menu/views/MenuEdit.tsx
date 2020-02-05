@@ -27,7 +27,7 @@ import { ContentPickerType, PickerItem } from '../../shared/types';
 
 import { ApolloQueryResult } from 'apollo-boost';
 import { getUserGroups } from '../../../shared/services/user-groups-service';
-import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_ID } from '../../content/content.gql';
+import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
@@ -51,7 +51,7 @@ export interface MenuSchema {
 	description: string | null;
 	user_group_ids: number[];
 	content_type: ContentPickerType | null;
-	content_path: string | number | null;
+	content_path: string | null;
 	link_target: '_blank' | '_self' | null;
 	position: number;
 	placement: string;
@@ -113,7 +113,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 							icon: menuItem.icon_name as IconName,
 							label: menuItem.label,
 							content_type: menuItem.content_type || 'COLLECTION',
-							content_path: (menuItem.content_path || '').toString(),
+							content_path: String(menuItem.content_path || ''),
 							link_target: menuItem.link_target || '_self',
 							user_group_ids: (menuItem.user_group_ids || []) as number[], // TODO remove once typings 2.10.0 is released
 							placement: menuItem.placement,
@@ -180,17 +180,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 
 	// Check if the navigation item is visible for users that do not have access to the selected content page
 	useEffect(() => {
-		if (
-			menuForm.content_type === 'CONTENT_PAGE' &&
-			menuForm.content_path &&
-			/[0-9]+/g.test(menuForm.content_path)
-		) {
+		if (menuForm.content_type === 'CONTENT_PAGE' && menuForm.content_path) {
 			// Check if permissions are more strict than the permissions on the content_page
 			dataService
 				.query({
-					query: GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_ID,
+					query: GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH,
 					variables: {
-						id: parseInt(menuForm.content_path, 10),
+						path: menuForm.content_path,
 					},
 				})
 				.then(response => {
@@ -199,9 +195,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 				.catch(err => {
 					console.error(
 						new CustomError('Failed to get permissions from page', err, {
-							query: 'GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_ID',
+							query: 'GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH',
 							variables: {
-								id: menuForm.content_path,
+								path: menuForm.content_path,
 							},
 						})
 					);
@@ -268,7 +264,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 			content_path: menuForm.content_path,
 			content_type: menuForm.content_type,
 			link_target: menuForm.link_target,
-			user_group_ids: [],
+			user_group_ids: menuForm.user_group_ids,
 			placement: menuForm.placement,
 		};
 

@@ -113,9 +113,9 @@ export const DELETE_CONTENT = gql`
 	}
 `;
 
-export const GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_ID = gql`
-	query GetPermissionsFromContentPageByPath($id: Int!) {
-		app_content(where: { id: { _eq: $id } }) {
+export const GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH = gql`
+	query GetPermissionsFromContentPageByPath($path: String!) {
+		app_content(where: { path: { _eq: $path } }) {
 			user_group_ids
 		}
 	}

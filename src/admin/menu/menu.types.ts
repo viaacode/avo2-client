@@ -16,8 +16,8 @@ export interface MenuEditFormState {
 	placement?: string;
 	icon: IconName | '';
 	label: string;
-	content_path: string;
-	content_type: ContentPickerType;
+	content_path: string | null;
+	content_type: ContentPickerType | null;
 	link_target: '_blank' | '_self';
 	user_group_ids: number[];
 }
