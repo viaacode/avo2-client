@@ -74,10 +74,10 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 								isProtected: contentItem.is_protected,
 								path: contentItem.path,
 								contentType: contentItem.content_type,
-								// TODO: remove any when updating typings
-								contentWidth: (contentItem as any).content_width || ContentWidth.REGULAR,
+								contentWidth: contentItem.content_width || ContentWidth.REGULAR,
 								publishAt: contentItem.publish_at || '',
 								depublishAt: contentItem.depublish_at || '',
+								userGroupIds: (contentItem as any).user_group_ids, // TODO remove once update typings to v2.10.0
 							},
 						});
 					} else {

@@ -1,18 +1,33 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, startCase } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { capitalize, compact, get, sortBy, startCase, without } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import { Button, Container, Flex, IconName, SelectOption, Spinner } from '@viaa/avo2-components';
+import {
+	Badge,
+	Button,
+	ButtonToolbar,
+	Container,
+	Flex,
+	IconName,
+	SelectOption,
+	Spacer,
+	Spinner,
+	TagInfo,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { navigate } from '../../../shared/helpers';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
+import { CustomError, navigate } from '../../../shared/helpers';
+import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
+import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
-import { ContentPickerType } from '../../shared/types';
+import { ContentPickerType, PickerItem } from '../../shared/types';
 
+import { ApolloQueryResult } from 'apollo-boost';
+import { getUserGroups } from '../../../shared/services/user-groups-service';
+import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_ID } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
@@ -23,6 +38,11 @@ import {
 	MenuEditPageType,
 	MenuEditParams,
 } from '../menu.types';
+
+interface UserGroup {
+	id: number;
+	label: string;
+}
 
 export interface MenuSchema {
 	id: number;
@@ -41,7 +61,7 @@ export interface MenuSchema {
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
-const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
+const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) => {
 	const [t] = useTranslation();
 
 	const { menu: menuParentId, id: menuItemId } = match.params;
@@ -54,6 +74,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [formErrors, setFormErrors] = useState<MenuEditFormErrorState>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [permissionWarning, setPermissionWarning] = useState<ReactNode | null>(null);
+	const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
 
 	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -93,7 +115,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							content_type: menuItem.content_type || 'COLLECTION',
 							content_path: (menuItem.content_path || '').toString(),
 							link_target: menuItem.link_target || '_self',
-							user_group_ids: (menuItem.user_group_ids || []) as number[],
+							user_group_ids: (menuItem.user_group_ids || []) as number[], // TODO remove once typings 2.10.0 is released
 							placement: menuItem.placement,
 						});
 					}
@@ -103,6 +125,92 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				});
 		}
 	}, [menuItemId, menuParentId]);
+
+	// Get labels of the userGroups, so we can show a readable error message
+	useEffect(() => {
+		getUserGroups()
+			.then(userGroups => {
+				setUserGroups(userGroups);
+			})
+			.catch((err: any) => {
+				console.error('Failed to get user groups', err);
+				toastService.danger(
+					t(
+						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
+					)
+				);
+			});
+	}, [setUserGroups]);
+
+	const checkMenuItemContentPagePermissionsMismatch = (response: ApolloQueryResult<any>) => {
+		const contentUserGroupIds: number[] = get(response, 'data.app_content[0].user_group_ids', []);
+		const navItemUserGroupIds: number[] = menuForm.user_group_ids;
+		const faultyUserGroupIds = without(navItemUserGroupIds, ...contentUserGroupIds);
+		if (faultyUserGroupIds.length) {
+			const faultyUserGroups = compact(
+				faultyUserGroupIds.map(faultyUserGroupId => {
+					const faultyUserGroup = userGroups.find(userGroup => userGroup.id === faultyUserGroupId);
+					return faultyUserGroup ? faultyUserGroup.label : null;
+				})
+			);
+			setPermissionWarning(
+				<div>
+					<Spacer margin="bottom-small">
+						<Trans>
+							Het navigatie item zal zichtbaar zijn voor gebruikers die geen toegang habben tot de
+							geselecteerde pagina.
+						</Trans>
+					</Spacer>
+					<Spacer margin="bottom-small">
+						<Trans>De geselecteerde pagina is niet toegankelijk voor: </Trans>
+						<ButtonToolbar>
+							{faultyUserGroups.map(group => (
+								<Badge text={group} />
+							))}
+						</ButtonToolbar>
+					</Spacer>
+				</div>
+			);
+		} else if (permissionWarning) {
+			setPermissionWarning(null);
+		}
+	};
+
+	// Check if the navigation item is visible for users that do not have access to the selected content page
+	useEffect(() => {
+		if (
+			menuForm.content_type === 'CONTENT_PAGE' &&
+			menuForm.content_path &&
+			/[0-9]+/g.test(menuForm.content_path)
+		) {
+			// Check if permissions are more strict than the permissions on the content_page
+			dataService
+				.query({
+					query: GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_ID,
+					variables: {
+						id: parseInt(menuForm.content_path, 10),
+					},
+				})
+				.then(response => {
+					checkMenuItemContentPagePermissionsMismatch(response);
+				})
+				.catch(err => {
+					console.error(
+						new CustomError('Failed to get permissions from page', err, {
+							query: 'GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_ID',
+							variables: {
+								id: menuForm.content_path,
+							},
+						})
+					);
+					toastService.danger(
+						t(
+							'Het controleren of de permissies van de pagina overeenkomen met de zichtbaarheid van dit navigatie item is mislukt'
+						)
+					);
+				});
+		}
+	}, [menuForm.content_type, menuForm.content_path, menuForm.user_group_ids]);
 
 	// Computed
 	const pageType: MenuEditPageType = menuItemId ? 'edit' : 'create';
@@ -122,11 +230,22 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	);
 
 	// Methods
-	const handleChange = (key: keyof MenuEditFormState, value: any): void => {
-		setMenuForm({
-			...menuForm,
-			[key]: value,
-		});
+	const handleChange = (
+		key: keyof MenuEditFormState | 'content',
+		value: ValueOf<MenuEditFormState> | PickerItem | null
+	): void => {
+		if (key === 'content') {
+			setMenuForm({
+				...menuForm,
+				content_type: (value as PickerItem).type,
+				content_path: (value as PickerItem).value,
+			});
+		} else {
+			setMenuForm({
+				...menuForm,
+				[key]: value,
+			});
+		}
 	};
 
 	const handleSave = (): void => {
@@ -147,7 +266,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			content_path: menuForm.content_path,
 			content_type: menuForm.content_type,
 			link_target: menuForm.link_target,
-			user_group_ids: menuForm.user_group_ids,
+			user_group_ids: [],
 			placement: menuForm.placement,
 		};
 
@@ -258,6 +377,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							menuParentId={menuParentId}
 							menuParentOptions={menuParentOptions}
 							onChange={handleChange}
+							permissionWarning={permissionWarning}
 						/>
 					</Container>
 				</Container>

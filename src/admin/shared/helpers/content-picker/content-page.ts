@@ -2,7 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { fetchContentItems } from '../../../content/content.service';
 
-import { PickerSelectItem, PickerSelectItemGroup } from '../../types/content-picker';
+import { PickerSelectItem, PickerSelectItemGroup } from '../../types';
 import { parsePickerItem } from './parse-picker';
 
 // Fetch content items from GQL
@@ -17,7 +17,7 @@ const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItemGroup =>
 	const parsedContentItems = raw.map(
 		(item: Avo.Content.Content): PickerSelectItem => ({
 			label: item.title,
-			value: parsePickerItem('CONTENT_PAGE', item.path),
+			value: parsePickerItem('CONTENT_PAGE', String(item.id)),
 		})
 	);
 

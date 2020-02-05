@@ -10,7 +10,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import i18n from '../../shared/translations/i18n';
 
-export type ErrorActionButton = 'home';
+export type ErrorActionButton = 'home' | 'helpdesk';
 
 interface ErrorViewQueryParams {
 	message?: string;
@@ -20,11 +20,11 @@ interface ErrorViewQueryParams {
 interface ErrorViewProps extends RouteComponentProps {
 	message?: string;
 	icon?: IconName;
+	actionButtons?: ErrorActionButton[];
 	children?: ReactNode;
 	history: History;
 	match: match<ErrorViewQueryParams>;
 	location: Location;
-	actionButtons?: ErrorActionButton[];
 }
 
 const ErrorView: FunctionComponent<ErrorViewProps> = ({

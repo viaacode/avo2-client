@@ -139,7 +139,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			return;
 		}
 
-		// TODO: remove any for content_width with typings update
 		const contentItem: Partial<Avo.Content.Content> | any = {
 			title: contentForm.title,
 			description: contentForm.description || null,
@@ -149,6 +148,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			content_width: contentForm.contentWidth,
 			publish_at: contentForm.publishAt || null,
 			depublish_at: contentForm.depublishAt || null,
+			user_group_ids: contentForm.userGroupIds,
 		};
 
 		if (pageType === PageType.Create) {
