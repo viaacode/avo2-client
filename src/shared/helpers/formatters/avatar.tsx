@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
 import { Avatar, AvatarList, AvatarProps } from '@viaa/avo2-components';
@@ -67,6 +67,7 @@ export const renderAvatar = (
 		includeRole?: boolean;
 		small?: boolean;
 		abbreviatedName?: boolean;
+		dark?: boolean;
 	} = {}
 ): ReactNode | null => {
 	if (!profile) {
@@ -74,7 +75,7 @@ export const renderAvatar = (
 	}
 
 	const props: AvatarProps = getAvatarProps(profile, options);
-	return <Avatar {...props} />;
+	return <Avatar {...(isNil(options.dark) ? {} : { dark: options.dark })} {...props} />;
 };
 
 export const renderAvatars = (
