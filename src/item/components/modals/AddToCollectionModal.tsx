@@ -104,7 +104,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	useEffect(() => {
 		if (isOpen) {
 			// Reset the state
-			setCreateNewCollection(false);
+			setCreateNewCollection(!collections.length);
 			setSelectedCollectionId('');
 			setSelectedCollection(undefined);
 			setNewCollectionTitle('');
