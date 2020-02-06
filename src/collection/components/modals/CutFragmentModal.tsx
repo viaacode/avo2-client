@@ -17,7 +17,12 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
+import {
+	CustomError,
+	formatDurationHoursMinutesSeconds,
+	getEnv,
+	toSeconds,
+} from '../../../shared/helpers';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
 import toastService from '../../../shared/services/toast-service';
@@ -153,7 +158,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 				parseTimes();
 			}
 		} catch (err) {
-			console.error('');
+			console.error(new CustomError('Failed to parse times on enter key', err));
 			toastService.danger(t('De ingevulde tijd heeft geen geldig formaat'));
 		}
 	};
