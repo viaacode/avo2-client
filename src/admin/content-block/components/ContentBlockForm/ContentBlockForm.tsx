@@ -222,7 +222,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							title={t(
 								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
 							)}
-							type="tertiary"
+							type="danger"
 						/>
 					</ButtonToolbar>
 				</AccordionActions>
