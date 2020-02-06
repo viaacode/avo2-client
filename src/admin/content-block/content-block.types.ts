@@ -13,7 +13,17 @@ export type AlignOptions = 'left' | 'right' | 'center';
 
 export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 
-export type ButtonTypeOptions = 'primary' | 'secondary';
+export type ButtonTypeOptions =
+	| 'borderless-i'
+	| 'borderless'
+	| 'danger-hover'
+	| 'danger'
+	| 'link'
+	| 'inline-link'
+	| 'primary'
+	| 'secondary-i'
+	| 'secondary'
+	| 'tertiary';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {

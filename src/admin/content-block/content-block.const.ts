@@ -103,4 +103,12 @@ export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
 export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
 	{ label: i18n.t('Primair'), value: 'primary' },
 	{ label: i18n.t('Secundair'), value: 'secondary' },
+	{ label: i18n.t('Secundair (invers)'), value: 'secondary-i' },
+	{ label: i18n.t('Tertiair'), value: 'tertiary' },
+	{ label: i18n.t('Randloos'), value: 'borderless' },
+	{ label: i18n.t('Randloos (invers)'), value: 'borderless-i' },
+	{ label: i18n.t('Gevaar'), value: 'danger' },
+	{ label: i18n.t('Gevaar (hover)'), value: 'danger-hover' },
+	{ label: i18n.t('Link'), value: 'link' },
+	{ label: i18n.t('Link (inline)'), value: 'inline-link' },
 ];
