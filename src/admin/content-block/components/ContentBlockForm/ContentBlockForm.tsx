@@ -14,6 +14,9 @@ import {
 	FlexItem,
 	Form,
 	Spacer,
+	Toolbar,
+	ToolbarLeft,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 
 import {
@@ -138,7 +141,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					formGroup.state.map((formGroupState, stateIndex) => (
 						<Spacer key={stateIndex} margin="bottom-small">
 							<BlockHeading type="h4" className="u-m-t-0">
-								{`${get(config, 'components.name')} ${stateIndex + 1}`}
+								<Toolbar>
+									<ToolbarLeft>{`${get(config, 'components.name')} ${stateIndex + 1}`}</ToolbarLeft>
+									<ToolbarRight>{renderRemoveButton(stateIndex)}</ToolbarRight>
+								</Toolbar>
 							</BlockHeading>
 							<Flex spaced="regular" wrap>
 								<FlexItem>
@@ -149,7 +155,6 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 										stateIndex={stateIndex}
 									/>
 								</FlexItem>
-								{renderRemoveButton(stateIndex)}
 							</Flex>
 						</Spacer>
 					))
