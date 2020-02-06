@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
-import { capitalize, compact, get, sortBy, startCase, uniq, without } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import { compact, get, startCase, uniq, without } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -142,53 +142,56 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 					false
 				);
 			});
-	}, [setAllUserGroups]);
+	}, [setAllUserGroups, t]);
 
-	const checkMenuItemContentPagePermissionsMismatch = (response: ApolloQueryResult<any>) => {
-		let contentUserGroupIds: number[] = get(response, 'data.app_content[0].user_group_ids', []);
-		const navItemUserGroupIds: number[] = menuForm.user_group_ids;
-		const allUserGroupIds: number[] = allUserGroups.map(ug => ug.value as number);
+	const checkMenuItemContentPagePermissionsMismatch = useCallback(
+		(response: ApolloQueryResult<any>) => {
+			let contentUserGroupIds: number[] = get(response, 'data.app_content[0].user_group_ids', []);
+			const navItemUserGroupIds: number[] = menuForm.user_group_ids;
+			const allUserGroupIds: number[] = allUserGroups.map(ug => ug.value as number);
 
-		// Add all user groups to content page user groups if content page is accessible by special user group: logged in users
-		if (contentUserGroupIds.includes(SpecialPermissionGroups.loggedInUsers)) {
-			contentUserGroupIds = uniq([
-				...contentUserGroupIds,
-				...without(allUserGroupIds, SpecialPermissionGroups.loggedOutUsers),
-			]);
-		}
+			// Add all user groups to content page user groups if content page is accessible by special user group: logged in users
+			if (contentUserGroupIds.includes(SpecialPermissionGroups.loggedInUsers)) {
+				contentUserGroupIds = uniq([
+					...contentUserGroupIds,
+					...without(allUserGroupIds, SpecialPermissionGroups.loggedOutUsers),
+				]);
+			}
 
-		const faultyUserGroupIds = without(navItemUserGroupIds, ...contentUserGroupIds);
-		if (faultyUserGroupIds.length) {
-			const faultyUserGroups = compact(
-				faultyUserGroupIds.map(faultyUserGroupId => {
-					const faultyUserGroup = allUserGroups.find(
-						userGroup => userGroup.value === faultyUserGroupId
-					);
-					return faultyUserGroup ? faultyUserGroup.label : null;
-				})
-			);
-			setPermissionWarning(
-				<div>
-					<Spacer margin="bottom-small">
-						<Trans>
-							Het navigatie item zal zichtbaar zijn voor gebruikers die geen toegang habben tot de
-							geselecteerde pagina.
-						</Trans>
-					</Spacer>
-					<Spacer margin="bottom-small">
-						<Trans>De geselecteerde pagina is niet toegankelijk voor: </Trans>
-						<ButtonToolbar>
-							{faultyUserGroups.map(group => (
-								<Badge text={group} />
-							))}
-						</ButtonToolbar>
-					</Spacer>
-				</div>
-			);
-		} else if (permissionWarning) {
-			setPermissionWarning(null);
-		}
-	};
+			const faultyUserGroupIds = without(navItemUserGroupIds, ...contentUserGroupIds);
+			if (faultyUserGroupIds.length) {
+				const faultyUserGroups = compact(
+					faultyUserGroupIds.map(faultyUserGroupId => {
+						const faultyUserGroup = allUserGroups.find(
+							userGroup => userGroup.value === faultyUserGroupId
+						);
+						return faultyUserGroup ? faultyUserGroup.label : null;
+					})
+				);
+				setPermissionWarning(
+					<div>
+						<Spacer margin="bottom-small">
+							<Trans>
+								Het navigatie item zal zichtbaar zijn voor gebruikers die geen toegang habben tot de
+								geselecteerde pagina.
+							</Trans>
+						</Spacer>
+						<Spacer margin="bottom-small">
+							<Trans>De geselecteerde pagina is niet toegankelijk voor: </Trans>
+							<ButtonToolbar>
+								{faultyUserGroups.map(group => (
+									<Badge text={group} />
+								))}
+							</ButtonToolbar>
+						</Spacer>
+					</div>
+				);
+			} else {
+				setPermissionWarning(null);
+			}
+		},
+		[setPermissionWarning, menuForm.user_group_ids, allUserGroups]
+	);
 
 	// Check if the navigation item is visible for users that do not have access to the selected content page
 	useEffect(() => {
@@ -221,7 +224,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 					);
 				});
 		}
-	}, [menuForm.content_type, menuForm.content_path, menuForm.user_group_ids]);
+	}, [
+		menuForm.content_type,
+		menuForm.content_path,
+		menuForm.user_group_ids,
+		checkMenuItemContentPagePermissionsMismatch,
+		t,
+	]);
 
 	// Computed
 	const pageType: MenuEditPageType = menuItemId ? 'edit' : 'create';

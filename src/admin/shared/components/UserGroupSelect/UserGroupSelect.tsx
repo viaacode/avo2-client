@@ -1,4 +1,4 @@
-import { capitalize, isEmpty, sortBy } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
