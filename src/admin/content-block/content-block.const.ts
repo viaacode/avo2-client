@@ -95,6 +95,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 
 // Options
 export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
+	{ label: i18n.t('H1'), value: 'h1' },
 	{ label: i18n.t('H2'), value: 'h2' },
 	{ label: i18n.t('H3'), value: 'h3' },
 	{ label: i18n.t('H4'), value: 'h4' },

@@ -13,7 +13,7 @@ import {
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
-	headingType: 'h2',
+	headingType: 'h1',
 	heading: '',
 	content: '',
 	buttonType: 'secondary',

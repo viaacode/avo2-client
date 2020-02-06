@@ -11,7 +11,7 @@ export type ContentBlockStateOptions =
 
 export type AlignOptions = 'left' | 'right' | 'center';
 
-export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
+export type HeadingLevelOptions = 'h1' | 'h2' | 'h3' | 'h4';
 
 export type ButtonTypeOptions = 'primary' | 'secondary';
 
