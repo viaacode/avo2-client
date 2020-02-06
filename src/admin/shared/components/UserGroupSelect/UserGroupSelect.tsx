@@ -36,7 +36,8 @@ const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 				toastService.danger(
 					t(
 						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
-					)
+					),
+					false
 				);
 			});
 	}, [t]);

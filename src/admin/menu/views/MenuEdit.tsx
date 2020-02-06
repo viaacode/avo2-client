@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { capitalize, compact, get, sortBy, startCase, without } from 'lodash-es';
+import { capitalize, compact, get, sortBy, startCase, uniq, without } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -39,9 +39,9 @@ import {
 	MenuEditParams,
 } from '../menu.types';
 
-interface UserGroup {
-	id: number;
-	label: string;
+export enum SpecialPermissionGroups {
+	loggedOutUsers = -1,
+	loggedInUsers = -2,
 }
 
 export interface MenuSchema {
@@ -75,7 +75,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [permissionWarning, setPermissionWarning] = useState<ReactNode | null>(null);
-	const [userGroups, setUserGroups] = useState<TagInfo[]>([]);
+	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
 
 	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
 	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
@@ -89,7 +89,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 			} else {
 				// Go back to overview if no menu items are present
 				toastService.danger(
-					t(`Er werden geen navigatie items gevonden voor {{menuName}}`, { menuName })
+					t(`Er werden geen navigatie items gevonden voor {{menuName}}`, { menuName }),
+					false
 				);
 				history.push(MENU_PATH.MENU);
 			}
@@ -130,26 +131,37 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 	useEffect(() => {
 		getUserGroups()
 			.then(userGroups => {
-				setUserGroups(userGroups);
+				setAllUserGroups(userGroups);
 			})
 			.catch((err: any) => {
 				console.error('Failed to get user groups', err);
 				toastService.danger(
 					t(
 						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
-					)
+					),
+					false
 				);
 			});
-	}, [setUserGroups]);
+	}, [setAllUserGroups]);
 
 	const checkMenuItemContentPagePermissionsMismatch = (response: ApolloQueryResult<any>) => {
-		const contentUserGroupIds: number[] = get(response, 'data.app_content[0].user_group_ids', []);
+		let contentUserGroupIds: number[] = get(response, 'data.app_content[0].user_group_ids', []);
 		const navItemUserGroupIds: number[] = menuForm.user_group_ids;
+		const allUserGroupIds: number[] = allUserGroups.map(ug => ug.value as number);
+
+		// Add all user groups to content page user groups if content page is accessible by special user group: logged in users
+		if (contentUserGroupIds.includes(SpecialPermissionGroups.loggedInUsers)) {
+			contentUserGroupIds = uniq([
+				...contentUserGroupIds,
+				...without(allUserGroupIds, SpecialPermissionGroups.loggedOutUsers),
+			]);
+		}
+
 		const faultyUserGroupIds = without(navItemUserGroupIds, ...contentUserGroupIds);
 		if (faultyUserGroupIds.length) {
 			const faultyUserGroups = compact(
 				faultyUserGroupIds.map(faultyUserGroupId => {
-					const faultyUserGroup = userGroups.find(
+					const faultyUserGroup = allUserGroups.find(
 						userGroup => userGroup.value === faultyUserGroupId
 					);
 					return faultyUserGroup ? faultyUserGroup.label : null;
@@ -204,7 +216,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 					toastService.danger(
 						t(
 							'Het controleren of de permissies van de pagina overeenkomen met de zichtbaarheid van dit navigatie item is mislukt'
-						)
+						),
+						false
 					);
 				});
 		}

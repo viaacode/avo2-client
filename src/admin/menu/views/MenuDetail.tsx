@@ -154,7 +154,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetchMenuItems: () => void) => {
 		// Return to overview if menu is empty
 		if (!menu.length) {
-			toastService.danger('Er werden geen navigatie items gevonden');
+			toastService.danger('Er werden geen navigatie items gevonden', false);
 			handleNavigate(MENU_PATH.MENU);
 		}
 
