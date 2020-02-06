@@ -8,6 +8,7 @@ import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
 import { useTranslation } from 'react-i18next';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
+import { CustomError } from '../../shared/helpers';
 import i18n from '../../shared/translations/i18n';
 
 export type ErrorActionButton = 'home' | 'helpdesk';
@@ -35,6 +36,8 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	location,
 	actionButtons = [],
 }) => {
+	console.log('error view');
+
 	const [t] = useTranslation();
 
 	const queryParams = queryString.parse(
@@ -45,6 +48,17 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 		message ||
 		i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden');
 	const errorIcon: IconName = queryParams.icon || icon || 'search';
+
+	if (!(queryParams.message || message)) {
+		console.error(
+			new CustomError('Error view without error message', null, {
+				queryParams,
+				message,
+				icon,
+				actionButtons,
+			})
+		);
+	}
 
 	return (
 		<Container mode="vertical" background="alt">

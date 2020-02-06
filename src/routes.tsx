@@ -5,7 +5,7 @@ import { renderAssignmentRoutes } from './assignment/assignment.routes';
 import { renderAuthenticationRoutes } from './authentication/authentication.routes';
 import { renderBundleRoutes } from './bundle/bundle.routes';
 import { renderCollectionRoutes } from './collection/collection.routes';
-import { renderContentPageRoutes } from './content-page/content-page.routes';
+import { renderDynamicRouteResolverRoutes } from './dynamic-route-resolver/dynamic-route-resolver.routes';
 import { renderErrorRoutes } from './error/error.routes';
 import { renderHomeRoutes } from './home/home.routes';
 import { renderItemRoutes } from './item/item.routes';
@@ -28,7 +28,7 @@ export const renderRoutes = () => (
 		{renderWorkspaceRoutes()}
 		{renderAuthenticationRoutes()}
 		{renderSettingsRoutes()}
-		{renderContentPageRoutes()}
 		{renderErrorRoutes()}
+		{renderDynamicRouteResolverRoutes()}
 	</Switch>
 );
