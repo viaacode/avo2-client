@@ -152,7 +152,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	useEffect(() => {
 		debouncedOnFragmentChanged();
-	}, [useCustomFields, title, description]);
+	}, [useCustomFields, title, description, debouncedOnFragmentChanged]);
 
 	const initFlowPlayer = () =>
 		!playerTicket &&
