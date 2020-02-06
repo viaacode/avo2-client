@@ -13,6 +13,7 @@ import {
 	ContentBlockStateType,
 } from '../../content-block.types';
 
+import { get, isNumber } from 'lodash-es';
 import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 
 interface ContentBlockFormGroupProps {
@@ -48,12 +49,18 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 				label: formGroup.fields[key].label,
 			};
 
+			let error: string[];
+			const formErrorsForBlock: string[] | string[][] =
+				formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState];
+			if (isNumber(stateIndex)) {
+				error = get(formErrorsForBlock, [stateIndex]) as string[];
+			} else {
+				error = formErrorsForBlock as string[];
+			}
+
 			return (
 				<Spacer margin="bottom">
-					<FormGroup
-						{...formGroupOptions}
-						error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
-					>
+					<FormGroup {...formGroupOptions} error={error}>
 						<ContentBlockFieldEditor
 							block={{ config, index: blockIndex }}
 							fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}

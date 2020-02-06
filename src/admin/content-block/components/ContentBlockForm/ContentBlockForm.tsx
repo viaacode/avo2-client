@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -75,14 +75,15 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		};
 		const stateUpdate = isArray(components.state) ? [updateObject] : updateObject;
 
-		handleValidation(key, formGroupType, parsedValue);
+		handleValidation(key, formGroupType, parsedValue, stateIndex);
 		onChange(formGroupType, stateUpdate, stateIndex);
 	};
 
 	const handleValidation = (
 		fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState,
 		formGroupType: ContentBlockStateType,
-		updatedFormValue: any
+		updatedFormValue: any,
+		stateIndex?: number
 	) => {
 		const errors: any = {};
 
@@ -93,7 +94,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			const errorArray = validator(updatedFormValue);
 
 			if (errorArray.length) {
-				errors[fieldKey] = errorArray;
+				if (isNumber(stateIndex)) {
+					errors[fieldKey] = [];
+					errors[fieldKey][stateIndex] = errorArray;
+				} else {
+					errors[fieldKey] = errorArray;
+				}
 			}
 		}
 
