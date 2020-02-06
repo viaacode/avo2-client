@@ -7,3 +7,4 @@ export { default as Footer } from './Footer/Footer';
 export { default as InputModal } from './InputModal/InputModal';
 export { default as LoadingErrorLoadedComponent } from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 export { default as Navigation } from './Navigation/Navigation';
+export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';

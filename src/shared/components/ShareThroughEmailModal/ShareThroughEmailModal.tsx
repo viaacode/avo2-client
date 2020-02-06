@@ -10,7 +10,6 @@ import {
 	Modal,
 	ModalBody,
 	Spacer,
-	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
 
@@ -18,11 +17,12 @@ import toastService from '../../../shared/services/toast-service';
 import { copyToClipboard } from '../../helpers';
 import { shareThroughEmail } from '../../helpers/share-through-email';
 
+import { EmailTemplateType } from './share-through-email.types';
 import './ShareThroughEmailModal.scss';
 
 interface AddToCollectionModalProps {
 	modalTitle: string;
-	type: 'item' | 'collection' | 'bundle';
+	type: EmailTemplateType;
 	emailLinkHref: string;
 	emailLinkTitle: string;
 	isOpen: boolean;
@@ -42,6 +42,11 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const [emailAddress, setEmailAddress] = useState<string>('');
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
+	const copyLink = () => {
+		copyToClipboard(emailLinkHref);
+		toastService.success(t('De url is naar het klembord gekopieerd'));
+	};
+
 	const sendEmail = async () => {
 		try {
 			setIsProcessing(true);
@@ -60,7 +65,14 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 	};
 
 	return (
-		<Modal className="m-share-through-email-modal" title={modalTitle} size="medium" isOpen={isOpen} onClose={onClose} scrollable>
+		<Modal
+			className="m-share-through-email-modal"
+			title={modalTitle}
+			size="medium"
+			isOpen={isOpen}
+			onClose={onClose}
+			scrollable
+		>
 			<ModalBody>
 				<BlockHeading type="h4">
 					<Trans>Kopieer deze publieke link</Trans>
@@ -79,13 +91,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 							</FlexItem>
 							<FlexItem shrink>
 								<Spacer margin="left-small">
-									<Button
-										label={t('Kopieer link')}
-										onClick={() => {
-											copyToClipboard(emailLinkHref);
-											toastService.success(t('De url is naar het klembord gekopieerd'));
-										}}
-									/>
+									<Button label={t('Kopieer link')} onClick={copyLink} />
 								</Spacer>
 							</FlexItem>
 						</Flex>

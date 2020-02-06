@@ -46,8 +46,7 @@ import {
 	toEnglishContentType,
 } from '../../collection/collection.types';
 import { ErrorView } from '../../error/views';
-import { DataQueryComponent } from '../../shared/components';
-import ShareThroughEmailModal from '../../shared/components/ShareThroughEmailModal/ShareThroughEmailModal';
+import { DataQueryComponent, ShareThroughEmailModal } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,

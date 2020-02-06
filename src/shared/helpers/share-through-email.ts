@@ -1,3 +1,5 @@
+import { EmailTemplateType } from '../components/ShareThroughEmailModal/share-through-email.types';
+
 import { getEnv } from './env';
 import { CustomError } from './error';
 
@@ -5,7 +7,7 @@ export async function shareThroughEmail(
 	email: string,
 	title: string,
 	link: string,
-	type: 'item' | 'collection' | 'bundle'
+	type: EmailTemplateType
 ): Promise<void> {
 	let url: string | undefined = undefined;
 	let body: any = undefined;
