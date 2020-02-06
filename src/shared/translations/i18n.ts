@@ -13,6 +13,8 @@ i18n
 				translation: translations,
 			},
 		},
+		keySeparator: '^',
+		nsSeparator: '^',
 		lng: 'nl',
 		fallbackLng: 'nl',
 		interpolation: {

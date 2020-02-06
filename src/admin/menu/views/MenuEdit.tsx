@@ -10,8 +10,8 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { navigate } from '../../../shared/helpers';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
-import { ContentPickerType } from '../../content/content.types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { ContentPickerType } from '../../shared/types';
 
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';

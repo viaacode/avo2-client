@@ -2,21 +2,21 @@ import { TableColumn, TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
+import { PickerTypeOption } from '../shared/types';
 
-import {
-	ContentEditFormState,
-	ContentFilterFormState,
-	ContentPageType,
-	ContentWidth,
-	PickerTypeOption,
-} from './content.types';
 import {
 	fetchBundles,
 	fetchCollections,
 	fetchContentPages,
 	fetchInternalLinks,
 	fetchItems,
-} from './helpers';
+} from '../shared/helpers';
+import {
+	ContentEditFormState,
+	ContentFilterFormState,
+	ContentPageType,
+	ContentWidth,
+} from './content.types';
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',

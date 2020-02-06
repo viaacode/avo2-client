@@ -1,3 +1,4 @@
+export * from './accordions';
 export * from './defaults';
 export * from './heading';
 export * from './rich-text';
