@@ -31,8 +31,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	match,
 	user,
 }) => {
-	console.log('dynamic route resolver');
-
 	const [t] = useTranslation();
 
 	// State
@@ -116,8 +114,8 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		}
 		console.error(
 			new CustomError("Route doesn't seem to be a bundle or content page", null, {
-				path: location.pathname,
 				routeInfo,
+				path: location.pathname,
 			})
 		);
 		return (

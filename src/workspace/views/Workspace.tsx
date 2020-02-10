@@ -69,7 +69,6 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	// Make map for available tab views
 	useEffect(() => {
-		console.log('init tabs', tabCounts, permissions, t, history, location, match, user);
 		const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
 			if (permissions[tabId]) {
 				return { [tabId]: obj };
@@ -133,12 +132,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	// Get active tab based on above map with tabId
 	const getActiveTab = useCallback(() => {
-		console.log('get active tab');
 		return tabs[tabId || Object.keys(tabs)[0]];
 	}, [tabs, tabId]);
 
 	useEffect(() => {
-		console.log('fetch permissions');
 		if (!isEmpty(permissions)) {
 			return;
 		}
@@ -182,7 +179,6 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	}, [user, t, setPermissions, permissions]);
 
 	useEffect(() => {
-		console.log('set loaded or error');
 		if (!isEmpty(permissions) && !isEmpty(tabs)) {
 			if (getActiveTab()) {
 				// Use has access to at least one tab
@@ -202,7 +198,6 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	}, [setLoadingInfo, getActiveTab, t, permissions, tabs]);
 
 	const getNavTabs = useCallback(() => {
-		console.log('get nav tabs');
 		return TABS.map(tab => ({
 			...tab,
 			active: (tabId || Object.keys(tabs)[0]) === tab.id,

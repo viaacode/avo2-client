@@ -36,8 +36,6 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 	location,
 	actionButtons = [],
 }) => {
-	console.log('error view');
-
 	const [t] = useTranslation();
 
 	const queryParams = queryString.parse(
