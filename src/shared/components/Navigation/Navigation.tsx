@@ -202,7 +202,9 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 										<img
 											className="c-brand__image"
 											src="/images/avo-logo-i.svg"
-											alt="Archief voor Onderwijs logo"
+											alt={t(
+												'shared/components/navigation/navigation___archief-voor-onderwijs-logo'
+											)}
 										/>
 									</Link>
 								</h1>

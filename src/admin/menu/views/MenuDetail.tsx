@@ -68,11 +68,17 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		})
 			.then(() => {
 				refetchMenuItems();
-				toastService.success('Het navigatie item is succesvol verwijderd', false);
+				toastService.success(
+					t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd'),
+					false
+				);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger('Het verwijderen van het navigatie item is mislukt', false);
+				toastService.danger(
+					t('admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'),
+					false
+				);
 			});
 	};
 
@@ -102,11 +108,17 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		Promise.all(promises)
 			.then(() => {
 				refetch();
-				toastService.success('De navigatie items zijn succesvol opgeslagen', false);
+				toastService.success(
+					t('admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'),
+					false
+				);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger('Het opslaan van de navigatie items is mislukt', false);
+				toastService.danger(
+					t('admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'),
+					false
+				);
 			});
 	};
 
@@ -154,7 +166,10 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetchMenuItems: () => void) => {
 		// Return to overview if menu is empty
 		if (!menu.length) {
-			toastService.danger('Er werden geen navigatie items gevonden', false);
+			toastService.danger(
+				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
+				false
+			);
 			handleNavigate(MENU_PATH.MENU);
 		}
 
