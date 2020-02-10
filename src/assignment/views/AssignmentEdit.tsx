@@ -165,7 +165,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			} catch (err) {
 				setLoadingInfo({
 					state: 'error',
-					message: 'Het ophalen/aanmaken van de opdracht is mislukt',
+					message: t(
+						'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
+					),
 					icon: 'alert-triangle',
 				});
 			}
@@ -238,7 +240,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				if (!assignmentResponse) {
 					setLoadingInfo({
 						state: 'error',
-						message: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+						message: t(
+							'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt-leeg-antwoord'
+						),
 						icon: 'search',
 					});
 					return null;
@@ -251,7 +255,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				setLoadingInfo({
 					state: 'error',
-					message: 'Het ophalen van de opdracht is mislukt',
+					message: t('assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'),
 					icon: 'alert-triangle',
 				});
 				return null;
@@ -294,7 +298,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					console.error('Failed to fetch the assignment content', { response, ...queryParams });
 					setLoadingInfo({
 						state: 'error',
-						message: 'Het ophalen van de opdracht inhoud is mislukt (leeg antwoord)',
+						message: t(
+							'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt-leeg-antwoord'
+						),
 						icon: 'search',
 					});
 					return;
@@ -313,7 +319,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				console.error(err);
 				setLoadingInfo({
 					state: 'error',
-					message: 'Het ophalen van de opdracht inhoud is mislukt',
+					message: t(
+						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
+					),
 					icon: 'alert-triangle',
 				});
 			}
@@ -331,15 +339,21 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const deleteCurrentAssignment = async () => {
 		try {
 			if (typeof currentAssignment.id === 'undefined') {
-				toastService.danger('De huidige opdracht is nog nooit opgeslagen (geen id)');
+				toastService.danger(
+					t(
+						'assignment/views/assignment-edit___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
+					)
+				);
 				return;
 			}
 			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
-			toastService.success('De opdracht is verwijdert');
+			toastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
 			console.error(err);
-			toastService.danger('Het verwijderen van de opdracht is mislukt');
+			toastService.danger(
+				t('assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt')
+			);
 		}
 	};
 
@@ -351,7 +365,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService.success(t('De url is naar het klembord gekopieerd'));
+		toastService.success(
+			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
+		);
 
 		if (currentAssignment.id) {
 			trackEvents(
@@ -386,13 +402,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			});
 
 			if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
-				toastService.success(`De opdracht is ge${shouldBeArchived ? '' : 'de'}archiveerd`);
+				toastService.success(
+					shouldBeArchived
+						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
+						: t('assignment/views/assignment-edit___de-opdracht-is-gedearchiveerd')
+				);
 			}
 			// else: assignment was not valid and could not be saved yet
 		} catch (err) {
 			console.error(err);
 			toastService.danger(
-				`Het ${shouldBeArchived ? '' : 'de'}archiveren van de opdracht is mislukt`
+				shouldBeArchived
+					? t('assignment/views/assignment-edit___het-archiveren-van-de-opdracht-is-mislukt')
+					: t('assignment/views/assignment-edit___het-dearchiveren-van-de-opdracht-is-mislukt')
 			);
 		}
 	};
@@ -434,7 +456,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 
 			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
-			toastService.success('De opdracht is succesvol gedupliceerd. U kijkt nu naar het duplicaat');
+			toastService.success(
+				t(
+					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
+				)
+			);
 		} catch (err) {
 			console.error('Failed to copy collection for the current assignment', err, {
 				assignmentContent,
@@ -482,7 +508,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			{
 				object: assignment.content_id,
 				object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
-				message: `User ${getProfileName(user)} heeft ${
+				message: `Gebruiker ${getProfileName(user)} heeft ${
 					CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
 				} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
 				action: 'view',
@@ -526,7 +552,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				if (insertedAssignment) {
 					setBothAssignments(insertedAssignment);
 					trackAddObjectToAssignment(insertedAssignment);
-					toastService.success('De opdracht is succesvol aangemaakt');
+					toastService.success(
+						t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
+					);
 					navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
 				}
 			} else {

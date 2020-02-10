@@ -1,20 +1,30 @@
 import { History, Location } from 'history';
+import { uniq } from 'lodash-es';
 import queryString from 'querystring';
 import React, { FunctionComponent, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { match, RouteComponentProps, withRouter } from 'react-router';
 
-import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
+import {
+	Blankslate,
+	Button,
+	ButtonToolbar,
+	Container,
+	IconName,
+	Toolbar,
+	ToolbarCenter,
+} from '@viaa/avo2-components';
 
-import { useTranslation } from 'react-i18next';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import i18n from '../../shared/translations/i18n';
 
-export type ErrorActionButton = 'home';
+export type ErrorActionButton = 'home' | 'helpdesk'; // TODO use type in typings repo
 
 interface ErrorViewQueryParams {
 	message?: string;
 	icon?: IconName;
+	actionButtons?: string;
 }
 
 interface ErrorViewProps extends RouteComponentProps {
@@ -45,18 +55,37 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 		message ||
 		i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden');
 	const errorIcon: IconName = queryParams.icon || icon || 'search';
+	const buttons = uniq([
+		...actionButtons,
+		...(queryParams.actionButtons
+			? queryParams.actionButtons.split(',').map(button => button.trim())
+			: []),
+	]);
 
 	return (
 		<Container mode="vertical" background="alt">
 			<Container size="medium" mode="horizontal">
 				<Blankslate body="" icon={errorIcon} title={errorMessage}>
 					{children}
-					{actionButtons.includes('home') && (
-						<Button
-							onClick={() => redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)}
-							label={t('error/views/error-view___ga-terug-naar-de-homepagina')}
-						/>
-					)}
+					<Toolbar>
+						<ToolbarCenter>
+							<ButtonToolbar>
+								{buttons.includes('home') && (
+									<Button
+										onClick={() => redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)}
+										label={t('error/views/error-view___ga-terug-naar-de-homepagina')}
+									/>
+								)}
+								{buttons.includes('helpdesk') && (
+									<Button
+										type="danger"
+										onClick={() => window.zE('webWidget', 'toggle')}
+										label={t('Contacteer de helpdesk')}
+									/>
+								)}
+							</ButtonToolbar>
+						</ToolbarCenter>
+					</Toolbar>
 				</Blankslate>
 			</Container>
 		</Container>

@@ -132,14 +132,14 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			<RadioButtonGroup>
 				<Flex orientation="horizontal" spaced="wide">
 					<RadioButton
-						label="Content"
+						label={t('admin/shared/components/content-picker/content-picker___content')}
 						name="content"
 						value="content"
 						checked={controls === 'content'}
 						onChange={() => setControls('content')}
 					/>
 					<RadioButton
-						label="Externe URL"
+						label={t('admin/shared/components/content-picker/content-picker___externe-url')}
 						name="external-url"
 						value="external-url"
 						checked={controls === 'external-url'}

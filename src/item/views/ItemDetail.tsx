@@ -136,7 +136,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					limit,
 					index: 'items',
 				});
-				toastService.danger('Het ophalen van de gerelateerde items is mislukt');
+				toastService.danger(
+					t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
+				);
 			});
 	};
 
@@ -500,7 +502,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					variables={{ id: itemId }}
 					resultPath="app_item_meta[0]"
 					renderData={renderItem}
-					notFoundMessage="Dit item werd niet gevonden"
+					notFoundMessage={t('item/views/item___dit-item-werd-niet-gevonden')}
 					actionButtons={['home']}
 				/>
 			</PermissionGuardPass>

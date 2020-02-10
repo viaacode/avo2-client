@@ -23,9 +23,9 @@ export const INITIAL_ACCORDIONS_BLOCK_STATE = (position: number): DefaultContent
 	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Accordions, position);
 
 export const ACCORDIONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('Accordeons'),
+	name: i18n.t('admin/content-block/helpers/generators/accordions___accordeons'),
 	components: {
-		name: i18n.t('Accordeon'),
+		name: i18n.t('admin/content-block/helpers/generators/accordions___accordeon'),
 		limits: {
 			min: 1,
 			max: 8,
@@ -35,7 +35,7 @@ export const ACCORDIONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 			title: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/defaults___tekst-is-verplicht'),
 				{
-					label: i18n.t('Titel'),
+					label: i18n.t('admin/content-block/helpers/generators/accordions___titel'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
