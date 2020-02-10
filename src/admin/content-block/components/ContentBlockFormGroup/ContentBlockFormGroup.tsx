@@ -42,31 +42,24 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 	formErrors,
 }) => (
 	<div className="c-content-block-form-group">
-		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
-			const formGroupOptions = {
-				key: createKey('form-group', blockIndex, formGroupIndex, stateIndex),
-				label: formGroup.fields[key].label,
-			};
-
-			return (
-				<Spacer margin="bottom">
-					<FormGroup
-						{...formGroupOptions}
-						error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
-					>
-						<ContentBlockFieldEditor
-							block={{ config, index: blockIndex }}
-							fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
-							field={formGroup.fields[key]}
-							state={formGroupState}
-							type={formGroupType}
-							formGroupIndex={formGroupIndex}
-							stateIndex={stateIndex}
-							handleChange={handleChange}
-						/>
-					</FormGroup>
-				</Spacer>
-			);
-		})}
+		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => (
+			<Spacer key={createKey('form-group', blockIndex, formGroupIndex, stateIndex)} margin="bottom">
+				<FormGroup
+					label={formGroup.fields[key].label}
+					error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
+				>
+					<ContentBlockFieldEditor
+						block={{ config, index: blockIndex }}
+						fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
+						field={formGroup.fields[key]}
+						state={formGroupState}
+						type={formGroupType}
+						formGroupIndex={formGroupIndex}
+						stateIndex={stateIndex}
+						handleChange={handleChange}
+					/>
+				</FormGroup>
+			</Spacer>
+		))}
 	</div>
 );
