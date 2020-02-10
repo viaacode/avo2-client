@@ -24,7 +24,7 @@ import {
 	ContentBlockType,
 } from '../../content-block.types';
 
-interface ContentBlockPreviewProps extends DefaultSecureRouteProps<> {
+interface ContentBlockPreviewProps extends DefaultSecureRouteProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
 	contentWidth?: Avo.Content.ContentWidth;
 	blockState: ContentBlockState;
@@ -81,7 +81,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			innerState.navigate = (buttonActions: ButtonAction) => {
 				switch (buttonActions.type) {
 					case 'EXTERNAL_LINK':
-						history.push(buttonActions.value);
+						history.push(buttonActions.value as string);
 						break;
 					default:
 						break;

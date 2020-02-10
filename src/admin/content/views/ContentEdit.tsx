@@ -52,7 +52,7 @@ import './ContentEdit.scss';
 
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
-const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user }) => {
+const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, location, match, user }) => {
 	const { id } = match.params;
 
 	// Hooks
@@ -284,6 +284,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						onRemove={openDeleteModal}
 						onReorder={reorderContentBlockConfig}
 						onSave={handleStateSave}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
 					/>
 				);
 			case 'metadata':

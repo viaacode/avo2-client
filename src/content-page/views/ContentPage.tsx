@@ -15,7 +15,12 @@ import './ContentPage.scss';
 
 interface ContentPageDetailProps extends DefaultSecureRouteProps<{ path: string }> {}
 
-const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
+const ContentPage: FunctionComponent<ContentPageDetailProps> = ({
+	history,
+	location,
+	match,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	const getCurrentPath = useCallback(() => `/${match.params.path}`, [match]);
@@ -39,6 +44,10 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match }) => {
 				componentState={contentBlockConfig.components.state}
 				contentWidth={(contentPage as any).content_width} // TODO: remove any with typings update
 				blockState={contentBlockConfig.block.state}
+				history={history}
+				location={location}
+				match={match}
+				user={user}
 			/>
 		));
 	};

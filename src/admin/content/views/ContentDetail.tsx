@@ -36,7 +36,12 @@ import { ContentDetailParams } from '../content.types';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
-const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, user }) => {
+const ContentDetail: FunctionComponent<ContentDetailProps> = ({
+	history,
+	match,
+	location,
+	user,
+}) => {
 	const { id } = match.params;
 
 	// Hooks
@@ -96,6 +101,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						componentState={contentBlockConfig.components.state}
 						contentWidth={get(content, 'content_width')}
 						blockState={contentBlockConfig.block.state}
+						history={history}
+						location={location}
+						match={match}
+						user={user}
 					/>
 				));
 			case 'metadata':

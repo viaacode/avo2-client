@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
@@ -18,7 +19,7 @@ import {
 import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers/create-key';
 
-interface ContentEditContentBlocksProps {
+interface ContentEditContentBlocksProps extends DefaultSecureRouteProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	contentWidth: Avo.Content.ContentWidth;
 	onAdd: (config: ContentBlockConfig) => void;
@@ -43,6 +44,10 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	onSave,
 	addComponentToState,
 	removeComponentFromState,
+	history,
+	location,
+	match,
+	user,
 }) => {
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
@@ -114,6 +119,10 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					componentState={components.state}
 					contentWidth={contentWidth}
 					blockState={block.state}
+					history={history}
+					location={location}
+					match={match}
+					user={user}
 				/>
 			);
 		});
