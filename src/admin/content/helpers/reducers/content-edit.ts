@@ -92,10 +92,12 @@ const setComponentState = (
 			// TODO: HELP! Omdat buttonAction een object is, krijg ik deze hier niet gespread, daarom dat ik dit niet op de methode in de 'else' kan oplossen. What's my issue?
 			(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
 				...(configs[index].components.state as ContentBlockComponentState[])[stateIndex],
+				// ZONDER buttonActions, is buttonAction undefined... WHY? I'M CONFUSED.
 				buttonActions: (formGroupState as any).buttonAction,
 				buttonAction: (formGroupState as any).buttonAction,
 			} as any;
 		} else {
+			// Dit zou ook moeten werken om die buttonAction property hierop toe te voegen.
 			(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
 				...(configs[index].components.state as ContentBlockComponentState[])[stateIndex],
 				...(formGroupState as any),
