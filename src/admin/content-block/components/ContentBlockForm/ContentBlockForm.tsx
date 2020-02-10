@@ -115,6 +115,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						icon="delete"
 						type="danger"
 						onClick={() => removeComponentFromState(stateIndex)}
+						size="small"
 					/>
 				</FlexItem>
 			)
@@ -139,9 +140,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			<Spacer margin="top-small">
 				{isArray(formGroup.state) ? (
 					formGroup.state.map((formGroupState, stateIndex) => (
-						<Spacer key={stateIndex} margin="bottom-small">
-							<BlockHeading type="h4" className="u-m-t-0">
-								<Toolbar>
+						<Spacer key={stateIndex} margin="bottom">
+							<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
+								<Toolbar autoHeight>
 									<ToolbarLeft>{`${get(config, 'components.name')} ${stateIndex + 1}`}</ToolbarLeft>
 									<ToolbarRight>{renderRemoveButton(stateIndex)}</ToolbarRight>
 								</Toolbar>
