@@ -83,23 +83,19 @@ const setComponentState = (
 ): ContentBlockConfig[] => {
 	const { index, formGroupState, stateIndex } = payload;
 
-	console.log('FGS', formGroupState);
-
 	if (stateIndex || stateIndex === 0) {
 		console.log((formGroupState as any).buttonAction);
 
+		const componentState: ContentBlockComponentState[] = configs[index].components
+			.state as ContentBlockComponentState[];
 		if ((formGroupState as any).buttonAction) {
-			// TODO: HELP! Omdat buttonAction een object is, krijg ik deze hier niet gespread, daarom dat ik dit niet op de methode in de 'else' kan oplossen. What's my issue?
-			(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
-				...(configs[index].components.state as ContentBlockComponentState[])[stateIndex],
-				// ZONDER buttonActions, is buttonAction undefined... WHY? I'M CONFUSED.
-				buttonActions: (formGroupState as any).buttonAction,
+			componentState[stateIndex] = {
+				...componentState[stateIndex],
 				buttonAction: (formGroupState as any).buttonAction,
 			} as any;
 		} else {
-			// Dit zou ook moeten werken om die buttonAction property hierop toe te voegen.
-			(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
-				...(configs[index].components.state as ContentBlockComponentState[])[stateIndex],
+			componentState[stateIndex] = {
+				...componentState[stateIndex],
 				...(formGroupState as any),
 			};
 		}
