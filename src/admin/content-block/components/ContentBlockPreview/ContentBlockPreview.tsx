@@ -77,17 +77,16 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 
 	if (blockState.blockType === ContentBlockType.CTAs) {
 		stateToSpread.elements.forEach((innerState: any) => {
-			innerState.buttonAction = innerState.buttonActions;
-			innerState.navigate = (buttonActions: ButtonAction) => {
-				switch (buttonActions.type) {
+			innerState.navigate = () => {
+				switch (innerState.buttonAction.type) {
 					case 'EXTERNAL_LINK':
-						history.push(buttonActions.value as string);
+						history.push(innerState.buttonAction.value as string);
 						break;
 					default:
 						break;
 				}
 				// console.log(buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })
-				console.log('preview: buttonActions', buttonActions);
+				console.log('preview: buttonActions', innerState.buttonAction);
 			};
 		});
 	}

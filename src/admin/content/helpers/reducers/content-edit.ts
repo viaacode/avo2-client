@@ -77,30 +77,20 @@ const removeComponentState = (
 	return configs;
 };
 
+const clone = (obj: any): any => JSON.parse(JSON.stringify(obj));
+
 const setComponentState = (
 	configs: ContentBlockConfig[],
 	payload: { index: number; formGroupState: ContentBlockComponentState; stateIndex: number }
 ): ContentBlockConfig[] => {
 	const { index, formGroupState, stateIndex } = payload;
-
 	if (stateIndex || stateIndex === 0) {
-		console.log((formGroupState as any).buttonAction);
-
 		const componentState: ContentBlockComponentState[] = configs[index].components
 			.state as ContentBlockComponentState[];
-		if ((formGroupState as any).buttonAction) {
-			componentState[stateIndex] = {
-				...componentState[stateIndex],
-				buttonAction: (formGroupState as any).buttonAction,
-			} as any;
-		} else {
-			componentState[stateIndex] = {
-				...componentState[stateIndex],
-				...(formGroupState as any),
-			};
-		}
-
-		console.log('WHY DOES THIS NOT STATE', configs[index].components.state);
+		(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
+			...componentState[stateIndex],
+			...formGroupState,
+		};
 	} else {
 		// Convert update object to array if necessary
 		const componentState = Array.isArray(configs[index].components.state)
@@ -124,7 +114,7 @@ const setComponentState = (
 		configs.splice(index, 1, updatedConfig);
 	}
 
-	return configs;
+	return clone(configs);
 };
 
 const setBlockState = (
