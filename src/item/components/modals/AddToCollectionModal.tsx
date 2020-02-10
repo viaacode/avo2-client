@@ -111,7 +111,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			setFragmentStartTime(0);
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
 		}
-	}, [isOpen, itemMetaData.duration]);
+	}, [isOpen, itemMetaData.duration, collections.length]);
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
