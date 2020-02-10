@@ -1,4 +1,5 @@
 import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { BlockHeading, Container, Navbar, Tabs, Toolbar, ToolbarLeft } from '@viaa/avo2-components';
 
@@ -7,7 +8,6 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { buildLink } from '../../shared/helpers';
 import toastService from '../../shared/services/toast-service';
 
-import { Trans } from 'react-i18next';
 import { Account, Email, Notifications, Profile } from '../components';
 import {
 	ACCOUNT_ID,
@@ -21,6 +21,8 @@ import {
 interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 
 const Settings: FunctionComponent<ForPupilsProps> = props => {
+	const [t] = useTranslation();
+
 	const [activeTab, setActiveTab] = useState<SettingsTab>(props.match.params.tabId || PROFILE_ID);
 
 	const generateTabHeader = (id: string, label: string) => ({
@@ -60,7 +62,9 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 	const getActiveTabComponent = (): ReactElement | null => {
 		let tab = tabContents[activeTab];
 		if (!tab) {
-			toastService.danger(`Het instellingen tab ${activeTab} bestaat niet`);
+			toastService.danger(
+				t('settings/views/settings___het-instellingen-tab-active-tab-bestaat-niet', { activeTab })
+			);
 			tab = tabContents[PROFILE_ID];
 		}
 		return tab.component;

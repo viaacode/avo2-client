@@ -1,8 +1,9 @@
+import { get, isNumber } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { FormGroup, Spacer } from '@viaa/avo2-components';
 
-import { createKey } from '../../../shared/helpers/create-key';
+import { createKey } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,
 	ContentBlockComponentsConfig,
@@ -13,7 +14,6 @@ import {
 	ContentBlockStateType,
 } from '../../content-block.types';
 
-import { get, isNumber } from 'lodash-es';
 import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 
 interface ContentBlockFormGroupProps {
@@ -44,11 +44,6 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 }) => (
 	<div className="c-content-block-form-group">
 		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
-			const formGroupOptions = {
-				key: createKey('form-group', blockIndex, formGroupIndex, stateIndex),
-				label: formGroup.fields[key].label,
-			};
-
 			let error: string[];
 			const formErrorsForBlock: string[] | string[][] =
 				formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState];
@@ -59,8 +54,11 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 			}
 
 			return (
-				<Spacer margin="bottom">
-					<FormGroup {...formGroupOptions} error={error}>
+				<Spacer
+					key={createKey('form-group', blockIndex, formGroupIndex, stateIndex)}
+					margin="bottom"
+				>
+					<FormGroup label={formGroup.fields[key].label} error={error}>
 						<ContentBlockFieldEditor
 							block={{ config, index: blockIndex }}
 							fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}

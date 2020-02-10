@@ -14,6 +14,9 @@ import {
 	FlexItem,
 	Form,
 	Spacer,
+	Toolbar,
+	ToolbarLeft,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 
 import {
@@ -124,6 +127,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						icon="delete"
 						type="danger"
 						onClick={() => removeComponentFromState(stateIndex)}
+						size="small"
 					/>
 				</FlexItem>
 			)
@@ -148,9 +152,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			<Spacer margin="top-small">
 				{isArray(formGroup.state) ? (
 					formGroup.state.map((formGroupState, stateIndex) => (
-						<Spacer key={stateIndex} margin="bottom-small">
-							<BlockHeading type="h4" className="u-m-t-0">
-								{`${get(config, 'components.name')} ${stateIndex + 1}`}
+						<Spacer key={stateIndex} margin="bottom">
+							<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
+								<Toolbar autoHeight>
+									<ToolbarLeft>{`${get(config, 'components.name')} ${stateIndex + 1}`}</ToolbarLeft>
+									<ToolbarRight>{renderRemoveButton(stateIndex)}</ToolbarRight>
+								</Toolbar>
 							</BlockHeading>
 							<Flex spaced="regular" wrap>
 								<FlexItem>
@@ -161,7 +168,6 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 										stateIndex={stateIndex}
 									/>
 								</FlexItem>
-								{renderRemoveButton(stateIndex)}
 							</Flex>
 						</Spacer>
 					))
@@ -202,7 +208,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							icon="chevron-up"
 							onClick={() => onReorder(blockIndex, -1)}
 							size="small"
-							title="Verplaats naar boven"
+							title={t(
+								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
+							)}
 							type="tertiary"
 						/>
 						<Button
@@ -210,7 +218,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							icon="chevron-down"
 							onClick={() => onReorder(blockIndex, 1)}
 							size="small"
-							title="Verplaats naar onder"
+							title={t(
+								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
+							)}
 							type="tertiary"
 						/>
 						<Button
@@ -229,7 +239,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							title={t(
 								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
 							)}
-							type="tertiary"
+							type="danger"
 						/>
 					</ButtonToolbar>
 				</AccordionActions>

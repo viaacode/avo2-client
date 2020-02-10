@@ -1,6 +1,6 @@
 {
 	"name": "avo2-client",
-	"version": "0.26.2",
+	"version": "0.28.0",
 	"private": true,
 	"scripts": {
 		"prestart": "npm run env",
