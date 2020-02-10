@@ -104,14 +104,14 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	useEffect(() => {
 		if (isOpen) {
 			// Reset the state
-			setCreateNewCollection(false);
+			setCreateNewCollection(!collections.length);
 			setSelectedCollectionId('');
 			setSelectedCollection(undefined);
 			setNewCollectionTitle('');
 			setFragmentStartTime(0);
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
 		}
-	}, [isOpen, itemMetaData.duration]);
+	}, [isOpen, itemMetaData.duration, collections.length]);
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
@@ -154,10 +154,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			end_oc: hasCut ? fragmentEndTime : null,
 			custom_title: null,
 			custom_description: null,
-			collection_uuid: collection.id, // TODO Remove conversion once update to typings 2.8
-			collection_id: String((collection as any).avo1_id),
+			collection_uuid: collection.id,
 			item_meta: itemMetaData,
-		} as any; // TODO Remove cast once update to typings 2.8
+		} as any;
 	};
 
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {
@@ -394,31 +393,36 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 													onChange={checked => setCreateNewCollection(!checked)}
 												/>
 												<div>
-													<Select
-														id="existingCollection"
-														options={[
-															{
-																label: collections.length
-																	? t(
-																			'item/components/modals/add-to-collection-modal___kies-collectie'
-																	  )
-																	: t(
-																			'item/components/modals/add-to-collection-modal___je-hebt-nog-geen-collecties'
-																	  ),
-																value: '',
-																disabled: true,
-															},
-															...collections.map(
-																(collection: Partial<Avo.Collection.Collection>) => ({
-																	label: collection.title || '',
-																	value: String(collection.id),
-																})
-															),
-														]}
-														value={selectedCollectionId}
-														onChange={setSelectedCollectionIdAndGetCollectionInfo}
-														disabled={createNewCollection}
-													/>
+													{collections.length ? (
+														<Select
+															id="existingCollection"
+															options={[
+																{
+																	label: t(
+																		'item/components/modals/add-to-collection-modal___kies-collectie'
+																	),
+																	value: '',
+																	disabled: true,
+																},
+																...collections.map(
+																	(collection: Partial<Avo.Collection.Collection>) => ({
+																		label: collection.title || '',
+																		value: String(collection.id),
+																	})
+																),
+															]}
+															value={selectedCollectionId}
+															onChange={setSelectedCollectionIdAndGetCollectionInfo}
+															disabled={createNewCollection}
+														/>
+													) : (
+														<TextInput
+															disabled
+															value={t(
+																'item/components/modals/add-to-collection-modal___je-hebt-nog-geen-collecties'
+															)}
+														/>
+													)}
 												</div>
 											</Spacer>
 											<Spacer margin="bottom">
