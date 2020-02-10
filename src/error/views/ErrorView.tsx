@@ -8,12 +8,11 @@ import { match, RouteComponentProps, withRouter } from 'react-router';
 import {
 	Blankslate,
 	Button,
-	ButtonGroup,
 	ButtonToolbar,
 	Container,
 	IconName,
 	Toolbar,
-	ToolbarCenter
+	ToolbarCenter,
 } from '@viaa/avo2-components';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -80,7 +79,7 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 								{buttons.includes('helpdesk') && (
 									<Button
 										type="danger"
-										onClick={() => (window as any).zE('webWidget', 'toggle')}
+										onClick={() => window.zE('webWidget', 'toggle')}
 										label={t('Contacteer de helpdesk')}
 									/>
 								)}
