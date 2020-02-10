@@ -53,6 +53,7 @@ import {
 	ControlledDropdown,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
+	ShareThroughEmailModal,
 } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
@@ -74,6 +75,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
 	const [relatedBundles /*, setRelatedBundles */] = useState<Avo.Search.ResultItem[] | null>(null);
@@ -420,6 +422,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 													onClick={onEditBundle}
 													type="primary"
 												/>
+												<Button
+													title={t('Share bundel')}
+													type="secondary"
+													icon="share-2"
+													ariaLabel={t('Share bundel')}
+													onClick={() => setIsShareThroughEmailModalOpen(true)}
+												/>
 												<ControlledDropdown
 													isOpen={isOptionsMenuOpen}
 													menuWidth="fit-content"
@@ -494,6 +503,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => onDeleteBundle()}
+				/>
+				<ShareThroughEmailModal
+					modalTitle={t('Deel deze bundel')}
+					type="bundle"
+					emailLinkHref={window.location.href}
+					emailLinkTitle={(bundle as Avo.Collection.Collection).title}
+					isOpen={isShareThroughEmailModalOpen}
+					onClose={() => setIsShareThroughEmailModalOpen(false)}
 				/>
 			</>
 		);
