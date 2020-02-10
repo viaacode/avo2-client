@@ -1,4 +1,4 @@
-import { get, isNil } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
 import { Avatar, AvatarList, AvatarProps } from '@viaa/avo2-components';
