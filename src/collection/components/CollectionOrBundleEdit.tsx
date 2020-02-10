@@ -44,7 +44,7 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
+import { trackLogEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
 import { AppState } from '../../store';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
@@ -327,7 +327,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 						? t(`Collectie opgeslagen`)
 						: t('collection/components/collection-or-bundle-edit___bundle-opgeslagen')
 				);
-				trackEvents(
+				trackLogEvents(
 					{
 						object: String(newCollection.id),
 						object_type: 'collections',
@@ -422,7 +422,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			trackEvents(
+			trackLogEvents(
 				{
 					object: String(currentCollection.id),
 					object_type: 'collections',

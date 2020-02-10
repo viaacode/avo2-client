@@ -40,7 +40,7 @@ import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
-import { trackEvents } from '../../../shared/services/event-logging-service';
+import { trackLogEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 import toastService from '../../../shared/services/toast-service';
@@ -191,7 +191,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					)
 				);
 				onClose();
-				trackEvents(
+				trackLogEvents(
 					{
 						object: String(collection.id),
 						object_type: 'collections',

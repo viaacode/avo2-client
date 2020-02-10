@@ -21,7 +21,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { trackEvents } from '../../../shared/services/event-logging-service';
+import { trackLogEvents } from '../../../shared/services/event-logging-service';
 import toastService from '../../../shared/services/toast-service';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
@@ -115,7 +115,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			closeModal(newCollection);
 
 			// Public status changed => log as event
-			trackEvents(
+			trackLogEvents(
 				{
 					object: String(collection.id),
 					object_type: 'collections',

@@ -56,7 +56,7 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { trackEvents } from '../../shared/services/event-logging-service';
+import { trackLogEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 
@@ -106,7 +106,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 			}
 
 			// Log event of item page view
-			trackEvents(
+			trackLogEvents(
 				{
 					object: itemId,
 					object_type: 'avo_item_pid',
@@ -117,6 +117,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 				},
 				user
 			);
+			trackEvent('item', 'view');
 		}
 	}, [time, history, videoRef, itemId, relatedItems, user]);
 

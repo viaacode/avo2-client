@@ -56,7 +56,7 @@ import {
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
+import { trackLogEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -134,7 +134,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	useEffect(() => {
-		trackEvents(
+		trackLogEvents(
 			{
 				object: collectionId,
 				object_type: 'collections',

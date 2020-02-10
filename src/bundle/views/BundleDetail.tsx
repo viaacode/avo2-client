@@ -57,7 +57,7 @@ import {
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
 import { ApolloCacheManager } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
+import { trackLogEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -94,7 +94,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
-		trackEvents(
+		trackLogEvents(
 			{
 				object: bundleId,
 				object_type: 'bundels' as any, // TODO remove cast after update typings

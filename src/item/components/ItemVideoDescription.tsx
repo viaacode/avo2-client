@@ -24,7 +24,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
-import { trackEvents } from '../../shared/services/event-logging-service';
+import { trackLogEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 import toastService from '../../shared/services/toast-service';
 
@@ -126,7 +126,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		fetchPlayerTicket(itemMetaData.external_id)
 			.then((data: string) => {
 				setPlayerTicket(data);
-				trackEvents(
+				trackLogEvents(
 					{
 						object: itemMetaData.external_id,
 						object_type: 'avo_item_pid',
