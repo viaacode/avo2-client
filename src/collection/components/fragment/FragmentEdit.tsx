@@ -287,23 +287,25 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
-				<FormGroup
-					label={t('collection/components/fragment/fragment-edit___tekstblok-beschrijving')}
-					labelFor={`description_${fragment.id}`}
-				>
-					{!isNil(allowedToAddLinks) && (
-						<WYSIWYG
-							id={`description_${fragment.id}`}
-							btns={allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT}
-							placeholder={t(
-								'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
-							)}
-							data={description}
-							onChange={setDescription}
-							disabled={disableVideoFields}
-						/>
-					)}
-				</FormGroup>
+				{!isCollection && (
+					<FormGroup
+						label={t('collection/components/fragment/fragment-edit___tekstblok-beschrijving')}
+						labelFor={`description_${fragment.id}`}
+					>
+						{!isNil(allowedToAddLinks) && (
+							<WYSIWYG
+								id={`description_${fragment.id}`}
+								btns={allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT}
+								placeholder={t(
+									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
+								)}
+								data={description}
+								onChange={setDescription}
+								disabled={disableVideoFields}
+							/>
+						)}
+					</FormGroup>
+				)}
 			</Form>
 		);
 	};
