@@ -12,4 +12,5 @@ interface Window {
 		version: string;
 		mode: 'development' | 'production' | 'test';
 	};
+	zE: Function;
 }
