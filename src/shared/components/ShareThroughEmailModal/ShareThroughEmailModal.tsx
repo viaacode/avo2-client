@@ -18,7 +18,6 @@ import { copyToClipboard } from '../../helpers';
 import { shareThroughEmail } from '../../helpers/share-through-email';
 
 import { EmailTemplateType } from './share-through-email.types';
-import './ShareThroughEmailModal.scss';
 
 interface AddToCollectionModalProps {
 	modalTitle: string;
@@ -77,16 +76,14 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 				<BlockHeading type="h4">
 					<Trans>Kopieer deze publieke link</Trans>
 				</BlockHeading>
-				<p>
-					<Trans>
-						Let wel, enkel personen met een Archief voor Onderwijs account zullen deze link kunnen
-						openen.
-					</Trans>
-				</p>
+				<Trans parent="p">
+					Let wel, enkel personen met een Archief voor Onderwijs account zullen deze link kunnen
+					openen.
+				</Trans>
 				<Spacer margin="top-large">
 					<Box backgroundColor="gray" condensed>
 						<Flex wrap justify="between" align="baseline">
-							<FlexItem className="c-ellipsis">
+							<FlexItem className="u-truncate">
 								<a href={emailLinkHref}>{emailLinkHref}</a>
 							</FlexItem>
 							<FlexItem shrink>
