@@ -85,7 +85,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		updatedFormValue: any,
 		stateIndex?: number
 	) => {
-		const errors: any = {};
+		const errors: ContentBlockFormError = { ...formErrors };
 
 		const field = config[formGroupType].fields[fieldKey];
 		const validator = get(field, 'validator');
@@ -95,10 +95,16 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 
 			if (errorArray.length) {
 				if (isNumber(stateIndex)) {
-					errors[fieldKey] = [];
+					errors[fieldKey] = errors[fieldKey] || [];
 					errors[fieldKey][stateIndex] = errorArray;
 				} else {
 					errors[fieldKey] = errorArray;
+				}
+			} else if (errors[fieldKey]) {
+				if (isNumber(stateIndex)) {
+					delete errors[fieldKey][stateIndex];
+				} else {
+					delete errors[fieldKey];
 				}
 			}
 		}
