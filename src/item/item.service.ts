@@ -17,7 +17,7 @@ export const getItems = async (limit?: number): Promise<Avo.Item.Item[] | null> 
 
 		return get(response, `data.${ITEM_RESULT_PATH}`, null);
 	} catch (err) {
-		console.error(`Failed to fetch items`);
+		console.error('Failed to fetch items');
 		return null;
 	}
 };

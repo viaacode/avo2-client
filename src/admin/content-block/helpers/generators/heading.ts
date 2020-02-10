@@ -1,5 +1,4 @@
 import i18n from '../../../../shared/translations/i18n';
-
 import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
@@ -9,6 +8,7 @@ import {
 	DefaultContentBlockState,
 	HeadingBlockComponentState,
 } from '../../content-block.types';
+
 import {
 	ALIGN_FIELD,
 	CONTENT_BLOCK_FIELD_DEFAULTS,
