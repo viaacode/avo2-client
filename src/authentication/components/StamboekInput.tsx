@@ -60,14 +60,15 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 				<span>
 					<Trans>
 						Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog maar recent uw
-						kaart heeft ontvangen kan u via
-					</Trans>{' '}
-					<Button
-						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
-						label={t('authentication/components/stamboek-input___een-manuele-aanvraag')}
-						type="inline-link"
-					/>{' '}
-					<Trans>toch al toegang krijgen.</Trans>
+						kaart heeft ontvangen kan u via{' '}
+						<Button
+							onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
+							type={'inline-link'}
+						>
+							een manuele aanvraag
+						</Button>{' '}
+						toch al toegang krijgen.
+					</Trans>
 				</span>
 			),
 			status: ToastType.DANGER,

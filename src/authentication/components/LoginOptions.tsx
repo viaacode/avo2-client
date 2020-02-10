@@ -63,7 +63,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				label={t('authentication/components/login-options___inloggen-met-klas-cement')}
 				onClick={() => {
 					onOptionClicked();
-					toastService.info(i18n.t('Nog niet geïmplementeerd'));
+					toastService.info(t('Nog niet geïmplementeerd'));
 				}}
 			/>
 		</div>

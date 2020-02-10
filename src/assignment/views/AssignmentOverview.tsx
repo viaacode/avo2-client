@@ -176,7 +176,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					toastService.success(
 						archivedAssigment.is_archived
 							? t('De opdracht is gearchiveerd')
-							: t(`De opdracht is gedearchiveerd`)
+							: t('De opdracht is gedearchiveerd')
 					);
 				}
 				// else: assignment was not valid and could not be saved yet

@@ -336,7 +336,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
-			toastService.success(t('De opdracht is verwijdert'));
+			toastService.success(t('De opdracht is verwijderd'));
 		} catch (err) {
 			console.error(err);
 			toastService.danger(t('Het verwijderen van de opdracht is mislukt'));
@@ -387,7 +387,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 				toastService.success(
-					shouldBeArchived ? t('De opdracht is gearchiveerd') : t(`De opdracht is gedearchiveerd`)
+					shouldBeArchived ? t('De opdracht is gearchiveerd') : t('De opdracht is gedearchiveerd')
 				);
 			}
 			// else: assignment was not valid and could not be saved yet
@@ -396,7 +396,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			toastService.danger(
 				shouldBeArchived
 					? t('Het archiveren van de opdracht is mislukt')
-					: t(`Het dearchiveren van de opdracht is mislukt`)
+					: t('Het dearchiveren van de opdracht is mislukt')
 			);
 		}
 	};

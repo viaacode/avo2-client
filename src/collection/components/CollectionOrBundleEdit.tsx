@@ -324,7 +324,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				setInitialCollection(cloneDeep(newCollection));
 				toastService.success(
 					isCollection
-						? t(`Collectie opgeslagen`)
+						? t('Collectie opgeslagen')
 						: t('collection/components/collection-or-bundle-edit___bundle-opgeslagen')
 				);
 				trackEvents(

@@ -217,7 +217,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 						case NOT_YET_AVAILABLE:
 							errorObj = {
-								message: t(`De opdracht is nog niet beschikbaar`),
+								message: t('De opdracht is nog niet beschikbaar'),
 								icon: 'clock' as IconName,
 							};
 							break;

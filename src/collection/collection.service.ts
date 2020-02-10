@@ -546,7 +546,7 @@ export class CollectionService {
 
 		if (!tempFragment) {
 			toastService.info(
-				i18n.t(`Fragment om toe te voegen is niet gevonden (id: {{id}})`, { id: tempId })
+				i18n.t('Fragment om toe te voegen is niet gevonden (id: {{id}})', { id: tempId })
 			);
 			return;
 		}
