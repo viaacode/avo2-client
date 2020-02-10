@@ -82,12 +82,19 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const fetchCollections = React.useCallback(
 		() =>
-			CollectionService.getCollectionTitlesByUser('collection', user).then(
-				(collectionTitles: Partial<Avo.Collection.Collection>[]) => {
+			CollectionService.getCollectionTitlesByUser('collection', user)
+				.then((collectionTitles: Partial<Avo.Collection.Collection>[]) => {
 					setCollections(collectionTitles);
-				}
-			),
-		[user]
+				})
+				.catch(err => {
+					console.error(err);
+					toastService.danger(
+						t(
+							'item/components/modals/add-to-collection-modal___het-ophalen-van-de-bestaande-collections-is-mislukt'
+						)
+					);
+				}),
+		[user, t]
 	);
 
 	useEffect(() => {

@@ -38,7 +38,7 @@ import {
 	checkPermissions,
 	LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink, renderAvatar } from '../../shared/helpers';
+import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
@@ -179,9 +179,11 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							setAssignment(tempAssignment);
 						})
 						.catch(err => {
-							console.error('Failed to get assignment content', err, {
-								assignment: tempAssignment,
-							});
+							console.error(
+								new CustomError('Failed to get assignment content', err, {
+									assignment: tempAssignment,
+								})
+							);
 							// Show toast instead of showing error using the loadingInfo
 							// since we still want to show the assignment without the content if the content fails to load
 							if (err && err.message === 'NOT_FOUND') {
@@ -215,7 +217,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 						case NOT_YET_AVAILABLE:
 							errorObj = {
-								message: t(`De opdracht is nog niet beschikbaar`),
+								message: t(
+									'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
+								),
 								icon: 'clock' as IconName,
 							};
 							break;
@@ -290,7 +294,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				})
 					.then(() => {
 						toastService.success(
-							`De opdracht is ge${isAssignmentResponseArchived() ? 'de' : ''}archiveerd`
+							isAssignmentResponseArchived()
+								? t('De opdracht is gedearchiveerd')
+								: t('assignment/views/assignment-detail___de-opdracht-is-gearchiveerd')
 						);
 
 						// Update local cached assignment
@@ -303,20 +309,24 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						);
 					})
 					.catch(err => {
-						console.error('failed to update assignmentResponse object', err, {
-							variables: {
-								assignmentResponse,
-								id: assignmentResponse.id,
-							},
-						});
+						console.error(
+							new CustomError('failed to update assignmentResponse object', err, {
+								variables: {
+									assignmentResponse,
+									id: assignmentResponse.id,
+								},
+							})
+						);
 						toastService.danger(
 							t('assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt')
 						);
 					});
 			} else {
-				console.error("assignmentResponse object is null or doesn't have an id", {
-					assignmentResponse,
-				});
+				console.error(
+					new CustomError("assignmentResponse object is null or doesn't have an id", null, {
+						assignmentResponse,
+					})
+				);
 				toastService.danger(
 					t('assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt')
 				);
@@ -458,9 +468,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 															{
 																icon: 'archive',
 																id: 'archive',
-																label: `${
-																	isAssignmentResponseArchived() ? 'Dearchiveer' : 'Archiveer'
-																}`,
+																label: isAssignmentResponseArchived()
+																	? t('assignment/views/assignment-detail___dearchiveer')
+																	: t('assignment/views/assignment-detail___archiveer'),
 															},
 														]}
 														onClick={handleExtraOptionsClick as any}
@@ -501,7 +511,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			notFoundError="De opdracht werdt niet gevonden"
+			notFoundError={t('assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden')}
 			dataObject={assignment}
 			render={renderAssignment}
 		/>

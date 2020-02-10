@@ -116,7 +116,7 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 	},
 	{
 		value: 'BUNDLE',
-		label: i18n.t('Bundels'),
+		label: i18n.t('admin/content/content___bundels'),
 		disabled: false,
 		fetch: fetchBundles,
 	},

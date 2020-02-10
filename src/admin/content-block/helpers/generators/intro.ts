@@ -1,5 +1,4 @@
 import i18n from '../../../../shared/translations/i18n';
-
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -8,6 +7,7 @@ import {
 	DefaultContentBlockState,
 	IntroBlockComponentState,
 } from '../../content-block.types';
+
 import {
 	ALIGN_FIELD,
 	CONTENT_BLOCK_FIELD_DEFAULTS,

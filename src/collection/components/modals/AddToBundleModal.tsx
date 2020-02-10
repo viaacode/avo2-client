@@ -70,15 +70,22 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	const fetchBundles = React.useCallback(
 		() =>
-			CollectionService.getCollectionTitlesByUser('bundle', user).then(
-				(bundleTitles: Partial<Avo.Collection.Collection>[]) => {
+			CollectionService.getCollectionTitlesByUser('bundle', user)
+				.then((bundleTitles: Partial<Avo.Collection.Collection>[]) => {
 					setBundles(bundleTitles);
 					if (!bundleTitles.length) {
 						setCreateNewBundle(true);
 					}
-				}
-			),
-		[user]
+				})
+				.catch(err => {
+					console.error(err);
+					toastService.danger(
+						t(
+							'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bestaande-bundels-is-mislukt'
+						)
+					);
+				}),
+		[user, t]
 	);
 
 	useEffect(() => {
