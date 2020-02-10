@@ -186,7 +186,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			console.error(err);
 			toastService.danger(
 				activeView === 'archived_assignments'
-					? t(`Het dearchiveren van de opdracht is mislukt`)
+					? t('Het dearchiveren van de opdracht is mislukt')
 					: t('assignment/views/assignment-overview___het-archiveren-van-de-opdracht-is-mislukt')
 			);
 		}
