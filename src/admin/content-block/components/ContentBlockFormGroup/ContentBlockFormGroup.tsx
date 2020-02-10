@@ -1,8 +1,9 @@
+import { get, isNumber } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { FormGroup, Spacer } from '@viaa/avo2-components';
 
-import { createKey } from '../../../shared/helpers/create-key';
+import { createKey } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,
 	ContentBlockComponentsConfig,
@@ -42,24 +43,35 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 	formErrors,
 }) => (
 	<div className="c-content-block-form-group">
-		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => (
-			<Spacer key={createKey('form-group', blockIndex, formGroupIndex, stateIndex)} margin="bottom">
-				<FormGroup
-					label={formGroup.fields[key].label}
-					error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
+		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
+			let error: string[];
+			const formErrorsForBlock: string[] | string[][] =
+				formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState];
+			if (isNumber(stateIndex)) {
+				error = get(formErrorsForBlock, [stateIndex]) as string[];
+			} else {
+				error = formErrorsForBlock as string[];
+			}
+
+			return (
+				<Spacer
+					key={createKey('form-group', blockIndex, formGroupIndex, stateIndex)}
+					margin="bottom"
 				>
-					<ContentBlockFieldEditor
-						block={{ config, index: blockIndex }}
-						fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
-						field={formGroup.fields[key]}
-						state={formGroupState}
-						type={formGroupType}
-						formGroupIndex={formGroupIndex}
-						stateIndex={stateIndex}
-						handleChange={handleChange}
-					/>
-				</FormGroup>
-			</Spacer>
-		))}
+					<FormGroup label={formGroup.fields[key].label} error={error}>
+						<ContentBlockFieldEditor
+							block={{ config, index: blockIndex }}
+							fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
+							field={formGroup.fields[key]}
+							state={formGroupState}
+							type={formGroupType}
+							formGroupIndex={formGroupIndex}
+							stateIndex={stateIndex}
+							handleChange={handleChange}
+						/>
+					</FormGroup>
+				</Spacer>
+			);
+		})}
 	</div>
 );
