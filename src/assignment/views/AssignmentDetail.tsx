@@ -438,7 +438,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 										</ToolbarItem>
 										{!!profile && (
 											<ToolbarItem>
-												{renderAvatar(profile, { includeRole: true, small: true })}
+												{renderAvatar(profile, { includeRole: true, small: true, dark: true })}
 											</ToolbarItem>
 										)}
 										<ToolbarItem>
