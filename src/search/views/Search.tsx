@@ -358,7 +358,7 @@ const Search: FunctionComponent<SearchProps> = ({
 											label={t('search/views/search___maak-van-deze-zoekopdracht-een-opdracht')}
 											onClick={() => {
 												setIsOptionsMenuOpen(false);
-												toastService.info('Nog niet geïmplementeerd');
+												toastService.info(t('search/views/search___nog-niet-geimplementeerd'));
 											}}
 										/> */}
 									</DropdownContent>

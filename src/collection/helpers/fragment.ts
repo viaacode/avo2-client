@@ -3,6 +3,7 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import toastService from '../../shared/services/toast-service';
+import i18n from '../../shared/translations/i18n';
 
 export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
 	return fragmentInfo.external_id && fragmentInfo.external_id !== '-1';
@@ -25,7 +26,11 @@ const getFragmentByPosition = (fragments: Avo.Collection.Fragment[], position: n
 	);
 
 	if (!fragmentAtPosition) {
-		toastService.danger(`Het fragment met positie ${position} is niet gevonden`);
+		toastService.danger(
+			i18n.t('collection/helpers/fragment___het-fragment-met-positie-position-is-niet-gevonden', {
+				position,
+			})
+		);
 		return;
 	}
 

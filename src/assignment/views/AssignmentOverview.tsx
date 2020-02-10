@@ -174,7 +174,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 					refetchAssignments();
 					toastService.success(
-						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`
+						archivedAssigment.is_archived
+							? t('assignment/views/assignment-overview___de-opdracht-is-gearchiveerd')
+							: t('assignment/views/assignment-overview___de-opdracht-is-gedearchiveerd')
 					);
 				}
 				// else: assignment was not valid and could not be saved yet
@@ -183,9 +185,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		} catch (err) {
 			console.error(err);
 			toastService.danger(
-				`Het ${
-					activeView === 'archived_assignments' ? 'de' : ''
-				}archiveren van de opdracht is mislukt`
+				activeView === 'archived_assignments'
+					? t('Het dearchiveren van de opdracht is mislukt')
+					: t('assignment/views/assignment-overview___het-archiveren-van-de-opdracht-is-mislukt')
 			);
 		}
 	};
@@ -327,14 +329,29 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 							<DropdownContent>
 								<MenuContent
 									menuItems={[
-										{ icon: 'edit2' as IconName, id: 'edit', label: 'Bewerk' },
+										{
+											icon: 'edit2' as IconName,
+											id: 'edit',
+											label: t('assignment/views/assignment-overview___bewerk'),
+										},
 										{
 											icon: 'archive' as IconName,
 											id: 'archive',
-											label: activeView === 'archived_assignments' ? 'Dearchiveer' : 'Archiveer',
+											label:
+												activeView === 'archived_assignments'
+													? t('assignment/views/assignment-overview___dearchiveer')
+													: t('assignment/views/assignment-overview___archiveer'),
 										},
-										{ icon: 'copy' as IconName, id: 'duplicate', label: 'Dupliceer' },
-										{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' },
+										{
+											icon: 'copy' as IconName,
+											id: 'duplicate',
+											label: t('assignment/views/assignment-overview___dupliceer'),
+										},
+										{
+											icon: 'delete' as IconName,
+											id: 'delete',
+											label: t('assignment/views/assignment-overview___verwijder'),
+										},
 									]}
 									onClick={(actionId: ReactText) =>
 										handleExtraOptionsItemClicked(
