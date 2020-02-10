@@ -50,6 +50,7 @@ import { DataQueryComponent } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
+	CustomError,
 	generateAssignmentCreateLink,
 	generateSearchLink,
 	generateSearchLinks,
@@ -60,6 +61,7 @@ import { trackLogEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 
+import { trackEvent } from '../../shared/services/event-service';
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
@@ -117,7 +119,9 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 				},
 				user
 			);
-			trackEvent('item', 'view');
+			trackEvent('view', 'item', itemId, user).catch(err =>
+				console.error(new CustomError('Failed to track item view', err, { itemId, user }))
+			);
 		}
 	}, [time, history, videoRef, itemId, relatedItems, user]);
 
@@ -132,6 +136,19 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 				});
 				toastService.danger('Het ophalen van de gerelateerde items is mislukt');
 			});
+	};
+
+	const toggleBookmark = async (item: Avo.Item.Item) => {
+		try {
+			// TODO update query to only get the bookmark for the current user once the database is updated
+			if (item.bookmarks) {
+				await trackEvent('unbookmark', 'item', item.external_id, user);
+			} else {
+				await trackEvent('bookmark', 'item', item.external_id, user);
+			}
+		} catch (err) {
+			console.error('Failed to bookmark/unbookmark the item', err, { item });
+		}
 	};
 
 	/**
@@ -292,6 +309,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 												icon="bookmark"
 												active={false}
 												ariaLabel={t('item/views/item___toggle-bladwijzer')}
+												onClick={() => toggleBookmark(itemMetaData)}
 											/>
 											<Button
 												type="tertiary"
