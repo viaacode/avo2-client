@@ -26,19 +26,21 @@ const REACT_SELECT_DEFAULT_OPTIONS = {
 };
 
 export interface ContentPickerProps {
+	initialControls?: ContentPickerControls;
 	selectableTypes?: string[];
 	onSelect: (value: ValueType<PickerItem>) => void;
 	errors?: string | string[];
 }
 
 const ContentPicker: FunctionComponent<ContentPickerProps> = ({
+	initialControls = 'content',
 	selectableTypes,
 	onSelect,
 	errors = [],
 }) => {
 	const [t] = useTranslation();
 
-	const [controls, setControls] = useState<ContentPickerControls>('content');
+	const [controls, setControls] = useState<ContentPickerControls>(initialControls);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [currentTypes, setCurrentTypes] = useState<PickerTypeOption[]>([]);
 	const [groupedOptions, setGroupedOptions] = useState<PickerSelectItemGroup[]>([]);

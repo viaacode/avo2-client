@@ -83,11 +83,26 @@ const setComponentState = (
 ): ContentBlockConfig[] => {
 	const { index, formGroupState, stateIndex } = payload;
 
+	console.log('FGS', formGroupState);
+
 	if (stateIndex || stateIndex === 0) {
-		(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
-			...(configs[index].components.state as ContentBlockComponentState[])[stateIndex],
-			...formGroupState,
-		};
+		console.log((formGroupState as any).buttonAction);
+
+		if ((formGroupState as any).buttonAction) {
+			// TODO: HELP! Omdat buttonAction een object is, krijg ik deze hier niet gespread, daarom dat ik dit niet op de methode in de 'else' kan oplossen. What's my issue?
+			(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
+				...(configs[index].components.state as ContentBlockComponentState[])[stateIndex],
+				buttonActions: (formGroupState as any).buttonAction,
+				buttonAction: (formGroupState as any).buttonAction,
+			} as any;
+		} else {
+			(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
+				...(configs[index].components.state as ContentBlockComponentState[])[stateIndex],
+				...(formGroupState as any),
+			};
+		}
+
+		console.log('WHY DOES THIS NOT STATE', configs[index].components.state);
 	} else {
 		// Convert update object to array if necessary
 		const componentState = Array.isArray(configs[index].components.state)

@@ -9,9 +9,13 @@ import {
 	BlockIFrame,
 	BlockIntro,
 	BlockRichText,
+	ButtonAction,
 	Container,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
+import { DefaultSecureRouteProps } from '../../../../authentication/components/SecuredRoute';
+import { navigate } from '../../../../shared/helpers';
 
 import {
 	ContentBlockBackgroundColor,
@@ -20,7 +24,7 @@ import {
 	ContentBlockType,
 } from '../../content-block.types';
 
-interface ContentBlockPreviewProps {
+interface ContentBlockPreviewProps extends DefaultSecureRouteProps<> {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
 	contentWidth?: Avo.Content.ContentWidth;
 	blockState: ContentBlockState;
@@ -54,6 +58,8 @@ const REPEATABLE_CONTENT_BLOCKS = [
 export const BLOCK_STATE_INHERITING_PROPS = ['align'];
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
+	history,
+	match,
 	componentState,
 	contentWidth = 'REGULAR',
 	blockState,
@@ -68,6 +74,23 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			stateToSpread[prop] = (blockState as any)[prop];
 		}
 	});
+
+	if (blockState.blockType === ContentBlockType.CTAs) {
+		stateToSpread.elements.forEach((innerState: any) => {
+			innerState.buttonAction = innerState.buttonActions;
+			innerState.navigate = (buttonActions: ButtonAction) => {
+				switch (buttonActions.type) {
+					case 'EXTERNAL_LINK':
+						history.push(buttonActions.value);
+						break;
+					default:
+						break;
+				}
+				// console.log(buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })
+				console.log('preview: buttonActions', buttonActions);
+			};
+		});
+	}
 
 	return (
 		// TODO: Extend spacer with paddings in components lib

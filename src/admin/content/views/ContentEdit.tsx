@@ -240,6 +240,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		formGroupState: ContentBlockStateOptions,
 		stateIndex?: number
 	) => {
+		console.log('handleStateSave', formGroupState);
 		dispatch({
 			type:
 				formGroupType === 'block'
@@ -252,6 +253,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				formGroupState: Array.isArray(formGroupState) ? formGroupState[0] : formGroupState,
 			},
 		});
+		console.log(contentBlockConfigs[index]);
 	};
 
 	// Render
