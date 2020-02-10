@@ -105,7 +105,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					t('settings/components/profile___het-ophalen-van-de-steden-is-mislukt')
 				);
 			});
-	}, []);
+	}, [t]);
 
 	useEffect(() => {
 		(async () => {

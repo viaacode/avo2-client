@@ -6,7 +6,6 @@ import { Button, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
 import toastService from '../../shared/services/toast-service';
-import i18n from '../../shared/translations/i18n';
 
 import { redirectToClientPage, redirectToServerSmartschoolLogin } from '../helpers/redirects';
 
