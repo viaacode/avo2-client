@@ -101,7 +101,7 @@ const Home: FunctionComponent<HomeProps> = ({
 				);
 			} else {
 				toastService.danger(
-					t('Geen zoekresultaten gevonden met id: {{id}}', { id: searchResultId })
+					t('home/views/home___geen-zoekresultaten-gevonden-met-id-id', { id: searchResultId })
 				);
 			}
 		}
@@ -143,7 +143,7 @@ const Home: FunctionComponent<HomeProps> = ({
 										{!searchResultsLoading ? (
 											<MenuSearchResultContent
 												menuItems={autocompleteMenuItems}
-												noResultsLabel={t('Geen resultaten')}
+												noResultsLabel={t('home/views/home___geen-resultaten')}
 												onClick={id => goToSearchResult(id.toString())}
 											/>
 										) : (

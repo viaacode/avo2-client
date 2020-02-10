@@ -212,7 +212,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										>
 											<TextInput
 												id={`${id}-gte`}
-												placeholder={t('JJJJ')}
+												placeholder={t(
+													'shared/components/date-range-dropdown/date-range-dropdown___jjjj'
+												)}
 												value={fromYear}
 												onChange={async (value: string) => {
 													setYearInputGte(value);
@@ -229,7 +231,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 										>
 											<TextInput
 												id={`${id}-lte`}
-												placeholder={t('JJJJ')}
+												placeholder={t(
+													'shared/components/date-range-dropdown/date-range-dropdown___jjjj'
+												)}
 												value={tillYear}
 												onChange={async (value: string) => {
 													setYearInputLte(value);

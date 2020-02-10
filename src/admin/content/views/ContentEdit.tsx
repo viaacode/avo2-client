@@ -86,7 +86,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
-	const pageTitle = pageType === PageType.Create ? t('Content toevoegen') : t('Content aanpassen');
+	const pageTitle =
+		pageType === PageType.Create
+			? t('admin/content/views/content-edit___content-toevoegen')
+			: t('admin/content/views/content-edit___content-aanpassen');
 	// TODO: clean up admin check
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
@@ -121,7 +124,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setIsSaving(false);
 
 		if (response) {
-			toastService.success(t('Het content item is succesvol opgeslagen'), false);
+			toastService.success(
+				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen'),
+				false
+			);
 			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
 		}
 	};
@@ -134,7 +140,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!isFormValid) {
 			setIsSaving(false);
-			toastService.danger(t('Er zijn nog fouten in het metadata formulier'), false);
+			toastService.danger(
+				t('admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'),
+				false
+			);
 
 			return;
 		}
@@ -176,7 +185,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 				handleResponse(updatedContent);
 			} else {
-				toastService.danger(t('Het content id: {{id}} is ongeldig.', { id }), false);
+				toastService.danger(
+					t('admin/content/views/content-edit___het-content-id-id-is-ongeldig', { id }),
+					false
+				);
 				history.push(CONTENT_PATH.CONTENT);
 			}
 		}
@@ -187,18 +199,20 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
 
 		if (!contentForm.title) {
-			errors.title = t('Titel is verplicht');
+			errors.title = t('admin/content/views/content-edit___titel-is-verplicht');
 		}
 
 		if (!contentForm.contentType) {
-			errors.contentType = t('Content type is verplicht');
+			errors.contentType = t('admin/content/views/content-edit___content-type-is-verplicht');
 		}
 
 		if (
 			hasPublicationAndDePublicationDates &&
 			new Date(contentForm.depublishAt) < new Date(contentForm.publishAt)
 		) {
-			errors.depublishAt = t('Depublicatie moet na publicatie datum');
+			errors.depublishAt = t(
+				'admin/content/views/content-edit___depublicatie-moet-na-publicatie-datum'
+			);
 		}
 
 		setFormErrors(errors);

@@ -48,7 +48,9 @@ const validateAssignment = (
 	// Validate obligatory fields
 	OBLIGATORY_PROPERTIES.forEach((prop: AssignmentProperty) => {
 		if (!(assignmentToSave as any)[prop.name]) {
-			errors.push(i18n.t('Een {{eigenschap}} is verplicht', { eigenschap: prop.label }));
+			errors.push(
+				i18n.t('assignment/assignment___een-eigenschap-is-verplicht', { eigenschap: prop.label })
+			);
 		}
 	});
 
@@ -166,7 +168,9 @@ export const insertDuplicateAssignment = async (
 	assignment: Partial<Avo.Assignment.Assignment> | null
 ) => {
 	if (!assignment) {
-		toastService.danger(i18n.t('De opdracht is niet beschikbaar om te dupliceren'));
+		toastService.danger(
+			i18n.t('assignment/assignment___de-opdracht-is-niet-beschikbaar-om-te-dupliceren')
+		);
 		return;
 	}
 
@@ -181,7 +185,9 @@ export const insertDuplicateAssignment = async (
 		return await insertAssignment(triggerAssignmentInsert, newAssignment);
 	} catch (err) {
 		console.error(err);
-		toastService.danger(i18n.t('Het dupliceren van de opdracht is mislukt'));
+		toastService.danger(
+			i18n.t('assignment/assignment___het-dupliceren-van-de-opdracht-is-mislukt')
+		);
 	}
 };
 
@@ -189,8 +195,10 @@ function warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
 	// Validate if deadline_at is not in the past
 	if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
 		toastService.info([
-			i18n.t('De ingestelde deadline ligt in het verleden'),
-			i18n.t('De leerlingen zullen dus geen toegang hebben tot deze opdracht.'),
+			i18n.t('assignment/assignment___de-ingestelde-deadline-ligt-in-het-verleden'),
+			i18n.t(
+				'assignment/assignment___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht'
+			),
 		]);
 	}
 }

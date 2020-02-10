@@ -76,7 +76,11 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				})
 				.catch(err => {
 					console.error(err);
-					toastService.danger(t('Het ophalen van de bestaande bundels is mislukt'));
+					toastService.danger(
+						t(
+							'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bestaande-bundels-is-mislukt'
+						)
+					);
 				}),
 		[user, t]
 	);

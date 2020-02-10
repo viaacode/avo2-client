@@ -87,7 +87,9 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
-				toastService.danger(i18n.t('De huidige collectie is niet gevonden'));
+				toastService.danger(
+					i18n.t('collection/collection___de-huidige-collectie-is-niet-gevonden')
+				);
 				return null;
 			}
 			// Validate collection before save
@@ -171,7 +173,9 @@ export class CollectionService {
 				});
 
 				if (!fragmentToUpdate) {
-					toastService.info(i18n.t('Kan het te updaten fragment niet vinden (id: {{id}}', { id }));
+					toastService.info(
+						i18n.t('collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id', { id })
+					);
 					return;
 				}
 
@@ -546,7 +550,9 @@ export class CollectionService {
 
 		if (!tempFragment) {
 			toastService.info(
-				i18n.t('Fragment om toe te voegen is niet gevonden (id: {{id}})', { id: tempId })
+				i18n.t('collection/collection___fragment-om-toe-te-voegen-is-niet-gevonden-id-id', {
+					id: tempId,
+				})
 			);
 			return;
 		}

@@ -39,18 +39,21 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		state: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES(),
 		fields: {
 			type: {
-				label: i18n.t('Type'),
+				label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: BUTTON_TYPE_OPTIONS,
 				},
 			},
-			label: TEXT_FIELD(i18n.t('Knoptekst is verplicht'), {
-				label: i18n.t('Tekst'),
-				editorType: ContentBlockEditor.TextInput,
-			}),
+			label: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/buttons___knoptekst-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/buttons___tekst'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
 			icon: {
-				label: i18n.t('Icoon'),
+				label: i18n.t('admin/content-block/helpers/generators/buttons___icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
 					options: ADMIN_ICON_OPTIONS,

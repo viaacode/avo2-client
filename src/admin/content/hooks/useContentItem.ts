@@ -83,7 +83,10 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 						});
 					} else {
 						toastService.danger(
-							i18n.t('Er ging iets mis tijdens het ophalen van de content met id: {{id}}', { id }),
+							i18n.t(
+								'admin/content/hooks/use-content-item___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-met-id-id',
+								{ id }
+							),
 							false
 						);
 						history.push(CONTENT_PATH.CONTENT);

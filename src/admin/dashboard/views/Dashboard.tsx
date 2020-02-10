@@ -7,7 +7,7 @@ import i18n from '../../../shared/translations/i18n';
 import { AdminLayout } from '../../shared/layouts';
 
 const Dashboard = () => (
-	<AdminLayout pageTitle={i18n.t('Dashboard')}>
+	<AdminLayout pageTitle={i18n.t('admin/dashboard/views/dashboard___dashboard')}>
 		<Container className="u-spacer-top-l" mode="vertical" size="small">
 			<p>
 				<Trans i18nKey="admin/dashboard/views/dashboard___introductie-beheer-dashboard">

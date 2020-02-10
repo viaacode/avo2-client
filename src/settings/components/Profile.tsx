@@ -101,7 +101,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			.then(setCities)
 			.catch(err => {
 				console.error('Failed to get cities', err);
-				toastService.danger(t('Het ophalen van de steden is mislukt'));
+				toastService.danger(
+					t('settings/components/profile___het-ophalen-van-de-steden-is-mislukt')
+				);
 			});
 	}, []);
 
@@ -174,12 +176,14 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					setIsSaving(false);
 				}, 0);
 			} else {
-				toastService.success(t('Opgeslagen'));
+				toastService.success(t('settings/components/profile___opgeslagen'));
 				setIsSaving(false);
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(t('Het opslaan van de profiel information is mislukt.'));
+			toastService.danger(
+				t('settings/components/profile___het-opslaan-van-de-profiel-information-is-mislukt')
+			);
 			setIsSaving(false);
 		}
 	};
@@ -191,7 +195,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const onSelectedOrganizationChanged = (orgLabel: string) => {
 		const selectedOrg = organizations.find(org => org.label === orgLabel);
 		if (!selectedOrg) {
-			toastService.danger(t('De geselecteerde instelling kon niet worden gevonden'));
+			toastService.danger(
+				t('settings/components/profile___de-geselecteerde-instelling-kon-niet-worden-gevonden')
+			);
 			return;
 		}
 		setSelectedOrganizations(
@@ -209,14 +215,20 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		if (organizations.length === 0 && organizationsLoadingState === 'loaded') {
 			return [
 				{
-					label: t('Er zijn geen (andere) organisaties gekend in deze gemeente'),
+					label: t(
+						'settings/components/profile___er-zijn-geen-andere-organisaties-gekend-in-deze-gemeente'
+					),
 					value: '',
 					disabled: true,
 				},
 			];
 		}
 		return [
-			{ label: t('selecteer een instelling'), value: '', disabled: true },
+			{
+				label: t('settings/components/profile___selecteer-een-instelling'),
+				value: '',
+				disabled: true,
+			},
 			...organizations.map((org: Avo.EducationOrganization.Organization) => ({
 				label: org.label,
 				value: org.label,
@@ -234,7 +246,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 
 	const handleAvatarOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
 		setAvatar('');
-		toastService.info(t('Nog niet geïmplementeerd'));
+		toastService.info(t('settings/components/profile___nog-niet-geimplementeerd'));
 	};
 
 	const renderRequiredFields = (subjects: string[], educationLevels: string[]) => (

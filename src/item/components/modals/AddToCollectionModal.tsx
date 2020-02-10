@@ -88,7 +88,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				})
 				.catch(err => {
 					console.error(err);
-					toastService.danger(t('Het ophalen van de bestaande collections is mislukt'));
+					toastService.danger(
+						t(
+							'item/components/modals/add-to-collection-modal___het-ophalen-van-de-bestaande-collections-is-mislukt'
+						)
+					);
 				}),
 		[user, t]
 	);

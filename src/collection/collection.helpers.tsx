@@ -22,7 +22,7 @@ export const getValidationFeedbackForShortDescription = (
 
 	if (isError) {
 		return exceedsSize
-			? i18n.t('De korte omschrijving is te lang. {{count}}', { count } as any)
+			? i18n.t('collection/collection___de-korte-omschrijving-is-te-lang-count', { count } as any)
 			: '';
 	}
 
@@ -39,8 +39,8 @@ const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collectio
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('De collectie beschrijving is te lang')
-				: i18n.t('De bundel beschrijving is te lang'),
+				? i18n.t('collection/collection___de-collectie-beschrijving-is-te-lang')
+				: i18n.t('collection/collection___de-bundel-beschrijving-is-te-lang'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.description || collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
 	},
@@ -50,15 +50,15 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('De collectie heeft geen titel.')
-				: i18n.t('De bundel heeft geen titel.'),
+				? i18n.t('collection/collection___de-collectie-heeft-geen-titel')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-titel'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.title,
 	},
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('De collectie heeft geen beschrijving.')
-				: i18n.t('De bundel heeft geen beschrijving.'),
+				? i18n.t('collection/collection___de-collectie-heeft-geen-beschrijving')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-beschrijving'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.description,
 	},
 	{
@@ -72,30 +72,32 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('De collectie heeft geen vakken.')
-				: i18n.t('De bundel heeft geen vakken.'),
+				? i18n.t('collection/collection___de-collectie-heeft-geen-vakken')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-vakken'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.lom_classification && collection.lom_classification.length),
 	},
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('De collectie heeft geen items.')
-				: i18n.t('De bundel heeft geen collecties.'),
+				? i18n.t('collection/collection___de-collectie-heeft-geen-items')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-collecties'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.collection_fragments && collection.collection_fragments.length),
 	},
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('De video-items moeten een titel en beschrijving bevatten.')
-				: i18n.t('De collecties moeten een titel hebben.'),
+				? i18n.t('collection/collection___de-video-items-moeten-een-titel-en-beschrijving-bevatten')
+				: i18n.t('collection/collection___de-collecties-moeten-een-titel-hebben'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.collection_fragments ||
 			validateFragments(collection.collection_fragments, 'video'),
 	},
 	{
-		error: i18n.t('Uw tekst-items moeten een titel of beschrijving bevatten.'),
+		error: i18n.t(
+			'collection/collection___uw-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
+		),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => {
 			return (
 				collection.type_id === ContentTypeNumber.bundle ||
@@ -111,19 +113,19 @@ const VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: ValidationRule<
 	Avo.Collection.Fragment
 >[] = [
 	{
-		error: i18n.t('De starttijd heeft geen geldig formaat (uu:mm:ss)'),
+		error: i18n.t('collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return !isNil(collectionFragment.start_oc);
 		},
 	},
 	{
-		error: i18n.t('De eindtijd heeft geen geldig formaat (uu:mm:ss)'),
+		error: i18n.t('collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return !isNil(collectionFragment.end_oc);
 		},
 	},
 	{
-		error: i18n.t('De starttijd moet voor de eindtijd vallen'),
+		error: i18n.t('collection/collection___de-starttijd-moet-voor-de-eindtijd-vallen'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return (
 				!collectionFragment.start_oc ||

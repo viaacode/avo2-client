@@ -33,13 +33,15 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	inputValue,
 	inputCallback,
 	isOpen,
-	title = i18n.t('Vul in'),
+	title = i18n.t('shared/components/input-modal/input-modal___vul-in'),
 	inputLabel = '',
 	inputPlaceholder = '',
-	cancelLabel = i18n.t('Annuleer'),
-	confirmLabel = i18n.t('Opslaan'),
+	cancelLabel = i18n.t('shared/components/input-modal/input-modal___annuleer'),
+	confirmLabel = i18n.t('shared/components/input-modal/input-modal___opslaan'),
 	onClose = () => {},
-	emptyMessage = i18n.t('Gelieve een waarde in te vullen.'),
+	emptyMessage = i18n.t(
+		'shared/components/input-modal/input-modal___gelieve-een-waarde-in-te-vullen'
+	),
 }) => {
 	const [input, setInput] = useState<string>(inputValue || '');
 

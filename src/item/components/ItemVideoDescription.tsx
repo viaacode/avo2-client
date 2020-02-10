@@ -142,7 +142,11 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService.danger(t('Het ophalen van de mediaplayer ticket is mislukt'));
+				toastService.danger(
+					t(
+						'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
+					)
+				);
 			});
 
 	const renderMedia = () => (

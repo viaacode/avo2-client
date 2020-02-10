@@ -62,7 +62,9 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 	const getActiveTabComponent = (): ReactElement | null => {
 		let tab = tabContents[activeTab];
 		if (!tab) {
-			toastService.danger(t('Het instellingen tab {{activeTab}} bestaat niet', { activeTab }));
+			toastService.danger(
+				t('settings/views/settings___het-instellingen-tab-active-tab-bestaat-niet', { activeTab })
+			);
 			tab = tabContents[PROFILE_ID];
 		}
 		return tab.component;

@@ -217,7 +217,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 						case NOT_YET_AVAILABLE:
 							errorObj = {
-								message: t('De opdracht is nog niet beschikbaar'),
+								message: t(
+									'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
+								),
 								icon: 'clock' as IconName,
 							};
 							break;
@@ -294,7 +296,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						toastService.success(
 							isAssignmentResponseArchived()
 								? t(`De opdracht is gedearchiveerd`)
-								: t('De opdracht is gearchiveerd')
+								: t('assignment/views/assignment-detail___de-opdracht-is-gearchiveerd')
 						);
 
 						// Update local cached assignment
@@ -467,8 +469,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 																icon: 'archive',
 																id: 'archive',
 																label: isAssignmentResponseArchived()
-																	? t('Dearchiveer')
-																	: t('Archiveer'),
+																	? t('assignment/views/assignment-detail___dearchiveer')
+																	: t('assignment/views/assignment-detail___archiveer'),
 															},
 														]}
 														onClick={handleExtraOptionsClick as any}
@@ -509,7 +511,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			notFoundError={t('De opdracht werdt niet gevonden')}
+			notFoundError={t('assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden')}
 			dataObject={assignment}
 			render={renderAssignment}
 		/>

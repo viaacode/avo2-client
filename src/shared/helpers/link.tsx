@@ -19,7 +19,9 @@ const navigationConsoleError = (route: string, missingParams: string[] = []) => 
 	const paramsString = missingParams.join(', ');
 	console.error(`The following params were not included: [${paramsString}] for route ${route}`);
 };
-const navigationToastError = i18n.t('De navigatie is afgebroken wegens foutieve parameters');
+const navigationToastError = i18n.t(
+	'shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters'
+);
 
 export const buildLink = (route: string, params: RouteParams = {}, search?: string): string => {
 	let builtLink = route;

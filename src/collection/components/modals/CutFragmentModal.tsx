@@ -159,7 +159,11 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to parse times on enter key', err));
-			toastService.danger(t('De ingevulde tijd heeft geen geldig formaat'));
+			toastService.danger(
+				t(
+					'collection/components/modals/cut-fragment-modal___de-ingevulde-tijd-heeft-geen-geldig-formaat'
+				)
+			);
 		}
 	};
 
