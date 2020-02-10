@@ -72,7 +72,6 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 
 	const [t] = useTranslation();
 
-	const [itemId] = useState<string>(match.params.id);
 	const [item, setItem] = useState<Avo.Item.Item | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	// TODO: use setTime when adding logic for enabling timestamps in the URL
@@ -85,7 +84,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 			const hasPermission: boolean = await PermissionService.hasPermissions(
 				[
 					PermissionNames.VIEW_ITEMS,
-					{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: itemId },
+					{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: match.params.id },
 				],
 				user
 			);
@@ -100,7 +99,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 			const response = await dataService.query({
 				query: GET_ITEM_BY_ID,
 				variables: {
-					id: itemId,
+					id: match.params.id,
 				},
 			});
 
@@ -116,25 +115,25 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 
 			trackEvents(
 				{
-					object: itemId,
+					object: match.params.id,
 					object_type: 'avo_item_pid',
-					message: `Gebruiker ${getProfileName(
-						user
-					)} heeft de pagina van fragment ${itemId} bezocht`,
+					message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
+						match.params.id
+					} bezocht`,
 					action: 'view',
 				},
 				user
 			);
 
 			if (isNull(relatedItems)) {
-				retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
+				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
 			}
 
 			setItem(itemObj);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to check permissions or get item from graphql', err, {
-					itemId,
+					itemId: match.params.id,
 					user,
 				})
 			);
@@ -158,7 +157,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	 */
 	useEffect(() => {
 		checkPermissionsAndGetItem();
-	}, [itemId, setItem]);
+	}, [match.params.id, setItem, checkPermissionsAndGetItem]);
 
 	/**
 	 * Update video and query param time when time changes in the state
@@ -166,7 +165,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	useEffect(() => {
 		const setSeekerTimeInQueryParams = (): void => {
 			history.push({
-				pathname: `/item/${itemId}`,
+				pathname: `/item/${match.params.id}`,
 				search: time ? `?${queryString.stringify({ time })}` : '',
 			});
 		};
@@ -181,7 +180,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 			setSeekerTimeInQueryParams();
 			setSeekerTime();
 		}
-	}, [time, history, videoRef, itemId, relatedItems, user]);
+	}, [time, history, videoRef, match.params.id, relatedItems, user]);
 
 	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
 		getRelatedItems(currentItemId, 'items', limit)
@@ -520,14 +519,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 						</Grid>
 					</Container>
 				</Container>
-				{typeof itemId !== undefined && (
+				{typeof match.params.id !== undefined && (
 					<AddToCollectionModal
 						history={history}
 						location={location}
 						match={match}
 						user={user}
 						itemMetaData={item}
-						externalId={itemId as string}
+						externalId={match.params.id as string}
 						isOpen={isOpenAddToCollectionModal}
 						onClose={() => setIsOpenAddToCollectionModal(false)}
 					/>
