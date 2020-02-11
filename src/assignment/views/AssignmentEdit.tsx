@@ -629,7 +629,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					)}
 				</DropdownButton>
 				<DropdownContent>
-					<Spacer>
+					<Spacer margin="medium">
 						<Form>
 							<Button
 								type="borderless"

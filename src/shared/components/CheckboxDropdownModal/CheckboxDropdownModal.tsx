@@ -148,7 +148,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
 				</DropdownButton>
 				<DropdownContent>
-					<Spacer>
+					<Spacer margin="medium">
 						<Form>
 							<FormGroup label={label} labelFor={id}>
 								<CheckboxGroup>
@@ -212,7 +212,7 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 						/>
 					</ModalHeaderRight>
 					<ModalBody>
-						<Spacer>
+						<Spacer margin="medium">
 							<Form>
 								<Grid>
 									<Column size="2-4">{renderCheckboxGroup(firstColumnOptions)}</Column>

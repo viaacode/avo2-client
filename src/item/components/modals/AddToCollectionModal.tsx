@@ -343,7 +343,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			>
 				<ModalBody>
 					<div className="c-modal__body-add-fragment">
-						<Spacer>
+						<Spacer margin="medium">
 							<Form>
 								<Grid>
 									<Column size="2-7">

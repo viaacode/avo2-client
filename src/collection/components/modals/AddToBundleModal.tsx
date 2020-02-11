@@ -290,7 +290,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		>
 			<ModalBody>
 				<div className="c-modal__body-add-collection">
-					<Spacer>
+					<Spacer margin="medium">
 						<Form>
 							<FormGroup>
 								<Spacer margin="bottom">

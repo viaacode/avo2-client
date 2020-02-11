@@ -116,7 +116,7 @@ const Home: FunctionComponent<HomeProps> = ({
 		<div className="m-home-page">
 			<Container mode="vertical" background="alt">
 				<Container mode="horizontal" size="medium">
-					<Spacer>
+					<Spacer margin="medium">
 						<BlockHeading type="h2" className="u-text-center">
 							<Trans i18nKey="home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken">
 								Vind alles wat je nodig hebt om je lessen te verrijken.

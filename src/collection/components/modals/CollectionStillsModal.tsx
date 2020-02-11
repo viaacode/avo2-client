@@ -76,7 +76,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 			scrollable
 		>
 			<ModalBody>
-				<Spacer>
+				<Spacer margin="medium">
 					<Form>
 						{!videoStills ? (
 							<Flex center orientation="horizontal">
