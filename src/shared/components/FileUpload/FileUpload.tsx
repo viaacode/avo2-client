@@ -75,7 +75,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				for (let i = 0; i < (allowMulti ? files.length : 1); i++) {
 					uploadedUrls.push(await uploadFile(files[i], assetType, ownerId));
 				}
-				onChange([...urls, ...uploadedUrls]);
+				onChange(allowMulti ? [...urls, ...uploadedUrls] : uploadedUrls);
 			}
 		} catch (err) {
 			console.error(
@@ -138,25 +138,20 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 		return urls.map(url => {
 			if (isPhoto(url)) {
 				return (
-					<Spacer margin="bottom-small">
-						<div
-							className="a-upload-image-preview"
-							style={{ backgroundImage: `url(${url})` }}
-							key={url}
-						>
+					<Spacer margin="bottom-small" key={url}>
+						<div className="a-upload-image-preview" style={{ backgroundImage: `url(${url})` }}>
 							{renderDeleteButton(url)}
 						</div>
 					</Spacer>
 				);
 			} else {
 				return (
-					<Spacer margin="bottom-small">
+					<Spacer margin="bottom-small" key={url}>
 						<Blankslate
 							title={url.split('/').pop() || ''}
 							body=""
 							icon="file"
 							className="a-upload-file-preview"
-							key={url}
 						>
 							{renderDeleteButton(url)}
 						</Blankslate>

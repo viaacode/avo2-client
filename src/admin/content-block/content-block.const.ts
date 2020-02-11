@@ -13,7 +13,7 @@ import {
 	ContentBlockBackgroundColor,
 	ContentBlockType,
 	HeadingLevelOptions,
-	ImageGridFillOptions,
+	ImageGridFillOptions, ImageGridTextAlignOptions,
 	ImageWidthOptions,
 } from './content-block.types';
 import {
@@ -83,7 +83,7 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		value: ContentBlockType.Image,
 	},
 	{
-		label: i18n.t('Afbeeldingslijst'),
+		label: i18n.t('Afbeelding grid'),
 		value: ContentBlockType.ImageGrid,
 	},
 ];
@@ -147,4 +147,11 @@ export const IMAGE_WIDTH_OPTIONS: SelectOption<ImageWidthOptions>[] = [
 export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOptions>[] = [
 	{ label: i18n.t('Opvullen'), value: 'cover' },
 	{ label: i18n.t('Volledig zichtbaar'), value: 'contain' },
+	{ label: i18n.t('Oorspronkelijke grootte'), value: 'auto' },
+];
+
+export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<ImageGridTextAlignOptions>[] = [
+	{ label: i18n.t('Links'), value: 'left' },
+	{ label: i18n.t('Center'), value: 'center' },
+	{ label: i18n.t('Rechts'), value: 'right' },
 ];

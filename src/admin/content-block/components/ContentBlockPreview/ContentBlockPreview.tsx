@@ -5,10 +5,10 @@ import {
 	BlockAccordions,
 	BlockButtons,
 	BlockCTAs,
+	BlockGrid,
 	BlockHeading,
 	BlockIFrame,
 	BlockImage,
-	BlockImageGrid,
 	BlockIntro,
 	BlockRichText,
 	Container,
@@ -44,7 +44,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Accordions]: BlockAccordions,
 	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.ImageGrid]: BlockImageGrid,
+	[ContentBlockType.ImageGrid]: BlockGrid,
 });
 
 const REPEATABLE_CONTENT_BLOCKS = [
@@ -53,6 +53,7 @@ const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.CTAs,
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
+	ContentBlockType.ImageGrid,
 ];
 
 export const BLOCK_STATE_INHERITING_PROPS = ['align'];

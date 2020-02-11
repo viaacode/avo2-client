@@ -1,6 +1,7 @@
-import { IconName, MultiRange } from '@viaa/avo2-components';
+import { ButtonAction, IconName } from '@viaa/avo2-components';
 // TODO: Import from components lib when exported there.
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
+import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
 
 export type ContentBlockStateType = 'components' | 'block';
 
@@ -17,7 +18,9 @@ export type ButtonTypeOptions = 'primary' | 'secondary';
 
 export type ImageWidthOptions = 'full-width' | '500px' | '400px';
 
-export type ImageGridFillOptions = 'cover' | 'contain';
+export type ImageGridFillOptions = 'cover' | 'contain' | 'auto';
+
+export type ImageGridTextAlignOptions = 'left' | 'center' | 'right';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -62,7 +65,7 @@ export type ContentBlockComponentState =
 	| IFrameBlockComponentState
 	| AccordionsBlockComponentState
 	| ImageBlockComponentState
-	| ImageGridBlockComponentState;
+	| ImageGridBlockComponentStateFields;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -134,11 +137,22 @@ export interface ImageBlockComponentState {
 	width: ImageWidthOptions;
 }
 
-export interface ImageGridBlockComponentState {
-	images: string[];
-	width?: number;
-	height?: number;
+export interface ImageGridBlockComponentStateFields {
+	source?: string;
+	title?: string;
+	text?: string;
+	action?: ButtonAction;
+}
+
+export interface ImageGridBlockComponentStateBlockFields extends DefaultContentBlockState {
+	elements: GridItem[];
+	imageWidth?: number;
+	imageHeight?: number;
+	itemWidth?: number;
 	fill?: ImageGridFillOptions;
+	textAlign?: ImageGridTextAlignOptions;
+	className?: string;
+	navigate?: (action: ButtonAction) => void;
 }
 
 export interface ButtonsBlockComponentState {

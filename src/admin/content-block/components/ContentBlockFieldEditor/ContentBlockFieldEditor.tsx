@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
@@ -72,7 +72,7 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 			const value = (state as any)[fieldKey];
 			editorProps = {
 				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
-				urls: Array.isArray(value) ? value : [value],
+				urls: Array.isArray(value) ? value : isNil(value) ? [] : [value],
 			};
 			break;
 		default:
