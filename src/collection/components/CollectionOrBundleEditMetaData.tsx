@@ -15,6 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DataQueryComponent, FileUpload } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 
@@ -28,7 +29,10 @@ import { CollectionStillsModal } from '../components';
 interface CollectionOrBundleEditMetaDataProps {
 	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
-	updateCollectionProperty: (value: string | string[], fieldName: string) => void;
+	updateCollectionProperty: (
+		value: string | string[] | null,
+		fieldName: keyof Avo.Collection.Collection
+	) => void;
 }
 
 const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMetaDataProps> = ({
@@ -73,7 +77,10 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 			});
 	}, [setEducationLevels, setSubjects]);
 
-	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
+	const updateCollectionMultiProperty = (
+		selectedTagOptions: TagInfo[],
+		fieldName: keyof Avo.Collection.Collection
+	) => {
 		updateCollectionProperty(
 			(selectedTagOptions || []).map(tag => tag.value as string),
 			fieldName
@@ -165,13 +172,24 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												)}
 												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
-										) : null}
-										{/* TODO add upload cover image for bundle */}
+										) : (
+											<FileUpload
+												label={t('Upload een cover afbeelding')}
+												url={collection.thumbnail_path}
+												assetType="BUNDLE_COVER"
+												ownerId={collection.id}
+												onChange={(url: string | null) =>
+													updateCollectionProperty(url, 'thumbnail_path')
+												}
+											/>
+										)}
 									</FormGroup>
 									{/* TODO: DISABLED FEATURE
-											<FormGroup label={t('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
-												<Button type="secondary" icon="add" label={t('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
-											</FormGroup>
+											{ isCollection &&
+												<FormGroup label={t('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
+													<Button type="secondary" icon="add" label={t('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
+												</FormGroup>
+											}
 										*/}
 								</Column>
 							</Grid>

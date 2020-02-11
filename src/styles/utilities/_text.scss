@@ -53,3 +53,9 @@ $u-text-danger-color: $color-error !default;
 .u-text-uc {
 	text-transform: uppercase;
 }
+
+.u-truncate {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
