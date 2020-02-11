@@ -1,4 +1,4 @@
-import { IconName } from '@viaa/avo2-components';
+import { IconName, MultiRange } from '@viaa/avo2-components';
 // TODO: Import from components lib when exported there.
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 
@@ -16,6 +16,8 @@ export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 export type ButtonTypeOptions = 'primary' | 'secondary';
 
 export type ImageWidthOptions = 'full-width' | '500px' | '400px';
+
+export type ImageGridFillOptions = 'cover' | 'contain';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -59,7 +61,8 @@ export type ContentBlockComponentState =
 	| CTAsBlockComponentState
 	| IFrameBlockComponentState
 	| AccordionsBlockComponentState
-	| ImageBlockComponentState;
+	| ImageBlockComponentState
+	| ImageGridBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -79,6 +82,7 @@ export enum ContentBlockEditor {
 	IconPicker = 'IconPicker',
 	ContentPicker = 'ContentPicker',
 	FileUpload = 'FileUpload',
+	MultiRange = 'MultiRange',
 }
 
 // If only one block exists then the errors are a string[]
@@ -110,6 +114,7 @@ export enum ContentBlockType {
 	IFrame = 'IFRAME',
 	Accordions = 'ACCORDIONS',
 	Image = 'IMAGE',
+	ImageGrid = 'IMAGE_GRID',
 }
 
 export interface HeadingBlockComponentState {
@@ -127,6 +132,13 @@ export interface ImageBlockComponentState {
 	text: string;
 	source: string;
 	width: ImageWidthOptions;
+}
+
+export interface ImageGridBlockComponentState {
+	images: string[];
+	width?: number;
+	height?: number;
+	fill?: ImageGridFillOptions;
 }
 
 export interface ButtonsBlockComponentState {

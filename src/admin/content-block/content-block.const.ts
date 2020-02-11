@@ -1,4 +1,4 @@
-import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
+import { MultiRange, Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
 
 import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
@@ -13,6 +13,7 @@ import {
 	ContentBlockBackgroundColor,
 	ContentBlockType,
 	HeadingLevelOptions,
+	ImageGridFillOptions,
 	ImageWidthOptions,
 } from './content-block.types';
 import {
@@ -35,6 +36,10 @@ import {
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
+import {
+	IMAGE_GRID_BLOCK_CONFIG,
+	INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATE,
+} from './helpers/generators/image-grid';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -77,6 +82,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('Afbeelding'),
 		value: ContentBlockType.Image,
 	},
+	{
+		label: i18n.t('Afbeeldingslijst'),
+		value: ContentBlockType.ImageGrid,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -88,6 +97,7 @@ export const EDITOR_TYPES_MAP = {
 	IconPicker,
 	ContentPicker,
 	FileUpload,
+	MultiRange,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -100,6 +110,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
 	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
+	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
@@ -112,6 +123,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATE,
 };
 
 // Options
@@ -130,4 +142,9 @@ export const IMAGE_WIDTH_OPTIONS: SelectOption<ImageWidthOptions>[] = [
 	{ label: i18n.t('paginabreedte'), value: 'full-width' },
 	{ label: i18n.t('groot'), value: '500px' },
 	{ label: i18n.t('middelgroot'), value: '400px' },
+];
+
+export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOptions>[] = [
+	{ label: i18n.t('Opvullen'), value: 'cover' },
+	{ label: i18n.t('Volledig zichtbaar'), value: 'contain' },
 ];

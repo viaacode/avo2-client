@@ -6,6 +6,18 @@
 		background-repeat: no-repeat;
 		background-position: center;
 		background-size: contain;
+		background-color: #ddd;
+	}
+
+	.a-upload-image-preview,
+	.a-upload-file-preview {
+		position: relative;
+
+		.a-delete-button {
+			position: absolute;
+			bottom: 10px;
+			right: 10px;
+		}
 	}
 
 	.c-file-upload-button-and-input {

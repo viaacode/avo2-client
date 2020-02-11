@@ -102,7 +102,11 @@ const setComponentState = (
 			...configs[index],
 			components: {
 				...configs[index].components,
-				state: componentState,
+				// Different blocks can have the same property with different types, typescript doesn't like this
+				// Example:
+				// ImageBlock.width => multi option
+				// ImageGridBlock.width => number
+				state: componentState as any,
 				fields: configs[index].components.fields,
 			},
 		};
