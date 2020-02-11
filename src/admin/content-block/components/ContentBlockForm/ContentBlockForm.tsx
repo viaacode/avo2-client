@@ -75,7 +75,6 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		};
 		const stateUpdate = isArray(components.state) ? [updateObject] : updateObject;
 
-		console.log('handleChange', stateUpdate);
 		handleValidation(key, formGroupType, parsedValue);
 		onChange(formGroupType, stateUpdate, stateIndex);
 	};

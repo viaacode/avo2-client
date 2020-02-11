@@ -56,7 +56,6 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 		case ContentBlockEditor.ContentPicker:
 			editorProps = {
 				onSelect: (picked: ContentPickerType) => {
-					console.log('picked', picked);
 					handleChange(type, fieldKey, { value: picked }, stateIndex);
 				},
 			};

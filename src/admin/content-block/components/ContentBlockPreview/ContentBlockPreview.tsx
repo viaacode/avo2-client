@@ -9,12 +9,14 @@ import {
 	BlockIFrame,
 	BlockIntro,
 	BlockRichText,
-	ButtonAction,
 	Container,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../../authentication/components/SecuredRoute';
+import { BUNDLE_PATH } from '../../../../bundle/bundle.const';
+import { COLLECTION_PATH } from '../../../../collection/collection.const';
+import { ITEM_PATH } from '../../../../item/item.const';
 import { navigate } from '../../../../shared/helpers';
 
 import {
@@ -59,7 +61,6 @@ export const BLOCK_STATE_INHERITING_PROPS = ['align'];
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	history,
-	match,
 	componentState,
 	contentWidth = 'REGULAR',
 	blockState,
@@ -78,15 +79,35 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	if (blockState.blockType === ContentBlockType.CTAs) {
 		stateToSpread.elements.forEach((innerState: any) => {
 			innerState.navigate = () => {
-				switch (innerState.buttonAction.type) {
-					case 'EXTERNAL_LINK':
-						history.push(innerState.buttonAction.value as string);
-						break;
-					default:
-						break;
+				if (innerState.buttonAction) {
+					switch (innerState.buttonAction.type) {
+						case 'INTERNAL_LINK':
+						case 'CONTENT_PAGE':
+							history.push(innerState.buttonAction.value as string);
+							break;
+						case 'COLLECTION':
+							navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, {
+								id: innerState.buttonAction.value as string,
+							});
+							break;
+						case 'ITEM':
+							// TODO: Fix output
+							navigate(history, ITEM_PATH.ITEM, {
+								id: innerState.buttonAction.value,
+							});
+							break;
+						case 'BUNDLE':
+							navigate(history, BUNDLE_PATH.BUNDLE_DETAIL, {
+								id: innerState.buttonAction.value,
+							});
+							break;
+						case 'EXTERNAL_LINK':
+							window.location.href = innerState.buttonAction.value as string;
+							break;
+						default:
+							break;
+					}
 				}
-				// console.log(buildLink(CONTENT_PATH.CONTENT_DETAIL, { id })
-				console.log('preview: buttonActions', innerState.buttonAction);
 			};
 		});
 	}
