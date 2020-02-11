@@ -79,71 +79,6 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 
-	const checkPermissionsAndGetItem = async () => {
-		try {
-			const hasPermission: boolean = await PermissionService.hasPermissions(
-				[
-					PermissionNames.VIEW_ITEMS,
-					{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: match.params.id },
-				],
-				user
-			);
-			if (!hasPermission) {
-				setLoadingInfo({
-					state: 'error',
-					message: t('item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'),
-					icon: 'lock',
-				});
-				return;
-			}
-			const response = await dataService.query({
-				query: GET_ITEM_BY_ID,
-				variables: {
-					id: match.params.id,
-				},
-			});
-
-			const itemObj = get(response, 'data.app_item_meta[0]');
-			if (!itemObj) {
-				setLoadingInfo({
-					state: 'error',
-					message: t('item/views/item___dit-item-werd-niet-gevonden'),
-					icon: 'search',
-				});
-				return;
-			}
-
-			trackEvents(
-				{
-					object: match.params.id,
-					object_type: 'avo_item_pid',
-					message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
-						match.params.id
-					} bezocht`,
-					action: 'view',
-				},
-				user
-			);
-
-			if (isNull(relatedItems)) {
-				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
-			}
-
-			setItem(itemObj);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to check permissions or get item from graphql', err, {
-					itemId: match.params.id,
-					user,
-				})
-			);
-			setLoadingInfo({
-				state: 'error',
-				message: t('Het ophalen van het item is mislukt'),
-			});
-		}
-	};
-
 	useEffect(() => {
 		if (item) {
 			setLoadingInfo({
@@ -156,8 +91,73 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	 * Load item from database
 	 */
 	useEffect(() => {
+		const checkPermissionsAndGetItem = async () => {
+			try {
+				const hasPermission: boolean = await PermissionService.hasPermissions(
+					[
+						PermissionNames.VIEW_ITEMS,
+						{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: match.params.id },
+					],
+					user
+				);
+				if (!hasPermission) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'),
+						icon: 'lock',
+					});
+					return;
+				}
+				const response = await dataService.query({
+					query: GET_ITEM_BY_ID,
+					variables: {
+						id: match.params.id,
+					},
+				});
+
+				const itemObj = get(response, 'data.app_item_meta[0]');
+				if (!itemObj) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('item/views/item___dit-item-werd-niet-gevonden'),
+						icon: 'search',
+					});
+					return;
+				}
+
+				trackEvents(
+					{
+						object: match.params.id,
+						object_type: 'avo_item_pid',
+						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
+							match.params.id
+						} bezocht`,
+						action: 'view',
+					},
+					user
+				);
+
+				if (isNull(relatedItems)) {
+					retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
+				}
+
+				setItem(itemObj);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to check permissions or get item from graphql', err, {
+						itemId: match.params.id,
+						user,
+					})
+				);
+				setLoadingInfo({
+					state: 'error',
+					message: t('Het ophalen van het item is mislukt'),
+				});
+			}
+		};
+
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem, checkPermissionsAndGetItem]);
+	}, [match.params.id, setItem]);
 
 	/**
 	 * Update video and query param time when time changes in the state
