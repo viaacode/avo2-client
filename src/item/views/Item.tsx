@@ -158,8 +158,8 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to check permissions or get item from graphql', err, {
-						itemId: match.params.id,
 						user,
+						itemId: match.params.id,
 					})
 				);
 				setLoadingInfo({
