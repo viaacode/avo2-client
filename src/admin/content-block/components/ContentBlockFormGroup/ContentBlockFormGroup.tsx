@@ -1,7 +1,6 @@
-import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import { FormGroup } from '@viaa/avo2-components';
+import { FormGroup, Spacer } from '@viaa/avo2-components';
 
 import { createKey } from '../../../shared/helpers/create-key';
 import {
@@ -13,7 +12,6 @@ import {
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../content-block.types';
-import { createFieldEditorLabel } from '../../helpers/field-editor';
 
 import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 
@@ -43,34 +41,32 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 	handleChange,
 	formErrors,
 }) => (
-	<>
+	<div className="c-content-block-form-group">
 		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
 			const formGroupOptions = {
-				key: createKey('e', blockIndex, formGroupIndex, stateIndex),
-				label: createFieldEditorLabel(
-					get(config, 'components.name'),
-					formGroup.fields[key].label,
-					stateIndex
-				),
+				key: createKey('form-group', blockIndex, formGroupIndex, stateIndex),
+				label: formGroup.fields[key].label,
 			};
 
 			return (
-				<FormGroup
-					{...formGroupOptions}
-					error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
-				>
-					<ContentBlockFieldEditor
-						block={{ config, index: blockIndex }}
-						fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
-						field={formGroup.fields[key]}
-						state={formGroupState}
-						type={formGroupType}
-						formGroupIndex={formGroupIndex}
-						stateIndex={stateIndex}
-						handleChange={handleChange}
-					/>
-				</FormGroup>
+				<Spacer margin="bottom">
+					<FormGroup
+						{...formGroupOptions}
+						error={formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState]}
+					>
+						<ContentBlockFieldEditor
+							block={{ config, index: blockIndex }}
+							fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
+							field={formGroup.fields[key]}
+							state={formGroupState}
+							type={formGroupType}
+							formGroupIndex={formGroupIndex}
+							stateIndex={stateIndex}
+							handleChange={handleChange}
+						/>
+					</FormGroup>
+				</Spacer>
 			);
 		})}
-	</>
+	</div>
 );

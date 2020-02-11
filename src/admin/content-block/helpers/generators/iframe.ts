@@ -1,5 +1,4 @@
 import i18n from '../../../../shared/translations/i18n';
-
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -8,6 +7,7 @@ import {
 	DefaultContentBlockState,
 	IFrameBlockComponentState,
 } from '../../content-block.types';
+
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 export const INITIAL_IFRAME_BLOCK_COMPONENT_STATE = (): IFrameBlockComponentState => ({

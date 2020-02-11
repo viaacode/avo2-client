@@ -3,7 +3,10 @@ import { compact, isNil } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { stripHtml } from '../shared/helpers/formatters/strip-html';
+import i18n from '../shared/translations/i18n';
+
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
+import { ContentTypeNumber } from './collection.types';
 
 export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
 	return fragmentInfo.external_id && fragmentInfo.external_id !== '-1';
@@ -13,12 +16,14 @@ export const getValidationFeedbackForShortDescription = (
 	description: string | null,
 	isError?: boolean | null
 ): string => {
-	const count = `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
+	const count: string = `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
 
 	const exceedsSize: boolean = (description || '').length > MAX_SEARCH_DESCRIPTION_LENGTH;
 
 	if (isError) {
-		return exceedsSize ? `De korte omschrijving is te lang. ${count}` : '';
+		return exceedsSize
+			? i18n.t('collection/collection___de-korte-omschrijving-is-te-lang-count', { count } as any)
+			: '';
 	}
 
 	return exceedsSize ? '' : `${(description || '').length}/${MAX_SEARCH_DESCRIPTION_LENGTH}`;
@@ -32,7 +37,10 @@ type ValidationRule<T> = {
 
 const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collection>>[] = [
 	{
-		error: 'De collectie beschrijving is te lang',
+		error: collection =>
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t('collection/collection___de-collectie-beschrijving-is-te-lang')
+				: i18n.t('collection/collection___de-bundel-beschrijving-is-te-lang'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.description || collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
 	},
@@ -40,39 +48,63 @@ const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collectio
 
 const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collection>>[] = [
 	{
-		error: 'De collectie heeft geen titel.',
+		error: collection =>
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t('collection/collection___de-collectie-heeft-geen-titel')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-titel'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.title,
 	},
 	{
-		error: 'De collectie heeft geen beschrijving.',
+		error: collection =>
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t('collection/collection___de-collectie-heeft-geen-beschrijving')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-beschrijving'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.description,
 	},
 	{
-		error: "De collectie heeft geen onderwijsniveau's.",
+		error: collection =>
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t("De collectie heeft geen onderwijsniveau's.")
+				: i18n.t("De bundel heeft geen onderwijsniveau's."),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.lom_context && collection.lom_context.length),
 	},
 	{
-		error: 'De collectie heeft geen vakken.',
+		error: collection =>
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t('collection/collection___de-collectie-heeft-geen-vakken')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-vakken'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.lom_classification && collection.lom_classification.length),
 	},
 	{
-		error: 'De collectie heeft geen items.',
+		error: collection =>
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t('collection/collection___de-collectie-heeft-geen-items')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-collecties'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.collection_fragments && collection.collection_fragments.length),
 	},
 	{
-		error: 'De video-items moeten een titel en beschrijving bevatten.',
+		error: collection =>
+			collection.type_id === ContentTypeNumber.collection
+				? i18n.t('collection/collection___de-video-items-moeten-een-titel-en-beschrijving-bevatten')
+				: i18n.t('collection/collection___de-collecties-moeten-een-titel-hebben'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.collection_fragments ||
 			validateFragments(collection.collection_fragments, 'video'),
 	},
 	{
-		error: 'Uw tekst-items moeten een titel of beschrijving bevatten.',
-		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!collection.collection_fragments ||
-			validateFragments(collection.collection_fragments, 'text'),
+		error: i18n.t(
+			'collection/collection___uw-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
+		),
+		isValid: (collection: Partial<Avo.Collection.Collection>) => {
+			return (
+				collection.type_id === ContentTypeNumber.bundle ||
+				!collection.collection_fragments ||
+				validateFragments(collection.collection_fragments, 'text')
+			);
+		},
 	},
 	// TODO: Add check if owner or write-rights.
 ];
@@ -81,19 +113,19 @@ const VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: ValidationRule<
 	Avo.Collection.Fragment
 >[] = [
 	{
-		error: 'De starttijd heeft geen geldig formaat (uu:mm:ss)',
+		error: i18n.t('collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return !isNil(collectionFragment.start_oc);
 		},
 	},
 	{
-		error: 'De eindtijd heeft geen geldig formaat (uu:mm:ss)',
+		error: i18n.t('collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return !isNil(collectionFragment.end_oc);
 		},
 	},
 	{
-		error: 'De starttijd moet voor de eindtijd vallen',
+		error: i18n.t('collection/collection___de-starttijd-moet-voor-de-eindtijd-vallen'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
 			return (
 				!collectionFragment.start_oc ||
@@ -158,9 +190,9 @@ export const getValidationErrorsForPublish = (
 	collection: Partial<Avo.Collection.Collection>
 ): string[] => {
 	return compact(
-		[...VALIDATION_RULES_FOR_SAVE, ...VALIDATION_RULES_FOR_PUBLISH].map(rule =>
-			rule.isValid(collection) ? null : getError(rule, collection)
-		)
+		[...VALIDATION_RULES_FOR_SAVE, ...VALIDATION_RULES_FOR_PUBLISH].map(rule => {
+			return rule.isValid(collection) ? null : getError(rule, collection);
+		})
 	);
 };
 

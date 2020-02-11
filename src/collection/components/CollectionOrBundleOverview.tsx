@@ -110,7 +110,15 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		setIdToDelete(null);
 	};
 
-	const onClickCreate = () => history.push(SEARCH_PATH.SEARCH);
+	// TODO add bundles once available as a filter in elasticsearch
+	const onClickCreate = () =>
+		history.push(
+			buildLink(
+				SEARCH_PATH.SEARCH,
+				{},
+				isCollection ? 'filters={"type":["video","audio"]}' : 'filters={"type":["collectie"]}'
+			)
+		);
 
 	// TODO: Make shared function because also used in assignments
 	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {

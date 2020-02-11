@@ -2,15 +2,21 @@ import { TableColumn, TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
+import { PickerTypeOption } from '../shared/types';
 
+import {
+	fetchBundles,
+	fetchCollections,
+	fetchContentPages,
+	fetchInternalLinks,
+	fetchItems,
+} from '../shared/helpers';
 import {
 	ContentEditFormState,
 	ContentFilterFormState,
 	ContentPageType,
 	ContentWidth,
-	PickerTypeOption,
 } from './content.types';
-import { fetchCollections, fetchContentPages, fetchInternalLinks, fetchItems } from './helpers';
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
@@ -107,6 +113,12 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 		label: i18n.t('admin/content/content___items'),
 		disabled: false,
 		fetch: fetchItems,
+	},
+	{
+		value: 'BUNDLE',
+		label: i18n.t('admin/content/content___bundels'),
+		disabled: false,
+		fetch: fetchBundles,
 	},
 ];
 

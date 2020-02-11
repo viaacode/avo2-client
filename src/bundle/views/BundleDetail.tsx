@@ -76,7 +76,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedBundles, setRelatedBundles] = useState<Avo.Search.ResultItem[] | null>(null);
+	const [relatedBundles /*, setRelatedBundles */] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewBundles: boolean;
@@ -449,7 +449,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 								<p className="c-body-1">{description}</p>
 								<Flex spaced="regular" wrap>
 									<FlexItem className="c-avatar-and-text">
-										<Avatar image={organisationLogo} title={organisationName} />
+										<Avatar image={organisationLogo} title={organisationName} dark />
 									</FlexItem>
 									<TagList tags={tags} />
 								</Flex>

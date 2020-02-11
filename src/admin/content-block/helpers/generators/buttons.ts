@@ -1,5 +1,8 @@
 import i18n from '../../../../shared/translations/i18n';
 
+import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { BUTTON_TYPE_OPTIONS } from '../../content-block.const';
+
 import {
 	ButtonsBlockComponentState,
 	ContentBlockBackgroundColor,
@@ -8,6 +11,7 @@ import {
 	ContentBlockType,
 	DefaultContentBlockState,
 } from '../../content-block.types';
+
 import {
 	ALIGN_FIELD,
 	CONTENT_BLOCK_FIELD_DEFAULTS,
@@ -18,6 +22,7 @@ import {
 export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentState[] => [
 	{
 		label: '',
+		type: 'primary',
 	},
 ];
 
@@ -33,12 +38,27 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		},
 		state: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES(),
 		fields: {
+			type: {
+				label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: BUTTON_TYPE_OPTIONS,
+				},
+			},
 			label: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/buttons___knoptekst-is-verplicht'),
 				{
+					label: i18n.t('admin/content-block/helpers/generators/buttons___tekst'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
+			icon: {
+				label: i18n.t('admin/content-block/helpers/generators/buttons___icoon'),
+				editorType: ContentBlockEditor.IconPicker,
+				editorProps: {
+					options: ADMIN_ICON_OPTIONS,
+				},
+			},
 		},
 	},
 	block: {

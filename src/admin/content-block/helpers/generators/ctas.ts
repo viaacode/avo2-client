@@ -1,6 +1,7 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
+import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -12,13 +13,11 @@ import {
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
+	headingType: 'h2',
 	heading: '',
 	content: '',
-	headingType: 'h2',
-	// TODO: Add Button Props
-	// button: {
-	// 	label: '',
-	// },
+	buttonType: 'secondary',
+	buttonLabel: '',
 };
 
 export const INITIAL_CTAS_BLOCK_COMPONENT_STATES = (): CTAsBlockComponentState[] => [
@@ -39,18 +38,42 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 		},
 		state: INITIAL_CTAS_BLOCK_COMPONENT_STATES(),
 		fields: {
-			heading: TEXT_FIELD(i18n.t('admin/content-block/helpers/generators/ctas___knoptekst'), {
-				editorType: ContentBlockEditor.TextInput,
-			}),
-			content: TEXT_FIELD(i18n.t('admin/content-block/helpers/generators/ctas___knoptekst')),
 			headingType: {
-				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
+				label: i18n.t('admin/content-block/helpers/generators/ctas___titel-stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: HEADING_LEVEL_OPTIONS,
 				},
 			},
-			// TODO: Add Button Fields
+			heading: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/ctas___titel-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/ctas___titel-tekst'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
+			content: TEXT_FIELD(),
+			buttonType: {
+				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-type'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: BUTTON_TYPE_OPTIONS,
+				},
+			},
+			buttonLabel: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/ctas___knoptekst-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/ctas___knop-tekst'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
+			buttonIcon: {
+				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),
+				editorType: ContentBlockEditor.IconPicker,
+				editorProps: {
+					options: ADMIN_ICON_OPTIONS,
+				},
+			},
 		},
 	},
 	block: {

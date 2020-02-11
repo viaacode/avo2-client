@@ -98,9 +98,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedCollections, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(
-		null
-	);
+	const [relatedCollections /*, setRelatedCollections */] = useState<
+		Avo.Search.ResultItem[] | null
+	>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewCollections: boolean;
@@ -500,7 +500,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					views="0" // TODO: Real view count
 				>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-					<HeaderAvatar>{profile && renderAvatar(profile, { includeRole: true })}</HeaderAvatar>
+					<HeaderAvatar>
+						{profile && renderAvatar(profile, { includeRole: true, dark: true })}
+					</HeaderAvatar>
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">

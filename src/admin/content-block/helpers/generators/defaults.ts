@@ -1,6 +1,6 @@
 import { isEmpty, isNil } from 'lodash-es';
-import i18n from '../../../../shared/translations/i18n';
 
+import i18n from '../../../../shared/translations/i18n';
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,

@@ -40,9 +40,9 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 	stateIndex,
 	handleChange,
 }) => {
-	const { index, config } = block;
+	const { index } = block;
 	const EditorComponent = EDITOR_TYPES_MAP[field.editorType];
-	const editorId = createKey('e', index, formGroupIndex, stateIndex);
+	const editorId = createKey('editor', index, formGroupIndex, stateIndex);
 	const defaultProps = {
 		...field.editorProps,
 		editorId,
@@ -51,12 +51,13 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 	let editorProps = {};
 
 	switch (field.editorType) {
+		case ContentBlockEditor.IconPicker:
 		case ContentBlockEditor.ColorSelect:
 			editorProps = {
 				onChange: (option: SelectOption) =>
 					handleChange(type, fieldKey, get(option, 'value', ''), stateIndex),
 				value: defaultProps.options.find(
-					(opt: SelectOption) => opt.value === config.block.state.backgroundColor
+					(opt: SelectOption) => opt.value === (state as any)[fieldKey]
 				),
 			};
 			break;

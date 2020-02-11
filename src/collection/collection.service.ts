@@ -10,8 +10,10 @@ import { ApolloCacheManager, dataService } from '../shared/services/data-service
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
+
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
+	GET_BUNDLES,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
@@ -21,7 +23,6 @@ import {
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
 import { ContentTypeNumber } from './collection.types';
 
-// TODO: Translations in errors.
 export class CollectionService {
 	public static async insertCollection(
 		newCollection: Partial<Avo.Collection.Collection>,
@@ -86,7 +87,9 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
-				toastService.danger(`De huidige collectie is niet gevonden`);
+				toastService.danger(
+					i18n.t('collection/collection___de-huidige-collectie-is-niet-gevonden')
+				);
 				return null;
 			}
 			// Validate collection before save
@@ -170,7 +173,9 @@ export class CollectionService {
 				});
 
 				if (!fragmentToUpdate) {
-					toastService.info(`Kan het te updaten fragment niet vinden (id: ${id})`);
+					toastService.info(
+						i18n.t('collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id', { id })
+					);
 					return;
 				}
 
@@ -303,7 +308,9 @@ export class CollectionService {
 				user
 			);
 		} catch (err) {
-			console.error('Failed to get good copy title for collection', err, { collectionToInsert });
+			console.error('Failed to get good copy title for collection', err, {
+				collectionToInsert,
+			});
 			// Fallback to simple copy title
 			collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${collectionToInsert.title}`;
 		}
@@ -331,6 +338,22 @@ export class CollectionService {
 
 		return omit(collection, propertiesToDelete);
 	}
+	public static async getBundles(limit: number): Promise<Avo.Collection.Collection[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_BUNDLES,
+				variables: { limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			const error = new CustomError('Het ophalen van de bundels is mislukt.', err, {
+				query: 'GET_BUNDLES',
+			});
+			console.error(error);
+			throw error;
+		}
+	}
 
 	// TODO: Merge the following two get collections functions.
 	public static async getCollections(limit: number): Promise<Avo.Collection.Collection[]> {
@@ -342,8 +365,12 @@ export class CollectionService {
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			console.error('Failed to fetch collections.', err);
-			throw new CustomError('Het ophalen van de collecties is mislukt.', err);
+			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
+				query: 'GET_COLLECTIONS',
+				variables: { limit },
+			});
+			console.error(error);
+			throw error;
 		}
 	}
 
@@ -360,10 +387,14 @@ export class CollectionService {
 			const response = await dataService.query(queryInfo);
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			console.error('Failed to get collection titles by owner', err, queryInfo);
-			throw new CustomError('Het ophalen van de bestaande collecties is mislukt', err, {
+			const error = new CustomError('Failed to fetch existing bundle titles by owner', err, {
 				user,
+				type,
+				query:
+					type === 'collection' ? 'GET_COLLECTION_TITLES_BY_OWNER' : 'GET_BUNDLE_TITLES_BY_OWNER',
 			});
+			console.error(error);
+			throw error;
 		}
 	}
 
@@ -519,7 +550,9 @@ export class CollectionService {
 
 		if (!tempFragment) {
 			toastService.info(
-				i18n.t(`Fragment om toe te voegen is niet gevonden (id: {{id}})`, { id: tempId })
+				i18n.t('collection/collection___fragment-om-toe-te-voegen-is-niet-gevonden-id-id', {
+					id: tempId,
+				})
 			);
 			return;
 		}

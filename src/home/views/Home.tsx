@@ -100,7 +100,9 @@ const Home: FunctionComponent<HomeProps> = ({
 					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
 				);
 			} else {
-				toastService.danger(`Geen zoekresultaten gevonden met id: ${searchResultId}`);
+				toastService.danger(
+					t('home/views/home___geen-zoekresultaten-gevonden-met-id-id', { id: searchResultId })
+				);
 			}
 		}
 	};
@@ -141,7 +143,7 @@ const Home: FunctionComponent<HomeProps> = ({
 										{!searchResultsLoading ? (
 											<MenuSearchResultContent
 												menuItems={autocompleteMenuItems}
-												noResultsLabel="Geen resultaten"
+												noResultsLabel={t('home/views/home___geen-resultaten')}
 												onClick={id => goToSearchResult(id.toString())}
 											/>
 										) : (

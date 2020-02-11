@@ -231,7 +231,16 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 
 export const GET_COLLECTIONS = gql`
 	query getCollections($limit: Int!) {
-		app_collections(limit: $limit) {
+		app_collections(where: { type_id: { _eq: 3 } }, limit: $limit) {
+			id
+			title
+		}
+	}
+`;
+
+export const GET_BUNDLES = gql`
+	query getBundles($limit: Int!) {
+		app_collections(where: { type_id: { _eq: 4 } }, limit: $limit) {
 			id
 			title
 		}

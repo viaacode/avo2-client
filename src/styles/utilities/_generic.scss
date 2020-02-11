@@ -110,10 +110,20 @@
 	flex: 1 1 auto;
 }
 
-.u-flex-align-end {
+.u-flex-align {
 	display: flex;
 
-	align-items: flex-end;
+	&--start {
+		align-items: flex-start;
+	}
+
+	&--center {
+		align-items: center;
+	}
+
+	&--end {
+		align-items: flex-end;
+	}
 }
 
 .u-content-flex {

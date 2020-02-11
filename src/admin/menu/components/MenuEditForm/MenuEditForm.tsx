@@ -7,12 +7,10 @@ import { ValueType } from 'react-select/src/types';
 import { Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
-import { ContentPicker } from '../../../content/components/ContentPicker/ContentPicker';
-import { PickerItem } from '../../../content/content.types';
-import { IconPicker } from '../../../shared/components';
-
+import { ContentPicker, IconPicker } from '../../../shared/components';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
-import { MENU_ICON_OPTIONS } from '../../menu.const';
+import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { PickerItem } from '../../../shared/types/content-picker';
 import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
 
 interface MenuEditFormProps {
@@ -74,11 +72,11 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			)}
 			<FormGroup label={t('admin/menu/components/menu-edit-form/menu-edit-form___icoon')}>
 				<IconPicker
-					options={MENU_ICON_OPTIONS}
+					options={ADMIN_ICON_OPTIONS}
 					onChange={(option: ValueType<ReactSelectOption<string>>) =>
 						onChange('icon', get(option, 'value', ''))
 					}
-					value={MENU_ICON_OPTIONS.find(
+					value={ADMIN_ICON_OPTIONS.find(
 						(option: ReactSelectOption<string>) => option.value === formState.icon
 					)}
 				/>
