@@ -17,7 +17,6 @@ import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-se
 import toastService from '../../services/toast-service';
 import i18n from '../../translations/i18n';
 
-import { every } from 'lodash-es';
 import './FileUpload.scss';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];

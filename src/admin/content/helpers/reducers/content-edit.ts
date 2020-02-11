@@ -123,15 +123,16 @@ const setBlockState = (
 	{ index, formGroupState }: { index: number; formGroupState: ContentBlockComponentState[] }
 ): ContentBlockConfig[] => {
 	// Update single content block config
+	const block = configs[index].block;
 	const updatedConfig = {
 		...configs[index],
 		block: {
-			...configs[index].block,
+			...block,
 			state: {
-				...configs[index].block.state,
+				...block.state,
 				...formGroupState,
 			},
-			fields: configs[index].block.fields,
+			fields: block.fields,
 		},
 	};
 	// Apply update object to config

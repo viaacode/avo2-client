@@ -20,7 +20,7 @@ import {
 	TEXT_FIELD,
 } from './defaults';
 
-export const INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATE = (): ImageGridBlockComponentStateFields[] => [
+export const INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES = (): ImageGridBlockComponentStateFields[] => [
 	{
 		source: undefined,
 		title: '',
@@ -47,7 +47,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	name: i18n.t('Afbeeldingen grid'),
 	components: {
 		name: i18n.t('Item'),
-		state: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES(),
 		fields: {
 			source: FILE_FIELD(i18n.t('Een afbeelding is verplicht'), {
 				label: i18n.t('Afbeelding'),

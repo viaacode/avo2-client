@@ -15,6 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockComponentState,
@@ -56,7 +57,7 @@ const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.ImageGrid,
 ];
 
-export const BLOCK_STATE_INHERITING_PROPS = ['align'];
+const IGNORE_BLOCK_LEVEL_PROPS = ['position', 'elements', 'blockType'];
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	componentState,
@@ -68,8 +69,9 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
 	const stateToSpread: any = needsElements ? { elements: componentState } : componentState;
 
-	BLOCK_STATE_INHERITING_PROPS.forEach((prop: string) => {
-		if ((blockState as any)[prop]) {
+	const initialBlockLevelState = CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP[blockState.blockType];
+	Object.keys(initialBlockLevelState(0)).forEach((prop: string) => {
+		if ((blockState as any)[prop] && !IGNORE_BLOCK_LEVEL_PROPS.includes(prop)) {
 			stateToSpread[prop] = (blockState as any)[prop];
 		}
 	});
