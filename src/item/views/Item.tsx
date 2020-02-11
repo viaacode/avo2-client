@@ -1,4 +1,4 @@
-import { get, isNull } from 'lodash-es';
+import { get } from 'lodash-es';
 import queryString from 'query-string';
 import React, { createRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -91,6 +91,21 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	 * Load item from database
 	 */
 	useEffect(() => {
+		const retrieveRelatedItems = (currentItemId: string, limit: number) => {
+			getRelatedItems(currentItemId, 'items', limit)
+				.then(setRelatedItems)
+				.catch(err => {
+					console.error('Failed to get related items', err, {
+						currentItemId,
+						limit,
+						index: 'items',
+					});
+					toastService.danger(
+						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
+					);
+				});
+		};
+
 		const checkPermissionsAndGetItem = async () => {
 			try {
 				const hasPermission: boolean = await PermissionService.hasPermissions(
@@ -137,9 +152,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 					user
 				);
 
-				if (isNull(relatedItems)) {
-					retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
-				}
+				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
 
 				setItem(itemObj);
 			} catch (err) {
@@ -157,7 +170,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 		};
 
 		checkPermissionsAndGetItem();
-	}, [match.params.id, setItem]);
+	}, [match.params.id, setItem, t, user]);
 
 	/**
 	 * Update video and query param time when time changes in the state
@@ -181,21 +194,6 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 			setSeekerTime();
 		}
 	}, [time, history, videoRef, match.params.id, relatedItems, user]);
-
-	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
-		getRelatedItems(currentItemId, 'items', limit)
-			.then(setRelatedItems)
-			.catch(err => {
-				console.error('Failed to get related items', err, {
-					currentItemId,
-					limit,
-					index: 'items',
-				});
-				toastService.danger(
-					t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
-				);
-			});
-	};
 
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
