@@ -7,6 +7,7 @@ import {
 	BlockCTAs,
 	BlockHeading,
 	BlockIFrame,
+	BlockImage,
 	BlockIntro,
 	BlockRichText,
 	Container,
@@ -41,6 +42,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Accordions]: BlockAccordions,
+	[ContentBlockType.Image]: BlockImage,
 });
 
 const REPEATABLE_CONTENT_BLOCKS = [
