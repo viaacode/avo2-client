@@ -80,7 +80,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	if (blockState.blockType === ContentBlockType.Buttons) {
 		stateToSpread.elements.forEach(({ action }: any) => {
 			stateToSpread.navigate = () => {
-				navigateToContentType(history, action);
+				navigateToContentType(action, history);
 			};
 		});
 	}
@@ -88,7 +88,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	if (blockState.blockType === ContentBlockType.CTAs) {
 		stateToSpread.elements.forEach((innerState: any) => {
 			innerState.navigate = () => {
-				navigateToContentType(history, innerState.buttonAction);
+				navigateToContentType(innerState.buttonAction, history);
 			};
 		});
 	}

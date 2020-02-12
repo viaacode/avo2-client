@@ -76,7 +76,7 @@ export const navigate = (
 	history.push(builtLink);
 };
 
-export const navigateToContentType = (history: History, action: any) => {
+export const navigateToContentType = (action: any, history: History) => {
 	// TODO: Change any to ButtonAction when typings is updated.
 	if (action) {
 		const { type, value } = action;
