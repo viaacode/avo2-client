@@ -215,11 +215,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 				},
 				user
 			);
-			trackEvent('view', 'item', match.params.id, user).catch(err =>
-				console.error(
-					new CustomError('Failed to track item view', err, { itemId: match.params.id, user })
-				)
-			);
+			// trackEvent('view', 'item', match.params.id, user).catch(err =>
+			// 	console.error(
+			// 		new CustomError('Failed to track item view', err, { itemId: match.params.id, user })
+			// 	)
+			// );
 		}
 	}, [time, history, videoRef, match.params.id, relatedItems, user]);
 
