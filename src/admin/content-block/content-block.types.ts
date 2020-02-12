@@ -77,9 +77,9 @@ export enum ContentBlockEditor {
 	ContentPicker = 'ContentPicker',
 }
 
-export interface ContentBlockFormError {
-	[key: string]: string[];
-}
+// If only one block exists then the errors are a string[]
+// If multiple blocks exist then the errors are an array of string array indexed by their stateIndex
+export type ContentBlockFormError = { [key: string]: (string[] | string[][]) };
 
 // CONTENT BLOCKS
 export interface DefaultContentBlockState {
