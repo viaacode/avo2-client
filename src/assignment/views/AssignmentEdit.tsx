@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
-import { get, isEmpty, remove } from 'lodash-es';
+import { get, isEmpty, isNil, remove } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -43,7 +43,6 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
-import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
 import {
 	DeleteObjectModal,
@@ -69,17 +68,9 @@ import {
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
-import {
-	deleteAssignment,
-	insertAssignment,
-	insertDuplicateAssignment,
-	updateAssignment,
-} from '../assignment.service';
+import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
-
-const ASSIGNMENT_COPY_PREFIX = 'Opdracht kopie %index%: ';
-const ASSIGNMENT_COPY_REGEX = /^Opdracht kopie [0-9]+: /gi;
 
 const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
 	ITEM: ROUTE_PARTS.item,
@@ -97,11 +88,6 @@ const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-let currentAssignment: Partial<Avo.Assignment.Assignment>;
-let setCurrentAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
-let initialAssignment: Partial<Avo.Assignment.Assignment>;
-let setInitialAssignment: (newAssignment: Partial<Avo.Assignment.Assignment>) => void;
-
 const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	history,
 	location,
@@ -110,8 +96,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	[currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>({});
-	[initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>({});
 	const [pageType, setPageType] = useState<'create' | 'edit' | undefined>();
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | undefined>(
 		undefined
@@ -122,6 +106,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
+		{}
+	);
+	const [initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
+		{}
+	);
 
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
@@ -129,10 +119,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
-	const setBothAssignments = (assignment: Partial<Avo.Assignment.Assignment>) => {
-		setCurrentAssignment(assignment);
-		setInitialAssignment(assignment);
-	};
+	const setBothAssignments = useCallback(
+		(assignment: Partial<Avo.Assignment.Assignment>) => {
+			setCurrentAssignment(assignment);
+			setInitialAssignment(assignment);
+		},
+		[setCurrentAssignment, setInitialAssignment]
+	);
 
 	/**
 	 *  Get query string variables and store them into the assignment state object
@@ -140,11 +133,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	useEffect(() => {
 		const initAssignmentData = async () => {
 			try {
-				if (loadingInfo.state === 'error') {
-					// Do not keep trying to fetch the assignment when an error occurred
-					return;
-				}
-
 				// Determine if this is an edit or create page and initialize or fetch the assignment
 				let assignment: Partial<Avo.Assignment.Assignment> | null;
 				if (location.pathname.includes(ROUTE_PARTS.create)) {
@@ -248,7 +236,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					return null;
 				}
 				setBothAssignments(assignmentResponse);
-				setLoadingInfo({ state: 'loaded' });
 				return assignmentResponse;
 			} catch (err) {
 				console.error(err);
@@ -267,54 +254,48 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		 */
 		const fetchAssignmentContent = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 			try {
-				if (!assignment.assignment_type || assignmentContent) {
+				if (!assignment.assignment_type) {
 					// Only fetch assignment content if not set yet
 					return;
 				}
-				if (!assignment.content_id || !assignment.content_label) {
+
+				let assignmentContentResponse: Avo.Assignment.Content | undefined = undefined;
+				if (assignment.content_id && assignment.content_label) {
 					// The assignment doesn't have content linked to it
-					setLoadingInfo({ state: 'loaded' });
-					return;
-				}
+					// Fetch the content from the network
+					const queryParams = {
+						query:
+							CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].query,
+						variables: { id: assignment.content_id },
+					};
+					const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
+						queryParams
+					);
 
-				// Fetch the content from the network
-				const queryParams = {
-					query:
-						CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].query,
-					variables: { id: assignment.content_id },
-				};
-				const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
-					queryParams
-				);
-
-				const assignmentContentResponse: Avo.Assignment.Content = get(
-					response,
-					`data.${
-						CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
-							.resultPath
-					}`
-				);
-				if (!assignmentContentResponse) {
-					console.error('Failed to fetch the assignment content', { response, ...queryParams });
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt-leeg-antwoord'
-						),
-						icon: 'search',
-					});
-					return;
+					assignmentContentResponse = get(
+						response,
+						`data.${
+							CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
+								.resultPath
+						}`
+					);
+					if (!assignmentContentResponse) {
+						console.error('Failed to fetch the assignment content', { response, ...queryParams });
+						setLoadingInfo({
+							state: 'error',
+							message: t(
+								'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt-leeg-antwoord'
+							),
+							icon: 'search',
+						});
+					}
 				}
 
 				setAssignmentContent(assignmentContentResponse);
 				setBothAssignments({
 					...assignment,
-					title:
-						assignment.title ||
-						(assignmentContentResponse && assignmentContentResponse.title) ||
-						'',
+					title: assignment.title || get(assignmentContentResponse, 'title', ''),
 				});
-				setLoadingInfo({ state: 'loaded' });
 			} catch (err) {
 				console.error(err);
 				setLoadingInfo({
@@ -334,7 +315,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			setLoadingInfo,
 			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
 		);
-	}, [loadingInfo, location, match.params, setLoadingInfo, assignmentContent, t, user]);
+	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user]);
+
+	useEffect(() => {
+		if (
+			!isEmpty(initialAssignment) &&
+			!isEmpty(currentAssignment) &&
+			(isNil(currentAssignment.content_id) || !isEmpty(assignmentContent))
+		) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
+	}, [initialAssignment, currentAssignment, assignmentContent]);
 
 	const deleteCurrentAssignment = async () => {
 		try {
@@ -346,7 +339,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				);
 				return;
 			}
-			await deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
+			await AssignmentService.deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
 			toastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
@@ -401,7 +394,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				is_archived: shouldBeArchived,
 			});
 
-			if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
+			if (await AssignmentService.updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 				toastService.success(
 					shouldBeArchived
 						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
@@ -419,41 +412,26 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const triggerCollectionCopy = async (
-		contentLabel: string
-	): Promise<Avo.Collection.Collection | null> => {
-		if (!(contentLabel === 'COLLECTIE')) {
-			return null;
-		}
-
-		return await CollectionService.duplicateCollection(
-			assignmentContent as Avo.Collection.Collection,
-			user,
-			ASSIGNMENT_COPY_PREFIX,
-			ASSIGNMENT_COPY_REGEX,
-			triggerCollectionInsert,
-			triggerCollectionFragmentsInsert
-		);
-	};
-
-	const duplicateAssignment = async (title: string) => {
+	const attemptDuplicateAssignment = async (
+		newTitle: string,
+		assignment: Partial<Avo.Assignment.Assignment>
+	) => {
 		try {
-			// Copy collection if not own collection
-			const collectionCopy = await triggerCollectionCopy(initialAssignment.content_label || '');
-
-			if (!collectionCopy) {
+			if (isNil(assignment.id)) {
+				toastService.danger('Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.');
 				return;
 			}
+			const duplicatedAssigment = await AssignmentService.duplicateAssignment(
+				newTitle,
+				assignment,
+				user,
+				triggerCollectionInsert,
+				triggerCollectionFragmentsInsert,
+				triggerAssignmentInsert
+			);
 
-			// Duplicate assignment with new content identifier
-			const duplicatedAssigment = await insertDuplicateAssignment(triggerAssignmentInsert, title, {
-				...initialAssignment,
-				content_id: String(collectionCopy.id),
-			});
-
-			if (!duplicatedAssigment) {
-				return;
-			}
+			setCurrentAssignment({});
+			setLoadingInfo({ state: 'loading' });
 
 			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
 			toastService.success(
@@ -462,9 +440,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				)
 			);
 		} catch (err) {
-			console.error('Failed to copy collection for the current assignment', err, {
-				assignmentContent,
-			});
+			console.error('Failed to copy the assignment', err);
 			toastService.danger(
 				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
 			);
@@ -528,18 +504,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId(user)
 				) {
 					const sourceCollection = assignmentContent as Avo.Collection.Collection;
-					const copy = await CollectionService.duplicateCollection(
+					assignment.content_id = await AssignmentService.duplicateCollectionForAssignment(
 						sourceCollection,
 						user,
-						ASSIGNMENT_COPY_PREFIX,
-						ASSIGNMENT_COPY_REGEX,
 						triggerCollectionInsert,
 						triggerCollectionFragmentsInsert
 					);
-					if (!copy) {
-						return; // Creating the copy failed, error has already been shown to the user
-					}
-					assignment.content_id = String(copy.id);
 				}
 
 				// create => insert into graphql
@@ -547,7 +517,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					...assignment,
 					owner_profile_id: getProfileId(user),
 				} as Avo.Assignment.Assignment;
-				const insertedAssignment = await insertAssignment(triggerAssignmentInsert, newAssignment);
+				const insertedAssignment = await AssignmentService.insertAssignment(
+					triggerAssignmentInsert,
+					newAssignment
+				);
 
 				if (insertedAssignment) {
 					setBothAssignments(insertedAssignment);
@@ -559,7 +532,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 			} else {
 				// edit => update graphql
-				await updateAssignment(triggerAssignmentUpdate, assignment);
+				await AssignmentService.updateAssignment(triggerAssignmentUpdate, assignment);
 				setBothAssignments(assignment);
 				toastService.success(
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
@@ -1009,7 +982,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					inputPlaceholder={t('assignment/views/assignment-edit___titel-van-de-nieuwe-taak')}
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
-					inputCallback={(newTitle: string) => duplicateAssignment(newTitle)}
+					inputCallback={(newTitle: string) =>
+						attemptDuplicateAssignment(newTitle, currentAssignment)
+					}
 					emptyMessage={t(
 						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
 					)}
