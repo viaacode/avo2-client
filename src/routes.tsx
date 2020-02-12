@@ -28,7 +28,8 @@ export const renderRoutes = () => (
 		{renderWorkspaceRoutes()}
 		{renderAuthenticationRoutes()}
 		{renderSettingsRoutes()}
-		{renderContentPageRoutes()}
 		{renderErrorRoutes()}
+		{/* This route needs to be the last one, since it handles all remaining routes */}
+		{renderContentPageRoutes()}
 	</Switch>
 );

@@ -31,22 +31,20 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import {
-	PermissionGuard,
-	PermissionGuardFail,
-	PermissionGuardPass,
-} from '../../authentication/components';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PermissionNames } from '../../authentication/helpers/permission-service';
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { ErrorView } from '../../error/views';
-import { DataQueryComponent } from '../../shared/components';
+import { LoadingErrorLoadedComponent } from '../../shared/components';
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -57,6 +55,7 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
+import { dataService } from '../../shared/services/data-service';
 import { trackLogEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
@@ -74,11 +73,105 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 
 	const [t] = useTranslation();
 
-	const [itemId] = useState<string | undefined>(match.params.id);
+	const [item, setItem] = useState<Avo.Item.Item | null>(null);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	// TODO: use setTime when adding logic for enabling timestamps in the URL
 	const [time] = useState<number>(0);
 	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
+
+	useEffect(() => {
+		if (item) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
+	}, [item, setLoadingInfo]);
+
+	/**
+	 * Load item from database
+	 */
+	useEffect(() => {
+		const retrieveRelatedItems = (currentItemId: string, limit: number) => {
+			getRelatedItems(currentItemId, 'items', limit)
+				.then(setRelatedItems)
+				.catch(err => {
+					console.error('Failed to get related items', err, {
+						currentItemId,
+						limit,
+						index: 'items',
+					});
+					toastService.danger(
+						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
+					);
+				});
+		};
+
+		const checkPermissionsAndGetItem = async () => {
+			try {
+				const hasPermission: boolean = await PermissionService.hasPermissions(
+					[
+						PermissionNames.VIEW_ITEMS,
+						{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: match.params.id },
+					],
+					user
+				);
+				if (!hasPermission) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'),
+						icon: 'lock',
+					});
+					return;
+				}
+				const response = await dataService.query({
+					query: GET_ITEM_BY_ID,
+					variables: {
+						id: match.params.id,
+					},
+				});
+
+				const itemObj = get(response, 'data.app_item_meta[0]');
+				if (!itemObj) {
+					setLoadingInfo({
+						state: 'error',
+						message: t('item/views/item___dit-item-werd-niet-gevonden'),
+						icon: 'search',
+					});
+					return;
+				}
+
+				trackLogEvents(
+					{
+						object: match.params.id,
+						object_type: 'avo_item_pid',
+						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
+							match.params.id
+						} bezocht`,
+						action: 'view',
+					},
+					user
+				);
+
+				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
+
+				setItem(itemObj);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to check permissions or get item from graphql', err, {
+						user,
+						itemId: match.params.id,
+					})
+				);
+				setLoadingInfo({
+					state: 'error',
+					message: t('Het ophalen van het item is mislukt'),
+				});
+			}
+		};
+
+		checkPermissionsAndGetItem();
+	}, [match.params.id, setItem, t, user]);
 
 	/**
 	 * Update video and query param time when time changes in the state
@@ -86,7 +179,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	useEffect(() => {
 		const setSeekerTimeInQueryParams = (): void => {
 			history.push({
-				pathname: `/item/${itemId}`,
+				pathname: `/item/${match.params.id}`,
 				search: time ? `?${queryString.stringify({ time })}` : '',
 			});
 		};
@@ -102,28 +195,30 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 			setSeekerTime();
 		}
 
-		if (itemId) {
+		if (match.params.id) {
 			if (isNull(relatedItems)) {
-				retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
+				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
 			}
 
 			// Log event of item page view
 			trackLogEvents(
 				{
-					object: itemId,
+					object: match.params.id,
 					object_type: 'avo_item_pid',
-					message: `Gebruiker ${getProfileName(
-						user
-					)} heeft de pagina van fragment ${itemId} bezocht`,
+					message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
+						match.params.id
+					} bezocht`,
 					action: 'view',
 				},
 				user
 			);
-			trackEvent('view', 'item', itemId, user).catch(err =>
-				console.error(new CustomError('Failed to track item view', err, { itemId, user }))
+			trackEvent('view', 'item', match.params.id, user).catch(err =>
+				console.error(
+					new CustomError('Failed to track item view', err, { itemId: match.params.id, user })
+				)
 			);
 		}
-	}, [time, history, videoRef, itemId, relatedItems, user]);
+	}, [time, history, videoRef, match.params.id, relatedItems, user]);
 
 	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
 		getRelatedItems(currentItemId, 'items', limit)
@@ -197,9 +292,12 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 		return null;
 	};
 
-	const renderItem = (itemMetaData: Avo.Item.Item) => {
+	const renderItem = () => {
+		if (!item) {
+			return null;
+		}
 		const englishContentType: EnglishContentType =
-			toEnglishContentType(get(itemMetaData, 'type.label')) || ContentTypeString.video;
+			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
 
 		return (
 			<>
@@ -212,34 +310,34 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 										<div className="c-content-type c-content-type--video">
 											<Icon
 												name={
-													(get(itemMetaData, 'type.id') === ContentTypeNumber.audio
+													(get(item, 'type.id') === ContentTypeNumber.audio
 														? 'headphone'
-														: get(itemMetaData, 'type.label')) as IconName
+														: get(item, 'type.label')) as IconName
 												}
 											/>
-											<p>{get(itemMetaData, 'type.label')}</p>
+											<p>{get(item, 'type.label')}</p>
 										</div>
 									</Spacer>
-									<h1 className="c-h2 u-m-0">{itemMetaData.title}</h1>
-									<MetaData category={toEnglishContentType(get(itemMetaData, 'type.label'))} spaced>
-										{!!get(itemMetaData, 'organisation.name') && (
+									<h1 className="c-h2 u-m-0">{item.title}</h1>
+									<MetaData category={toEnglishContentType(get(item, 'type.label'))} spaced>
+										{!!get(item, 'organisation.name') && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													{generateSearchLink('provider', itemMetaData.organisation.name)}
+													{generateSearchLink('provider', item.organisation.name)}
 												</p>
 											</MetaDataItem>
 										)}
-										{!!itemMetaData.issued && (
+										{!!item.issued && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													Gepubliceerd op {reorderDate(itemMetaData.issued || null, '/')}
+													Gepubliceerd op {reorderDate(item.issued || null, '/')}
 												</p>
 											</MetaDataItem>
 										)}
-										{!!itemMetaData.series && (
+										{!!item.series && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													Uit reeks: {generateSearchLink('serie', itemMetaData.series)}
+													Uit reeks: {generateSearchLink('serie', item.series)}
 												</p>
 											</MetaDataItem>
 										)}
@@ -253,7 +351,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 											{/* TODO link meta data to actual data */}
 											<MetaDataItem label="0" icon="eye" />
 											<MetaDataItem label="0" icon="bookmark" />
-											{get(itemMetaData, 'type.id') === ContentTypeNumber.collection && (
+											{get(item, 'type.id') === ContentTypeNumber.collection && (
 												<MetaDataItem label="0" icon="collection" />
 											)}
 										</MetaData>
@@ -266,7 +364,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">
 						<ItemVideoDescription
-							itemMetaData={itemMetaData}
+							itemMetaData={item}
 							history={history}
 							location={location}
 							match={match}
@@ -292,11 +390,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 														label={t('item/views/item___maak-opdracht')}
 														onClick={() =>
 															history.push(
-																generateAssignmentCreateLink(
-																	'KIJK',
-																	itemMetaData.external_id,
-																	'ITEM'
-																)
+																generateAssignmentCreateLink('KIJK', item.external_id, 'ITEM')
 															)
 														}
 													/>
@@ -309,7 +403,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 												icon="bookmark"
 												active={false}
 												ariaLabel={t('item/views/item___toggle-bladwijzer')}
-												onClick={() => toggleBookmark(itemMetaData)}
+												onClick={() => toggleBookmark(item)}
 											/>
 											<Button
 												type="tertiary"
@@ -337,59 +431,59 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 									</BlockHeading>
 									<Table horizontal untable>
 										<Grid tag="tbody">
-											{!!itemMetaData.issued && (
+											{!!item.issued && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
 														<Trans i18nKey="item/views/item___publicatiedatum">
 															Publicatiedatum
 														</Trans>
 													</th>
-													<td>{reorderDate(itemMetaData.issued, '/')}</td>
+													<td>{reorderDate(item.issued, '/')}</td>
 												</Column>
 											)}
-											{!!itemMetaData.published_at && (
+											{!!item.published_at && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
 														<Trans i18nKey="item/views/item___toegevoegd-op">Toegevoegd op</Trans>
 													</th>
-													<td>{reorderDate(itemMetaData.published_at, '/')}</td>
+													<td>{reorderDate(item.published_at, '/')}</td>
 												</Column>
 											)}
 										</Grid>
 										<Grid tag="tbody">
-											{!!get(itemMetaData, 'organisation.name') && (
+											{!!get(item, 'organisation.name') && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
 														<Trans i18nKey="item/views/item___aanbieder">Aanbieder</Trans>
 													</th>
-													<td>{generateSearchLink('provider', itemMetaData.organisation.name)}</td>
+													<td>{generateSearchLink('provider', item.organisation.name)}</td>
 												</Column>
 											)}
-											{!!itemMetaData.duration && (
+											{!!item.duration && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
 														<Trans i18nKey="item/views/item___speelduur">Speelduur</Trans>
 													</th>
-													<td>{itemMetaData.duration}</td>
+													<td>{item.duration}</td>
 												</Column>
 											)}
 										</Grid>
 										<Grid tag="tbody">
-											{!!itemMetaData.series && (
+											{!!item.series && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
 														<Trans i18nKey="item/views/item___reeks">Reeks</Trans>
 													</th>
-													<td>{generateSearchLink('serie', itemMetaData.series)}</td>
+													<td>{generateSearchLink('serie', item.series)}</td>
 												</Column>
 											)}
-											{!!itemMetaData.lom_languages && !!itemMetaData.lom_languages.length && (
+											{!!item.lom_languages && !!item.lom_languages.length && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
 														<Trans i18nKey="item/views/item___taal">Taal</Trans>
 													</th>
 													<td>
-														{itemMetaData.lom_languages
+														{item.lom_languages
 															.map(languageCode => LANGUAGES.nl[languageCode])
 															.join(', ')}
 													</td>
@@ -400,30 +494,30 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 									<div className="c-hr" />
 									<Table horizontal untable>
 										<tbody>
-											{!!itemMetaData.external_id && !!itemMetaData.lom_context && (
+											{!!item.external_id && !!item.lom_context && (
 												<tr>
 													<th scope="row">
 														<Trans i18nKey="item/views/item___geschikt-voor">Geschikt voor</Trans>
 													</th>
 													<td>
 														{generateSearchLinks(
-															itemMetaData.external_id,
+															item.external_id,
 															'educationLevel',
-															itemMetaData.lom_context
+															item.lom_context
 														)}
 													</td>
 												</tr>
 											)}
-											{!!itemMetaData.external_id && !!itemMetaData.lom_classification && (
+											{!!item.external_id && !!item.lom_classification && (
 												<tr>
 													<th scope="row">
 														<Trans i18nKey="item/views/item___vakken">Vakken</Trans>
 													</th>
 													<td>
 														{generateSearchLinks(
-															itemMetaData.external_id,
+															item.external_id,
 															'subject',
-															itemMetaData.lom_classification
+															item.lom_classification
 														)}
 													</td>
 												</tr>
@@ -433,14 +527,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 									<div className="c-hr" />
 									<Table horizontal untable>
 										<tbody>
-											{!!itemMetaData.lom_keywords && !!itemMetaData.lom_keywords.length && (
+											{!!item.lom_keywords && !!item.lom_keywords.length && (
 												<tr>
 													<th scope="row">
 														<Trans i18nKey="item/views/item___trefwoorden">Trefwoorden</Trans>
 													</th>
 													<td>
 														<TagList
-															tags={itemMetaData.lom_keywords.map(keyword => ({
+															tags={item.lom_keywords.map(keyword => ({
 																label: keyword,
 																id: keyword,
 															}))}
@@ -475,14 +569,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 						</Grid>
 					</Container>
 				</Container>
-				{typeof itemId !== undefined && (
+				{typeof match.params.id !== undefined && (
 					<AddToCollectionModal
 						history={history}
 						location={location}
 						match={match}
 						user={user}
-						itemMetaData={itemMetaData}
-						externalId={itemId as string}
+						itemMetaData={item}
+						externalId={match.params.id as string}
 						isOpen={isOpenAddToCollectionModal}
 						onClose={() => setIsOpenAddToCollectionModal(false)}
 					/>
@@ -491,30 +585,13 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 		);
 	};
 
-	const permissions = [
-		PermissionNames.VIEW_ITEMS,
-		{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: itemId },
-	];
 	return (
-		<PermissionGuard permissions={permissions} user={user}>
-			<PermissionGuardPass>
-				<DataQueryComponent
-					query={GET_ITEM_BY_ID}
-					variables={{ id: itemId }}
-					resultPath="app_item_meta[0]"
-					renderData={renderItem}
-					notFoundMessage="Dit item werd niet gevonden"
-					actionButtons={['home']}
-				/>
-			</PermissionGuardPass>
-			<PermissionGuardFail>
-				<ErrorView
-					message={t('item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken')}
-					icon="lock"
-					actionButtons={['home']}
-				/>
-			</PermissionGuardFail>
-		</PermissionGuard>
+		<LoadingErrorLoadedComponent
+			loadingInfo={loadingInfo}
+			dataObject={item}
+			render={renderItem}
+			notFoundError={t('item/views/item___dit-item-werd-niet-gevonden')}
+		/>
 	);
 };
 

@@ -2,7 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { fetchContentItems } from '../../../content/content.service';
 
-import { PickerSelectItem, PickerSelectItemGroup } from '../../types/content-picker';
+import { PickerSelectItem, PickerSelectItemGroup } from '../../types';
 import { parsePickerItem } from './parse-picker';
 
 // Fetch content items from GQL

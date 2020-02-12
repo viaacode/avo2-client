@@ -70,12 +70,22 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	const fetchBundles = React.useCallback(
 		() =>
-			CollectionService.getCollectionTitlesByUser('bundle', user).then(
-				(bundleTitles: Partial<Avo.Collection.Collection>[]) => {
+			CollectionService.getCollectionTitlesByUser('bundle', user)
+				.then((bundleTitles: Partial<Avo.Collection.Collection>[]) => {
 					setBundles(bundleTitles);
-				}
-			),
-		[user]
+					if (!bundleTitles.length) {
+						setCreateNewBundle(true);
+					}
+				})
+				.catch(err => {
+					console.error(err);
+					toastService.danger(
+						t(
+							'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bestaande-bundels-is-mislukt'
+						)
+					);
+				}),
+		[user, t]
 	);
 
 	useEffect(() => {
@@ -292,25 +302,30 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 										onChange={checked => checked && setCreateNewBundle(false)}
 									/>
 									<div>
-										<Select
-											id="existingCollection"
-											placeholder={
-												bundles.length
-													? t('collection/components/modals/add-to-bundle-modal___kies-bundel')
-													: t(
-															'collection/components/modals/add-to-bundle-modal___je-hebt-nog-geen-bundels'
-													  )
-											}
-											options={[
-												...bundles.map((bundle: Partial<Avo.Collection.Collection>) => ({
-													label: bundle.title || '',
-													value: String(bundle.id),
-												})),
-											]}
-											value={selectedBundleId}
-											onChange={setSelectedBundleIdAndGetBundleInfo}
-											disabled={createNewBundle}
-										/>
+										{bundles.length ? (
+											<Select
+												id="existingCollection"
+												placeholder={t(
+													'collection/components/modals/add-to-bundle-modal___kies-bundel'
+												)}
+												options={[
+													...bundles.map((bundle: Partial<Avo.Collection.Collection>) => ({
+														label: bundle.title || '',
+														value: String(bundle.id),
+													})),
+												]}
+												value={selectedBundleId}
+												onChange={setSelectedBundleIdAndGetBundleInfo}
+												disabled={createNewBundle}
+											/>
+										) : (
+											<TextInput
+												disabled
+												value={t(
+													'collection/components/modals/add-to-bundle-modal___je-hebt-nog-geen-bundels'
+												)}
+											/>
+										)}
 									</div>
 								</Spacer>
 								<Spacer margin="bottom">

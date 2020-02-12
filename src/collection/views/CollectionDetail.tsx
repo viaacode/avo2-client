@@ -500,7 +500,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					views="0" // TODO: Real view count
 				>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-					<HeaderAvatar>{profile && renderAvatar(profile, { includeRole: true })}</HeaderAvatar>
+					<HeaderAvatar>
+						{profile && renderAvatar(profile, { includeRole: true, dark: true })}
+					</HeaderAvatar>
 				</Header>
 				<Container mode="vertical">
 					<Container mode="horizontal">
