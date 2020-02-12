@@ -1,3 +1,5 @@
+import i18n from '../../../../shared/translations/i18n';
+
 import { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../../../collection/collection.service';
@@ -15,13 +17,13 @@ export const fetchCollections = async (limit: number = 5): Promise<PickerSelectI
 		limit
 	);
 
-	return parseCollections('COLLECTION', collections || [], 'Collecties');
+	return parseCollections('COLLECTION', collections || [], i18n.t('Collecties'));
 };
 
 export const fetchBundles = async (limit: number = 5): Promise<PickerSelectItemGroup> => {
 	const bundles: Avo.Collection.Collection[] | null = await CollectionService.getBundles(limit);
 
-	return parseCollections('BUNDLE', bundles || [], 'Bundels');
+	return parseCollections('BUNDLE', bundles || [], i18n.t('Bundels'));
 };
 
 // Parse raw content items to react-select options

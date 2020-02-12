@@ -114,7 +114,7 @@ const setComponentState = (
 		configs.splice(index, 1, updatedConfig);
 	}
 
-	return clone(configs);
+	return configs;
 };
 
 const setBlockState = (

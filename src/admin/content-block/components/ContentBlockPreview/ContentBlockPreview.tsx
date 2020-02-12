@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import {
 	BlockAccordions,
@@ -13,7 +14,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../../../authentication/components/SecuredRoute';
 import { BUNDLE_PATH } from '../../../../bundle/bundle.const';
 import { COLLECTION_PATH } from '../../../../collection/collection.const';
 import { ITEM_PATH } from '../../../../item/item.const';
@@ -26,7 +26,7 @@ import {
 	ContentBlockType,
 } from '../../content-block.types';
 
-interface ContentBlockPreviewProps extends DefaultSecureRouteProps {
+interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
 	contentWidth?: Avo.Content.ContentWidth;
 	blockState: ContentBlockState;
@@ -130,4 +130,4 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	);
 };
 
-export default ContentBlockPreview;
+export default withRouter(ContentBlockPreview);
