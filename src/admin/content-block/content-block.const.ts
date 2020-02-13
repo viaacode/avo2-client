@@ -50,15 +50,25 @@ export const ALIGN_OPTIONS: { label: string; value: AlignOptions }[] = [
 ];
 
 export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
-	{ label: i18n.t('Kies een content block'), value: '', disabled: true },
-	{ label: i18n.t('Titel'), value: ContentBlockType.Heading },
-	{ label: i18n.t('Tekst'), value: ContentBlockType.RichText },
-	{ label: i18n.t('Tekst (2 kolommen)'), value: ContentBlockType.RichTextTwoColumns },
-	{ label: i18n.t('Knoppen'), value: ContentBlockType.Buttons },
-	{ label: i18n.t('Intro'), value: ContentBlockType.Intro },
-	{ label: i18n.t('2 CTAs'), value: ContentBlockType.CTAs },
-	{ label: i18n.t('IFrame'), value: ContentBlockType.IFrame },
-	{ label: i18n.t('Accordeons'), value: ContentBlockType.Accordions },
+	{
+		label: i18n.t('admin/content-block/content-block___kies-een-content-block'),
+		value: '',
+		disabled: true,
+	},
+	{ label: i18n.t('admin/content-block/content-block___titel'), value: ContentBlockType.Heading },
+	{ label: i18n.t('admin/content-block/content-block___tekst'), value: ContentBlockType.RichText },
+	{
+		label: i18n.t('admin/content-block/content-block___tekst-2-kolommen'),
+		value: ContentBlockType.RichTextTwoColumns,
+	},
+	{ label: i18n.t('admin/content-block/content-block___knoppen'), value: ContentBlockType.Buttons },
+	{ label: i18n.t('admin/content-block/content-block___intro'), value: ContentBlockType.Intro },
+	{ label: i18n.t('admin/content-block/content-block___2-ct-as'), value: ContentBlockType.CTAs },
+	{ label: i18n.t('admin/content-block/content-block___i-frame'), value: ContentBlockType.IFrame },
+	{
+		label: i18n.t('admin/content-block/content-block___accordeons'),
+		value: ContentBlockType.Accordions,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -95,12 +105,12 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 
 // Options
 export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
-	{ label: i18n.t('H2'), value: 'h2' },
-	{ label: i18n.t('H3'), value: 'h3' },
-	{ label: i18n.t('H4'), value: 'h4' },
+	{ label: i18n.t('admin/content-block/content-block___h-2'), value: 'h2' },
+	{ label: i18n.t('admin/content-block/content-block___h-3'), value: 'h3' },
+	{ label: i18n.t('admin/content-block/content-block___h-4'), value: 'h4' },
 ];
 
 export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
-	{ label: i18n.t('Primair'), value: 'primary' },
-	{ label: i18n.t('Secundair'), value: 'secondary' },
+	{ label: i18n.t('admin/content-block/content-block___primair'), value: 'primary' },
+	{ label: i18n.t('admin/content-block/content-block___secundair'), value: 'secondary' },
 ];

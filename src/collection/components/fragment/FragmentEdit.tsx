@@ -159,7 +159,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		!isCollection &&
 		fetchPlayerTicket(fragment.external_id)
 			.then(data => setPlayerTicket(data))
-			.catch(() => toastService.danger('Play ticket kon niet opgehaald worden.'));
+			.catch(() =>
+				toastService.danger(
+					t('collection/components/fragment/fragment-edit___play-ticket-kon-niet-opgehaald-worden')
+				)
+			);
 
 	const itemMetaData = (fragment as any).item_meta;
 
@@ -197,22 +201,22 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	// TODO: DISABLED FEATURE
 	// const onDuplicateFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success('Fragment is succesvol gedupliceerd');
+	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gedupliceerd'));
 	// };
 
 	// const onMoveFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success('Fragment is succesvol verplaatst');
+	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst'));
 	// };
 
 	// const onCopyFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success('Fragment is succesvol gekopiëerd naar collectie');
+	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gekopieerd-naar-collectie'));
 	// };
 
 	// const onMoveFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success('Fragment is succesvol verplaatst naar collectie');
+	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst-naar-collectie'));
 	// };
 
 	const onClickDropdownItem = (item: ReactText) => {
@@ -283,23 +287,25 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
-				<FormGroup
-					label={t('collection/components/fragment/fragment-edit___tekstblok-beschrijving')}
-					labelFor={`description_${fragment.id}`}
-				>
-					{!isNil(allowedToAddLinks) && (
-						<WYSIWYG
-							id={`description_${fragment.id}`}
-							btns={allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT}
-							placeholder={t(
-								'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
-							)}
-							data={description}
-							onChange={setDescription}
-							disabled={disableVideoFields}
-						/>
-					)}
-				</FormGroup>
+				{!isCollection && (
+					<FormGroup
+						label={t('collection/components/fragment/fragment-edit___tekstblok-beschrijving')}
+						labelFor={`description_${fragment.id}`}
+					>
+						{!isNil(allowedToAddLinks) && (
+							<WYSIWYG
+								id={`description_${fragment.id}`}
+								btns={allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT}
+								placeholder={t(
+									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
+								)}
+								data={description}
+								onChange={setDescription}
+								disabled={disableVideoFields}
+							/>
+						)}
+					</FormGroup>
+				)}
 			</Form>
 		);
 	};

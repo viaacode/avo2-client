@@ -14,6 +14,7 @@ import {
 } from '@viaa/avo2-components';
 
 import toastService from '../../services/toast-service';
+import i18n from '../../translations/i18n';
 
 interface InputModalProps {
 	title?: string;
@@ -32,13 +33,15 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	inputValue,
 	inputCallback,
 	isOpen,
-	title = 'Vul in',
+	title = i18n.t('shared/components/input-modal/input-modal___vul-in'),
 	inputLabel = '',
 	inputPlaceholder = '',
-	cancelLabel = 'Annuleer',
-	confirmLabel = 'Opslaan',
+	cancelLabel = i18n.t('shared/components/input-modal/input-modal___annuleer'),
+	confirmLabel = i18n.t('shared/components/input-modal/input-modal___opslaan'),
 	onClose = () => {},
-	emptyMessage = 'Gelieve een waarde in te vullen.',
+	emptyMessage = i18n.t(
+		'shared/components/input-modal/input-modal___gelieve-een-waarde-in-te-vullen'
+	),
 }) => {
 	const [input, setInput] = useState<string>(inputValue || '');
 

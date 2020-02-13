@@ -89,8 +89,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 			} else {
 				// Go back to overview if no menu items are present
 				toastService.danger(
-					t(`Er werden geen navigatie items gevonden voor {{menuName}}`, { menuName }),
-					false
+					t('admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name', {
+						menuName,
+					}),
+                    false
 				);
 				history.push(MENU_PATH.MENU);
 			}
