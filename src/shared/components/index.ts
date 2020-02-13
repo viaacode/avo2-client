@@ -8,3 +8,4 @@ export { default as InputModal } from './InputModal/InputModal';
 export { default as LoadingErrorLoadedComponent } from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 export { default as Navigation } from './Navigation/Navigation';
 export { default as FileUpload } from './FileUpload/FileUpload';
+export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';
