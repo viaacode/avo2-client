@@ -17,7 +17,7 @@ import { Avo } from '@viaa/avo2-types';
 import { BUNDLE_PATH } from '../../../../bundle/bundle.const';
 import { COLLECTION_PATH } from '../../../../collection/collection.const';
 import { ITEM_PATH } from '../../../../item/item.const';
-import { navigate } from '../../../../shared/helpers';
+import { navigate, navigateToContentType } from '../../../../shared/helpers';
 
 import {
 	ContentBlockBackgroundColor,
@@ -76,38 +76,19 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		}
 	});
 
+	// TODO: Change BlockCTA to the way Buttons works so that we don't have to add navigate to each CTA element + then we can remove one of the two following conditional statements..
+	if (blockState.blockType === ContentBlockType.Buttons) {
+		stateToSpread.elements.forEach(({ action }: any) => {
+			stateToSpread.navigate = () => {
+				navigateToContentType(action, history);
+			};
+		});
+	}
+
 	if (blockState.blockType === ContentBlockType.CTAs) {
 		stateToSpread.elements.forEach((innerState: any) => {
 			innerState.navigate = () => {
-				if (innerState.buttonAction) {
-					switch (innerState.buttonAction.type) {
-						case 'INTERNAL_LINK':
-						case 'CONTENT_PAGE':
-							history.push(innerState.buttonAction.value as string);
-							break;
-						case 'COLLECTION':
-							navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, {
-								id: innerState.buttonAction.value as string,
-							});
-							break;
-						case 'ITEM':
-							// TODO: Fix output
-							navigate(history, ITEM_PATH.ITEM, {
-								id: innerState.buttonAction.value,
-							});
-							break;
-						case 'BUNDLE':
-							navigate(history, BUNDLE_PATH.BUNDLE_DETAIL, {
-								id: innerState.buttonAction.value,
-							});
-							break;
-						case 'EXTERNAL_LINK':
-							window.location.href = innerState.buttonAction.value as string;
-							break;
-						default:
-							break;
-					}
-				}
+				navigateToContentType(innerState.buttonAction, history);
 			};
 		});
 	}
