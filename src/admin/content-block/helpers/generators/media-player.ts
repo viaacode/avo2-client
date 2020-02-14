@@ -1,4 +1,5 @@
 import i18n from '../../../../shared/translations/i18n';
+import { WIDTH_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -31,6 +32,13 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					selectableTypes: ['ITEM'],
+				},
+			},
+			width: {
+				label: i18n.t('Breedte'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: WIDTH_OPTIONS,
 				},
 			},
 		},

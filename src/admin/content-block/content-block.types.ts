@@ -14,6 +14,8 @@ export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 
 export type ButtonTypeOptions = 'primary' | 'secondary';
 
+export type WidthOptions = 'full-width' | '500px' | '400px';
+
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
 	index: number;

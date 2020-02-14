@@ -12,6 +12,7 @@ import {
 	ContentBlockBackgroundColor,
 	ContentBlockType,
 	HeadingLevelOptions,
+	WidthOptions,
 } from './content-block.types';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
@@ -172,5 +173,20 @@ export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
 	{
 		label: i18n.t('admin/content-block/content-block___secundair'),
 		value: 'secondary',
+	},
+];
+
+export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
+	{
+		label: i18n.t('paginabreedte'),
+		value: 'full-width',
+	},
+	{
+		label: i18n.t('groot'),
+		value: '500px',
+	},
+	{
+		label: i18n.t('middelgroot'),
+		value: '400px',
 	},
 ];
