@@ -39,7 +39,7 @@ export const GET_CONTENT_PAGES = gql`
 			title
 			updated_at
 		}
-		app_content_aggregate {
+		app_content_aggregate(where: $where) {
 			aggregate {
 				count
 			}
@@ -91,7 +91,7 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 				}
 			}
 		}
-		app_content_aggregate {
+		app_content_aggregate(where: $where) {
 			aggregate {
 				count
 			}

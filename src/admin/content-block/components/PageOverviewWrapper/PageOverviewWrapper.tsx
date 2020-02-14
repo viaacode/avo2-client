@@ -70,7 +70,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 
 	const dbToPageOverviewContentPage = (dbContentPage: Avo.Content.Content): ContentPageInfo => {
 		return {
-			thumbnail_path: '',
+			thumbnail_path: '/images/placeholder.png',
 			labels: [],
 			created_at: dbContentPage.created_at,
 			description: dbContentPage.description,
@@ -90,12 +90,13 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			const response = await dataService.query({
 				query: itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
 				variables: {
+					where: { content_type: { _eq: contentTypeAndTabs.selectedContentType } },
 					offset: currentPage * itemsPerPage,
 					limit: itemsPerPage,
 				},
 			});
 			const pageArray: Avo.Content.Content[] = get(response, 'data.app_content', []);
-			pageCount = get(response, 'data.app_content_aggregate.aggregate.count', []);
+			pageCount = get(response, 'data.app_content_aggregate.aggregate.count', 0) / itemsPerPage;
 			filteredPages = pageArray.map(dbToPageOverviewContentPage);
 		}
 		setPages(filteredPages);
