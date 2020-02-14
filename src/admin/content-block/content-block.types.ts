@@ -106,6 +106,7 @@ export enum ContentBlockType {
 	IFrame = 'IFRAME',
 	Intro = 'INTRO',
 	MediaPlayer = 'MEDIA_PLAYER',
+	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 }
@@ -153,6 +154,11 @@ export interface AccordionsBlockComponentState {
 }
 
 export interface MediaPlayerBlockComponentState {
+	title: string;
+	item?: ButtonAction;
+}
+
+export interface MediaPlayerTitleTextButtonBlockComponentState {
 	title: string;
 	item?: ButtonAction;
 }

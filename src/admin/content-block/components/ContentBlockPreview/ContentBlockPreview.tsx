@@ -23,7 +23,7 @@ import {
 	ContentBlockState,
 	ContentBlockType,
 } from '../../content-block.types';
-import { MediaPlayer } from '../../helpers/previews/MediaPlayer';
+import { MediaPlayer } from '../../helpers/wrappers/BlockMediaPlayerWrapper';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
@@ -47,6 +47,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Accordions]: BlockAccordions,
 	[ContentBlockType.MediaPlayer]: BlockFlowPlayer,
+	[ContentBlockType.MediaPlayerTitleTextButton]: BlockFlowPlayer,
 });
 
 const REPEATABLE_CONTENT_BLOCKS = [
@@ -76,7 +77,10 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		}
 	});
 
-	if (blockState.blockType === ContentBlockType.MediaPlayer) {
+	if (
+		blockState.blockType === ContentBlockType.MediaPlayer ||
+		blockState.blockType === ContentBlockType.MediaPlayerTitleTextButton
+	) {
 		return <MediaPlayer {...stateToSpread} />;
 	}
 
