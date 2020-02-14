@@ -83,3 +83,10 @@ export const FILE_FIELD = (
 	editorProps: { type: 'CONTENT_PAGE_IMAGE' },
 	...propOverride,
 });
+
+export const TAG_INPUT = (propOverride?: Partial<ContentBlockField>) => ({
+	label: i18n.t('Labels'),
+	editorType: ContentBlockEditor.FileUpload,
+	validator: () => [],
+	...propOverride,
+});

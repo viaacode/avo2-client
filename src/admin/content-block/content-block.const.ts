@@ -8,13 +8,13 @@ import { ContentPicker } from '../shared/components';
 
 import { AlignSelect, ColorSelect } from './components';
 import {
-	AlignOptions,
-	ButtonTypeOptions,
+	AlignOption,
+	ButtonTypeOption,
 	ContentBlockBackgroundColor,
-	ContentBlockType,
-	HeadingLevelOptions,
-	ImageGridFillOptions, ImageGridTextAlignOptions,
-	ImageWidthOptions,
+	ContentBlockType, ContentTypeOption,
+	HeadingLevelOption,
+	ImageGridFillOption, ImageGridTextAlignOption,
+	ImageWidthOption,
 } from './content-block.types';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
@@ -40,6 +40,10 @@ import {
 	IMAGE_GRID_BLOCK_CONFIG,
 	INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES, INITIAL_IMAGE_GRID_BLOCK_STATE,
 } from './helpers/generators/image-grid';
+import {
+	ContentItemStyle,
+	ContentTabStyle
+} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -52,7 +56,7 @@ export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>
 	{ label: 'Blauw', value: ContentBlockBackgroundColor.NightBlue },
 ];
 
-export const ALIGN_OPTIONS: { label: string; value: AlignOptions }[] = [
+export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
 	{ label: 'Links', value: 'left' },
 	{ label: 'Gecentreerd', value: 'center' },
 	{ label: 'Rechts', value: 'right' },
@@ -140,31 +144,52 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 };
 
 // Options
-export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
+export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOption>[] = [
 	{ label: i18n.t('admin/content-block/content-block___h-2'), value: 'h2' },
 	{ label: i18n.t('admin/content-block/content-block___h-3'), value: 'h3' },
 	{ label: i18n.t('admin/content-block/content-block___h-4'), value: 'h4' },
 ];
 
-export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
+export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOption>[] = [
 	{ label: i18n.t('admin/content-block/content-block___primair'), value: 'primary' },
 	{ label: i18n.t('admin/content-block/content-block___secundair'), value: 'secondary' },
 ];
 
-export const IMAGE_WIDTH_OPTIONS: SelectOption<ImageWidthOptions>[] = [
+export const IMAGE_WIDTH_OPTIONS: SelectOption<ImageWidthOption>[] = [
 	{ label: i18n.t('paginabreedte'), value: 'full-width' },
 	{ label: i18n.t('groot'), value: '500px' },
 	{ label: i18n.t('middelgroot'), value: '400px' },
 ];
 
-export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOptions>[] = [
+export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOption>[] = [
 	{ label: i18n.t('Opvullen'), value: 'cover' },
 	{ label: i18n.t('Volledig zichtbaar'), value: 'contain' },
 	{ label: i18n.t('Oorspronkelijke grootte'), value: 'auto' },
 ];
 
-export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<ImageGridTextAlignOptions>[] = [
+export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<ImageGridTextAlignOption>[] = [
 	{ label: i18n.t('Links'), value: 'left' },
 	{ label: i18n.t('Center'), value: 'center' },
 	{ label: i18n.t('Rechts'), value: 'right' },
+];
+
+export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = [
+	{ label: i18n.t('Menu balk'), value: 'MENU_BAR' },
+	{ label: i18n.t('Tags'), value: 'ROUNDED_BADGES' },
+];
+
+export const PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: SelectOption<ContentItemStyle>[] = [
+	{ label: i18n.t('Lijst'), value: 'LIST' },
+	{ label: i18n.t('Grid'), value: 'GRID' },
+	{ label: i18n.t('Accrodions'), value: 'ACCORDION' },
+];
+
+export const PAGE_OVERVIEW_CONTENT_TYPE_OPTIONS: SelectOption<ContentTypeOption>[] = [
+	{ label: i18n.t('Nieuws overzicht'), value: 'NIEUWS_OVERZICHT' },
+	{ label: i18n.t('Nieuws item'), value: 'NIEUWS_ITEM' },
+	{ label: i18n.t('FAQ overzicht'), value: 'FAQ_OVERZICHT' },
+	{ label: i18n.t('FAQ item'), value: 'FAQ_ITEM' },
+	{ label: i18n.t('Screencast'), value: 'SCREENCAST' },
+	{ label: i18n.t('Pagina'), value: 'PAGINA' },
+	{ label: i18n.t('Project'), value: 'PROJECT' },
 ];

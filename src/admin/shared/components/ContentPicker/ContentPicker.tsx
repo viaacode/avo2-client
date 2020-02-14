@@ -20,7 +20,7 @@ import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../../sh
 
 type ContentPickerControls = 'content' | 'external-url';
 
-const REACT_SELECT_DEFAULT_OPTIONS = {
+export const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
 	classNamePrefix: 'c-select',
 };

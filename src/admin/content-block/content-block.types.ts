@@ -2,6 +2,10 @@ import { ButtonAction, IconName } from '@viaa/avo2-components';
 // TODO: Import from components lib when exported there.
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
+import {
+	ContentItemStyle,
+	ContentTabStyle,
+} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
 
 export type ContentBlockStateType = 'components' | 'block';
 
@@ -10,17 +14,20 @@ export type ContentBlockStateOptions =
 	| Partial<ContentBlockComponentState>[]
 	| Partial<ContentBlockState>;
 
-export type AlignOptions = 'left' | 'right' | 'center';
-
-export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
-
-export type ButtonTypeOptions = 'primary' | 'secondary';
-
-export type ImageWidthOptions = 'full-width' | '500px' | '400px';
-
-export type ImageGridFillOptions = 'cover' | 'contain' | 'auto';
-
-export type ImageGridTextAlignOptions = 'left' | 'center' | 'right';
+export type AlignOption = 'left' | 'right' | 'center';
+export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
+export type ButtonTypeOption = 'primary' | 'secondary';
+export type ImageWidthOption = 'full-width' | '500px' | '400px';
+export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
+export type ImageGridTextAlignOption = 'left' | 'center' | 'right';
+export type ContentTypeOption =
+	| 'NIEUWS_OVERZICHT'
+	| 'NIEUWS_ITEM'
+	| 'FAQ_OVERZICHT'
+	| 'FAQ_ITEM'
+	| 'SCREENCAST'
+	| 'PAGINA'
+	| 'PROJECT';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -65,7 +72,8 @@ export type ContentBlockComponentState =
 	| IFrameBlockComponentState
 	| AccordionsBlockComponentState
 	| ImageBlockComponentState
-	| ImageGridBlockComponentStateFields;
+	| ImageGridBlockComponentStateFields
+	| PageOverviewBlockComponentStateFields;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -118,12 +126,13 @@ export enum ContentBlockType {
 	Accordions = 'ACCORDIONS',
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
+	PageOverview = 'PAGE_OVERVIEW',
 }
 
 export interface HeadingBlockComponentState {
 	children: string;
-	type: HeadingLevelOptions;
-	align: AlignOptions;
+	type: HeadingLevelOption;
+	align: AlignOption;
 }
 
 export interface RichTextBlockComponentState {
@@ -134,7 +143,7 @@ export interface ImageBlockComponentState {
 	title: string;
 	text: string;
 	source: string;
-	width: ImageWidthOptions;
+	width: ImageWidthOption;
 }
 
 export interface ImageGridBlockComponentStateFields {
@@ -149,9 +158,23 @@ export interface ImageGridBlockComponentStateBlockFields extends DefaultContentB
 	imageWidth?: number;
 	imageHeight?: number;
 	itemWidth?: number;
-	fill?: ImageGridFillOptions;
-	textAlign?: ImageGridTextAlignOptions;
+	fill?: ImageGridFillOption;
+	textAlign?: ImageGridTextAlignOption;
 	className?: string;
+	navigate?: (action: ButtonAction) => void;
+}
+
+export interface PageOverviewBlockComponentStateFields {
+	tabs?: string[];
+	tabStyle?: ContentTabStyle;
+	allowMultiple?: boolean;
+	contentType: ContentTypeOption;
+	itemStyle?: ContentItemStyle;
+	showTitle?: boolean;
+	showDescription?: boolean;
+	showDate?: boolean;
+	buttonLabel?: string;
+	itemsPerPage?: number;
 	navigate?: (action: ButtonAction) => void;
 }
 
@@ -164,12 +187,12 @@ export interface ButtonsBlockComponentState {
 export interface IntroBlockComponentState {
 	title: string;
 	content: string;
-	align: AlignOptions;
+	align: AlignOption;
 }
 
 export interface CTAsBlockComponentState {
 	heading: string;
-	headingType: HeadingLevelOptions;
+	headingType: HeadingLevelOption;
 	content: string | string[];
 	buttonLabel: string;
 	buttonIcon?: IconName;

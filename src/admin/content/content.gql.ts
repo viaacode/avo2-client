@@ -75,13 +75,22 @@ export const GET_CONTENT_BY_ID = gql`
 		}
 	}
 `;
+
 export const GET_CONTENT_TYPES = gql`
 	{
 		lookup_enum_content_types {
 			value
+			description
 		}
 	}
 `;
+
+export const GET_LABELS_FOR_CONTENT_TYPE = gql`
+	{
+		// TODO implement once this has been added to the database
+	}
+`;
+
 export const UPDATE_CONTENT_BY_ID = gql`
 	mutation updateContentById($id: Int!, $contentItem: app_content_set_input!) {
 		update_app_content(where: { id: { _eq: $id } }, _set: $contentItem) {
