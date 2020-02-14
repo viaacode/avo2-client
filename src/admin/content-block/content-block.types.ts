@@ -55,7 +55,8 @@ export type ContentBlockComponentState =
 	| IntroBlockComponentState
 	| CTAsBlockComponentState
 	| IFrameBlockComponentState
-	| AccordionsBlockComponentState;
+	| AccordionsBlockComponentState
+	| MediaPlayerBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -69,11 +70,11 @@ export interface ContentBlockField {
 export enum ContentBlockEditor {
 	AlignSelect = 'AlignSelect',
 	ColorSelect = 'ColorSelect',
+	ContentPicker = 'ContentPicker',
+	IconPicker = 'IconPicker',
 	Select = 'Select',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
-	IconPicker = 'IconPicker',
-	ContentPicker = 'ContentPicker',
 }
 
 // If only one block exists then the errors are a string[]
@@ -96,14 +97,15 @@ export enum ContentBlockBackgroundColor {
 // These match the content_block_types enums from graphql
 // New values need to be added there as well or it won't save
 export enum ContentBlockType {
+	Accordions = 'ACCORDIONS',
 	Buttons = 'BUTTONS',
-	Heading = 'HEADING',
 	CTAs = 'CTAS',
+	Heading = 'HEADING',
+	IFrame = 'IFRAME',
 	Intro = 'INTRO',
+	MediaPlayer = 'MEDIA_PLAYER',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
-	IFrame = 'IFRAME',
-	Accordions = 'ACCORDIONS',
 }
 
 export interface HeadingBlockComponentState {
@@ -146,4 +148,9 @@ export interface IFrameBlockComponentState {
 export interface AccordionsBlockComponentState {
 	title: string;
 	content: string;
+}
+
+export interface MediaPlayerBlockComponentState {
+	title: string;
+	item?: ButtonAction;
 }
