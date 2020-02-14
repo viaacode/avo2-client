@@ -35,7 +35,7 @@ import {
 	INITIAL_FILTER_FORM,
 	ITEMS_PER_PAGE,
 } from '../content.const';
-import { DELETE_CONTENT, GET_CONTENT } from '../content.gql';
+import { DELETE_CONTENT, GET_CONTENT_PAGES } from '../content.gql';
 import { ContentFilterFormState, ContentOverviewTableCols } from '../content.types';
 import { cleanFiltersObject, generateWhereObject } from '../helpers/filters';
 import {
@@ -339,7 +339,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 						/>
 						<DataQueryComponent
 							renderData={renderContentOverview}
-							query={GET_CONTENT}
+							query={GET_CONTENT_PAGES}
 							variables={{
 								offset: page * ITEMS_PER_PAGE,
 								order: { [sortColumn]: sortOrder },

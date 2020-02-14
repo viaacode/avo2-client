@@ -48,7 +48,7 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 		editorId,
 		name: editorId,
 	};
-	let editorProps = {};
+	let editorProps;
 
 	switch (field.editorType) {
 		case ContentBlockEditor.IconPicker:
@@ -82,9 +82,17 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 				values: [num || 0],
 			};
 			break;
-		default:
+		case ContentBlockEditor.Checkbox:
 			editorProps = {
 				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+				checked: (state as any)[fieldKey],
+			};
+			break;
+		default:
+			editorProps = {
+				onChange: (value: any) => {
+					handleChange(type, fieldKey, value, stateIndex);
+				},
 				value: (state as any)[fieldKey],
 			};
 			break;

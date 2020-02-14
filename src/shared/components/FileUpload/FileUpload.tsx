@@ -71,7 +71,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				// Upload all files in series
 				setIsProcessing(true);
 				const uploadedUrls: string[] = [];
-				for (let i = 0; i < (allowMulti ? files.length : 1); i++) {
+				for (let i = 0; i < (allowMulti ? files.length : 1); i += 1) {
 					uploadedUrls.push(await uploadFile(files[i], assetType, ownerId));
 				}
 				onChange(allowMulti ? [...urls, ...uploadedUrls] : uploadedUrls);
@@ -94,7 +94,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			setIsProcessing(true);
 			if (urls) {
 				const newUrls = [...urls];
-				for (let i = 0; i < newUrls.length; i++) {
+				for (let i = 0; i < newUrls.length; i += 1) {
 					if (newUrls[i] === url) {
 						await deleteFile(newUrls[i]);
 						newUrls.splice(i, 1);
@@ -143,20 +143,19 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 						</div>
 					</Spacer>
 				);
-			} else {
-				return (
-					<Spacer margin="bottom-small" key={url}>
-						<Blankslate
-							title={url.split('/').pop() || ''}
-							body=""
-							icon="file"
-							className="a-upload-file-preview"
-						>
-							{renderDeleteButton(url)}
-						</Blankslate>
-					</Spacer>
-				);
 			}
+			return (
+				<Spacer margin="bottom-small" key={url}>
+					<Blankslate
+						title={url.split('/').pop() || ''}
+						body=""
+						icon="file"
+						className="a-upload-file-preview"
+					>
+						{renderDeleteButton(url)}
+					</Blankslate>
+				</Spacer>
+			);
 		});
 	};
 

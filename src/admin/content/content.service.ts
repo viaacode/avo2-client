@@ -11,7 +11,7 @@ import { insertContentBlocks, updateContentBlocks } from '../content-block/conte
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
-import { GET_CONTENT, GET_CONTENT_BY_ID, GET_CONTENT_TYPES } from './content.gql';
+import { GET_CONTENT_BY_ID, GET_CONTENT_PAGES, GET_CONTENT_TYPES } from './content.gql';
 import { ContentTypesResponse } from './content.types';
 
 export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
@@ -32,7 +32,7 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 
 export const fetchContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
 	try {
-		const response = await dataService.query({ query: GET_CONTENT, variables: { limit } });
+		const response = await dataService.query({ query: GET_CONTENT_PAGES, variables: { limit } });
 
 		return get(response, `data.${CONTENT_RESULT_PATH.GET}`, null);
 	} catch (err) {

@@ -45,6 +45,7 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
 
 export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('Afbeeldingen grid'),
+	type: ContentBlockType.ImageGrid,
 	components: {
 		name: i18n.t('Item'),
 		state: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES(),

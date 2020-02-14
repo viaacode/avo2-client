@@ -16,7 +16,7 @@ export const GET_CONTENT_PAGE_BY_PATH = gql`
 			is_published
 			publish_at
 			path
-			contentBlockssBycontentId {
+			contentBlockssBycontentId(order_by: { position: asc }) {
 				content_block_type
 				content_id
 				created_at

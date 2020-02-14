@@ -84,9 +84,9 @@ export const FILE_FIELD = (
 	...propOverride,
 });
 
-export const TAG_INPUT = (propOverride?: Partial<ContentBlockField>) => ({
-	label: i18n.t('Labels'),
-	editorType: ContentBlockEditor.FileUpload,
+export const CONTENT_TYPE_AND_LABELS_INPUT = (propOverride?: Partial<ContentBlockField>) => ({
+	label: i18n.t('Type en Labels'),
+	editorType: ContentBlockEditor.ContentTypeAndLabelsPicker,
 	validator: () => [],
 	...propOverride,
 });

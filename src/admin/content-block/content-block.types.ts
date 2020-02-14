@@ -40,6 +40,7 @@ export interface ContentBlockConfig {
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
+	type: ContentBlockType;
 }
 
 export interface ContentBlockComponentsConfig {
@@ -94,6 +95,8 @@ export enum ContentBlockEditor {
 	ContentPicker = 'ContentPicker',
 	FileUpload = 'FileUpload',
 	MultiRange = 'MultiRange',
+	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
+	Checkbox = 'Checkbox',
 }
 
 // If only one block exists then the errors are a string[]

@@ -1,26 +1,21 @@
 import { get } from 'lodash';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ReactSelect, { ActionMeta } from 'react-select';
+import ReactSelect from 'react-select';
 import { ValueType } from 'react-select/src/types';
 
-import {
-	Column,
-	Flex,
-	FormGroup,
-	Grid,
-	RadioButton,
-	RadioButtonGroup,
-	Select,
-	SelectOption,
-	TextInput,
-} from '@viaa/avo2-components';
+import { Column, FormGroup, Grid, SelectOption } from '@viaa/avo2-components';
+import { compact } from 'lodash-es';
 import { dataService } from '../../../../shared/services/data-service';
 import toastService from '../../../../shared/services/toast-service';
 import { ContentTypeOption } from '../../../content-block/content-block.types';
 import { GET_CONTENT_TYPES } from '../../../content/content.gql';
-import { PickerItem } from '../../../shared/types';
 import { REACT_SELECT_DEFAULT_OPTIONS } from '../ContentPicker/ContentPicker';
+
+export interface ContentTypeAndLabelsValue {
+	selectedContentType: ContentTypeOption;
+	selectedLabels: ContentLabel[];
+}
 
 export interface ContentLabel {
 	id: number;
@@ -31,21 +26,22 @@ export interface ContentLabel {
 }
 
 export interface ContentPickerProps {
-	selectedContentType: ContentTypeOption;
-	onSelectedContentTypeChanged: (contentTypes: ContentTypeOption) => void;
-	selectedLabels: ContentLabel[];
-	onSelectedLabelsChanged: (labels: ContentLabel[]) => void;
+	value?: ContentTypeAndLabelsValue;
+	onChange: (value: ContentTypeAndLabelsValue) => void;
+	errors: string[];
 }
 
 const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
-	selectedContentType,
-	onSelectedContentTypeChanged,
-	selectedLabels,
-	onSelectedLabelsChanged,
+	value = {
+		selectedContentType: 'PROJECT',
+		selectedLabels: [],
+	},
+	onChange,
+	errors,
 }) => {
 	const [t] = useTranslation();
 
-	const [contentTypes, setContentTypes] = useState<ContentTypeOption>([]);
+	const [contentTypes, setContentTypes] = useState<ContentTypeOption[]>([]);
 	const [labels, setLabels] = useState<ContentLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -57,8 +53,8 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 				query: GET_CONTENT_TYPES,
 			})
 			.then(response => {
-				const types: string[] = get(response, 'data.lookup_enum_content_types', []).map(
-					(type: { value: string }) => type.value
+				const types: ContentTypeOption[] = get(response, 'data.lookup_enum_content_types', []).map(
+					(type: { value: string }): ContentTypeOption => type.value as ContentTypeOption
 				);
 				setContentTypes(types);
 			})
@@ -75,14 +71,14 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 		setIsLoading(true);
 		setLabels(
 			[
-				`${selectedContentType}-test1`,
-				`${selectedContentType}-test2`,
-				`${selectedContentType}-test3`,
+				`${value.selectedContentType}-test1`,
+				`${value.selectedContentType}-test2`,
+				`${value.selectedContentType}-test3`,
 			].map(
 				(label, index): ContentLabel => ({
 					label,
 					id: index,
-					content_type: selectedContentType,
+					content_type: value.selectedContentType,
 					created_at: new Date().toISOString(),
 					updated_at: new Date().toISOString(),
 				})
@@ -107,9 +103,27 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 		// 		toastService.danger(t('Het ophalen van de content pagina types is mislukt'));
 		// 	})
 		//  .finally(() => setIsLoading(false));
-	}, [selectedContentType, setLabels, t]);
+	}, [value.selectedContentType, setLabels, t]);
 
-	const renderGroupLabel = (data: any) => <span>{data.label}</span>;
+	const handleContentTypeChanged = (selectedItem: ValueType<SelectOption<ContentTypeOption>>) => {
+		onChange({
+			selectedContentType: get(selectedItem, 'value'),
+			selectedLabels: get(value, 'selectedLabels', []),
+		});
+	};
+
+	const handleLabelsChanged = (newSelectedLabels: SelectOption<number>[]) => {
+		onChange({
+			selectedContentType: get(value, 'selectedContentType'),
+			selectedLabels: compact(
+				(newSelectedLabels || []).map((selectedLabel: SelectOption<number>) =>
+					(labels || []).find(labelObj => {
+						return labelObj.id === get(selectedLabel, 'value');
+					})
+				)
+			),
+		});
+	};
 
 	const renderSelectPicker = () => (
 		<Grid>
@@ -118,14 +132,15 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 					{...REACT_SELECT_DEFAULT_OPTIONS}
 					id="content-type-and-label-picker-type"
 					placeholder={t('admin/content/components/content-picker/content-picker___type')}
-					options={contentTypes.map(
-						(type: ContentTypeOption): SelectOption => ({ label: type, value: type })
+					options={(contentTypes || []).map(
+						(type: ContentTypeOption): SelectOption<ContentTypeOption> => ({
+							label: type,
+							value: type,
+						})
 					)}
 					isSearchable={true}
 					isMulti={false}
-					onChange={(selectedItem: ValueType<PickerItem>) =>
-						onSelectedContentTypeChanged(get(selectedItem, 'value') as ContentTypeOption)
-					}
+					onChange={handleContentTypeChanged}
 				/>
 			</Column>
 			<Column size="3">
@@ -133,57 +148,24 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 					{...REACT_SELECT_DEFAULT_OPTIONS}
 					id="content-type-and-label-picker-label"
 					placeholder={t('Labels')}
-					options={labels.map(
-						(label): SelectOption => ({ label: label.label, value: String(label.id) })
+					options={(labels || []).map(
+						(label): SelectOption<number> => ({ label: label.label, value: label.id })
+					)}
+					value={compact(
+						(value.selectedLabels || []).map(
+							(labelObj): SelectOption<number> => ({ label: labelObj.label, value: labelObj.id })
+						)
 					)}
 					isSearchable={true}
+					isMulti={true}
 					isLoading={isLoading}
-					onChange={(changedValue: ValueType<SelectOption>, actionMeta: ActionMeta) => {
-						if (actionMeta.action === 'select-option') {
-							onChange((changedValue as SelectOption).value);
-						}
-					}}
+					onChange={handleLabelsChanged as any}
 				/>
 			</Column>
 		</Grid>
 	);
 
-	const renderInputPicker = () => <TextInput value={input} onChange={onChangeText} />;
-
-	const renderEditor = () => {
-		switch (controls) {
-			case 'content':
-				return renderSelectPicker();
-			case 'external-url':
-				return renderInputPicker();
-			default:
-				return null;
-		}
-	};
-
-	return (
-		<>
-			<RadioButtonGroup>
-				<Flex orientation="horizontal" spaced="wide">
-					<RadioButton
-						label={t('admin/shared/components/content-picker/content-picker___content')}
-						name="content"
-						value="content"
-						checked={controls === 'content'}
-						onChange={() => setControls('content')}
-					/>
-					<RadioButton
-						label={t('admin/shared/components/content-picker/content-picker___externe-url')}
-						name="external-url"
-						value="external-url"
-						checked={controls === 'external-url'}
-						onChange={() => setControls('external-url')}
-					/>
-				</Flex>
-			</RadioButtonGroup>
-			<FormGroup error={errors}>{renderEditor()}</FormGroup>
-		</>
-	);
+	return <FormGroup error={errors}>{renderSelectPicker()}</FormGroup>;
 };
 
-export default ContentLabelPicker;
+export default ContentTypeAndLabelsPicker;

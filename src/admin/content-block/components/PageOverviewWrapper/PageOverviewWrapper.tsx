@@ -4,24 +4,28 @@ import { useTranslation } from 'react-i18next';
 
 import {
 	BlockPageOverview,
+	ContentItemStyle,
 	ContentPageInfo,
-} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
+	ContentTabStyle,
+	LabelObj,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { dataService } from '../../../../shared/services/data-service';
 import i18n from '../../../../shared/translations/i18n';
-import { GET_CONTENT } from '../../../content/content.gql';
+import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../content/content.gql';
+import { ContentTypeAndLabelsValue } from '../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
 import { ContentBlockConfig } from '../../content-block.types';
 import { parseContentBlocks } from '../../helpers';
 
+import toastService from '../../../../shared/services/toast-service';
 import { ContentBlockPreview } from '../index';
 
 interface PageOverviewWrapperProps {
-	tabs?: string[];
-	tabStyle?: 'ROUNDED_BADGES' | 'MENU_BAR';
+	contentTypeAndTabs: ContentTypeAndLabelsValue;
+	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
-	contentType: string; // lookup options in lookup.enum_content_types
-	itemStyle?: 'GRID' | 'LIST';
+	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
 	showDescription?: boolean;
 	showDate?: boolean;
@@ -30,10 +34,12 @@ interface PageOverviewWrapperProps {
 }
 
 const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
-	tabs = [],
+	contentTypeAndTabs = {
+		selectedContentType: 'PROJECT',
+		selectedLabels: [],
+	},
 	tabStyle = 'MENU_BAR',
 	allowMultiple = false,
-	contentType = 'PROJECT', // lookup options in lookup.enum_content_types
 	itemStyle = 'LIST',
 	showTitle = true,
 	showDescription = true,
@@ -44,7 +50,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	const [t] = useTranslation();
 
 	const [currentPage, setCurrentPage] = useState<number>(0);
-	const [selectedTabs, setSelectedTabs] = useState<string[]>([]);
+	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
 	const [pages, setPages] = useState<ContentPageInfo[]>([]);
 	const [pageCount, setPageCount] = useState<number>(1);
 
@@ -75,14 +81,14 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		};
 	};
 
-	useEffect(() => {
+	const fetchPages = async () => {
 		let filteredPages: ContentPageInfo[] = [];
 		let pageCount = 0;
 		if (selectedTabs.length) {
 			// TODO get contentPages from the database that have one of the selected groups
 		} else {
-			const response = dataService.query({
-				query: GET_CONTENT,
+			const response = await dataService.query({
+				query: itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
 				variables: {
 					offset: currentPage * itemsPerPage,
 					limit: itemsPerPage,
@@ -94,20 +100,34 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		}
 		setPages(filteredPages);
 		setPageCount(Math.ceil(pageCount / itemsPerPage));
-	}, [selectedTabs, currentPage]);
+	};
+
+	useEffect(() => {
+		fetchPages().catch(err => {
+			toastService.danger(
+				t('Het ophalen van de paginas is mislukt', err, {
+					query: 'GET_CONTENT',
+					variables: {
+						offset: currentPage * itemsPerPage,
+						limit: itemsPerPage,
+					},
+				})
+			);
+		});
+	}, [contentTypeAndTabs.selectedContentType, selectedTabs, currentPage]);
 
 	const handleCurrentPageChanged = (pageIndex: number) => {
 		setCurrentPage(pageIndex);
 	};
 
-	const handleSelectedTabsChanged = (tabs: string[]) => {
+	const handleSelectedTabsChanged = (tabs: LabelObj[]) => {
 		setSelectedTabs(tabs);
 		setCurrentPage(0);
 	};
 
 	return (
 		<BlockPageOverview
-			tabs={tabs}
+			tabs={contentTypeAndTabs.selectedLabels}
 			selectedTabs={selectedTabs}
 			onSelectedTabsChanged={handleSelectedTabsChanged}
 			currentPage={currentPage}

@@ -22,6 +22,7 @@ import {
 	ContentBlockState,
 	ContentBlockType,
 } from '../../content-block.types';
+import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
 
 interface ContentBlockPreviewProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
@@ -46,9 +47,10 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Accordions]: BlockAccordions,
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.ImageGrid]: BlockGrid,
+	[ContentBlockType.PageOverview]: PageOverviewWrapper,
 });
 
-const REPEATABLE_CONTENT_BLOCKS = [
+export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.Accordions,
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,

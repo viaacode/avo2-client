@@ -1,4 +1,11 @@
-import { MultiRange, Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
+import {
+	Checkbox,
+	MultiRange,
+	Select,
+	SelectOption,
+	TextInput,
+	WYSIWYG,
+} from '@viaa/avo2-components';
 
 import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
@@ -6,14 +13,21 @@ import i18n from '../../shared/translations/i18n';
 import { FileUpload } from '../../shared/components';
 import { ContentPicker } from '../shared/components';
 
+import {
+	ContentItemStyle,
+	ContentTabStyle,
+} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
+import ContentTypeAndLabelsPicker from '../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
 import { AlignSelect, ColorSelect } from './components';
 import {
 	AlignOption,
 	ButtonTypeOption,
 	ContentBlockBackgroundColor,
-	ContentBlockType, ContentTypeOption,
+	ContentBlockType,
+	ContentTypeOption,
 	HeadingLevelOption,
-	ImageGridFillOption, ImageGridTextAlignOption,
+	ImageGridFillOption,
+	ImageGridTextAlignOption,
 	ImageWidthOption,
 } from './content-block.types';
 import {
@@ -23,27 +37,38 @@ import {
 	HEADING_BLOCK_CONFIG,
 	IFRAME_BLOCK_CONFIG,
 	IMAGE_BLOCK_CONFIG,
-	INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES, INITIAL_ACCORDIONS_BLOCK_STATE,
-	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES, INITIAL_BUTTONS_BLOCK_STATE,
-	INITIAL_CTAS_BLOCK_COMPONENT_STATES, INITIAL_CTAS_BLOCK_STATE,
-	INITIAL_HEADING_BLOCK_COMPONENT_STATE, INITIAL_HEADING_BLOCK_STATE,
-	INITIAL_IFRAME_BLOCK_COMPONENT_STATE, INITIAL_IFRAME_BLOCK_STATE,
-	INITIAL_IMAGE_BLOCK_COMPONENT_STATE, INITIAL_IMAGE_BLOCK_STATE,
-	INITIAL_INTRO_BLOCK_COMPONENT_STATE, INITIAL_INTRO_BLOCK_STATE,
-	INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE, INITIAL_RICH_TEXT_BLOCK_STATE,
-	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE, INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
+	INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
+	INITIAL_ACCORDIONS_BLOCK_STATE,
+	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
+	INITIAL_BUTTONS_BLOCK_STATE,
+	INITIAL_CTAS_BLOCK_COMPONENT_STATES,
+	INITIAL_CTAS_BLOCK_STATE,
+	INITIAL_HEADING_BLOCK_COMPONENT_STATE,
+	INITIAL_HEADING_BLOCK_STATE,
+	INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	INITIAL_IFRAME_BLOCK_STATE,
+	INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
+	INITIAL_IMAGE_BLOCK_STATE,
+	INITIAL_INTRO_BLOCK_COMPONENT_STATE,
+	INITIAL_INTRO_BLOCK_STATE,
+	INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
+	INITIAL_RICH_TEXT_BLOCK_STATE,
+	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
+	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 	INTRO_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
 import {
 	IMAGE_GRID_BLOCK_CONFIG,
-	INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES, INITIAL_IMAGE_GRID_BLOCK_STATE,
+	INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
+	INITIAL_IMAGE_GRID_BLOCK_STATE,
 } from './helpers/generators/image-grid';
 import {
-	ContentItemStyle,
-	ContentTabStyle
-} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
+	INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE,
+	INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
+	PAGE_OVERVIEW_BLOCK_CONFIG,
+} from './helpers/generators/page-overview';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -90,6 +115,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('Afbeelding grid'),
 		value: ContentBlockType.ImageGrid,
 	},
+	{
+		label: i18n.t('Pagina overzicht'),
+		value: ContentBlockType.PageOverview,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -102,6 +131,8 @@ export const EDITOR_TYPES_MAP = {
 	ContentPicker,
 	FileUpload,
 	MultiRange,
+	ContentTypeAndLabelsPicker,
+	Checkbox,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -115,6 +146,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
+	[ContentBlockType.PageOverview]: PAGE_OVERVIEW_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
@@ -128,6 +160,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE,
 };
 
 export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
@@ -141,6 +174,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
+	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
 };
 
 // Options
@@ -182,14 +216,4 @@ export const PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: SelectOption<ContentItemStyle>[] 
 	{ label: i18n.t('Lijst'), value: 'LIST' },
 	{ label: i18n.t('Grid'), value: 'GRID' },
 	{ label: i18n.t('Accrodions'), value: 'ACCORDION' },
-];
-
-export const PAGE_OVERVIEW_CONTENT_TYPE_OPTIONS: SelectOption<ContentTypeOption>[] = [
-	{ label: i18n.t('Nieuws overzicht'), value: 'NIEUWS_OVERZICHT' },
-	{ label: i18n.t('Nieuws item'), value: 'NIEUWS_ITEM' },
-	{ label: i18n.t('FAQ overzicht'), value: 'FAQ_OVERZICHT' },
-	{ label: i18n.t('FAQ item'), value: 'FAQ_ITEM' },
-	{ label: i18n.t('Screencast'), value: 'SCREENCAST' },
-	{ label: i18n.t('Pagina'), value: 'PAGINA' },
-	{ label: i18n.t('Project'), value: 'PROJECT' },
 ];
