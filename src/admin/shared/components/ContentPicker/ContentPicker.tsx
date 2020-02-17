@@ -18,25 +18,32 @@ const REACT_SELECT_DEFAULT_OPTIONS = {
 };
 
 export interface ContentPickerProps {
+	onSelect: (value: ValueType<PickerItem>) => void;
 	selectableTypes?: string[];
-	onSelect: (value: PickerItem) => void;
 	errors?: string | string[];
+	currentSelection?: PickerItem;
 }
 
 const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	selectableTypes,
 	onSelect,
 	errors = [],
+	currentSelection,
 }) => {
+	const typeOptions = CONTENT_TYPES.filter((option: PickerTypeOption) =>
+		selectableTypes ? selectableTypes.includes(option.value) : option.value
+	);
+	const currentTypeObject = typeOptions.find(
+		type => type.value === get(currentSelection, 'type')
+	) as PickerTypeOption;
+
 	const [t] = useTranslation();
 
 	const [loading, setLoading] = useState<boolean>(false);
-	const [currentType, setCurrentType] = useState<PickerTypeOption>();
+	const [currentType, setCurrentType] = useState<PickerTypeOption>(currentTypeObject || null);
 	const [options, setOptions] = useState<PickerSelectItem[]>([]);
-	const [input, setInput] = useState<string>();
-
-	const typeOptions = CONTENT_TYPES.filter((option: PickerTypeOption) =>
-		selectableTypes ? selectableTypes.includes(option.value) : option.value
+	const [input, setInput] = useState<string>(
+		get(currentTypeObject, 'picker') === 'TEXT_INPUT' ? get(currentSelection, 'value', '') : ''
 	);
 
 	useEffect(() => {
@@ -51,6 +58,7 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					setLoading(false);
 				})
 				.catch(error => {
+					setLoading(false);
 					console.error('Failed to inflate content picker.', error);
 					toastService.danger(
 						t(
@@ -97,7 +105,14 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			options={options as any}
 			isSearchable={false}
 			isLoading={loading}
-			onChange={(selectedItem: ValueType<PickerItem>) => onSelect(get(selectedItem, 'value'))}
+			onChange={(selectedItem: ValueType<PickerItem>) => {
+				onSelect(get(selectedItem, 'value'));
+			}}
+			value={
+				options.find(
+					option => get(option, 'value.value', '') === get(currentSelection, 'value', '')
+				) as ValueType<PickerItem>
+			}
 		/>
 	);
 
@@ -115,6 +130,7 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 						isSearchable={false}
 						isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
 						onChange={onChangeType}
+						value={currentType}
 					/>
 				</Column>
 				<Column size="3">{renderContentPickerControls()}</Column>

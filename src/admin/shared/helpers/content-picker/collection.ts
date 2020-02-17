@@ -1,5 +1,3 @@
-import i18n from '../../../../shared/translations/i18n';
-
 import { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../../../collection/collection.service';
