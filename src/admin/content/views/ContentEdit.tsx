@@ -310,14 +310,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<HeaderButtons>
 						<ButtonToolbar>
 							<Button
-								disabled={isSaving}
-								label={t('admin/content/views/content-edit___opslaan')}
-								onClick={handleSave}
-							/>
-							<Button
 								label={t('admin/content/views/content-edit___annuleer')}
 								onClick={navigateBack}
 								type="tertiary"
+							/>
+							<Button
+								disabled={isSaving}
+								label={t('admin/content/views/content-edit___opslaan')}
+								onClick={handleSave}
 							/>
 						</ButtonToolbar>
 					</HeaderButtons>
