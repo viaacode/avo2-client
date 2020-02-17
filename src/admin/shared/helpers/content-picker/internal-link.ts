@@ -1,12 +1,12 @@
 import { APP_PATH } from '../../../../constants';
 
-import { PickerSelectItemGroup } from '../../types';
+import { PickerSelectItem } from '../../types';
 import { parsePickerItem } from './parse-picker';
 
 const APP_PATH_ARRAY = Object.entries(APP_PATH);
 
 // Return InternalLinkItems items from APP_PATH
-export const fetchInternalLinks = async (limit: number): Promise<PickerSelectItemGroup> =>
+export const fetchInternalLinks = async (limit: number): Promise<PickerSelectItem[]> =>
 	parseInternalLinks(APP_PATH_ARRAY, limit);
 
 export const parseInternalLinks = (raw: any, limit: number) => {
@@ -17,8 +17,5 @@ export const parseInternalLinks = (raw: any, limit: number) => {
 		value: parsePickerItem('INTERNAL_LINK', item[1]),
 	}));
 
-	return {
-		label: 'Interne links',
-		options: parsedInternalLinkItemsItems,
-	};
+	return parsedInternalLinkItemsItems;
 };

@@ -4,21 +4,13 @@ import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import { ValueType } from 'react-select/src/types';
 
-import {
-	Column,
-	Flex,
-	FormGroup,
-	Grid,
-	RadioButton,
-	RadioButtonGroup,
-	TextInput,
-} from '@viaa/avo2-components';
-import toastService from '../../../../shared/services/toast-service';
-import { CONTENT_TYPES } from '../../../content/content.const';
-import { parsePickerItem } from '../../../shared/helpers';
-import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../../shared/types';
+import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
-type ContentPickerControls = 'content' | 'external-url';
+import toastService from '../../../../shared/services/toast-service';
+import { parsePickerItem } from '../../../shared/helpers';
+import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
+
+import { CONTENT_TYPES } from './ContentPicker.const';
 
 const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
@@ -26,45 +18,40 @@ const REACT_SELECT_DEFAULT_OPTIONS = {
 };
 
 export interface ContentPickerProps {
-	initialControls?: ContentPickerControls;
 	selectableTypes?: string[];
 	onSelect: (value: ValueType<PickerItem>) => void;
 	errors?: string | string[];
 }
 
 const ContentPicker: FunctionComponent<ContentPickerProps> = ({
-	initialControls = 'content',
 	selectableTypes,
 	onSelect,
 	errors = [],
 }) => {
 	const [t] = useTranslation();
 
-	const [controls, setControls] = useState<ContentPickerControls>(initialControls);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [currentTypes, setCurrentTypes] = useState<PickerTypeOption[]>([]);
-	const [groupedOptions, setGroupedOptions] = useState<PickerSelectItemGroup[]>([]);
+	const [currentType, setCurrentType] = useState<PickerTypeOption>();
+	const [options, setOptions] = useState<PickerSelectItem[]>([]);
 	const [input, setInput] = useState<string>();
 
 	const typeOptions = CONTENT_TYPES.filter((option: PickerTypeOption) =>
 		selectableTypes ? selectableTypes.includes(option.value) : option.value
 	);
 
-	// Retrieve items when type is selected.
 	useEffect(() => {
-		if (currentTypes && currentTypes.length) {
+		if (currentType && !!currentType.fetch) {
 			setLoading(true);
-			const maxPerType = Math.floor(20 / currentTypes.length);
-			const fetchChain = currentTypes.map(type => type.fetch(maxPerType));
 
-			// Retrieve items for selected types.
-			Promise.all(fetchChain)
-				.then((data: PickerSelectItemGroup[]) => {
-					setGroupedOptions(data);
+			// Retrieve items for selected type.
+			currentType
+				.fetch(20)
+				.then(items => {
+					setOptions(items || []);
 					setLoading(false);
 				})
-				.catch(err => {
-					console.error('Failed to inflate content picker.', err);
+				.catch(error => {
+					console.error('Failed to inflate content picker.', error);
 					toastService.danger(
 						t(
 							'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
@@ -73,84 +60,66 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					);
 				});
 		}
-	}, [currentTypes, t]);
+	}, [currentType, t]);
 
 	const onChangeText = (value: string) => {
 		setInput(value);
 		onSelect(parsePickerItem('EXTERNAL_LINK', value));
 	};
 
-	const onChangeType = (currentValues: ValueType<PickerTypeOption>) => {
-		setCurrentTypes((currentValues as PickerTypeOption[]) || []);
+	const onChangeType = (selected: ValueType<PickerTypeOption>) => {
+		setCurrentType(selected as PickerTypeOption);
 	};
 
 	const renderGroupLabel = (data: any) => <span>{data.label}</span>;
 
-	const renderSelectPicker = () => (
-		<Grid>
-			<Column size="1">
-				<ReactSelect
-					{...REACT_SELECT_DEFAULT_OPTIONS}
-					id="content-picker-type"
-					placeholder={t('admin/content/components/content-picker/content-picker___type')}
-					options={typeOptions}
-					isSearchable={false}
-					isMulti={true}
-					isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
-					onChange={onChangeType}
-				/>
-			</Column>
-			<Column size="3">
-				<ReactSelect
-					{...REACT_SELECT_DEFAULT_OPTIONS}
-					id="content-picker-query"
-					placeholder={t('admin/content/components/content-picker/content-picker___item')}
-					formatGroupLabel={renderGroupLabel}
-					options={groupedOptions as any}
-					isSearchable={false}
-					isDisabled={!currentTypes.length}
-					isLoading={loading}
-					onChange={(selectedItem: ValueType<PickerItem>) => onSelect(get(selectedItem, 'value'))}
-				/>
-			</Column>
-		</Grid>
-	);
+	const renderContentPickerControls = () => {
+		if (!currentType) {
+			return null;
+		}
 
-	const renderInputPicker = () => <TextInput value={input} onChange={onChangeText} />;
-
-	const renderEditor = () => {
-		switch (controls) {
-			case 'content':
+		switch (currentType.picker) {
+			case 'SELECT':
 				return renderSelectPicker();
-			case 'external-url':
-				return renderInputPicker();
+			case 'TEXT_INPUT':
+				return renderTextInputPicker();
 			default:
 				return null;
 		}
 	};
 
+	const renderSelectPicker = () => (
+		<ReactSelect
+			{...REACT_SELECT_DEFAULT_OPTIONS}
+			id="content-picker-query"
+			placeholder={t('admin/content/components/content-picker/content-picker___item')}
+			formatGroupLabel={renderGroupLabel}
+			options={options as any}
+			isSearchable={false}
+			isLoading={loading}
+			onChange={(selectedItem: ValueType<PickerItem>) => onSelect(get(selectedItem, 'value'))}
+		/>
+	);
+
+	const renderTextInputPicker = () => <TextInput value={input} onChange={onChangeText} />;
+
 	return (
-		<>
-			<RadioButtonGroup>
-				<Flex orientation="horizontal" spaced="wide">
-					<RadioButton
-						label={t('admin/shared/components/content-picker/content-picker___content')}
-						name="content"
-						value="content"
-						checked={controls === 'content'}
-						onChange={() => setControls('content')}
+		<FormGroup error={errors}>
+			<Grid>
+				<Column size="1">
+					<ReactSelect
+						{...REACT_SELECT_DEFAULT_OPTIONS}
+						id="content-picker-type"
+						placeholder={t('admin/content/components/content-picker/content-picker___type')}
+						options={typeOptions}
+						isSearchable={false}
+						isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
+						onChange={onChangeType}
 					/>
-					<RadioButton
-						label={t('admin/shared/components/content-picker/content-picker___externe-url')}
-						name="external-url"
-						value="external-url"
-						checked={controls === 'external-url'}
-						onChange={() => setControls('external-url')}
-					/>
-				</Flex>
-			</RadioButtonGroup>
-			<FormGroup error={errors}>{renderEditor()}</FormGroup>
-		</>
+				</Column>
+				<Column size="3">{renderContentPickerControls()}</Column>
+			</Grid>
+		</FormGroup>
 	);
 };
 

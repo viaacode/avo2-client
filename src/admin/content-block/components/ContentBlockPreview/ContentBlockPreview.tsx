@@ -14,10 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { BUNDLE_PATH } from '../../../../bundle/bundle.const';
-import { COLLECTION_PATH } from '../../../../collection/collection.const';
-import { ITEM_PATH } from '../../../../item/item.const';
-import { navigate, navigateToContentType } from '../../../../shared/helpers';
+import { navigateToContentType } from '../../../../shared/helpers';
 
 import {
 	ContentBlockBackgroundColor,
