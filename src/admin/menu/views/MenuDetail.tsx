@@ -167,7 +167,8 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		// Return to overview if menu is empty
 		if (!menu.length) {
 			toastService.danger(
-				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden')
+				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
+				false
 			);
 			handleNavigate(MENU_PATH.MENU);
 		}
