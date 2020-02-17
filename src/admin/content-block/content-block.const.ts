@@ -127,7 +127,7 @@ export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
 ];
 
 export const IMAGE_WIDTH_OPTIONS: SelectOption<ImageWidthOptions>[] = [
-	{ label: i18n.t('paginabreedte'), value: 'full-width' },
-	{ label: i18n.t('groot'), value: '500px' },
-	{ label: i18n.t('middelgroot'), value: '400px' },
+	{ label: i18n.t('Paginabreedte'), value: 'full-width' },
+	{ label: i18n.t('Groot'), value: '500px' },
+	{ label: i18n.t('Middelgroot'), value: '400px' },
 ];

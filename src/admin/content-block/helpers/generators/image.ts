@@ -28,12 +28,12 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 		state: INITIAL_IMAGE_BLOCK_COMPONENT_STATE(),
 		fields: {
 			title: {
-				label: i18n.t('Titel'),
+				label: i18n.t('Bijschift titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			},
 			text: {
-				label: i18n.t('Tekst'),
+				label: i18n.t('Bijschrift beschrijving'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			},
