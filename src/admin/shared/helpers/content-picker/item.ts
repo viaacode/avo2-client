@@ -17,7 +17,7 @@ const parseItems = (raw: Avo.Item.Item[]): PickerSelectItemGroup => {
 	const parsedItems = raw.map(
 		(item: Avo.Item.Item): PickerSelectItem => ({
 			label: item.title,
-			value: parsePickerItem('ITEM', item.id.toString()),
+			value: parsePickerItem('ITEM', item.external_id.toString()),
 		})
 	);
 

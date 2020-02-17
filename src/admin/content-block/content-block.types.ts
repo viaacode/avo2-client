@@ -1,5 +1,4 @@
-import { IconName } from '@viaa/avo2-components';
-// TODO: Import from components lib when exported there.
+import { ButtonAction, IconName } from '@viaa/avo2-components';
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 
 export type ContentBlockStateType = 'components' | 'block';
@@ -148,6 +147,7 @@ export interface CTAsBlockComponentState {
 	buttonLabel: string;
 	buttonIcon?: IconName;
 	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
 }
 
 export interface IFrameBlockComponentState {

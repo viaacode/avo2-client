@@ -10,8 +10,11 @@ export enum PageType {
 }
 
 export enum ContentPageType {
-	FAQ = 'FAQ',
-	News = 'NIEUWS',
+	NewsOverview = 'NIEUWS_OVERZICHT',
+	NewsItem = 'NIEUWS_ITEM',
+	FaqOverview = 'FAQ_OVERZICHT',
+	FaqItem = 'FAQ_ITEM',
+	Screencast = 'SCREENCAST',
 	Page = 'PAGINA',
 	Project = 'PROJECT',
 }
@@ -70,6 +73,7 @@ export interface ContentEditFormState {
 	contentWidth: Avo.Content.ContentWidth;
 	publishAt: string;
 	depublishAt: string;
+	userGroupIds: number[];
 }
 
 export interface ContentEditState {
