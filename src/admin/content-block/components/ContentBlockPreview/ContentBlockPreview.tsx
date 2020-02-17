@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import {
 	BlockAccordions,
@@ -7,11 +8,17 @@ import {
 	BlockCTAs,
 	BlockHeading,
 	BlockIFrame,
+	BlockImage,
 	BlockIntro,
 	BlockRichText,
 	Container,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+
+import { BUNDLE_PATH } from '../../../../bundle/bundle.const';
+import { COLLECTION_PATH } from '../../../../collection/collection.const';
+import { ITEM_PATH } from '../../../../item/item.const';
+import { navigate, navigateToContentType } from '../../../../shared/helpers';
 
 import {
 	ContentBlockBackgroundColor,
@@ -20,7 +27,7 @@ import {
 	ContentBlockType,
 } from '../../content-block.types';
 
-interface ContentBlockPreviewProps {
+interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
 	contentWidth?: Avo.Content.ContentWidth;
 	blockState: ContentBlockState;
@@ -41,6 +48,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Accordions]: BlockAccordions,
+	[ContentBlockType.Image]: BlockImage,
 });
 
 const REPEATABLE_CONTENT_BLOCKS = [
@@ -54,6 +62,7 @@ const REPEATABLE_CONTENT_BLOCKS = [
 export const BLOCK_STATE_INHERITING_PROPS = ['align'];
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
+	history,
 	componentState,
 	contentWidth = 'REGULAR',
 	blockState,
@@ -68,6 +77,23 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			stateToSpread[prop] = (blockState as any)[prop];
 		}
 	});
+
+	// TODO: Change BlockCTA to the way Buttons works so that we don't have to add navigate to each CTA element + then we can remove one of the two following conditional statements..
+	if (blockState.blockType === ContentBlockType.Buttons) {
+		stateToSpread.elements.forEach(({ action }: any) => {
+			stateToSpread.navigate = () => {
+				navigateToContentType(action, history);
+			};
+		});
+	}
+
+	if (blockState.blockType === ContentBlockType.CTAs) {
+		stateToSpread.elements.forEach((innerState: any) => {
+			innerState.navigate = () => {
+				navigateToContentType(innerState.buttonAction, history);
+			};
+		});
+	}
 
 	return (
 		// TODO: Extend spacer with paddings in components lib
@@ -87,4 +113,4 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	);
 };
 
-export default ContentBlockPreview;
+export default withRouter(ContentBlockPreview);

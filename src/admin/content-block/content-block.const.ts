@@ -3,6 +3,7 @@ import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components'
 import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
 
+import { FileUpload } from '../../shared/components';
 import { ContentPicker } from '../shared/components';
 
 import { AlignSelect, ColorSelect } from './components';
@@ -12,6 +13,7 @@ import {
 	ContentBlockBackgroundColor,
 	ContentBlockType,
 	HeadingLevelOptions,
+	ImageWidthOptions,
 } from './content-block.types';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
@@ -19,11 +21,13 @@ import {
 	CTAS_BLOCK_CONFIG,
 	HEADING_BLOCK_CONFIG,
 	IFRAME_BLOCK_CONFIG,
+	IMAGE_BLOCK_CONFIG,
 	INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
 	INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	INITIAL_HEADING_BLOCK_COMPONENT_STATE,
 	INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	INITIAL_INTRO_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
@@ -69,6 +73,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('admin/content-block/content-block___accordeons'),
 		value: ContentBlockType.Accordions,
 	},
+	{
+		label: i18n.t('Afbeelding'),
+		value: ContentBlockType.Image,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -79,6 +87,7 @@ export const EDITOR_TYPES_MAP = {
 	WYSIWYG,
 	IconPicker,
 	ContentPicker,
+	FileUpload,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -90,6 +99,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
 	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
+	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
@@ -101,6 +111,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 };
 
 // Options
@@ -113,4 +124,10 @@ export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
 export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
 	{ label: i18n.t('admin/content-block/content-block___primair'), value: 'primary' },
 	{ label: i18n.t('admin/content-block/content-block___secundair'), value: 'secondary' },
+];
+
+export const IMAGE_WIDTH_OPTIONS: SelectOption<ImageWidthOptions>[] = [
+	{ label: i18n.t('Paginabreedte'), value: 'full-width' },
+	{ label: i18n.t('Groot'), value: '500px' },
+	{ label: i18n.t('Middelgroot'), value: '400px' },
 ];
