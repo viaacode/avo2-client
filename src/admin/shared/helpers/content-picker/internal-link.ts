@@ -13,7 +13,8 @@ export const fetchInternalLinks = async (limit: number): Promise<PickerSelectIte
 
 export const parseInternalLinks = (allPaths: string[], limit: number) => {
 	const paths = allPaths.slice(0, limit).filter((path: any) => !path.includes(':'));
-	remove(paths, (item: any) => item[0] === 'ASSIGNMENT_CREATE');
+	remove(paths, '/mijn-werkruimte/opdrachten/maak');
+	paths.push('/mijn-werkruimte');
 	paths.push('/mijn-werkruimte/collecties');
 	paths.push('/mijn-werkruimte/bundels');
 	paths.push('/mijn-werkruimte/opdrachten');
