@@ -24,7 +24,6 @@ import {
 	ButtonTypeOption,
 	ContentBlockBackgroundColor,
 	ContentBlockType,
-	ContentTypeOption,
 	HeadingLevelOption,
 	ImageGridFillOption,
 	ImageGridTextAlignOption,
