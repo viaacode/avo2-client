@@ -38,6 +38,8 @@ export const GET_CONTENT_PAGES = gql`
 			publish_at
 			title
 			updated_at
+			user_group_ids
+			user_profile_id
 		}
 		app_content_aggregate(where: $where) {
 			aggregate {
@@ -124,6 +126,7 @@ export const GET_CONTENT_BY_ID = gql`
 			publish_at
 			title
 			updated_at
+			user_group_ids
 		}
 	}
 `;
@@ -165,6 +168,14 @@ export const DELETE_CONTENT = gql`
 	mutation deleteContent($id: Int!) {
 		delete_app_content(where: { id: { _eq: $id } }) {
 			affected_rows
+		}
+	}
+`;
+
+export const GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH = gql`
+	query GetPermissionsFromContentPageByPath($path: String!) {
+		app_content(where: { path: { _eq: $path } }) {
+			user_group_ids
 		}
 	}
 `;

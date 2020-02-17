@@ -162,13 +162,11 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									label={t(
 										'admin/content/components/content-edit-form/content-edit-form___zichtbaar-voor'
 									)}
-									error={'' /* formErrors.user_group_ids */}
+									error={formErrors.userGroupIds}
 									placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
-									values={[1]}
+									values={formState.userGroupIds}
 									required={false}
-									onChange={
-										() => {} /* (userGroupIds: number[]) => onChange('user_group_ids', userGroupIds) */
-									}
+									onChange={(userGroupIds: number[]) => onChange('userGroupIds', userGroupIds)}
 								/>
 							</Column>
 							<Column size="3-6">

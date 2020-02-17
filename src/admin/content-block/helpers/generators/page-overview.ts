@@ -93,7 +93,7 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					label: i18n.t('Items per pagina'),
 					editorType: ContentBlockEditor.MultiRange,
 					editorProps: {
-						min: 1,
+						min: 0,
 						max: 1000,
 						step: 1,
 					} as MultiRangeProps,

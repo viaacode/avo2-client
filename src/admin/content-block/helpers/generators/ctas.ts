@@ -75,6 +75,10 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 					options: ADMIN_ICON_OPTIONS,
 				},
 			},
+			buttonAction: {
+				label: i18n.t('Knop: Actie'),
+				editorType: ContentBlockEditor.ContentPicker,
+			},
 		},
 	},
 	block: {
