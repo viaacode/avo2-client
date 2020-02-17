@@ -159,6 +159,14 @@ export interface MediaPlayerBlockComponentState {
 }
 
 export interface MediaPlayerTitleTextButtonBlockComponentState {
-	title: string;
-	item?: ButtonAction;
+	mediaTitle: string;
+	mediaItem?: ButtonAction;
+	headingType: HeadingLevelOptions;
+	headingTitle: string;
+	content: string;
+	buttonLabel: string;
+	buttonIcon?: IconName;
+	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
+	align: AlignOptions;
 }
