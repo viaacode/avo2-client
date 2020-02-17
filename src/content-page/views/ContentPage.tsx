@@ -25,7 +25,7 @@ interface ErrorInfo {
 
 interface ContentPageDetailProps extends DefaultSecureRouteProps<{ path: string }> {}
 
-const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ history, match, user }) => {
+const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match, user }) => {
 	const [t] = useTranslation();
 
 	const [errorInfo, setErrorInfo] = useState<ErrorInfo | null>(null);

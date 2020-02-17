@@ -247,8 +247,9 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	// TODO: FEATURE - handle search result bookmark button toggle
-	const handleBookmarkToggle = (id: string, active: boolean) => {};
+	const handleBookmarkToggle = (/*id: string, active: boolean*/) => {};
 
+	// @ts-ignore
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {
 			setFormState({

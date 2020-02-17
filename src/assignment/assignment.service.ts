@@ -8,10 +8,7 @@ import { ApolloCacheManager } from '../shared/services/data-service';
 import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 
-import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
 import { CollectionService } from '../collection/collection.service';
-import { navigate } from '../shared/helpers';
-import { ASSIGNMENT_PATH } from './assignment.const';
 import { AssignmentLayout } from './assignment.types';
 
 export const ASSIGNMENT_COPY_PREFIX = 'Opdracht kopie %index%: ';
