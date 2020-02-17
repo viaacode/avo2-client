@@ -63,7 +63,10 @@ export const uploadFile = async (
 			body: JSON.stringify(body),
 		});
 
-		const data: AssetInfo = await response.json();
+		const data: AssetInfo | any = await response.json();
+		if (data.statusCode < 200 || data.statusCode >= 400) {
+			throw new CustomError('Failed to upload file: wrong statusCode received', null, data);
+		}
 		return data.url;
 	} catch (err) {
 		throw new CustomError('Failed to upload file', err, { file, url, body });
