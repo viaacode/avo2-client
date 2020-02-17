@@ -1,24 +1,30 @@
 import { get, kebabCase } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CreatableSelect from 'react-select/creatable';
 import { ValueType } from 'react-select/src/types';
 
-import { Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
+import { Alert, Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { ContentPicker, IconPicker } from '../../../shared/components';
 import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
-import { PickerItem } from '../../../shared/types/content-picker';
+import { PickerItem } from '../../../shared/types';
 import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
+
+import './MenuEditForm.scss';
 
 interface MenuEditFormProps {
 	formErrors: MenuEditFormErrorState;
 	formState: MenuEditFormState;
 	menuParentId: string | undefined;
 	menuParentOptions: ReactSelectOption<string>[];
-	onChange: (key: keyof MenuEditFormState, value: ValueOf<MenuEditFormState>) => void;
+	onChange: (
+		key: keyof MenuEditFormState | 'content',
+		value: ValueOf<MenuEditFormState> | PickerItem | null
+	) => void;
+	permissionWarning: ReactNode | null;
 }
 
 const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
@@ -27,6 +33,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 	menuParentId,
 	menuParentOptions,
 	onChange,
+	permissionWarning,
 }) => {
 	const [t] = useTranslation();
 
@@ -38,7 +45,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 	};
 
 	return (
-		<Form>
+		<Form className="m-menu-edit-form">
 			<FormGroup
 				error={formErrors.placement}
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___navigatie-naam')}
@@ -96,9 +103,8 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			>
 				<ContentPicker
 					selectableTypes={['CONTENT_PAGE', 'INTERNAL_LINK']}
-					onSelect={(item: ValueType<PickerItem>) => {
-						onChange('content_type', (item as PickerItem).type);
-						onChange('content_path', (item as PickerItem).value);
+					onSelect={(item: PickerItem) => {
+						onChange('content', item);
 					}}
 				/>
 			</FormGroup>
@@ -130,6 +136,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				required={false}
 				onChange={(userGroupIds: number[]) => onChange('user_group_ids', userGroupIds)}
 			/>
+			{permissionWarning && <Alert message={permissionWarning} type="danger" />}
 		</Form>
 	);
 };

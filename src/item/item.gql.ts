@@ -3,7 +3,7 @@ import { gql } from 'apollo-boost';
 export const GET_ITEMS = gql`
 	query getItems($limit: Int!) {
 		app_item_meta(limit: 10) {
-			id
+			external_id
 			title
 		}
 	}

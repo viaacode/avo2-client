@@ -32,7 +32,10 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 
 export const fetchContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
 	try {
-		const response = await dataService.query({ query: GET_CONTENT, variables: { limit } });
+		const response = await dataService.query({
+			query: GET_CONTENT,
+			variables: { limit, order: { title: 'asc' } },
+		});
 
 		return get(response, `data.${CONTENT_RESULT_PATH.GET}`, null);
 	} catch (err) {
