@@ -116,7 +116,9 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		/>
 	);
 
-	const renderTextInputPicker = () => <TextInput value={input} onChange={onChangeText} />;
+	const renderTextInputPicker = () => (
+		<TextInput value={input} onChange={onChangeText} placeholder="http://www.meemoo.be" />
+	);
 
 	return (
 		<FormGroup error={errors}>
