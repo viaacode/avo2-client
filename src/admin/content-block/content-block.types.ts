@@ -1,4 +1,4 @@
-import { ButtonAction, IconName } from '@viaa/avo2-components';
+import { IconName } from '@viaa/avo2-components';
 // TODO: Import from components lib when exported there.
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
@@ -6,6 +6,7 @@ import {
 	ContentItemStyle,
 	ContentTabStyle,
 } from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
+import { ButtonAction } from '@viaa/avo2-components/dist/types';
 
 export type ContentBlockStateType = 'components' | 'block';
 
@@ -130,6 +131,7 @@ export enum ContentBlockType {
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
 	PageOverview = 'PAGE_OVERVIEW',
+	ProjectsSpotlight = 'PROJECTS_SPOTLIGHT',
 }
 
 export interface HeadingBlockComponentState {

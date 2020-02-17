@@ -10,6 +10,7 @@ import {
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
+	BlockProjectsSpotlight,
 	BlockRichText,
 	Container,
 } from '@viaa/avo2-components';
@@ -48,6 +49,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.ImageGrid]: BlockGrid,
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
+	[ContentBlockType.ProjectsSpotlight]: BlockProjectsSpotlight,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
@@ -57,6 +59,7 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.ImageGrid,
+	ContentBlockType.ProjectsSpotlight,
 ];
 
 const IGNORE_BLOCK_LEVEL_PROPS = ['position', 'elements', 'blockType'];

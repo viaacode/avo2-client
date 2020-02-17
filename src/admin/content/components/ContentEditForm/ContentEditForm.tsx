@@ -123,7 +123,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									error={formErrors.path}
 									label={t('admin/content/components/content-edit-form/content-edit-form___url')}
 								>
-									<TextInput onChange={value => onChange('path', value)} value={formState.path} />
+									<TextInput
+										onChange={value => onChange('path', value)}
+										value={formState.path || ''}
+									/>
 								</FormGroup>
 							</Column>
 							<Column size="3-6">

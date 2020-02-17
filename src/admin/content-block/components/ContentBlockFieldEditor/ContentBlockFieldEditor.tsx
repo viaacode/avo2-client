@@ -71,7 +71,14 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 		case ContentBlockEditor.FileUpload:
 			const urlOrUrls: string[] | undefined = (state as any)[fieldKey];
 			editorProps = {
-				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+				// If the component wants a single value, take the first image from the array, otherwise pass the array
+				onChange: (value: null | undefined | string[]) =>
+					handleChange(
+						type,
+						fieldKey,
+						field.editorProps.allowMulti || !value ? value : value[0],
+						stateIndex
+					),
 				urls: Array.isArray(urlOrUrls) ? urlOrUrls : isNil(urlOrUrls) ? [] : [urlOrUrls],
 			};
 			break;
