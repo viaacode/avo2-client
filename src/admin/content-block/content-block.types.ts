@@ -200,6 +200,7 @@ export interface CTAsBlockComponentState {
 	buttonLabel: string;
 	buttonIcon?: IconName;
 	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
 }
 
 export interface IFrameBlockComponentState {

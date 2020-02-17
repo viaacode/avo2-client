@@ -30,11 +30,11 @@ interface ErrorViewQueryParams {
 interface ErrorViewProps extends RouteComponentProps {
 	message?: string;
 	icon?: IconName;
+	actionButtons?: ErrorActionButton[];
 	children?: ReactNode;
 	history: History;
 	match: match<ErrorViewQueryParams>;
 	location: Location;
-	actionButtons?: ErrorActionButton[];
 }
 
 const ErrorView: FunctionComponent<ErrorViewProps> = ({
