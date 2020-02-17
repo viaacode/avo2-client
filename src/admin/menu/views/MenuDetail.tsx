@@ -168,7 +168,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		if (!menu.length) {
 			toastService.danger(
 				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
-                false
+				false
 			);
 			handleNavigate(MENU_PATH.MENU);
 		}

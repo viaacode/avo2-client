@@ -1,5 +1,4 @@
-import { IconName } from '@viaa/avo2-components';
-// TODO: Import from components lib when exported there.
+import { ButtonAction, IconName } from '@viaa/avo2-components';
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 
 export type ContentBlockStateType = 'components' | 'block';
@@ -79,7 +78,7 @@ export enum ContentBlockEditor {
 
 // If only one block exists then the errors are a string[]
 // If multiple blocks exist then the errors are an array of string array indexed by their stateIndex
-export type ContentBlockFormError = { [key: string]: (string[] | string[][]) };
+export type ContentBlockFormError = { [key: string]: string[] | string[][] };
 
 // CONTENT BLOCKS
 export interface DefaultContentBlockState {
@@ -136,6 +135,7 @@ export interface CTAsBlockComponentState {
 	buttonLabel: string;
 	buttonIcon?: IconName;
 	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
 }
 
 export interface IFrameBlockComponentState {

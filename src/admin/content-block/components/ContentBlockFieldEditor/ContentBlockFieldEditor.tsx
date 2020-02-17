@@ -3,7 +3,9 @@ import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
 
-import { createKey } from '../../../shared/helpers/create-key';
+import { createKey } from '../../../shared/helpers';
+import { ContentPickerType } from '../../../shared/types';
+
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
 	ContentBlockComponentState,
@@ -51,6 +53,13 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 	let editorProps = {};
 
 	switch (field.editorType) {
+		case ContentBlockEditor.ContentPicker:
+			editorProps = {
+				onSelect: (picked: ContentPickerType) => {
+					handleChange(type, fieldKey, { value: picked }, stateIndex);
+				},
+			};
+			break;
 		case ContentBlockEditor.IconPicker:
 		case ContentBlockEditor.ColorSelect:
 			editorProps = {

@@ -5,7 +5,8 @@ export type ContentPickerType =
 	| 'ITEM'
 	| 'DROPDOWN'
 	| 'INTERNAL_LINK'
-	| 'EXTERNAL_LINK';
+	| 'EXTERNAL_LINK'
+	| 'BUNDLE';
 
 export interface PickerTypeOption<T = string> {
 	value: T;

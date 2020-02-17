@@ -92,7 +92,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 					t('admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name', {
 						menuName,
 					}),
-                    false
+					false
 				);
 				history.push(MENU_PATH.MENU);
 			}
@@ -167,14 +167,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 						const faultyUserGroup = allUserGroups.find(
 							userGroup => userGroup.value === faultyUserGroupId
 						);
-						return faultyUserGroup ? faultyUserGroup.label : null;
+						return get(faultyUserGroup, 'label', null);
 					})
 				);
 				setPermissionWarning(
 					<div>
 						<Spacer margin="bottom-small">
 							<Trans>
-								Het navigatie item zal zichtbaar zijn voor gebruikers die geen toegang habben tot de
+								Het navigatie item zal zichtbaar zijn voor gebruikers die geen toegang hebben tot de
 								geselecteerde pagina.
 							</Trans>
 						</Spacer>
