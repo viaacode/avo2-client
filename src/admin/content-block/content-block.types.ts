@@ -14,7 +14,7 @@ export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 
 export type ButtonTypeOptions = 'primary' | 'secondary';
 
-export type WidthOptions = 'full-width' | '500px' | '400px';
+export type ImageWidthOptions = 'full-width' | '500px' | '400px';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -58,6 +58,7 @@ export type ContentBlockComponentState =
 	| CTAsBlockComponentState
 	| IFrameBlockComponentState
 	| AccordionsBlockComponentState
+	| ImageBlockComponentState
 	| MediaPlayerBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
@@ -73,6 +74,7 @@ export enum ContentBlockEditor {
 	AlignSelect = 'AlignSelect',
 	ColorSelect = 'ColorSelect',
 	ContentPicker = 'ContentPicker',
+	FileUpload = 'FileUpload',
 	IconPicker = 'IconPicker',
 	Select = 'Select',
 	TextInput = 'TextInput',
@@ -104,6 +106,7 @@ export enum ContentBlockType {
 	CTAs = 'CTAS',
 	Heading = 'HEADING',
 	IFrame = 'IFRAME',
+	Image = 'IMAGE',
 	Intro = 'INTRO',
 	MediaPlayer = 'MEDIA_PLAYER',
 	RichText = 'RICH_TEXT',
@@ -118,6 +121,13 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
+}
+
+export interface ImageBlockComponentState {
+	title: string;
+	text: string;
+	source: string;
+	width: ImageWidthOptions;
 }
 
 export interface ButtonsBlockComponentState {

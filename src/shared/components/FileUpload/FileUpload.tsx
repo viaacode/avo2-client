@@ -15,6 +15,7 @@ import {
 import { CustomError } from '../../helpers';
 import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-service';
 import toastService from '../../services/toast-service';
+import i18n from '../../translations/i18n';
 
 import './FileUpload.scss';
 
@@ -27,9 +28,9 @@ export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
 	gif: 'image/gif',
 };
 
-interface FileUploadProps {
+export interface FileUploadProps {
 	icon?: IconName;
-	label: string;
+	label?: string;
 	allowedTypes?: string[];
 	assetType: AssetType;
 	ownerId: string;
@@ -39,7 +40,7 @@ interface FileUploadProps {
 
 const FileUpload: FunctionComponent<FileUploadProps> = ({
 	icon,
-	label,
+	label = i18n.t('Selecteer een bestand'),
 	allowedTypes = PHOTO_TYPES,
 	assetType,
 	ownerId,
@@ -50,23 +51,30 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
 	const uploadSelectedFile = async (file: File | null) => {
-		if (file) {
-			if (allowedTypes.includes(file.type)) {
-				setIsProcessing(true);
-				const url = await uploadFile(file, assetType, ownerId);
-				onChange(url);
-				setIsProcessing(false);
-			} else {
-				const allowedExtensions = allowedTypes
-					.map(type => type.split('/').pop() || type)
-					.join(', ');
-				toastService.danger(
-					t('Het geselecteerde bestand is niet toegelaten, ({{allowedExtensions}})', {
-						allowedExtensions,
-					})
-				);
+		try {
+			if (file) {
+				if (allowedTypes.includes(file.type)) {
+					setIsProcessing(true);
+					const url = await uploadFile(file, assetType, ownerId);
+					onChange(url);
+				} else {
+					const allowedExtensions = allowedTypes
+						.map(type => type.split('/').pop() || type)
+						.join(', ');
+					toastService.danger(
+						t('Het geselecteerde bestand is niet toegelaten, ({{allowedExtensions}})', {
+							allowedExtensions,
+						})
+					);
+				}
 			}
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to upload file in FileUpload component', err, { file })
+			);
+			toastService.danger(t('Het uploaden van het bestand is mislukt'));
 		}
+		setIsProcessing(false);
 	};
 
 	const deleteUploadedFile = async () => {
