@@ -1,7 +1,11 @@
-import { get } from 'lodash-es';
+import { capitalize, get, sortBy } from 'lodash-es';
 
-import { CustomError } from '../helpers/error';
+import { TagInfo } from '@viaa/avo2-components';
+
+import { CustomError } from '../helpers';
 import { GET_USER_GROUPS } from '../queries/user-groups.gql';
+import i18n from '../translations/i18n';
+
 import { dataService } from './data-service';
 
 interface GetUserGroupsResponse {
@@ -15,13 +19,35 @@ export interface UserGroup {
 	label: string;
 }
 
-export async function getUserGroups(): Promise<UserGroup[]> {
+export async function getUserGroups(): Promise<TagInfo[]> {
 	try {
 		const response: GetUserGroupsResponse = await dataService.query({
 			query: GET_USER_GROUPS,
 		});
 
-		return get(response, 'data.users_groups', []);
+		return sortBy(
+			[
+				{
+					label: i18n.t(
+						'admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'
+					),
+					value: -1,
+				},
+				{
+					label: i18n.t(
+						'admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'
+					),
+					value: -2,
+				},
+				...get(response, 'data.users_groups', []).map(
+					(userGroup: UserGroup): TagInfo => ({
+						label: capitalize(userGroup.label),
+						value: userGroup.id,
+					})
+				),
+			],
+			'label'
+		);
 	} catch (err) {
 		throw new CustomError('Failed to get user groups', err);
 	}

@@ -19,7 +19,7 @@ const REACT_SELECT_DEFAULT_OPTIONS = {
 
 export interface ContentPickerProps {
 	selectableTypes?: string[];
-	onSelect: (value: ValueType<PickerItem>) => void;
+	onSelect: (value: PickerItem) => void;
 	errors?: string | string[];
 }
 

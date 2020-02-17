@@ -66,6 +66,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	contentWidth: ContentWidth.REGULAR,
 	publishAt: '',
 	depublishAt: '',
+	userGroupIds: [],
 });
 
 export const CONTENT_DETAIL_TABS: TabProps[] = [
@@ -91,5 +92,5 @@ export const CONTENT_WIDTH_OPTIONS = [
 export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: string[] } = {
 	[ContentWidth.REGULAR]: [ContentPageType.Project],
 	[ContentWidth.LARGE]: [],
-	[ContentWidth.MEDIUM]: [ContentPageType.News],
+	[ContentWidth.MEDIUM]: [ContentPageType.NewsItem],
 };
