@@ -167,7 +167,8 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		// Return to overview if menu is empty
 		if (!menu.length) {
 			toastService.danger(
-				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden')
+				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
+				false
 			);
 			handleNavigate(MENU_PATH.MENU);
 		}
@@ -251,14 +252,14 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				</AdminLayoutBody>
 				<AdminLayoutActions>
 					<Button
-						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
-						label={t('admin/menu/views/menu-detail___opslaan')}
-						onClick={() => handleSave(refetchMenuItems)}
-					/>
-					<Button
 						label={t('admin/menu/views/menu-detail___annuleer')}
 						onClick={() => handleNavigate(MENU_PATH.MENU)}
 						type="tertiary"
+					/>
+					<Button
+						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
+						label={t('admin/menu/views/menu-detail___opslaan')}
+						onClick={() => handleSave(refetchMenuItems)}
 					/>
 				</AdminLayoutActions>
 			</AdminLayout>
