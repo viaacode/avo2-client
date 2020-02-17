@@ -24,7 +24,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 		state: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE(),
 		fields: {
 			title: TEXT_FIELD(i18n.t('Titel is verplicht'), {
-				label: i18n.t('Titel'),
+				label: i18n.t('Toegankelijkheidstitel'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			item: {
