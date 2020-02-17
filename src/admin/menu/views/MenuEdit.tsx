@@ -406,14 +406,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) =>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
 				<Button
-					disabled={isSaving}
-					label={t('admin/menu/views/menu-edit___opslaan')}
-					onClick={handleSave}
-				/>
-				<Button
 					label={t('admin/menu/views/menu-edit___annuleer')}
 					onClick={navigateBack}
 					type="tertiary"
+				/>
+				<Button
+					disabled={isSaving}
+					label={t('admin/menu/views/menu-edit___opslaan')}
+					onClick={handleSave}
 				/>
 			</AdminLayoutActions>
 		</AdminLayout>

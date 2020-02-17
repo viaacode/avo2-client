@@ -252,14 +252,14 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				</AdminLayoutBody>
 				<AdminLayoutActions>
 					<Button
-						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
-						label={t('admin/menu/views/menu-detail___opslaan')}
-						onClick={() => handleSave(refetchMenuItems)}
-					/>
-					<Button
 						label={t('admin/menu/views/menu-detail___annuleer')}
 						onClick={() => handleNavigate(MENU_PATH.MENU)}
 						type="tertiary"
+					/>
+					<Button
+						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
+						label={t('admin/menu/views/menu-detail___opslaan')}
+						onClick={() => handleSave(refetchMenuItems)}
 					/>
 				</AdminLayoutActions>
 			</AdminLayout>
