@@ -20,7 +20,6 @@ export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
 export type ButtonTypeOption = 'primary' | 'secondary';
 export type WidthOption = 'full-width' | '500px' | '400px';
 export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
-export type ImageGridTextAlignOption = 'left' | 'center' | 'right';
 export type ContentTypeOption =
 	| 'NIEUWS_OVERZICHT'
 	| 'NIEUWS_ITEM'
@@ -167,7 +166,7 @@ export interface ImageGridBlockComponentStateBlockFields extends DefaultContentB
 	imageHeight?: number;
 	itemWidth?: number;
 	fill?: ImageGridFillOption;
-	textAlign?: ImageGridTextAlignOption;
+	textAlign?: AlignOption;
 	className?: string;
 	navigate?: (action: ButtonAction) => void;
 }

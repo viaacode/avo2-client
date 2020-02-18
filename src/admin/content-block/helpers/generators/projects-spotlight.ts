@@ -1,4 +1,4 @@
-import { ButtonAction, ImageInfo } from '@viaa/avo2-components';
+import { ImageInfo } from '@viaa/avo2-components';
 
 import i18n from '../../../../shared/translations/i18n';
 
