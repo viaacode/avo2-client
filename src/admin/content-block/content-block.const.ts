@@ -26,7 +26,6 @@ import {
 	ContentBlockType,
 	HeadingLevelOption,
 	ImageGridFillOption,
-	ImageGridTextAlignOption,
 	WidthOption,
 } from './content-block.types';
 import {
@@ -77,87 +76,6 @@ export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
 	INSERT: 'insert_app_content_blocks',
 };
-
-export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
-	{
-		label: 'Wit',
-		value: ContentBlockBackgroundColor.White,
-	},
-	{
-		label: 'Grijs',
-		value: ContentBlockBackgroundColor.Gray50,
-	},
-	{
-		label: 'Blauw',
-		value: ContentBlockBackgroundColor.NightBlue,
-	},
-];
-
-export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
-	{ label: 'Links', value: 'left' },
-	{ label: 'Gecentreerd', value: 'center' },
-	{ label: 'Rechts', value: 'right' },
-];
-
-export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
-	{
-		label: i18n.t('admin/content-block/content-block___kies-een-content-block'),
-		value: '',
-		disabled: true,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___titel'),
-		value: ContentBlockType.Heading,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___tekst'),
-		value: ContentBlockType.RichText,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___tekst-2-kolommen'),
-		value: ContentBlockType.RichTextTwoColumns,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___knoppen'),
-		value: ContentBlockType.Buttons,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___intro'),
-		value: ContentBlockType.Intro,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___2-ct-as'),
-		value: ContentBlockType.CTAs,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___i-frame'),
-		value: ContentBlockType.IFrame,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___accordeons'),
-		value: ContentBlockType.Accordions,
-	},
-	{
-		label: i18n.t('Media-speler'),
-		value: ContentBlockType.MediaPlayer,
-	},
-	{
-		label: i18n.t('Media-speler met titel, tekst en knop'),
-		value: ContentBlockType.MediaPlayerTitleTextButton,
-	},
-	{
-		label: i18n.t('Afbeelding'),
-		value: ContentBlockType.Image,
-	},
-	{
-		label: i18n.t('Afbeelding grid'),
-		value: ContentBlockType.ImageGrid,
-	},
-	{
-		label: i18n.t('Pagina overzicht'),
-		value: ContentBlockType.PageOverview,
-	},
-];
 
 export const EDITOR_TYPES_MAP = {
 	AlignSelect,
@@ -243,6 +161,87 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 };
 
 // Options
+export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
+	{
+		label: 'Wit',
+		value: ContentBlockBackgroundColor.White,
+	},
+	{
+		label: 'Grijs',
+		value: ContentBlockBackgroundColor.Gray50,
+	},
+	{
+		label: 'Blauw',
+		value: ContentBlockBackgroundColor.NightBlue,
+	},
+];
+
+export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
+	{ label: 'Links', value: 'left' },
+	{ label: 'Gecentreerd', value: 'center' },
+	{ label: 'Rechts', value: 'right' },
+];
+
+export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
+	{
+		label: i18n.t('admin/content-block/content-block___kies-een-content-block'),
+		value: '',
+		disabled: true,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___titel'),
+		value: ContentBlockType.Heading,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___tekst'),
+		value: ContentBlockType.RichText,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___tekst-2-kolommen'),
+		value: ContentBlockType.RichTextTwoColumns,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___knoppen'),
+		value: ContentBlockType.Buttons,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___intro'),
+		value: ContentBlockType.Intro,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___2-ct-as'),
+		value: ContentBlockType.CTAs,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___i-frame'),
+		value: ContentBlockType.IFrame,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___accordeons'),
+		value: ContentBlockType.Accordions,
+	},
+	{
+		label: i18n.t('Media-speler'),
+		value: ContentBlockType.MediaPlayer,
+	},
+	{
+		label: i18n.t('Media-speler met titel, tekst en knop'),
+		value: ContentBlockType.MediaPlayerTitleTextButton,
+	},
+	{
+		label: i18n.t('Afbeelding'),
+		value: ContentBlockType.Image,
+	},
+	{
+		label: i18n.t('Afbeelding grid'),
+		value: ContentBlockType.ImageGrid,
+	},
+	{
+		label: i18n.t('Pagina overzicht'),
+		value: ContentBlockType.PageOverview,
+	},
+];
+
 export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOption>[] = [
 	{ label: i18n.t('admin/content-block/content-block___h-2'), value: 'h2' },
 	{ label: i18n.t('admin/content-block/content-block___h-3'), value: 'h3' },
@@ -264,12 +263,6 @@ export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOption>[] = [
 	{ label: i18n.t('Opvullen'), value: 'cover' },
 	{ label: i18n.t('Volledig zichtbaar'), value: 'contain' },
 	{ label: i18n.t('Oorspronkelijke grootte'), value: 'auto' },
-];
-
-export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<ImageGridTextAlignOption>[] = [
-	{ label: i18n.t('Links'), value: 'left' },
-	{ label: i18n.t('Center'), value: 'center' },
-	{ label: i18n.t('Rechts'), value: 'right' },
 ];
 
 export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = [

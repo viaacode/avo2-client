@@ -149,7 +149,7 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 					id="content-type-and-label-picker-label"
 					placeholder={t('Labels')}
 					options={(labels || []).map(
-						(label): SelectOption<number> => ({ label: label.label, value: label.id })
+						(labelObj): SelectOption<number> => ({ label: labelObj.label, value: labelObj.id })
 					)}
 					value={compact(
 						(value.selectedLabels || []).map(
