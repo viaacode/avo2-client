@@ -8,6 +8,7 @@ import {
 	BlockCTAs,
 	BlockHeading,
 	BlockIFrame,
+	BlockImage,
 	BlockIntro,
 	BlockRichText,
 	Container,
@@ -37,16 +38,17 @@ enum ContentWidthMap {
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
+	[ContentBlockType.Accordions]: BlockAccordions,
 	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
 	[ContentBlockType.Heading]: BlockHeading,
-	[ContentBlockType.Intro]: BlockIntro,
-	[ContentBlockType.RichText]: BlockRichText,
-	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.IFrame]: BlockIFrame,
-	[ContentBlockType.Accordions]: BlockAccordions,
+	[ContentBlockType.Intro]: BlockIntro,
+	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.MediaPlayer]: MediaPlayer,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
+	[ContentBlockType.RichText]: BlockRichText,
+	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 });
 
 const REPEATABLE_CONTENT_BLOCKS = [

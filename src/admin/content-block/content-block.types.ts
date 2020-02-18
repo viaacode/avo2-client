@@ -55,6 +55,7 @@ export type ContentBlockComponentState =
 	| RichTextBlockComponentState
 	| ButtonsBlockComponentState
 	| IntroBlockComponentState
+	| ImageBlockComponentState
 	| CTAsBlockComponentState
 	| IFrameBlockComponentState
 	| AccordionsBlockComponentState
@@ -73,6 +74,7 @@ export enum ContentBlockEditor {
 	AlignSelect = 'AlignSelect',
 	ColorSelect = 'ColorSelect',
 	ContentPicker = 'ContentPicker',
+	FileUpload = 'FileUpload',
 	IconPicker = 'IconPicker',
 	Select = 'Select',
 	TextInput = 'TextInput',
@@ -104,6 +106,7 @@ export enum ContentBlockType {
 	CTAs = 'CTAS',
 	Heading = 'HEADING',
 	IFrame = 'IFRAME',
+	Image = 'IMAGE',
 	Intro = 'INTRO',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
@@ -119,6 +122,13 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
+}
+
+export interface ImageBlockComponentState {
+	title: string;
+	text: string;
+	source: string;
+	width: WidthOptions;
 }
 
 export interface ButtonsBlockComponentState {
