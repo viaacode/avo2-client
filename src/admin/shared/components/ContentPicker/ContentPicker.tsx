@@ -122,7 +122,8 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				if (!get(value, 'value')) {
 					onSelect(null);
 					setCurrentValue(null);
-					toastService.danger(i18n.t('Het geselecteerde item heeft geen pad.'), false);
+					console.error('Deze link is niet navigeerbaar, heeft waarschijnlijk geen pad.');
+					toastService.danger(i18n.t('Deze link is niet navigeerbaar.'), false);
 					return;
 				}
 
