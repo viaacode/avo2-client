@@ -14,7 +14,6 @@ import {
 	ContentBlockType,
 	HeadingLevelOptions,
 	ImageGridFillOptions,
-	ImageGridTextAlignOptions,
 	WidthOptions,
 } from './content-block.types';
 import {
@@ -258,7 +257,7 @@ export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOptions>[] = [
 	{ label: i18n.t('Oorspronkelijke grootte'), value: 'auto' },
 ];
 
-export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<ImageGridTextAlignOptions>[] = [
+export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<AlignOptions>[] = [
 	{ label: i18n.t('Links'), value: 'left' },
 	{ label: i18n.t('Center'), value: 'center' },
 	{ label: i18n.t('Rechts'), value: 'right' },

@@ -20,8 +20,6 @@ export type WidthOptions = 'full-width' | '500px' | '400px';
 
 export type ImageGridFillOptions = 'cover' | 'contain' | 'auto';
 
-export type ImageGridTextAlignOptions = 'left' | 'center' | 'right';
-
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
 	index: number;
@@ -141,7 +139,7 @@ export interface ImageBlockComponentState {
 }
 
 export interface ImageGridBlockComponentStateFields {
-	source?: string;
+	source: string;
 	title?: string;
 	text?: string;
 	action?: ButtonAction;
@@ -153,7 +151,7 @@ export interface ImageGridBlockComponentStateBlockFields extends DefaultContentB
 	imageHeight?: number;
 	itemWidth?: number;
 	fill?: ImageGridFillOptions;
-	textAlign?: ImageGridTextAlignOptions;
+	textAlign?: AlignOptions;
 	className?: string;
 	navigate?: (action: ButtonAction) => void;
 }

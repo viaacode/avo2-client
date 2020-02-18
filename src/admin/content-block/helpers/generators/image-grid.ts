@@ -26,7 +26,7 @@ export const INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES = (): ImageGridBlockCompo
 		title: '',
 		text: '',
 		action: undefined,
-	},
+	} as any,
 ];
 
 export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
