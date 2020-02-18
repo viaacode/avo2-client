@@ -28,7 +28,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			item: {
-				label: i18n.t('Selecteer een video- of audio-item'),
+				label: i18n.t('Video- of audio-item'),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					selectableTypes: ['ITEM'],
