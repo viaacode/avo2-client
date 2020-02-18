@@ -315,7 +315,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			setLoadingInfo,
 			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
 		);
-	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user]);
+	}, [
+		location,
+		match.params,
+		setLoadingInfo,
+		setAssignmentContent,
+		t,
+		user,
+		currentAssignment,
+		setBothAssignments,
+	]);
 
 	useEffect(() => {
 		if (
