@@ -47,6 +47,13 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const [input, setInput] = useState<string>(
 		get(currentTypeObject, 'picker') === 'TEXT_INPUT' ? get(currentSelection, 'value', '') : ''
 	);
+	const [currentValue, setCurrentValue] = useState<ValueType<PickerItem> | null>(
+		options.find(
+			option =>
+				get(option, 'value.value', 'EMPTY_OPTION') ===
+				get(currentSelection, 'value', 'EMPTY_SELECTION')
+		) as ValueType<PickerItem>
+	);
 
 	useEffect(() => {
 		if (currentType && !!currentType.fetch) {
@@ -58,6 +65,7 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				.then(items => {
 					setOptions(items || []);
 					setLoading(false);
+					setCurrentValue(null);
 				})
 				.catch(error => {
 					setLoading(false);
@@ -109,14 +117,9 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			isLoading={loading}
 			onChange={(selectedItem: ValueType<PickerItem>) => {
 				onSelect(get(selectedItem, 'value'));
+				setCurrentValue(selectedItem as ValueType<PickerItem>);
 			}}
-			value={
-				options.find(
-					option =>
-						get(option, 'value.value', 'EMPTY_OPTION') ===
-						get(currentSelection, 'value', 'EMPTY_SELECTION')
-				) as ValueType<PickerItem>
-			}
+			value={currentValue}
 		/>
 	);
 
