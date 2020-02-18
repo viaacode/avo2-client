@@ -61,7 +61,7 @@ export interface MenuSchema {
 
 interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
 
-const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match, user }) => {
+const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [t] = useTranslation();
 
 	const { menu: menuParentId, id: menuItemId } = match.params;

@@ -98,7 +98,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	};
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);
+		return mapNavElementsToNavigationItems(primaryNavItems, history, match, t);
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
@@ -108,7 +108,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		const dynamicNavItems: NavigationItemInfo[] = mapNavElementsToNavigationItems(
 			secondaryNavItems,
 			history,
-			location,
 			match,
 			t
 		);

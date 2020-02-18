@@ -17,7 +17,7 @@ export type ContentBlockStateOptions =
 export type AlignOption = 'left' | 'right' | 'center';
 export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
 export type ButtonTypeOption = 'primary' | 'secondary';
-export type ImageWidthOption = 'full-width' | '500px' | '400px';
+export type WidthOption = 'full-width' | '500px' | '400px';
 export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
 export type ImageGridTextAlignOption = 'left' | 'center' | 'right';
 export type ContentTypeOption =
@@ -65,15 +65,16 @@ export interface ContentBlockBlockConfig {
 }
 
 export type ContentBlockComponentState =
-	| HeadingBlockComponentState
-	| RichTextBlockComponentState
-	| ButtonsBlockComponentState
-	| IntroBlockComponentState
-	| CTAsBlockComponentState
-	| IFrameBlockComponentState
 	| AccordionsBlockComponentState
+	| ButtonsBlockComponentState
+	| CTAsBlockComponentState
+	| HeadingBlockComponentState
+	| IFrameBlockComponentState
 	| ImageBlockComponentState
 	| ImageGridBlockComponentStateFields
+	| IntroBlockComponentState
+	| MediaPlayerBlockComponentState
+	| RichTextBlockComponentState
 	| PageOverviewBlockComponentStateFields;
 
 export type ContentBlockState = DefaultContentBlockState;
@@ -88,13 +89,13 @@ export interface ContentBlockField {
 export enum ContentBlockEditor {
 	AlignSelect = 'AlignSelect',
 	ColorSelect = 'ColorSelect',
+	ContentPicker = 'ContentPicker',
+	FileUpload = 'FileUpload',
+	IconPicker = 'IconPicker',
+	MultiRange = 'MultiRange',
 	Select = 'Select',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
-	IconPicker = 'IconPicker',
-	ContentPicker = 'ContentPicker',
-	FileUpload = 'FileUpload',
-	MultiRange = 'MultiRange',
 	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
 	Checkbox = 'Checkbox',
 }
@@ -119,16 +120,18 @@ export enum ContentBlockBackgroundColor {
 // These match the content_block_types enums from graphql
 // New values need to be added there as well or it won't save
 export enum ContentBlockType {
-	Buttons = 'BUTTONS',
-	Heading = 'HEADING',
-	CTAs = 'CTAS',
-	Intro = 'INTRO',
-	RichText = 'RICH_TEXT',
-	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
-	IFrame = 'IFRAME',
 	Accordions = 'ACCORDIONS',
+	Buttons = 'BUTTONS',
+	CTAs = 'CTAS',
+	Heading = 'HEADING',
+	IFrame = 'IFRAME',
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
+	Intro = 'INTRO',
+	MediaPlayer = 'MEDIA_PLAYER',
+	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
+	RichText = 'RICH_TEXT',
+	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 	PageOverview = 'PAGE_OVERVIEW',
 }
 
@@ -146,7 +149,7 @@ export interface ImageBlockComponentState {
 	title: string;
 	text: string;
 	source: string;
-	width: ImageWidthOption;
+	width: WidthOption;
 }
 
 export interface ImageGridBlockComponentStateFields {
@@ -211,4 +214,22 @@ export interface IFrameBlockComponentState {
 export interface AccordionsBlockComponentState {
 	title: string;
 	content: string;
+}
+
+export interface MediaPlayerBlockComponentState {
+	title: string;
+	item?: ButtonAction;
+}
+
+export interface MediaPlayerTitleTextButtonBlockComponentState {
+	mediaTitle: string;
+	mediaItem?: ButtonAction;
+	headingType: HeadingLevelOption;
+	headingTitle: string;
+	content: string;
+	buttonLabel: string;
+	buttonIcon?: IconName;
+	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
+	align: AlignOption;
 }

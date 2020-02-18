@@ -27,7 +27,7 @@ import {
 	HeadingLevelOption,
 	ImageGridFillOption,
 	ImageGridTextAlignOption,
-	ImageWidthOption,
+	WidthOption,
 } from './content-block.types';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
@@ -50,11 +50,15 @@ import {
 	INITIAL_IMAGE_BLOCK_STATE,
 	INITIAL_INTRO_BLOCK_COMPONENT_STATE,
 	INITIAL_INTRO_BLOCK_STATE,
+	INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
+	INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_BLOCK_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 	INTRO_BLOCK_CONFIG,
+	MEDIA_PLAYER_BLOCK_CONFIG,
+	MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
@@ -75,9 +79,18 @@ export const CONTENT_BLOCKS_RESULT_PATH = {
 };
 
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
-	{ label: 'Wit', value: ContentBlockBackgroundColor.White },
-	{ label: 'Grijs', value: ContentBlockBackgroundColor.Gray50 },
-	{ label: 'Blauw', value: ContentBlockBackgroundColor.NightBlue },
+	{
+		label: 'Wit',
+		value: ContentBlockBackgroundColor.White,
+	},
+	{
+		label: 'Grijs',
+		value: ContentBlockBackgroundColor.Gray50,
+	},
+	{
+		label: 'Blauw',
+		value: ContentBlockBackgroundColor.NightBlue,
+	},
 ];
 
 export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
@@ -92,19 +105,45 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		value: '',
 		disabled: true,
 	},
-	{ label: i18n.t('admin/content-block/content-block___titel'), value: ContentBlockType.Heading },
-	{ label: i18n.t('admin/content-block/content-block___tekst'), value: ContentBlockType.RichText },
+	{
+		label: i18n.t('admin/content-block/content-block___titel'),
+		value: ContentBlockType.Heading,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___tekst'),
+		value: ContentBlockType.RichText,
+	},
 	{
 		label: i18n.t('admin/content-block/content-block___tekst-2-kolommen'),
 		value: ContentBlockType.RichTextTwoColumns,
 	},
-	{ label: i18n.t('admin/content-block/content-block___knoppen'), value: ContentBlockType.Buttons },
-	{ label: i18n.t('admin/content-block/content-block___intro'), value: ContentBlockType.Intro },
-	{ label: i18n.t('admin/content-block/content-block___2-ct-as'), value: ContentBlockType.CTAs },
-	{ label: i18n.t('admin/content-block/content-block___i-frame'), value: ContentBlockType.IFrame },
+	{
+		label: i18n.t('admin/content-block/content-block___knoppen'),
+		value: ContentBlockType.Buttons,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___intro'),
+		value: ContentBlockType.Intro,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___2-ct-as'),
+		value: ContentBlockType.CTAs,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___i-frame'),
+		value: ContentBlockType.IFrame,
+	},
 	{
 		label: i18n.t('admin/content-block/content-block___accordeons'),
 		value: ContentBlockType.Accordions,
+	},
+	{
+		label: i18n.t('Media-speler'),
+		value: ContentBlockType.MediaPlayer,
+	},
+	{
+		label: i18n.t('Media-speler met titel, tekst en knop'),
+		value: ContentBlockType.MediaPlayerTitleTextButton,
 	},
 	{
 		label: i18n.t('Afbeelding'),
@@ -135,10 +174,20 @@ export const EDITOR_TYPES_MAP = {
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
-	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
+	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
+	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
+	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
+	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
+	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
+	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
+	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
+	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
+	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
@@ -149,10 +198,20 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
-	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
@@ -163,11 +222,18 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 };
 
 export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
-	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_STATE,
+	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
 	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_STATE,
+	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
+	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_STATE,
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
@@ -188,7 +254,7 @@ export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOption>[] = [
 	{ label: i18n.t('admin/content-block/content-block___secundair'), value: 'secondary' },
 ];
 
-export const IMAGE_WIDTH_OPTIONS: SelectOption<ImageWidthOption>[] = [
+export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
 	{ label: i18n.t('Paginabreedte'), value: 'full-width' },
 	{ label: i18n.t('Groot'), value: '500px' },
 	{ label: i18n.t('Middelgroot'), value: '400px' },
