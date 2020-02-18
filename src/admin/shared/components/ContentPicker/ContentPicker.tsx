@@ -40,7 +40,9 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const [t] = useTranslation();
 
 	const [loading, setLoading] = useState<boolean>(false);
-	const [currentType, setCurrentType] = useState<PickerTypeOption>(currentTypeObject || null);
+	const [currentType, setCurrentType] = useState<PickerTypeOption>(
+		currentTypeObject || typeOptions[0]
+	);
 	const [options, setOptions] = useState<PickerSelectItem[]>([]);
 	const [input, setInput] = useState<string>(
 		get(currentTypeObject, 'picker') === 'TEXT_INPUT' ? get(currentSelection, 'value', '') : ''
