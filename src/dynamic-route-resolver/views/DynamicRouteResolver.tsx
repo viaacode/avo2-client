@@ -8,13 +8,13 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
 import { APP_PATH } from '../../constants';
-import { GET_CONTENT_PAGE_BY_PATH } from '../../content-page/content-page.gql';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
+import { getContentPageByPath } from '../../shared/services/navigation-items-service';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
 
@@ -59,24 +59,20 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			}
 
 			// Check if path points to a content page
-			const response = await dataService.query({
-				query: GET_CONTENT_PAGE_BY_PATH,
-				variables: {
-					path: location.pathname,
-				},
-			});
-			const contentPage: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
-			if (contentPage) {
-				// Path is indeed a content page url
-				setRouteInfo({ type: 'contentPage', data: contentPage });
+			const contentPage: Avo.Content.Content | null = await getContentPageByPath(location.pathname);
+			if (!contentPage) {
+				setRouteInfo({ type: 'notFound', data: null });
 				setLoadingInfo({
 					state: 'loaded',
 				});
+				return;
 			}
-			setRouteInfo({ type: 'notFound', data: null });
+			// Path is indeed a content page url
+			setRouteInfo({ type: 'contentPage', data: contentPage });
 			setLoadingInfo({
 				state: 'loaded',
 			});
+			return;
 		} catch (err) {
 			console.error(
 				new CustomError('Error during analysis of the route', err, {
