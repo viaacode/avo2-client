@@ -32,11 +32,14 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 
 export const fetchContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
 	try {
-		const response = await dataService.query({ query: GET_CONTENT, variables: { limit } });
+		const response = await dataService.query({
+			query: GET_CONTENT,
+			variables: { limit, order: { title: 'asc' } },
+		});
 
 		return get(response, `data.${CONTENT_RESULT_PATH.GET}`, null);
 	} catch (err) {
-		console.error(`Failed to fetch content items`);
+		console.error('Failed to fetch content items');
 		toastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items'),
 			false

@@ -247,8 +247,9 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	// TODO: FEATURE - handle search result bookmark button toggle
-	const handleBookmarkToggle = (id: string, active: boolean) => {};
+	const handleBookmarkToggle = (/*id: string, active: boolean*/) => {};
 
+	// @ts-ignore
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
 		if (originalCp) {
 			setFormState({
@@ -358,7 +359,7 @@ const Search: FunctionComponent<SearchProps> = ({
 											label={t('search/views/search___maak-van-deze-zoekopdracht-een-opdracht')}
 											onClick={() => {
 												setIsOptionsMenuOpen(false);
-												toastService.info('Nog niet geïmplementeerd');
+												toastService.info(t('search/views/search___nog-niet-geimplementeerd'));
 											}}
 										/> */}
 									</DropdownContent>

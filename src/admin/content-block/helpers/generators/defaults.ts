@@ -1,6 +1,6 @@
 import { isEmpty, isNil } from 'lodash-es';
-import i18n from '../../../../shared/translations/i18n';
 
+import i18n from '../../../../shared/translations/i18n';
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
@@ -62,5 +62,24 @@ export const TEXT_FIELD = (
 
 		return errorArray;
 	},
+	...propOverride,
+});
+
+export const FILE_FIELD = (
+	emptyFieldValidatorMessage = i18n.t('Een bestand is verplicht'),
+	propOverride?: Partial<ContentBlockField>
+) => ({
+	label: i18n.t('Bestand'),
+	editorType: ContentBlockEditor.FileUpload,
+	validator: (value: string) => {
+		const errorArray: string[] = [];
+
+		if (isNil(value) || isEmpty(value)) {
+			errorArray.push(emptyFieldValidatorMessage);
+		}
+
+		return errorArray;
+	},
+	editorProps: { type: 'CONTENT_PAGE_IMAGE' },
 	...propOverride,
 });

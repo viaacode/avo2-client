@@ -324,7 +324,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				setInitialCollection(cloneDeep(newCollection));
 				toastService.success(
 					isCollection
-						? t(`Collectie opgeslagen`)
+						? t('collection/components/collection-or-bundle-edit___collectie-opgeslagen')
 						: t('collection/components/collection-or-bundle-edit___bundle-opgeslagen')
 				);
 				trackEvents(
@@ -631,7 +631,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					views="0" // TODO: Real view count
 				>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-					<HeaderAvatar>{profile && renderAvatar(profile, { includeRole: true })}</HeaderAvatar>
+					<HeaderAvatar>
+						{profile && renderAvatar(profile, { includeRole: true, dark: true })}
+					</HeaderAvatar>
 				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">

@@ -1,5 +1,4 @@
-import { IconName } from '@viaa/avo2-components';
-// TODO: Import from components lib when exported there.
+import { ButtonAction, IconName } from '@viaa/avo2-components';
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 
 export type ContentBlockStateType = 'components' | 'block';
@@ -24,6 +23,8 @@ export type ButtonTypeOptions =
 	| 'secondary-i'
 	| 'secondary'
 	| 'tertiary';
+
+export type WidthOptions = 'full-width' | '500px' | '400px';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -64,9 +65,11 @@ export type ContentBlockComponentState =
 	| RichTextBlockComponentState
 	| ButtonsBlockComponentState
 	| IntroBlockComponentState
+	| ImageBlockComponentState
 	| CTAsBlockComponentState
 	| IFrameBlockComponentState
-	| AccordionsBlockComponentState;
+	| AccordionsBlockComponentState
+	| MediaPlayerBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -80,16 +83,17 @@ export interface ContentBlockField {
 export enum ContentBlockEditor {
 	AlignSelect = 'AlignSelect',
 	ColorSelect = 'ColorSelect',
+	ContentPicker = 'ContentPicker',
+	FileUpload = 'FileUpload',
+	IconPicker = 'IconPicker',
 	Select = 'Select',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
-	IconPicker = 'IconPicker',
-	ContentPicker = 'ContentPicker',
 }
 
-export interface ContentBlockFormError {
-	[key: string]: string[];
-}
+// If only one block exists then the errors are a string[]
+// If multiple blocks exist then the errors are an array of string array indexed by their stateIndex
+export type ContentBlockFormError = { [key: string]: string[] | string[][] };
 
 // CONTENT BLOCKS
 export interface DefaultContentBlockState {
@@ -107,14 +111,17 @@ export enum ContentBlockBackgroundColor {
 // These match the content_block_types enums from graphql
 // New values need to be added there as well or it won't save
 export enum ContentBlockType {
+	Accordions = 'ACCORDIONS',
 	Buttons = 'BUTTONS',
-	Heading = 'HEADING',
 	CTAs = 'CTAS',
+	Heading = 'HEADING',
+	IFrame = 'IFRAME',
+	Image = 'IMAGE',
 	Intro = 'INTRO',
+	MediaPlayer = 'MEDIA_PLAYER',
+	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
-	IFrame = 'IFRAME',
-	Accordions = 'ACCORDIONS',
 }
 
 export interface HeadingBlockComponentState {
@@ -125,6 +132,13 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
+}
+
+export interface ImageBlockComponentState {
+	title: string;
+	text: string;
+	source: string;
+	width: WidthOptions;
 }
 
 export interface ButtonsBlockComponentState {
@@ -146,6 +160,7 @@ export interface CTAsBlockComponentState {
 	buttonLabel: string;
 	buttonIcon?: IconName;
 	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
 }
 
 export interface IFrameBlockComponentState {
@@ -156,4 +171,22 @@ export interface IFrameBlockComponentState {
 export interface AccordionsBlockComponentState {
 	title: string;
 	content: string;
+}
+
+export interface MediaPlayerBlockComponentState {
+	title: string;
+	item?: ButtonAction;
+}
+
+export interface MediaPlayerTitleTextButtonBlockComponentState {
+	mediaTitle: string;
+	mediaItem?: ButtonAction;
+	headingType: HeadingLevelOptions;
+	headingTitle: string;
+	content: string;
+	buttonLabel: string;
+	buttonIcon?: IconName;
+	buttonType?: ButtonType;
+	buttonAction?: ButtonAction;
+	align: AlignOptions;
 }

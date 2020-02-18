@@ -87,7 +87,9 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
-				toastService.danger(`De huidige collectie is niet gevonden`);
+				toastService.danger(
+					i18n.t('collection/collection___de-huidige-collectie-is-niet-gevonden')
+				);
 				return null;
 			}
 			// Validate collection before save
@@ -171,7 +173,9 @@ export class CollectionService {
 				});
 
 				if (!fragmentToUpdate) {
-					toastService.info(`Kan het te updaten fragment niet vinden (id: ${id})`);
+					toastService.info(
+						i18n.t('collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id', { id })
+					);
 					return;
 				}
 
@@ -363,6 +367,7 @@ export class CollectionService {
 		} catch (err) {
 			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_COLLECTIONS',
+				variables: { limit },
 			});
 			console.error(error);
 			throw error;
@@ -382,14 +387,18 @@ export class CollectionService {
 			const response = await dataService.query(queryInfo);
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
-			console.error('Failed to get collection titles by owner', err, queryInfo);
-			throw new CustomError('Het ophalen van de bestaande collecties is mislukt', err, {
+			const error = new CustomError('Failed to fetch existing bundle titles by owner', err, {
 				user,
+				type,
+				query:
+					type === 'collection' ? 'GET_COLLECTION_TITLES_BY_OWNER' : 'GET_BUNDLE_TITLES_BY_OWNER',
 			});
+			console.error(error);
+			throw error;
 		}
 	}
 
-	public static async getCollectionWithItems(
+	public static async getCollection(
 		collectionId: string,
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
@@ -422,6 +431,19 @@ export class CollectionService {
 		}
 		// Collection/bundle loaded successfully
 		if (collectionObj.type_id !== ContentTypeNumber[type]) {
+			return undefined;
+		}
+
+		return collectionObj;
+	}
+
+	public static async getCollectionWithItems(
+		collectionId: string,
+		type: 'collection' | 'bundle'
+	): Promise<Avo.Collection.Collection | undefined> {
+		const collectionObj = await CollectionService.getCollection(collectionId, type);
+
+		if (!collectionObj) {
 			return undefined;
 		}
 
@@ -541,7 +563,9 @@ export class CollectionService {
 
 		if (!tempFragment) {
 			toastService.info(
-				i18n.t(`Fragment om toe te voegen is niet gevonden (id: {{id}})`, { id: tempId })
+				i18n.t('collection/collection___fragment-om-toe-te-voegen-is-niet-gevonden-id-id', {
+					id: tempId,
+				})
 			);
 			return;
 		}

@@ -103,21 +103,6 @@ describe('<Checkbox />', () => {
 			/>
 		);
 
-		const defaultState = {
-			one: false,
-			two: false,
-			three: false,
-			four: false,
-			five: false,
-			six: false,
-			seven: false,
-			eight: false,
-			nine: false,
-			ten: false,
-			elven: false,
-			twelve: false,
-		};
-
 		const checkboxes = checkboxDropdownComponent.find('[type="checkbox"]');
 		const button = checkboxDropdownComponent
 			.find('.c-button.c-button--block.c-button--primary')

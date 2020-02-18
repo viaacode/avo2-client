@@ -45,7 +45,6 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 export function mapNavElementsToNavigationItems(
 	navItems: AppContentNavElement[],
 	history: H.History,
-	location: H.Location,
 	match: Match<any>,
 	t: TFunction
 ): NavigationItemInfo[] {

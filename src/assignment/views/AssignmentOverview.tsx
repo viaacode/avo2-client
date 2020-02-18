@@ -38,12 +38,13 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
-import { buildLink, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
+import { buildLink, CustomError, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { useTableSort } from '../../shared/hooks';
 import { dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
+import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
@@ -53,11 +54,7 @@ import {
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
-import {
-	deleteAssignment,
-	insertDuplicateAssignment,
-	updateAssignment,
-} from '../assignment.service';
+import { AssignmentService } from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
@@ -76,9 +73,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		false
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
-	const [markedAssignment, setMarkedAssignment] = useState<null | Partial<
-		Avo.Assignment.Assignment
-	>>(null);
+	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [page, setPage] = useState<number>(0);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean>(false);
 
@@ -89,6 +84,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
 	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
+	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
+	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
 		PermissionService.hasPermissions(PermissionNames.EDIT_ASSIGNMENTS, user)
@@ -123,7 +120,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		];
 	};
 
-	const getAssigmentById = async (assignmentId: number | string) => {
+	const getAssigmentById = async (
+		assignmentId: number | string
+	): Promise<Avo.Assignment.Assignment> => {
 		const response: ApolloQueryResult<Avo.Assignment.Assignment> = await dataService.query({
 			query: GET_ASSIGNMENT_BY_ID,
 			variables: { id: assignmentId },
@@ -131,31 +130,40 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		const assignment = get(response, 'data.app_assignments[0]');
 
 		if (!assignment) {
-			toastService.danger(
-				t('assignment/views/assignment-overview___het-ophalen-van-de-opdracht-is-mislukt')
-			);
-			return;
+			throw new CustomError('Failed to fetch the assignment', null, { assignmentId });
 		}
 		return assignment;
 	};
 
-	const duplicateAssignment = async (
-		title: string,
+	const attemptDuplicateAssignment = async (
+		newTitle: string,
 		assignment: Partial<Avo.Assignment.Assignment> | null,
 		refetchAssignments: () => void
 	) => {
-		const duplicatedAssignment = await insertDuplicateAssignment(
-			triggerAssignmentInsert,
-			title,
-			assignment
-		);
+		try {
+			if (!assignment) {
+				throw new CustomError(
+					'Failed to duplicate the assigment because the marked assigment is null'
+				);
+			}
+			await AssignmentService.duplicateAssignment(
+				newTitle,
+				assignment,
+				user,
+				triggerCollectionInsert,
+				triggerCollectionFragmentsInsert,
+				triggerAssignmentInsert
+			);
 
-		if (!duplicatedAssignment) {
-			return; // assignment was not valid => validation service already showed a toast
+			refetchAssignments();
+
+			toastService.success(t('Het dupliceren van de opdracht is gelukt'));
+		} catch (err) {
+			console.error('Failed to copy the assignment', err, { newTitle, assignment });
+			toastService.danger(
+				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
+			);
 		}
-
-		refetchAssignments();
-		toastService.success(t('assignment/views/assignment-overview___de-opdracht-is-gedupliceerd'));
 	};
 
 	const archiveAssignment = async (
@@ -163,7 +171,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		try {
-			const assignment: Partial<Avo.Assignment.Assignment> = await getAssigmentById(assignmentId);
+			const assignment: Avo.Assignment.Assignment | null = await getAssigmentById(assignmentId);
 
 			if (assignment) {
 				const archivedAssigment: Partial<Avo.Assignment.Assignment> = {
@@ -171,10 +179,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					is_archived: !assignment.is_archived,
 				};
 
-				if (await updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
+				if (await AssignmentService.updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
 					refetchAssignments();
 					toastService.success(
-						`De opdracht is ge${archivedAssigment.is_archived ? '' : 'de'}archiveerd`
+						archivedAssigment.is_archived
+							? t('assignment/views/assignment-overview___de-opdracht-is-gearchiveerd')
+							: t('assignment/views/assignment-overview___de-opdracht-is-gedearchiveerd')
 					);
 				}
 				// else: assignment was not valid and could not be saved yet
@@ -183,9 +193,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		} catch (err) {
 			console.error(err);
 			toastService.danger(
-				`Het ${
-					activeView === 'archived_assignments' ? 'de' : ''
-				}archiveren van de opdracht is mislukt`
+				activeView === 'archived_assignments'
+					? t('Het dearchiveren van de opdracht is mislukt')
+					: t('assignment/views/assignment-overview___het-archiveren-van-de-opdracht-is-mislukt')
 			);
 		}
 	};
@@ -203,7 +213,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				);
 				return;
 			}
-			await deleteAssignment(triggerAssignmentDelete, assignmentId);
+			await AssignmentService.deleteAssignment(triggerAssignmentDelete, assignmentId);
 			refetchAssignments();
 			toastService.success(t('assignment/views/assignment-overview___de-opdracht-is-verwijdert'));
 		} catch (err) {
@@ -216,7 +226,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 	const handleExtraOptionsItemClicked = async (
 		actionId: ExtraAssignmentOptions,
-		dataRow: Partial<Avo.Assignment.Assignment>,
+		dataRow: Avo.Assignment.Assignment,
 		refetchAssignments: () => void
 	) => {
 		if (!dataRow.id) {
@@ -232,11 +242,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: dataRow.id });
 				break;
 			case 'duplicate':
-				const assignment: Partial<Avo.Assignment.Assignment> = await getAssigmentById(dataRow.id);
-				if (assignment) {
+				try {
+					const assignment: Avo.Assignment.Assignment = await getAssigmentById(dataRow.id);
+
 					setMarkedAssignment(assignment);
 					setDuplicateAssignmentModalOpen(true);
-				} else {
+				} catch (err) {
+					console.error('Failed to duplicate assigment', err, { assignmentId: dataRow.id });
 					toastService.danger(
 						t(
 							'assignment/views/assignment-overview___het-ophalen-van-de-details-van-de-opdracht-is-mislukt'
@@ -327,14 +339,29 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 							<DropdownContent>
 								<MenuContent
 									menuItems={[
-										{ icon: 'edit2' as IconName, id: 'edit', label: 'Bewerk' },
+										{
+											icon: 'edit2' as IconName,
+											id: 'edit',
+											label: t('assignment/views/assignment-overview___bewerk'),
+										},
 										{
 											icon: 'archive' as IconName,
 											id: 'archive',
-											label: activeView === 'archived_assignments' ? 'Dearchiveer' : 'Archiveer',
+											label:
+												activeView === 'archived_assignments'
+													? t('assignment/views/assignment-overview___dearchiveer')
+													: t('assignment/views/assignment-overview___archiveer'),
 										},
-										{ icon: 'copy' as IconName, id: 'duplicate', label: 'Dupliceer' },
-										{ icon: 'delete' as IconName, id: 'delete', label: 'Verwijder' },
+										{
+											icon: 'copy' as IconName,
+											id: 'duplicate',
+											label: t('assignment/views/assignment-overview___dupliceer'),
+										},
+										{
+											icon: 'delete' as IconName,
+											id: 'delete',
+											label: t('assignment/views/assignment-overview___verwijder'),
+										},
 									]}
 									onClick={(actionId: ReactText) =>
 										handleExtraOptionsItemClicked(
@@ -440,7 +467,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					isOpen={isDuplicateAssignmentModalOpen}
 					onClose={handleDuplicateModalClose}
 					inputCallback={(newTitle: string) =>
-						duplicateAssignment(newTitle, markedAssignment, refetchAssignments)
+						attemptDuplicateAssignment(newTitle, markedAssignment, refetchAssignments)
 					}
 					emptyMessage={t(
 						'assignment/views/assignment-overview___gelieve-een-opdracht-titel-in-te-vullen'

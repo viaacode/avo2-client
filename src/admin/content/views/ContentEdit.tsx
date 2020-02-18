@@ -18,9 +18,11 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-info';
+import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql';
 import { DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
+import { dataService } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import {
@@ -86,7 +88,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
-	const pageTitle = `Content ${pageType === PageType.Create ? 'toevoegen' : 'aanpassen'}`;
+	const pageTitle =
+		pageType === PageType.Create
+			? t('admin/content/views/content-edit___content-toevoegen')
+			: t('admin/content/views/content-edit___content-aanpassen');
 	// TODO: clean up admin check
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
@@ -121,7 +126,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setIsSaving(false);
 
 		if (response) {
-			toastService.success('Het content item is succesvol opgeslagen', false);
+			toastService.success(
+				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen'),
+				false
+			);
 			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
 		}
 	};
@@ -130,16 +138,18 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setIsSaving(true);
 
 		// Validate form
-		const isFormValid = handleValidation();
+		const isFormValid = await handleValidation();
 
 		if (!isFormValid) {
 			setIsSaving(false);
-			toastService.danger('Er zijn nog fouten in het metadata formulier', false);
+			toastService.danger(
+				t('admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'),
+				false
+			);
 
 			return;
 		}
 
-		// TODO: remove any for content_width with typings update
 		const contentItem: Partial<Avo.Content.Content> | any = {
 			title: contentForm.title,
 			description: contentForm.description || null,
@@ -149,6 +159,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			content_width: contentForm.contentWidth,
 			publish_at: contentForm.publishAt || null,
 			depublish_at: contentForm.depublishAt || null,
+			user_group_ids: contentForm.userGroupIds,
 		};
 
 		if (pageType === PageType.Create) {
@@ -176,29 +187,50 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 				handleResponse(updatedContent);
 			} else {
-				toastService.danger(`Het content id: ${id} is ongeldig.`, false);
+				toastService.danger(
+					t('admin/content/views/content-edit___het-content-id-id-is-ongeldig', { id }),
+					false
+				);
 				history.push(CONTENT_PATH.CONTENT);
 			}
 		}
 	};
 
-	const handleValidation = () => {
+	const handleValidation = async (): Promise<boolean> => {
 		const errors: ContentEditFormErrors = {};
 		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
 
 		if (!contentForm.title) {
-			errors.title = 'Titel is verplicht';
+			errors.title = t('admin/content/views/content-edit___titel-is-verplicht');
 		}
 
 		if (!contentForm.contentType) {
-			errors.contentType = 'Content type is verplicht';
+			errors.contentType = t('admin/content/views/content-edit___content-type-is-verplicht');
+		}
+
+		if (!contentForm.path) {
+			errors.path = t('Een url is verplicht');
+		} else {
+			// check if it is unique
+			const response = await dataService.query({
+				query: GET_CONTENT_PAGE_BY_PATH,
+				variables: { path: contentForm.path },
+			});
+			const page: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
+			if (page) {
+				errors.path = t('Dit path is reeds gebruikt door pagina: {{pageTitle}}', {
+					pageTitle: page.title,
+				});
+			}
 		}
 
 		if (
 			hasPublicationAndDePublicationDates &&
 			new Date(contentForm.depublishAt) < new Date(contentForm.publishAt)
 		) {
-			errors.depublishAt = 'Depublicatie moet na publicatie datum';
+			errors.depublishAt = t(
+				'admin/content/views/content-edit___depublicatie-moet-na-publicatie-datum'
+			);
 		}
 
 		setFormErrors(errors);
@@ -296,14 +328,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<HeaderButtons>
 						<ButtonToolbar>
 							<Button
-								disabled={isSaving}
-								label={t('admin/content/views/content-edit___opslaan')}
-								onClick={handleSave}
-							/>
-							<Button
 								label={t('admin/content/views/content-edit___annuleer')}
 								onClick={navigateBack}
 								type="tertiary"
+							/>
+							<Button
+								disabled={isSaving}
+								label={t('admin/content/views/content-edit___opslaan')}
+								onClick={handleSave}
 							/>
 						</ButtonToolbar>
 					</HeaderButtons>

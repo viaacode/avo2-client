@@ -1,17 +1,20 @@
-// Picker
 export type ContentPickerType =
 	| 'CONTENT_PAGE'
 	| 'COLLECTION'
 	| 'ITEM'
 	| 'DROPDOWN'
 	| 'INTERNAL_LINK'
-	| 'EXTERNAL_LINK';
+	| 'EXTERNAL_LINK'
+	| 'BUNDLE';
+
+export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
 
 export interface PickerTypeOption<T = string> {
 	value: T;
 	label: string;
 	disabled?: boolean;
-	fetch: (limit: number) => Promise<PickerSelectItemGroup>;
+	picker: PickerItemControls;
+	fetch?: (limit: number) => Promise<PickerSelectItem[]>;
 }
 
 export interface PickerSelectItem {

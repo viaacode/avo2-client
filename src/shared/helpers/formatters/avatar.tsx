@@ -67,6 +67,7 @@ export const renderAvatar = (
 		includeRole?: boolean;
 		small?: boolean;
 		abbreviatedName?: boolean;
+		dark?: boolean;
 	} = {}
 ): ReactNode | null => {
 	if (!profile) {
@@ -74,7 +75,7 @@ export const renderAvatar = (
 	}
 
 	const props: AvatarProps = getAvatarProps(profile, options);
-	return <Avatar {...props} />;
+	return <Avatar dark={options.dark} {...props} />;
 };
 
 export const renderAvatars = (

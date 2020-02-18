@@ -24,8 +24,8 @@ export const INITIAL_MENU_FORM = (placement: string = ''): MenuEditFormState => 
 	description: '',
 	icon: '',
 	label: '',
-	content_type: 'COLLECTION',
-	content_path: '',
+	content_type: null,
+	content_path: null,
 	link_target: '_self',
 	user_group_ids: [],
 });

@@ -1,0 +1,9 @@
+.m-menu-edit-form {
+	.c-button-toolbar {
+		display: inline-flex;
+
+		> .c-badge + .c-badge {
+			margin-left: 0.8rem;
+		}
+	}
+}

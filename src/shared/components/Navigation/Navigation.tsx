@@ -98,7 +98,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 	};
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems, history, location, match, t);
+		return mapNavElementsToNavigationItems(primaryNavItems, history, match, t);
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
@@ -108,7 +108,6 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		const dynamicNavItems: NavigationItemInfo[] = mapNavElementsToNavigationItems(
 			secondaryNavItems,
 			history,
-			location,
 			match,
 			t
 		);
@@ -202,7 +201,9 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 										<img
 											className="c-brand__image"
 											src="/images/avo-logo-i.svg"
-											alt="Archief voor Onderwijs logo"
+											alt={t(
+												'shared/components/navigation/navigation___archief-voor-onderwijs-logo'
+											)}
 										/>
 									</Link>
 								</h1>

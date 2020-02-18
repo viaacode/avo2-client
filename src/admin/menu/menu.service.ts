@@ -27,7 +27,7 @@ export const fetchMenuItems = async (placement?: string): Promise<Avo.Menu.Menu[
 		const response = await dataService.query(queryOptions);
 		return get(response, `data.${MENU_RESULT_PATH}`, null);
 	} catch (err) {
-		console.error(`Failed to fetch menu items`);
+		console.error('Failed to fetch menu items');
 		return null;
 	}
 };

@@ -7,10 +7,13 @@ import { Link } from 'react-router-dom';
 import { Avo } from '@viaa/avo2-types';
 
 import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
-import { SEARCH_PATH } from '../../search/search.const';
-
+import { BUNDLE_PATH } from '../../bundle/bundle.const';
+import { COLLECTION_PATH } from '../../collection/collection.const';
 import { CONTENT_TYPE_TO_ROUTE } from '../../constants';
+import { ITEM_PATH } from '../../item/item.const';
+import { SEARCH_PATH } from '../../search/search.const';
 import toastService from '../services/toast-service';
+import i18n from '../translations/i18n';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
@@ -19,7 +22,9 @@ const navigationConsoleError = (route: string, missingParams: string[] = []) => 
 	const paramsString = missingParams.join(', ');
 	console.error(`The following params were not included: [${paramsString}] for route ${route}`);
 };
-const navigationToastError = 'De navigatie is afgebroken wegens foutieve parameters';
+const navigationToastError = i18n.t(
+	'shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters'
+);
 
 export const buildLink = (route: string, params: RouteParams = {}, search?: string): string => {
 	let builtLink = route;
@@ -68,6 +73,40 @@ export const navigate = (
 	}
 
 	history.push(builtLink);
+};
+
+export const navigateToContentType = (action: any, history: History) => {
+	// TODO: Change any to ButtonAction when typings is updated.
+	if (action) {
+		const { type, value } = action;
+
+		switch (type) {
+			case 'INTERNAL_LINK':
+			case 'CONTENT_PAGE':
+				history.push(value as string);
+				break;
+			case 'COLLECTION':
+				navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, {
+					id: value as string,
+				});
+				break;
+			case 'ITEM':
+				navigate(history, ITEM_PATH.ITEM, {
+					id: value,
+				});
+				break;
+			case 'BUNDLE':
+				navigate(history, BUNDLE_PATH.BUNDLE_DETAIL, {
+					id: value,
+				});
+				break;
+			case 'EXTERNAL_LINK':
+				window.location.href = value as string;
+				break;
+			default:
+				break;
+		}
+	}
 };
 
 export const generateSearchLinks = (

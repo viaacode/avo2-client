@@ -4,6 +4,7 @@ import { Reducer, useEffect, useReducer, useState } from 'react';
 import { Avo } from '@viaa/avo2-types';
 
 import toastService from '../../../shared/services/toast-service';
+import i18n from '../../../shared/translations/i18n';
 import { ReactAction } from '../../../shared/types';
 
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
@@ -74,15 +75,18 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 								isProtected: contentItem.is_protected,
 								path: contentItem.path,
 								contentType: contentItem.content_type,
-								// TODO: remove any when updating typings
-								contentWidth: (contentItem as any).content_width || ContentWidth.REGULAR,
+								contentWidth: contentItem.content_width || ContentWidth.REGULAR,
 								publishAt: contentItem.publish_at || '',
 								depublishAt: contentItem.depublish_at || '',
+								userGroupIds: (contentItem as any).user_group_ids, // TODO remove once update typings to v2.10.0
 							},
 						});
 					} else {
 						toastService.danger(
-							`Er ging iets mis tijdens het ophalen van de content met id: ${id}`,
+							i18n.t(
+								'admin/content/hooks/use-content-item___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-met-id-id',
+								{ id }
+							),
 							false
 						);
 						history.push(CONTENT_PATH.CONTENT);
