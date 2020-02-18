@@ -7,22 +7,27 @@ import { parsePickerItem } from './parse-picker';
 
 const APP_PATH_ARRAY = Object.values(APP_PATH);
 
+const PATHS_TO_ADD = [
+	'/mijn-werkruimte',
+	'/mijn-werkruimte/collecties',
+	'/mijn-werkruimte/bundels',
+	'/mijn-werkruimte/opdrachten',
+	'/mijn-werkruimte/bladwijzers',
+	'/instellingen/profiel',
+	'/instellingen/account',
+	'/instellingen/email',
+	'/instellingen/notificaties',
+];
+const PATHS_TO_REMOVE = ['/mijn-werkruimte/opdrachten/maak'];
+
 // Return InternalLinkItems items from APP_PATH
 export const fetchInternalLinks = async (limit: number): Promise<PickerSelectItemGroup> =>
 	parseInternalLinks(APP_PATH_ARRAY, limit);
 
 export const parseInternalLinks = (allPaths: string[], limit: number) => {
 	const paths = allPaths.slice(0, limit).filter((path: any) => !path.includes(':'));
-	remove(paths, '/mijn-werkruimte/opdrachten/maak');
-	paths.push('/mijn-werkruimte');
-	paths.push('/mijn-werkruimte/collecties');
-	paths.push('/mijn-werkruimte/bundels');
-	paths.push('/mijn-werkruimte/opdrachten');
-	paths.push('/mijn-werkruimte/bladwijzers');
-	paths.push('/instellingen/profiel');
-	paths.push('/instellingen/account');
-	paths.push('/instellingen/email');
-	paths.push('/instellingen/notificaties');
+	PATHS_TO_ADD.forEach(path => paths.push(path));
+	PATHS_TO_REMOVE.forEach(path => remove(paths, path));
 
 	const parsedInternalLinkItemsItems = paths.sort().map((path: string) => ({
 		label: path,
