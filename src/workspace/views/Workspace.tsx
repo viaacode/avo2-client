@@ -50,18 +50,23 @@ export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string 
 	collections: Avo.Collection.Collection | null;
 }
 
-const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ...rest }) => {
+const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location, user }) => {
 	const [t] = useTranslation();
 
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
-	const [tabId, setTabId] = useState<string | null>(match.params.tabId || null);
+	const [tabId, setTabId] = useState<string | null>(null);
 	const [tabs, setTabs] = useState<TabViewMap>({});
 	const [tabCounts, setTabCounts] = useState<{ [tabId: string]: number }>({});
 	const [permissions, setPermissions] = useState<{ [tabId: string]: boolean }>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	// Methods
+	// react to route changes by navigating back wih the browser history back button
+	useEffect(() => {
+		setTabId(match.params.tabId);
+	}, [match.params.tabId]);
+
 	// Make map for available tab views
 	useEffect(() => {
 		const addTabIfUserHasPerm = (tabId: string, obj: any): any => {
@@ -77,9 +82,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 						numberOfItems={tabCounts[COLLECTIONS_ID]}
 						type="collection"
 						history={history}
+						location={location}
 						match={match}
 						user={user}
-						{...rest}
 					/>
 				),
 				// TODO: DISABLED_FEATURE filter
@@ -99,9 +104,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 						numberOfItems={tabCounts[BUNDLES_ID]}
 						type="bundle"
 						history={history}
+						location={location}
 						match={match}
 						user={user}
-						{...rest}
 					/>
 				),
 				filter: {
@@ -111,28 +116,24 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 			}),
 			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
 				component: () => (
-					<AssignmentOverview history={history} match={match} user={user} {...rest} />
+					<AssignmentOverview history={history} location={location} match={match} user={user} />
 				),
 			}),
 			...addTabIfUserHasPerm(BOOKMARKS_ID, {
 				component: () => <Bookmarks />,
 			}),
 		});
-	}, [tabCounts, permissions]);
+	}, [tabCounts, permissions, t, history, location, match, user]);
 
 	const goToTab = (id: ReactText) => {
 		navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: id });
 		setTabId(String(id));
 	};
 
-	const getTabId = useCallback(() => {
-		return tabId || Object.keys(tabs)[0];
-	}, [tabs, tabId]);
-
 	// Get active tab based on above map with tabId
 	const getActiveTab = useCallback(() => {
-		return tabs[getTabId()];
-	}, [tabs, getTabId]);
+		return tabs[tabId || Object.keys(tabs)[0]];
+	}, [tabs, tabId]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions)) {
@@ -175,15 +176,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 					message: t('workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'),
 				});
 			});
-	}, [user, t, permissions]);
+	}, [user, t, setPermissions, permissions]);
 
 	useEffect(() => {
-		if (
-			!isEmpty(permissions) &&
-			!isEmpty(tabs) &&
-			loadingInfo.state !== 'loaded' &&
-			loadingInfo.state !== 'error'
-		) {
+		if (!isEmpty(permissions) && !isEmpty(tabs)) {
 			if (getActiveTab()) {
 				// Use has access to at least one tab
 				setLoadingInfo({
@@ -201,13 +197,13 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 		}
 	}, [setLoadingInfo, getActiveTab, t, permissions, tabs]);
 
-	const getNavTabs = () => {
+	const getNavTabs = useCallback(() => {
 		return TABS.map(tab => ({
 			...tab,
-			active: getTabId() === tab.id,
+			active: (tabId || Object.keys(tabs)[0]) === tab.id,
 			label: tabCounts[tab.id] ? `${tab.label} (${tabCounts[tab.id]})` : tab.label,
 		}));
-	};
+	}, [tabs, tabId, tabCounts]);
 
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 
@@ -216,11 +212,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, user, ..
 		const filter: TabFilter | null = get(getActiveTab(), 'filter', null);
 
 		if (filter) {
-			if (!activeFilter) {
-				setActiveFilter(filter.options[0].id);
-			}
-
-			const currentFilter = filter.options.find(f => f.id === activeFilter);
+			const currentFilter = filter.options.find(
+				f => f.id === (activeFilter || filter.options[0].id)
+			);
 
 			return (
 				<Form type="inline">

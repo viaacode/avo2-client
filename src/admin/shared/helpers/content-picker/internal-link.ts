@@ -1,24 +1,38 @@
+import { remove } from 'lodash-es';
+
 import { APP_PATH } from '../../../../constants';
 
-import { PickerSelectItemGroup } from '../../types';
+import { PickerSelectItem } from '../../types';
 import { parsePickerItem } from './parse-picker';
 
-const APP_PATH_ARRAY = Object.entries(APP_PATH);
+const APP_PATH_ARRAY = Object.values(APP_PATH);
+
+const PATHS_TO_ADD = [
+	'/mijn-werkruimte',
+	'/mijn-werkruimte/collecties',
+	'/mijn-werkruimte/bundels',
+	'/mijn-werkruimte/opdrachten',
+	'/mijn-werkruimte/bladwijzers',
+	'/instellingen/profiel',
+	'/instellingen/account',
+	'/instellingen/email',
+	'/instellingen/notificaties',
+];
+const PATHS_TO_REMOVE = ['/mijn-werkruimte/opdrachten/maak'];
 
 // Return InternalLinkItems items from APP_PATH
-export const fetchInternalLinks = async (limit: number): Promise<PickerSelectItemGroup> =>
+export const fetchInternalLinks = async (limit: number): Promise<PickerSelectItem[]> =>
 	parseInternalLinks(APP_PATH_ARRAY, limit);
 
-export const parseInternalLinks = (raw: any, limit: number) => {
-	const filteredItems = raw.slice(0, limit).filter((item: any) => !item[1].includes(':'));
+export const parseInternalLinks = (allPaths: string[], limit: number) => {
+	const paths = allPaths.slice(0, limit).filter((path: any) => !path.includes(':'));
+	PATHS_TO_ADD.forEach(path => paths.push(path));
+	PATHS_TO_REMOVE.forEach(path => remove(paths, path));
 
-	const parsedInternalLinkItemsItems = filteredItems.map((item: any) => ({
-		label: item[1],
-		value: parsePickerItem('INTERNAL_LINK', item[1]),
+	const parsedInternalLinkItemsItems = paths.sort().map((path: string) => ({
+		label: path,
+		value: parsePickerItem('INTERNAL_LINK', path),
 	}));
 
-	return {
-		label: 'Interne links',
-		options: parsedInternalLinkItemsItems,
-	};
+	return parsedInternalLinkItemsItems;
 };

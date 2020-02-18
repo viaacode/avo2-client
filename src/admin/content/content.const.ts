@@ -2,15 +2,7 @@ import { TableColumn, TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
-import { PickerTypeOption } from '../shared/types';
 
-import {
-	fetchBundles,
-	fetchCollections,
-	fetchContentPages,
-	fetchInternalLinks,
-	fetchItems,
-} from '../shared/helpers';
 import {
 	ContentEditFormState,
 	ContentFilterFormState,
@@ -74,6 +66,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	contentWidth: ContentWidth.REGULAR,
 	publishAt: '',
 	depublishAt: '',
+	userGroupIds: [],
 });
 
 export const CONTENT_DETAIL_TABS: TabProps[] = [
@@ -89,39 +82,6 @@ export const CONTENT_DETAIL_TABS: TabProps[] = [
 	},
 ];
 
-export const CONTENT_TYPES: PickerTypeOption[] = [
-	{
-		value: 'CONTENT_PAGE',
-		label: i18n.t('admin/content/content___content'),
-		disabled: false,
-		fetch: fetchContentPages,
-	},
-	{
-		value: 'INTERNAL_LINK',
-		label: i18n.t('admin/content/content___statisch'),
-		disabled: false,
-		fetch: fetchInternalLinks,
-	},
-	{
-		value: 'COLLECTION',
-		label: i18n.t('admin/content/content___collecties'),
-		disabled: false,
-		fetch: fetchCollections,
-	},
-	{
-		value: 'ITEM',
-		label: i18n.t('admin/content/content___items'),
-		disabled: false,
-		fetch: fetchItems,
-	},
-	{
-		value: 'BUNDLE',
-		label: i18n.t('admin/content/content___bundels'),
-		disabled: false,
-		fetch: fetchBundles,
-	},
-];
-
 export const CONTENT_WIDTH_OPTIONS = [
 	{ label: 'Kies een content breedte', value: '', disabled: true },
 	{ label: 'Max. (1300px)', value: 'REGULAR' },
@@ -132,5 +92,5 @@ export const CONTENT_WIDTH_OPTIONS = [
 export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: string[] } = {
 	[ContentWidth.REGULAR]: [ContentPageType.Project],
 	[ContentWidth.LARGE]: [],
-	[ContentWidth.MEDIUM]: [ContentPageType.News],
+	[ContentWidth.MEDIUM]: [ContentPageType.NewsItem],
 };
