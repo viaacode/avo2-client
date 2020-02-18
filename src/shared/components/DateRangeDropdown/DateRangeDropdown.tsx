@@ -48,6 +48,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 	const [yearInputGte, setYearInputGte] = useState<string>('');
 	const [yearInputLte, setYearInputLte] = useState<string>('');
 
+	// @ts-ignore
 	const resetInternalRangeState = async (tagId?: ReactText, evt?: MouseEvent): Promise<void> => {
 		evt && evt.stopPropagation();
 		setRangeState(range);
@@ -61,6 +62,7 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		await closeDropdown();
 	};
 
+	// @ts-ignore
 	const removeFilter = (tagId: ReactText, evt: MouseEvent) => {
 		evt.stopPropagation();
 		setRangeState(DEFAULT_DATE_RANGE);

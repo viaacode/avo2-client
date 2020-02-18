@@ -231,16 +231,17 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 
 export const GET_COLLECTIONS = gql`
 	query getCollections($limit: Int!) {
-		app_collections(where: { type_id: { _eq: 3 } }, limit: $limit) {
+		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 3 } }, limit: $limit) {
 			id
 			title
 		}
 	}
 `;
 
+// TODO: Move bundle GQL to bundle.gql.ts
 export const GET_BUNDLES = gql`
 	query getBundles($limit: Int!) {
-		app_collections(where: { type_id: { _eq: 4 } }, limit: $limit) {
+		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 4 } }, limit: $limit) {
 			id
 			title
 		}

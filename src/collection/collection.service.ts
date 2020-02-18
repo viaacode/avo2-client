@@ -398,7 +398,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async getCollectionWithItems(
+	public static async getCollection(
 		collectionId: string,
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
@@ -431,6 +431,19 @@ export class CollectionService {
 		}
 		// Collection/bundle loaded successfully
 		if (collectionObj.type_id !== ContentTypeNumber[type]) {
+			return undefined;
+		}
+
+		return collectionObj;
+	}
+
+	public static async getCollectionWithItems(
+		collectionId: string,
+		type: 'collection' | 'bundle'
+	): Promise<Avo.Collection.Collection | undefined> {
+		const collectionObj = await CollectionService.getCollection(collectionId, type);
+
+		if (!collectionObj) {
 			return undefined;
 		}
 
