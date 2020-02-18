@@ -3,6 +3,7 @@ import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components'
 import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
 
+import { FileUpload } from '../../shared/components';
 import { ContentPicker } from '../shared/components';
 
 import { AlignSelect, ColorSelect } from './components';
@@ -20,11 +21,13 @@ import {
 	CTAS_BLOCK_CONFIG,
 	HEADING_BLOCK_CONFIG,
 	IFRAME_BLOCK_CONFIG,
+	IMAGE_BLOCK_CONFIG,
 	INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
 	INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	INITIAL_HEADING_BLOCK_COMPONENT_STATE,
 	INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	INITIAL_INTRO_BLOCK_COMPONENT_STATE,
 	INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
@@ -113,6 +116,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('Media-speler'),
 		value: ContentBlockType.MediaPlayer,
 	},
+	{
+		label: i18n.t('Afbeelding'),
+		value: ContentBlockType.Image,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -123,6 +130,7 @@ export const EDITOR_TYPES_MAP = {
 	WYSIWYG,
 	IconPicker,
 	ContentPicker,
+	FileUpload,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -131,6 +139,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
@@ -143,6 +152,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
@@ -189,4 +199,10 @@ export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
 		label: i18n.t('middelgroot'),
 		value: '400px',
 	},
+];
+
+export const IMAGE_WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
+	{ label: i18n.t('Paginabreedte'), value: 'full-width' },
+	{ label: i18n.t('Groot'), value: '500px' },
+	{ label: i18n.t('Middelgroot'), value: '400px' },
 ];

@@ -15,8 +15,8 @@ import {
 } from '@viaa/avo2-components';
 import toastService from '../../../../shared/services/toast-service';
 import { CONTENT_TYPES } from '../../../content/content.const';
-import { parsePickerItem } from '../../../shared/helpers';
-import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../../shared/types';
+import { parsePickerItem } from '../../helpers';
+import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../types';
 
 type ContentPickerControls = 'content' | 'external-url';
 
@@ -28,7 +28,7 @@ const REACT_SELECT_DEFAULT_OPTIONS = {
 export interface ContentPickerProps {
 	initialControls?: ContentPickerControls;
 	selectableTypes?: string[];
-	onSelect: (value: ValueType<PickerItem>) => void;
+	onSelect: (value: PickerItem) => void;
 	errors?: string | string[];
 }
 
@@ -110,7 +110,9 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					isSearchable={false}
 					isDisabled={!currentTypes.length}
 					isLoading={loading}
-					onChange={(selectedItem: ValueType<PickerItem>) => onSelect(get(selectedItem, 'value'))}
+					onChange={(selectedItem: ValueType<PickerItem>) => {
+						onSelect(get(selectedItem, 'value'));
+					}}
 				/>
 			</Column>
 		</Grid>

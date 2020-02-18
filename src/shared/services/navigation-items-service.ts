@@ -1,11 +1,11 @@
 import { memoize } from 'lodash-es';
 
 import { IconName } from '@viaa/avo2-components';
-import { getEnv } from '../helpers';
-import { CustomError } from '../helpers/error';
+
+import { CustomError, getEnv } from '../helpers';
 
 export interface AppContentNavElement {
-	content_path: any;
+	content_path: string | null;
 	content_type: any;
 	link_target: string;
 	placement: string;

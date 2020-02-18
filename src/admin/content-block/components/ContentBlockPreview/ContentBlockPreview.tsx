@@ -9,6 +9,7 @@ import {
 	BlockFlowPlayer,
 	BlockHeading,
 	BlockIFrame,
+	BlockImage,
 	BlockIntro,
 	BlockRichText,
 	Container,
@@ -38,15 +39,16 @@ enum ContentWidthMap {
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
+	[ContentBlockType.Accordions]: BlockAccordions,
 	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
 	[ContentBlockType.Heading]: BlockHeading,
+	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
+	[ContentBlockType.Image]: BlockImage,
+	[ContentBlockType.MediaPlayer]: BlockFlowPlayer,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
-	[ContentBlockType.IFrame]: BlockIFrame,
-	[ContentBlockType.Accordions]: BlockAccordions,
-	[ContentBlockType.MediaPlayer]: BlockFlowPlayer,
 });
 
 const REPEATABLE_CONTENT_BLOCKS = [

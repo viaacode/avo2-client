@@ -1,4 +1,4 @@
-import { capitalize, isEmpty, sortBy } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -30,39 +30,14 @@ const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 	useEffect(() => {
 		// fetch user groups for giving permissions to view a certain navigation item
 		getUserGroups()
-			.then((userGroups: { label: string; id: number }[]) => {
-				setUserGroupOptions(
-					sortBy(
-						[
-							{
-								label: t(
-									'admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'
-								),
-								value: -1,
-							},
-							{
-								label: t(
-									'admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'
-								),
-								value: -2,
-							},
-							...userGroups.map(
-								(userGroup): TagInfo => ({
-									label: capitalize(userGroup.label),
-									value: userGroup.id,
-								})
-							),
-						],
-						'label'
-					)
-				);
-			})
+			.then(setUserGroupOptions)
 			.catch((err: any) => {
 				console.error('Failed to get user groups', err);
 				toastService.danger(
 					t(
 						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
-					)
+					),
+					false
 				);
 			});
 	}, [t]);
