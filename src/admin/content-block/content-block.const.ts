@@ -186,6 +186,12 @@ export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
 	},
 ];
 
+export const IMAGE_WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
+	{ label: i18n.t('Paginabreedte'), value: 'full-width' },
+	{ label: i18n.t('Groot'), value: '500px' },
+	{ label: i18n.t('Middelgroot'), value: '400px' },
+];
+
 export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
 	{
 		label: i18n.t('paginabreedte'),
@@ -199,10 +205,4 @@ export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
 		label: i18n.t('middelgroot'),
 		value: '400px',
 	},
-];
-
-export const IMAGE_WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
-	{ label: i18n.t('Paginabreedte'), value: 'full-width' },
-	{ label: i18n.t('Groot'), value: '500px' },
-	{ label: i18n.t('Middelgroot'), value: '400px' },
 ];
