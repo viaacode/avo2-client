@@ -48,20 +48,6 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	components: {
 		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE(),
 		fields: {
-			headingTitle: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
-				{
-					label: i18n.t('admin/content-block/helpers/generators/heading___titel'),
-					editorType: ContentBlockEditor.TextInput,
-				}
-			),
-			headingType: {
-				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
-				editorType: ContentBlockEditor.Select,
-				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
-				},
-			},
 			mediaTitle: TEXT_FIELD(i18n.t('Titel is verplicht'), {
 				label: i18n.t('Video- of audio-item: Toegankelijkheidstitel'),
 				editorType: ContentBlockEditor.TextInput,
@@ -78,6 +64,20 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: WIDTH_OPTIONS,
+				},
+			},
+			headingTitle: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/heading___titel'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
+			headingType: {
+				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: HEADING_LEVEL_OPTIONS,
 				},
 			},
 			content: TEXT_FIELD(),
