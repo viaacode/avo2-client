@@ -8,19 +8,19 @@ import {
 	MediaPlayerBlockComponentState,
 } from '../../content-block.types';
 
-import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE = (): MediaPlayerBlockComponentState => ({
+export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockComponentState => ({
 	title: '',
 });
 
 export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockType.MediaPlayer, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayer, position);
 
 export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('Media-speler'),
 	components: {
-		state: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_MEDIA_PLAYER_COMPONENTS_STATE(),
 		fields: {
 			title: TEXT_FIELD(i18n.t('Titel is verplicht'), {
 				label: i18n.t('Toegankelijkheidstitel'),
@@ -44,6 +44,6 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 	},
 	block: {
 		state: INITIAL_MEDIA_PLAYER_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

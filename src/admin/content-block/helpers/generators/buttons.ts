@@ -11,14 +11,9 @@ import {
 	DefaultContentBlockState,
 } from '../../content-block.types';
 
-import {
-	ALIGN_FIELD,
-	CONTENT_BLOCK_FIELD_DEFAULTS,
-	FORM_STATE_DEFAULTS,
-	TEXT_FIELD,
-} from './defaults';
+import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentState[] => [
+export const INITIAL_BUTTONS_COMPONENTS_STATE = (): ButtonsBlockComponentState[] => [
 	{
 		label: '',
 		type: 'primary',
@@ -26,7 +21,7 @@ export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentS
 ];
 
 export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockType.Buttons, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Buttons, position);
 
 export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
@@ -35,7 +30,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		limits: {
 			max: 3,
 		},
-		state: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES(),
+		state: INITIAL_BUTTONS_COMPONENTS_STATE(),
 		fields: {
 			type: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
@@ -68,7 +63,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		state: INITIAL_BUTTONS_BLOCK_STATE(position),
 		fields: {
 			align: ALIGN_FIELD(),
-			...CONTENT_BLOCK_FIELD_DEFAULTS(),
+			...BLOCK_FIELD_DEFAULTS(),
 		},
 	},
 });

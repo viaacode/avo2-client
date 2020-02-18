@@ -9,9 +9,9 @@ import {
 	ImageBlockComponentState,
 } from '../../content-block.types';
 
-import { CONTENT_BLOCK_FIELD_DEFAULTS, FILE_FIELD, FORM_STATE_DEFAULTS } from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD } from './defaults';
 
-export const INITIAL_IMAGE_BLOCK_COMPONENT_STATE = (): ImageBlockComponentState => ({
+export const INITIAL_IMAGE_COMPONENTS_STATE = (): ImageBlockComponentState => ({
 	title: '',
 	text: '',
 	source: '',
@@ -19,12 +19,12 @@ export const INITIAL_IMAGE_BLOCK_COMPONENT_STATE = (): ImageBlockComponentState 
 });
 
 export const INITIAL_IMAGE_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockType.Image, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Image, position);
 
 export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('Afbeelding'),
 	components: {
-		state: INITIAL_IMAGE_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_IMAGE_COMPONENTS_STATE(),
 		fields: {
 			title: {
 				label: i18n.t('Bijschift titel'),
@@ -51,6 +51,6 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 	},
 	block: {
 		state: INITIAL_IMAGE_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

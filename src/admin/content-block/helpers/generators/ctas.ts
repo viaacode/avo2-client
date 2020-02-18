@@ -9,7 +9,7 @@ import {
 	CTAsBlockComponentState,
 	DefaultContentBlockState,
 } from '../../content-block.types';
-import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
 	headingType: 'h2',
@@ -19,13 +19,13 @@ const EMPTY_CTA: CTAsBlockComponentState = {
 	buttonLabel: '',
 };
 
-export const INITIAL_CTAS_BLOCK_COMPONENT_STATES = (): CTAsBlockComponentState[] => [
+export const INITIAL_CTAS_COMPONENTS_STATE = (): CTAsBlockComponentState[] => [
 	EMPTY_CTA,
 	EMPTY_CTA,
 ];
 
 export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockType.CTAs, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.CTAs, position);
 
 export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t("CTA's"),
@@ -35,7 +35,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 			min: 2,
 			max: 2,
 		},
-		state: INITIAL_CTAS_BLOCK_COMPONENT_STATES(),
+		state: INITIAL_CTAS_COMPONENTS_STATE(),
 		fields: {
 			headingType: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___titel-stijl'),
@@ -81,6 +81,6 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 	},
 	block: {
 		state: INITIAL_CTAS_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

@@ -7,20 +7,20 @@ import {
 	IFrameBlockComponentState,
 } from '../../content-block.types';
 
-import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_IFRAME_BLOCK_COMPONENT_STATE = (): IFrameBlockComponentState => ({
+export const INITIAL_IFRAME_COMPONENTS_STATE = (): IFrameBlockComponentState => ({
 	title: '',
 	src: '',
 });
 
 export const INITIAL_IFRAME_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockType.IFrame, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.IFrame, position);
 
 export const IFRAME_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/iframe___i-frame'),
 	components: {
-		state: INITIAL_IFRAME_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_IFRAME_COMPONENTS_STATE(),
 		fields: {
 			title: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/iframe___titel-is-verplicht'),
@@ -37,6 +37,6 @@ export const IFRAME_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =>
 	},
 	block: {
 		state: INITIAL_IFRAME_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

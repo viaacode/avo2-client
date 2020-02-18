@@ -9,7 +9,8 @@ import {
 	ContentBlockType,
 } from '../../content-block.types';
 
-export const FORM_STATE_DEFAULTS = (
+// Block config defaults
+export const BLOCK_STATE_DEFAULTS = (
 	blockType: ContentBlockType,
 	position: number,
 	backgroundColor: ContentBlockBackgroundColor = ContentBlockBackgroundColor.White
@@ -19,7 +20,7 @@ export const FORM_STATE_DEFAULTS = (
 	backgroundColor,
 });
 
-export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
+export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
 });
 
