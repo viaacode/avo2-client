@@ -1,7 +1,11 @@
 import i18n from '../../../../shared/translations/i18n';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
-import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS, WIDTH_OPTIONS, } from '../../content-block.const';
+import {
+	BUTTON_TYPE_OPTIONS,
+	HEADING_LEVEL_OPTIONS,
+	WIDTH_OPTIONS,
+} from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -11,7 +15,12 @@ import {
 	MediaPlayerTitleTextButtonBlockComponentState,
 } from '../../content-block.types';
 
-import { ALIGN_FIELD, CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD, } from './defaults';
+import {
+	ALIGN_FIELD,
+	CONTENT_BLOCK_FIELD_DEFAULTS,
+	FORM_STATE_DEFAULTS,
+	TEXT_FIELD,
+} from './defaults';
 
 export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE = (): MediaPlayerTitleTextButtonBlockComponentState => ({
 	mediaTitle: '',

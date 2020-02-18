@@ -154,7 +154,7 @@ export interface ImageBlockComponentState {
 }
 
 export interface ImageGridBlockComponentStateFields {
-	source?: string;
+	source: string;
 	title?: string;
 	text?: string;
 	action?: ButtonAction;
