@@ -2,15 +2,7 @@ import { TableColumn, TabProps } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
-import { PickerTypeOption } from '../shared/types';
 
-import {
-	fetchBundles,
-	fetchCollections,
-	fetchContentPages,
-	fetchInternalLinks,
-	fetchItems,
-} from '../shared/helpers';
 import {
 	ContentEditFormState,
 	ContentFilterFormState,
@@ -87,39 +79,6 @@ export const CONTENT_DETAIL_TABS: TabProps[] = [
 		id: 'metadata',
 		label: i18n.t('admin/content/content___metadata'),
 		icon: 'file-text',
-	},
-];
-
-export const CONTENT_TYPES: PickerTypeOption[] = [
-	{
-		value: 'CONTENT_PAGE',
-		label: i18n.t('admin/content/content___content'),
-		disabled: false,
-		fetch: fetchContentPages,
-	},
-	{
-		value: 'INTERNAL_LINK',
-		label: i18n.t('admin/content/content___statisch'),
-		disabled: false,
-		fetch: fetchInternalLinks,
-	},
-	{
-		value: 'COLLECTION',
-		label: i18n.t('admin/content/content___collecties'),
-		disabled: false,
-		fetch: fetchCollections,
-	},
-	{
-		value: 'ITEM',
-		label: i18n.t('admin/content/content___items'),
-		disabled: false,
-		fetch: fetchItems,
-	},
-	{
-		value: 'BUNDLE',
-		label: i18n.t('admin/content/content___bundels'),
-		disabled: false,
-		fetch: fetchBundles,
 	},
 ];
 

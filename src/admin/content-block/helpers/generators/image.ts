@@ -1,6 +1,6 @@
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
-import { IMAGE_WIDTH_OPTIONS } from '../../content-block.const';
+import { WIDTH_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -46,7 +46,7 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				label: i18n.t('Breedte'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: IMAGE_WIDTH_OPTIONS,
+					options: WIDTH_OPTIONS,
 				},
 			},
 		},

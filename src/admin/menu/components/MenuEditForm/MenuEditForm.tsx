@@ -95,17 +95,24 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			>
 				<TextInput onChange={(value: string) => onChange('label', value)} value={formState.label} />
 			</FormGroup>
-			{/* TODO: ContentPicker validations like URL regex */}
 			<FormGroup
 				error={formErrors.content_path}
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___link')}
 				required
 			>
 				<ContentPicker
-					selectableTypes={['CONTENT_PAGE', 'INTERNAL_LINK']}
-					onSelect={(item: PickerItem) => {
-						onChange('content', item);
+					selectableTypes={['CONTENT_PAGE', 'INTERNAL_LINK', 'EXTERNAL_LINK']}
+					onSelect={(item: ValueType<PickerItem>) => {
+						onChange('content', item as PickerItem);
 					}}
+					currentSelection={
+						formState.content_type && formState.content_path
+							? {
+									type: formState.content_type,
+									value: formState.content_path,
+							  }
+							: undefined
+					}
 				/>
 			</FormGroup>
 			<FormGroup

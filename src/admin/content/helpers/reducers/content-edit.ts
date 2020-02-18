@@ -77,8 +77,6 @@ const removeComponentState = (
 	return configs;
 };
 
-const clone = (obj: any): any => JSON.parse(JSON.stringify(obj));
-
 const setComponentState = (
 	configs: ContentBlockConfig[],
 	payload: { index: number; formGroupState: ContentBlockComponentState; stateIndex: number }

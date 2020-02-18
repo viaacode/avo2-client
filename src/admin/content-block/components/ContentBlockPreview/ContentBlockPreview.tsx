@@ -17,10 +17,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { BUNDLE_PATH } from '../../../../bundle/bundle.const';
-import { COLLECTION_PATH } from '../../../../collection/collection.const';
-import { ITEM_PATH } from '../../../../item/item.const';
-import { navigate, navigateToContentType } from '../../../../shared/helpers';
+import { navigateToContentType } from '../../../../shared/helpers';
 
 import { CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP } from '../../content-block.const';
 import {
@@ -30,6 +27,7 @@ import {
 	ContentBlockType,
 } from '../../content-block.types';
 import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
+import { MediaPlayer, MediaPlayerTitleTextButton } from '../../helpers/wrappers';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
@@ -44,10 +42,15 @@ enum ContentWidthMap {
 }
 
 const COMPONENT_PREVIEW_MAP = Object.freeze({
+	[ContentBlockType.Accordions]: BlockAccordions,
 	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
 	[ContentBlockType.Heading]: BlockHeading,
+	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
+	[ContentBlockType.Image]: BlockImage,
+	[ContentBlockType.MediaPlayer]: MediaPlayer,
+	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.IFrame]: BlockIFrame,
