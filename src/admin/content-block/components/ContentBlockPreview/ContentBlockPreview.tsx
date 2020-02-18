@@ -25,8 +25,8 @@ import {
 	ContentBlockState,
 	ContentBlockType,
 } from '../../content-block.types';
-import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
 import { MediaPlayer, MediaPlayerTitleTextButton } from '../../helpers/wrappers';
+import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
