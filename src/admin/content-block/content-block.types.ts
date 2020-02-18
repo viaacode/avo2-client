@@ -14,6 +14,8 @@ export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 
 export type ButtonTypeOptions = 'primary' | 'secondary';
 
+export type ImageWidthOptions = 'full-width' | '500px' | '400px';
+
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
 	index: number;
@@ -55,7 +57,8 @@ export type ContentBlockComponentState =
 	| IntroBlockComponentState
 	| CTAsBlockComponentState
 	| IFrameBlockComponentState
-	| AccordionsBlockComponentState;
+	| AccordionsBlockComponentState
+	| ImageBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -74,6 +77,7 @@ export enum ContentBlockEditor {
 	WYSIWYG = 'WYSIWYG',
 	IconPicker = 'IconPicker',
 	ContentPicker = 'ContentPicker',
+	FileUpload = 'FileUpload',
 }
 
 // If only one block exists then the errors are a string[]
@@ -104,6 +108,7 @@ export enum ContentBlockType {
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 	IFrame = 'IFRAME',
 	Accordions = 'ACCORDIONS',
+	Image = 'IMAGE',
 }
 
 export interface HeadingBlockComponentState {
@@ -114,6 +119,13 @@ export interface HeadingBlockComponentState {
 
 export interface RichTextBlockComponentState {
 	content: string;
+}
+
+export interface ImageBlockComponentState {
+	title: string;
+	text: string;
+	source: string;
+	width: ImageWidthOptions;
 }
 
 export interface ButtonsBlockComponentState {

@@ -78,6 +78,12 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
 			};
 			break;
+		case ContentBlockEditor.FileUpload:
+			editorProps = {
+				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+				url: (state as any)[fieldKey],
+			};
+			break;
 		default:
 			editorProps = {
 				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
