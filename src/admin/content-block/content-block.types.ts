@@ -108,6 +108,7 @@ export enum ContentBlockType {
 	IFrame = 'IFRAME',
 	Image = 'IMAGE',
 	Intro = 'INTRO',
+	MediaGrid = 'MEDIA_GRID',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
 	RichText = 'RICH_TEXT',

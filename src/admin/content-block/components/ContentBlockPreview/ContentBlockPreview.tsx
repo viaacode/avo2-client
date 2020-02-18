@@ -10,6 +10,7 @@ import {
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
+	BlockMediaList,
 	BlockRichText,
 	Container,
 } from '@viaa/avo2-components';
@@ -45,6 +46,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.Image]: BlockImage,
+	[ContentBlockType.MediaGrid]: BlockMediaList,
 	[ContentBlockType.MediaPlayer]: MediaPlayer,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
 	[ContentBlockType.RichText]: BlockRichText,

@@ -6,6 +6,7 @@ export * from './heading';
 export * from './iframe';
 export * from './image';
 export * from './intro';
+export * from './media-grid';
 export * from './media-player';
 export * from './media-player-title-text-button';
 export * from './rich-text';
