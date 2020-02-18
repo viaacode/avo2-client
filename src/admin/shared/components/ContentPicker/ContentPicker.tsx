@@ -112,7 +112,9 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			}}
 			value={
 				options.find(
-					option => get(option, 'value.value', '') === get(currentSelection, 'value', '')
+					option =>
+						get(option, 'value.value', 'EMPTY_OPTION') ===
+						get(currentSelection, 'value', 'EMPTY_SELECTION')
 				) as ValueType<PickerItem>
 			}
 		/>
