@@ -7,6 +7,7 @@ import { ValueType } from 'react-select/src/types';
 import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
 import toastService from '../../../../shared/services/toast-service';
+import i18n from '../../../../shared/translations/i18n';
 import { parsePickerItem } from '../../../shared/helpers';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
 
@@ -116,8 +117,17 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			isSearchable={false}
 			isLoading={loading}
 			onChange={(selectedItem: ValueType<PickerItem>) => {
-				onSelect(get(selectedItem, 'value'));
-				setCurrentValue(selectedItem as ValueType<PickerItem>);
+				const value = get(selectedItem, 'value', null);
+
+				if (!get(value, 'value')) {
+					onSelect(null);
+					setCurrentValue(null);
+					toastService.danger(i18n.t('Het geselecteerde item heeft geen pad.'), false);
+					return;
+				}
+
+				onSelect(value);
+				setCurrentValue(selectedItem);
 			}}
 			value={currentValue}
 		/>
