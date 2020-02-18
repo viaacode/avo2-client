@@ -7,5 +7,6 @@ export * from './iframe';
 export * from './image';
 export * from './intro';
 export * from './media-player';
+export * from './media-player-title-text-button';
 export * from './rich-text';
 export * from './rich-text-two-columns';

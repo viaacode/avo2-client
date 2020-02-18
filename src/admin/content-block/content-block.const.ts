@@ -30,10 +30,12 @@ import {
 	INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	INITIAL_INTRO_BLOCK_COMPONENT_STATE,
 	INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
+	INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
 	INTRO_BLOCK_CONFIG,
 	MEDIA_PLAYER_BLOCK_CONFIG,
+	MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
@@ -95,7 +97,6 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('admin/content-block/content-block___knoppen'),
 		value: ContentBlockType.Buttons,
 	},
-
 	{
 		label: i18n.t('admin/content-block/content-block___intro'),
 		value: ContentBlockType.Intro,
@@ -115,6 +116,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{
 		label: i18n.t('Media-speler'),
 		value: ContentBlockType.MediaPlayer,
+	},
+	{
+		label: i18n.t('Media-speler met titel, tekst en knop'),
+		value: ContentBlockType.MediaPlayerTitleTextButton,
 	},
 	{
 		label: i18n.t('Afbeelding'),
@@ -142,6 +147,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
+	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 };
@@ -155,6 +161,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
 };
@@ -184,12 +191,6 @@ export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
 		label: i18n.t('admin/content-block/content-block___secundair'),
 		value: 'secondary',
 	},
-];
-
-export const IMAGE_WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
-	{ label: i18n.t('Paginabreedte'), value: 'full-width' },
-	{ label: i18n.t('Groot'), value: '500px' },
-	{ label: i18n.t('Middelgroot'), value: '400px' },
 ];
 
 export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [

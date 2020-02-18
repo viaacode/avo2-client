@@ -6,7 +6,6 @@ import {
 	BlockAccordions,
 	BlockButtons,
 	BlockCTAs,
-	BlockFlowPlayer,
 	BlockHeading,
 	BlockIFrame,
 	BlockImage,
@@ -24,7 +23,7 @@ import {
 	ContentBlockState,
 	ContentBlockType,
 } from '../../content-block.types';
-import { MediaPlayer } from '../../helpers/previews/MediaPlayer';
+import { MediaPlayer, MediaPlayerTitleTextButton } from '../../helpers/wrappers';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
@@ -46,7 +45,8 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.MediaPlayer]: BlockFlowPlayer,
+	[ContentBlockType.MediaPlayer]: MediaPlayer,
+	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 });
@@ -77,10 +77,6 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			stateToSpread[prop] = (blockState as any)[prop];
 		}
 	});
-
-	if (blockState.blockType === ContentBlockType.MediaPlayer) {
-		return <MediaPlayer {...stateToSpread} />;
-	}
 
 	// TODO: Change BlockCTA to the way Buttons works so that we don't have to add navigate to each CTA element + then we can remove one of the two following conditional statements..
 	if (blockState.blockType === ContentBlockType.Buttons) {
