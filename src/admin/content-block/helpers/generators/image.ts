@@ -2,7 +2,6 @@ import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUp
 import i18n from '../../../../shared/translations/i18n';
 import { WIDTH_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -20,7 +19,7 @@ export const INITIAL_IMAGE_BLOCK_COMPONENT_STATE = (): ImageBlockComponentState 
 });
 
 export const INITIAL_IMAGE_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Image, position);
+	FORM_STATE_DEFAULTS(ContentBlockType.Image, position);
 
 export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('Afbeelding'),

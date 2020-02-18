@@ -2,7 +2,6 @@ import i18n from '../../../../shared/translations/i18n';
 
 import {
 	AccordionsBlockComponentState,
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -20,7 +19,7 @@ export const INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES = (): AccordionsBlockComp
 ];
 
 export const INITIAL_ACCORDIONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Accordions, position);
+	FORM_STATE_DEFAULTS(ContentBlockType.Accordions, position);
 
 export const ACCORDIONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/accordions___accordeons'),

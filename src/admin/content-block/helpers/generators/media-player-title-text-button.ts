@@ -7,7 +7,6 @@ import {
 	WIDTH_OPTIONS,
 } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -35,11 +34,7 @@ export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE = (): 
 export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (
 	position: number
 ): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(
-		ContentBlockBackgroundColor.White,
-		ContentBlockType.MediaPlayerTitleTextButton,
-		position
-	);
+	FORM_STATE_DEFAULTS(ContentBlockType.MediaPlayerTitleTextButton, position);
 
 export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	position: number = 0

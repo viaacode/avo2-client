@@ -3,7 +3,6 @@ import i18n from '../../../../shared/translations/i18n';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -26,7 +25,7 @@ export const INITIAL_CTAS_BLOCK_COMPONENT_STATES = (): CTAsBlockComponentState[]
 ];
 
 export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.CTAs, position);
+	FORM_STATE_DEFAULTS(ContentBlockType.CTAs, position);
 
 export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t("CTA's"),

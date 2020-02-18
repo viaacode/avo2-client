@@ -1,6 +1,5 @@
 import i18n from '../../../../shared/translations/i18n';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockType,
 	DefaultContentBlockState,
@@ -14,7 +13,7 @@ export const INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE = (): RichTextBlockComponen
 });
 
 export const INITIAL_RICH_TEXT_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.RichText, position);
+	FORM_STATE_DEFAULTS(ContentBlockType.RichText, position);
 
 export const RICH_TEXT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/rich-text___tekst'),

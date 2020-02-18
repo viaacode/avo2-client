@@ -1,6 +1,5 @@
 import i18n from '../../../../shared/translations/i18n';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -22,7 +21,7 @@ export const INITIAL_INTRO_BLOCK_COMPONENT_STATE = (): IntroBlockComponentState 
 });
 
 export const INITIAL_INTRO_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro, position);
+	FORM_STATE_DEFAULTS(ContentBlockType.Intro, position);
 
 export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/intro___intro'),

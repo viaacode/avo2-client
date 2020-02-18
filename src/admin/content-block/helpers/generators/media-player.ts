@@ -1,7 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 import { WIDTH_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -16,7 +15,7 @@ export const INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE = (): MediaPlayerBlockCo
 });
 
 export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.MediaPlayer, position);
+	FORM_STATE_DEFAULTS(ContentBlockType.MediaPlayer, position);
 
 export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('Media-speler'),

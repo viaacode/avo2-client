@@ -10,13 +10,13 @@ import {
 } from '../../content-block.types';
 
 export const FORM_STATE_DEFAULTS = (
-	backgroundColor: ContentBlockBackgroundColor,
 	blockType: ContentBlockType,
-	position: number
+	position: number,
+	backgroundColor: ContentBlockBackgroundColor = ContentBlockBackgroundColor.White
 ) => ({
-	backgroundColor,
 	blockType,
 	position,
+	backgroundColor,
 });
 
 export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({

@@ -1,7 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -23,7 +22,7 @@ export const INITIAL_HEADING_BLOCK_COMPONENT_STATE = (): HeadingBlockComponentSt
 });
 
 export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading, position);
+	FORM_STATE_DEFAULTS(ContentBlockType.Heading, position);
 
 export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/heading___titel'),
