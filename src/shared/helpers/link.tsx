@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { ButtonAction } from '@viaa/avo2-components';
 import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { COLLECTION_PATH } from '../../collection/collection.const';

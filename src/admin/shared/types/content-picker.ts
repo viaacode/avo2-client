@@ -1,4 +1,3 @@
-// Picker
 export type ContentPickerType =
 	| 'CONTENT_PAGE'
 	| 'COLLECTION'
@@ -8,11 +7,14 @@ export type ContentPickerType =
 	| 'EXTERNAL_LINK'
 	| 'BUNDLE';
 
+export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
+
 export interface PickerTypeOption<T = string> {
 	value: T;
 	label: string;
 	disabled?: boolean;
-	fetch: (limit: number) => Promise<PickerSelectItemGroup>;
+	picker: PickerItemControls;
+	fetch?: (limit: number) => Promise<PickerSelectItem[]>;
 }
 
 export interface PickerSelectItem {

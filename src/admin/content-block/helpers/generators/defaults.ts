@@ -64,3 +64,22 @@ export const TEXT_FIELD = (
 	},
 	...propOverride,
 });
+
+export const FILE_FIELD = (
+	emptyFieldValidatorMessage = i18n.t('Een bestand is verplicht'),
+	propOverride?: Partial<ContentBlockField>
+) => ({
+	label: i18n.t('Bestand'),
+	editorType: ContentBlockEditor.FileUpload,
+	validator: (value: string) => {
+		const errorArray: string[] = [];
+
+		if (isNil(value) || isEmpty(value)) {
+			errorArray.push(emptyFieldValidatorMessage);
+		}
+
+		return errorArray;
+	},
+	editorProps: { type: 'CONTENT_PAGE_IMAGE' },
+	...propOverride,
+});

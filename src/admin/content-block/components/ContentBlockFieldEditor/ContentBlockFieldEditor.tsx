@@ -58,6 +58,7 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 				onSelect: (picked: ContentPickerType) => {
 					handleChange(type, fieldKey, { value: picked }, stateIndex);
 				},
+				currentSelection: get(state as any, 'buttonAction'),
 			};
 			break;
 		case ContentBlockEditor.IconPicker:
@@ -75,6 +76,12 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 				id: editorId,
 				data: (state as any)[fieldKey],
 				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+			};
+			break;
+		case ContentBlockEditor.FileUpload:
+			editorProps = {
+				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+				url: (state as any)[fieldKey],
 			};
 			break;
 		default:
