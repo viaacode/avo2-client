@@ -217,7 +217,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				variables: { path: contentForm.path },
 			});
 			const page: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
-			if (page) {
+			if (page && String(page.id) !== id) {
 				errors.path = t('Dit path is reeds gebruikt door pagina: {{pageTitle}}', {
 					pageTitle: page.title,
 				});
