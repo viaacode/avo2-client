@@ -109,7 +109,6 @@ export enum ContentBlockType {
 	Image = 'IMAGE',
 	Intro = 'INTRO',
 	MediaPlayer = 'MEDIA_PLAYER',
-	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 }
@@ -128,7 +127,7 @@ export interface ImageBlockComponentState {
 	title: string;
 	text: string;
 	source: string;
-	width: ImageWidthOptions;
+	width: WidthOptions;
 }
 
 export interface ButtonsBlockComponentState {
@@ -166,17 +165,4 @@ export interface AccordionsBlockComponentState {
 export interface MediaPlayerBlockComponentState {
 	title: string;
 	item?: ButtonAction;
-}
-
-export interface MediaPlayerTitleTextButtonBlockComponentState {
-	mediaTitle: string;
-	mediaItem?: ButtonAction;
-	headingType: HeadingLevelOptions;
-	headingTitle: string;
-	content: string;
-	buttonLabel: string;
-	buttonIcon?: IconName;
-	buttonType?: ButtonType;
-	buttonAction?: ButtonAction;
-	align: AlignOptions;
 }
