@@ -1,5 +1,5 @@
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
-import React, { ChangeEvent, FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -244,7 +244,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		selectedOrganizations &&
 		selectedOrganizations.length > 0;
 
-	const handleAvatarOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
+	const handleAvatarOnChange = () => {
 		setAvatar('');
 		toastService.info(t('settings/components/profile___nog-niet-geimplementeerd'));
 	};

@@ -1,6 +1,6 @@
 import moment, { Moment } from 'moment';
 
-import { formatTimestamp, fromNow, normalizeTimestamp, reorderDate } from './date';
+import { fromNow, normalizeTimestamp, reorderDate } from './date';
 
 describe('Formatters - date', () => {
 	it('should format date as string`', () => {
