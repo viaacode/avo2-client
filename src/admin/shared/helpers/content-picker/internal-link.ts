@@ -2,7 +2,7 @@ import { remove } from 'lodash-es';
 
 import { APP_PATH } from '../../../../constants';
 
-import { PickerSelectItemGroup } from '../../types';
+import { PickerSelectItem } from '../../types';
 import { parsePickerItem } from './parse-picker';
 
 const APP_PATH_ARRAY = Object.values(APP_PATH);
@@ -21,7 +21,7 @@ const PATHS_TO_ADD = [
 const PATHS_TO_REMOVE = ['/mijn-werkruimte/opdrachten/maak'];
 
 // Return InternalLinkItems items from APP_PATH
-export const fetchInternalLinks = async (limit: number): Promise<PickerSelectItemGroup> =>
+export const fetchInternalLinks = async (limit: number): Promise<PickerSelectItem[]> =>
 	parseInternalLinks(APP_PATH_ARRAY, limit);
 
 export const parseInternalLinks = (allPaths: string[], limit: number) => {
@@ -34,8 +34,5 @@ export const parseInternalLinks = (allPaths: string[], limit: number) => {
 		value: parsePickerItem('INTERNAL_LINK', path),
 	}));
 
-	return {
-		label: 'Interne links',
-		options: parsedInternalLinkItemsItems,
-	};
+	return parsedInternalLinkItemsItems;
 };

@@ -4,21 +4,14 @@ import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import { ValueType } from 'react-select/src/types';
 
-import {
-	Column,
-	Flex,
-	FormGroup,
-	Grid,
-	RadioButton,
-	RadioButtonGroup,
-	TextInput,
-} from '@viaa/avo2-components';
-import toastService from '../../../../shared/services/toast-service';
-import { CONTENT_TYPES } from '../../../content/content.const';
-import { parsePickerItem } from '../../helpers';
-import { PickerItem, PickerSelectItemGroup, PickerTypeOption } from '../../types';
+import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
-type ContentPickerControls = 'content' | 'external-url';
+import toastService from '../../../../shared/services/toast-service';
+import i18n from '../../../../shared/translations/i18n';
+import { parsePickerItem } from '../../../shared/helpers';
+import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
+
+import { CONTENT_TYPES } from './ContentPicker.const';
 
 const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
@@ -26,45 +19,58 @@ const REACT_SELECT_DEFAULT_OPTIONS = {
 };
 
 export interface ContentPickerProps {
-	initialControls?: ContentPickerControls;
+	onSelect: (value: ValueType<PickerItem>) => void;
 	selectableTypes?: string[];
-	onSelect: (value: PickerItem) => void;
 	errors?: string | string[];
+	currentSelection?: PickerItem;
 }
 
 const ContentPicker: FunctionComponent<ContentPickerProps> = ({
-	initialControls = 'content',
 	selectableTypes,
 	onSelect,
 	errors = [],
+	currentSelection,
 }) => {
-	const [t] = useTranslation();
-
-	const [controls, setControls] = useState<ContentPickerControls>(initialControls);
-	const [loading, setLoading] = useState<boolean>(false);
-	const [currentTypes, setCurrentTypes] = useState<PickerTypeOption[]>([]);
-	const [groupedOptions, setGroupedOptions] = useState<PickerSelectItemGroup[]>([]);
-	const [input, setInput] = useState<string>();
-
 	const typeOptions = CONTENT_TYPES.filter((option: PickerTypeOption) =>
 		selectableTypes ? selectableTypes.includes(option.value) : option.value
 	);
+	const currentTypeObject = typeOptions.find(
+		type => type.value === get(currentSelection, 'type')
+	) as PickerTypeOption;
 
-	// Retrieve items when type is selected.
+	const [t] = useTranslation();
+
+	const [loading, setLoading] = useState<boolean>(false);
+	const [currentType, setCurrentType] = useState<PickerTypeOption>(
+		currentTypeObject || typeOptions[0]
+	);
+	const [options, setOptions] = useState<PickerSelectItem[]>([]);
+	const [input, setInput] = useState<string>(
+		get(currentTypeObject, 'picker') === 'TEXT_INPUT' ? get(currentSelection, 'value', '') : ''
+	);
+	const [currentValue, setCurrentValue] = useState<ValueType<PickerItem> | null>(
+		options.find(
+			option =>
+				get(option, 'value.value', 'EMPTY_OPTION') ===
+				get(currentSelection, 'value', 'EMPTY_SELECTION')
+		) as ValueType<PickerItem>
+	);
+
 	useEffect(() => {
-		if (currentTypes && currentTypes.length) {
+		if (currentType && !!currentType.fetch) {
 			setLoading(true);
-			const maxPerType = Math.floor(20 / currentTypes.length);
-			const fetchChain = currentTypes.map(type => type.fetch(maxPerType));
 
-			// Retrieve items for selected types.
-			Promise.all(fetchChain)
-				.then((data: PickerSelectItemGroup[]) => {
-					setGroupedOptions(data);
+			// Retrieve items for selected type.
+			currentType
+				.fetch(20)
+				.then(items => {
+					setOptions(items || []);
 					setLoading(false);
+					setCurrentValue(null);
 				})
-				.catch(err => {
-					console.error('Failed to inflate content picker.', err);
+				.catch(error => {
+					setLoading(false);
+					console.error('Failed to inflate content picker.', error);
 					toastService.danger(
 						t(
 							'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
@@ -73,86 +79,83 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					);
 				});
 		}
-	}, [currentTypes, t]);
+	}, [currentType, t]);
 
 	const onChangeText = (value: string) => {
 		setInput(value);
 		onSelect(parsePickerItem('EXTERNAL_LINK', value));
 	};
 
-	const onChangeType = (currentValues: ValueType<PickerTypeOption>) => {
-		setCurrentTypes((currentValues as PickerTypeOption[]) || []);
+	const onChangeType = (selected: ValueType<PickerTypeOption>) => {
+		setCurrentType(selected as PickerTypeOption);
 	};
 
 	const renderGroupLabel = (data: any) => <span>{data.label}</span>;
 
-	const renderSelectPicker = () => (
-		<Grid>
-			<Column size="1">
-				<ReactSelect
-					{...REACT_SELECT_DEFAULT_OPTIONS}
-					id="content-picker-type"
-					placeholder={t('admin/content/components/content-picker/content-picker___type')}
-					options={typeOptions}
-					isSearchable={false}
-					isMulti={true}
-					isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
-					onChange={onChangeType}
-				/>
-			</Column>
-			<Column size="3">
-				<ReactSelect
-					{...REACT_SELECT_DEFAULT_OPTIONS}
-					id="content-picker-query"
-					placeholder={t('admin/content/components/content-picker/content-picker___item')}
-					formatGroupLabel={renderGroupLabel}
-					options={groupedOptions as any}
-					isSearchable={false}
-					isDisabled={!currentTypes.length}
-					isLoading={loading}
-					onChange={(selectedItem: ValueType<PickerItem>) => {
-						onSelect(get(selectedItem, 'value'));
-					}}
-				/>
-			</Column>
-		</Grid>
-	);
+	const renderContentPickerControls = () => {
+		if (!currentType) {
+			return null;
+		}
 
-	const renderInputPicker = () => <TextInput value={input} onChange={onChangeText} />;
-
-	const renderEditor = () => {
-		switch (controls) {
-			case 'content':
+		switch (currentType.picker) {
+			case 'SELECT':
 				return renderSelectPicker();
-			case 'external-url':
-				return renderInputPicker();
+			case 'TEXT_INPUT':
+				return renderTextInputPicker();
 			default:
 				return null;
 		}
 	};
 
+	const renderSelectPicker = () => (
+		<ReactSelect
+			{...REACT_SELECT_DEFAULT_OPTIONS}
+			id="content-picker-query"
+			placeholder={t('admin/content/components/content-picker/content-picker___item')}
+			formatGroupLabel={renderGroupLabel}
+			options={options as any}
+			isSearchable={false}
+			isLoading={loading}
+			onChange={(selectedItem: ValueType<PickerItem>) => {
+				const value = get(selectedItem, 'value', null);
+
+				if (!get(value, 'value')) {
+					onSelect(null);
+					setCurrentValue(null);
+					console.error('Deze link is niet navigeerbaar, heeft waarschijnlijk geen pad.');
+					toastService.danger(i18n.t('Deze link is niet navigeerbaar.'), false);
+					return;
+				}
+
+				onSelect(value);
+				setCurrentValue(selectedItem);
+			}}
+			value={currentValue}
+		/>
+	);
+
+	const renderTextInputPicker = () => (
+		<TextInput value={input} onChange={onChangeText} placeholder="http://www.meemoo.be" />
+	);
+
 	return (
-		<>
-			<RadioButtonGroup>
-				<Flex orientation="horizontal" spaced="wide">
-					<RadioButton
-						label={t('admin/shared/components/content-picker/content-picker___content')}
-						name="content"
-						value="content"
-						checked={controls === 'content'}
-						onChange={() => setControls('content')}
+		<FormGroup error={errors}>
+			<Grid>
+				<Column size="1">
+					<ReactSelect
+						{...REACT_SELECT_DEFAULT_OPTIONS}
+						id="content-picker-type"
+						placeholder={t('admin/content/components/content-picker/content-picker___type')}
+						options={typeOptions}
+						isSearchable={false}
+						isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
+						onChange={onChangeType}
+						value={currentType}
 					/>
-					<RadioButton
-						label={t('admin/shared/components/content-picker/content-picker___externe-url')}
-						name="external-url"
-						value="external-url"
-						checked={controls === 'external-url'}
-						onChange={() => setControls('external-url')}
-					/>
-				</Flex>
-			</RadioButtonGroup>
-			<FormGroup error={errors}>{renderEditor()}</FormGroup>
-		</>
+				</Column>
+				<Column size="3">{renderContentPickerControls()}</Column>
+			</Grid>
+		</FormGroup>
 	);
 };
 
