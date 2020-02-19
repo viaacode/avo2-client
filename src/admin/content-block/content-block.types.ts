@@ -1,5 +1,6 @@
 import { ButtonAction, IconName } from '@viaa/avo2-components';
-// TODO: Import from components lib when exported there.
+
+// TODO use exported ButtonType from components repo
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
 import {
@@ -17,7 +18,18 @@ export type ContentBlockStateOptions =
 
 export type AlignOption = 'left' | 'right' | 'center';
 export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
-export type ButtonTypeOption = 'primary' | 'secondary';
+// TODO use ButtonType from components repo
+export type ButtonTypeOption =
+	| 'borderless-i'
+	| 'borderless'
+	| 'danger-hover'
+	| 'danger'
+	| 'link'
+	| 'inline-link'
+	| 'primary'
+	| 'secondary-i'
+	| 'secondary'
+	| 'tertiary';
 export type WidthOption = 'full-width' | '500px' | '400px';
 export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
 
