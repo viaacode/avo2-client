@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { get, isEmpty, isNil, remove } from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -21,7 +22,6 @@ import {
 	Form,
 	FormGroup,
 	Icon,
-	MenuContent,
 	Navbar,
 	RadioButton,
 	RadioButtonGroup,
@@ -39,7 +39,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { toEnglishContentType } from '../../collection/collection.types';
@@ -50,7 +50,7 @@ import {
 } from '../../shared/components';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
+import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
@@ -61,12 +61,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ASSIGNMENT_PATH, CONTENT_LABEL_TO_QUERY } from '../assignment.const';
-import {
-	DELETE_ASSIGNMENT,
-	GET_ASSIGNMENT_BY_ID,
-	INSERT_ASSIGNMENT,
-	UPDATE_ASSIGNMENT,
-} from '../assignment.gql';
+import { DELETE_ASSIGNMENT, INSERT_ASSIGNMENT } from '../assignment.gql';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
@@ -77,9 +72,17 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabe
 	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
-interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
+	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
+} = {
+	ITEM: 'avo_item_pid',
+	COLLECTIE: 'collections',
+	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
+};
 
-const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
+interface AssignmentCreateProps extends DefaultSecureRouteProps {}
+
+const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 	history,
 	location,
 	match,
@@ -92,7 +95,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
-	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -105,7 +107,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
 	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
-	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
@@ -123,24 +124,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	useEffect(() => {
 		const initAssignmentData = async () => {
 			try {
-				// Determine if this is an edit or create page and initialize or fetch the assignment
-				const tempAssignment: Partial<Avo.Assignment.Assignment> | null = await fetchAssignment(
-					match.params.id
-				);
-
-				if (!tempAssignment) {
-					// Something went wrong during init/fetch
-					return;
-				}
-
-				// Fetch the content if the assignment has content
-				const tempAssignmentContent = await fetchAssignmentContent(tempAssignment);
-
-				setAssignmentContent(tempAssignmentContent);
-				setBothAssignments({
-					...tempAssignment,
-					title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
-				});
+				const tempAssignment = initAssignmentsByQueryParams();
+				await fetchAssignmentContent(tempAssignment);
+				setBothAssignments(tempAssignment);
 			} catch (err) {
 				setLoadingInfo({
 					state: 'error',
@@ -152,45 +138,38 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 		};
 
-		const fetchAssignment = async (
-			id: string | number
-		): Promise<Avo.Assignment.Assignment | null> => {
-			try {
-				const assignmentQuery = {
-					query: GET_ASSIGNMENT_BY_ID,
-					variables: { id },
+		/**
+		 * Get assignment_type, content_id and content_label from query params
+		 */
+		const initAssignmentsByQueryParams = (): Partial<Avo.Assignment.Assignment> => {
+			const queryParams = queryString.parse(location.search);
+			let newAssignment: Partial<Avo.Assignment.Assignment> = {};
+
+			if (typeof queryParams.assignment_type === 'string') {
+				newAssignment = {
+					assignment_type: queryParams.assignment_type as Avo.Assignment.Type,
 				};
-
-				// Get the assigment from graphql
-				const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
-					assignmentQuery
-				);
-
-				const assignmentResponse: Avo.Assignment.Assignment | undefined = get(
-					response,
-					'data.app_assignments[0]'
-				);
-				if (!assignmentResponse) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt-leeg-antwoord'
-						),
-						icon: 'search',
-					});
-					return null;
-				}
-				return assignmentResponse;
-			} catch (err) {
-				console.error(err);
-
-				setLoadingInfo({
-					state: 'error',
-					message: t('assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'),
-					icon: 'alert-triangle',
-				});
-				return null;
 			}
+
+			if (typeof queryParams.content_id === 'string') {
+				newAssignment = {
+					...(newAssignment || {}),
+					content_id: queryParams.content_id,
+				};
+			}
+
+			if (typeof queryParams.content_label === 'string') {
+				newAssignment = {
+					...(newAssignment || {}),
+					content_label: queryParams.content_label as Avo.Assignment.ContentLabel,
+				};
+			}
+
+			if (!newAssignment.assignment_type) {
+				throw new CustomError('Failed to create assignment without assigment type');
+			}
+
+			return newAssignment;
 		};
 
 		/**
@@ -198,6 +177,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		 */
 		const fetchAssignmentContent = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 			try {
+				if (!assignment.assignment_type) {
+					// Only fetch assignment content if not set yet
+					return;
+				}
+
 				let assignmentContentResponse: Avo.Assignment.Content | undefined = undefined;
 				if (assignment.content_id && assignment.content_label) {
 					// The assignment doesn't have content linked to it
@@ -229,25 +213,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						});
 					}
 				}
-				return assignmentContentResponse;
+
+				setAssignmentContent(assignmentContentResponse);
 			} catch (err) {
 				console.error(err);
-				setLoadingInfo({
-					state: 'error',
-					message: t(
-						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
-					),
-					icon: 'alert-triangle',
-				});
+				toastService.danger(t('Het ophalen van de opdracht inhoud is mislukt'));
 			}
 		};
 
 		checkPermissions(
-			PermissionNames.EDIT_ASSIGNMENTS,
+			PermissionNames.CREATE_ASSIGNMENTS,
 			user,
 			initAssignmentData,
 			setLoadingInfo,
-			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
+			t('Je hebt geen rechten om een opdracht te maken')
 		);
 	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
 
@@ -311,41 +290,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const viewAsStudent = () => history.push(getAssignmentUrl(false));
-
-	const archiveAssignment = async (shouldBeArchived: boolean) => {
-		try {
-			// Use initialAssignment to avoid saving changes the user made, but hasn't explicitly saved yet
-			const archivedAssigment: Partial<Avo.Assignment.Assignment> = {
-				...initialAssignment,
-				is_archived: shouldBeArchived,
-			};
-			setInitialAssignment(archivedAssigment);
-
-			// Also set the currentAssignment to archived, so if the user saves, the assignment will stay archived
-			setCurrentAssignment({
-				...currentAssignment,
-				is_archived: shouldBeArchived,
-			});
-
-			if (await AssignmentService.updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
-				toastService.success(
-					shouldBeArchived
-						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
-						: t('assignment/views/assignment-edit___de-opdracht-is-gedearchiveerd')
-				);
-			}
-			// else: assignment was not valid and could not be saved yet
-		} catch (err) {
-			console.error(err);
-			toastService.danger(
-				shouldBeArchived
-					? t('assignment/views/assignment-edit___het-archiveren-van-de-opdracht-is-mislukt')
-					: t('assignment/views/assignment-edit___het-dearchiveren-van-de-opdracht-is-mislukt')
-			);
-		}
-	};
-
 	const attemptDuplicateAssignment = async (
 		newTitle: string,
 		assignment: Partial<Avo.Assignment.Assignment>
@@ -381,27 +325,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const handleExtraOptionClicked = async (itemId: 'duplicate' | 'archive' | 'delete') => {
-		switch (itemId) {
-			case 'duplicate':
-				setDuplicateModalOpen(true);
-				setExtraOptionsMenuOpen(false);
-				break;
-
-			case 'archive':
-				archiveAssignment(!initialAssignment.is_archived).then(() => {});
-				setExtraOptionsMenuOpen(false);
-				break;
-
-			case 'delete':
-				setDeleteModalOpen(true);
-				setExtraOptionsMenuOpen(false);
-				break;
-			default:
-				return null;
-		}
-	};
-
 	const setAssignmentProp = (property: keyof Avo.Assignment.Assignment, value: any) => {
 		const newAssignment = {
 			...currentAssignment,
@@ -410,15 +333,60 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setCurrentAssignment(newAssignment);
 	};
 
+	const trackAddObjectToAssignment = (assignment: Avo.Assignment.Assignment) => {
+		if (!assignment.content_label || !assignment.content_id) {
+			return;
+		}
+		trackEvents(
+			{
+				object: assignment.content_id,
+				object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
+				message: `Gebruiker ${getProfileName(user)} heeft ${
+					CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
+				} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
+				action: 'view',
+			},
+			user
+		);
+	};
+
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
-			// edit => update graphql
-			await AssignmentService.updateAssignment(triggerAssignmentUpdate, assignment);
-			setBothAssignments(assignment);
-			toastService.success(
-				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
+
+			// Copy content if it's a collection collection if not owned by logged in user
+			// so your assignment can work after the other user deletes his collection
+			if (
+				assignment.content_label === 'COLLECTIE' &&
+				(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId(user)
+			) {
+				const sourceCollection = assignmentContent as Avo.Collection.Collection;
+				assignment.content_id = await AssignmentService.duplicateCollectionForAssignment(
+					sourceCollection,
+					user,
+					triggerCollectionInsert,
+					triggerCollectionFragmentsInsert
+				);
+			}
+
+			// create => insert into graphql
+			const newAssignment: Avo.Assignment.Assignment = {
+				...assignment,
+				owner_profile_id: getProfileId(user),
+			} as Avo.Assignment.Assignment;
+			const insertedAssignment = await AssignmentService.insertAssignment(
+				triggerAssignmentInsert,
+				newAssignment
 			);
+
+			if (insertedAssignment) {
+				setBothAssignments(insertedAssignment);
+				trackAddObjectToAssignment(insertedAssignment);
+				toastService.success(
+					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
+				);
+				navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
+			}
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
@@ -528,6 +496,23 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			</div>
 		);
 
+		if (
+			currentAssignment.content_label === 'COLLECTIE' &&
+			getProfileId(user) !== (content as Avo.Collection.Collection).owner_profile_id
+		) {
+			// During create we do not allow linking to the collection if you do not own the collection,
+			// since we still need to make a copy when the user clicks on "save assignment" button
+			return (
+				<div
+					title={t(
+						'assignment/views/assignment-edit___u-kan-pas-doorklikken-naar-de-collectie-nadat-u-de-opdracht-hebt-aangemaakt'
+					)}
+				>
+					{linkContent}
+				</div>
+			);
+		}
+
 		return (
 			<Link
 				to={`/${
@@ -564,7 +549,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											</Trans>
 										</Link>
 										<BlockHeading className="u-m-0" type="h2">
-											{currentAssignment.title}
+											{t('assignment/views/assignment-edit___nieuwe-opdracht')}
 										</BlockHeading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
@@ -590,45 +575,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								<ToolbarRight>
 									<ToolbarItem>
 										<ButtonToolbar>
-											<Spacer margin="right-small">
-												<Button
-													type="secondary"
-													onClick={viewAsStudent}
-													label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
-												/>
-												<Dropdown
-													isOpen={isExtraOptionsMenuOpen}
-													menuWidth="fit-content"
-													onOpen={() => setExtraOptionsMenuOpen(true)}
-													onClose={() => setExtraOptionsMenuOpen(false)}
-													placement="bottom-end"
-												>
-													<DropdownButton>
-														<Button
-															type="secondary"
-															icon="more-horizontal"
-															ariaLabel={t('assignment/views/assignment-edit___meer-opties')}
-															title={t('assignment/views/assignment-edit___meer-opties')}
-														/>
-													</DropdownButton>
-													<DropdownContent>
-														<MenuContent
-															menuItems={[
-																{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-																{
-																	icon: 'archive',
-																	id: 'archive',
-																	label: initialAssignment.is_archived
-																		? 'Dearchiveer'
-																		: 'Archiveer',
-																},
-																{ icon: 'delete', id: 'delete', label: 'Verwijder' },
-															]}
-															onClick={id => handleExtraOptionClicked(id.toString() as any)}
-														/>
-													</DropdownContent>
-												</Dropdown>
-											</Spacer>
+											<Button
+												type="secondary"
+												onClick={() => history.goBack()}
+												label={t('assignment/views/assignment-edit___annuleren')}
+											/>
 											<Button
 												type="primary"
 												label={t('assignment/views/assignment-edit___opslaan')}
@@ -855,4 +806,4 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	);
 };
 
-export default AssignmentEdit;
+export default AssignmentCreate;
