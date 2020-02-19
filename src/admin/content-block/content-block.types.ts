@@ -81,7 +81,7 @@ export type ContentBlockComponentState =
 export type ContentBlockState = DefaultContentBlockState;
 
 export interface ContentBlockField {
-	label: string;
+	label?: string; // Optional for checkboxes, who have their own label
 	editorType: ContentBlockEditor;
 	editorProps?: any;
 	validator?: (value: any) => string[];

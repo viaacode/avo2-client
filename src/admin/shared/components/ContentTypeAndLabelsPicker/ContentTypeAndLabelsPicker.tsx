@@ -110,7 +110,7 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 					id="content-type-and-label-picker-type"
 					placeholder={t('admin/content/components/content-picker/content-picker___type')}
 					options={contentTypes}
-					isSearchable={true}
+					isSearchable
 					isMulti={false}
 					isLoading={isLoadingContentTypes}
 					onChange={handleContentTypeChanged}
@@ -132,8 +132,8 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 							})
 						)
 					)}
-					isSearchable={true}
-					isMulti={true}
+					isSearchable
+					isMulti
 					isLoading={isLoading}
 					onChange={handleLabelsChanged as any}
 				/>
