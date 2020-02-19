@@ -12,6 +12,7 @@ import { parsePickerItem } from '../../../shared/helpers';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
 
 import { CONTENT_TYPES } from './ContentPicker.const';
+import { CustomError } from '../../../../shared/helpers';
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
@@ -88,6 +89,7 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	const onChangeType = (selected: ValueType<PickerTypeOption>) => {
 		setCurrentType(selected as PickerTypeOption);
+		setCurrentValue(null);
 	};
 
 	const renderGroupLabel = (data: any) => <span>{data.label}</span>;
@@ -122,8 +124,12 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				if (!get(value, 'value')) {
 					onSelect(null);
 					setCurrentValue(null);
-					console.error('Deze link is niet navigeerbaar, heeft waarschijnlijk geen pad.');
-					toastService.danger(i18n.t('Deze link is niet navigeerbaar.'), false);
+					console.error(
+						new CustomError('Selected content in content picker does not have a value', null, {
+							selectedItem,
+						})
+					);
+					toastService.danger(i18n.t('Voor deze content pagina is geen pad geconfigureerd'), false);
 					return;
 				}
 

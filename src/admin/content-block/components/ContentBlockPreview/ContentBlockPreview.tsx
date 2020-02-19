@@ -11,7 +11,9 @@ import {
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
+	BlockProjectsSpotlight,
 	BlockRichText,
+	ButtonAction,
 	Container,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -57,6 +59,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.ImageGrid]: BlockGrid,
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
+	[ContentBlockType.ProjectsSpotlight]: BlockProjectsSpotlight,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
@@ -66,6 +69,7 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.ImageGrid,
+	ContentBlockType.ProjectsSpotlight,
 ];
 
 const IGNORE_BLOCK_LEVEL_PROPS = ['position', 'elements', 'blockType'];
@@ -103,6 +107,12 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				navigateToContentType(innerState.buttonAction, history);
 			};
 		});
+	}
+
+	if (blockState.blockType === ContentBlockType.ProjectsSpotlight) {
+		stateToSpread.navigate = (buttonAction: ButtonAction) => {
+			navigateToContentType(buttonAction, history);
+		};
 	}
 
 	return (
