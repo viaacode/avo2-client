@@ -77,7 +77,7 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 		// 		console.error('Failed to get content types in ContentTypeAndLabelsPicker', err, {
 		// 			query: 'GET_CONTENT_TYPES',
 		// 		});
-		// 		toastService.danger(t('Het ophalen van de content pagina types is mislukt'));
+		// 		toastService.danger(t('admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-types-is-mislukt'));
 		// 	})
 		//  .finally(() => setIsLoading(false));
 	}, [value.selectedContentType, setLabels, t]);
@@ -120,7 +120,9 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 				<ReactSelect
 					{...REACT_SELECT_DEFAULT_OPTIONS}
 					id="content-type-and-label-picker-label"
-					placeholder={t('Labels')}
+					placeholder={t(
+						'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
+					)}
 					options={(labels || []).map(
 						(labelObj): SelectOption<number> => ({ label: labelObj.label, value: labelObj.id })
 					)}

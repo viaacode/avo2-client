@@ -11,8 +11,8 @@ import i18n from '../../../../shared/translations/i18n';
 import { parsePickerItem } from '../../../shared/helpers';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
 
-import { CONTENT_TYPES } from './ContentPicker.const';
 import { CustomError } from '../../../../shared/helpers';
+import { CONTENT_TYPES } from './ContentPicker.const';
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
@@ -129,7 +129,12 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 							selectedItem,
 						})
 					);
-					toastService.danger(i18n.t('Voor deze content pagina is geen pad geconfigureerd'), false);
+					toastService.danger(
+						i18n.t(
+							'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd'
+						),
+						false
+					);
 					return;
 				}
 

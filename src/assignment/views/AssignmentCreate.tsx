@@ -217,7 +217,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				setAssignmentContent(assignmentContentResponse);
 			} catch (err) {
 				console.error(err);
-				toastService.danger(t('Het ophalen van de opdracht inhoud is mislukt'));
+				toastService.danger(
+					t('assignment/views/assignment-create___het-ophalen-van-de-opdracht-inhoud-is-mislukt')
+				);
 			}
 		};
 
@@ -226,7 +228,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			user,
 			initAssignmentData,
 			setLoadingInfo,
-			t('Je hebt geen rechten om een opdracht te maken')
+			t('assignment/views/assignment-create___je-hebt-geen-rechten-om-een-opdracht-te-maken')
 		);
 	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
 
