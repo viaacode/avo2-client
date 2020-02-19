@@ -24,11 +24,9 @@ export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES = (): ImageInfo[]
 		3,
 		() =>
 			({
-				image: undefined as any,
+				image: undefined,
 				title: '',
-				buttonAction: {
-					type: 'CONTENT_PAGE',
-				},
+				buttonAction: undefined,
 			} as any)
 	);
 
@@ -61,7 +59,10 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),
-			// TODO add content picker once PR is merged
+			buttonAction: {
+				label: i18n.t('Link'),
+				editorType: ContentBlockEditor.ContentPicker,
+			},
 		},
 	},
 	block: {

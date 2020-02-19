@@ -13,6 +13,7 @@ import {
 	BlockIntro,
 	BlockProjectsSpotlight,
 	BlockRichText,
+	ButtonAction,
 	Container,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -106,6 +107,12 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				navigateToContentType(innerState.buttonAction, history);
 			};
 		});
+	}
+
+	if (blockState.blockType === ContentBlockType.ProjectsSpotlight) {
+		stateToSpread.navigate = (buttonAction: ButtonAction) => {
+			navigateToContentType(buttonAction, history);
+		};
 	}
 
 	return (
