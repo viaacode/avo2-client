@@ -6,13 +6,13 @@ import { ValueType } from 'react-select/src/types';
 
 import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
+import { CustomError } from '../../../../shared/helpers';
 import toastService from '../../../../shared/services/toast-service';
 import i18n from '../../../../shared/translations/i18n';
 import { parsePickerItem } from '../../../shared/helpers';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
 
 import { CONTENT_TYPES } from './ContentPicker.const';
-import { CustomError } from '../../../../shared/helpers';
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',

@@ -1,3 +1,4 @@
+import { CheckboxProps } from '@viaa/avo2-components/dist/components/Checkbox/Checkbox';
 import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRange/MultiRange';
 
 import i18n from '../../../../shared/translations/i18n';
@@ -20,7 +21,6 @@ import {
 	CONTENT_TYPE_AND_LABELS_INPUT,
 	FORM_STATE_DEFAULTS,
 } from './defaults';
-import { CheckboxProps } from '@viaa/avo2-components/dist/components/Checkbox/Checkbox';
 
 export const INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE = (): PageOverviewBlockComponentStateFields => ({
 	tabs: [],
