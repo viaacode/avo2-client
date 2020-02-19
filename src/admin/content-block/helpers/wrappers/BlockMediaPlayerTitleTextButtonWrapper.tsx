@@ -13,6 +13,7 @@ import {
 
 import { navigateToContentType } from '../../../../shared/helpers';
 
+// TODO use exported ButtonType from components repo
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 import { AlignOption, HeadingLevelOption } from '../../content-block.types';
 import { MediaPlayer } from './BlockMediaPlayerWrapper';

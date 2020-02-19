@@ -1,12 +1,10 @@
-import { IconName } from '@viaa/avo2-components';
-// TODO: Import from components lib when exported there.
+import { ButtonAction, ContentItemStyle, ContentTabStyle, IconName } from '@viaa/avo2-components';
+
+// TODO use exported ButtonType from components repo
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
-import {
-	ContentItemStyle,
-	ContentTabStyle,
-} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
-import { ButtonAction } from '@viaa/avo2-components/dist/types';
+
+import { ContentPageType } from '../content/content.types';
 
 export type ContentBlockStateType = 'components' | 'block';
 
@@ -17,17 +15,20 @@ export type ContentBlockStateOptions =
 
 export type AlignOption = 'left' | 'right' | 'center';
 export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
-export type ButtonTypeOption = 'primary' | 'secondary';
+// TODO use ButtonType from components repo
+export type ButtonTypeOption =
+	| 'borderless-i'
+	| 'borderless'
+	| 'danger-hover'
+	| 'danger'
+	| 'link'
+	| 'inline-link'
+	| 'primary'
+	| 'secondary-i'
+	| 'secondary'
+	| 'tertiary';
 export type WidthOption = 'full-width' | '500px' | '400px';
 export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
-export type ContentTypeOption =
-	| 'NIEUWS_OVERZICHT'
-	| 'NIEUWS_ITEM'
-	| 'FAQ_OVERZICHT'
-	| 'FAQ_ITEM'
-	| 'SCREENCAST'
-	| 'PAGINA'
-	| 'PROJECT';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -175,7 +176,7 @@ export interface PageOverviewBlockComponentStateFields {
 	tabs?: string[];
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
-	contentType: ContentTypeOption;
+	contentType: ContentPageType;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
 	showDescription?: boolean;

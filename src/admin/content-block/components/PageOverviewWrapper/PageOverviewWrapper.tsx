@@ -1,9 +1,11 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	BlockPageOverview,
+	ButtonAction,
 	ContentItemStyle,
 	ContentPageInfo,
 	ContentTabStyle,
@@ -11,6 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { navigateToContentType } from '../../../../shared/helpers';
 import { dataService } from '../../../../shared/services/data-service';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../content/content.gql';
@@ -21,7 +24,7 @@ import { parseContentBlocks } from '../../helpers';
 import toastService from '../../../../shared/services/toast-service';
 import { ContentBlockPreview } from '../index';
 
-interface PageOverviewWrapperProps {
+interface PageOverviewWrapperProps extends RouteComponentProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
@@ -46,6 +49,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	showDate = false,
 	buttonLabel = i18n.t('Lees meer'),
 	itemsPerPage = 20,
+	history,
 }) => {
 	const [t] = useTranslation();
 
@@ -78,6 +82,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			id: dbContentPage.id,
 			blocks: dbContentPage.contentBlockssBycontentId ? renderContentPage(dbContentPage) : null,
 			content_width: dbContentPage.content_width,
+			path: dbContentPage.path,
 		};
 	};
 
@@ -115,7 +120,14 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 				})
 			);
 		});
-	}, [contentTypeAndTabs.selectedContentType, selectedTabs, currentPage]);
+	}, [
+		contentTypeAndTabs.selectedContentType,
+		selectedTabs,
+		currentPage,
+		setPageCount,
+		setPages,
+		t,
+	]);
 
 	const handleCurrentPageChanged = (pageIndex: number) => {
 		setCurrentPage(pageIndex);
@@ -146,9 +158,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			allLabel={t('Alle')}
 			noLabel={t('Overige')}
 			buttonLabel={buttonLabel}
-			navigate={() => {}} // TODO fill in once the PR is merged
+			navigate={(buttonAction: ButtonAction) => navigateToContentType(buttonAction, history)}
 		/>
 	);
 };
 
-export default PageOverviewWrapper;
+export default withRouter(PageOverviewWrapper);
