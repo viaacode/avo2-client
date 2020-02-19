@@ -1,4 +1,6 @@
 import { ButtonAction, IconName } from '@viaa/avo2-components';
+
+// TODO use exported ButtonType from components repo
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 
 export type ContentBlockStateType = 'components' | 'block';
@@ -12,6 +14,7 @@ export type AlignOptions = 'left' | 'right' | 'center';
 
 export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 
+// TODO use ButtonType from components repo
 export type ButtonTypeOptions =
 	| 'borderless-i'
 	| 'borderless'
