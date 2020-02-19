@@ -17,6 +17,7 @@ import {
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
+import { CustomError } from '../../shared/helpers';
 import i18n from '../../shared/translations/i18n';
 
 export type ErrorActionButton = 'home' | 'helpdesk'; // TODO use type in typings repo
@@ -61,6 +62,17 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 			? queryParams.actionButtons.split(',').map(button => button.trim())
 			: []),
 	]);
+
+	if (!(queryParams.message || message)) {
+		console.error(
+			new CustomError('Error view without error message', null, {
+				queryParams,
+				message,
+				icon,
+				actionButtons,
+			})
+		);
+	}
 
 	return (
 		<Container mode="vertical" background="alt">

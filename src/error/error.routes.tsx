@@ -1,10 +1,9 @@
 import React, { ReactNode } from 'react';
 import { Route } from 'react-router';
 
-import { APP_PATH } from '../constants';
-
+import { ERROR_PATH } from './error.const';
 import { ErrorView } from './views';
 
 export const renderErrorRoutes = (): ReactNode[] => [
-	<Route path={APP_PATH.ERROR} component={ErrorView} key="error-view" />,
+	<Route path={ERROR_PATH.ERROR} exact component={ErrorView} key="error-view" />,
 ];
