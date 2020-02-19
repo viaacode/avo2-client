@@ -168,7 +168,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			onCurrentPageChanged={handleCurrentPageChanged}
 			pageCount={pageCount}
 			pages={pages.map(dbToPageOverviewContentPage)}
-			itemsPerPage={debouncedItemsPerPage}
 			tabStyle={tabStyle}
 			itemStyle={itemStyle}
 			allowMultiple={allowMultiple}
