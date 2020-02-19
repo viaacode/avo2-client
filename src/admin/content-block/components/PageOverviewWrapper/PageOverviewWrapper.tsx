@@ -1,5 +1,5 @@
 import { get } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -14,6 +14,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
+import { useDebounce } from '../../../../shared/hooks';
 import { dataService } from '../../../../shared/services/data-service';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../content/content.gql';
@@ -55,8 +56,10 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
-	const [pages, setPages] = useState<ContentPageInfo[]>([]);
+	const [pages, setPages] = useState<Avo.Content.Content[]>([] as Avo.Content.Content[]);
 	const [pageCount, setPageCount] = useState<number>(1);
+
+	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
 
 	const renderContentPage = (contentPage: Avo.Content.Content) => {
 		const contentBlockConfig: ContentBlockConfig[] = parseContentBlocks(
@@ -86,8 +89,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		};
 	};
 
-	const fetchPages = async () => {
-		let filteredPages: ContentPageInfo[] = [];
+	const fetchPages = useCallback(async () => {
+		let filteredPages: Avo.Content.Content[] = [];
 		let pageCount = 0;
 		if (selectedTabs.length) {
 			// TODO get contentPages from the database that have one of the selected groups
@@ -96,17 +99,26 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 				query: itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
 				variables: {
 					where: { content_type: { _eq: contentTypeAndTabs.selectedContentType } },
-					offset: currentPage * itemsPerPage,
-					limit: itemsPerPage,
+					offset: currentPage * debouncedItemsPerPage,
+					limit: debouncedItemsPerPage,
 				},
 			});
 			const pageArray: Avo.Content.Content[] = get(response, 'data.app_content', []);
-			pageCount = get(response, 'data.app_content_aggregate.aggregate.count', 0) / itemsPerPage;
-			filteredPages = pageArray.map(dbToPageOverviewContentPage);
+			pageCount =
+				get(response, 'data.app_content_aggregate.aggregate.count', 0) / debouncedItemsPerPage;
+			filteredPages = pageArray;
 		}
 		setPages(filteredPages);
-		setPageCount(Math.ceil(pageCount / itemsPerPage));
-	};
+		setPageCount(Math.ceil(pageCount / debouncedItemsPerPage));
+	}, [
+		selectedTabs,
+		itemStyle,
+		currentPage,
+		debouncedItemsPerPage,
+		setPages,
+		setPageCount,
+		contentTypeAndTabs,
+	]);
 
 	useEffect(() => {
 		fetchPages().catch(err => {
@@ -114,8 +126,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 				t('Het ophalen van de paginas is mislukt', err, {
 					query: 'GET_CONTENT',
 					variables: {
-						offset: currentPage * itemsPerPage,
-						limit: itemsPerPage,
+						offset: currentPage * debouncedItemsPerPage,
+						limit: debouncedItemsPerPage,
 					},
 				})
 			);
@@ -126,6 +138,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		currentPage,
 		setPageCount,
 		setPages,
+		fetchPages,
+		debouncedItemsPerPage,
 		t,
 	]);
 
@@ -146,8 +160,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			currentPage={currentPage}
 			onCurrentPageChanged={handleCurrentPageChanged}
 			pageCount={pageCount}
-			pages={pages}
-			itemsPerPage={itemsPerPage}
+			pages={pages.map(dbToPageOverviewContentPage)}
+			itemsPerPage={debouncedItemsPerPage}
 			tabStyle={tabStyle}
 			itemStyle={itemStyle}
 			allowMultiple={allowMultiple}

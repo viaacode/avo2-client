@@ -95,8 +95,9 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					editorType: ContentBlockEditor.MultiRange,
 					editorProps: {
 						min: 0,
-						max: 1000,
+						max: 200,
 						step: 1,
+						showNumber: true,
 					} as MultiRangeProps,
 				},
 			},

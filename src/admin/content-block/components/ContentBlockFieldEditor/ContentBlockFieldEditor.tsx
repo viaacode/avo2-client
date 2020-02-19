@@ -1,4 +1,4 @@
-import { get, isNil } from 'lodash-es';
+import { get, isArray, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
@@ -88,8 +88,10 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 		case ContentBlockEditor.MultiRange:
 			const num = (state as any)[fieldKey];
 			editorProps = {
-				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
-				values: [num || 0],
+				onChange: (value: any) => {
+					handleChange(type, fieldKey, isArray(value) ? value[0] || 0 : value, stateIndex);
+				},
+				values: [num || 0], // TODO default to min value of input field instead of 0
 			};
 			break;
 		case ContentBlockEditor.Checkbox:
