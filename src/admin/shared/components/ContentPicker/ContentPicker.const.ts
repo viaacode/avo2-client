@@ -45,7 +45,7 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 	},
 	{
 		value: 'EXTERNAL_LINK',
-		label: i18n.t('Externe URL'),
+		label: i18n.t('admin/shared/components/content-picker/content-picker___externe-url'),
 		disabled: false,
 		picker: 'TEXT_INPUT',
 	},

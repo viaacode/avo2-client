@@ -61,9 +61,12 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 						.map(type => type.split('/').pop() || type)
 						.join(', ');
 					toastService.danger(
-						t('Een geselecteerde bestand is niet toegelaten, ({{allowedExtensions}})', {
-							allowedExtensions,
-						})
+						t(
+							'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten-allowed-extensions',
+							{
+								allowedExtensions,
+							}
+						)
 					);
 					return;
 				}
@@ -81,9 +84,13 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				new CustomError('Failed to upload files in FileUpload component', err, { files })
 			);
 			if (files && files.length > 1 && allowMulti) {
-				toastService.danger(t('Het uploaden van de bestanden is mislukt'));
+				toastService.danger(
+					t('shared/components/file-upload/file-upload___het-uploaden-van-de-bestanden-is-mislukt')
+				);
 			} else {
-				toastService.danger(t('Het uploaden van het bestand is mislukt'));
+				toastService.danger(
+					t('shared/components/file-upload/file-upload___het-uploaden-van-het-bestand-is-mislukt')
+				);
 			}
 		}
 		setIsProcessing(false);
@@ -106,7 +113,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to delete asset', err, { urls }));
-			toastService.danger(t('Het verwijderen van het bestand is mislukt'));
+			toastService.danger(
+				t('shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt')
+			);
 		}
 		setIsProcessing(false);
 	};
@@ -121,7 +130,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				className="a-delete-button"
 				type="danger-hover"
 				icon="trash-2"
-				ariaLabel={t('Verwijder bestand')}
+				ariaLabel={t('shared/components/file-upload/file-upload___verwijder-bestand')}
 				autoHeight
 				disabled={isProcessing}
 				onClick={() => deleteUploadedFile(url)}
@@ -175,7 +184,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 							<Button
 								label={
 									label ||
-									(allowMulti ? i18n.t('Selecteer bestanden') : i18n.t('Selecteer een bestand'))
+									(allowMulti
+										? i18n.t('shared/components/file-upload/file-upload___selecteer-bestanden')
+										: i18n.t('shared/components/file-upload/file-upload___selecteer-een-bestand'))
 								}
 								ariaLabel={label}
 								type="secondary"
@@ -183,7 +194,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 							/>
 							<input
 								type="file"
-								title={t('Kies een bestand')}
+								title={t('shared/components/file-upload/file-upload___kies-een-bestand')}
 								multiple={allowMulti}
 								onChange={evt =>
 									!!evt.target.files && uploadSelectedFile(Array.from(evt.target.files))

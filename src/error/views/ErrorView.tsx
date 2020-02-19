@@ -92,7 +92,7 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 									<Button
 										type="danger"
 										onClick={() => window.zE('webWidget', 'toggle')}
-										label={t('Contacteer de helpdesk')}
+										label={t('error/views/error-view___contacteer-de-helpdesk')}
 									/>
 								)}
 							</ButtonToolbar>

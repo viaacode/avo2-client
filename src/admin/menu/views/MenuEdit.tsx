@@ -173,13 +173,15 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				setPermissionWarning(
 					<div>
 						<Spacer margin="bottom-small">
-							<Trans>
+							<Trans i18nKey="admin/menu/views/menu-edit___het-navigatie-item-zal-zichtbaar-zijn-voor-gebruikers-die-geen-toegang-hebben-tot-de-geselecteerde-pagina">
 								Het navigatie item zal zichtbaar zijn voor gebruikers die geen toegang hebben tot de
 								geselecteerde pagina.
 							</Trans>
 						</Spacer>
 						<Spacer margin="bottom-small">
-							<Trans>De geselecteerde pagina is niet toegankelijk voor: </Trans>
+							<Trans i18nKey="admin/menu/views/menu-edit___de-geselecteerde-pagina-is-niet-toegankelijk-voor">
+								De geselecteerde pagina is niet toegankelijk voor:
+							</Trans>
 							<ButtonToolbar>
 								{faultyUserGroups.map(group => (
 									<Badge text={group} />
@@ -220,7 +222,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					);
 					toastService.danger(
 						t(
-							'Het controleren of de permissies van de pagina overeenkomen met de zichtbaarheid van dit navigatie item is mislukt'
+							'admin/menu/views/menu-edit___het-controleren-of-de-permissies-van-de-pagina-overeenkomen-met-de-zichtbaarheid-van-dit-navigatie-item-is-mislukt'
 						),
 						false
 					);

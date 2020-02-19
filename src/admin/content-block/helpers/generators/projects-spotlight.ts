@@ -40,27 +40,34 @@ export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (
 	);
 
 export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('Projecten in de kijker'),
+	name: i18n.t(
+		'admin/content-block/helpers/generators/projects-spotlight___projecten-in-de-kijker'
+	),
 	type: ContentBlockType.ProjectsSpotlight,
 	components: {
-		name: i18n.t('Project'),
+		name: i18n.t('admin/content-block/helpers/generators/projects-spotlight___project'),
 		limits: {
 			min: 3,
 			max: 3,
 		},
 		state: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES(),
 		fields: {
-			image: FILE_FIELD(i18n.t('Een afbeelding is verplicht'), {
-				label: i18n.t('Afbeelding'),
-				editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
-			}),
+			image: FILE_FIELD(
+				i18n.t(
+					'admin/content-block/helpers/generators/projects-spotlight___een-afbeelding-is-verplicht'
+				),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___afbeelding'),
+					editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
+				}
+			),
 			title: TEXT_FIELD('', {
-				label: i18n.t('Titel'),
+				label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),
 			buttonAction: {
-				label: i18n.t('Link'),
+				label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___link'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 		},

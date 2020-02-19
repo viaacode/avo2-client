@@ -640,7 +640,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					deleteObjectCallback={() => onDeleteCollection()}
 				/>
 				<ShareThroughEmailModal
-					modalTitle={t('Deel deze collectie')}
+					modalTitle={t('collection/views/collection-detail___deel-deze-collectie')}
 					type="collection"
 					emailLinkHref={window.location.href}
 					emailLinkTitle={(collection as Avo.Collection.Collection).title}

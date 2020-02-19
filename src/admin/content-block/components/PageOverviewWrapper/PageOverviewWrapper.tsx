@@ -13,7 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { navigateToContentType } from '../../../../shared/helpers';
+import { CustomError, navigateToContentType } from '../../../../shared/helpers';
 import { useDebounce } from '../../../../shared/hooks';
 import { dataService } from '../../../../shared/services/data-service';
 import i18n from '../../../../shared/translations/i18n';
@@ -48,7 +48,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	showTitle = true,
 	showDescription = true,
 	showDate = false,
-	buttonLabel = i18n.t('Lees meer'),
+	buttonLabel = i18n.t(
+		'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___lees-meer'
+	),
 	itemsPerPage = 20,
 	history,
 }) => {
@@ -122,14 +124,19 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 
 	useEffect(() => {
 		fetchPages().catch(err => {
-			toastService.danger(
-				t('Het ophalen van de paginas is mislukt', err, {
+			console.error(
+				new CustomError('Failed to fetch pages', err, {
 					query: 'GET_CONTENT',
 					variables: {
 						offset: currentPage * debouncedItemsPerPage,
 						limit: debouncedItemsPerPage,
 					},
 				})
+			);
+			toastService.danger(
+				t(
+					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-de-paginas-is-mislukt'
+				)
 			);
 		});
 	}, [
@@ -168,9 +175,15 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			showTitle={showTitle}
 			showDescription={showDescription}
 			showDate={showDate}
-			dateString={t('Geplaatst in %label% op %date%')}
-			allLabel={t('Alle')}
-			noLabel={t('Overige')}
+			dateString={t(
+				'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___geplaatst-in-label-op-date'
+			)}
+			allLabel={t(
+				'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___alle'
+			)}
+			noLabel={t(
+				'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___overige'
+			)}
 			buttonLabel={buttonLabel}
 			navigate={(buttonAction: ButtonAction) => navigateToContentType(buttonAction, history)}
 		/>
