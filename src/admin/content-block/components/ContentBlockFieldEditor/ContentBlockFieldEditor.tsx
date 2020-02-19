@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
@@ -79,9 +79,17 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 			};
 			break;
 		case ContentBlockEditor.FileUpload:
+			const urlOrUrls: string[] | undefined = (state as any)[fieldKey];
 			editorProps = {
 				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
-				url: (state as any)[fieldKey],
+				urls: Array.isArray(urlOrUrls) ? urlOrUrls : isNil(urlOrUrls) ? [] : [urlOrUrls],
+			};
+			break;
+		case ContentBlockEditor.MultiRange:
+			const num = (state as any)[fieldKey];
+			editorProps = {
+				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+				values: [num || 0],
 			};
 			break;
 		default:

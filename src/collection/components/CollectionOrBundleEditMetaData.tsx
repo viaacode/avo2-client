@@ -175,12 +175,13 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										) : (
 											<FileUpload
 												label={t('Upload een cover afbeelding')}
-												url={collection.thumbnail_path}
+												urls={collection.thumbnail_path ? [collection.thumbnail_path] : []}
+												allowMulti={false}
 												assetType="BUNDLE_COVER"
 												ownerId={collection.id}
-												onChange={(url: string | null) =>
-													updateCollectionProperty(url, 'thumbnail_path')
-												}
+												onChange={(urls: string[]) => {
+													updateCollectionProperty(urls[0] || null, 'thumbnail_path');
+												}}
 											/>
 										)}
 									</FormGroup>
