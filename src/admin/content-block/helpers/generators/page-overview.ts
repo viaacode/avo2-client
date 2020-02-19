@@ -20,6 +20,7 @@ import {
 	CONTENT_TYPE_AND_LABELS_INPUT,
 	FORM_STATE_DEFAULTS,
 } from './defaults';
+import { CheckboxProps } from '@viaa/avo2-components/dist/components/Checkbox/Checkbox';
 
 export const INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE = (): PageOverviewBlockComponentStateFields => ({
 	tabs: [],
@@ -64,8 +65,10 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					},
 				},
 				allowMultiple: {
-					label: i18n.t('Mag meerdere menu items selecteren'),
 					editorType: ContentBlockEditor.Checkbox,
+					editorProps: {
+						label: i18n.t('Mag meerdere menu items selecteren'),
+					} as CheckboxProps,
 				},
 				itemStyle: {
 					label: i18n.t('Item type'),
@@ -75,16 +78,22 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					},
 				},
 				showTitle: {
-					label: i18n.t('Toon de titel'),
 					editorType: ContentBlockEditor.Checkbox,
+					editorProps: {
+						label: i18n.t('Toon de titel'),
+					} as CheckboxProps,
 				},
 				showDescription: {
-					label: i18n.t('Toon de Beschrijving'),
 					editorType: ContentBlockEditor.Checkbox,
+					editorProps: {
+						label: i18n.t('Toon de Beschrijving'),
+					} as CheckboxProps,
 				},
 				showDate: {
-					label: i18n.t('Toon de datum en categorie'),
 					editorType: ContentBlockEditor.Checkbox,
+					editorProps: {
+						label: i18n.t('Toon de datum en categorie'),
+					} as CheckboxProps,
 				},
 				buttonLabel: {
 					label: i18n.t('Label voor de button (Lijst item)'),
