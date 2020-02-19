@@ -1,10 +1,10 @@
-export class CustomError extends Error {
+export class CustomError {
 	public message: string;
 	public innerException: any | null;
 	public additionalInfo: any | null;
 	public identifier: string = Math.random()
 		.toString()
-		.substring(2, 9);
+		.substring(2, 15);
 	public name: string = 'Error';
 	public stack: string;
 	public timestamp: string = new Date().toISOString();
@@ -14,7 +14,6 @@ export class CustomError extends Error {
 		innerException: any = null,
 		additionalInfo: any = null
 	) {
-		super(message);
 		this.message = message;
 		this.innerException = innerException;
 		this.additionalInfo = additionalInfo;
@@ -27,11 +26,11 @@ export class CustomError extends Error {
 		}
 	}
 
-	public toString(): string {
+	public toString = (): string => {
 		return JSON.stringify(
 			this,
 			// Avoid huge request object in error json
 			(key, value) => (key === 'request' ? '[request]' : value)
 		);
-	}
+	};
 }
