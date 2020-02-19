@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 import { SelectOption } from '@viaa/avo2-components';
 
 import { createKey } from '../../../shared/helpers';
-import { ContentPickerType } from '../../../shared/types';
+import { PickerItem } from '../../../shared/types';
 
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
@@ -55,7 +55,7 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 	switch (field.editorType) {
 		case ContentBlockEditor.ContentPicker:
 			editorProps = {
-				onSelect: (picked: ContentPickerType) => {
+				onSelect: (picked: PickerItem) => {
 					handleChange(type, fieldKey, { value: picked }, stateIndex);
 				},
 				currentSelection: get(state as any, 'buttonAction'),
@@ -81,7 +81,14 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 		case ContentBlockEditor.FileUpload:
 			const urlOrUrls: string[] | undefined = (state as any)[fieldKey];
 			editorProps = {
-				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+				// If the component wants a single value, take the first image from the array, otherwise pass the array
+				onChange: (value: null | undefined | string[]) =>
+					handleChange(
+						type,
+						fieldKey,
+						field.editorProps.allowMulti || !value ? value : value[0],
+						stateIndex
+					),
 				urls: Array.isArray(urlOrUrls) ? urlOrUrls : isNil(urlOrUrls) ? [] : [urlOrUrls],
 			};
 			break;

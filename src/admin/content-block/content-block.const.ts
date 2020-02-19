@@ -71,6 +71,11 @@ import {
 	INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
 	PAGE_OVERVIEW_BLOCK_CONFIG,
 } from './helpers/generators/page-overview';
+import {
+	INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES,
+	INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
+	PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
+} from './helpers/generators/projects-spotlight';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -113,6 +118,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
 	[ContentBlockType.PageOverview]: PAGE_OVERVIEW_BLOCK_CONFIG,
+	[ContentBlockType.ProjectsSpotlight]: PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
@@ -137,6 +143,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES,
 };
 
 export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
@@ -158,6 +165,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
+	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
 };
 
 // Options
@@ -239,6 +247,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{
 		label: i18n.t('Pagina overzicht'),
 		value: ContentBlockType.PageOverview,
+	},
+	{
+		label: i18n.t('Projecten in de kijker'),
+		value: ContentBlockType.ProjectsSpotlight,
 	},
 ];
 
