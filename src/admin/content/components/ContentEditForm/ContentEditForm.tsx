@@ -10,6 +10,7 @@ import {
 	FormGroup,
 	Grid,
 	Select,
+	SelectOption,
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
@@ -21,13 +22,13 @@ import { CONTENT_WIDTH_OPTIONS, DEFAULT_PAGES_WIDTH } from '../../content.const'
 import {
 	ContentEditFormErrors,
 	ContentEditFormState,
-	ContentTypesResponse,
+	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
 import './ContentEditForm.scss';
 
 interface ContentEditFormProps {
-	contentTypes: ContentTypesResponse[];
+	contentTypes: SelectOption<ContentPageType>[];
 	formErrors: ContentEditFormErrors;
 	formState: ContentEditFormState;
 	isAdminUser: boolean;

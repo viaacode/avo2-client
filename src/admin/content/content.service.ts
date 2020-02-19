@@ -12,7 +12,7 @@ import { ContentBlockConfig } from '../content-block/content-block.types';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import { GET_CONTENT_BY_ID, GET_CONTENT_PAGES, GET_CONTENT_TYPES } from './content.gql';
-import { ContentTypesResponse } from './content.types';
+import { ContentPageType } from './content.types';
 
 export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
 	try {
@@ -49,11 +49,12 @@ export const fetchContentItems = async (limit: number): Promise<Avo.Content.Cont
 	}
 };
 
-export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
+export const fetchContentTypes = async (): Promise<ContentPageType[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
-
-		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, null);
+		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, []).map(
+			(obj: { value: ContentPageType }) => obj.value
+		);
 	} catch (err) {
 		console.error('Failed to fetch content types', err);
 		toastService.danger(

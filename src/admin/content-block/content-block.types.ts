@@ -6,6 +6,7 @@ import {
 	ContentItemStyle,
 	ContentTabStyle,
 } from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
+import { ContentPageType } from '../content/content.types';
 
 export type ContentBlockStateType = 'components' | 'block';
 
@@ -19,14 +20,6 @@ export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
 export type ButtonTypeOption = 'primary' | 'secondary';
 export type WidthOption = 'full-width' | '500px' | '400px';
 export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
-export type ContentTypeOption =
-	| 'NIEUWS_OVERZICHT'
-	| 'NIEUWS_ITEM'
-	| 'FAQ_OVERZICHT'
-	| 'FAQ_ITEM'
-	| 'SCREENCAST'
-	| 'PAGINA'
-	| 'PROJECT';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -173,7 +166,7 @@ export interface PageOverviewBlockComponentStateFields {
 	tabs?: string[];
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
-	contentType: ContentTypeOption;
+	contentType: ContentPageType;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
 	showDescription?: boolean;

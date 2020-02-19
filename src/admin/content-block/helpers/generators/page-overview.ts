@@ -1,6 +1,7 @@
 import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRange/MultiRange';
 
 import i18n from '../../../../shared/translations/i18n';
+import { ContentPageType } from '../../../content/content.types';
 import {
 	PAGE_OVERVIEW_ITEM_STYLE_OPTIONS,
 	PAGE_OVERVIEW_TAB_STYLE_OPTIONS,
@@ -24,7 +25,7 @@ export const INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE = (): PageOverviewBlock
 	tabs: [],
 	tabStyle: 'MENU_BAR',
 	allowMultiple: false,
-	contentType: 'PROJECT', // lookup options in lookup.enum_content_types
+	contentType: ContentPageType.Project, // lookup options in lookup.enum_content_types
 	itemStyle: 'LIST',
 	showTitle: true,
 	showDescription: true,
