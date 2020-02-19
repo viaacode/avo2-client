@@ -1,11 +1,12 @@
 import i18n from '../../../../shared/translations/i18n';
+
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockType,
 	DefaultContentBlockState,
 	RichTextBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
@@ -21,11 +22,7 @@ export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE = (): RichTextB
 export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (
 	position: number
 ): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(
-		ContentBlockBackgroundColor.White,
-		ContentBlockType.RichTextTwoColumns,
-		position
-	);
+	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.RichTextTwoColumns, position);
 
 export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/rich-text-two-columns___tekst-2-kolommen'),

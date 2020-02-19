@@ -3,15 +3,15 @@ import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/Bl
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
-import { IMAGE_GRID_FILL_OPTIONS, IMAGE_GRID_TEXT_ALIGN_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	ImageGridBlockComponentStateBlockFields,
 	ImageGridBlockComponentStateFields,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { IMAGE_GRID_FILL_OPTIONS, IMAGE_GRID_TEXT_ALIGN_OPTIONS } from '../../content-block.const';
 
 import {
 	CONTENT_BLOCK_FIELD_DEFAULTS,
@@ -33,7 +33,7 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
 	position: number
 ): ImageGridBlockComponentStateBlockFields => {
 	return {
-		...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.ImageGrid, position),
+		...FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.ImageGrid, position),
 		elements: [] as GridItem[],
 		imageWidth: 200,
 		imageHeight: 200,

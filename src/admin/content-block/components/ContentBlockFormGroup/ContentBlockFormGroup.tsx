@@ -12,7 +12,7 @@ import {
 	ContentBlockFormError,
 	ContentBlockState,
 	ContentBlockStateType,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 

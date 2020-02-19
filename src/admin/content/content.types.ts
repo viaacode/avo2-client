@@ -1,7 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { ContentBlockConfig } from '../content-block/content-block.types';
+import { ContentBlockConfig } from '../shared/types';
 
 // Pages
 export enum PageType {

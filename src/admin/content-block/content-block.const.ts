@@ -4,18 +4,19 @@ import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
 
 import { FileUpload } from '../../shared/components';
+
 import { ContentPicker } from '../shared/components';
+import {
+	AlignOption,
+	BackgroundColorOption,
+	ButtonTypeOption,
+	ContentBlockType,
+	FillOption,
+	HeadingTypeOption,
+	WidthOption,
+} from '../shared/types';
 
 import { AlignSelect, ColorSelect } from './components';
-import {
-	AlignOptions,
-	ButtonTypeOptions,
-	ContentBlockBackgroundColor,
-	ContentBlockType,
-	HeadingLevelOptions,
-	ImageGridFillOptions,
-	WidthOptions,
-} from './content-block.types';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
 	BUTTONS_BLOCK_CONFIG,
@@ -23,6 +24,7 @@ import {
 	HEADING_BLOCK_CONFIG,
 	IFRAME_BLOCK_CONFIG,
 	IMAGE_BLOCK_CONFIG,
+	IMAGE_GRID_BLOCK_CONFIG,
 	INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	INITIAL_ACCORDIONS_BLOCK_STATE,
 	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
@@ -35,6 +37,8 @@ import {
 	INITIAL_IFRAME_BLOCK_STATE,
 	INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	INITIAL_IMAGE_BLOCK_STATE,
+	INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
+	INITIAL_IMAGE_GRID_BLOCK_STATE,
 	INITIAL_INTRO_BLOCK_COMPONENT_STATE,
 	INITIAL_INTRO_BLOCK_STATE,
 	INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
@@ -49,33 +53,28 @@ import {
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
-import {
-	IMAGE_GRID_BLOCK_CONFIG,
-	INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
-	INITIAL_IMAGE_GRID_BLOCK_STATE,
-} from './helpers/generators/image-grid';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
 	INSERT: 'insert_app_content_blocks',
 };
 
-export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
+export const BACKGROUND_COLOR_OPTIONS: SelectOption<BackgroundColorOption>[] = [
 	{
 		label: 'Wit',
-		value: ContentBlockBackgroundColor.White,
+		value: BackgroundColorOption.White,
 	},
 	{
 		label: 'Grijs',
-		value: ContentBlockBackgroundColor.Gray50,
+		value: BackgroundColorOption.Gray50,
 	},
 	{
 		label: 'Blauw',
-		value: ContentBlockBackgroundColor.NightBlue,
+		value: BackgroundColorOption.NightBlue,
 	},
 ];
 
-export const ALIGN_OPTIONS: { label: string; value: AlignOptions }[] = [
+export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
 	{
 		label: 'Links',
 		value: 'left',
@@ -210,7 +209,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 };
 
 // Options
-export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
+export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingTypeOption>[] = [
 	{
 		label: i18n.t('admin/content-block/content-block___h-2'),
 		value: 'h2',
@@ -225,7 +224,7 @@ export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
 	},
 ];
 
-export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
+export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOption>[] = [
 	{
 		label: i18n.t('admin/content-block/content-block___primair'),
 		value: 'primary',
@@ -244,7 +243,7 @@ export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
 	{ label: i18n.t('Link (inline)'), value: 'inline-link' },
 ];
 
-export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
+export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
 	{
 		label: i18n.t('paginabreedte'),
 		value: 'full-width',
@@ -259,13 +258,13 @@ export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
 	},
 ];
 
-export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOptions>[] = [
+export const IMAGE_GRID_FILL_OPTIONS: SelectOption<FillOption>[] = [
 	{ label: i18n.t('Opvullen'), value: 'cover' },
 	{ label: i18n.t('Volledig zichtbaar'), value: 'contain' },
 	{ label: i18n.t('Oorspronkelijke grootte'), value: 'auto' },
 ];
 
-export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<AlignOptions>[] = [
+export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<AlignOption>[] = [
 	{ label: i18n.t('Links'), value: 'left' },
 	{ label: i18n.t('Center'), value: 'center' },
 	{ label: i18n.t('Rechts'), value: 'right' },

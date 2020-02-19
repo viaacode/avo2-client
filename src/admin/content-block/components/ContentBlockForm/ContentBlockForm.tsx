@@ -27,7 +27,8 @@ import {
 	ContentBlockFormError,
 	ContentBlockState,
 	ContentBlockStateType,
-} from '../../content-block.types';
+} from '../../../shared/types';
+
 import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockFormGroup';
 
 import './ContentBlockForm.scss';

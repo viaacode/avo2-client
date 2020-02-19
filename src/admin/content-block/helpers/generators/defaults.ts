@@ -1,16 +1,18 @@
 import { isEmpty, isNil } from 'lodash-es';
 
 import i18n from '../../../../shared/translations/i18n';
-import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
+
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockEditor,
 	ContentBlockField,
 	ContentBlockType,
-} from '../../content-block.types';
+} from '../../../shared/types';
+
+import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 
 export const FORM_STATE_DEFAULTS = (
-	backgroundColor: ContentBlockBackgroundColor,
+	backgroundColor: BackgroundColorOption,
 	blockType: ContentBlockType,
 	position: number
 ) => ({

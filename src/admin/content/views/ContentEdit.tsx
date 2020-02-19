@@ -25,15 +25,15 @@ import { useTabs } from '../../../shared/hooks';
 import { dataService } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
-import {
-	ContentBlockConfig,
-	ContentBlockStateOptions,
-	ContentBlockStateType,
-	ContentBlockType,
-} from '../../content-block/content-block.types';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import {
+	ContentBlockConfig,
+	ContentBlockStateOption,
+	ContentBlockStateType,
+	ContentBlockType,
+} from '../../shared/types';
 
 import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
@@ -269,7 +269,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const handleStateSave = (
 		index: number,
 		formGroupType: ContentBlockStateType,
-		formGroupState: ContentBlockStateOptions,
+		formGroupState: ContentBlockStateOption,
 		stateIndex?: number
 	) => {
 		dispatch({

@@ -2,18 +2,18 @@ import i18n from '../../../../shared/translations/i18n';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
 import {
-	BUTTON_TYPE_OPTIONS,
-	HEADING_LEVEL_OPTIONS,
-	WIDTH_OPTIONS,
-} from '../../content-block.const';
-import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	MediaPlayerTitleTextButtonBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import {
+	BUTTON_TYPE_OPTIONS,
+	HEADING_LEVEL_OPTIONS,
+	WIDTH_OPTIONS,
+} from '../../content-block.const';
 
 import {
 	ALIGN_FIELD,
@@ -36,7 +36,7 @@ export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (
 	position: number
 ): DefaultContentBlockState =>
 	FORM_STATE_DEFAULTS(
-		ContentBlockBackgroundColor.White,
+		BackgroundColorOption.White,
 		ContentBlockType.MediaPlayerTitleTextButton,
 		position
 	);

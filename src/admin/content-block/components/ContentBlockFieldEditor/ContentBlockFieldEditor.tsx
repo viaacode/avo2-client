@@ -4,9 +4,6 @@ import React, { FunctionComponent } from 'react';
 import { SelectOption } from '@viaa/avo2-components';
 
 import { createKey } from '../../../shared/helpers';
-import { ContentPickerType } from '../../../shared/types';
-
-import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
 	ContentBlockComponentState,
 	ContentBlockEditor,
@@ -14,7 +11,10 @@ import {
 	ContentBlockMeta,
 	ContentBlockState,
 	ContentBlockStateType,
-} from '../../content-block.types';
+	ContentPickerType,
+} from '../../../shared/types';
+
+import { EDITOR_TYPES_MAP } from '../../content-block.const';
 
 interface ContentBlockFieldProps {
 	block: ContentBlockMeta; // Block metadata

@@ -5,6 +5,7 @@ export * from './defaults';
 export * from './heading';
 export * from './iframe';
 export * from './image';
+export * from './image-grid';
 export * from './intro';
 export * from './media-player';
 export * from './media-player-title-text-button';

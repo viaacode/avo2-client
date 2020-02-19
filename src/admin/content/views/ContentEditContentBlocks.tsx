@@ -9,14 +9,14 @@ import {
 	CONTENT_BLOCK_CONFIG_MAP,
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
-import {
-	ContentBlockConfig,
-	ContentBlockStateOptions,
-	ContentBlockStateType,
-	ContentBlockType,
-} from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers/create-key';
+import {
+	ContentBlockConfig,
+	ContentBlockStateOption,
+	ContentBlockStateType,
+	ContentBlockType,
+} from '../../shared/types';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
@@ -27,7 +27,7 @@ interface ContentEditContentBlocksProps {
 	onSave: (
 		index: number,
 		formGroupType: ContentBlockStateType,
-		formGroupState: ContentBlockStateOptions,
+		formGroupState: ContentBlockStateOption,
 		stateIndex?: number
 	) => void;
 	addComponentToState: (index: number, blockType: ContentBlockType) => void;
