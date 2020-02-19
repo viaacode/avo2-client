@@ -1,4 +1,4 @@
-import { Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
+import { MultiRange, Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
 
 import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
@@ -13,6 +13,7 @@ import {
 	ContentBlockBackgroundColor,
 	ContentBlockType,
 	HeadingLevelOptions,
+	ImageGridFillOptions,
 	WidthOptions,
 } from './content-block.types';
 import {
@@ -23,22 +24,36 @@ import {
 	IFRAME_BLOCK_CONFIG,
 	IMAGE_BLOCK_CONFIG,
 	INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
+	INITIAL_ACCORDIONS_BLOCK_STATE,
 	INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
+	INITIAL_BUTTONS_BLOCK_STATE,
 	INITIAL_CTAS_BLOCK_COMPONENT_STATES,
+	INITIAL_CTAS_BLOCK_STATE,
 	INITIAL_HEADING_BLOCK_COMPONENT_STATE,
+	INITIAL_HEADING_BLOCK_STATE,
 	INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	INITIAL_IFRAME_BLOCK_STATE,
 	INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
+	INITIAL_IMAGE_BLOCK_STATE,
 	INITIAL_INTRO_BLOCK_COMPONENT_STATE,
+	INITIAL_INTRO_BLOCK_STATE,
 	INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
 	INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
 	INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
+	INITIAL_RICH_TEXT_BLOCK_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
+	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 	INTRO_BLOCK_CONFIG,
 	MEDIA_PLAYER_BLOCK_CONFIG,
 	MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
+import {
+	IMAGE_GRID_BLOCK_CONFIG,
+	INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
+	INITIAL_IMAGE_GRID_BLOCK_STATE,
+} from './helpers/generators/image-grid';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
@@ -125,6 +140,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('Afbeelding'),
 		value: ContentBlockType.Image,
 	},
+	{
+		label: i18n.t('Afbeelding grid'),
+		value: ContentBlockType.ImageGrid,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -136,34 +155,58 @@ export const EDITOR_TYPES_MAP = {
 	IconPicker,
 	ContentPicker,
 	FileUpload,
+	MultiRange,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
-	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
+	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
+	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
 	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
+	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
-	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
-	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
+	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_COMPONENT_STATES,
 	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
+};
+
+export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
+	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_STATE,
+	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
+	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
+	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_STATE,
+	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
+	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
+	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
 };
 
 // Options
@@ -206,4 +249,16 @@ export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
 		label: i18n.t('middelgroot'),
 		value: '400px',
 	},
+];
+
+export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOptions>[] = [
+	{ label: i18n.t('Opvullen'), value: 'cover' },
+	{ label: i18n.t('Volledig zichtbaar'), value: 'contain' },
+	{ label: i18n.t('Oorspronkelijke grootte'), value: 'auto' },
+];
+
+export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<AlignOptions>[] = [
+	{ label: i18n.t('Links'), value: 'left' },
+	{ label: i18n.t('Center'), value: 'center' },
+	{ label: i18n.t('Rechts'), value: 'right' },
 ];
