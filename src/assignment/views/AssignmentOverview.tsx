@@ -157,7 +157,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 			refetchAssignments();
 
-			toastService.success(t('Het dupliceren van de opdracht is gelukt'));
+			toastService.success(
+				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
+			);
 		} catch (err) {
 			console.error('Failed to copy the assignment', err, { newTitle, assignment });
 			toastService.danger(
@@ -194,7 +196,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			console.error(err);
 			toastService.danger(
 				activeView === 'archived_assignments'
-					? t('Het dearchiveren van de opdracht is mislukt')
+					? t('assignment/views/assignment-overview___het-dearchiveren-van-de-opdracht-is-mislukt')
 					: t('assignment/views/assignment-overview___het-archiveren-van-de-opdracht-is-mislukt')
 			);
 		}

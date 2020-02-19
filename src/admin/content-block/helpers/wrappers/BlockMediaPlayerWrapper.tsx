@@ -24,7 +24,11 @@ export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title }) => {
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService.danger(i18n.t('Het ophalen van het player-ticket is mislukt.'));
+				toastService.danger(
+					i18n.t(
+						'admin/content-block/helpers/wrappers/block-media-player-wrapper___het-ophalen-van-het-player-ticket-is-mislukt'
+					)
+				);
 			});
 
 	return (

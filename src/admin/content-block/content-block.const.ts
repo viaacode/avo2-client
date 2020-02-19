@@ -229,27 +229,27 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		value: ContentBlockType.Accordions,
 	},
 	{
-		label: i18n.t('Media-speler'),
+		label: i18n.t('admin/content-block/content-block___media-speler'),
 		value: ContentBlockType.MediaPlayer,
 	},
 	{
-		label: i18n.t('Media-speler met titel, tekst en knop'),
+		label: i18n.t('admin/content-block/content-block___media-speler-met-titel-tekst-en-knop'),
 		value: ContentBlockType.MediaPlayerTitleTextButton,
 	},
 	{
-		label: i18n.t('Afbeelding'),
+		label: i18n.t('admin/content-block/content-block___afbeelding'),
 		value: ContentBlockType.Image,
 	},
 	{
-		label: i18n.t('Afbeelding grid'),
+		label: i18n.t('admin/content-block/content-block___afbeelding-grid'),
 		value: ContentBlockType.ImageGrid,
 	},
 	{
-		label: i18n.t('Pagina overzicht'),
+		label: i18n.t('admin/content-block/content-block___pagina-overzicht'),
 		value: ContentBlockType.PageOverview,
 	},
 	{
-		label: i18n.t('Projecten in de kijker'),
+		label: i18n.t('admin/content-block/content-block___projecten-in-de-kijker'),
 		value: ContentBlockType.ProjectsSpotlight,
 	},
 ];
@@ -263,35 +263,35 @@ export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOption>[] = [
 export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOption>[] = [
 	{ label: i18n.t('admin/content-block/content-block___primair'), value: 'primary' },
 	{ label: i18n.t('admin/content-block/content-block___secundair'), value: 'secondary' },
-	{ label: i18n.t('Secundair (invers)'), value: 'secondary-i' },
-	{ label: i18n.t('Tertiair'), value: 'tertiary' },
-	{ label: i18n.t('Randloos'), value: 'borderless' },
-	{ label: i18n.t('Randloos (invers)'), value: 'borderless-i' },
-	{ label: i18n.t('Gevaar'), value: 'danger' },
-	{ label: i18n.t('Gevaar (hover)'), value: 'danger-hover' },
-	{ label: i18n.t('Link'), value: 'link' },
-	{ label: i18n.t('Link (inline)'), value: 'inline-link' },
+	{ label: i18n.t('admin/content-block/content-block___secundair-invers'), value: 'secondary-i' },
+	{ label: i18n.t('admin/content-block/content-block___tertiair'), value: 'tertiary' },
+	{ label: i18n.t('admin/content-block/content-block___randloos'), value: 'borderless' },
+	{ label: i18n.t('admin/content-block/content-block___randloos-invers'), value: 'borderless-i' },
+	{ label: i18n.t('admin/content-block/content-block___gevaar'), value: 'danger' },
+	{ label: i18n.t('admin/content-block/content-block___gevaar-hover'), value: 'danger-hover' },
+	{ label: i18n.t('admin/content-block/content-block___link'), value: 'link' },
+	{ label: i18n.t('admin/content-block/content-block___link-inline'), value: 'inline-link' },
 ];
 
 export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
-	{ label: i18n.t('Paginabreedte'), value: 'full-width' },
-	{ label: i18n.t('Groot'), value: '500px' },
-	{ label: i18n.t('Middelgroot'), value: '400px' },
+	{ label: i18n.t('admin/content-block/content-block___paginabreedte'), value: 'full-width' },
+	{ label: i18n.t('admin/content-block/content-block___groot'), value: '500px' },
+	{ label: i18n.t('admin/content-block/content-block___middelgroot'), value: '400px' },
 ];
 
 export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOption>[] = [
-	{ label: i18n.t('Opvullen'), value: 'cover' },
-	{ label: i18n.t('Volledig zichtbaar'), value: 'contain' },
-	{ label: i18n.t('Oorspronkelijke grootte'), value: 'auto' },
+	{ label: i18n.t('admin/content-block/content-block___opvullen'), value: 'cover' },
+	{ label: i18n.t('admin/content-block/content-block___volledig-zichtbaar'), value: 'contain' },
+	{ label: i18n.t('admin/content-block/content-block___oorspronkelijke-grootte'), value: 'auto' },
 ];
 
 export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = [
-	{ label: i18n.t('Menu balk'), value: 'MENU_BAR' },
-	{ label: i18n.t('Tags'), value: 'ROUNDED_BADGES' },
+	{ label: i18n.t('admin/content-block/content-block___menu-balk'), value: 'MENU_BAR' },
+	{ label: i18n.t('admin/content-block/content-block___tags'), value: 'ROUNDED_BADGES' },
 ];
 
 export const PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: SelectOption<ContentItemStyle>[] = [
-	{ label: i18n.t('Lijst'), value: 'LIST' },
-	{ label: i18n.t('Grid'), value: 'GRID' },
-	{ label: i18n.t('Accrodions'), value: 'ACCORDION' },
+	{ label: i18n.t('admin/content-block/content-block___lijst'), value: 'LIST' },
+	{ label: i18n.t('admin/content-block/content-block___grid'), value: 'GRID' },
+	{ label: i18n.t('admin/content-block/content-block___accrodions'), value: 'ACCORDION' },
 ];

@@ -295,7 +295,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					.then(() => {
 						toastService.success(
 							isAssignmentResponseArchived()
-								? t('De opdracht is gedearchiveerd')
+								? t('assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd')
 								: t('assignment/views/assignment-detail___de-opdracht-is-gearchiveerd')
 						);
 

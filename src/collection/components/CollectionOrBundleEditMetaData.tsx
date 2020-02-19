@@ -174,7 +174,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											/>
 										) : (
 											<FileUpload
-												label={t('Upload een cover afbeelding')}
+												label={t(
+													'collection/components/collection-or-bundle-edit-meta-data___upload-een-cover-afbeelding'
+												)}
 												urls={collection.thumbnail_path ? [collection.thumbnail_path] : []}
 												allowMulti={false}
 												assetType="BUNDLE_COVER"
