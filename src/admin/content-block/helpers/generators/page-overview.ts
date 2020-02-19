@@ -16,7 +16,6 @@ import {
 	PageOverviewBlockComponentStateFields,
 } from '../../content-block.types';
 
-import { CheckboxProps } from '@viaa/avo2-components/dist/components/Checkbox/Checkbox';
 import {
 	CONTENT_BLOCK_FIELD_DEFAULTS,
 	CONTENT_TYPE_AND_LABELS_INPUT,

@@ -12,7 +12,6 @@ import i18n from '../../../../shared/translations/i18n';
 import { parsePickerItem } from '../../../shared/helpers';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
 
-import { CustomError } from '../../../../shared/helpers';
 import { CONTENT_TYPES } from './ContentPicker.const';
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {
