@@ -29,6 +29,7 @@ import {
 	ContentBlockStateType,
 } from '../../content-block.types';
 import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockFormGroup';
+import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview';
 
 import './ContentBlockForm.scss';
 
@@ -246,7 +247,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				</AccordionActions>
 				<AccordionBody>
 					{renderFormGroups(components, 'components')}
-					{underLimit && renderAddButton(label)}
+					{underLimit && REPEATABLE_CONTENT_BLOCKS.includes(config.type) && renderAddButton(label)}
 					<Spacer margin="top">
 						<BlockHeading type="h4" className="u-m-t-0">
 							Blok-opties

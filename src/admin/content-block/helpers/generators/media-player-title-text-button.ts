@@ -45,6 +45,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	position: number = 0
 ): ContentBlockConfig => ({
 	name: i18n.t('Media-speler met titel, tekst en knop'),
+	type: ContentBlockType.MediaPlayerTitleTextButton,
 	components: {
 		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE(),
 		fields: {

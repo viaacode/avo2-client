@@ -3,7 +3,7 @@ import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/Bl
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
-import { IMAGE_GRID_FILL_OPTIONS, IMAGE_GRID_TEXT_ALIGN_OPTIONS } from '../../content-block.const';
+import { ALIGN_OPTIONS, IMAGE_GRID_FILL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -45,6 +45,7 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
 
 export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('Afbeeldingen grid'),
+	type: ContentBlockType.ImageGrid,
 	components: {
 		name: i18n.t('Item'),
 		state: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES(),
@@ -114,7 +115,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				label: i18n.t('Text alignatie'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: IMAGE_GRID_TEXT_ALIGN_OPTIONS,
+					options: ALIGN_OPTIONS,
 				},
 			},
 		},

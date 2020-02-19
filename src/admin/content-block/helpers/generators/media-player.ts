@@ -20,6 +20,7 @@ export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultConte
 
 export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('Media-speler'),
+	type: ContentBlockType.MediaPlayer,
 	components: {
 		state: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE(),
 		fields: {

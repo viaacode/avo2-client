@@ -29,6 +29,7 @@ export const INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE = (
 
 export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/rich-text-two-columns___tekst-2-kolommen'),
+	type: ContentBlockType.RichTextTwoColumns,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/rich-text-two-columns___kolom'),
 		limits: {

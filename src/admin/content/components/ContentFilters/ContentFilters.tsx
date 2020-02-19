@@ -1,16 +1,24 @@
 import React, { FunctionComponent, KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Flex, Form, FormGroup, Spacer, TextInput } from '@viaa/avo2-components';
+import {
+	Button,
+	Flex,
+	Form,
+	FormGroup,
+	SelectOption,
+	Spacer,
+	TextInput,
+} from '@viaa/avo2-components';
 
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
 import { KeyCode } from '../../../../shared/types';
 
-import { ContentFilterFormState, ContentTypesResponse } from '../../content.types';
+import { ContentFilterFormState, ContentPageType } from '../../content.types';
 import './ContentFilters.scss';
 
 interface ContentFiltersProps {
-	contentTypes: ContentTypesResponse[];
+	contentTypes: SelectOption<ContentPageType>[];
 	formState: ContentFilterFormState;
 	hasFilters: boolean;
 	onClearFilters: () => void;
@@ -35,10 +43,10 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 	const [t] = useTranslation();
 
 	// Computed
-	const contentTypeOptions = contentTypes.map(({ value }) => ({
-		checked: formState.contentType.includes(value),
-		id: value,
-		label: value,
+	const contentTypeOptions = contentTypes.map(option => ({
+		label: option.label,
+		id: option.value,
+		checked: formState.contentType.includes(option.value),
 	}));
 
 	// Methods

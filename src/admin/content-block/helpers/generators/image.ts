@@ -24,6 +24,7 @@ export const INITIAL_IMAGE_BLOCK_STATE = (position: number): DefaultContentBlock
 
 export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('Afbeelding'),
+	type: ContentBlockType.Image,
 	components: {
 		state: INITIAL_IMAGE_BLOCK_COMPONENT_STATE(),
 		fields: {

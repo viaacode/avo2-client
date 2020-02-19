@@ -13,7 +13,7 @@ import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/
 
 import { CONTENT_TYPES } from './ContentPicker.const';
 
-const REACT_SELECT_DEFAULT_OPTIONS = {
+export const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
 	classNamePrefix: 'c-select',
 };

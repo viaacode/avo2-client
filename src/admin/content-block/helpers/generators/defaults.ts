@@ -83,3 +83,10 @@ export const FILE_FIELD = (
 	editorProps: { type: 'CONTENT_PAGE_IMAGE' },
 	...propOverride,
 });
+
+export const CONTENT_TYPE_AND_LABELS_INPUT = (propOverride?: Partial<ContentBlockField>) => ({
+	label: i18n.t('Type en Labels'),
+	editorType: ContentBlockEditor.ContentTypeAndLabelsPicker,
+	validator: () => [],
+	...propOverride,
+});

@@ -3,6 +3,11 @@ import { ButtonAction, IconName } from '@viaa/avo2-components';
 // TODO use exported ButtonType from components repo
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
+import {
+	ContentItemStyle,
+	ContentTabStyle,
+} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
+import { ContentPageType } from '../content/content.types';
 
 export type ContentBlockStateType = 'components' | 'block';
 
@@ -11,12 +16,10 @@ export type ContentBlockStateOptions =
 	| Partial<ContentBlockComponentState>[]
 	| Partial<ContentBlockState>;
 
-export type AlignOptions = 'left' | 'right' | 'center';
-
-export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
-
+export type AlignOption = 'left' | 'right' | 'center';
+export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
 // TODO use ButtonType from components repo
-export type ButtonTypeOptions =
+export type ButtonTypeOption =
 	| 'borderless-i'
 	| 'borderless'
 	| 'danger-hover'
@@ -27,10 +30,8 @@ export type ButtonTypeOptions =
 	| 'secondary-i'
 	| 'secondary'
 	| 'tertiary';
-
-export type WidthOptions = 'full-width' | '500px' | '400px';
-
-export type ImageGridFillOptions = 'cover' | 'contain' | 'auto';
+export type WidthOption = 'full-width' | '500px' | '400px';
+export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -43,6 +44,7 @@ export interface ContentBlockConfig {
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
+	type: ContentBlockType;
 }
 
 export interface ContentBlockComponentsConfig {
@@ -76,12 +78,13 @@ export type ContentBlockComponentState =
 	| ImageGridBlockComponentStateFields
 	| IntroBlockComponentState
 	| MediaPlayerBlockComponentState
-	| RichTextBlockComponentState;
+	| RichTextBlockComponentState
+	| PageOverviewBlockComponentStateFields;
 
 export type ContentBlockState = DefaultContentBlockState;
 
 export interface ContentBlockField {
-	label: string;
+	label?: string; // Optional for checkboxes, who have their own label
 	editorType: ContentBlockEditor;
 	editorProps?: any;
 	validator?: (value: any) => string[];
@@ -97,6 +100,8 @@ export enum ContentBlockEditor {
 	Select = 'Select',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
+	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
+	Checkbox = 'Checkbox',
 }
 
 // If only one block exists then the errors are a string[]
@@ -131,12 +136,13 @@ export enum ContentBlockType {
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
+	PageOverview = 'PAGE_OVERVIEW',
 }
 
 export interface HeadingBlockComponentState {
 	children: string;
-	type: HeadingLevelOptions;
-	align: AlignOptions;
+	type: HeadingLevelOption;
+	align: AlignOption;
 }
 
 export interface RichTextBlockComponentState {
@@ -147,7 +153,7 @@ export interface ImageBlockComponentState {
 	title: string;
 	text: string;
 	source: string;
-	width: WidthOptions;
+	width: WidthOption;
 }
 
 export interface ImageGridBlockComponentStateFields {
@@ -162,9 +168,23 @@ export interface ImageGridBlockComponentStateBlockFields extends DefaultContentB
 	imageWidth?: number;
 	imageHeight?: number;
 	itemWidth?: number;
-	fill?: ImageGridFillOptions;
-	textAlign?: AlignOptions;
+	fill?: ImageGridFillOption;
+	textAlign?: AlignOption;
 	className?: string;
+	navigate?: (action: ButtonAction) => void;
+}
+
+export interface PageOverviewBlockComponentStateFields {
+	tabs?: string[];
+	tabStyle?: ContentTabStyle;
+	allowMultiple?: boolean;
+	contentType: ContentPageType;
+	itemStyle?: ContentItemStyle;
+	showTitle?: boolean;
+	showDescription?: boolean;
+	showDate?: boolean;
+	buttonLabel?: string;
+	itemsPerPage?: number;
 	navigate?: (action: ButtonAction) => void;
 }
 
@@ -177,12 +197,12 @@ export interface ButtonsBlockComponentState {
 export interface IntroBlockComponentState {
 	title: string;
 	content: string;
-	align: AlignOptions;
+	align: AlignOption;
 }
 
 export interface CTAsBlockComponentState {
 	heading: string;
-	headingType: HeadingLevelOptions;
+	headingType: HeadingLevelOption;
 	content: string | string[];
 	buttonLabel: string;
 	buttonIcon?: IconName;
@@ -208,12 +228,12 @@ export interface MediaPlayerBlockComponentState {
 export interface MediaPlayerTitleTextButtonBlockComponentState {
 	mediaTitle: string;
 	mediaItem?: ButtonAction;
-	headingType: HeadingLevelOptions;
+	headingType: HeadingLevelOption;
 	headingTitle: string;
 	content: string;
 	buttonLabel: string;
 	buttonIcon?: IconName;
 	buttonType?: ButtonType;
 	buttonAction?: ButtonAction;
-	align: AlignOptions;
+	align: AlignOption;
 }
