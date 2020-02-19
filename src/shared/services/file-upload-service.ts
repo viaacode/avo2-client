@@ -37,14 +37,14 @@ export const uploadFile = async (
 	file: File,
 	assetType: AssetType,
 	ownerId: string
-): Promise<string | null> => {
+): Promise<string> => {
 	let url: string | undefined = undefined;
 	let body: UploadAssetInfo | undefined = undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/assets/upload`;
 		const content = await fileToBase64(file);
 		if (!content) {
-			return null;
+			throw new CustomError("Failed to upload file: file doesn't have any content", null);
 		}
 		body = {
 			content,

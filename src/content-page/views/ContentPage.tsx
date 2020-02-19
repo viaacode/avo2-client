@@ -9,6 +9,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ContentBlockPreview } from '../../admin/content-block/components';
 import { ContentBlockConfig } from '../../admin/content-block/content-block.types';
 import { parseContentBlocks } from '../../admin/content-block/helpers';
+import { SpecialPermissionGroups } from '../../admin/menu/views/MenuEdit';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { ErrorActionButton } from '../../error/views/ErrorView';
 import { DataQueryComponent } from '../../shared/components';
@@ -43,7 +44,10 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ match, user })
 
 	const renderContentPage = (contentPage: Avo.Content.Content) => {
 		const pageUserGroups: number[] = (contentPage as any).user_group_ids || []; // TODO remove cast to any when typings v2.10.0 is released
-		const userUserGroups: number[] = [...get(user, 'profile.userGroupIds', []), user ? -2 : -1]; // Ingelogde gebruiker en niet ingelogde gebruiker
+		const userUserGroups: number[] = [
+			...get(user, 'profile.userGroupIds', []),
+			user ? SpecialPermissionGroups.loggedInUsers : SpecialPermissionGroups.loggedOutUsers,
+		];
 		if (!intersection(pageUserGroups, userUserGroups).length) {
 			// User isn't allowed to see this page (this will in the future also be checked by the graphql instance
 			setErrorInfo({
