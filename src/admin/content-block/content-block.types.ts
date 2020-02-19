@@ -1,5 +1,7 @@
 import { ButtonAction, IconName } from '@viaa/avo2-components';
+// TODO: Import from components lib when exported there.
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
+import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
 
 export type ContentBlockStateType = 'components' | 'block';
 
@@ -15,6 +17,8 @@ export type HeadingLevelOptions = 'h2' | 'h3' | 'h4';
 export type ButtonTypeOptions = 'primary' | 'secondary';
 
 export type WidthOptions = 'full-width' | '500px' | '400px';
+
+export type ImageGridFillOptions = 'cover' | 'contain' | 'auto';
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -51,15 +55,16 @@ export interface ContentBlockBlockConfig {
 }
 
 export type ContentBlockComponentState =
-	| HeadingBlockComponentState
-	| RichTextBlockComponentState
-	| ButtonsBlockComponentState
-	| IntroBlockComponentState
-	| ImageBlockComponentState
-	| CTAsBlockComponentState
-	| IFrameBlockComponentState
 	| AccordionsBlockComponentState
-	| MediaPlayerBlockComponentState;
+	| ButtonsBlockComponentState
+	| CTAsBlockComponentState
+	| HeadingBlockComponentState
+	| IFrameBlockComponentState
+	| ImageBlockComponentState
+	| ImageGridBlockComponentStateFields
+	| IntroBlockComponentState
+	| MediaPlayerBlockComponentState
+	| RichTextBlockComponentState;
 
 export type ContentBlockState = DefaultContentBlockState;
 
@@ -76,6 +81,7 @@ export enum ContentBlockEditor {
 	ContentPicker = 'ContentPicker',
 	FileUpload = 'FileUpload',
 	IconPicker = 'IconPicker',
+	MultiRange = 'MultiRange',
 	Select = 'Select',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
@@ -107,6 +113,7 @@ export enum ContentBlockType {
 	Heading = 'HEADING',
 	IFrame = 'IFRAME',
 	Image = 'IMAGE',
+	ImageGrid = 'IMAGE_GRID',
 	Intro = 'INTRO',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
@@ -129,6 +136,24 @@ export interface ImageBlockComponentState {
 	text: string;
 	source: string;
 	width: WidthOptions;
+}
+
+export interface ImageGridBlockComponentStateFields {
+	source: string;
+	title?: string;
+	text?: string;
+	action?: ButtonAction;
+}
+
+export interface ImageGridBlockComponentStateBlockFields extends DefaultContentBlockState {
+	elements: GridItem[];
+	imageWidth?: number;
+	imageHeight?: number;
+	itemWidth?: number;
+	fill?: ImageGridFillOptions;
+	textAlign?: AlignOptions;
+	className?: string;
+	navigate?: (action: ButtonAction) => void;
 }
 
 export interface ButtonsBlockComponentState {
