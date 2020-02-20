@@ -55,6 +55,25 @@ objects:
               value: production
             - name: PORT
               value: "8080"
+						- name: FLOW_PLAYER_TOKEN
+						  value: changeme
+						- name: FLOW_PLAYER_ID
+						  value: changeme
+						- name: ENV
+						  value: production
+						- name: ZENDESK_KEY
+						  value: changeme
+						- name: GRAPHQL_URL
+						  value: http://avo-graphql-prd
+						- name: GRAPHQL_SECRET
+						  value: randomthingie
+						- name: FETCH_POEDITOR_PROJECT
+						  value: changeme
+						- name: FETCH_POEDITOR_TOKEN
+						  value: changeme
+						
+						
+						
           ports:
           - containerPort: 8080
             name: http
