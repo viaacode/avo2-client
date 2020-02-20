@@ -9,6 +9,7 @@ import {
 	convertToHtml,
 	DropdownButton,
 	DropdownContent,
+	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -40,7 +41,6 @@ import { isMediaFragment } from '../../helpers';
 import { CollectionService } from '../../collection.service';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
-import { FlowPlayerWrapper } from './FlowPlayerWrapper';
 import FragmentAdd from './FragmentAdd';
 
 interface FragmentEditProps extends DefaultSecureRouteProps {
@@ -360,7 +360,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						<Grid>
 							<Column size="3-6">
 								{!isCollection ? (
-									<FlowPlayerWrapper
+									<FlowPlayer
 										src={playerTicket ? playerTicket.toString() : null}
 										poster={itemMetaData.thumbnail_path}
 										title={itemMetaData.title}
@@ -369,6 +369,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 										token={getEnv('FLOW_PLAYER_TOKEN')}
 										dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 										logo={get(itemMetaData, 'organisation.logo_url')}
+										autoplay
 										{...cuePoints}
 									/>
 								) : (
