@@ -92,16 +92,10 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		}
 	});
 
-	// TODO: Change BlockCTA to the way Buttons works so that we don't have to add navigate to each CTA element + then we can remove one of the two following conditional statements..
-	if (blockState.blockType === ContentBlockType.Buttons) {
-		stateToSpread.elements.forEach(({ action }: any) => {
-			stateToSpread.navigate = () => {
-				navigateToContentType(action, history);
-			};
-		});
-	}
-
-	if (blockState.blockType === ContentBlockType.CTAs) {
+	if (
+		blockState.blockType === ContentBlockType.CTAs ||
+		blockState.blockType === ContentBlockType.Buttons
+	) {
 		stateToSpread.elements.forEach((innerState: any) => {
 			innerState.navigate = () => {
 				navigateToContentType(innerState.buttonAction, history);

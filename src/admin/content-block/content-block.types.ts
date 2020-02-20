@@ -183,13 +183,14 @@ export interface PageOverviewBlockComponentStateFields {
 	showDate?: boolean;
 	buttonLabel?: string;
 	itemsPerPage?: number;
-	navigate?: (action: ButtonAction) => void;
+	navigate?: () => void;
 }
 
 export interface ButtonsBlockComponentState {
 	label: string;
 	icon?: IconName;
 	type?: ButtonType;
+	navigate?: () => void;
 }
 
 export interface IntroBlockComponentState {
