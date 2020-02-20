@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
 
 import toastService from '../../../../shared/services/toast-service';
-import { getUserGroups } from '../../../../shared/services/user-groups-service';
+import { getAllUserGroups } from '../../../../shared/services/user-groups-service';
 
 interface UserGroupSelectProps {
 	label: string;
@@ -29,7 +29,7 @@ const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 
 	useEffect(() => {
 		// fetch user groups for giving permissions to view a certain navigation item
-		getUserGroups()
+		getAllUserGroups()
 			.then(setUserGroupOptions)
 			.catch((err: any) => {
 				console.error('Failed to get user groups', err);
