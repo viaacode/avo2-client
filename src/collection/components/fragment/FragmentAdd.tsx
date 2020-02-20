@@ -6,18 +6,19 @@ import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { NEW_FRAGMENT } from '../../collection.const';
+import { CollectionAction } from '../CollectionOrBundleEdit';
 
 interface FragmentAddProps {
 	index: number;
 	collection: Avo.Collection.Collection;
-	updateCollection: (collection: Avo.Collection.Collection) => void;
+	changeCollectionState: (action: CollectionAction) => void;
 	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 }
 
 const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	index,
 	collection,
-	updateCollection,
+	changeCollectionState,
 	reorderFragments,
 }) => {
 	const [t] = useTranslation();
@@ -42,9 +43,10 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	const handleAddFragmentClick = () => {
 		const generatedFragments = generateNewFragments();
 
-		updateCollection({
-			...collection,
-			collection_fragments: generatedFragments,
+		changeCollectionState({
+			type: 'UPDATE_COLLECTION_PROP',
+			collectionProp: 'collection_fragments',
+			collectionPropValue: generatedFragments,
 		});
 	};
 
