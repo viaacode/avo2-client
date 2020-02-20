@@ -41,6 +41,7 @@ import { isMediaFragment } from '../../helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
+import { CollectionService } from '../../collection.service';
 
 interface FragmentEditProps extends DefaultSecureRouteProps {
 	type: 'itemOrText' | 'collection';
@@ -50,7 +51,6 @@ interface FragmentEditProps extends DefaultSecureRouteProps {
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
-	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 }
 
 const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
@@ -61,7 +61,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	openOptionsId,
 	setOpenOptionsId,
 	fragment,
-	reorderFragments,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -167,7 +166,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			['asc']
 		);
 
-		const positionedFragments = reorderFragments(orderedFragments);
+		const positionedFragments = CollectionService.reorderFragments(orderedFragments);
 
 		changeCollectionState({
 			type: 'UPDATE_COLLECTION_PROP',
@@ -389,7 +388,6 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					index={index}
 					collection={collection}
 					changeCollectionState={changeCollectionState}
-					reorderFragments={reorderFragments}
 				/>
 			)}
 

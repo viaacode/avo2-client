@@ -26,12 +26,6 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 
 	const isCollection = type === 'collection';
 
-	const reorderFragments = (fragments: Avo.Collection.Fragment[]) =>
-		fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
-			...fragment,
-			position: index + 1,
-		}));
-
 	return (
 		<Container mode="vertical">
 			<Container mode="horizontal">
@@ -48,7 +42,6 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 							openOptionsId={openOptionsId}
 							setOpenOptionsId={setOpenOptionsId}
 							fragment={fragment}
-							reorderFragments={reorderFragments}
 							{...rest}
 						/>
 					)
@@ -59,7 +52,6 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 					index={0}
 					collection={collection}
 					changeCollectionState={changeCollectionState}
-					reorderFragments={reorderFragments}
 				/>
 			)}
 		</Container>

@@ -7,19 +7,18 @@ import { Avo } from '@viaa/avo2-types';
 
 import { NEW_FRAGMENT } from '../../collection.const';
 import { CollectionAction } from '../CollectionOrBundleEdit';
+import { CollectionService } from '../../collection.service';
 
 interface FragmentAddProps {
 	index: number;
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
-	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
 }
 
 const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	index,
 	collection,
 	changeCollectionState,
-	reorderFragments,
 }) => {
 	const [t] = useTranslation();
 
@@ -37,7 +36,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 
 		newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
 
-		return reorderFragments(newFragments);
+		return CollectionService.reorderFragments(newFragments);
 	};
 
 	const handleAddFragmentClick = () => {

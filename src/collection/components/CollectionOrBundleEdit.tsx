@@ -27,6 +27,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH } from '../../constants';
@@ -36,6 +40,7 @@ import {
 	InputModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -46,14 +51,10 @@ import {
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
+import { ValueOf } from '../../shared/types';
 import { AppState } from '../../store';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
@@ -72,7 +73,7 @@ type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
 	fragmentId: number;
 	fragmentProp: keyof Avo.Collection.Fragment;
-	fragmentPropValue: any;
+	fragmentPropValue: ValueOf<Avo.Collection.Fragment>;
 };
 
 type FragmentSwapAction = {
@@ -89,7 +90,7 @@ type CollectionUpdateAction = {
 type CollectionPropUpdateAction = {
 	type: 'UPDATE_COLLECTION_PROP';
 	collectionProp: keyof Avo.Collection.Collection;
-	collectionPropValue: any;
+	collectionPropValue: ValueOf<Avo.Collection.Collection>;
 	updateInitialCollection?: boolean;
 };
 
@@ -159,8 +160,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			};
 		}
 
-		const newCurrentCollection = cloneDeep(collectionState.currentCollection);
-		const newInitialCollection = cloneDeep(collectionState.initialCollection);
+		const newCurrentCollection: Avo.Collection.Collection | null = cloneDeep(
+			collectionState.currentCollection
+		);
+		const newInitialCollection: Avo.Collection.Collection | null = cloneDeep(
+			collectionState.initialCollection
+		);
 
 		if (!newCurrentCollection) {
 			toastService.danger(
@@ -208,6 +213,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					action.currentFragmentId,
 					delta
 				);
+				break;
+
+			case 'UPDATE_COLLECTION_PROP':
+				(newCurrentCollection as any)[action.collectionProp] = action.collectionPropValue;
+				if (action.updateInitialCollection) {
+					(newInitialCollection as any)[action.collectionProp] = action.collectionPropValue;
+				}
 				break;
 		}
 
