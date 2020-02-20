@@ -55,12 +55,12 @@ objects:
               value: production
             - name: PORT
               value: "8080"
-	    - name: FLOW_PLAYER_TOKEN
-	      value: changeme
+            - name: FLOW_PLAYER_TOKEN
+              value: changeme
             - name: FLOW_PLAYER_ID
-	      value: changeme
+              value: changeme
             - name: ENV
-	      value: production
+              value: production
             - name: ZENDESK_KEY
               value: changeme
             - name: GRAPHQL_URL
@@ -70,10 +70,7 @@ objects:
             - name: FETCH_POEDITOR_PROJECT
               value: changeme
             - name: FETCH_POEDITOR_TOKEN
-              value: changeme
-						
-						
-						
+              value: changeme					
           ports:
           - containerPort: 8080
             name: http
