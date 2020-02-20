@@ -9,7 +9,6 @@ import {
 	convertToHtml,
 	DropdownButton,
 	DropdownContent,
-	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -38,10 +37,11 @@ import { fetchPlayerTicket } from '../../../shared/services/player-ticket-servic
 import toastService from '../../../shared/services/toast-service';
 import { isMediaFragment } from '../../helpers';
 
+import { CollectionService } from '../../collection.service';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
+import { FlowPlayerWrapper } from './FlowPlayerWrapper';
 import FragmentAdd from './FragmentAdd';
-import { CollectionService } from '../../collection.service';
 
 interface FragmentEditProps extends DefaultSecureRouteProps {
 	type: 'itemOrText' | 'collection';
@@ -360,7 +360,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						<Grid>
 							<Column size="3-6">
 								{!isCollection ? (
-									<FlowPlayer
+									<FlowPlayerWrapper
 										src={playerTicket ? playerTicket.toString() : null}
 										poster={itemMetaData.thumbnail_path}
 										title={itemMetaData.title}

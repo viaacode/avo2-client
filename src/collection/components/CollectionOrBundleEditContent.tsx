@@ -35,7 +35,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 							// If the parent is a collection then the fragment is an ITEM or TEXT
 							// If the parent is a bundle then the fragment is a COLLECTION
 							type={isCollection ? 'itemOrText' : 'collection'}
-							key={`fragment_${fragment.id}-${fragment.position}`}
+							key={`fragment_${fragment.id}`}
 							index={index}
 							collection={collection}
 							changeCollectionState={changeCollectionState}
