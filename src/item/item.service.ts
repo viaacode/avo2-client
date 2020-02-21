@@ -6,11 +6,14 @@ import { dataService } from '../shared/services/data-service';
 import { GET_ITEMS } from './item.gql';
 const ITEM_RESULT_PATH = 'app_item_meta';
 
-export const getItems = async (limit?: number): Promise<Avo.Item.Item[] | null> => {
+export const getItems = async (
+	keyword: string,
+	limit?: number
+): Promise<Avo.Item.Item[] | null> => {
 	try {
 		const queryOptions = {
 			query: GET_ITEMS,
-			variables: { limit },
+			variables: { keyword, limit },
 		};
 
 		const response = await dataService.query(queryOptions);

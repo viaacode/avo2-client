@@ -2,7 +2,8 @@ import { get } from 'lodash';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
-import { ValueType } from 'react-select/src/types';
+import AsyncSelect from 'react-select/async';
+import { ActionMeta, ValueType } from 'react-select/src/types';
 
 import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
@@ -10,68 +11,54 @@ import { CustomError } from '../../../../shared/helpers';
 import toastService from '../../../../shared/services/toast-service';
 import i18n from '../../../../shared/translations/i18n';
 import { parsePickerItem } from '../../../shared/helpers';
-import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
+import {
+	ContentPickerType,
+	PickerItem,
+	PickerSelectItem,
+	PickerTypeOption,
+} from '../../../shared/types';
 
-import { CONTENT_TYPES } from './ContentPicker.const';
-
-export const REACT_SELECT_DEFAULT_OPTIONS = {
-	className: 'c-select',
-	classNamePrefix: 'c-select',
-};
+import { CONTENT_TYPES, REACT_SELECT_DEFAULT_OPTIONS } from './ContentPicker.const';
+import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
 
 export interface ContentPickerProps {
 	onSelect: (value: ValueType<PickerItem>) => void;
-	selectableTypes?: string[];
+	allowedTypes?: ContentPickerType[];
 	errors?: string | string[];
 	currentSelection?: PickerItem;
 }
 
 const ContentPicker: FunctionComponent<ContentPickerProps> = ({
-	selectableTypes,
+	allowedTypes,
 	onSelect,
 	errors = [],
 	currentSelection,
 }) => {
-	const typeOptions = CONTENT_TYPES.filter((option: PickerTypeOption) =>
-		selectableTypes ? selectableTypes.includes(option.value) : option.value
-	);
-	const currentTypeObject = typeOptions.find(
-		type => type.value === get(currentSelection, 'type')
-	) as PickerTypeOption;
+	const typeOptions = filterTypes(CONTENT_TYPES, allowedTypes || []);
+	const currentTypeObject = typeOptions.find(type => type.value === get(currentSelection, 'type'));
 
 	const [t] = useTranslation();
 
-	const [loading, setLoading] = useState<boolean>(false);
-	const [currentType, setCurrentType] = useState<PickerTypeOption>(
+	const [currentType, setCurrentType] = useState<PickerTypeOption<ContentPickerType>>(
 		currentTypeObject || typeOptions[0]
 	);
 	const [options, setOptions] = useState<PickerSelectItem[]>([]);
-	const [input, setInput] = useState<string>(
-		get(currentTypeObject, 'picker') === 'TEXT_INPUT' ? get(currentSelection, 'value', '') : ''
-	);
-	const [currentValue, setCurrentValue] = useState<ValueType<PickerItem> | null>(
-		options.find(
-			option =>
-				get(option, 'value.value', 'EMPTY_OPTION') ===
-				get(currentSelection, 'value', 'EMPTY_SELECTION')
-		) as ValueType<PickerItem>
+	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, currentSelection));
+	const [currentItem, setCurrentItem] = useState<ValueType<PickerItem> | null>(
+		setInitialItem(options, currentSelection)
 	);
 
-	useEffect(() => {
+	// inflate content picker
+	const inflatePicker = (keyword: string | null, callback: any) => {
 		if (currentType && !!currentType.fetch) {
-			setLoading(true);
-
-			// Retrieve items for selected type.
 			currentType
-				.fetch(20)
-				.then(items => {
-					setOptions(items || []);
-					setLoading(false);
-					setCurrentValue(null);
+				.fetch(keyword, 20)
+				.then((items: any) => {
+					callback((items as any) || []);
+					setCurrentItem(null);
 				})
-				.catch(error => {
-					setLoading(false);
-					console.error('Failed to inflate content picker.', error);
+				.catch((error: any) => {
+					console.error('[Content Picker] - Failed to inflate.', error);
 					toastService.danger(
 						t(
 							'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
@@ -80,28 +67,79 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					);
 				});
 		}
-	}, [currentType, t]);
-
-	const onChangeText = (value: string) => {
-		setInput(value);
-		onSelect(parsePickerItem('EXTERNAL_LINK', value));
 	};
 
-	const onChangeType = (selected: ValueType<PickerTypeOption>) => {
+	useEffect(() => {
+		inflatePicker(null, setOptions);
+	}, [currentType]); // eslint-disable-line
+
+	// events
+	const onSelectType = (selected: ValueType<PickerTypeOption>) => {
 		setCurrentType(selected as PickerTypeOption);
-		setCurrentValue(null);
+		setCurrentItem(null);
 	};
 
-	const renderGroupLabel = (data: any) => <span>{data.label}</span>;
+	const onSelectItem = (selectedItem: ValueType<PickerItem>, event: ActionMeta) => {
+		if (event.action === 'clear') {
+			setCurrentItem(null);
+		}
 
-	const renderContentPickerControls = () => {
+		if (!selectedItem) {
+			return null;
+		}
+
+		const value = get(selectedItem, 'value', null);
+
+		if (!get(value, 'value')) {
+			onSelect(null);
+			setCurrentItem(null);
+			console.error(
+				new CustomError('[Content Picker] - Selected item has no value.', null, {
+					selectedItem,
+				})
+			);
+			toastService.danger(
+				i18n.t(
+					'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd'
+				),
+				false
+			);
+			return null;
+		}
+
+		onSelect(value);
+		setCurrentItem(selectedItem);
+	};
+
+	const onChangeInput = (value: string) => {
+		setInput(value);
+		onSelect(parsePickerItem(get(currentType, 'value') as ContentPickerType, value));
+	};
+
+	// render controls
+	const renderTypePicker = () => (
+		<ReactSelect
+			{...REACT_SELECT_DEFAULT_OPTIONS}
+			id="content-picker-type"
+			placeholder={t('Type')}
+			aria-label={i18n.t('Selecteer een type')}
+			options={typeOptions}
+			onChange={onSelectType}
+			value={currentType}
+			isSearchable={false}
+			isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
+			noOptionsMessage={() => i18n.t('Geen types')}
+		/>
+	);
+
+	const renderItemControl = () => {
 		if (!currentType) {
 			return null;
 		}
 
 		switch (currentType.picker) {
 			case 'SELECT':
-				return renderSelectPicker();
+				return renderItemPicker();
 			case 'TEXT_INPUT':
 				return renderTextInputPicker();
 			default:
@@ -109,62 +147,31 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		}
 	};
 
-	const renderSelectPicker = () => (
-		<ReactSelect
+	const renderItemPicker = () => (
+		<AsyncSelect
 			{...REACT_SELECT_DEFAULT_OPTIONS}
-			id="content-picker-query"
-			placeholder={t('admin/content/components/content-picker/content-picker___item')}
-			formatGroupLabel={renderGroupLabel}
-			options={options as any}
-			isSearchable={false}
-			isLoading={loading}
-			onChange={(selectedItem: ValueType<PickerItem>) => {
-				const value = get(selectedItem, 'value', null);
-
-				if (!get(value, 'value')) {
-					onSelect(null);
-					setCurrentValue(null);
-					console.error(
-						new CustomError('Selected content in content picker does not have a value', null, {
-							selectedItem,
-						})
-					);
-					toastService.danger(
-						i18n.t(
-							'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd'
-						),
-						false
-					);
-					return;
-				}
-
-				onSelect(value);
-				setCurrentValue(selectedItem);
-			}}
-			value={currentValue}
+			id="content-picker-item"
+			placeholder={t('Item')}
+			aria-label={i18n.t('Selecteer een item')}
+			loadOptions={inflatePicker}
+			onChange={onSelectItem}
+			value={currentItem}
+			defaultOptions={options as any}
+			isClearable
+			noOptionsMessage={() => i18n.t('Geen resultaten')}
+			loadingMessage={() => i18n.t('Laden...')}
 		/>
 	);
 
 	const renderTextInputPicker = () => (
-		<TextInput value={input} onChange={onChangeText} placeholder="http://www.meemoo.be" />
+		<TextInput value={input} onChange={onChangeInput} placeholder="http://www.meemoo.be" />
 	);
 
 	return (
 		<FormGroup error={errors}>
 			<Grid>
-				<Column size="1">
-					<ReactSelect
-						{...REACT_SELECT_DEFAULT_OPTIONS}
-						id="content-picker-type"
-						placeholder={t('admin/content/components/content-picker/content-picker___type')}
-						options={typeOptions}
-						isSearchable={false}
-						isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
-						onChange={onChangeType}
-						value={currentType}
-					/>
-				</Column>
-				<Column size="3">{renderContentPickerControls()}</Column>
+				<Column size="1">{renderTypePicker()}</Column>
+				<Column size="3">{renderItemControl()}</Column>
 			</Grid>
 		</FormGroup>
 	);

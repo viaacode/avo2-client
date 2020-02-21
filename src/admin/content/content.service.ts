@@ -30,11 +30,16 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 	}
 };
 
-export const fetchContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
+export const fetchContentItems = async (
+	keyword: string,
+	limit: number
+): Promise<Avo.Content.Content[] | null> => {
 	try {
+		const where = { title: { _ilike: keyword } };
+
 		const response = await dataService.query({
 			query: GET_CONTENT_PAGES,
-			variables: { limit, order: { title: 'asc' } },
+			variables: { where, limit, order: { title: 'asc' } },
 		});
 
 		return get(response, `data.${CONTENT_RESULT_PATH.GET}`, null);

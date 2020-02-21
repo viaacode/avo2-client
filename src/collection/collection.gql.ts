@@ -230,8 +230,12 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 `;
 
 export const GET_COLLECTIONS = gql`
-	query getCollections($limit: Int!) {
-		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 3 } }, limit: $limit) {
+	query getCollections($keyword: String!, $limit: Int!) {
+		app_collections(
+			order_by: { title: asc }
+			where: { type_id: { _eq: 3 }, title: { _ilike: $keyword } }
+			limit: $limit
+		) {
 			id
 			title
 		}
@@ -240,8 +244,12 @@ export const GET_COLLECTIONS = gql`
 
 // TODO: Move bundle GQL to bundle.gql.ts
 export const GET_BUNDLES = gql`
-	query getBundles($limit: Int!) {
-		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 4 } }, limit: $limit) {
+	query getBundles($keyword: String!, $limit: Int!) {
+		app_collections(
+			order_by: { title: asc }
+			where: { type_id: { _eq: 4 }, title: { _ilike: $keyword } }
+			limit: $limit
+		) {
 			id
 			title
 		}

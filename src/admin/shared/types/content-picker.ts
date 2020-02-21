@@ -9,12 +9,12 @@ export type ContentPickerType =
 
 export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
 
-export interface PickerTypeOption<T = string> {
+export interface PickerTypeOption<T = ContentPickerType> {
 	value: T;
 	label: string;
 	disabled?: boolean;
 	picker: PickerItemControls;
-	fetch?: (limit: number) => Promise<PickerSelectItem[]>;
+	fetch?: (keyword: string | null, limit: number) => Promise<PickerSelectItem[]>;
 }
 
 export interface PickerSelectItem {

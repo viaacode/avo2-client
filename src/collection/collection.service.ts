@@ -345,11 +345,15 @@ export class CollectionService {
 
 		return omit(collection, propertiesToDelete);
 	}
-	public static async getBundles(limit: number): Promise<Avo.Collection.Collection[]> {
+
+	public static async getBundles(
+		keyword: string,
+		limit?: number
+	): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_BUNDLES,
-				variables: { limit },
+				variables: { keyword, limit },
 			});
 
 			return get(response, 'data.app_collections', []);
@@ -362,19 +366,21 @@ export class CollectionService {
 		}
 	}
 
-	// TODO: Merge the following two get collections functions.
-	public static async getCollections(limit: number): Promise<Avo.Collection.Collection[]> {
+	public static async getCollections(
+		keyword: string,
+		limit: number
+	): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_COLLECTIONS,
-				variables: { limit },
+				variables: { keyword, limit },
 			});
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_COLLECTIONS',
-				variables: { limit },
+				variables: { keyword, limit },
 			});
 			console.error(error);
 			throw error;

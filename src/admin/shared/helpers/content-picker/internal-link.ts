@@ -21,8 +21,14 @@ const PATHS_TO_ADD = [
 const PATHS_TO_REMOVE = ['/mijn-werkruimte/opdrachten/maak'];
 
 // Return InternalLinkItems items from APP_PATH
-export const fetchInternalLinks = async (limit: number): Promise<PickerSelectItem[]> =>
-	parseInternalLinks(APP_PATH_ARRAY, limit);
+export const fetchInternalLinks = async (
+	keyword: string | null,
+	limit: number
+): Promise<PickerSelectItem[]> => {
+	return keyword
+		? parseInternalLinks(APP_PATH_ARRAY, limit).filter(obj => obj.value.value.includes(keyword))
+		: parseInternalLinks(APP_PATH_ARRAY, limit);
+};
 
 export const parseInternalLinks = (allPaths: string[], limit: number) => {
 	const paths = allPaths.slice(0, limit).filter((path: any) => !path.includes(':'));

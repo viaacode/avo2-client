@@ -6,8 +6,11 @@ import { PickerSelectItem } from '../../types';
 import { parsePickerItem } from './parse-picker';
 
 // Fetch content items from GQL
-export const fetchItems = async (limit: number = 5): Promise<PickerSelectItem[]> => {
-	const items: Avo.Item.Item[] | null = await getItems(limit);
+export const fetchItems = async (
+	keyword: string | null,
+	limit: number = 5
+): Promise<PickerSelectItem[]> => {
+	const items: Avo.Item.Item[] | null = await getItems(keyword ? `%${keyword}%` : '%', limit);
 
 	return parseItems(items || []);
 };
