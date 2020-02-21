@@ -87,7 +87,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			id: dbContentPage.id,
 			blocks: dbContentPage.contentBlockssBycontentId ? renderContentPage(dbContentPage) : null,
 			content_width: dbContentPage.content_width,
-			path: dbContentPage.path,
+			path: dbContentPage.path as string, // TODO enforce path in database
 		};
 	};
 
