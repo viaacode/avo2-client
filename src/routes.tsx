@@ -13,6 +13,7 @@ import { renderPupilRoutes } from './pupils/pupils.routes';
 import { renderSearchRoutes } from './search/search.routes';
 import { renderSettingsRoutes } from './settings/settings.routes';
 import { renderTeacherRoutes } from './teachers/teachers.routes';
+import { renderUserItemRequestFormRoutes } from './user-item-request-form/user-item-request-form.routes';
 import { renderWorkspaceRoutes } from './workspace/workspace.routes';
 
 export const renderRoutes = () => (
@@ -29,6 +30,7 @@ export const renderRoutes = () => (
 		{renderAuthenticationRoutes()}
 		{renderSettingsRoutes()}
 		{renderErrorRoutes()}
+		{renderUserItemRequestFormRoutes()}
 		{/* This route needs to be the last one, since it handles all remaining routes */}
 		{renderDynamicRouteResolverRoutes()}
 	</Switch>
