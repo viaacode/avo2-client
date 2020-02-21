@@ -1,4 +1,11 @@
-import { MultiRange, Select, SelectOption, TextInput, WYSIWYG } from '@viaa/avo2-components';
+import {
+	Checkbox,
+	MultiRange,
+	Select,
+	SelectOption,
+	TextInput,
+	WYSIWYG,
+} from '@viaa/avo2-components';
 
 import { IconPicker } from '../../admin/shared/components';
 import i18n from '../../shared/translations/i18n';
@@ -6,15 +13,20 @@ import i18n from '../../shared/translations/i18n';
 import { FileUpload } from '../../shared/components';
 import { ContentPicker } from '../shared/components';
 
+import {
+	ContentItemStyle,
+	ContentTabStyle,
+} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
+import ContentTypeAndLabelsPicker from '../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
 import { AlignSelect, ColorSelect } from './components';
 import {
-	AlignOptions,
-	ButtonTypeOptions,
+	AlignOption,
+	ButtonTypeOption,
 	ContentBlockBackgroundColor,
 	ContentBlockType,
-	HeadingLevelOptions,
-	ImageGridFillOptions,
-	WidthOptions,
+	HeadingLevelOption,
+	ImageGridFillOption,
+	WidthOption,
 } from './content-block.types';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
@@ -54,12 +66,109 @@ import {
 	INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
 	INITIAL_IMAGE_GRID_BLOCK_STATE,
 } from './helpers/generators/image-grid';
+import {
+	INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE,
+	INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
+	PAGE_OVERVIEW_BLOCK_CONFIG,
+} from './helpers/generators/page-overview';
+import {
+	INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES,
+	INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
+	PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
+} from './helpers/generators/projects-spotlight';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
 	GET: 'app_content_blocks',
 	INSERT: 'insert_app_content_blocks',
 };
 
+export const EDITOR_TYPES_MAP = {
+	AlignSelect,
+	ColorSelect,
+	Select,
+	TextInput,
+	WYSIWYG,
+	IconPicker,
+	ContentPicker,
+	FileUpload,
+	MultiRange,
+	ContentTypeAndLabelsPicker,
+	Checkbox,
+};
+
+export const CONTENT_BLOCK_CONFIG_MAP = {
+	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
+	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
+	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
+	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
+	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
+	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
+	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
+	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
+	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
+	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
+	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
+	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
+	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
+	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
+	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
+	[ContentBlockType.PageOverview]: PAGE_OVERVIEW_BLOCK_CONFIG,
+	[ContentBlockType.ProjectsSpotlight]: PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
+};
+
+export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
+	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES,
+};
+
+export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
+	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_STATE,
+	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
+	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
+	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_STATE,
+	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
+	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
+	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
+	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
+	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_STATE,
+	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
+	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
+	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
+	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
+	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
+};
+
+// Options
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
 	{
 		label: 'Wit',
@@ -75,19 +184,10 @@ export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>
 	},
 ];
 
-export const ALIGN_OPTIONS: { label: string; value: AlignOptions }[] = [
-	{
-		label: 'Links',
-		value: 'left',
-	},
-	{
-		label: 'Gecentreerd',
-		value: 'center',
-	},
-	{
-		label: 'Rechts',
-		value: 'right',
-	},
+export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
+	{ label: 'Links', value: 'left' },
+	{ label: 'Gecentreerd', value: 'center' },
+	{ label: 'Rechts', value: 'right' },
 ];
 
 export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
@@ -129,144 +229,69 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		value: ContentBlockType.Accordions,
 	},
 	{
-		label: i18n.t('Media-speler'),
+		label: i18n.t('admin/content-block/content-block___media-speler'),
 		value: ContentBlockType.MediaPlayer,
 	},
 	{
-		label: i18n.t('Media-speler met titel, tekst en knop'),
+		label: i18n.t('admin/content-block/content-block___media-speler-met-titel-tekst-en-knop'),
 		value: ContentBlockType.MediaPlayerTitleTextButton,
 	},
 	{
-		label: i18n.t('Afbeelding'),
+		label: i18n.t('admin/content-block/content-block___afbeelding'),
 		value: ContentBlockType.Image,
 	},
 	{
-		label: i18n.t('Afbeelding grid'),
+		label: i18n.t('admin/content-block/content-block___afbeelding-grid'),
 		value: ContentBlockType.ImageGrid,
 	},
-];
-
-export const EDITOR_TYPES_MAP = {
-	AlignSelect,
-	ColorSelect,
-	Select,
-	TextInput,
-	WYSIWYG,
-	IconPicker,
-	ContentPicker,
-	FileUpload,
-	MultiRange,
-};
-
-export const CONTENT_BLOCK_CONFIG_MAP = {
-	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
-	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
-	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
-	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
-	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
-	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
-	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
-	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
-	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
-	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
-	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
-	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
-	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
-	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
-	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
-};
-
-export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
-	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
-	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES,
-	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES,
-	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_COMPONENT_STATES,
-	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES,
-	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE,
-};
-
-export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
-	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
-	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_STATE,
-	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
-	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_STATE,
-	[ContentBlockType.IFrame]: INITIAL_IFRAME_BLOCK_STATE,
-	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_BLOCK_STATE,
-	[ContentBlockType.Image]: INITIAL_IMAGE_BLOCK_STATE,
-	[ContentBlockType.Intro]: INITIAL_INTRO_BLOCK_STATE,
-	[ContentBlockType.MediaPlayer]: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE,
-	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
-	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
-	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE,
-};
-
-// Options
-export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOptions>[] = [
 	{
-		label: i18n.t('admin/content-block/content-block___h-2'),
-		value: 'h2',
+		label: i18n.t('admin/content-block/content-block___pagina-overzicht'),
+		value: ContentBlockType.PageOverview,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___h-3'),
-		value: 'h3',
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___h-4'),
-		value: 'h4',
+		label: i18n.t('admin/content-block/content-block___projecten-in-de-kijker'),
+		value: ContentBlockType.ProjectsSpotlight,
 	},
 ];
 
-export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOptions>[] = [
-	{
-		label: i18n.t('admin/content-block/content-block___primair'),
-		value: 'primary',
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___secundair'),
-		value: 'secondary',
-	},
-	{ label: i18n.t('Secundair (invers)'), value: 'secondary-i' },
-	{ label: i18n.t('Tertiair'), value: 'tertiary' },
-	{ label: i18n.t('Randloos'), value: 'borderless' },
-	{ label: i18n.t('Randloos (invers)'), value: 'borderless-i' },
-	{ label: i18n.t('Gevaar'), value: 'danger' },
-	{ label: i18n.t('Gevaar (hover)'), value: 'danger-hover' },
-	{ label: i18n.t('Link'), value: 'link' },
-	{ label: i18n.t('Link (inline)'), value: 'inline-link' },
+export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOption>[] = [
+	{ label: i18n.t('admin/content-block/content-block___h-2'), value: 'h2' },
+	{ label: i18n.t('admin/content-block/content-block___h-3'), value: 'h3' },
+	{ label: i18n.t('admin/content-block/content-block___h-4'), value: 'h4' },
 ];
 
-export const WIDTH_OPTIONS: SelectOption<WidthOptions>[] = [
-	{
-		label: i18n.t('paginabreedte'),
-		value: 'full-width',
-	},
-	{
-		label: i18n.t('groot'),
-		value: '500px',
-	},
-	{
-		label: i18n.t('middelgroot'),
-		value: '400px',
-	},
+export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOption>[] = [
+	{ label: i18n.t('admin/content-block/content-block___primair'), value: 'primary' },
+	{ label: i18n.t('admin/content-block/content-block___secundair'), value: 'secondary' },
+	{ label: i18n.t('admin/content-block/content-block___secundair-invers'), value: 'secondary-i' },
+	{ label: i18n.t('admin/content-block/content-block___tertiair'), value: 'tertiary' },
+	{ label: i18n.t('admin/content-block/content-block___randloos'), value: 'borderless' },
+	{ label: i18n.t('admin/content-block/content-block___randloos-invers'), value: 'borderless-i' },
+	{ label: i18n.t('admin/content-block/content-block___gevaar'), value: 'danger' },
+	{ label: i18n.t('admin/content-block/content-block___gevaar-hover'), value: 'danger-hover' },
+	{ label: i18n.t('admin/content-block/content-block___link'), value: 'link' },
+	{ label: i18n.t('admin/content-block/content-block___link-inline'), value: 'inline-link' },
 ];
 
-export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOptions>[] = [
-	{ label: i18n.t('Opvullen'), value: 'cover' },
-	{ label: i18n.t('Volledig zichtbaar'), value: 'contain' },
-	{ label: i18n.t('Oorspronkelijke grootte'), value: 'auto' },
+export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
+	{ label: i18n.t('admin/content-block/content-block___paginabreedte'), value: 'full-width' },
+	{ label: i18n.t('admin/content-block/content-block___groot'), value: '500px' },
+	{ label: i18n.t('admin/content-block/content-block___middelgroot'), value: '400px' },
 ];
 
-export const IMAGE_GRID_TEXT_ALIGN_OPTIONS: SelectOption<AlignOptions>[] = [
-	{ label: i18n.t('Links'), value: 'left' },
-	{ label: i18n.t('Center'), value: 'center' },
-	{ label: i18n.t('Rechts'), value: 'right' },
+export const IMAGE_GRID_FILL_OPTIONS: SelectOption<ImageGridFillOption>[] = [
+	{ label: i18n.t('admin/content-block/content-block___opvullen'), value: 'cover' },
+	{ label: i18n.t('admin/content-block/content-block___volledig-zichtbaar'), value: 'contain' },
+	{ label: i18n.t('admin/content-block/content-block___oorspronkelijke-grootte'), value: 'auto' },
+];
+
+export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = [
+	{ label: i18n.t('admin/content-block/content-block___menu-balk'), value: 'MENU_BAR' },
+	{ label: i18n.t('admin/content-block/content-block___tags'), value: 'ROUNDED_BADGES' },
+];
+
+export const PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: SelectOption<ContentItemStyle>[] = [
+	{ label: i18n.t('admin/content-block/content-block___lijst'), value: 'LIST' },
+	{ label: i18n.t('admin/content-block/content-block___grid'), value: 'GRID' },
+	{ label: i18n.t('admin/content-block/content-block___accrodions'), value: 'ACCORDION' },
 ];

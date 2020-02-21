@@ -209,7 +209,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 
 		if (!contentForm.path) {
-			errors.path = t('Een url is verplicht');
+			errors.path = t('admin/content/views/content-edit___een-url-is-verplicht');
 		} else {
 			// check if it is unique
 			const response = await dataService.query({
@@ -218,9 +218,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			});
 			const page: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
 			if (page && String(page.id) !== id) {
-				errors.path = t('Dit path is reeds gebruikt door pagina: {{pageTitle}}', {
-					pageTitle: page.title,
-				});
+				errors.path = t(
+					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
+					{
+						pageTitle: page.title,
+					}
+				);
 			}
 		}
 

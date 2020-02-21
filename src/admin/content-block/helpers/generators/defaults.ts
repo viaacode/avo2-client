@@ -66,10 +66,12 @@ export const TEXT_FIELD = (
 });
 
 export const FILE_FIELD = (
-	emptyFieldValidatorMessage = i18n.t('Een bestand is verplicht'),
+	emptyFieldValidatorMessage = i18n.t(
+		'admin/content-block/helpers/generators/defaults___een-bestand-is-verplicht'
+	),
 	propOverride?: Partial<ContentBlockField>
 ) => ({
-	label: i18n.t('Bestand'),
+	label: i18n.t('admin/content-block/helpers/generators/defaults___bestand'),
 	editorType: ContentBlockEditor.FileUpload,
 	validator: (value: string) => {
 		const errorArray: string[] = [];
@@ -81,5 +83,12 @@ export const FILE_FIELD = (
 		return errorArray;
 	},
 	editorProps: { type: 'CONTENT_PAGE_IMAGE' },
+	...propOverride,
+});
+
+export const CONTENT_TYPE_AND_LABELS_INPUT = (propOverride?: Partial<ContentBlockField>) => ({
+	label: i18n.t('admin/content-block/helpers/generators/defaults___type-en-labels'),
+	editorType: ContentBlockEditor.ContentTypeAndLabelsPicker,
+	validator: () => [],
 	...propOverride,
 });
