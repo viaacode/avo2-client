@@ -77,6 +77,13 @@ export class CollectionService {
 		}
 	}
 
+	public static reorderFragments(fragments: Avo.Collection.Fragment[]): Avo.Collection.Fragment[] {
+		return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
+			...fragment,
+			position: index + 1,
+		}));
+	}
+
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
 		updatedCollection: Avo.Collection.Collection,
