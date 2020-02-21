@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, eq, isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactText, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Prompt, withRouter } from 'react-router';
@@ -27,6 +27,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH } from '../../constants';
@@ -36,6 +40,7 @@ import {
 	InputModal,
 	LoadingErrorLoadedComponent,
 } from '../../shared/components';
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -46,14 +51,10 @@ import {
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
+import { ValueOf } from '../../shared/types';
 import { AppState } from '../../store';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
@@ -67,6 +68,42 @@ import { ShareCollectionModal } from '../components';
 import { swapFragmentsPositions } from '../helpers';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
+
+type FragmentPropUpdateAction = {
+	type: 'UPDATE_FRAGMENT_PROP';
+	fragmentId: number;
+	fragmentProp: keyof Avo.Collection.Fragment;
+	fragmentPropValue: ValueOf<Avo.Collection.Fragment>;
+};
+
+type FragmentSwapAction = {
+	type: 'SWAP_FRAGMENTS';
+	currentFragmentId: number;
+	direction: 'up' | 'down';
+};
+
+type CollectionUpdateAction = {
+	type: 'UPDATE_COLLECTION';
+	newCollection: Avo.Collection.Collection | null;
+};
+
+type CollectionPropUpdateAction = {
+	type: 'UPDATE_COLLECTION_PROP';
+	collectionProp: keyof Avo.Collection.Collection;
+	collectionPropValue: ValueOf<Avo.Collection.Collection>;
+	updateInitialCollection?: boolean;
+};
+
+export type CollectionAction =
+	| FragmentPropUpdateAction
+	| FragmentSwapAction
+	| CollectionUpdateAction
+	| CollectionPropUpdateAction;
+
+interface CollectionState {
+	currentCollection: Avo.Collection.Collection | null;
+	initialCollection: Avo.Collection.Collection | null;
+}
 
 interface CollectionOrBundleEditProps extends DefaultSecureRouteProps<{ id: string }> {
 	type: 'collection' | 'bundle';
@@ -86,12 +123,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	const [currentTab, setCurrentTab] = useState<string>('inhoud');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
-	const [initialCollection, setInitialCollection] = useState<Avo.Collection.Collection | null>(
-		null
-	);
-	const [currentCollection, setCurrentCollection] = useState<Avo.Collection.Collection | null>(
-		null
-	);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
@@ -114,7 +145,96 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
 
+	// Computed values
 	const isCollection = type === 'collection';
+
+	// Main collection reducer
+	function currentCollectionReducer(
+		collectionState: CollectionState,
+		action: CollectionAction
+	): CollectionState {
+		if (action.type === 'UPDATE_COLLECTION') {
+			return {
+				currentCollection: action.newCollection,
+				initialCollection: cloneDeep(action.newCollection),
+			};
+		}
+
+		const newCurrentCollection: Avo.Collection.Collection | null = cloneDeep(
+			collectionState.currentCollection
+		);
+		const newInitialCollection: Avo.Collection.Collection | null = cloneDeep(
+			collectionState.initialCollection
+		);
+
+		if (!newCurrentCollection) {
+			toastService.danger(
+				isCollection
+					? t('collection/components/collection-or-bundle-edit___de-collectie-is-nog-niet-geladen')
+					: t('collection/components/collection-or-bundle-edit___de-bundel-is-nog-niet-geladen')
+			);
+			return collectionState;
+		}
+
+		switch (action.type) {
+			case 'UPDATE_FRAGMENT_PROP':
+				const fragmentToUpdateIndex = newCurrentCollection.collection_fragments.findIndex(
+					(item: Avo.Collection.Fragment) => item.id === action.fragmentId
+				);
+				newCurrentCollection.collection_fragments[fragmentToUpdateIndex] = {
+					...newCurrentCollection.collection_fragments[fragmentToUpdateIndex],
+					[action.fragmentProp]: action.fragmentPropValue,
+				};
+				break;
+
+			case 'SWAP_FRAGMENTS':
+				if (
+					!newCurrentCollection.collection_fragments ||
+					!newCurrentCollection.collection_fragments.length
+				) {
+					toastService.danger(
+						isCollection
+							? t(
+									'collection/components/collection-or-bundle-edit___de-collectie-lijkt-geen-fragmenten-te-bevatten'
+							  )
+							: t(
+									'collection/components/collection-or-bundle-edit___deze-bundel-lijkt-geen-collecties-te-bevatten'
+							  )
+					);
+					return collectionState;
+				}
+
+				const fragments = CollectionService.getFragments(newCurrentCollection);
+
+				const delta = action.direction === 'up' ? 1 : -1;
+
+				newCurrentCollection.collection_fragments = swapFragmentsPositions(
+					fragments,
+					action.currentFragmentId,
+					delta
+				);
+				break;
+
+			case 'UPDATE_COLLECTION_PROP':
+				(newCurrentCollection as any)[action.collectionProp] = action.collectionPropValue;
+				if (action.updateInitialCollection) {
+					(newInitialCollection as any)[action.collectionProp] = action.collectionPropValue;
+				}
+				break;
+		}
+
+		return {
+			currentCollection: newCurrentCollection,
+			initialCollection: newInitialCollection,
+		};
+	}
+
+	const [collectionState, changeCollectionState] = useReducer<
+		React.Reducer<CollectionState, CollectionAction>
+	>(currentCollectionReducer, {
+		currentCollection: null,
+		initialCollection: null,
+	});
 
 	useEffect(() => {
 		// Register listener once when the component loads
@@ -192,8 +312,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			}
 
 			setPermissions(permissionObj);
-			setCurrentCollection(collectionObj || null);
-			setInitialCollection(collectionObj || null);
+			changeCollectionState({
+				type: 'UPDATE_COLLECTION',
+				newCollection: collectionObj || null,
+			});
 		};
 
 		checkPermissionsAndGetBundle().catch(err => {
@@ -217,12 +339,16 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	}, [user, collectionId, setLoadingInfo, t, isCollection, type]);
 
 	useEffect(() => {
-		if (currentCollection && initialCollection && !isEmpty(permissions)) {
+		if (
+			collectionState.currentCollection &&
+			collectionState.initialCollection &&
+			!isEmpty(permissions)
+		) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [currentCollection, initialCollection, permissions]);
+	}, [collectionState.currentCollection, collectionState.initialCollection, permissions]);
 
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
@@ -235,84 +361,18 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		active: currentTab === tab.id,
 	}));
 
-	// Update individual property of collection
-	const updateCollectionProperty = (value: any, fieldName: string) => {
-		setCurrentCollection({
-			...currentCollection,
-			[fieldName]: value,
-		} as Avo.Collection.Collection);
-	};
-
-	// Update individual property of fragment
-	const onFragmentChanged = (fragment: Avo.Collection.Fragment) => {
-		const tempCollection: Avo.Collection.Collection | null = cloneDeep(currentCollection);
-
-		if (!tempCollection) {
-			toastService.danger(
-				isCollection
-					? t(
-							'collection/components/collection-or-bundle-edit___de-collectie-updaten-is-mislukt-kon-geen-kopie-maken-van-de-bestaande-collectie'
-					  )
-					: t(
-							'collection/components/collection-or-bundle-edit___de-bundel-updaten-is-mislukt-kon-geen-kopie-maken-van-de-bestaande-bundel'
-					  )
-			);
-			return;
-		}
-
-		const fragmentToUpdateIndex = tempCollection.collection_fragments.findIndex(
-			(item: Avo.Collection.Fragment) => item.id === fragment.id
-		);
-		tempCollection.collection_fragments[fragmentToUpdateIndex] = fragment;
-
-		setCurrentCollection(tempCollection);
-	};
-
-	// Swap position of two fragments within a collection
-	const swapFragments = (currentFragmentId: number, direction: 'up' | 'down') => {
-		if (!currentCollection) {
-			toastService.danger(
-				isCollection
-					? t('collection/components/collection-or-bundle-edit___de-collectie-is-nog-niet-geladen')
-					: t('collection/components/collection-or-bundle-edit___de-bundel-is-nog-niet-geladen')
-			);
-			return;
-		}
-
-		if (!currentCollection.collection_fragments || !currentCollection.collection_fragments.length) {
-			toastService.danger(
-				isCollection
-					? t(
-							'collection/components/collection-or-bundle-edit___de-collectie-lijkt-geen-fragmenten-te-bevatten'
-					  )
-					: t(
-							'collection/components/collection-or-bundle-edit___deze-bundel-lijkt-geen-collecties-te-bevatten'
-					  )
-			);
-			return;
-		}
-
-		const fragments = CollectionService.getFragments(currentCollection);
-
-		const delta = direction === 'up' ? 1 : -1;
-
-		setCurrentCollection({
-			...currentCollection,
-			collection_fragments: swapFragmentsPositions(fragments, currentFragmentId, delta),
-		});
-	};
-
 	const hasUnsavedChanged = () =>
-		JSON.stringify(currentCollection) !== JSON.stringify(initialCollection);
+		JSON.stringify(collectionState.currentCollection) !==
+		JSON.stringify(collectionState.initialCollection);
 
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
 
-		if (currentCollection) {
+		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
-				initialCollection,
-				currentCollection,
+				collectionState.initialCollection,
+				collectionState.currentCollection,
 				triggerCollectionUpdate,
 				triggerCollectionFragmentsInsert,
 				triggerCollectionFragmentDelete,
@@ -320,8 +380,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			);
 
 			if (newCollection) {
-				setCurrentCollection(newCollection);
-				setInitialCollection(cloneDeep(newCollection));
+				changeCollectionState({
+					type: 'UPDATE_COLLECTION',
+					newCollection,
+				});
 				toastService.success(
 					isCollection
 						? t('collection/components/collection-or-bundle-edit___collectie-opgeslagen')
@@ -351,7 +413,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 
 	const onRenameCollection = async (newTitle: string) => {
 		try {
-			if (!initialCollection) {
+			if (!collectionState.initialCollection) {
 				toastService.info(
 					isCollection
 						? t(
@@ -363,15 +425,19 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				);
 				return;
 			}
-			// Update the name in the current collection
-			updateCollectionProperty(newTitle, 'title');
+			// Update the name in the current and the initial collection
+			changeCollectionState({
+				type: 'UPDATE_COLLECTION_PROP',
+				collectionProp: 'title',
+				collectionPropValue: newTitle,
+				updateInitialCollection: true,
+			});
 
+			// Save the name immediately to the database
 			const collectionWithNewName = {
-				...initialCollection,
+				...collectionState.initialCollection,
 				title: newTitle,
 			};
-			// Update the name in the initial collection
-			setInitialCollection(collectionWithNewName);
 			const cleanedCollection = CollectionService.cleanCollectionBeforeSave(collectionWithNewName);
 
 			// Immediately store the new name, without the user having to click the save button twice
@@ -402,7 +468,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 
 	const onDeleteCollection = async () => {
 		try {
-			if (!currentCollection) {
+			if (!collectionState.currentCollection) {
 				console.error(`Failed to delete ${type} since currentCollection is undefined`);
 				toastService.info(
 					isCollection
@@ -417,17 +483,17 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			}
 			await triggerCollectionDelete({
 				variables: {
-					id: currentCollection.id,
+					id: collectionState.currentCollection.id,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			trackEvents(
 				{
-					object: String(currentCollection.id),
+					object: String(collectionState.currentCollection.id),
 					object_type: 'collections',
 					message: `Gebruiker ${getProfileName(user)} heeft de ${type} ${
-						currentCollection.id
+						collectionState.currentCollection.id
 					} verwijderd`,
 					action: 'delete',
 				},
@@ -470,20 +536,18 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 
 		// Update initial and current states, so that the 'hasUnsavedChanged' status is correct
 		if (collection) {
-			if (currentCollection) {
-				setCurrentCollection({
-					...currentCollection,
-					is_public: collection.is_public,
-					publish_at: collection.publish_at,
-				});
-			}
-			if (initialCollection) {
-				setInitialCollection({
-					...initialCollection,
-					is_public: collection.is_public,
-					publish_at: collection.publish_at,
-				});
-			}
+			changeCollectionState({
+				type: 'UPDATE_COLLECTION_PROP',
+				collectionProp: 'is_public',
+				collectionPropValue: collection.is_public,
+				updateInitialCollection: true,
+			});
+			changeCollectionState({
+				type: 'UPDATE_COLLECTION_PROP',
+				collectionProp: 'publish_at',
+				collectionPropValue: collection.publish_at,
+				updateInitialCollection: true,
+			});
 		}
 	};
 
@@ -507,16 +571,14 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	);
 
 	const renderTab = () => {
-		if (currentCollection) {
+		if (collectionState.currentCollection) {
 			switch (currentTab) {
 				case 'inhoud':
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
-							collection={currentCollection}
-							swapFragments={swapFragments}
-							updateCollection={setCurrentCollection}
-							onFragmentChanged={onFragmentChanged}
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
 							history={history}
 							match={match}
 							user={user}
@@ -527,8 +589,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					return (
 						<CollectionOrBundleEditMetaData
 							type={type}
-							collection={currentCollection}
-							updateCollectionProperty={updateCollectionProperty}
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
 						/>
 					);
 				default:
@@ -555,7 +617,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					label={t('collection/views/collection-edit___delen')}
 					disabled={hasUnsavedChanged()}
 					title={
-						!eq(currentCollection, initialCollection)
+						!eq(collectionState.currentCollection, collectionState.initialCollection)
 							? t(
 									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 							  )
@@ -612,7 +674,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	};
 
 	const renderCollectionOrBundleEdit = () => {
-		const { profile, title } = currentCollection as Avo.Collection.Collection;
+		const { profile, title } = collectionState.currentCollection as Avo.Collection.Collection;
 
 		return (
 			<>
@@ -659,10 +721,16 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					/>
 				*/}
 				<ShareCollectionModal
-					collection={currentCollection as Avo.Collection.Collection}
+					collection={collectionState.currentCollection as Avo.Collection.Collection}
 					isOpen={isShareModalOpen}
 					onClose={onCloseShareCollectionModal}
-					setIsPublic={(value: boolean) => updateCollectionProperty(value, 'is_public')}
+					setIsPublic={(value: boolean) =>
+						changeCollectionState({
+							type: 'UPDATE_COLLECTION_PROP',
+							collectionProp: 'is_public',
+							collectionPropValue: value,
+						})
+					}
 					history={history}
 					match={match}
 					user={user}
@@ -717,7 +785,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			dataObject={currentCollection}
+			dataObject={collectionState.currentCollection}
 			render={renderCollectionOrBundleEdit}
 		/>
 	);
