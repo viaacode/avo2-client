@@ -30,6 +30,7 @@ export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockS
 
 export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t("CTA's"),
+	type: ContentBlockType.CTAs,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/ctas___cta'),
 		limits: {
@@ -73,6 +74,10 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				editorProps: {
 					options: ADMIN_ICON_OPTIONS,
 				},
+			},
+			buttonAction: {
+				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-actie'),
+				editorType: ContentBlockEditor.ContentPicker,
 			},
 		},
 	},

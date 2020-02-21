@@ -43,8 +43,7 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { LoadingErrorLoadedComponent } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { LoadingErrorLoadedComponent, ShareThroughEmailModal } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -55,19 +54,26 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 
+import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { dataService } from '../../shared/services/data-service';
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
-import './Item.scss';
+import './ItemDetail.scss';
 
-interface ItemProps extends DefaultSecureRouteProps<{ id: string }> {}
+interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ...rest }) => {
+const ItemDetail: FunctionComponent<ItemDetailProps> = ({
+	history,
+	match,
+	location,
+	user,
+	...rest
+}) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [t] = useTranslation();
@@ -77,6 +83,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	// TODO: use setTime when adding logic for enabling timestamps in the URL
 	const [time] = useState<number>(0);
 	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
+	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 
 	useEffect(() => {
@@ -164,7 +171,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van het item is mislukt'),
+					message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
 				});
 			}
 		};
@@ -192,6 +199,21 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 		if (time) {
 			setSeekerTimeInQueryParams();
 			setSeekerTime();
+		}
+
+		if (match.params.id) {
+			// Log event of item page view
+			trackEvents(
+				{
+					object: match.params.id,
+					object_type: 'avo_item_pid',
+					message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
+						match.params.id
+					} bezocht`,
+					action: 'view',
+				},
+				user
+			);
 		}
 	}, [time, history, videoRef, match.params.id, relatedItems, user]);
 
@@ -357,6 +379,7 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 												type="tertiary"
 												icon="share-2"
 												ariaLabel={t('item/views/item___share-item')}
+												onClick={() => setIsShareThroughEmailModalOpen(true)}
 											/>
 											<Button
 												type="tertiary"
@@ -529,6 +552,14 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 						onClose={() => setIsOpenAddToCollectionModal(false)}
 					/>
 				)}
+				<ShareThroughEmailModal
+					modalTitle={t('item/views/item-detail___deel-dit-item')}
+					type="item"
+					emailLinkHref={window.location.href}
+					emailLinkTitle={item.title}
+					isOpen={isShareThroughEmailModalOpen}
+					onClose={() => setIsShareThroughEmailModalOpen(false)}
+				/>
 			</>
 		);
 	};
@@ -543,4 +574,4 @@ const Item: FunctionComponent<ItemProps> = ({ history, match, location, user, ..
 	);
 };
 
-export default Item;
+export default ItemDetail;

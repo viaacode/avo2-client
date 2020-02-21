@@ -15,6 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { FileUpload } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
 import { ContextAndClassificationData } from '../../shared/types/lookup';
 
@@ -24,17 +25,18 @@ import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import { getValidationFeedbackForShortDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
+import { CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditMetaDataProps {
 	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
-	updateCollectionProperty: (value: string | string[], fieldName: string) => void;
+	changeCollectionState: (action: CollectionAction) => void;
 }
 
 const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMetaDataProps> = ({
 	type,
 	collection,
-	updateCollectionProperty,
+	changeCollectionState,
 }) => {
 	const [t] = useTranslation();
 
@@ -73,11 +75,15 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 			});
 	}, [setEducationLevels, setSubjects]);
 
-	const updateCollectionMultiProperty = (selectedTagOptions: TagInfo[], fieldName: string) => {
-		updateCollectionProperty(
-			(selectedTagOptions || []).map(tag => tag.value as string),
-			fieldName
-		);
+	const updateCollectionMultiProperty = (
+		selectedTagOptions: TagInfo[],
+		collectionProp: keyof Avo.Collection.Collection
+	) => {
+		changeCollectionState({
+			type: 'UPDATE_COLLECTION_PROP',
+			collectionProp,
+			collectionPropValue: (selectedTagOptions || []).map(tag => tag.value as string),
+		});
 	};
 
 	return (
@@ -128,7 +134,13 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											value={collection.description || ''}
 											id="shortDescriptionId"
 											height="medium"
-											onChange={(value: string) => updateCollectionProperty(value, 'description')}
+											onChange={(value: string) =>
+												changeCollectionState({
+													type: 'UPDATE_COLLECTION_PROP',
+													collectionProp: 'description',
+													collectionPropValue: value,
+												})
+											}
 										/>
 										<label>
 											{getValidationFeedbackForShortDescription(collection.description)}
@@ -148,7 +160,13 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											placeholder={t(
 												'collection/views/collection-edit-meta-data___geef-hier-je-persoonlijke-opmerkingen-notities-in'
 											)}
-											onChange={(value: string) => updateCollectionProperty(value, 'note')}
+											onChange={(value: string) =>
+												changeCollectionState({
+													type: 'UPDATE_COLLECTION_PROP',
+													collectionProp: 'note',
+													collectionPropValue: value,
+												})
+											}
 										/>
 									</FormGroup>
 								</Column>
@@ -165,13 +183,31 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												)}
 												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
-										) : null}
-										{/* TODO add upload cover image for bundle */}
+										) : (
+											<FileUpload
+												label={t(
+													'collection/components/collection-or-bundle-edit-meta-data___upload-een-cover-afbeelding'
+												)}
+												urls={collection.thumbnail_path ? [collection.thumbnail_path] : []}
+												allowMulti={false}
+												assetType="BUNDLE_COVER"
+												ownerId={collection.id}
+												onChange={(urls: string[]) =>
+													changeCollectionState({
+														type: 'UPDATE_COLLECTION_PROP',
+														collectionProp: 'thumbnail_path',
+														collectionPropValue: urls[0] || null,
+													})
+												}
+											/>
+										)}
 									</FormGroup>
 									{/* TODO: DISABLED FEATURE
-											<FormGroup label={t('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
-												<Button type="secondary" icon="add" label={t('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
-											</FormGroup>
+											{ isCollection &&
+												<FormGroup label={t('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
+													<Button type="secondary" icon="add" label={t('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
+												</FormGroup>
+											}
 										*/}
 								</Column>
 							</Grid>

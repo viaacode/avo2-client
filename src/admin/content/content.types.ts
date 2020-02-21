@@ -10,14 +10,12 @@ export enum PageType {
 }
 
 export enum ContentPageType {
-	FAQ = 'FAQ',
-	News = 'NIEUWS',
+	NewsItem = 'NIEUWS_ITEM',
+	FaqItem = 'FAQ_ITEM',
+	Screencast = 'SCREENCAST',
 	Page = 'PAGINA',
 	Project = 'PROJECT',
-}
-
-export interface ContentTypesResponse {
-	value: string;
+	overview = 'OVERZICHT',
 }
 
 export enum ContentWidth {
@@ -70,6 +68,7 @@ export interface ContentEditFormState {
 	contentWidth: Avo.Content.ContentWidth;
 	publishAt: string;
 	depublishAt: string;
+	userGroupIds: number[];
 }
 
 export interface ContentEditState {

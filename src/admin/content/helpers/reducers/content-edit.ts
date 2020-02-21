@@ -82,10 +82,11 @@ const setComponentState = (
 	payload: { index: number; formGroupState: ContentBlockComponentState; stateIndex: number }
 ): ContentBlockConfig[] => {
 	const { index, formGroupState, stateIndex } = payload;
-
 	if (stateIndex || stateIndex === 0) {
+		const componentState: ContentBlockComponentState[] = configs[index].components
+			.state as ContentBlockComponentState[];
 		(configs[index].components.state as ContentBlockComponentState[])[stateIndex] = {
-			...(configs[index].components.state as ContentBlockComponentState[])[stateIndex],
+			...componentState[stateIndex],
 			...formGroupState,
 		};
 	} else {
@@ -102,7 +103,11 @@ const setComponentState = (
 			...configs[index],
 			components: {
 				...configs[index].components,
-				state: componentState,
+				// Different blocks can have the same property with different types, typescript doesn't like this
+				// Example:
+				// ImageBlock.width => multi option
+				// ImageGridBlock.width => number
+				state: componentState as any,
 				fields: configs[index].components.fields,
 			},
 		};
@@ -119,15 +124,16 @@ const setBlockState = (
 	{ index, formGroupState }: { index: number; formGroupState: ContentBlockComponentState[] }
 ): ContentBlockConfig[] => {
 	// Update single content block config
+	const block = configs[index].block;
 	const updatedConfig = {
 		...configs[index],
 		block: {
-			...configs[index].block,
+			...block,
 			state: {
-				...configs[index].block.state,
+				...block.state,
 				...formGroupState,
 			},
-			fields: configs[index].block.fields,
+			fields: block.fields,
 		},
 	};
 	// Apply update object to config

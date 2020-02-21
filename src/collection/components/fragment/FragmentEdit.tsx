@@ -1,4 +1,4 @@
-import { debounce, get, isNil, orderBy } from 'lodash-es';
+import { get, isNil, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +38,8 @@ import { fetchPlayerTicket } from '../../../shared/services/player-ticket-servic
 import toastService from '../../../shared/services/toast-service';
 import { isMediaFragment } from '../../helpers';
 
+import { CollectionService } from '../../collection.service';
+import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
 
@@ -45,41 +47,24 @@ interface FragmentEditProps extends DefaultSecureRouteProps {
 	type: 'itemOrText' | 'collection';
 	index: number;
 	collection: Avo.Collection.Collection;
-	swapFragments: (currentId: number, direction: 'up' | 'down') => void;
-	onFragmentChanged: (fragment: Avo.Collection.Fragment) => void;
+	changeCollectionState: (action: CollectionAction) => void;
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
-	reorderFragments: (fragments: Avo.Collection.Fragment[]) => Avo.Collection.Fragment[];
-	updateCollection: (collection: Avo.Collection.Collection) => void;
 }
 
 const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	type,
 	index,
 	collection,
-	swapFragments,
-	onFragmentChanged,
+	changeCollectionState,
 	openOptionsId,
 	setOpenOptionsId,
 	fragment,
-	reorderFragments,
-	updateCollection,
 	user,
 }) => {
 	const [t] = useTranslation();
 
-	const [useCustomFields, setUseCustomFields] = useState<boolean>(fragment.use_custom_fields);
-	const [title, setTitle] = useState<string>(
-		fragment.use_custom_fields ? fragment.custom_title : get(fragment, 'item_meta.title', '')
-	);
-	const [description, setDescription] = useState<string>(
-		convertToHtml(
-			fragment.use_custom_fields
-				? fragment.custom_description
-				: get(fragment, 'item_meta.description', '')
-		)
-	);
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -125,34 +110,35 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			});
 	}, [user, t]);
 
-	const setUseCustomFieldsWithTextFields = (useCustom: boolean) => {
-		if (!useCustom) {
-			// Do not use custom fields => reset the value back to the original item fields
-			setDescription(get(fragment, 'item_meta.description', ''));
-			setTitle(get(fragment, 'item_meta.title', ''));
-		} else {
-			setDescription(fragment.custom_description || '');
-			setTitle(fragment.custom_title || '');
-		}
-		setUseCustomFields(useCustom);
+	const handleChangedValue = (
+		fragmentProp: keyof Avo.Collection.Fragment,
+		fragmentPropValue: any
+	) => {
+		changeCollectionState({
+			fragmentProp,
+			fragmentPropValue,
+			type: 'UPDATE_FRAGMENT_PROP',
+			fragmentId: fragment.id,
+		});
+		// }
 	};
 
-	const debouncedOnFragmentChanged = debounce(
-		() => {
-			onFragmentChanged({
-				...fragment,
-				use_custom_fields: useCustomFields,
-				custom_title: title,
-				custom_description: description,
-			});
-		},
-		10,
-		{ leading: false, trailing: true }
-	);
+	const getTitle = () => {
+		if (fragment.use_custom_fields) {
+			return fragment.custom_title || '';
+		}
+		return get(fragment, 'item_meta.title', '');
+	};
 
-	useEffect(() => {
-		debouncedOnFragmentChanged();
-	}, [useCustomFields, title, description]);
+	const getDescription = () => {
+		let description: string | undefined;
+		if (fragment.use_custom_fields) {
+			description = fragment.custom_description || '';
+		} else {
+			description = get(fragment, 'item_meta.description', '');
+		}
+		return convertToHtml(description);
+	};
 
 	const initFlowPlayer = () =>
 		!playerTicket &&
@@ -180,11 +166,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			['asc']
 		);
 
-		const positionedFragments = reorderFragments(orderedFragments);
+		const positionedFragments = CollectionService.reorderFragments(orderedFragments);
 
-		updateCollection({
-			...collection,
-			collection_fragments: positionedFragments,
+		changeCollectionState({
+			type: 'UPDATE_COLLECTION_PROP',
+			collectionProp: 'collection_fragments',
+			collectionPropValue: positionedFragments,
 		});
 
 		toastService.success(
@@ -251,7 +238,13 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		<Button
 			type="secondary"
 			icon={`chevron-${direction}` as IconName}
-			onClick={() => swapFragments(fragmentId, direction)}
+			onClick={() => {
+				changeCollectionState({
+					direction,
+					type: 'SWAP_FRAGMENTS',
+					currentFragmentId: fragmentId,
+				});
+			}}
 		/>
 	);
 
@@ -267,8 +260,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					>
 						<Toggle
 							id="customFields"
-							checked={useCustomFields}
-							onChange={setUseCustomFieldsWithTextFields}
+							checked={fragment.use_custom_fields}
+							onChange={(newUseCustomFields: boolean) =>
+								handleChangedValue('use_custom_fields', newUseCustomFields)
+							}
 						/>
 					</FormGroup>
 				)}
@@ -279,11 +274,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
-						value={title}
+						value={getTitle()}
 						placeholder={t(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
-						onChange={setTitle}
+						onChange={(newTitle: string) => handleChangedValue('custom_title', newTitle)}
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
@@ -299,8 +294,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 								placeholder={t(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 								)}
-								data={description}
-								onChange={setDescription}
+								data={getDescription()}
+								onChange={(newDescription: string) =>
+									handleChangedValue('custom_description', newDescription)
+								}
 								disabled={disableVideoFields}
 							/>
 						)}
@@ -372,6 +369,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 										token={getEnv('FLOW_PLAYER_TOKEN')}
 										dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 										logo={get(itemMetaData, 'organisation.logo_url')}
+										autoplay
 										{...cuePoints}
 									/>
 								) : (
@@ -390,8 +388,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 				<FragmentAdd
 					index={index}
 					collection={collection}
-					updateCollection={updateCollection}
-					reorderFragments={reorderFragments}
+					changeCollectionState={changeCollectionState}
 				/>
 			)}
 
@@ -418,7 +415,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					isOpen={isCutModalOpen}
 					onClose={() => setIsCutModalOpen(false)}
 					itemMetaData={itemMetaData}
-					onFragmentChanged={onFragmentChanged}
+					changeCollectionState={changeCollectionState}
 					fragment={fragment}
 					updateCuePoints={setCuePoints}
 				/>

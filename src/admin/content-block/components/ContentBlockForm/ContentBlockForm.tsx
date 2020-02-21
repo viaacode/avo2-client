@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { get, isNil, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,9 @@ import {
 	FlexItem,
 	Form,
 	Spacer,
+	Toolbar,
+	ToolbarLeft,
+	ToolbarRight,
 } from '@viaa/avo2-components';
 
 import {
@@ -26,6 +29,7 @@ import {
 	ContentBlockStateType,
 } from '../../content-block.types';
 import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockFormGroup';
+import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview';
 
 import './ContentBlockForm.scss';
 
@@ -75,16 +79,17 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		};
 		const stateUpdate = isArray(components.state) ? [updateObject] : updateObject;
 
-		handleValidation(key, formGroupType, parsedValue);
+		handleValidation(key, formGroupType, parsedValue, stateIndex);
 		onChange(formGroupType, stateUpdate, stateIndex);
 	};
 
 	const handleValidation = (
 		fieldKey: keyof ContentBlockComponentState | keyof ContentBlockState,
 		formGroupType: ContentBlockStateType,
-		updatedFormValue: any
+		updatedFormValue: any,
+		stateIndex?: number
 	) => {
-		const errors: any = {};
+		const errors: ContentBlockFormError = { ...formErrors };
 
 		const field = config[formGroupType].fields[fieldKey];
 		const validator = get(field, 'validator');
@@ -93,7 +98,18 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			const errorArray = validator(updatedFormValue);
 
 			if (errorArray.length) {
-				errors[fieldKey] = errorArray;
+				if (isNumber(stateIndex)) {
+					errors[fieldKey] = errors[fieldKey] || [];
+					errors[fieldKey][stateIndex] = errorArray;
+				} else {
+					errors[fieldKey] = errorArray;
+				}
+			} else if (errors[fieldKey]) {
+				if (isNumber(stateIndex)) {
+					delete errors[fieldKey][stateIndex];
+				} else {
+					delete errors[fieldKey];
+				}
 			}
 		}
 
@@ -112,6 +128,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						icon="delete"
 						type="danger"
 						onClick={() => removeComponentFromState(stateIndex)}
+						size="small"
 					/>
 				</FlexItem>
 			)
@@ -136,9 +153,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			<Spacer margin="top-small">
 				{isArray(formGroup.state) ? (
 					formGroup.state.map((formGroupState, stateIndex) => (
-						<Spacer key={stateIndex} margin="bottom-small">
-							<BlockHeading type="h4" className="u-m-t-0">
-								{`${get(config, 'components.name')} ${stateIndex + 1}`}
+						<Spacer key={stateIndex} margin="bottom">
+							<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
+								<Toolbar autoHeight>
+									<ToolbarLeft>{`${get(config, 'components.name')} ${stateIndex + 1}`}</ToolbarLeft>
+									<ToolbarRight>{renderRemoveButton(stateIndex)}</ToolbarRight>
+								</Toolbar>
 							</BlockHeading>
 							<Flex spaced="regular" wrap>
 								<FlexItem>
@@ -149,7 +169,6 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 										stateIndex={stateIndex}
 									/>
 								</FlexItem>
-								{renderRemoveButton(stateIndex)}
 							</Flex>
 						</Spacer>
 					))
@@ -178,7 +197,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const accordionTitle = `${contentBlock.name} (${blockIndex + 1}/${length})`;
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
 		const underLimit =
-			isArray(components.state) && components.state.length < get(components, 'limits.max');
+			isNil(get(components, 'limits.max')) ||
+			(isArray(components.state) && components.state.length < get(components, 'limits.max'));
 
 		return (
 			<Accordion isOpen={isAccordionOpen}>
@@ -221,13 +241,13 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							title={t(
 								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
 							)}
-							type="tertiary"
+							type="danger"
 						/>
 					</ButtonToolbar>
 				</AccordionActions>
 				<AccordionBody>
 					{renderFormGroups(components, 'components')}
-					{underLimit && renderAddButton(label)}
+					{underLimit && REPEATABLE_CONTENT_BLOCKS.includes(config.type) && renderAddButton(label)}
 					<Spacer margin="top">
 						<BlockHeading type="h4" className="u-m-t-0">
 							Blok-opties

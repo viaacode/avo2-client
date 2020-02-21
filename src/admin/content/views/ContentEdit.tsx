@@ -18,9 +18,11 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-info';
+import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql';
 import { DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
+import { dataService } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import {
@@ -136,7 +138,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setIsSaving(true);
 
 		// Validate form
-		const isFormValid = handleValidation();
+		const isFormValid = await handleValidation();
 
 		if (!isFormValid) {
 			setIsSaving(false);
@@ -148,7 +150,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			return;
 		}
 
-		// TODO: remove any for content_width with typings update
 		const contentItem: Partial<Avo.Content.Content> | any = {
 			title: contentForm.title,
 			description: contentForm.description || null,
@@ -158,6 +159,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			content_width: contentForm.contentWidth,
 			publish_at: contentForm.publishAt || null,
 			depublish_at: contentForm.depublishAt || null,
+			user_group_ids: contentForm.userGroupIds,
 		};
 
 		if (pageType === PageType.Create) {
@@ -194,7 +196,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	};
 
-	const handleValidation = () => {
+	const handleValidation = async (): Promise<boolean> => {
 		const errors: ContentEditFormErrors = {};
 		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
 
@@ -204,6 +206,25 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!contentForm.contentType) {
 			errors.contentType = t('admin/content/views/content-edit___content-type-is-verplicht');
+		}
+
+		if (!contentForm.path) {
+			errors.path = t('admin/content/views/content-edit___een-url-is-verplicht');
+		} else {
+			// check if it is unique
+			const response = await dataService.query({
+				query: GET_CONTENT_PAGE_BY_PATH,
+				variables: { path: contentForm.path },
+			});
+			const page: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
+			if (page && String(page.id) !== id) {
+				errors.path = t(
+					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
+					{
+						pageTitle: page.title,
+					}
+				);
+			}
 		}
 
 		if (
@@ -310,14 +331,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<HeaderButtons>
 						<ButtonToolbar>
 							<Button
-								disabled={isSaving}
-								label={t('admin/content/views/content-edit___opslaan')}
-								onClick={handleSave}
-							/>
-							<Button
 								label={t('admin/content/views/content-edit___annuleer')}
 								onClick={navigateBack}
 								type="tertiary"
+							/>
+							<Button
+								disabled={isSaving}
+								label={t('admin/content/views/content-edit___opslaan')}
+								onClick={handleSave}
 							/>
 						</ButtonToolbar>
 					</HeaderButtons>

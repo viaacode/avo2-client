@@ -164,6 +164,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				token={getEnv('FLOW_PLAYER_TOKEN')}
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
+				autoplay
 			/>
 		</div>
 	);

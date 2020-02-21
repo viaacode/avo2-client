@@ -31,6 +31,7 @@ export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): DefaultContentBlo
 
 export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
+	type: ContentBlockType.Buttons,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/buttons___knop'),
 		limits: {
@@ -58,6 +59,10 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				editorProps: {
 					options: ADMIN_ICON_OPTIONS,
 				},
+			},
+			action: {
+				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
+				editorType: ContentBlockEditor.ContentPicker,
 			},
 		},
 	},

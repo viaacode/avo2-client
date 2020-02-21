@@ -1,0 +1,39 @@
+.c-file-upload {
+	position: relative;
+
+	.a-upload-image-preview {
+		height: 300px;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: contain;
+		background-color: #ddd;
+	}
+
+	.a-upload-image-preview,
+	.a-upload-file-preview {
+		position: relative;
+
+		.a-delete-button {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+		}
+	}
+
+	.c-file-upload-button-and-input {
+		position: relative;
+
+		&:hover .c-button {
+			background: #FFF;
+		}
+
+		input[type="file"] {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			opacity: 0.00001;
+		}
+	}
+}

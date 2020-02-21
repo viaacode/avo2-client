@@ -16,7 +16,7 @@ import {
 	ContentBlockType,
 } from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
-import { createKey } from '../../shared/helpers/create-key';
+import { createKey } from '../../shared/helpers';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];

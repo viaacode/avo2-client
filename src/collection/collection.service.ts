@@ -77,6 +77,13 @@ export class CollectionService {
 		}
 	}
 
+	public static reorderFragments(fragments: Avo.Collection.Fragment[]): Avo.Collection.Fragment[] {
+		return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
+			...fragment,
+			position: index + 1,
+		}));
+	}
+
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
 		updatedCollection: Avo.Collection.Collection,
@@ -398,7 +405,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async getCollectionWithItems(
+	public static async getCollection(
 		collectionId: string,
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
@@ -431,6 +438,19 @@ export class CollectionService {
 		}
 		// Collection/bundle loaded successfully
 		if (collectionObj.type_id !== ContentTypeNumber[type]) {
+			return undefined;
+		}
+
+		return collectionObj;
+	}
+
+	public static async getCollectionWithItems(
+		collectionId: string,
+		type: 'collection' | 'bundle'
+	): Promise<Avo.Collection.Collection | undefined> {
+		const collectionObj = await CollectionService.getCollection(collectionId, type);
+
+		if (!collectionObj) {
 			return undefined;
 		}
 

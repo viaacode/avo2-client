@@ -17,3 +17,11 @@ export const GET_COLLECTIONS_BY_IDS = gql`
 		}
 	}
 `;
+
+export const GET_COLLECTIONS_BY_AVO1_ID = gql`
+	query getCollectionsByAvo1Id($avo1Id: String!) {
+		items: app_collections(where: { avo1_id: { _eq: $avo1Id } }) {
+			id
+		}
+	}
+`;
