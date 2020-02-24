@@ -93,11 +93,11 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 				t('search/components/search-filter-controls___onderwijsniveau'),
 				'educationLevel'
 			)}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___domein'),
-				'domain',
-				true
-			)}
+			{/*{renderCheckboxDropdownModal( TODO: DISABLED FEATURE */}
+			{/*	t('search/components/search-filter-controls___domein'),*/}
+			{/*	'domain',*/}
+			{/*	true*/}
+			{/*)}*/}
 			{renderCheckboxDropdownModal(t('search/components/search-filter-controls___vak'), 'subject')}
 			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___trefwoord'),
