@@ -21,10 +21,10 @@ import {
 
 import { APP_PATH } from '../../../constants';
 import toastService from '../../../shared/services/toast-service';
-import { createZendeskTicket } from '../../authentication.service';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
+import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 export interface ManualRegistrationProps extends RouteComponentProps {}
 
@@ -123,7 +123,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					'authentication/views/registration-flow/r-4-manual-registration___manuele-aanvraag-account-op-av-o'
 				),
 			};
-			await createZendeskTicket(ticket);
+			await ZendeskService.createTicket(ticket);
 			toastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
