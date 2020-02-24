@@ -171,16 +171,32 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 // Options
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>[] = [
 	{
-		label: 'Wit',
+		label: i18n.t('Wit'),
 		value: ContentBlockBackgroundColor.White,
 	},
 	{
-		label: 'Grijs',
+		label: i18n.t('Grijs'),
 		value: ContentBlockBackgroundColor.Gray50,
 	},
 	{
-		label: 'Blauw',
+		label: i18n.t('Nachtblauw'),
 		value: ContentBlockBackgroundColor.NightBlue,
+	},
+	{
+		label: i18n.t('Zachtblauw'),
+		value: ContentBlockBackgroundColor.SoftBlue,
+	},
+	{
+		label: i18n.t('Appelblauwzeegroen'),
+		value: ContentBlockBackgroundColor.Teal,
+	},
+	{
+		label: i18n.t('Appelblauwzeegroen helder'),
+		value: ContentBlockBackgroundColor.TealBright,
+	},
+	{
+		label: i18n.t('Oceaangroen'),
+		value: ContentBlockBackgroundColor.OceanGreen,
 	},
 ];
 
