@@ -23,6 +23,7 @@ export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): DefaultContent
 
 export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/accordions___accordeons'),
+	type: ContentBlockType.MediaGrid,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/accordions___accordeon'),
 		limits: {

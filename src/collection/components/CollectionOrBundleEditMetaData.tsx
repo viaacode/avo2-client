@@ -25,20 +25,18 @@ import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import { getValidationFeedbackForShortDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
+import { CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditMetaDataProps {
 	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
-	updateCollectionProperty: (
-		value: string | string[] | null,
-		fieldName: keyof Avo.Collection.Collection
-	) => void;
+	changeCollectionState: (action: CollectionAction) => void;
 }
 
 const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMetaDataProps> = ({
 	type,
 	collection,
-	updateCollectionProperty,
+	changeCollectionState,
 }) => {
 	const [t] = useTranslation();
 
@@ -79,12 +77,13 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 
 	const updateCollectionMultiProperty = (
 		selectedTagOptions: TagInfo[],
-		fieldName: keyof Avo.Collection.Collection
+		collectionProp: keyof Avo.Collection.Collection
 	) => {
-		updateCollectionProperty(
-			(selectedTagOptions || []).map(tag => tag.value as string),
-			fieldName
-		);
+		changeCollectionState({
+			collectionProp,
+			type: 'UPDATE_COLLECTION_PROP',
+			collectionPropValue: (selectedTagOptions || []).map(tag => tag.value as string),
+		});
 	};
 
 	return (
@@ -135,7 +134,13 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											value={collection.description || ''}
 											id="shortDescriptionId"
 											height="medium"
-											onChange={(value: string) => updateCollectionProperty(value, 'description')}
+											onChange={(value: string) =>
+												changeCollectionState({
+													type: 'UPDATE_COLLECTION_PROP',
+													collectionProp: 'description',
+													collectionPropValue: value,
+												})
+											}
 										/>
 										<label>
 											{getValidationFeedbackForShortDescription(collection.description)}
@@ -155,7 +160,13 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											placeholder={t(
 												'collection/views/collection-edit-meta-data___geef-hier-je-persoonlijke-opmerkingen-notities-in'
 											)}
-											onChange={(value: string) => updateCollectionProperty(value, 'note')}
+											onChange={(value: string) =>
+												changeCollectionState({
+													type: 'UPDATE_COLLECTION_PROP',
+													collectionProp: 'note',
+													collectionPropValue: value,
+												})
+											}
 										/>
 									</FormGroup>
 								</Column>
@@ -174,12 +185,19 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											/>
 										) : (
 											<FileUpload
-												label={t('Upload een cover afbeelding')}
-												url={collection.thumbnail_path}
+												label={t(
+													'collection/components/collection-or-bundle-edit-meta-data___upload-een-cover-afbeelding'
+												)}
+												urls={collection.thumbnail_path ? [collection.thumbnail_path] : []}
+												allowMulti={false}
 												assetType="BUNDLE_COVER"
 												ownerId={collection.id}
-												onChange={(url: string | null) =>
-													updateCollectionProperty(url, 'thumbnail_path')
+												onChange={(urls: string[]) =>
+													changeCollectionState({
+														type: 'UPDATE_COLLECTION_PROP',
+														collectionProp: 'thumbnail_path',
+														collectionPropValue: urls[0] || null,
+													})
 												}
 											/>
 										)}

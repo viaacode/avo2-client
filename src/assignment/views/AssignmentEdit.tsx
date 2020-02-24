@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { get, isEmpty, isNil, remove } from 'lodash-es';
-import queryString from 'query-string';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -40,7 +39,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
+import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { toEnglishContentType } from '../../collection/collection.types';
@@ -78,14 +77,6 @@ const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabe
 	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
 };
 
-const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
-} = {
-	ITEM: 'avo_item_pid',
-	COLLECTIE: 'collections',
-	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
-};
-
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
 const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
@@ -96,7 +87,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [pageType, setPageType] = useState<'create' | 'edit' | undefined>();
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | undefined>(
 		undefined
 	);
@@ -134,22 +124,23 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		const initAssignmentData = async () => {
 			try {
 				// Determine if this is an edit or create page and initialize or fetch the assignment
-				let assignment: Partial<Avo.Assignment.Assignment> | null;
-				if (location.pathname.includes(ROUTE_PARTS.create)) {
-					setPageType('create');
-					assignment = initAssignmentsByQueryParams();
-				} else {
-					setPageType('edit');
-					assignment = await fetchAssignment(match.params.id);
-				}
+				const tempAssignment: Partial<Avo.Assignment.Assignment> | null = await fetchAssignment(
+					match.params.id
+				);
 
-				if (!assignment) {
+				if (!tempAssignment) {
 					// Something went wrong during init/fetch
 					return;
 				}
 
 				// Fetch the content if the assignment has content
-				await fetchAssignmentContent(assignment);
+				const tempAssignmentContent = await fetchAssignmentContent(tempAssignment);
+
+				setAssignmentContent(tempAssignmentContent);
+				setBothAssignments({
+					...tempAssignment,
+					title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
+				});
 			} catch (err) {
 				setLoadingInfo({
 					state: 'error',
@@ -161,56 +152,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 		};
 
-		/**
-		 * Get assignment_type, content_id and content_label from query params
-		 */
-		const initAssignmentsByQueryParams = (): Partial<Avo.Assignment.Assignment> => {
-			if (currentAssignment && !isEmpty(currentAssignment)) {
-				// Only init the assignment if not set yet
-				return currentAssignment;
-			}
-			const queryParams = queryString.parse(location.search);
-			let newAssignment: Partial<Avo.Assignment.Assignment> | undefined;
-
-			if (typeof queryParams.assignment_type === 'string') {
-				newAssignment = {
-					assignment_type: queryParams.assignment_type as Avo.Assignment.Type,
-				};
-			}
-
-			if (typeof queryParams.content_id === 'string') {
-				newAssignment = {
-					...(newAssignment || {}),
-					content_id: queryParams.content_id,
-				};
-			}
-
-			if (typeof queryParams.content_label === 'string') {
-				newAssignment = {
-					...(newAssignment || {}),
-					content_label: queryParams.content_label as Avo.Assignment.ContentLabel,
-				};
-			}
-
-			newAssignment = {
-				...(currentAssignment || {}),
-				...newAssignment,
-			} as Avo.Assignment.Assignment;
-
-			setBothAssignments(newAssignment);
-
-			return newAssignment;
-		};
-
 		const fetchAssignment = async (
 			id: string | number
 		): Promise<Avo.Assignment.Assignment | null> => {
 			try {
-				if (currentAssignment && !isEmpty(currentAssignment)) {
-					// Only fetch the assignment if not set yet
-					return currentAssignment as Avo.Assignment.Assignment;
-				}
-
 				const assignmentQuery = {
 					query: GET_ASSIGNMENT_BY_ID,
 					variables: { id },
@@ -235,7 +180,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					});
 					return null;
 				}
-				setBothAssignments(assignmentResponse);
 				return assignmentResponse;
 			} catch (err) {
 				console.error(err);
@@ -254,11 +198,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		 */
 		const fetchAssignmentContent = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 			try {
-				if (!assignment.assignment_type) {
-					// Only fetch assignment content if not set yet
-					return;
-				}
-
 				let assignmentContentResponse: Avo.Assignment.Content | undefined = undefined;
 				if (assignment.content_id && assignment.content_label) {
 					// The assignment doesn't have content linked to it
@@ -290,12 +229,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						});
 					}
 				}
-
-				setAssignmentContent(assignmentContentResponse);
-				setBothAssignments({
-					...assignment,
-					title: assignment.title || get(assignmentContentResponse, 'title', ''),
-				});
+				return assignmentContentResponse;
 			} catch (err) {
 				console.error(err);
 				setLoadingInfo({
@@ -315,16 +249,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			setLoadingInfo,
 			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
 		);
-	}, [
-		location,
-		match.params,
-		setLoadingInfo,
-		setAssignmentContent,
-		t,
-		user,
-		currentAssignment,
-		setBothAssignments,
-	]);
+	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
 
 	useEffect(() => {
 		if (
@@ -485,68 +410,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setCurrentAssignment(newAssignment);
 	};
 
-	const trackAddObjectToAssignment = (assignment: Avo.Assignment.Assignment) => {
-		if (!assignment.content_label || !assignment.content_id) {
-			return;
-		}
-		trackEvents(
-			{
-				object: assignment.content_id,
-				object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],
-				message: `Gebruiker ${getProfileName(user)} heeft ${
-					CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label]
-				} ${assignment.content_id} toegevoegd aan opdracht ${assignment.id}`,
-				action: 'view',
-			},
-			user
-		);
-	};
-
 	const saveAssignment = async (assignment: Partial<Avo.Assignment.Assignment>) => {
 		try {
 			setIsSaving(true);
-			if (pageType === 'create') {
-				// Copy content if it's a collection collection if not owned by logged in user
-				// so your assignment can work after the other user deletes his collection
-				if (
-					assignment.content_label === 'COLLECTIE' &&
-					(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId(user)
-				) {
-					const sourceCollection = assignmentContent as Avo.Collection.Collection;
-					assignment.content_id = await AssignmentService.duplicateCollectionForAssignment(
-						sourceCollection,
-						user,
-						triggerCollectionInsert,
-						triggerCollectionFragmentsInsert
-					);
-				}
-
-				// create => insert into graphql
-				const newAssignment: Avo.Assignment.Assignment = {
-					...assignment,
-					owner_profile_id: getProfileId(user),
-				} as Avo.Assignment.Assignment;
-				const insertedAssignment = await AssignmentService.insertAssignment(
-					triggerAssignmentInsert,
-					newAssignment
-				);
-
-				if (insertedAssignment) {
-					setBothAssignments(insertedAssignment);
-					trackAddObjectToAssignment(insertedAssignment);
-					toastService.success(
-						t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
-					);
-					navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
-				}
-			} else {
-				// edit => update graphql
-				await AssignmentService.updateAssignment(triggerAssignmentUpdate, assignment);
-				setBothAssignments(assignment);
-				toastService.success(
-					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
-				);
-			}
+			// edit => update graphql
+			await AssignmentService.updateAssignment(triggerAssignmentUpdate, assignment);
+			setBothAssignments(assignment);
+			toastService.success(
+				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
+			);
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
@@ -656,24 +528,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			</div>
 		);
 
-		if (
-			pageType === 'create' &&
-			currentAssignment.content_label === 'COLLECTIE' &&
-			getProfileId(user) !== (content as Avo.Collection.Collection).owner_profile_id
-		) {
-			// During create we do not allow linking to the collection if you do not own the collection,
-			// since we still need to make a copy when the user clicks on "save assignment" button
-			return (
-				<div
-					title={t(
-						'assignment/views/assignment-edit___u-kan-pas-doorklikken-naar-de-collectie-nadat-u-de-opdracht-hebt-aangemaakt'
-					)}
-				>
-					{linkContent}
-				</div>
-			);
-		}
-
 		return (
 			<Link
 				to={`/${
@@ -710,9 +564,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											</Trans>
 										</Link>
 										<BlockHeading className="u-m-0" type="h2">
-											{pageType === 'create'
-												? t('assignment/views/assignment-edit___nieuwe-opdracht')
-												: currentAssignment.title}
+											{currentAssignment.title}
 										</BlockHeading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
@@ -738,54 +590,45 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								<ToolbarRight>
 									<ToolbarItem>
 										<ButtonToolbar>
-											{pageType === 'create' && (
+											<Spacer margin="right-small">
 												<Button
 													type="secondary"
-													onClick={() => history.goBack()}
-													label={t('assignment/views/assignment-edit___annuleren')}
+													onClick={viewAsStudent}
+													label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
 												/>
-											)}
-											{pageType === 'edit' && (
-												<Spacer margin="right-small">
-													<Button
-														type="secondary"
-														onClick={viewAsStudent}
-														label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
-													/>
-													<Dropdown
-														isOpen={isExtraOptionsMenuOpen}
-														menuWidth="fit-content"
-														onOpen={() => setExtraOptionsMenuOpen(true)}
-														onClose={() => setExtraOptionsMenuOpen(false)}
-														placement="bottom-end"
-													>
-														<DropdownButton>
-															<Button
-																type="secondary"
-																icon="more-horizontal"
-																ariaLabel={t('assignment/views/assignment-edit___meer-opties')}
-																title={t('assignment/views/assignment-edit___meer-opties')}
-															/>
-														</DropdownButton>
-														<DropdownContent>
-															<MenuContent
-																menuItems={[
-																	{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
-																	{
-																		icon: 'archive',
-																		id: 'archive',
-																		label: initialAssignment.is_archived
-																			? 'Dearchiveer'
-																			: 'Archiveer',
-																	},
-																	{ icon: 'delete', id: 'delete', label: 'Verwijder' },
-																]}
-																onClick={id => handleExtraOptionClicked(id.toString() as any)}
-															/>
-														</DropdownContent>
-													</Dropdown>
-												</Spacer>
-											)}
+												<Dropdown
+													isOpen={isExtraOptionsMenuOpen}
+													menuWidth="fit-content"
+													onOpen={() => setExtraOptionsMenuOpen(true)}
+													onClose={() => setExtraOptionsMenuOpen(false)}
+													placement="bottom-end"
+												>
+													<DropdownButton>
+														<Button
+															type="secondary"
+															icon="more-horizontal"
+															ariaLabel={t('assignment/views/assignment-edit___meer-opties')}
+															title={t('assignment/views/assignment-edit___meer-opties')}
+														/>
+													</DropdownButton>
+													<DropdownContent>
+														<MenuContent
+															menuItems={[
+																{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+																{
+																	icon: 'archive',
+																	id: 'archive',
+																	label: initialAssignment.is_archived
+																		? 'Dearchiveer'
+																		: 'Archiveer',
+																},
+																{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+															]}
+															onClick={id => handleExtraOptionClicked(id.toString() as any)}
+														/>
+													</DropdownContent>
+												</Dropdown>
+											</Spacer>
 											<Button
 												type="primary"
 												label={t('assignment/views/assignment-edit___opslaan')}

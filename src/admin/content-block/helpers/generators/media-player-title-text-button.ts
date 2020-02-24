@@ -34,23 +34,37 @@ export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (
 export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	position: number = 0
 ): ContentBlockConfig => ({
-	name: i18n.t('Media-speler met titel, tekst en knop'),
+	name: i18n.t(
+		'admin/content-block/helpers/generators/media-player-title-text-button___media-speler-met-titel-tekst-en-knop'
+	),
+	type: ContentBlockType.MediaPlayerTitleTextButton,
 	components: {
 		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE(),
 		fields: {
-			mediaTitle: TEXT_FIELD(i18n.t('Titel is verplicht'), {
-				label: i18n.t('Video- of audio-item: Toegankelijkheidstitel'),
-				editorType: ContentBlockEditor.TextInput,
-			}),
+			mediaTitle: TEXT_FIELD(
+				i18n.t(
+					'admin/content-block/helpers/generators/media-player-title-text-button___titel-is-verplicht'
+				),
+				{
+					label: i18n.t(
+						'admin/content-block/helpers/generators/media-player-title-text-button___video-of-audio-item-toegankelijkheidstitel'
+					),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
 			mediaItem: {
-				label: i18n.t('Video- of audio-item'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player-title-text-button___video-of-audio-item'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					selectableTypes: ['ITEM'],
 				},
 			},
 			mediaWidth: {
-				label: i18n.t('Breedte'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player-title-text-button___breedte'
+				),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: WIDTH_OPTIONS,
@@ -93,7 +107,9 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				},
 			},
 			buttonAction: {
-				label: i18n.t('Knop: Actie'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player-title-text-button___knop-actie'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 			align: ALIGN_FIELD(),

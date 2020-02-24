@@ -21,6 +21,7 @@ export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlo
 
 export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/heading___titel'),
+	type: ContentBlockType.Heading,
 	components: {
 		state: INITIAL_HEADING_COMPONENTS_STATE(),
 		fields: {

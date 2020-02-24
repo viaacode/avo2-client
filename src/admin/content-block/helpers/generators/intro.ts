@@ -20,6 +20,7 @@ export const INITIAL_INTRO_BLOCK_STATE = (position: number): DefaultContentBlock
 
 export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/intro___intro'),
+	type: ContentBlockType.Intro,
 	components: {
 		state: INITIAL_INTRO_COMPONENTS_STATE(),
 		fields: {

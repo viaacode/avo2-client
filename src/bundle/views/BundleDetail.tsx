@@ -423,10 +423,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 													type="primary"
 												/>
 												<Button
-													title={t('Share bundel')}
+													title={t('bundle/views/bundle-detail___share-bundel')}
 													type="secondary"
 													icon="share-2"
-													ariaLabel={t('Share bundel')}
+													ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
 													onClick={() => setIsShareThroughEmailModalOpen(true)}
 												/>
 												<ControlledDropdown
@@ -505,7 +505,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					deleteObjectCallback={() => onDeleteBundle()}
 				/>
 				<ShareThroughEmailModal
-					modalTitle={t('Deel deze bundel')}
+					modalTitle={t('bundle/views/bundle-detail___deel-deze-bundel')}
 					type="bundle"
 					emailLinkHref={window.location.href}
 					emailLinkTitle={(bundle as Avo.Collection.Collection).title}

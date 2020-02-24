@@ -1,10 +1,10 @@
-import { get } from 'lodash-es';
+import { get, isArray, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
 
 import { createKey } from '../../../shared/helpers';
-import { ContentPickerType } from '../../../shared/types';
+import { PickerItem } from '../../../shared/types';
 
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
@@ -50,12 +50,12 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 		editorId,
 		name: editorId,
 	};
-	let editorProps = {};
+	let editorProps;
 
 	switch (field.editorType) {
 		case ContentBlockEditor.ContentPicker:
 			editorProps = {
-				onSelect: (picked: ContentPickerType) => {
+				onSelect: (picked: PickerItem) => {
 					handleChange(type, fieldKey, { value: picked }, stateIndex);
 				},
 				currentSelection: get(state as any, 'buttonAction'),
@@ -79,14 +79,39 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 			};
 			break;
 		case ContentBlockEditor.FileUpload:
+			const urlOrUrls: string[] | undefined = (state as any)[fieldKey];
+			editorProps = {
+				// If the component wants a single value, take the first image from the array, otherwise pass the array
+				onChange: (value: null | undefined | string[]) =>
+					handleChange(
+						type,
+						fieldKey,
+						field.editorProps.allowMulti || !value ? value : value[0],
+						stateIndex
+					),
+				urls: Array.isArray(urlOrUrls) ? urlOrUrls : isNil(urlOrUrls) ? [] : [urlOrUrls],
+			};
+			break;
+		case ContentBlockEditor.MultiRange:
+			const num = (state as any)[fieldKey];
+			editorProps = {
+				onChange: (value: any) => {
+					handleChange(type, fieldKey, isArray(value) ? value[0] || 0 : value, stateIndex);
+				},
+				values: [num || 0], // TODO default to min value of input field instead of 0
+			};
+			break;
+		case ContentBlockEditor.Checkbox:
 			editorProps = {
 				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
-				url: (state as any)[fieldKey],
+				checked: (state as any)[fieldKey],
 			};
 			break;
 		default:
 			editorProps = {
-				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+				onChange: (value: any) => {
+					handleChange(type, fieldKey, value, stateIndex);
+				},
 				value: (state as any)[fieldKey],
 			};
 			break;

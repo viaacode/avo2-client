@@ -1,4 +1,4 @@
-import { get, isNumber } from 'lodash-es';
+import { get, isNil, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +29,7 @@ import {
 	ContentBlockStateType,
 } from '../../content-block.types';
 import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockFormGroup';
+import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview';
 
 import './ContentBlockForm.scss';
 
@@ -196,7 +197,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const accordionTitle = `${contentBlock.name} (${blockIndex + 1}/${length})`;
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
 		const underLimit =
-			isArray(components.state) && components.state.length < get(components, 'limits.max');
+			isNil(get(components, 'limits.max')) ||
+			(isArray(components.state) && components.state.length < get(components, 'limits.max'));
 
 		return (
 			<Accordion isOpen={isAccordionOpen}>
@@ -245,7 +247,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				</AccordionActions>
 				<AccordionBody>
 					{renderFormGroups(components, 'components')}
-					{underLimit && renderAddButton(label)}
+					{underLimit && REPEATABLE_CONTENT_BLOCKS.includes(config.type) && renderAddButton(label)}
 					<Spacer margin="top">
 						<BlockHeading type="h4" className="u-m-t-0">
 							Blok-opties
