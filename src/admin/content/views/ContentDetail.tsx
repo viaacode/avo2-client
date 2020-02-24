@@ -24,7 +24,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
-import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
+import { formatDate, getAvatarProps, navigate, sanitizePresets } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import toastService from '../../../shared/services/toast-service';
@@ -37,6 +37,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/la
 import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
 import { DELETE_CONTENT, GET_CONTENT_BY_ID } from '../content.gql';
 import { ContentDetailParams } from '../content.types';
+import sanitize from 'sanitize-html';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
@@ -86,12 +87,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			})
 		);
 		const tagOptions = tagInfos.map(
-			(ug: TagInfo): TagOption => {
-				return {
-					id: ug.value,
-					label: ug.label,
-				};
-			}
+			(ug: TagInfo): TagOption => ({
+				id: ug.value,
+				label: ug.label,
+			})
 		);
 		if (tagOptions && tagOptions.length) {
 			return tagOptions;
@@ -156,7 +155,11 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 											Omschrijving:
 										</Trans>
 									</BlockHeading>
-									<p dangerouslySetInnerHTML={{ __html: contentItem.description }} />
+									<p
+										dangerouslySetInnerHTML={{
+											__html: sanitize(contentItem.description, sanitizePresets.link),
+										}}
+									/>
 								</Spacer>
 							)}
 
