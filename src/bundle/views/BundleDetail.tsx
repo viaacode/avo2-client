@@ -57,9 +57,9 @@ import {
 } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import './BundleDetail.scss';
@@ -423,10 +423,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 													type="primary"
 												/>
 												<Button
-													title={t('Share bundel')}
+													title={t('bundle/views/bundle-detail___share-bundel')}
 													type="secondary"
 													icon="share-2"
-													ariaLabel={t('Share bundel')}
+													ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
 													onClick={() => setIsShareThroughEmailModalOpen(true)}
 												/>
 												<ControlledDropdown
@@ -505,7 +505,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					deleteObjectCallback={() => onDeleteBundle()}
 				/>
 				<ShareThroughEmailModal
-					modalTitle={t('Deel deze bundel')}
+					modalTitle={t('bundle/views/bundle-detail___deel-deze-bundel')}
 					type="bundle"
 					emailLinkHref={window.location.href}
 					emailLinkTitle={(bundle as Avo.Collection.Collection).title}

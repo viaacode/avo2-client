@@ -11,8 +11,8 @@ import {
 	ImageGridBlockComponentStateBlockFields,
 	ImageGridBlockComponentStateFields,
 } from '../../../shared/types';
-import { IMAGE_GRID_FILL_OPTIONS, IMAGE_GRID_TEXT_ALIGN_OPTIONS } from '../../content-block.const';
 
+import { ALIGN_OPTIONS, FILL_OPTIONS } from '../../content-block.const';
 import {
 	CONTENT_BLOCK_FIELD_DEFAULTS,
 	FILE_FIELD,
@@ -44,22 +44,26 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
 };
 
 export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('Afbeeldingen grid'),
+	name: i18n.t('admin/content-block/helpers/generators/image-grid___afbeeldingen-grid'),
+	type: ContentBlockType.ImageGrid,
 	components: {
-		name: i18n.t('Item'),
+		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),
 		state: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES(),
 		fields: {
-			source: FILE_FIELD(i18n.t('Een afbeelding is verplicht'), {
-				label: i18n.t('Afbeelding'),
-				editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
-			}),
+			source: FILE_FIELD(
+				i18n.t('admin/content-block/helpers/generators/image-grid___een-afbeelding-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding'),
+					editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
+				}
+			),
 			title: TEXT_FIELD('', {
-				label: i18n.t('Titel'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),
 			text: TEXT_FIELD('', {
-				label: i18n.t('Tekst'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___tekst'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),
@@ -71,7 +75,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		fields: {
 			...CONTENT_BLOCK_FIELD_DEFAULTS(),
 			imageWidth: {
-				label: i18n.t('Afbeelding breedte'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding-breedte'),
 				editorType: ContentBlockEditor.MultiRange,
 				validator: () => [],
 				editorProps: {
@@ -82,7 +86,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				} as MultiRangeProps,
 			},
 			imageHeight: {
-				label: i18n.t('Afbeelding hoogte'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding-hoogte'),
 				editorType: ContentBlockEditor.MultiRange,
 				validator: () => [],
 				editorProps: {
@@ -93,7 +97,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				} as MultiRangeProps,
 			},
 			itemWidth: {
-				label: i18n.t('Item Breedte'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___item-breedte'),
 				editorType: ContentBlockEditor.MultiRange,
 				validator: () => [],
 				editorProps: {
@@ -104,17 +108,17 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				} as MultiRangeProps,
 			},
 			fill: {
-				label: i18n.t('Zoom'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___zoom'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: IMAGE_GRID_FILL_OPTIONS,
+					options: FILL_OPTIONS,
 				},
 			},
 			textAlign: {
-				label: i18n.t('Text alignatie'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___text-alignatie'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: IMAGE_GRID_TEXT_ALIGN_OPTIONS,
+					options: ALIGN_OPTIONS,
 				},
 			},
 		},

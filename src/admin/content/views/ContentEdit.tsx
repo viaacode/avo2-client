@@ -22,8 +22,7 @@ import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql
 import { DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { dataService } from '../../../shared/services/data-service';
-import toastService from '../../../shared/services/toast-service';
+import { dataService, toastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
@@ -209,7 +208,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 
 		if (!contentForm.path) {
-			errors.path = t('Een url is verplicht');
+			errors.path = t('admin/content/views/content-edit___een-url-is-verplicht');
 		} else {
 			// check if it is unique
 			const response = await dataService.query({
@@ -218,9 +217,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			});
 			const page: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
 			if (page && String(page.id) !== id) {
-				errors.path = t('Dit path is reeds gebruikt door pagina: {{pageTitle}}', {
-					pageTitle: page.title,
-				});
+				errors.path = t(
+					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
+					{
+						pageTitle: page.title,
+					}
+				);
 			}
 		}
 

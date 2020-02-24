@@ -17,8 +17,8 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
+import { toastService } from '../../../shared/services';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import toastService from '../../../shared/services/toast-service';
 
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';

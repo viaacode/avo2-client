@@ -20,7 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
-import toastService from '../../../shared/services/toast-service';
+import { toastService } from '../../../shared/services';
 import { createZendeskTicket } from '../../authentication.service';
 import { redirectToClientPage } from '../../helpers/redirects';
 

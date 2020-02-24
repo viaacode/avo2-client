@@ -15,7 +15,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
-import { ToastType } from '../../shared/services/toast-service';
+import { ToastType } from '../../shared/services';
 
 import { verifyStamboekNumber } from '../authentication.service';
 import { redirectToClientPage } from '../helpers/redirects';

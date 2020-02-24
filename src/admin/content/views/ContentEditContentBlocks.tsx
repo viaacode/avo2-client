@@ -10,7 +10,7 @@ import {
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
 import { Sidebar } from '../../shared/components';
-import { createKey } from '../../shared/helpers/create-key';
+import { createKey } from '../../shared/helpers';
 import {
 	ContentBlockConfig,
 	ContentBlockStateOption,

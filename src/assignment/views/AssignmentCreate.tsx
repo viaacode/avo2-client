@@ -51,9 +51,9 @@ import {
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import {
@@ -217,7 +217,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				setAssignmentContent(assignmentContentResponse);
 			} catch (err) {
 				console.error(err);
-				toastService.danger(t('Het ophalen van de opdracht inhoud is mislukt'));
+				toastService.danger(
+					t('assignment/views/assignment-create___het-ophalen-van-de-opdracht-inhoud-is-mislukt')
+				);
 			}
 		};
 
@@ -226,7 +228,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			user,
 			initAssignmentData,
 			setLoadingInfo,
-			t('Je hebt geen rechten om een opdracht te maken')
+			t('assignment/views/assignment-create___je-hebt-geen-rechten-om-een-opdracht-te-maken')
 		);
 	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
 

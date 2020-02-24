@@ -23,8 +23,8 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
+import { toastService } from '../../../shared/services';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import toastService from '../../../shared/services/toast-service';
 import { ContentBlockPreview } from '../../content-block/components';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';

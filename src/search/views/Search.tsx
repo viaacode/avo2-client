@@ -44,7 +44,7 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { copyToClipboard, navigate } from '../../shared/helpers';
-import toastService from '../../shared/services/toast-service';
+import { toastService } from '../../shared/services';
 
 import { SearchFilterControls, SearchResults } from '../components';
 import {

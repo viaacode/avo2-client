@@ -39,8 +39,8 @@ import {
 	LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { ASSIGNMENT_PATH } from '../assignment.const';
@@ -295,7 +295,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					.then(() => {
 						toastService.success(
 							isAssignmentResponseArchived()
-								? t('De opdracht is gedearchiveerd')
+								? t('assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd')
 								: t('assignment/views/assignment-detail___de-opdracht-is-gearchiveerd')
 						);
 

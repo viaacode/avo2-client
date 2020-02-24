@@ -44,22 +44,19 @@ import { PermissionNames } from '../../authentication/helpers/permission-service
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { toEnglishContentType } from '../../collection/collection.types';
 import {
+	checkPermissions,
 	DeleteObjectModal,
 	InputModal,
 	LoadingErrorLoadedComponent,
+	LoadingInfo,
 } from '../../shared/components';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
-import { dataService } from '../../shared/services/data-service';
+import { dataService, toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import {
-	checkPermissions,
-	LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ASSIGNMENT_PATH, CONTENT_LABEL_TO_QUERY } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,

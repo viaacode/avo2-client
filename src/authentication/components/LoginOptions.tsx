@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import { Button, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
-import toastService from '../../shared/services/toast-service';
+import { toastService } from '../../shared/services';
 
 import { redirectToClientPage, redirectToServerSmartschoolLogin } from '../helpers/redirects';
 

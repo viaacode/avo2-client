@@ -3,8 +3,8 @@ import { get, has, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 
 import { ContentBlockConfig } from '../shared/types';

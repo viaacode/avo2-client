@@ -4,8 +4,8 @@ import { cloneDeep, get, isNil, isString } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../shared/helpers/error';
+import { toastService } from '../shared/services';
 import { ApolloCacheManager } from '../shared/services/data-service';
-import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 
 import { CollectionService } from '../collection/collection.service';

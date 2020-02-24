@@ -6,14 +6,15 @@ import { ValueType } from 'react-select/src/types';
 
 import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
-import toastService from '../../../../shared/services/toast-service';
+import { CustomError } from '../../../../shared/helpers';
+import { toastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
 import { parsePickerItem } from '../../../shared/helpers';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
 
 import { CONTENT_TYPES } from './ContentPicker.const';
 
-const REACT_SELECT_DEFAULT_OPTIONS = {
+export const REACT_SELECT_DEFAULT_OPTIONS = {
 	className: 'c-select',
 	classNamePrefix: 'c-select',
 };
@@ -25,7 +26,7 @@ export interface ContentPickerProps {
 	currentSelection?: PickerItem;
 }
 
-const ContentPicker: FunctionComponent<ContentPickerProps> = ({
+export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	selectableTypes,
 	onSelect,
 	errors = [],
@@ -88,6 +89,7 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	const onChangeType = (selected: ValueType<PickerTypeOption>) => {
 		setCurrentType(selected as PickerTypeOption);
+		setCurrentValue(null);
 	};
 
 	const renderGroupLabel = (data: any) => <span>{data.label}</span>;
@@ -122,8 +124,17 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				if (!get(value, 'value')) {
 					onSelect(null);
 					setCurrentValue(null);
-					console.error('Deze link is niet navigeerbaar, heeft waarschijnlijk geen pad.');
-					toastService.danger(i18n.t('Deze link is niet navigeerbaar.'), false);
+					console.error(
+						new CustomError('Selected content in content picker does not have a value', null, {
+							selectedItem,
+						})
+					);
+					toastService.danger(
+						i18n.t(
+							'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd'
+						),
+						false
+					);
 					return;
 				}
 
@@ -158,5 +169,3 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		</FormGroup>
 	);
 };
-
-export default ContentPicker;

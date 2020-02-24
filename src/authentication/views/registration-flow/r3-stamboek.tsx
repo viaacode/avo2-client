@@ -14,7 +14,7 @@ import {
 
 import { Link } from 'react-router-dom';
 import { APP_PATH } from '../../../constants';
-import toastService from '../../../shared/services/toast-service';
+import { toastService } from '../../../shared/services';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 

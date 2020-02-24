@@ -10,17 +10,12 @@ export enum PageType {
 }
 
 export enum ContentPageType {
-	NewsOverview = 'NIEUWS_OVERZICHT',
 	NewsItem = 'NIEUWS_ITEM',
-	FaqOverview = 'FAQ_OVERZICHT',
 	FaqItem = 'FAQ_ITEM',
 	Screencast = 'SCREENCAST',
 	Page = 'PAGINA',
 	Project = 'PROJECT',
-}
-
-export interface ContentTypesResponse {
-	value: string;
+	overview = 'OVERZICHT',
 }
 
 export enum ContentWidth {

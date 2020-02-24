@@ -25,9 +25,9 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService from '../../shared/services/toast-service';
 
 import './ItemVideoDescription.scss';
 
@@ -164,6 +164,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				token={getEnv('FLOW_PLAYER_TOKEN')}
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
+				autoplay
 			/>
 		</div>
 	);

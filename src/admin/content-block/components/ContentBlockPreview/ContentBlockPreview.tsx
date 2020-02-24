@@ -11,7 +11,9 @@ import {
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
+	BlockProjectsSpotlight,
 	BlockRichText,
+	ButtonAction,
 	Container,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -26,6 +28,7 @@ import {
 } from '../../../shared/types';
 import { CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP } from '../../content-block.const';
 import { MediaPlayer, MediaPlayerTitleTextButton } from '../../helpers/wrappers';
+import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
@@ -55,15 +58,18 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Accordions]: BlockAccordions,
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.ImageGrid]: BlockGrid,
+	[ContentBlockType.PageOverview]: PageOverviewWrapper,
+	[ContentBlockType.ProjectsSpotlight]: BlockProjectsSpotlight,
 });
 
-const REPEATABLE_CONTENT_BLOCKS = [
+export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.Accordions,
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
 	ContentBlockType.ImageGrid,
+	ContentBlockType.ProjectsSpotlight,
 ];
 
 const IGNORE_BLOCK_LEVEL_PROPS = ['position', 'elements', 'blockType'];
@@ -101,6 +107,12 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				navigateToContentType(innerState.buttonAction, history);
 			};
 		});
+	}
+
+	if (blockState.blockType === ContentBlockType.ProjectsSpotlight) {
+		stateToSpread.navigate = (buttonAction: ButtonAction) => {
+			navigateToContentType(buttonAction, history);
+		};
 	}
 
 	return (

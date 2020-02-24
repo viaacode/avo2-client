@@ -40,8 +40,7 @@ import {
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, CustomError, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { useTableSort } from '../../shared/hooks';
-import { dataService } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
+import { dataService, toastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
@@ -157,7 +156,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 			refetchAssignments();
 
-			toastService.success(t('Het dupliceren van de opdracht is gelukt'));
+			toastService.success(
+				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
+			);
 		} catch (err) {
 			console.error('Failed to copy the assignment', err, { newTitle, assignment });
 			toastService.danger(
@@ -194,7 +195,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			console.error(err);
 			toastService.danger(
 				activeView === 'archived_assignments'
-					? t('Het dearchiveren van de opdracht is mislukt')
+					? t('assignment/views/assignment-overview___het-dearchiveren-van-de-opdracht-is-mislukt')
 					: t('assignment/views/assignment-overview___het-archiveren-van-de-opdracht-is-mislukt')
 			);
 		}

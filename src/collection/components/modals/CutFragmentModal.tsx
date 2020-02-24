@@ -23,18 +23,19 @@ import {
 	getEnv,
 	toSeconds,
 } from '../../../shared/helpers';
+import { toastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
-import toastService from '../../../shared/services/toast-service';
 import { KeyCode } from '../../../shared/types';
 
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
+import { CollectionAction } from '../CollectionOrBundleEdit';
 
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	itemMetaData: Avo.Item.Item;
 	fragment: Avo.Collection.Fragment;
-	onFragmentChanged: (fragment: Avo.Collection.Fragment) => void;
+	changeCollectionState: (action: CollectionAction) => void;
 	updateCuePoints: (cuepoints: any) => void;
 	onClose: () => void;
 }
@@ -43,7 +44,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	onClose,
 	isOpen,
 	itemMetaData,
-	onFragmentChanged,
+	changeCollectionState,
 	fragment,
 	updateCuePoints,
 }) => {
@@ -98,14 +99,28 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			{ externalId: fragment.external_id, startTime: startTime || 0 },
 		]);
 
-		onFragmentChanged({
-			...fragment,
-			start_oc: startTime,
-			end_oc: endTime,
-			...(videoStills && videoStills.length
-				? { thumbnail_path: videoStills[0].thumbnailImagePath }
-				: {}),
+		changeCollectionState({
+			type: 'UPDATE_FRAGMENT_PROP',
+			fragmentId: fragment.id,
+			fragmentProp: 'start_oc',
+			fragmentPropValue: start,
 		});
+
+		changeCollectionState({
+			type: 'UPDATE_FRAGMENT_PROP',
+			fragmentId: fragment.id,
+			fragmentProp: 'end_oc',
+			fragmentPropValue: endTime,
+		});
+
+		if (videoStills && videoStills.length) {
+			changeCollectionState({
+				type: 'UPDATE_FRAGMENT_PROP',
+				fragmentId: fragment.id,
+				fragmentProp: 'thumbnail_path',
+				fragmentPropValue: videoStills[0].previewImagePath,
+			});
+		}
 
 		updateCuePoints({
 			start: startTime,

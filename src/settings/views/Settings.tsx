@@ -6,7 +6,7 @@ import { BlockHeading, Container, Navbar, Tabs, Toolbar, ToolbarLeft } from '@vi
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { buildLink } from '../../shared/helpers';
-import toastService from '../../shared/services/toast-service';
+import { toastService } from '../../shared/services';
 
 import { Account, Email, Notifications, Profile } from '../components';
 import {

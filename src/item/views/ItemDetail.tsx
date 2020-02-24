@@ -54,9 +54,9 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import toastService from '../../shared/services/toast-service';
 
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { dataService } from '../../shared/services/data-service';
@@ -171,7 +171,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van het item is mislukt'),
+					message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
 				});
 			}
 		};
@@ -553,7 +553,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					/>
 				)}
 				<ShareThroughEmailModal
-					modalTitle={t('Deel dit item')}
+					modalTitle={t('item/views/item-detail___deel-dit-item')}
 					type="item"
 					emailLinkHref={window.location.href}
 					emailLinkTitle={item.title}

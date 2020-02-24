@@ -17,7 +17,7 @@ interface ActionsBarprops {
 	fixed?: boolean;
 }
 
-const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => {
+export const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => {
 	return (
 		<Navbar
 			autoHeight
@@ -39,5 +39,3 @@ const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => 
 		</Navbar>
 	);
 };
-
-export default ActionsBar;

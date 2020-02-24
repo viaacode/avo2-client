@@ -13,7 +13,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
-import toastService from '../../../shared/services/toast-service';
+import { toastService } from '../../../shared/services';
 import { copyToClipboard } from '../../helpers';
 import { shareThroughEmail } from '../../helpers/share-through-email';
 
@@ -43,14 +43,22 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const copyLink = () => {
 		copyToClipboard(emailLinkHref);
-		toastService.success(t('De url is naar het klembord gekopieerd'));
+		toastService.success(
+			t(
+				'shared/components/share-through-email-modal/share-through-email-modal___de-url-is-naar-het-klembord-gekopieerd'
+			)
+		);
 	};
 
 	const sendEmail = async () => {
 		try {
 			setIsProcessing(true);
 			await shareThroughEmail(emailAddress, emailLinkTitle, emailLinkHref, type);
-			toastService.success(t('De email is verstuurd'));
+			toastService.success(
+				t(
+					'shared/components/share-through-email-modal/share-through-email-modal___de-email-is-verstuurd'
+				)
+			);
 		} catch (err) {
 			console.error('Failed to send email to share item', err, {
 				emailAddress,
@@ -74,7 +82,9 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 		>
 			<ModalBody>
 				<BlockHeading type="h4">
-					<Trans>Kopieer deze publieke link</Trans>
+					<Trans i18nKey="shared/components/share-through-email-modal/share-through-email-modal___kopieer-deze-publieke-link">
+						Kopieer deze publieke link
+					</Trans>
 				</BlockHeading>
 				<Trans parent="p">
 					Let wel, enkel personen met een Archief voor Onderwijs account zullen deze link kunnen
@@ -88,24 +98,35 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 							</FlexItem>
 							<FlexItem shrink>
 								<Spacer margin="left-small">
-									<Button label={t('Kopieer link')} onClick={copyLink} />
+									<Button
+										label={t(
+											'shared/components/share-through-email-modal/share-through-email-modal___kopieer-link'
+										)}
+										onClick={copyLink}
+									/>
 								</Spacer>
 							</FlexItem>
 						</Flex>
 					</Box>
 				</Spacer>
 				<BlockHeading type="h4">
-					<Trans>Stuur een link via email</Trans>
+					<Trans i18nKey="shared/components/share-through-email-modal/share-through-email-modal___stuur-een-link-via-email">
+						Stuur een link via email
+					</Trans>
 				</BlockHeading>
 				<p>
-					<Trans>Wij sturen voor jou een mailtje met deze link.</Trans>
+					<Trans i18nKey="shared/components/share-through-email-modal/share-through-email-modal___wij-sturen-voor-jou-een-mailtje-met-deze-link">
+						Wij sturen voor jou een mailtje met deze link.
+					</Trans>
 				</p>
 				<Spacer margin="top-large">
 					<Box backgroundColor="gray" condensed>
 						<Flex wrap justify="between">
 							<FlexItem>
 								<TextInput
-									placeholder={t('Uw e-mailadres...')}
+									placeholder={t(
+										'shared/components/share-through-email-modal/share-through-email-modal___uw-e-mailadres'
+									)}
 									value={emailAddress}
 									onChange={setEmailAddress}
 								/>
@@ -116,7 +137,15 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 										type="primary"
 										onClick={sendEmail}
 										disabled={isProcessing}
-										label={isProcessing ? t('Versturen...') : t('Verzenden')}
+										label={
+											isProcessing
+												? t(
+														'shared/components/share-through-email-modal/share-through-email-modal___versturen'
+												  )
+												: t(
+														'shared/components/share-through-email-modal/share-through-email-modal___verzenden'
+												  )
+										}
 									/>
 								</Spacer>
 							</FlexItem>

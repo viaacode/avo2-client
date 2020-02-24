@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import toastService from '../../shared/services/toast-service';
+import { toastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 
 export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {

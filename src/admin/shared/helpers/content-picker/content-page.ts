@@ -17,7 +17,7 @@ const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItem[] => {
 	const parsedContentItems = raw.map(
 		(item: Avo.Content.Content): PickerSelectItem => ({
 			label: item.title,
-			value: parsePickerItem('CONTENT_PAGE', item.path),
+			value: parsePickerItem('CONTENT_PAGE', item.path as string), // TODO enforce path in database
 		})
 	);
 

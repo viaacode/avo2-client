@@ -18,6 +18,7 @@ export const INITIAL_RICH_TEXT_BLOCK_STATE = (position: number): DefaultContentB
 
 export const RICH_TEXT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/rich-text___tekst'),
+	type: ContentBlockType.RichText,
 	components: {
 		state: INITIAL_RICH_TEXT_BLOCK_COMPONENT_STATE(),
 		fields: {

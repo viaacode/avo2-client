@@ -41,9 +41,9 @@ import {
 	ControlledDropdown,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
+	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -56,9 +56,9 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import { COLLECTION_PATH } from '../collection.const';
@@ -640,7 +640,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					deleteObjectCallback={() => onDeleteCollection()}
 				/>
 				<ShareThroughEmailModal
-					modalTitle={t('Deel deze collectie')}
+					modalTitle={t('collection/views/collection-detail___deel-deze-collectie')}
 					type="collection"
 					emailLinkHref={window.location.href}
 					emailLinkTitle={(collection as Avo.Collection.Collection).title}

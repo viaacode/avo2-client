@@ -32,7 +32,7 @@ import {
 	getNavigationItems,
 	NavItemMap,
 } from '../../services/navigation-items-service';
-import toastService from '../../services/toast-service';
+import { toastService } from '../../services/toast-service';
 import { NavigationItemInfo } from '../../types';
 
 import './Navigation.scss';

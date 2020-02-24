@@ -14,7 +14,7 @@ interface SidebarProps {
 	navItems?: NavigationItemInfo[];
 }
 
-const Sidebar: FunctionComponent<SidebarProps> = ({
+export const Sidebar: FunctionComponent<SidebarProps> = ({
 	children,
 	className,
 	headerLink,
@@ -50,5 +50,3 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 		</div>
 	</div>
 );
-
-export default Sidebar;

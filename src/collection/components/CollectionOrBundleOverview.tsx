@@ -36,8 +36,8 @@ import {
 	getAvatarProps,
 	navigate,
 } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
@@ -336,7 +336,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						jou delen die je dan hier terugvindt.
 					</Trans>
 				) : (
-					<Trans i18nKey="collection/components/collection-or-bundle-overview___een-bundel-is-een-verzameling-van-collecties-rond-een-bepaald-thema-of-voor-een-bepaalde-les-nadat-je-een-bundel-hebt-aangemaakt-kan-je-deze-delen-met-andere-gebruikers-om-samen-aan-te-werken-andere-gebruikers-kunnen-ook-bundels-met-jou-delen-die-je-dan-hier-terugvindt">
+					<Trans i18nKey="collection/components/beschrijving-hoe-collecties-aan-te-maken">
 						Een bundel is een verzameling van collecties rond een bepaald thema of voor een bepaalde
 						les. Nadat je een bundel hebt aangemaakt kan je deze delen met andere gebruikers om
 						samen aan te werken. Andere gebruikers kunnen ook bundels met jou delen die je dan hier

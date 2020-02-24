@@ -4,15 +4,15 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
 import { ContentBlockConfig } from '../shared/types';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
-import { GET_CONTENT, GET_CONTENT_BY_ID, GET_CONTENT_TYPES } from './content.gql';
-import { ContentTypesResponse } from './content.types';
+import { GET_CONTENT_BY_ID, GET_CONTENT_PAGES, GET_CONTENT_TYPES } from './content.gql';
+import { ContentPageType } from './content.types';
 
 export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
 	try {
@@ -33,7 +33,7 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 export const fetchContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
 	try {
 		const response = await dataService.query({
-			query: GET_CONTENT,
+			query: GET_CONTENT_PAGES,
 			variables: { limit, order: { title: 'asc' } },
 		});
 
@@ -49,11 +49,12 @@ export const fetchContentItems = async (limit: number): Promise<Avo.Content.Cont
 	}
 };
 
-export const fetchContentTypes = async (): Promise<ContentTypesResponse[] | null> => {
+export const fetchContentTypes = async (): Promise<ContentPageType[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
-
-		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, null);
+		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, []).map(
+			(obj: { value: ContentPageType }) => obj.value
+		);
 	} catch (err) {
 		console.error('Failed to fetch content types', err);
 		toastService.danger(

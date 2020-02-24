@@ -6,9 +6,8 @@ import { Avo } from '@viaa/avo2-types';
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError } from '../shared/helpers';
-import { ApolloCacheManager, dataService } from '../shared/services/data-service';
+import { ApolloCacheManager, dataService, toastService } from '../shared/services';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
-import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 
 import {
@@ -75,6 +74,13 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to insert collection', err, { newCollection });
 		}
+	}
+
+	public static reorderFragments(fragments: Avo.Collection.Fragment[]): Avo.Collection.Fragment[] {
+		return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
+			...fragment,
+			position: index + 1,
+		}));
 	}
 
 	public static async updateCollection(
