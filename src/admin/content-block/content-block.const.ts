@@ -200,6 +200,11 @@ export const BACKGROUND_COLOR_OPTIONS: SelectOption<ContentBlockBackgroundColor>
 	},
 ];
 
+export const DARK_BACKGROUND_COLOR_OPTIONS: ContentBlockBackgroundColor[] = [
+	ContentBlockBackgroundColor.NightBlue,
+	ContentBlockBackgroundColor.Teal,
+];
+
 export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
 	{ label: 'Links', value: 'left' },
 	{ label: 'Gecentreerd', value: 'center' },
