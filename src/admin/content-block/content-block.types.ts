@@ -74,6 +74,7 @@ export type ContentBlockComponentState =
 	| ImageBlockComponentState
 	| ImageGridBlockComponentStateFields
 	| IntroBlockComponentState
+	| MediaGridBlockComponentState
 	| MediaPlayerBlockComponentState
 	| RichTextBlockComponentState
 	| PageOverviewBlockComponentStateFields;
@@ -95,6 +96,7 @@ export enum ContentBlockEditor {
 	IconPicker = 'IconPicker',
 	MultiRange = 'MultiRange',
 	Select = 'Select',
+	TextArea = 'TextArea',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
 	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
@@ -235,4 +237,15 @@ export interface MediaPlayerTitleTextButtonBlockComponentState {
 	buttonType?: ButtonType;
 	buttonAction?: ButtonAction;
 	align: AlignOption;
+}
+
+export interface MediaGridBlockComponentState {
+	mediaItem?: ButtonAction;
+}
+
+export interface MediaGridBlockState extends DefaultContentBlockState {
+	ctaTitle?: string;
+	ctaContent?: string;
+	ctaButtonLabel?: string;
+	ctaButtonAction?: ButtonAction;
 }

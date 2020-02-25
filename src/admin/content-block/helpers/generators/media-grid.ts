@@ -1,49 +1,68 @@
 import i18n from '../../../../shared/translations/i18n';
 
 import {
-	AccordionsBlockComponentState,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
-	DefaultContentBlockState,
+	MediaGridBlockComponentState,
+	MediaGridBlockState,
 } from '../../content-block.types';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-const EMPTY_MEDIA_GRID: AccordionsBlockComponentState = {
-	title: '',
-	content: '',
-};
+const EMPTY_MEDIA_GRID: MediaGridBlockComponentState = {};
 
-export const INITIAL_MEDIA_GRID_COMPONENTS_STATE = (): AccordionsBlockComponentState[] => [
+export const INITIAL_MEDIA_GRID_COMPONENTS_STATE = (): MediaGridBlockComponentState[] => [
 	EMPTY_MEDIA_GRID,
 ];
 
-export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Accordions, position);
+export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): MediaGridBlockState => ({
+	...BLOCK_STATE_DEFAULTS(ContentBlockType.MediaGrid, position),
+	ctaTitle: '',
+	ctaContent: '',
+	ctaButtonLabel: '',
+	ctaButtonAction: { type: 'ITEM', value: '' },
+});
 
 export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('admin/content-block/helpers/generators/accordions___accordeons'),
+	name: i18n.t('Media grid'),
 	type: ContentBlockType.MediaGrid,
 	components: {
-		name: i18n.t('admin/content-block/helpers/generators/accordions___accordeon'),
+		name: i18n.t('Media item'),
 		limits: {
 			min: 1,
 			max: 8,
 		},
 		state: INITIAL_MEDIA_GRID_COMPONENTS_STATE(),
 		fields: {
-			title: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/defaults___tekst-is-verplicht'),
-				{
-					label: i18n.t('admin/content-block/helpers/generators/accordions___titel'),
-					editorType: ContentBlockEditor.TextInput,
-				}
-			),
-			content: TEXT_FIELD(),
+			mediaItem: {
+				label: i18n.t('Selecteer uit items en collecties'),
+				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					selectableTypes: ['ITEM', 'COLLECTION'],
+				},
+			},
 		},
 	},
 	block: {
 		state: INITIAL_MEDIA_GRID_BLOCK_STATE(position),
-		fields: BLOCK_FIELD_DEFAULTS(),
+		fields: {
+			ctaTitle: TEXT_FIELD(i18n.t('CTA titel is verplicht'), {
+				label: i18n.t('CTA titel'),
+				editorType: ContentBlockEditor.TextInput,
+			}),
+			ctaContent: TEXT_FIELD(i18n.t('CTA content is verplicht'), {
+				label: i18n.t('CTA omschrijving'),
+				editorType: ContentBlockEditor.TextArea,
+			}),
+			ctaButtonLabel: TEXT_FIELD(i18n.t('CTA knop tekst is verplicht'), {
+				label: i18n.t('CTA knop: Tekst'),
+				editorType: ContentBlockEditor.TextInput,
+			}),
+			ctaButtonAction: {
+				label: i18n.t('CTA knop: Actie'),
+				editorType: ContentBlockEditor.ContentPicker,
+			},
+			...BLOCK_FIELD_DEFAULTS(),
+		},
 	},
 });

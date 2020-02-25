@@ -3,6 +3,7 @@ import {
 	MultiRange,
 	Select,
 	SelectOption,
+	TextArea,
 	TextInput,
 	WYSIWYG,
 } from '@viaa/avo2-components';
@@ -91,6 +92,7 @@ export const EDITOR_TYPES_MAP = {
 	AlignSelect,
 	ColorSelect,
 	Select,
+	TextArea,
 	TextInput,
 	WYSIWYG,
 	IconPicker,
@@ -230,6 +232,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 	{
 		label: i18n.t('admin/content-block/content-block___afbeelding-grid'),
 		value: ContentBlockType.ImageGrid,
+	},
+	{
+		label: i18n.t('Media grid'),
+		value: ContentBlockType.MediaGrid,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___pagina-overzicht'),
