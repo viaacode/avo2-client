@@ -116,6 +116,10 @@ export enum ContentBlockBackgroundColor {
 	Gray50 = 'gray-50',
 	White = 'white',
 	NightBlue = 'night-blue',
+	Teal = 'teal',
+	TealBright = 'teal-bright',
+	SoftBlue = 'soft-blue',
+	OceanGreen = 'ocean-green',
 }
 
 // These match the content_block_types enums from graphql

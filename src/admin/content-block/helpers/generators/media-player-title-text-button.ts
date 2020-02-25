@@ -1,11 +1,7 @@
 import i18n from '../../../../shared/translations/i18n';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
-import {
-	BUTTON_TYPE_OPTIONS,
-	HEADING_LEVEL_OPTIONS,
-	WIDTH_OPTIONS,
-} from '../../content-block.const';
+import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockBackgroundColor,
 	ContentBlockConfig,
@@ -69,15 +65,6 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					selectableTypes: ['ITEM'],
-				},
-			},
-			mediaWidth: {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/media-player-title-text-button___breedte'
-				),
-				editorType: ContentBlockEditor.Select,
-				editorProps: {
-					options: WIDTH_OPTIONS,
 				},
 			},
 			headingTitle: TEXT_FIELD(
