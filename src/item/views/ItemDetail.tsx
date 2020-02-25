@@ -61,7 +61,7 @@ import {
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
 import { dataService } from '../../shared/services/data-service';
-import { trackLogEvents } from '../../shared/services/event-logging-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import toastService from '../../shared/services/toast-service';
 

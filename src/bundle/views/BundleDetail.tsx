@@ -90,6 +90,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [viewCountsById, setViewCountsById] = useState<{ [id: string]: number }>({});
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -163,6 +164,18 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			}
 
 			BookmarksViewsPlaysService.action('view', 'bundle', bundleObj.id, user);
+
+			// Get view counts for each fragment
+			try {
+				setViewCountsById(
+					await BookmarksViewsPlaysService.getMultipleViewCounts(
+						bundleObj.collection_fragments.map(fragment => fragment.external_id),
+						'collection'
+					)
+				);
+			} catch (err) {
+				console.error(new CustomError('Failed to get counts for bundle fragments', err, {}));
+			}
 
 			setPermissions(permissionObj);
 			setBundle(bundleObj || null);
@@ -341,7 +354,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category="collection">
-								<MetaDataItem label={'370'} icon="eye" />
+								<MetaDataItem
+									label={String(viewCountsById[fragment.external_id] || 0)}
+									icon="eye"
+								/>
 								<MetaDataItem label={fromNow(collection.updated_at)} />
 							</MetaData>
 						</MediaCardMetaData>

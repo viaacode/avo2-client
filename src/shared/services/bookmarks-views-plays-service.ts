@@ -7,6 +7,8 @@ import i18n from '../translations/i18n';
 import {
 	GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
 	GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
+	GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
+	GET_MULTIPLE_ITEM_VIEW_COUNTS,
 	INCREMENT_COLLECTION_PLAYS,
 	INCREMENT_COLLECTION_VIEWS,
 	INCREMENT_ITEM_PLAYS,
@@ -304,6 +306,20 @@ export class BookmarksViewsPlaysService {
 			);
 			return false;
 		}
+	}
+
+	public static async getMultipleViewCounts(
+		contentIds: string[],
+		type: EventContentTypeSimplified
+	): Promise<{ [uuid: string]: number }> {
+		const response = await dataService.query({
+			query: type === 'item' ? GET_MULTIPLE_ITEM_VIEW_COUNTS : GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
+			variables: { uuids: contentIds },
+		});
+		const items = get(response, 'data.items', []);
+		return Object.fromEntries(
+			items.map((item: { id: string; count: number }) => [item.id, item.count])
+		);
 	}
 
 	private static async insertInitialCount(

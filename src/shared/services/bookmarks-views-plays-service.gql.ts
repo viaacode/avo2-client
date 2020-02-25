@@ -46,7 +46,7 @@ export const INCREMENT_ITEM_VIEWS = gql`
 
 export const INCREMENT_COLLECTION_VIEWS = gql`
 	mutation increaseCollectionViews($collectionUuid: uuid!) {
-		update_app_collection_plays(
+		update_app_collection_views(
 			where: { collection_uuid: { _eq: $collectionUuid } }
 			_inc: { count: 1 }
 		) {
@@ -105,25 +105,13 @@ export const INIT_COLLECTION_PLAYS = gql`
 
 export const GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS = gql`
 	query getItemBookmarkViewPlayCounts($itemUuid: uuid!, $profileId: uuid) {
-		app_item_plays(
-			where: { item_id: { _eq: $itemUuid } }
-			order_by: { created_at: asc }
-			limit: 1
-		) {
+		app_item_plays(where: { item_id: { _eq: $itemUuid } }, limit: 1) {
 			count
 		}
-		app_item_views(
-			where: { item_id: { _eq: $itemUuid } }
-			order_by: { created_at: asc }
-			limit: 1
-		) {
+		app_item_views(where: { item_id: { _eq: $itemUuid } }, limit: 1) {
 			count
 		}
-		app_item_bookmarks_aggregate(
-			where: { item_id: { _eq: $itemUuid } }
-			order_by: { created_at: asc }
-			limit: 1
-		) {
+		app_item_bookmarks_aggregate(where: { item_id: { _eq: $itemUuid } }) {
 			aggregate {
 				count
 			}
@@ -139,25 +127,13 @@ export const GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS = gql`
 
 export const GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS = gql`
 	query getCollectionBookmarkViewPlayCounts($collectionUuid: uuid!, $profileId: uuid) {
-		app_collection_views(
-			where: { collection_uuid: { _eq: $collectionUuid } }
-			order_by: { created_at: asc }
-			limit: 1
-		) {
+		app_collection_views(where: { collection_uuid: { _eq: $collectionUuid } }, limit: 1) {
 			count
 		}
-		app_collection_plays(
-			where: { collection_uuid: { _eq: $collectionUuid } }
-			order_by: { created_at: asc }
-			limit: 1
-		) {
+		app_collection_plays(where: { collection_uuid: { _eq: $collectionUuid } }, limit: 1) {
 			count
 		}
-		app_collection_bookmarks_aggregate(
-			where: { collection_uuid: { _eq: $collectionUuid } }
-			order_by: { created_at: asc }
-			limit: 1
-		) {
+		app_collection_bookmarks_aggregate(where: { collection_uuid: { _eq: $collectionUuid } }) {
 			aggregate {
 				count
 			}
@@ -167,6 +143,24 @@ export const GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS = gql`
 			limit: 1
 		) {
 			id
+		}
+	}
+`;
+
+export const GET_MULTIPLE_ITEM_VIEW_COUNTS = gql`
+	query getMultipleItemViewCounts($uuids: [uuid!]) {
+		items: app_item_views(where: { item_id: { _in: $uuids } }) {
+			count
+			id: item_id
+		}
+	}
+`;
+
+export const GET_MULTIPLE_COLLECTION_VIEW_COUNTS = gql`
+	query getMultipleCollectionViewCounts($uuids: [uuid!]) {
+		items: app_collection_views(where: { collection_uuid: { _in: $uuids } }) {
+			count
+			id: collection_uuid
 		}
 	}
 `;
