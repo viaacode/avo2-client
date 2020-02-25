@@ -7,11 +7,11 @@ import { parsePickerItem } from './parse-picker';
 
 // Fetch content items from GQL
 export const fetchContentPages = async (
-	keyword: string | null,
+	title: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
-	const contentItems: Avo.Content.Content[] | null = keyword
-		? await getContentItemsByTitle(keyword, limit)
+	const contentItems: Avo.Content.Content[] | null = title
+		? await getContentItemsByTitle(`%${title}`, limit)
 		: await getContentItems(limit);
 
 	return parseContentPages(contentItems || []);

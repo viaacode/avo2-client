@@ -3,7 +3,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../../shared/helpers';
+import { CustomError, performQuery } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
@@ -19,25 +19,6 @@ import {
 } from './content.gql';
 import { ContentPageType } from './content.types';
 
-// TODO: Move to helper file and use in other queries.
-interface Query {
-	query: any;
-	variables?: any;
-}
-
-const performQuery = async (query: Query, subResponse: string, error: string, feedback: string) => {
-	try {
-		const response = await dataService.query(query);
-
-		return get(response, subResponse, null);
-	} catch (err) {
-		console.error(error);
-		toastService.danger(feedback, false);
-
-		return null;
-	}
-};
-
 export const getContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
 	const query = {
 		query: GET_CONTENT_PAGES,
@@ -50,8 +31,8 @@ export const getContentItems = async (limit: number): Promise<Avo.Content.Conten
 	return performQuery(
 		query,
 		`data.${CONTENT_RESULT_PATH.GET}`,
-		'Failed to fetch content items',
-		i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items')
+		'Failed to retrieve content items.',
+		i18n.t('Er ging iets mis tijdens het ophalen van de content items.')
 	);
 };
 
@@ -71,8 +52,8 @@ export const getContentItemsByTitle = async (
 	return performQuery(
 		query,
 		`data.${CONTENT_RESULT_PATH.GET}`,
-		'Failed to fetch content items',
-		i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items')
+		'Failed to retrieve content items by title.',
+		i18n.t('Er ging iets mis tijdens het ophalen van de content items.')
 	);
 };
 
@@ -87,8 +68,8 @@ export const getContentItemById = async (id: number): Promise<Avo.Content.Conten
 	return performQuery(
 		query,
 		`data.${CONTENT_RESULT_PATH.GET}[0]`,
-		`Failed to fetch menu item with id: ${id}`,
-		i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item')
+		`Failed to retrieve content item by id: ${id}.`,
+		i18n.t('Er ging iets mis tijdens het ophalen van het content item.')
 	);
 };
 
@@ -99,7 +80,7 @@ export const getContentTypes = async (): Promise<ContentPageType[] | null> => {
 			(obj: { value: ContentPageType }) => obj.value
 		);
 	} catch (err) {
-		console.error('Failed to fetch content types', err);
+		console.error('Failed to retrieve content types.', err);
 		toastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'),
 			false

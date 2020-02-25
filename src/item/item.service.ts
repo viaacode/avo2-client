@@ -1,26 +1,41 @@
-import { get } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
 
-import { dataService } from '../shared/services/data-service';
-import { GET_ITEMS, GET_ITEMS_BY_KEYWORD } from './item.gql';
+import { performQuery } from '../shared/helpers';
+import i18n from '../shared/translations/i18n';
+
+import { GET_ITEMS, GET_ITEMS_BY_TITLE } from './item.gql';
+
 const ITEM_RESULT_PATH = 'app_item_meta';
 
-export const getItems = async (
-	keyword: string | null,
+// TODO: Move to helper file and use in other queries.
+
+export const getItems = async (limit?: number): Promise<Avo.Item.Item[] | null> => {
+	const query = {
+		query: GET_ITEMS,
+		variables: { limit },
+	};
+
+	return performQuery(
+		query,
+		`data.${ITEM_RESULT_PATH}`,
+		'Failed to retrieve items.',
+		i18n.t('Er ging iets mis tijdens het ophalen van de items.')
+	);
+};
+
+export const getItemsByTitle = async (
+	title: string,
 	limit?: number
 ): Promise<Avo.Item.Item[] | null> => {
-	try {
-		const queryOptions = {
-			query: keyword ? GET_ITEMS_BY_KEYWORD : GET_ITEMS,
-			variables: keyword ? { limit, keyword: `%${keyword}%` } : { limit },
-		};
+	const query = {
+		query: GET_ITEMS_BY_TITLE,
+		variables: { limit, title: `%${title}%` },
+	};
 
-		const response = await dataService.query(queryOptions);
-
-		return get(response, `data.${ITEM_RESULT_PATH}`, null);
-	} catch (err) {
-		console.error('Failed to fetch items');
-		return null;
-	}
+	return performQuery(
+		query,
+		`data.${ITEM_RESULT_PATH}`,
+		'Failed to retrieve items by title.',
+		i18n.t('Er ging iets mis tijdens het ophalen van de items.')
+	);
 };

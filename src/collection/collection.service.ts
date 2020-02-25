@@ -4,7 +4,7 @@ import { cloneDeep, compact, get, isNil, omit, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
+import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError } from '../shared/helpers';
 import { ApolloCacheManager, dataService } from '../shared/services/data-service';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
@@ -13,12 +13,11 @@ import i18n from '../shared/translations/i18n';
 
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_BUNDLES,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
-	GET_COLLECTIONS_BY_KEYWORD,
+	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
@@ -347,14 +346,11 @@ export class CollectionService {
 		return omit(collection, propertiesToDelete);
 	}
 
-	public static async getBundles(
-		keyword: string,
-		limit?: number
-	): Promise<Avo.Collection.Collection[]> {
+	public static async getBundles(limit?: number): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_BUNDLES,
-				variables: { keyword, limit },
+				variables: { limit },
 			});
 
 			return get(response, 'data.app_collections', []);
@@ -367,21 +363,59 @@ export class CollectionService {
 		}
 	}
 
-	public static async getCollections(
-		keyword: string | null,
-		limit: number
+	public static async getBundlesByTitle(
+		title: string,
+		limit?: number
 	): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
-				query: keyword ? GET_COLLECTIONS_BY_KEYWORD : GET_COLLECTIONS,
-				variables: keyword ? { limit, keyword: `%${keyword}%` } : { limit },
+				query: GET_BUNDLES_BY_TITLE,
+				variables: { title, limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			const error = new CustomError('Het ophalen van de bundels is mislukt.', err, {
+				query: 'GET_BUNDLES_BY_TITLE',
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
+	public static async getCollections(limit: number): Promise<Avo.Collection.Collection[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTIONS,
+				variables: { limit },
 			});
 
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_COLLECTIONS',
-				variables: { keyword, limit },
+				variables: { limit },
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
+	public static async getCollectionsByTitle(
+		title: string,
+		limit: number
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTIONS_BY_TITLE,
+				variables: { title, limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
+				query: 'GET_COLLECTIONS_BY_TITLE',
+				variables: { title, limit },
 			});
 			console.error(error);
 			throw error;

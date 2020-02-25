@@ -3,6 +3,7 @@ export * from './dropdown';
 export * from './env';
 export * from './error';
 export * from './formatters';
+export * from './gql';
 export * from './link';
 export * from './parsers/duration';
 export * from './redux/create-reducer';
