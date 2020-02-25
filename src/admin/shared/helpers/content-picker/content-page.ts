@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { fetchContentItems } from '../../../content/content.service';
+import { getContentItems, getContentItemsByTitle } from '../../../content/content.service';
 
 import { PickerSelectItem } from '../../types';
 import { parsePickerItem } from './parse-picker';
@@ -10,10 +10,9 @@ export const fetchContentPages = async (
 	keyword: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
-	const contentItems: Avo.Content.Content[] | null = await fetchContentItems(
-		keyword ? `%${keyword}%` : '%',
-		limit
-	);
+	const contentItems: Avo.Content.Content[] | null = keyword
+		? await getContentItemsByTitle(keyword, limit)
+		: await getContentItems(limit);
 
 	return parseContentPages(contentItems || []);
 };

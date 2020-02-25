@@ -230,6 +230,15 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 `;
 
 export const GET_COLLECTIONS = gql`
+	query getCollections($limit: Int!) {
+		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 3 } }, limit: $limit) {
+			id
+			title
+		}
+	}
+`;
+
+export const GET_COLLECTIONS_BY_KEYWORD = gql`
 	query getCollections($keyword: String!, $limit: Int!) {
 		app_collections(
 			order_by: { title: asc }

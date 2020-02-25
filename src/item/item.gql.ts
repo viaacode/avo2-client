@@ -1,6 +1,15 @@
 import { gql } from 'apollo-boost';
 
 export const GET_ITEMS = gql`
+	query getItems($limit: Int!) {
+		app_item_meta(order_by: { title: asc }, limit: $limit) {
+			external_id
+			title
+		}
+	}
+`;
+
+export const GET_ITEMS_BY_KEYWORD = gql`
 	query getItems($keyword: String!, $limit: Int!) {
 		app_item_meta(order_by: { title: asc }, limit: $limit, where: { title: { _ilike: $keyword } }) {
 			external_id

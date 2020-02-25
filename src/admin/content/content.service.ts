@@ -11,50 +11,88 @@ import { insertContentBlocks, updateContentBlocks } from '../content-block/conte
 import { ContentBlockConfig } from '../content-block/content-block.types';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
-import { GET_CONTENT_BY_ID, GET_CONTENT_PAGES, GET_CONTENT_TYPES } from './content.gql';
+import {
+	GET_CONTENT_BY_ID,
+	GET_CONTENT_PAGES,
+	GET_CONTENT_PAGES_BY_TITLE,
+	GET_CONTENT_TYPES,
+} from './content.gql';
 import { ContentPageType } from './content.types';
 
-export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
-	try {
-		const response = await dataService.query({ query: GET_CONTENT_BY_ID, variables: { id } });
+// TODO: Move to helper file and use in other queries.
+interface Query {
+	query: any;
+	variables?: any;
+}
 
-		return get(response, `data.${CONTENT_RESULT_PATH.GET}[0]`, null) as Avo.Content.Content | null;
+const performQuery = async (query: Query, subResponse: string, error: string, feedback: string) => {
+	try {
+		const response = await dataService.query(query);
+
+		return get(response, subResponse, null);
 	} catch (err) {
-		console.error(`Failed to fetch menu item with id: ${id}`);
-		toastService.danger(
-			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item'),
-			false
-		);
+		console.error(error);
+		toastService.danger(feedback, false);
 
 		return null;
 	}
 };
 
-export const fetchContentItems = async (
-	keyword: string,
+export const getContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
+	const query = {
+		query: GET_CONTENT_PAGES,
+		variables: {
+			limit,
+			order: { title: 'asc' },
+		},
+	};
+
+	return performQuery(
+		query,
+		`data.${CONTENT_RESULT_PATH.GET}`,
+		'Failed to fetch content items',
+		i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items')
+	);
+};
+
+export const getContentItemsByTitle = async (
+	title: string,
 	limit: number
 ): Promise<Avo.Content.Content[] | null> => {
-	try {
-		const where = { title: { _ilike: keyword } };
+	const query = {
+		query: GET_CONTENT_PAGES_BY_TITLE,
+		variables: {
+			title,
+			limit,
+			order: { title: 'asc' },
+		},
+	};
 
-		const response = await dataService.query({
-			query: GET_CONTENT_PAGES,
-			variables: { where, limit, order: { title: 'asc' } },
-		});
-
-		return get(response, `data.${CONTENT_RESULT_PATH.GET}`, null);
-	} catch (err) {
-		console.error('Failed to fetch content items');
-		toastService.danger(
-			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items'),
-			false
-		);
-
-		return null;
-	}
+	return performQuery(
+		query,
+		`data.${CONTENT_RESULT_PATH.GET}`,
+		'Failed to fetch content items',
+		i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items')
+	);
 };
 
-export const fetchContentTypes = async (): Promise<ContentPageType[] | null> => {
+export const getContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
+	const query = {
+		query: GET_CONTENT_BY_ID,
+		variables: {
+			id,
+		},
+	};
+
+	return performQuery(
+		query,
+		`data.${CONTENT_RESULT_PATH.GET}[0]`,
+		`Failed to fetch menu item with id: ${id}`,
+		i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item')
+	);
+};
+
+export const getContentTypes = async (): Promise<ContentPageType[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
 		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, []).map(

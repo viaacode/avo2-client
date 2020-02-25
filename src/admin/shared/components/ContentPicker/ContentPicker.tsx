@@ -9,7 +9,6 @@ import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../shared/helpers';
 import toastService from '../../../../shared/services/toast-service';
-import i18n from '../../../../shared/translations/i18n';
 import { parsePickerItem } from '../../../shared/helpers';
 import {
 	ContentPickerType,
@@ -55,6 +54,7 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				.fetch(keyword, 20)
 				.then((items: any) => {
 					callback((items as any) || []);
+
 					setCurrentItem(null);
 				})
 				.catch((error: any) => {
@@ -99,7 +99,7 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				})
 			);
 			toastService.danger(
-				i18n.t(
+				t(
 					'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd'
 				),
 				false
@@ -122,13 +122,13 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			{...REACT_SELECT_DEFAULT_OPTIONS}
 			id="content-picker-type"
 			placeholder={t('Type')}
-			aria-label={i18n.t('Selecteer een type')}
+			aria-label={t('Selecteer een type')}
 			options={typeOptions}
 			onChange={onSelectType}
 			value={currentType}
 			isSearchable={false}
 			isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
-			noOptionsMessage={() => i18n.t('Geen types')}
+			noOptionsMessage={() => t('Geen types')}
 		/>
 	);
 
@@ -151,20 +151,20 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		<AsyncSelect
 			{...REACT_SELECT_DEFAULT_OPTIONS}
 			id="content-picker-item"
-			placeholder={t('Item')}
-			aria-label={i18n.t('Selecteer een item')}
+			placeholder={t('Selecteer een item')}
+			aria-label={t('Selecteer een item')}
 			loadOptions={inflatePicker}
 			onChange={onSelectItem}
 			value={currentItem}
 			defaultOptions={options as any}
 			isClearable
-			noOptionsMessage={() => i18n.t('Geen resultaten')}
-			loadingMessage={() => i18n.t('Laden...')}
+			noOptionsMessage={() => t('Geen resultaten')}
+			loadingMessage={() => t('Laden...')}
 		/>
 	);
 
 	const renderTextInputPicker = () => (
-		<TextInput value={input} onChange={onChangeInput} placeholder="http://www.meemoo.be" />
+		<TextInput value={input} onChange={onChangeInput} placeholder={t('https://')} />
 	);
 
 	return (

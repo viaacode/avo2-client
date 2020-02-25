@@ -11,7 +11,7 @@ export const fetchCollections = async (
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	const collections: Avo.Collection.Collection[] | null = await CollectionService.getCollections(
-		keyword ? `%${keyword}%` : '%',
+		keyword,
 		limit
 	);
 

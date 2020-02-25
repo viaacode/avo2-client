@@ -10,7 +10,7 @@ export const fetchItems = async (
 	keyword: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
-	const items: Avo.Item.Item[] | null = await getItems(keyword ? `%${keyword}%` : '%', limit);
+	const items: Avo.Item.Item[] | null = await getItems(keyword, limit);
 
 	return parseItems(items || []);
 };

@@ -18,6 +18,7 @@ import {
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
+	GET_COLLECTIONS_BY_KEYWORD,
 	GET_ITEMS_BY_IDS,
 } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
@@ -367,13 +368,13 @@ export class CollectionService {
 	}
 
 	public static async getCollections(
-		keyword: string,
+		keyword: string | null,
 		limit: number
 	): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
-				query: GET_COLLECTIONS,
-				variables: { keyword, limit },
+				query: keyword ? GET_COLLECTIONS_BY_KEYWORD : GET_COLLECTIONS,
+				variables: keyword ? { limit, keyword: `%${keyword}%` } : { limit },
 			});
 
 			return get(response, 'data.app_collections', []);
