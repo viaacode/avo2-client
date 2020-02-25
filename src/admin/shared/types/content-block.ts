@@ -34,6 +34,10 @@ export enum BackgroundColorOption {
 	Gray50 = 'gray-50',
 	White = 'white',
 	NightBlue = 'night-blue',
+	Teal = 'teal',
+	TealBright = 'teal-bright',
+	SoftBlue = 'soft-blue',
+	OceanGreen = 'ocean-green',
 }
 
 // CONTENT BLOCK CONFIG
@@ -77,11 +81,6 @@ export interface ContentBlockField {
 	editorType: ContentBlockEditor;
 	editorProps?: any;
 	validator?: (value: any) => string[];
-}
-
-export interface ContentBlockMeta {
-	index: number;
-	config: ContentBlockConfig;
 }
 
 // must match the lookup enumeration `content_block_types` on GraphQL.

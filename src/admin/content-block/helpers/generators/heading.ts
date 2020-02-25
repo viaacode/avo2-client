@@ -7,7 +7,7 @@ import {
 	DefaultContentBlockState,
 	HeadingBlockComponentState,
 } from '../../../shared/types';
-import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
+import { HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
 import {
 	ALIGN_FIELD,
@@ -42,7 +42,7 @@ export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			align: ALIGN_FIELD(),

@@ -206,63 +206,165 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 // Options
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<BackgroundColorOption>[] = [
 	{
-		label: 'Wit',
+		label: i18n.t('Wit'),
 		value: BackgroundColorOption.White,
 	},
 	{
-		label: 'Grijs',
+		label: i18n.t('Grijs'),
 		value: BackgroundColorOption.Gray50,
 	},
 	{
-		label: 'Blauw',
+		label: i18n.t('Nachtblauw'),
 		value: BackgroundColorOption.NightBlue,
+	},
+	{
+		label: i18n.t('Zachtblauw'),
+		value: BackgroundColorOption.SoftBlue,
+	},
+	{
+		label: i18n.t('Appelblauwzeegroen'),
+		value: BackgroundColorOption.Teal,
+	},
+	{
+		label: i18n.t('Appelblauwzeegroen helder'),
+		value: BackgroundColorOption.TealBright,
+	},
+	{
+		label: i18n.t('Oceaangroen'),
+		value: BackgroundColorOption.OceanGreen,
 	},
 ];
 
-export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
-	{ label: 'Links', value: 'left' },
-	{ label: 'Gecentreerd', value: 'center' },
-	{ label: 'Rechts', value: 'right' },
+export const DARK_BACKGROUND_COLOR_OPTIONS: BackgroundColorOption[] = [
+	BackgroundColorOption.NightBlue,
+	BackgroundColorOption.Teal,
 ];
 
-export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingTypeOption>[] = [
-	{ label: i18n.t('admin/content-block/content-block___h-2'), value: 'h2' },
-	{ label: i18n.t('admin/content-block/content-block___h-3'), value: 'h3' },
-	{ label: i18n.t('admin/content-block/content-block___h-4'), value: 'h4' },
+export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
+	{
+		label: 'Links',
+		value: 'left',
+	},
+	{
+		label: 'Gecentreerd',
+		value: 'center',
+	},
+	{
+		label: 'Rechts',
+		value: 'right',
+	},
+];
+
+export const HEADING_TYPE_OPTIONS: SelectOption<HeadingTypeOption>[] = [
+	{
+		label: i18n.t('admin/content-block/content-block___h-2'),
+		value: 'h2',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___h-3'),
+		value: 'h3',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___h-4'),
+		value: 'h4',
+	},
 ];
 
 export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOption>[] = [
-	{ label: i18n.t('admin/content-block/content-block___primair'), value: 'primary' },
-	{ label: i18n.t('admin/content-block/content-block___secundair'), value: 'secondary' },
-	{ label: i18n.t('admin/content-block/content-block___secundair-invers'), value: 'secondary-i' },
-	{ label: i18n.t('admin/content-block/content-block___tertiair'), value: 'tertiary' },
-	{ label: i18n.t('admin/content-block/content-block___randloos'), value: 'borderless' },
-	{ label: i18n.t('admin/content-block/content-block___randloos-invers'), value: 'borderless-i' },
-	{ label: i18n.t('admin/content-block/content-block___gevaar'), value: 'danger' },
-	{ label: i18n.t('admin/content-block/content-block___gevaar-hover'), value: 'danger-hover' },
-	{ label: i18n.t('admin/content-block/content-block___link'), value: 'link' },
-	{ label: i18n.t('admin/content-block/content-block___link-inline'), value: 'inline-link' },
+	{
+		label: i18n.t('admin/content-block/content-block___primair'),
+		value: 'primary',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___secundair'),
+		value: 'secondary',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___secundair-invers'),
+		value: 'secondary-i',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___tertiair'),
+		value: 'tertiary',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___randloos'),
+		value: 'borderless',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___randloos-invers'),
+		value: 'borderless-i',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___gevaar'),
+		value: 'danger',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___gevaar-hover'),
+		value: 'danger-hover',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___link'),
+		value: 'link',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___link-inline'),
+		value: 'inline-link',
+	},
 ];
 
 export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
-	{ label: i18n.t('admin/content-block/content-block___paginabreedte'), value: 'full-width' },
-	{ label: i18n.t('admin/content-block/content-block___groot'), value: '500px' },
-	{ label: i18n.t('admin/content-block/content-block___middelgroot'), value: '400px' },
+	{
+		label: i18n.t('admin/content-block/content-block___paginabreedte'),
+		value: 'full-width',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___groot'),
+		value: '500px',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___middelgroot'),
+		value: '400px',
+	},
 ];
 
 export const FILL_OPTIONS: SelectOption<FillOption>[] = [
-	{ label: i18n.t('admin/content-block/content-block___opvullen'), value: 'cover' },
-	{ label: i18n.t('admin/content-block/content-block___volledig-zichtbaar'), value: 'contain' },
-	{ label: i18n.t('admin/content-block/content-block___oorspronkelijke-grootte'), value: 'auto' },
+	{
+		label: i18n.t('admin/content-block/content-block___opvullen'),
+		value: 'cover',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___volledig-zichtbaar'),
+		value: 'contain',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___oorspronkelijke-grootte'),
+		value: 'auto',
+	},
 ];
 
 export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = [
-	{ label: i18n.t('admin/content-block/content-block___menu-balk'), value: 'MENU_BAR' },
-	{ label: i18n.t('admin/content-block/content-block___tags'), value: 'ROUNDED_BADGES' },
+	{
+		label: i18n.t('admin/content-block/content-block___menu-balk'),
+		value: 'MENU_BAR',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___tags'),
+		value: 'ROUNDED_BADGES',
+	},
 ];
 
 export const PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: SelectOption<ContentItemStyle>[] = [
-	{ label: i18n.t('admin/content-block/content-block___lijst'), value: 'LIST' },
-	{ label: i18n.t('admin/content-block/content-block___grid'), value: 'GRID' },
-	{ label: i18n.t('admin/content-block/content-block___accrodions'), value: 'ACCORDION' },
+	{
+		label: i18n.t('admin/content-block/content-block___lijst'),
+		value: 'LIST',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___grid'),
+		value: 'GRID',
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___accrodions'),
+		value: 'ACCORDION',
+	},
 ];

@@ -9,7 +9,7 @@ import {
 	CTAsBlockComponentState,
 	DefaultContentBlockState,
 } from '../../../shared/types';
-import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
+import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
@@ -43,7 +43,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___titel-stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			heading: TEXT_FIELD(
