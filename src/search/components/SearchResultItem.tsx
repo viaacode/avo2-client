@@ -28,8 +28,8 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			date={formatDate(result.dcterms_issued)}
 			// TODO: DISABLED_FEATURE
 			// tags={[{ label: 'Redactiekeuze', id: 'redactiekeuze' }, { label: 'Partner', id: 'partner' }]}
-			viewCount={412}
-			bookmarkCount={85}
+			viewCount={(result as any).views_count || 0}
+			bookmarkCount={(result as any).bookmarks_count || 0}
 			description={result.dcterms_abstract || ''}
 			onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.id, active)}
 		>

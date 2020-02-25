@@ -1,0 +1,172 @@
+import { gql } from 'apollo-boost';
+
+export const INSERT_ITEM_BOOKMARK = gql`
+	mutation insertItemBookmark($bookmarkItem: app_item_bookmarks_insert_input!) {
+		insert_app_item_bookmarks(objects: [$bookmarkItem]) {
+			affected_rows
+		}
+	}
+`;
+
+export const INSERT_COLLECTION_BOOKMARK = gql`
+	mutation insertCollectionBookmark($bookmarkItem: app_collection_bookmarks_insert_input!) {
+		insert_app_collection_bookmarks(objects: [$bookmarkItem]) {
+			affected_rows
+		}
+	}
+`;
+
+export const REMOVE_ITEM_BOOKMARK = gql`
+	mutation deleteItemBookmark($itemUuid: uuid!, $profileId: uuid) {
+		delete_app_item_bookmarks(
+			where: { item_id: { _eq: $itemUuid }, profile_id: { _eq: $profileId } }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const REMOVE_COLLECTION_BOOKMARK = gql`
+	mutation deleteCollectionBookmark($collectionUuid: uuid!, $profileId: uuid) {
+		delete_app_collection_bookmarks(
+			where: { collection_uuid: { _eq: $collectionUuid }, profile_id: { _eq: $profileId } }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const INCREMENT_ITEM_VIEWS = gql`
+	mutation increaseItemViews($itemUuid: uuid!) {
+		update_app_item_views(where: { item_id: { _eq: $itemUuid } }, _inc: { count: 1 }) {
+			affected_rows
+		}
+	}
+`;
+
+export const INCREMENT_COLLECTION_VIEWS = gql`
+	mutation increaseCollectionViews($collectionUuid: uuid!) {
+		update_app_collection_plays(
+			where: { collection_uuid: { _eq: $collectionUuid } }
+			_inc: { count: 1 }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const INIT_ITEM_VIEWS = gql`
+	mutation insertInitialItemViewCount($itemUuid: uuid!) {
+		insert_app_item_views(objects: [{ count: 1, item_id: $itemUuid }]) {
+			affected_rows
+		}
+	}
+`;
+
+export const INIT_COLLECTION_VIEWS = gql`
+	mutation insertInitialCollectionViewCount($collectionUuid: uuid!) {
+		insert_app_collection_views(objects: [{ count: 1, collection_uuid: $collectionUuid }]) {
+			affected_rows
+		}
+	}
+`;
+
+export const INCREMENT_ITEM_PLAYS = gql`
+	mutation increaseCollectionPlays($itemUuid: uuid!) {
+		update_app_item_plays(where: { collection_uuid: { _eq: $itemUuid } }, _inc: { count: 1 }) {
+			affected_rows
+		}
+	}
+`;
+
+export const INCREMENT_COLLECTION_PLAYS = gql`
+	mutation increaseItemPlays($collectionUuid: uuid!) {
+		update_app_collection_plays(where: { item_id: { _eq: $collectionUuid } }, _inc: { count: 1 }) {
+			affected_rows
+		}
+	}
+`;
+
+export const INIT_ITEM_PLAYS = gql`
+	mutation insertInitialItemPlayCount($itemUuid: uuid!) {
+		insert_app_item_plays(objects: [{ count: 1, item_id: $itemUuid }]) {
+			affected_rows
+		}
+	}
+`;
+
+export const INIT_COLLECTION_PLAYS = gql`
+	mutation insertInitialCollectionPlayCount($collectionUuid: uuid!) {
+		insert_app_collection_plays(objects: [{ count: 1, collection_uuid: $collectionUuid }]) {
+			affected_rows
+		}
+	}
+`;
+
+export const GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS = gql`
+	query getItemBookmarkViewPlayCounts($itemUuid: uuid!, $profileId: uuid) {
+		app_item_plays(
+			where: { item_id: { _eq: $itemUuid } }
+			order_by: { created_at: asc }
+			limit: 1
+		) {
+			count
+		}
+		app_item_views(
+			where: { item_id: { _eq: $itemUuid } }
+			order_by: { created_at: asc }
+			limit: 1
+		) {
+			count
+		}
+		app_item_bookmarks_aggregate(
+			where: { item_id: { _eq: $itemUuid } }
+			order_by: { created_at: asc }
+			limit: 1
+		) {
+			aggregate {
+				count
+			}
+		}
+		app_item_bookmarks(
+			where: { profile_id: { _eq: $profileId }, item_id: { _eq: $itemUuid } }
+			limit: 1
+		) {
+			id
+		}
+	}
+`;
+
+export const GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS = gql`
+	query getCollectionBookmarkViewPlayCounts($collectionUuid: uuid!, $profileId: uuid) {
+		app_collection_views(
+			where: { collection_uuid: { _eq: $collectionUuid } }
+			order_by: { created_at: asc }
+			limit: 1
+		) {
+			count
+		}
+		app_collection_plays(
+			where: { collection_uuid: { _eq: $collectionUuid } }
+			order_by: { created_at: asc }
+			limit: 1
+		) {
+			count
+		}
+		app_collection_bookmarks_aggregate(
+			where: { collection_uuid: { _eq: $collectionUuid } }
+			order_by: { created_at: asc }
+			limit: 1
+		) {
+			aggregate {
+				count
+			}
+		}
+		app_collection_bookmarks(
+			where: { profile_id: { _eq: $profileId }, collection_uuid: { _eq: $collectionUuid } }
+			limit: 1
+		) {
+			id
+		}
+	}
+`;

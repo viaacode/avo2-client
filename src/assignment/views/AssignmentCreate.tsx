@@ -52,7 +52,7 @@ import { renderDropdownButton } from '../../shared/components/CheckboxDropdownMo
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
+import { trackLogEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -278,7 +278,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 		);
 
 		if (currentAssignment.id) {
-			trackEvents(
+			trackLogEvents(
 				{
 					object: String(currentAssignment.id),
 					object_type: 'avo_assignment' as any, // TODO add this object type to the database
@@ -339,7 +339,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 		if (!assignment.content_label || !assignment.content_id) {
 			return;
 		}
-		trackEvents(
+		trackLogEvents(
 			{
 				object: assignment.content_id,
 				object_type: CONTENT_LABEL_TO_EVENT_OBJECT_TYPE[assignment.content_label],

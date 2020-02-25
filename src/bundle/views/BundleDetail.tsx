@@ -57,6 +57,7 @@ import {
 } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
@@ -158,7 +159,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					message: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
 					icon: 'search',
 				});
+				return;
 			}
+
+			BookmarksViewsPlaysService.action('view', 'bundle', bundleObj.id, user);
 
 			setPermissions(permissionObj);
 			setBundle(bundleObj || null);
@@ -298,7 +302,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category="bundle">
-								<MetaDataItem label={'370'} icon="eye" />
+								<MetaDataItem label={'300'} icon="eye" />
 								{/*<MetaDataItem label={fromNow(relatedBundle.updated_at)} />*/}
 								<MetaDataItem label={fromNow(relatedBundle.original_cp || '')} />
 							</MetaData>

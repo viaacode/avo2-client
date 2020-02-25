@@ -20,6 +20,7 @@ export const GET_ITEM_BY_ID = gql`
 			expiry_date
 			external_id
 			id
+			uid
 			is_deleted
 			is_orphaned
 			is_published
