@@ -48,6 +48,13 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 		label: i18n.t('admin/shared/components/content-picker/content-picker___externe-url'),
 		disabled: false,
 		picker: 'TEXT_INPUT',
+		placeholder: 'https://',
+	},
+	{
+		value: 'SEARCH_QUERY',
+		label: i18n.t('Zoekfilters'),
+		disabled: false,
+		picker: 'TEXT_INPUT',
 	},
 ];
 

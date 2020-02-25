@@ -78,6 +78,16 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: [
+						'CONTENT_PAGE',
+						'ITEM',
+						'COLLECTION',
+						'BUNDLE',
+						'INTERNAL_LINK',
+						'EXTERNAL_LINK',
+					],
+				},
 			},
 		},
 	},

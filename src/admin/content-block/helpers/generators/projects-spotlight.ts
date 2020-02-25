@@ -58,7 +58,10 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 				),
 				{
 					label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___afbeelding'),
-					editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
+					editorProps: {
+						assetType: 'CONTENT_PAGE_IMAGE',
+						allowMulti: false,
+					} as FileUploadProps,
 				}
 			),
 			title: TEXT_FIELD('', {
@@ -69,6 +72,16 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___link'),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: [
+						'CONTENT_PAGE',
+						'ITEM',
+						'COLLECTION',
+						'BUNDLE',
+						'INTERNAL_LINK',
+						'EXTERNAL_LINK',
+					],
+				},
 			},
 		},
 	},

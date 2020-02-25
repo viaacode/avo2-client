@@ -121,6 +121,16 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 					'admin/content-block/helpers/generators/media-player-title-text-button___knop-actie'
 				),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: [
+						'CONTENT_PAGE',
+						'ITEM',
+						'COLLECTION',
+						'BUNDLE',
+						'INTERNAL_LINK',
+						'EXTERNAL_LINK',
+					],
+				},
 			},
 			align: ALIGN_FIELD(),
 		},

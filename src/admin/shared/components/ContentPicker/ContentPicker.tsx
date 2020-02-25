@@ -164,7 +164,11 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	);
 
 	const renderTextInputPicker = () => (
-		<TextInput value={input} onChange={onChangeInput} placeholder={t('https://')} />
+		<TextInput
+			value={input}
+			onChange={onChangeInput}
+			placeholder={get(currentTypeObject, 'placeholder')}
+		/>
 	);
 
 	return (
