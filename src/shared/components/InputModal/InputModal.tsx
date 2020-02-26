@@ -13,7 +13,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
-import toastService from '../../services/toast-service';
+import { toastService } from '../../services/toast-service';
 import i18n from '../../translations/i18n';
 
 interface InputModalProps {
@@ -79,8 +79,16 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
-								<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
+								<Button
+									type="secondary"
+									label={cancelLabel}
+									onClick={onClickClose}
+								/>
+								<Button
+									type="primary"
+									label={confirmLabel}
+									onClick={onClickConfirm}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

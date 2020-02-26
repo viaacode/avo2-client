@@ -15,13 +15,13 @@ import { navigateToContentType } from '../../../../shared/helpers';
 
 // TODO use exported ButtonType from components repo
 import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
-import { AlignOption, HeadingLevelOption } from '../../content-block.types';
+import { AlignOption, HeadingTypeOption } from '../../../shared/types';
 import { MediaPlayer } from './BlockMediaPlayerWrapper';
 
 interface MediaPlayerTitleTextButtonProps extends RouteComponentProps {
 	mediaTitle: string;
 	mediaItem: ButtonAction;
-	headingType: HeadingLevelOption;
+	headingType: HeadingTypeOption;
 	headingTitle: string;
 	content: string;
 	buttonLabel: string;

@@ -176,7 +176,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 				<div className="u-spacer">
 					<Form>
 						<FormGroup
-							label={t('shared/components/date-range-dropdown/date-range-dropdown___hoe-specifiek')}
+							label={t(
+								'shared/components/date-range-dropdown/date-range-dropdown___hoe-specifiek'
+							)}
 						>
 							<RadioButtonGroup inline>
 								<RadioButton
@@ -210,7 +212,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 								<Grid>
 									<Column size="6">
 										<FormGroup
-											label={t('shared/components/date-range-dropdown/date-range-dropdown___van')}
+											label={t(
+												'shared/components/date-range-dropdown/date-range-dropdown___van'
+											)}
 										>
 											<TextInput
 												id={`${id}-gte`}
@@ -221,7 +225,10 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 												onChange={async (value: string) => {
 													setYearInputGte(value);
 													if (value.length === 4) {
-														await handleDateChange(`${value}-01-01`, 'gte');
+														await handleDateChange(
+															`${value}-01-01`,
+															'gte'
+														);
 													}
 												}}
 											/>
@@ -229,7 +236,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									</Column>
 									<Column size="6">
 										<FormGroup
-											label={t('shared/components/date-range-dropdown/date-range-dropdown___tot')}
+											label={t(
+												'shared/components/date-range-dropdown/date-range-dropdown___tot'
+											)}
 										>
 											<TextInput
 												id={`${id}-lte`}
@@ -240,7 +249,10 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 												onChange={async (value: string) => {
 													setYearInputLte(value);
 													if (value.length === 4) {
-														await handleDateChange(`${value}-12-31`, 'lte');
+														await handleDateChange(
+															`${value}-12-31`,
+															'lte'
+														);
 													}
 												}}
 											/>
@@ -252,13 +264,18 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 								<Grid>
 									<Column size="6">
 										<FormGroup
-											label={t('shared/components/date-range-dropdown/date-range-dropdown___van')}
+											label={t(
+												'shared/components/date-range-dropdown/date-range-dropdown___van'
+											)}
 										>
 											<DatePicker
 												value={fromDate}
 												onChange={value =>
 													handleDateChange(
-														value && value.toISOString().substring(0, '2000-01-01'.length),
+														value &&
+															value
+																.toISOString()
+																.substring(0, '2000-01-01'.length),
 														'gte'
 													)
 												}
@@ -267,13 +284,18 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 									</Column>
 									<Column size="6">
 										<FormGroup
-											label={t('shared/components/date-range-dropdown/date-range-dropdown___tot')}
+											label={t(
+												'shared/components/date-range-dropdown/date-range-dropdown___tot'
+											)}
 										>
 											<DatePicker
 												value={tillDate}
 												onChange={value =>
 													handleDateChange(
-														value && value.toISOString().substring(0, '2000-01-01'.length),
+														value &&
+															value
+																.toISOString()
+																.substring(0, '2000-01-01'.length),
 														'lte'
 													)
 												}
@@ -285,7 +307,9 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 						</FormGroup>
 						<FormGroup>
 							<Button
-								label={t('shared/components/date-range-dropdown/date-range-dropdown___toepassen')}
+								label={t(
+									'shared/components/date-range-dropdown/date-range-dropdown___toepassen'
+								)}
 								type="primary"
 								className="c-apply-filter-button"
 								block

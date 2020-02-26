@@ -4,12 +4,10 @@ import React from 'react';
 import { TopBar } from './TopBar';
 
 describe('<TopBar />', () => {
-	const topBarComponent = shallow(
-		<TopBar showBackButton history={{} as any} location={{} as any} match={{} as any} />
-	);
+	const topBarComponent = shallow(<TopBar showBackButton />);
 
 	it('Should be able to render', () => {
-		shallow(<TopBar showBackButton history={{} as any} location={{} as any} match={{} as any} />);
+		shallow(<TopBar showBackButton />);
 	});
 
 	it('Should set the correct className', () => {

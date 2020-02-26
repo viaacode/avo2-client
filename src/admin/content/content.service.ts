@@ -4,11 +4,11 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
-import { ContentBlockConfig } from '../content-block/content-block.types';
+import { ContentBlockConfig } from '../shared/types';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import { GET_CONTENT_BY_ID, GET_CONTENT_PAGES, GET_CONTENT_TYPES } from './content.gql';
@@ -18,11 +18,17 @@ export const fetchContentItemById = async (id: number): Promise<Avo.Content.Cont
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_BY_ID, variables: { id } });
 
-		return get(response, `data.${CONTENT_RESULT_PATH.GET}[0]`, null) as Avo.Content.Content | null;
+		return get(
+			response,
+			`data.${CONTENT_RESULT_PATH.GET}[0]`,
+			null
+		) as Avo.Content.Content | null;
 	} catch (err) {
 		console.error(`Failed to fetch menu item with id: ${id}`);
 		toastService.danger(
-			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item'),
+			i18n.t(
+				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item'
+			),
 			false
 		);
 
@@ -41,7 +47,9 @@ export const fetchContentItems = async (limit: number): Promise<Avo.Content.Cont
 	} catch (err) {
 		console.error('Failed to fetch content items');
 		toastService.danger(
-			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items'),
+			i18n.t(
+				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items'
+			),
 			false
 		);
 
@@ -58,7 +66,9 @@ export const fetchContentTypes = async (): Promise<ContentPageType[] | null> => 
 	} catch (err) {
 		console.error('Failed to fetch content types', err);
 		toastService.danger(
-			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'),
+			i18n.t(
+				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'
+			),
 			false
 		);
 

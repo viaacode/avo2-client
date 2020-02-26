@@ -35,7 +35,11 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 							))}
 						</ul>
 						<Spacer margin="large">
-							<Pagination pageCount={pageCount} currentPage={currentPage} onPageChange={setPage} />
+							<Pagination
+								pageCount={pageCount}
+								currentPage={currentPage}
+								onPageChange={setPage}
+							/>
 						</Spacer>
 					</>
 				) : (

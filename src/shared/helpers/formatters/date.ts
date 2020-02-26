@@ -13,7 +13,9 @@ export function reorderDate(dateString: string | null, separator: string = '/'):
 
 export function normalizeTimestamp(timestamp: string): Moment {
 	if (
-		timestamp.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}/g)
+		timestamp.match(
+			/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}/g
+		)
 	) {
 		return moment.parseZone(timestamp);
 	}

@@ -38,8 +38,8 @@ const CollectionListDetail: FunctionComponent<CollectionDetailProps> = ({
 		return (
 			<Thumbnail
 				src={
-					((collectionFragment.item_meta as unknown) as Avo.Collection.Collection).thumbnail_path ||
-					''
+					((collectionFragment.item_meta as unknown) as Avo.Collection.Collection)
+						.thumbnail_path || ''
 				}
 				category={'collection'}
 			/>
@@ -57,11 +57,14 @@ const CollectionListDetail: FunctionComponent<CollectionDetailProps> = ({
 			<BlockHeading type="h3" className={'u-clickable'} onClick={getTitleClickedHandler}>
 				{collectionFragment.use_custom_fields
 					? collectionFragment.custom_title
-					: ((collectionFragment.item_meta as unknown) as Avo.Collection.Collection).id}{' '}
+					: ((collectionFragment.item_meta as unknown) as Avo.Collection.Collection)
+							.id}{' '}
 				{/* TODO remove once typings has been updated */}
 			</BlockHeading>
 			<BlockHeading type="h4">
-				<Trans i18nKey="item/components/item-video-description___beschrijving">Beschrijving</Trans>
+				<Trans i18nKey="item/components/item-video-description___beschrijving">
+					Beschrijving
+				</Trans>
 			</BlockHeading>
 			)}
 			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (8) */}
@@ -70,7 +73,8 @@ const CollectionListDetail: FunctionComponent<CollectionDetailProps> = ({
 					{convertToHtml(
 						collectionFragment.use_custom_fields
 							? collectionFragment.custom_description
-							: ((collectionFragment.item_meta as unknown) as Avo.Collection.Collection).description
+							: ((collectionFragment.item_meta as unknown) as Avo.Collection.Collection)
+									.description
 					)}
 				</p>
 			</ExpandableContainer>
