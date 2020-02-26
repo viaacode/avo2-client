@@ -125,7 +125,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	const renderForm = () => {
 		return (
 			<>
-				<Button type="secondary" onClick={() => history.goBack()}>
+				<Button type="secondary" onClick={history.goBack}>
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___terug">
 						Terug
 					</Trans>
@@ -172,7 +172,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 								ownerId=""
 								allowedTypes={[]} // allow all types
 								allowMulti={false}
-								label="Selecteer een betand (Word, Excel, … max. xxx MB)"
+								label={t('Selecteer een betand (Word, Excel, … max. xxx MB)')}
 							/>
 						)}
 					</FormGroup>

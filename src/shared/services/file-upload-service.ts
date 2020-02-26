@@ -53,8 +53,8 @@ export const uploadFile = async (
 };
 
 export const uploadFileToZendesk = async (file: File): Promise<string> => {
-	let url: string | undefined = undefined;
-	let body: ZendeskFileInfo | undefined = undefined;
+	let url: string | undefined;
+	let body: ZendeskFileInfo | undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/zendesk/upload-attachment`;
 		const base64 = await fileToBase64(file);
@@ -91,8 +91,8 @@ export const uploadFileToBlobStorage = async (
 	assetType: AssetType,
 	ownerId: string
 ): Promise<string> => {
-	let url: string | undefined = undefined;
-	let body: UploadAssetInfo | undefined = undefined;
+	let url: string | undefined;
+	let body: UploadAssetInfo | undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/assets/upload`;
 		const content = await fileToBase64(file);
@@ -127,7 +127,7 @@ export const uploadFileToBlobStorage = async (
 };
 
 export const deleteFile = async (fileUrl: string): Promise<void> => {
-	let url: string | undefined = undefined;
+	let url: string | undefined;
 	let body: any;
 	try {
 		url = `${getEnv('PROXY_URL')}/assets/delete`;

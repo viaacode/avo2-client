@@ -1,3 +1,4 @@
+import { get } from 'lodash-es';
 import * as queryString from 'querystring';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +19,6 @@ import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-se
 import toastService from '../../services/toast-service';
 import i18n from '../../translations/i18n';
 
-import { get } from 'lodash-es';
 import './FileUpload.scss';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
@@ -167,6 +167,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			const title: string = get(queryParams, 'name', 'bestand') as string;
 			return (
 				<Spacer margin="bottom-small" key={url}>
+					{/* TODO drop body once it becomes optional (components repo update 1.29.0) */}
 					<Blankslate title={title} body="" icon="file" className="a-upload-file-preview">
 						{renderDeleteButton(url)}
 					</Blankslate>
