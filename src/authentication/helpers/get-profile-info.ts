@@ -10,7 +10,9 @@ import { LoginMessage } from '../authentication.types';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
-		throw new CustomError('Failed to get user first name because the logged in user is undefined');
+		throw new CustomError(
+			'Failed to get user first name because the logged in user is undefined'
+		);
 	}
 	return get(user, 'first_name') || defaultName;
 };
@@ -21,7 +23,9 @@ export function hasIdpLinked(user: Avo.User.User, idpType: Avo.Auth.IdpType): bo
 
 export const getLastName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
-		throw new CustomError('Failed to get user last name because the logged in user is undefined');
+		throw new CustomError(
+			'Failed to get user last name because the logged in user is undefined'
+		);
 	}
 	return get(user, 'last_name') || defaultName;
 };
@@ -62,14 +66,18 @@ export function getProfileName(user: Avo.User.User | undefined): string {
 
 export function getProfileAlias(user: Avo.User.User | undefined): string {
 	if (!user) {
-		throw new CustomError('Failed to get profile alias because the logged in user is undefined');
+		throw new CustomError(
+			'Failed to get profile alias because the logged in user is undefined'
+		);
 	}
 	return get(user, 'profile.alias', '');
 }
 
 export function getProfileInitials(user: Avo.User.User | undefined): string {
 	if (!user) {
-		throw new CustomError('Failed to get profile initials because the logged in user is undefined');
+		throw new CustomError(
+			'Failed to get profile initials because the logged in user is undefined'
+		);
 	}
 	return getFirstName(user, 'X')[0] + getLastName(user, 'X')[0];
 }

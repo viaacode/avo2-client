@@ -76,7 +76,9 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			.catch(err => {
 				console.error(err);
 				toastService.danger(
-					t('admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'),
+					t(
+						'admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'
+					),
 					false
 				);
 			});
@@ -109,14 +111,18 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			.then(() => {
 				refetch();
 				toastService.success(
-					t('admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'),
+					t(
+						'admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'
+					),
 					false
 				);
 			})
 			.catch(err => {
 				console.error(err);
 				toastService.danger(
-					t('admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'),
+					t(
+						'admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'
+					),
 					false
 				);
 			});
@@ -196,12 +202,18 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 									{menuItems.map((item, index) => (
 										<tr
 											key={`nav-edit-${item.id}`}
-											className={activeRow === item.id ? 'c-menu-detail__table-row--active' : ''}
+											className={
+												activeRow === item.id
+													? 'c-menu-detail__table-row--active'
+													: ''
+											}
 										>
 											<td className="o-table-col-1">
 												<ButtonToolbar>
-													{!isFirst(index) && renderReorderButton('up', index, item.id)}
-													{!isLast(index) && renderReorderButton('down', index, item.id)}
+													{!isFirst(index) &&
+														renderReorderButton('up', index, item.id)}
+													{!isLast(index) &&
+														renderReorderButton('down', index, item.id)}
 												</ButtonToolbar>
 											</td>
 											<td>{item.label}</td>
@@ -210,10 +222,13 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 													<Button
 														icon="edit-2"
 														onClick={() =>
-															handleNavigate(MENU_PATH.MENU_ITEM_EDIT, {
-																menu: menuId,
-																id: String(item.id),
-															})
+															handleNavigate(
+																MENU_PATH.MENU_ITEM_EDIT,
+																{
+																	menu: menuId,
+																	id: String(item.id),
+																}
+															)
 														}
 														type="secondary"
 													/>
@@ -232,7 +247,9 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 								<Flex center>
 									<Button
 										icon="plus"
-										label={t('admin/menu/views/menu-detail___voeg-een-item-toe')}
+										label={t(
+											'admin/menu/views/menu-detail___voeg-een-item-toe'
+										)}
 										onClick={() =>
 											handleNavigate(MENU_PATH.MENU_ITEM_CREATE, {
 												menu: menuId,

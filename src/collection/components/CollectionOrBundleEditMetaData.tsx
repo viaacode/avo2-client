@@ -68,9 +68,13 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 			})
 			.catch(err => {
 				console.error(
-					new CustomError('Failed to get classifications and subjects from the database', err, {
-						query: 'GET_CLASSIFICATIONS_AND_SUBJECTS',
-					})
+					new CustomError(
+						'Failed to get classifications and subjects from the database',
+						err,
+						{
+							query: 'GET_CLASSIFICATIONS_AND_SUBJECTS',
+						}
+					)
 				);
 			});
 	}, [setEducationLevels, setSubjects]);
@@ -95,39 +99,55 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 							<Grid>
 								<Column size="3-7">
 									<FormGroup
-										label={t('collection/views/collection-edit-meta-data___onderwijsniveau')}
+										label={t(
+											'collection/views/collection-edit-meta-data___onderwijsniveau'
+										)}
 										labelFor="classificationId"
 									>
 										<TagsInput
 											options={educationLevels}
-											value={(collection.lom_context || []).map((item: string) => ({
-												value: item,
-												label: item,
-											}))}
+											value={(collection.lom_context || []).map(
+												(item: string) => ({
+													value: item,
+													label: item,
+												})
+											)}
 											onChange={(values: TagInfo[]) =>
 												updateCollectionMultiProperty(values, 'lom_context')
 											}
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t('collection/views/collection-edit-meta-data___vakken')}
+										label={t(
+											'collection/views/collection-edit-meta-data___vakken'
+										)}
 										labelFor="subjectsId"
 									>
 										<TagsInput
 											options={subjects}
-											value={(collection.lom_classification || []).map((item: string) => ({
-												value: item,
-												label: item,
-											}))}
+											value={(collection.lom_classification || []).map(
+												(item: string) => ({
+													value: item,
+													label: item,
+												})
+											)}
 											onChange={(values: TagInfo[]) =>
-												updateCollectionMultiProperty(values, 'lom_classification')
+												updateCollectionMultiProperty(
+													values,
+													'lom_classification'
+												)
 											}
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t('collection/views/collection-edit-meta-data___korte-omschrijving')}
+										label={t(
+											'collection/views/collection-edit-meta-data___korte-omschrijving'
+										)}
 										labelFor="shortDescriptionId"
-										error={getValidationFeedbackForShortDescription(collection.description, true)}
+										error={getValidationFeedbackForShortDescription(
+											collection.description,
+											true
+										)}
 									>
 										<TextArea
 											name="shortDescriptionId"
@@ -143,7 +163,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											}
 										/>
 										<label>
-											{getValidationFeedbackForShortDescription(collection.description)}
+											{getValidationFeedbackForShortDescription(
+												collection.description
+											)}
 										</label>
 									</FormGroup>
 									<FormGroup
@@ -172,7 +194,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 								</Column>
 								<Column size="3-5">
 									<FormGroup
-										label={t('collection/views/collection-edit-meta-data___cover-afbeelding')}
+										label={t(
+											'collection/views/collection-edit-meta-data___cover-afbeelding'
+										)}
 										labelFor="coverImageId"
 									>
 										{isCollection ? (
@@ -188,7 +212,11 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												label={t(
 													'collection/components/collection-or-bundle-edit-meta-data___upload-een-cover-afbeelding'
 												)}
-												urls={collection.thumbnail_path ? [collection.thumbnail_path] : []}
+												urls={
+													collection.thumbnail_path
+														? [collection.thumbnail_path]
+														: []
+												}
 												allowMulti={false}
 												assetType="BUNDLE_COVER"
 												ownerId={collection.id}

@@ -166,13 +166,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				if (collectionId !== uuid) {
 					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 					// and continue loading the collection
-					redirectToClientPage(buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }), history);
+					redirectToClientPage(
+						buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }),
+						history
+					);
 				}
 				const rawPermissions = await Promise.all([
 					PermissionService.hasPermissions(
 						[
 							{ name: PermissionNames.VIEW_COLLECTIONS },
-							{ name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT, obj: collectionId },
+							{
+								name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
+								obj: collectionId,
+							},
 						],
 						user
 					),
@@ -190,7 +196,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						],
 						user
 					),
-					PermissionService.hasPermissions([{ name: PermissionNames.CREATE_COLLECTIONS }], user),
+					PermissionService.hasPermissions(
+						[{ name: PermissionNames.CREATE_COLLECTIONS }],
+						user
+					),
 					PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
 				]);
 				const permissionObj = {
@@ -200,7 +209,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					canCreateCollections: rawPermissions[3],
 					canViewItems: rawPermissions[4],
 				};
-				const collectionObj = await CollectionService.getCollectionWithItems(uuid, 'collection');
+				const collectionObj = await CollectionService.getCollectionWithItems(
+					uuid,
+					'collection'
+				);
 
 				if (!collectionObj) {
 					setLoadingInfo({
@@ -224,9 +236,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				setPublishedBundles(publishedBundlesList);
 			} catch (err) {
 				console.error(
-					new CustomError('Failed to check permissions or get collection from the database', err, {
-						collectionId,
-					})
+					new CustomError(
+						'Failed to check permissions or get collection from the database',
+						err,
+						{
+							collectionId,
+						}
+					)
 				);
 				setLoadingInfo({
 					state: 'error',
@@ -289,7 +305,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		} catch (err) {
 			console.error(err);
 			toastService.danger(
-				t('collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt')
+				t(
+					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
+				)
 			);
 		}
 	};
@@ -332,9 +350,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						)
 					);
 				} catch (err) {
-					console.error('Failed to copy collection', err, { originalCollection: collection });
+					console.error('Failed to copy collection', err, {
+						originalCollection: collection,
+					});
 					toastService.danger(
-						t('collection/views/collection-detail___het-kopieren-van-de-collectie-is-mislukt')
+						t(
+							'collection/views/collection-detail___het-kopieren-van-de-collectie-is-mislukt'
+						)
 					);
 				}
 				break;
@@ -365,7 +387,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 
 		relatedCollections.map((relatedCollection: Avo.Search.ResultItem) => {
-			const { id, dc_title, thumbnail_path = undefined, original_cp = '' } = relatedCollection;
+			const {
+				id,
+				dc_title,
+				thumbnail_path = undefined,
+				original_cp = '',
+			} = relatedCollection;
 			const category = toEnglishContentType(CONTENT_TYPE);
 
 			return (
@@ -374,7 +401,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						<MediaCard
 							category={category}
 							onClick={() =>
-								redirectToClientPage(buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id }), history)
+								redirectToClientPage(
+									buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id }),
+									history
+								)
 							}
 							orientation="horizontal"
 							title={dc_title}
@@ -417,7 +447,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				  ]
 				: []),
 			...(permissions.canDeleteCollections
-				? [createDropdownMenuItem('delete', t('collection/views/collection-detail___verwijder'))]
+				? [
+						createDropdownMenuItem(
+							'delete',
+							t('collection/views/collection-detail___verwijder')
+						),
+				  ]
 				: []),
 		];
 		return (
@@ -458,7 +493,10 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						/>
 					</DropdownButton>
 					<DropdownContent>
-						<MenuContent menuItems={COLLECTION_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
+						<MenuContent
+							menuItems={COLLECTION_DROPDOWN_ITEMS}
+							onClick={onClickDropdownItem}
+						/>
 					</DropdownContent>
 				</ControlledDropdown>
 				{permissions.canEditCollections && (
@@ -537,7 +575,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</p>
 									<p className="c-body-1">
 										{lom_context && lom_context.length ? (
-											generateSearchLinks(`${id}`, 'educationLevel', lom_context)
+											generateSearchLinks(
+												`${id}`,
+												'educationLevel',
+												lom_context
+											)
 										) : (
 											<span className="u-d-block">-</span>
 										)}
@@ -556,7 +598,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 							<Column size="3-6">
 								<p className="u-text-bold">
-									<Trans i18nKey="collection/views/collection-detail___ordering">Ordering</Trans>
+									<Trans i18nKey="collection/views/collection-detail___ordering">
+										Ordering
+									</Trans>
 								</p>
 								{/* TODO: add links */}
 								<p className="c-body-1">
@@ -572,7 +616,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 										return (
 											<>
 												{index !== 0 && !!publishedBundles.length && ', '}
-												<Link to={buildLink(APP_PATH.BUNDLE_DETAIL, { id: bundle.id })}>
+												<Link
+													to={buildLink(APP_PATH.BUNDLE_DETAIL, {
+														id: bundle.id,
+													})}
+												>
 													{bundle.title}
 												</Link>
 											</>
@@ -583,11 +631,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							<Column size="3-3">
 								<Spacer margin="top">
 									<p className="u-text-bold">
-										<Trans i18nKey="collection/views/collection-detail___vakken">Vakken</Trans>
+										<Trans i18nKey="collection/views/collection-detail___vakken">
+											Vakken
+										</Trans>
 									</p>
 									<p className="c-body-1">
 										{lom_classification && lom_classification.length ? (
-											generateSearchLinks(`${id}`, 'subject', lom_classification)
+											generateSearchLinks(
+												`${id}`,
+												'subject',
+												lom_classification
+											)
 										) : (
 											<span className="u-d-block">-</span>
 										)}
@@ -597,14 +651,19 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						</Grid>
 						<hr className="c-hr" />
 						<BlockHeading type="h3">
-							<Trans i18nKey="collection/views/collection-detail___bekijk-ook">Bekijk ook</Trans>
+							<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
+								Bekijk ook
+							</Trans>
 						</BlockHeading>
 						{renderRelatedCollections()}
 					</Container>
 				</Container>
 				{isPublic !== null && (
 					<ShareCollectionModal
-						collection={{ ...(collection as Avo.Collection.Collection), is_public: isPublic }}
+						collection={{
+							...(collection as Avo.Collection.Collection),
+							is_public: isPublic,
+						}}
 						isOpen={isShareModalOpen}
 						onClose={() => setIsShareModalOpen(false)}
 						setIsPublic={setIsPublic}

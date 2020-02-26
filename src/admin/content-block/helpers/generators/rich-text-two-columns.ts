@@ -36,7 +36,9 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 		state: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_COMPONENT_STATE(),
 		fields: {
 			content: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/rich-text-two-columns___tekst-is-verplicht')
+				i18n.t(
+					'admin/content-block/helpers/generators/rich-text-two-columns___tekst-is-verplicht'
+				)
 			),
 		},
 	},

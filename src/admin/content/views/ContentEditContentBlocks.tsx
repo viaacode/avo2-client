@@ -88,9 +88,11 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
 						})
 					}
-					onChange={(formGroupType: ContentBlockStateType, input: any, stateIndex?: number) =>
-						onSave(index, formGroupType, input, stateIndex)
-					}
+					onChange={(
+						formGroupType: ContentBlockStateType,
+						input: any,
+						stateIndex?: number
+					) => onSave(index, formGroupType, input, stateIndex)}
 					addComponentToState={() =>
 						addComponentToState(index, contentBlockConfig.block.state.blockType)
 					}

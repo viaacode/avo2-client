@@ -63,7 +63,9 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 		let tab = tabContents[activeTab];
 		if (!tab) {
 			toastService.danger(
-				t('settings/views/settings___het-instellingen-tab-active-tab-bestaat-niet', { activeTab })
+				t('settings/views/settings___het-instellingen-tab-active-tab-bestaat-niet', {
+					activeTab,
+				})
 			);
 			tab = tabContents[PROFILE_ID];
 		}

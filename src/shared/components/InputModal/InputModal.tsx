@@ -79,8 +79,16 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 					<ToolbarRight>
 						<ToolbarItem>
 							<ButtonToolbar>
-								<Button type="secondary" label={cancelLabel} onClick={onClickClose} />
-								<Button type="primary" label={confirmLabel} onClick={onClickConfirm} />
+								<Button
+									type="secondary"
+									label={cancelLabel}
+									onClick={onClickClose}
+								/>
+								<Button
+									type="primary"
+									label={confirmLabel}
+									onClick={onClickConfirm}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

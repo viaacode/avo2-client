@@ -104,10 +104,14 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 				</Spacer>
 				<FormGroup>
 					<Button
-						label={t('authentication/views/registration-flow/r-3-stamboek___account-aanmaken')}
+						label={t(
+							'authentication/views/registration-flow/r-3-stamboek___account-aanmaken'
+						)}
 						type="primary"
 						disabled={!validStamboekNumber || !hasAcceptedConditions}
-						onClick={() => redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)}
+						onClick={() =>
+							redirectToServerArchiefRegistrationIdp(location, validStamboekNumber)
+						}
 					/>
 				</FormGroup>
 

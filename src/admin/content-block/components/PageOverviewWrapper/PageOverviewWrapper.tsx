@@ -84,7 +84,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			description: dbContentPage.description,
 			title: dbContentPage.title,
 			id: dbContentPage.id,
-			blocks: dbContentPage.contentBlockssBycontentId ? renderContentPage(dbContentPage) : null,
+			blocks: dbContentPage.contentBlockssBycontentId
+				? renderContentPage(dbContentPage)
+				: null,
 			content_width: dbContentPage.content_width,
 			path: dbContentPage.path as string, // TODO enforce path in database
 		};
@@ -97,7 +99,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			// TODO get contentPages from the database that have one of the selected groups
 		} else {
 			const response = await dataService.query({
-				query: itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
+				query:
+					itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
 				variables: {
 					where: { content_type: { _eq: contentTypeAndTabs.selectedContentType } },
 					offset: currentPage * debouncedItemsPerPage,
@@ -106,7 +109,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			});
 			const pageArray: Avo.Content.Content[] = get(response, 'data.app_content', []);
 			pageCount =
-				get(response, 'data.app_content_aggregate.aggregate.count', 0) / debouncedItemsPerPage;
+				get(response, 'data.app_content_aggregate.aggregate.count', 0) /
+				debouncedItemsPerPage;
 			filteredPages = pageArray;
 		}
 		setPages(filteredPages);

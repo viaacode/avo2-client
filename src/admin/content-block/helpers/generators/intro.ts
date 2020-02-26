@@ -38,7 +38,9 @@ export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				}
 			),
 			content: TEXT_FIELD(),
-			align: ALIGN_FIELD(i18n.t('admin/content-block/helpers/generators/intro___titel-uitlijning')),
+			align: ALIGN_FIELD(
+				i18n.t('admin/content-block/helpers/generators/intro___titel-uitlijning')
+			),
 		},
 	},
 	block: {

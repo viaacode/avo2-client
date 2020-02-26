@@ -91,7 +91,9 @@ const Search: FunctionComponent<SearchProps> = ({
 		// Only do initial search after query params have been analysed and have been added to the state
 		if (queryParamsAnalysed) {
 			// Parse values from formState into a parsed object that we'll send to the proxy search endpoint
-			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
+			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
+				cloneDeep(formState)
+			);
 
 			// TODO: do the search by dispatching a redux action
 			search(
@@ -110,7 +112,9 @@ const Search: FunctionComponent<SearchProps> = ({
 	 */
 	useEffect(() => {
 		if (searchResults) {
-			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(cloneDeep(formState));
+			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
+				cloneDeep(formState)
+			);
 
 			// Copy the searchterm to the search input field
 			setSearchTerms(formState.query);
@@ -119,14 +123,25 @@ const Search: FunctionComponent<SearchProps> = ({
 			setMultiOptions(searchResults.aggregations);
 
 			// Remember this search by adding it to the query params in the url
-			const filters = isEmpty(filterOptions) ? null : `filters=${JSON.stringify(filterOptions)}`;
+			const filters = isEmpty(filterOptions)
+				? null
+				: `filters=${JSON.stringify(filterOptions)}`;
 			const orderProperty =
-				sortOrder.orderProperty === 'relevance' ? null : `orderProperty=${sortOrder.orderProperty}`;
+				sortOrder.orderProperty === 'relevance'
+					? null
+					: `orderProperty=${sortOrder.orderProperty}`;
 			const orderDirection =
-				sortOrder.orderDirection === 'desc' ? null : `orderDirection=${sortOrder.orderDirection}`;
+				sortOrder.orderDirection === 'desc'
+					? null
+					: `orderDirection=${sortOrder.orderDirection}`;
 			const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
 
-			const queryParams: string = compact([filters, orderProperty, orderDirection, page]).join('&');
+			const queryParams: string = compact([
+				filters,
+				orderProperty,
+				orderDirection,
+				page,
+			]).join('&');
 			navigate(history, SEARCH_PATH.SEARCH, {}, queryParams.length ? queryParams : '');
 
 			//  Scroll to the first search result
@@ -294,7 +309,11 @@ const Search: FunctionComponent<SearchProps> = ({
 			value: 'addedDate_desc',
 			disabled: true,
 		},
-		{ label: t('search/views/search___laatst-gewijzigd'), value: 'editDate_desc', disabled: true },
+		{
+			label: t('search/views/search___laatst-gewijzigd'),
+			value: 'editDate_desc',
+			disabled: true,
+		},
 	];
 	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
 		'desc'}`;
@@ -313,7 +332,9 @@ const Search: FunctionComponent<SearchProps> = ({
 						<ToolbarLeft>
 							<ToolbarItem>
 								<ToolbarTitle>
-									<Trans i18nKey="search/views/search___zoekresultaten">Zoekresultaten</Trans>
+									<Trans i18nKey="search/views/search___zoekresultaten">
+										Zoekresultaten
+									</Trans>
 								</ToolbarTitle>
 							</ToolbarItem>
 							<ToolbarItem>
@@ -325,7 +346,10 @@ const Search: FunctionComponent<SearchProps> = ({
 						<ToolbarRight>
 							<Flex spaced="regular">
 								<Form type="inline">
-									<FormGroup label={t('search/views/search___sorteer-op')} labelFor="sortBy">
+									<FormGroup
+										label={t('search/views/search___sorteer-op')}
+										labelFor="sortBy"
+									>
 										<Select
 											className="c-search-view__sort-select"
 											id="sortBy"
@@ -349,7 +373,9 @@ const Search: FunctionComponent<SearchProps> = ({
 										<Button
 											type="link"
 											className="c-menu__item"
-											label={t('search/views/search___kopieer-vaste-link-naar-deze-zoekopdracht')}
+											label={t(
+												'search/views/search___kopieer-vaste-link-naar-deze-zoekopdracht'
+											)}
 											onClick={onCopySearchLinkClicked}
 										/>
 										{/* TODO: DSABLED_FEATURE Create link to create search assignment task */}
@@ -378,7 +404,9 @@ const Search: FunctionComponent<SearchProps> = ({
 									<FormGroup inlineMode="grow">
 										<TextInput
 											id="query"
-											placeholder={t('search/views/search___vul-uw-zoekterm-in')}
+											placeholder={t(
+												'search/views/search___vul-uw-zoekterm-in'
+											)}
 											value={searchTerms}
 											className="c-search-term-input-field"
 											icon="search"
@@ -396,7 +424,9 @@ const Search: FunctionComponent<SearchProps> = ({
 									{hasFilters && (
 										<FormGroup inlineMode="shrink">
 											<Button
-												label={t('search/views/search___verwijder-alle-filters')}
+												label={t(
+													'search/views/search___verwijder-alle-filters'
+												)}
 												type="link"
 												onClick={deleteAllFilters}
 											/>
@@ -439,7 +469,9 @@ const Search: FunctionComponent<SearchProps> = ({
 			<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
 			<PermissionGuardFail>
 				<ErrorView
-					message={t('search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken')}
+					message={t(
+						'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
+					)}
 					icon={'lock'}
 					actionButtons={['home']}
 				/>

@@ -34,7 +34,9 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				}
 			),
 			item: {
-				label: i18n.t('admin/content-block/helpers/generators/media-player___video-of-audio-item'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___video-of-audio-item'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					selectableTypes: ['ITEM'],

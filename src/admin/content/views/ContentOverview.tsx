@@ -155,7 +155,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 			.then(() => {
 				refetchContentItems();
 				toastService.success(
-					t('admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'),
+					t(
+						'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
+					),
 					false
 				);
 			})
@@ -250,13 +252,16 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 
 		return !contentData.length && !hasFilters ? (
 			<ErrorView
-				message={t('admin/content/views/content-overview___er-is-nog-geen-content-aangemaakt')}
+				message={t(
+					'admin/content/views/content-overview___er-is-nog-geen-content-aangemaakt'
+				)}
 			>
 				<p>
 					<Trans i18nKey="admin/content/views/content-overview___beschrijving-hoe-content-toe-te-voegen">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
-						blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
-						ratione quas impedit repudiandae nisi corrupti quis eaque!
+						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab
+						debitis blanditiis vitae molestiae delectus earum asperiores mollitia,
+						minima laborum expedita ratione quas impedit repudiandae nisi corrupti quis
+						eaque!
 					</Trans>
 				</p>
 				<Spacer margin="top">
@@ -279,9 +284,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 								? t(
 										'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
 								  )
-								: t('admin/content/views/content-overview___er-is-nog-geen-content-beschikbaar')
+								: t(
+										'admin/content/views/content-overview___er-is-nog-geen-content-beschikbaar'
+								  )
 						}
-						onColumnClick={columId => handleSortClick(columId as ContentOverviewTableCols)}
+						onColumnClick={columId =>
+							handleSortClick(columId as ContentOverviewTableCols)
+						}
 						renderCell={(rowData: Avo.Content.Content, columnId: string) =>
 							renderTableCell(rowData, columnId as ContentOverviewTableCols)
 						}
@@ -302,14 +311,18 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={
 						get(contentToDelete, 'is_protected', null)
-							? t('admin/content/views/content-overview___opgelet-dit-is-een-beschermde-pagina')
+							? t(
+									'admin/content/views/content-overview___opgelet-dit-is-een-beschermde-pagina'
+							  )
 							: ''
 					}
 				/>
 				<Modal
 					isOpen={isNotAdminModalOpen}
 					onClose={() => setIsNotAdminModalOpen(false)}
-					title={t('admin/content/views/content-overview___u-heeft-niet-de-juiste-rechten')}
+					title={t(
+						'admin/content/views/content-overview___u-heeft-niet-de-juiste-rechten'
+					)}
 				>
 					<ModalBody>
 						<p>

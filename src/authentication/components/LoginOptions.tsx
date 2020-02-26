@@ -28,7 +28,9 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				<Spacer margin="top-small">
 					<Button
 						block
-						label={t('authentication/components/login-options___inloggen-met-e-mailadres')}
+						label={t(
+							'authentication/components/login-options___inloggen-met-e-mailadres'
+						)}
 						type="primary"
 						className="c-login-with-archief"
 						onClick={() => {

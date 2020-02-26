@@ -67,13 +67,17 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		label: enumLabel,
 		value: enumLabel,
 	});
-	const gqlOrganizationToSelectOption = (org: Avo.EducationOrganization.Organization): TagInfo => ({
+	const gqlOrganizationToSelectOption = (
+		org: Avo.EducationOrganization.Organization
+	): TagInfo => ({
 		label: `${org.label}`,
 		value: `${org.organizationId}:${org.unitId || ''}`,
 	});
 	const [cities, setCities] = useState<string[]>([]);
 	const [selectedCity, setSelectedCity] = useState<string>('');
-	const [organizations, setOrganizations] = useState<Avo.EducationOrganization.Organization[]>([]);
+	const [organizations, setOrganizations] = useState<Avo.EducationOrganization.Organization[]>(
+		[]
+	);
 	const [organizationsLoadingState, setOrganizationsLoadingState] = useState<
 		'loading' | 'loaded' | 'error'
 	>('loaded');
@@ -196,7 +200,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 		const selectedOrg = organizations.find(org => org.label === orgLabel);
 		if (!selectedOrg) {
 			toastService.danger(
-				t('settings/components/profile___de-geselecteerde-instelling-kon-niet-worden-gevonden')
+				t(
+					'settings/components/profile___de-geselecteerde-instelling-kon-niet-worden-gevonden'
+				)
 			);
 			return;
 		}
@@ -294,7 +300,10 @@ const Profile: FunctionComponent<ProfileProps> = ({
 				<Spacer margin="top-small">
 					<Select
 						options={[
-							{ label: t('settings/components/profile___voeg-een-organisatie-toe'), value: '' },
+							{
+								label: t('settings/components/profile___voeg-een-organisatie-toe'),
+								value: '',
+							},
 							...cities.map(c => ({ label: c, value: c })),
 						]}
 						value={selectedCity || ''}
@@ -305,7 +314,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					{organizationsLoadingState === 'loading' && (
 						<Alert
 							type="spinner"
-							message={t('settings/components/profile___bezig-met-ophalen-van-organisaties')}
+							message={t(
+								'settings/components/profile___bezig-met-ophalen-van-organisaties'
+							)}
 						/>
 					)}
 					{!!selectedCity && organizationsLoadingState === 'loaded' && (
@@ -377,12 +388,17 @@ const Profile: FunctionComponent<ProfileProps> = ({
 											>
 												<TextInput
 													id="alias"
-													placeholder={t('settings/components/profile___een-unieke-gebruikersnaam')}
+													placeholder={t(
+														'settings/components/profile___een-unieke-gebruikersnaam'
+													)}
 													value={alias || ''}
 													onChange={setAlias}
 												/>
 											</FormGroup>
-											<FormGroup label={t('settings/components/profile___functie')} labelFor="func">
+											<FormGroup
+												label={t('settings/components/profile___functie')}
+												labelFor="func"
+											>
 												<TextInput
 													id="func"
 													placeholder={t(
@@ -393,7 +409,9 @@ const Profile: FunctionComponent<ProfileProps> = ({
 												/>
 											</FormGroup>
 											<FormGroup
-												label={t('settings/components/profile___profielfoto')}
+												label={t(
+													'settings/components/profile___profielfoto'
+												)}
 												labelFor="profilePicture"
 											>
 												<Box>
@@ -402,12 +420,17 @@ const Profile: FunctionComponent<ProfileProps> = ({
 													<Icon name="user" size="large" />
 													<input
 														type="file"
-														placeholder={t('settings/components/profile___profielfoto-uploaden')}
+														placeholder={t(
+															'settings/components/profile___profielfoto-uploaden'
+														)}
 														onChange={handleAvatarOnChange}
 													/>
 												</Box>
 											</FormGroup>
-											<FormGroup label={t('settings/components/profile___bio')} labelFor="bio">
+											<FormGroup
+												label={t('settings/components/profile___bio')}
+												labelFor="bio"
+											>
 												<TextArea
 													name="bio"
 													id="bio"
@@ -440,9 +463,10 @@ const Profile: FunctionComponent<ProfileProps> = ({
 											<Box>
 												<p>
 													<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
-														Vul hier wat info over jezelf in! Deze informatie wordt getoond op jouw
-														persoonlijk profiel. Je kan voor elk veld aanduiden of je deze
-														informatie wil delen of niet.
+														Vul hier wat info over jezelf in! Deze
+														informatie wordt getoond op jouw persoonlijk
+														profiel. Je kan voor elk veld aanduiden of
+														je deze informatie wil delen of niet.
 													</Trans>
 												</p>
 											</Box>

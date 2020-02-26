@@ -89,9 +89,12 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			} else {
 				// Go back to overview if no menu items are present
 				toastService.danger(
-					t('admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name', {
-						menuName,
-					}),
+					t(
+						'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
+						{
+							menuName,
+						}
+					),
 					false
 				);
 				history.push(MENU_PATH.MENU);
@@ -148,7 +151,11 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	const checkMenuItemContentPagePermissionsMismatch = useCallback(
 		(response: ApolloQueryResult<any>) => {
-			let contentUserGroupIds: number[] = get(response, 'data.app_content[0].user_group_ids', []);
+			let contentUserGroupIds: number[] = get(
+				response,
+				'data.app_content[0].user_group_ids',
+				[]
+			);
 			const navItemUserGroupIds: number[] = menuForm.user_group_ids;
 			const allUserGroupIds: number[] = allUserGroups.map(ug => ug.value as number);
 
@@ -174,8 +181,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					<div>
 						<Spacer margin="bottom-small">
 							<Trans i18nKey="admin/menu/views/menu-edit___het-navigatie-item-zal-zichtbaar-zijn-voor-gebruikers-die-geen-toegang-hebben-tot-de-geselecteerde-pagina">
-								Het navigatie item zal zichtbaar zijn voor gebruikers die geen toegang hebben tot de
-								geselecteerde pagina.
+								Het navigatie item zal zichtbaar zijn voor gebruikers die geen
+								toegang hebben tot de geselecteerde pagina.
 							</Trans>
 						</Spacer>
 						<Spacer margin="bottom-small">
@@ -313,7 +320,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				)
 				.catch(err =>
 					handleResponse(
-						t('admin/menu/views/menu-edit___het-aanmaken-van-het-navigatie-item-is-mislukt'),
+						t(
+							'admin/menu/views/menu-edit___het-aanmaken-van-het-navigatie-item-is-mislukt'
+						),
 						err || null
 					)
 				);
@@ -336,7 +345,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				)
 				.catch(err =>
 					handleResponse(
-						t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
+						t(
+							'admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'
+						),
 						err || null
 					)
 				);

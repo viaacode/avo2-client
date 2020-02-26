@@ -119,7 +119,12 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				);
 			}
 
-			return <span key={`description-part-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
+			return (
+				<span
+					key={`description-part-${index}`}
+					dangerouslySetInnerHTML={{ __html: part }}
+				/>
+			);
 		});
 	};
 

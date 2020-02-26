@@ -107,7 +107,9 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 								'collection/components/modals/share-collection-modal___de-collectie-staat-nu-niet-meer-publiek'
 						  )
 					: isCollectionPublic
-					? t('collection/components/modals/share-collection-modal___de-bundel-staat-nu-publiek')
+					? t(
+							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-publiek'
+					  )
 					: t(
 							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-niet-meer-publiek'
 					  )
@@ -187,12 +189,16 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t('collection/components/modals/share-collection-modal___annuleren')}
+									label={t(
+										'collection/components/modals/share-collection-modal___annuleren'
+									)}
 									onClick={() => onClose()}
 								/>
 								<Button
 									type="primary"
-									label={t('collection/components/modals/share-collection-modal___opslaan')}
+									label={t(
+										'collection/components/modals/share-collection-modal___opslaan'
+									)}
 									onClick={onSave}
 								/>
 							</ButtonToolbar>

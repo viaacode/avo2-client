@@ -27,9 +27,12 @@ const getFragmentByPosition = (fragments: Avo.Collection.Fragment[], position: n
 
 	if (!fragmentAtPosition) {
 		toastService.danger(
-			i18n.t('collection/helpers/fragment___het-fragment-met-positie-position-is-niet-gevonden', {
-				position,
-			})
+			i18n.t(
+				'collection/helpers/fragment___het-fragment-met-positie-position-is-niet-gevonden',
+				{
+					position,
+				}
+			)
 		);
 		return;
 	}

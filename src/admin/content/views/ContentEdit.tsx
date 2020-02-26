@@ -142,7 +142,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		if (!isFormValid) {
 			setIsSaving(false);
 			toastService.danger(
-				t('admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'),
+				t(
+					'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
+				),
 				false
 			);
 
@@ -197,7 +199,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const handleValidation = async (): Promise<boolean> => {
 		const errors: ContentEditFormErrors = {};
-		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
+		const hasPublicationAndDePublicationDates =
+			contentForm.publishAt && contentForm.depublishAt;
 
 		if (!contentForm.title) {
 			errors.title = t('admin/content/views/content-edit___titel-is-verplicht');

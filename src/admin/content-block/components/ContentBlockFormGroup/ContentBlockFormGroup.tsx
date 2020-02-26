@@ -61,7 +61,9 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 					<FormGroup label={formGroup.fields[key].label} error={error}>
 						<ContentBlockFieldEditor
 							block={{ config, index: blockIndex }}
-							fieldKey={key as keyof ContentBlockComponentState | keyof ContentBlockState}
+							fieldKey={
+								key as keyof ContentBlockComponentState | keyof ContentBlockState
+							}
 							field={formGroup.fields[key]}
 							state={formGroupState}
 							type={formGroupType}

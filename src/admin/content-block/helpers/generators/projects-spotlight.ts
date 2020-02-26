@@ -53,8 +53,13 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 					'admin/content-block/helpers/generators/projects-spotlight___een-afbeelding-is-verplicht'
 				),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___afbeelding'),
-					editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
+					label: i18n.t(
+						'admin/content-block/helpers/generators/projects-spotlight___afbeelding'
+					),
+					editorProps: {
+						assetType: 'CONTENT_PAGE_IMAGE',
+						allowMulti: false,
+					} as FileUploadProps,
 				}
 			),
 			title: TEXT_FIELD('', {

@@ -157,7 +157,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						<Spacer key={stateIndex} margin="bottom">
 							<BlockHeading type="h4" className="u-m-t-0 u-spacer-bottom-s">
 								<Toolbar autoHeight>
-									<ToolbarLeft>{`${get(config, 'components.name')} ${stateIndex + 1}`}</ToolbarLeft>
+									<ToolbarLeft>{`${get(config, 'components.name')} ${stateIndex +
+										1}`}</ToolbarLeft>
 									<ToolbarRight>{renderRemoveButton(stateIndex)}</ToolbarRight>
 								</Toolbar>
 							</BlockHeading>
@@ -248,7 +249,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				</AccordionActions>
 				<AccordionBody>
 					{renderFormGroups(components, 'components')}
-					{underLimit && REPEATABLE_CONTENT_BLOCKS.includes(config.type) && renderAddButton(label)}
+					{underLimit &&
+						REPEATABLE_CONTENT_BLOCKS.includes(config.type) &&
+						renderAddButton(label)}
 					<Spacer margin="top">
 						<BlockHeading type="h4" className="u-m-t-0">
 							Blok-opties

@@ -51,10 +51,15 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		state: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES(),
 		fields: {
 			source: FILE_FIELD(
-				i18n.t('admin/content-block/helpers/generators/image-grid___een-afbeelding-is-verplicht'),
+				i18n.t(
+					'admin/content-block/helpers/generators/image-grid___een-afbeelding-is-verplicht'
+				),
 				{
 					label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding'),
-					editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
+					editorProps: {
+						assetType: 'CONTENT_PAGE_IMAGE',
+						allowMulti: false,
+					} as FileUploadProps,
 				}
 			),
 			title: TEXT_FIELD('', {
@@ -75,7 +80,9 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		fields: {
 			...CONTENT_BLOCK_FIELD_DEFAULTS(),
 			imageWidth: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding-breedte'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image-grid___afbeelding-breedte'
+				),
 				editorType: ContentBlockEditor.MultiRange,
 				validator: () => [],
 				editorProps: {
@@ -86,7 +93,9 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				} as MultiRangeProps,
 			},
 			imageHeight: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding-hoogte'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image-grid___afbeelding-hoogte'
+				),
 				editorType: ContentBlockEditor.MultiRange,
 				validator: () => [],
 				editorProps: {

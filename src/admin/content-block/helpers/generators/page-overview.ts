@@ -37,7 +37,11 @@ export const INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE = (): PageOverviewBlock
 
 export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (position: number): DefaultContentBlockState => {
 	return {
-		...FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.PageOverview, position),
+		...FORM_STATE_DEFAULTS(
+			BackgroundColorOption.White,
+			ContentBlockType.PageOverview,
+			position
+		),
 	};
 };
 
@@ -54,7 +58,9 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					),
 				}),
 				tabStyle: {
-					label: i18n.t('admin/content-block/helpers/generators/page-overview___menu-type'),
+					label: i18n.t(
+						'admin/content-block/helpers/generators/page-overview___menu-type'
+					),
 					editorType: ContentBlockEditor.Select,
 					editorProps: {
 						options: PAGE_OVERVIEW_TAB_STYLE_OPTIONS,
@@ -69,7 +75,9 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					} as CheckboxProps,
 				},
 				itemStyle: {
-					label: i18n.t('admin/content-block/helpers/generators/page-overview___item-type'),
+					label: i18n.t(
+						'admin/content-block/helpers/generators/page-overview___item-type'
+					),
 					editorType: ContentBlockEditor.Select,
 					editorProps: {
 						options: PAGE_OVERVIEW_ITEM_STYLE_OPTIONS,
@@ -78,7 +86,9 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 				showTitle: {
 					editorType: ContentBlockEditor.Checkbox,
 					editorProps: {
-						label: i18n.t('admin/content-block/helpers/generators/page-overview___toon-de-titel'),
+						label: i18n.t(
+							'admin/content-block/helpers/generators/page-overview___toon-de-titel'
+						),
 					} as CheckboxProps,
 				},
 				showDescription: {
@@ -104,7 +114,9 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					editorType: ContentBlockEditor.TextInput,
 				},
 				itemsPerPage: {
-					label: i18n.t('admin/content-block/helpers/generators/page-overview___items-per-pagina'),
+					label: i18n.t(
+						'admin/content-block/helpers/generators/page-overview___items-per-pagina'
+					),
 					editorType: ContentBlockEditor.MultiRange,
 					editorProps: {
 						min: 0,

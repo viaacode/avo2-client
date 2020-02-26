@@ -125,9 +125,13 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					onSelect(null);
 					setCurrentValue(null);
 					console.error(
-						new CustomError('Selected content in content picker does not have a value', null, {
-							selectedItem,
-						})
+						new CustomError(
+							'Selected content in content picker does not have a value',
+							null,
+							{
+								selectedItem,
+							}
+						)
 					);
 					toastService.danger(
 						i18n.t(
@@ -156,7 +160,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					<ReactSelect
 						{...REACT_SELECT_DEFAULT_OPTIONS}
 						id="content-picker-type"
-						placeholder={t('admin/content/components/content-picker/content-picker___type')}
+						placeholder={t(
+							'admin/content/components/content-picker/content-picker___type'
+						)}
 						options={typeOptions}
 						isSearchable={false}
 						isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}

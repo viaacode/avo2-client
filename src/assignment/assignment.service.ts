@@ -54,7 +54,9 @@ export class AssignmentService {
 		OBLIGATORY_PROPERTIES.forEach((prop: AssignmentProperty) => {
 			if (!(assignmentToSave as any)[prop.name]) {
 				errors.push(
-					i18n.t('assignment/assignment___een-eigenschap-is-verplicht', { eigenschap: prop.label })
+					i18n.t('assignment/assignment___een-eigenschap-is-verplicht', {
+						eigenschap: prop.label,
+					})
 				);
 			}
 		});

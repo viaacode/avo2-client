@@ -68,7 +68,11 @@ const Home: FunctionComponent<HomeProps> = ({
 	}, [debouncedSearchTerms, search]);
 
 	// Computed
-	const autocompleteMenuItems = (get(searchResults, 'results', []) as Avo.Search.ResultItem[]).map(
+	const autocompleteMenuItems = (get(
+		searchResults,
+		'results',
+		[]
+	) as Avo.Search.ResultItem[]).map(
 		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
 			label: searchResult.dc_title,
 			id: searchResult.external_id,
@@ -97,11 +101,16 @@ const Home: FunctionComponent<HomeProps> = ({
 
 			if (searchResultItem) {
 				history.push(
-					generateContentLinkString(searchResultItem.administrative_type, searchResultItem.id)
+					generateContentLinkString(
+						searchResultItem.administrative_type,
+						searchResultItem.id
+					)
 				);
 			} else {
 				toastService.danger(
-					t('home/views/home___geen-zoekresultaten-gevonden-met-id-id', { id: searchResultId })
+					t('home/views/home___geen-zoekresultaten-gevonden-met-id-id', {
+						id: searchResultId,
+					})
 				);
 			}
 		}
@@ -136,14 +145,18 @@ const Home: FunctionComponent<HomeProps> = ({
 											placeholder={t('home/views/home___vul-een-zoekterm-in')}
 											icon="search"
 											value={searchTerms}
-											onChange={searchTerm => handleSearchTermChanged(searchTerm)}
+											onChange={searchTerm =>
+												handleSearchTermChanged(searchTerm)
+											}
 										/>
 									</DropdownButton>
 									<DropdownContent>
 										{!searchResultsLoading ? (
 											<MenuSearchResultContent
 												menuItems={autocompleteMenuItems}
-												noResultsLabel={t('home/views/home___geen-resultaten')}
+												noResultsLabel={t(
+													'home/views/home___geen-resultaten'
+												)}
 												onClick={id => goToSearchResult(id.toString())}
 											/>
 										) : (
@@ -168,9 +181,15 @@ const Home: FunctionComponent<HomeProps> = ({
 								</p>
 								<Flex className="c-button-toolbar" orientation="horizontal" center>
 									{/* TODO discover/overview-basic.html */}
-									<Button label={t('home/views/home___basisonderwijs')} type="secondary" />
+									<Button
+										label={t('home/views/home___basisonderwijs')}
+										type="secondary"
+									/>
 									{/* TODO discover/overview-secondary.html */}
-									<Button label={t('home/views/home___secundair-onderwijs')} type="secondary" />
+									<Button
+										label={t('home/views/home___secundair-onderwijs')}
+										type="secondary"
+									/>
 								</Flex>
 							</Spacer>
 						</div>

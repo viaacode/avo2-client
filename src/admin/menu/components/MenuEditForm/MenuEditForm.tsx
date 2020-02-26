@@ -68,7 +68,9 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			{!menuParentId && (
 				<FormGroup
 					error={formErrors.description}
-					label={t('admin/menu/components/menu-edit-form/menu-edit-form___navigatie-omschrijving')}
+					label={t(
+						'admin/menu/components/menu-edit-form/menu-edit-form___navigatie-omschrijving'
+					)}
 				>
 					<TextArea
 						onChange={(value: string) => onChange('description', value)}
@@ -92,7 +94,10 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___label')}
 				required
 			>
-				<TextInput onChange={(value: string) => onChange('label', value)} value={formState.label} />
+				<TextInput
+					onChange={(value: string) => onChange('label', value)}
+					value={formState.label}
+				/>
 			</FormGroup>
 			<FormGroup
 				error={formErrors.content_path}
@@ -122,11 +127,15 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				<Select
 					options={[
 						{
-							label: t('admin/menu/components/menu-edit-form/menu-edit-form___nieuw-venster'),
+							label: t(
+								'admin/menu/components/menu-edit-form/menu-edit-form___nieuw-venster'
+							),
 							value: '_blank',
 						},
 						{
-							label: t('admin/menu/components/menu-edit-form/menu-edit-form___hetzelfde-venster'),
+							label: t(
+								'admin/menu/components/menu-edit-form/menu-edit-form___hetzelfde-venster'
+							),
 							value: '_self',
 						},
 					]}

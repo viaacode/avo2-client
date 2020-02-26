@@ -96,7 +96,12 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 			const num = (state as any)[fieldKey];
 			editorProps = {
 				onChange: (value: any) => {
-					handleChange(type, fieldKey, isArray(value) ? value[0] || 0 : value, stateIndex);
+					handleChange(
+						type,
+						fieldKey,
+						isArray(value) ? value[0] || 0 : value,
+						stateIndex
+					);
 				},
 				values: [num || 0], // TODO default to min value of input field instead of 0
 			};

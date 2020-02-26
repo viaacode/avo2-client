@@ -88,9 +88,14 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="12">
 								<FormGroup
 									error={formErrors.title}
-									label={t('admin/content/components/content-edit-form/content-edit-form___titel')}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___titel'
+									)}
 								>
-									<TextInput onChange={value => onChange('title', value)} value={formState.title} />
+									<TextInput
+										onChange={value => onChange('title', value)}
+										value={formState.title}
+									/>
 								</FormGroup>
 							</Column>
 							<Column size="12">
@@ -123,7 +128,9 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="12">
 								<FormGroup
 									error={formErrors.path}
-									label={t('admin/content/components/content-edit-form/content-edit-form___url')}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___url'
+									)}
 								>
 									<TextInput
 										onChange={value => onChange('path', value)}
@@ -165,10 +172,14 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										'admin/content/components/content-edit-form/content-edit-form___zichtbaar-voor'
 									)}
 									error={formErrors.userGroupIds}
-									placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
+									placeholder={t(
+										'admin/menu/components/menu-edit-form/menu-edit-form___niemand'
+									)}
 									values={formState.userGroupIds}
 									required={false}
-									onChange={(userGroupIds: number[]) => onChange('userGroupIds', userGroupIds)}
+									onChange={(userGroupIds: number[]) =>
+										onChange('userGroupIds', userGroupIds)
+									}
 								/>
 							</Column>
 							<Column size="3-6">

@@ -87,8 +87,8 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 					</Trans>
 				</BlockHeading>
 				<Trans parent="p">
-					Let wel, enkel personen met een Archief voor Onderwijs account zullen deze link kunnen
-					openen.
+					Let wel, enkel personen met een Archief voor Onderwijs account zullen deze link
+					kunnen openen.
 				</Trans>
 				<Spacer margin="top-large">
 					<Box backgroundColor="gray" condensed>

@@ -47,7 +47,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [t] = useTranslation();
 
 	const [contentBlocks] = useContentBlocksByContentId(id);
-	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, CONTENT_DETAIL_TABS[0].id);
+	const [currentTab, setCurrentTab, tabs] = useTabs(
+		CONTENT_DETAIL_TABS,
+		CONTENT_DETAIL_TABS[0].id
+	);
 
 	// Computed
 	const avatarProps = getAvatarProps(get(content, 'profile', null));
@@ -65,14 +68,18 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			.then(() => {
 				history.push(CONTENT_PATH.CONTENT);
 				toastService.success(
-					t('admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'),
+					t(
+						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
+					),
 					false
 				);
 			})
 			.catch(err => {
 				console.error(err);
 				toastService.danger(
-					t('admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'),
+					t(
+						'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
+					),
 					false
 				);
 			});
@@ -114,7 +121,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 							)}
 
 							<BlockHeading type="h4">
-								<Trans i18nKey="admin/content/views/content-detail___metadata">Metadata:</Trans>
+								<Trans i18nKey="admin/content/views/content-detail___metadata">
+									Metadata:
+								</Trans>
 							</BlockHeading>
 							<Table horizontal variant="invisible">
 								<tbody>
@@ -226,7 +235,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={
 						isContentProtected
-							? t('admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina')
+							? t(
+									'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
+							  )
 							: ''
 					}
 				/>

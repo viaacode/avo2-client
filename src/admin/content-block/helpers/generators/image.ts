@@ -34,12 +34,16 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				validator: () => [],
 			},
 			text: {
-				label: i18n.t('admin/content-block/helpers/generators/image___bijschrift-beschrijving'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image___bijschrift-beschrijving'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			},
 			imageSource: FILE_FIELD(
-				i18n.t('admin/content-block/helpers/generators/image___een-afbeelding-is-verplicht'),
+				i18n.t(
+					'admin/content-block/helpers/generators/image___een-afbeelding-is-verplicht'
+				),
 				{
 					label: i18n.t('admin/content-block/helpers/generators/image___afbeelding'),
 					editorProps: { assetType: 'CONTENT_PAGE_IMAGE' } as FileUploadProps,
