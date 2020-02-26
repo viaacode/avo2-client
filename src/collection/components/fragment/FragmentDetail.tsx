@@ -41,7 +41,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 			return () => {
 				if (collectionFragment.item_meta) {
 					redirectToClientPage(
-						buildLink(APP_PATH.ITEM, {
+						buildLink(APP_PATH.ITEM_DETAIL, {
 							id: (collectionFragment.item_meta as Avo.Item.Item).external_id,
 						}),
 						history

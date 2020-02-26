@@ -1,152 +1,31 @@
-import { get } from 'lodash-es';
+import { compact, get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../helpers';
+import { ContentTypeNumber } from '../../collection/collection.types';
+import { CustomError, normalizeTimestamp } from '../helpers';
 import i18n from '../translations/i18n';
 import {
+	AppCollectionBookmark,
+	AppItemBookmark,
+	BookmarkInfo,
+	BookmarkViewPlayCounts,
+	EVENT_QUERIES,
+	EventAction,
+	EventContentType,
+	EventContentTypeSimplified,
+	EventInitAction,
+	GetBookmarksForUserResponse,
+} from './bookmarks-views-plays-service.const';
+import {
+	GET_BOOKMARKS_FOR_USER,
 	GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
 	GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
 	GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
 	GET_MULTIPLE_ITEM_VIEW_COUNTS,
-	INCREMENT_COLLECTION_PLAYS,
-	INCREMENT_COLLECTION_VIEWS,
-	INCREMENT_ITEM_PLAYS,
-	INCREMENT_ITEM_VIEWS,
-	INIT_COLLECTION_PLAYS,
-	INIT_COLLECTION_VIEWS,
-	INIT_ITEM_PLAYS,
-	INIT_ITEM_VIEWS,
-	INSERT_COLLECTION_BOOKMARK,
-	INSERT_ITEM_BOOKMARK,
-	REMOVE_COLLECTION_BOOKMARK,
-	REMOVE_ITEM_BOOKMARK,
 } from './bookmarks-views-plays-service.gql';
 import { ApolloCacheManager, dataService } from './data-service';
 import toastService from './toast-service';
-const { print } = require('graphql/language/printer');
-
-export interface BookmarkViewPlayCounts {
-	bookmarkCount: number;
-	viewCount: number;
-	playCount: number;
-	isBookmarked: boolean;
-}
-
-export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
-	bookmarkCount: 0,
-	viewCount: 0,
-	playCount: 0,
-	isBookmarked: false,
-};
-
-type EventAction = 'bookmark' | 'unbookmark' | 'view' | 'play';
-type EventInitAction = 'viewInit' | 'playInit';
-type EventActionExtended = EventAction | EventInitAction;
-type EventContentTypeSimplified = 'item' | 'collection';
-type EventContentType = EventContentTypeSimplified | 'bundle';
-
-interface QueryDefinition {
-	query: any;
-	variables: ((uuid: string, profileId: string) => any) | ((uuid: string) => any);
-}
-
-const EVENT_QUERIES: {
-	[action in EventActionExtended]: { [contentType in EventContentTypeSimplified]: QueryDefinition };
-} = {
-	bookmark: {
-		item: {
-			query: INSERT_ITEM_BOOKMARK,
-			variables: (itemUuid: string, profileId: string) => ({
-				bookmarkItem: {
-					item_id: itemUuid,
-					profile_id: profileId,
-				},
-			}),
-		},
-		collection: {
-			query: INSERT_COLLECTION_BOOKMARK,
-			variables: (collectionUuid: string, profileId: string) => ({
-				bookmarkItem: {
-					collection_uuid: collectionUuid,
-					profile_id: profileId,
-				},
-			}),
-		},
-	},
-	unbookmark: {
-		item: {
-			query: REMOVE_ITEM_BOOKMARK,
-			variables: (itemUuid: string, profileId: string) => ({
-				itemUuid,
-				profileId,
-			}),
-		},
-		collection: {
-			query: REMOVE_COLLECTION_BOOKMARK,
-			variables: (collectionUuid: string, profileId: string) => ({
-				collectionUuid,
-				profileId,
-			}),
-		},
-	},
-	view: {
-		item: {
-			query: INCREMENT_ITEM_VIEWS,
-			variables: (itemUuid: string) => ({
-				itemUuid,
-			}),
-		},
-		collection: {
-			query: INCREMENT_COLLECTION_VIEWS,
-			variables: (collectionUuid: string) => ({
-				collectionUuid,
-			}),
-		},
-	},
-	play: {
-		item: {
-			query: INCREMENT_ITEM_PLAYS,
-			variables: (itemUuid: string) => ({
-				itemUuid,
-			}),
-		},
-		collection: {
-			query: INCREMENT_COLLECTION_PLAYS,
-			variables: (collectionUuid: string) => ({
-				collectionUuid,
-			}),
-		},
-	},
-	viewInit: {
-		item: {
-			query: INIT_ITEM_VIEWS,
-			variables: (itemUuid: string) => ({
-				itemUuid,
-			}),
-		},
-		collection: {
-			query: INIT_COLLECTION_VIEWS,
-			variables: (collectionUuid: string) => ({
-				collectionUuid,
-			}),
-		},
-	},
-	playInit: {
-		item: {
-			query: INIT_ITEM_PLAYS,
-			variables: (itemUuid: string) => ({
-				itemUuid,
-			}),
-		},
-		collection: {
-			query: INIT_COLLECTION_PLAYS,
-			variables: (collectionUuid: string) => ({
-				collectionUuid,
-			}),
-		},
-	},
-};
 
 export class BookmarksViewsPlaysService {
 	public static async action(
@@ -168,8 +47,6 @@ export class BookmarksViewsPlaysService {
 			if (!mutation || !variables) {
 				throw new CustomError('Failed to find query/variables in query lookup table');
 			}
-			console.log('query', print(mutation));
-			console.log('variables', variables);
 
 			const response = await dataService.mutate({
 				mutation,
@@ -198,7 +75,6 @@ export class BookmarksViewsPlaysService {
 					// Bookmark related action failed
 					console.error('Failed to store action into the database', null, {
 						response,
-						query: print(mutation),
 						variables,
 					});
 					toastService.danger(
@@ -280,7 +156,7 @@ export class BookmarksViewsPlaysService {
 	public static async toggleBookmark(
 		contentId: string,
 		user: Avo.User.User,
-		type: EventContentTypeSimplified,
+		type: EventContentType,
 		isBookmarked: boolean
 	): Promise<boolean> {
 		try {
@@ -306,6 +182,76 @@ export class BookmarksViewsPlaysService {
 			);
 			return false;
 		}
+	}
+
+	/**
+	 * Gets all bookmarks for user without pagination
+	 * since we cannot order items across both tables: item_bookmarks and collection_bookmarks
+	 * @param user
+	 */
+	public static async getAllBookmarksForUser(user: Avo.User.User): Promise<BookmarkInfo[]> {
+		const response: GetBookmarksForUserResponse = await dataService.query({
+			query: GET_BOOKMARKS_FOR_USER,
+			variables: { profileId: get(user, 'profile.id') },
+		});
+		const itemBookmarks: AppItemBookmark[] = get(response, 'data.app_item_bookmarks', []);
+		const collectionBookmarks: AppCollectionBookmark[] = get(
+			response,
+			'data.app_collection_bookmarks',
+			[]
+		);
+		const itemViews = await this.getMultipleViewCounts(
+			itemBookmarks.map(b => b.item_id),
+			'item'
+		);
+		const collectionViews = await this.getMultipleViewCounts(
+			collectionBookmarks.map(b => b.collection_uuid),
+			'collection'
+		);
+		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
+			(itemBookmark): BookmarkInfo | null => {
+				if (!itemBookmark.bookmarkedItem) {
+					return null;
+				}
+				return {
+					contentId: itemBookmark.item_id,
+					contentType: 'item',
+					createdAt: normalizeTimestamp(itemBookmark.created_at)
+						.toDate()
+						.getTime(),
+					contentTitle: itemBookmark.bookmarkedItem.title,
+					contentThumbnailPath: itemBookmark.bookmarkedItem.thumbnail_path,
+					contentCreatedAt: normalizeTimestamp(itemBookmark.bookmarkedItem.issued)
+						.toDate()
+						.getTime(),
+					contentViews: itemViews[itemBookmark.item_id] || 0,
+				};
+			}
+		);
+		const collectionBookmarkInfos: (BookmarkInfo | null)[] = collectionBookmarks.map(
+			(collectionBookmark): BookmarkInfo | null => {
+				if (!collectionBookmark.bookmarkedCollection) {
+					return null;
+				}
+				return {
+					contentId: collectionBookmark.collection_uuid,
+					contentType:
+						collectionBookmark.bookmarkedCollection.type_id === ContentTypeNumber.collection
+							? 'collection'
+							: 'bundle',
+					createdAt: normalizeTimestamp(collectionBookmark.created_at)
+						.toDate()
+						.getTime(),
+					contentTitle: collectionBookmark.bookmarkedCollection.title,
+					contentThumbnailPath: collectionBookmark.bookmarkedCollection.thumbnail_path,
+					contentCreatedAt: normalizeTimestamp(collectionBookmark.bookmarkedCollection.created_at)
+						.toDate()
+						.getTime(),
+					contentViews: collectionViews[collectionBookmark.collection_uuid] || 0,
+				};
+			}
+		);
+		return [...compact(itemBookmarkInfos), ...compact(collectionBookmarkInfos)];
 	}
 
 	public static async getMultipleViewCounts(

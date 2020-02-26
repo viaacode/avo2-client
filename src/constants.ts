@@ -35,8 +35,8 @@ export const APP_PATH = Object.freeze({
 });
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
-	video: APP_PATH.ITEM,
-	audio: APP_PATH.ITEM,
+	video: APP_PATH.ITEM_DETAIL,
+	audio: APP_PATH.ITEM_DETAIL,
 	collectie: APP_PATH.COLLECTION_DETAIL,
 	bundel: APP_PATH.BUNDLE_DETAIL,
 };

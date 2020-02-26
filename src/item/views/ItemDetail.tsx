@@ -55,11 +55,11 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import {
-	BookmarksViewsPlaysService,
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+} from '../../shared/services/bookmarks-views-plays-service.const';
 import { dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
@@ -265,7 +265,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 						<MediaCard
 							category={englishContentType}
 							onClick={() =>
-								redirectToClientPage(buildLink(ITEM_PATH.ITEM, { id: relatedItem.id }), history)
+								redirectToClientPage(
+									buildLink(ITEM_PATH.ITEM_DETAIL, { id: relatedItem.id }),
+									history
+								)
 							}
 							orientation="horizontal"
 							title={relatedItem.dc_title}

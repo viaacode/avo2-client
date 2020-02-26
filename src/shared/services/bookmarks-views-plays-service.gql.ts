@@ -164,3 +164,27 @@ export const GET_MULTIPLE_COLLECTION_VIEW_COUNTS = gql`
 		}
 	}
 `;
+
+export const GET_BOOKMARKS_FOR_USER = gql`
+	query getBookmarksForUser($profileId: uuid!) {
+		app_item_bookmarks(where: { profile_id: { _eq: $profileId } }) {
+			bookmarkedItem {
+				title
+				thumbnail_path
+				issued
+			}
+			item_id
+			created_at
+		}
+		app_collection_bookmarks(where: { profile_id: { _eq: $profileId } }) {
+			bookmarkedCollection {
+				title
+				thumbnail_path
+				created_at
+				type_id
+			}
+			collection_uuid
+			created_at
+		}
+	}
+`;

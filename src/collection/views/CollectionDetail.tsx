@@ -57,11 +57,11 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import {
-	BookmarksViewsPlaysService,
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+} from '../../shared/services/bookmarks-views-plays-service.const';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import toastService from '../../shared/services/toast-service';
@@ -78,7 +78,6 @@ import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
-
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
