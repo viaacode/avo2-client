@@ -51,7 +51,7 @@ export const DELETE_ITEM = gql`
 `;
 
 export const DELETE_COLLECTION = gql`
-	mutation deleteItemBookmark($collectionUuid: uuid!, $profileId: uuid!) {
+	mutation deleteCollectionBookmark($collectionUuid: uuid!, $profileId: uuid!) {
 		delete_app_collection_bookmarks(
 			where: { collection_uuid: { _eq: $collectionUuid }, profile_id: { _eq: $profileId } }
 		) {

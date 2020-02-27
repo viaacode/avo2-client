@@ -10,6 +10,7 @@ import {
 	Pagination,
 	Spacer,
 	Table,
+	TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
 
@@ -46,6 +47,23 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [paginatedBookmarks, setPaginatedBookmarks] = useState<BookmarkInfo[]>([]);
 
+	const BOOKMARK_COLUMNS: TableColumn[] = [
+		{ id: 'contentThumbnailPath', label: '', col: '2' },
+		{
+			id: 'contentTitle',
+			label: t('collection/views/collection-overview___titel'),
+			col: '6',
+			sortable: true,
+		},
+		{
+			id: 'createdAt',
+			label: t('Aangemaakt op'),
+			col: '3',
+			sortable: true,
+		},
+		{ id: 'actions', label: '', col: '1' },
+	];
+
 	const fetchBookmarks = useCallback(async () => {
 		try {
 			const bookmarkInfos = await BookmarksViewsPlaysService.getAllBookmarksForUser(user);
@@ -53,7 +71,10 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
 			console.error(new CustomError('Failed to get all bookmarks for user', err, { user }));
-			setLoadingInfo({ state: 'error', message: t('Het ophalen van je bladwijzers is mislukt') });
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het ophalen van je bladwijzers is mislukt'),
+			});
 		}
 	}, [user, setBookmarks, setLoadingInfo, t]);
 
@@ -88,13 +109,16 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			await fetchBookmarks();
 			toastService.success(t('de bladwijzer is verwijderd'));
 		} catch (err) {
-			console.error(new CustomError('Failed t delete bookmark', err, { bookmarkToDelete, user }));
+			console.error(
+				new CustomError('Failed t delete bookmark', err, { bookmarkToDelete, user })
+			);
 			toastService.danger(t('Het verwijderen van de bladwijzer is mislukt'));
 		}
 
 		setBookmarkToDelete(null);
 	};
 
+	// TODO: Make shared function because also used in assignments
 	const onClickColumn = (columnId: keyof BookmarkInfo) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
@@ -115,9 +139,12 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		contentThumbnailPath,
 	}: BookmarkInfo) => (
 		<Link
-			to={buildLink(contentType === 'item' ? APP_PATH.ITEM_DETAIL : APP_PATH.COLLECTION_DETAIL, {
-				id: contentId,
-			})}
+			to={buildLink(
+				contentType === 'item' ? APP_PATH.ITEM_DETAIL : APP_PATH.COLLECTION_DETAIL,
+				{
+					id: contentId,
+				}
+			)}
 			title={contentTitle}
 		>
 			<Thumbnail
@@ -194,24 +221,11 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const renderTable = () => (
 		<>
 			<Table
-				columns={[
-					{ id: 'contentThumbnailPath', label: '', col: '2' },
-					{
-						id: 'contentTitle',
-						label: t('collection/views/collection-overview___titel'),
-						col: '6',
-						sortable: true,
-					},
-					{
-						id: 'createdAt',
-						label: t('Aangemaakt op'),
-						col: '3',
-						sortable: true,
-					},
-					{ id: 'actions', label: '', col: '1' },
-				]}
+				columns={BOOKMARK_COLUMNS}
 				data={paginatedBookmarks}
-				emptyStateMessage={t('collection/views/collection-overview___geen-resultaten-gevonden')}
+				emptyStateMessage={t(
+					'collection/views/collection-overview___geen-resultaten-gevonden'
+				)}
 				renderCell={renderCell}
 				rowKey="contentId"
 				variant="styled"
@@ -253,7 +267,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setIsDeleteModalOpen(false)}
-				deleteObjectCallback={() => onDeleteBookmark()}
+				deleteObjectCallback={onDeleteBookmark}
 			/>
 		</>
 	);
