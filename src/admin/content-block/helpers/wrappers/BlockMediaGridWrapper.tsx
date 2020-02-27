@@ -1,106 +1,14 @@
-import { get, isEqual } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import {
-	ButtonAction,
-	Column,
-	CTA,
-	EnglishContentType,
-	Grid,
-	MediaCard,
-	MediaCardMetaData,
-	MediaCardThumbnail,
-	MetaData,
-	MetaDataItem,
-	Orientation,
-	Thumbnail,
-} from '@viaa/avo2-components';
-import { MetaDataItemProps } from '@viaa/avo2-components/dist/components/MetaData/MetaDataItem/MetaDataItem';
+import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
 
 import { formatDate, navigateToContentType } from '../../../../shared/helpers';
 import { MediaItemResponse } from '../../../shared/types';
 import { fetchCollectionOrItem } from '../../services/block-data.service';
 
-import './BlockMediaList.scss';
-
-export type MediaListItem = {
-	action: ButtonAction;
-	category: EnglishContentType;
-	metadata?: MetaDataItemProps[];
-	thumbnail?: { label: string; meta?: string; src?: string };
-	title: string;
-};
-
-export interface BlockMediaListProps {
-	elements: MediaListItem[];
-	navigate: (action: ButtonAction) => void;
-	orientation?: Orientation;
-	ctaTitle?: string;
-	ctaContent?: string;
-	ctaButtonAction?: ButtonAction;
-	ctaButtonLabel?: string;
-}
-
-// TODO: everything related to BlockMediaList once it has been updated in components lib
-export const BlockMediaList: FunctionComponent<BlockMediaListProps> = ({
-	elements = [],
-	navigate,
-	orientation,
-	ctaTitle = '',
-	ctaContent = '',
-	ctaButtonAction = { type: 'COLLECTION', value: '' },
-	ctaButtonLabel = '',
-}) => {
-	return (
-		<div className="c-block-media-list c-media-card-list">
-			<Grid>
-				{elements.map(({ action, category, metadata, thumbnail, title }, i) => (
-					<Column key={`block-media-list-${i}`} size="3-3">
-						<MediaCard
-							category={category}
-							onClick={() => navigate(action)}
-							orientation={orientation}
-							title={title}
-						>
-							{thumbnail && (
-								<MediaCardThumbnail>
-									<Thumbnail alt={title} category={category} {...thumbnail} />
-								</MediaCardThumbnail>
-							)}
-							{metadata && metadata.length > 0 && (
-								<MediaCardMetaData>
-									<MetaData category={category}>
-										{metadata.map((props, i) => (
-											<MetaDataItem
-												key={`block-media-list-meta-${i}`}
-												{...props}
-											/>
-										))}
-									</MetaData>
-								</MediaCardMetaData>
-							)}
-						</MediaCard>
-					</Column>
-				))}
-				{(ctaTitle || ctaButtonAction.value || ctaButtonLabel) && (
-					<Column size="3-3">
-						<CTA
-							buttonAction={ctaButtonAction}
-							buttonLabel={ctaButtonLabel}
-							heading={ctaTitle}
-							content={ctaContent}
-							headingType="h3"
-							navigate={navigate}
-						/>
-					</Column>
-				)}
-			</Grid>
-		</div>
-	);
-};
-
-interface BlockMediaListWrapperProps extends RouteComponentProps {
+interface BlockMediaGridWrapperProps extends RouteComponentProps {
 	ctaTitle?: string;
 	ctaContent?: string;
 	ctaButtonAction?: ButtonAction;
@@ -108,7 +16,7 @@ interface BlockMediaListWrapperProps extends RouteComponentProps {
 	elements: { mediaItem: ButtonAction }[];
 }
 
-const BlockMediaListWrapper: FunctionComponent<BlockMediaListWrapperProps> = ({
+const BlockMediaGridWrapper: FunctionComponent<BlockMediaGridWrapperProps> = ({
 	ctaTitle,
 	ctaContent,
 	ctaButtonAction,
@@ -117,7 +25,7 @@ const BlockMediaListWrapper: FunctionComponent<BlockMediaListWrapperProps> = ({
 	history,
 }) => {
 	// Hooks
-	const [data, setData] = useState<MediaListItem[]>([]);
+	const [gridData, setGridData] = useState<MediaListItem[]>([]);
 
 	const mapResponseData = useCallback(
 		(action: ButtonAction, { tileData, count = 0 }: MediaItemResponse): MediaListItem => {
@@ -131,12 +39,12 @@ const BlockMediaListWrapper: FunctionComponent<BlockMediaListWrapperProps> = ({
 			);
 
 			return {
-				action,
 				category: isItem ? itemLabel : 'collection',
 				metadata: [
 					{ icon: 'eye', label: String(count) },
 					{ label: formatDate(tileData.created_at) },
 				],
+				navigate: () => navigateToContentType(action, history),
 				title: tileData.title || '',
 				thumbnail: {
 					label: itemLabel,
@@ -145,14 +53,14 @@ const BlockMediaListWrapper: FunctionComponent<BlockMediaListWrapperProps> = ({
 				},
 			};
 		},
-		[]
+		[history]
 	);
 
 	useEffect(() => {
 		const mediaItems = elements.map(({ mediaItem }) => ({ ...mediaItem }));
 
 		const fetchAndMapData = async () => {
-			const dataArray: any[] = [];
+			const newGridData: MediaListItem[] = [];
 
 			for (let i = 0; i < mediaItems.length; i += 1) {
 				const mediaItem = mediaItems[i];
@@ -163,30 +71,29 @@ const BlockMediaListWrapper: FunctionComponent<BlockMediaListWrapperProps> = ({
 					if (rawData) {
 						const cleanData = mapResponseData(mediaItem, rawData);
 
-						dataArray.push(cleanData);
+						newGridData.push(cleanData);
 					}
 				}
 			}
 
-			if (dataArray.length && !isEqual(data, dataArray)) {
-				setData(dataArray);
+			if (newGridData.length) {
+				setGridData(newGridData);
 			}
 		};
 
 		fetchAndMapData();
-	}, [data, elements, mapResponseData]);
+	}, [elements, mapResponseData]);
 
 	// Render
 	return (
 		<BlockMediaList
-			elements={data}
-			navigate={action => navigateToContentType(action, history)}
-			ctaTitle={ctaTitle}
-			ctaContent={ctaContent}
-			ctaButtonAction={ctaButtonAction}
 			ctaButtonLabel={ctaButtonLabel}
+			ctaContent={ctaContent}
+			ctaNavigate={() => navigateToContentType(ctaButtonAction, history)}
+			ctaTitle={ctaTitle}
+			elements={gridData}
 		/>
 	);
 };
 
-export default withRouter(BlockMediaListWrapper);
+export default withRouter(BlockMediaGridWrapper);
