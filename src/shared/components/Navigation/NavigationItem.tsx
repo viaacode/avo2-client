@@ -60,8 +60,12 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 					menuWidth="fit-content"
 					placement="bottom-end"
 					isOpen={areDropdownsOpen[item.key] || false}
-					onOpen={() => setDropdownOpen(item.key, true, areDropdownsOpen, setDropdownsOpen)}
-					onClose={() => setDropdownOpen(item.key, false, areDropdownsOpen, setDropdownsOpen)}
+					onOpen={() =>
+						setDropdownOpen(item.key, true, areDropdownsOpen, setDropdownsOpen)
+					}
+					onClose={() =>
+						setDropdownOpen(item.key, false, areDropdownsOpen, setDropdownsOpen)
+					}
 				>
 					<DropdownButton>
 						<div className={`${className} u-clickable`}>
@@ -72,7 +76,12 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 					<DropdownContent>
 						{React.cloneElement(item.component, {
 							closeDropdown: () =>
-								setDropdownOpen(item.key, false, areDropdownsOpen, setDropdownsOpen),
+								setDropdownOpen(
+									item.key,
+									false,
+									areDropdownsOpen,
+									setDropdownsOpen
+								),
 						})}
 					</DropdownContent>
 				</Dropdown>

@@ -4,9 +4,6 @@ import React, { FunctionComponent } from 'react';
 import { SelectOption } from '@viaa/avo2-components';
 
 import { createKey } from '../../../shared/helpers';
-import { PickerItem } from '../../../shared/types';
-
-import { EDITOR_TYPES_MAP } from '../../content-block.const';
 import {
 	ContentBlockComponentState,
 	ContentBlockEditor,
@@ -14,7 +11,10 @@ import {
 	ContentBlockMeta,
 	ContentBlockState,
 	ContentBlockStateType,
-} from '../../content-block.types';
+	PickerItem,
+} from '../../../shared/types';
+
+import { EDITOR_TYPES_MAP } from '../../content-block.const';
 
 interface ContentBlockFieldProps {
 	block: ContentBlockMeta; // Block metadata
@@ -96,7 +96,12 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 			const num = (state as any)[fieldKey];
 			editorProps = {
 				onChange: (value: any) => {
-					handleChange(type, fieldKey, isArray(value) ? value[0] || 0 : value, stateIndex);
+					handleChange(
+						type,
+						fieldKey,
+						isArray(value) ? value[0] || 0 : value,
+						stateIndex
+					);
 				},
 				values: [num || 0], // TODO default to min value of input field instead of 0
 			};

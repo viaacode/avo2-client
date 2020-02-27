@@ -8,7 +8,8 @@ import { ActionMeta, ValueType } from 'react-select/src/types';
 import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../shared/helpers';
-import toastService from '../../../../shared/services/toast-service';
+import { toastService } from '../../../../shared/services';
+
 import { parsePickerItem } from '../../../shared/helpers';
 import {
 	ContentPickerType,
@@ -16,7 +17,6 @@ import {
 	PickerSelectItem,
 	PickerTypeOption,
 } from '../../../shared/types';
-
 import { CONTENT_TYPES, REACT_SELECT_DEFAULT_OPTIONS } from './ContentPicker.const';
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
 
@@ -27,14 +27,16 @@ export interface ContentPickerProps {
 	currentSelection?: PickerItem;
 }
 
-const ContentPicker: FunctionComponent<ContentPickerProps> = ({
+export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	allowedTypes,
 	onSelect,
 	errors = [],
 	currentSelection,
 }) => {
 	const typeOptions = filterTypes(CONTENT_TYPES, allowedTypes || []);
-	const currentTypeObject = typeOptions.find(type => type.value === get(currentSelection, 'type'));
+	const currentTypeObject = typeOptions.find(
+		type => type.value === get(currentSelection, 'type')
+	);
 
 	const [t] = useTranslation();
 
@@ -42,7 +44,9 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		currentTypeObject || typeOptions[0]
 	);
 	const [options, setOptions] = useState<PickerSelectItem[]>([]);
-	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, currentSelection));
+	const [input, setInput] = useState<string>(
+		setInitialInput(currentTypeObject, currentSelection)
+	);
 	const [currentItem, setCurrentItem] = useState<ValueType<PickerItem> | null>(
 		setInitialItem(options, currentSelection)
 	);
@@ -176,5 +180,3 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		</FormGroup>
 	);
 };
-
-export default ContentPicker;

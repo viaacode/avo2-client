@@ -6,8 +6,8 @@ import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { NEW_FRAGMENT } from '../../collection.const';
-import { CollectionAction } from '../CollectionOrBundleEdit';
 import { CollectionService } from '../../collection.service';
+import { CollectionAction } from '../CollectionOrBundleEdit';
 
 interface FragmentAddProps {
 	index: number;
@@ -65,7 +65,9 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 						type="secondary"
 						icon="add"
 						onClick={handleAddFragmentClick}
-						ariaLabel={t('collection/components/fragment/fragment-add___sectie-toevoegen')}
+						ariaLabel={t(
+							'collection/components/fragment/fragment-add___sectie-toevoegen'
+						)}
 					/>
 				</ToolbarItem>
 				{renderDivider()}
