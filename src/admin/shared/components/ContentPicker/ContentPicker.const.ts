@@ -55,7 +55,17 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 		label: i18n.t('Zoekfilters'),
 		disabled: false,
 		picker: 'TEXT_INPUT',
+		placeholder: i18n.t('Plak hier uw zoekpagina-URL'),
 	},
+];
+
+export const DEFAULT_ALLOWED_TYPES = [
+	'CONTENT_PAGE',
+	'ITEM',
+	'COLLECTION',
+	'BUNDLE',
+	'INTERNAL_LINK',
+	'EXTERNAL_LINK',
 ];
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {

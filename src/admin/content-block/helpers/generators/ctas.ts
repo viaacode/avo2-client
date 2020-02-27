@@ -1,5 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 
+import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	BackgroundColorOption,
@@ -10,6 +11,7 @@ import {
 	DefaultContentBlockState,
 } from '../../../shared/types';
 import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
+
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
@@ -79,14 +81,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
-					allowedTypes: [
-						'CONTENT_PAGE',
-						'ITEM',
-						'COLLECTION',
-						'BUNDLE',
-						'INTERNAL_LINK',
-						'EXTERNAL_LINK',
-					],
+					allowedTypes: DEFAULT_ALLOWED_TYPES,
 				},
 			},
 		},
