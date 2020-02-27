@@ -20,7 +20,7 @@ export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): MediaGridBlock
 });
 
 export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('Media grid'),
+	name: i18n.t('Media tegels'),
 	type: ContentBlockType.MediaGrid,
 	components: {
 		name: i18n.t('Media item'),
@@ -42,17 +42,20 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	block: {
 		state: INITIAL_MEDIA_GRID_BLOCK_STATE(position),
 		fields: {
-			ctaTitle: TEXT_FIELD(i18n.t('CTA titel is verplicht'), {
+			ctaTitle: TEXT_FIELD('', {
 				label: i18n.t('CTA titel'),
 				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
 			}),
-			ctaContent: TEXT_FIELD(i18n.t('CTA content is verplicht'), {
+			ctaContent: TEXT_FIELD('', {
 				label: i18n.t('CTA omschrijving'),
 				editorType: ContentBlockEditor.TextArea,
+				validator: undefined,
 			}),
-			ctaButtonLabel: TEXT_FIELD(i18n.t('CTA knop tekst is verplicht'), {
+			ctaButtonLabel: TEXT_FIELD('', {
 				label: i18n.t('CTA knop: Tekst'),
 				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
 			}),
 			ctaButtonAction: {
 				label: i18n.t('CTA knop: Actie'),
