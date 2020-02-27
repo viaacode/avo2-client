@@ -30,7 +30,7 @@ import {
 	DARK_BACKGROUND_COLOR_OPTIONS,
 } from '../../content-block.const';
 import {
-	BlockMediaListWrapper,
+	BlockMediaGridWrapper,
 	MediaPlayer,
 	MediaPlayerTitleTextButton,
 } from '../../helpers/wrappers';
@@ -56,7 +56,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.MediaGrid]: BlockMediaListWrapper,
+	[ContentBlockType.MediaGrid]: BlockMediaGridWrapper,
 	[ContentBlockType.MediaPlayer]: MediaPlayer,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
 	[ContentBlockType.RichText]: BlockRichText,
