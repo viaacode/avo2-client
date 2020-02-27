@@ -12,8 +12,9 @@ import { COLLECTION_PATH } from '../../collection/collection.const';
 import { CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { ITEM_PATH } from '../../item/item.const';
 import { SEARCH_PATH } from '../../search/search.const';
-import { toastService } from '../services/toast-service';
+import { toastService } from '../services';
 import i18n from '../translations/i18n';
+import { ButtonAction } from '@viaa/avo2-components';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
@@ -75,12 +76,11 @@ export const navigate = (
 	history.push(builtLink);
 };
 
-export const navigateToContentType = (action: any, history: History) => {
-	// TODO: Change any to ButtonAction when typings is updated.
+export const navigateToContentType = (action: ButtonAction, history: History) => {
 	if (action) {
 		const { type, value } = action;
 
-		switch (type) {
+		switch (type as Avo.Core.ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
 				history.push(value as string);

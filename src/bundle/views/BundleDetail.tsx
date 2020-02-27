@@ -101,7 +101,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		trackEvents(
 			{
 				object: bundleId,
-				object_type: 'bundels' as any, // TODO remove cast after update typings
+				object_type: 'bundels',
 				message: `Gebruiker ${getProfileName(
 					user
 				)} heeft de pagina voor collectie ${bundleId} bekeken`,
@@ -327,7 +327,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			return null;
 		}
 		return (bundle.collection_fragments || []).map((fragment: Avo.Collection.Fragment) => {
-			const collection: Avo.Collection.Collection = (fragment.item_meta as unknown) as Avo.Collection.Collection; // TODO update with new typings type
+			const collection: Avo.Collection.Collection = fragment.item_meta as Avo.Collection.Collection;
 			if (!collection) {
 				return null;
 			}

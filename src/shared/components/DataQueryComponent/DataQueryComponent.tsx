@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { ErrorActionButton } from '@viaa/avo2-types/types/auth';
 
 import {
 	PermissionGuard,
@@ -14,7 +15,6 @@ import {
 } from '../../../authentication/components';
 import { Permissions } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
-import { ErrorActionButton } from '../../../error/views/ErrorView';
 
 export interface DataQueryComponentProps {
 	query: DocumentNode;

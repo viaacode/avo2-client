@@ -1,5 +1,10 @@
-import { ButtonAction, ContentItemStyle, ContentTabStyle, IconName } from '@viaa/avo2-components';
-import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types'; // TODO: import from components library when exported.
+import {
+	ButtonAction,
+	ButtonType,
+	ContentItemStyle,
+	ContentTabStyle,
+	IconName,
+} from '@viaa/avo2-components';
 import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid'; // TODO: import from components library when exported.
 
 import { ContentPageType } from '../../content/content.types';

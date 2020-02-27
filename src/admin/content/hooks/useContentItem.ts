@@ -78,7 +78,7 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 								contentWidth: contentItem.content_width || ContentWidth.REGULAR,
 								publishAt: contentItem.publish_at || '',
 								depublishAt: contentItem.depublish_at || '',
-								userGroupIds: (contentItem as any).user_group_ids, // TODO remove once update typings to v2.10.0
+								userGroupIds: contentItem.user_group_ids,
 							},
 						});
 					} else {
