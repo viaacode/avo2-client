@@ -4,13 +4,13 @@ import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import { BUTTON_TYPE_OPTIONS } from '../../content-block.const';
 
 import {
+	BackgroundColorOption,
 	ButtonsBlockComponentState,
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import {
 	ALIGN_FIELD,
@@ -27,7 +27,7 @@ export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentS
 ];
 
 export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons, position);
+	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.Buttons, position);
 
 export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),

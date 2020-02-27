@@ -8,7 +8,9 @@ import { ContentPageType } from '../content.types';
 type UseContentTypesTuple = [SelectOption<ContentPageType>[], boolean];
 
 export const useContentTypes = (): UseContentTypesTuple => {
-	const [contentTypeOptions, setContentTypeOptions] = useState<SelectOption<ContentPageType>[]>([]);
+	const [contentTypeOptions, setContentTypeOptions] = useState<SelectOption<ContentPageType>[]>(
+		[]
+	);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {

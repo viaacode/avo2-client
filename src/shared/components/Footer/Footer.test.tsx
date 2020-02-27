@@ -7,6 +7,8 @@ import { Footer } from './Footer';
 
 describe('<Footer />', () => {
 	it('Should be able to render', () => {
-		shallow(<Footer user={mockUser} history={{} as any} match={{} as any} location={{} as any} />);
+		shallow(
+			<Footer user={mockUser} history={{} as any} match={{} as any} location={{} as any} />
+		);
 	});
 });

@@ -4,12 +4,12 @@ import i18n from '../../../../shared/translations/i18n';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import { times } from 'lodash-es';
 import {
@@ -33,11 +33,7 @@ export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES = (): ImageInfo[]
 export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (
 	position: number
 ): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(
-		ContentBlockBackgroundColor.White,
-		ContentBlockType.ProjectsSpotlight,
-		position
-	);
+	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.ProjectsSpotlight, position);
 
 export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t(
@@ -57,7 +53,9 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 					'admin/content-block/helpers/generators/projects-spotlight___een-afbeelding-is-verplicht'
 				),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___afbeelding'),
+					label: i18n.t(
+						'admin/content-block/helpers/generators/projects-spotlight___afbeelding'
+					),
 					editorProps: {
 						assetType: 'CONTENT_PAGE_IMAGE',
 						allowMulti: false,

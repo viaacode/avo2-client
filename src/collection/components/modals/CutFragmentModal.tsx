@@ -23,9 +23,9 @@ import {
 	getEnv,
 	toSeconds,
 } from '../../../shared/helpers';
+import { toastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
-import toastService from '../../../shared/services/toast-service';
 import { KeyCode } from '../../../shared/types';
 
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
@@ -236,12 +236,16 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t('collection/components/modals/cut-fragment-modal___annuleren')}
+									label={t(
+										'collection/components/modals/cut-fragment-modal___annuleren'
+									)}
 									onClick={onCancelCut}
 								/>
 								<Button
 									type="primary"
-									label={t('collection/components/modals/cut-fragment-modal___knippen')}
+									label={t(
+										'collection/components/modals/cut-fragment-modal___knippen'
+									)}
 									onClick={onSaveCut}
 								/>
 							</ButtonToolbar>

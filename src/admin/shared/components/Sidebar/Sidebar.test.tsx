@@ -1,7 +1,7 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 
-import Sidebar from './Sidebar';
+import { Sidebar } from './Sidebar';
 
 const sidebarProps = {
 	headerLink: '/beheer',

@@ -13,8 +13,8 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { CustomError } from '../../helpers';
+import { toastService } from '../../services';
 import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-service';
-import toastService from '../../services/toast-service';
 import i18n from '../../translations/i18n';
 
 import './FileUpload.scss';
@@ -85,11 +85,15 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			);
 			if (files && files.length > 1 && allowMulti) {
 				toastService.danger(
-					t('shared/components/file-upload/file-upload___het-uploaden-van-de-bestanden-is-mislukt')
+					t(
+						'shared/components/file-upload/file-upload___het-uploaden-van-de-bestanden-is-mislukt'
+					)
 				);
 			} else {
 				toastService.danger(
-					t('shared/components/file-upload/file-upload___het-uploaden-van-het-bestand-is-mislukt')
+					t(
+						'shared/components/file-upload/file-upload___het-uploaden-van-het-bestand-is-mislukt'
+					)
 				);
 			}
 		}
@@ -114,7 +118,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 		} catch (err) {
 			console.error(new CustomError('Failed to delete asset', err, { urls }));
 			toastService.danger(
-				t('shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt')
+				t(
+					'shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt'
+				)
 			);
 		}
 		setIsProcessing(false);
@@ -147,7 +153,10 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			if (isPhoto(url)) {
 				return (
 					<Spacer margin="bottom-small" key={url}>
-						<div className="a-upload-image-preview" style={{ backgroundImage: `url(${url})` }}>
+						<div
+							className="a-upload-image-preview"
+							style={{ backgroundImage: `url(${url})` }}
+						>
 							{renderDeleteButton(url)}
 						</div>
 					</Spacer>
@@ -185,8 +194,12 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 								label={
 									label ||
 									(allowMulti
-										? i18n.t('shared/components/file-upload/file-upload___selecteer-bestanden')
-										: i18n.t('shared/components/file-upload/file-upload___selecteer-een-bestand'))
+										? i18n.t(
+												'shared/components/file-upload/file-upload___selecteer-bestanden'
+										  )
+										: i18n.t(
+												'shared/components/file-upload/file-upload___selecteer-een-bestand'
+										  ))
 								}
 								ariaLabel={label}
 								type="secondary"
@@ -194,10 +207,13 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 							/>
 							<input
 								type="file"
-								title={t('shared/components/file-upload/file-upload___kies-een-bestand')}
+								title={t(
+									'shared/components/file-upload/file-upload___kies-een-bestand'
+								)}
 								multiple={allowMulti}
 								onChange={evt =>
-									!!evt.target.files && uploadSelectedFile(Array.from(evt.target.files))
+									!!evt.target.files &&
+									uploadSelectedFile(Array.from(evt.target.files))
 								}
 							/>
 						</FlexItem>

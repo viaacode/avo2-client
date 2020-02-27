@@ -1,7 +1,6 @@
 import { get } from 'lodash-es';
 
-import { dataService } from '../services/data-service';
-import toastService from '../services/toast-service';
+import { dataService, toastService } from '../services';
 
 interface Query {
 	query: any;

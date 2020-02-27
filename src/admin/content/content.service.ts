@@ -4,12 +4,12 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, performQuery } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
-import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
-import { ContentBlockConfig } from '../content-block/content-block.types';
 
+import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
+import { ContentBlockConfig } from '../shared/types';
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import {
 	GET_CONTENT_BY_ID,
@@ -82,7 +82,9 @@ export const getContentTypes = async (): Promise<ContentPageType[] | null> => {
 	} catch (err) {
 		console.error('Failed to retrieve content types.', err);
 		toastService.danger(
-			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'),
+			i18n.t(
+				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'
+			),
 			false
 		);
 

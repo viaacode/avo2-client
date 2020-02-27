@@ -4,8 +4,8 @@ import { cloneDeep, get, isNil, isString } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../shared/helpers/error';
+import { toastService } from '../shared/services';
 import { ApolloCacheManager } from '../shared/services/data-service';
-import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 
 import { CollectionService } from '../collection/collection.service';
@@ -54,7 +54,9 @@ export class AssignmentService {
 		OBLIGATORY_PROPERTIES.forEach((prop: AssignmentProperty) => {
 			if (!(assignmentToSave as any)[prop.name]) {
 				errors.push(
-					i18n.t('assignment/assignment___een-eigenschap-is-verplicht', { eigenschap: prop.label })
+					i18n.t('assignment/assignment___een-eigenschap-is-verplicht', {
+						eigenschap: prop.label,
+					})
 				);
 			}
 		});
