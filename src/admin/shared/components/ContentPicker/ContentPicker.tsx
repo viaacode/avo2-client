@@ -79,8 +79,10 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	// events
 	const onSelectType = (selected: ValueType<PickerTypeOption>) => {
-		setCurrentType(selected as PickerTypeOption);
-		setCurrentItem(null);
+		if (currentType !== selected) {
+			setCurrentType(selected as PickerTypeOption);
+			setCurrentItem(null);
+		}
 	};
 
 	const onSelectItem = (selectedItem: ValueType<PickerItem>, event: ActionMeta) => {
