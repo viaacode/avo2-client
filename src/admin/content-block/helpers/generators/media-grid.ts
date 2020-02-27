@@ -24,10 +24,6 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	type: ContentBlockType.MediaGrid,
 	components: {
 		name: i18n.t('Media item'),
-		limits: {
-			min: 1,
-			max: 8,
-		},
 		state: INITIAL_MEDIA_GRID_COMPONENTS_STATE(),
 		fields: {
 			mediaItem: {

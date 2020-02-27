@@ -4,7 +4,8 @@ import { ButtonAction } from '@viaa/avo2-components';
 
 import { GET_COLLECTION_TILE_BY_ID } from '../../../collection/collection.gql';
 import { GET_ITEM_TILE_BY_ID } from '../../../item/item.gql';
-import { dataService } from '../../../shared/services/data-service';
+import { dataService, toastService } from '../../../shared/services';
+import i18n from '../../../shared/translations/i18n';
 
 import { MediaItemResponse } from '../../shared/types';
 
@@ -24,6 +25,10 @@ export const fetchCollectionOrItem = async ({
 		return tileData ? { tileData, count } : null;
 	} catch (err) {
 		console.error(err);
+		toastService.danger(
+			i18n.t('Er ging iets mis tijdens het ophalen van de tegel data'),
+			false
+		);
 		return null;
 	}
 };
