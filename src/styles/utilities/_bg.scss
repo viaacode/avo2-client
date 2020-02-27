@@ -5,7 +5,7 @@
 /* Grayscale
    ========================================================================== */
 .u-bg-white {
-	background: #FFF;
+	background: #fff;
 }
 
 .u-bg-gray-50 {
@@ -28,4 +28,20 @@
    ========================================================================== */
 .u-bg-night-blue {
 	background: $color-night-blue;
+}
+
+.u-bg-soft-blue {
+	background: $color-soft-blue;
+}
+
+.u-bg-ocean-green {
+	background: $color-ocean-green;
+}
+
+.u-bg-teal {
+	background: $color-teal;
+}
+
+.u-bg-teal-bright {
+	background: $color-teal-bright;
 }

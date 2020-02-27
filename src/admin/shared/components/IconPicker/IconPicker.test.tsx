@@ -3,7 +3,7 @@ import React from 'react';
 
 import { ADMIN_ICON_OPTIONS } from '../../constants';
 
-import IconPicker from './IconPicker';
+import { IconPicker } from './IconPicker';
 
 const iconPickerProps = {
 	className: 'c-icon-picker-custom',

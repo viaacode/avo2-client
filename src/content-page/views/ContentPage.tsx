@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockPreview } from '../../admin/content-block/components';
-import { ContentBlockConfig } from '../../admin/content-block/content-block.types';
 import { parseContentBlocks } from '../../admin/content-block/helpers';
 import { SpecialPermissionGroups } from '../../admin/menu/views/MenuEdit';
+import { ContentBlockConfig } from '../../admin/shared/types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { ErrorView } from '../../error/views';
 import { CustomError } from '../../shared/helpers';

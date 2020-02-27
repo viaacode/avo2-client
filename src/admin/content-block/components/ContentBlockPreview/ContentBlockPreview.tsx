@@ -20,13 +20,15 @@ import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
 
-import { CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockComponentState,
 	ContentBlockState,
 	ContentBlockType,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import {
+	CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP,
+	DARK_BACKGROUND_COLOR_OPTIONS,
+} from '../../content-block.const';
 import { MediaPlayer, MediaPlayerTitleTextButton } from '../../helpers/wrappers';
 import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
 
@@ -114,7 +116,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		// This way we can easily set paddings from a content-blocks blockState
 		<div
 			className={classnames(`u-bg-${blockState.backgroundColor} u-padding`, {
-				'u-color-white': blockState.backgroundColor === ContentBlockBackgroundColor.NightBlue,
+				'u-color-white': DARK_BACKGROUND_COLOR_OPTIONS.includes(blockState.backgroundColor),
 			})}
 		>
 			<Container

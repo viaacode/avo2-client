@@ -29,7 +29,9 @@ describe('<Checkbox />', () => {
 		yearInputs.at(1).simulate('change', { target: { value: '2018' } });
 		yearInputs.at(2).simulate('change', { target: { value: '2019' } });
 
-		dateTimePickerComponent.find('.c-button.c-button--block.c-button--primary').simulate('click');
+		dateTimePickerComponent
+			.find('.c-button.c-button--block.c-button--primary')
+			.simulate('click');
 
 		expect(onChangeHandler).toBeCalled();
 		expect(onChangeHandler).toBeCalledWith(

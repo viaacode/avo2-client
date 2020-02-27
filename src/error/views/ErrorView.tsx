@@ -84,8 +84,12 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 							<ButtonToolbar>
 								{buttons.includes('home') && (
 									<Button
-										onClick={() => redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)}
-										label={t('error/views/error-view___ga-terug-naar-de-homepagina')}
+										onClick={() =>
+											redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)
+										}
+										label={t(
+											'error/views/error-view___ga-terug-naar-de-homepagina'
+										)}
 									/>
 								)}
 								{buttons.includes('helpdesk') && (
