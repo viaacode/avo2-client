@@ -1,12 +1,5 @@
 import { TabProps } from '@viaa/avo2-components';
 
-import { ROUTE_PARTS } from '../shared/constants';
-
-export const COLLECTION_PATH = Object.freeze({
-	COLLECTION_DETAIL: `/${ROUTE_PARTS.collections}/:id`,
-	COLLECTION_EDIT: `/${ROUTE_PARTS.collections}/:id/${ROUTE_PARTS.edit}`,
-});
-
 export const COLLECTION_EDIT_TABS: TabProps[] = [
 	{
 		id: 'inhoud',

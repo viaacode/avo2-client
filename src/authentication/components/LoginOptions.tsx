@@ -35,7 +35,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						className="c-login-with-archief"
 						onClick={() => {
 							onOptionClicked();
-							redirectToClientPage(APP_PATH.LOGIN_AVO, history);
+							redirectToClientPage(APP_PATH.LOGIN.route, history);
 						}}
 					/>
 				</Spacer>

@@ -23,8 +23,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { SEARCH_PATH } from '../../search/search.const';
 import { DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import {
 	buildLink,
@@ -36,12 +36,10 @@ import {
 	getAvatarProps,
 	navigate,
 } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
-import { ApolloCacheManager } from '../../shared/services/data-service';
+import { ApolloCacheManager, toastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
-import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { ContentTypeNumber } from '../collection.types';
 import './CollectionOrBundleOverview.scss';
@@ -118,7 +116,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const onClickCreate = () =>
 		history.push(
 			buildLink(
-				SEARCH_PATH.SEARCH,
+				APP_PATH.SEARCH.route,
 				{},
 				isCollection
 					? 'filters={"type":["video","audio"]}'
@@ -140,7 +138,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	// Render functions
 	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
-		<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
+		<Link to={buildLink(APP_PATH.COLLECTION_DETAIL.route, { id })} title={title}>
 			<Thumbnail
 				alt="thumbnail"
 				category={type}
@@ -155,9 +153,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			<h3 className="c-content-header__header">
 				<Link
 					to={buildLink(
-						isCollection
-							? COLLECTION_PATH.COLLECTION_DETAIL
-							: BUNDLE_PATH.BUNDLE_DETAIL,
+						isCollection ? APP_PATH.COLLECTION_DETAIL.route : BUNDLE_PATH.BUNDLE_DETAIL,
 						{ id }
 					)}
 					title={title}
@@ -207,7 +203,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				case 'edit':
 					navigate(
 						history,
-						isCollection ? COLLECTION_PATH.COLLECTION_EDIT : BUNDLE_PATH.BUNDLE_EDIT,
+						isCollection ? APP_PATH.COLLECTION_EDIT.route : BUNDLE_PATH.BUNDLE_EDIT,
 						{ id: collectionId }
 					);
 					break;
@@ -247,7 +243,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						navigate(
 							history,
 							isCollection
-								? COLLECTION_PATH.COLLECTION_DETAIL
+								? APP_PATH.COLLECTION_DETAIL.route
 								: BUNDLE_PATH.BUNDLE_DETAIL,
 							{ id: collectionId }
 						)

@@ -56,12 +56,9 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
-import { toastService } from '../../shared/services';
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import { ApolloCacheManager, dataService, toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { COLLECTION_PATH } from '../collection.const';
 import {
 	DELETE_COLLECTION,
 	GET_COLLECTION_ID_BY_AVO1_ID,
@@ -167,7 +164,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 					// and continue loading the collection
 					redirectToClientPage(
-						buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }),
+						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
 						history
 					);
 				}
@@ -298,7 +295,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(WORKSPACE_PATH.WORKSPACE);
+			history.push(APP_PATH.WORKSPACE.route);
 			toastService.success(
 				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
 			);
@@ -340,7 +337,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						triggerCollectionFragmentsInsert
 					);
 					redirectToClientPage(
-						buildLink(APP_PATH.COLLECTION_DETAIL, { id: duplicateCollection.id }),
+						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
 						history
 					);
 					setCollection(duplicateCollection);
@@ -402,7 +399,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							category={category}
 							onClick={() =>
 								redirectToClientPage(
-									buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id }),
+									buildLink(APP_PATH.COLLECTION_DETAIL.route, { id }),
 									history
 								)
 							}
@@ -617,7 +614,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 											<>
 												{index !== 0 && !!publishedBundles.length && ', '}
 												<Link
-													to={buildLink(APP_PATH.BUNDLE_DETAIL, {
+													to={buildLink(APP_PATH.BUNDLE_DETAIL.route, {
 														id: bundle.id,
 													})}
 												>

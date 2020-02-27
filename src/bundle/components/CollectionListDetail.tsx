@@ -29,7 +29,7 @@ const CollectionListDetail: FunctionComponent<CollectionDetailProps> = ({
 }) => {
 	const getTitleClickedHandler = () => {
 		redirectToClientPage(
-			buildLink(APP_PATH.COLLECTION_DETAIL, { id: collectionFragment.external_id }),
+			buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collectionFragment.external_id }),
 			history
 		);
 	};

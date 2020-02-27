@@ -53,14 +53,12 @@ import {
 	ControlledDropdown,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
+	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
-import { ApolloCacheManager } from '../../shared/services/data-service';
+import { ApolloCacheManager, toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import './BundleDetail.scss';
 
@@ -196,7 +194,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	// Listeners
 	const onEditBundle = () => {
-		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT, { id: bundleId }), history);
+		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT.route, { id: bundleId }), history);
 	};
 
 	const onDeleteBundle = async () => {
@@ -207,7 +205,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(WORKSPACE_PATH.WORKSPACE);
+			history.push(APP_PATH.WORKSPACE.route);
 			toastService.success(
 				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
 			);
@@ -246,7 +244,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						triggerCollectionFragmentsInsert
 					);
 					redirectToClientPage(
-						buildLink(APP_PATH.BUNDLE_DETAIL, { id: duplicateCollection.id }),
+						buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
 						history
 					);
 					setBundle(duplicateCollection);
@@ -290,7 +288,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.BUNDLE_DETAIL, { id: relatedBundle.id }),
+								buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: relatedBundle.id }),
 								history
 							)
 						}
@@ -338,7 +336,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.COLLECTION_DETAIL, { id: collection.id }),
+								buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collection.id }),
 								history
 							)
 						}

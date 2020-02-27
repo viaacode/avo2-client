@@ -118,7 +118,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 				<Spacer margin="top-large">
 					{/* TODO add links to help article */}
 					<Alert type="info">
-						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST}>
+						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST.route}>
 							Ik ben lesgever en heb (nog) geen lerarenkaart of stamboeknummer.
 						</Link>
 					</Alert>

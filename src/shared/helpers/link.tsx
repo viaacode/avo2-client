@@ -6,13 +6,9 @@ import { Link } from 'react-router-dom';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
-import { COLLECTION_PATH } from '../../collection/collection.const';
-import { CONTENT_TYPE_TO_ROUTE } from '../../constants';
-import { ITEM_PATH } from '../../item/item.const';
-import { SEARCH_PATH } from '../../search/search.const';
-import { toastService } from '../services/toast-service';
+import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
+import { toastService } from '../services';
 import i18n from '../translations/i18n';
 
 type RouteParams = { [key: string]: string | number | undefined };
@@ -86,12 +82,12 @@ export const navigateToContentType = (action: any, history: History) => {
 				history.push(value as string);
 				break;
 			case 'COLLECTION':
-				navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, {
+				navigate(history, APP_PATH.COLLECTION_DETAIL.route, {
 					id: value as string,
 				});
 				break;
 			case 'ITEM':
-				navigate(history, ITEM_PATH.ITEM, {
+				navigate(history, APP_PATH.ITEM.route, {
 					id: value,
 				});
 				break;
@@ -152,7 +148,7 @@ export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filt
 			? queryString.stringify({ filters: JSON.stringify({ query: filterValue }) })
 			: queryString.stringify({ filters: `{"${filterProp}":["${filterValue}"]}` });
 
-	return buildLink(SEARCH_PATH.SEARCH, {}, queryParams);
+	return buildLink(APP_PATH.SEARCH.route, {}, queryParams);
 }
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
@@ -165,7 +161,7 @@ export function generateAssignmentCreateLink(
 	contentLabel?: Avo.Assignment.ContentLabel
 ) {
 	return buildLink(
-		ASSIGNMENT_PATH.ASSIGNMENT_CREATE,
+		APP_PATH.ASSIGNMENT_CREATE.route,
 		{},
 		`assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`
 	);

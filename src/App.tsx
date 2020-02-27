@@ -40,9 +40,9 @@ const App: FunctionComponent<AppProps> = props => {
 				<Admin />
 			) : (
 				<>
-					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Navigation {...props} />}
+					{props.location.pathname !== APP_PATH.LOGIN.route && <Navigation {...props} />}
 					{renderRoutes()}
-					{props.location.pathname !== APP_PATH.LOGIN_AVO && <Footer {...props} />}
+					{props.location.pathname !== APP_PATH.LOGIN.route && <Footer {...props} />}
 					<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} />
 				</>
 			)}

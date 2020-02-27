@@ -46,13 +46,9 @@ import {
 import { copyToClipboard, navigate } from '../../shared/helpers';
 import { toastService } from '../../shared/services';
 
+import { APP_PATH } from '../../constants';
 import { SearchFilterControls, SearchResults } from '../components';
-import {
-	DEFAULT_FORM_STATE,
-	DEFAULT_SORT_ORDER,
-	ITEMS_PER_PAGE,
-	SEARCH_PATH,
-} from '../search.const';
+import { DEFAULT_FORM_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import {
 	SearchFilterFieldValues,
 	SearchFilterMultiOptions,
@@ -65,6 +61,7 @@ import { selectSearchError, selectSearchLoading, selectSearchResults } from '../
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { ErrorView } from '../../error/views';
 import './Search.scss';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 
 const Search: FunctionComponent<SearchProps> = ({
 	searchResults,
@@ -142,7 +139,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				orderDirection,
 				page,
 			]).join('&');
-			navigate(history, SEARCH_PATH.SEARCH, {}, queryParams.length ? queryParams : '');
+			navigate(history, APP_PATH.SEARCH.route, {}, queryParams.length ? queryParams : '');
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
@@ -390,6 +387,7 @@ const Search: FunctionComponent<SearchProps> = ({
 										/> */}
 									</DropdownContent>
 								</Dropdown>
+								<InteractiveTour routeId="SEARCH" user={user} showButton />
 							</Flex>
 						</ToolbarRight>
 					</Toolbar>

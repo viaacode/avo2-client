@@ -43,7 +43,12 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
-import { LoadingErrorLoadedComponent, ShareThroughEmailModal } from '../../shared/components';
+import { APP_PATH } from '../../constants';
+import {
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+	ShareThroughEmailModal,
+} from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -54,14 +59,12 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { dataService, toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { dataService } from '../../shared/services/data-service';
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
-import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
+import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './ItemDetail.scss';
 
@@ -249,7 +252,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							category={englishContentType}
 							onClick={() =>
 								redirectToClientPage(
-									buildLink(ITEM_PATH.ITEM, { id: relatedItem.id }),
+									buildLink(APP_PATH.ITEM.route, { id: relatedItem.id }),
 									history
 								)
 							}

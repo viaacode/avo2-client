@@ -12,18 +12,18 @@ import { Navigation } from './Navigation';
 const linkLoginState: {
 	[routePath: string]: { showWhenLoggedIn: boolean; showWhenLoggedOut: boolean };
 } = {
-	[APP_PATH.LOGGED_IN_HOME]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.SEARCH]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.WORKSPACE]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.PROJECTS]: { showWhenLoggedIn: true, showWhenLoggedOut: true },
-	[APP_PATH.NEWS]: { showWhenLoggedIn: true, showWhenLoggedOut: true },
-	[APP_PATH.FOR_TEACHERS]: { showWhenLoggedIn: false, showWhenLoggedOut: true },
-	[APP_PATH.FOR_PUPILS]: { showWhenLoggedIn: false, showWhenLoggedOut: true },
-	[APP_PATH.SETTINGS]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.HELP]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.FEEDBACK]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.LOGOUT]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
-	[APP_PATH.REGISTER_OR_LOGIN]: { showWhenLoggedIn: false, showWhenLoggedOut: true },
+	[APP_PATH.LOGGED_IN_HOME.route]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
+	[APP_PATH.SEARCH.route]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
+	[APP_PATH.WORKSPACE.route]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
+	[APP_PATH.PROJECTS.route]: { showWhenLoggedIn: true, showWhenLoggedOut: true },
+	[APP_PATH.NEWS.route]: { showWhenLoggedIn: true, showWhenLoggedOut: true },
+	[APP_PATH.FOR_TEACHERS.route]: { showWhenLoggedIn: false, showWhenLoggedOut: true },
+	[APP_PATH.FOR_PUPILS.route]: { showWhenLoggedIn: false, showWhenLoggedOut: true },
+	[APP_PATH.SETTINGS.route]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
+	[APP_PATH.HELP.route]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
+	[APP_PATH.FEEDBACK.route]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
+	[APP_PATH.LOGOUT.route]: { showWhenLoggedIn: true, showWhenLoggedOut: false },
+	[APP_PATH.REGISTER_OR_LOGIN.route]: { showWhenLoggedIn: false, showWhenLoggedOut: true },
 };
 
 function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
@@ -33,7 +33,11 @@ function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
 		const to: Location = link.prop('to') as Location;
 		if (to) {
 			expect(link.text()).toBeTruthy();
-			expect(Object.values(APP_PATH).includes(to.pathname)).toEqual(true);
+			expect(
+				Object.values(APP_PATH)
+					.map(routeInfo => routeInfo.route)
+					.includes(to.pathname)
+			).toEqual(true);
 			if (loggedIn) {
 				expect(
 					linkLoginState[to.pathname].showWhenLoggedIn,

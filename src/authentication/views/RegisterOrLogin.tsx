@@ -60,7 +60,10 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												)}
 												type="primary"
 												onClick={() =>
-													redirectToClientPage(APP_PATH.STAMBOEK, history)
+													redirectToClientPage(
+														APP_PATH.STAMBOEK.route,
+														history
+													)
 												}
 											/>
 										</Spacer>
@@ -71,7 +74,10 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 											)}
 											type="primary"
 											onClick={() =>
-												redirectToClientPage(APP_PATH.FOR_PUPILS, history)
+												redirectToClientPage(
+													APP_PATH.FOR_PUPILS.route,
+													history
+												)
 											}
 										/>
 									</FlexItem>

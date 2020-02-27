@@ -31,19 +31,18 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
-import { LoadingErrorLoadedComponent } from '../../shared/components';
 import {
 	checkPermissions,
+	LoadingErrorLoadedComponent,
 	LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+} from '../../shared/components';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
+import { ApolloCacheManager, dataService, toastService } from '../../shared/services';
+import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
-import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -432,8 +431,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 		const isOwner = getProfileId(user) === assignment.owner_profile_id;
 		const backLink = isOwner
-			? buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assignment.id })
-			: buildLink(WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
+			? buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id })
+			: buildLink(APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 
 		return isOwner ? (
 			<Link className="c-return" to={backLink}>
