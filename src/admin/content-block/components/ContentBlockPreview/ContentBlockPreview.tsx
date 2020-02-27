@@ -11,7 +11,6 @@ import {
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
-	BlockMediaList,
 	BlockProjectsSpotlight,
 	BlockRichText,
 	ButtonAction,
@@ -28,7 +27,11 @@ import {
 	ContentBlockState,
 	ContentBlockType,
 } from '../../content-block.types';
-import { MediaPlayer, MediaPlayerTitleTextButton } from '../../helpers/wrappers';
+import {
+	BlockMediaListWrapper,
+	MediaPlayer,
+	MediaPlayerTitleTextButton,
+} from '../../helpers/wrappers';
 import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
@@ -51,7 +54,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.MediaGrid]: BlockMediaList,
+	[ContentBlockType.MediaGrid]: BlockMediaListWrapper,
 	[ContentBlockType.MediaPlayer]: MediaPlayer,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
 	[ContentBlockType.RichText]: BlockRichText,
@@ -70,6 +73,7 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.CTAs,
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
+	ContentBlockType.MediaGrid,
 	ContentBlockType.ImageGrid,
 	ContentBlockType.ProjectsSpotlight,
 ];

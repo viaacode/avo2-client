@@ -7,8 +7,11 @@ import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import toastService from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
-import { insertContentBlocks, updateContentBlocks } from '../content-block/content-block.services';
 import { ContentBlockConfig } from '../content-block/content-block.types';
+import {
+	insertContentBlocks,
+	updateContentBlocks,
+} from '../content-block/services/content-block.service';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import { GET_CONTENT_BY_ID, GET_CONTENT_PAGES, GET_CONTENT_TYPES } from './content.gql';

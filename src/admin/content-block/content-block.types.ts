@@ -1,8 +1,12 @@
-import { ButtonAction, ContentItemStyle, ContentTabStyle, IconName } from '@viaa/avo2-components';
-
-// TODO use exported ButtonType from components repo
-import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
+import {
+	ButtonAction,
+	ButtonType,
+	ContentItemStyle,
+	ContentTabStyle,
+	IconName,
+} from '@viaa/avo2-components';
 import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
+import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageType } from '../content/content.types';
 
@@ -15,18 +19,6 @@ export type ContentBlockStateOptions =
 
 export type AlignOption = 'left' | 'right' | 'center';
 export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
-// TODO use ButtonType from components repo
-export type ButtonTypeOption =
-	| 'borderless-i'
-	| 'borderless'
-	| 'danger-hover'
-	| 'danger'
-	| 'link'
-	| 'inline-link'
-	| 'primary'
-	| 'secondary-i'
-	| 'secondary'
-	| 'tertiary';
 export type WidthOption = 'full-width' | '500px' | '400px';
 export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
 
@@ -248,4 +240,9 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 	ctaContent?: string;
 	ctaButtonLabel?: string;
 	ctaButtonAction?: ButtonAction;
+}
+
+export interface MediaItemResponse {
+	tileData: Partial<Avo.Collection.Collection | Avo.Item.Item>;
+	count: number;
 }

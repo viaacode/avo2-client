@@ -1,4 +1,5 @@
 import {
+	ButtonType,
 	Checkbox,
 	MultiRange,
 	Select,
@@ -22,7 +23,6 @@ import ContentTypeAndLabelsPicker from '../shared/components/ContentTypeAndLabel
 import { AlignSelect, ColorSelect } from './components';
 import {
 	AlignOption,
-	ButtonTypeOption,
 	ContentBlockBackgroundColor,
 	ContentBlockType,
 	HeadingLevelOption,
@@ -253,7 +253,7 @@ export const HEADING_LEVEL_OPTIONS: SelectOption<HeadingLevelOption>[] = [
 	{ label: i18n.t('admin/content-block/content-block___h-4'), value: 'h4' },
 ];
 
-export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonTypeOption>[] = [
+export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonType>[] = [
 	{ label: i18n.t('admin/content-block/content-block___primair'), value: 'primary' },
 	{ label: i18n.t('admin/content-block/content-block___secundair'), value: 'secondary' },
 	{ label: i18n.t('admin/content-block/content-block___secundair-invers'), value: 'secondary-i' },

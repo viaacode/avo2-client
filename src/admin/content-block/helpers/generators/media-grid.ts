@@ -9,11 +9,7 @@ import {
 } from '../../content-block.types';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-const EMPTY_MEDIA_GRID: MediaGridBlockComponentState = {};
-
-export const INITIAL_MEDIA_GRID_COMPONENTS_STATE = (): MediaGridBlockComponentState[] => [
-	EMPTY_MEDIA_GRID,
-];
+export const INITIAL_MEDIA_GRID_COMPONENTS_STATE = (): MediaGridBlockComponentState[] => [{}];
 
 export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): MediaGridBlockState => ({
 	...BLOCK_STATE_DEFAULTS(ContentBlockType.MediaGrid, position),
