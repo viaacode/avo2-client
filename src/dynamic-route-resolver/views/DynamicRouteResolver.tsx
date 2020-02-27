@@ -59,7 +59,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			}
 
 			// Check if path points to a content page
-			const contentPage: Avo.Content.Content | null = await getContentPageByPath(location.pathname);
+			const contentPage: Avo.Content.Content | null = await getContentPageByPath(
+				location.pathname
+			);
 			if (!contentPage) {
 				setRouteInfo({ type: 'notFound', data: null });
 				setLoadingInfo({

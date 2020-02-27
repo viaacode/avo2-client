@@ -51,9 +51,9 @@ import {
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService from '../../shared/services/toast-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import {
@@ -188,7 +188,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 					// Fetch the content from the network
 					const queryParams = {
 						query:
-							CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].query,
+							CONTENT_LABEL_TO_QUERY[
+								assignment.content_label as Avo.Assignment.ContentLabel
+							].query,
 						variables: { id: assignment.content_id },
 					};
 					const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
@@ -198,12 +200,16 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 					assignmentContentResponse = get(
 						response,
 						`data.${
-							CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
-								.resultPath
+							CONTENT_LABEL_TO_QUERY[
+								assignment.content_label as Avo.Assignment.ContentLabel
+							].resultPath
 						}`
 					);
 					if (!assignmentContentResponse) {
-						console.error('Failed to fetch the assignment content', { response, ...queryParams });
+						console.error('Failed to fetch the assignment content', {
+							response,
+							...queryParams,
+						});
 						setLoadingInfo({
 							state: 'error',
 							message: t(
@@ -218,7 +224,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			} catch (err) {
 				console.error(err);
 				toastService.danger(
-					t('assignment/views/assignment-create___het-ophalen-van-de-opdracht-inhoud-is-mislukt')
+					t(
+						'assignment/views/assignment-create___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
+					)
 				);
 			}
 		};
@@ -298,7 +306,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 	) => {
 		try {
 			if (isNil(assignment.id)) {
-				toastService.danger('Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.');
+				toastService.danger(
+					'Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.'
+				);
 				return;
 			}
 			const duplicatedAssigment = await AssignmentService.duplicateAssignment(
@@ -360,7 +370,8 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			// so your assignment can work after the other user deletes his collection
 			if (
 				assignment.content_label === 'COLLECTIE' &&
-				(assignmentContent as Avo.Collection.Collection).owner_profile_id !== getProfileId(user)
+				(assignmentContent as Avo.Collection.Collection).owner_profile_id !==
+					getProfileId(user)
 			) {
 				const sourceCollection = assignmentContent as Avo.Collection.Collection;
 				assignment.content_id = await AssignmentService.duplicateCollectionForAssignment(
@@ -463,7 +474,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 							<Button
 								type="borderless"
 								block
-								label={t('assignment/views/assignment-edit___beheer-vakken-en-projecten')}
+								label={t(
+									'assignment/views/assignment-edit___beheer-vakken-en-projecten'
+								)}
 							/>
 						</Form>
 					</Spacer>
@@ -551,13 +564,22 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 											</Trans>
 										</Link>
 										<BlockHeading className="u-m-0" type="h2">
-											{t('assignment/views/assignment-edit___nieuwe-opdracht')}
+											{t(
+												'assignment/views/assignment-edit___nieuwe-opdracht'
+											)}
 										</BlockHeading>
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">
-													<FormGroup label={t('assignment/views/assignment-edit___url')}>
-														<TextInput value={getAssignmentUrl()} disabled />
+													<FormGroup
+														label={t(
+															'assignment/views/assignment-edit___url'
+														)}
+													>
+														<TextInput
+															value={getAssignmentUrl()}
+															disabled
+														/>
 													</FormGroup>
 													<Spacer margin="left-small">
 														<Button
@@ -580,11 +602,15 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 											<Button
 												type="secondary"
 												onClick={history.goBack}
-												label={t('assignment/views/assignment-edit___annuleren')}
+												label={t(
+													'assignment/views/assignment-edit___annuleren'
+												)}
 											/>
 											<Button
 												type="primary"
-												label={t('assignment/views/assignment-edit___opslaan')}
+												label={t(
+													'assignment/views/assignment-edit___opslaan'
+												)}
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
@@ -598,19 +624,27 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				<Container mode="horizontal" size="small" className="c-assignment-edit">
 					<Container mode="vertical" size="large">
 						<Form>
-							<FormGroup required label={t('assignment/views/assignment-edit___titel')}>
+							<FormGroup
+								required
+								label={t('assignment/views/assignment-edit___titel')}
+							>
 								<TextInput
 									id="title"
 									value={currentAssignment.title}
 									onChange={title => setAssignmentProp('title', title)}
 								/>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___opdracht')} required>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___opdracht')}
+								required
+							>
 								<WYSIWYG
 									id="assignmentDescription"
 									autogrow
 									data={currentAssignment.description}
-									onChange={description => setAssignmentProp('description', description)}
+									onChange={description =>
+										setAssignmentProp('description', description)
+									}
 								/>
 							</FormGroup>
 							{assignmentContent && currentAssignment.content_label && (
@@ -624,34 +658,58 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 							>
 								<RadioButtonGroup>
 									<RadioButton
-										label={t('assignment/views/assignment-edit___mediaspeler-met-beschrijving')}
+										label={t(
+											'assignment/views/assignment-edit___mediaspeler-met-beschrijving'
+										)}
 										name="content_layout"
 										value={String(AssignmentLayout.PlayerAndText)}
-										checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
+										checked={
+											currentAssignment.content_layout ===
+											AssignmentLayout.PlayerAndText
+										}
 										onChange={isChecked =>
 											isChecked &&
-											setAssignmentProp('content_layout', AssignmentLayout.PlayerAndText)
+											setAssignmentProp(
+												'content_layout',
+												AssignmentLayout.PlayerAndText
+											)
 										}
 									/>
 									<RadioButton
-										label={t('assignment/views/assignment-edit___enkel-mediaspeler')}
+										label={t(
+											'assignment/views/assignment-edit___enkel-mediaspeler'
+										)}
 										name="content_layout"
 										value={String(AssignmentLayout.OnlyPlayer)}
-										checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
+										checked={
+											currentAssignment.content_layout ===
+											AssignmentLayout.OnlyPlayer
+										}
 										onChange={isChecked =>
-											isChecked && setAssignmentProp('content_layout', AssignmentLayout.OnlyPlayer)
+											isChecked &&
+											setAssignmentProp(
+												'content_layout',
+												AssignmentLayout.OnlyPlayer
+											)
 										}
 									/>
 								</RadioButtonGroup>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___klas-of-groep')} required>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___klas-of-groep')}
+								required
+							>
 								<TextInput
 									id="class_room"
 									value={currentAssignment.class_room || ''}
-									onChange={classRoom => setAssignmentProp('class_room', classRoom)}
+									onChange={classRoom =>
+										setAssignmentProp('class_room', classRoom)
+									}
 								/>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___vak-of-project')}>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___vak-of-project')}
+							>
 								{renderTagsDropdown()}
 							</FormGroup>
 							<FormGroup
@@ -667,12 +725,14 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 								/>
 								<p className="c-form-help-text">
 									<Trans i18nKey="assignment/views/assignment-edit___waar-geeft-de-leerling-de-antwoorden-in-voeg-een-optionele-url-naar-een-ander-platform-toe">
-										Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
-										platform toe.
+										Waar geeft de leerling de antwoorden in? Voeg een optionele
+										URL naar een ander platform toe.
 									</Trans>
 								</p>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___beschikbaar-vanaf')}>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___beschikbaar-vanaf')}
+							>
 								<Flex>
 									<DatePicker
 										value={
@@ -681,13 +741,19 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 												: now
 										}
 										onChange={(value: Date | null) =>
-											setAssignmentProp('available_at', value ? value.toISOString() : null)
+											setAssignmentProp(
+												'available_at',
+												value ? value.toISOString() : null
+											)
 										}
 										showTimeInput
 									/>
 								</Flex>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___deadline')} required>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___deadline')}
+								required
+							>
 								<Flex>
 									<Spacer margin="right-small">
 										<DatePicker
@@ -696,7 +762,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 													? new Date(currentAssignment.deadline_at)
 													: null
 											}
-											onChange={value => setAssignmentProp('deadline_at', value)}
+											onChange={value =>
+												setAssignmentProp('deadline_at', value)
+											}
 											showTimeInput
 										/>
 									</Spacer>
@@ -708,13 +776,15 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 										</Trans>
 										<br />
 										<Trans i18nKey="assignment/views/assignment-edit___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht">
-											De leerlingen zullen dus geen toegang hebben tot deze opdracht
+											De leerlingen zullen dus geen toegang hebben tot deze
+											opdracht
 										</Trans>
 									</div>
 								) : (
 									<p className="c-form-help-text">
 										<Trans i18nKey="assignment/views/assignment-edit___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen">
-											Na deze datum kan de leerling de opdracht niet meer invullen.
+											Na deze datum kan de leerling de opdracht niet meer
+											invullen.
 										</Trans>
 									</p>
 								)}
@@ -726,7 +796,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 								>
 									<Toggle
 										checked={currentAssignment.is_collaborative}
-										onChange={checked => setAssignmentProp('is_collaborative', checked)}
+										onChange={checked =>
+											setAssignmentProp('is_collaborative', checked)
+										}
 									/>
 								</FormGroup>
 							)}
@@ -739,7 +811,11 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 										</Trans>
 										<br />
 										Bekijk onze{' '}
-										<a href="http://google.com" target="_blank" rel="noopener noreferrer">
+										<a
+											href="http://google.com"
+											target="_blank"
+											rel="noopener noreferrer"
+										>
 											<Trans i18nKey="assignment/views/assignment-edit___screencast">
 												screencast
 											</Trans>
@@ -774,7 +850,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 					title={t(
 						'assignment/views/assignment-edit___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 					)}
-					body={t('assignment/views/assignment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden')}
+					body={t(
+						'assignment/views/assignment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCurrentAssignment}
@@ -782,9 +860,13 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 
 				<InputModal
 					title={t('assignment/views/assignment-edit___dupliceer-taak')}
-					inputLabel={t('assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam')}
+					inputLabel={t(
+						'assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam'
+					)}
 					inputValue={currentAssignment.title}
-					inputPlaceholder={t('assignment/views/assignment-edit___titel-van-de-nieuwe-taak')}
+					inputPlaceholder={t(
+						'assignment/views/assignment-edit___titel-van-de-nieuwe-taak'
+					)}
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) =>

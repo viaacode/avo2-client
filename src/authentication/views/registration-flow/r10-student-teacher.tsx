@@ -16,7 +16,9 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 				<div className="c-content">
 					<Button
 						type="secondary"
-						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
+						onClick={() =>
+							redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)
+						}
 					>
 						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___terug">
 							Terug

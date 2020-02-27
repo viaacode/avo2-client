@@ -88,7 +88,9 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 		);
 
 	const getSelectedFilterIds = (currentCheckedStates: CheckedState) =>
-		compact(Object.keys(currentCheckedStates).map(key => (currentCheckedStates[key] ? key : null)));
+		compact(
+			Object.keys(currentCheckedStates).map(key => (currentCheckedStates[key] ? key : null))
+		);
 
 	const resetInternalCheckboxStates = () => setCheckedStates(optionsFromPairs);
 
@@ -162,7 +164,9 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 													: option.label
 											}
 											checked={checkedStates[option.id]}
-											onChange={(checked: boolean) => handleCheckboxToggled(checked, option.id)}
+											onChange={(checked: boolean) =>
+												handleCheckboxToggled(checked, option.id)
+											}
 										/>
 									))}
 								</CheckboxGroup>
@@ -202,7 +206,13 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 				<div className="c-checkbox-dropdown__trigger" onClick={openDropdownOrModal}>
 					{renderDropdownButton(label, isOpen, getSelectedTags(), removeFilter)}
 				</div>
-				<Modal isOpen={isOpen} title={label} size="large" onClose={closeDropdownOrModal} scrollable>
+				<Modal
+					isOpen={isOpen}
+					title={label}
+					size="large"
+					onClose={closeDropdownOrModal}
+					scrollable
+				>
 					<ModalHeaderRight>
 						<TextInput
 							placeholder={t(
@@ -215,9 +225,15 @@ const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps> = ({
 						<Spacer>
 							<Form>
 								<Grid>
-									<Column size="2-4">{renderCheckboxGroup(firstColumnOptions)}</Column>
-									<Column size="2-4">{renderCheckboxGroup(secondColumnOptions)}</Column>
-									<Column size="2-4">{renderCheckboxGroup(thirdColumnOptions)}</Column>
+									<Column size="2-4">
+										{renderCheckboxGroup(firstColumnOptions)}
+									</Column>
+									<Column size="2-4">
+										{renderCheckboxGroup(secondColumnOptions)}
+									</Column>
+									<Column size="2-4">
+										{renderCheckboxGroup(thirdColumnOptions)}
+									</Column>
 								</Grid>
 							</Form>
 						</Spacer>
@@ -272,7 +288,12 @@ export const renderDropdownButton = (
 			<div className="c-button__content">
 				<div className="c-button__label">{label}</div>
 				{!!selectedTags.length && (
-					<TagList tags={selectedTags} swatches={false} closable onTagClosed={removeFilter} />
+					<TagList
+						tags={selectedTags}
+						swatches={false}
+						closable
+						onTagClosed={removeFilter}
+					/>
 				)}
 				<Icon
 					className="c-button__icon"

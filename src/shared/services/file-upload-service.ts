@@ -146,7 +146,9 @@ export const deleteFile = async (fileUrl: string): Promise<void> => {
 		});
 
 		if (response.status < 200 || response.status >= 400) {
-			throw new CustomError('Response status is not in the success range', null, { response });
+			throw new CustomError('Response status is not in the success range', null, {
+				response,
+			});
 		}
 
 		const reply = await response.json();

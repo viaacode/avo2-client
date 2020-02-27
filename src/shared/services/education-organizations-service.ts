@@ -29,10 +29,12 @@ export const fetchEducationOrganizations = async (
 ): Promise<Avo.EducationOrganization.Organization[]> => {
 	let url: string | undefined;
 	try {
-		url = `${getEnv('PROXY_URL')}/education-organizations/organizations?${queryString.stringify({
-			city,
-			zipCode,
-		})}`;
+		url = `${getEnv('PROXY_URL')}/education-organizations/organizations?${queryString.stringify(
+			{
+				city,
+				zipCode,
+			}
+		)}`;
 
 		const response = await fetch(url, {
 			method: 'GET',

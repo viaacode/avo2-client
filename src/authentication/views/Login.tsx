@@ -64,7 +64,10 @@ const Login: FunctionComponent<LoginProps> = ({
 
 	if (loginStateError) {
 		return (
-			<ErrorView message={t('authentication/views/login___het-inloggen-is-mislukt')} icon="lock">
+			<ErrorView
+				message={t('authentication/views/login___het-inloggen-is-mislukt')}
+				icon="lock"
+			>
 				<Button
 					type="link"
 					onClick={tryLoginAgainManually}
