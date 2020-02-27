@@ -6,7 +6,7 @@ import {
 	ContentBlockType,
 	MediaGridBlockComponentState,
 	MediaGridBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 export const INITIAL_MEDIA_GRID_COMPONENTS_STATE = (): MediaGridBlockComponentState[] => [{}];

@@ -1,12 +1,12 @@
 import i18n from '../../../../shared/translations/i18n';
-import { WIDTH_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	MediaPlayerBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { WIDTH_OPTIONS } from '../../content-block.const';
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
@@ -33,7 +33,9 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				}
 			),
 			item: {
-				label: i18n.t('admin/content-block/helpers/generators/media-player___video-of-audio-item'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___video-of-audio-item'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					selectableTypes: ['ITEM'],

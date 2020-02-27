@@ -48,9 +48,9 @@ import {
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService from '../../shared/services/toast-service';
 import { ValueOf } from '../../shared/types';
 import { AppState } from '../../store';
 import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
@@ -170,8 +170,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		if (!newCurrentCollection) {
 			toastService.danger(
 				isCollection
-					? t('collection/components/collection-or-bundle-edit___de-collectie-is-nog-niet-geladen')
-					: t('collection/components/collection-or-bundle-edit___de-bundel-is-nog-niet-geladen')
+					? t(
+							'collection/components/collection-or-bundle-edit___de-collectie-is-nog-niet-geladen'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-edit___de-bundel-is-nog-niet-geladen'
+					  )
 			);
 			return collectionState;
 		}
@@ -218,7 +222,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			case 'UPDATE_COLLECTION_PROP':
 				(newCurrentCollection as any)[action.collectionProp] = action.collectionPropValue;
 				if (action.updateInitialCollection) {
-					(newInitialCollection as any)[action.collectionProp] = action.collectionPropValue;
+					(newInitialCollection as any)[action.collectionProp] =
+						action.collectionPropValue;
 				}
 				break;
 		}
@@ -299,13 +304,18 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				canCreate: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const collectionObj = await CollectionService.getCollectionWithItems(collectionId, type);
+			const collectionObj = await CollectionService.getCollectionWithItems(
+				collectionId,
+				type
+			);
 
 			if (!collectionObj) {
 				setLoadingInfo({
 					state: 'error',
 					message: isCollection
-						? t('collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden')
+						? t(
+								'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
+						  )
 						: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
 					icon: 'search',
 				});
@@ -320,9 +330,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 
 		checkPermissionsAndGetBundle().catch(err => {
 			console.error(
-				new CustomError(`Failed to check permissions or get ${type} from the database`, err, {
-					collectionId,
-				})
+				new CustomError(
+					`Failed to check permissions or get ${type} from the database`,
+					err,
+					{
+						collectionId,
+					}
+				)
 			);
 			setLoadingInfo({
 				state: 'error',
@@ -386,7 +400,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				});
 				toastService.success(
 					isCollection
-						? t('collection/components/collection-or-bundle-edit___collectie-opgeslagen')
+						? t(
+								'collection/components/collection-or-bundle-edit___collectie-opgeslagen'
+						  )
 						: t('collection/components/collection-or-bundle-edit___bundle-opgeslagen')
 				);
 				trackEvents(
@@ -438,7 +454,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				...collectionState.initialCollection,
 				title: newTitle,
 			};
-			const cleanedCollection = CollectionService.cleanCollectionBeforeSave(collectionWithNewName);
+			const cleanedCollection = CollectionService.cleanCollectionBeforeSave(
+				collectionWithNewName
+			);
 
 			// Immediately store the new name, without the user having to click the save button twice
 			await triggerCollectionUpdate({
@@ -639,9 +657,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					}
 					onClick={() =>
 						redirectToClientPage(
-							buildLink(isCollection ? APP_PATH.COLLECTION_DETAIL : APP_PATH.BUNDLE_DETAIL, {
-								id: match.params.id,
-							}),
+							buildLink(
+								isCollection ? APP_PATH.COLLECTION_DETAIL : APP_PATH.BUNDLE_DETAIL,
+								{
+									id: match.params.id,
+								}
+							),
 							history
 						)
 					}
@@ -665,7 +686,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 						<Button type="secondary" icon="more-horizontal" />
 					</DropdownButton>
 					<DropdownContent>
-						<MenuContent menuItems={COLLECTION_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
+						<MenuContent
+							menuItems={COLLECTION_DROPDOWN_ITEMS}
+							onClick={onClickDropdownItem}
+						/>
 					</DropdownContent>
 				</ControlledDropdown>
 				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
@@ -757,7 +781,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					title={
 						isCollection
 							? t('collection/views/collection-edit___hernoem-deze-collectie')
-							: t('collection/components/collection-or-bundle-edit___hernoem-deze-bundel')
+							: t(
+									'collection/components/collection-or-bundle-edit___hernoem-deze-bundel'
+							  )
 					}
 					inputLabel={
 						isCollection

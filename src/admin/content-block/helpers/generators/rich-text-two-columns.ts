@@ -1,10 +1,11 @@
 import i18n from '../../../../shared/translations/i18n';
+
 import {
 	ContentBlockConfig,
 	ContentBlockType,
 	DefaultContentBlockState,
 	RichTextBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
@@ -33,7 +34,9 @@ export const RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG = (position: number = 0): Conten
 		state: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE(),
 		fields: {
 			content: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/rich-text-two-columns___tekst-is-verplicht')
+				i18n.t(
+					'admin/content-block/helpers/generators/rich-text-two-columns___tekst-is-verplicht'
+				)
 			),
 		},
 	},

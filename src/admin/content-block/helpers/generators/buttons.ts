@@ -9,7 +9,7 @@ import {
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 

@@ -65,7 +65,9 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 						type="secondary"
 						icon="add"
 						onClick={handleAddFragmentClick}
-						ariaLabel={t('collection/components/fragment/fragment-add___sectie-toevoegen')}
+						ariaLabel={t(
+							'collection/components/fragment/fragment-add___sectie-toevoegen'
+						)}
 					/>
 				</ToolbarItem>
 				{renderDivider()}

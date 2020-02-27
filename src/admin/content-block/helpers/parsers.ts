@@ -2,8 +2,8 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { ContentBlockConfig, ContentBlockType } from '../../shared/types';
 import { CONTENT_BLOCK_CONFIG_MAP } from '../content-block.const';
-import { ContentBlockConfig, ContentBlockType } from '../content-block.types';
 
 // Parse content-block config to valid request body
 export const parseContentBlockConfig = (

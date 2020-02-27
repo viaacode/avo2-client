@@ -12,7 +12,7 @@ import { COLLECTION_PATH } from '../../collection/collection.const';
 import { CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { ITEM_PATH } from '../../item/item.const';
 import { SEARCH_PATH } from '../../search/search.const';
-import toastService from '../services/toast-service';
+import { toastService } from '../services/toast-service';
 import i18n from '../translations/i18n';
 
 type RouteParams = { [key: string]: string | number | undefined };

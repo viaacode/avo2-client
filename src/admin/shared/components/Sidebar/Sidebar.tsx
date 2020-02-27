@@ -14,7 +14,7 @@ interface SidebarProps {
 	navItems?: NavigationItemInfo[];
 }
 
-const Sidebar: FunctionComponent<SidebarProps> = ({
+export const Sidebar: FunctionComponent<SidebarProps> = ({
 	children,
 	className,
 	headerLink,
@@ -33,7 +33,10 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 			{navItems ? (
 				<ul className="o-sidebar__nav c-bordered-list">
 					{navItems.map((navItem, index) => (
-						<li key={`${navItem.location}-${index}`} className="o-sidebar__nav-item-wrapper">
+						<li
+							key={`${navItem.location}-${index}`}
+							className="o-sidebar__nav-item-wrapper"
+						>
 							<NavLink
 								activeClassName="o-sidebar__nav-item--active"
 								className="o-sidebar__nav-item"
@@ -50,5 +53,3 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 		</div>
 	</div>
 );
-
-export default Sidebar;

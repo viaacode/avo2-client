@@ -4,7 +4,7 @@ import {
 	ContentBlockType,
 	DefaultContentBlockState,
 	RichTextBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 

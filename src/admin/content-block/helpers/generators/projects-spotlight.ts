@@ -8,12 +8,12 @@ import {
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import { times } from 'lodash-es';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
-export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES = (): ImageInfo[] =>
+export const INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE = (): ImageInfo[] =>
 	times(
 		3,
 		() =>
@@ -39,15 +39,20 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 			min: 3,
 			max: 3,
 		},
-		state: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES(),
+		state: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE(),
 		fields: {
 			image: FILE_FIELD(
 				i18n.t(
 					'admin/content-block/helpers/generators/projects-spotlight___een-afbeelding-is-verplicht'
 				),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___afbeelding'),
-					editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
+					label: i18n.t(
+						'admin/content-block/helpers/generators/projects-spotlight___afbeelding'
+					),
+					editorProps: {
+						assetType: 'CONTENT_PAGE_IMAGE',
+						allowMulti: false,
+					} as FileUploadProps,
 				}
 			),
 			title: TEXT_FIELD('', {

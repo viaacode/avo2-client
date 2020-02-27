@@ -1,13 +1,13 @@
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
-import { WIDTH_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	ImageBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { WIDTH_OPTIONS } from '../../content-block.const';
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD } from './defaults';
 
@@ -33,12 +33,16 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				validator: () => [],
 			},
 			text: {
-				label: i18n.t('admin/content-block/helpers/generators/image___bijschrift-beschrijving'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image___bijschrift-beschrijving'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			},
 			imageSource: FILE_FIELD(
-				i18n.t('admin/content-block/helpers/generators/image___een-afbeelding-is-verplicht'),
+				i18n.t(
+					'admin/content-block/helpers/generators/image___een-afbeelding-is-verplicht'
+				),
 				{
 					label: i18n.t('admin/content-block/helpers/generators/image___afbeelding'),
 					editorProps: { assetType: 'CONTENT_PAGE_IMAGE' } as FileUploadProps,

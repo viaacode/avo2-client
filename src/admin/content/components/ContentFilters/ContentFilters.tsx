@@ -74,7 +74,9 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 					</FormGroup>
 					<FormGroup inlineMode="shrink">
 						<Button
-							label={t('admin/content/components/content-filters/content-filters___zoeken')}
+							label={t(
+								'admin/content/components/content-filters/content-filters___zoeken'
+							)}
 							type="primary"
 							onClick={() => onFilterChange('query', query)}
 						/>
@@ -99,25 +101,33 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 				/>
 				<DateRangeDropdown
 					id="content-filter-created-date"
-					label={t('admin/content/components/content-filters/content-filters___aanmaakdatum')}
+					label={t(
+						'admin/content/components/content-filters/content-filters___aanmaakdatum'
+					)}
 					onChange={value => onFilterChange('createdDate', value)}
 					range={formState.createdDate}
 				/>
 				<DateRangeDropdown
 					id="content-filter-updated-date"
-					label={t('admin/content/components/content-filters/content-filters___bewerkdatum')}
+					label={t(
+						'admin/content/components/content-filters/content-filters___bewerkdatum'
+					)}
 					onChange={value => onFilterChange('updatedDate', value)}
 					range={formState.updatedDate}
 				/>
 				<DateRangeDropdown
 					id="content-filter-publish-date"
-					label={t('admin/content/components/content-filters/content-filters___publiceerdatum')}
+					label={t(
+						'admin/content/components/content-filters/content-filters___publiceerdatum'
+					)}
 					onChange={value => onFilterChange('publishDate', value)}
 					range={formState.publishDate}
 				/>
 				<DateRangeDropdown
 					id="content-filter-depublish-date"
-					label={t('admin/content/components/content-filters/content-filters___depubliceerdatum')}
+					label={t(
+						'admin/content/components/content-filters/content-filters___depubliceerdatum'
+					)}
 					onChange={value => onFilterChange('depublishDate', value)}
 					range={formState.depublishDate}
 				/>

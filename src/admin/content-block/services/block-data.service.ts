@@ -6,7 +6,7 @@ import { GET_COLLECTION_TILE_BY_ID } from '../../../collection/collection.gql';
 import { GET_ITEM_TILE_BY_ID } from '../../../item/item.gql';
 import { dataService } from '../../../shared/services/data-service';
 
-import { MediaItemResponse } from '../content-block.types';
+import { MediaItemResponse } from '../../shared/types';
 
 export const fetchCollectionOrItem = async ({
 	type,

@@ -19,7 +19,7 @@ import {
 import { MetaDataItemProps } from '@viaa/avo2-components/dist/components/MetaData/MetaDataItem/MetaDataItem';
 
 import { formatDate, navigateToContentType } from '../../../../shared/helpers';
-import { MediaItemResponse } from '../../content-block.types';
+import { MediaItemResponse } from '../../../shared/types';
 import { fetchCollectionOrItem } from '../../services/block-data.service';
 
 import './BlockMediaList.scss';
@@ -72,7 +72,10 @@ export const BlockMediaList: FunctionComponent<BlockMediaListProps> = ({
 								<MediaCardMetaData>
 									<MetaData category={category}>
 										{metadata.map((props, i) => (
-											<MetaDataItem key={`block-media-list-meta-${i}`} {...props} />
+											<MetaDataItem
+												key={`block-media-list-meta-${i}`}
+												{...props}
+											/>
 										))}
 									</MetaData>
 								</MediaCardMetaData>
@@ -121,7 +124,11 @@ const BlockMediaListWrapper: FunctionComponent<BlockMediaListWrapperProps> = ({
 			const isItem = action.type === 'ITEM';
 			const itemDuration = get(tileData, 'duration', 0);
 			const itemLabel = get(tileData, 'type.label', 'item');
-			const collectionItems = get(tileData, 'collection_fragments_aggregate.aggregate.count', 0);
+			const collectionItems = get(
+				tileData,
+				'collection_fragments_aggregate.aggregate.count',
+				0
+			);
 
 			return {
 				action,

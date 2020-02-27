@@ -5,22 +5,46 @@ import {
 	ContentTabStyle,
 	IconName,
 } from '@viaa/avo2-components';
-import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
+import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid'; // TODO: import from components library when exported.
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentPageType } from '../content/content.types';
+import { ContentPageType } from '../../content/content.types';
 
-export type ContentBlockStateType = 'components' | 'block';
+// OPTIONS
+export type AlignOption = 'left' | 'right' | 'center';
+
+export type FillOption = 'cover' | 'contain' | 'auto';
+
+export type WidthOption = 'full-width' | '500px' | '400px';
+
+export type HeadingTypeOption = 'h2' | 'h3' | 'h4';
 
 export type ContentBlockStateOptions =
 	| Partial<ContentBlockComponentState>
 	| Partial<ContentBlockComponentState>[]
 	| Partial<ContentBlockState>;
 
-export type AlignOption = 'left' | 'right' | 'center';
-export type HeadingLevelOption = 'h2' | 'h3' | 'h4';
-export type WidthOption = 'full-width' | '500px' | '400px';
-export type ImageGridFillOption = 'cover' | 'contain' | 'auto';
+export type ButtonTypeOption =
+	| 'borderless-i'
+	| 'borderless'
+	| 'danger-hover'
+	| 'danger'
+	| 'link'
+	| 'inline-link'
+	| 'primary'
+	| 'secondary-i'
+	| 'secondary'
+	| 'tertiary';
+
+export enum BackgroundColorOption {
+	Gray50 = 'gray-50',
+	White = 'white',
+	NightBlue = 'night-blue',
+	Teal = 'teal',
+	TealBright = 'teal-bright',
+	SoftBlue = 'soft-blue',
+	OceanGreen = 'ocean-green',
+}
 
 // CONTENT BLOCK CONFIG
 export interface ContentBlockMeta {
@@ -28,6 +52,7 @@ export interface ContentBlockMeta {
 	config: ContentBlockConfig;
 }
 
+// CONTENT BLOCK
 export interface ContentBlockConfig {
 	id?: number;
 	name: string;
@@ -57,22 +82,6 @@ export interface ContentBlockBlockConfig {
 	};
 }
 
-export type ContentBlockComponentState =
-	| AccordionsBlockComponentState
-	| ButtonsBlockComponentState
-	| CTAsBlockComponentState
-	| HeadingBlockComponentState
-	| IFrameBlockComponentState
-	| ImageBlockComponentState
-	| ImageGridBlockComponentStateFields
-	| IntroBlockComponentState
-	| MediaGridBlockComponentState
-	| MediaPlayerBlockComponentState
-	| RichTextBlockComponentState
-	| PageOverviewBlockComponentStateFields;
-
-export type ContentBlockState = DefaultContentBlockState;
-
 export interface ContentBlockField {
 	label?: string; // Optional for checkboxes, who have their own label
 	editorType: ContentBlockEditor;
@@ -80,40 +89,7 @@ export interface ContentBlockField {
 	validator?: (value: any) => string[];
 }
 
-export enum ContentBlockEditor {
-	AlignSelect = 'AlignSelect',
-	ColorSelect = 'ColorSelect',
-	ContentPicker = 'ContentPicker',
-	FileUpload = 'FileUpload',
-	IconPicker = 'IconPicker',
-	MultiRange = 'MultiRange',
-	Select = 'Select',
-	TextArea = 'TextArea',
-	TextInput = 'TextInput',
-	WYSIWYG = 'WYSIWYG',
-	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
-	Checkbox = 'Checkbox',
-}
-
-// If only one block exists then the errors are a string[]
-// If multiple blocks exist then the errors are an array of string array indexed by their stateIndex
-export type ContentBlockFormError = { [key: string]: string[] | string[][] };
-
-// CONTENT BLOCKS
-export interface DefaultContentBlockState {
-	backgroundColor: ContentBlockBackgroundColor;
-	blockType: ContentBlockType;
-	position: number;
-}
-
-export enum ContentBlockBackgroundColor {
-	Gray50 = 'gray-50',
-	White = 'white',
-	NightBlue = 'night-blue',
-}
-
-// These match the content_block_types enums from graphql
-// New values need to be added there as well or it won't save
+// must match the lookup enumeration `content_block_types` on GraphQL.
 export enum ContentBlockType {
 	Accordions = 'ACCORDIONS',
 	Buttons = 'BUTTONS',
@@ -132,9 +108,59 @@ export enum ContentBlockType {
 	ProjectsSpotlight = 'PROJECTS_SPOTLIGHT',
 }
 
+// if 1 block, errors is a string[]. If multiple, it is a string[] index by their stateIndex, so string[][].
+export type ContentBlockFormError = { [key: string]: string[] | string[][] };
+
+/* CONTENT BLOCK STATE */
+export interface DefaultContentBlockState {
+	backgroundColor: BackgroundColorOption;
+	blockType: ContentBlockType;
+	position: number;
+}
+
+export type ContentBlockState = DefaultContentBlockState;
+
+export type ContentBlockStateType = 'components' | 'block';
+
+export type ContentBlockStateOption =
+	| Partial<ContentBlockComponentState>
+	| Partial<ContentBlockComponentState>[]
+	| Partial<ContentBlockState>;
+
+/* CONTENT BLOCK EDITOR */
+export enum ContentBlockEditor {
+	AlignSelect = 'AlignSelect',
+	Checkbox = 'Checkbox',
+	ColorSelect = 'ColorSelect',
+	ContentPicker = 'ContentPicker',
+	ContentTypeAndLabelsPicker = 'ContentTypeAndLabelsPicker',
+	FileUpload = 'FileUpload',
+	IconPicker = 'IconPicker',
+	MultiRange = 'MultiRange',
+	Select = 'Select',
+	TextArea = 'TextArea',
+	TextInput = 'TextInput',
+	WYSIWYG = 'WYSIWYG',
+}
+
+/* CONTENT BLOCKS */
+export type ContentBlockComponentState =
+	| AccordionsBlockComponentState
+	| ButtonsBlockComponentState
+	| CTAsBlockComponentState
+	| HeadingBlockComponentState
+	| IFrameBlockComponentState
+	| ImageBlockComponentState
+	| ImageGridBlockComponentStateFields
+	| IntroBlockComponentState
+	| MediaGridBlockComponentState
+	| MediaPlayerBlockComponentState
+	| PageOverviewBlockComponentStateFields
+	| RichTextBlockComponentState;
+
 export interface HeadingBlockComponentState {
 	children: string;
-	type: HeadingLevelOption;
+	type: HeadingTypeOption;
 	align: AlignOption;
 }
 
@@ -161,7 +187,7 @@ export interface ImageGridBlockComponentStateBlockFields extends DefaultContentB
 	imageWidth?: number;
 	imageHeight?: number;
 	itemWidth?: number;
-	fill?: ImageGridFillOption;
+	fill?: FillOption;
 	textAlign?: AlignOption;
 	className?: string;
 	navigate?: (action: ButtonAction) => void;
@@ -195,7 +221,7 @@ export interface IntroBlockComponentState {
 
 export interface CTAsBlockComponentState {
 	heading: string;
-	headingType: HeadingLevelOption;
+	headingType: HeadingTypeOption;
 	content: string | string[];
 	buttonLabel: string;
 	buttonIcon?: IconName;
@@ -221,7 +247,7 @@ export interface MediaPlayerBlockComponentState {
 export interface MediaPlayerTitleTextButtonBlockComponentState {
 	mediaTitle: string;
 	mediaItem?: ButtonAction;
-	headingType: HeadingLevelOption;
+	headingType: HeadingTypeOption;
 	headingTitle: string;
 	content: string;
 	buttonLabel: string;

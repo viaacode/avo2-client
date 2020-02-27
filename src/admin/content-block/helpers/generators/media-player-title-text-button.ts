@@ -2,17 +2,13 @@ import i18n from '../../../../shared/translations/i18n';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
 import {
-	BUTTON_TYPE_OPTIONS,
-	HEADING_LEVEL_OPTIONS,
-	WIDTH_OPTIONS,
-} from '../../content-block.const';
-import {
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	MediaPlayerTitleTextButtonBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
 import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
@@ -61,15 +57,6 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 					selectableTypes: ['ITEM'],
 				},
 			},
-			mediaWidth: {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/media-player-title-text-button___breedte'
-				),
-				editorType: ContentBlockEditor.Select,
-				editorProps: {
-					options: WIDTH_OPTIONS,
-				},
-			},
 			headingTitle: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
 				{
@@ -81,7 +68,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			content: TEXT_FIELD(),

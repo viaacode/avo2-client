@@ -1,14 +1,14 @@
 import i18n from '../../../../shared/translations/i18n';
 
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
-import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	CTAsBlockComponentState,
 	DefaultContentBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
@@ -42,7 +42,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___titel-stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			heading: TEXT_FIELD(
