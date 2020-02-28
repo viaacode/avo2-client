@@ -64,7 +64,6 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import ReportItemModal from '../components/modals/ReportItemModal';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
-import ReportItemModal from '../components/modals/ReportItemModal';
 import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './ItemDetail.scss';
