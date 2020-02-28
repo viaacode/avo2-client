@@ -9,7 +9,7 @@ import { Column, FormGroup, Grid, LabelObj, SelectOption } from '@viaa/avo2-comp
 
 import { ContentPageType } from '../../../content/content.types';
 import { useContentTypes } from '../../../content/hooks';
-import { REACT_SELECT_DEFAULT_OPTIONS } from '../ContentPicker/ContentPicker';
+import { REACT_SELECT_DEFAULT_OPTIONS } from '../ContentPicker/ContentPicker.const';
 
 export interface ContentTypeAndLabelsValue {
 	selectedContentType: ContentPageType;
