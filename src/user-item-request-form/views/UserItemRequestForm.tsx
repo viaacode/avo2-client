@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import { Tickets } from 'node-zendesk';
-import * as queryString from 'querystring';
+import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
@@ -21,7 +21,7 @@ import { createZendeskTicket } from '../../authentication/authentication.service
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { FileUpload } from '../../shared/components';
 import { isPhoto } from '../../shared/components/FileUpload/FileUpload';
-import toastService from '../../shared/services/toast-service';
+import { toastService } from '../../shared/services';
 
 export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
 
@@ -52,12 +52,10 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		if (wantsToUploadAttachment && attachmentUrl) {
 			if (isPhoto(attachmentUrl)) {
 				return `<img src="${attachmentUrl}" alt="Bijlage"/>`;
-			} else {
-				return `<a href="${attachmentUrl}">${filename}</a>`;
 			}
-		} else {
-			return t('Er werd geen bijlage toegevoegd');
+			return `<a href="${attachmentUrl}">${filename}</a>`;
 		}
+		return t('Er werd geen bijlage toegevoegd');
 	};
 
 	const onSend = async () => {
@@ -91,16 +89,16 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
   <dt><Trans>Bijlage</Trans></dt><dd>${renderAttachment()}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___voornaam">Voornaam</Trans></dt><dd>${
 		body.firstName
-	}</dd>
+  }</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___achternaam">Achternaam</Trans></dt><dd>${
 		body.lastName
-	}</dd>
+  }</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${
 		body.email
-	}</dd>
+  }</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${
 		body.organization
-	}</dd>
+  }</dd>
   <dt><Trans>Vakken</Trans></dt><dd>${body.subjects}</dd>
   <dt><Trans>Onderwijsniveaus</Trans></dt><dd>${body.educationLevels}</dd>
 </dl>`,
@@ -135,13 +133,13 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				</BlockHeading>
 				<p>
 					<Trans>
-						Vul onderstaand formulier in. Wij gaan na of de fragment(en) in aanmerking komen voor
-						publicatie op ons platform. We mogen immers niet zomaar alles publiceren omdat we
-						gebonden zijn aan enkele strikte richtlijnen. Bekijk deze aandachtig verderop deze
-						pagina. Tip: Ben je zeker dat het door jou gezochte fragment fragment niet op ons
-						platform staat? Misschien heeft het ondertussen een andere titel? Of is er een
-						gelijkaardig fragment dat je in de plaats kunt gebruiken?{' '}
-						<Link to="/zoektips">Bekijk onze zoektips</Link>.
+						Vul onderstaand formulier in. Wij gaan na of de fragment(en) in aanmerking
+						komen voor publicatie op ons platform. We mogen immers niet zomaar alles
+						publiceren omdat we gebonden zijn aan enkele strikte richtlijnen. Bekijk
+						deze aandachtig verderop deze pagina. Tip: Ben je zeker dat het door jou
+						gezochte fragment fragment niet op ons platform staat? Misschien heeft het
+						ondertussen een andere titel? Of is er een gelijkaardig fragment dat je in
+						de plaats kunt gebruiken? <Link to="/zoektips">Bekijk onze zoektips</Link>.
 					</Trans>
 				</p>
 
@@ -195,8 +193,8 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	const renderConfirmation = () => (
 		<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bevestiging">
 			Bedankt voor je aanvraag. Onze helpdesk bekijkt deze binnen de vijf werkdagen. Heb je
-			ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze dan in
-			een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
+			ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze
+			dan in een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
 		</Trans>
 	);
 

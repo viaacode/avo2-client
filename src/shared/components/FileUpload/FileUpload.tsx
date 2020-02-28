@@ -1,5 +1,5 @@
 import { get } from 'lodash-es';
-import * as queryString from 'querystring';
+import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
