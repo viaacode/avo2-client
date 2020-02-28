@@ -64,3 +64,23 @@ export const GET_ITEM_BY_ID = gql`
 		}
 	}
 `;
+
+export const GET_ITEM_TILE_BY_ID = gql`
+	query getItemTileById($id: bpchar!) {
+		tileData: app_item_meta(where: { external_id: { _eq: $id } }) {
+			created_at
+			duration
+			thumbnail_path
+			title
+			type {
+				label
+			}
+		}
+		# TODO: uncomment when views are available
+		# count: app_item_views_aggregate(where: { external_id: { _eq: $id } }) {
+		# 	aggregate {
+		# 		count
+		# 	}
+		# }
+	}
+`;

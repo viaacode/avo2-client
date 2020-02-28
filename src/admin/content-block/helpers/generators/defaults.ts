@@ -11,17 +11,18 @@ import {
 
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 
-export const FORM_STATE_DEFAULTS = (
-	backgroundColor: BackgroundColorOption,
+// Block config defaults
+export const BLOCK_STATE_DEFAULTS = (
 	blockType: ContentBlockType,
-	position: number
+	position: number,
+	backgroundColor: BackgroundColorOption = BackgroundColorOption.White
 ) => ({
-	backgroundColor,
 	blockType,
 	position,
+	backgroundColor,
 });
 
-export const CONTENT_BLOCK_FIELD_DEFAULTS = () => ({
+export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
 });
 

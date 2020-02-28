@@ -2,25 +2,24 @@ import i18n from '../../../../shared/translations/i18n';
 
 import {
 	AccordionsBlockComponentState,
-	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 } from '../../../shared/types';
-import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_ACCORDION: AccordionsBlockComponentState = {
 	title: '',
 	content: '',
 };
 
-export const INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES = (): AccordionsBlockComponentState[] => [
+export const INITIAL_ACCORDIONS_COMPONENTS_STATE = (): AccordionsBlockComponentState[] => [
 	EMPTY_ACCORDION,
 ];
 
 export const INITIAL_ACCORDIONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.Accordions, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Accordions, position);
 
 export const ACCORDIONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/accordions___accordeons'),
@@ -31,7 +30,7 @@ export const ACCORDIONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 			min: 1,
 			max: 8,
 		},
-		state: INITIAL_ACCORDIONS_BLOCK_COMPONENT_STATES(),
+		state: INITIAL_ACCORDIONS_COMPONENTS_STATE(),
 		fields: {
 			title: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/defaults___tekst-is-verplicht'),
@@ -45,6 +44,6 @@ export const ACCORDIONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	},
 	block: {
 		state: INITIAL_ACCORDIONS_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });
