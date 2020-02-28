@@ -21,11 +21,10 @@ import {
 
 import { APP_PATH } from '../../../constants';
 import { toastService } from '../../../shared/services';
-import { createZendeskTicket } from '../../authentication.service';
+import { ZendeskService } from '../../../shared/services/zendesk-service';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
-import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 export interface ManualRegistrationProps extends RouteComponentProps {}
 

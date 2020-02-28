@@ -20,9 +20,10 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import toastService from '../../../shared/services/toast-service';
+import { toastService } from '../../../shared/services';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
 import i18n from '../../../shared/translations/i18n';
+import { Tickets } from 'node-zendesk';
 
 interface ReportItemModalProps {
 	externalId: string;
@@ -50,7 +51,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 	const [isProcessing, setISProcessing] = useState<boolean>(false);
 
 	const reportItem = async () => {
-		let ticket: any = undefined;
+		let ticket: Tickets.CreateModel | undefined;
 		try {
 			if (!reason) {
 				return;
@@ -70,13 +71,13 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 					html_body: `<dl>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___voornaam">Voornaam</Trans></dt><dd>${
 		body.firstName
-	}</dd>
+  }</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___achternaam">Achternaam</Trans></dt><dd>${
 		body.lastName
-	}</dd>
+  }</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${
 		body.email
-	}</dd>
+  }</dd>
   <dt><Trans>Reden van rapporteren</Trans></dt><dd>${RADIO_BUTTON_LABELS[reason]}</dd>
   <dt><Trans>Extra toelichting</Trans></dt><dd>${extraDetails ||
 		t('Geen extra toelichting ingegeven')}</dd>
@@ -160,7 +161,9 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 								<ButtonToolbar>
 									{isProcessing && <Spinner />}
 									<Button
-										label={t('item/components/modals/add-to-collection-modal___annuleren')}
+										label={t(
+											'item/components/modals/add-to-collection-modal___annuleren'
+										)}
 										type="link"
 										block
 										onClick={onClose}
@@ -172,7 +175,11 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 										block
 										disabled={isProcessing || !reason}
 										title={
-											reason ? '' : t('Je moet een reden opgeven om een item te kunnen rapporteren')
+											reason
+												? ''
+												: t(
+														'Je moet een reden opgeven om een item te kunnen rapporteren'
+												  )
 										}
 										onClick={reportItem}
 									/>
