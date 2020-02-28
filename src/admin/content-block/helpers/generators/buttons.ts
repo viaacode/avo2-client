@@ -71,7 +71,6 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 						'BUNDLE',
 						'INTERNAL_LINK',
 						'EXTERNAL_LINK',
-						'SEARCH_QUERY',
 					],
 				},
 			},
