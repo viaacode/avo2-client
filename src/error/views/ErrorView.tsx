@@ -1,6 +1,6 @@
 import { History, Location } from 'history';
 import { uniq } from 'lodash-es';
-import queryString from 'querystring';
+import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { match, RouteComponentProps, withRouter } from 'react-router';
