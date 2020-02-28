@@ -27,12 +27,12 @@ import { selectUser } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
+import { toastService } from '../../services';
 import {
 	AppContentNavElement,
 	getNavigationItems,
 	NavItemMap,
 } from '../../services/navigation-items-service';
-import { toastService } from '../../services/toast-service';
 import { NavigationItemInfo } from '../../types';
 
 import './Navigation.scss';

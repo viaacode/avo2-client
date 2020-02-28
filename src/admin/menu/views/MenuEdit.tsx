@@ -26,7 +26,7 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 import { ContentPickerType, PickerItem } from '../../shared/types';
 
 import { ApolloQueryResult } from 'apollo-boost';
-import { getUserGroups } from '../../../shared/services/user-groups-service';
+import { getAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
@@ -134,7 +134,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Get labels of the userGroups, so we can show a readable error message
 	useEffect(() => {
-		getUserGroups()
+		getAllUserGroups()
 			.then(userGroups => {
 				setAllUserGroups(userGroups);
 			})

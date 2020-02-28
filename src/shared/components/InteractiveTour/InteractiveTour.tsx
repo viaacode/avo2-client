@@ -54,7 +54,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 						target: '#query',
 					},
 					{
-						content: 'In het zoekveld kan je een zoekterm ingeven',
+						content: 'Met de zoek knop kan je de lijst met resultaten updaten',
 						target:
 							'#root > div > div.c-search-view.o-container > div.c-navbar.c-navbar--bordered-bottom.c-navbar--auto > div > div > div > div > div > div.o-form-group.o-form-group--inline-shrink > div > button > div > div',
 					},
