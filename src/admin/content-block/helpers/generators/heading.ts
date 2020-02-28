@@ -19,7 +19,7 @@ import {
 export const INITIAL_HEADING_BLOCK_COMPONENT_STATE = (): HeadingBlockComponentState => ({
 	children: '',
 	type: 'h2',
-	align: 'left',
+	align: 'center',
 });
 
 export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
