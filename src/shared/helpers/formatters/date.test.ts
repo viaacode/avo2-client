@@ -23,9 +23,9 @@ describe('Formatters - date', () => {
 		expect((normalizeTimestamp('2017-09-20') as Moment).toDate().toISOString()).toEqual(
 			'2017-09-19T22:00:00.000Z'
 		);
-		expect((normalizeTimestamp('2017-09-20 13:12:11') as Moment).toDate().toISOString()).toEqual(
-			'2017-09-20T11:12:11.000Z'
-		);
+		expect(
+			(normalizeTimestamp('2017-09-20 13:12:11') as Moment).toDate().toISOString()
+		).toEqual('2017-09-20T11:12:11.000Z');
 	});
 
 	it('should make humanly readable', () => {

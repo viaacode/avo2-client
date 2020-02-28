@@ -116,7 +116,12 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			}),
 			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
 				component: () => (
-					<AssignmentOverview history={history} location={location} match={match} user={user} />
+					<AssignmentOverview
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+					/>
 				),
 			}),
 			...addTabIfUserHasPerm(BOOKMARKS_ID, {
@@ -173,7 +178,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'),
+					message: t(
+						'workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'
+					),
 				});
 			});
 	}, [user, t, setPermissions, permissions]);
@@ -223,7 +230,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 							<DropdownButton>
 								<div className="c-filter-dropdown c-filter-dropdown--no-bg">
 									<div className="c-filter-dropdown__label">
-										{currentFilter ? currentFilter.label : filter.options[0].label}
+										{currentFilter
+											? currentFilter.label
+											: filter.options[0].label}
 									</div>
 									<div className="c-filter-dropdown__options">
 										<Icon name="caret-down" />
@@ -231,7 +240,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								</div>
 							</DropdownButton>
 							<DropdownContent>
-								<MenuContent menuItems={filter.options} onClick={handleMenuContentClick} />
+								<MenuContent
+									menuItems={filter.options}
+									onClick={handleMenuContentClick}
+								/>
 							</DropdownContent>
 						</ControlledDropdown>
 					</FormGroup>
@@ -246,7 +258,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<BlockHeading type="h2" className="u-m-0">
-							<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">Mijn Werkruimte</Trans>
+							<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">
+								Mijn Werkruimte
+							</Trans>
 						</BlockHeading>
 					</Container>
 				</Container>

@@ -1,13 +1,13 @@
 import i18n from '../../../../shared/translations/i18n';
-import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	HeadingBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
 import {
 	ALIGN_FIELD,
@@ -23,7 +23,7 @@ export const INITIAL_HEADING_BLOCK_COMPONENT_STATE = (): HeadingBlockComponentSt
 });
 
 export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading, position);
+	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.Heading, position);
 
 export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/heading___titel'),
@@ -42,7 +42,7 @@ export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			align: ALIGN_FIELD(),

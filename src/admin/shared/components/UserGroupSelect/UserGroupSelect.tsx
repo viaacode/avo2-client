@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
 
-import toastService from '../../../../shared/services/toast-service';
+import { toastService } from '../../../../shared/services';
 import { getAllUserGroups } from '../../../../shared/services/user-groups-service';
 
 interface UserGroupSelectProps {
@@ -16,7 +16,7 @@ interface UserGroupSelectProps {
 	onChange: (selectedUserGroupIds: number[]) => void;
 }
 
-const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
+export const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 	label,
 	error,
 	placeholder,
@@ -64,5 +64,3 @@ const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 		</FormGroup>
 	);
 };
-
-export default UserGroupSelect;
