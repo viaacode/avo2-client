@@ -50,3 +50,8 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 		picker: 'TEXT_INPUT',
 	},
 ];
+
+export const REACT_SELECT_DEFAULT_OPTIONS = {
+	className: 'c-select',
+	classNamePrefix: 'c-select',
+};
