@@ -1,4 +1,4 @@
-import { stringify } from 'querystring';
+import { stringify } from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
 

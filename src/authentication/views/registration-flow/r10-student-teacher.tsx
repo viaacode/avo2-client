@@ -32,14 +32,13 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 					<p>
 						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___student-teacher-description">
 							Jij zoekt meer en dat vinden wij top! Studenten lerarenopleiding{' '}
-							<strong>kunnen via hun docent toegang krijgen</strong> tot onze
-							beeldbank. De docenten moeten hiervoor een aanvraag sturen naar{' '}
-							<a href="mailto:support@viaa.be">support@viaa.be</a> met inbegrip van
-							een lijst (excel of csv) met de voornaam, achternaam en het e-mailadres
-							van de student aan de betreffende onderwijsinstelling (geen
-							privé-adressen). In die mail moet ook formeel bevestigd worden dat de
-							lijst enkel gegevens bevat van studenten in een Vlaamse lerarenopleiding
-							ingeschreven bij de boven vernoemde onderwijsinstelling. Hou rekening
+							<strong>kunnen via hun docent toegang krijgen</strong> tot onze beeldbank. De docenten
+							moeten hiervoor een aanvraag sturen naar{' '}
+							<a href="mailto:support@meemoo.be">support@meemoo.be</a> met inbegrip van een lijst
+							(excel of csv) met de voornaam, achternaam en het e-mailadres van de student aan de
+							betreffende onderwijsinstelling (geen privé-adressen). In die mail moet ook formeel
+							bevestigd worden dat de lijst enkel gegevens bevat van studenten in een Vlaamse
+							lerarenopleiding ingeschreven bij de boven vernoemde onderwijsinstelling. Hou rekening
 							met een verwerkingstijd van gemiddeld een werkweek.
 						</Trans>
 					</p>

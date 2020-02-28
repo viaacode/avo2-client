@@ -6,7 +6,8 @@ export type AssetType =
 	| 'COLLECTION_COVER'
 	| 'CONTENT_PAGE_IMAGE'
 	| 'PROFILE_AVATAR'
-	| 'ITEM_SUBTITLE';
+	| 'ITEM_SUBTITLE'
+	| 'ZENDESK_ATTACHMENT';
 
 export interface UploadAssetInfo {
 	// TODO use typings version
@@ -15,6 +16,13 @@ export interface UploadAssetInfo {
 	mimeType: string;
 	type: AssetType; // Used to put the asset inside a folder structure inside the bucket
 	ownerId: string;
+}
+
+export interface ZendeskFileInfo {
+	// TODO use typings version
+	base64: string;
+	filename: string;
+	mimeType: string;
 }
 
 export interface AssetInfo {
@@ -39,8 +47,53 @@ export const uploadFile = async (
 	assetType: AssetType,
 	ownerId: string
 ): Promise<string> => {
-	let url: string | undefined = undefined;
-	let body: UploadAssetInfo | undefined = undefined;
+	if (assetType === 'ZENDESK_ATTACHMENT') {
+		return await uploadFileToZendesk(file);
+	}
+	return await uploadFileToBlobStorage(file, assetType, ownerId);
+};
+
+export const uploadFileToZendesk = async (file: File): Promise<string> => {
+	let url: string | undefined;
+	let body: ZendeskFileInfo | undefined;
+	try {
+		url = `${getEnv('PROXY_URL')}/zendesk/upload-attachment`;
+		const base64 = await fileToBase64(file);
+		if (!base64) {
+			throw new CustomError("Failed to upload file: file doesn't have any content", null);
+		}
+		body = {
+			base64,
+			filename: file.name,
+			mimeType: file.type,
+		};
+
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include',
+			body: JSON.stringify(body),
+		});
+
+		const data: any = await response.json();
+		if (data.statusCode && (data.statusCode < 200 || data.statusCode >= 400)) {
+			throw new CustomError('Failed to upload file: wrong statusCode received', null, data);
+		}
+		return data.url;
+	} catch (err) {
+		throw new CustomError('Failed to upload file', err, { file, url, body });
+	}
+};
+
+export const uploadFileToBlobStorage = async (
+	file: File,
+	assetType: AssetType,
+	ownerId: string
+): Promise<string> => {
+	let url: string | undefined;
+	let body: UploadAssetInfo | undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/assets/upload`;
 		const content = await fileToBase64(file);
@@ -75,7 +128,7 @@ export const uploadFile = async (
 };
 
 export const deleteFile = async (fileUrl: string): Promise<void> => {
-	let url: string | undefined = undefined;
+	let url: string | undefined;
 	let body: any;
 	try {
 		url = `${getEnv('PROXY_URL')}/assets/delete`;
