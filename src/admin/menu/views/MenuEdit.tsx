@@ -121,7 +121,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							content_type: menuItem.content_type || 'COLLECTION',
 							content_path: String(menuItem.content_path || ''),
 							link_target: menuItem.link_target || '_self',
-							user_group_ids: (menuItem.user_group_ids || []) as number[], // TODO remove once typings 2.10.0 is released
+							user_group_ids: menuItem.user_group_ids || [],
 							placement: menuItem.placement,
 						});
 					}

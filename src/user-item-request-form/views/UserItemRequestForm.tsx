@@ -17,11 +17,10 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 
-import { createZendeskTicket } from '../../authentication/authentication.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { FileUpload } from '../../shared/components';
 import { isPhoto } from '../../shared/components/FileUpload/FileUpload';
-import { ToastService } from '../../shared/services';
+import { ToastService, ZendeskService } from '../../shared/services';
 
 export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
 
@@ -106,7 +105,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				},
 				subject: t('Gebruikersaanvraag item'),
 			};
-			await createZendeskTicket(ticket);
+			await ZendeskService.createTicket(ticket);
 			ToastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
