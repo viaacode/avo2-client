@@ -1,4 +1,4 @@
 import { ApolloCacheManager, dataService } from './data-service';
-import { toastService, ToastType } from './toast-service';
+import { ToastService, ToastType } from './toast-service';
 
-export { dataService, toastService, ToastType, ApolloCacheManager };
+export { dataService, ToastService, ToastType, ApolloCacheManager };

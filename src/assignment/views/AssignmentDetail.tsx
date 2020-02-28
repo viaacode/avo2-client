@@ -39,7 +39,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
@@ -118,7 +118,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						);
 
 						if (isNil(assignmentResponseId)) {
-							toastService.info(
+							ToastService.info(
 								t(
 									'assignment/views/assignment-detail___het-aanmaken-van-de-opdracht-antwoord-entry-is-mislukt-leeg-id'
 								)
@@ -134,7 +134,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						];
 					} catch (err) {
 						console.error(err);
-						toastService.danger(
+						ToastService.danger(
 							t(
 								'assignment/views/assignment-detail___het-aanmaken-van-een-opdracht-antwoord-entry-is-mislukt'
 							)
@@ -195,13 +195,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							// Show toast instead of showing error using the loadingInfo
 							// since we still want to show the assignment without the content if the content fails to load
 							if (err && err.message === 'NOT_FOUND') {
-								toastService.danger(
+								ToastService.danger(
 									t(
 										'assignment/views/assignment-detail___de-opdracht-inhoud-werdt-niet-terug-gevonden'
 									)
 								);
 							} else {
-								toastService.danger(
+								ToastService.danger(
 									t(
 										'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
 									)
@@ -288,7 +288,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {
 			if (assignment && isOwnerOfAssignment(assignment)) {
-				toastService.info(
+				ToastService.info(
 					t(
 						'assignment/views/assignment-detail___u-kan-deze-opdracht-niet-archiveren-want-dit-is-slechts-een-voorbeeld'
 					)
@@ -311,7 +311,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					update: ApolloCacheManager.clearAssignmentCache,
 				})
 					.then(() => {
-						toastService.success(
+						ToastService.success(
 							isAssignmentResponseArchived()
 								? t(
 										'assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd'
@@ -339,7 +339,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 								},
 							})
 						);
-						toastService.danger(
+						ToastService.danger(
 							t(
 								'assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt'
 							)
@@ -355,7 +355,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						}
 					)
 				);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt'
 					)

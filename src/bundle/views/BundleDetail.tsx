@@ -57,7 +57,7 @@ import {
 } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
@@ -119,7 +119,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		// 				index: 'bundles',
 		// 				limit: 4,
 		// 			});
-		// 			toastService.danger(t('bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'));
+		// 			ToastService.danger(t('bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'));
 		// 		});
 		// }
 	}, [bundleId, relatedBundles, t, user]);
@@ -208,12 +208,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService.success(
+			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('bundle/views/bundle-detail___het-verwijderen-van-de-bundel-is-mislukt')
 			);
 		}
@@ -230,7 +230,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			case 'duplicate':
 				try {
 					if (!bundle) {
-						toastService.danger(
+						ToastService.danger(
 							t(
 								'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 							)
@@ -250,14 +250,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						history
 					);
 					setBundle(duplicateCollection);
-					toastService.success(
+					ToastService.success(
 						t(
 							'bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
 						)
 					);
 				} catch (err) {
 					console.error('Failed to copy bundle', err, { originalBundle: bundle });
-					toastService.danger(
+					ToastService.danger(
 						t('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
 					);
 				}

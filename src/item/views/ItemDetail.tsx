@@ -54,7 +54,7 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 
@@ -107,7 +107,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 						limit,
 						index: 'items',
 					});
-					toastService.danger(
+					ToastService.danger(
 						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
 					);
 				});

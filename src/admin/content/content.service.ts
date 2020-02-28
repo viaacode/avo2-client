@@ -4,7 +4,7 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, performQuery } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import i18n from '../../shared/translations/i18n';
 
@@ -81,7 +81,7 @@ export const getContentTypes = async (): Promise<ContentPageType[] | null> => {
 		);
 	} catch (err) {
 		console.error('Failed to retrieve content types.', err);
-		toastService.danger(
+		ToastService.danger(
 			i18n.t(
 				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'
 			),
@@ -125,7 +125,7 @@ export const insertContent = async (
 		return null;
 	} catch (err) {
 		console.error('Failed to insert content blocks', err);
-		toastService.danger(
+		ToastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
 			false
 		);
@@ -165,7 +165,7 @@ export const updateContent = async (
 		return contentItem;
 	} catch (err) {
 		console.error('Failed to save content', err);
-		toastService.danger(
+		ToastService.danger(
 			i18n.t('admin/content/content___er-ging-iets-mis-tijdens-het-opslaan-van-de-content'),
 			false
 		);

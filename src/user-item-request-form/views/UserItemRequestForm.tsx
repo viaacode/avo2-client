@@ -21,7 +21,7 @@ import { createZendeskTicket } from '../../authentication/authentication.service
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { FileUpload } from '../../shared/components';
 import { isPhoto } from '../../shared/components/FileUpload/FileUpload';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 
 export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
 
@@ -63,7 +63,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		try {
 			const errors = getValidationErrors();
 			if (errors.length) {
-				toastService.danger(errors);
+				ToastService.danger(errors);
 				return;
 			}
 
@@ -107,7 +107,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				subject: t('Gebruikersaanvraag item'),
 			};
 			await createZendeskTicket(ticket);
-			toastService.success(
+			ToastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
 				)
@@ -115,7 +115,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 			setHasBeenSent(true);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
-			toastService.danger(t('Het versturen van je aanvraag is mislukt'));
+			ToastService.danger(t('Het versturen van je aanvraag is mislukt'));
 		}
 		setIsLoading(false);
 	};

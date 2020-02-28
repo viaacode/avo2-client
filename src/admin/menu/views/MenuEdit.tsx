@@ -19,7 +19,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError, navigate } from '../../../shared/helpers';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -88,7 +88,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				setMenuItems(menuItemsByPosition);
 			} else {
 				// Go back to overview if no menu items are present
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
 						{
@@ -140,7 +140,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			})
 			.catch((err: any) => {
 				console.error('Failed to get user groups', err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
 					),
@@ -227,7 +227,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							},
 						})
 					);
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'admin/menu/views/menu-edit___het-controleren-of-de-permissies-van-de-pagina-overeenkomen-met-de-zichtbaarheid-van-dit-navigatie-item-is-mislukt'
 						),
@@ -358,7 +358,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		setIsSaving(false);
 
 		const hasError = err || err === null;
-		toastService[hasError ? 'danger' : 'success'](message, false);
+		ToastService[hasError ? 'danger' : 'success'](message, false);
 
 		if (hasError) {
 			console.error(err);

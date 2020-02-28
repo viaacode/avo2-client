@@ -3,7 +3,7 @@ import { get, has, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import i18n from '../../shared/translations/i18n';
 
@@ -28,7 +28,7 @@ export const fetchContentBlocksByContentId = async (
 		return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.GET}`, null);
 	} catch (err) {
 		console.error(err);
-		toastService.danger(
+		ToastService.danger(
 			i18n.t(
 				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-blocks'
 			),
@@ -54,7 +54,7 @@ export const insertContentBlocks = async (
 		return get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`, null);
 	} catch (err) {
 		console.error(err);
-		toastService.danger(
+		ToastService.danger(
 			i18n.t(
 				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
 			),
@@ -108,7 +108,7 @@ export const updateContentBlocks = async (
 		]);
 	} catch (err) {
 		console.error(err);
-		toastService.danger(
+		ToastService.danger(
 			i18n.t(
 				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
 			),
@@ -128,7 +128,7 @@ export const deleteContentBlock = async (id: number) => {
 		});
 	} catch (err) {
 		console.error(err);
-		toastService.danger(
+		ToastService.danger(
 			i18n.t(
 				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
 			),
@@ -151,7 +151,7 @@ export const updateContentBlock = async (
 		});
 	} catch (err) {
 		console.error(err);
-		toastService.danger(
+		ToastService.danger(
 			i18n.t(
 				'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
 			),

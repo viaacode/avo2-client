@@ -22,7 +22,7 @@ import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql
 import { DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { dataService, toastService } from '../../../shared/services';
+import { dataService, ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
@@ -125,7 +125,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setIsSaving(false);
 
 		if (response) {
-			toastService.success(
+			ToastService.success(
 				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen'),
 				false
 			);
@@ -141,7 +141,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!isFormValid) {
 			setIsSaving(false);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
 				),
@@ -188,7 +188,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 				handleResponse(updatedContent);
 			} else {
-				toastService.danger(
+				ToastService.danger(
 					t('admin/content/views/content-edit___het-content-id-id-is-ongeldig', { id }),
 					false
 				);
