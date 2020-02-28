@@ -327,7 +327,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			return null;
 		}
 		return (bundle.collection_fragments || []).map((fragment: Avo.Collection.Fragment) => {
-			const collection: Avo.Collection.Collection = fragment.item_meta as Avo.Collection.Collection;
+			const collection = fragment.item_meta as Avo.Collection.Collection;
 			if (!collection) {
 				return null;
 			}
