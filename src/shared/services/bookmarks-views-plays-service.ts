@@ -25,7 +25,7 @@ import {
 	GET_MULTIPLE_ITEM_VIEW_COUNTS,
 } from './bookmarks-views-plays-service.gql';
 import { ApolloCacheManager, dataService } from './data-service';
-import toastService from './toast-service';
+import { toastService } from './toast-service';
 
 export class BookmarksViewsPlaysService {
 	public static async action(

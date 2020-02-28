@@ -22,7 +22,9 @@ export const getValidationFeedbackForShortDescription = (
 
 	if (isError) {
 		return exceedsSize
-			? i18n.t('collection/collection___de-korte-omschrijving-is-te-lang-count', { count } as any)
+			? i18n.t('collection/collection___de-korte-omschrijving-is-te-lang-count', {
+					count,
+			  } as any)
 			: '';
 	}
 
@@ -42,7 +44,8 @@ const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collectio
 				? i18n.t('collection/collection___de-collectie-beschrijving-is-te-lang')
 				: i18n.t('collection/collection___de-bundel-beschrijving-is-te-lang'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!collection.description || collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
+			!collection.description ||
+			collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
 	},
 ];
 
@@ -88,7 +91,9 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('collection/collection___de-video-items-moeten-een-titel-en-beschrijving-bevatten')
+				? i18n.t(
+						'collection/collection___de-video-items-moeten-een-titel-en-beschrijving-bevatten'
+				  )
 				: i18n.t('collection/collection___de-collecties-moeten-een-titel-hebben'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.collection_fragments ||

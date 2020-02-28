@@ -1,15 +1,15 @@
 import i18n from '../../../../shared/translations/i18n';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
-import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	MediaPlayerTitleTextButtonBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
 import {
 	ALIGN_FIELD,
@@ -32,7 +32,7 @@ export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (
 	position: number
 ): DefaultContentBlockState =>
 	FORM_STATE_DEFAULTS(
-		ContentBlockBackgroundColor.White,
+		BackgroundColorOption.White,
 		ContentBlockType.MediaPlayerTitleTextButton,
 		position
 	);
@@ -64,7 +64,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
-					selectableTypes: ['ITEM'],
+					allowedTypes: ['ITEM'],
 				},
 			},
 			headingTitle: TEXT_FIELD(
@@ -78,7 +78,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			content: TEXT_FIELD(),

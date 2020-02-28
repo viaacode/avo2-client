@@ -1,13 +1,13 @@
 import i18n from '../../../../shared/translations/i18n';
-import { WIDTH_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	MediaPlayerBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { WIDTH_OPTIONS } from '../../content-block.const';
 
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
@@ -16,7 +16,7 @@ export const INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE = (): MediaPlayerBlockCo
 });
 
 export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.MediaPlayer, position);
+	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.MediaPlayer, position);
 
 export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/media-player___media-speler'),
@@ -34,10 +34,12 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				}
 			),
 			item: {
-				label: i18n.t('admin/content-block/helpers/generators/media-player___video-of-audio-item'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___video-of-audio-item'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
-					selectableTypes: ['ITEM'],
+					allowedTypes: ['ITEM'],
 				},
 			},
 			width: {

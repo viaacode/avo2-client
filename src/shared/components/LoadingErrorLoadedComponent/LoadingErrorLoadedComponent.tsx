@@ -24,7 +24,7 @@ export interface LoadingErrorLoadedComponentProps {
 	render: () => ReactElement | null;
 }
 
-const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponentProps> = ({
+export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponentProps> = ({
 	loadingInfo = { state: 'loading' },
 	notFoundError,
 	showSpinner = true,
@@ -114,5 +114,3 @@ export async function checkPermissions(
 		});
 	}
 }
-
-export default LoadingErrorLoadedComponent;

@@ -7,8 +7,7 @@ import { ValueType } from 'react-select/src/types';
 import { Alert, Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
-import { ContentPicker, IconPicker } from '../../../shared/components';
-import UserGroupSelect from '../../../shared/components/UserGroupSelect/UserGroupSelect';
+import { ContentPicker, IconPicker, UserGroupSelect } from '../../../shared/components';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import { PickerItem } from '../../../shared/types';
 import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
@@ -69,7 +68,9 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			{!menuParentId && (
 				<FormGroup
 					error={formErrors.description}
-					label={t('admin/menu/components/menu-edit-form/menu-edit-form___navigatie-omschrijving')}
+					label={t(
+						'admin/menu/components/menu-edit-form/menu-edit-form___navigatie-omschrijving'
+					)}
 				>
 					<TextArea
 						onChange={(value: string) => onChange('description', value)}
@@ -93,7 +94,10 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				label={t('admin/menu/components/menu-edit-form/menu-edit-form___label')}
 				required
 			>
-				<TextInput onChange={(value: string) => onChange('label', value)} value={formState.label} />
+				<TextInput
+					onChange={(value: string) => onChange('label', value)}
+					value={formState.label}
+				/>
 			</FormGroup>
 			<FormGroup
 				error={formErrors.content_path}
@@ -101,7 +105,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				required
 			>
 				<ContentPicker
-					selectableTypes={['CONTENT_PAGE', 'INTERNAL_LINK', 'EXTERNAL_LINK']}
+					allowedTypes={['CONTENT_PAGE', 'INTERNAL_LINK', 'EXTERNAL_LINK']}
 					onSelect={(item: ValueType<PickerItem>) => {
 						onChange('content', item as PickerItem);
 					}}
@@ -123,11 +127,15 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				<Select
 					options={[
 						{
-							label: t('admin/menu/components/menu-edit-form/menu-edit-form___nieuw-venster'),
+							label: t(
+								'admin/menu/components/menu-edit-form/menu-edit-form___nieuw-venster'
+							),
 							value: '_blank',
 						},
 						{
-							label: t('admin/menu/components/menu-edit-form/menu-edit-form___hetzelfde-venster'),
+							label: t(
+								'admin/menu/components/menu-edit-form/menu-edit-form___hetzelfde-venster'
+							),
 							value: '_self',
 						},
 					]}

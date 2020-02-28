@@ -26,10 +26,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { toastService } from '../../../shared/services';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
-import toastService from '../../../shared/services/toast-service';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,

@@ -23,7 +23,9 @@ export function normalizeTimestamp(timestamp: DateLike): Moment {
 		return moment(timestamp);
 	}
 	if (
-		timestamp.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}/g)
+		timestamp.match(
+			/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}/g
+		)
 	) {
 		return moment.parseZone(timestamp);
 	}

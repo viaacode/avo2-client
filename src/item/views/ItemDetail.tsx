@@ -54,9 +54,9 @@ import {
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service.const';
 import { dataService } from '../../shared/services/data-service';
+import { toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import toastService from '../../shared/services/toast-service';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
@@ -121,7 +121,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				if (!hasPermission) {
 					setLoadingInfo({
 						state: 'error',
-						message: t('item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'),
+						message: t(
+							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
+						),
 						icon: 'lock',
 					});
 					return;
@@ -244,7 +246,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map(relatedItem => {
 				const englishContentType: EnglishContentType =
-					toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
+					toEnglishContentType(relatedItem.administrative_type) ||
+					ContentTypeString.video;
 
 				return (
 					<li key={`related-item-${relatedItem.id}`}>
@@ -255,7 +258,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							title={relatedItem.dc_title}
 						>
 							<MediaCardThumbnail>
-								<Thumbnail category={englishContentType} src={relatedItem.thumbnail_path} />
+								<Thumbnail
+									category={englishContentType}
+									src={relatedItem.thumbnail_path}
+								/>
 							</MediaCardThumbnail>
 							<MediaCardMetaData>
 								<MetaData category={englishContentType}>
@@ -279,7 +285,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 		return (
 			<>
-				<Container className="c-item-view__header" mode="vertical" size="small" background="alt">
+				<Container
+					className="c-item-view__header"
+					mode="vertical"
+					size="small"
+					background="alt"
+				>
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarLeft>
@@ -288,7 +299,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 										<div className="c-content-type c-content-type--video">
 											<Icon
 												name={
-													(get(item, 'type.id') === ContentTypeNumber.audio
+													(get(item, 'type.id') ===
+													ContentTypeNumber.audio
 														? 'headphone'
 														: get(item, 'type.label')) as IconName
 												}
@@ -297,11 +309,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{item.title}</h1>
-									<MetaData category={toEnglishContentType(get(item, 'type.label'))} spaced>
+									<MetaData
+										category={toEnglishContentType(get(item, 'type.label'))}
+										spaced
+									>
 										{!!get(item, 'organisation.name') && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													{generateSearchLink('provider', item.organisation.name)}
+													{generateSearchLink(
+														'provider',
+														item.organisation.name
+													)}
 												</p>
 											</MetaDataItem>
 										)}
@@ -351,8 +369,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 													<Button
 														type="tertiary"
 														icon="add"
-														label={t('item/views/item___voeg-fragment-toe-aan-collectie')}
-														onClick={() => setIsOpenAddToCollectionModal(true)}
+														label={t(
+															'item/views/item___voeg-fragment-toe-aan-collectie'
+														)}
+														onClick={() =>
+															setIsOpenAddToCollectionModal(true)
+														}
 													/>
 													<Button
 														type="tertiary"
@@ -375,7 +397,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 												type="tertiary"
 												icon="share-2"
 												ariaLabel={t('item/views/item___share-item')}
-												onClick={() => setIsShareThroughEmailModalOpen(true)}
+												onClick={() =>
+													setIsShareThroughEmailModalOpen(true)
+												}
 											/>
 											<Button type="tertiary" icon="flag" ariaLabel={t('item/views/item___rapporteer-item')} />
 										</ButtonToolbar>
@@ -405,7 +429,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 											{!!item.published_at && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___toegevoegd-op">Toegevoegd op</Trans>
+														<Trans i18nKey="item/views/item___toegevoegd-op">
+															Toegevoegd op
+														</Trans>
 													</th>
 													<td>{reorderDate(item.published_at, '/')}</td>
 												</Column>
@@ -415,15 +441,24 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 											{!!get(item, 'organisation.name') && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___aanbieder">Aanbieder</Trans>
+														<Trans i18nKey="item/views/item___aanbieder">
+															Aanbieder
+														</Trans>
 													</th>
-													<td>{generateSearchLink('provider', item.organisation.name)}</td>
+													<td>
+														{generateSearchLink(
+															'provider',
+															item.organisation.name
+														)}
+													</td>
 												</Column>
 											)}
 											{!!item.duration && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___speelduur">Speelduur</Trans>
+														<Trans i18nKey="item/views/item___speelduur">
+															Speelduur
+														</Trans>
 													</th>
 													<td>{item.duration}</td>
 												</Column>
@@ -433,15 +468,21 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 											{!!item.series && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___reeks">Reeks</Trans>
+														<Trans i18nKey="item/views/item___reeks">
+															Reeks
+														</Trans>
 													</th>
-													<td>{generateSearchLink('serie', item.series)}</td>
+													<td>
+														{generateSearchLink('serie', item.series)}
+													</td>
 												</Column>
 											)}
 											{!!item.lom_languages && !!item.lom_languages.length && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___taal">Taal</Trans>
+														<Trans i18nKey="item/views/item___taal">
+															Taal
+														</Trans>
 													</th>
 													<td>{item.lom_languages.map(languageCode => LANGUAGES.nl[languageCode]).join(', ')}</td>
 												</Column>
@@ -454,7 +495,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 											{!!item.external_id && !!item.lom_context && (
 												<tr>
 													<th scope="row">
-														<Trans i18nKey="item/views/item___geschikt-voor">Geschikt voor</Trans>
+														<Trans i18nKey="item/views/item___geschikt-voor">
+															Geschikt voor
+														</Trans>
 													</th>
 													<td>{generateSearchLinks(item.external_id, 'educationLevel', item.lom_context)}</td>
 												</tr>
@@ -462,7 +505,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 											{!!item.external_id && !!item.lom_classification && (
 												<tr>
 													<th scope="row">
-														<Trans i18nKey="item/views/item___vakken">Vakken</Trans>
+														<Trans i18nKey="item/views/item___vakken">
+															Vakken
+														</Trans>
 													</th>
 													<td>{generateSearchLinks(item.external_id, 'subject', item.lom_classification)}</td>
 												</tr>
@@ -475,14 +520,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 											{!!item.lom_keywords && !!item.lom_keywords.length && (
 												<tr>
 													<th scope="row">
-														<Trans i18nKey="item/views/item___trefwoorden">Trefwoorden</Trans>
+														<Trans i18nKey="item/views/item___trefwoorden">
+															Trefwoorden
+														</Trans>
 													</th>
 													<td>
 														<TagList
-															tags={item.lom_keywords.map(keyword => ({
-																label: keyword,
-																id: keyword,
-															}))}
+															tags={item.lom_keywords.map(
+																keyword => ({
+																	label: keyword,
+																	id: keyword,
+																})
+															)}
 															swatches={false}
 															onTagClicked={(tagId: string | number) => goToSearchPage('keyword', tagId as string)}
 														/>
@@ -504,7 +553,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
 									<BlockHeading type="h3">
-										<Trans i18nKey="item/views/item___bekijk-ook">Bekijk ook</Trans>
+										<Trans i18nKey="item/views/item___bekijk-ook">
+											Bekijk ook
+										</Trans>
 									</BlockHeading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>

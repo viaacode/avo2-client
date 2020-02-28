@@ -148,7 +148,10 @@ export const DELETE_COLLECTION = gql`
 `;
 
 export const UPDATE_COLLECTION_FRAGMENT = gql`
-	mutation updateCollectionFragmentById($id: Int!, $fragment: app_collection_fragments_set_input!) {
+	mutation updateCollectionFragmentById(
+		$id: Int!
+		$fragment: app_collection_fragments_set_input!
+	) {
 		update_app_collection_fragments(where: { id: { _eq: $id } }, _set: $fragment) {
 			affected_rows
 		}
@@ -238,10 +241,13 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
-// TODO: Move bundle GQL to bundle.gql.ts
-export const GET_BUNDLES = gql`
-	query getBundles($limit: Int!) {
-		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 4 } }, limit: $limit) {
+export const GET_COLLECTIONS_BY_TITLE = gql`
+	query getCollections($title: String!, $limit: Int!) {
+		app_collections(
+			order_by: { title: asc }
+			where: { type_id: { _eq: 3 }, title: { _ilike: $title } }
+			limit: $limit
+		) {
 			id
 			title
 		}
@@ -250,7 +256,9 @@ export const GET_BUNDLES = gql`
 
 export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 	query getCollectionNamesByOwner($owner_profile_id: uuid) {
-		app_collections(where: { type_id: { _eq: 3 }, owner_profile_id: { _eq: $owner_profile_id } }) {
+		app_collections(
+			where: { type_id: { _eq: 3 }, owner_profile_id: { _eq: $owner_profile_id } }
+		) {
 			id
 			title
 		}
@@ -259,7 +267,9 @@ export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 
 export const GET_BUNDLE_TITLES_BY_OWNER = gql`
 	query getCollectionNamesByOwner($owner_profile_id: uuid) {
-		app_collections(where: { type_id: { _eq: 4 }, owner_profile_id: { _eq: $owner_profile_id } }) {
+		app_collections(
+			where: { type_id: { _eq: 4 }, owner_profile_id: { _eq: $owner_profile_id } }
+		) {
 			id
 			title
 		}

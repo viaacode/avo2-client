@@ -19,14 +19,14 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError, navigate } from '../../../shared/helpers';
+import { toastService } from '../../../shared/services';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
-import toastService from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { ContentPickerType, PickerItem } from '../../shared/types';
 
 import { ApolloQueryResult } from 'apollo-boost';
-import { getUserGroups } from '../../../shared/services/user-groups-service';
+import { getAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
@@ -89,9 +89,12 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			} else {
 				// Go back to overview if no menu items are present
 				toastService.danger(
-					t('admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name', {
-						menuName,
-					}),
+					t(
+						'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
+						{
+							menuName,
+						}
+					),
 					false
 				);
 				history.push(MENU_PATH.MENU);
@@ -131,7 +134,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Get labels of the userGroups, so we can show a readable error message
 	useEffect(() => {
-		getUserGroups()
+		getAllUserGroups()
 			.then(userGroups => {
 				setAllUserGroups(userGroups);
 			})
@@ -148,7 +151,11 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	const checkMenuItemContentPagePermissionsMismatch = useCallback(
 		(response: ApolloQueryResult<any>) => {
-			let contentUserGroupIds: number[] = get(response, 'data.app_content[0].user_group_ids', []);
+			let contentUserGroupIds: number[] = get(
+				response,
+				'data.app_content[0].user_group_ids',
+				[]
+			);
 			const navItemUserGroupIds: number[] = menuForm.user_group_ids;
 			const allUserGroupIds: number[] = allUserGroups.map(ug => ug.value as number);
 
@@ -174,8 +181,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					<div>
 						<Spacer margin="bottom-small">
 							<Trans i18nKey="admin/menu/views/menu-edit___het-navigatie-item-zal-zichtbaar-zijn-voor-gebruikers-die-geen-toegang-hebben-tot-de-geselecteerde-pagina">
-								Het navigatie item zal zichtbaar zijn voor gebruikers die geen toegang hebben tot de
-								geselecteerde pagina.
+								Het navigatie item zal zichtbaar zijn voor gebruikers die geen
+								toegang hebben tot de geselecteerde pagina.
 							</Trans>
 						</Spacer>
 						<Spacer margin="bottom-small">
@@ -313,7 +320,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				)
 				.catch(err =>
 					handleResponse(
-						t('admin/menu/views/menu-edit___het-aanmaken-van-het-navigatie-item-is-mislukt'),
+						t(
+							'admin/menu/views/menu-edit___het-aanmaken-van-het-navigatie-item-is-mislukt'
+						),
 						err || null
 					)
 				);
@@ -336,7 +345,9 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				)
 				.catch(err =>
 					handleResponse(
-						t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
+						t(
+							'admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'
+						),
 						err || null
 					)
 				);

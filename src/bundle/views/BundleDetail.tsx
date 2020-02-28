@@ -58,9 +58,9 @@ import {
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import { toastService } from '../../shared/services';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService from '../../shared/services/toast-service';
 import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import './BundleDetail.scss';
@@ -79,7 +79,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedBundles /*, setRelatedBundles */] = useState<Avo.Search.ResultItem[] | null>(null);
+	const [relatedBundles /*, setRelatedBundles */] = useState<Avo.Search.ResultItem[] | null>(
+		null
+	);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewBundles: boolean;
@@ -183,9 +185,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 		checkPermissionsAndGetBundle().catch(err => {
 			console.error(
-				new CustomError('Failed to check permissions or get bundle from the database', err, {
-					bundleId,
-				})
+				new CustomError(
+					'Failed to check permissions or get bundle from the database',
+					err,
+					{
+						bundleId,
+					}
+				)
 			);
 			setLoadingInfo({
 				state: 'error',
@@ -219,7 +225,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService.success(t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd'));
+			toastService.success(
+				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
+			);
 		} catch (err) {
 			console.error(err);
 			toastService.danger(
@@ -260,7 +268,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					);
 					setBundle(duplicateCollection);
 					toastService.success(
-						t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
+						t(
+							'bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
+						)
 					);
 				} catch (err) {
 					console.error('Failed to copy bundle', err, { originalBundle: bundle });
@@ -308,9 +318,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							<Thumbnail
 								category="bundle"
 								src={relatedBundle.thumbnail_path}
-								meta={t('bundle/views/bundle-detail___num-of-collection-fragments-items', {
-									numOfCollectionFragments: 3 /*relatedBundle.numOfCollectionFragments*/,
-								})}
+								meta={t(
+									'bundle/views/bundle-detail___num-of-collection-fragments-items',
+									{
+										numOfCollectionFragments: 3 /*relatedBundle.numOfCollectionFragments*/,
+									}
+								)}
 							/>
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
@@ -350,7 +363,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						title={collection.title}
 					>
 						<MediaCardThumbnail>
-							<Thumbnail category="collection" src={collection.thumbnail_path || undefined} />
+							<Thumbnail
+								category="collection"
+								src={collection.thumbnail_path || undefined}
+							/>
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category="collection">
@@ -391,7 +407,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 		const BUNDLE_DROPDOWN_ITEMS = [
 			...(permissions.canCreateBundles
-				? [createDropdownMenuItem('duplicate', t('bundle/views/bundle-detail___dupliceer'), 'copy')]
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('bundle/views/bundle-detail___dupliceer'),
+							'copy'
+						),
+				  ]
 				: []),
 			...(permissions.canDeleteBundles
 				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
@@ -412,7 +434,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						<Grid>
 							<Column size="3-2">
 								<Spacer margin="right-large">
-									<Thumbnail category="bundle" src={thumbnail_path || undefined} />
+									<Thumbnail
+										category="bundle"
+										src={thumbnail_path || undefined}
+									/>
 								</Spacer>
 							</Column>
 							<Column size="3-10">
@@ -421,8 +446,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										<ToolbarItem>
 											<span className="c-overline u-text-muted">
 												{is_public
-													? t('bundle/views/bundle-detail___openbare-bundel')
-													: t('bundle/views/bundle-detail___prive-bundel')}
+													? t(
+															'bundle/views/bundle-detail___openbare-bundel'
+													  )
+													: t(
+															'bundle/views/bundle-detail___prive-bundel'
+													  )}
 											</span>
 											<Spacer margin="top-small">
 												<h1 className="c-h1 u-m-0">{title}</h1>
@@ -438,16 +467,24 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 													type="secondary"
 												/>
 												<Button
-													label={t('bundle/views/bundle-detail___bewerken')}
+													label={t(
+														'bundle/views/bundle-detail___bewerken'
+													)}
 													onClick={onEditBundle}
 													type="primary"
 												/>
 												<Button
-													title={t('bundle/views/bundle-detail___share-bundel')}
+													title={t(
+														'bundle/views/bundle-detail___share-bundel'
+													)}
 													type="secondary"
 													icon="share-2"
-													ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
-													onClick={() => setIsShareThroughEmailModalOpen(true)}
+													ariaLabel={t(
+														'bundle/views/bundle-detail___share-bundel'
+													)}
+													onClick={() =>
+														setIsShareThroughEmailModalOpen(true)
+													}
 												/>
 												<ControlledDropdown
 													isOpen={isOptionsMenuOpen}
@@ -460,8 +497,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 														<Button
 															type="secondary"
 															icon="more-horizontal"
-															ariaLabel={t('collection/views/collection-detail___meer-opties')}
-															title={t('collection/views/collection-detail___meer-opties')}
+															ariaLabel={t(
+																'collection/views/collection-detail___meer-opties'
+															)}
+															title={t(
+																'collection/views/collection-detail___meer-opties'
+															)}
 														/>
 													</DropdownButton>
 													<DropdownContent>
@@ -478,7 +519,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 								<p className="c-body-1">{description}</p>
 								<Flex spaced="regular" wrap>
 									<FlexItem className="c-avatar-and-text">
-										<Avatar image={organisationLogo} title={organisationName} dark />
+										<Avatar
+											image={organisationLogo}
+											title={organisationName}
+											dark
+										/>
 									</FlexItem>
 									<TagList tags={tags} />
 								</Flex>
@@ -507,7 +552,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				</Container>
 				{isPublic !== null && (
 					<ShareCollectionModal
-						collection={{ ...(bundle as Avo.Collection.Collection), is_public: isPublic }}
+						collection={{
+							...(bundle as Avo.Collection.Collection),
+							is_public: isPublic,
+						}}
 						isOpen={isShareModalOpen}
 						onClose={() => setIsShareModalOpen(false)}
 						setIsPublic={setIsPublic}
@@ -518,8 +566,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					/>
 				)}
 				<DeleteObjectModal
-					title={t('bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen')}
-					body={t('bundle/views/bundle-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden')}
+					title={t(
+						'bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen'
+					)}
+					body={t(
+						'bundle/views/bundle-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={() => onDeleteBundle()}

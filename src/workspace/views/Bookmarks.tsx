@@ -17,12 +17,15 @@ import {
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { DeleteObjectModal, LoadingErrorLoadedComponent } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import {
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../shared/components';
 import { buildLink, CustomError, formatDate, formatTimestamp, fromNow } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service.const';
-import toastService from '../../shared/services/toast-service';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -167,7 +170,9 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				<Link
 					to={buildLink(
 						contentType === 'item' ? APP_PATH.ITEM_DETAIL : APP_PATH.COLLECTION_DETAIL,
-						{ id: contentId }
+						{
+							id: contentId,
+						}
 					)}
 					title={contentTitle}
 				>

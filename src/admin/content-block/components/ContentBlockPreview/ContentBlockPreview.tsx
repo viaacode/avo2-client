@@ -21,14 +21,14 @@ import { Avo } from '@viaa/avo2-types';
 import { navigateToContentType } from '../../../../shared/helpers';
 
 import {
-	CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP,
-	DARK_BACKGROUND_COLOR_OPTIONS,
-} from '../../content-block.const';
-import {
 	ContentBlockComponentState,
 	ContentBlockState,
 	ContentBlockType,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import {
+	CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP,
+	DARK_BACKGROUND_COLOR_OPTIONS,
+} from '../../content-block.const';
 import { MediaPlayer, MediaPlayerTitleTextButton } from '../../helpers/wrappers';
 import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
 
@@ -94,16 +94,10 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		}
 	});
 
-	// TODO: Change BlockCTA to the way Buttons works so that we don't have to add navigate to each CTA element + then we can remove one of the two following conditional statements..
-	if (blockState.blockType === ContentBlockType.Buttons) {
-		stateToSpread.elements.forEach(({ action }: any) => {
-			stateToSpread.navigate = () => {
-				navigateToContentType(action, history);
-			};
-		});
-	}
-
-	if (blockState.blockType === ContentBlockType.CTAs) {
+	if (
+		blockState.blockType === ContentBlockType.CTAs ||
+		blockState.blockType === ContentBlockType.Buttons
+	) {
 		stateToSpread.elements.forEach((innerState: any) => {
 			innerState.navigate = () => {
 				navigateToContentType(innerState.buttonAction, history);

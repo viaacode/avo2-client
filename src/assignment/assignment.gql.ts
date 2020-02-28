@@ -107,7 +107,11 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 		app_assignment_responses(
 			where: {
 				owner_profile_ids: { _has_key: $owner_profile_id }
-				assignment: { is_deleted: { _eq: false }, is_archived: { _eq: $archived }, _or: $filter }
+				assignment: {
+					is_deleted: { _eq: false }
+					is_archived: { _eq: $archived }
+					_or: $filter
+				}
 			}
 			limit: $limit
 			offset: $offset
@@ -155,7 +159,11 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 	query getAssignmentWithResponse($assignmentId: Int!, $studentUuid: String!) {
 		assignments: app_assignments(
-			where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false }, is_archived: { _eq: false } }
+			where: {
+				id: { _eq: $assignmentId }
+				is_deleted: { _eq: false }
+				is_archived: { _eq: false }
+			}
 		) {
 			assignment_assignment_tags {
 				assignment_tag {
