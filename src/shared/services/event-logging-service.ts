@@ -40,7 +40,10 @@ export function trackEvents(
 				'Content-Type': 'application/json',
 			},
 		}).catch((err: any) => {
-			console.error('Failed to log events to database', { eventLogEntries, innerException: err });
+			console.error('Failed to log events to database', {
+				eventLogEntries,
+				innerException: err,
+			});
 		});
 	} catch (err) {
 		console.error('Failed to log event to the server', err, { events });

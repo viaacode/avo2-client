@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import { Button, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
-import toastService from '../../shared/services/toast-service';
+import { toastService } from '../../shared/services';
 
 import { redirectToClientPage, redirectToServerSmartschoolLogin } from '../helpers/redirects';
 
@@ -28,7 +28,9 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				<Spacer margin="top-small">
 					<Button
 						block
-						label={t('authentication/components/login-options___inloggen-met-e-mailadres')}
+						label={t(
+							'authentication/components/login-options___inloggen-met-e-mailadres'
+						)}
 						type="primary"
 						className="c-login-with-archief"
 						onClick={() => {

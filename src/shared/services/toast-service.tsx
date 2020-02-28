@@ -53,11 +53,9 @@ function showToast(
 	toast(<Toast dark={dark} message={alertMessage} type={alertType} />, options);
 }
 
-const toastService: ToastService = {
+export const toastService: ToastService = {
 	danger: (alert, dark, options) => showToast(alert, dark, options, ToastType.DANGER),
 	info: (alert, dark, options) => showToast(alert, dark, options, ToastType.INFO),
 	spinner: (alert, dark, options) => showToast(alert, dark, options, ToastType.SPINNER),
 	success: (alert, dark, options) => showToast(alert, dark, options, ToastType.SUCCESS),
 };
-
-export default toastService;

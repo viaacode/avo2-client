@@ -88,7 +88,10 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 
 	return (
 		<ul className="c-filter-dropdown-list">
-			{renderCheckboxDropdownModal(t('search/components/search-filter-controls___type'), 'type')}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___type'),
+				'type'
+			)}
 			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___onderwijsniveau'),
 				'educationLevel'
@@ -96,14 +99,23 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			{/*{renderCheckboxDropdownModal( TODO: DISABLED FEATURE */}
 			{/*	t('search/components/search-filter-controls___domein'),*/}
 			{/*	'domain',*/}
-			{/*	true*/}
 			{/*)}*/}
-			{renderCheckboxDropdownModal(t('search/components/search-filter-controls___vak'), 'subject')}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___vak'),
+				'subject'
+			)}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___vak'),
+				'subject'
+			)}
 			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___trefwoord'),
 				'keyword'
 			)}
-			{renderCheckboxDropdownModal(t('search/components/search-filter-controls___serie'), 'serie')}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___serie'),
+				'serie'
+			)}
 			{renderDateRangeDropdown(
 				t('search/components/search-filter-controls___uitzenddatum'),
 				'broadcastDate'
