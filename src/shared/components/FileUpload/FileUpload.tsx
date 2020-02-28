@@ -1,3 +1,5 @@
+import { get } from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,6 +22,10 @@ import i18n from '../../translations/i18n';
 import './FileUpload.scss';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
+export function isPhoto(url: string): boolean {
+	return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[url.split('.').pop() || '']);
+}
 
 export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
 	jpeg: 'image/jpeg',
@@ -55,7 +61,10 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	const uploadSelectedFile = async (files: File[] | null) => {
 		try {
 			if (files && files.length) {
-				const notAllowedFiles = files.filter(file => !allowedTypes.includes(file.type));
+				// If allowedTypes array is empty, all filetypes are allowed
+				const notAllowedFiles = allowedTypes.length
+					? files.filter(file => !allowedTypes.includes(file.type))
+					: [];
 				if (notAllowedFiles.length) {
 					const allowedExtensions = allowedTypes
 						.map(type => type.split('/').pop() || type)
@@ -102,12 +111,17 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 
 	const deleteUploadedFile = async (url: string) => {
 		try {
+			if (assetType === 'ZENDESK_ATTACHMENT') {
+				// We don't manage zendesk attachments
+				onChange([]);
+				return;
+			}
 			setIsProcessing(true);
 			if (urls) {
 				const newUrls = [...urls];
 				for (let i = 0; i < newUrls.length; i += 1) {
 					if (newUrls[i] === url) {
-						await deleteFile(newUrls[i]);
+						await deleteFile(url);
 						newUrls.splice(i, 1);
 					}
 				}
@@ -124,10 +138,6 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			);
 		}
 		setIsProcessing(false);
-	};
-
-	const isPhoto = (url: string): boolean => {
-		return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[url.split('.').pop() || '']);
 	};
 
 	const renderDeleteButton = (url: string) => {
@@ -162,14 +172,12 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					</Spacer>
 				);
 			}
+			const queryParams = queryString.parse(url.split('?').pop() || '');
+			const title: string = get(queryParams, 'name', 'bestand') as string;
 			return (
 				<Spacer margin="bottom-small" key={url}>
-					<Blankslate
-						title={url.split('/').pop() || ''}
-						body=""
-						icon="file"
-						className="a-upload-file-preview"
-					>
+					{/* TODO drop body once it becomes optional (components repo update 1.29.0) */}
+					<Blankslate title={title} body="" icon="file" className="a-upload-file-preview">
 						{renderDeleteButton(url)}
 					</Blankslate>
 				</Spacer>

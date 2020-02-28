@@ -601,7 +601,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 										<ButtonToolbar>
 											<Button
 												type="secondary"
-												onClick={() => history.goBack()}
+												onClick={history.goBack}
 												label={t(
 													'assignment/views/assignment-edit___annuleren'
 												)}

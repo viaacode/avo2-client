@@ -5,7 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError, getEnv } from '../helpers';
 
 export const fetchCities = async (): Promise<string[]> => {
-	let url: string | undefined = undefined;
+	let url: string | undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/education-organizations/cities`;
 
@@ -27,7 +27,7 @@ export const fetchEducationOrganizations = async (
 	city: string | null,
 	zipCode: string | null
 ): Promise<Avo.EducationOrganization.Organization[]> => {
-	let url: string | undefined = undefined;
+	let url: string | undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/education-organizations/organizations?${queryString.stringify(
 			{

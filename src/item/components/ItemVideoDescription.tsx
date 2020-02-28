@@ -1,5 +1,5 @@
 import { debounce, get } from 'lodash-es';
-import { parse } from 'querystring';
+import { parse } from 'query-string';
 import React, {
 	createRef,
 	FunctionComponent,

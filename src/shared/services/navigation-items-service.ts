@@ -1,5 +1,5 @@
 import { memoize } from 'lodash-es';
-import * as queryString from 'querystring';
+import queryString from 'query-string';
 
 import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
