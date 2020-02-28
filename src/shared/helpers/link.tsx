@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
@@ -14,7 +15,6 @@ import { ITEM_PATH } from '../../item/item.const';
 import { SEARCH_PATH } from '../../search/search.const';
 import { toastService } from '../services';
 import i18n from '../translations/i18n';
-import { ButtonAction } from '@viaa/avo2-components';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
