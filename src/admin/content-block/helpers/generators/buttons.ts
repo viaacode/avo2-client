@@ -60,7 +60,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 					options: ADMIN_ICON_OPTIONS,
 				},
 			},
-			action: {
+			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
