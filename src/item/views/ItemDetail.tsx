@@ -62,6 +62,7 @@ import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './ItemDetail.scss';
+import ReportItemModal from '../components/modals/ReportItemModal';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -76,6 +77,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 	const [time] = useState<number>(0);
 	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
+	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
@@ -391,17 +393,25 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 												icon="bookmark"
 												active={bookmarkViewPlayCounts.isBookmarked}
 												ariaLabel={t('item/views/item___toggle-bladwijzer')}
+												title={t('item/views/item___toggle-bladwijzer')}
 												onClick={toggleBookmark}
 											/>
 											<Button
 												type="tertiary"
 												icon="share-2"
 												ariaLabel={t('item/views/item___share-item')}
+												title={t('item/views/item___share-item')}
 												onClick={() =>
 													setIsShareThroughEmailModalOpen(true)
 												}
 											/>
-											<Button type="tertiary" icon="flag" ariaLabel={t('item/views/item___rapporteer-item')} />
+											<Button
+												type="tertiary"
+												icon="flag"
+												ariaLabel={t('item/views/item___rapporteer-item')}
+												title={t('item/views/item___rapporteer-item')}
+												onClick={() => setIsReportItemModalOpen(true)}
+											/>
 										</ButtonToolbar>
 									</Flex>
 								</Spacer>
@@ -582,6 +592,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					emailLinkTitle={item.title}
 					isOpen={isShareThroughEmailModalOpen}
 					onClose={() => setIsShareThroughEmailModalOpen(false)}
+				/>
+				<ReportItemModal
+					externalId={match.params.id}
+					isOpen={isReportItemModalOpen}
+					onClose={() => setIsReportItemModalOpen(false)}
+					user={user}
 				/>
 			</>
 		);
