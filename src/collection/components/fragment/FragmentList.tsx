@@ -27,21 +27,23 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 	...rest
 }) => {
 	const renderCollectionFragments = () =>
-		sortBy(collectionFragments, 'position').map((collectionFragment: Avo.Collection.Fragment) => {
-			return (
-				<li
-					className="c-collection-list__item"
-					key={`collection-fragment-${collectionFragment.id}`}
-				>
-					<FragmentDetail
-						collectionFragment={collectionFragment}
-						showDescription={showDescription}
-						linkToItems={linkToItems}
-						{...rest}
-					/>
-				</li>
-			);
-		});
+		sortBy(collectionFragments, 'position').map(
+			(collectionFragment: Avo.Collection.Fragment) => {
+				return (
+					<li
+						className="c-collection-list__item"
+						key={`collection-fragment-${collectionFragment.id}`}
+					>
+						<FragmentDetail
+							collectionFragment={collectionFragment}
+							showDescription={showDescription}
+							linkToItems={linkToItems}
+							{...rest}
+						/>
+					</li>
+				);
+			}
+		);
 
 	return <ul className="c-collection-list">{renderCollectionFragments()}</ul>;
 };

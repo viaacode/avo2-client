@@ -4,8 +4,7 @@ import { initReactI18next } from 'react-i18next';
 
 import translations from './nl.json';
 
-i18n
-	.use(initReactI18next) // passes i18n down to react-i18next
+i18n.use(initReactI18next) // passes i18n down to react-i18next
 	.init({
 		debug: get(window, '_ENV_.ENV') === 'local',
 		resources: {

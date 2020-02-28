@@ -3,7 +3,7 @@ import { Reducer, useEffect, useReducer, useState } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
 
-import toastService from '../../../shared/services/toast-service';
+import { toastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ReactAction } from '../../../shared/types';
 

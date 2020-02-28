@@ -10,7 +10,7 @@ import './IconPicker.scss';
 
 interface IconPickerProps extends Props {}
 
-const IconPicker: FunctionComponent<IconPickerProps> = ({
+export const IconPicker: FunctionComponent<IconPickerProps> = ({
 	className,
 	isClearable = true,
 	isSearchable = true,
@@ -38,5 +38,3 @@ const IconPicker: FunctionComponent<IconPickerProps> = ({
 		/>
 	);
 };
-
-export default IconPicker;

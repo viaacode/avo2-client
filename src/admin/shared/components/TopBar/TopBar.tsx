@@ -15,7 +15,10 @@ interface TopbarProps extends RouteComponentProps {
 	showBackButton?: boolean;
 }
 
-export const TopBar: FunctionComponent<TopbarProps> = ({ showBackButton = false, history }) => {
+export const TopBarComponent: FunctionComponent<TopbarProps> = ({
+	showBackButton = false,
+	history,
+}) => {
 	const [t] = useTranslation();
 
 	return (
@@ -41,4 +44,4 @@ export const TopBar: FunctionComponent<TopbarProps> = ({ showBackButton = false,
 	);
 };
 
-export default withRouter(TopBar);
+export const TopBar = withRouter(TopBarComponent);

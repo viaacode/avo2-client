@@ -19,7 +19,8 @@ export const getAssignmentContent = async (
 		const newAssignmentContent = get(
 			response,
 			`data.${
-				CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].resultPath
+				CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
+					.resultPath
 			}`
 		);
 

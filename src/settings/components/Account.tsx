@@ -45,7 +45,9 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 								<Form type="standard">
 									<Form type="standard">
 										<BlockHeading type="h3">
-											<Trans i18nKey="settings/components/account___account">Account</Trans>
+											<Trans i18nKey="settings/components/account___account">
+												Account
+											</Trans>
 										</BlockHeading>
 										<FormGroup label={t('settings/components/account___email')}>
 											<span>{get(user, 'mail')}</span>
@@ -59,10 +61,13 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 														</Trans>
 													</h4>
 													<Trans i18nKey="settings/components/account___beheerd-in-een-centraal-identiteitsmanagementsysteem">
-														Jouw account wordt beheerd in een centraal identiteitsmanagementsysteem
-														dat je toelaat om met dezelfde gegevens op meerdere VIAA-websites en
-														applicaties in te loggen. <br /> Wijzigingen aan deze gegevens worden
-														dus doorgevoerd in al deze websites en tools.
+														Jouw account wordt beheerd in een centraal
+														identiteitsmanagementsysteem dat je toelaat
+														om met dezelfde gegevens op meerdere
+														VIAA-websites en applicaties in te loggen.{' '}
+														<br /> Wijzigingen aan deze gegevens worden
+														dus doorgevoerd in al deze websites en
+														tools.
 													</Trans>
 													<br />
 													<a href={getSsumAccountEditPage()}>
@@ -91,16 +96,30 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 												</span>
 												<Button
 													type="link"
-													label={t('settings/components/account___unlink')}
-													onClick={() => redirectToServerUnlinkAccount(location, 'SMARTSCHOOL')}
+													label={t(
+														'settings/components/account___unlink'
+													)}
+													onClick={() =>
+														redirectToServerUnlinkAccount(
+															location,
+															'SMARTSCHOOL'
+														)
+													}
 												/>
 											</>
 										) : (
 											<Button
 												className="c-button-smartschool"
 												icon="smartschool"
-												label={t('settings/components/account___link-je-smartschool-account')}
-												onClick={() => redirectToServerLinkAccount(location, 'SMARTSCHOOL')}
+												label={t(
+													'settings/components/account___link-je-smartschool-account'
+												)}
+												onClick={() =>
+													redirectToServerLinkAccount(
+														location,
+														'SMARTSCHOOL'
+													)
+												}
 											/>
 										)}
 									</FormGroup>
