@@ -6,6 +6,7 @@ import {
 	IconName,
 } from '@viaa/avo2-components';
 import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid'; // TODO: import from components library when exported.
+import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageType } from '../../content/content.types';
 
@@ -98,6 +99,7 @@ export enum ContentBlockType {
 	Image = 'IMAGE',
 	ImageGrid = 'IMAGE_GRID',
 	Intro = 'INTRO',
+	MediaGrid = 'MEDIA_GRID',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
 	RichText = 'RICH_TEXT',
@@ -136,6 +138,7 @@ export enum ContentBlockEditor {
 	IconPicker = 'IconPicker',
 	MultiRange = 'MultiRange',
 	Select = 'Select',
+	TextArea = 'TextArea',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
 }
@@ -150,6 +153,7 @@ export type ContentBlockComponentState =
 	| ImageBlockComponentState
 	| ImageGridBlockComponentStateFields
 	| IntroBlockComponentState
+	| MediaGridBlockComponentState
 	| MediaPlayerBlockComponentState
 	| PageOverviewBlockComponentStateFields
 	| RichTextBlockComponentState;
@@ -252,4 +256,20 @@ export interface MediaPlayerTitleTextButtonBlockComponentState {
 	buttonType?: ButtonType;
 	buttonAction?: ButtonAction;
 	align: AlignOption;
+}
+
+export interface MediaGridBlockComponentState {
+	mediaItem?: ButtonAction;
+}
+
+export interface MediaGridBlockState extends DefaultContentBlockState {
+	ctaTitle?: string;
+	ctaContent?: string;
+	ctaButtonLabel?: string;
+	ctaButtonAction?: ButtonAction;
+}
+
+export interface MediaItemResponse {
+	tileData: Partial<Avo.Collection.Collection | Avo.Item.Item>;
+	count: number;
 }
