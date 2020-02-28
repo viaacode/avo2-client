@@ -147,7 +147,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					return;
 				}
 
-				trackEvents(
+				trackLogEvents(
 					{
 						object: match.params.id,
 						object_type: 'avo_item_pid',
@@ -227,6 +227,19 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 				...bookmarkViewPlayCounts,
 				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
 			});
+		}
+	};
+
+	const toggleBookmark = async (item: Avo.Item.Item) => {
+		try {
+			// TODO update query to only get the bookmark for the current user once the database is updated
+			if (item.bookmarks) {
+				await trackEvent('unbookmark', 'item', item.external_id, user);
+			} else {
+				await trackEvent('bookmark', 'item', item.external_id, user);
+			}
+		} catch (err) {
+			console.error('Failed to bookmark/unbookmark the item', err, { item });
 		}
 	};
 

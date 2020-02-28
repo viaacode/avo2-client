@@ -117,7 +117,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 			closeModal(newCollection);
 
 			// Public status changed => log as event
-			trackEvents(
+			trackLogEvents(
 				{
 					object: String(collection.id),
 					object_type: 'collections',

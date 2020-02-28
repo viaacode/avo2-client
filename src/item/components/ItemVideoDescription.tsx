@@ -138,7 +138,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		fetchPlayerTicket(itemMetaData.external_id)
 			.then((data: string) => {
 				setPlayerTicket(data);
-				trackEvents(
+				trackLogEvents(
 					{
 						object: itemMetaData.external_id,
 						object_type: 'avo_item_pid',

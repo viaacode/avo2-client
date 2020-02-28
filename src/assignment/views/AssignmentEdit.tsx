@@ -304,7 +304,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		);
 
 		if (currentAssignment.id) {
-			trackEvents(
+			trackLogEvents(
 				{
 					object: String(currentAssignment.id),
 					object_type: 'avo_assignment' as any, // TODO add this object type to the database

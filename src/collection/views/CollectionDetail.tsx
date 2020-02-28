@@ -144,7 +144,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	useEffect(() => {
-		trackEvents(
+		trackLogEvents(
 			{
 				object: collectionId,
 				object_type: 'collections',
