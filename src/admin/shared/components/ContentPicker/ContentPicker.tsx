@@ -7,7 +7,7 @@ import { ValueType } from 'react-select/src/types';
 import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../shared/helpers';
-import toastService from '../../../../shared/services/toast-service';
+import { toastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
 import { parsePickerItem } from '../../../shared/helpers';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../../shared/types';
@@ -26,7 +26,7 @@ export interface ContentPickerProps {
 	currentSelection?: PickerItem;
 }
 
-const ContentPicker: FunctionComponent<ContentPickerProps> = ({
+export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	selectableTypes,
 	onSelect,
 	errors = [],
@@ -125,9 +125,13 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					onSelect(null);
 					setCurrentValue(null);
 					console.error(
-						new CustomError('Selected content in content picker does not have a value', null, {
-							selectedItem,
-						})
+						new CustomError(
+							'Selected content in content picker does not have a value',
+							null,
+							{
+								selectedItem,
+							}
+						)
 					);
 					toastService.danger(
 						i18n.t(
@@ -156,7 +160,9 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					<ReactSelect
 						{...REACT_SELECT_DEFAULT_OPTIONS}
 						id="content-picker-type"
-						placeholder={t('admin/content/components/content-picker/content-picker___type')}
+						placeholder={t(
+							'admin/content/components/content-picker/content-picker___type'
+						)}
 						options={typeOptions}
 						isSearchable={false}
 						isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
@@ -169,5 +175,3 @@ const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		</FormGroup>
 	);
 };
-
-export default ContentPicker;

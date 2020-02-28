@@ -20,7 +20,8 @@ const getProfile = (obj: Avo.User.Profile | Avo.User.User | null | undefined) =>
 export const getInitialChar = (value: string | undefined | null) => (value ? value[0] : '');
 
 export const getInitials = (profile: Avo.User.Profile | null) =>
-	getInitialChar(get(profile, 'user.first_name')) + getInitialChar(get(profile, 'user.last_name'));
+	getInitialChar(get(profile, 'user.first_name')) +
+	getInitialChar(get(profile, 'user.last_name'));
 
 export const getFullName = (userOrProfile: Avo.User.Profile | Avo.User.User | null | undefined) => {
 	if (!userOrProfile) {

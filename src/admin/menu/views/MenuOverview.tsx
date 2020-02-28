@@ -28,7 +28,9 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 
 		switch (columnId) {
 			case 'placement':
-				return <Link to={buildLink(MENU_PATH.MENU_DETAIL, { menu })}>{startCase(menu)}</Link>;
+				return (
+					<Link to={buildLink(MENU_PATH.MENU_DETAIL, { menu })}>{startCase(menu)}</Link>
+				);
 			case 'actions':
 				return (
 					<ButtonToolbar>
@@ -36,14 +38,18 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 							icon="list"
 							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
 							size="small"
-							title={t('admin/menu/views/menu-overview___bekijk-alle-navigatie-items')}
+							title={t(
+								'admin/menu/views/menu-overview___bekijk-alle-navigatie-items'
+							)}
 							type="tertiary"
 						/>
 						<Button
 							icon="plus"
 							onClick={() => navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu })}
 							size="small"
-							title={t('admin/menu/views/menu-overview___voeg-een-navigatie-item-toe')}
+							title={t(
+								'admin/menu/views/menu-overview___voeg-een-navigatie-item-toe'
+							)}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -57,13 +63,16 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 		if (!data.length) {
 			return (
 				<ErrorView
-					message={t('admin/menu/views/menu-overview___er-zijn-nog-geen-navigaties-aangemaakt')}
+					message={t(
+						'admin/menu/views/menu-overview___er-zijn-nog-geen-navigaties-aangemaakt'
+					)}
 				>
 					<p>
 						<Trans i18nKey="admin/menu/views/menu-overview___beschrijving-hoe-navigatie-items-toe-te-voegen">
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab debitis
-							blanditiis vitae molestiae delectus earum asperiores mollitia, minima laborum expedita
-							ratione quas impedit repudiandae nisi corrupti quis eaque!
+							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid
+							ab debitis blanditiis vitae molestiae delectus earum asperiores
+							mollitia, minima laborum expedita ratione quas impedit repudiandae nisi
+							corrupti quis eaque!
 						</Trans>
 					</p>
 					<Spacer margin="top">

@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react';
 
 import { Button, ButtonGroup, IconName } from '@viaa/avo2-components';
 
-import { AlignOption } from '../../content-block.types';
+import { AlignOption } from '../../../shared/types';
 
 interface AlignSelectProps {
 	onChange: (value: string) => void;

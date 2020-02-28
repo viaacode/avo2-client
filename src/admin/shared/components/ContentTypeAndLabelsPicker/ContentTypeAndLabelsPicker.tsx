@@ -24,13 +24,13 @@ export interface ContentLabel {
 	updated_at: string;
 }
 
-export interface ContentPickerProps {
+export interface ContentTypeAndLabelsProps {
 	value?: ContentTypeAndLabelsValue;
 	onChange: (value: ContentTypeAndLabelsValue) => void;
 	errors: string[];
 }
 
-const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
+export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsProps> = ({
 	value = {
 		selectedContentType: 'PROJECT',
 		selectedLabels: [],
@@ -124,7 +124,10 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 						'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
 					)}
 					options={(labels || []).map(
-						(labelObj): SelectOption<number> => ({ label: labelObj.label, value: labelObj.id })
+						(labelObj): SelectOption<number> => ({
+							label: labelObj.label,
+							value: labelObj.id,
+						})
 					)}
 					value={compact(
 						((value.selectedLabels || []) as LabelObj[]).map(
@@ -145,5 +148,3 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 
 	return <FormGroup error={errors}>{renderSelectPicker()}</FormGroup>;
 };
-
-export default ContentTypeAndLabelsPicker;

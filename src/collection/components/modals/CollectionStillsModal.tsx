@@ -19,8 +19,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { toastService } from '../../../shared/services';
 import { getThumbnailsForCollection } from '../../../shared/services/stills-service';
-import toastService from '../../../shared/services/toast-service';
 import { STILL_DIMENSIONS } from '../../collection.const';
 
 interface CollectionStillsModalProps {
@@ -108,13 +108,17 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 						<ToolbarItem>
 							<ButtonToolbar>
 								<Button
-									label={t('collection/components/modals/collection-stills-modal___annuleren')}
+									label={t(
+										'collection/components/modals/collection-stills-modal___annuleren'
+									)}
 									type="secondary"
 									block
 									onClick={onClose}
 								/>
 								<Button
-									label={t('collection/components/modals/collection-stills-modal___opslaan')}
+									label={t(
+										'collection/components/modals/collection-stills-modal___opslaan'
+									)}
 									type="primary"
 									block
 									onClick={saveCoverImage}

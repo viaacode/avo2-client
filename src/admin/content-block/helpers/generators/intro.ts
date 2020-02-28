@@ -3,13 +3,13 @@ import { isEqual } from 'lodash-es';
 import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	IntroBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
 import {
 	ALIGN_FIELD,
@@ -25,7 +25,7 @@ export const INITIAL_INTRO_BLOCK_COMPONENT_STATE = (): IntroBlockComponentState 
 });
 
 export const INITIAL_INTRO_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Intro, position);
+	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.Intro, position);
 
 export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/intro___intro'),
@@ -44,7 +44,9 @@ export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
 				editorType: ContentBlockEditor.WYSIWYG,
 				editorProps: {
-					btns: WYSIWYG_OPTIONS_FULL.filter(array => !isEqual(array, WYSIWYG_OPTIONS_ALIGN)),
+					btns: WYSIWYG_OPTIONS_FULL.filter(
+						array => !isEqual(array, WYSIWYG_OPTIONS_ALIGN)
+					),
 				},
 			}),
 			align: ALIGN_FIELD(i18n.t('Uitlijning')),

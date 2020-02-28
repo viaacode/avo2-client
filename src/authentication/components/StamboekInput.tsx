@@ -15,7 +15,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
-import { ToastType } from '../../shared/services/toast-service';
+import { ToastType } from '../../shared/services';
 
 import { verifyStamboekNumber } from '../authentication.service';
 import { redirectToClientPage } from '../helpers/redirects';
@@ -59,14 +59,19 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 			message: (
 				<span>
 					<Trans i18nKey="authentication/components/stamboek-input___het-stamboek-nummer-is-niet-geldig-of-nog-niet-geactiveerd">
-						Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog maar recent uw
-						kaart heeft ontvangen kan u via een manuele aanvraag toch al toegang krijgen.
+						Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog
+						maar recent uw kaart heeft ontvangen kan u via een manuele aanvraag toch al
+						toegang krijgen.
 					</Trans>
 					<br />
 					<Spacer margin="top-small">
 						<Button
-							onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
-							label={t('authentication/components/stamboek-input___manuele-aanvraag-indienen')}
+							onClick={() =>
+								redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)
+							}
+							label={t(
+								'authentication/components/stamboek-input___manuele-aanvraag-indienen'
+							)}
 						/>
 					</Spacer>
 				</span>
@@ -88,8 +93,12 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 						Dit stamboek nummer is reeds in gebruik,
 					</Trans>{' '}
 					<Button
-						label={t('authentication/components/stamboek-input___contacteer-de-helpdesk')}
-						onClick={() => redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)}
+						label={t(
+							'authentication/components/stamboek-input___contacteer-de-helpdesk'
+						)}
+						onClick={() =>
+							redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)
+						}
 						type="inline-link"
 					/>
 					.
@@ -162,7 +171,9 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 							</span>
 						</Spacer>
 						<img
-							alt={t('authentication/components/stamboek-input___voorbeeld-leeraren-kaart')}
+							alt={t(
+								'authentication/components/stamboek-input___voorbeeld-leeraren-kaart'
+							)}
 							className="a-stamboek-image"
 							src="/images/leerkrachten-kaart-voorbeeld-nummer.png"
 						/>
