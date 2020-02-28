@@ -19,7 +19,7 @@ interface BlockMediaGridWrapperProps extends RouteComponentProps {
 const BlockMediaGridWrapper: FunctionComponent<BlockMediaGridWrapperProps> = ({
 	ctaTitle,
 	ctaContent,
-	ctaButtonAction,
+	ctaButtonAction = { type: 'COLLECTION', value: '' },
 	ctaButtonLabel,
 	elements = [],
 	history,
@@ -89,7 +89,11 @@ const BlockMediaGridWrapper: FunctionComponent<BlockMediaGridWrapperProps> = ({
 		<BlockMediaList
 			ctaButtonLabel={ctaButtonLabel}
 			ctaContent={ctaContent}
-			ctaNavigate={() => navigateToContentType(ctaButtonAction, history)}
+			ctaNavigate={
+				ctaButtonAction.value
+					? () => navigateToContentType(ctaButtonAction, history)
+					: () => {}
+			}
 			ctaTitle={ctaTitle}
 			elements={gridData}
 		/>

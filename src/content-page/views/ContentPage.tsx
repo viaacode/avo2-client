@@ -21,7 +21,7 @@ interface ContentPageDetailProps extends DefaultSecureRouteProps {
 const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ contentPage, user }) => {
 	const [t] = useTranslation();
 
-	const pageUserGroups: number[] = (contentPage as any).user_group_ids || []; // TODO remove cast to any when typings v2.10.0 is released
+	const pageUserGroups: number[] = contentPage.user_group_ids || [];
 	const userUserGroups: number[] = [
 		...get(user, 'profile.userGroupIds', []),
 		user ? SpecialPermissionGroups.loggedInUsers : SpecialPermissionGroups.loggedOutUsers,
@@ -51,7 +51,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ contentPage, u
 				<ContentBlockPreview
 					key={contentPage.contentBlockssBycontentId[index].id}
 					componentState={contentBlockConfig.components.state}
-					contentWidth={(contentPage as any).content_width} // TODO: remove any with typings update
+					contentWidth={contentPage.content_width}
 					blockState={contentBlockConfig.block.state}
 				/>
 			))}

@@ -3,7 +3,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../../shared/helpers';
+import { CustomError, performQuery } from '../../shared/helpers';
 import { toastService } from '../../shared/services';
 import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
 import i18n from '../../shared/translations/i18n';
@@ -14,60 +14,76 @@ import {
 import { ContentBlockConfig } from '../shared/types';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
-import { GET_CONTENT_BY_ID, GET_CONTENT_PAGES, GET_CONTENT_TYPES } from './content.gql';
+import {
+	GET_CONTENT_BY_ID,
+	GET_CONTENT_PAGES,
+	GET_CONTENT_PAGES_BY_TITLE,
+	GET_CONTENT_TYPES,
+} from './content.gql';
 import { ContentPageType } from './content.types';
 
-export const fetchContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
-	try {
-		const response = await dataService.query({ query: GET_CONTENT_BY_ID, variables: { id } });
+export const getContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
+	const query = {
+		query: GET_CONTENT_PAGES,
+		variables: {
+			limit,
+			order: { title: 'asc' },
+		},
+	};
 
-		return get(
-			response,
-			`data.${CONTENT_RESULT_PATH.GET}[0]`,
-			null
-		) as Avo.Content.Content | null;
-	} catch (err) {
-		console.error(`Failed to fetch menu item with id: ${id}`);
-		toastService.danger(
-			i18n.t(
-				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item'
-			),
-			false
-		);
-
-		return null;
-	}
+	return performQuery(
+		query,
+		`data.${CONTENT_RESULT_PATH.GET}`,
+		'Failed to retrieve content items.',
+		i18n.t('Er ging iets mis tijdens het ophalen van de content items.')
+	);
 };
 
-export const fetchContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
-	try {
-		const response = await dataService.query({
-			query: GET_CONTENT_PAGES,
-			variables: { limit, order: { title: 'asc' } },
-		});
+export const getContentItemsByTitle = async (
+	title: string,
+	limit: number
+): Promise<Avo.Content.Content[] | null> => {
+	const query = {
+		query: GET_CONTENT_PAGES_BY_TITLE,
+		variables: {
+			title,
+			limit,
+			order: { title: 'asc' },
+		},
+	};
 
-		return get(response, `data.${CONTENT_RESULT_PATH.GET}`, null);
-	} catch (err) {
-		console.error('Failed to fetch content items');
-		toastService.danger(
-			i18n.t(
-				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-items'
-			),
-			false
-		);
-
-		return null;
-	}
+	return performQuery(
+		query,
+		`data.${CONTENT_RESULT_PATH.GET}`,
+		'Failed to retrieve content items by title.',
+		i18n.t('Er ging iets mis tijdens het ophalen van de content items.')
+	);
 };
 
-export const fetchContentTypes = async (): Promise<ContentPageType[] | null> => {
+export const getContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
+	const query = {
+		query: GET_CONTENT_BY_ID,
+		variables: {
+			id,
+		},
+	};
+
+	return performQuery(
+		query,
+		`data.${CONTENT_RESULT_PATH.GET}[0]`,
+		`Failed to retrieve content item by id: ${id}.`,
+		i18n.t('Er ging iets mis tijdens het ophalen van het content item.')
+	);
+};
+
+export const getContentTypes = async (): Promise<ContentPageType[] | null> => {
 	try {
 		const response = await dataService.query({ query: GET_CONTENT_TYPES });
 		return get(response, `data.${CONTENT_TYPES_LOOKUP_PATH}`, []).map(
 			(obj: { value: ContentPageType }) => obj.value
 		);
 	} catch (err) {
-		console.error('Failed to fetch content types', err);
+		console.error('Failed to retrieve content types.', err);
 		toastService.danger(
 			i18n.t(
 				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'

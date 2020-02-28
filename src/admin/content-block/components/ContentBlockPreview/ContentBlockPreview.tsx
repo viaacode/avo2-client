@@ -100,16 +100,10 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		}
 	});
 
-	// TODO: Rewrok these blocks to work exactly the same way.
-	if (blockState.blockType === ContentBlockType.Buttons) {
-		stateToSpread.elements.forEach(({ action }: any) => {
-			stateToSpread.navigate = () => {
-				navigateToContentType(action, history);
-			};
-		});
-	}
-
-	if (blockState.blockType === ContentBlockType.CTAs) {
+	if (
+		blockState.blockType === ContentBlockType.CTAs ||
+		blockState.blockType === ContentBlockType.Buttons
+	) {
 		stateToSpread.elements.forEach((innerState: any) => {
 			innerState.navigate = () => {
 				navigateToContentType(innerState.buttonAction, history);

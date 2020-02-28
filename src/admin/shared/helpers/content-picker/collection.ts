@@ -5,22 +5,34 @@ import { CollectionService } from '../../../../collection/collection.service';
 import { ContentPickerType, PickerSelectItem } from '../../types/content-picker';
 import { parsePickerItem } from './parse-picker';
 
-// Fetch content items from GQL
-export const fetchCollections = async (limit: number = 5): Promise<PickerSelectItem[]> => {
-	const collections: Avo.Collection.Collection[] | null = await CollectionService.getCollections(
-		limit
-	);
+// TODO: move getBundles and getBundlesByTitle to a seperate bundle service, not collection service.
+const { getBundles, getBundlesByTitle, getCollections, getCollectionsByTitle } = CollectionService;
+
+// fetch collections by title-wildcard
+export const fetchCollections = async (
+	title: string | null,
+	limit: number = 5
+): Promise<PickerSelectItem[]> => {
+	const collections: Avo.Collection.Collection[] | null = title
+		? await getCollectionsByTitle(`%${title}%`, limit)
+		: await getCollections(limit);
 
 	return parseCollections('COLLECTION', collections || []);
 };
 
-export const fetchBundles = async (limit: number = 5): Promise<PickerSelectItem[]> => {
-	const bundles: Avo.Collection.Collection[] | null = await CollectionService.getBundles(limit);
+// fetch bundles by title-wildcard
+export const fetchBundles = async (
+	title: string | null,
+	limit: number = 5
+): Promise<PickerSelectItem[]> => {
+	const bundles: Avo.Collection.Collection[] | null = title
+		? await getBundlesByTitle(`%${title}%`, limit)
+		: await getBundles(limit);
 
 	return parseCollections('BUNDLE', bundles || []);
 };
 
-// Parse raw content items to react-select options
+// parse raw data to react-select options
 const parseCollections = (
 	type: ContentPickerType,
 	raw: Avo.Collection.Collection[]

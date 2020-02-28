@@ -9,6 +9,19 @@ export const GET_ITEMS = gql`
 	}
 `;
 
+export const GET_ITEMS_BY_TITLE = gql`
+	query getItems($title: String!, $limit: Int!) {
+		app_item_meta(
+			order_by: { title: asc }
+			limit: $limit
+			where: { title: { _ilike: $title } }
+		) {
+			external_id
+			title
+		}
+	}
+`;
+
 export const GET_ITEM_BY_ID = gql`
 	query getItemById($id: bpchar!) {
 		app_item_meta(where: { external_id: { _eq: $id } }) {

@@ -265,10 +265,13 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
-// TODO: Move bundle GQL to bundle.gql.ts
-export const GET_BUNDLES = gql`
-	query getBundles($limit: Int!) {
-		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 4 } }, limit: $limit) {
+export const GET_COLLECTIONS_BY_TITLE = gql`
+	query getCollections($title: String!, $limit: Int!) {
+		app_collections(
+			order_by: { title: asc }
+			where: { type_id: { _eq: 3 }, title: { _ilike: $title } }
+			limit: $limit
+		) {
 			id
 			title
 		}

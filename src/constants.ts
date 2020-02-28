@@ -11,6 +11,7 @@ import { SEARCH_PATH } from './search/search.const';
 import { SETTINGS_PATH } from './settings/settings.const';
 import { ROUTE_PARTS } from './shared/constants';
 import { TEACHERS_PATH } from './teachers/teachers.const';
+import { USER_ITEM_REQUEST_FORM_PATH } from './user-item-request-form/user-item-request-form.consts';
 import { WORKSPACE_PATH } from './workspace/workspace.const';
 
 export const APP_PATH = Object.freeze({
@@ -25,6 +26,7 @@ export const APP_PATH = Object.freeze({
 	...SEARCH_PATH,
 	...WORKSPACE_PATH,
 	...SETTINGS_PATH,
+	...USER_ITEM_REQUEST_FORM_PATH,
 	// TODO: Replace once available
 	NEWS: `/${ROUTE_PARTS.news}`,
 	PROJECTS: `/${ROUTE_PARTS.projects}`,

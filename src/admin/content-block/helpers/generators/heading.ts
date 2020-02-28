@@ -13,7 +13,7 @@ import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } f
 export const INITIAL_HEADING_COMPONENTS_STATE = (): HeadingBlockComponentState => ({
 	children: '',
 	type: 'h2',
-	align: 'left',
+	align: 'center',
 });
 
 export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>

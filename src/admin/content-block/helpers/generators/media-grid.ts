@@ -30,7 +30,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				label: i18n.t('Selecteer uit items en collecties'),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
-					selectableTypes: ['ITEM', 'COLLECTION'],
+					allowedTypes: ['ITEM', 'COLLECTION'],
 				},
 			},
 		},

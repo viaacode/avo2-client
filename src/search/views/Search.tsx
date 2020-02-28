@@ -301,19 +301,14 @@ const Search: FunctionComponent<SearchProps> = ({
 
 	const orderOptions = [
 		{ label: t('search/views/search___meest-relevant'), value: 'relevance_desc' },
-		{ label: t('search/views/search___meest-bekeken'), value: 'views_desc', disabled: true },
+		{ label: t('search/views/search___meest-bekeken'), value: 'views_desc' },
 		{ label: t('search/views/search___uitzenddatum-aflopend'), value: 'broadcastDate_desc' },
 		{ label: t('search/views/search___uitzenddatum-oplopend'), value: 'broadcastDate_asc' },
 		{
 			label: t('search/views/search___laatst-toegevoegd'),
-			value: 'addedDate_desc',
-			disabled: true,
+			value: 'createdAt_desc',
 		},
-		{
-			label: t('search/views/search___laatst-gewijzigd'),
-			value: 'editDate_desc',
-			disabled: true,
-		},
+		{ label: t('search/views/search___laatst-gewijzigd'), value: 'updatedAt_desc' },
 	];
 	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
 		'desc'}`;
