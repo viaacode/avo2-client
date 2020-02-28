@@ -4,7 +4,6 @@ import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/Bl
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
 import {
-	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -13,14 +12,9 @@ import {
 } from '../../../shared/types';
 
 import { ALIGN_OPTIONS, FILL_OPTIONS } from '../../content-block.const';
-import {
-	CONTENT_BLOCK_FIELD_DEFAULTS,
-	FILE_FIELD,
-	FORM_STATE_DEFAULTS,
-	TEXT_FIELD,
-} from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
-export const INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES = (): ImageGridBlockComponentStateFields[] => [
+export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
 	{
 		source: undefined,
 		title: '',
@@ -33,7 +27,7 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
 	position: number
 ): ImageGridBlockComponentStateBlockFields => {
 	return {
-		...FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.ImageGrid, position),
+		...BLOCK_STATE_DEFAULTS(ContentBlockType.ImageGrid, position),
 		elements: [] as GridItem[],
 		imageWidth: 200,
 		imageHeight: 200,
@@ -48,7 +42,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	type: ContentBlockType.ImageGrid,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),
-		state: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES(),
+		state: INITIAL_IMAGE_GRID_COMPONENTS_STATE(),
 		fields: {
 			source: FILE_FIELD(
 				i18n.t(
@@ -78,7 +72,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	block: {
 		state: INITIAL_IMAGE_GRID_BLOCK_STATE(position),
 		fields: {
-			...CONTENT_BLOCK_FIELD_DEFAULTS(),
+			...BLOCK_FIELD_DEFAULTS(),
 			imageWidth: {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/image-grid___afbeelding-breedte'

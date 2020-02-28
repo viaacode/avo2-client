@@ -38,7 +38,13 @@ const DeleteObjectModal: FunctionComponent<DeleteObjectModalProps> = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} title={title} size="small" onClose={onClose} scrollable>
+		<Modal
+			isOpen={isOpen}
+			title={title && sanitize(title)}
+			size="small"
+			onClose={onClose}
+			scrollable
+		>
 			<ModalBody>
 				{!!body && <p dangerouslySetInnerHTML={{ __html: sanitize(body) }} />}
 				<Toolbar spaced>

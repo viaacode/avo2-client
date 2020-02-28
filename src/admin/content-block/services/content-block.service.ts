@@ -3,19 +3,18 @@ import { get, has, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { ToastService } from '../../shared/services';
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import i18n from '../../shared/translations/i18n';
+import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
+import i18n from '../../../shared/translations/i18n';
 
-import { ContentBlockConfig } from '../shared/types';
-import { CONTENT_BLOCKS_RESULT_PATH } from './content-block.const';
+import { ContentBlockConfig } from '../../shared/types';
+import { CONTENT_BLOCKS_RESULT_PATH } from '../content-block.const';
 import {
 	DELETE_CONTENT_BLOCK,
 	GET_CONTENT_BLOCKS_BY_CONTENT_ID,
 	INSERT_CONTENT_BLOCKS,
 	UPDATE_CONTENT_BLOCK,
-} from './content-block.gql';
-import { parseContentBlockConfig, parseContentBlockConfigs } from './helpers';
+} from '../content-block.gql';
+import { parseContentBlockConfig, parseContentBlockConfigs } from '../helpers';
 
 export const fetchContentBlocksByContentId = async (
 	contentId: number
