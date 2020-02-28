@@ -62,6 +62,11 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
 
 	useEffect(() => {
+		// reset token when item changes
+		setPlayerTicket(undefined);
+	}, [itemMetaData.external_id]);
+
+	useEffect(() => {
 		// Set video current time from the query params once the video has loaded its meta data
 		// If this happens sooner, the time will be ignored by the video player
 		const queryParams = parse(location.search);
