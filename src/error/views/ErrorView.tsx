@@ -14,13 +14,12 @@ import {
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
+import { ErrorActionButton } from '@viaa/avo2-types/types/auth';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { CustomError } from '../../shared/helpers';
 import i18n from '../../shared/translations/i18n';
-
-export type ErrorActionButton = 'home' | 'helpdesk'; // TODO use type in typings repo
 
 interface ErrorViewQueryParams {
 	message?: string;

@@ -1,5 +1,6 @@
 import { CustomError, getEnv } from '../helpers';
 
+// TODO use typings version
 export type AssetType =
 	| 'BUNDLE_COVER'
 	| 'COLLECTION_COVER'
