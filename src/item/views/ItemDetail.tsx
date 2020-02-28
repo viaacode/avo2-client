@@ -33,16 +33,9 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionNames, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import {
-	ContentTypeNumber,
-	ContentTypeString,
-	toEnglishContentType,
-} from '../../collection/collection.types';
+import { ContentTypeNumber, ContentTypeString, toEnglishContentType } from '../../collection/collection.types';
 import { LoadingErrorLoadedComponent, ShareThroughEmailModal } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { LANGUAGES } from '../../shared/constants';
@@ -72,13 +65,7 @@ import './ItemDetail.scss';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const ItemDetail: FunctionComponent<ItemDetailProps> = ({
-	history,
-	match,
-	location,
-	user,
-	...rest
-}) => {
+const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, location, user, ...rest }) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [t] = useTranslation();
@@ -115,9 +102,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 						limit,
 						index: 'items',
 					});
-					toastService.danger(
-						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
-					);
+					toastService.danger(t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt'));
 				});
 		};
 
@@ -126,7 +111,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 				const hasPermission: boolean = await PermissionService.hasPermissions(
 					[
 						PermissionNames.VIEW_ITEMS,
-						{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: match.params.id },
+						{
+							name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT,
+							obj: match.params.id,
+						},
 					],
 					user
 				);
@@ -159,9 +147,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					{
 						object: match.params.id,
 						object_type: 'avo_item_pid',
-						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
-							match.params.id
-						} bezocht`,
+						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${match.params.id} bezocht`,
 						action: 'view',
 					},
 					user
@@ -176,11 +162,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					setBookmarkViewPlayCounts(counts);
 				} catch (err) {
 					console.error(
-						new CustomError('Failed to get getItemCounts', err, { uuid: (itemObj as any).uid })
+						new CustomError('Failed to get getItemCounts', err, {
+							uuid: (itemObj as any).uid,
+						})
 					);
-					toastService.danger(
-						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
-					);
+					toastService.danger(t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt'));
 				}
 
 				setItem(itemObj);
@@ -264,12 +250,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							category={englishContentType}
-							onClick={() =>
-								redirectToClientPage(
-									buildLink(ITEM_PATH.ITEM_DETAIL, { id: relatedItem.id }),
-									history
-								)
-							}
+							onClick={() => redirectToClientPage(buildLink(ITEM_PATH.ITEM_DETAIL, { id: relatedItem.id }), history)}
 							orientation="horizontal"
 							title={relatedItem.dc_title}
 						>
@@ -326,16 +307,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 										)}
 										{!!item.issued && (
 											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">
-													Gepubliceerd op {reorderDate(item.issued || null, '/')}
-												</p>
+												<p className="c-body-2 u-text-muted">Gepubliceerd op {reorderDate(item.issued || null, '/')}</p>
 											</MetaDataItem>
 										)}
 										{!!item.series && (
 											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">
-													Uit reeks: {generateSearchLink('serie', item.series)}
-												</p>
+												<p className="c-body-2 u-text-muted">Uit reeks: {generateSearchLink('serie', item.series)}</p>
 											</MetaDataItem>
 										)}
 									</MetaData>
@@ -346,10 +323,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 									<div className="u-mq-switch-main-nav-authentication">
 										<MetaData category={englishContentType}>
 											<MetaDataItem label={String(bookmarkViewPlayCounts.viewCount)} icon="eye" />
-											<MetaDataItem
-												label={String(bookmarkViewPlayCounts.bookmarkCount)}
-												icon="bookmark"
-											/>
+											<MetaDataItem label={String(bookmarkViewPlayCounts.bookmarkCount)} icon="bookmark" />
 										</MetaData>
 									</div>
 								</ToolbarItem>
@@ -384,11 +358,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 														type="tertiary"
 														icon="clipboard"
 														label={t('item/views/item___maak-opdracht')}
-														onClick={() =>
-															history.push(
-																generateAssignmentCreateLink('KIJK', item.external_id, 'ITEM')
-															)
-														}
+														onClick={() => history.push(generateAssignmentCreateLink('KIJK', item.external_id, 'ITEM'))}
 													/>
 												</Flex>
 											</ButtonToolbar>
@@ -399,7 +369,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 												icon="bookmark"
 												active={bookmarkViewPlayCounts.isBookmarked}
 												ariaLabel={t('item/views/item___toggle-bladwijzer')}
-												onClick={() => toggleBookmark()}
+												onClick={toggleBookmark}
 											/>
 											<Button
 												type="tertiary"
@@ -407,11 +377,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 												ariaLabel={t('item/views/item___share-item')}
 												onClick={() => setIsShareThroughEmailModalOpen(true)}
 											/>
-											<Button
-												type="tertiary"
-												icon="flag"
-												ariaLabel={t('item/views/item___rapporteer-item')}
-											/>
+											<Button type="tertiary" icon="flag" ariaLabel={t('item/views/item___rapporteer-item')} />
 										</ButtonToolbar>
 									</Flex>
 								</Spacer>
@@ -431,9 +397,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											{!!item.issued && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___publicatiedatum">
-															Publicatiedatum
-														</Trans>
+														<Trans i18nKey="item/views/item___publicatiedatum">Publicatiedatum</Trans>
 													</th>
 													<td>{reorderDate(item.issued, '/')}</td>
 												</Column>
@@ -479,11 +443,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 													<th scope="row">
 														<Trans i18nKey="item/views/item___taal">Taal</Trans>
 													</th>
-													<td>
-														{item.lom_languages
-															.map(languageCode => LANGUAGES.nl[languageCode])
-															.join(', ')}
-													</td>
+													<td>{item.lom_languages.map(languageCode => LANGUAGES.nl[languageCode]).join(', ')}</td>
 												</Column>
 											)}
 										</Grid>
@@ -496,13 +456,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 													<th scope="row">
 														<Trans i18nKey="item/views/item___geschikt-voor">Geschikt voor</Trans>
 													</th>
-													<td>
-														{generateSearchLinks(
-															item.external_id,
-															'educationLevel',
-															item.lom_context
-														)}
-													</td>
+													<td>{generateSearchLinks(item.external_id, 'educationLevel', item.lom_context)}</td>
 												</tr>
 											)}
 											{!!item.external_id && !!item.lom_classification && (
@@ -510,13 +464,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 													<th scope="row">
 														<Trans i18nKey="item/views/item___vakken">Vakken</Trans>
 													</th>
-													<td>
-														{generateSearchLinks(
-															item.external_id,
-															'subject',
-															item.lom_classification
-														)}
-													</td>
+													<td>{generateSearchLinks(item.external_id, 'subject', item.lom_classification)}</td>
 												</tr>
 											)}
 										</tbody>
@@ -536,9 +484,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 																id: keyword,
 															}))}
 															swatches={false}
-															onTagClicked={(tagId: string | number) =>
-																goToSearchPage('keyword', tagId as string)
-															}
+															onTagClicked={(tagId: string | number) => goToSearchPage('keyword', tagId as string)}
 														/>
 													</td>
 												</tr>

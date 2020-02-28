@@ -37,6 +37,7 @@ import {
 } from '../../../collection/collection.gql';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
+import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
@@ -45,7 +46,6 @@ import { getThumbnailForCollection } from '../../../shared/services/stills-servi
 import toastService from '../../../shared/services/toast-service';
 
 import './AddToCollectionModal.scss';
-import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 
 interface AddToCollectionModalProps extends DefaultSecureRouteProps {
 	externalId: string;
@@ -151,7 +151,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const getFragment = (
 		collection: Partial<Avo.Collection.Collection>
 	): Partial<Avo.Collection.Fragment> => {
-		const hasCut = fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
+		const hasCut =
+			fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
 
 		return {
 			use_custom_fields: false,
@@ -324,7 +325,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const onApply = createNewCollection
 		? addItemToNewCollection
-		: () => addItemToExistingCollection(selectedCollection as Partial<Avo.Collection.Collection>);
+		: () =>
+				addItemToExistingCollection(
+					selectedCollection as Partial<Avo.Collection.Collection>
+				);
 
 	const renderAddToCollectionModal = () => {
 		const initFlowPlayer = () =>
@@ -360,12 +364,19 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 										/>
 										<Container mode="vertical" className="m-time-crop-controls">
 											<TextInput
-												value={formatDurationHoursMinutesSeconds(fragmentStartTime)}
-												onChange={timeString => setFragmentTime(timeString, 'start')}
+												value={formatDurationHoursMinutesSeconds(
+													fragmentStartTime
+												)}
+												onChange={timeString =>
+													setFragmentTime(timeString, 'start')
+												}
 											/>
 											<div className="m-multi-range-wrapper">
 												<MultiRange
-													values={[fragmentStartTime, Math.min(fragmentEndTime, fragmentDuration)]}
+													values={[
+														fragmentStartTime,
+														Math.min(fragmentEndTime, fragmentDuration),
+													]}
 													onChange={onUpdateMultiRangeValues}
 													min={0}
 													max={fragmentDuration}
@@ -373,22 +384,34 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												/>
 											</div>
 											<TextInput
-												value={formatDurationHoursMinutesSeconds(fragmentEndTime)}
-												onChange={timeString => setFragmentTime(timeString, 'end')}
+												value={formatDurationHoursMinutesSeconds(
+													fragmentEndTime
+												)}
+												onChange={timeString =>
+													setFragmentTime(timeString, 'end')
+												}
 											/>
 										</Container>
 									</Column>
 									<Column size="2-5">
-										<FormGroup label={t('item/components/modals/add-to-collection-modal___titel')}>
+										<FormGroup
+											label={t(
+												'item/components/modals/add-to-collection-modal___titel'
+											)}
+										>
 											<span>{itemMetaData.title}</span>
 										</FormGroup>
 										<FormGroup
-											label={t('item/components/modals/add-to-collection-modal___beschrijving')}
+											label={t(
+												'item/components/modals/add-to-collection-modal___beschrijving'
+											)}
 										>
 											<span>{itemMetaData.description}</span>
 										</FormGroup>
 										<FormGroup
-											label={t('item/components/modals/add-to-collection-modal___collectie')}
+											label={t(
+												'item/components/modals/add-to-collection-modal___collectie'
+											)}
 										>
 											<Spacer margin="bottom">
 												<RadioButton
@@ -398,7 +421,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 													checked={!createNewCollection}
 													value="existing"
 													name="collection"
-													onChange={checked => setCreateNewCollection(!checked)}
+													onChange={checked =>
+														setCreateNewCollection(!checked)
+													}
 												/>
 												<div>
 													{collections.length ? (
@@ -413,14 +438,23 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 																	disabled: true,
 																},
 																...collections.map(
-																	(collection: Partial<Avo.Collection.Collection>) => ({
-																		label: collection.title || '',
-																		value: String(collection.id),
+																	(
+																		collection: Partial<
+																			Avo.Collection.Collection
+																		>
+																	) => ({
+																		label:
+																			collection.title || '',
+																		value: String(
+																			collection.id
+																		),
 																	})
 																),
 															]}
 															value={selectedCollectionId}
-															onChange={setSelectedCollectionIdAndGetCollectionInfo}
+															onChange={
+																setSelectedCollectionIdAndGetCollectionInfo
+															}
 															disabled={createNewCollection}
 														/>
 													) : (
@@ -467,14 +501,18 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 								<ButtonToolbar>
 									{isProcessing && <Spinner />}
 									<Button
-										label={t('item/components/modals/add-to-collection-modal___annuleren')}
+										label={t(
+											'item/components/modals/add-to-collection-modal___annuleren'
+										)}
 										type="link"
 										block
 										onClick={onClose}
 										disabled={isProcessing}
 									/>
 									<Button
-										label={t('item/components/modals/add-to-collection-modal___toepassen')}
+										label={t(
+											'item/components/modals/add-to-collection-modal___toepassen'
+										)}
 										type="primary"
 										block
 										title={

@@ -40,10 +40,11 @@ export class BookmarksViewsPlaysService {
 			const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
 
 			const mutation = get(EVENT_QUERIES, [action, contentTypeSimplified, 'query']);
-			const variables = get(EVENT_QUERIES, [action, contentTypeSimplified, 'variables'], () => {})(
-				contentUuid,
-				get(user, 'profile.id')
-			);
+			const variables = get(
+				EVENT_QUERIES,
+				[action, contentTypeSimplified, 'variables'],
+				() => {}
+			)(contentUuid, get(user, 'profile.id'));
 			if (!mutation || !variables) {
 				throw new CustomError('Failed to find query/variables in query lookup table');
 			}
@@ -167,11 +168,13 @@ export class BookmarksViewsPlaysService {
 					{ contentId }
 				);
 			}
-			if (isBookmarked) {
-				await BookmarksViewsPlaysService.action('unbookmark', type, contentId, user, false);
-			} else {
-				await BookmarksViewsPlaysService.action('bookmark', type, contentId, user, false);
-			}
+			await BookmarksViewsPlaysService.action(
+				isBookmarked ? 'unbookmark' : 'bookmark',
+				type,
+				contentId,
+				user,
+				false
+			);
 			return true;
 		} catch (err) {
 			console.error('Failed to bookmark/unbookmark the item', err, { contentId });
@@ -236,7 +239,8 @@ export class BookmarksViewsPlaysService {
 				return {
 					contentId: collectionBookmark.collection_uuid,
 					contentType:
-						collectionBookmark.bookmarkedCollection.type_id === ContentTypeNumber.collection
+						collectionBookmark.bookmarkedCollection.type_id ===
+						ContentTypeNumber.collection
 							? 'collection'
 							: 'bundle',
 					createdAt: normalizeTimestamp(collectionBookmark.created_at)
@@ -244,7 +248,9 @@ export class BookmarksViewsPlaysService {
 						.getTime(),
 					contentTitle: collectionBookmark.bookmarkedCollection.title,
 					contentThumbnailPath: collectionBookmark.bookmarkedCollection.thumbnail_path,
-					contentCreatedAt: normalizeTimestamp(collectionBookmark.bookmarkedCollection.created_at)
+					contentCreatedAt: normalizeTimestamp(
+						collectionBookmark.bookmarkedCollection.created_at
+					)
 						.toDate()
 						.getTime(),
 					contentViews: collectionViews[collectionBookmark.collection_uuid] || 0,
@@ -259,7 +265,10 @@ export class BookmarksViewsPlaysService {
 		type: EventContentTypeSimplified
 	): Promise<{ [uuid: string]: number }> {
 		const response = await dataService.query({
-			query: type === 'item' ? GET_MULTIPLE_ITEM_VIEW_COUNTS : GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
+			query:
+				type === 'item'
+					? GET_MULTIPLE_ITEM_VIEW_COUNTS
+					: GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
 			variables: { uuids: contentIds },
 		});
 		const items = get(response, 'data.items', []);
@@ -300,12 +309,16 @@ export class BookmarksViewsPlaysService {
 				throw new CustomError('Graphql errors', null, { errors: response.errors });
 			}
 		} catch (err) {
-			const error = new CustomError('Failed to initialize view/play count in the database', err, {
-				action,
-				contentType,
-				contentUuid,
-				user,
-			});
+			const error = new CustomError(
+				'Failed to initialize view/play count in the database',
+				err,
+				{
+					action,
+					contentType,
+					contentUuid,
+					user,
+				}
+			);
 			if (silent) {
 				console.error(error);
 			} else {

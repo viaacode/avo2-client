@@ -5,7 +5,6 @@ import { Blankslate, Container, Flex, Pagination, Spacer, Spinner } from '@viaa/
 
 import { SearchResultsProps } from '../search.types';
 import SearchResultItem from './SearchResultItem';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 
 const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	currentPage,
@@ -28,18 +27,28 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 					<>
 						<ul className="c-search-result-list">
 							{data.results.map((result, index) => (
-								<SearchResultItem {...resultProps} key={`search-result-item-${index}`} result={result} />
+								<SearchResultItem
+									{...resultProps}
+									key={`search-result-item-${index}`}
+									result={result}
+								/>
 							))}
 						</ul>
 						<Spacer margin="large">
-							<Pagination pageCount={pageCount} currentPage={currentPage} onPageChange={setPage} />
+							<Pagination
+								pageCount={pageCount}
+								currentPage={currentPage}
+								onPageChange={setPage}
+							/>
 						</Spacer>
 					</>
 				) : (
 					<Blankslate
 						body=""
 						icon="search"
-						title={t('search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters')}
+						title={t(
+							'search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters'
+						)}
 					/>
 				)}
 			</Container>

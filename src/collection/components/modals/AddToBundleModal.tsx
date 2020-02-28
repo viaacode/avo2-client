@@ -268,7 +268,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				},
 			});
 			toastService.danger(
-				t('collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt')
+				t(
+					'collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt'
+				)
 			);
 
 			// Re-enable apply button
@@ -282,7 +284,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	return (
 		<Modal
-			title={t('collection/components/modals/add-to-bundle-modal___voeg-collectie-toe-aan-bundel')}
+			title={t(
+				'collection/components/modals/add-to-bundle-modal___voeg-collectie-toe-aan-bundel'
+			)}
 			size="medium"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -295,7 +299,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 							<FormGroup>
 								<Spacer margin="bottom">
 									<RadioButton
-										label={t('collection/components/modals/add-to-bundle-modal___bestaande-bundel')}
+										label={t(
+											'collection/components/modals/add-to-bundle-modal___bestaande-bundel'
+										)}
 										checked={!createNewBundle}
 										value="existing"
 										name="collection"
@@ -309,10 +315,16 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 													'collection/components/modals/add-to-bundle-modal___kies-bundel'
 												)}
 												options={[
-													...bundles.map((bundle: Partial<Avo.Collection.Collection>) => ({
-														label: bundle.title || '',
-														value: String(bundle.id),
-													})),
+													...bundles.map(
+														(
+															bundle: Partial<
+																Avo.Collection.Collection
+															>
+														) => ({
+															label: bundle.title || '',
+															value: String(bundle.id),
+														})
+													),
 												]}
 												value={selectedBundleId}
 												onChange={setSelectedBundleIdAndGetBundleInfo}
@@ -330,7 +342,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 								</Spacer>
 								<Spacer margin="bottom">
 									<RadioButton
-										label={t('collection/components/modals/add-to-bundle-modal___nieuwe-bundel')}
+										label={t(
+											'collection/components/modals/add-to-bundle-modal___nieuwe-bundel'
+										)}
 										checked={createNewBundle}
 										value="new"
 										name="bundle"
@@ -359,14 +373,18 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 							<ButtonToolbar>
 								{isProcessing && <Spinner />}
 								<Button
-									label={t('item/components/modals/add-to-collection-modal___annuleren')}
+									label={t(
+										'item/components/modals/add-to-collection-modal___annuleren'
+									)}
 									type="link"
 									block
 									onClick={onClose}
 									disabled={isProcessing}
 								/>
 								<Button
-									label={t('item/components/modals/add-to-collection-modal___toepassen')}
+									label={t(
+										'item/components/modals/add-to-collection-modal___toepassen'
+									)}
 									type="primary"
 									block
 									title={
