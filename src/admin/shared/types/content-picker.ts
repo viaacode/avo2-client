@@ -5,7 +5,8 @@ export type ContentPickerType =
 	| 'DROPDOWN'
 	| 'INTERNAL_LINK'
 	| 'EXTERNAL_LINK'
-	| 'BUNDLE';
+	| 'BUNDLE'
+	| 'SEARCH_QUERY';
 
 export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
 
@@ -15,6 +16,7 @@ export interface PickerTypeOption<T = ContentPickerType> {
 	disabled?: boolean;
 	picker: PickerItemControls;
 	fetch?: (keyword: string | null, limit: number) => Promise<PickerSelectItem[]>;
+	placeholder?: string;
 }
 
 export interface PickerSelectItem {
