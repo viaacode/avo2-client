@@ -15,8 +15,8 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { CustomError } from '../../helpers';
+import { toastService } from '../../services';
 import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-service';
-import { toastService } from '../../services/toast-service';
 import i18n from '../../translations/i18n';
 
 import './FileUpload.scss';

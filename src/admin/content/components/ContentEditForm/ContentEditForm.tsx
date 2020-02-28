@@ -11,8 +11,8 @@ import {
 	Grid,
 	Select,
 	SelectOption,
-	TextArea,
 	TextInput,
+	WYSIWYG,
 } from '@viaa/avo2-components';
 
 import { ValueOf } from '../../../../shared/types';
@@ -105,10 +105,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										'admin/content/components/content-edit-form/content-edit-form___omschrijving'
 									)}
 								>
-									<TextArea
+									<WYSIWYG
 										onChange={(value: string) => onChange('description', value)}
-										rows={3}
-										value={formState.description}
+										data={formState.description}
+										id="description"
 									/>
 								</FormGroup>
 							</Column>

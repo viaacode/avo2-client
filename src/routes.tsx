@@ -9,6 +9,7 @@ import { renderDynamicRouteResolverRoutes } from './dynamic-route-resolver/dynam
 import { renderErrorRoutes } from './error/error.routes';
 import { renderHomeRoutes } from './home/home.routes';
 import { renderItemRoutes } from './item/item.routes';
+import { renderKlaarRoutes } from './klaar/klaar.routes';
 import { renderPupilRoutes } from './pupils/pupils.routes';
 import { renderSearchRoutes } from './search/search.routes';
 import { renderSettingsRoutes } from './settings/settings.routes';
@@ -31,6 +32,7 @@ export const renderRoutes = () => (
 		{renderSettingsRoutes()}
 		{renderErrorRoutes()}
 		{renderUserItemRequestFormRoutes()}
+		{renderKlaarRoutes()}
 		{/* This route needs to be the last one, since it handles all remaining routes */}
 		{renderDynamicRouteResolverRoutes()}
 	</Switch>
