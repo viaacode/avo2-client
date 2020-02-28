@@ -62,12 +62,12 @@ import {
 import { dataService, toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import ReportItemModal from '../components/modals/ReportItemModal';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './ItemDetail.scss';
-import ReportItemModal from '../components/modals/ReportItemModal';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { fetchContentBlocksByContentId } from '../content-block.services';
+import { fetchContentBlocksByContentId } from '../services/content-block.service';
 
 type UseContentBlocksByContentIdTuple = [Avo.ContentBlocks.ContentBlocks[], boolean];
 

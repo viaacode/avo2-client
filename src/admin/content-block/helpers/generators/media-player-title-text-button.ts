@@ -4,7 +4,6 @@ import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
 import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import {
-	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -13,14 +12,9 @@ import {
 } from '../../../shared/types';
 import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
-import {
-	ALIGN_FIELD,
-	CONTENT_BLOCK_FIELD_DEFAULTS,
-	FORM_STATE_DEFAULTS,
-	TEXT_FIELD,
-} from './defaults';
+import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE = (): MediaPlayerTitleTextButtonBlockComponentState => ({
+export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE = (): MediaPlayerTitleTextButtonBlockComponentState => ({
 	mediaTitle: '',
 	headingTitle: '',
 	headingType: 'h2',
@@ -33,11 +27,7 @@ export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE = (): 
 export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (
 	position: number
 ): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(
-		BackgroundColorOption.White,
-		ContentBlockType.MediaPlayerTitleTextButton,
-		position
-	);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayerTitleTextButton, position);
 
 export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	position: number = 0
@@ -47,7 +37,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	),
 	type: ContentBlockType.MediaPlayerTitleTextButton,
 	components: {
-		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE(),
 		fields: {
 			mediaTitle: TEXT_FIELD(
 				i18n.t(
@@ -119,6 +109,6 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	},
 	block: {
 		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });
