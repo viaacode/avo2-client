@@ -70,7 +70,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			<ContentBlockPreview
 				key={contentPage.contentBlockssBycontentId[index].id}
 				componentState={contentBlockConfig.components.state}
-				contentWidth={(contentPage as any).content_width} // TODO: remove any with typings update
+				contentWidth={contentPage.content_width}
 				blockState={contentBlockConfig.block.state}
 			/>
 		));

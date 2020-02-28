@@ -1,5 +1,5 @@
 import { debounce, get } from 'lodash-es';
-import { parse } from 'querystring';
+import { parse } from 'query-string';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -60,6 +60,11 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [time, setTime] = useState<number>(0);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
+
+	useEffect(() => {
+		// reset token when item changes
+		setPlayerTicket(undefined);
+	}, [itemMetaData.external_id]);
 
 	useEffect(() => {
 		// Set video current time from the query params once the video has loaded its meta data

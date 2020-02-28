@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
@@ -71,12 +72,11 @@ export const navigate = (
 	history.push(builtLink);
 };
 
-export const navigateToContentType = (action: any, history: History) => {
-	// TODO: Change any to ButtonAction when typings is updated.
+export const navigateToContentType = (action: ButtonAction, history: History) => {
 	if (action) {
 		const { type, value } = action;
 
-		switch (type) {
+		switch (type as Avo.Core.ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
 				history.push(value as string);

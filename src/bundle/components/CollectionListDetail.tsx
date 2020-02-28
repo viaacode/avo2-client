@@ -57,9 +57,7 @@ const CollectionListDetail: FunctionComponent<CollectionDetailProps> = ({
 			<BlockHeading type="h3" className={'u-clickable'} onClick={getTitleClickedHandler}>
 				{collectionFragment.use_custom_fields
 					? collectionFragment.custom_title
-					: ((collectionFragment.item_meta as unknown) as Avo.Collection.Collection)
-							.id}{' '}
-				{/* TODO remove once typings has been updated */}
+					: (collectionFragment.item_meta as Avo.Collection.Collection).id}{' '}
 			</BlockHeading>
 			<BlockHeading type="h4">
 				<Trans i18nKey="item/components/item-video-description___beschrijving">

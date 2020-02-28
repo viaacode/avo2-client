@@ -1,8 +1,11 @@
+import { times } from 'lodash-es';
+
 import { ImageInfo } from '@viaa/avo2-components';
 
+import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
 
-import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import {
 	BackgroundColorOption,
 	ContentBlockConfig,
@@ -11,7 +14,6 @@ import {
 	DefaultContentBlockState,
 } from '../../../shared/types';
 
-import { times } from 'lodash-es';
 import {
 	CONTENT_BLOCK_FIELD_DEFAULTS,
 	FILE_FIELD,
@@ -70,6 +72,9 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___link'),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: DEFAULT_ALLOWED_TYPES,
+				},
 			},
 		},
 	},

@@ -66,6 +66,7 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = Object.freeze
 		showInContentPicker: false,
 	},
 	SEARCH: { route: `/${ROUTE_PARTS.search}`, showInContentPicker: true },
+	USER_ITEM_REQUEST_FORM: { route: '/gebruiker-item-aanvraag', showInContentPicker: true },
 	WORKSPACE: { route: `/${ROUTE_PARTS.workspace}`, showInContentPicker: true },
 	WORKSPACE_TAB: {
 		route: `/${ROUTE_PARTS.workspace}/:tabId`,
