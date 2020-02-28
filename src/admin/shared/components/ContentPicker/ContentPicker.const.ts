@@ -48,7 +48,24 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 		label: i18n.t('admin/shared/components/content-picker/content-picker___externe-url'),
 		disabled: false,
 		picker: 'TEXT_INPUT',
+		placeholder: 'https://',
 	},
+	{
+		value: 'SEARCH_QUERY',
+		label: i18n.t('Zoekfilters'),
+		disabled: false,
+		picker: 'TEXT_INPUT',
+		placeholder: i18n.t('Plak hier uw zoekpagina-URL'),
+	},
+];
+
+export const DEFAULT_ALLOWED_TYPES = [
+	'CONTENT_PAGE',
+	'ITEM',
+	'COLLECTION',
+	'BUNDLE',
+	'INTERNAL_LINK',
+	'EXTERNAL_LINK',
 ];
 
 export const REACT_SELECT_DEFAULT_OPTIONS = {

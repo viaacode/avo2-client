@@ -1,6 +1,8 @@
 import i18n from '../../../../shared/translations/i18n';
+
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
+import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import {
 	BackgroundColorOption,
 	ContentBlockConfig,
@@ -108,6 +110,9 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 					'admin/content-block/helpers/generators/media-player-title-text-button___knop-actie'
 				),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: DEFAULT_ALLOWED_TYPES,
+				},
 			},
 			align: ALIGN_FIELD(),
 		},
