@@ -1,4 +1,5 @@
 import { Tickets } from 'node-zendesk';
+
 import { getEnv } from '../helpers';
 
 export class ZendeskService {

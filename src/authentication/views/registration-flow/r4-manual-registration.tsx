@@ -20,8 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
-import { toastService } from '../../../shared/services';
-import { ZendeskService } from '../../../shared/services/zendesk-service';
+import { toastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';

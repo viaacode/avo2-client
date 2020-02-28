@@ -411,11 +411,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 												icon="bookmark"
 												active={false}
 												ariaLabel={t('item/views/item___toggle-bladwijzer')}
+												title={t('item/views/item___toggle-bladwijzer')}
 											/>
 											<Button
 												type="tertiary"
 												icon="share-2"
 												ariaLabel={t('item/views/item___share-item')}
+												title={t('item/views/item___share-item')}
 												onClick={() =>
 													setIsShareThroughEmailModalOpen(true)
 												}
@@ -424,6 +426,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 												type="tertiary"
 												icon="flag"
 												ariaLabel={t('item/views/item___rapporteer-item')}
+												title={t('item/views/item___rapporteer-item')}
 												onClick={() => setIsReportItemModalOpen(true)}
 											/>
 										</ButtonToolbar>

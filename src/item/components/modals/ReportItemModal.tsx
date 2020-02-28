@@ -1,4 +1,5 @@
 import { get } from 'lodash-es';
+import { Tickets } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,10 +21,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { toastService } from '../../../shared/services';
-import { ZendeskService } from '../../../shared/services/zendesk-service';
+import { toastService, ZendeskService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
-import { Tickets } from 'node-zendesk';
 
 interface ReportItemModalProps {
 	externalId: string;
@@ -48,7 +47,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 
 	const [reason, setReason] = useState<keyof typeof RADIO_BUTTON_LABELS | null>(null);
 	const [extraDetails, setExtraDetails] = useState<string>('');
-	const [isProcessing, setISProcessing] = useState<boolean>(false);
+	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
 	const reportItem = async () => {
 		let ticket: Tickets.CreateModel | undefined;
@@ -56,7 +55,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 			if (!reason) {
 				return;
 			}
-			setISProcessing(true);
+			setIsProcessing(true);
 			const body = {
 				extraDetails,
 				firstName: get(user, 'first_name'),
@@ -101,7 +100,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 				)
 			);
 		}
-		setISProcessing(false);
+		setIsProcessing(false);
 	};
 
 	const renderReportItemModal = () => {
