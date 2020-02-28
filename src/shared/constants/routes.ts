@@ -39,4 +39,5 @@ export const ROUTE_PARTS = Object.freeze({
 	email: 'email',
 	notifications: 'notificaties',
 	error: 'error',
+	klaar: 'klaar',
 });

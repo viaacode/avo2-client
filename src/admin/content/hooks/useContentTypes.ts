@@ -2,7 +2,7 @@ import { compact } from 'lodash-es';
 import { useEffect, useState } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
-import { fetchContentTypes } from '../content.service';
+import { getContentTypes } from '../content.service';
 import { ContentPageType } from '../content.types';
 
 type UseContentTypesTuple = [SelectOption<ContentPageType>[], boolean];
@@ -16,7 +16,7 @@ export const useContentTypes = (): UseContentTypesTuple => {
 	useEffect(() => {
 		setIsLoading(true);
 
-		fetchContentTypes()
+		getContentTypes()
 			.then((types: ContentPageType[] | null) => {
 				if (types) {
 					setContentTypeOptions(
