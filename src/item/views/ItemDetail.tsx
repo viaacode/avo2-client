@@ -54,9 +54,9 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
+import { toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
-import toastService from '../../shared/services/toast-service';
 
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { dataService } from '../../shared/services/data-service';
@@ -120,14 +120,19 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 				const hasPermission: boolean = await PermissionService.hasPermissions(
 					[
 						PermissionNames.VIEW_ITEMS,
-						{ name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT, obj: match.params.id },
+						{
+							name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT,
+							obj: match.params.id,
+						},
 					],
 					user
 				);
 				if (!hasPermission) {
 					setLoadingInfo({
 						state: 'error',
-						message: t('item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'),
+						message: t(
+							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
+						),
 						icon: 'lock',
 					});
 					return;
@@ -237,20 +242,27 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 		if (relatedItems && relatedItems.length) {
 			return relatedItems.map(relatedItem => {
 				const englishContentType: EnglishContentType =
-					toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
+					toEnglishContentType(relatedItem.administrative_type) ||
+					ContentTypeString.video;
 
 				return (
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							category={englishContentType}
 							onClick={() =>
-								redirectToClientPage(buildLink(ITEM_PATH.ITEM, { id: relatedItem.id }), history)
+								redirectToClientPage(
+									buildLink(ITEM_PATH.ITEM, { id: relatedItem.id }),
+									history
+								)
 							}
 							orientation="horizontal"
 							title={relatedItem.dc_title}
 						>
 							<MediaCardThumbnail>
-								<Thumbnail category={englishContentType} src={relatedItem.thumbnail_path} />
+								<Thumbnail
+									category={englishContentType}
+									src={relatedItem.thumbnail_path}
+								/>
 							</MediaCardThumbnail>
 							<MediaCardMetaData>
 								<MetaData category={englishContentType}>
@@ -274,7 +286,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 
 		return (
 			<>
-				<Container className="c-item-view__header" mode="vertical" size="small" background="alt">
+				<Container
+					className="c-item-view__header"
+					mode="vertical"
+					size="small"
+					background="alt"
+				>
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarLeft>
@@ -283,7 +300,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 										<div className="c-content-type c-content-type--video">
 											<Icon
 												name={
-													(get(item, 'type.id') === ContentTypeNumber.audio
+													(get(item, 'type.id') ===
+													ContentTypeNumber.audio
 														? 'headphone'
 														: get(item, 'type.label')) as IconName
 												}
@@ -292,25 +310,33 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 										</div>
 									</Spacer>
 									<h1 className="c-h2 u-m-0">{item.title}</h1>
-									<MetaData category={toEnglishContentType(get(item, 'type.label'))} spaced>
+									<MetaData
+										category={toEnglishContentType(get(item, 'type.label'))}
+										spaced
+									>
 										{!!get(item, 'organisation.name') && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													{generateSearchLink('provider', item.organisation.name)}
+													{generateSearchLink(
+														'provider',
+														item.organisation.name
+													)}
 												</p>
 											</MetaDataItem>
 										)}
 										{!!item.issued && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													Gepubliceerd op {reorderDate(item.issued || null, '/')}
+													Gepubliceerd op{' '}
+													{reorderDate(item.issued || null, '/')}
 												</p>
 											</MetaDataItem>
 										)}
 										{!!item.series && (
 											<MetaDataItem>
 												<p className="c-body-2 u-text-muted">
-													Uit reeks: {generateSearchLink('serie', item.series)}
+													Uit reeks:{' '}
+													{generateSearchLink('serie', item.series)}
 												</p>
 											</MetaDataItem>
 										)}
@@ -324,7 +350,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											{/* TODO link meta data to actual data */}
 											<MetaDataItem label="0" icon="eye" />
 											<MetaDataItem label="0" icon="bookmark" />
-											{get(item, 'type.id') === ContentTypeNumber.collection && (
+											{get(item, 'type.id') ===
+												ContentTypeNumber.collection && (
 												<MetaDataItem label="0" icon="collection" />
 											)}
 										</MetaData>
@@ -354,8 +381,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 													<Button
 														type="tertiary"
 														icon="add"
-														label={t('item/views/item___voeg-fragment-toe-aan-collectie')}
-														onClick={() => setIsOpenAddToCollectionModal(true)}
+														label={t(
+															'item/views/item___voeg-fragment-toe-aan-collectie'
+														)}
+														onClick={() =>
+															setIsOpenAddToCollectionModal(true)
+														}
 													/>
 													<Button
 														type="tertiary"
@@ -363,7 +394,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 														label={t('item/views/item___maak-opdracht')}
 														onClick={() =>
 															history.push(
-																generateAssignmentCreateLink('KIJK', item.external_id, 'ITEM')
+																generateAssignmentCreateLink(
+																	'KIJK',
+																	item.external_id,
+																	'ITEM'
+																)
 															)
 														}
 													/>
@@ -381,7 +416,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 												type="tertiary"
 												icon="share-2"
 												ariaLabel={t('item/views/item___share-item')}
-												onClick={() => setIsShareThroughEmailModalOpen(true)}
+												onClick={() =>
+													setIsShareThroughEmailModalOpen(true)
+												}
 											/>
 											<Button
 												type="tertiary"
@@ -418,7 +455,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											{!!item.published_at && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___toegevoegd-op">Toegevoegd op</Trans>
+														<Trans i18nKey="item/views/item___toegevoegd-op">
+															Toegevoegd op
+														</Trans>
 													</th>
 													<td>{reorderDate(item.published_at, '/')}</td>
 												</Column>
@@ -428,15 +467,24 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											{!!get(item, 'organisation.name') && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___aanbieder">Aanbieder</Trans>
+														<Trans i18nKey="item/views/item___aanbieder">
+															Aanbieder
+														</Trans>
 													</th>
-													<td>{generateSearchLink('provider', item.organisation.name)}</td>
+													<td>
+														{generateSearchLink(
+															'provider',
+															item.organisation.name
+														)}
+													</td>
 												</Column>
 											)}
 											{!!item.duration && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___speelduur">Speelduur</Trans>
+														<Trans i18nKey="item/views/item___speelduur">
+															Speelduur
+														</Trans>
 													</th>
 													<td>{item.duration}</td>
 												</Column>
@@ -446,19 +494,28 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											{!!item.series && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___reeks">Reeks</Trans>
+														<Trans i18nKey="item/views/item___reeks">
+															Reeks
+														</Trans>
 													</th>
-													<td>{generateSearchLink('serie', item.series)}</td>
+													<td>
+														{generateSearchLink('serie', item.series)}
+													</td>
 												</Column>
 											)}
 											{!!item.lom_languages && !!item.lom_languages.length && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___taal">Taal</Trans>
+														<Trans i18nKey="item/views/item___taal">
+															Taal
+														</Trans>
 													</th>
 													<td>
 														{item.lom_languages
-															.map(languageCode => LANGUAGES.nl[languageCode])
+															.map(
+																languageCode =>
+																	LANGUAGES.nl[languageCode]
+															)
 															.join(', ')}
 													</td>
 												</Column>
@@ -471,7 +528,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											{!!item.external_id && !!item.lom_context && (
 												<tr>
 													<th scope="row">
-														<Trans i18nKey="item/views/item___geschikt-voor">Geschikt voor</Trans>
+														<Trans i18nKey="item/views/item___geschikt-voor">
+															Geschikt voor
+														</Trans>
 													</th>
 													<td>
 														{generateSearchLinks(
@@ -485,7 +544,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											{!!item.external_id && !!item.lom_classification && (
 												<tr>
 													<th scope="row">
-														<Trans i18nKey="item/views/item___vakken">Vakken</Trans>
+														<Trans i18nKey="item/views/item___vakken">
+															Vakken
+														</Trans>
 													</th>
 													<td>
 														{generateSearchLinks(
@@ -504,17 +565,26 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											{!!item.lom_keywords && !!item.lom_keywords.length && (
 												<tr>
 													<th scope="row">
-														<Trans i18nKey="item/views/item___trefwoorden">Trefwoorden</Trans>
+														<Trans i18nKey="item/views/item___trefwoorden">
+															Trefwoorden
+														</Trans>
 													</th>
 													<td>
 														<TagList
-															tags={item.lom_keywords.map(keyword => ({
-																label: keyword,
-																id: keyword,
-															}))}
+															tags={item.lom_keywords.map(
+																keyword => ({
+																	label: keyword,
+																	id: keyword,
+																})
+															)}
 															swatches={false}
-															onTagClicked={(tagId: string | number) =>
-																goToSearchPage('keyword', tagId as string)
+															onTagClicked={(
+																tagId: string | number
+															) =>
+																goToSearchPage(
+																	'keyword',
+																	tagId as string
+																)
 															}
 														/>
 													</td>
@@ -535,7 +605,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
 									<BlockHeading type="h3">
-										<Trans i18nKey="item/views/item___bekijk-ook">Bekijk ook</Trans>
+										<Trans i18nKey="item/views/item___bekijk-ook">
+											Bekijk ook
+										</Trans>
 									</BlockHeading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>

@@ -69,7 +69,9 @@ describe('<Navigation />', () => {
 			</Router>
 		);
 
-		const primaryMenuDesktop = navigationComponent.find('.u-mq-switch-main-nav-has-space .c-nav');
+		const primaryMenuDesktop = navigationComponent.find(
+			'.u-mq-switch-main-nav-has-space .c-nav'
+		);
 
 		checkLinks(primaryMenuDesktop, false);
 
@@ -87,7 +89,9 @@ describe('<Navigation />', () => {
 			</Router>
 		);
 
-		const primaryMenuDesktop = navigationComponent.find('.u-mq-switch-main-nav-has-space .c-nav');
+		const primaryMenuDesktop = navigationComponent.find(
+			'.u-mq-switch-main-nav-has-space .c-nav'
+		);
 
 		checkLinks(primaryMenuDesktop, true);
 

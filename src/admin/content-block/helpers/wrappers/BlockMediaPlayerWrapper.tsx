@@ -4,8 +4,8 @@ import React, { FC, useState } from 'react';
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
 
 import { getEnv } from '../../../../shared/helpers';
+import { toastService } from '../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../shared/services/player-ticket-service';
-import toastService from '../../../../shared/services/toast-service';
 import i18n from '../../../../shared/translations/i18n';
 
 interface MediaPlayerProps {

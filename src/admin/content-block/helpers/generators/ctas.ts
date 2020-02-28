@@ -1,15 +1,15 @@
 import i18n from '../../../../shared/translations/i18n';
 
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
-import { BUTTON_TYPE_OPTIONS, HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
+	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	CTAsBlockComponentState,
 	DefaultContentBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
 import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
@@ -26,7 +26,7 @@ export const INITIAL_CTAS_BLOCK_COMPONENT_STATES = (): CTAsBlockComponentState[]
 ];
 
 export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.CTAs, position);
+	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.CTAs, position);
 
 export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t("CTA's"),
@@ -43,7 +43,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___titel-stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			heading: TEXT_FIELD(
