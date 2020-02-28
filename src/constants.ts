@@ -4,7 +4,6 @@ import { ROUTE_PARTS } from './shared/constants';
 
 interface RouteInfo {
 	route: string;
-	regexp?: string; // If not defined use literal route string
 	showInContentPicker: boolean;
 }
 
