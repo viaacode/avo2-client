@@ -81,7 +81,9 @@ export interface QueryDefinition {
 }
 
 export const EVENT_QUERIES: {
-	[action in EventActionExtended]: { [contentType in EventContentTypeSimplified]: QueryDefinition };
+	[action in EventActionExtended]: {
+		[contentType in EventContentTypeSimplified]: QueryDefinition;
+	};
 } = {
 	bookmark: {
 		item: {

@@ -26,7 +26,9 @@ export const fetchCollectionOrItem = async ({
 	} catch (err) {
 		console.error(err);
 		ToastService.danger(
-			i18n.t('Er ging iets mis tijdens het ophalen van de tegel data'),
+			i18n.t(
+				'admin/content-block/services/block-data___er-ging-iets-mis-tijdens-het-ophalen-van-de-tegel-data'
+			),
 			false
 		);
 		return null;

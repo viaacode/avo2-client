@@ -194,7 +194,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 						})
 					);
 					ToastService.danger(
-						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
+						t(
+							'item/views/item-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+						)
 					);
 				}
 

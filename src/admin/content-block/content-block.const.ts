@@ -119,7 +119,7 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		value: ContentBlockType.Accordions,
 	},
 	{
-		label: i18n.t('Media tegels'),
+		label: i18n.t('admin/content-block/content-block___media-tegels'),
 		value: ContentBlockType.MediaGrid,
 	},
 	{
@@ -220,31 +220,31 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 // Options
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<BackgroundColorOption>[] = [
 	{
-		label: i18n.t('Wit'),
+		label: i18n.t('admin/content-block/content-block___wit'),
 		value: BackgroundColorOption.White,
 	},
 	{
-		label: i18n.t('Grijs'),
+		label: i18n.t('admin/content-block/content-block___grijs'),
 		value: BackgroundColorOption.Gray50,
 	},
 	{
-		label: i18n.t('Nachtblauw'),
+		label: i18n.t('admin/content-block/content-block___nachtblauw'),
 		value: BackgroundColorOption.NightBlue,
 	},
 	{
-		label: i18n.t('Zachtblauw'),
+		label: i18n.t('admin/content-block/content-block___zachtblauw'),
 		value: BackgroundColorOption.SoftBlue,
 	},
 	{
-		label: i18n.t('Appelblauwzeegroen'),
+		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
 		value: BackgroundColorOption.Teal,
 	},
 	{
-		label: i18n.t('Appelblauwzeegroen helder'),
+		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
 		value: BackgroundColorOption.TealBright,
 	},
 	{
-		label: i18n.t('Oceaangroen'),
+		label: i18n.t('admin/content-block/content-block___oceaangroen'),
 		value: BackgroundColorOption.OceanGreen,
 	},
 ];

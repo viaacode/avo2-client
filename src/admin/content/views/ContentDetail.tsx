@@ -238,7 +238,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 									</tr>
 									<tr>
 										<th>
-											<Trans>Toegankelijk voor:</Trans>
+											<Trans i18nKey="admin/content/views/content-detail___toegankelijk-voor">
+												Toegankelijk voor:
+											</Trans>
 										</th>
 										<td>
 											<TagList

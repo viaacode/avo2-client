@@ -80,8 +80,12 @@ export class BookmarksViewsPlaysService {
 					});
 					ToastService.danger(
 						action === 'bookmark'
-							? i18n.t('Het aanmaken van de bladwijzer is mislukt')
-							: i18n.t('Het verwijderen van de bladwijzer is mislukt')
+							? i18n.t(
+									'shared/services/bookmarks-views-plays-service___het-aanmaken-van-de-bladwijzer-is-mislukt'
+							  )
+							: i18n.t(
+									'shared/services/bookmarks-views-plays-service___het-verwijderen-van-de-bladwijzer-is-mislukt'
+							  )
 					);
 				}
 			}
@@ -180,8 +184,12 @@ export class BookmarksViewsPlaysService {
 			console.error('Failed to bookmark/unbookmark the item', err, { contentId });
 			ToastService.danger(
 				isBookmarked
-					? i18n.t('Het aanmaken van de bladwijzer is mislukt')
-					: i18n.t('Het verwijderen van de bladwijzer is mislukt')
+					? i18n.t(
+							'shared/services/bookmarks-views-plays-service___het-aanmaken-van-de-bladwijzer-is-mislukt'
+					  )
+					: i18n.t(
+							'shared/services/bookmarks-views-plays-service___het-verwijderen-van-de-bladwijzer-is-mislukt'
+					  )
 			);
 			return false;
 		}

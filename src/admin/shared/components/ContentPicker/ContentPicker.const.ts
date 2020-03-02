@@ -52,10 +52,12 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 	},
 	{
 		value: 'SEARCH_QUERY',
-		label: i18n.t('Zoekfilters'),
+		label: i18n.t('admin/shared/components/content-picker/content-picker___zoekfilters'),
 		disabled: false,
 		picker: 'TEXT_INPUT',
-		placeholder: i18n.t('Plak hier uw zoekpagina-URL'),
+		placeholder: i18n.t(
+			'admin/shared/components/content-picker/content-picker___plak-hier-uw-zoekpagina-url'
+		),
 	},
 ];
 

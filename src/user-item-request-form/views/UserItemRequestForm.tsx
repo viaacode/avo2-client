@@ -34,10 +34,16 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	const [hasBeenSent, setHasBeenSent] = useState<boolean>(false);
 
 	const getValidationErrors = (): string[] => {
-		const requiredError = t('is verplicht');
+		const requiredError = t(
+			'user-item-request-form/views/user-item-request-form___is-verplicht'
+		);
 		const errors = [];
 		if (!description) {
-			errors.push(`${t('Omschrijving')} ${requiredError}`);
+			errors.push(
+				`${t(
+					'user-item-request-form/views/user-item-request-form___omschrijving'
+				)} ${requiredError}`
+			);
 		}
 		return errors;
 	};
@@ -46,7 +52,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		const filename = get(
 			queryString.parse((attachmentUrl || '').split('?').pop() || ''),
 			'name',
-			t('bestand')
+			t('user-item-request-form/views/user-item-request-form___bestand')
 		);
 		if (wantsToUploadAttachment && attachmentUrl) {
 			if (isPhoto(attachmentUrl)) {
@@ -54,7 +60,9 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 			}
 			return `<a href="${attachmentUrl}">${filename}</a>`;
 		}
-		return t('Er werd geen bijlage toegevoegd');
+		return t(
+			'user-item-request-form/views/user-item-request-form___er-werd-geen-bijlage-toegevoegd'
+		);
 	};
 
 	const onSend = async () => {
@@ -84,8 +92,10 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 					url: window.location.href,
 					body: JSON.stringify(body),
 					html_body: `<dl>
-  <dt><Trans>Bericht</Trans></dt><dd>${body.description}</dd>
-  <dt><Trans>Bijlage</Trans></dt><dd>${renderAttachment()}</dd>
+  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___bericht">Bericht</Trans></dt><dd>${
+		body.description
+  }</dd>
+  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___bijlage">Bijlage</Trans></dt><dd>${renderAttachment()}</dd>
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___voornaam">Voornaam</Trans></dt><dd>${
 		body.firstName
   }</dd>
@@ -98,12 +108,18 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${
 		body.organization
   }</dd>
-  <dt><Trans>Vakken</Trans></dt><dd>${body.subjects}</dd>
-  <dt><Trans>Onderwijsniveaus</Trans></dt><dd>${body.educationLevels}</dd>
+  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___vakken">Vakken</Trans></dt><dd>${
+		body.subjects
+  }</dd>
+  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___onderwijsniveaus">Onderwijsniveaus</Trans></dt><dd>${
+		body.educationLevels
+  }</dd>
 </dl>`,
 					public: false,
 				},
-				subject: t('Gebruikersaanvraag item'),
+				subject: t(
+					'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-item'
+				),
 			};
 			await ZendeskService.createTicket(ticket);
 			ToastService.success(
@@ -114,7 +130,11 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 			setHasBeenSent(true);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
-			ToastService.danger(t('Het versturen van je aanvraag is mislukt'));
+			ToastService.danger(
+				t(
+					'user-item-request-form/views/user-item-request-form___het-versturen-van-je-aanvraag-is-mislukt'
+				)
+			);
 		}
 		setIsLoading(false);
 	};
@@ -128,10 +148,12 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 					</Trans>
 				</Button>
 				<BlockHeading type="h2">
-					<Trans>Niet gevonden wat je zocht? Vraag het aan!</Trans>
+					<Trans i18nKey="user-item-request-form/views/user-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan">
+						Niet gevonden wat je zocht? Vraag het aan!
+					</Trans>
 				</BlockHeading>
 				<p>
-					<Trans>
+					<Trans i18nKey="user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in">
 						Vul onderstaand formulier in. Wij gaan na of de fragment(en) in aanmerking
 						komen voor publicatie op ons platform. We mogen immers niet zomaar alles
 						publiceren omdat we gebonden zijn aan enkele strikte richtlijnen. Bekijk
@@ -143,7 +165,12 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				</p>
 
 				<Container mode="vertical">
-					<FormGroup label={t('Omschrijf je aanvraag')} labelFor="description">
+					<FormGroup
+						label={t(
+							'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
+						)}
+						labelFor="description"
+					>
 						<TextArea
 							id="description"
 							value={description}
@@ -151,13 +178,15 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 							width="large"
 							rows={6}
 							placeholder={t(
-								'Bezorg ons de naam van het programma, titel van een filmpje, aanbieder of zender, uitzenddatum en korte omschrijving. Misschien heb je ook een link?'
+								'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-beschrijving'
 							)}
 						/>
 					</FormGroup>
 					<FormGroup label="" labelFor="attachment">
 						<Checkbox
-							label={t('Ik wil een bijlage opladen')}
+							label={t(
+								'user-item-request-form/views/user-item-request-form___ik-wil-een-bijlage-opladen'
+							)}
 							checked={wantsToUploadAttachment}
 							onChange={setWantsToUploadAttachment}
 						/>
@@ -169,7 +198,9 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 								ownerId=""
 								allowedTypes={[]} // allow all types
 								allowMulti={false}
-								label={t('Selecteer een betand (Word, Excel, … max. xxx MB)')}
+								label={t(
+									'user-item-request-form/views/user-item-request-form___selecteer-een-betand-word-excel-max-xxx-mb'
+								)}
 							/>
 						)}
 					</FormGroup>
@@ -179,7 +210,9 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 								<Spinner size="large" />
 							) : (
 								<Button type="primary" onClick={onSend}>
-									<Trans>Aanvraag indienen</Trans>
+									<Trans i18nKey="user-item-request-form/views/user-item-request-form___aanvraag-indienen">
+										Aanvraag indienen
+									</Trans>
 								</Button>
 							)}
 						</FormGroup>

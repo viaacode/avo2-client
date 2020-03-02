@@ -63,7 +63,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		},
 		{
 			id: 'createdAt',
-			label: t('Aangemaakt op'),
+			label: t('workspace/views/bookmarks___aangemaakt-op'),
 			col: '3',
 			sortable: true,
 		},
@@ -79,7 +79,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			console.error(new CustomError('Failed to get all bookmarks for user', err, { user }));
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van je bladwijzers is mislukt'),
+				message: t('workspace/views/bookmarks___het-ophalen-van-je-bladwijzers-is-mislukt'),
 			});
 		}
 	}, [user, setBookmarks, setLoadingInfo, t]);
@@ -102,7 +102,9 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const onDeleteBookmark = async () => {
 		try {
 			if (!bookmarkToDelete) {
-				ToastService.danger(t('Het verwijderen van de bladwijzer is mislukt'));
+				ToastService.danger(
+					t('workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt')
+				);
 				return;
 			}
 			await BookmarksViewsPlaysService.toggleBookmark(
@@ -113,12 +115,14 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			);
 
 			await fetchBookmarks();
-			ToastService.success(t('de bladwijzer is verwijderd'));
+			ToastService.success(t('workspace/views/bookmarks___de-bladwijzer-is-verwijderd'));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed t delete bookmark', err, { bookmarkToDelete, user })
 			);
-			ToastService.danger(t('Het verwijderen van de bladwijzer is mislukt'));
+			ToastService.danger(
+				t('workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt')
+			);
 		}
 
 		setBookmarkToDelete(null);
@@ -192,7 +196,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const renderDeleteAction = (bookmarkInfo: BookmarkInfo) => {
 		return (
 			<Button
-				label={t('Verwijder uit bladwijzers')}
+				label={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
 				icon="bookmark"
 				type="borderless"
 				onClick={() => {
@@ -243,15 +247,20 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	);
 
 	const renderEmptyFallback = () => (
-		<ErrorView icon="bookmark" message={t('Je hebt nog geen bladwijzers aangemaakt')}>
+		<ErrorView
+			icon="bookmark"
+			message={t('workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt')}
+		>
 			<p>
-				<Trans>Een bladwijzer kan je gebruiken om eenvoudig items terug te vinden.</Trans>
+				<Trans i18nKey="workspace/views/bookmarks___een-bladwijzer-kan-je-gebruiken-om-eenvoudig-items-terug-te-vinden">
+					Een bladwijzer kan je gebruiken om eenvoudig items terug te vinden.
+				</Trans>
 			</p>
 			<Spacer margin="top">
 				<Button
 					type="primary"
 					icon="search"
-					label={t('Zoek een item')}
+					label={t('workspace/views/bookmarks___zoek-een-item')}
 					onClick={() => history.push(APP_PATH.SEARCH.route)}
 				/>
 			</Spacer>
@@ -262,7 +271,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		<>
 			{bookmarks.length ? renderTable() : renderEmptyFallback()}
 			<DeleteObjectModal
-				title={t('Verwijder bladwijzer')}
+				title={t('workspace/views/bookmarks___verwijder-bladwijzer')}
 				body={t(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
 				)}
