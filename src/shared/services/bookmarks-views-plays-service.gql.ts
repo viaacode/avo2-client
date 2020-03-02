@@ -81,7 +81,10 @@ export const INCREMENT_ITEM_PLAYS = gql`
 
 export const INCREMENT_COLLECTION_PLAYS = gql`
 	mutation increaseItemPlays($collectionUuid: uuid!) {
-		update_app_collection_plays(where: { item_id: { _eq: $collectionUuid } }, _inc: { count: 1 }) {
+		update_app_collection_plays(
+			where: { item_id: { _eq: $collectionUuid } }
+			_inc: { count: 1 }
+		) {
 			affected_rows
 		}
 	}

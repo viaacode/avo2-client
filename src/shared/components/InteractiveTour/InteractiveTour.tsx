@@ -90,11 +90,11 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 					steps={steps}
 					callback={handleJoyrideCallback}
 					locale={{
-						back: t('Terug'),
-						close: t('Sluit'),
-						last: t('Einde'),
-						next: t('Volgende'),
-						skip: t('Overslaan'),
+						back: t('shared/components/interactive-tour/interactive-tour___terug'),
+						close: t('shared/components/interactive-tour/interactive-tour___sluit'),
+						last: t('shared/components/interactive-tour/interactive-tour___einde'),
+						next: t('shared/components/interactive-tour/interactive-tour___volgende'),
+						skip: t('shared/components/interactive-tour/interactive-tour___overslaan'),
 					}}
 					spotlightPadding={8}
 					scrollOffset={200}
@@ -110,7 +110,9 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 				{showButton && (
 					<Button
 						type="primary"
-						label={t('Rondleiding')}
+						label={t(
+							'shared/components/interactive-tour/interactive-tour___rondleiding'
+						)}
 						icon="info"
 						onClick={() => setRun(true)}
 					/>

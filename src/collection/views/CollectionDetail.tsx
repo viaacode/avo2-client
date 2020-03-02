@@ -244,7 +244,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						})
 					);
 					ToastService.danger(
-						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
+						t(
+							'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+						)
 					);
 				}
 

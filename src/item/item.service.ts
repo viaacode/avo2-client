@@ -19,7 +19,7 @@ export const getItems = async (limit?: number): Promise<Avo.Item.Item[] | null> 
 		query,
 		`data.${ITEM_RESULT_PATH}`,
 		'Failed to retrieve items.',
-		i18n.t('Er ging iets mis tijdens het ophalen van de items.')
+		i18n.t('item/item___er-ging-iets-mis-tijdens-het-ophalen-van-de-items')
 	);
 };
 
@@ -36,6 +36,6 @@ export const getItemsByTitle = async (
 		query,
 		`data.${ITEM_RESULT_PATH}`,
 		'Failed to retrieve items by title.',
-		i18n.t('Er ging iets mis tijdens het ophalen van de items.')
+		i18n.t('item/item___er-ging-iets-mis-tijdens-het-ophalen-van-de-items')
 	);
 };
