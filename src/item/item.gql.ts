@@ -23,8 +23,10 @@ export const GET_ITEMS_BY_TITLE = gql`
 `;
 
 export const GET_ITEM_BY_ID = gql`
-	query getItemById($id: bpchar!) {
-		app_item_meta(where: { external_id: { _eq: $id } }) {
+	query getItemById($externalId: bpchar!, $uid: uuid!) {
+		app_item_meta(
+			where: { _or: [{ external_id: { _eq: $externalId } }, { uid: { _eq: $uid } }] }
+		) {
 			browse_path
 			created_at
 			depublish_at

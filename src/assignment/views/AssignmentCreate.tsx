@@ -184,25 +184,19 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				if (assignment.content_id && assignment.content_label) {
 					// The assignment doesn't have content linked to it
 					// Fetch the content from the network
+					const queryInfo =
+						CONTENT_LABEL_TO_QUERY[
+							assignment.content_label as Avo.Assignment.ContentLabel
+						];
 					const queryParams = {
-						query:
-							CONTENT_LABEL_TO_QUERY[
-								assignment.content_label as Avo.Assignment.ContentLabel
-							].query,
-						variables: { id: assignment.content_id },
+						query: queryInfo.query,
+						variables: queryInfo.getVariables(assignment.content_id),
 					};
 					const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
 						queryParams
 					);
 
-					assignmentContentResponse = get(
-						response,
-						`data.${
-							CONTENT_LABEL_TO_QUERY[
-								assignment.content_label as Avo.Assignment.ContentLabel
-							].resultPath
-						}`
-					);
+					assignmentContentResponse = get(response, `data.${queryInfo.resultPath}`);
 					if (!assignmentContentResponse) {
 						console.error('Failed to fetch the assignment content', {
 							response,
