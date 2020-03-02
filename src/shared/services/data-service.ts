@@ -9,6 +9,11 @@ export const dataService = new ApolloClient({
 type ApolloCache = { [key: string]: any };
 
 export class ApolloCacheManager {
+	public static clearBookmarksViewsPlays(cache: ApolloCache) {
+		ApolloCacheManager.deleteFromCache(cache, 'app_item_bookmarks');
+		ApolloCacheManager.deleteFromCache(cache, 'app_item_views');
+		ApolloCacheManager.deleteFromCache(cache, 'app_item_plays');
+	}
 	/**
 	 * Clear all collection aggregate related data from the cache
 	 * eg: app_collections, app_collection_fragments, app_collections_aggregate

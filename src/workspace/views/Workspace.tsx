@@ -121,7 +121,15 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				),
 			}),
 			...addTabIfUserHasPerm(BOOKMARKS_ID, {
-				component: () => <Bookmarks />,
+				component: () => (
+					<Bookmarks
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						numberOfItems={tabCounts[BOOKMARKS_ID]}
+					/>
+				),
 			}),
 		});
 	}, [tabCounts, permissions, t, history, location, match, user]);

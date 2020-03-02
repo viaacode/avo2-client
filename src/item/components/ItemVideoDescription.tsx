@@ -17,13 +17,13 @@ import {
 	Column,
 	convertToHtml,
 	ExpandableContainer,
-	FlowPlayer,
 	Grid,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { FlowPlayerWrapper } from '../../shared/components';
 import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -161,7 +161,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 
 	const renderMedia = () => (
 		<div className="c-video-player t-player-skin--dark">
-			<FlowPlayer
+			<FlowPlayerWrapper
 				src={playerTicket ? playerTicket.toString() : null}
 				seekTime={time}
 				poster={itemMetaData.thumbnail_path}
@@ -175,6 +175,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
 				autoplay
+				itemUuid={(itemMetaData as any).uid} // TODO remove cast to any when typings v2.11 is released
 			/>
 		</div>
 	);

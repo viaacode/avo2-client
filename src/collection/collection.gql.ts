@@ -97,6 +97,7 @@ export const GET_ITEMS_BY_IDS = gql`
 	query getCollectionsByIds($ids: [bpchar!]!) {
 		items: app_item_meta(where: { external_id: { _in: $ids } }) {
 			id
+			uid
 			external_id
 			duration
 			title
@@ -142,7 +143,6 @@ export const DELETE_COLLECTION = gql`
 	mutation deleteCollectionById($id: uuid!) {
 		delete_app_collections(where: { id: { _eq: $id } }) {
 			affected_rows
-			__typename
 		}
 	}
 `;

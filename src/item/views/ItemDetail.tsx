@@ -60,6 +60,11 @@ import {
 	reorderDate,
 } from '../../shared/helpers';
 import { dataService, ToastService } from '../../shared/services';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarkViewPlayCounts,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service.const';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import ReportItemModal from '../components/modals/ReportItemModal';
@@ -90,6 +95,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
+	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
 	useEffect(() => {
 		if (item) {
@@ -147,7 +155,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					},
 				});
 
-				const itemObj = get(response, 'data.app_item_meta[0]');
+				const itemObj: Avo.Item.Item | undefined = get(response, 'data.app_item_meta[0]');
 				if (!itemObj) {
 					setLoadingInfo({
 						state: 'error',
@@ -169,7 +177,26 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					user
 				);
 
+				// TODO remove cast to any when typings v2.11 is released
+				BookmarksViewsPlaysService.action('view', 'item', (itemObj as any).uid, user);
+
 				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
+				try {
+					const counts = await BookmarksViewsPlaysService.getItemCounts(
+						(itemObj as any).uid,
+						user
+					);
+					setBookmarkViewPlayCounts(counts);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to get getItemCounts', err, {
+							uuid: (itemObj as any).uid,
+						})
+					);
+					ToastService.danger(
+						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
+					);
+				}
 
 				setItem(itemObj);
 			} catch (err) {
@@ -210,22 +237,23 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 			setSeekerTimeInQueryParams();
 			setSeekerTime();
 		}
-
-		if (match.params.id) {
-			// Log event of item page view
-			trackEvents(
-				{
-					object: match.params.id,
-					object_type: 'avo_item_pid',
-					message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
-						match.params.id
-					} bezocht`,
-					action: 'view',
-				},
-				user
-			);
-		}
 	}, [time, history, videoRef, match.params.id, relatedItems, user]);
+
+	const toggleBookmark = async () => {
+		if (
+			await BookmarksViewsPlaysService.toggleBookmark(
+				(item as any).uid,
+				user,
+				'item',
+				bookmarkViewPlayCounts.isBookmarked
+			)
+		) {
+			setBookmarkViewPlayCounts({
+				...bookmarkViewPlayCounts,
+				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
+			});
+		}
+	};
 
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
@@ -254,7 +282,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							category={englishContentType}
 							onClick={() =>
 								redirectToClientPage(
-									buildLink(APP_PATH.ITEM.route, { id: relatedItem.id }),
+									buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
 									history
 								)
 							}
@@ -350,13 +378,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-authentication">
 										<MetaData category={englishContentType}>
-											{/* TODO link meta data to actual data */}
-											<MetaDataItem label="0" icon="eye" />
-											<MetaDataItem label="0" icon="bookmark" />
-											{get(item, 'type.id') ===
-												ContentTypeNumber.collection && (
-												<MetaDataItem label="0" icon="collection" />
-											)}
+											<MetaDataItem
+												label={String(bookmarkViewPlayCounts.viewCount)}
+												icon="eye"
+											/>
+											<MetaDataItem
+												label={String(bookmarkViewPlayCounts.bookmarkCount)}
+												icon="bookmark"
+											/>
 										</MetaData>
 									</div>
 								</ToolbarItem>
@@ -412,9 +441,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											<ToggleButton
 												type="tertiary"
 												icon="bookmark"
-												active={false}
+												active={bookmarkViewPlayCounts.isBookmarked}
 												ariaLabel={t('item/views/item___toggle-bladwijzer')}
 												title={t('item/views/item___toggle-bladwijzer')}
+												onClick={toggleBookmark}
 											/>
 											<Button
 												type="tertiary"

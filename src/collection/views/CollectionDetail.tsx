@@ -26,6 +26,7 @@ import {
 	MetaDataItem,
 	Spacer,
 	Thumbnail,
+	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -57,6 +58,11 @@ import {
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarkViewPlayCounts,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service.const';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import {
@@ -69,7 +75,6 @@ import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
-
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
@@ -110,6 +115,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -220,6 +228,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						icon: 'search',
 					});
 					return;
+				}
+
+				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
+				try {
+					const counts = await BookmarksViewsPlaysService.getCollectionCounts(
+						collectionObj.id,
+						user
+					);
+					setBookmarkViewPlayCounts(counts);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to get getCollectionCounts', err, {
+							uuid: collectionObj.id,
+						})
+					);
+					ToastService.danger(
+						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
+					);
 				}
 
 				// Get published bundles that contain this collection
@@ -371,6 +397,22 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
+	const toggleBookmark = async () => {
+		if (
+			await BookmarksViewsPlaysService.toggleBookmark(
+				collectionId,
+				user,
+				'collection',
+				bookmarkViewPlayCounts.isBookmarked
+			)
+		) {
+			setBookmarkViewPlayCounts({
+				...bookmarkViewPlayCounts,
+				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
+			});
+		}
+	};
+
 	// Render functions
 	const renderRelatedCollections = () => {
 		if (!relatedCollections || !relatedCollections.length) {
@@ -461,11 +503,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
 					/>
 				)}
-				<Button
+				<ToggleButton
 					title={t('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
 					icon="bookmark"
+					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
+					onClick={() => toggleBookmark()}
 				/>
 				<Button
 					title={t('collection/views/collection-detail___deel')}
@@ -534,8 +578,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					onClickTitle={() => null}
 					category="collection"
 					showMetaData
-					bookmarks="0" // TODO: Real bookmark count
-					views="0" // TODO: Real view count
+					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount)}
+					views={String(bookmarkViewPlayCounts.viewCount)}
 				>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
 					<HeaderAvatar>

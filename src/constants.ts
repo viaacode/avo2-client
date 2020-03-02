@@ -60,7 +60,7 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = Object.freeze
 	LOGGED_OUT_HOME: { route: '/', showInContentPicker: true },
 	FOR_PUPILS: { route: `/${ROUTE_PARTS.forPupils}`, showInContentPicker: true },
 	LOGGED_IN_HOME: { route: `/${ROUTE_PARTS.loggedInHome}`, showInContentPicker: true },
-	ITEM: {
+	ITEM_DETAIL: {
 		route: `/${ROUTE_PARTS.item}/:id`,
 		regexp: `/${ROUTE_PARTS.item}/[^/?]+`,
 		showInContentPicker: false,
@@ -114,8 +114,8 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = Object.freeze
 export type RouteId = keyof typeof APP_PATH;
 
 export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: string } = {
-	video: APP_PATH.ITEM.route,
-	audio: APP_PATH.ITEM.route,
+	video: APP_PATH.ITEM_DETAIL.route,
+	audio: APP_PATH.ITEM_DETAIL.route,
 	collectie: APP_PATH.COLLECTION_DETAIL.route,
 	bundel: APP_PATH.BUNDLE_DETAIL.route,
 };
