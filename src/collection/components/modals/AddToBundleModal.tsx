@@ -28,7 +28,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { toastService } from '../../../shared/services';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
-import { trackLogEvents } from '../../../shared/services/event-logging-service';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 import {
 	GET_COLLECTION_BY_ID,
@@ -174,7 +174,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 					)
 				);
 				onClose();
-				trackLogEvents(
+				trackEvents(
 					{
 						object: String(collection.id),
 						object_type: 'collections',

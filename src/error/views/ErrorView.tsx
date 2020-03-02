@@ -14,7 +14,7 @@ import {
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
-import { ErrorActionButton } from '@viaa/avo2-types/types/auth';
+import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
@@ -30,7 +30,7 @@ interface ErrorViewQueryParams {
 interface ErrorViewProps extends RouteComponentProps {
 	message?: string;
 	icon?: IconName;
-	actionButtons?: ErrorActionButton[];
+	actionButtons?: Avo.Auth.ErrorActionButton[];
 	children?: ReactNode;
 	history: History;
 	match: match<ErrorViewQueryParams>;

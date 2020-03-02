@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { ErrorActionButton } from '@viaa/avo2-types/types/auth';
 
 import {
 	PermissionGuard,
@@ -27,7 +26,7 @@ export interface DataQueryComponentProps {
 	noPermissionsMessage?: string;
 	permissions?: Permissions;
 	user?: Avo.User.User;
-	actionButtons?: ErrorActionButton[];
+	actionButtons?: Avo.Auth.ErrorActionButton[];
 }
 
 const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({

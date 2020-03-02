@@ -41,7 +41,7 @@ import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/Flow
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
 import { toastService } from '../../../shared/services';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
-import { trackLogEvents } from '../../../shared/services/event-logging-service';
+import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 
@@ -198,7 +198,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					)
 				);
 				onClose();
-				trackLogEvents(
+				trackEvents(
 					{
 						object: String(collection.id),
 						object_type: 'collections',

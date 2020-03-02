@@ -405,7 +405,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 						  )
 						: t('collection/components/collection-or-bundle-edit___bundle-opgeslagen')
 				);
-				trackLogEvents(
+				trackEvents(
 					{
 						object: String(newCollection.id),
 						object_type: 'collections',
@@ -506,7 +506,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			trackLogEvents(
+			trackEvents(
 				{
 					object: String(collectionState.currentCollection.id),
 					object_type: 'collections',

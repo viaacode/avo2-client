@@ -10,7 +10,7 @@ interface MinimalClientEvent {
 	message: any; // user played item xxx on avo
 }
 
-export function trackLogEvents(
+export function trackEvents(
 	events: MinimalClientEvent[] | MinimalClientEvent,
 	user: Avo.User.User
 ) {

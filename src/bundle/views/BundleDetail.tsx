@@ -100,7 +100,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
-		trackLogEvents(
+		trackEvents(
 			{
 				object: bundleId,
 				object_type: 'bundels',
@@ -176,7 +176,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					)
 				);
 			} catch (err) {
-				console.error(new CustomError('Failed to get counts for bundle fragments', err, {}));
+				console.error(
+					new CustomError('Failed to get counts for bundle fragments', err, {})
+				);
 			}
 
 			setPermissions(permissionObj);

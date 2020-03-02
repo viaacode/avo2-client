@@ -33,11 +33,21 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PermissionNames, PermissionService } from '../../authentication/helpers/permission-service';
+import {
+	PermissionNames,
+	PermissionService,
+} from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { ContentTypeNumber, ContentTypeString, toEnglishContentType } from '../../collection/collection.types';
-import { LoadingErrorLoadedComponent, ShareThroughEmailModal } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import {
+	ContentTypeNumber,
+	ContentTypeString,
+	toEnglishContentType,
+} from '../../collection/collection.types';
+import {
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+	ShareThroughEmailModal,
+} from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -48,25 +58,30 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
+import { dataService, toastService } from '../../shared/services';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service.const';
-import { dataService } from '../../shared/services/data-service';
-import { toastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import ReportItemModal from '../components/modals/ReportItemModal';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
-import ReportItemModal from '../components/modals/ReportItemModal';
 import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './ItemDetail.scss';
 
 interface ItemDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, location, user, ...rest }) => {
+const ItemDetail: FunctionComponent<ItemDetailProps> = ({
+	history,
+	match,
+	location,
+	user,
+	...rest
+}) => {
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 
 	const [t] = useTranslation();
@@ -104,7 +119,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 						limit,
 						index: 'items',
 					});
-					toastService.danger(t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt'));
+					toastService.danger(
+						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
+					);
 				});
 		};
 
@@ -147,11 +164,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					return;
 				}
 
-				trackLogEvents(
+				trackEvents(
 					{
 						object: match.params.id,
 						object_type: 'avo_item_pid',
-						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${match.params.id} bezocht`,
+						message: `Gebruiker ${getProfileName(user)} heeft de pagina van fragment ${
+							match.params.id
+						} bezocht`,
 						action: 'view',
 					},
 					user
@@ -162,7 +181,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 
 				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
 				try {
-					const counts = await BookmarksViewsPlaysService.getItemCounts((itemObj as any).uid, user);
+					const counts = await BookmarksViewsPlaysService.getItemCounts(
+						(itemObj as any).uid,
+						user
+					);
 					setBookmarkViewPlayCounts(counts);
 				} catch (err) {
 					console.error(
@@ -170,7 +192,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 							uuid: (itemObj as any).uid,
 						})
 					);
-					toastService.danger(t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt'));
+					toastService.danger(
+						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
+					);
 				}
 
 				setItem(itemObj);
@@ -230,19 +254,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 		}
 	};
 
-	const toggleBookmark = async (item: Avo.Item.Item) => {
-		try {
-			// TODO update query to only get the bookmark for the current user once the database is updated
-			if (item.bookmarks) {
-				await trackEvent('unbookmark', 'item', item.external_id, user);
-			} else {
-				await trackEvent('bookmark', 'item', item.external_id, user);
-			}
-		} catch (err) {
-			console.error('Failed to bookmark/unbookmark the item', err, { item });
-		}
-	};
-
 	/**
 	 * Set video current time from the query params once the video has loaded its meta data
 	 * If this happens sooner, the time will be ignored by the video player
@@ -268,7 +279,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 					<li key={`related-item-${relatedItem.id}`}>
 						<MediaCard
 							category={englishContentType}
-							onClick={() => redirectToClientPage(buildLink(ITEM_PATH.ITEM_DETAIL, { id: relatedItem.id }), history)}
+							onClick={() =>
+								redirectToClientPage(
+									buildLink(ITEM_PATH.ITEM_DETAIL, { id: relatedItem.id }),
+									history
+								)
+							}
 							orientation="horizontal"
 							title={relatedItem.dc_title}
 						>
@@ -340,12 +356,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 										)}
 										{!!item.issued && (
 											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">Gepubliceerd op {reorderDate(item.issued || null, '/')}</p>
+												<p className="c-body-2 u-text-muted">
+													Gepubliceerd op{' '}
+													{reorderDate(item.issued || null, '/')}
+												</p>
 											</MetaDataItem>
 										)}
 										{!!item.series && (
 											<MetaDataItem>
-												<p className="c-body-2 u-text-muted">Uit reeks: {generateSearchLink('serie', item.series)}</p>
+												<p className="c-body-2 u-text-muted">
+													Uit reeks:{' '}
+													{generateSearchLink('serie', item.series)}
+												</p>
 											</MetaDataItem>
 										)}
 									</MetaData>
@@ -355,8 +377,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 								<ToolbarItem>
 									<div className="u-mq-switch-main-nav-authentication">
 										<MetaData category={englishContentType}>
-											<MetaDataItem label={String(bookmarkViewPlayCounts.viewCount)} icon="eye" />
-											<MetaDataItem label={String(bookmarkViewPlayCounts.bookmarkCount)} icon="bookmark" />
+											<MetaDataItem
+												label={String(bookmarkViewPlayCounts.viewCount)}
+												icon="eye"
+											/>
+											<MetaDataItem
+												label={String(bookmarkViewPlayCounts.bookmarkCount)}
+												icon="bookmark"
+											/>
 										</MetaData>
 									</div>
 								</ToolbarItem>
@@ -395,7 +423,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 														type="tertiary"
 														icon="clipboard"
 														label={t('item/views/item___maak-opdracht')}
-														onClick={() => history.push(generateAssignmentCreateLink('KIJK', item.external_id, 'ITEM'))}
+														onClick={() =>
+															history.push(
+																generateAssignmentCreateLink(
+																	'KIJK',
+																	item.external_id,
+																	'ITEM'
+																)
+															)
+														}
 													/>
 												</Flex>
 											</ButtonToolbar>
@@ -444,7 +480,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 											{!!item.issued && (
 												<Column size="2-5" tag="tr">
 													<th scope="row">
-														<Trans i18nKey="item/views/item___publicatiedatum">Publicatiedatum</Trans>
+														<Trans i18nKey="item/views/item___publicatiedatum">
+															Publicatiedatum
+														</Trans>
 													</th>
 													<td>{reorderDate(item.issued, '/')}</td>
 												</Column>
@@ -507,7 +545,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 															Taal
 														</Trans>
 													</th>
-													<td>{item.lom_languages.map(languageCode => LANGUAGES.nl[languageCode]).join(', ')}</td>
+													<td>
+														{item.lom_languages
+															.map(
+																languageCode =>
+																	LANGUAGES.nl[languageCode]
+															)
+															.join(', ')}
+													</td>
 												</Column>
 											)}
 										</Grid>
@@ -522,7 +567,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 															Geschikt voor
 														</Trans>
 													</th>
-													<td>{generateSearchLinks(item.external_id, 'educationLevel', item.lom_context)}</td>
+													<td>
+														{generateSearchLinks(
+															item.external_id,
+															'educationLevel',
+															item.lom_context
+														)}
+													</td>
 												</tr>
 											)}
 											{!!item.external_id && !!item.lom_classification && (
@@ -532,7 +583,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 															Vakken
 														</Trans>
 													</th>
-													<td>{generateSearchLinks(item.external_id, 'subject', item.lom_classification)}</td>
+													<td>
+														{generateSearchLinks(
+															item.external_id,
+															'subject',
+															item.lom_classification
+														)}
+													</td>
 												</tr>
 											)}
 										</tbody>
@@ -556,7 +613,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match, locati
 																})
 															)}
 															swatches={false}
-															onTagClicked={(tagId: string | number) => goToSearchPage('keyword', tagId as string)}
+															onTagClicked={(
+																tagId: string | number
+															) =>
+																goToSearchPage(
+																	'keyword',
+																	tagId as string
+																)
+															}
 														/>
 													</td>
 												</tr>

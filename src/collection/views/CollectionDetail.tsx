@@ -144,7 +144,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	useEffect(() => {
-		trackLogEvents(
+		trackEvents(
 			{
 				object: collectionId,
 				object_type: 'collections',
@@ -242,7 +242,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					setBookmarkViewPlayCounts(counts);
 				} catch (err) {
 					console.error(
-						new CustomError('Failed to get getCollectionCounts', err, { uuid: collectionObj.id })
+						new CustomError('Failed to get getCollectionCounts', err, {
+							uuid: collectionObj.id,
+						})
 					);
 					toastService.danger(
 						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
