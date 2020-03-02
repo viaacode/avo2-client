@@ -67,7 +67,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 					<Spacer margin="top-small">
 						<Button
 							onClick={() =>
-								redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)
+								redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST.route, history)
 							}
 							label={t(
 								'authentication/components/stamboek-input___manuele-aanvraag-indienen'
@@ -97,7 +97,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({
 							'authentication/components/stamboek-input___contacteer-de-helpdesk'
 						)}
 						onClick={() =>
-							redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST, history)
+							redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST.route, history)
 						}
 						type="inline-link"
 					/>

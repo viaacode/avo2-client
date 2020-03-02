@@ -39,8 +39,8 @@ import {
 	DeleteObjectModal,
 	InputModal,
 	LoadingErrorLoadedComponent,
+	LoadingInfo,
 } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -48,13 +48,12 @@ import {
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { ApolloCacheManager } from '../../shared/services/data-service';
+import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { AppState } from '../../store';
-import { COLLECTIONS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
 
+import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
@@ -518,7 +517,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				user
 			);
 
-			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID });
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID });
 		} catch (err) {
 			console.error(err);
 			ToastService.info(
@@ -658,7 +657,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					onClick={() =>
 						redirectToClientPage(
 							buildLink(
-								isCollection ? APP_PATH.COLLECTION_DETAIL : APP_PATH.BUNDLE_DETAIL,
+								isCollection
+									? APP_PATH.COLLECTION_DETAIL.route
+									: APP_PATH.BUNDLE_DETAIL.route,
 								{
 									id: match.params.id,
 								}

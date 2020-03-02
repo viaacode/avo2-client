@@ -43,6 +43,7 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
 import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -64,7 +65,7 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import ReportItemModal from '../components/modals/ReportItemModal';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
-import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
+import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './ItemDetail.scss';
 
@@ -253,7 +254,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							category={englishContentType}
 							onClick={() =>
 								redirectToClientPage(
-									buildLink(ITEM_PATH.ITEM, { id: relatedItem.id }),
+									buildLink(APP_PATH.ITEM.route, { id: relatedItem.id }),
 									history
 								)
 							}

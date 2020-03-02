@@ -115,8 +115,8 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		const logoutNavItem = last(dynamicNavItems) as NavigationItemInfo;
 
 		if (
-			(user && logoutNavItem.location !== APP_PATH.LOGOUT) ||
-			(!user && logoutNavItem.location === APP_PATH.LOGOUT)
+			(user && logoutNavItem.location !== APP_PATH.LOGOUT.route) ||
+			(!user && logoutNavItem.location === APP_PATH.LOGOUT.route)
 		) {
 			// Avoid flashing the menu items for a second without them being in a dropdown menu
 			return [];

@@ -8,15 +8,9 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { buildLink } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
+import { APP_PATH } from '../../constants';
 import { Account, Email, Notifications, Profile } from '../components';
-import {
-	ACCOUNT_ID,
-	EMAIL_ID,
-	NOTIFICATIONS_ID,
-	PROFILE_ID,
-	SETTINGS_PATH,
-	SettingsTab,
-} from '../settings.const';
+import { ACCOUNT_ID, EMAIL_ID, NOTIFICATIONS_ID, PROFILE_ID, SettingsTab } from '../settings.const';
 
 interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 
@@ -55,7 +49,7 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 	};
 
 	const goToTab = (tabId: string | ReactText) => {
-		redirectToClientPage(buildLink(SETTINGS_PATH.SETTINGS_TAB, { tabId }), props.history);
+		redirectToClientPage(buildLink(APP_PATH.SETTINGS_TAB.route, { tabId }), props.history);
 		setActiveTab(tabId as SettingsTab);
 	};
 

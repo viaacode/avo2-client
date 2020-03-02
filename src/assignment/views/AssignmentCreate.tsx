@@ -44,23 +44,21 @@ import { PermissionNames } from '../../authentication/helpers/permission-service
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { toEnglishContentType } from '../../collection/collection.types';
 import {
+	checkPermissions,
 	DeleteObjectModal,
 	InputModal,
 	LoadingErrorLoadedComponent,
+	LoadingInfo,
 } from '../../shared/components';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { dataService } from '../../shared/services/data-service';
+import { dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
+import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
-import {
-	checkPermissions,
-	LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { ASSIGNMENT_PATH, CONTENT_LABEL_TO_QUERY } from '../assignment.const';
+import { APP_PATH } from '../../constants';
+import { CONTENT_LABEL_TO_QUERY } from '../assignment.const';
 import { DELETE_ASSIGNMENT, INSERT_ASSIGNMENT } from '../assignment.gql';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
@@ -263,7 +261,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				return;
 			}
 			await AssignmentService.deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
-			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 			ToastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
 			console.error(err);
@@ -323,7 +321,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			setCurrentAssignment({});
 			setLoadingInfo({ state: 'loading' });
 
-			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssigment.id });
 			ToastService.success(
 				t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
@@ -398,7 +396,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				ToastService.success(
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
 				);
-				navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
+				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: insertedAssignment.id });
 			}
 			setIsSaving(false);
 		} catch (err) {
@@ -554,7 +552,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 									<ToolbarItem grow>
 										<Link
 											className="c-return"
-											to={buildLink(WORKSPACE_PATH.WORKSPACE_TAB, {
+											to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
 												tabId: ASSIGNMENTS_ID,
 											})}
 										>

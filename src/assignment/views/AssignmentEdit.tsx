@@ -43,6 +43,7 @@ import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { toEnglishContentType } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
 import {
 	checkPermissions,
 	DeleteObjectModal,
@@ -55,9 +56,9 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
+import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
-import { ASSIGNMENT_PATH, CONTENT_LABEL_TO_QUERY } from '../assignment.const';
+import { CONTENT_LABEL_TO_QUERY } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
@@ -281,7 +282,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 			await AssignmentService.deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
-			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 			ToastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
 			console.error(err);
@@ -382,7 +383,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			setCurrentAssignment({});
 			setLoadingInfo({ state: 'loading' });
 
-			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssigment.id });
 			ToastService.success(
 				t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
@@ -571,7 +572,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									<ToolbarItem grow>
 										<Link
 											className="c-return"
-											to={buildLink(WORKSPACE_PATH.WORKSPACE_TAB, {
+											to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
 												tabId: ASSIGNMENTS_ID,
 											})}
 										>

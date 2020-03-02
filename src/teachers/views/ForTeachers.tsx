@@ -19,12 +19,14 @@ const ForTeachers: FunctionComponent<ForTeachersProps> = ({ history }) => {
 					<Button
 						label={t('teachers/views/for-teachers___login')}
 						type="primary"
-						onClick={() => redirectToClientPage(APP_PATH.REGISTER_OR_LOGIN, history)}
+						onClick={() =>
+							redirectToClientPage(APP_PATH.REGISTER_OR_LOGIN.route, history)
+						}
 					/>
 					<Button
 						label={t('teachers/views/for-teachers___maak-je-gratis-account-aan')}
 						type="secondary"
-						onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}
+						onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
 					/>
 				</ButtonToolbar>
 			</Container>

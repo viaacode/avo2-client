@@ -39,7 +39,7 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 						)}
 						onClick={() => {
 							closeDropdown();
-							redirectToClientPage(APP_PATH.FOR_TEACHERS, history);
+							redirectToClientPage(APP_PATH.FOR_TEACHERS.route, history);
 						}}
 					/>
 				</Spacer>
@@ -63,7 +63,7 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 							)}
 							onClick={() => {
 								closeDropdown();
-								redirectToClientPage(APP_PATH.FOR_PUPILS, history);
+								redirectToClientPage(APP_PATH.FOR_PUPILS.route, history);
 							}}
 						/>
 					</Spacer>

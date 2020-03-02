@@ -1,9 +1,15 @@
 import React, { ReactNode } from 'react';
 
 import { SecuredRoute } from '../authentication/components';
-import { SEARCH_PATH } from './search.const';
+import { APP_PATH } from '../constants';
+
 import { Search } from './views';
 
 export const renderSearchRoutes = (): ReactNode[] => [
-	<SecuredRoute component={Search} exact path={SEARCH_PATH.SEARCH} key={SEARCH_PATH.SEARCH} />,
+	<SecuredRoute
+		component={Search}
+		exact
+		path={APP_PATH.SEARCH.route}
+		key={APP_PATH.SEARCH.route}
+	/>,
 ];
