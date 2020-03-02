@@ -1,7 +1,4 @@
-import {
-	ContentBlockComponentState,
-	ContentBlockConfig,
-} from '../../../content-block/content-block.types';
+import { ContentBlockComponentState, ContentBlockConfig } from '../../../shared/types';
 
 import { ContentEditAction, ContentEditActionType, ContentEditState } from '../../content.types';
 

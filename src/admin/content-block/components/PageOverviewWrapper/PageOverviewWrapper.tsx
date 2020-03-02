@@ -15,14 +15,13 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, navigateToContentType } from '../../../../shared/helpers';
 import { useDebounce } from '../../../../shared/hooks';
-import { dataService } from '../../../../shared/services/data-service';
+import { dataService, ToastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../content/content.gql';
-import { ContentTypeAndLabelsValue } from '../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
-import { ContentBlockConfig } from '../../content-block.types';
-import { parseContentBlocks } from '../../helpers';
+import { ContentTypeAndLabelsValue } from '../../../shared/components';
+import { ContentBlockConfig } from '../../../shared/types';
 
-import toastService from '../../../../shared/services/toast-service';
+import { parseContentBlocks } from '../../helpers';
 import { ContentBlockPreview } from '../index';
 
 interface PageOverviewWrapperProps extends RouteComponentProps {
@@ -71,7 +70,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			<ContentBlockPreview
 				key={contentPage.contentBlockssBycontentId[index].id}
 				componentState={contentBlockConfig.components.state}
-				contentWidth={(contentPage as any).content_width} // TODO: remove any with typings update
+				contentWidth={contentPage.content_width}
 				blockState={contentBlockConfig.block.state}
 			/>
 		));
@@ -85,7 +84,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			description: dbContentPage.description,
 			title: dbContentPage.title,
 			id: dbContentPage.id,
-			blocks: dbContentPage.contentBlockssBycontentId ? renderContentPage(dbContentPage) : null,
+			blocks: dbContentPage.contentBlockssBycontentId
+				? renderContentPage(dbContentPage)
+				: null,
 			content_width: dbContentPage.content_width,
 			path: dbContentPage.path as string, // TODO enforce path in database
 		};
@@ -98,7 +99,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			// TODO get contentPages from the database that have one of the selected groups
 		} else {
 			const response = await dataService.query({
-				query: itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
+				query:
+					itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
 				variables: {
 					where: { content_type: { _eq: contentTypeAndTabs.selectedContentType } },
 					offset: currentPage * debouncedItemsPerPage,
@@ -107,7 +109,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			});
 			const pageArray: Avo.Content.Content[] = get(response, 'data.app_content', []);
 			pageCount =
-				get(response, 'data.app_content_aggregate.aggregate.count', 0) / debouncedItemsPerPage;
+				get(response, 'data.app_content_aggregate.aggregate.count', 0) /
+				debouncedItemsPerPage;
 			filteredPages = pageArray;
 		}
 		setPages(filteredPages);
@@ -133,7 +136,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 					},
 				})
 			);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-de-paginas-is-mislukt'
 				)

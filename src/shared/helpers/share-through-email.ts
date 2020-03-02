@@ -9,8 +9,8 @@ export async function shareThroughEmail(
 	link: string,
 	type: EmailTemplateType
 ): Promise<void> {
-	let url: string | undefined = undefined;
-	let body: any = undefined;
+	let url: string | undefined;
+	let body: any;
 	try {
 		url = `${getEnv('PROXY_URL')}/campaign-monitor/send`;
 		body = {

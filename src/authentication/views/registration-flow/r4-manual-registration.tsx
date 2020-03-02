@@ -20,8 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
-import toastService from '../../../shared/services/toast-service';
-import { createZendeskTicket } from '../../authentication.service';
+import { ToastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
@@ -94,7 +93,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		try {
 			const errors = getValidationErrors();
 			if (errors.length) {
-				toastService.danger(errors);
+				ToastService.danger(errors);
 				return;
 			}
 			// create zendesk ticket
@@ -123,8 +122,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					'authentication/views/registration-flow/r-4-manual-registration___manuele-aanvraag-account-op-av-o'
 				),
 			};
-			await createZendeskTicket(ticket);
-			toastService.success(
+			await ZendeskService.createTicket(ticket);
+			ToastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
 				)
@@ -132,7 +131,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			setHasBeenSent(true);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt'
 				)
@@ -143,7 +142,10 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	const renderForm = () => {
 		return (
 			<>
-				<Button type="secondary" onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}>
+				<Button
+					type="secondary"
+					onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
+				>
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___terug">
 						Terug
 					</Trans>
@@ -159,7 +161,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						<br />
 						<br />
 						Het Archief voor Onderwijs biedt op een eenvoudige manier toegang tot Vlaams
-						audiovisueel materiaal van meer dan 30 partners. Dit materiaal is beschikbaar voor:
+						audiovisueel materiaal van meer dan 30 partners. Dit materiaal is
+						beschikbaar voor:
 						<ul>
 							<li>leerkrachten aan een Vlaamse erkende onderwijsinstelling</li>
 							<li>studenten aan een Vlaamse lerarenopleiding</li>
@@ -170,35 +173,44 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							<li>
 								<strong>Je bent student aan een Vlaamse lerarenopleiding?</strong>
 								<br />
-								Dan krijg je via je docent of hogeschool toegang tot onze beeldbank. Hoe? Ontdek het
-								op <Link to={APP_PATH.STUDENT_TEACHER}>deze pagina</Link>.<br />
+								Dan krijg je via je docent of hogeschool toegang tot onze beeldbank.
+								Hoe? Ontdek het op{' '}
+								<Link to={APP_PATH.STUDENT_TEACHER.route}>deze pagina</Link>.<br />
 								<br />
 							</li>
 							<li>
-								<strong>Je bent leerling in een Vlaamse erkende secundaire school?</strong>
+								<strong>
+									Je bent leerling in een Vlaamse erkende secundaire school?
+								</strong>
 								<br />
-								Vraag een account via een van je leerkrachten. Lees meer over Het Archief voor
-								Onderwijs voor leerlingen op <Link to={APP_PATH.FOR_PUPILS}>deze pagina</Link>.
+								Vraag een account via een van je leerkrachten. Lees meer over Het
+								Archief voor Onderwijs voor leerlingen op{' '}
+								<Link to={APP_PATH.FOR_PUPILS.route}>deze pagina</Link>.
 								<br />
 								Wil je als leerkracht je leerlingen toegang geven? Alle info vind je{' '}
-								<Link to={'/leerlingen-toegang-versie-leerkrachten'}>hier</Link>.<br />
+								<Link to={'/leerlingen-toegang-versie-leerkrachten'}>hier</Link>.
+								<br />
 								<br />
 							</li>
 							<li>
-								<strong>Je bent lesgever in een Vlaamse erkende onderwijsinstelling?</strong>
+								<strong>
+									Je bent lesgever in een Vlaamse erkende onderwijsinstelling?
+								</strong>
 								<br />
 
 								<ul>
 									<li>
 										Je hebt een lerarenkaart- of stamboeknummer? Maak dan{' '}
-										<Link to={APP_PATH.STAMBOEK}>hier</Link> je gratis een account aan.
+										<Link to={APP_PATH.STAMBOEK.route}>hier</Link> je gratis een
+										account aan.
 									</li>
 
 									<li>
-										Je hebt geen lerarenkaart- of stamboeknummer? Of je vraagt je af of je als
-										lesgever zonder nummer in aanmerking komt voor een account? Vraag je toegang aan
-										via onderstaand formulier. We verwerken je aanvraag binnen de vijf werkdagen na
-										ontvangst.
+										Je hebt geen lerarenkaart- of stamboeknummer? Of je vraagt
+										je af of je als lesgever zonder nummer in aanmerking komt
+										voor een account? Vraag je toegang aan via onderstaand
+										formulier. We verwerken je aanvraag binnen de vijf werkdagen
+										na ontvangst.
 									</li>
 								</ul>
 							</li>
@@ -213,7 +225,9 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				<Grid>
 					<Column size="2-6" className="m-manual-registration">
 						<FormGroup
-							label={t('authentication/views/registration-flow/r-4-manual-registration___voornaam')}
+							label={t(
+								'authentication/views/registration-flow/r-4-manual-registration___voornaam'
+							)}
 							labelFor="firstName"
 						>
 							<TextInput id="firstName" value={firstName} onChange={setFirstName} />
@@ -242,9 +256,10 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								<TooltipContent>
 									<p>
 										<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___tooltip-professioneel-email-adres">
-											Vul bij voorkeur je professioneel e-mailadres in. Dat is het adres dat je
-											krijgt in je school of organisatie, bv. jan.smit@basisschool-mirakel.be. Zo
-											kunnen we je aanvraag sneller behandelen.
+											Vul bij voorkeur je professioneel e-mailadres in. Dat is
+											het adres dat je krijgt in je school of organisatie, bv.
+											jan.smit@basisschool-mirakel.be. Zo kunnen we je
+											aanvraag sneller behandelen.
 										</Trans>
 									</p>
 								</TooltipContent>
@@ -256,7 +271,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							)}
 							labelFor="organization"
 						>
-							<TextInput id="organization" value={organization} onChange={setOrganization} />
+							<TextInput
+								id="organization"
+								value={organization}
+								onChange={setOrganization}
+							/>
 						</FormGroup>
 						<FormGroup
 							label={t(
@@ -272,7 +291,12 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							)}
 							labelFor="reason"
 						>
-							<TextArea height="small" id="reason" value={reason} onChange={setReason} />
+							<TextArea
+								height="small"
+								id="reason"
+								value={reason}
+								onChange={setReason}
+							/>
 						</FormGroup>
 						<Button type="primary" onClick={onSend}>
 							<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
@@ -291,8 +315,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	const renderConfirmation = () => (
 		<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bevestiging">
 			Bedankt voor je aanvraag. Onze helpdesk bekijkt deze binnen de vijf werkdagen. Heb je
-			ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze dan in
-			een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
+			ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze
+			dan in een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
 		</Trans>
 	);
 

@@ -31,19 +31,18 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
-import { LoadingErrorLoadedComponent } from '../../shared/components';
 import {
 	checkPermissions,
+	LoadingErrorLoadedComponent,
 	LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+} from '../../shared/components';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
-import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
+import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
-import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	GET_ASSIGNMENT_WITH_RESPONSE,
 	INSERT_ASSIGNMENT_RESPONSE,
@@ -85,7 +84,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 		 * since we might need to get the assignment content as well and
 		 * this looks cleaner if everything loads at once instead of staggered
 		 */
-		const createAssignmentResponseObject = async (tempAssignment: Avo.Assignment.Assignment) => {
+		const createAssignmentResponseObject = async (
+			tempAssignment: Avo.Assignment.Assignment
+		) => {
 			if (!isOwnerOfAssignment(tempAssignment)) {
 				let assignmentResponse: Partial<Avo.Assignment.Response> | null | undefined = get(
 					tempAssignment,
@@ -116,7 +117,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						);
 
 						if (isNil(assignmentResponseId)) {
-							toastService.info(
+							ToastService.info(
 								t(
 									'assignment/views/assignment-detail___het-aanmaken-van-de-opdracht-antwoord-entry-is-mislukt-leeg-id'
 								)
@@ -124,11 +125,15 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							return;
 						}
 
-						(assignmentResponse as Partial<Avo.Assignment.Response>).id = assignmentResponseId;
-						tempAssignment.assignment_responses = [assignmentResponse as Avo.Assignment.Response];
+						(assignmentResponse as Partial<
+							Avo.Assignment.Response
+						>).id = assignmentResponseId;
+						tempAssignment.assignment_responses = [
+							assignmentResponse as Avo.Assignment.Response,
+						];
 					} catch (err) {
 						console.error(err);
-						toastService.danger(
+						ToastService.danger(
 							t(
 								'assignment/views/assignment-detail___het-aanmaken-van-een-opdracht-antwoord-entry-is-mislukt'
 							)
@@ -160,7 +165,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					if (!tempAssignment) {
 						setLoadingInfo({
 							state: 'error',
-							message: t('assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden'),
+							message: t(
+								'assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden'
+							),
 							icon: 'search',
 						});
 						return;
@@ -187,13 +194,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							// Show toast instead of showing error using the loadingInfo
 							// since we still want to show the assignment without the content if the content fails to load
 							if (err && err.message === 'NOT_FOUND') {
-								toastService.danger(
+								ToastService.danger(
 									t(
 										'assignment/views/assignment-detail___de-opdracht-inhoud-werdt-niet-terug-gevonden'
 									)
 								);
 							} else {
-								toastService.danger(
+								ToastService.danger(
 									t(
 										'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
 									)
@@ -210,7 +217,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					switch (graphqlError) {
 						case DELETED:
 							errorObj = {
-								message: t('assignment/views/assignment-detail___de-opdracht-werd-verwijderd'),
+								message: t(
+									'assignment/views/assignment-detail___de-opdracht-werd-verwijderd'
+								),
 								icon: 'delete' as IconName,
 							};
 							break;
@@ -243,7 +252,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							break;
 					}
 
-					if (loadingInfo.state !== 'error' || !eq(errorObj.message, loadingInfo.message)) {
+					if (
+						loadingInfo.state !== 'error' ||
+						!eq(errorObj.message, loadingInfo.message)
+					) {
 						console.error(err);
 						setLoadingInfo({ state: 'error', ...errorObj });
 					}
@@ -258,7 +270,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			user,
 			retrieveAssignmentAndContent,
 			setLoadingInfo,
-			t('assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken')
+			t(
+				'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
+			)
 		);
 	}, [
 		loadingInfo.message,
@@ -273,7 +287,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 	const handleExtraOptionsClick = (itemId: 'archive') => {
 		if (itemId === 'archive') {
 			if (assignment && isOwnerOfAssignment(assignment)) {
-				toastService.info(
+				ToastService.info(
 					t(
 						'assignment/views/assignment-detail___u-kan-deze-opdracht-niet-archiveren-want-dit-is-slechts-een-voorbeeld'
 					)
@@ -284,7 +298,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 			const assignmentResponse = getAssignmentResponse();
 
 			if (!isNil(assignmentResponse) && !isNil(assignmentResponse.id)) {
-				const updatedAssignmentResponse = omit(cloneDeep(assignmentResponse), ['__typename', 'id']);
+				const updatedAssignmentResponse = omit(cloneDeep(assignmentResponse), [
+					'__typename',
+					'id',
+				]);
 				triggerUpdateAssignmentResponse({
 					variables: {
 						id: assignmentResponse.id,
@@ -293,10 +310,14 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					update: ApolloCacheManager.clearAssignmentCache,
 				})
 					.then(() => {
-						toastService.success(
+						ToastService.success(
 							isAssignmentResponseArchived()
-								? t('assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd')
-								: t('assignment/views/assignment-detail___de-opdracht-is-gearchiveerd')
+								? t(
+										'assignment/views/assignment-detail___de-opdracht-is-gedearchiveerd'
+								  )
+								: t(
+										'assignment/views/assignment-detail___de-opdracht-is-gearchiveerd'
+								  )
 						);
 
 						// Update local cached assignment
@@ -317,18 +338,26 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 								},
 							})
 						);
-						toastService.danger(
-							t('assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt')
+						ToastService.danger(
+							t(
+								'assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt'
+							)
 						);
 					});
 			} else {
 				console.error(
-					new CustomError("assignmentResponse object is null or doesn't have an id", null, {
-						assignmentResponse,
-					})
+					new CustomError(
+						"assignmentResponse object is null or doesn't have an id",
+						null,
+						{
+							assignmentResponse,
+						}
+					)
 				);
-				toastService.danger(
-					t('assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt')
+				ToastService.danger(
+					t(
+						'assignment/views/assignment-detail___het-archiveren-van-de-opdracht-is-mislukt'
+					)
 				);
 			}
 		}
@@ -357,7 +386,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						collectionFragments={
 							(assignmentContent as Avo.Collection.Collection).collection_fragments
 						}
-						showDescription={assignment.content_layout === AssignmentLayout.PlayerAndText}
+						showDescription={
+							assignment.content_layout === AssignmentLayout.PlayerAndText
+						}
 						linkToItems={false}
 						match={match}
 						user={user}
@@ -378,9 +409,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				return (
 					<ErrorView
 						icon="alert-triangle"
-						message={t('assignment/views/assignment-detail___onverwacht-opdracht-inhoud-type-0', {
-							type: content_label || undefined,
-						})}
+						message={t(
+							'assignment/views/assignment-detail___onverwacht-opdracht-inhoud-type-0',
+							{
+								type: content_label || undefined,
+							}
+						)}
 					/>
 				);
 		}
@@ -397,8 +431,8 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 
 		const isOwner = getProfileId(user) === assignment.owner_profile_id;
 		const backLink = isOwner
-			? buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: assignment.id })
-			: buildLink(WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
+			? buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id })
+			: buildLink(APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 
 		return isOwner ? (
 			<Link className="c-return" to={backLink}>
@@ -432,7 +466,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 				<Navbar>
 					<Container mode="vertical" size="small" background="alt">
 						<Container mode="horizontal">
-							<Toolbar size="huge" className="c-toolbar--drop-columns-low-mq c-toolbar__justified">
+							<Toolbar
+								size="huge"
+								className="c-toolbar--drop-columns-low-mq c-toolbar__justified"
+							>
 								<ToolbarLeft>
 									<ToolbarItem>
 										{renderBackLink()}
@@ -444,11 +481,20 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 								<ToolbarRight>
 									<>
 										<ToolbarItem>
-											<TagList tags={tags} closable={false} swatches bordered />
+											<TagList
+												tags={tags}
+												closable={false}
+												swatches
+												bordered
+											/>
 										</ToolbarItem>
 										{!!profile && (
 											<ToolbarItem>
-												{renderAvatar(profile, { includeRole: true, small: true, dark: true })}
+												{renderAvatar(profile, {
+													includeRole: true,
+													small: true,
+													dark: true,
+												})}
 											</ToolbarItem>
 										)}
 										<ToolbarItem>
@@ -460,7 +506,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 												placement="bottom-end"
 											>
 												<DropdownButton>
-													<Button icon="more-horizontal" type="secondary" />
+													<Button
+														icon="more-horizontal"
+														type="secondary"
+													/>
 												</DropdownButton>
 												<DropdownContent>
 													<MenuContent
@@ -469,8 +518,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 																icon: 'archive',
 																id: 'archive',
 																label: isAssignmentResponseArchived()
-																	? t('assignment/views/assignment-detail___dearchiveer')
-																	: t('assignment/views/assignment-detail___archiveer'),
+																	? t(
+																			'assignment/views/assignment-detail___dearchiveer'
+																	  )
+																	: t(
+																			'assignment/views/assignment-detail___archiveer'
+																	  ),
 															},
 														]}
 														onClick={handleExtraOptionsClick as any}
@@ -484,7 +537,10 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 						</Container>
 						<Spacer margin="top">
 							<Container mode="horizontal">
-								<div className="c-content" dangerouslySetInnerHTML={{ __html: description }} />
+								<div
+									className="c-content"
+									dangerouslySetInnerHTML={{ __html: description }}
+								/>
 								{!!answer_url && (
 									<Box backgroundColor="soft-white" condensed>
 										<p>
@@ -511,7 +567,9 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			notFoundError={t('assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden')}
+			notFoundError={t(
+				'assignment/views/assignment-detail___de-opdracht-werdt-niet-gevonden'
+			)}
 			dataObject={assignment}
 			render={renderAssignment}
 		/>

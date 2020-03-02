@@ -37,15 +37,14 @@ import {
 	PermissionNames,
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
+import { APP_PATH } from '../../constants';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, CustomError, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { useTableSort } from '../../shared/hooks';
-import { dataService } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
+import { dataService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
-import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
@@ -73,7 +72,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		false
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
-	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(null);
+	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(
+		null
+	);
 	const [page, setPage] = useState<number>(0);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean>(false);
 
@@ -97,7 +98,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					user,
 					permissions: PermissionNames.EDIT_ASSIGNMENTS,
 				});
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
 					)
@@ -114,7 +115,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 		return [
 			{ title: { _ilike: `%${filter}%` } },
-			{ assignment_assignment_tags: { assignment_tag: { label: { _ilike: `%${filter}%` } } } },
+			{
+				assignment_assignment_tags: {
+					assignment_tag: { label: { _ilike: `%${filter}%` } },
+				},
+			},
 			{ class_room: { _ilike: `%${filter}%` } },
 			{ assignment_type: { _ilike: `%${filter}%` } },
 		];
@@ -157,12 +162,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 			refetchAssignments();
 
-			toastService.success(
+			ToastService.success(
 				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
 			);
 		} catch (err) {
 			console.error('Failed to copy the assignment', err, { newTitle, assignment });
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
 			);
 		}
@@ -173,7 +178,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		try {
-			const assignment: Avo.Assignment.Assignment | null = await getAssigmentById(assignmentId);
+			const assignment: Avo.Assignment.Assignment | null = await getAssigmentById(
+				assignmentId
+			);
 
 			if (assignment) {
 				const archivedAssigment: Partial<Avo.Assignment.Assignment> = {
@@ -181,12 +188,21 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					is_archived: !assignment.is_archived,
 				};
 
-				if (await AssignmentService.updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
+				if (
+					await AssignmentService.updateAssignment(
+						triggerAssignmentUpdate,
+						archivedAssigment
+					)
+				) {
 					refetchAssignments();
-					toastService.success(
+					ToastService.success(
 						archivedAssigment.is_archived
-							? t('assignment/views/assignment-overview___de-opdracht-is-gearchiveerd')
-							: t('assignment/views/assignment-overview___de-opdracht-is-gedearchiveerd')
+							? t(
+									'assignment/views/assignment-overview___de-opdracht-is-gearchiveerd'
+							  )
+							: t(
+									'assignment/views/assignment-overview___de-opdracht-is-gedearchiveerd'
+							  )
 					);
 				}
 				// else: assignment was not valid and could not be saved yet
@@ -194,10 +210,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				activeView === 'archived_assignments'
-					? t('assignment/views/assignment-overview___het-dearchiveren-van-de-opdracht-is-mislukt')
-					: t('assignment/views/assignment-overview___het-archiveren-van-de-opdracht-is-mislukt')
+					? t(
+							'assignment/views/assignment-overview___het-dearchiveren-van-de-opdracht-is-mislukt'
+					  )
+					: t(
+							'assignment/views/assignment-overview___het-archiveren-van-de-opdracht-is-mislukt'
+					  )
 			);
 		}
 	};
@@ -208,7 +228,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	) => {
 		try {
 			if (typeof assignmentId === 'undefined' || assignmentId === null) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
 					)
@@ -217,11 +237,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			}
 			await AssignmentService.deleteAssignment(triggerAssignmentDelete, assignmentId);
 			refetchAssignments();
-			toastService.success(t('assignment/views/assignment-overview___de-opdracht-is-verwijdert'));
+			ToastService.success(
+				t('assignment/views/assignment-overview___de-opdracht-is-verwijdert')
+			);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
-				t('assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt')
+			ToastService.danger(
+				t(
+					'assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt'
+				)
 			);
 		}
 	};
@@ -232,7 +256,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		if (!dataRow.id) {
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'assignment/views/assignment-overview___het-opdracht-id-van-de-geselecteerde-rij-is-niet-ingesteld'
 				)
@@ -241,17 +265,21 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		}
 		switch (actionId) {
 			case 'edit':
-				navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: dataRow.id });
+				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: dataRow.id });
 				break;
 			case 'duplicate':
 				try {
-					const assignment: Avo.Assignment.Assignment = await getAssigmentById(dataRow.id);
+					const assignment: Avo.Assignment.Assignment = await getAssigmentById(
+						dataRow.id
+					);
 
 					setMarkedAssignment(assignment);
 					setDuplicateAssignmentModalOpen(true);
 				} catch (err) {
-					console.error('Failed to duplicate assigment', err, { assignmentId: dataRow.id });
-					toastService.danger(
+					console.error('Failed to duplicate assigment', err, {
+						assignmentId: dataRow.id,
+					});
+					ToastService.danger(
 						t(
 							'assignment/views/assignment-overview___het-ophalen-van-de-details-van-de-opdracht-is-mislukt'
 						)
@@ -288,8 +316,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		const cellData: any = (rowData as any)[colKey];
-		const editLink = buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id });
-		const detailLink = buildLink(ASSIGNMENT_PATH.ASSIGNMENT_DETAIL, { id: rowData.id });
+		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: rowData.id });
+		const detailLink = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: rowData.id });
 
 		switch (colKey) {
 			case 'title':
@@ -300,7 +328,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
-								<Link to={canEditAssignments ? editLink : detailLink}>{rowData.title}</Link>
+								<Link to={canEditAssignments ? editLink : detailLink}>
+									{rowData.title}
+								</Link>
 							</h3>
 						</div>
 					</Flex>
@@ -321,7 +351,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
 			case 'assignment_responses':
 				return (
-					<Link to={buildLink(ASSIGNMENT_PATH.ASSIGNMENT_RESPONSES, { id: rowData.id })}>
+					<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: rowData.id })}>
 						{(cellData || []).length}
 					</Link>
 				);
@@ -344,25 +374,35 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 										{
 											icon: 'edit2' as IconName,
 											id: 'edit',
-											label: t('assignment/views/assignment-overview___bewerk'),
+											label: t(
+												'assignment/views/assignment-overview___bewerk'
+											),
 										},
 										{
 											icon: 'archive' as IconName,
 											id: 'archive',
 											label:
 												activeView === 'archived_assignments'
-													? t('assignment/views/assignment-overview___dearchiveer')
-													: t('assignment/views/assignment-overview___archiveer'),
+													? t(
+															'assignment/views/assignment-overview___dearchiveer'
+													  )
+													: t(
+															'assignment/views/assignment-overview___archiveer'
+													  ),
 										},
 										{
 											icon: 'copy' as IconName,
 											id: 'duplicate',
-											label: t('assignment/views/assignment-overview___dupliceer'),
+											label: t(
+												'assignment/views/assignment-overview___dupliceer'
+											),
 										},
 										{
 											icon: 'delete' as IconName,
 											id: 'delete',
-											label: t('assignment/views/assignment-overview___verwijder'),
+											label: t(
+												'assignment/views/assignment-overview___verwijder'
+											),
 										},
 									]}
 									onClick={(actionId: ReactText) =>
@@ -378,7 +418,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 						<Button
 							icon="chevron-right"
-							onClick={() => navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id })}
+							onClick={() =>
+								navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
+									id: rowData.id,
+								})
+							}
 							type="borderless"
 						/>
 					</ButtonToolbar>
@@ -395,7 +439,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			id: 'assignment_assignment_tags',
 			label: t('assignment/views/assignment-overview___vak-of-project'),
 		},
-		{ id: 'class_room', label: t('assignment/views/assignment-overview___klas'), sortable: true },
+		{
+			id: 'class_room',
+			label: t('assignment/views/assignment-overview___klas'),
+			sortable: true,
+		},
 		{
 			id: 'deadline_at',
 			label: t('assignment/views/assignment-overview___deadline'),
@@ -414,7 +462,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		const assignments = [];
-		assignments.push(...(data.app_assignment_responses || []).map(response => response.assignment));
+		assignments.push(
+			...(data.app_assignment_responses || []).map(response => response.assignment)
+		);
 		assignments.push(...(data.app_assignments || []));
 		return (
 			<>
@@ -427,15 +477,25 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
 							  )
 							: activeView === 'archived_assignments'
-							? t('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd')
-							: t('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt')
+							? t(
+									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
+							  )
+							: t(
+									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
+							  )
 					}
 					renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
-						renderCell(rowData, colKey as AssignmentOverviewTableColumns, refetchAssignments)
+						renderCell(
+							rowData,
+							colKey as AssignmentOverviewTableColumns,
+							refetchAssignments
+						)
 					}
 					rowKey="id"
 					variant="styled"
-					onColumnClick={columnId => handleColumnClick(columnId as AssignmentOverviewTableColumns)}
+					onColumnClick={columnId =>
+						handleColumnClick(columnId as AssignmentOverviewTableColumns)
+					}
 					sortColumn={sortColumn}
 					sortOrder={sortOrder}
 				/>
@@ -457,15 +517,22 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
 					deleteObjectCallback={() =>
-						deleteCurrentAssignment(get(markedAssignment, 'id', null), refetchAssignments)
+						deleteCurrentAssignment(
+							get(markedAssignment, 'id', null),
+							refetchAssignments
+						)
 					}
 				/>
 
 				<InputModal
 					title={t('assignment/views/assignment-overview___dupliceer-taak')}
-					inputLabel={t('assignment/views/assignment-overview___geef-de-nieuwe-taak-een-naam')}
+					inputLabel={t(
+						'assignment/views/assignment-overview___geef-de-nieuwe-taak-een-naam'
+					)}
 					inputValue={get(markedAssignment, 'title', '')}
-					inputPlaceholder={t('assignment/views/assignment-overview___titel-van-de-nieuwe-taak')}
+					inputPlaceholder={t(
+						'assignment/views/assignment-overview___titel-van-de-nieuwe-taak'
+					)}
 					isOpen={isDuplicateAssignmentModalOpen}
 					onClose={handleDuplicateModalClose}
 					inputCallback={(newTitle: string) =>
@@ -494,7 +561,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 								/>
 								<Button
 									type="secondary"
-									label={t('assignment/views/assignment-overview___gearchiveerde-opdrachten')}
+									label={t(
+										'assignment/views/assignment-overview___gearchiveerde-opdrachten'
+									)}
 									active={activeView === 'archived_assignments'}
 									onClick={() => setActiveView('archived_assignments')}
 								/>
@@ -505,7 +574,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						<ToolbarItem>
 							<Form type="inline">
 								<FormGroup>
-									<TextInput icon="filter" value={filterString} onChange={setFilterString} />
+									<TextInput
+										icon="filter"
+										value={filterString}
+										onChange={setFilterString}
+									/>
 								</FormGroup>
 							</Form>
 						</ToolbarItem>

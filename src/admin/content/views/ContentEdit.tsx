@@ -22,18 +22,17 @@ import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql
 import { DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { dataService } from '../../../shared/services/data-service';
-import toastService from '../../../shared/services/toast-service';
+import { dataService, ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
-import {
-	ContentBlockConfig,
-	ContentBlockStateOptions,
-	ContentBlockStateType,
-	ContentBlockType,
-} from '../../content-block/content-block.types';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import {
+	ContentBlockConfig,
+	ContentBlockStateOption,
+	ContentBlockStateType,
+	ContentBlockType,
+} from '../../shared/types';
 
 import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
@@ -126,7 +125,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setIsSaving(false);
 
 		if (response) {
-			toastService.success(
+			ToastService.success(
 				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen'),
 				false
 			);
@@ -142,8 +141,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 		if (!isFormValid) {
 			setIsSaving(false);
-			toastService.danger(
-				t('admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'),
+			ToastService.danger(
+				t(
+					'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
+				),
 				false
 			);
 
@@ -187,7 +188,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 				handleResponse(updatedContent);
 			} else {
-				toastService.danger(
+				ToastService.danger(
 					t('admin/content/views/content-edit___het-content-id-id-is-ongeldig', { id }),
 					false
 				);
@@ -198,7 +199,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const handleValidation = async (): Promise<boolean> => {
 		const errors: ContentEditFormErrors = {};
-		const hasPublicationAndDePublicationDates = contentForm.publishAt && contentForm.depublishAt;
+		const hasPublicationAndDePublicationDates =
+			contentForm.publishAt && contentForm.depublishAt;
 
 		if (!contentForm.title) {
 			errors.title = t('admin/content/views/content-edit___titel-is-verplicht');
@@ -272,7 +274,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const handleStateSave = (
 		index: number,
 		formGroupType: ContentBlockStateType,
-		formGroupState: ContentBlockStateOptions,
+		formGroupState: ContentBlockStateOption,
 		stateIndex?: number
 	) => {
 		dispatch({

@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,14 +10,14 @@ import {
 	CONTENT_BLOCK_CONFIG_MAP,
 	CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
-import {
-	ContentBlockConfig,
-	ContentBlockStateOptions,
-	ContentBlockStateType,
-	ContentBlockType,
-} from '../../content-block/content-block.types';
 import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers';
+import {
+	ContentBlockConfig,
+	ContentBlockStateOption,
+	ContentBlockStateType,
+	ContentBlockType,
+} from '../../shared/types';
 
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
@@ -27,7 +28,7 @@ interface ContentEditContentBlocksProps {
 	onSave: (
 		index: number,
 		formGroupType: ContentBlockStateType,
-		formGroupState: ContentBlockStateOptions,
+		formGroupState: ContentBlockStateOption,
 		stateIndex?: number
 	) => void;
 	addComponentToState: (index: number, blockType: ContentBlockType) => void;
@@ -88,9 +89,11 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
 						})
 					}
-					onChange={(formGroupType: ContentBlockStateType, input: any, stateIndex?: number) =>
-						onSave(index, formGroupType, input, stateIndex)
-					}
+					onChange={(
+						formGroupType: ContentBlockStateType,
+						input: any,
+						stateIndex?: number
+					) => onSave(index, formGroupType, input, stateIndex)}
 					addComponentToState={() =>
 						addComponentToState(index, contentBlockConfig.block.state.blockType)
 					}
@@ -111,7 +114,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 			return (
 				<ContentBlockPreview
 					key={createKey('preview', blockIndex)}
-					componentState={components.state}
+					// TODO: this cloneDeep is temporary, this should be fixed in the content-edit
+					// reducer which will be done in a separate PR
+					componentState={cloneDeep(components.state)}
 					contentWidth={contentWidth}
 					blockState={block.state}
 				/>

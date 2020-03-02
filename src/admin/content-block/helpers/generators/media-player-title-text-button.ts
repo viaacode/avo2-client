@@ -1,28 +1,20 @@
 import i18n from '../../../../shared/translations/i18n';
+
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
+import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import {
-	BUTTON_TYPE_OPTIONS,
-	HEADING_LEVEL_OPTIONS,
-	WIDTH_OPTIONS,
-} from '../../content-block.const';
-import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	MediaPlayerTitleTextButtonBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
-import {
-	ALIGN_FIELD,
-	CONTENT_BLOCK_FIELD_DEFAULTS,
-	FORM_STATE_DEFAULTS,
-	TEXT_FIELD,
-} from './defaults';
+import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE = (): MediaPlayerTitleTextButtonBlockComponentState => ({
+export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE = (): MediaPlayerTitleTextButtonBlockComponentState => ({
 	mediaTitle: '',
 	headingTitle: '',
 	headingType: 'h2',
@@ -35,11 +27,7 @@ export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE = (): 
 export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE = (
 	position: number
 ): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(
-		ContentBlockBackgroundColor.White,
-		ContentBlockType.MediaPlayerTitleTextButton,
-		position
-	);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayerTitleTextButton, position);
 
 export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	position: number = 0
@@ -49,7 +37,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 	),
 	type: ContentBlockType.MediaPlayerTitleTextButton,
 	components: {
-		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE(),
 		fields: {
 			mediaTitle: TEXT_FIELD(
 				i18n.t(
@@ -68,16 +56,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
-					selectableTypes: ['ITEM'],
-				},
-			},
-			mediaWidth: {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/media-player-title-text-button___breedte'
-				),
-				editorType: ContentBlockEditor.Select,
-				editorProps: {
-					options: WIDTH_OPTIONS,
+					allowedTypes: ['ITEM'],
 				},
 			},
 			headingTitle: TEXT_FIELD(
@@ -91,7 +70,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			content: TEXT_FIELD(),
@@ -121,12 +100,15 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 					'admin/content-block/helpers/generators/media-player-title-text-button___knop-actie'
 				),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: DEFAULT_ALLOWED_TYPES,
+				},
 			},
 			align: ALIGN_FIELD(),
 		},
 	},
 	block: {
 		state: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

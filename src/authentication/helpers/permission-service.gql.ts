@@ -21,7 +21,12 @@ export const GET_LINKED_COLLECTIONS = gql`
 			where: {
 				_or: [
 					{ collection_uuid: { _eq: $idInt } }
-					{ assignment: { content_id: { _eq: $idString }, content_label: { _eq: COLLECTIE } } }
+					{
+						assignment: {
+							content_id: { _eq: $idString }
+							content_label: { _eq: COLLECTIE }
+						}
+					}
 				]
 				owner_profile_ids: { _has_key: $userId }
 			}

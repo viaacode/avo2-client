@@ -97,6 +97,7 @@ export const GET_ITEMS_BY_IDS = gql`
 	query getCollectionsByIds($ids: [bpchar!]!) {
 		items: app_item_meta(where: { external_id: { _in: $ids } }) {
 			id
+			uid
 			external_id
 			duration
 			title
@@ -142,13 +143,15 @@ export const DELETE_COLLECTION = gql`
 	mutation deleteCollectionById($id: uuid!) {
 		delete_app_collections(where: { id: { _eq: $id } }) {
 			affected_rows
-			__typename
 		}
 	}
 `;
 
 export const UPDATE_COLLECTION_FRAGMENT = gql`
-	mutation updateCollectionFragmentById($id: Int!, $fragment: app_collection_fragments_set_input!) {
+	mutation updateCollectionFragmentById(
+		$id: Int!
+		$fragment: app_collection_fragments_set_input!
+	) {
 		update_app_collection_fragments(where: { id: { _eq: $id } }, _set: $fragment) {
 			affected_rows
 		}
@@ -229,6 +232,30 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 	}
 `;
 
+export const GET_COLLECTION_TILE_BY_ID = gql`
+	query getCollectionTileById($id: uuid!) {
+		tileData: app_collections(where: { id: { _eq: $id } }) {
+			created_at
+			collection_fragments_aggregate {
+				aggregate {
+					count
+				}
+			}
+			title
+			thumbnail_path
+			type {
+				label
+			}
+		}
+		# TODO: uncomment when views are available
+		# count: app_collection_views_aggregate(where: { id: { _eq: $id } }) {
+		# 	aggregate {
+		# 		count
+		# 	}
+		# }
+	}
+`;
+
 export const GET_COLLECTIONS = gql`
 	query getCollections($limit: Int!) {
 		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 3 } }, limit: $limit) {
@@ -238,10 +265,13 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
-// TODO: Move bundle GQL to bundle.gql.ts
-export const GET_BUNDLES = gql`
-	query getBundles($limit: Int!) {
-		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 4 } }, limit: $limit) {
+export const GET_COLLECTIONS_BY_TITLE = gql`
+	query getCollections($title: String!, $limit: Int!) {
+		app_collections(
+			order_by: { title: asc }
+			where: { type_id: { _eq: 3 }, title: { _ilike: $title } }
+			limit: $limit
+		) {
 			id
 			title
 		}
@@ -250,7 +280,9 @@ export const GET_BUNDLES = gql`
 
 export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 	query getCollectionNamesByOwner($owner_profile_id: uuid) {
-		app_collections(where: { type_id: { _eq: 3 }, owner_profile_id: { _eq: $owner_profile_id } }) {
+		app_collections(
+			where: { type_id: { _eq: 3 }, owner_profile_id: { _eq: $owner_profile_id } }
+		) {
 			id
 			title
 		}
@@ -259,7 +291,9 @@ export const GET_COLLECTION_TITLES_BY_OWNER = gql`
 
 export const GET_BUNDLE_TITLES_BY_OWNER = gql`
 	query getCollectionNamesByOwner($owner_profile_id: uuid) {
-		app_collections(where: { type_id: { _eq: 4 }, owner_profile_id: { _eq: $owner_profile_id } }) {
+		app_collections(
+			where: { type_id: { _eq: 4 }, owner_profile_id: { _eq: $owner_profile_id } }
+		) {
 			id
 			title
 		}

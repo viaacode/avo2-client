@@ -47,8 +47,8 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 										<Spacer margin={['top-small', 'bottom']}>
 											<p>
 												<Trans i18nKey="authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas">
-													Maak een gratis account aan en verrijk je lessen met beeld en geluid op
-													maat van de klas.
+													Maak een gratis account aan en verrijk je lessen
+													met beeld en geluid op maat van de klas.
 												</Trans>
 											</p>
 										</Spacer>
@@ -59,7 +59,12 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 													'authentication/views/register-or-login___account-aanmaken-als-lesgever'
 												)}
 												type="primary"
-												onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}
+												onClick={() =>
+													redirectToClientPage(
+														APP_PATH.STAMBOEK.route,
+														history
+													)
+												}
 											/>
 										</Spacer>
 										<Button
@@ -68,7 +73,12 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												'authentication/views/register-or-login___krijg-toegang-als-leerling'
 											)}
 											type="primary"
-											onClick={() => redirectToClientPage(APP_PATH.FOR_PUPILS, history)}
+											onClick={() =>
+												redirectToClientPage(
+													APP_PATH.FOR_PUPILS.route,
+													history
+												)
+											}
 										/>
 									</FlexItem>
 								</Flex>
@@ -85,7 +95,11 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 												Log dan hier in.
 											</Trans>
 										</BlockHeading>
-										<LoginOptions history={history} location={location} match={match} />
+										<LoginOptions
+											history={history}
+											location={location}
+											match={match}
+										/>
 									</FlexItem>
 								</Flex>
 							</Column>

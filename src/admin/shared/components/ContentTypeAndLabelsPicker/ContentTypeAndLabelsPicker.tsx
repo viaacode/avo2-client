@@ -9,7 +9,7 @@ import { Column, FormGroup, Grid, LabelObj, SelectOption } from '@viaa/avo2-comp
 
 import { ContentPageType } from '../../../content/content.types';
 import { useContentTypes } from '../../../content/hooks';
-import { REACT_SELECT_DEFAULT_OPTIONS } from '../ContentPicker/ContentPicker';
+import { REACT_SELECT_DEFAULT_OPTIONS } from '../ContentPicker/ContentPicker.const';
 
 export interface ContentTypeAndLabelsValue {
 	selectedContentType: ContentPageType;
@@ -24,13 +24,13 @@ export interface ContentLabel {
 	updated_at: string;
 }
 
-export interface ContentPickerProps {
+export interface ContentTypeAndLabelsProps {
 	value?: ContentTypeAndLabelsValue;
 	onChange: (value: ContentTypeAndLabelsValue) => void;
 	errors: string[];
 }
 
-const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
+export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsProps> = ({
 	value = {
 		selectedContentType: 'PROJECT',
 		selectedLabels: [],
@@ -77,7 +77,7 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 		// 		console.error('Failed to get content types in ContentTypeAndLabelsPicker', err, {
 		// 			query: 'GET_CONTENT_TYPES',
 		// 		});
-		// 		toastService.danger(t('admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-types-is-mislukt'));
+		// 		ToastService.danger(t('admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-types-is-mislukt'));
 		// 	})
 		//  .finally(() => setIsLoading(false));
 	}, [value.selectedContentType, setLabels, t]);
@@ -124,7 +124,10 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 						'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
 					)}
 					options={(labels || []).map(
-						(labelObj): SelectOption<number> => ({ label: labelObj.label, value: labelObj.id })
+						(labelObj): SelectOption<number> => ({
+							label: labelObj.label,
+							value: labelObj.id,
+						})
 					)}
 					value={compact(
 						((value.selectedLabels || []) as LabelObj[]).map(
@@ -145,5 +148,3 @@ const ContentTypeAndLabelsPicker: FunctionComponent<ContentPickerProps> = ({
 
 	return <FormGroup error={errors}>{renderSelectPicker()}</FormGroup>;
 };
-
-export default ContentTypeAndLabelsPicker;

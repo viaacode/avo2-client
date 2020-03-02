@@ -4,20 +4,19 @@ import { cloneDeep, compact, get, isNil, omit, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
+import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError } from '../shared/helpers';
-import { ApolloCacheManager, dataService } from '../shared/services/data-service';
+import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
-import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_BUNDLES,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
+	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
@@ -77,7 +76,9 @@ export class CollectionService {
 		}
 	}
 
-	public static reorderFragments(fragments: Avo.Collection.Fragment[]): Avo.Collection.Fragment[] {
+	public static reorderFragments(
+		fragments: Avo.Collection.Fragment[]
+	): Avo.Collection.Fragment[] {
 		return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
 			...fragment,
 			position: index + 1,
@@ -94,7 +95,7 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
-				toastService.danger(
+				ToastService.danger(
 					i18n.t('collection/collection___de-huidige-collectie-is-niet-gevonden')
 				);
 				return null;
@@ -108,25 +109,31 @@ export class CollectionService {
 			}
 
 			if (validationErrors.length) {
-				toastService.danger(validationErrors);
+				ToastService.danger(validationErrors);
 				return null;
 			}
 
 			let newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
 
 			// Remove custom_title and custom_description if user wants to use the item's original title and description
-			(newCollection.collection_fragments || []).forEach((fragment: Avo.Collection.Fragment) => {
-				if (!fragment.use_custom_fields) {
-					delete fragment.custom_title;
-					delete fragment.custom_description;
+			(newCollection.collection_fragments || []).forEach(
+				(fragment: Avo.Collection.Fragment) => {
+					if (!fragment.use_custom_fields) {
+						delete fragment.custom_title;
+						delete fragment.custom_description;
+					}
 				}
-			});
+			);
 
 			// Not using lodash default value parameter since the value an be null and
 			// that doesn't default to the default value
 			// only undefined defaults to the default value
-			const initialFragmentIds: number[] = this.getFragmentIdsFromCollection(initialCollection);
-			const currentFragmentIds: number[] = this.getFragmentIdsFromCollection(updatedCollection);
+			const initialFragmentIds: number[] = this.getFragmentIdsFromCollection(
+				initialCollection
+			);
+			const currentFragmentIds: number[] = this.getFragmentIdsFromCollection(
+				updatedCollection
+			);
 			const newFragmentIds: number[] = this.getFragmentIdsFromCollection(newCollection);
 			const currentFragments: Avo.Collection.Fragment[] = get(
 				updatedCollection,
@@ -180,8 +187,11 @@ export class CollectionService {
 				});
 
 				if (!fragmentToUpdate) {
-					toastService.info(
-						i18n.t('collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id', { id })
+					ToastService.info(
+						i18n.t(
+							'collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id',
+							{ id }
+						)
 					);
 					return;
 				}
@@ -226,7 +236,9 @@ export class CollectionService {
 
 			if (newCollection.type_id === ContentTypeNumber.collection) {
 				// Determine new thumbnail path since videos could have changed order / been deleted
-				newCollection.thumbnail_path = await this.getThumbnailPathForCollection(newCollection);
+				newCollection.thumbnail_path = await this.getThumbnailPathForCollection(
+					newCollection
+				);
 			}
 
 			// Trigger collection update
@@ -319,7 +331,9 @@ export class CollectionService {
 				collectionToInsert,
 			});
 			// Fallback to simple copy title
-			collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${collectionToInsert.title}`;
+			collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${
+				collectionToInsert.title
+			}`;
 		}
 
 		return await CollectionService.insertCollection(
@@ -345,7 +359,8 @@ export class CollectionService {
 
 		return omit(collection, propertiesToDelete);
 	}
-	public static async getBundles(limit: number): Promise<Avo.Collection.Collection[]> {
+
+	public static async getBundles(limit?: number): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_BUNDLES,
@@ -362,7 +377,26 @@ export class CollectionService {
 		}
 	}
 
-	// TODO: Merge the following two get collections functions.
+	public static async getBundlesByTitle(
+		title: string,
+		limit?: number
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_BUNDLES_BY_TITLE,
+				variables: { title, limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			const error = new CustomError('Het ophalen van de bundels is mislukt.', err, {
+				query: 'GET_BUNDLES_BY_TITLE',
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
 	public static async getCollections(limit: number): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
@@ -381,6 +415,27 @@ export class CollectionService {
 		}
 	}
 
+	public static async getCollectionsByTitle(
+		title: string,
+		limit: number
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTIONS_BY_TITLE,
+				variables: { title, limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
+				query: 'GET_COLLECTIONS_BY_TITLE',
+				variables: { title, limit },
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
 	public static async getCollectionTitlesByUser(
 		type: 'collection' | 'bundle',
 		user: Avo.User.User | undefined
@@ -388,7 +443,10 @@ export class CollectionService {
 		let queryInfo: any;
 		try {
 			queryInfo = {
-				query: type === 'collection' ? GET_COLLECTION_TITLES_BY_OWNER : GET_BUNDLE_TITLES_BY_OWNER,
+				query:
+					type === 'collection'
+						? GET_COLLECTION_TITLES_BY_OWNER
+						: GET_BUNDLE_TITLES_BY_OWNER,
 				variables: { owner_profile_id: getProfileId(user) },
 			};
 			const response = await dataService.query(queryInfo);
@@ -398,7 +456,9 @@ export class CollectionService {
 				user,
 				type,
 				query:
-					type === 'collection' ? 'GET_COLLECTION_TITLES_BY_OWNER' : 'GET_BUNDLE_TITLES_BY_OWNER',
+					type === 'collection'
+						? 'GET_COLLECTION_TITLES_BY_OWNER'
+						: 'GET_BUNDLE_TITLES_BY_OWNER',
 			});
 			console.error(error);
 			throw error;
@@ -481,7 +541,8 @@ export class CollectionService {
 					| Avo.Collection.Fragment
 					| undefined = collectionObj.collection_fragments.find(
 					fragment =>
-						fragment.external_id === (type === 'collection' ? itemInfo.external_id : itemInfo.id)
+						fragment.external_id ===
+						(type === 'collection' ? itemInfo.external_id : itemInfo.id)
 				);
 				if (collectionFragment) {
 					collectionFragment.item_meta = itemInfo;
@@ -522,7 +583,9 @@ export class CollectionService {
 	private static getFragmentIdsFromCollection(
 		collection: Partial<Avo.Collection.Collection> | null
 	): number[] {
-		return this.getFragments(collection).map((fragment: Avo.Collection.Fragment) => fragment.id);
+		return this.getFragments(collection).map(
+			(fragment: Avo.Collection.Fragment) => fragment.id
+		);
 	}
 
 	private static async insertFragments(
@@ -560,7 +623,7 @@ export class CollectionService {
 		triggerCollectionFragmentInsert: any
 	) {
 		if (!collection) {
-			toastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
+			ToastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
 			return;
 		}
 
@@ -569,7 +632,7 @@ export class CollectionService {
 		);
 
 		if (!tempFragment) {
-			toastService.info(
+			ToastService.info(
 				i18n.t('collection/collection___fragment-om-toe-te-voegen-is-niet-gevonden-id-id', {
 					id: tempId,
 				})
@@ -615,9 +678,13 @@ export class CollectionService {
 			return collection.thumbnail_path;
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
-			toastService.danger([
-				i18n.t('collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'),
-				i18n.t('collection/collection___de-collectie-zal-opgeslagen-worden-zonder-thumbnail'),
+			ToastService.danger([
+				i18n.t(
+					'collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'
+				),
+				i18n.t(
+					'collection/collection___de-collectie-zal-opgeslagen-worden-zonder-thumbnail'
+				),
 			]);
 			return null;
 		}

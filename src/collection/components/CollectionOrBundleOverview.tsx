@@ -23,8 +23,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
+import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { SEARCH_PATH } from '../../search/search.const';
 import { DataQueryComponent, DeleteObjectModal } from '../../shared/components';
 import {
 	buildLink,
@@ -36,12 +36,10 @@ import {
 	getAvatarProps,
 	navigate,
 } from '../../shared/helpers';
-import { ApolloCacheManager } from '../../shared/services/data-service';
-import toastService from '../../shared/services/toast-service';
+import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
-import { COLLECTION_PATH } from '../collection.const';
 import { DELETE_COLLECTION, GET_COLLECTIONS_BY_OWNER } from '../collection.gql';
 import { ContentTypeNumber } from '../collection.types';
 import './CollectionOrBundleOverview.scss';
@@ -88,15 +86,19 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			toastService.success(
+			ToastService.success(
 				isCollection
-					? t('collection/components/collection-or-bundle-overview___collectie-is-verwijderd')
-					: t('collection/components/collection-or-bundle-overview___bundel-is-verwijderd')
+					? t(
+							'collection/components/collection-or-bundle-overview___collectie-is-verwijderd'
+					  )
+					: t(
+							'collection/components/collection-or-bundle-overview___bundel-is-verwijderd'
+					  )
 			);
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				isCollection
 					? t(
 							'collection/components/collection-or-bundle-overview___collectie-kon-niet-verwijderd-worden'
@@ -114,9 +116,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const onClickCreate = () =>
 		history.push(
 			buildLink(
-				SEARCH_PATH.SEARCH,
+				APP_PATH.SEARCH.route,
 				{},
-				isCollection ? 'filters={"type":["video","audio"]}' : 'filters={"type":["collectie"]}'
+				isCollection
+					? 'filters={"type":["video","audio"]}'
+					: 'filters={"type":["collectie"]}'
 			)
 		);
 
@@ -134,7 +138,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	// Render functions
 	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
-		<Link to={buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id })} title={title}>
+		<Link to={buildLink(APP_PATH.COLLECTION_DETAIL.route, { id })} title={title}>
 			<Thumbnail
 				alt="thumbnail"
 				category={type}
@@ -149,7 +153,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			<h3 className="c-content-header__header">
 				<Link
 					to={buildLink(
-						isCollection ? COLLECTION_PATH.COLLECTION_DETAIL : BUNDLE_PATH.BUNDLE_DETAIL,
+						isCollection ? APP_PATH.COLLECTION_DETAIL.route : BUNDLE_PATH.BUNDLE_DETAIL,
 						{ id }
 					)}
 					title={title}
@@ -160,7 +164,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={type}>
 					<MetaDataItem>
-						<span title={`Aangemaakt: ${formatDate(created_at)}`}>{fromNow(created_at)}</span>
+						<span title={`Aangemaakt: ${formatDate(created_at)}`}>
+							{fromNow(created_at)}
+						</span>
 					</MetaDataItem>
 					{/* TODO: Views from GQL */}
 					<MetaDataItem icon="eye" label="0" />
@@ -171,7 +177,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderActions = (collectionId: string) => {
 		const ROW_DROPDOWN_ITEMS = [
-			createDropdownMenuItem('edit', t('collection/views/collection-overview___bewerk'), 'edit2'),
+			createDropdownMenuItem(
+				'edit',
+				t('collection/views/collection-overview___bewerk'),
+				'edit2'
+			),
 			...(isCollection
 				? [
 						createDropdownMenuItem(
@@ -181,7 +191,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						),
 				  ]
 				: []),
-			createDropdownMenuItem('delete', t('collection/views/collection-overview___verwijderen')),
+			createDropdownMenuItem(
+				'delete',
+				t('collection/views/collection-overview___verwijderen')
+			),
 		];
 
 		// Listeners
@@ -190,12 +203,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				case 'edit':
 					navigate(
 						history,
-						isCollection ? COLLECTION_PATH.COLLECTION_EDIT : BUNDLE_PATH.BUNDLE_EDIT,
+						isCollection ? APP_PATH.COLLECTION_EDIT.route : BUNDLE_PATH.BUNDLE_EDIT,
 						{ id: collectionId }
 					);
 					break;
 				case 'createAssignment':
-					history.push(generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'));
+					history.push(
+						generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE')
+					);
 					break;
 				case 'delete':
 					onClickDelete(collectionId);
@@ -227,7 +242,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					onClick={() =>
 						navigate(
 							history,
-							isCollection ? COLLECTION_PATH.COLLECTION_DETAIL : BUNDLE_PATH.BUNDLE_DETAIL,
+							isCollection
+								? APP_PATH.COLLECTION_DETAIL.route
+								: BUNDLE_PATH.BUNDLE_DETAIL,
 							{ id: collectionId }
 						)
 					}
@@ -296,11 +313,17 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								},
 						  ]
 						: []),
-					{ id: 'access', label: t('collection/views/collection-overview___toegang'), col: '2' },
+					{
+						id: 'access',
+						label: t('collection/views/collection-overview___toegang'),
+						col: '2',
+					},
 					{ id: 'actions', label: '', col: '1' },
 				]}
 				data={collections}
-				emptyStateMessage={t('collection/views/collection-overview___geen-resultaten-gevonden')}
+				emptyStateMessage={t(
+					'collection/views/collection-overview___geen-resultaten-gevonden'
+				)}
 				renderCell={renderCell}
 				rowKey="id"
 				variant="styled"
@@ -321,7 +344,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			icon="collection"
 			message={
 				isCollection
-					? t('collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt')
+					? t(
+							'collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt'
+					  )
 					: t(
 							'collection/components/collection-or-bundle-overview___je-hebt-nog-geen-bundels-aangemaakt'
 					  )
@@ -330,17 +355,18 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			<p>
 				{isCollection ? (
 					<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
-						Een collectie is een verzameling van video- of audiofragmenten rond een bepaald thema of
-						voor een bepaalde les. Nadat je een collectie hebt aangemaakt kan je deze delen met
-						andere gebruikers om samen aan te werken. Andere gebruikers kunnen ook collecties met
-						jou delen die je dan hier terugvindt.
+						Een collectie is een verzameling van video- of audiofragmenten rond een
+						bepaald thema of voor een bepaalde les. Nadat je een collectie hebt
+						aangemaakt kan je deze delen met andere gebruikers om samen aan te werken.
+						Andere gebruikers kunnen ook collecties met jou delen die je dan hier
+						terugvindt.
 					</Trans>
 				) : (
 					<Trans i18nKey="collection/components/beschrijving-hoe-collecties-aan-te-maken">
-						Een bundel is een verzameling van collecties rond een bepaald thema of voor een bepaalde
-						les. Nadat je een bundel hebt aangemaakt kan je deze delen met andere gebruikers om
-						samen aan te werken. Andere gebruikers kunnen ook bundels met jou delen die je dan hier
-						terugvindt.
+						Een bundel is een verzameling van collecties rond een bepaald thema of voor
+						een bepaalde les. Nadat je een bundel hebt aangemaakt kan je deze delen met
+						andere gebruikers om samen aan te werken. Andere gebruikers kunnen ook
+						bundels met jou delen die je dan hier terugvindt.
 					</Trans>
 				)}
 			</p>
@@ -371,7 +397,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				title={
 					isCollection
 						? t('collection/views/collection-overview___verwijder-collectie')
-						: t('collection/components/collection-or-bundle-overview___verwijder-bundel')
+						: t(
+								'collection/components/collection-or-bundle-overview___verwijder-bundel'
+						  )
 				}
 				body={t(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
@@ -397,7 +425,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			renderData={renderCollections}
 			notFoundMessage={
 				isCollection
-					? t('collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden')
+					? t(
+							'collection/views/collection-overview___er-konden-geen-collecties-worden-gevonden'
+					  )
 					: t(
 							'collection/components/collection-or-bundle-overview___er-konden-geen-bundels-worden-gevonden'
 					  )

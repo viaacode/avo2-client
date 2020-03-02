@@ -22,25 +22,21 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { ControlledDropdown, LoadingErrorLoadedComponent } from '../../shared/components';
-import { navigate } from '../../shared/helpers';
-
 import {
 	PermissionNames,
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { dataService } from '../../shared/services/data-service';
-
+import { APP_PATH } from '../../constants';
 import {
-	ASSIGNMENTS_ID,
-	BOOKMARKS_ID,
-	BUNDLES_ID,
-	COLLECTIONS_ID,
-	TABS,
-	WORKSPACE_PATH,
-} from '../workspace.const';
+	ControlledDropdown,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../shared/components';
+import { navigate } from '../../shared/helpers';
+import { dataService } from '../../shared/services';
+
+import { ASSIGNMENTS_ID, BOOKMARKS_ID, BUNDLES_ID, COLLECTIONS_ID, TABS } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabFilter, TabViewMap } from '../workspace.types';
 import Bookmarks from './Bookmarks';
@@ -116,17 +112,30 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			}),
 			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
 				component: () => (
-					<AssignmentOverview history={history} location={location} match={match} user={user} />
+					<AssignmentOverview
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+					/>
 				),
 			}),
 			...addTabIfUserHasPerm(BOOKMARKS_ID, {
-				component: () => <Bookmarks />,
+				component: () => (
+					<Bookmarks
+						history={history}
+						location={location}
+						match={match}
+						user={user}
+						numberOfItems={tabCounts[BOOKMARKS_ID]}
+					/>
+				),
 			}),
 		});
 	}, [tabCounts, permissions, t, history, location, match, user]);
 
 	const goToTab = (id: ReactText) => {
-		navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: id });
+		navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
 		setTabId(String(id));
 	};
 
@@ -173,7 +182,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'),
+					message: t(
+						'workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'
+					),
 				});
 			});
 	}, [user, t, setPermissions, permissions]);
@@ -223,7 +234,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 							<DropdownButton>
 								<div className="c-filter-dropdown c-filter-dropdown--no-bg">
 									<div className="c-filter-dropdown__label">
-										{currentFilter ? currentFilter.label : filter.options[0].label}
+										{currentFilter
+											? currentFilter.label
+											: filter.options[0].label}
 									</div>
 									<div className="c-filter-dropdown__options">
 										<Icon name="caret-down" />
@@ -231,7 +244,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								</div>
 							</DropdownButton>
 							<DropdownContent>
-								<MenuContent menuItems={filter.options} onClick={handleMenuContentClick} />
+								<MenuContent
+									menuItems={filter.options}
+									onClick={handleMenuContentClick}
+								/>
 							</DropdownContent>
 						</ControlledDropdown>
 					</FormGroup>
@@ -246,7 +262,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<BlockHeading type="h2" className="u-m-0">
-							<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">Mijn Werkruimte</Trans>
+							<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">
+								Mijn Werkruimte
+							</Trans>
 						</BlockHeading>
 					</Container>
 				</Container>

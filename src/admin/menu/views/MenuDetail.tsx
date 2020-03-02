@@ -17,8 +17,8 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
+import { ToastService } from '../../../shared/services';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
-import toastService from '../../../shared/services/toast-service';
 
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
@@ -68,15 +68,17 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		})
 			.then(() => {
 				refetchMenuItems();
-				toastService.success(
+				ToastService.success(
 					t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd'),
 					false
 				);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger(
-					t('admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'),
+				ToastService.danger(
+					t(
+						'admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'
+					),
 					false
 				);
 			});
@@ -108,15 +110,19 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		Promise.all(promises)
 			.then(() => {
 				refetch();
-				toastService.success(
-					t('admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'),
+				ToastService.success(
+					t(
+						'admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'
+					),
 					false
 				);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger(
-					t('admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'),
+				ToastService.danger(
+					t(
+						'admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'
+					),
 					false
 				);
 			});
@@ -166,7 +172,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetchMenuItems: () => void) => {
 		// Return to overview if menu is empty
 		if (!menu.length) {
-			toastService.danger(
+			ToastService.danger(
 				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
 				false
 			);
@@ -196,12 +202,18 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 									{menuItems.map((item, index) => (
 										<tr
 											key={`nav-edit-${item.id}`}
-											className={activeRow === item.id ? 'c-menu-detail__table-row--active' : ''}
+											className={
+												activeRow === item.id
+													? 'c-menu-detail__table-row--active'
+													: ''
+											}
 										>
 											<td className="o-table-col-1">
 												<ButtonToolbar>
-													{!isFirst(index) && renderReorderButton('up', index, item.id)}
-													{!isLast(index) && renderReorderButton('down', index, item.id)}
+													{!isFirst(index) &&
+														renderReorderButton('up', index, item.id)}
+													{!isLast(index) &&
+														renderReorderButton('down', index, item.id)}
 												</ButtonToolbar>
 											</td>
 											<td>{item.label}</td>
@@ -210,10 +222,13 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 													<Button
 														icon="edit-2"
 														onClick={() =>
-															handleNavigate(MENU_PATH.MENU_ITEM_EDIT, {
-																menu: menuId,
-																id: String(item.id),
-															})
+															handleNavigate(
+																MENU_PATH.MENU_ITEM_EDIT,
+																{
+																	menu: menuId,
+																	id: String(item.id),
+																}
+															)
 														}
 														type="secondary"
 													/>
@@ -232,7 +247,9 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 								<Flex center>
 									<Button
 										icon="plus"
-										label={t('admin/menu/views/menu-detail___voeg-een-item-toe')}
+										label={t(
+											'admin/menu/views/menu-detail___voeg-een-item-toe'
+										)}
 										onClick={() =>
 											handleNavigate(MENU_PATH.MENU_ITEM_CREATE, {
 												menu: menuId,

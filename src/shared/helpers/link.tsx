@@ -4,15 +4,12 @@ import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
-import { COLLECTION_PATH } from '../../collection/collection.const';
-import { CONTENT_TYPE_TO_ROUTE } from '../../constants';
-import { ITEM_PATH } from '../../item/item.const';
-import { SEARCH_PATH } from '../../search/search.const';
-import toastService from '../services/toast-service';
+import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
+import { ToastService } from '../services';
 import i18n from '../translations/i18n';
 
 type RouteParams = { [key: string]: string | number | undefined };
@@ -58,7 +55,7 @@ export const navigate = (
 	// Abort navigation when params were expected but none were given
 	if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
 		navigationConsoleError(route, missingParams);
-		toastService.danger(navigationToastError);
+		ToastService.danger(navigationToastError);
 
 		return;
 	}
@@ -67,7 +64,7 @@ export const navigate = (
 	const builtLink = buildLink(route, params, search);
 
 	if (isEmpty(builtLink)) {
-		toastService.danger(navigationToastError);
+		ToastService.danger(navigationToastError);
 
 		return;
 	}
@@ -75,23 +72,22 @@ export const navigate = (
 	history.push(builtLink);
 };
 
-export const navigateToContentType = (action: any, history: History) => {
-	// TODO: Change any to ButtonAction when typings is updated.
+export const navigateToContentType = (action: ButtonAction, history: History) => {
 	if (action) {
 		const { type, value } = action;
 
-		switch (type) {
+		switch (type as Avo.Core.ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
 				history.push(value as string);
 				break;
 			case 'COLLECTION':
-				navigate(history, COLLECTION_PATH.COLLECTION_DETAIL, {
+				navigate(history, APP_PATH.COLLECTION_DETAIL.route, {
 					id: value as string,
 				});
 				break;
 			case 'ITEM':
-				navigate(history, ITEM_PATH.ITEM, {
+				navigate(history, APP_PATH.ITEM_DETAIL.route, {
 					id: value,
 				});
 				break;
@@ -152,7 +148,7 @@ export function generateSearchLinkString(filterProp: Avo.Search.FilterProp, filt
 			? queryString.stringify({ filters: JSON.stringify({ query: filterValue }) })
 			: queryString.stringify({ filters: `{"${filterProp}":["${filterValue}"]}` });
 
-	return buildLink(SEARCH_PATH.SEARCH, {}, queryParams);
+	return buildLink(APP_PATH.SEARCH.route, {}, queryParams);
 }
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string) {
@@ -165,7 +161,7 @@ export function generateAssignmentCreateLink(
 	contentLabel?: Avo.Assignment.ContentLabel
 ) {
 	return buildLink(
-		ASSIGNMENT_PATH.ASSIGNMENT_CREATE,
+		APP_PATH.ASSIGNMENT_CREATE.route,
 		{},
 		`assignment_type=${assignmentType}&content_id=${contentId}&content_label=${contentLabel}`
 	);

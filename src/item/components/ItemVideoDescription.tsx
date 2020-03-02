@@ -1,5 +1,5 @@
 import { debounce, get } from 'lodash-es';
-import { parse } from 'querystring';
+import { parse } from 'query-string';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -17,17 +17,17 @@ import {
 	Column,
 	convertToHtml,
 	ExpandableContainer,
-	FlowPlayer,
 	Grid,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
+import { FlowPlayerWrapper } from '../../shared/components';
 import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
-import toastService from '../../shared/services/toast-service';
 
 import './ItemVideoDescription.scss';
 
@@ -60,6 +60,11 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [time, setTime] = useState<number>(0);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
+
+	useEffect(() => {
+		// reset token when item changes
+		setPlayerTicket(undefined);
+	}, [itemMetaData.external_id]);
 
 	useEffect(() => {
 		// Set video current time from the query params once the video has loaded its meta data
@@ -119,7 +124,12 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				);
 			}
 
-			return <span key={`description-part-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
+			return (
+				<span
+					key={`description-part-${index}`}
+					dangerouslySetInnerHTML={{ __html: part }}
+				/>
+			);
 		});
 	};
 
@@ -142,7 +152,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
 					)
@@ -151,7 +161,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 
 	const renderMedia = () => (
 		<div className="c-video-player t-player-skin--dark">
-			<FlowPlayer
+			<FlowPlayerWrapper
 				src={playerTicket ? playerTicket.toString() : null}
 				seekTime={time}
 				poster={itemMetaData.thumbnail_path}
@@ -165,6 +175,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
 				autoplay
+				itemUuid={(itemMetaData as any).uid} // TODO remove cast to any when typings v2.11 is released
 			/>
 		</div>
 	);

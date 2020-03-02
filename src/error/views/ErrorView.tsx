@@ -1,6 +1,6 @@
 import { History, Location } from 'history';
 import { uniq } from 'lodash-es';
-import queryString from 'querystring';
+import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { match, RouteComponentProps, withRouter } from 'react-router';
@@ -14,13 +14,12 @@ import {
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { CustomError } from '../../shared/helpers';
 import i18n from '../../shared/translations/i18n';
-
-export type ErrorActionButton = 'home' | 'helpdesk'; // TODO use type in typings repo
 
 interface ErrorViewQueryParams {
 	message?: string;
@@ -31,7 +30,7 @@ interface ErrorViewQueryParams {
 interface ErrorViewProps extends RouteComponentProps {
 	message?: string;
 	icon?: IconName;
-	actionButtons?: ErrorActionButton[];
+	actionButtons?: Avo.Auth.ErrorActionButton[];
 	children?: ReactNode;
 	history: History;
 	match: match<ErrorViewQueryParams>;
@@ -84,8 +83,15 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 							<ButtonToolbar>
 								{buttons.includes('home') && (
 									<Button
-										onClick={() => redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)}
-										label={t('error/views/error-view___ga-terug-naar-de-homepagina')}
+										onClick={() =>
+											redirectToClientPage(
+												APP_PATH.LOGGED_IN_HOME.route,
+												history
+											)
+										}
+										label={t(
+											'error/views/error-view___ga-terug-naar-de-homepagina'
+										)}
 									/>
 								)}
 								{buttons.includes('helpdesk') && (

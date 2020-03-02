@@ -1,35 +1,29 @@
 import i18n from '../../../../shared/translations/i18n';
-import { HEADING_LEVEL_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	HeadingBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
-import {
-	ALIGN_FIELD,
-	CONTENT_BLOCK_FIELD_DEFAULTS,
-	FORM_STATE_DEFAULTS,
-	TEXT_FIELD,
-} from './defaults';
+import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_HEADING_BLOCK_COMPONENT_STATE = (): HeadingBlockComponentState => ({
+export const INITIAL_HEADING_COMPONENTS_STATE = (): HeadingBlockComponentState => ({
 	children: '',
 	type: 'h2',
-	align: 'left',
+	align: 'center',
 });
 
 export const INITIAL_HEADING_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Heading, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Heading, position);
 
 export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/heading___titel'),
 	type: ContentBlockType.Heading,
 	components: {
-		state: INITIAL_HEADING_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_HEADING_COMPONENTS_STATE(),
 		fields: {
 			children: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
@@ -42,7 +36,7 @@ export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_LEVEL_OPTIONS,
+					options: HEADING_TYPE_OPTIONS,
 				},
 			},
 			align: ALIGN_FIELD(),
@@ -50,6 +44,6 @@ export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 	},
 	block: {
 		state: INITIAL_HEADING_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

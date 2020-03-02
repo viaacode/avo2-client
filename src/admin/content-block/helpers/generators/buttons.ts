@@ -1,25 +1,19 @@
 import i18n from '../../../../shared/translations/i18n';
 
+import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
-import { BUTTON_TYPE_OPTIONS } from '../../content-block.const';
-
 import {
 	ButtonsBlockComponentState,
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { BUTTON_TYPE_OPTIONS } from '../../content-block.const';
 
-import {
-	ALIGN_FIELD,
-	CONTENT_BLOCK_FIELD_DEFAULTS,
-	FORM_STATE_DEFAULTS,
-	TEXT_FIELD,
-} from './defaults';
+import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentState[] => [
+export const INITIAL_BUTTONS_COMPONENTS_STATE = (): ButtonsBlockComponentState[] => [
 	{
 		label: '',
 		type: 'primary',
@@ -27,7 +21,7 @@ export const INITIAL_BUTTONS_BLOCK_COMPONENT_STATES = (): ButtonsBlockComponentS
 ];
 
 export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.Buttons, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Buttons, position);
 
 export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
@@ -37,7 +31,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		limits: {
 			max: 3,
 		},
-		state: INITIAL_BUTTONS_BLOCK_COMPONENT_STATES(),
+		state: INITIAL_BUTTONS_COMPONENTS_STATE(),
 		fields: {
 			type: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
@@ -60,9 +54,12 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 					options: ADMIN_ICON_OPTIONS,
 				},
 			},
-			action: {
+			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: DEFAULT_ALLOWED_TYPES,
+				},
 			},
 		},
 	},
@@ -70,7 +67,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 		state: INITIAL_BUTTONS_BLOCK_STATE(position),
 		fields: {
 			align: ALIGN_FIELD(),
-			...CONTENT_BLOCK_FIELD_DEFAULTS(),
+			...BLOCK_FIELD_DEFAULTS(),
 		},
 	},
 });

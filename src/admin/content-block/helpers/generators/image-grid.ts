@@ -3,24 +3,18 @@ import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/Bl
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
-import { ALIGN_OPTIONS, IMAGE_GRID_FILL_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	ImageGridBlockComponentStateBlockFields,
 	ImageGridBlockComponentStateFields,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
-import {
-	CONTENT_BLOCK_FIELD_DEFAULTS,
-	FILE_FIELD,
-	FORM_STATE_DEFAULTS,
-	TEXT_FIELD,
-} from './defaults';
+import { ALIGN_OPTIONS, FILL_OPTIONS } from '../../content-block.const';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
-export const INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES = (): ImageGridBlockComponentStateFields[] => [
+export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
 	{
 		source: undefined,
 		title: '',
@@ -33,7 +27,7 @@ export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
 	position: number
 ): ImageGridBlockComponentStateBlockFields => {
 	return {
-		...FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.ImageGrid, position),
+		...BLOCK_STATE_DEFAULTS(ContentBlockType.ImageGrid, position),
 		elements: [] as GridItem[],
 		imageWidth: 200,
 		imageHeight: 200,
@@ -48,13 +42,18 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	type: ContentBlockType.ImageGrid,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),
-		state: INITIAL_IMAGE_GRID_BLOCK_COMPONENT_STATES(),
+		state: INITIAL_IMAGE_GRID_COMPONENTS_STATE(),
 		fields: {
 			source: FILE_FIELD(
-				i18n.t('admin/content-block/helpers/generators/image-grid___een-afbeelding-is-verplicht'),
+				i18n.t(
+					'admin/content-block/helpers/generators/image-grid___een-afbeelding-is-verplicht'
+				),
 				{
 					label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding'),
-					editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
+					editorProps: {
+						assetType: 'CONTENT_PAGE_IMAGE',
+						allowMulti: false,
+					} as FileUploadProps,
 				}
 			),
 			title: TEXT_FIELD('', {
@@ -73,9 +72,11 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	block: {
 		state: INITIAL_IMAGE_GRID_BLOCK_STATE(position),
 		fields: {
-			...CONTENT_BLOCK_FIELD_DEFAULTS(),
+			...BLOCK_FIELD_DEFAULTS(),
 			imageWidth: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding-breedte'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image-grid___afbeelding-breedte'
+				),
 				editorType: ContentBlockEditor.MultiRange,
 				validator: () => [],
 				editorProps: {
@@ -86,7 +87,9 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				} as MultiRangeProps,
 			},
 			imageHeight: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding-hoogte'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image-grid___afbeelding-hoogte'
+				),
 				editorType: ContentBlockEditor.MultiRange,
 				validator: () => [],
 				editorProps: {
@@ -111,7 +114,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___zoom'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: IMAGE_GRID_FILL_OPTIONS,
+					options: FILL_OPTIONS,
 				},
 			},
 			textAlign: {

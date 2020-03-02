@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
 
-import toastService from '../../../../shared/services/toast-service';
-import { getUserGroups } from '../../../../shared/services/user-groups-service';
+import { ToastService } from '../../../../shared/services';
+import { getAllUserGroups } from '../../../../shared/services/user-groups-service';
 
 interface UserGroupSelectProps {
 	label: string;
@@ -16,7 +16,7 @@ interface UserGroupSelectProps {
 	onChange: (selectedUserGroupIds: number[]) => void;
 }
 
-const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
+export const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 	label,
 	error,
 	placeholder,
@@ -29,11 +29,11 @@ const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 
 	useEffect(() => {
 		// fetch user groups for giving permissions to view a certain navigation item
-		getUserGroups()
+		getAllUserGroups()
 			.then(setUserGroupOptions)
 			.catch((err: any) => {
 				console.error('Failed to get user groups', err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
 					),
@@ -64,5 +64,3 @@ const UserGroupSelect: FunctionComponent<UserGroupSelectProps> = ({
 		</FormGroup>
 	);
 };
-
-export default UserGroupSelect;

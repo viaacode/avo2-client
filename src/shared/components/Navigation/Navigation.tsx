@@ -27,12 +27,12 @@ import { selectUser } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
+import { ToastService } from '../../services';
 import {
 	AppContentNavElement,
 	getNavigationItems,
 	NavItemMap,
 } from '../../services/navigation-items-service';
-import toastService from '../../services/toast-service';
 import { NavigationItemInfo } from '../../types';
 
 import './Navigation.scss';
@@ -72,7 +72,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			})
 			.catch(err => {
 				console.error('Failed to get navigation items', err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/navigation/navigation___het-ophalen-van-de-navigatie-items-is-mislukt-probeer-later-opnieuw'
 					)
@@ -115,8 +115,8 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		const logoutNavItem = last(dynamicNavItems) as NavigationItemInfo;
 
 		if (
-			(user && logoutNavItem.location !== APP_PATH.LOGOUT) ||
-			(!user && logoutNavItem.location === APP_PATH.LOGOUT)
+			(user && logoutNavItem.location !== APP_PATH.LOGOUT.route) ||
+			(!user && logoutNavItem.location === APP_PATH.LOGOUT.route)
 		) {
 			// Avoid flashing the menu items for a second without them being in a dropdown menu
 			return [];
@@ -131,7 +131,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 				{
 					label: (
 						<div className="c-navbar-profile-dropdown-button">
-							<Avatar initials={getProfileInitials(user)} name={getFirstName(user) || ''} />
+							<Avatar
+								initials={getProfileInitials(user)}
+								name={getFirstName(user) || ''}
+							/>
 							<Icon name="caret-down" size="small" />
 						</div>
 					),
@@ -140,8 +143,16 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 							menuItems={[
 								dynamicNavItems
 									.slice(0, dynamicNavItems.length - 1)
-									.map(navItem => ({ id: navItem.key as string, label: navItem.label as string })),
-								[{ id: logoutNavItem.key as string, label: logoutNavItem.label as string }],
+									.map(navItem => ({
+										id: navItem.key as string,
+										label: navItem.label as string,
+									})),
+								[
+									{
+										id: logoutNavItem.key as string,
+										label: logoutNavItem.label as string,
+									},
+								],
 							]}
 							onClick={handleMenuClick}
 						/>
@@ -161,12 +172,17 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 
 	const handleMenuClick = (menuItemId: string | ReactText) => {
 		try {
-			const navItemId: number = parseInt(menuItemId.toString().substring('nav-item-'.length), 10);
+			const navItemId: number = parseInt(
+				menuItemId.toString().substring('nav-item-'.length),
+				10
+			);
 			const navItem = secondaryNavItems.find(navItem => navItem.id === navItemId);
 			if (!navItem) {
 				console.error('Could not find navigation item by id', { menuItemId });
-				toastService.danger(
-					t('shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-1')
+				ToastService.danger(
+					t(
+						'shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-1'
+					)
 				);
 				return;
 			}
@@ -183,8 +199,10 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			console.error('Failed to handle menu item click because it is not a number', err, {
 				menuItemId,
 			});
-			toastService.danger(
-				t('shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-2')
+			ToastService.danger(
+				t(
+					'shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-2'
+				)
 			);
 		}
 	};
@@ -210,14 +228,18 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 							</ToolbarItem>
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-has-space">
-									<ul className="c-nav">{mapNavItems(getPrimaryNavigationItems())}</ul>
+									<ul className="c-nav">
+										{mapNavItems(getPrimaryNavigationItems())}
+									</ul>
 								</div>
 							</ToolbarItem>
 						</ToolbarLeft>
 						<ToolbarRight>
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-authentication">
-									<ul className="c-nav">{mapNavItems(getSecondaryNavigationItems())}</ul>
+									<ul className="c-nav">
+										{mapNavItems(getSecondaryNavigationItems())}
+									</ul>
 								</div>
 							</ToolbarItem>
 							<ToolbarItem>
@@ -225,7 +247,9 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 									<Button
 										icon="menu"
 										type="borderless-i"
-										ariaLabel={t('shared/components/navigation/navigation___menu')}
+										ariaLabel={t(
+											'shared/components/navigation/navigation___menu'
+										)}
 										onClick={onToggleMenu}
 									/>
 								</div>
@@ -238,16 +262,24 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 				<Container mode="horizontal">
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">{mapNavItems(getPrimaryNavigationItems())}</ul>
-						<ul className="c-nav-mobile">{mapNavItems(getSecondaryNavigationItems())}</ul>
+						<ul className="c-nav-mobile">
+							{mapNavItems(getSecondaryNavigationItems())}
+						</ul>
 					</Container>
 				</Container>
 			) : (
-				<Navbar className="u-mq-switch-main-nav-little-space" background="inverse" placement="top">
+				<Navbar
+					className="u-mq-switch-main-nav-little-space"
+					background="inverse"
+					placement="top"
+				>
 					<Container mode="horizontal">
 						<Toolbar>
 							<ToolbarLeft>
 								<div className="c-toolbar__item">
-									<ul className="c-nav">{mapNavItems(getPrimaryNavigationItems())}</ul>
+									<ul className="c-nav">
+										{mapNavItems(getPrimaryNavigationItems())}
+									</ul>
 								</div>
 							</ToolbarLeft>
 						</Toolbar>

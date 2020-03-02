@@ -10,7 +10,6 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -38,12 +37,12 @@ import {
 } from '../../../collection/collection.gql';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
+import { FlowPlayerWrapper } from '../../../shared/components';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
+import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
-import toastService from '../../../shared/services/toast-service';
 
 import './AddToCollectionModal.scss';
 
@@ -88,7 +87,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				})
 				.catch(err => {
 					console.error(err);
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'item/components/modals/add-to-collection-modal___het-ophalen-van-de-bestaande-collections-is-mislukt'
 						)
@@ -100,7 +99,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	useEffect(() => {
 		fetchCollections().catch(err => {
 			console.error('Failed to fetch collections', err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collecties-is-mislukt'
 				)
@@ -133,14 +132,14 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			if (collection) {
 				setSelectedCollection(collection);
 			} else {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collectie-details-is-mislukt'
 					)
 				);
 			}
 		} catch (err) {
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collectie-details-is-mislukt'
 				)
@@ -151,7 +150,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	const getFragment = (
 		collection: Partial<Avo.Collection.Collection>
 	): Partial<Avo.Collection.Fragment> => {
-		const hasCut = fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
+		const hasCut =
+			fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
 
 		return {
 			use_custom_fields: false,
@@ -185,13 +185,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie'
 					)
 				);
 			} else {
-				toastService.success(
+				ToastService.success(
 					t(
 						'item/components/modals/add-to-collection-modal___het-fragment-is-toegevoegd-aan-de-collectie'
 					)
@@ -212,7 +212,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie'
 				)
@@ -263,13 +263,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			);
 
 			if (!response || response.errors) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt'
 					)
 				);
 			} else if (!insertedCollection || isNil(insertedCollection.id)) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/modals/add-to-collection-modal___de-aangemaakte-collectie-kon-niet-worden-opgehaald'
 					)
@@ -289,7 +289,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					collection: newCollection,
 				},
 			});
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt'
 				)
@@ -324,7 +324,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const onApply = createNewCollection
 		? addItemToNewCollection
-		: () => addItemToExistingCollection(selectedCollection as Partial<Avo.Collection.Collection>);
+		: () =>
+				addItemToExistingCollection(
+					selectedCollection as Partial<Avo.Collection.Collection>
+				);
 
 	const renderAddToCollectionModal = () => {
 		const initFlowPlayer = () =>
@@ -347,7 +350,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 							<Form>
 								<Grid>
 									<Column size="2-7">
-										<FlowPlayer
+										<FlowPlayerWrapper
 											src={playerTicket ? playerTicket.toString() : null}
 											poster={itemMetaData.thumbnail_path}
 											title={itemMetaData.title}
@@ -356,15 +359,23 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											token={getEnv('FLOW_PLAYER_TOKEN')}
 											dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 											logo={get(itemMetaData, 'organisation.logo_url')}
+											itemUuid={(itemMetaData as any).uid} // TODO remove when typings v2.11 is released
 										/>
 										<Container mode="vertical" className="m-time-crop-controls">
 											<TextInput
-												value={formatDurationHoursMinutesSeconds(fragmentStartTime)}
-												onChange={timeString => setFragmentTime(timeString, 'start')}
+												value={formatDurationHoursMinutesSeconds(
+													fragmentStartTime
+												)}
+												onChange={timeString =>
+													setFragmentTime(timeString, 'start')
+												}
 											/>
 											<div className="m-multi-range-wrapper">
 												<MultiRange
-													values={[fragmentStartTime, Math.min(fragmentEndTime, fragmentDuration)]}
+													values={[
+														fragmentStartTime,
+														Math.min(fragmentEndTime, fragmentDuration),
+													]}
 													onChange={onUpdateMultiRangeValues}
 													min={0}
 													max={fragmentDuration}
@@ -372,22 +383,34 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												/>
 											</div>
 											<TextInput
-												value={formatDurationHoursMinutesSeconds(fragmentEndTime)}
-												onChange={timeString => setFragmentTime(timeString, 'end')}
+												value={formatDurationHoursMinutesSeconds(
+													fragmentEndTime
+												)}
+												onChange={timeString =>
+													setFragmentTime(timeString, 'end')
+												}
 											/>
 										</Container>
 									</Column>
 									<Column size="2-5">
-										<FormGroup label={t('item/components/modals/add-to-collection-modal___titel')}>
+										<FormGroup
+											label={t(
+												'item/components/modals/add-to-collection-modal___titel'
+											)}
+										>
 											<span>{itemMetaData.title}</span>
 										</FormGroup>
 										<FormGroup
-											label={t('item/components/modals/add-to-collection-modal___beschrijving')}
+											label={t(
+												'item/components/modals/add-to-collection-modal___beschrijving'
+											)}
 										>
 											<span>{itemMetaData.description}</span>
 										</FormGroup>
 										<FormGroup
-											label={t('item/components/modals/add-to-collection-modal___collectie')}
+											label={t(
+												'item/components/modals/add-to-collection-modal___collectie'
+											)}
 										>
 											<Spacer margin="bottom">
 												<RadioButton
@@ -397,7 +420,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 													checked={!createNewCollection}
 													value="existing"
 													name="collection"
-													onChange={checked => setCreateNewCollection(!checked)}
+													onChange={checked =>
+														setCreateNewCollection(!checked)
+													}
 												/>
 												<div>
 													{collections.length ? (
@@ -412,14 +437,23 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 																	disabled: true,
 																},
 																...collections.map(
-																	(collection: Partial<Avo.Collection.Collection>) => ({
-																		label: collection.title || '',
-																		value: String(collection.id),
+																	(
+																		collection: Partial<
+																			Avo.Collection.Collection
+																		>
+																	) => ({
+																		label:
+																			collection.title || '',
+																		value: String(
+																			collection.id
+																		),
 																	})
 																),
 															]}
 															value={selectedCollectionId}
-															onChange={setSelectedCollectionIdAndGetCollectionInfo}
+															onChange={
+																setSelectedCollectionIdAndGetCollectionInfo
+															}
 															disabled={createNewCollection}
 														/>
 													) : (
@@ -466,14 +500,18 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 								<ButtonToolbar>
 									{isProcessing && <Spinner />}
 									<Button
-										label={t('item/components/modals/add-to-collection-modal___annuleren')}
+										label={t(
+											'item/components/modals/add-to-collection-modal___annuleren'
+										)}
 										type="link"
 										block
 										onClick={onClose}
 										disabled={isProcessing}
 									/>
 									<Button
-										label={t('item/components/modals/add-to-collection-modal___toepassen')}
+										label={t(
+											'item/components/modals/add-to-collection-modal___toepassen'
+										)}
 										type="primary"
 										block
 										title={

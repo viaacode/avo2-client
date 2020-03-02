@@ -21,8 +21,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import toastService from '../../../shared/services/toast-service';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 
@@ -80,7 +80,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-					toastService.danger(validationErrors);
+					ToastService.danger(validationErrors);
 					return;
 				}
 			}
@@ -97,7 +97,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				},
 			});
 			setValidationError(undefined);
-			toastService.success(
+			ToastService.success(
 				isCollection()
 					? isCollectionPublic
 						? t(
@@ -107,7 +107,9 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 								'collection/components/modals/share-collection-modal___de-collectie-staat-nu-niet-meer-publiek'
 						  )
 					: isCollectionPublic
-					? t('collection/components/modals/share-collection-modal___de-bundel-staat-nu-publiek')
+					? t(
+							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-publiek'
+					  )
 					: t(
 							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-niet-meer-publiek'
 					  )
@@ -127,7 +129,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				user
 			);
 		} catch (err) {
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'collection/components/modals/share-collection-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'
 				)
@@ -187,12 +189,16 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t('collection/components/modals/share-collection-modal___annuleren')}
+									label={t(
+										'collection/components/modals/share-collection-modal___annuleren'
+									)}
 									onClick={() => onClose()}
 								/>
 								<Button
 									type="primary"
-									label={t('collection/components/modals/share-collection-modal___opslaan')}
+									label={t(
+										'collection/components/modals/share-collection-modal___opslaan'
+									)}
 									onClick={onSave}
 								/>
 							</ButtonToolbar>

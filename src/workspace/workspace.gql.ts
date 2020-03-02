@@ -39,3 +39,23 @@ export const GET_WORKSPACE_TAB_COUNTS = gql`
 		}
 	}
 `;
+
+export const DELETE_ITEM = gql`
+	mutation deleteItemBookmark($itemUuid: uuid!, $profileId: uuid!) {
+		delete_app_item_bookmarks(
+			where: { item_id: { _eq: $itemUuid }, profile_id: { _eq: $profileId } }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_COLLECTION = gql`
+	mutation deleteCollectionBookmark($collectionUuid: uuid!, $profileId: uuid!) {
+		delete_app_collection_bookmarks(
+			where: { collection_uuid: { _eq: $collectionUuid }, profile_id: { _eq: $profileId } }
+		) {
+			affected_rows
+		}
+	}
+`;

@@ -11,9 +11,7 @@ export enum ToastType {
 	SUCCESS = 'success',
 }
 
-type ToastAlert = string | string[] | ReactNode;
-type ToastServiceFn = (alert: ToastAlert, dark?: boolean, options?: ToastOptions) => void;
-type ToastService = { [type in ToastType]: ToastServiceFn };
+type ToastMessage = string | string[] | ReactNode;
 
 interface ToastProps extends AlertProps {
 	closeToast?: () => void;
@@ -24,19 +22,19 @@ const Toast: FunctionComponent<ToastProps> = ({ closeToast, ...rest }) => (
 );
 
 function showToast(
-	alert: ToastAlert,
+	message: ToastMessage,
 	dark: boolean = true,
 	options: ToastOptions = {},
 	alertType: ToastType = ToastType.INFO
 ) {
-	if (isNil(alert)) {
+	if (isNil(message)) {
 		return;
 	}
 
-	let alertMessage = alert;
+	let alertMessage = message;
 
-	if (Array.isArray(alert)) {
-		const messages = alert as string[];
+	if (Array.isArray(message)) {
+		const messages = message as string[];
 		alertMessage = (
 			<div>
 				{messages.map((message: string, index: number) => {
@@ -53,11 +51,13 @@ function showToast(
 	toast(<Toast dark={dark} message={alertMessage} type={alertType} />, options);
 }
 
-const toastService: ToastService = {
-	danger: (alert, dark, options) => showToast(alert, dark, options, ToastType.DANGER),
-	info: (alert, dark, options) => showToast(alert, dark, options, ToastType.INFO),
-	spinner: (alert, dark, options) => showToast(alert, dark, options, ToastType.SPINNER),
-	success: (alert, dark, options) => showToast(alert, dark, options, ToastType.SUCCESS),
-};
-
-export default toastService;
+export class ToastService {
+	public static danger = (message: ToastMessage, dark?: boolean, options?: ToastOptions) =>
+		showToast(message, dark, options, ToastType.DANGER);
+	public static info = (message: ToastMessage, dark?: boolean, options?: ToastOptions) =>
+		showToast(message, dark, options, ToastType.INFO);
+	public static spinner = (message: ToastMessage, dark?: boolean, options?: ToastOptions) =>
+		showToast(message, dark, options, ToastType.SPINNER);
+	public static success = (message: ToastMessage, dark?: boolean, options?: ToastOptions) =>
+		showToast(message, dark, options, ToastType.SUCCESS);
+}

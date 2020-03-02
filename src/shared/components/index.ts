@@ -5,7 +5,8 @@ export { default as DateRangeDropdown } from './DateRangeDropdown/DateRangeDropd
 export { default as DeleteObjectModal } from './DeleteObjectModal/DeleteObjectModal';
 export { default as Footer } from './Footer/Footer';
 export { default as InputModal } from './InputModal/InputModal';
-export { default as LoadingErrorLoadedComponent } from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 export { default as Navigation } from './Navigation/Navigation';
 export { default as FileUpload } from './FileUpload/FileUpload';
 export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';
+export { default as FlowPlayerWrapper } from './FlowPlayerWrapper/FlowPlayerWrapper';

@@ -34,8 +34,8 @@ import {
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
+import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
-import toastService from '../../../shared/services/toast-service';
 import { isMediaFragment } from '../../helpers';
 
 import { CollectionService } from '../../collection.service';
@@ -102,7 +102,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					err,
 					{ user, permission: PermissionNames.ADD_HYPERLINK_COLLECTIONS }
 				);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt'
 					)
@@ -146,8 +146,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		fetchPlayerTicket(fragment.external_id)
 			.then(data => setPlayerTicket(data))
 			.catch(() =>
-				toastService.danger(
-					t('collection/components/fragment/fragment-edit___play-ticket-kon-niet-opgehaald-worden')
+				ToastService.danger(
+					t(
+						'collection/components/fragment/fragment-edit___play-ticket-kon-niet-opgehaald-worden'
+					)
 				)
 			);
 
@@ -174,7 +176,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			collectionPropValue: positionedFragments,
 		});
 
-		toastService.success(
+		ToastService.success(
 			!isCollection
 				? t(
 						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
@@ -188,22 +190,22 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	// TODO: DISABLED FEATURE
 	// const onDuplicateFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gedupliceerd'));
+	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gedupliceerd'));
 	// };
 
 	// const onMoveFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst'));
+	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst'));
 	// };
 
 	// const onCopyFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gekopieerd-naar-collectie'));
+	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gekopieerd-naar-collectie'));
 	// };
 
 	// const onMoveFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst-naar-collectie'));
+	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst-naar-collectie'));
 	// };
 
 	const onClickDropdownItem = (item: ReactText) => {
@@ -249,13 +251,16 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	);
 
 	const renderForm = () => {
-		const disableVideoFields: boolean = !fragment.use_custom_fields && !!isMediaFragment(fragment);
+		const disableVideoFields: boolean =
+			!fragment.use_custom_fields && !!isMediaFragment(fragment);
 
 		return (
 			<Form>
 				{itemMetaData && (
 					<FormGroup
-						label={t('collection/components/fragment/fragment-edit___alternatieve-tekst')}
+						label={t(
+							'collection/components/fragment/fragment-edit___alternatieve-tekst'
+						)}
 						labelFor="customFields"
 					>
 						<Toggle
@@ -278,19 +283,27 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						placeholder={t(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
-						onChange={(newTitle: string) => handleChangedValue('custom_title', newTitle)}
+						onChange={(newTitle: string) =>
+							handleChangedValue('custom_title', newTitle)
+						}
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
 				{!isCollection && (
 					<FormGroup
-						label={t('collection/components/fragment/fragment-edit___tekstblok-beschrijving')}
+						label={t(
+							'collection/components/fragment/fragment-edit___tekstblok-beschrijving'
+						)}
 						labelFor={`description_${fragment.id}`}
 					>
 						{!isNil(allowedToAddLinks) && (
 							<WYSIWYG
 								id={`description_${fragment.id}`}
-								btns={allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT}
+								btns={
+									allowedToAddLinks
+										? WYSIWYG_OPTIONS_AUTHOR
+										: WYSIWYG_OPTIONS_DEFAULT
+								}
 								placeholder={t(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 								)}
@@ -315,12 +328,16 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						<ToolbarLeft>
 							<ToolbarItem>
 								<div className="c-button-toolbar">
-									{!isFirst(index) && renderReorderButton(fragment.position, 'up')}
-									{!isLast(index) && renderReorderButton(fragment.position, 'down')}
+									{!isFirst(index) &&
+										renderReorderButton(fragment.position, 'up')}
+									{!isLast(index) &&
+										renderReorderButton(fragment.position, 'down')}
 									{itemMetaData && !isCollection && (
 										<Button
 											icon="scissors"
-											label={t('collection/components/fragment/fragment-edit___knippen')}
+											label={t(
+												'collection/components/fragment/fragment-edit___knippen'
+											)}
 											type="secondary"
 											onClick={() => setIsCutModalOpen(true)}
 										/>
@@ -341,7 +358,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 										<Button
 											type="secondary"
 											icon="more-horizontal"
-											ariaLabel={t('collection/components/fragment/fragment-edit___meer-opties')}
+											ariaLabel={t(
+												'collection/components/fragment/fragment-edit___meer-opties'
+											)}
 										/>
 									</DropdownButton>
 									<DropdownContent>
@@ -365,7 +384,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 										poster={itemMetaData.thumbnail_path}
 										title={itemMetaData.title}
 										onInit={initFlowPlayer}
-										subtitles={[itemMetaData.issued, get(itemMetaData, 'organisation.name', '')]}
+										subtitles={[
+											itemMetaData.issued,
+											get(itemMetaData, 'organisation.name', ''),
+										]}
 										token={getEnv('FLOW_PLAYER_TOKEN')}
 										dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 										logo={get(itemMetaData, 'organisation.logo_url')}
@@ -373,7 +395,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 										{...cuePoints}
 									/>
 								) : (
-									<Thumbnail category="collection" src={itemMetaData.thumbnail_path} />
+									<Thumbnail
+										category="collection"
+										src={itemMetaData.thumbnail_path}
+									/>
 								)}
 							</Column>
 							<Column size="3-6">{renderForm()}</Column>

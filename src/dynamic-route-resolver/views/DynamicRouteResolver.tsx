@@ -52,14 +52,16 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					const bundleUuid: string | undefined = get(response, 'data.items[0].id');
 					if (bundleUuid) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
-						history.push(buildLink(APP_PATH.BUNDLE_DETAIL, { id: bundleUuid }));
+						history.push(buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid }));
 						return;
 					} // else keep analysing
 				}
 			}
 
 			// Check if path points to a content page
-			const contentPage: Avo.Content.Content | null = await getContentPageByPath(location.pathname);
+			const contentPage: Avo.Content.Content | null = await getContentPageByPath(
+				location.pathname
+			);
 			if (!contentPage) {
 				setRouteInfo({ type: 'notFound', data: null });
 				setLoadingInfo({

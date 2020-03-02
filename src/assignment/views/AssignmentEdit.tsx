@@ -43,24 +43,22 @@ import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { toEnglishContentType } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
 import {
+	checkPermissions,
 	DeleteObjectModal,
 	InputModal,
 	LoadingErrorLoadedComponent,
+	LoadingInfo,
 } from '../../shared/components';
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
-import { dataService } from '../../shared/services/data-service';
+import { dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import toastService from '../../shared/services/toast-service';
-import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
+import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
-import {
-	checkPermissions,
-	LoadingInfo,
-} from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { ASSIGNMENT_PATH, CONTENT_LABEL_TO_QUERY } from '../assignment.const';
+import { CONTENT_LABEL_TO_QUERY } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
@@ -124,9 +122,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		const initAssignmentData = async () => {
 			try {
 				// Determine if this is an edit or create page and initialize or fetch the assignment
-				const tempAssignment: Partial<Avo.Assignment.Assignment> | null = await fetchAssignment(
-					match.params.id
-				);
+				const tempAssignment: Partial<
+					Avo.Assignment.Assignment
+				> | null = await fetchAssignment(match.params.id);
 
 				if (!tempAssignment) {
 					// Something went wrong during init/fetch
@@ -186,7 +184,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				setLoadingInfo({
 					state: 'error',
-					message: t('assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'),
+					message: t(
+						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
+					),
 					icon: 'alert-triangle',
 				});
 				return null;
@@ -202,24 +202,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				if (assignment.content_id && assignment.content_label) {
 					// The assignment doesn't have content linked to it
 					// Fetch the content from the network
+					const queryInfo =
+						CONTENT_LABEL_TO_QUERY[
+							assignment.content_label as Avo.Assignment.ContentLabel
+						];
 					const queryParams = {
-						query:
-							CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel].query,
-						variables: { id: assignment.content_id },
+						query: queryInfo.query,
+						variables: queryInfo.getVariables(assignment.content_id),
 					};
 					const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
 						queryParams
 					);
 
-					assignmentContentResponse = get(
-						response,
-						`data.${
-							CONTENT_LABEL_TO_QUERY[assignment.content_label as Avo.Assignment.ContentLabel]
-								.resultPath
-						}`
-					);
+					assignmentContentResponse = get(response, `data.${queryInfo.resultPath}`);
 					if (!assignmentContentResponse) {
-						console.error('Failed to fetch the assignment content', { response, ...queryParams });
+						console.error('Failed to fetch the assignment content', {
+							response,
+							...queryParams,
+						});
 						setLoadingInfo({
 							state: 'error',
 							message: t(
@@ -247,7 +247,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			user,
 			initAssignmentData,
 			setLoadingInfo,
-			t('assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken')
+			t(
+				'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
+			)
 		);
 	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
 
@@ -266,7 +268,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const deleteCurrentAssignment = async () => {
 		try {
 			if (typeof currentAssignment.id === 'undefined') {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'assignment/views/assignment-edit___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
 					)
@@ -274,11 +276,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 			await AssignmentService.deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
-			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
-			toastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
+			ToastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt')
 			);
 		}
@@ -292,7 +294,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService.success(
+		ToastService.success(
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
@@ -328,8 +330,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				is_archived: shouldBeArchived,
 			});
 
-			if (await AssignmentService.updateAssignment(triggerAssignmentUpdate, archivedAssigment)) {
-				toastService.success(
+			if (
+				await AssignmentService.updateAssignment(triggerAssignmentUpdate, archivedAssigment)
+			) {
+				ToastService.success(
 					shouldBeArchived
 						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
 						: t('assignment/views/assignment-edit___de-opdracht-is-gedearchiveerd')
@@ -338,10 +342,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			// else: assignment was not valid and could not be saved yet
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				shouldBeArchived
-					? t('assignment/views/assignment-edit___het-archiveren-van-de-opdracht-is-mislukt')
-					: t('assignment/views/assignment-edit___het-dearchiveren-van-de-opdracht-is-mislukt')
+					? t(
+							'assignment/views/assignment-edit___het-archiveren-van-de-opdracht-is-mislukt'
+					  )
+					: t(
+							'assignment/views/assignment-edit___het-dearchiveren-van-de-opdracht-is-mislukt'
+					  )
 			);
 		}
 	};
@@ -352,7 +360,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	) => {
 		try {
 			if (isNil(assignment.id)) {
-				toastService.danger('Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.');
+				ToastService.danger(
+					'Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.'
+				);
 				return;
 			}
 			const duplicatedAssigment = await AssignmentService.duplicateAssignment(
@@ -367,15 +377,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			setCurrentAssignment({});
 			setLoadingInfo({ state: 'loading' });
 
-			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
-			toastService.success(
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssigment.id });
+			ToastService.success(
 				t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
 				)
 			);
 		} catch (err) {
 			console.error('Failed to copy the assignment', err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
 			);
 		}
@@ -416,13 +426,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			// edit => update graphql
 			await AssignmentService.updateAssignment(triggerAssignmentUpdate, assignment);
 			setBothAssignments(assignment);
-			toastService.success(
+			ToastService.success(
 				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
 			);
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
 			);
 			setIsSaving(false);
@@ -493,7 +503,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							<Button
 								type="borderless"
 								block
-								label={t('assignment/views/assignment-edit___beheer-vakken-en-projecten')}
+								label={t(
+									'assignment/views/assignment-edit___beheer-vakken-en-projecten'
+								)}
 							/>
 						</Form>
 					</Spacer>
@@ -554,7 +566,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									<ToolbarItem grow>
 										<Link
 											className="c-return"
-											to={buildLink(WORKSPACE_PATH.WORKSPACE_TAB, {
+											to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
 												tabId: ASSIGNMENTS_ID,
 											})}
 										>
@@ -569,8 +581,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										{currentAssignment.id && (
 											<Spacer margin="top-small">
 												<Form type="inline">
-													<FormGroup label={t('assignment/views/assignment-edit___url')}>
-														<TextInput value={getAssignmentUrl()} disabled />
+													<FormGroup
+														label={t(
+															'assignment/views/assignment-edit___url'
+														)}
+													>
+														<TextInput
+															value={getAssignmentUrl()}
+															disabled
+														/>
 													</FormGroup>
 													<Spacer margin="left-small">
 														<Button
@@ -594,7 +613,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												<Button
 													type="secondary"
 													onClick={viewAsStudent}
-													label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
+													label={t(
+														'assignment/views/assignment-edit___bekijk-als-leerling'
+													)}
 												/>
 												<Dropdown
 													isOpen={isExtraOptionsMenuOpen}
@@ -607,14 +628,22 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 														<Button
 															type="secondary"
 															icon="more-horizontal"
-															ariaLabel={t('assignment/views/assignment-edit___meer-opties')}
-															title={t('assignment/views/assignment-edit___meer-opties')}
+															ariaLabel={t(
+																'assignment/views/assignment-edit___meer-opties'
+															)}
+															title={t(
+																'assignment/views/assignment-edit___meer-opties'
+															)}
 														/>
 													</DropdownButton>
 													<DropdownContent>
 														<MenuContent
 															menuItems={[
-																{ icon: 'copy', id: 'duplicate', label: 'Dupliceer' },
+																{
+																	icon: 'copy',
+																	id: 'duplicate',
+																	label: 'Dupliceer',
+																},
 																{
 																	icon: 'archive',
 																	id: 'archive',
@@ -622,16 +651,26 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 																		? 'Dearchiveer'
 																		: 'Archiveer',
 																},
-																{ icon: 'delete', id: 'delete', label: 'Verwijder' },
+																{
+																	icon: 'delete',
+																	id: 'delete',
+																	label: 'Verwijder',
+																},
 															]}
-															onClick={id => handleExtraOptionClicked(id.toString() as any)}
+															onClick={id =>
+																handleExtraOptionClicked(
+																	id.toString() as any
+																)
+															}
 														/>
 													</DropdownContent>
 												</Dropdown>
 											</Spacer>
 											<Button
 												type="primary"
-												label={t('assignment/views/assignment-edit___opslaan')}
+												label={t(
+													'assignment/views/assignment-edit___opslaan'
+												)}
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
@@ -645,19 +684,27 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				<Container mode="horizontal" size="small" className="c-assignment-edit">
 					<Container mode="vertical" size="large">
 						<Form>
-							<FormGroup required label={t('assignment/views/assignment-edit___titel')}>
+							<FormGroup
+								required
+								label={t('assignment/views/assignment-edit___titel')}
+							>
 								<TextInput
 									id="title"
 									value={currentAssignment.title}
 									onChange={title => setAssignmentProp('title', title)}
 								/>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___opdracht')} required>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___opdracht')}
+								required
+							>
 								<WYSIWYG
 									id="assignmentDescription"
 									autogrow
 									data={currentAssignment.description}
-									onChange={description => setAssignmentProp('description', description)}
+									onChange={description =>
+										setAssignmentProp('description', description)
+									}
 								/>
 							</FormGroup>
 							{assignmentContent && currentAssignment.content_label && (
@@ -671,34 +718,58 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							>
 								<RadioButtonGroup>
 									<RadioButton
-										label={t('assignment/views/assignment-edit___mediaspeler-met-beschrijving')}
+										label={t(
+											'assignment/views/assignment-edit___mediaspeler-met-beschrijving'
+										)}
 										name="content_layout"
 										value={String(AssignmentLayout.PlayerAndText)}
-										checked={currentAssignment.content_layout === AssignmentLayout.PlayerAndText}
+										checked={
+											currentAssignment.content_layout ===
+											AssignmentLayout.PlayerAndText
+										}
 										onChange={isChecked =>
 											isChecked &&
-											setAssignmentProp('content_layout', AssignmentLayout.PlayerAndText)
+											setAssignmentProp(
+												'content_layout',
+												AssignmentLayout.PlayerAndText
+											)
 										}
 									/>
 									<RadioButton
-										label={t('assignment/views/assignment-edit___enkel-mediaspeler')}
+										label={t(
+											'assignment/views/assignment-edit___enkel-mediaspeler'
+										)}
 										name="content_layout"
 										value={String(AssignmentLayout.OnlyPlayer)}
-										checked={currentAssignment.content_layout === AssignmentLayout.OnlyPlayer}
+										checked={
+											currentAssignment.content_layout ===
+											AssignmentLayout.OnlyPlayer
+										}
 										onChange={isChecked =>
-											isChecked && setAssignmentProp('content_layout', AssignmentLayout.OnlyPlayer)
+											isChecked &&
+											setAssignmentProp(
+												'content_layout',
+												AssignmentLayout.OnlyPlayer
+											)
 										}
 									/>
 								</RadioButtonGroup>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___klas-of-groep')} required>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___klas-of-groep')}
+								required
+							>
 								<TextInput
 									id="class_room"
 									value={currentAssignment.class_room || ''}
-									onChange={classRoom => setAssignmentProp('class_room', classRoom)}
+									onChange={classRoom =>
+										setAssignmentProp('class_room', classRoom)
+									}
 								/>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___vak-of-project')}>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___vak-of-project')}
+							>
 								{renderTagsDropdown()}
 							</FormGroup>
 							<FormGroup
@@ -714,12 +785,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								/>
 								<p className="c-form-help-text">
 									<Trans i18nKey="assignment/views/assignment-edit___waar-geeft-de-leerling-de-antwoorden-in-voeg-een-optionele-url-naar-een-ander-platform-toe">
-										Waar geeft de leerling de antwoorden in? Voeg een optionele URL naar een ander
-										platform toe.
+										Waar geeft de leerling de antwoorden in? Voeg een optionele
+										URL naar een ander platform toe.
 									</Trans>
 								</p>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___beschikbaar-vanaf')}>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___beschikbaar-vanaf')}
+							>
 								<Flex>
 									<DatePicker
 										value={
@@ -728,13 +801,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												: now
 										}
 										onChange={(value: Date | null) =>
-											setAssignmentProp('available_at', value ? value.toISOString() : null)
+											setAssignmentProp(
+												'available_at',
+												value ? value.toISOString() : null
+											)
 										}
 										showTimeInput
 									/>
 								</Flex>
 							</FormGroup>
-							<FormGroup label={t('assignment/views/assignment-edit___deadline')} required>
+							<FormGroup
+								label={t('assignment/views/assignment-edit___deadline')}
+								required
+							>
 								<Flex>
 									<Spacer margin="right-small">
 										<DatePicker
@@ -743,7 +822,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 													? new Date(currentAssignment.deadline_at)
 													: null
 											}
-											onChange={value => setAssignmentProp('deadline_at', value)}
+											onChange={value =>
+												setAssignmentProp('deadline_at', value)
+											}
 											showTimeInput
 										/>
 									</Spacer>
@@ -755,13 +836,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										</Trans>
 										<br />
 										<Trans i18nKey="assignment/views/assignment-edit___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht">
-											De leerlingen zullen dus geen toegang hebben tot deze opdracht
+											De leerlingen zullen dus geen toegang hebben tot deze
+											opdracht
 										</Trans>
 									</div>
 								) : (
 									<p className="c-form-help-text">
 										<Trans i18nKey="assignment/views/assignment-edit___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen">
-											Na deze datum kan de leerling de opdracht niet meer invullen.
+											Na deze datum kan de leerling de opdracht niet meer
+											invullen.
 										</Trans>
 									</p>
 								)}
@@ -773,7 +856,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								>
 									<Toggle
 										checked={currentAssignment.is_collaborative}
-										onChange={checked => setAssignmentProp('is_collaborative', checked)}
+										onChange={checked =>
+											setAssignmentProp('is_collaborative', checked)
+										}
 									/>
 								</FormGroup>
 							)}
@@ -786,7 +871,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										</Trans>
 										<br />
 										Bekijk onze{' '}
-										<a href="http://google.com" target="_blank" rel="noopener noreferrer">
+										<a
+											href="http://google.com"
+											target="_blank"
+											rel="noopener noreferrer"
+										>
 											<Trans i18nKey="assignment/views/assignment-edit___screencast">
 												screencast
 											</Trans>
@@ -821,7 +910,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					title={t(
 						'assignment/views/assignment-edit___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 					)}
-					body={t('assignment/views/assignment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden')}
+					body={t(
+						'assignment/views/assignment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setDeleteModalOpen(false)}
 					deleteObjectCallback={deleteCurrentAssignment}
@@ -829,9 +920,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 				<InputModal
 					title={t('assignment/views/assignment-edit___dupliceer-taak')}
-					inputLabel={t('assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam')}
+					inputLabel={t(
+						'assignment/views/assignment-edit___geef-de-nieuwe-taak-een-naam'
+					)}
 					inputValue={currentAssignment.title}
-					inputPlaceholder={t('assignment/views/assignment-edit___titel-van-de-nieuwe-taak')}
+					inputPlaceholder={t(
+						'assignment/views/assignment-edit___titel-van-de-nieuwe-taak'
+					)}
 					isOpen={isDuplicateModalOpen}
 					onClose={() => setDuplicateModalOpen(false)}
 					inputCallback={(newTitle: string) =>

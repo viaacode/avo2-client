@@ -4,8 +4,8 @@ import { cloneDeep, get, isNil, isString } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../shared/helpers/error';
+import { ToastService } from '../shared/services';
 import { ApolloCacheManager } from '../shared/services/data-service';
-import toastService from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 
 import { CollectionService } from '../collection/collection.service';
@@ -54,7 +54,9 @@ export class AssignmentService {
 		OBLIGATORY_PROPERTIES.forEach((prop: AssignmentProperty) => {
 			if (!(assignmentToSave as any)[prop.name]) {
 				errors.push(
-					i18n.t('assignment/assignment___een-eigenschap-is-verplicht', { eigenschap: prop.label })
+					i18n.t('assignment/assignment___een-eigenschap-is-verplicht', {
+						eigenschap: prop.label,
+					})
 				);
 			}
 		});
@@ -100,7 +102,7 @@ export class AssignmentService {
 			});
 
 			if (validationErrors.length) {
-				toastService.danger(validationErrors);
+				ToastService.danger(validationErrors);
 				return null;
 			}
 
@@ -138,7 +140,7 @@ export class AssignmentService {
 			});
 
 			if (validationErrors.length) {
-				toastService.danger(validationErrors);
+				ToastService.danger(validationErrors);
 				return null;
 			}
 
@@ -177,7 +179,7 @@ export class AssignmentService {
 		assignment: Partial<Avo.Assignment.Assignment> | null
 	): Promise<Avo.Assignment.Assignment | null> {
 		if (!assignment) {
-			toastService.danger(
+			ToastService.danger(
 				i18n.t('assignment/assignment___de-opdracht-is-niet-beschikbaar-om-te-dupliceren')
 			);
 			return null;
@@ -194,7 +196,7 @@ export class AssignmentService {
 			return await AssignmentService.insertAssignment(triggerAssignmentInsert, newAssignment);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				i18n.t('assignment/assignment___het-dupliceren-van-de-opdracht-is-mislukt')
 			);
 			return null;
@@ -306,7 +308,7 @@ export class AssignmentService {
 	private static async warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
 		// Validate if deadline_at is not in the past
 		if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
-			toastService.info([
+			ToastService.info([
 				i18n.t('assignment/assignment___de-ingestelde-deadline-ligt-in-het-verleden'),
 				i18n.t(
 					'assignment/assignment___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht'

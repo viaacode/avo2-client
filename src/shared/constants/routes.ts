@@ -12,7 +12,7 @@ export const ROUTE_PARTS = Object.freeze({
 	bundle: 'bundel',
 	bundles: 'bundels',
 	item: 'item',
-	loginAvo: 'login-avo',
+	login: 'login',
 	logout: 'uitloggen',
 	manualAccessRequest: 'manuele-toegangsaanvraag',
 	studentTeacher: 'student-leerkracht',
@@ -39,4 +39,5 @@ export const ROUTE_PARTS = Object.freeze({
 	email: 'email',
 	notifications: 'notificaties',
 	error: 'error',
+	klaar: 'klaar',
 });

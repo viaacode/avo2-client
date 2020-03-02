@@ -1,28 +1,27 @@
 import i18n from '../../../../shared/translations/i18n';
-import { WIDTH_OPTIONS } from '../../content-block.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
 	MediaPlayerBlockComponentState,
-} from '../../content-block.types';
+} from '../../../shared/types';
+import { WIDTH_OPTIONS } from '../../content-block.const';
 
-import { CONTENT_BLOCK_FIELD_DEFAULTS, FORM_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE = (): MediaPlayerBlockComponentState => ({
+export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockComponentState => ({
 	title: '',
 });
 
 export const INITIAL_MEDIA_PLAYER_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(ContentBlockBackgroundColor.White, ContentBlockType.MediaPlayer, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.MediaPlayer, position);
 
 export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/media-player___media-speler'),
 	type: ContentBlockType.MediaPlayer,
 	components: {
-		state: INITIAL_MEDIA_PLAYER_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_MEDIA_PLAYER_COMPONENTS_STATE(),
 		fields: {
 			title: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/media-player___titel-is-verplicht'),
@@ -34,10 +33,12 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				}
 			),
 			item: {
-				label: i18n.t('admin/content-block/helpers/generators/media-player___video-of-audio-item'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-player___video-of-audio-item'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
-					selectableTypes: ['ITEM'],
+					allowedTypes: ['ITEM'],
 				},
 			},
 			width: {
@@ -51,6 +52,6 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 	},
 	block: {
 		state: INITIAL_MEDIA_PLAYER_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });

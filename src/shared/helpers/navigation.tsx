@@ -31,7 +31,7 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 
 	console.error('Failed to generate navigation link for navigation item', { navItem });
 	return buildLink(
-		APP_PATH.ERROR,
+		APP_PATH.ERROR.route,
 		{},
 		queryString.stringify({
 			message: t(

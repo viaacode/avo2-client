@@ -1,25 +1,21 @@
+import { times } from 'lodash-es';
+
 import { ImageInfo } from '@viaa/avo2-components';
 
+import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
 
-import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import {
-	ContentBlockBackgroundColor,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-} from '../../content-block.types';
+} from '../../../shared/types';
 
-import { times } from 'lodash-es';
-import {
-	CONTENT_BLOCK_FIELD_DEFAULTS,
-	FILE_FIELD,
-	FORM_STATE_DEFAULTS,
-	TEXT_FIELD,
-} from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
-export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES = (): ImageInfo[] =>
+export const INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE = (): ImageInfo[] =>
 	times(
 		3,
 		() =>
@@ -32,12 +28,7 @@ export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES = (): ImageInfo[]
 
 export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (
 	position: number
-): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(
-		ContentBlockBackgroundColor.White,
-		ContentBlockType.ProjectsSpotlight,
-		position
-	);
+): DefaultContentBlockState => BLOCK_STATE_DEFAULTS(ContentBlockType.ProjectsSpotlight, position);
 
 export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t(
@@ -50,15 +41,20 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 			min: 3,
 			max: 3,
 		},
-		state: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_COMPONENT_STATES(),
+		state: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE(),
 		fields: {
 			image: FILE_FIELD(
 				i18n.t(
 					'admin/content-block/helpers/generators/projects-spotlight___een-afbeelding-is-verplicht'
 				),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___afbeelding'),
-					editorProps: { assetType: 'CONTENT_PAGE_IMAGE', allowMulti: false } as FileUploadProps,
+					label: i18n.t(
+						'admin/content-block/helpers/generators/projects-spotlight___afbeelding'
+					),
+					editorProps: {
+						assetType: 'CONTENT_PAGE_IMAGE',
+						allowMulti: false,
+					} as FileUploadProps,
 				}
 			),
 			title: TEXT_FIELD('', {
@@ -69,13 +65,16 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___link'),
 				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: DEFAULT_ALLOWED_TYPES,
+				},
 			},
 		},
 	},
 	block: {
 		state: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE(position),
 		fields: {
-			...CONTENT_BLOCK_FIELD_DEFAULTS(),
+			...BLOCK_FIELD_DEFAULTS(),
 		},
 	},
 });

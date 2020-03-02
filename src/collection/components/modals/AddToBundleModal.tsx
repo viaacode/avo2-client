@@ -26,10 +26,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
+import { ToastService } from '../../../shared/services';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
-import toastService from '../../../shared/services/toast-service';
 import {
 	GET_COLLECTION_BY_ID,
 	INSERT_COLLECTION,
@@ -79,7 +79,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				})
 				.catch(err => {
 					console.error(err);
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bestaande-bundels-is-mislukt'
 						)
@@ -91,7 +91,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 	useEffect(() => {
 		fetchBundles().catch(err => {
 			console.error('Failed to fetch bundles', err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bundels-is-mislukt'
 				)
@@ -112,14 +112,14 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			if (collection) {
 				setSelectedBundle(collection);
 			} else {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-collectie-details-is-mislukt'
 					)
 				);
 			}
 		} catch (err) {
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-collectie-details-is-mislukt'
 				)
@@ -138,10 +138,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			end_oc: null,
 			custom_title: null,
 			custom_description: null,
-			collection_uuid: String(bundle.id), // TODO Remove conversion once update to typings 2.8
-			collection_id: String((bundle as any).avo1_id),
-			item_meta: collection as any, // TODO remove once typings has item_meta?: ItemSchema | CollectionSchema;
-		} as any; // TODO Remove conversion once update to typings 2.8
+			collection_uuid: bundle.id as any, // TODO Remove conversion once update to typings 2.12
+			item_meta: collection,
+		};
 	};
 
 	const addCollectionToExistingBundle = async (bundle: Partial<Avo.Collection.Collection>) => {
@@ -163,13 +162,13 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
 					)
 				);
 			} else {
-				toastService.success(
+				ToastService.success(
 					t(
 						'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
 					)
@@ -190,7 +189,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
 				)
@@ -241,13 +240,13 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			);
 
 			if (!response || response.errors) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt'
 					)
 				);
 			} else if (!insertedBundle || isNil(insertedBundle.id)) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'collection/components/modals/add-to-bundle-modal___de-aangemaakte-bundel-kon-niet-worden-opgehaald'
 					)
@@ -267,8 +266,10 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 					bundle: newBundle,
 				},
 			});
-			toastService.danger(
-				t('collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt')
+			ToastService.danger(
+				t(
+					'collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt'
+				)
 			);
 
 			// Re-enable apply button
@@ -282,7 +283,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	return (
 		<Modal
-			title={t('collection/components/modals/add-to-bundle-modal___voeg-collectie-toe-aan-bundel')}
+			title={t(
+				'collection/components/modals/add-to-bundle-modal___voeg-collectie-toe-aan-bundel'
+			)}
 			size="medium"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -295,7 +298,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 							<FormGroup>
 								<Spacer margin="bottom">
 									<RadioButton
-										label={t('collection/components/modals/add-to-bundle-modal___bestaande-bundel')}
+										label={t(
+											'collection/components/modals/add-to-bundle-modal___bestaande-bundel'
+										)}
 										checked={!createNewBundle}
 										value="existing"
 										name="collection"
@@ -309,10 +314,16 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 													'collection/components/modals/add-to-bundle-modal___kies-bundel'
 												)}
 												options={[
-													...bundles.map((bundle: Partial<Avo.Collection.Collection>) => ({
-														label: bundle.title || '',
-														value: String(bundle.id),
-													})),
+													...bundles.map(
+														(
+															bundle: Partial<
+																Avo.Collection.Collection
+															>
+														) => ({
+															label: bundle.title || '',
+															value: String(bundle.id),
+														})
+													),
 												]}
 												value={selectedBundleId}
 												onChange={setSelectedBundleIdAndGetBundleInfo}
@@ -330,7 +341,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 								</Spacer>
 								<Spacer margin="bottom">
 									<RadioButton
-										label={t('collection/components/modals/add-to-bundle-modal___nieuwe-bundel')}
+										label={t(
+											'collection/components/modals/add-to-bundle-modal___nieuwe-bundel'
+										)}
 										checked={createNewBundle}
 										value="new"
 										name="bundle"
@@ -359,14 +372,18 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 							<ButtonToolbar>
 								{isProcessing && <Spinner />}
 								<Button
-									label={t('item/components/modals/add-to-collection-modal___annuleren')}
+									label={t(
+										'item/components/modals/add-to-collection-modal___annuleren'
+									)}
 									type="link"
 									block
 									onClick={onClose}
 									disabled={isProcessing}
 								/>
 								<Button
-									label={t('item/components/modals/add-to-collection-modal___toepassen')}
+									label={t(
+										'item/components/modals/add-to-collection-modal___toepassen'
+									)}
 									type="primary"
 									block
 									title={
