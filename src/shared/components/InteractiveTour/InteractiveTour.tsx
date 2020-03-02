@@ -8,8 +8,6 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteId } from '../../../constants';
 import { CustomError } from '../../helpers';
 
-import './InteractiveTour.scss';
-
 export interface InteractiveTourProps {
 	routeId: RouteId;
 	user: Avo.User.User;
