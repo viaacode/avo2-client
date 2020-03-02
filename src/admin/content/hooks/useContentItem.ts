@@ -3,7 +3,7 @@ import { Reducer, useEffect, useReducer, useState } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ReactAction } from '../../../shared/types';
 
@@ -82,7 +82,7 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 							},
 						});
 					} else {
-						toastService.danger(
+						ToastService.danger(
 							i18n.t(
 								'admin/content/hooks/use-content-item___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-met-id-id',
 								{ id }

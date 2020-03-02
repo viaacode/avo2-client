@@ -25,7 +25,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 
@@ -152,7 +152,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
 					)

@@ -13,7 +13,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { copyToClipboard } from '../../helpers';
 import { shareThroughEmail } from '../../helpers/share-through-email';
 
@@ -43,7 +43,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 	const copyLink = () => {
 		copyToClipboard(emailLinkHref);
-		toastService.success(
+		ToastService.success(
 			t(
 				'shared/components/share-through-email-modal/share-through-email-modal___de-url-is-naar-het-klembord-gekopieerd'
 			)
@@ -54,7 +54,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 		try {
 			setIsProcessing(true);
 			await shareThroughEmail(emailAddress, emailLinkTitle, emailLinkHref, type);
-			toastService.success(
+			ToastService.success(
 				t(
 					'shared/components/share-through-email-modal/share-through-email-modal___de-email-is-verstuurd'
 				)
@@ -66,7 +66,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 				emailLinkHref,
 				type,
 			});
-			toastService.danger('Het versturen van de email is mislukt');
+			ToastService.danger('Het versturen van de email is mislukt');
 		}
 		setIsProcessing(false);
 	};

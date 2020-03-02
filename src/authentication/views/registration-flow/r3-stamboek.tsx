@@ -14,7 +14,7 @@ import {
 
 import { Link } from 'react-router-dom';
 import { APP_PATH } from '../../../constants';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
@@ -62,7 +62,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({
 							{/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
 							<a
 								onClick={() =>
-									toastService.info(
+									ToastService.info(
 										t(
 											'authentication/views/registration-flow/r-3-stamboek___nog-niet-geimplementeerd'
 										)

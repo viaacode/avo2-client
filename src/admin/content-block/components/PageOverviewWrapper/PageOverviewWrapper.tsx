@@ -15,7 +15,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, navigateToContentType } from '../../../../shared/helpers';
 import { useDebounce } from '../../../../shared/hooks';
-import { dataService, toastService } from '../../../../shared/services';
+import { dataService, ToastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../content/content.gql';
 import { ContentTypeAndLabelsValue } from '../../../shared/components';
@@ -136,7 +136,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 					},
 				})
 			);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-de-paginas-is-mislukt'
 				)

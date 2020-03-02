@@ -22,7 +22,7 @@ import { ErrorView } from '../../../error/views';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
@@ -97,7 +97,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 					});
 				} catch (err) {
 					console.error(err);
-					toastService.danger(
+					ToastService.danger(
 						t('admin/content/views/content-overview___ongeldige-zoek-query'),
 						false
 					);
@@ -154,7 +154,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 		})
 			.then(() => {
 				refetchContentItems();
-				toastService.success(
+				ToastService.success(
 					t(
 						'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
 					),
@@ -163,7 +163,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/content/views/content-overview___het-verwijderen-van-het-content-item-is-mislukt'
 					),
