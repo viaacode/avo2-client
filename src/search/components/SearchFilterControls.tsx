@@ -105,10 +105,6 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 				'subject'
 			)}
 			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___vak'),
-				'subject'
-			)}
-			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___trefwoord'),
 				'keyword'
 			)}
