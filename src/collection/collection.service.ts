@@ -5,15 +5,18 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
+import { APP_PATH } from '../constants';
 import { CustomError } from '../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
+import { isUuid } from '../shared/helpers/uuid';
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
+	GET_COLLECTION_ID_BY_AVO1_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_TITLE,
@@ -554,7 +557,9 @@ export class CollectionService {
 			});
 			return collectionObj;
 		} catch (err) {
-			throw new CustomError('Failed to get fragments inside the collection', err, { ids });
+			throw new CustomError('Failed to get fragments inside the collection', err, {
+				ids,
+			});
 		}
 	}
 
@@ -677,7 +682,9 @@ export class CollectionService {
 
 			return collection.thumbnail_path;
 		} catch (err) {
-			console.error('Failed to get the thumbnail path for collection', err, { collection });
+			console.error('Failed to get the thumbnail path for collection', err, {
+				collection,
+			});
 			ToastService.danger([
 				i18n.t(
 					'collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'
@@ -689,4 +696,52 @@ export class CollectionService {
 			return null;
 		}
 	}
+
+	public static getCollectionIdByAvo1Id = async (id: string) => {
+		if (isUuid(id)) {
+			return id;
+		}
+
+		const response = await dataService.query({
+			query: GET_COLLECTION_ID_BY_AVO1_ID,
+			variables: {
+				avo1Id: id,
+			},
+		});
+
+		if (!response) {
+			return null;
+		}
+
+		return get(response, 'data.app_collections[0].id', null);
+	};
+
+	public static onDeleteCollection = async (
+		history: any,
+		collectionId: string,
+		triggerCollectionDelete: any
+	) => {
+		try {
+			await triggerCollectionDelete({
+				variables: {
+					id: collectionId,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
+
+			history.push(APP_PATH.WORKSPACE.route);
+			ToastService.success(
+				i18n.t(
+					'collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd'
+				)
+			);
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(
+				i18n.t(
+					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
+				)
+			);
+		}
+	};
 }
