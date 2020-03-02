@@ -62,12 +62,9 @@ import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service.const';
-import { toastService } from '../../shared/services';
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
-import { COLLECTION_PATH } from '../collection.const';
 import {
 	DELETE_COLLECTION,
 	GET_COLLECTION_ID_BY_AVO1_ID,
@@ -175,7 +172,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 					// and continue loading the collection
 					redirectToClientPage(
-						buildLink(APP_PATH.COLLECTION_DETAIL, { id: uuid }),
+						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: uuid }),
 						history
 					);
 				}
@@ -294,7 +291,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// 					index: 'collections',
 	// 					limit: 4,
 	// 				});
-	// 				toastService.danger(t('collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'));
+	// 				ToastService.danger(t('collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'));
 	// 			});
 	// 	}
 	// }, [relatedCollections, t, collectionId]);
@@ -324,13 +321,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService.success(
+			history.push(APP_PATH.WORKSPACE.route);
+			ToastService.success(
 				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
 				)
@@ -350,7 +347,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			case 'duplicate':
 				try {
 					if (!collection) {
-						toastService.danger(
+						ToastService.danger(
 							t(
 								'collection/views/collection-detail___de-collectie-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 							)
@@ -366,11 +363,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						triggerCollectionFragmentsInsert
 					);
 					redirectToClientPage(
-						buildLink(APP_PATH.COLLECTION_DETAIL, { id: duplicateCollection.id }),
+						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
 						history
 					);
 					setCollection(duplicateCollection);
-					toastService.success(
+					ToastService.success(
 						t(
 							'collection/views/collection-detail___de-collectie-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
 						)
@@ -379,7 +376,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					console.error('Failed to copy collection', err, {
 						originalCollection: collection,
 					});
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'collection/views/collection-detail___het-kopieren-van-de-collectie-is-mislukt'
 						)
@@ -444,7 +441,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							category={category}
 							onClick={() =>
 								redirectToClientPage(
-									buildLink(COLLECTION_PATH.COLLECTION_DETAIL, { id }),
+									buildLink(APP_PATH.COLLECTION_DETAIL.route, { id }),
 									history
 								)
 							}
@@ -661,7 +658,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 											<>
 												{index !== 0 && !!publishedBundles.length && ', '}
 												<Link
-													to={buildLink(APP_PATH.BUNDLE_DETAIL, {
+													to={buildLink(APP_PATH.BUNDLE_DETAIL.route, {
 														id: bundle.id,
 													})}
 												>

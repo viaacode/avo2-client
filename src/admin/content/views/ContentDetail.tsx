@@ -32,7 +32,7 @@ import {
 	sanitizePresets,
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { ApolloCacheManager, toastService } from '../../../shared/services';
+import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import { getAllUserGroups } from '../../../shared/services/user-groups-service';
 import { ContentBlockPreview } from '../../content-block/components';
 import { parseContentBlocks } from '../../content-block/helpers';
@@ -77,7 +77,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			})
 			.catch((err: any) => {
 				console.error('Failed to get user groups', err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
 					),
@@ -117,7 +117,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		})
 			.then(() => {
 				history.push(CONTENT_PATH.CONTENT);
-				toastService.success(
+				ToastService.success(
 					t(
 						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
 					),
@@ -126,7 +126,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
 					),

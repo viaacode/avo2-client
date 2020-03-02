@@ -43,6 +43,7 @@ import {
 	ContentTypeString,
 	toEnglishContentType,
 } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
 import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -58,7 +59,7 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { dataService, toastService } from '../../shared/services';
+import { dataService, ToastService } from '../../shared/services';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import {
 	BookmarkViewPlayCounts,
@@ -69,7 +70,7 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import ReportItemModal from '../components/modals/ReportItemModal';
 
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
-import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
+import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './ItemDetail.scss';
 
@@ -119,7 +120,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 						limit,
 						index: 'items',
 					});
-					toastService.danger(
+					ToastService.danger(
 						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
 					);
 				});
@@ -281,7 +282,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							category={englishContentType}
 							onClick={() =>
 								redirectToClientPage(
-									buildLink(ITEM_PATH.ITEM_DETAIL, { id: relatedItem.id }),
+									buildLink(ITEM_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
 									history
 								)
 							}

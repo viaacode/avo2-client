@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 
-import { dataService, toastService } from '../services';
+import { dataService, ToastService } from '../services';
 
 interface Query {
 	query: any;
@@ -19,7 +19,7 @@ export const performQuery = async (
 		return get(response, subResponse, null);
 	} catch (err) {
 		console.error(error);
-		toastService.danger(feedback, false);
+		ToastService.danger(feedback, false);
 
 		return null;
 	}

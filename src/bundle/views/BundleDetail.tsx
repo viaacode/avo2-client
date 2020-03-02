@@ -53,15 +53,13 @@ import {
 	ControlledDropdown,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
+	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
-import { toastService } from '../../shared/services';
-import { ApolloCacheManager } from '../../shared/services/data-service';
+import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import './BundleDetail.scss';
 
@@ -121,7 +119,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		// 				index: 'bundles',
 		// 				limit: 4,
 		// 			});
-		// 			toastService.danger(t('bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'));
+		// 			ToastService.danger(t('bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'));
 		// 		});
 		// }
 	}, [bundleId, relatedBundles, t, user]);
@@ -215,7 +213,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	// Listeners
 	const onEditBundle = () => {
-		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT, { id: bundleId }), history);
+		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT.route, { id: bundleId }), history);
 	};
 
 	const onDeleteBundle = async () => {
@@ -226,13 +224,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(WORKSPACE_PATH.WORKSPACE);
-			toastService.success(
+			history.push(APP_PATH.WORKSPACE.route);
+			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('bundle/views/bundle-detail___het-verwijderen-van-de-bundel-is-mislukt')
 			);
 		}
@@ -249,7 +247,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			case 'duplicate':
 				try {
 					if (!bundle) {
-						toastService.danger(
+						ToastService.danger(
 							t(
 								'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 							)
@@ -265,18 +263,18 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						triggerCollectionFragmentsInsert
 					);
 					redirectToClientPage(
-						buildLink(APP_PATH.BUNDLE_DETAIL, { id: duplicateCollection.id }),
+						buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
 						history
 					);
 					setBundle(duplicateCollection);
-					toastService.success(
+					ToastService.success(
 						t(
 							'bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
 						)
 					);
 				} catch (err) {
 					console.error('Failed to copy bundle', err, { originalBundle: bundle });
-					toastService.danger(
+					ToastService.danger(
 						t('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
 					);
 				}
@@ -309,7 +307,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.BUNDLE_DETAIL, { id: relatedBundle.id }),
+								buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: relatedBundle.id }),
 								history
 							)
 						}
@@ -357,7 +355,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.COLLECTION_DETAIL, { id: collection.id }),
+								buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collection.id }),
 								history
 							)
 						}

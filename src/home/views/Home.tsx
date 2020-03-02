@@ -26,7 +26,7 @@ import { getSearchResults } from '../../search/store/actions';
 import { selectSearchLoading, selectSearchResults } from '../../search/store/selectors';
 import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
 import { useDebounce } from '../../shared/hooks';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 
 import './Home.scss';
 
@@ -107,7 +107,7 @@ const Home: FunctionComponent<HomeProps> = ({
 					)
 				);
 			} else {
-				toastService.danger(
+				ToastService.danger(
 					t('home/views/home___geen-zoekresultaten-gevonden-met-id-id', {
 						id: searchResultId,
 					})

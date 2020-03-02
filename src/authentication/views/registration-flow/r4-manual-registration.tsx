@@ -20,7 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
-import { toastService, ZendeskService } from '../../../shared/services';
+import { ToastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
@@ -93,7 +93,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		try {
 			const errors = getValidationErrors();
 			if (errors.length) {
-				toastService.danger(errors);
+				ToastService.danger(errors);
 				return;
 			}
 			// create zendesk ticket
@@ -123,7 +123,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				),
 			};
 			await ZendeskService.createTicket(ticket);
-			toastService.success(
+			ToastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
 				)
@@ -131,7 +131,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			setHasBeenSent(true);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt'
 				)
@@ -144,7 +144,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			<>
 				<Button
 					type="secondary"
-					onClick={() => redirectToClientPage(APP_PATH.STAMBOEK, history)}
+					onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
 				>
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___terug">
 						Terug
@@ -175,7 +175,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								<br />
 								Dan krijg je via je docent of hogeschool toegang tot onze beeldbank.
 								Hoe? Ontdek het op{' '}
-								<Link to={APP_PATH.STUDENT_TEACHER}>deze pagina</Link>.<br />
+								<Link to={APP_PATH.STUDENT_TEACHER.route}>deze pagina</Link>.<br />
 								<br />
 							</li>
 							<li>
@@ -185,7 +185,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								<br />
 								Vraag een account via een van je leerkrachten. Lees meer over Het
 								Archief voor Onderwijs voor leerlingen op{' '}
-								<Link to={APP_PATH.FOR_PUPILS}>deze pagina</Link>.
+								<Link to={APP_PATH.FOR_PUPILS.route}>deze pagina</Link>.
 								<br />
 								Wil je als leerkracht je leerlingen toegang geven? Alle info vind je{' '}
 								<Link to={'/leerlingen-toegang-versie-leerkrachten'}>hier</Link>.
@@ -201,7 +201,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								<ul>
 									<li>
 										Je hebt een lerarenkaart- of stamboeknummer? Maak dan{' '}
-										<Link to={APP_PATH.STAMBOEK}>hier</Link> je gratis een
+										<Link to={APP_PATH.STAMBOEK.route}>hier</Link> je gratis een
 										account aan.
 									</li>
 

@@ -22,25 +22,21 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { ControlledDropdown, LoadingErrorLoadedComponent } from '../../shared/components';
-import { navigate } from '../../shared/helpers';
-
 import {
 	PermissionNames,
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { dataService } from '../../shared/services/data-service';
-
+import { APP_PATH } from '../../constants';
 import {
-	ASSIGNMENTS_ID,
-	BOOKMARKS_ID,
-	BUNDLES_ID,
-	COLLECTIONS_ID,
-	TABS,
-	WORKSPACE_PATH,
-} from '../workspace.const';
+	ControlledDropdown,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../shared/components';
+import { navigate } from '../../shared/helpers';
+import { dataService } from '../../shared/services';
+
+import { ASSIGNMENTS_ID, BOOKMARKS_ID, BUNDLES_ID, COLLECTIONS_ID, TABS } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabFilter, TabViewMap } from '../workspace.types';
 import Bookmarks from './Bookmarks';
@@ -139,7 +135,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	}, [tabCounts, permissions, t, history, location, match, user]);
 
 	const goToTab = (id: ReactText) => {
-		navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: id });
+		navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: id });
 		setTabId(String(id));
 	};
 

@@ -27,7 +27,7 @@ import { selectUser } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
-import { toastService } from '../../services';
+import { ToastService } from '../../services';
 import {
 	AppContentNavElement,
 	getNavigationItems,
@@ -72,7 +72,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			})
 			.catch(err => {
 				console.error('Failed to get navigation items', err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/navigation/navigation___het-ophalen-van-de-navigatie-items-is-mislukt-probeer-later-opnieuw'
 					)
@@ -115,8 +115,8 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 		const logoutNavItem = last(dynamicNavItems) as NavigationItemInfo;
 
 		if (
-			(user && logoutNavItem.location !== APP_PATH.LOGOUT) ||
-			(!user && logoutNavItem.location === APP_PATH.LOGOUT)
+			(user && logoutNavItem.location !== APP_PATH.LOGOUT.route) ||
+			(!user && logoutNavItem.location === APP_PATH.LOGOUT.route)
 		) {
 			// Avoid flashing the menu items for a second without them being in a dropdown menu
 			return [];
@@ -179,7 +179,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			const navItem = secondaryNavItems.find(navItem => navItem.id === navItemId);
 			if (!navItem) {
 				console.error('Could not find navigation item by id', { menuItemId });
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-1'
 					)
@@ -199,7 +199,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			console.error('Failed to handle menu item click because it is not a number', err, {
 				menuItemId,
 			});
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-2'
 				)

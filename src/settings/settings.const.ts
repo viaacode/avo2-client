@@ -1,11 +1,5 @@
 import { ROUTE_PARTS } from '../shared/constants';
 
-export const SETTINGS_PATH = Object.freeze({
-	SETTINGS: `/${ROUTE_PARTS.settings}`,
-	SETTINGS_TAB: `/${ROUTE_PARTS.settings}/:tabId`,
-	COMPLETE_PROFILE: `/${ROUTE_PARTS.completeProfile}`,
-});
-
 export const PROFILE_ID = ROUTE_PARTS.profile;
 export const ACCOUNT_ID = ROUTE_PARTS.account;
 export const EMAIL_ID = ROUTE_PARTS.email;

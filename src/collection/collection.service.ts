@@ -6,7 +6,7 @@ import { Avo } from '@viaa/avo2-types';
 import { getProfileId } from '../authentication/helpers/get-profile-info';
 import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError } from '../shared/helpers';
-import { ApolloCacheManager, dataService, toastService } from '../shared/services';
+import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
@@ -95,7 +95,7 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
-				toastService.danger(
+				ToastService.danger(
 					i18n.t('collection/collection___de-huidige-collectie-is-niet-gevonden')
 				);
 				return null;
@@ -109,7 +109,7 @@ export class CollectionService {
 			}
 
 			if (validationErrors.length) {
-				toastService.danger(validationErrors);
+				ToastService.danger(validationErrors);
 				return null;
 			}
 
@@ -187,7 +187,7 @@ export class CollectionService {
 				});
 
 				if (!fragmentToUpdate) {
-					toastService.info(
+					ToastService.info(
 						i18n.t(
 							'collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id',
 							{ id }
@@ -623,7 +623,7 @@ export class CollectionService {
 		triggerCollectionFragmentInsert: any
 	) {
 		if (!collection) {
-			toastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
+			ToastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
 			return;
 		}
 
@@ -632,7 +632,7 @@ export class CollectionService {
 		);
 
 		if (!tempFragment) {
-			toastService.info(
+			ToastService.info(
 				i18n.t('collection/collection___fragment-om-toe-te-voegen-is-niet-gevonden-id-id', {
 					id: tempId,
 				})
@@ -678,7 +678,7 @@ export class CollectionService {
 			return collection.thumbnail_path;
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
-			toastService.danger([
+			ToastService.danger([
 				i18n.t(
 					'collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'
 				),

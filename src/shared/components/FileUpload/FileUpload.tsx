@@ -15,7 +15,7 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { CustomError } from '../../helpers';
-import { toastService } from '../../services';
+import { ToastService } from '../../services';
 import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
 
@@ -69,7 +69,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					const allowedExtensions = allowedTypes
 						.map(type => type.split('/').pop() || type)
 						.join(', ');
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten-allowed-extensions',
 							{
@@ -93,13 +93,13 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				new CustomError('Failed to upload files in FileUpload component', err, { files })
 			);
 			if (files && files.length > 1 && allowMulti) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/file-upload/file-upload___het-uploaden-van-de-bestanden-is-mislukt'
 					)
 				);
 			} else {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/file-upload/file-upload___het-uploaden-van-het-bestand-is-mislukt'
 					)
@@ -131,7 +131,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to delete asset', err, { urls }));
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt'
 				)

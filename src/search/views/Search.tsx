@@ -44,15 +44,11 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { copyToClipboard, navigate } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 
+import { APP_PATH } from '../../constants';
 import { SearchFilterControls, SearchResults } from '../components';
-import {
-	DEFAULT_FORM_STATE,
-	DEFAULT_SORT_ORDER,
-	ITEMS_PER_PAGE,
-	SEARCH_PATH,
-} from '../search.const';
+import { DEFAULT_FORM_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import {
 	SearchFilterFieldValues,
 	SearchFilterMultiOptions,
@@ -142,7 +138,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				orderDirection,
 				page,
 			]).join('&');
-			navigate(history, SEARCH_PATH.SEARCH, {}, queryParams.length ? queryParams : '');
+			navigate(history, APP_PATH.SEARCH.route, {}, queryParams.length ? queryParams : '');
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
@@ -189,7 +185,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
-			toastService.danger(t('search/views/search___ongeldige-zoek-query'));
+			ToastService.danger(t('search/views/search___ongeldige-zoek-query'));
 			console.error(err);
 		}
 		setQueryParamsAnalysed(true);
@@ -296,7 +292,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	const onCopySearchLinkClicked = () => {
 		copySearchLink();
 		setIsOptionsMenuOpen(false);
-		toastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
+		ToastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
 	};
 
 	const orderOptions = [
@@ -380,11 +376,13 @@ const Search: FunctionComponent<SearchProps> = ({
 											label={t('search/views/search___maak-van-deze-zoekopdracht-een-opdracht')}
 											onClick={() => {
 												setIsOptionsMenuOpen(false);
-												toastService.info(t('search/views/search___nog-niet-geimplementeerd'));
+												ToastService.info(t('search/views/search___nog-niet-geimplementeerd'));
 											}}
 										/> */}
 									</DropdownContent>
 								</Dropdown>
+								{/* TODO re-enable when interactive tour viewed status can be saved in the database */}
+								{/*<InteractiveTour routeId="SEARCH" user={user} showButton />*/}
 							</Flex>
 						</ToolbarRight>
 					</Toolbar>

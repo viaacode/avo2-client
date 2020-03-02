@@ -39,7 +39,7 @@ import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
@@ -88,7 +88,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				})
 				.catch(err => {
 					console.error(err);
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'item/components/modals/add-to-collection-modal___het-ophalen-van-de-bestaande-collections-is-mislukt'
 						)
@@ -100,7 +100,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	useEffect(() => {
 		fetchCollections().catch(err => {
 			console.error('Failed to fetch collections', err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collecties-is-mislukt'
 				)
@@ -133,14 +133,14 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			if (collection) {
 				setSelectedCollection(collection);
 			} else {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collectie-details-is-mislukt'
 					)
 				);
 			}
 		} catch (err) {
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collectie-details-is-mislukt'
 				)
@@ -186,13 +186,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 			if (!response || response.errors) {
 				console.error(get(response, 'errors'));
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie'
 					)
 				);
 			} else {
-				toastService.success(
+				ToastService.success(
 					t(
 						'item/components/modals/add-to-collection-modal___het-fragment-is-toegevoegd-aan-de-collectie'
 					)
@@ -213,7 +213,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie'
 				)
@@ -264,13 +264,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			);
 
 			if (!response || response.errors) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt'
 					)
 				);
 			} else if (!insertedCollection || isNil(insertedCollection.id)) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/modals/add-to-collection-modal___de-aangemaakte-collectie-kon-niet-worden-opgehaald'
 					)
@@ -290,7 +290,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					collection: newCollection,
 				},
 			});
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt'
 				)
