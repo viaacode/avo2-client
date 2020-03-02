@@ -1,4 +1,4 @@
-import { startCase } from 'lodash-es';
+import { first, startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -24,36 +24,39 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	const [users, setUsers] = useState<any>([]);
 
 	const renderTableCell = (rowData: Partial<Avo.User.User>, columnId: UserOverviewTableCols) => {
-		const { placement: user } = rowData;
+		const { id, first_name, last_name } = rowData;
 
 		switch (columnId) {
-			case 'placement':
+			case 'name':
 				return (
-					<Link to={buildLink(USER_PATH.USER_DETAIL, { user })}>{startCase(user)}</Link>
+					<Link
+						to={buildLink(USER_PATH.USER_DETAIL, { id })}
+					>{`${first_name} ${last_name}`}</Link>
 				);
 			case 'actions':
-				return (
-					<ButtonToolbar>
-						<Button
-							icon="list"
-							onClick={() => navigate(history, USER_PATH.USER_DETAIL, { user })}
-							size="small"
-							title={t(
-								'admin/user/views/user-overview___bekijk-alle-navigatie-items'
-							)}
-							type="tertiary"
-						/>
-						<Button
-							icon="plus"
-							onClick={() => navigate(history, USER_PATH.USER_ITEM_CREATE, { user })}
-							size="small"
-							title={t(
-								'admin/user/views/user-overview___voeg-een-navigatie-item-toe'
-							)}
-							type="tertiary"
-						/>
-					</ButtonToolbar>
-				);
+				// return (
+				// 	<ButtonToolbar>
+				// 		<Button
+				// 			icon="list"
+				// 			onClick={() => navigate(history, USER_PATH.USER_DETAIL, { user })}
+				// 			size="small"
+				// 			title={t(
+				// 				'admin/user/views/user-overview___bekijk-alle-navigatie-items'
+				// 			)}
+				// 			type="tertiary"
+				// 		/>
+				// 		<Button
+				// 			icon="plus"
+				// 			onClick={() => navigate(history, USER_PATH.USER_ITEM_CREATE, { user })}
+				// 			size="small"
+				// 			title={t(
+				// 				'admin/user/views/user-overview___voeg-een-navigatie-item-toe'
+				// 			)}
+				// 			type="tertiary"
+				// 		/>
+				// 	</ButtonToolbar>
+				// );
+				return null;
 			default:
 				return rowData[columnId];
 		}

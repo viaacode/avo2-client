@@ -2,16 +2,14 @@ import { IconName } from '@viaa/avo2-components';
 
 import { ContentPickerType } from '../shared/types';
 
-export type MenuOverviewTableCols = 'placement' | 'description' | 'actions';
+export type UserOverviewTableCols = 'name' | 'actions';
 
-export interface MenuEditParams {
-	menu?: string;
+export interface UserEditParams {
+	user?: string;
 	id?: string;
 }
 
-export type MenuEditPageType = 'edit' | 'create';
-
-export interface MenuEditFormState {
+export interface UserEditFormState {
 	description?: string;
 	placement?: string;
 	icon: IconName | '';
@@ -22,7 +20,7 @@ export interface MenuEditFormState {
 	user_group_ids: number[];
 }
 
-export interface MenuEditFormErrorState {
+export interface UserEditFormErrorState {
 	description?: string;
 	placement?: string;
 	icon?: string;
