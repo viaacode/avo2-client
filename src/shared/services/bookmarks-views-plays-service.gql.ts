@@ -172,6 +172,9 @@ export const GET_BOOKMARKS_FOR_USER = gql`
 				title
 				thumbnail_path
 				issued
+				item {
+					external_id
+				}
 			}
 			item_id
 			created_at

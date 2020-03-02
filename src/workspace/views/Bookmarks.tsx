@@ -138,22 +138,22 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	};
 
 	// Render functions
-	const getDetailLink = (contentType: EventContentType, contentId: string) => {
+	const getDetailLink = (contentType: EventContentType, contentLinkId: string) => {
 		return buildLink(
 			contentType === 'item' ? APP_PATH.ITEM_DETAIL.route : APP_PATH.COLLECTION_DETAIL.route,
 			{
-				id: contentId,
+				id: contentLinkId,
 			}
 		);
 	};
 
 	const renderThumbnail = ({
-		contentId,
+		contentLinkId,
 		contentType,
 		contentTitle,
 		contentThumbnailPath,
 	}: BookmarkInfo) => (
-		<Link to={getDetailLink(contentType, contentId)} title={contentTitle}>
+		<Link to={getDetailLink(contentType, contentLinkId)} title={contentTitle}>
 			<Thumbnail
 				alt="thumbnail"
 				category={contentType}
@@ -164,14 +164,14 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	);
 
 	const renderTitle = ({
-		contentId,
+		contentLinkId,
 		contentType,
 		contentTitle,
 		contentCreatedAt,
 	}: BookmarkInfo) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link to={getDetailLink(contentType, contentId)} title={contentTitle}>
+				<Link to={getDetailLink(contentType, contentLinkId)} title={contentTitle}>
 					{contentTitle}
 				</Link>
 			</h3>

@@ -151,8 +151,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 				const response = await dataService.query({
 					query: GET_ITEM_BY_ID,
 					variables: {
-						externalId: match.params.id,
-						uid: match.params.id,
+						id: match.params.id,
 					},
 				});
 

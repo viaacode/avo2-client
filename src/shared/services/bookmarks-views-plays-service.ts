@@ -218,6 +218,7 @@ export class BookmarksViewsPlaysService {
 				}
 				return {
 					contentId: itemBookmark.item_id,
+					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 					contentType: 'item',
 					createdAt: normalizeTimestamp(itemBookmark.created_at)
 						.toDate()
@@ -238,6 +239,7 @@ export class BookmarksViewsPlaysService {
 				}
 				return {
 					contentId: collectionBookmark.collection_uuid,
+					contentLinkId: collectionBookmark.collection_uuid,
 					contentType:
 						collectionBookmark.bookmarkedCollection.type_id ===
 						ContentTypeNumber.collection
