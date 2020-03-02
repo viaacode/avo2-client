@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { RouteComponentProps } from 'react-router';
 
 import {
 	Avatar,
@@ -14,7 +15,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError, formatDate, getEnv } from '../../../shared/helpers';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
@@ -23,9 +23,9 @@ import { redirectToExternalPage } from '../../../authentication/helpers/redirect
 import { dataService, ToastService } from '../../../shared/services';
 import { GET_USER_BY_ID } from '../user.gql';
 
-interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
+interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 
-const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
+const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 	const { id } = match.params;
 
 	// Hooks
@@ -77,13 +77,8 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	}, [setStoredUser, setLoadingInfo]);
 
 	useEffect(() => {
-		if (user) {
-			setStoredUser(user);
-			return;
-		}
-		// load user from route param id
 		fetchUserById();
-	}, [setStoredUser, fetchUserById]);
+	}, [fetchUserById]);
 
 	useEffect(() => {
 		if (storedUser) {

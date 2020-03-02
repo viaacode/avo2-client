@@ -50,7 +50,7 @@ export const GET_USERS = gql`
 			}
 		) {
 			id
-			usersByuserId {
+			user: usersByuserId {
 				first_name
 				last_name
 				mail

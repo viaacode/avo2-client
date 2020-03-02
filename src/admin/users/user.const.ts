@@ -10,5 +10,6 @@ export const USER_PATH = {
 
 export const USER_OVERVIEW_TABLE_COLS: TableColumn[] = [
 	{ id: 'name', label: i18n.t('Naam') },
+	{ id: 'email', label: i18n.t('Email') },
 	{ id: 'actions', label: '' },
 ];

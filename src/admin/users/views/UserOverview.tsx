@@ -3,7 +3,18 @@ import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Button, Container, FormGroup, Pagination, Table, TextInput } from '@viaa/avo2-components';
+import {
+	Button,
+	Container,
+	Form,
+	FormGroup,
+	Pagination,
+	Spacer,
+	Table,
+	TextInput,
+	Toolbar,
+	ToolbarRight,
+} from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -27,37 +38,47 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 	const [searchFieldValue, setSearchFieldValue] = useState<string>('');
 	// Contains the value of the search field when the user triggers a new search query
 	// by pressing enter or pressing the search button
-	const [queryString, setQueryString] = useState<string>('');
+	const [queryText, setQueryText] = useState<string>('');
 	const [page, setPage] = useState<number>(0);
 	// const [users, setUsers] = useState<any>([]);
 
 	const handleKeyUp = (e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.Enter) {
-			setQueryString(searchFieldValue);
+			setQueryText(searchFieldValue);
 		}
 	};
 
-	const renderTableCell = (rowData: Partial<Avo.User.User>, columnId: UserOverviewTableCols) => {
-		const { id, first_name, last_name } = rowData;
+	const renderTableCell = (
+		rowData: Partial<Avo.User.Profile>,
+		columnId: UserOverviewTableCols
+	) => {
+		const { id, user } = rowData;
 
 		switch (columnId) {
 			case 'name':
 				return (
-					<Link
-						to={buildLink(USER_PATH.USER_DETAIL, { id })}
-					>{`${first_name} ${last_name}`}</Link>
+					<Link to={buildLink(USER_PATH.USER_DETAIL, { id })}>{`${get(
+						user,
+						'first_name',
+						'Onbekend'
+					)} ${get(user, 'last_name', 'Onbekend')}`}</Link>
 				);
+
+			case 'email':
+				return get(user, 'mail', 'Onbekend');
+
 			case 'actions':
 				return null;
+
 			default:
 				return rowData[columnId];
 		}
 	};
 
 	const renderUserOverview = (response: any) => {
-		const dbUsers = get(response, 'users_profiles', []);
+		const dbProfiles: Partial<Avo.User.Profile>[] = get(response, 'users_profiles', []);
 		const userCount = get(response, 'users_profiles_aggregate.aggregate.count', 0);
-		if (!dbUsers.length) {
+		if (!dbProfiles.length) {
 			return (
 				<ErrorView message={t('Er bestaan nog geen gebruikers')}>
 					<p>
@@ -73,48 +94,63 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 			<>
 				<Table
 					columns={USER_OVERVIEW_TABLE_COLS}
-					data={dbUsers}
-					renderCell={(rowData: Partial<Avo.User.User>, columnId: string) =>
+					data={dbProfiles}
+					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
 						renderTableCell(rowData, columnId as UserOverviewTableCols)
 					}
 					rowKey="id"
 					variant="bordered"
 				/>
-				<Pagination pageCount={userCount} currentPage={page} onPageChange={setPage} />
+				<Spacer margin="top-large">
+					<Pagination pageCount={userCount} currentPage={page} onPageChange={setPage} />
+				</Spacer>
 			</>
 		);
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/user/views/user-overview___navigatie-overzicht')}>
+		<AdminLayout pageTitle={t('Gebruikers')}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
-						<FormGroup className="c-content-filters__search" inlineMode="grow">
-							<TextInput
-								placeholder={t('Zoek op naam, email, stamboek, alias, ...')}
-								icon="search"
-								onChange={setSearchFieldValue}
-								onKeyUp={handleKeyUp}
-								value={searchFieldValue}
-							/>
-						</FormGroup>
-						<FormGroup inlineMode="shrink">
-							<Button
-								label={t(
-									'admin/content/components/content-filters/content-filters___zoeken'
-								)}
-								type="primary"
-								onClick={() => setQueryString(searchFieldValue)}
-							/>
-						</FormGroup>
+						<Spacer margin="bottom-small">
+							<Toolbar>
+								<ToolbarRight>
+									<Form type="inline">
+										<FormGroup
+											className="c-content-filters__search"
+											inlineMode="grow"
+										>
+											<TextInput
+												placeholder={t(
+													'Zoek op naam, email, stamboek, alias, ...'
+												)}
+												icon="search"
+												onChange={setSearchFieldValue}
+												onKeyUp={handleKeyUp}
+												value={searchFieldValue}
+											/>
+										</FormGroup>
+										<FormGroup inlineMode="shrink">
+											<Button
+												label={t(
+													'admin/content/components/content-filters/content-filters___zoeken'
+												)}
+												type="primary"
+												onClick={() => setQueryText(searchFieldValue)}
+											/>
+										</FormGroup>
+									</Form>
+								</ToolbarRight>
+							</Toolbar>
+						</Spacer>
 						<DataQueryComponent
 							renderData={renderUserOverview}
 							query={GET_USERS}
 							variables={{
 								offset: page * ITEMS_PER_PAGE,
 								limit: ITEMS_PER_PAGE,
-								queryString: `%${queryString}%`,
+								queryText: `%${queryText}%`,
 							}}
 						/>
 					</Container>
