@@ -37,10 +37,9 @@ import {
 } from '../../../collection/collection.gql';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
-import FlowPlayerWrapper from '../../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { FlowPlayerWrapper } from '../../../shared/components';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
-import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
+import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
