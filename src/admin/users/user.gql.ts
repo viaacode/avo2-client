@@ -2,9 +2,9 @@ import { gql } from 'apollo-boost';
 
 export const GET_USER_BY_ID = gql`
 	query getUsers($id: uuid!) {
-		users_profiles(offset: 0, limit: 1, where: { id: $id }) {
+		users_profiles(offset: 0, limit: 1, where: { id: { _eq: $id } }) {
 			id
-			usersByuserId {
+			user: usersByuserId {
 				first_name
 				last_name
 				mail

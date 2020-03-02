@@ -5,7 +5,6 @@ import { RouteComponentProps } from 'react-router';
 
 import {
 	Avatar,
-	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -26,70 +25,68 @@ import { GET_USER_BY_ID } from '../user.gql';
 interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 
 const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
-	const { id } = match.params;
-
 	// Hooks
-	const [storedUser, setStoredUser] = useState<Avo.User.User | null>(null);
+	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	const [t] = useTranslation();
 
-	const fetchUserById = useCallback(async () => {
+	const fetchProfileById = useCallback(async () => {
 		try {
 			const response = await dataService.query({
 				query: GET_USER_BY_ID,
 				variables: {
-					userId: id,
+					id: match.params.id,
 				},
 			});
-			const dbUser = get(response, 'users_profiles[0]');
-			if (!dbUser) {
+			const dbProfile = get(response, 'data.users_profiles[0]');
+			if (!dbProfile) {
 				console.error(
 					new CustomError('Response from graphql is empty', null, {
 						query: 'GET_USER_BY_ID',
 						variables: {
-							userId: id,
+							id: match.params.id,
 						},
 						response,
 					})
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het opghalen van de gebruiker info is mislukt'),
+					message: t('Het ophalen van de gebruiker info is mislukt'),
 				});
 				return;
 			}
-			setStoredUser(dbUser);
+			setStoredProfile(dbProfile);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get user by id', err, {
 					query: 'GET_USER_BY_ID',
 					variables: {
-						userId: id,
+						id: match.params.id,
 					},
 				})
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het opghalen van de gebruiker info is mislukt'),
+				message: t('Het ophalen van de gebruiker info is mislukt'),
 			});
 		}
-	}, [setStoredUser, setLoadingInfo]);
+	}, [setStoredProfile, setLoadingInfo, t, match.params.id]);
 
 	useEffect(() => {
-		fetchUserById();
-	}, [fetchUserById]);
+		fetchProfileById();
+	}, [fetchProfileById]);
 
 	useEffect(() => {
-		if (storedUser) {
+		if (storedProfile) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
 		}
-	}, [storedUser]);
+	}, [storedProfile, setLoadingInfo]);
 
 	const getLdapDashboardUrl = () => {
-		const userLdapUuid = get(storedUser, 'idpmaps[0].idp_user_id');
+		const userLdapUuid = get(storedProfile, 'idpmaps[0].idp_user_id');
 		if (userLdapUuid) {
 			return `${getEnv('LDAP_DASHBOARD_PEOPLE_URL')}/${userLdapUuid}`;
 		}
@@ -101,7 +98,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 	};
 
 	const renderUserDetail = () => {
-		if (!storedUser) {
+		if (!storedProfile) {
 			console.error(
 				new CustomError(
 					'Failed to load user because render function is called before user was fetched'
@@ -112,75 +109,76 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
-					<BlockHeading type="h4">
-						<Trans>Gebruiker info:</Trans>
-					</BlockHeading>
 					<Table horizontal variant="invisible">
 						<tbody>
 							<tr>
-								<tr>
-									<th>
-										<Trans>Avatar</Trans>
-									</th>
-									<td>
-										<Avatar
-											image={get(storedUser, 'profile.avatar')}
-											size="large"
-										/>
-									</td>
-								</tr>
 								<th>
-									<Trans>Naam</Trans>
+									<Avatar
+										image={get(storedProfile, 'profile.avatar')}
+										size="large"
+									/>
 								</th>
-								<td>{`${storedUser.first_name} ${storedUser.last_name}`}</td>
+								<td />
+							</tr>
+							<tr>
+								<th>
+									<Trans>Vooraam</Trans>
+								</th>
+								<td>{get(storedProfile, 'user.first_name') || '-'}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Achternaam</Trans>
+								</th>
+								<td>{get(storedProfile, 'user.last_name') || '-'}</td>
 							</tr>
 							<tr>
 								<th>
 									<Trans>Gebruikersnaam</Trans>
 								</th>
-								<td>storedUser.alias}</td>
+								<td>{storedProfile.alias}</td>
 							</tr>
 							<tr>
 								<th>
 									<Trans>Primair email adres</Trans>
 								</th>
-								<td>{storedUser.mail}</td>
+								<td>{get(storedProfile, 'user.mail') || '-'}</td>
 							</tr>
 							<tr>
 								<th>
 									<Trans>Secundair email adres</Trans>
 								</th>
-								<td>{get(storedUser, 'profile.alternative_email')}</td>
+								<td>{get(storedProfile, 'alternative_email') || '-'}</td>
 							</tr>
 							<tr>
 								<th>
 									<Trans>Aangemaakt op</Trans>
 								</th>
-								<td>{formatDate(storedUser.created_at)}</td>
+								<td>{formatDate(storedProfile.created_at)}</td>
 							</tr>
 							<tr>
 								<th>
 									<Trans>Aangepast op</Trans>
 								</th>
-								<td>{formatDate(storedUser.created_at)}</td>
+								<td>{formatDate(storedProfile.updated_at)}</td>
 							</tr>
 							<tr>
 								<th>
 									<Trans>Bio</Trans>
 								</th>
-								<td>{get(storedUser, 'profile.bio')}</td>
+								<td>{get(storedProfile, 'bio') || '-'}</td>
 							</tr>
 							<tr>
 								<th>
 									<Trans>Functie</Trans>
 								</th>
-								<td>{get(storedUser, 'profile.function')}</td>
+								<td>{get(storedProfile, 'function') || '-'}</td>
 							</tr>
 							<tr>
 								<th>
 									<Trans>Stamboek nummer</Trans>
 								</th>
-								<td>{get(storedUser, 'profile.stamboek')}</td>
+								<td>{get(storedProfile, 'stamboek') || '-'}</td>
 							</tr>
 						</tbody>
 					</Table>
@@ -196,10 +194,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 					<HeaderButtons>
 						<ButtonToolbar>
 							<Button
-								label={t('Ban')}
+								type="danger"
+								label={t('Bannen')}
 								onClick={() =>
 									ToastService.info(
-										t('settings/components/profile___nog-niet-geimplementeerd')
+										t('settings/components/profile___nog-niet-geimplementeerd'),
+										false
 									)
 								}
 							/>{' '}
@@ -226,7 +226,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			dataObject={storedUser}
+			dataObject={storedProfile}
 			render={renderUserDetailPage}
 		/>
 	);

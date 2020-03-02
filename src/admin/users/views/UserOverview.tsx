@@ -1,7 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 import {
 	Button,
@@ -18,20 +17,22 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
-import { buildLink } from '../../../shared/helpers';
+import { buildLink, formatDate } from '../../../shared/helpers';
 import { KeyCode } from '../../../shared/types';
+import { ADMIN_PATH } from '../../admin.const';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
-import { USER_OVERVIEW_TABLE_COLS, USER_PATH } from '../user.const';
+import { USER_OVERVIEW_TABLE_COLS } from '../user.const';
 import { GET_USERS } from '../user.gql';
 import { UserOverviewTableCols } from '../user.types';
 
 interface UserOverviewProps extends DefaultSecureRouteProps {}
 
-const UserOverview: FunctionComponent<UserOverviewProps> = () => {
+const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	const [t] = useTranslation();
 
 	// Contains the value of the search field, without triggering a new search query
@@ -48,27 +49,41 @@ const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 		}
 	};
 
+	const navigateToUserDetail = (id: string | undefined) => {
+		if (!id) {
+			return;
+		}
+		const detailRoute = ADMIN_PATH.USER_DETAIL;
+		const link = buildLink(detailRoute, { id });
+		redirectToClientPage(link, history);
+	};
+
 	const renderTableCell = (
 		rowData: Partial<Avo.User.Profile>,
 		columnId: UserOverviewTableCols
 	) => {
-		const { id, user } = rowData;
+		const { id, user, stamboek, created_at } = rowData;
 
 		switch (columnId) {
-			case 'name':
-				return (
-					<Link to={buildLink(USER_PATH.USER_DETAIL, { id })}>{`${get(
-						user,
-						'first_name',
-						'Onbekend'
-					)} ${get(user, 'last_name', 'Onbekend')}`}</Link>
-				);
+			case 'first_name':
+				return get(user, 'first_name', '-');
 
-			case 'email':
+			case 'last_name':
+				return get(user, 'last_name', '-');
+
+			case 'mail':
 				return get(user, 'mail', 'Onbekend');
 
+			case 'stamboek':
+				return stamboek || '-';
+
+			case 'created_at':
+				return formatDate(created_at) || '-';
+
 			case 'actions':
-				return null;
+				return (
+					<Button type="secondary" icon="eye" onClick={() => navigateToUserDetail(id)} />
+				);
 
 			default:
 				return rowData[columnId];
