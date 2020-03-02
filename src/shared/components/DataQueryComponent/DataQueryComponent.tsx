@@ -14,7 +14,6 @@ import {
 } from '../../../authentication/components';
 import { Permissions } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
-import { ErrorActionButton } from '../../../error/views/ErrorView';
 
 export interface DataQueryComponentProps {
 	query: DocumentNode;
@@ -27,7 +26,7 @@ export interface DataQueryComponentProps {
 	noPermissionsMessage?: string;
 	permissions?: Permissions;
 	user?: Avo.User.User;
-	actionButtons?: ErrorActionButton[];
+	actionButtons?: Avo.Auth.ErrorActionButton[];
 }
 
 const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({

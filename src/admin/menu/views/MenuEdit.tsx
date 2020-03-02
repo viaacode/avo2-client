@@ -19,14 +19,14 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError, navigate } from '../../../shared/helpers';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { ContentPickerType, PickerItem } from '../../shared/types';
 
 import { ApolloQueryResult } from 'apollo-boost';
-import { getUserGroups } from '../../../shared/services/user-groups-service';
+import { getAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
@@ -88,7 +88,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				setMenuItems(menuItemsByPosition);
 			} else {
 				// Go back to overview if no menu items are present
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
 						{
@@ -121,7 +121,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							content_type: menuItem.content_type || 'COLLECTION',
 							content_path: String(menuItem.content_path || ''),
 							link_target: menuItem.link_target || '_self',
-							user_group_ids: (menuItem.user_group_ids || []) as number[], // TODO remove once typings 2.10.0 is released
+							user_group_ids: menuItem.user_group_ids || [],
 							placement: menuItem.placement,
 						});
 					}
@@ -134,13 +134,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Get labels of the userGroups, so we can show a readable error message
 	useEffect(() => {
-		getUserGroups()
+		getAllUserGroups()
 			.then(userGroups => {
 				setAllUserGroups(userGroups);
 			})
 			.catch((err: any) => {
 				console.error('Failed to get user groups', err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
 					),
@@ -227,7 +227,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 							},
 						})
 					);
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'admin/menu/views/menu-edit___het-controleren-of-de-permissies-van-de-pagina-overeenkomen-met-de-zichtbaarheid-van-dit-navigatie-item-is-mislukt'
 						),
@@ -358,7 +358,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		setIsSaving(false);
 
 		const hasError = err || err === null;
-		toastService[hasError ? 'danger' : 'success'](message, false);
+		ToastService[hasError ? 'danger' : 'success'](message, false);
 
 		if (hasError) {
 			console.error(err);

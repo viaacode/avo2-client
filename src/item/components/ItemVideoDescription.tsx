@@ -1,5 +1,5 @@
 import { debounce, get } from 'lodash-es';
-import { parse } from 'querystring';
+import { parse } from 'query-string';
 import React, {
 	createRef,
 	FunctionComponent,
@@ -25,7 +25,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { getEnv, parseDuration, reorderDate } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../shared/services/player-ticket-service';
 
@@ -60,6 +60,11 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [time, setTime] = useState<number>(0);
 	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
+
+	useEffect(() => {
+		// reset token when item changes
+		setPlayerTicket(undefined);
+	}, [itemMetaData.external_id]);
 
 	useEffect(() => {
 		// Set video current time from the query params once the video has loaded its meta data
@@ -147,7 +152,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
 					)

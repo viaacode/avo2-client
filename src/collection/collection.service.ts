@@ -4,19 +4,19 @@ import { cloneDeep, compact, get, isNil, omit, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import { GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
+import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError } from '../shared/helpers';
-import { ApolloCacheManager, dataService, toastService } from '../shared/services';
+import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
 import {
 	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_BUNDLES,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
+	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
 } from './collection.gql';
 import { getValidationErrorForSave, getValidationErrorsForPublish } from './collection.helpers';
@@ -95,7 +95,7 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			if (!updatedCollection) {
-				toastService.danger(
+				ToastService.danger(
 					i18n.t('collection/collection___de-huidige-collectie-is-niet-gevonden')
 				);
 				return null;
@@ -109,7 +109,7 @@ export class CollectionService {
 			}
 
 			if (validationErrors.length) {
-				toastService.danger(validationErrors);
+				ToastService.danger(validationErrors);
 				return null;
 			}
 
@@ -187,7 +187,7 @@ export class CollectionService {
 				});
 
 				if (!fragmentToUpdate) {
-					toastService.info(
+					ToastService.info(
 						i18n.t(
 							'collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id',
 							{ id }
@@ -359,7 +359,8 @@ export class CollectionService {
 
 		return omit(collection, propertiesToDelete);
 	}
-	public static async getBundles(limit: number): Promise<Avo.Collection.Collection[]> {
+
+	public static async getBundles(limit?: number): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_BUNDLES,
@@ -376,7 +377,26 @@ export class CollectionService {
 		}
 	}
 
-	// TODO: Merge the following two get collections functions.
+	public static async getBundlesByTitle(
+		title: string,
+		limit?: number
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_BUNDLES_BY_TITLE,
+				variables: { title, limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			const error = new CustomError('Het ophalen van de bundels is mislukt.', err, {
+				query: 'GET_BUNDLES_BY_TITLE',
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
 	public static async getCollections(limit: number): Promise<Avo.Collection.Collection[]> {
 		try {
 			const response = await dataService.query({
@@ -389,6 +409,27 @@ export class CollectionService {
 			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_COLLECTIONS',
 				variables: { limit },
+			});
+			console.error(error);
+			throw error;
+		}
+	}
+
+	public static async getCollectionsByTitle(
+		title: string,
+		limit: number
+	): Promise<Avo.Collection.Collection[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTIONS_BY_TITLE,
+				variables: { title, limit },
+			});
+
+			return get(response, 'data.app_collections', []);
+		} catch (err) {
+			const error = new CustomError('Het ophalen van de collecties is mislukt.', err, {
+				query: 'GET_COLLECTIONS_BY_TITLE',
+				variables: { title, limit },
 			});
 			console.error(error);
 			throw error;
@@ -582,7 +623,7 @@ export class CollectionService {
 		triggerCollectionFragmentInsert: any
 	) {
 		if (!collection) {
-			toastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
+			ToastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
 			return;
 		}
 
@@ -591,7 +632,7 @@ export class CollectionService {
 		);
 
 		if (!tempFragment) {
-			toastService.info(
+			ToastService.info(
 				i18n.t('collection/collection___fragment-om-toe-te-voegen-is-niet-gevonden-id-id', {
 					id: tempId,
 				})
@@ -637,7 +678,7 @@ export class CollectionService {
 			return collection.thumbnail_path;
 		} catch (err) {
 			console.error('Failed to get the thumbnail path for collection', err, { collection });
-			toastService.danger([
+			ToastService.danger([
 				i18n.t(
 					'collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'
 				),

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import { compact, get } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -16,15 +16,24 @@ import {
 	Spacer,
 	Table,
 	Tabs,
+	TagInfo,
+	TagList,
+	TagOption,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
-import { formatDate, getAvatarProps, navigate } from '../../../shared/helpers';
+import {
+	formatDate,
+	getAvatarProps,
+	navigate,
+	sanitize,
+	sanitizePresets,
+} from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { toastService } from '../../../shared/services';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
+import { ApolloCacheManager, ToastService } from '../../../shared/services';
+import { getAllUserGroups } from '../../../shared/services/user-groups-service';
 import { ContentBlockPreview } from '../../content-block/components';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
@@ -42,6 +51,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	// Hooks
 	const [content, setContent] = useState<Avo.Content.Content | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
@@ -59,7 +69,47 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const isContentProtected = get(content, 'is_protected', false);
 	const pageTitle = `Content: ${get(content, 'title', '')}`;
 
+	// Get labels of the userGroups, so we can show a readable error message
+	useEffect(() => {
+		getAllUserGroups()
+			.then(userGroups => {
+				setAllUserGroups(userGroups);
+			})
+			.catch((err: any) => {
+				console.error('Failed to get user groups', err);
+				ToastService.danger(
+					t(
+						'admin/shared/components/user-group-select/user-group-select___het-controleren-van-je-account-rechten-is-mislukt'
+					),
+					false
+				);
+			});
+	}, [setAllUserGroups, t]);
+
 	// Methods
+	const getUserGroups = (contentItem: Avo.Content.Content): TagOption[] => {
+		const tagInfos: TagInfo[] = compact(
+			(contentItem.user_group_ids || []).map((userGroupId: number): TagInfo | undefined => {
+				return allUserGroups.find(userGroupOption => userGroupOption.value === userGroupId);
+			})
+		);
+		const tagOptions = tagInfos.map(
+			(ug: TagInfo): TagOption => ({
+				id: ug.value,
+				label: ug.label,
+			})
+		);
+		if (tagOptions && tagOptions.length) {
+			return tagOptions;
+		}
+		return [
+			{
+				id: -3,
+				label: t('admin/menu/components/menu-edit-form/menu-edit-form___niemand'),
+			},
+		];
+	};
+
 	const handleDelete = () => {
 		triggerContentDelete({
 			variables: { id },
@@ -67,7 +117,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		})
 			.then(() => {
 				history.push(CONTENT_PATH.CONTENT);
-				toastService.success(
+				ToastService.success(
 					t(
 						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
 					),
@@ -76,7 +126,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
 					),
@@ -116,7 +166,14 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 											Omschrijving:
 										</Trans>
 									</BlockHeading>
-									<p>{contentItem.description}</p>
+									<p
+										dangerouslySetInnerHTML={{
+											__html: sanitize(
+												contentItem.description,
+												sanitizePresets.link
+											),
+										}}
+									/>
 								</Spacer>
 							)}
 
@@ -178,6 +235,19 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 											</Trans>
 										</th>
 										<td>{renderFormattedDate(contentItem.depublish_at)}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans>Toegankelijk voor:</Trans>
+										</th>
+										<td>
+											<TagList
+												swatches={false}
+												selectable={false}
+												closable={false}
+												tags={getUserGroups(contentItem)}
+											/>
+										</td>
 									</tr>
 								</tbody>
 							</Table>

@@ -105,7 +105,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				required
 			>
 				<ContentPicker
-					selectableTypes={['CONTENT_PAGE', 'INTERNAL_LINK', 'EXTERNAL_LINK']}
+					allowedTypes={['CONTENT_PAGE', 'INTERNAL_LINK', 'EXTERNAL_LINK']}
 					onSelect={(item: ValueType<PickerItem>) => {
 						onChange('content', item as PickerItem);
 					}}

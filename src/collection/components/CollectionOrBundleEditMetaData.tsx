@@ -220,7 +220,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												allowMulti={false}
 												assetType="BUNDLE_COVER"
 												ownerId={collection.id}
-												onChange={(urls: string[]) =>
+												onChange={urls =>
 													changeCollectionState({
 														type: 'UPDATE_COLLECTION_PROP',
 														collectionProp: 'thumbnail_path',

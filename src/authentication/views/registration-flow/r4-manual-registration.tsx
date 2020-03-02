@@ -20,8 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
-import { toastService } from '../../../shared/services';
-import { createZendeskTicket } from '../../authentication.service';
+import { ToastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
@@ -94,7 +93,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		try {
 			const errors = getValidationErrors();
 			if (errors.length) {
-				toastService.danger(errors);
+				ToastService.danger(errors);
 				return;
 			}
 			// create zendesk ticket
@@ -123,8 +122,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					'authentication/views/registration-flow/r-4-manual-registration___manuele-aanvraag-account-op-av-o'
 				),
 			};
-			await createZendeskTicket(ticket);
-			toastService.success(
+			await ZendeskService.createTicket(ticket);
+			ToastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
 				)
@@ -132,7 +131,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			setHasBeenSent(true);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt'
 				)

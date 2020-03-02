@@ -51,7 +51,7 @@ import {
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { dataService } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID, WORKSPACE_PATH } from '../../workspace/workspace.const';
@@ -223,7 +223,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				setAssignmentContent(assignmentContentResponse);
 			} catch (err) {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'assignment/views/assignment-create___het-ophalen-van-de-opdracht-inhoud-is-mislukt'
 					)
@@ -255,7 +255,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 	const deleteCurrentAssignment = async () => {
 		try {
 			if (typeof currentAssignment.id === 'undefined') {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'assignment/views/assignment-edit___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
 					)
@@ -264,10 +264,10 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			}
 			await AssignmentService.deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: ASSIGNMENTS_ID });
-			toastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
+			ToastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt')
 			);
 		}
@@ -281,7 +281,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService.success(
+		ToastService.success(
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
@@ -306,7 +306,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 	) => {
 		try {
 			if (isNil(assignment.id)) {
-				toastService.danger(
+				ToastService.danger(
 					'Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.'
 				);
 				return;
@@ -324,14 +324,14 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			setLoadingInfo({ state: 'loading' });
 
 			navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: duplicatedAssigment.id });
-			toastService.success(
+			ToastService.success(
 				t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
 				)
 			);
 		} catch (err) {
 			console.error('Failed to copy the assignment', err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
 			);
 		}
@@ -395,7 +395,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			if (insertedAssignment) {
 				setBothAssignments(insertedAssignment);
 				trackAddObjectToAssignment(insertedAssignment);
-				toastService.success(
+				ToastService.success(
 					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangemaakt')
 				);
 				navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: insertedAssignment.id });
@@ -403,7 +403,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
 			);
 			setIsSaving(false);
@@ -601,7 +601,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 										<ButtonToolbar>
 											<Button
 												type="secondary"
-												onClick={() => history.goBack()}
+												onClick={history.goBack}
 												label={t(
 													'assignment/views/assignment-edit___annuleren'
 												)}

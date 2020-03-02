@@ -4,6 +4,7 @@ import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
+import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ASSIGNMENT_PATH } from '../../assignment/assignment.const';
@@ -12,7 +13,7 @@ import { COLLECTION_PATH } from '../../collection/collection.const';
 import { CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { ITEM_PATH } from '../../item/item.const';
 import { SEARCH_PATH } from '../../search/search.const';
-import { toastService } from '../services/toast-service';
+import { ToastService } from '../services';
 import i18n from '../translations/i18n';
 
 type RouteParams = { [key: string]: string | number | undefined };
@@ -58,7 +59,7 @@ export const navigate = (
 	// Abort navigation when params were expected but none were given
 	if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
 		navigationConsoleError(route, missingParams);
-		toastService.danger(navigationToastError);
+		ToastService.danger(navigationToastError);
 
 		return;
 	}
@@ -67,7 +68,7 @@ export const navigate = (
 	const builtLink = buildLink(route, params, search);
 
 	if (isEmpty(builtLink)) {
-		toastService.danger(navigationToastError);
+		ToastService.danger(navigationToastError);
 
 		return;
 	}
@@ -75,12 +76,11 @@ export const navigate = (
 	history.push(builtLink);
 };
 
-export const navigateToContentType = (action: any, history: History) => {
-	// TODO: Change any to ButtonAction when typings is updated.
+export const navigateToContentType = (action: ButtonAction, history: History) => {
 	if (action) {
 		const { type, value } = action;
 
-		switch (type) {
+		switch (type as Avo.Core.ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
 				history.push(value as string);

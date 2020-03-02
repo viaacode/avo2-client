@@ -1,3 +1,5 @@
+import { get } from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,13 +15,17 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { CustomError } from '../../helpers';
+import { ToastService } from '../../services';
 import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-service';
-import { toastService } from '../../services/toast-service';
 import i18n from '../../translations/i18n';
 
 import './FileUpload.scss';
 
 export const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
+
+export function isPhoto(url: string): boolean {
+	return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[url.split('.').pop() || '']);
+}
 
 export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
 	jpeg: 'image/jpeg',
@@ -55,12 +61,15 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	const uploadSelectedFile = async (files: File[] | null) => {
 		try {
 			if (files && files.length) {
-				const notAllowedFiles = files.filter(file => !allowedTypes.includes(file.type));
+				// If allowedTypes array is empty, all filetypes are allowed
+				const notAllowedFiles = allowedTypes.length
+					? files.filter(file => !allowedTypes.includes(file.type))
+					: [];
 				if (notAllowedFiles.length) {
 					const allowedExtensions = allowedTypes
 						.map(type => type.split('/').pop() || type)
 						.join(', ');
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten-allowed-extensions',
 							{
@@ -84,13 +93,13 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				new CustomError('Failed to upload files in FileUpload component', err, { files })
 			);
 			if (files && files.length > 1 && allowMulti) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/file-upload/file-upload___het-uploaden-van-de-bestanden-is-mislukt'
 					)
 				);
 			} else {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/file-upload/file-upload___het-uploaden-van-het-bestand-is-mislukt'
 					)
@@ -102,12 +111,17 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 
 	const deleteUploadedFile = async (url: string) => {
 		try {
+			if (assetType === 'ZENDESK_ATTACHMENT') {
+				// We don't manage zendesk attachments
+				onChange([]);
+				return;
+			}
 			setIsProcessing(true);
 			if (urls) {
 				const newUrls = [...urls];
 				for (let i = 0; i < newUrls.length; i += 1) {
 					if (newUrls[i] === url) {
-						await deleteFile(newUrls[i]);
+						await deleteFile(url);
 						newUrls.splice(i, 1);
 					}
 				}
@@ -117,17 +131,13 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to delete asset', err, { urls }));
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt'
 				)
 			);
 		}
 		setIsProcessing(false);
-	};
-
-	const isPhoto = (url: string): boolean => {
-		return PHOTO_TYPES.includes(EXTENSION_TO_TYPE[url.split('.').pop() || '']);
 	};
 
 	const renderDeleteButton = (url: string) => {
@@ -162,14 +172,12 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					</Spacer>
 				);
 			}
+			const queryParams = queryString.parse(url.split('?').pop() || '');
+			const title: string = get(queryParams, 'name', 'bestand') as string;
 			return (
 				<Spacer margin="bottom-small" key={url}>
-					<Blankslate
-						title={url.split('/').pop() || ''}
-						body=""
-						icon="file"
-						className="a-upload-file-preview"
-					>
+					{/* TODO drop body once it becomes optional (components repo update 1.29.0) */}
+					<Blankslate title={title} body="" icon="file" className="a-upload-file-preview">
 						{renderDeleteButton(url)}
 					</Blankslate>
 				</Spacer>

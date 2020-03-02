@@ -44,7 +44,7 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { copyToClipboard, navigate } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 
 import { SearchFilterControls, SearchResults } from '../components';
 import {
@@ -189,7 +189,7 @@ const Search: FunctionComponent<SearchProps> = ({
 				setCurrentPage(newCurrentPage);
 			}
 		} catch (err) {
-			toastService.danger(t('search/views/search___ongeldige-zoek-query'));
+			ToastService.danger(t('search/views/search___ongeldige-zoek-query'));
 			console.error(err);
 		}
 		setQueryParamsAnalysed(true);
@@ -296,24 +296,19 @@ const Search: FunctionComponent<SearchProps> = ({
 	const onCopySearchLinkClicked = () => {
 		copySearchLink();
 		setIsOptionsMenuOpen(false);
-		toastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
+		ToastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
 	};
 
 	const orderOptions = [
 		{ label: t('search/views/search___meest-relevant'), value: 'relevance_desc' },
-		{ label: t('search/views/search___meest-bekeken'), value: 'views_desc', disabled: true },
+		{ label: t('search/views/search___meest-bekeken'), value: 'views_desc' },
 		{ label: t('search/views/search___uitzenddatum-aflopend'), value: 'broadcastDate_desc' },
 		{ label: t('search/views/search___uitzenddatum-oplopend'), value: 'broadcastDate_asc' },
 		{
 			label: t('search/views/search___laatst-toegevoegd'),
-			value: 'addedDate_desc',
-			disabled: true,
+			value: 'createdAt_desc',
 		},
-		{
-			label: t('search/views/search___laatst-gewijzigd'),
-			value: 'editDate_desc',
-			disabled: true,
-		},
+		{ label: t('search/views/search___laatst-gewijzigd'), value: 'updatedAt_desc' },
 	];
 	const defaultOrder = `${sortOrder.orderProperty || 'relevance'}_${sortOrder.orderDirection ||
 		'desc'}`;
@@ -385,7 +380,7 @@ const Search: FunctionComponent<SearchProps> = ({
 											label={t('search/views/search___maak-van-deze-zoekopdracht-een-opdracht')}
 											onClick={() => {
 												setIsOptionsMenuOpen(false);
-												toastService.info(t('search/views/search___nog-niet-geimplementeerd'));
+												ToastService.info(t('search/views/search___nog-niet-geimplementeerd'));
 											}}
 										/> */}
 									</DropdownContent>

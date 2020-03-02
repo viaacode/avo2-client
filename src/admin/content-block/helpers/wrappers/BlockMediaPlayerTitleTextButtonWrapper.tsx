@@ -6,6 +6,7 @@ import {
 	BlockRichText,
 	Button,
 	ButtonAction,
+	ButtonType,
 	Column,
 	Grid,
 	IconName,
@@ -13,8 +14,6 @@ import {
 
 import { navigateToContentType } from '../../../../shared/helpers';
 
-// TODO use exported ButtonType from components repo
-import { ButtonType } from '@viaa/avo2-components/dist/components/Button/Button.types';
 import { AlignOption, HeadingTypeOption } from '../../../shared/types';
 import { MediaPlayer } from './BlockMediaPlayerWrapper';
 
@@ -52,14 +51,16 @@ export const MediaPlayerTitleTextButton: FC<MediaPlayerTitleTextButtonProps> = (
 			<Column size="2-5" className={`u-text-${align}`}>
 				<BlockHeading type={headingType}>{headingTitle}</BlockHeading>
 				<BlockRichText elements={{ content }} />
-				<Button
-					icon={buttonIcon}
-					label={buttonLabel}
-					type={buttonType}
-					onClick={() => {
-						navigateToContentType(buttonAction, history);
-					}}
-				/>
+				{buttonAction && (
+					<Button
+						icon={buttonIcon}
+						label={buttonLabel}
+						type={buttonType}
+						onClick={() => {
+							navigateToContentType(buttonAction, history);
+						}}
+					/>
+				)}
 			</Column>
 		</Grid>
 	);

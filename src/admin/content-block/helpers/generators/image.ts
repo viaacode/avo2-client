@@ -1,7 +1,6 @@
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
 import {
-	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -10,9 +9,9 @@ import {
 } from '../../../shared/types';
 import { WIDTH_OPTIONS } from '../../content-block.const';
 
-import { CONTENT_BLOCK_FIELD_DEFAULTS, FILE_FIELD, FORM_STATE_DEFAULTS } from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD } from './defaults';
 
-export const INITIAL_IMAGE_BLOCK_COMPONENT_STATE = (): ImageBlockComponentState => ({
+export const INITIAL_IMAGE_COMPONENTS_STATE = (): ImageBlockComponentState => ({
 	title: '',
 	text: '',
 	source: '',
@@ -20,13 +19,13 @@ export const INITIAL_IMAGE_BLOCK_COMPONENT_STATE = (): ImageBlockComponentState 
 });
 
 export const INITIAL_IMAGE_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	FORM_STATE_DEFAULTS(BackgroundColorOption.White, ContentBlockType.Image, position);
+	BLOCK_STATE_DEFAULTS(ContentBlockType.Image, position);
 
 export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/image___afbeelding'),
 	type: ContentBlockType.Image,
 	components: {
-		state: INITIAL_IMAGE_BLOCK_COMPONENT_STATE(),
+		state: INITIAL_IMAGE_COMPONENTS_STATE(),
 		fields: {
 			title: {
 				label: i18n.t('admin/content-block/helpers/generators/image___bijschift-titel'),
@@ -60,6 +59,6 @@ export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 	},
 	block: {
 		state: INITIAL_IMAGE_BLOCK_STATE(position),
-		fields: CONTENT_BLOCK_FIELD_DEFAULTS(),
+		fields: BLOCK_FIELD_DEFAULTS(),
 	},
 });
