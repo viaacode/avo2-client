@@ -37,6 +37,7 @@ import {
 	PermissionNames,
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
+import { APP_PATH } from '../../constants';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, CustomError, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { useTableSort } from '../../shared/hooks';
@@ -44,7 +45,6 @@ import { dataService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
-import { ASSIGNMENT_PATH } from '../assignment.const';
 import {
 	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
@@ -265,7 +265,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		}
 		switch (actionId) {
 			case 'edit':
-				navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: dataRow.id });
+				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: dataRow.id });
 				break;
 			case 'duplicate':
 				try {
@@ -316,8 +316,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		const cellData: any = (rowData as any)[colKey];
-		const editLink = buildLink(ASSIGNMENT_PATH.ASSIGNMENT_EDIT, { id: rowData.id });
-		const detailLink = buildLink(ASSIGNMENT_PATH.ASSIGNMENT_DETAIL, { id: rowData.id });
+		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: rowData.id });
+		const detailLink = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: rowData.id });
 
 		switch (colKey) {
 			case 'title':
@@ -351,7 +351,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
 			case 'assignment_responses':
 				return (
-					<Link to={buildLink(ASSIGNMENT_PATH.ASSIGNMENT_RESPONSES, { id: rowData.id })}>
+					<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: rowData.id })}>
 						{(cellData || []).length}
 					</Link>
 				);
@@ -419,7 +419,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						<Button
 							icon="chevron-right"
 							onClick={() =>
-								navigate(history, ASSIGNMENT_PATH.ASSIGNMENT_EDIT, {
+								navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
 									id: rowData.id,
 								})
 							}

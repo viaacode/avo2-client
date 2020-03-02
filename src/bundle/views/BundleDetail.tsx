@@ -53,14 +53,13 @@ import {
 	ControlledDropdown,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
+	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { ApolloCacheManager } from '../../shared/services/data-service';
+import { ApolloCacheManager, ToastService } from '../../shared/services';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { WORKSPACE_PATH } from '../../workspace/workspace.const';
 
 import './BundleDetail.scss';
 
@@ -91,6 +90,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}>
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [viewCountsById, setViewCountsById] = useState<{ [id: string]: number }>({});
 
 	// Mutations
 	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
@@ -160,6 +160,23 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					message: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
 					icon: 'search',
 				});
+				return;
+			}
+
+			BookmarksViewsPlaysService.action('view', 'bundle', bundleObj.id, user);
+
+			// Get view counts for each fragment
+			try {
+				setViewCountsById(
+					await BookmarksViewsPlaysService.getMultipleViewCounts(
+						bundleObj.collection_fragments.map(fragment => fragment.external_id),
+						'collection'
+					)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get counts for bundle fragments', err, {})
+				);
 			}
 
 			setPermissions(permissionObj);
@@ -196,7 +213,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	// Listeners
 	const onEditBundle = () => {
-		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT, { id: bundleId }), history);
+		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT.route, { id: bundleId }), history);
 	};
 
 	const onDeleteBundle = async () => {
@@ -207,7 +224,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-			history.push(WORKSPACE_PATH.WORKSPACE);
+			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
 			);
@@ -246,7 +263,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						triggerCollectionFragmentsInsert
 					);
 					redirectToClientPage(
-						buildLink(APP_PATH.BUNDLE_DETAIL, { id: duplicateCollection.id }),
+						buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
 						history
 					);
 					setBundle(duplicateCollection);
@@ -290,7 +307,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.BUNDLE_DETAIL, { id: relatedBundle.id }),
+								buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: relatedBundle.id }),
 								history
 							)
 						}
@@ -311,7 +328,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category="bundle">
-								<MetaDataItem label={'370'} icon="eye" />
+								<MetaDataItem label={'300'} icon="eye" />
 								{/*<MetaDataItem label={fromNow(relatedBundle.updated_at)} />*/}
 								<MetaDataItem label={fromNow(relatedBundle.original_cp || '')} />
 							</MetaData>
@@ -338,7 +355,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						category="bundle"
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.COLLECTION_DETAIL, { id: collection.id }),
+								buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collection.id }),
 								history
 							)
 						}
@@ -353,7 +370,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category="collection">
-								<MetaDataItem label={'370'} icon="eye" />
+								<MetaDataItem
+									label={String(viewCountsById[fragment.external_id] || 0)}
+									icon="eye"
+								/>
 								<MetaDataItem label={fromNow(collection.updated_at)} />
 							</MetaData>
 						</MediaCardMetaData>

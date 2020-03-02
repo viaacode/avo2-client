@@ -80,7 +80,7 @@ describe('<Checkbox />', () => {
 	});
 
 	it('Should be able to render with less than 10 items', () => {
-		const checkboxDropdownComponent = shallow(
+		const checkboxDropdownComponent = mount(
 			<CheckboxDropdownModal
 				label="Counting"
 				id="counting"
@@ -88,7 +88,7 @@ describe('<Checkbox />', () => {
 				onChange={action('CheckboxDropdown changed')}
 			/>
 		);
-		expect(checkboxDropdownComponent.find('Checkbox')).toHaveLength(5);
+		expect(checkboxDropdownComponent.find('input')).toHaveLength(5);
 	});
 
 	it('Should call `onChange` when toggling checkbox', () => {

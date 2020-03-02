@@ -65,7 +65,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 				// Already logged in
 				if (loginState && loginState.message === LoginMessage.LOGGED_IN && user) {
 					// TODO enable this once we can save profile info
-					if (path === APP_PATH.COMPLETE_PROFILE) {
+					if (path === APP_PATH.COMPLETE_PROFILE.route) {
 						// Force user to complete their profile before letting them in
 						// This has to happen in the secure route component so we can pass the user object to the profile component
 						return (
@@ -86,7 +86,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 					return (
 						<Redirect
 							to={{
-								pathname: APP_PATH.COMPLETE_PROFILE,
+								pathname: APP_PATH.COMPLETE_PROFILE.route,
 								state: { from: props.location },
 							}}
 						/>
@@ -97,7 +97,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 				return (
 					<Redirect
 						to={{
-							pathname: APP_PATH.REGISTER_OR_LOGIN,
+							pathname: APP_PATH.REGISTER_OR_LOGIN.route,
 							state: { from: props.location },
 						}}
 					/>

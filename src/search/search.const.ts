@@ -1,12 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { ROUTE_PARTS } from '../shared/constants/routes';
-
 import { SortOrder } from './search.types';
-
-export const SEARCH_PATH = Object.freeze({
-	SEARCH: `/${ROUTE_PARTS.search}`,
-});
 
 export const ITEMS_PER_PAGE = 10;
 
