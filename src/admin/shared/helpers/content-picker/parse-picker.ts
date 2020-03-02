@@ -1,6 +1,6 @@
 import queryString from 'query-string';
 
-import { toastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
 
 import { ContentPickerType, PickerItem } from '../../types';
@@ -26,7 +26,7 @@ const parseSearchQuery = (input: string): string => {
 		return JSON.stringify(output);
 	} catch (err) {
 		console.error('Failed to parse search query input', err);
-		toastService.danger(i18n.t('Gelieve een correcte zoekfilter-link in te vullen.'), false);
+		ToastService.danger(i18n.t('Gelieve een correcte zoekfilter-link in te vullen.'), false);
 
 		return 'Ongeldige zoekfilter';
 	}
