@@ -1,294 +1,238 @@
-import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, isEqual, startCase } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import {
+	Avatar,
+	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
-	Flex,
-	IconName,
-	Spacer,
+	Header,
+	HeaderButtons,
 	Table,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
-import { navigate } from '../../../shared/helpers';
-import { toastService } from '../../../shared/services';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import { CustomError, formatDate, getEnv } from '../../../shared/helpers';
+import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
-import { USER_PATH } from '../user.const';
-import { DELETE_USER_ITEM, GET_USER_ITEMS_BY_PLACEMENT, UPDATE_USER_ITEM_BY_ID } from '../user.gql';
+import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
+import { dataService, ToastService } from '../../../shared/services';
+import { GET_USER_BY_ID } from '../user.gql';
 
-import './UserDetail.scss';
+interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-interface UserDetailProps extends DefaultSecureRouteProps<{ user: string }> {}
+const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
+	const { id } = match.params;
 
-const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match }) => {
+	// Hooks
+	const [storedUser, setStoredUser] = useState<Avo.User.User | null>(null);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
 	const [t] = useTranslation();
 
-	const [activeRow, setActiveRow] = useState<number | null>(null);
-	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [initialUserItems, setInitialUserItems] = useState<Avo.User.User[]>([]);
-	const [userItems, setUserItems] = useState<Avo.User.User[]>([]);
-	const [isSaving, setIsSaving] = useState<boolean>(false);
-
-	const [triggerUserItemDelete] = useMutation(DELETE_USER_ITEM);
-	const [triggerUserItemUpdate] = useMutation(UPDATE_USER_ITEM_BY_ID);
-
-	const hasInitialData = useRef<boolean>(false);
-	const timeout = useRef<NodeJS.Timeout | null>(null);
-
-	useEffect(() => {
-		// Reset active row to clear styling
-		timeout.current = setTimeout(() => {
-			setActiveRow(null);
-		}, 1000);
-
-		return () => {
-			if (timeout.current) {
-				clearTimeout(timeout.current);
-			}
-		};
-	}, [activeRow]);
-
-	// Computed
-	const userId = match.params.user;
-
-	// Methods
-	const handleDelete = (refetchUserItems: () => void): void => {
-		triggerUserItemDelete({
-			variables: { id: idToDelete },
-			update: ApolloCacheManager.clearNavElementsCache,
-		})
-			.then(() => {
-				refetchUserItems();
-				toastService.success(
-					t('admin/user/views/user-detail___het-navigatie-item-is-succesvol-verwijderd'),
-					false
-				);
-			})
-			.catch(err => {
-				console.error(err);
-				toastService.danger(
-					t(
-						'admin/user/views/user-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'
-					),
-					false
-				);
+	const fetchUserById = useCallback(async () => {
+		try {
+			const response = await dataService.query({
+				query: GET_USER_BY_ID,
+				variables: {
+					userId: id,
+				},
 			});
-	};
-
-	const handleNavigate = (path: string, params: { [key: string]: string } = {}): void => {
-		navigate(history, path, params);
-	};
-
-	const handleSave = (refetch: () => void): void => {
-		setIsSaving(true);
-
-		const promises: Promise<any>[] = [];
-		userItems.forEach(userItem => {
-			promises.push(
-				triggerUserItemUpdate({
-					variables: {
-						id: userItem.id,
-						userItem: {
-							...userItem,
-							updated_at: new Date().toISOString(),
+			const dbUser = get(response, 'users_profiles[0]');
+			if (!dbUser) {
+				console.error(
+					new CustomError('Response from graphql is empty', null, {
+						query: 'GET_USER_BY_ID',
+						variables: {
+							userId: id,
 						},
+						response,
+					})
+				);
+				setLoadingInfo({
+					state: 'error',
+					message: t('Het opghalen van de gebruiker info is mislukt'),
+				});
+				return;
+			}
+			setStoredUser(dbUser);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get user by id', err, {
+					query: 'GET_USER_BY_ID',
+					variables: {
+						userId: id,
 					},
-					update: ApolloCacheManager.clearNavElementsCache,
 				})
 			);
-		});
-
-		Promise.all(promises)
-			.then(() => {
-				refetch();
-				toastService.success(
-					t(
-						'admin/user/views/user-detail___de-navigatie-items-zijn-succesvol-opgeslagen'
-					),
-					false
-				);
-			})
-			.catch(err => {
-				console.error(err);
-				toastService.danger(
-					t(
-						'admin/user/views/user-detail___het-opslaan-van-de-navigatie-items-is-mislukt'
-					),
-					false
-				);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het opghalen van de gebruiker info is mislukt'),
 			});
+		}
+	}, [setStoredUser, setLoadingInfo]);
+
+	useEffect(() => {
+		if (user) {
+			setStoredUser(user);
+			return;
+		}
+		// load user from route param id
+		fetchUserById();
+	}, [setStoredUser, fetchUserById]);
+
+	useEffect(() => {
+		if (storedUser) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
+	}, [storedUser]);
+
+	const getLdapDashboardUrl = () => {
+		const userLdapUuid = get(storedUser, 'idpmaps[0].idp_user_id');
+		if (userLdapUuid) {
+			return `${getEnv('LDAP_DASHBOARD_PEOPLE_URL')}/${userLdapUuid}`;
+		}
+		return null;
 	};
 
-	const openConfirmModal = (id: number): void => {
-		setIdToDelete(id);
-		setIsConfirmModalOpen(true);
+	const handleLdapDashboardClick = () => {
+		redirectToExternalPage(getLdapDashboardUrl() as string, '_blank');
 	};
 
-	const reindexUseritems = (items: Avo.User.User[]): Avo.User.User[] =>
-		items.map((item, index) => {
-			item.position = index;
-			// Remove properties that we don't need for save
-			delete (item as any).__typename;
-
-			return item;
-		});
-
-	const reorderUserItem = (currentIndex: number, indexUpdate: number, id: number): void => {
-		const newIndex = currentIndex + indexUpdate;
-		const userItemsCopy = cloneDeep(userItems);
-		// Get updated item and remove it from copy
-		const updatedItem = userItemsCopy.splice(currentIndex, 1)[0];
-		// Add item back at new index
-		userItemsCopy.splice(newIndex, 0, updatedItem);
-
-		setActiveRow(id);
-		setUserItems(reindexUseritems(userItemsCopy));
-	};
-
-	// Render
-	const renderReorderButton = (dir: 'up' | 'down', index: number, id: number) => {
-		const decrease = dir === 'up';
-		const indexUpdate = decrease ? -1 : 1;
-
-		return (
-			<Button
-				icon={`chevron-${dir}` as IconName}
-				onClick={() => reorderUserItem(index, indexUpdate, id)}
-				title={`Verplaats item naar ${decrease ? 'boven' : 'onder'}`}
-				type="secondary"
-			/>
-		);
-	};
-
-	const renderUserDetail = (user: Avo.User.User[], refetchUserItems: () => void) => {
-		// Return to overview if user is empty
-		if (!user.length) {
-			toastService.danger(
-				t('admin/user/views/user-detail___er-werden-geen-navigatie-items-gevonden'),
-				false
+	const renderUserDetail = () => {
+		if (!storedUser) {
+			console.error(
+				new CustomError(
+					'Failed to load user because render function is called before user was fetched'
+				)
 			);
-			handleNavigate(USER_PATH.USER);
+			return;
 		}
-
-		// Reindex and set initial data
-		if (!hasInitialData.current) {
-			hasInitialData.current = true;
-			// Set items position property equal to index in array
-			const reindexedUserItems = reindexUseritems(user);
-
-			setInitialUserItems(reindexedUserItems);
-			setUserItems(reindexedUserItems);
-		}
-
-		const isFirst = (i: number) => i === 0;
-		const isLast = (i: number) => i === userItems.length - 1;
-
 		return (
-			<AdminLayout className="c-user-detail" showBackButton pageTitle={startCase(userId)}>
-				<AdminLayoutBody>
-					<Container mode="vertical" size="small">
-						<Container mode="horizontal">
-							<Table align className="c-user-detail__table" variant="styled">
-								<tbody>
-									{userItems.map((item, index) => (
-										<tr
-											key={`nav-edit-${item.id}`}
-											className={
-												activeRow === item.id
-													? 'c-user-detail__table-row--active'
-													: ''
-											}
-										>
-											<td className="o-table-col-1">
-												<ButtonToolbar>
-													{!isFirst(index) &&
-														renderReorderButton('up', index, item.id)}
-													{!isLast(index) &&
-														renderReorderButton('down', index, item.id)}
-												</ButtonToolbar>
-											</td>
-											<td>{item.label}</td>
-											<td>
-												<ButtonToolbar>
-													<Button
-														icon="edit-2"
-														onClick={() =>
-															handleNavigate(
-																USER_PATH.USER_ITEM_EDIT,
-																{
-																	user: userId,
-																	id: String(item.id),
-																}
-															)
-														}
-														type="secondary"
-													/>
-													<Button
-														icon="delete"
-														onClick={() => openConfirmModal(item.id)}
-														type="secondary"
-													/>
-												</ButtonToolbar>
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</Table>
-							<Spacer margin="top">
-								<Flex center>
-									<Button
-										icon="plus"
-										label={t(
-											'admin/user/views/user-detail___voeg-een-item-toe'
-										)}
-										onClick={() =>
-											handleNavigate(USER_PATH.USER_ITEM_CREATE, {
-												user: userId,
-											})
-										}
-										type="borderless"
-									/>
-								</Flex>
-							</Spacer>
-							<DeleteObjectModal
-								deleteObjectCallback={() => handleDelete(refetchUserItems)}
-								isOpen={isConfirmModalOpen}
-								onClose={() => setIsConfirmModalOpen(false)}
-							/>
-						</Container>
-					</Container>
-				</AdminLayoutBody>
-				<AdminLayoutActions>
-					<Button
-						label={t('admin/user/views/user-detail___annuleer')}
-						onClick={() => handleNavigate(USER_PATH.USER)}
-						type="tertiary"
-					/>
-					<Button
-						disabled={isEqual(initialUserItems, userItems) || isSaving}
-						label={t('admin/user/views/user-detail___opslaan')}
-						onClick={() => handleSave(refetchUserItems)}
-					/>
-				</AdminLayoutActions>
-			</AdminLayout>
+			<Container mode="vertical" size="small">
+				<Container mode="horizontal">
+					<BlockHeading type="h4">
+						<Trans>Gebruiker info:</Trans>
+					</BlockHeading>
+					<Table horizontal variant="invisible">
+						<tbody>
+							<tr>
+								<tr>
+									<th>
+										<Trans>Avatar</Trans>
+									</th>
+									<td>
+										<Avatar
+											image={get(storedUser, 'profile.avatar')}
+											size="large"
+										/>
+									</td>
+								</tr>
+								<th>
+									<Trans>Naam</Trans>
+								</th>
+								<td>{`${storedUser.first_name} ${storedUser.last_name}`}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Gebruikersnaam</Trans>
+								</th>
+								<td>storedUser.alias}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Primair email adres</Trans>
+								</th>
+								<td>{storedUser.mail}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Secundair email adres</Trans>
+								</th>
+								<td>{get(storedUser, 'profile.alternative_email')}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Aangemaakt op</Trans>
+								</th>
+								<td>{formatDate(storedUser.created_at)}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Aangepast op</Trans>
+								</th>
+								<td>{formatDate(storedUser.created_at)}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Bio</Trans>
+								</th>
+								<td>{get(storedUser, 'profile.bio')}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Functie</Trans>
+								</th>
+								<td>{get(storedUser, 'profile.function')}</td>
+							</tr>
+							<tr>
+								<th>
+									<Trans>Stamboek nummer</Trans>
+								</th>
+								<td>{get(storedUser, 'profile.stamboek')}</td>
+							</tr>
+						</tbody>
+					</Table>
+				</Container>
+			</Container>
 		);
 	};
+
+	const renderUserDetailPage = () => (
+		<AdminLayout showBackButton>
+			<AdminLayoutHeader>
+				<Header category="audio" title={t('Gebruiker details')} showMetaData={false}>
+					<HeaderButtons>
+						<ButtonToolbar>
+							<Button
+								label={t('Ban')}
+								onClick={() =>
+									ToastService.info(
+										t('settings/components/profile___nog-niet-geimplementeerd')
+									)
+								}
+							/>{' '}
+							<Button
+								label={t('Beheer in LDAP deshboard')}
+								disabled={!getLdapDashboardUrl()}
+								title={
+									getLdapDashboardUrl()
+										? ''
+										: t(
+												'Deze gebruiker is niet gelinked aan een archief account'
+										  )
+								}
+								onClick={handleLdapDashboardClick}
+							/>
+						</ButtonToolbar>
+					</HeaderButtons>
+				</Header>
+			</AdminLayoutHeader>
+			<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
+		</AdminLayout>
+	);
 
 	return (
-		<DataQueryComponent
-			query={GET_USER_ITEMS_BY_PLACEMENT}
-			renderData={renderUserDetail}
-			resultPath="app_content_nav_elements"
-			variables={{ placement: userId }}
+		<LoadingErrorLoadedComponent
+			loadingInfo={loadingInfo}
+			dataObject={storedUser}
+			render={renderUserDetailPage}
 		/>
 	);
 };

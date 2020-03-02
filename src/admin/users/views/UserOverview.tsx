@@ -12,7 +12,7 @@ import { DataQueryComponent } from '../../../shared/components';
 import { buildLink } from '../../../shared/helpers';
 import { KeyCode } from '../../../shared/types';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
 import { USER_OVERVIEW_TABLE_COLS, USER_PATH } from '../user.const';
 import { GET_USERS } from '../user.gql';
@@ -20,7 +20,7 @@ import { UserOverviewTableCols } from '../user.types';
 
 interface UserOverviewProps extends DefaultSecureRouteProps {}
 
-const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
+const UserOverview: FunctionComponent<UserOverviewProps> = () => {
 	const [t] = useTranslation();
 
 	// Contains the value of the search field, without triggering a new search query
@@ -29,7 +29,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	// by pressing enter or pressing the search button
 	const [queryString, setQueryString] = useState<string>('');
 	const [page, setPage] = useState<number>(0);
-	const [users, setUsers] = useState<any>([]);
+	// const [users, setUsers] = useState<any>([]);
 
 	const handleKeyUp = (e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.Enter) {
@@ -48,28 +48,6 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					>{`${first_name} ${last_name}`}</Link>
 				);
 			case 'actions':
-				// return (
-				// 	<ButtonToolbar>
-				// 		<Button
-				// 			icon="list"
-				// 			onClick={() => navigate(history, USER_PATH.USER_DETAIL, { user })}
-				// 			size="small"
-				// 			title={t(
-				// 				'admin/user/views/user-overview___bekijk-alle-navigatie-items'
-				// 			)}
-				// 			type="tertiary"
-				// 		/>
-				// 		<Button
-				// 			icon="plus"
-				// 			onClick={() => navigate(history, USER_PATH.USER_ITEM_CREATE, { user })}
-				// 			size="small"
-				// 			title={t(
-				// 				'admin/user/views/user-overview___voeg-een-navigatie-item-toe'
-				// 			)}
-				// 			type="tertiary"
-				// 		/>
-				// 	</ButtonToolbar>
-				// );
 				return null;
 			default:
 				return rowData[columnId];
@@ -89,7 +67,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 			);
 		}
 
-		setUsers(dbUsers);
+		// setUsers(dbUsers);
 
 		return (
 			<>
@@ -142,14 +120,6 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			{!!users.length && (
-				<AdminLayoutActions>
-					<Button
-						label={t('admin/user/views/user-overview___navigatie-toevoegen')}
-						onClick={() => history.push(USER_PATH.USER_CREATE)}
-					/>
-				</AdminLayoutActions>
-			)}
 		</AdminLayout>
 	);
 };
