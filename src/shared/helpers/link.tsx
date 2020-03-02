@@ -9,7 +9,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
-import { toastService } from '../services';
+import { ToastService } from '../services';
 import i18n from '../translations/i18n';
 
 type RouteParams = { [key: string]: string | number | undefined };
@@ -55,7 +55,7 @@ export const navigate = (
 	// Abort navigation when params were expected but none were given
 	if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
 		navigationConsoleError(route, missingParams);
-		toastService.danger(navigationToastError);
+		ToastService.danger(navigationToastError);
 
 		return;
 	}
@@ -64,7 +64,7 @@ export const navigate = (
 	const builtLink = buildLink(route, params, search);
 
 	if (isEmpty(builtLink)) {
-		toastService.danger(navigationToastError);
+		ToastService.danger(navigationToastError);
 
 		return;
 	}

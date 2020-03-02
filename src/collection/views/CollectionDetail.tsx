@@ -56,7 +56,7 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
-import { ApolloCacheManager, dataService, toastService } from '../../shared/services';
+import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import {
@@ -265,7 +265,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	// 					index: 'collections',
 	// 					limit: 4,
 	// 				});
-	// 				toastService.danger(t('collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'));
+	// 				ToastService.danger(t('collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'));
 	// 			});
 	// 	}
 	// }, [relatedCollections, t, collectionId]);
@@ -296,12 +296,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 			history.push(APP_PATH.WORKSPACE.route);
-			toastService.success(
+			ToastService.success(
 				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
 				)
@@ -321,7 +321,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			case 'duplicate':
 				try {
 					if (!collection) {
-						toastService.danger(
+						ToastService.danger(
 							t(
 								'collection/views/collection-detail___de-collectie-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 							)
@@ -341,7 +341,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						history
 					);
 					setCollection(duplicateCollection);
-					toastService.success(
+					ToastService.success(
 						t(
 							'collection/views/collection-detail___de-collectie-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
 						)
@@ -350,7 +350,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					console.error('Failed to copy collection', err, {
 						originalCollection: collection,
 					});
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'collection/views/collection-detail___het-kopieren-van-de-collectie-is-mislukt'
 						)

@@ -54,7 +54,7 @@ import {
 import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
-import { dataService, toastService } from '../../shared/services';
+import { dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
@@ -274,7 +274,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const deleteCurrentAssignment = async () => {
 		try {
 			if (typeof currentAssignment.id === 'undefined') {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'assignment/views/assignment-edit___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
 					)
@@ -283,10 +283,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 			await AssignmentService.deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
 			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
-			toastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
+			ToastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-verwijderen-van-de-opdracht-is-mislukt')
 			);
 		}
@@ -300,7 +300,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const copyAssignmentUrl = () => {
 		copyToClipboard(getAssignmentUrl());
-		toastService.success(
+		ToastService.success(
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
@@ -339,7 +339,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			if (
 				await AssignmentService.updateAssignment(triggerAssignmentUpdate, archivedAssigment)
 			) {
-				toastService.success(
+				ToastService.success(
 					shouldBeArchived
 						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
 						: t('assignment/views/assignment-edit___de-opdracht-is-gedearchiveerd')
@@ -348,7 +348,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			// else: assignment was not valid and could not be saved yet
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				shouldBeArchived
 					? t(
 							'assignment/views/assignment-edit___het-archiveren-van-de-opdracht-is-mislukt'
@@ -366,7 +366,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	) => {
 		try {
 			if (isNil(assignment.id)) {
-				toastService.danger(
+				ToastService.danger(
 					'Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.'
 				);
 				return;
@@ -384,14 +384,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			setLoadingInfo({ state: 'loading' });
 
 			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssigment.id });
-			toastService.success(
+			ToastService.success(
 				t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
 				)
 			);
 		} catch (err) {
 			console.error('Failed to copy the assignment', err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
 			);
 		}
@@ -432,13 +432,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			// edit => update graphql
 			await AssignmentService.updateAssignment(triggerAssignmentUpdate, assignment);
 			setBothAssignments(assignment);
-			toastService.success(
+			ToastService.success(
 				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
 			);
 			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
 			);
 			setIsSaving(false);

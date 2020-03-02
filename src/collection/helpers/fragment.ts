@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 
 export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
@@ -26,7 +26,7 @@ const getFragmentByPosition = (fragments: Avo.Collection.Fragment[], position: n
 	);
 
 	if (!fragmentAtPosition) {
-		toastService.danger(
+		ToastService.danger(
 			i18n.t(
 				'collection/helpers/fragment___het-fragment-met-positie-position-is-niet-gevonden',
 				{

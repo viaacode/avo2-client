@@ -40,7 +40,7 @@ import {
 import { APP_PATH } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import {
 	fetchCities,
 	fetchEducationOrganizations,
@@ -105,7 +105,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 			.then(setCities)
 			.catch(err => {
 				console.error('Failed to get cities', err);
-				toastService.danger(
+				ToastService.danger(
 					t('settings/components/profile___het-ophalen-van-de-steden-is-mislukt')
 				);
 			});
@@ -180,12 +180,12 @@ const Profile: FunctionComponent<ProfileProps> = ({
 					setIsSaving(false);
 				}, 0);
 			} else {
-				toastService.success(t('settings/components/profile___opgeslagen'));
+				ToastService.success(t('settings/components/profile___opgeslagen'));
 				setIsSaving(false);
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t('settings/components/profile___het-opslaan-van-de-profiel-information-is-mislukt')
 			);
 			setIsSaving(false);
@@ -199,7 +199,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	const onSelectedOrganizationChanged = (orgLabel: string) => {
 		const selectedOrg = organizations.find(org => org.label === orgLabel);
 		if (!selectedOrg) {
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'settings/components/profile___de-geselecteerde-instelling-kon-niet-worden-gevonden'
 				)
@@ -252,7 +252,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 
 	const handleAvatarOnChange = () => {
 		setAvatar('');
-		toastService.info(t('settings/components/profile___nog-niet-geimplementeerd'));
+		ToastService.info(t('settings/components/profile___nog-niet-geimplementeerd'));
 	};
 
 	const renderRequiredFields = (subjects: string[], educationLevels: string[]) => (

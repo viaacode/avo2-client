@@ -6,7 +6,7 @@ import { BlockHeading, Container, Navbar, Tabs, Toolbar, ToolbarLeft } from '@vi
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { buildLink } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 
 import { APP_PATH } from '../../constants';
 import { Account, Email, Notifications, Profile } from '../components';
@@ -56,7 +56,7 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 	const getActiveTabComponent = (): ReactElement | null => {
 		let tab = tabContents[activeTab];
 		if (!tab) {
-			toastService.danger(
+			ToastService.danger(
 				t('settings/views/settings___het-instellingen-tab-active-tab-bestaat-niet', {
 					activeTab,
 				})

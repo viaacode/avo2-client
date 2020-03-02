@@ -21,7 +21,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { toastService, ZendeskService } from '../../../shared/services';
+import { ToastService, ZendeskService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 
 interface ReportItemModalProps {
@@ -87,14 +87,14 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 			};
 			await ZendeskService.createTicket(ticket);
 			onClose();
-			toastService.success(t('Het item is gerapporteerd'));
+			ToastService.success(t('Het item is gerapporteerd'));
 		} catch (err) {
 			console.error('Failed to create zendesk ticket for reporting an item', err, {
 				ticket,
 				externalId,
 				user,
 			});
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt'
 				)

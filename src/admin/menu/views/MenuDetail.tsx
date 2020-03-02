@@ -17,7 +17,7 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { ApolloCacheManager } from '../../../shared/services/data-service';
 
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -68,14 +68,14 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		})
 			.then(() => {
 				refetchMenuItems();
-				toastService.success(
+				ToastService.success(
 					t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd'),
 					false
 				);
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'
 					),
@@ -110,7 +110,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		Promise.all(promises)
 			.then(() => {
 				refetch();
-				toastService.success(
+				ToastService.success(
 					t(
 						'admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'
 					),
@@ -119,7 +119,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			})
 			.catch(err => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'
 					),
@@ -172,7 +172,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetchMenuItems: () => void) => {
 		// Return to overview if menu is empty
 		if (!menu.length) {
-			toastService.danger(
+			ToastService.danger(
 				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
 				false
 			);

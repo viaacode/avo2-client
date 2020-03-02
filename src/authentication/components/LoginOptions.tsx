@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router';
 import { Button, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 
 import { redirectToClientPage, redirectToServerSmartschoolLogin } from '../helpers/redirects';
 
@@ -64,7 +64,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				label={t('authentication/components/login-options___inloggen-met-klas-cement')}
 				onClick={() => {
 					onOptionClicked();
-					toastService.info(
+					ToastService.info(
 						t('authentication/components/login-options___nog-niet-geimplementeerd')
 					);
 				}}

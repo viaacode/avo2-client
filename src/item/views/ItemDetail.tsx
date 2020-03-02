@@ -59,7 +59,7 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { dataService, toastService } from '../../shared/services';
+import { dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import ReportItemModal from '../components/modals/ReportItemModal';
@@ -112,7 +112,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 						limit,
 						index: 'items',
 					});
-					toastService.danger(
+					ToastService.danger(
 						t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
 					);
 				});

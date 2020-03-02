@@ -21,7 +21,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
@@ -80,7 +80,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors.map(rule => get(rule[1], 'error')));
-					toastService.danger(validationErrors);
+					ToastService.danger(validationErrors);
 					return;
 				}
 			}
@@ -97,7 +97,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				},
 			});
 			setValidationError(undefined);
-			toastService.success(
+			ToastService.success(
 				isCollection()
 					? isCollectionPublic
 						? t(
@@ -129,7 +129,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 				user
 			);
 		} catch (err) {
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'collection/components/modals/share-collection-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'
 				)

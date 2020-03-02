@@ -41,7 +41,7 @@ import { APP_PATH } from '../../constants';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, CustomError, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
 import { useTableSort } from '../../shared/hooks';
-import { dataService, toastService } from '../../shared/services';
+import { dataService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
 import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
@@ -98,7 +98,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					user,
 					permissions: PermissionNames.EDIT_ASSIGNMENTS,
 				});
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
 					)
@@ -162,12 +162,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 
 			refetchAssignments();
 
-			toastService.success(
+			ToastService.success(
 				t('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
 			);
 		} catch (err) {
 			console.error('Failed to copy the assignment', err, { newTitle, assignment });
-			toastService.danger(
+			ToastService.danger(
 				t('assignment/views/assignment-edit___het-kopieren-van-de-opdracht-is-mislukt')
 			);
 		}
@@ -195,7 +195,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					)
 				) {
 					refetchAssignments();
-					toastService.success(
+					ToastService.success(
 						archivedAssigment.is_archived
 							? t(
 									'assignment/views/assignment-overview___de-opdracht-is-gearchiveerd'
@@ -210,7 +210,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			}
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				activeView === 'archived_assignments'
 					? t(
 							'assignment/views/assignment-overview___het-dearchiveren-van-de-opdracht-is-mislukt'
@@ -228,7 +228,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	) => {
 		try {
 			if (typeof assignmentId === 'undefined' || assignmentId === null) {
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
 					)
@@ -237,12 +237,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 			}
 			await AssignmentService.deleteAssignment(triggerAssignmentDelete, assignmentId);
 			refetchAssignments();
-			toastService.success(
+			ToastService.success(
 				t('assignment/views/assignment-overview___de-opdracht-is-verwijdert')
 			);
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt'
 				)
@@ -256,7 +256,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		if (!dataRow.id) {
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'assignment/views/assignment-overview___het-opdracht-id-van-de-geselecteerde-rij-is-niet-ingesteld'
 				)
@@ -279,7 +279,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					console.error('Failed to duplicate assigment', err, {
 						assignmentId: dataRow.id,
 					});
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'assignment/views/assignment-overview___het-ophalen-van-de-details-van-de-opdracht-is-mislukt'
 						)
