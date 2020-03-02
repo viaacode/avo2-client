@@ -267,6 +267,8 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 	ctaContent?: string;
 	ctaButtonLabel?: string;
 	ctaButtonAction?: ButtonAction;
+	searchQuery?: ButtonAction;
+	searchQueryLimit: string;
 }
 
 export interface MediaItemResponse {
