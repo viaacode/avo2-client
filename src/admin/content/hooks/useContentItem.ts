@@ -8,7 +8,7 @@ import i18n from '../../../shared/translations/i18n';
 import { ReactAction } from '../../../shared/types';
 
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
-import { fetchContentItemById } from '../content.service';
+import { getContentItemById } from '../content.service';
 import { ContentEditFormState, ContentWidth } from '../content.types';
 
 type SetContentFormParams = Parameters<
@@ -64,7 +64,7 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 		if (id) {
 			setIsLoading(true);
 
-			fetchContentItemById(Number(id))
+			getContentItemById(Number(id))
 				.then((contentItem: Avo.Content.Content | null) => {
 					if (contentItem) {
 						dispatch({
@@ -78,7 +78,7 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 								contentWidth: contentItem.content_width || ContentWidth.REGULAR,
 								publishAt: contentItem.publish_at || '',
 								depublishAt: contentItem.depublish_at || '',
-								userGroupIds: (contentItem as any).user_group_ids, // TODO remove once update typings to v2.10.0
+								userGroupIds: contentItem.user_group_ids,
 							},
 						});
 					} else {

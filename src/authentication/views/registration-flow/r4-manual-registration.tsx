@@ -20,8 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../../constants';
-import { toastService } from '../../../shared/services';
-import { createZendeskTicket } from '../../authentication.service';
+import { toastService, ZendeskService } from '../../../shared/services';
 import { redirectToClientPage } from '../../helpers/redirects';
 
 import './r4-manual-registration.scss';
@@ -123,7 +122,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					'authentication/views/registration-flow/r-4-manual-registration___manuele-aanvraag-account-op-av-o'
 				),
 			};
-			await createZendeskTicket(ticket);
+			await ZendeskService.createTicket(ticket);
 			toastService.success(
 				t(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'

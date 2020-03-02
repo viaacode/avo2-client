@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -113,7 +114,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 			return (
 				<ContentBlockPreview
 					key={createKey('preview', blockIndex)}
-					componentState={components.state}
+					// TODO: this cloneDeep is temporary, this should be fixed in the content-edit
+					// reducer which will be done in a separate PR
+					componentState={cloneDeep(components.state)}
 					contentWidth={contentWidth}
 					blockState={block.state}
 				/>

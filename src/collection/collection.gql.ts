@@ -232,6 +232,30 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 	}
 `;
 
+export const GET_COLLECTION_TILE_BY_ID = gql`
+	query getCollectionTileById($id: uuid!) {
+		tileData: app_collections(where: { id: { _eq: $id } }) {
+			created_at
+			collection_fragments_aggregate {
+				aggregate {
+					count
+				}
+			}
+			title
+			thumbnail_path
+			type {
+				label
+			}
+		}
+		# TODO: uncomment when views are available
+		# count: app_collection_views_aggregate(where: { id: { _eq: $id } }) {
+		# 	aggregate {
+		# 		count
+		# 	}
+		# }
+	}
+`;
+
 export const GET_COLLECTIONS = gql`
 	query getCollections($limit: Int!) {
 		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 3 } }, limit: $limit) {
@@ -241,10 +265,13 @@ export const GET_COLLECTIONS = gql`
 	}
 `;
 
-// TODO: Move bundle GQL to bundle.gql.ts
-export const GET_BUNDLES = gql`
-	query getBundles($limit: Int!) {
-		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 4 } }, limit: $limit) {
+export const GET_COLLECTIONS_BY_TITLE = gql`
+	query getCollections($title: String!, $limit: Int!) {
+		app_collections(
+			order_by: { title: asc }
+			where: { type_id: { _eq: 3 }, title: { _ilike: $title } }
+			limit: $limit
+		) {
 			id
 			title
 		}

@@ -4,7 +4,6 @@ import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRang
 import i18n from '../../../../shared/translations/i18n';
 import { ContentPageType } from '../../../content/content.types';
 import {
-	BackgroundColorOption,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -17,12 +16,12 @@ import {
 } from '../../content-block.const';
 
 import {
-	CONTENT_BLOCK_FIELD_DEFAULTS,
+	BLOCK_FIELD_DEFAULTS,
+	BLOCK_STATE_DEFAULTS,
 	CONTENT_TYPE_AND_LABELS_INPUT,
-	FORM_STATE_DEFAULTS,
 } from './defaults';
 
-export const INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE = (): PageOverviewBlockComponentStateFields => ({
+export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockComponentStateFields => ({
 	tabs: [],
 	tabStyle: 'MENU_BAR',
 	allowMultiple: false,
@@ -37,11 +36,7 @@ export const INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE = (): PageOverviewBlock
 
 export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (position: number): DefaultContentBlockState => {
 	return {
-		...FORM_STATE_DEFAULTS(
-			BackgroundColorOption.White,
-			ContentBlockType.PageOverview,
-			position
-		),
+		...BLOCK_STATE_DEFAULTS(ContentBlockType.PageOverview, position),
 	};
 };
 
@@ -50,7 +45,7 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 		name: i18n.t('admin/content-block/helpers/generators/page-overview___pagina-overzicht'),
 		type: ContentBlockType.PageOverview,
 		components: {
-			state: INITIAL_PAGE_OVERVIEW_BLOCK_COMPONENT_STATE(),
+			state: INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE(),
 			fields: {
 				contentTypeAndTabs: CONTENT_TYPE_AND_LABELS_INPUT({
 					label: i18n.t(
@@ -130,7 +125,7 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 		block: {
 			state: INITIAL_PAGE_OVERVIEW_BLOCK_STATE(position),
 			fields: {
-				...CONTENT_BLOCK_FIELD_DEFAULTS(),
+				...BLOCK_FIELD_DEFAULTS(),
 			},
 		},
 	};

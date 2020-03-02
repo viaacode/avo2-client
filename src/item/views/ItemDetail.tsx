@@ -61,6 +61,7 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import { dataService } from '../../shared/services/data-service';
 import { AddToCollectionModal, ItemVideoDescription } from '../components';
+import ReportItemModal from '../components/modals/ReportItemModal';
 import { ITEM_PATH, RELATED_ITEMS_AMOUNT } from '../item.const';
 import { GET_ITEM_BY_ID } from '../item.gql';
 import './ItemDetail.scss';
@@ -84,6 +85,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 	const [time] = useState<number>(0);
 	const [isOpenAddToCollectionModal, setIsOpenAddToCollectionModal] = useState(false);
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
+	const [isReportItemModalOpen, setIsReportItemModalOpen] = useState(false);
 	const [relatedItems, setRelatedItems] = useState<Avo.Search.ResultItem[] | null>(null);
 
 	useEffect(() => {
@@ -409,11 +411,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 												icon="bookmark"
 												active={false}
 												ariaLabel={t('item/views/item___toggle-bladwijzer')}
+												title={t('item/views/item___toggle-bladwijzer')}
 											/>
 											<Button
 												type="tertiary"
 												icon="share-2"
 												ariaLabel={t('item/views/item___share-item')}
+												title={t('item/views/item___share-item')}
 												onClick={() =>
 													setIsShareThroughEmailModalOpen(true)
 												}
@@ -422,6 +426,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 												type="tertiary"
 												icon="flag"
 												ariaLabel={t('item/views/item___rapporteer-item')}
+												title={t('item/views/item___rapporteer-item')}
+												onClick={() => setIsReportItemModalOpen(true)}
 											/>
 										</ButtonToolbar>
 									</Flex>
@@ -631,6 +637,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					emailLinkTitle={item.title}
 					isOpen={isShareThroughEmailModalOpen}
 					onClose={() => setIsShareThroughEmailModalOpen(false)}
+				/>
+				<ReportItemModal
+					externalId={match.params.id}
+					isOpen={isReportItemModalOpen}
+					onClose={() => setIsReportItemModalOpen(false)}
+					user={user}
 				/>
 			</>
 		);

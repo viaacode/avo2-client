@@ -29,7 +29,11 @@ import {
 	CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP,
 	DARK_BACKGROUND_COLOR_OPTIONS,
 } from '../../content-block.const';
-import { MediaPlayer, MediaPlayerTitleTextButton } from '../../helpers/wrappers';
+import {
+	BlockMediaGridWrapper,
+	MediaPlayer,
+	MediaPlayerTitleTextButton,
+} from '../../helpers/wrappers';
 import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
@@ -52,6 +56,7 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.Image]: BlockImage,
+	[ContentBlockType.MediaGrid]: BlockMediaGridWrapper,
 	[ContentBlockType.MediaPlayer]: MediaPlayer,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
 	[ContentBlockType.RichText]: BlockRichText,
@@ -70,6 +75,7 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.CTAs,
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
+	ContentBlockType.MediaGrid,
 	ContentBlockType.ImageGrid,
 	ContentBlockType.ProjectsSpotlight,
 ];
@@ -94,16 +100,10 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		}
 	});
 
-	// TODO: Rewrok these blocks to work exactly the same way.
-	if (blockState.blockType === ContentBlockType.Buttons) {
-		stateToSpread.elements.forEach(({ action }: any) => {
-			stateToSpread.navigate = () => {
-				navigateToContentType(action, history);
-			};
-		});
-	}
-
-	if (blockState.blockType === ContentBlockType.CTAs) {
+	if (
+		blockState.blockType === ContentBlockType.CTAs ||
+		blockState.blockType === ContentBlockType.Buttons
+	) {
 		stateToSpread.elements.forEach((innerState: any) => {
 			innerState.navigate = () => {
 				navigateToContentType(innerState.buttonAction, history);
