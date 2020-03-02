@@ -1,17 +1,19 @@
-import { first, startCase } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Button, ButtonToolbar, Container, Spacer, Table } from '@viaa/avo2-components';
+import { Button, Container, FormGroup, Pagination, Table, TextInput } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
-import { buildLink, navigate } from '../../../shared/helpers';
-
+import { buildLink } from '../../../shared/helpers';
+import { KeyCode } from '../../../shared/types';
+import { ITEMS_PER_PAGE } from '../../content/content.const';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+
 import { USER_OVERVIEW_TABLE_COLS, USER_PATH } from '../user.const';
 import { GET_USERS } from '../user.gql';
 import { UserOverviewTableCols } from '../user.types';
@@ -21,7 +23,19 @@ interface UserOverviewProps extends DefaultSecureRouteProps {}
 const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	const [t] = useTranslation();
 
+	// Contains the value of the search field, without triggering a new search query
+	const [searchFieldValue, setSearchFieldValue] = useState<string>('');
+	// Contains the value of the search field when the user triggers a new search query
+	// by pressing enter or pressing the search button
+	const [queryString, setQueryString] = useState<string>('');
+	const [page, setPage] = useState<number>(0);
 	const [users, setUsers] = useState<any>([]);
+
+	const handleKeyUp = (e: KeyboardEvent) => {
+		if (e.keyCode === KeyCode.Enter) {
+			setQueryString(searchFieldValue);
+		}
+	};
 
 	const renderTableCell = (rowData: Partial<Avo.User.User>, columnId: UserOverviewTableCols) => {
 		const { id, first_name, last_name } = rowData;
@@ -62,45 +76,34 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		}
 	};
 
-	const renderUserOverview = (data: Partial<Avo.User.User>[]) => {
-		if (!data.length) {
+	const renderUserOverview = (response: any) => {
+		const dbUsers = get(response, 'users_profiles', []);
+		const userCount = get(response, 'users_profiles_aggregate.aggregate.count', 0);
+		if (!dbUsers.length) {
 			return (
-				<ErrorView
-					message={t(
-						'admin/user/views/user-overview___er-zijn-nog-geen-navigaties-aangemaakt'
-					)}
-				>
+				<ErrorView message={t('Er bestaan nog geen gebruikers')}>
 					<p>
-						<Trans i18nKey="admin/user/views/user-overview___beschrijving-hoe-navigatie-items-toe-te-voegen">
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid
-							ab debitis blanditiis vitae molestiae delectus earum asperiores
-							mollitia, minima laborum expedita ratione quas impedit repudiandae nisi
-							corrupti quis eaque!
-						</Trans>
+						<Trans>Beschrijving wanneer er nog geen gebruikers zijn</Trans>
 					</p>
-					<Spacer margin="top">
-						<Button
-							icon="plus"
-							label={t('admin/user/views/user-overview___navigatie-toevoegen')}
-							onClick={() => history.push(USER_PATH.USER_CREATE)}
-						/>
-					</Spacer>
 				</ErrorView>
 			);
 		}
 
-		setUsers(data);
+		setUsers(dbUsers);
 
 		return (
-			<Table
-				columns={USER_OVERVIEW_TABLE_COLS}
-				data={data}
-				renderCell={(rowData: Partial<Avo.User.User>, columnId: string) =>
-					renderTableCell(rowData, columnId as UserOverviewTableCols)
-				}
-				rowKey="id"
-				variant="bordered"
-			/>
+			<>
+				<Table
+					columns={USER_OVERVIEW_TABLE_COLS}
+					data={dbUsers}
+					renderCell={(rowData: Partial<Avo.User.User>, columnId: string) =>
+						renderTableCell(rowData, columnId as UserOverviewTableCols)
+					}
+					rowKey="id"
+					variant="bordered"
+				/>
+				<Pagination pageCount={userCount} currentPage={page} onPageChange={setPage} />
+			</>
 		);
 	};
 
@@ -109,10 +112,32 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
+						<FormGroup className="c-content-filters__search" inlineMode="grow">
+							<TextInput
+								placeholder={t('Zoek op naam, email, stamboek, alias, ...')}
+								icon="search"
+								onChange={setSearchFieldValue}
+								onKeyUp={handleKeyUp}
+								value={searchFieldValue}
+							/>
+						</FormGroup>
+						<FormGroup inlineMode="shrink">
+							<Button
+								label={t(
+									'admin/content/components/content-filters/content-filters___zoeken'
+								)}
+								type="primary"
+								onClick={() => setQueryString(searchFieldValue)}
+							/>
+						</FormGroup>
 						<DataQueryComponent
 							renderData={renderUserOverview}
-							resultPath="app_content_nav_elements"
 							query={GET_USERS}
+							variables={{
+								offset: page * ITEMS_PER_PAGE,
+								limit: ITEMS_PER_PAGE,
+								queryString: `%${queryString}%`,
+							}}
 						/>
 					</Container>
 				</Container>

@@ -1,37 +1,28 @@
 import { gql } from 'apollo-boost';
 
 export const GET_USERS = gql`
-	query getUsers(
-		$offset: Int!
-		$limit: Int!
-		$stamboek: String!
-		$mail: String!
-		$alternativeEmail: String!
-		$bio: String!
-		$alias: String!
-		$firstName: String!
-		$lastName: String!
-		$function: String!
-	) {
+	query getUsers($offset: Int!, $limit: Int!, $queryText: String!) {
 		users_profiles(
-			limit: $limit
 			offset: $offset
+			limit: $limit
 			order_by: { usersByuserId: { last_name: asc, first_name: asc } }
 			where: {
-				_or: {
-					bio: { _ilike: $bio }
-					function: { _ilike: $function }
-					stamboek: { _ilike: $stamboek }
-					alternative_email: { _ilike: $alternativeEmail }
-					alias: { _ilike: $alias }
-					usersByuserId: {
-						_or: {
-							first_name: { _ilike: $firstName }
-							last_name: { _ilike: $lastName }
-							mail: { _ilike: $mail }
+				_or: [
+					{ stamboek: { _ilike: $queryText } }
+					{ alternative_email: { _ilike: $queryText } }
+					{ bio: { _ilike: $queryText } }
+					{ alias: { _ilike: $queryText } }
+					{ function: { _ilike: $queryText } }
+					{
+						usersByuserId: {
+							_or: [
+								{ first_name: { _ilike: $queryText } }
+								{ last_name: { _ilike: $queryText } }
+								{ mail: { _ilike: $queryText } }
+							]
 						}
 					}
-				}
+				]
 			}
 		) {
 			id
@@ -51,6 +42,30 @@ export const GET_USERS = gql`
 			created_at
 			bio
 			alternative_email
+		}
+		users_profiles_aggregate(
+			where: {
+				_or: [
+					{ stamboek: { _ilike: $queryText } }
+					{ alternative_email: { _ilike: $queryText } }
+					{ bio: { _ilike: $queryText } }
+					{ alias: { _ilike: $queryText } }
+					{ function: { _ilike: $queryText } }
+					{
+						usersByuserId: {
+							_or: [
+								{ first_name: { _ilike: $queryText } }
+								{ last_name: { _ilike: $queryText } }
+								{ mail: { _ilike: $queryText } }
+							]
+						}
+					}
+				]
+			}
+		) {
+			aggregate {
+				count
+			}
 		}
 	}
 `;
