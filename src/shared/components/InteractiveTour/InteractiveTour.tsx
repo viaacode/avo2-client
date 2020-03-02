@@ -69,7 +69,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 				)
 			);
 		}
-	}, [setSteps]);
+	}, [setSteps, routeId, user]);
 
 	useEffect(() => setRun(!!steps), [steps]);
 
