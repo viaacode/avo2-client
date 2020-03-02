@@ -23,7 +23,9 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps> = props => {
 		// Only trigger once per video
 		if (itemUuid && triggeredForUrl !== props.src) {
 			BookmarksViewsPlaysService.action('play', 'item', itemUuid, undefined).catch(err => {
-				console.error(new CustomError('Failed to track item play event', err, { itemUuid }));
+				console.error(
+					new CustomError('Failed to track item play event', err, { itemUuid })
+				);
 			});
 			setTriggeredForUrl(props.src);
 		}

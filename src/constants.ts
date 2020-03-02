@@ -60,7 +60,7 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = Object.freeze
 	LOGGED_OUT_HOME: { route: '/', showInContentPicker: true },
 	FOR_PUPILS: { route: `/${ROUTE_PARTS.forPupils}`, showInContentPicker: true },
 	LOGGED_IN_HOME: { route: `/${ROUTE_PARTS.loggedInHome}`, showInContentPicker: true },
-	ITEM: {
+	ITEM_DETAIL: {
 		route: `/${ROUTE_PARTS.item}/:id`,
 		regexp: `/${ROUTE_PARTS.item}/[^/?]+`,
 		showInContentPicker: false,

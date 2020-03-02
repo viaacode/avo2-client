@@ -57,8 +57,8 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import './BundleDetail.scss';

@@ -57,12 +57,12 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
+import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service.const';
-import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import {
@@ -243,7 +243,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							uuid: collectionObj.id,
 						})
 					);
-					toastService.danger(
+					ToastService.danger(
 						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
 					);
 				}

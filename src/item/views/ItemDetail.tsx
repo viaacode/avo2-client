@@ -193,7 +193,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							uuid: (itemObj as any).uid,
 						})
 					);
-					toastService.danger(
+					ToastService.danger(
 						t('Het ophalen van het aantal keer bekeken / gebookmarked is mislukt')
 					);
 				}
@@ -282,7 +282,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 							category={englishContentType}
 							onClick={() =>
 								redirectToClientPage(
-									buildLink(ITEM_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
+									buildLink(APP_PATH.ITEM_DETAIL.route, { id: relatedItem.id }),
 									history
 								)
 							}

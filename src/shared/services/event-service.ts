@@ -65,7 +65,10 @@ export async function trackEvent(
 	try {
 		const profileId = get(user, 'profile.id');
 		if (!profileId) {
-			throw new CustomError('Failed to create bookmark because could not get profile id', null);
+			throw new CustomError(
+				'Failed to create bookmark because could not get profile id',
+				null
+			);
 		}
 		const query = get(EVENT_QUERIES, [action, contentType, 'query']);
 		const variables = get(EVENT_QUERIES, [action, contentType, 'variables'], () => {})(

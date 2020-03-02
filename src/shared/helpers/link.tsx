@@ -87,7 +87,7 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 				});
 				break;
 			case 'ITEM':
-				navigate(history, ITEM_PATH.ITEM_DETAIL.route, {
+				navigate(history, APP_PATH.ITEM_DETAIL.route, {
 					id: value,
 				});
 				break;

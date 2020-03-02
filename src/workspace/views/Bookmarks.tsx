@@ -23,9 +23,12 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import { buildLink, CustomError, formatDate, formatTimestamp, fromNow } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
-import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service.const';
+import {
+	BookmarkInfo,
+	EventContentType,
+} from '../../shared/services/bookmarks-views-plays-service.const';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -99,7 +102,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const onDeleteBookmark = async () => {
 		try {
 			if (!bookmarkToDelete) {
-				toastService.danger(t('Het verwijderen van de bladwijzer is mislukt'));
+				ToastService.danger(t('Het verwijderen van de bladwijzer is mislukt'));
 				return;
 			}
 			await BookmarksViewsPlaysService.toggleBookmark(
@@ -110,12 +113,12 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			);
 
 			await fetchBookmarks();
-			toastService.success(t('de bladwijzer is verwijderd'));
+			ToastService.success(t('de bladwijzer is verwijderd'));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed t delete bookmark', err, { bookmarkToDelete, user })
 			);
-			toastService.danger(t('Het verwijderen van de bladwijzer is mislukt'));
+			ToastService.danger(t('Het verwijderen van de bladwijzer is mislukt'));
 		}
 
 		setBookmarkToDelete(null);
@@ -135,21 +138,22 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	};
 
 	// Render functions
+	const getDetailLink = (contentType: EventContentType, contentId: string) => {
+		return buildLink(
+			contentType === 'item' ? APP_PATH.ITEM_DETAIL.route : APP_PATH.COLLECTION_DETAIL.route,
+			{
+				id: contentId,
+			}
+		);
+	};
+
 	const renderThumbnail = ({
 		contentId,
 		contentType,
 		contentTitle,
 		contentThumbnailPath,
 	}: BookmarkInfo) => (
-		<Link
-			to={buildLink(
-				contentType === 'item' ? APP_PATH.ITEM_DETAIL : APP_PATH.COLLECTION_DETAIL,
-				{
-					id: contentId,
-				}
-			)}
-			title={contentTitle}
-		>
+		<Link to={getDetailLink(contentType, contentId)} title={contentTitle}>
 			<Thumbnail
 				alt="thumbnail"
 				category={contentType}
@@ -167,15 +171,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	}: BookmarkInfo) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link
-					to={buildLink(
-						contentType === 'item' ? APP_PATH.ITEM_DETAIL : APP_PATH.COLLECTION_DETAIL,
-						{
-							id: contentId,
-						}
-					)}
-					title={contentTitle}
-				>
+				<Link to={getDetailLink(contentType, contentId)} title={contentTitle}>
 					{contentTitle}
 				</Link>
 			</h3>
@@ -256,7 +252,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 					type="primary"
 					icon="search"
 					label={t('Zoek een item')}
-					onClick={() => history.push(APP_PATH.SEARCH)}
+					onClick={() => history.push(APP_PATH.SEARCH.route)}
 				/>
 			</Spacer>
 		</ErrorView>

@@ -25,7 +25,7 @@ import {
 	GET_MULTIPLE_ITEM_VIEW_COUNTS,
 } from './bookmarks-views-plays-service.gql';
 import { ApolloCacheManager, dataService } from './data-service';
-import { toastService } from './toast-service';
+import { ToastService } from './toast-service';
 
 export class BookmarksViewsPlaysService {
 	public static async action(
@@ -78,7 +78,7 @@ export class BookmarksViewsPlaysService {
 						response,
 						variables,
 					});
-					toastService.danger(
+					ToastService.danger(
 						action === 'bookmark'
 							? i18n.t('Het aanmaken van de bladwijzer is mislukt')
 							: i18n.t('Het verwijderen van de bladwijzer is mislukt')
@@ -178,7 +178,7 @@ export class BookmarksViewsPlaysService {
 			return true;
 		} catch (err) {
 			console.error('Failed to bookmark/unbookmark the item', err, { contentId });
-			toastService.danger(
+			ToastService.danger(
 				isBookmarked
 					? i18n.t('Het aanmaken van de bladwijzer is mislukt')
 					: i18n.t('Het verwijderen van de bladwijzer is mislukt')
