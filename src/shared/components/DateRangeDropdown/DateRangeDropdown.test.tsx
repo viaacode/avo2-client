@@ -24,10 +24,14 @@ describe('<Checkbox />', () => {
 			<DateRangeDropdown label="releaseDate" id="releaseDate" onChange={onChangeHandler} />
 		);
 
-		const yearInputs = dateTimePickerComponent.find('[placeholder="JJJJ"]');
-
-		yearInputs.at(1).simulate('change', { target: { value: '2018' } });
-		yearInputs.at(2).simulate('change', { target: { value: '2019' } });
+		dateTimePickerComponent
+			.find('#releaseDate-gte')
+			.at(0)
+			.simulate('change', { target: { value: '2018' } });
+		dateTimePickerComponent
+			.find('#releaseDate-lte')
+			.at(0)
+			.simulate('change', { target: { value: '2019' } });
 
 		dateTimePickerComponent
 			.find('.c-button.c-button--block.c-button--primary')
