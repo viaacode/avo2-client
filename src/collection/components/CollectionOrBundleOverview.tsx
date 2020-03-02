@@ -36,7 +36,7 @@ import {
 	getAvatarProps,
 	navigate,
 } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
@@ -88,7 +88,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			toastService.success(
+			ToastService.success(
 				isCollection
 					? t(
 							'collection/components/collection-or-bundle-overview___collectie-is-verwijderd'
@@ -100,7 +100,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			refetchCollections();
 		} catch (err) {
 			console.error(err);
-			toastService.danger(
+			ToastService.danger(
 				isCollection
 					? t(
 							'collection/components/collection-or-bundle-overview___collectie-kon-niet-verwijderd-worden'

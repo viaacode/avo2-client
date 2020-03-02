@@ -34,7 +34,7 @@ import {
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { isMediaFragment } from '../../helpers';
 
@@ -102,7 +102,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					err,
 					{ user, permission: PermissionNames.ADD_HYPERLINK_COLLECTIONS }
 				);
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt'
 					)
@@ -146,7 +146,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		fetchPlayerTicket(fragment.external_id)
 			.then(data => setPlayerTicket(data))
 			.catch(() =>
-				toastService.danger(
+				ToastService.danger(
 					t(
 						'collection/components/fragment/fragment-edit___play-ticket-kon-niet-opgehaald-worden'
 					)
@@ -176,7 +176,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			collectionPropValue: positionedFragments,
 		});
 
-		toastService.success(
+		ToastService.success(
 			!isCollection
 				? t(
 						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
@@ -190,22 +190,22 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	// TODO: DISABLED FEATURE
 	// const onDuplicateFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gedupliceerd'));
+	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gedupliceerd'));
 	// };
 
 	// const onMoveFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst'));
+	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst'));
 	// };
 
 	// const onCopyFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gekopieerd-naar-collectie'));
+	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gekopieerd-naar-collectie'));
 	// };
 
 	// const onMoveFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	toastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst-naar-collectie'));
+	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst-naar-collectie'));
 	// };
 
 	const onClickDropdownItem = (item: ReactText) => {

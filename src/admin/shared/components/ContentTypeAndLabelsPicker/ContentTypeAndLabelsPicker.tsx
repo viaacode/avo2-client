@@ -77,7 +77,7 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 		// 		console.error('Failed to get content types in ContentTypeAndLabelsPicker', err, {
 		// 			query: 'GET_CONTENT_TYPES',
 		// 		});
-		// 		toastService.danger(t('admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-types-is-mislukt'));
+		// 		ToastService.danger(t('admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-types-is-mislukt'));
 		// 	})
 		//  .finally(() => setIsLoading(false));
 	}, [value.selectedContentType, setLabels, t]);

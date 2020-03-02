@@ -48,7 +48,7 @@ import {
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
-import { toastService } from '../../shared/services';
+import { ToastService } from '../../shared/services';
 import { ApolloCacheManager } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
@@ -168,7 +168,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		);
 
 		if (!newCurrentCollection) {
-			toastService.danger(
+			ToastService.danger(
 				isCollection
 					? t(
 							'collection/components/collection-or-bundle-edit___de-collectie-is-nog-niet-geladen'
@@ -196,7 +196,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					!newCurrentCollection.collection_fragments ||
 					!newCurrentCollection.collection_fragments.length
 				) {
-					toastService.danger(
+					ToastService.danger(
 						isCollection
 							? t(
 									'collection/components/collection-or-bundle-edit___de-collectie-lijkt-geen-fragmenten-te-bevatten'
@@ -398,7 +398,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					newCollection,
 					type: 'UPDATE_COLLECTION',
 				});
-				toastService.success(
+				ToastService.success(
 					isCollection
 						? t(
 								'collection/components/collection-or-bundle-edit___collectie-opgeslagen'
@@ -430,7 +430,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	const onRenameCollection = async (newTitle: string) => {
 		try {
 			if (!collectionState.initialCollection) {
-				toastService.info(
+				ToastService.info(
 					isCollection
 						? t(
 								'collection/components/collection-or-bundle-edit___de-collectie-naam-kon-niet-geupdate-worden-collectie-is-niet-gedefinieerd'
@@ -467,7 +467,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			});
 		} catch (err) {
 			console.error(err);
-			toastService.info(
+			ToastService.info(
 				isCollection
 					? t(
 							'collection/components/collection-or-bundle-edit___het-hernoemen-van-de-collectie-is-mislukt'
@@ -488,7 +488,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		try {
 			if (!collectionState.currentCollection) {
 				console.error(`Failed to delete ${type} since currentCollection is undefined`);
-				toastService.info(
+				ToastService.info(
 					isCollection
 						? t(
 								'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt-collectie-niet-ingesteld'
@@ -521,7 +521,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			navigate(history, WORKSPACE_PATH.WORKSPACE_TAB, { tabId: COLLECTIONS_ID });
 		} catch (err) {
 			console.error(err);
-			toastService.info(
+			ToastService.info(
 				isCollection
 					? t(
 							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt'

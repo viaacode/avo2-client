@@ -8,7 +8,7 @@ import { ActionMeta, ValueType } from 'react-select/src/types';
 import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../shared/helpers';
-import { toastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services';
 
 import { parsePickerItem } from '../../../shared/helpers';
 import {
@@ -63,7 +63,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				})
 				.catch((error: any) => {
 					console.error('[Content Picker] - Failed to inflate.', error);
-					toastService.danger(
+					ToastService.danger(
 						t(
 							'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
 						),
@@ -104,7 +104,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					selectedItem,
 				})
 			);
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd'
 				),

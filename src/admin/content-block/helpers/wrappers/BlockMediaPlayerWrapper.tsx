@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
 
 import { getEnv } from '../../../../shared/helpers';
-import { toastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../shared/services/player-ticket-service';
 import i18n from '../../../../shared/translations/i18n';
 
@@ -24,7 +24,7 @@ export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title }) => {
 			})
 			.catch((err: any) => {
 				console.error(err);
-				toastService.danger(
+				ToastService.danger(
 					i18n.t(
 						'admin/content-block/helpers/wrappers/block-media-player-wrapper___het-ophalen-van-het-player-ticket-is-mislukt'
 					)

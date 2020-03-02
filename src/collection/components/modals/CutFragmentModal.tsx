@@ -23,7 +23,7 @@ import {
 	getEnv,
 	toSeconds,
 } from '../../../shared/helpers';
-import { toastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../shared/services/stills-service';
 import { KeyCode } from '../../../shared/types';
@@ -87,7 +87,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		const errors = getValidationErrors();
 
 		if (errors && errors.length) {
-			toastService.danger(errors);
+			ToastService.danger(errors);
 
 			return;
 		}
@@ -174,7 +174,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			}
 		} catch (err) {
 			console.error(new CustomError('Failed to parse times on enter key', err));
-			toastService.danger(
+			ToastService.danger(
 				t(
 					'collection/components/modals/cut-fragment-modal___de-ingevulde-tijd-heeft-geen-geldig-formaat'
 				)
