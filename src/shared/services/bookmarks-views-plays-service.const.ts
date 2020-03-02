@@ -16,6 +16,7 @@ import {
 export interface BookmarkInfo {
 	createdAt: number;
 	contentId: string;
+	contentLinkId: string;
 	contentType: EventContentType;
 	contentTitle: string;
 	contentThumbnailPath: string | null | undefined;
@@ -49,6 +50,9 @@ export interface AppItemBookmark {
 		title: string;
 		thumbnail_path: string;
 		issued: string;
+		item: {
+			external_id: string;
+		};
 	};
 	item_id: string;
 	created_at: string;
