@@ -4,6 +4,14 @@
 	flex: 1 1 auto;
 }
 
+.c-content-edit-view__preview {
+	overflow-x: hidden;
+
+	.o-container {
+		overflow-x: hidden;
+	}
+}
+
 .c-content-edit-view__sidebar {
 	max-width: 45%;
 	height: auto;
