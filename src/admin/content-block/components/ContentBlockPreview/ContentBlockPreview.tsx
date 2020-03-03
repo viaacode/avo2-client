@@ -26,15 +26,15 @@ import {
 	ContentBlockType,
 } from '../../../shared/types';
 import {
-	MediaGridWrapper,
-	MediaPlayerTitleTextButtonWrapper,
-	MediaPlayerWrapper,
-} from '../../components/wrappers';
-import {
 	CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP,
 	DARK_BACKGROUND_COLOR_OPTIONS,
 } from '../../content-block.const';
-import PageOverviewWrapper from '../wrappers/PageOverviewWrapper/PageOverviewWrapper';
+import {
+	MediaGridWrapper,
+	MediaPlayerTitleTextButtonWrapper,
+	MediaPlayerWrapper,
+	PageOverviewWrapper,
+} from '../wrappers';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
