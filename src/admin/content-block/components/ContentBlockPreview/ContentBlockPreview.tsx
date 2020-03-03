@@ -15,6 +15,7 @@ import {
 	BlockRichText,
 	ButtonAction,
 	Container,
+	Spacer,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -117,13 +118,16 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		};
 	}
 
+	const hasDarkBg = DARK_BACKGROUND_COLOR_OPTIONS.includes(blockState.backgroundColor);
+
 	return (
-		// TODO: Extend spacer with paddings in components lib
-		// This way we can easily set paddings from a content-blocks blockState
-		<div
-			className={classnames(`u-bg-${blockState.backgroundColor} u-padding`, {
-				'u-color-white': DARK_BACKGROUND_COLOR_OPTIONS.includes(blockState.backgroundColor),
+		<Spacer
+			className={classnames('c-content-block-preview', `u-bg-${blockState.backgroundColor}`, {
+				'c-content-block-preview--dark': hasDarkBg,
+				'u-color-white': hasDarkBg,
 			})}
+			margin={[]}
+			padding={[blockState.padding.top, blockState.padding.bottom]}
 		>
 			<Container
 				mode="horizontal"
@@ -131,7 +135,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			>
 				<PreviewComponent {...stateToSpread} />
 			</Container>
-		</div>
+		</Spacer>
 	);
 };
 
