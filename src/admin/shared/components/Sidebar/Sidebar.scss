@@ -27,11 +27,13 @@
 	text-align: center;
 }
 
-.o-sidebar__content {
-	padding: 2.4rem 0;
-}
-
 .o-sidebar__nav {
+	.o-sidebar__nav-item-sublink > a {
+		line-height: 7px;
+		padding-left: 44px;
+		display: block;
+		background-color: rgba(255, 255, 255, 0.04);
+	}
 
 	.o-sidebar__nav-item-wrapper {
 		border-color: rgba($color-gray-50, 0.4);

@@ -1,59 +1,125 @@
-import React, { FunctionComponent, KeyboardEvent } from 'react';
+import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-	Button,
-	Flex,
-	Form,
-	FormGroup,
-	SelectOption,
-	Spacer,
-	TextInput,
-} from '@viaa/avo2-components';
+import { Button, Flex, Form, FormGroup, Spacer, TextInput } from '@viaa/avo2-components';
 
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
+import { DateRange } from '../../../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { KeyCode } from '../../../../shared/types';
 
-import { ContentFilterFormState, ContentPageType } from '../../content.types';
+import { StringParam, useQueryParam } from 'use-query-params';
+import { ContentFilterFormState } from '../../content.types';
+import { useContentTypes } from '../../hooks';
 import './ContentFilters.scss';
 
+const stringArrayParam = {
+	encode: (value: string[] | undefined) => {
+		if (!value) {
+			return undefined;
+		}
+		return value.join(',');
+	},
+	decode: (value: string | string[]): string[] => {
+		if (Array.isArray(value)) {
+			return value;
+		}
+		return value.split(',');
+	},
+};
+
+const DateRangeParam = {
+	encode: (value: DateRange | undefined) => {
+		if (!value) {
+			return undefined;
+		}
+		return JSON.stringify(value);
+	},
+	decode: (value: string | string[]): DateRange | undefined => {
+		try {
+			if (Array.isArray(value)) {
+				if (value.length) {
+					return JSON.parse(value[0]);
+				}
+				return undefined;
+			}
+			return JSON.parse(value);
+		} catch (err) {
+			return undefined;
+		}
+	},
+};
+
 interface ContentFiltersProps {
-	contentTypes: SelectOption<ContentPageType>[];
-	formState: ContentFilterFormState;
-	hasFilters: boolean;
-	onClearFilters: () => void;
-	onFilterChange: <K extends keyof ContentFilterFormState>(
-		key: K,
-		value: ContentFilterFormState[K]
-	) => void;
-	onQueryChange: (query: string) => void;
-	query: string;
+	onFiltersChange: (filters: Partial<ContentFilterFormState>) => void;
 }
 
-const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
-	contentTypes,
-	formState,
-	hasFilters,
-	onClearFilters,
-	onFilterChange,
-	onQueryChange,
-	query,
-}) => {
+const ContentFilters: FunctionComponent<ContentFiltersProps> = ({ onFiltersChange }) => {
 	// Hooks
 	const [t] = useTranslation();
+	const [contentTypes] = useContentTypes();
+
+	const [contentType, setContentType] = useQueryParam<string[] | undefined>(
+		'contentType',
+		stringArrayParam
+	);
+	const [createdDate, setCreatedDate] = useQueryParam<DateRange | undefined>(
+		'createdDate',
+		DateRangeParam
+	);
+	const [updatedDate, setUpdatedDate] = useQueryParam<DateRange | undefined>(
+		'updatedDate',
+		DateRangeParam
+	);
+	const [publishDate, setPublishDate] = useQueryParam<DateRange | undefined>(
+		'publishDate',
+		DateRangeParam
+	);
+	const [depublishDate, setDepublishDate] = useQueryParam<DateRange | undefined>(
+		'depublishDate',
+		DateRangeParam
+	);
+	const [query, setQuery] = useQueryParam<string | undefined>('query', StringParam);
+	// Holds the text while the user is typing, once they press the search button or enter it will be copied to the query prop
+	// This avoids doing a database query on every key press
+	const [searchTerm, setSearchTerm] = useState<string>('');
 
 	// Computed
 	const contentTypeOptions = contentTypes.map(option => ({
 		label: option.label,
 		id: option.value,
-		checked: formState.contentType.includes(option.value),
+		checked: (contentType || []).includes(option.value),
 	}));
 
+	useEffect(() => {
+		onFiltersChange({
+			...(contentType ? { contentType } : {}),
+			...(createdDate ? { createdDate } : {}),
+			...(updatedDate ? { updatedDate } : {}),
+			...(publishDate ? { publishDate } : {}),
+			...(depublishDate ? { depublishDate } : {}),
+			...(searchTerm ? { query: searchTerm } : {}),
+		});
+	}, [contentType, createdDate, updatedDate, publishDate, depublishDate, query]);
+
 	// Methods
+	const clearFilters = () => {
+		setSearchTerm('');
+		setContentType(undefined);
+		setCreatedDate(undefined);
+		setUpdatedDate(undefined);
+		setPublishDate(undefined);
+		setDepublishDate(undefined);
+		setQuery('');
+	};
+
 	const handleKeyUp = (e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.Enter) {
-			onFilterChange('query', query);
+			setQuery(searchTerm);
 		}
+	};
+
+	const hasFilters = () => {
+		return contentType || createdDate || updatedDate || publishDate || depublishDate || query;
 	};
 
 	// Render
@@ -67,9 +133,9 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 								'admin/content/components/content-filters/content-filters___zoek-op-auteur-titel'
 							)}
 							icon="search"
-							onChange={onQueryChange}
+							onChange={setSearchTerm}
 							onKeyUp={handleKeyUp}
-							value={query}
+							value={searchTerm}
 						/>
 					</FormGroup>
 					<FormGroup inlineMode="shrink">
@@ -78,15 +144,15 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 								'admin/content/components/content-filters/content-filters___zoeken'
 							)}
 							type="primary"
-							onClick={() => onFilterChange('query', query)}
+							onClick={() => setQuery(searchTerm)}
 						/>
 					</FormGroup>
-					{hasFilters && (
+					{hasFilters() && (
 						<FormGroup inlineMode="shrink">
 							<Button
 								label={t('search/views/search___verwijder-alle-filters')}
 								type="link"
-								onClick={onClearFilters}
+								onClick={clearFilters}
 							/>
 						</FormGroup>
 					)}
@@ -96,7 +162,7 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 				<CheckboxDropdownModal
 					id="content-filter-type"
 					label={t('admin/content/components/content-filters/content-filters___type')}
-					onChange={value => onFilterChange('contentType', value)}
+					onChange={value => setContentType(value)}
 					options={contentTypeOptions}
 				/>
 				<DateRangeDropdown
@@ -104,32 +170,32 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({
 					label={t(
 						'admin/content/components/content-filters/content-filters___aanmaakdatum'
 					)}
-					onChange={value => onFilterChange('createdDate', value)}
-					range={formState.createdDate}
+					onChange={value => setCreatedDate(value)}
+					range={createdDate}
 				/>
 				<DateRangeDropdown
 					id="content-filter-updated-date"
 					label={t(
 						'admin/content/components/content-filters/content-filters___bewerkdatum'
 					)}
-					onChange={value => onFilterChange('updatedDate', value)}
-					range={formState.updatedDate}
+					onChange={value => setUpdatedDate(value)}
+					range={updatedDate}
 				/>
 				<DateRangeDropdown
 					id="content-filter-publish-date"
 					label={t(
 						'admin/content/components/content-filters/content-filters___publiceerdatum'
 					)}
-					onChange={value => onFilterChange('publishDate', value)}
-					range={formState.publishDate}
+					onChange={value => setPublishDate(value)}
+					range={publishDate}
 				/>
 				<DateRangeDropdown
 					id="content-filter-depublish-date"
 					label={t(
 						'admin/content/components/content-filters/content-filters___depubliceerdatum'
 					)}
-					onChange={value => onFilterChange('depublishDate', value)}
-					range={formState.depublishDate}
+					onChange={value => setDepublishDate(value)}
+					range={depublishDate}
 				/>
 			</Flex>
 		</Spacer>

@@ -1,7 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, get, isEmpty, isEqual } from 'lodash-es';
-import queryString from 'query-string';
-import React, { FunctionComponent, useEffect, useMemo, useReducer, useState } from 'react';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -22,8 +21,7 @@ import { ErrorView } from '../../../error/views';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
+import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { ContentFilters } from '../components';
@@ -31,42 +29,28 @@ import {
 	CONTENT_OVERVIEW_TABLE_COLS,
 	CONTENT_PATH,
 	CONTENT_RESULT_PATH,
-	INITIAL_CONTENT_OVERVIEW_STATE,
-	INITIAL_FILTER_FORM,
 	ITEMS_PER_PAGE,
 } from '../content.const';
 import { DELETE_CONTENT, GET_CONTENT_PAGES } from '../content.gql';
 import { ContentFilterFormState, ContentOverviewTableCols } from '../content.types';
-import { cleanFiltersObject, generateWhereObject } from '../helpers/filters';
-import {
-	ContentOverviewActionType,
-	ContentOverviewReducer,
-	contentOverviewReducer,
-} from '../helpers/reducers';
-import { useContentTypes } from '../hooks';
+import { generateWhereObject } from '../helpers/filters';
 
 import './ContentOverview.scss';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
-const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, location, user }) => {
+const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, user }) => {
 	// Hooks
-	const [{ filterForm }, dispatch] = useReducer<ContentOverviewReducer>(
-		contentOverviewReducer,
-		INITIAL_CONTENT_OVERVIEW_STATE()
-	);
-
 	const [contentList, setContentList] = useState<Avo.Content.Content[]>([]);
 	const [contentToDelete, setContentToDelete] = useState<Avo.Content.Content | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [isNotAdminModalOpen, setIsNotAdminModalOpen] = useState<boolean>(false);
-	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [page, setPage] = useState<number>(0);
-	const [queryParamsAnalysed, setQueryParamsAnalysed] = useState<boolean>(false);
+	const [filters, setFilters] = useState<Partial<ContentFilterFormState>>({});
+	// const [queryParamsAnalysed, setQueryParamsAnalysed] = useState<boolean>(false);
 
-	const hasFilters = useMemo(() => !isEqual(filterForm, INITIAL_FILTER_FORM()), [filterForm]);
+	// const hasFilters = useMemo(() => !isEqual(filterForm, INITIAL_FILTER_FORM()), [filterForm]);
 
-	const [contentTypes] = useContentTypes();
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<ContentOverviewTableCols>(
 		'updated_at'
 	);
@@ -74,74 +58,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
-	useEffect(() => {
-		// Get query params and transform to workable filter object
-		if (!queryParamsAnalysed) {
-			const queryParams = queryString.parse(location.search);
-
-			if (queryParams.filters) {
-				try {
-					const filters = JSON.parse(queryParams.filters as string);
-					const cleanFilters = cleanFiltersObject(filters);
-					const newFormState = {
-						...INITIAL_FILTER_FORM(),
-						...cleanFilters,
-					};
-
-					// Set query
-					setSearchTerm(newFormState.query);
-					// Set filter form
-					dispatch({
-						type: ContentOverviewActionType.SET_FILTER_FORM,
-						payload: newFormState,
-					});
-				} catch (err) {
-					console.error(err);
-					ToastService.danger(
-						t('admin/content/views/content-overview___ongeldige-zoek-query'),
-						false
-					);
-				}
-			}
-
-			setQueryParamsAnalysed(true);
-		}
-	}, [location.search, queryParamsAnalysed, t]);
-
-	useEffect(() => {
-		// Reflect filter changes in url query
-		const cleanFilters = cleanFiltersObject(cloneDeep(filterForm));
-		const oldQuery = queryString.parse(location.search).filters;
-		const newQuery = JSON.stringify(cleanFilters);
-
-		if (!isEqual(oldQuery, newQuery)) {
-			const filterString = !isEmpty(cleanFilters) ? `filters=${newQuery}` : '';
-			navigate(history, CONTENT_PATH.CONTENT, {}, filterString);
-		}
-	}, [filterForm, history, location.search]);
-
 	// Computed
 	// TODO: clean up admin check
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
 	// Methods
-	const clearFilters = () => {
-		setSearchTerm('');
-		dispatch({
-			type: ContentOverviewActionType.SET_FILTER_FORM,
-			payload: INITIAL_FILTER_FORM(),
-		});
-	};
-
-	const handleFilterChange = <K extends keyof ContentFilterFormState>(
-		key: K,
-		value: ContentFilterFormState[K]
-	) => {
-		dispatch({
-			type: ContentOverviewActionType.UPDATE_FILTER_FORM,
-			payload: { [key]: value },
-		});
-	};
 
 	const handleDelete = (refetchContentItems: () => void) => {
 		if (!contentToDelete) {
@@ -186,6 +107,17 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 			setContentToDelete(content);
 			setIsConfirmModalOpen(true);
 		}
+	};
+
+	const hasFilters = () => {
+		return (
+			filters.contentType ||
+			filters.createdDate ||
+			filters.updatedDate ||
+			filters.publishDate ||
+			filters.depublishDate ||
+			filters.query
+		);
 	};
 
 	// Render
@@ -341,22 +273,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, loc
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
-						<ContentFilters
-							contentTypes={contentTypes}
-							formState={filterForm}
-							hasFilters={hasFilters}
-							onClearFilters={clearFilters}
-							onFilterChange={handleFilterChange}
-							onQueryChange={setSearchTerm}
-							query={searchTerm}
-						/>
+						<ContentFilters onFiltersChange={setFilters} />
 						<DataQueryComponent
 							renderData={renderContentOverview}
 							query={GET_CONTENT_PAGES}
 							variables={{
 								offset: page * ITEMS_PER_PAGE,
 								order: { [sortColumn]: sortOrder },
-								where: generateWhereObject(filterForm),
+								where: generateWhereObject(filters),
 							}}
 						/>
 					</Container>

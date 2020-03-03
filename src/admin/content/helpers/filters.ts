@@ -2,7 +2,9 @@ import { cloneDeep, isEmpty, isNil, isPlainObject, pick, pickBy } from 'lodash-e
 
 import { ContentFilterFormState, DateRangeKeys, RangeFilters } from '../content.types';
 
-export const cleanFiltersObject = (obj: ContentFilterFormState): Partial<ContentFilterFormState> =>
+export const cleanFiltersObject = (
+	obj: Partial<ContentFilterFormState>
+): Partial<ContentFilterFormState> =>
 	pickBy(obj, (value: any, key: keyof ContentFilterFormState) => {
 		if (['contentType', 'query'].includes(key)) {
 			return !isEmpty(value) && !isNil(value);
@@ -12,8 +14,8 @@ export const cleanFiltersObject = (obj: ContentFilterFormState): Partial<Content
 		return isPlainObject(value) && (!!value.gte || !!value.lte);
 	});
 
-export const generateFilterObject = (filterForm: ContentFilterFormState) => {
-	const query = filterForm.query.trim();
+export const generateFilterObject = (filterForm: Partial<ContentFilterFormState>) => {
+	const query = (filterForm.query || '').trim();
 
 	if (!query) {
 		return {};
@@ -26,7 +28,7 @@ export const generateFilterObject = (filterForm: ContentFilterFormState) => {
 	];
 };
 
-export const generateWhereObject = (filterForm: ContentFilterFormState) => {
+export const generateWhereObject = (filterForm: Partial<ContentFilterFormState>) => {
 	const cleanFilters = cleanFiltersObject(cloneDeep(filterForm));
 
 	// Return when no where properties are given
@@ -60,7 +62,7 @@ export const generateWhereObject = (filterForm: ContentFilterFormState) => {
 		: [];
 
 	return {
-		...(contentType.length ? { content_type: { _in: contentType } } : null),
+		...((contentType || []).length ? { content_type: { _in: contentType } } : null),
 		...(dateRangeFilters.length ? { _and: dateRangeFilters } : null),
 		...(queryFilters ? { _or: queryFilters } : null),
 	};

@@ -24,6 +24,9 @@ export const CONTENT_PATH = {
 	CONTENT_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/${ROUTE_PARTS.create}`,
 	CONTENT_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id`,
 	CONTENT_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id/${ROUTE_PARTS.edit}`,
+	NEWS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?contentType=NIEUWS_ITEM`,
+	FAQS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?contentType=FAQ_ITEM`,
+	PROJECTS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?contentType=PROJECT`,
 };
 
 export const ITEMS_PER_PAGE = 10;
