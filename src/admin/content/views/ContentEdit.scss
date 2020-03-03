@@ -10,6 +10,10 @@
 	.o-container {
 		overflow-x: hidden;
 	}
+
+	.c-content > p {
+		overflow-wrap: break-word;
+	}
 }
 
 .c-content-edit-view__sidebar {
