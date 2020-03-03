@@ -21,6 +21,7 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, formatDate } from '../../../shared/helpers';
+import { ToastService } from '../../../shared/services';
 import { KeyCode } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
@@ -51,6 +52,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 
 	const navigateToUserDetail = (id: string | undefined) => {
 		if (!id) {
+			ToastService.danger(t('Deze gebruiker heeft geen geldig id'));
 			return;
 		}
 		const detailRoute = ADMIN_PATH.USER_DETAIL;
