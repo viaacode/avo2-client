@@ -43,11 +43,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 			if (!dbProfile) {
 				console.error(
 					new CustomError('Response from graphql is empty', null, {
+						response,
 						query: 'GET_USER_BY_ID',
 						variables: {
 							id: match.params.id,
 						},
-						response,
 					})
 				);
 				setLoadingInfo({
