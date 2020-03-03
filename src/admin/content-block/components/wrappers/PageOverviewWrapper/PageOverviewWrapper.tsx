@@ -22,7 +22,7 @@ import { ContentTypeAndLabelsValue } from '../../../../shared/components';
 import { ContentBlockConfig } from '../../../../shared/types';
 
 import { parseContentBlocks } from '../../../helpers';
-import { ContentBlockPreview } from '../../index';
+import ContentBlockPreview from '../../ContentBlockPreview/ContentBlockPreview';
 
 interface PageOverviewWrapperProps extends RouteComponentProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
