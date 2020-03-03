@@ -13,16 +13,16 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError, navigateToContentType } from '../../../../shared/helpers';
-import { useDebounce } from '../../../../shared/hooks';
-import { dataService, ToastService } from '../../../../shared/services';
-import i18n from '../../../../shared/translations/i18n';
-import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../content/content.gql';
-import { ContentTypeAndLabelsValue } from '../../../shared/components';
-import { ContentBlockConfig } from '../../../shared/types';
+import { CustomError, navigateToContentType } from '../../../../../shared/helpers';
+import { useDebounce } from '../../../../../shared/hooks';
+import { dataService, ToastService } from '../../../../../shared/services';
+import i18n from '../../../../../shared/translations/i18n';
+import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
+import { ContentTypeAndLabelsValue } from '../../../../shared/components';
+import { ContentBlockConfig } from '../../../../shared/types';
 
-import { parseContentBlocks } from '../../helpers';
-import { ContentBlockPreview } from '../index';
+import { parseContentBlocks } from '../../../helpers';
+import { ContentBlockPreview } from '../../index';
 
 interface PageOverviewWrapperProps extends RouteComponentProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;

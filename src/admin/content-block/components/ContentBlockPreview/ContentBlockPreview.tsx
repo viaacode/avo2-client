@@ -26,15 +26,15 @@ import {
 	ContentBlockType,
 } from '../../../shared/types';
 import {
+	MediaGridWrapper,
+	MediaPlayerTitleTextButtonWrapper,
+	MediaPlayerWrapper,
+} from '../../components/wrappers';
+import {
 	CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP,
 	DARK_BACKGROUND_COLOR_OPTIONS,
 } from '../../content-block.const';
-import {
-	BlockMediaGridWrapper,
-	MediaPlayer,
-	MediaPlayerTitleTextButton,
-} from '../../helpers/wrappers';
-import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
+import PageOverviewWrapper from '../wrappers/PageOverviewWrapper/PageOverviewWrapper';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
@@ -56,9 +56,9 @@ const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.MediaGrid]: BlockMediaGridWrapper,
-	[ContentBlockType.MediaPlayer]: MediaPlayer,
-	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
+	[ContentBlockType.MediaGrid]: MediaGridWrapper,
+	[ContentBlockType.MediaPlayer]: MediaPlayerWrapper,
+	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButtonWrapper,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.IFrame]: BlockIFrame,
