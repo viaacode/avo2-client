@@ -1,6 +1,8 @@
 import {
 	ButtonType,
 	Checkbox,
+	ContentItemStyle,
+	ContentTabStyle,
 	MultiRange,
 	Select,
 	SelectOption,
@@ -8,11 +10,6 @@ import {
 	TextInput,
 	WYSIWYG,
 } from '@viaa/avo2-components';
-import {
-	// TODO: Export from comp lib.
-	ContentItemStyle,
-	ContentTabStyle,
-} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
 
 import { FileUpload } from '../../shared/components';
 import i18n from '../../shared/translations/i18n';
