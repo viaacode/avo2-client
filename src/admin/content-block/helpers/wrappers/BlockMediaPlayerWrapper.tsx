@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, { FC, useState } from 'react';
 
@@ -8,12 +9,15 @@ import { ToastService } from '../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../shared/services/player-ticket-service';
 import i18n from '../../../../shared/translations/i18n';
 
+import './BlockMediaPlayerWrapper.scss';
+
 interface MediaPlayerProps {
 	title: string;
 	item: ButtonAction;
+	width?: 'full-width' | '500px' | '400px';
 }
 
-export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title }) => {
+export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title, width }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 
 	const initFlowPlayer = () =>
@@ -32,7 +36,12 @@ export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title }) => {
 			});
 
 	return (
-		<div className="c-video-player t-player-skin--dark">
+		<div
+			className={classnames(
+				'c-video-player t-player-skin--dark',
+				`o-media-block-width-${width}`
+			)}
+		>
 			<BlockFlowPlayer
 				title={title}
 				src={playerTicket ? playerTicket.toString() : null}
