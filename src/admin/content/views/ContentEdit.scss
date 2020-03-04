@@ -7,12 +7,9 @@
 .c-content-edit-view__preview {
 	overflow-x: hidden;
 
-	.o-container {
-		overflow-x: hidden;
-	}
-
-	.c-content > p {
+	.c-content-block-preview > .o-container {
 		overflow-wrap: break-word;
+		overflow-x: hidden;
 	}
 }
 
