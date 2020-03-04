@@ -22,6 +22,8 @@ import {
 	REPEATABLE_CONTENT_BLOCKS,
 } from './ContentBlockPreview.const';
 
+import './ContentBlockPreview.scss';
+
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
 	contentWidth?: Avo.Content.ContentWidth;
