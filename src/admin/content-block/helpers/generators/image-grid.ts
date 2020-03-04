@@ -1,5 +1,5 @@
+import { GridItem } from '@viaa/avo2-components';
 import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRange/MultiRange';
-import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
