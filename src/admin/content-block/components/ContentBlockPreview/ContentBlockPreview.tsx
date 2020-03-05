@@ -80,7 +80,7 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.ProjectsSpotlight,
 ];
 
-const IGNORE_BLOCK_LEVEL_PROPS = ['position', 'elements', 'blockType'];
+const IGNORE_BLOCK_LEVEL_PROPS = ['position', 'elements', 'blockType', 'backgroundColor'];
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	history,
