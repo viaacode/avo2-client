@@ -277,6 +277,10 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 	ctaButtonAction?: ButtonAction;
 }
 
+export interface ButtonsBlockState extends DefaultContentBlockState {
+	align?: AlignOption;
+}
+
 export interface MediaItemResponse {
 	tileData: Partial<Avo.Collection.Collection | Avo.Item.Item>;
 	count: number;

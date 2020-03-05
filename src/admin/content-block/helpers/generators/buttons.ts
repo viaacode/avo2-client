@@ -4,10 +4,10 @@ import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ButtonsBlockComponentState,
+	ButtonsBlockState,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
-	DefaultContentBlockState,
 } from '../../../shared/types';
 import { BUTTON_TYPE_OPTIONS } from '../../content-block.const';
 
@@ -20,8 +20,10 @@ export const INITIAL_BUTTONS_COMPONENTS_STATE = (): ButtonsBlockComponentState[]
 	},
 ];
 
-export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
-	BLOCK_STATE_DEFAULTS(ContentBlockType.Buttons, position);
+export const INITIAL_BUTTONS_BLOCK_STATE = (position: number): ButtonsBlockState => ({
+	...BLOCK_STATE_DEFAULTS(ContentBlockType.Buttons, position),
+	align: 'left',
+});
 
 export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
