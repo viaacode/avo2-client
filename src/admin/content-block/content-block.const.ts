@@ -1,6 +1,8 @@
 import {
 	ButtonType,
 	Checkbox,
+	ContentItemStyle,
+	ContentTabStyle,
 	MultiRange,
 	Select,
 	SelectOption,
@@ -8,11 +10,6 @@ import {
 	TextInput,
 	WYSIWYG,
 } from '@viaa/avo2-components';
-import {
-	// TODO: Export from comp lib.
-	ContentItemStyle,
-	ContentTabStyle,
-} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
 
 import { FileUpload } from '../../shared/components';
 import i18n from '../../shared/translations/i18n';
@@ -26,7 +23,7 @@ import {
 	HeadingTypeOption,
 	WidthOption,
 } from '../shared/types';
-import { AlignSelect, ColorSelect } from './components';
+import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
 	BUTTONS_BLOCK_CONFIG,
@@ -152,15 +149,16 @@ export const EDITOR_TYPES_MAP = {
 	AlignSelect,
 	Checkbox,
 	ColorSelect,
+	ContentPicker,
 	ContentTypeAndLabelsPicker,
+	FileUpload,
+	IconPicker,
+	MultiRange,
+	PaddingSelect,
 	Select,
 	TextArea,
 	TextInput,
 	WYSIWYG,
-	IconPicker,
-	ContentPicker,
-	FileUpload,
-	MultiRange,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {

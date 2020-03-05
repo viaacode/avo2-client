@@ -10,18 +10,18 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { toEnglishContentType } from '../../../../collection/collection.types';
+import { toEnglishContentType } from '../../../../../collection/collection.types';
 import {
 	CustomError,
 	formatDate,
 	formatDurationHoursMinutesSeconds,
 	navigateToContentType,
-} from '../../../../shared/helpers';
-import { MediaItemResponse } from '../../../shared/types';
+} from '../../../../../shared/helpers';
+import { MediaItemResponse } from '../../../../shared/types';
 
-import { fetchCollectionOrItem, fetchSearchQuery } from '../../services/block-data.service';
+import { fetchCollectionOrItem, fetchSearchQuery } from '../../../services/block-data.service';
 
-interface BlockMediaGridWrapperProps extends RouteComponentProps {
+interface MediaGridWrapperProps extends RouteComponentProps {
 	ctaTitle?: string;
 	ctaContent?: string;
 	ctaButtonAction?: ButtonAction;
@@ -31,7 +31,7 @@ interface BlockMediaGridWrapperProps extends RouteComponentProps {
 	searchQueryLimit?: number;
 }
 
-const BlockMediaGridWrapper: FunctionComponent<BlockMediaGridWrapperProps> = ({
+const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	ctaTitle,
 	ctaContent,
 	ctaButtonAction = { type: 'COLLECTION', value: '' },
@@ -185,4 +185,4 @@ const BlockMediaGridWrapper: FunctionComponent<BlockMediaGridWrapperProps> = ({
 	);
 };
 
-export default withRouter(BlockMediaGridWrapper);
+export default withRouter(MediaGridWrapper);

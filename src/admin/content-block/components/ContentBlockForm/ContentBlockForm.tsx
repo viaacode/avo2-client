@@ -30,7 +30,7 @@ import {
 } from '../../../shared/types';
 
 import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockFormGroup';
-import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview';
+import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview.const';
 
 import './ContentBlockForm.scss';
 
