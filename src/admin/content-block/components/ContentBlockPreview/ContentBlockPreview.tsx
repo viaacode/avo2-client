@@ -43,9 +43,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const containerSize = ContentWidthMap[contentWidth];
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
-	const componentStateProps: any = needsElements
-		? { elements: [...componentState] }
-		: { ...componentState };
+	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
 	const blockStateProps = Object.keys(blockState).reduce((acc, key) => {
 		const blockValue = (blockState as any)[key];
