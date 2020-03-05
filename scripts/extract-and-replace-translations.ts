@@ -188,7 +188,7 @@ async function updateTranslations() {
 
 	// Console log translations that were found in the json file but not in the code
 	console.warn(
-		`The following translation keys were removed: 
+		`The following translation keys were removed:
 \t${removedTranslationKeys.join('\n\t')}`
 	);
 
