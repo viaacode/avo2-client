@@ -48,6 +48,13 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.ProjectsSpotlight,
 ];
 
+export const NAVIGATEABLE_CONTENT_BLOCKS = [
+	ContentBlockType.Buttons,
+	ContentBlockType.CTAs,
+	// TODO: components@1.30.0 - Add this once ProjectSpotlight block is updated
+	// ContentBlockType.ProjectsSpotlight,
+];
+
 export const IGNORE_BLOCK_LEVEL_PROPS = [
 	'backgroundColor',
 	'blockType',
