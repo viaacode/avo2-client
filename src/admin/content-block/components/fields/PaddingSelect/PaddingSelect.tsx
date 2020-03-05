@@ -10,8 +10,18 @@ interface PaddingSelectProps {
 	value: PaddingFieldState;
 }
 
+type PaddingDirection = 'top' | 'bottom';
+
 const PaddingSelect: FunctionComponent<PaddingSelectProps> = ({ onChange, value }) => {
-	const handleChange = (newValue: string, direction: 'top' | 'bottom') => {
+	const generateOptions = (direction: PaddingDirection) =>
+		[
+			{ label: 'Klein', value: `${direction}-small` },
+			{ label: 'Medium', value: `${direction}` },
+			{ label: 'Groot', value: `${direction}-large` },
+			{ label: 'Extra groot', value: `${direction}-extra-large` },
+		] as SelectOption<SpacerOption>[];
+
+	const handleChange = (newValue: string, direction: PaddingDirection) => {
 		onChange({ ...value, [direction]: newValue });
 	};
 
@@ -20,28 +30,14 @@ const PaddingSelect: FunctionComponent<PaddingSelectProps> = ({ onChange, value 
 			<FormGroup label="Boven">
 				<Select
 					onChange={(value: string) => handleChange(value, 'top')}
-					options={
-						[
-							{ label: 'Klein', value: 'top-small' },
-							{ label: 'Medium', value: 'top' },
-							{ label: 'Groot', value: 'top-large' },
-							{ label: 'Extra groot', value: 'top-extra-large' },
-						] as SelectOption<SpacerOption>[]
-					}
+					options={generateOptions('top')}
 					value={value.top}
 				/>
 			</FormGroup>
 			<FormGroup label="Onder">
 				<Select
 					onChange={(value: string) => handleChange(value, 'bottom')}
-					options={
-						[
-							{ label: 'Klein', value: 'bottom-small' },
-							{ label: 'Medium', value: 'bottom' },
-							{ label: 'Groot', value: 'bottom-large' },
-							{ label: 'Extra groot', value: 'bottom-extra-large' },
-						] as SelectOption<SpacerOption>[]
-					}
+					options={generateOptions('bottom')}
 					value={value.bottom}
 				/>
 			</FormGroup>
