@@ -6,6 +6,7 @@ import {
 	GridItem,
 	IconName,
 } from '@viaa/avo2-components';
+import { SpacerOption } from '@viaa/avo2-components/dist/components/Spacer/Spacer'; // TODO: import from components library when exported.
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageType } from '../../content/content.types';
@@ -44,6 +45,11 @@ export enum BackgroundColorOption {
 	TealBright = 'teal-bright',
 	SoftBlue = 'soft-blue',
 	OceanGreen = 'ocean-green',
+}
+
+export interface PaddingFieldState {
+	top: SpacerOption;
+	bottom: SpacerOption;
 }
 
 // CONTENT BLOCK CONFIG
@@ -116,6 +122,7 @@ export interface DefaultContentBlockState {
 	backgroundColor: BackgroundColorOption;
 	blockType: ContentBlockType;
 	position: number;
+	padding: PaddingFieldState;
 }
 
 export type ContentBlockState = DefaultContentBlockState;
@@ -137,6 +144,7 @@ export enum ContentBlockEditor {
 	FileUpload = 'FileUpload',
 	IconPicker = 'IconPicker',
 	MultiRange = 'MultiRange',
+	PaddingSelect = 'PaddingSelect',
 	Select = 'Select',
 	TextArea = 'TextArea',
 	TextInput = 'TextInput',
