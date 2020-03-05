@@ -1,6 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { PickerTypeOption } from '../../types';
+import { ContentPickerType, PickerTypeOption } from '../../types';
 
 import { fetchBundles, fetchCollections } from '../../helpers/content-picker/collection';
 import { fetchContentPages } from '../../helpers/content-picker/content-page';
@@ -61,7 +61,7 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 	},
 ];
 
-export const DEFAULT_ALLOWED_TYPES = [
+export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
 	'CONTENT_PAGE',
 	'ITEM',
 	'COLLECTION',

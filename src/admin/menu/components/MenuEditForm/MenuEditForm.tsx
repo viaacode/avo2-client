@@ -109,7 +109,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 					onSelect={(item: ValueType<PickerItem>) => {
 						onChange('content', item as PickerItem);
 					}}
-					currentSelection={
+					initialValues={
 						formState.content_type && formState.content_path
 							? {
 									type: formState.content_type,
