@@ -2,20 +2,7 @@ import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import {
-	BlockAccordions,
-	BlockButtons,
-	BlockCTAs,
-	BlockGrid,
-	BlockHeading,
-	BlockIFrame,
-	BlockImage,
-	BlockIntro,
-	BlockProjectsSpotlight,
-	BlockRichText,
-	ButtonAction,
-	Container,
-} from '@viaa/avo2-components';
+import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
@@ -30,11 +17,12 @@ import {
 	DARK_BACKGROUND_COLOR_OPTIONS,
 } from '../../content-block.const';
 import {
-	BlockMediaGridWrapper,
-	MediaPlayer,
-	MediaPlayerTitleTextButton,
-} from '../../helpers/wrappers';
-import PageOverviewWrapper from '../PageOverviewWrapper/PageOverviewWrapper';
+	COMPONENT_PREVIEW_MAP,
+	IGNORE_BLOCK_LEVEL_PROPS,
+	REPEATABLE_CONTENT_BLOCKS,
+} from './ContentBlockPreview.const';
+
+import './ContentBlockPreview.scss';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
 	componentState: ContentBlockComponentState | ContentBlockComponentState[];
@@ -47,40 +35,6 @@ enum ContentWidthMap {
 	LARGE = 'large',
 	MEDIUM = 'medium',
 }
-
-const COMPONENT_PREVIEW_MAP = Object.freeze({
-	[ContentBlockType.Accordions]: BlockAccordions,
-	[ContentBlockType.CTAs]: BlockCTAs,
-	[ContentBlockType.Buttons]: BlockButtons,
-	[ContentBlockType.Heading]: BlockHeading,
-	[ContentBlockType.IFrame]: BlockIFrame,
-	[ContentBlockType.Intro]: BlockIntro,
-	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.MediaGrid]: BlockMediaGridWrapper,
-	[ContentBlockType.MediaPlayer]: MediaPlayer,
-	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButton,
-	[ContentBlockType.RichText]: BlockRichText,
-	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
-	[ContentBlockType.IFrame]: BlockIFrame,
-	[ContentBlockType.Accordions]: BlockAccordions,
-	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.ImageGrid]: BlockGrid,
-	[ContentBlockType.PageOverview]: PageOverviewWrapper,
-	[ContentBlockType.ProjectsSpotlight]: BlockProjectsSpotlight,
-});
-
-export const REPEATABLE_CONTENT_BLOCKS = [
-	ContentBlockType.Accordions,
-	ContentBlockType.Buttons,
-	ContentBlockType.CTAs,
-	ContentBlockType.RichText,
-	ContentBlockType.RichTextTwoColumns,
-	ContentBlockType.MediaGrid,
-	ContentBlockType.ImageGrid,
-	ContentBlockType.ProjectsSpotlight,
-];
-
-const IGNORE_BLOCK_LEVEL_PROPS = ['position', 'elements', 'blockType'];
 
 const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	history,
@@ -117,20 +71,16 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		};
 	}
 
+	const hasDarkBg = DARK_BACKGROUND_COLOR_OPTIONS.includes(blockState.backgroundColor);
+
 	return (
-		// TODO: Extend spacer with paddings in components lib
-		// This way we can easily set paddings from a content-blocks blockState
-		<div
-			className={classnames(
-				'c-content-block-preview',
-				`u-bg-${blockState.backgroundColor}`,
-				'u-padding',
-				{
-					'u-color-white': DARK_BACKGROUND_COLOR_OPTIONS.includes(
-						blockState.backgroundColor
-					),
-				}
-			)}
+		<Spacer
+			className={classnames('c-content-block-preview', `u-bg-${blockState.backgroundColor}`, {
+				'c-content-block-preview--dark': hasDarkBg,
+				'u-color-white': hasDarkBg,
+			})}
+			margin={[]}
+			padding={[blockState.padding.top, blockState.padding.bottom]}
 		>
 			<Container
 				mode="horizontal"
@@ -138,7 +88,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 			>
 				<PreviewComponent {...stateToSpread} />
 			</Container>
-		</div>
+		</Spacer>
 	);
 };
 

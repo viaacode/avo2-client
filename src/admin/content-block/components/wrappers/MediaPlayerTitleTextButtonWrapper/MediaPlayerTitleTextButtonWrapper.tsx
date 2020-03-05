@@ -12,12 +12,12 @@ import {
 	IconName,
 } from '@viaa/avo2-components';
 
-import { navigateToContentType } from '../../../../shared/helpers';
+import { navigateToContentType } from '../../../../../shared/helpers';
 
-import { AlignOption, HeadingTypeOption } from '../../../shared/types';
-import { MediaPlayer } from './BlockMediaPlayerWrapper';
+import { AlignOption, HeadingTypeOption } from '../../../../shared/types';
+import { MediaPlayerWrapper } from '../MediaPlayerWrapper/MediaPlayerWrapper';
 
-interface MediaPlayerTitleTextButtonProps extends RouteComponentProps {
+interface MediaPlayerTitleTextButtonWrapperProps extends RouteComponentProps {
 	mediaTitle: string;
 	mediaItem: ButtonAction;
 	headingType: HeadingTypeOption;
@@ -30,7 +30,7 @@ interface MediaPlayerTitleTextButtonProps extends RouteComponentProps {
 	align: AlignOption;
 }
 
-export const MediaPlayerTitleTextButton: FC<MediaPlayerTitleTextButtonProps> = ({
+export const MediaPlayerTitleTextButtonWrapper: FC<MediaPlayerTitleTextButtonWrapperProps> = ({
 	mediaItem,
 	mediaTitle,
 	headingTitle,
@@ -46,7 +46,7 @@ export const MediaPlayerTitleTextButton: FC<MediaPlayerTitleTextButtonProps> = (
 	return (
 		<Grid className="c-item-video-description">
 			<Column size="2-7">
-				<MediaPlayer item={mediaItem} title={mediaTitle} />
+				<MediaPlayerWrapper item={mediaItem} title={mediaTitle} />
 			</Column>
 			<Column size="2-5" className={`u-text-${align}`}>
 				<BlockHeading type={headingType}>{headingTitle}</BlockHeading>
@@ -66,4 +66,4 @@ export const MediaPlayerTitleTextButton: FC<MediaPlayerTitleTextButtonProps> = (
 	);
 };
 
-export default withRouter(MediaPlayerTitleTextButton);
+export default withRouter(MediaPlayerTitleTextButtonWrapper);
