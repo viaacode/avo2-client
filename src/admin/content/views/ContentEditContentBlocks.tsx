@@ -125,7 +125,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 	return (
 		<Flex className="c-content-edit-view__content">
-			<FlexItem>{renderBlockPreviews()}</FlexItem>
+			<FlexItem className="c-content-edit-view__preview">{renderBlockPreviews()}</FlexItem>
 			<Sidebar className="c-content-edit-view__sidebar" light>
 				{renderContentBlockForms()}
 				<Form>
