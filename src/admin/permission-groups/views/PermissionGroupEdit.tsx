@@ -20,11 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import {
-	DeleteObjectModal,
-	LoadingErrorLoadedComponent,
-	LoadingInfo,
-} from '../../../shared/components';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
@@ -62,8 +58,6 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 	const [selectedPermissionId, setSelectedPermissionId] = useState<string | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionsTableCols>('label');
-	const [permissionIdToDelete, setPermissionIdToDelete] = useState<number | null>(null);
-	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
 	const isCreatePage: boolean = location.pathname.includes(`/${ROUTE_PARTS.create}`);
 
@@ -182,19 +176,14 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 		return null;
 	};
 
-	const openModal = (permission: Permission): void => {
-		setIsConfirmModalOpen(true);
-		setPermissionIdToDelete(permission.id);
-	};
-
-	const handleDelete = () => {
+	const deletePermission = (permissionIdToDelete: number) => {
 		if (!permissionGroup) {
 			return;
 		}
 		setPermissionGroup({
 			...permissionGroup,
 			permissions: (permissionGroup.permissions || []).filter(
-				permission => permission.id === permissionIdToDelete
+				permission => permission.id !== permissionIdToDelete
 			),
 		});
 	};
@@ -272,7 +261,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				permissionGroupId
 			);
 
-			ToastService.success(t('De permissie groep is opgeslagen'));
+			ToastService.success(t('De permissie groep is opgeslagen'), false);
 			setIsSaving(false);
 		} catch (err) {
 			console.error(
@@ -313,7 +302,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 					<ButtonToolbar>
 						<Button
 							icon="delete"
-							onClick={() => openModal(rowData)}
+							onClick={() => deletePermission(rowData.id)}
 							size="small"
 							ariaLabel={t('Verwijder')}
 							title={t('Verwijder')}
@@ -403,11 +392,6 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 							variant="bordered"
 							sortColumn={sortColumn}
 							sortOrder={sortOrder}
-						/>
-						<DeleteObjectModal
-							deleteObjectCallback={() => handleDelete()}
-							isOpen={isConfirmModalOpen}
-							onClose={() => setIsConfirmModalOpen(false)}
 						/>
 					</PanelBody>
 				</Panel>
