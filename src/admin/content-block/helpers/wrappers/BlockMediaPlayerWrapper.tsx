@@ -41,7 +41,7 @@ export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title }) => {
 
 	const retrieveStill = async () => {
 		const videoStills = await getVideoStills([
-			{ externalId: item.value.toString(), startTime: 0 },
+			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
 		]);
 
 		setVideoStill(videoStills[0].previewImagePath);
