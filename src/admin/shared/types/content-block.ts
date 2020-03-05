@@ -3,9 +3,9 @@ import {
 	ButtonType,
 	ContentItemStyle,
 	ContentTabStyle,
+	GridItem,
 	IconName,
 } from '@viaa/avo2-components';
-import { GridItem } from '@viaa/avo2-components/dist/content-blocks/BlockGrid/BlockGrid'; // TODO: import from components library when exported.
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageType } from '../../content/content.types';

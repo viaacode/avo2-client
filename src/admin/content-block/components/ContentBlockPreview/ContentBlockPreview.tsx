@@ -121,9 +121,16 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		// TODO: Extend spacer with paddings in components lib
 		// This way we can easily set paddings from a content-blocks blockState
 		<div
-			className={classnames(`u-bg-${blockState.backgroundColor} u-padding`, {
-				'u-color-white': DARK_BACKGROUND_COLOR_OPTIONS.includes(blockState.backgroundColor),
-			})}
+			className={classnames(
+				'c-content-block-preview',
+				`u-bg-${blockState.backgroundColor}`,
+				'u-padding',
+				{
+					'u-color-white': DARK_BACKGROUND_COLOR_OPTIONS.includes(
+						blockState.backgroundColor
+					),
+				}
+			)}
 		>
 			<Container
 				mode="horizontal"

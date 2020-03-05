@@ -42,7 +42,6 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	// by pressing enter or pressing the search button
 	const [queryText, setQueryText] = useState<string>('');
 	const [page, setPage] = useState<number>(0);
-	// const [users, setUsers] = useState<any>([]);
 
 	const handleKeyUp = (e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.Enter) {
@@ -95,7 +94,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	const renderUserOverview = (response: any) => {
 		const dbProfiles: Partial<Avo.User.Profile>[] = get(response, 'users_profiles', []);
 		const userCount = get(response, 'users_profiles_aggregate.aggregate.count', 0);
-		if (!dbProfiles.length) {
+		if (!userCount) {
 			return (
 				<ErrorView message={t('Er bestaan nog geen gebruikers')}>
 					<p>
@@ -104,8 +103,6 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				</ErrorView>
 			);
 		}
-
-		// setUsers(dbUsers);
 
 		return (
 			<>
@@ -119,7 +116,11 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					variant="bordered"
 				/>
 				<Spacer margin="top-large">
-					<Pagination pageCount={userCount} currentPage={page} onPageChange={setPage} />
+					<Pagination
+						pageCount={Math.ceil(userCount / ITEMS_PER_PAGE)}
+						currentPage={page}
+						onPageChange={setPage}
+					/>
 				</Spacer>
 			</>
 		);
