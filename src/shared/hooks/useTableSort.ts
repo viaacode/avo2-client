@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-type SortOrder = 'asc' | 'desc';
+export type SortOrder = 'asc' | 'desc';
 type UseTableSortTuple<T> = [T, SortOrder, (columnId: T) => void];
 
 export const useTableSort = <T>(
