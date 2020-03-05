@@ -53,7 +53,6 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 								})}
 							>
 								<Link
-									// activeClassName="o-sidebar__nav-item--active"
 									className={classnames('o-sidebar__nav-item', {
 										'o-sidebar__nav-item--active': isActiveClass(navItem),
 									})}

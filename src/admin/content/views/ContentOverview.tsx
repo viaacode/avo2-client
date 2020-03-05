@@ -47,9 +47,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [isNotAdminModalOpen, setIsNotAdminModalOpen] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 	const [filters, setFilters] = useState<Partial<ContentFilterFormState>>({});
-	// const [queryParamsAnalysed, setQueryParamsAnalysed] = useState<boolean>(false);
-
-	// const hasFilters = useMemo(() => !isEqual(filterForm, INITIAL_FILTER_FORM()), [filterForm]);
 
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<ContentOverviewTableCols>(
 		'updated_at'
@@ -63,7 +60,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 
 	// Methods
-
 	const handleDelete = (refetchContentItems: () => void) => {
 		if (!contentToDelete) {
 			return;
