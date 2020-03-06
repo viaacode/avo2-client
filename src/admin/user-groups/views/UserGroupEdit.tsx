@@ -397,7 +397,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 									<Select
 										options={getAllPermissionGroups()}
 										placeholder={t('Kies een permissie groep')}
-										value={selectedPermissionGroupId}
+										value={selectedPermissionGroupId || undefined}
 										onChange={setSelectedPermissionGroupId}
 										loading={!allPermissionGroups}
 									/>
