@@ -4,11 +4,11 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
 
-import { formatDate, navigateToContentType } from '../../../../shared/helpers';
-import { MediaItemResponse } from '../../../shared/types';
-import { fetchCollectionOrItem } from '../../services/block-data.service';
+import { formatDate, navigateToContentType } from '../../../../../shared/helpers';
+import { MediaItemResponse } from '../../../../shared/types';
+import { fetchCollectionOrItem } from '../../../services/block-data.service';
 
-interface BlockMediaGridWrapperProps extends RouteComponentProps {
+interface MediaGridWrapperProps extends RouteComponentProps {
 	ctaTitle?: string;
 	ctaContent?: string;
 	ctaButtonAction?: ButtonAction;
@@ -16,7 +16,7 @@ interface BlockMediaGridWrapperProps extends RouteComponentProps {
 	elements: { mediaItem: ButtonAction }[];
 }
 
-const BlockMediaGridWrapper: FunctionComponent<BlockMediaGridWrapperProps> = ({
+const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	ctaTitle,
 	ctaContent,
 	ctaButtonAction = { type: 'COLLECTION', value: '' },
@@ -100,4 +100,4 @@ const BlockMediaGridWrapper: FunctionComponent<BlockMediaGridWrapperProps> = ({
 	);
 };
 
-export default withRouter(BlockMediaGridWrapper);
+export default withRouter(MediaGridWrapper);

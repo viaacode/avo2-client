@@ -3,17 +3,17 @@ import React, { FC, useState } from 'react';
 
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
 
-import { getEnv } from '../../../../shared/helpers';
-import { ToastService } from '../../../../shared/services';
-import { fetchPlayerTicket } from '../../../../shared/services/player-ticket-service';
-import i18n from '../../../../shared/translations/i18n';
+import { getEnv } from '../../../../../shared/helpers';
+import { ToastService } from '../../../../../shared/services';
+import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
+import i18n from '../../../../../shared/translations/i18n';
 
 interface MediaPlayerProps {
 	title: string;
 	item: ButtonAction;
 }
 
-export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title }) => {
+export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 
 	const initFlowPlayer = () =>
