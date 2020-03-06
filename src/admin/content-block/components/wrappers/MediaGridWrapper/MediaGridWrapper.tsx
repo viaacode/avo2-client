@@ -120,7 +120,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			if (searchQuery && searchQuery.value) {
 				let valueObj;
 
-				// Wre have to wrap JSON.parse in this try..catch because if the value is cleared
+				// We have to wrap JSON.parse in this try..catch because if the value is cleared
 				// it returns an invalid JSON string which causes a crash
 				try {
 					valueObj = JSON.parse(searchQuery.value as string);
