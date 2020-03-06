@@ -18,7 +18,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { CustomError, formatDate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
@@ -26,6 +26,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/la
 import { GET_USER_GROUP_BY_ID } from '../user-group.gql';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup } from '../user-group.types';
+import { USER_GROUP_PATH } from '../user-group.const';
 
 interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 
@@ -102,11 +103,11 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 				return;
 			}
 			await UserGroupService.deleteUserGroup(userGroup.id);
-			ToastService.success(t('De gebruikersgroep is verwijdert'));
+			ToastService.success(t('De gebruikersgroep is verwijdert'), false);
 			redirectToClientPage(ADMIN_PATH.USER_GROUP_OVERVIEW, history);
 		} catch (err) {
 			console.error(new CustomError('Failed to delete user group', err, { userGroup }));
-			ToastService.danger(t('Het verwijderen van de gebruikersgroep is mislukt'));
+			ToastService.danger(t('Het verwijderen van de gebruikersgroep is mislukt'), false);
 		}
 	};
 
@@ -179,6 +180,18 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 				<Header category="audio" title={t('Gebruikersgroep details')} showMetaData={false}>
 					<HeaderButtons>
 						<ButtonToolbar>
+							<Button
+								type="primary"
+								label={t('Bewerk')}
+								onClick={() => {
+									redirectToClientPage(
+										buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, {
+											id: match.params.id,
+										}),
+										history
+									);
+								}}
+							/>
 							<Button
 								type="danger"
 								label={t('Verwijderen')}

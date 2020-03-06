@@ -1,9 +1,10 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, KeyboardEvent, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { get, isNil } from 'lodash-es';
+import React, { FunctionComponent, KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
+	ButtonToolbar,
 	Container,
 	Form,
 	FormGroup,
@@ -17,18 +18,21 @@ import {
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { ErrorView } from '../../../error/views';
-import { DataQueryComponent } from '../../../shared/components';
-import { buildLink, formatDate } from '../../../shared/helpers';
+import {
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
+import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
+import { dataService, ToastService } from '../../../shared/services';
 import { KeyCode } from '../../../shared/types';
-import { ADMIN_PATH } from '../../admin.const';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { USER_GROUP_OVERVIEW_TABLE_COLS } from '../user-group.const';
+import { USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { GET_USER_GROUPS } from '../user-group.gql';
+import { UserGroupService } from '../user-group.service';
 import {
 	PermissionGroupTableCols,
 	UserGroup,
@@ -49,6 +53,57 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
 		'label'
 	);
+	const [userGroupIdToDelete, setUserGroupIdToDelete] = useState<number | null>(null);
+	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+	const [userGroups, setUserGroups] = useState<UserGroup[] | null>(null);
+	const [userGroupCount, setUserGroupCount] = useState<number | null>(null);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
+	const fetchUserGroups = useCallback(async () => {
+		let variables: any;
+		try {
+			variables = {
+				offset: ITEMS_PER_PAGE * page,
+				limit: ITEMS_PER_PAGE,
+				orderBy: [{ [sortColumn]: sortOrder }],
+				queryText: `%${queryText}%`,
+			};
+			const response = await dataService.query({
+				variables,
+				query: GET_USER_GROUPS,
+			});
+			const userGroups = get(response, 'data.users_groups');
+			const userGroupCount = get(response, 'data.users_groups_aggregate.aggregate.count');
+
+			if (!userGroups) {
+				setLoadingInfo({
+					state: 'error',
+					message: t('Het ophalen van de permissie groepen is mislukt'),
+				});
+				return;
+			}
+
+			setUserGroups(userGroups);
+			setUserGroupCount(userGroupCount);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to fetch user groups from graphql', err, {
+					variables,
+					query: 'GET_USER_GROUPS',
+				})
+			);
+		}
+	}, [setUserGroups, setLoadingInfo, t, page, queryText, sortColumn, sortOrder]);
+
+	useEffect(() => {
+		fetchUserGroups();
+	}, [fetchUserGroups]);
+
+	useEffect(() => {
+		if (userGroups && !isNil(userGroupCount)) {
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [userGroups, userGroupCount]);
 
 	const handleKeyUp = (e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.Enter) {
@@ -56,13 +111,42 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		}
 	};
 
-	const navigateToUserGroupDetail = (id: number | undefined) => {
-		if (!id) {
-			ToastService.danger(t('Deze gebruikersgroep heeft geen geldig id'));
+	const handleDelete = async () => {
+		try {
+			if (!userGroupIdToDelete) {
+				ToastService.danger(
+					t(
+						'Het verwijderen van de gebruikersgroep is mislukt, probeer de pagina te herladen'
+					),
+					false
+				);
+				return;
+			}
+
+			await UserGroupService.deleteUserGroup(userGroupIdToDelete);
+			await fetchUserGroups();
+			ToastService.success(t('De gebruikersgroep is verwijdert'), false);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to delete user group', err, {
+					query: 'DELETE_USER_GROUP',
+					userGroupIdToDelete,
+				})
+			);
+			ToastService.danger(t('Het verwijderen van de gebruikersgroep is mislukt'), false);
+		}
+	};
+
+	const openModal = (userGroupId: number | undefined): void => {
+		if (isNil(userGroupId)) {
+			ToastService.danger(
+				t('De gebruikersgroep kon niet worden verwijdert, probeer de pagina te herladen'),
+				false
+			);
 			return;
 		}
-		const link = buildLink(ADMIN_PATH.USER_GROUP_DETAIL, { id });
-		redirectToClientPage(link, history);
+		setUserGroupIdToDelete(userGroupId);
+		setIsConfirmModalOpen(true);
 	};
 
 	const renderTableCell = (rowData: Partial<UserGroup>, columnId: UserGroupOverviewTableCols) => {
@@ -77,11 +161,35 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 
 			case 'actions':
 				return (
-					<Button
-						type="secondary"
-						icon="eye"
-						onClick={() => navigateToUserGroupDetail(rowData.id)}
-					/>
+					<ButtonToolbar>
+						<Button
+							type="secondary"
+							icon="eye"
+							onClick={() =>
+								navigate(history, USER_GROUP_PATH.USER_GROUP_DETAIL, {
+									id: rowData.id,
+								})
+							}
+						/>
+						<Button
+							icon="edit"
+							onClick={() =>
+								navigate(history, USER_GROUP_PATH.USER_GROUP_EDIT, {
+									id: rowData.id,
+								})
+							}
+							size="small"
+							title={t('admin/content/views/content-overview___pas-content-aan')}
+							type="secondary"
+						/>
+						<Button
+							icon="delete"
+							onClick={() => openModal(rowData.id)}
+							size="small"
+							title={t('admin/content/views/content-overview___verwijder-content')}
+							type="danger-hover"
+						/>
+					</ButtonToolbar>
 				);
 
 			default:
@@ -89,24 +197,12 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		}
 	};
 
-	const renderUserGroupOverview = (response: any) => {
-		const dbUserGroups: Partial<UserGroup>[] = get(response, 'users_groups', []);
-		const userGroupCount = get(response, 'users_groups_aggregate.aggregate.count', 0);
-		if (!userGroupCount) {
-			return (
-				<ErrorView message={t('Er bestaan nog geen gebruikersgroepen')}>
-					<p>
-						<Trans>Beschrijving wanneer er nog geen gebruikersgroepen zijn</Trans>
-					</p>
-				</ErrorView>
-			);
-		}
-
+	const renderUserGroupTable = () => {
 		return (
 			<>
 				<Table
 					columns={USER_GROUP_OVERVIEW_TABLE_COLS}
-					data={dbUserGroups}
+					data={userGroups || []}
 					renderCell={(rowData: Partial<UserGroup>, columnId: string) =>
 						renderTableCell(rowData, columnId as UserGroupOverviewTableCols)
 					}
@@ -120,11 +216,50 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 				/>
 				<Spacer margin="top-large">
 					<Pagination
-						pageCount={Math.ceil(userGroupCount / ITEMS_PER_PAGE)}
+						pageCount={Math.ceil((userGroupCount || 0) / ITEMS_PER_PAGE)}
 						currentPage={page}
 						onPageChange={setPage}
 					/>
 				</Spacer>
+			</>
+		);
+	};
+
+	const renderUserGroupPageBody = () => {
+		return (
+			<>
+				<Spacer margin="bottom-small">
+					<Toolbar>
+						<ToolbarRight>
+							<Form type="inline">
+								<FormGroup className="c-content-filters__search" inlineMode="grow">
+									<TextInput
+										placeholder={t('Zoek op label, beschrijving')}
+										icon="search"
+										onChange={setSearchFieldValue}
+										onKeyUp={handleKeyUp}
+										value={searchFieldValue}
+									/>
+								</FormGroup>
+								<FormGroup inlineMode="shrink">
+									<Button
+										label={t(
+											'admin/content/components/content-filters/content-filters___zoeken'
+										)}
+										type="primary"
+										onClick={() => setQueryText(searchFieldValue)}
+									/>
+								</FormGroup>
+							</Form>
+						</ToolbarRight>
+					</Toolbar>
+				</Spacer>
+				{renderUserGroupTable()}
+				<DeleteObjectModal
+					deleteObjectCallback={() => handleDelete()}
+					isOpen={isConfirmModalOpen}
+					onClose={() => setIsConfirmModalOpen(false)}
+				/>
 			</>
 		);
 	};
@@ -134,48 +269,22 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
-						<Spacer margin="bottom-small">
-							<Toolbar>
-								<ToolbarRight>
-									<Form type="inline">
-										<FormGroup
-											className="c-content-filters__search"
-											inlineMode="grow"
-										>
-											<TextInput
-												placeholder={t('Zoek op label, beschrijving')}
-												icon="search"
-												onChange={setSearchFieldValue}
-												onKeyUp={handleKeyUp}
-												value={searchFieldValue}
-											/>
-										</FormGroup>
-										<FormGroup inlineMode="shrink">
-											<Button
-												label={t(
-													'admin/content/components/content-filters/content-filters___zoeken'
-												)}
-												type="primary"
-												onClick={() => setQueryText(searchFieldValue)}
-											/>
-										</FormGroup>
-									</Form>
-								</ToolbarRight>
-							</Toolbar>
-						</Spacer>
-						<DataQueryComponent
-							renderData={renderUserGroupOverview}
-							query={GET_USER_GROUPS}
-							variables={{
-								offset: page * ITEMS_PER_PAGE,
-								limit: ITEMS_PER_PAGE,
-								orderBy: [{ [sortColumn]: sortOrder }],
-								queryText: `%${queryText}%`,
-							}}
+						<LoadingErrorLoadedComponent
+							loadingInfo={loadingInfo}
+							dataObject={userGroups}
+							render={renderUserGroupPageBody}
 						/>
 					</Container>
 				</Container>
 			</AdminLayoutBody>
+			<AdminLayoutActions>
+				<Button
+					label={t('Gebruikersgroep toevoegen')}
+					onClick={() => {
+						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
+					}}
+				/>
+			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };

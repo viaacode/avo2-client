@@ -13,16 +13,16 @@ export const renderAdminUserGroupRoutes = (): ReactNode[] => [
 		path={USER_GROUP_PATH.USER_GROUP_OVERVIEW}
 	/>,
 	<SecuredRoute
-		key={USER_GROUP_PATH.USER_GROUP_DETAIL}
-		component={UserGroupDetail}
-		exact
-		path={USER_GROUP_PATH.USER_GROUP_DETAIL}
-	/>,
-	<SecuredRoute
 		key={USER_GROUP_PATH.USER_GROUP_CREATE}
 		component={UserGroupEdit}
 		exact
 		path={USER_GROUP_PATH.USER_GROUP_CREATE}
+	/>,
+	<SecuredRoute
+		key={USER_GROUP_PATH.USER_GROUP_DETAIL}
+		component={UserGroupDetail}
+		exact
+		path={USER_GROUP_PATH.USER_GROUP_DETAIL}
 	/>,
 	<SecuredRoute
 		key={USER_GROUP_PATH.USER_GROUP_EDIT}

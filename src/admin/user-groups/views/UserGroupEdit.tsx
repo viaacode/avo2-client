@@ -26,7 +26,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
-import { CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
 import { dataService, ToastService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -42,6 +42,7 @@ import {
 	UserGroupEditFormErrorState,
 	UserGroupOverviewTableCols,
 } from '../user-group.types';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 
 interface UserGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -55,7 +56,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	const [formErrors, setFormErrors] = useState<UserGroupEditFormErrorState>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [allPermissionGroups, setAllPermissionGroups] = useState<PermissionGroup[]>([]);
-	const [selectedPermissionId, setSelectedPermissionId] = useState<string | null>(null);
+	const [selectedPermissionGroupId, setSelectedPermissionGroupId] = useState<string | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
 		'label'
@@ -83,7 +84,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					variables: { id: match.params.id },
 				});
 
-				const userGroupObj = get(response, 'data.users_user_groups[0]');
+				const userGroupObj = get(response, 'data.users_groups[0]');
 
 				if (!userGroupObj) {
 					setLoadingInfo({
@@ -95,9 +96,9 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				}
 
 				const permissionGroups: Permission[] = flatten(
-					get(userGroupObj, 'user_group_user_permissions', []).map(
+					get(userGroupObj, 'group_user_permission_groups', []).map(
 						(userGroupItem: any) => {
-							return get(userGroupItem, 'permissionGroups', []);
+							return get(userGroupItem, 'permission_group', []);
 						}
 					)
 				);
@@ -202,16 +203,20 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 		});
 	};
 
-	const handleAddPermission = () => {
+	const handleAddPermissionGroup = () => {
 		if (!userGroup) {
 			return;
 		}
-		if ((userGroup.permissionGroups || []).find(pg => String(pg.id) === selectedPermissionId)) {
+		if (
+			(userGroup.permissionGroups || []).find(
+				pg => String(pg.id) === selectedPermissionGroupId
+			)
+		) {
 			ToastService.danger(t('Deze permissie zit reeds in de groep'), false);
 			return;
 		}
 		const selectedPermission = allPermissionGroups.find(
-			pg => String(pg.id) === selectedPermissionId
+			pg => String(pg.id) === selectedPermissionGroupId
 		);
 		if (!selectedPermission) {
 			ToastService.danger(t('De geselecteerde permissie kon niet worden gevonden'), false);
@@ -221,7 +226,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			...userGroup,
 			permissionGroups: [...userGroup.permissionGroups, selectedPermission],
 		});
-		setSelectedPermissionId(null);
+		setSelectedPermissionGroupId(null);
 	};
 
 	const handleSave = async () => {
@@ -273,8 +278,13 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				userGroupId
 			);
 
-			ToastService.success(t('De Gebruikersgroep is opgeslagen'));
-			setIsSaving(false);
+			ToastService.success(t('De Gebruikersgroep is opgeslagen'), false);
+			if (isCreatePage) {
+				redirectToClientPage(
+					buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, { id: userGroupId }),
+					history
+				);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save user group', err, {
@@ -284,6 +294,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			);
 			ToastService.danger(t('Het opslaan van de gebruikersgroep is mislukt'), false);
 		}
+		setIsSaving(false);
 	};
 
 	const getAllPermissionGroups = () => {
@@ -369,24 +380,30 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 
 				<Panel>
 					<PanelHeader>
-						<BlockHeading type="h3">Permissies in deze groep:</BlockHeading>
+						<BlockHeading type="h3">
+							Permissie groepen gelinked aan deze gebruikersgroep:
+						</BlockHeading>
 					</PanelHeader>
 					<PanelBody>
 						<Spacer margin="bottom-large">
 							<Form type="inline">
-								<FormGroup label={t('Voeg een permissie toe aan deze groep: ')}>
+								<FormGroup
+									label={t(
+										'Voeg een permissie groep toe aan deze gebruikersgroep: '
+									)}
+								>
 									<Select
 										options={getAllPermissionGroups()}
-										placeholder={t('Kies een permissie')}
-										value={selectedPermissionId}
-										onChange={setSelectedPermissionId}
+										placeholder={t('Kies een permissie groep')}
+										value={selectedPermissionGroupId}
+										onChange={setSelectedPermissionGroupId}
 										loading={!allPermissionGroups}
 									/>
 								</FormGroup>
 								<FormGroup>
 									<Button
 										label={t('Toevoegen')}
-										onClick={handleAddPermission}
+										onClick={handleAddPermissionGroup}
 										type="primary"
 									/>
 								</FormGroup>

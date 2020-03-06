@@ -2,7 +2,7 @@ import { get, isNil, orderBy } from 'lodash-es';
 
 import { CustomError } from '../../shared/helpers';
 import { SortOrder } from '../../shared/hooks';
-import { dataService } from '../../shared/services';
+import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import {
 	ADD_PERMISSION_GROUPS_TO_USER_GROUP, DELETE_USER_GROUP,
@@ -76,7 +76,7 @@ export class UserGroupService {
 			const response = await dataService.mutate({
 				mutation: INSERT_USER_GROUP,
 				variables: {
-					permissionGroup: {
+					userGroup: {
 						label: userGroup.label,
 						description: userGroup.description,
 					} as Partial<UserGroup>,
@@ -88,7 +88,7 @@ export class UserGroupService {
 					response,
 				});
 			}
-			const userGroupId = get(response, 'data.insert_users_groups.returning.id');
+			const userGroupId = get(response, 'data.insert_users_groups.returning[0].id');
 			if (isNil(userGroupId)) {
 				throw new CustomError(
 					'Response from database does not contain the id of the inserted user group',
@@ -138,6 +138,7 @@ export class UserGroupService {
 				variables: {
 					userGroupId,
 				},
+				update: ApolloCacheManager.clearUserGroupCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to delete user group from the database', null, {
