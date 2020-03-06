@@ -1,3 +1,4 @@
+import { isArray } from 'lodash-es';
 import { DateRange } from '../../../shared/components/DateRangeDropdown/DateRangeDropdown';
 
 export const DateRangeParam = {
@@ -16,6 +17,28 @@ export const DateRangeParam = {
 				return undefined;
 			}
 			return JSON.parse(value);
+		} catch (err) {
+			return undefined;
+		}
+	},
+};
+
+export const CheckboxListParam = {
+	encode: (value: string[] | undefined) => {
+		if (!value) {
+			return undefined;
+		}
+		return value.join(',');
+	},
+	decode: (value: string | string[]): string[] | undefined => {
+		try {
+			if (!value) {
+				return [];
+			}
+			if (isArray(value)) {
+				return value;
+			}
+			return value.split(',');
 		} catch (err) {
 			return undefined;
 		}

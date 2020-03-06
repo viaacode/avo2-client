@@ -1,20 +1,18 @@
-import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Flex, Form, FormGroup, Spacer, TextInput } from '@viaa/avo2-components';
+import { Button, Flex, Form, FormGroup, Spacer } from '@viaa/avo2-components';
 
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
 import { DateRange } from '../../../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { KeyCode } from '../../../../shared/types';
-
-import { StringParam, useQueryParam, DelimitedArrayParam } from 'use-query-params';
-import { ContentFilterFormState } from '../../content.types';
-import { useContentTypes } from '../../hooks';
-import './ContentFilters.scss';
 import { DateRangeParam } from '../../../shared/helpers/query-string-converters';
 
+import { DelimitedArrayParam, StringParam, useQueryParam } from 'use-query-params';
+import { useContentTypes } from '../../hooks';
+import './ContentFilters.scss';
+
 interface ContentFiltersProps {
-	onFiltersChange: (filters: Partial<ContentFilterFormState>) => void;
+	onFiltersChange: (filters: Partial<any>) => void;
 }
 
 const ContentFilters: FunctionComponent<ContentFiltersProps> = ({ onFiltersChange }) => {

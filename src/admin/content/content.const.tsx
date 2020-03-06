@@ -1,16 +1,15 @@
-import { TableColumn, TabProps } from '@viaa/avo2-components';
+import { TabProps } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 
 import {
 	ContentEditFormState,
-	ContentFilterFormState,
 	ContentPageType,
+	ContentTableState,
 	ContentWidth,
 } from './content.types';
-import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
-import { Avo } from '@viaa/avo2-types';
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
@@ -33,29 +32,16 @@ export const CONTENT_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const CONTENT_OVERVIEW_TABLE_COLS: FilterableColumn<Avo.Content.Content>[] = [
-	{ id: 'title', label: i18n.t('admin/content/content___titel') },
-	{ id: 'content_type', label: i18n.t('admin/content/content___content-type') },
-	{ id: 'author', label: i18n.t('admin/content/content___auteur') },
-	{ id: 'role', label: i18n.t('admin/content/content___rol') },
-	{ id: 'publish_at', label: i18n.t('admin/content/content___publicatiedatum'), sortable: true },
-	{
-		id: 'depublish_at',
-		label: i18n.t('admin/content/content___depublicatiedatum'),
-		sortable: true,
-	},
-	{ id: 'created_at', label: i18n.t('admin/content/content___aangemaakt'), sortable: true },
-	{ id: 'updated_at', label: i18n.t('admin/content/content___laatst-bewerkt'), sortable: true },
-	{ id: 'actions', label: '' },
-];
-
-export const INITIAL_FILTER_FORM = (): ContentFilterFormState => ({
-	contentType: [],
-	createdDate: { gte: '', lte: '' },
-	updatedDate: { gte: '', lte: '' },
-	publishDate: { gte: '', lte: '' },
-	depublishDate: { gte: '', lte: '' },
+export const INITIAL_FILTER_FORM = (): ContentTableState => ({
+	content_type: [],
+	created_at: { gte: '', lte: '' },
+	updated_at: { gte: '', lte: '' },
+	publish_at: { gte: '', lte: '' },
+	depublish_at: { gte: '', lte: '' },
 	query: '',
+	page: 0,
+	sort_column: 'updated_at',
+	sort_order: 'desc' as Avo.Search.OrderDirection,
 });
 
 export const INITIAL_CONTENT_OVERVIEW_STATE = () => ({

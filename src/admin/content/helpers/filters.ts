@@ -1,12 +1,10 @@
 import { cloneDeep, isEmpty, isNil, isPlainObject, pick, pickBy } from 'lodash-es';
 
-import { ContentFilterFormState, DateRangeKeys, RangeFilters } from '../content.types';
+import { ContentTableState, DateRangeKeys, RangeFilters } from '../content.types';
 
-export const cleanFiltersObject = (
-	obj: Partial<ContentFilterFormState>
-): Partial<ContentFilterFormState> =>
-	pickBy(obj, (value: any, key: keyof ContentFilterFormState) => {
-		if (['contentType', 'query'].includes(key)) {
+export const cleanFiltersObject = (obj: Partial<ContentTableState>): Partial<ContentTableState> =>
+	pickBy(obj, (value: any, key: keyof ContentTableState) => {
+		if (['content_type', 'query'].includes(key)) {
 			return !isEmpty(value) && !isNil(value);
 		}
 
@@ -14,7 +12,7 @@ export const cleanFiltersObject = (
 		return isPlainObject(value) && (!!value.gte || !!value.lte);
 	});
 
-export const generateFilterObject = (filterForm: Partial<ContentFilterFormState>) => {
+export const generateFilterObject = (filterForm: Partial<ContentTableState>) => {
 	const query = (filterForm.query || '').trim();
 
 	if (!query) {
@@ -28,7 +26,7 @@ export const generateFilterObject = (filterForm: Partial<ContentFilterFormState>
 	];
 };
 
-export const generateWhereObject = (filterForm: Partial<ContentFilterFormState>) => {
+export const generateWhereObject = (filterForm: Partial<ContentTableState>) => {
 	const cleanFilters = cleanFiltersObject(cloneDeep(filterForm));
 
 	// Return when no where properties are given
@@ -36,13 +34,13 @@ export const generateWhereObject = (filterForm: Partial<ContentFilterFormState>)
 		return {};
 	}
 
-	const { contentType } = filterForm;
+	const { content_type } = filterForm;
 	const queryFilters = generateFilterObject(filterForm);
 	const dateRangeKeys: DateRangeKeys[] = [
-		'createdDate',
-		'updatedDate',
-		'publishDate',
-		'depublishDate',
+		'created_at',
+		'updated_at',
+		'publish_at',
+		'depublish_at',
 	];
 	const dateRanges = pick(cleanFilters, dateRangeKeys);
 
@@ -62,7 +60,7 @@ export const generateWhereObject = (filterForm: Partial<ContentFilterFormState>)
 		: [];
 
 	return {
-		...((contentType || []).length ? { content_type: { _in: contentType } } : null),
+		...((content_type || []).length ? { content_type: { _in: content_type } } : null),
 		...(dateRangeFilters.length ? { _and: dateRangeFilters } : null),
 		...(queryFilters ? { _or: queryFilters } : null),
 	};
