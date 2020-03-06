@@ -32,7 +32,7 @@ interface ContentBlockFieldProps {
 	) => void;
 }
 
-export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
+const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 	block,
 	fieldKey,
 	formGroupIndex,
@@ -124,3 +124,5 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 
 	return <EditorComponent {...defaultProps} {...editorProps} />;
 };
+
+export default React.memo(ContentBlockFieldEditor);
