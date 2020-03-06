@@ -7,10 +7,12 @@ import { renderAdminContentRoutes } from './content/content.routes';
 import { renderAdminDashboardRoutes } from './dashboard/dashboard.routes';
 import { renderAdminMenuRoutes } from './menu/menu.routes';
 import { renderAdminPermissionGroupRoutes } from './permission-groups/permission-group.routes';
+import { renderAdminUserRoutes } from './users/user.routes';
 
 export const renderAdminRoutes = () => (
 	<Switch>
 		{renderAdminDashboardRoutes()}
+		{renderAdminUserRoutes()}
 		{renderAdminMenuRoutes()}
 		{renderAdminContentRoutes()}
 		{renderAdminPermissionGroupRoutes()}
