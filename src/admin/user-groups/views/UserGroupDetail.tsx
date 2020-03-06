@@ -145,7 +145,24 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 				return formatDate(rowData[columnId]);
 
 			case 'actions':
-				return null;
+				return (
+					<ButtonToolbar>
+						{/* TODO add link to permission group edit page */}
+						<Button
+							icon="edit"
+							onClick={() =>
+								ToastService.info(
+									t('settings/components/profile___nog-niet-geimplementeerd'),
+									false
+								)
+							}
+							size="small"
+							ariaLabel={t('Verwijder')}
+							title={t('Verwijder')}
+							type="tertiary"
+						/>
+					</ButtonToolbar>
+				);
 
 			default:
 				return rowData[columnId];

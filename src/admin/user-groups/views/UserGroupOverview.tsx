@@ -129,8 +129,8 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete user group', err, {
-					query: 'DELETE_USER_GROUP',
 					userGroupIdToDelete,
+					query: 'DELETE_USER_GROUP',
 				})
 			);
 			ToastService.danger(t('Het verwijderen van de gebruikersgroep is mislukt'), false);

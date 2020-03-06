@@ -11,17 +11,17 @@ export const USER_GROUP_PATH = {
 };
 
 export const USER_GROUP_OVERVIEW_TABLE_COLS: TableColumn[] = [
-	{ id: 'label', label: i18n.t('Label') },
-	{ id: 'description', label: i18n.t('Beschrijving') },
-	{ id: 'created_at', label: i18n.t('Aangemaakt op') },
-	{ id: 'updated_at', label: i18n.t('Aangepast op') },
+	{ id: 'label', label: i18n.t('Label'), sortable: true },
+	{ id: 'description', label: i18n.t('Beschrijving'), sortable: true },
+	{ id: 'created_at', label: i18n.t('Aangemaakt op'), sortable: true },
+	{ id: 'updated_at', label: i18n.t('Aangepast op'), sortable: true },
 	{ id: 'actions', label: '' },
 ];
 
 export const PERMISSION_GROUP_TABLE_COLS: TableColumn[] = [
-	{ id: 'label', label: i18n.t('Label') },
-	{ id: 'description', label: i18n.t('Beschrijving') },
-	{ id: 'created_at', label: i18n.t('Aangemaakt op') },
-	{ id: 'updated_at', label: i18n.t('Aangepast op') },
+	{ id: 'label', label: i18n.t('Label'), sortable: true },
+	{ id: 'description', label: i18n.t('Beschrijving'), sortable: true },
+	{ id: 'created_at', label: i18n.t('Aangemaakt op'), sortable: true },
+	{ id: 'updated_at', label: i18n.t('Aangepast op'), sortable: true },
 	{ id: 'actions', label: '' },
 ];

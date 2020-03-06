@@ -88,8 +88,8 @@ export class UserGroupService {
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to insert user group in the database', null, {
-					errors: response.errors,
 					response,
+					errors: response.errors,
 				});
 			}
 			const userGroupId = get(response, 'data.insert_users_groups.returning[0].id');
@@ -124,8 +124,8 @@ export class UserGroupService {
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to update user group in the database', null, {
-					errors: response.errors,
 					response,
+					errors: response.errors,
 				});
 			}
 		} catch (err) {
@@ -147,8 +147,8 @@ export class UserGroupService {
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to delete user group from the database', null, {
-					errors: response.errors,
 					response,
+					errors: response.errors,
 				});
 			}
 		} catch (err) {
