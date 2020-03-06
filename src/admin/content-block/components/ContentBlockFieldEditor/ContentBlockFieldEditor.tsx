@@ -58,7 +58,7 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 				onSelect: (picked: PickerItem) => {
 					handleChange(type, fieldKey, { value: picked }, stateIndex);
 				},
-				initialValues: get(state as any, 'buttonAction'),
+				initialValues: get(state as any, fieldKey),
 			};
 			break;
 		case ContentBlockEditor.IconPicker:
