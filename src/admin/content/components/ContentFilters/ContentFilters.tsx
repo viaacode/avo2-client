@@ -7,47 +7,11 @@ import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/com
 import { DateRange } from '../../../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { KeyCode } from '../../../../shared/types';
 
-import { StringParam, useQueryParam } from 'use-query-params';
+import { StringParam, useQueryParam, DelimitedArrayParam } from 'use-query-params';
 import { ContentFilterFormState } from '../../content.types';
 import { useContentTypes } from '../../hooks';
 import './ContentFilters.scss';
-
-const stringArrayParam = {
-	encode: (value: string[] | undefined) => {
-		if (!value) {
-			return undefined;
-		}
-		return value.join(',');
-	},
-	decode: (value: string | string[]): string[] => {
-		if (Array.isArray(value)) {
-			return value;
-		}
-		return value.split(',');
-	},
-};
-
-const DateRangeParam = {
-	encode: (value: DateRange | undefined) => {
-		if (!value) {
-			return undefined;
-		}
-		return JSON.stringify(value);
-	},
-	decode: (value: string | string[]): DateRange | undefined => {
-		try {
-			if (Array.isArray(value)) {
-				if (value.length) {
-					return JSON.parse(value[0]);
-				}
-				return undefined;
-			}
-			return JSON.parse(value);
-		} catch (err) {
-			return undefined;
-		}
-	},
-};
+import { DateRangeParam } from '../../../shared/helpers/query-string-converters';
 
 interface ContentFiltersProps {
 	onFiltersChange: (filters: Partial<ContentFilterFormState>) => void;
@@ -60,7 +24,7 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({ onFiltersChang
 
 	const [contentType, setContentType] = useQueryParam<string[] | undefined>(
 		'contentType',
-		stringArrayParam
+		DelimitedArrayParam
 	);
 	const [createdDate, setCreatedDate] = useQueryParam<DateRange | undefined>(
 		'createdDate',
@@ -112,12 +76,6 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({ onFiltersChang
 		setQuery('');
 	};
 
-	const handleKeyUp = (e: KeyboardEvent) => {
-		if (e.keyCode === KeyCode.Enter) {
-			setQuery(searchTerm);
-		}
-	};
-
 	const hasFilters = () => {
 		return contentType || createdDate || updatedDate || publishDate || depublishDate || query;
 	};
@@ -127,26 +85,6 @@ const ContentFilters: FunctionComponent<ContentFiltersProps> = ({ onFiltersChang
 		<Spacer className="c-content-filters" margin="bottom-small">
 			<Spacer margin="bottom">
 				<Form type="inline">
-					<FormGroup className="c-content-filters__search" inlineMode="grow">
-						<TextInput
-							placeholder={t(
-								'admin/content/components/content-filters/content-filters___zoek-op-auteur-titel'
-							)}
-							icon="search"
-							onChange={setSearchTerm}
-							onKeyUp={handleKeyUp}
-							value={searchTerm}
-						/>
-					</FormGroup>
-					<FormGroup inlineMode="shrink">
-						<Button
-							label={t(
-								'admin/content/components/content-filters/content-filters___zoeken'
-							)}
-							type="primary"
-							onClick={() => setQuery(searchTerm)}
-						/>
-					</FormGroup>
 					{hasFilters() && (
 						<FormGroup inlineMode="shrink">
 							<Button

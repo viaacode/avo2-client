@@ -9,6 +9,8 @@ import {
 	ContentPageType,
 	ContentWidth,
 } from './content.types';
+import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { Avo } from '@viaa/avo2-types';
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
@@ -31,7 +33,7 @@ export const CONTENT_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
+export const CONTENT_OVERVIEW_TABLE_COLS: FilterableColumn<Avo.Content.Content>[] = [
 	{ id: 'title', label: i18n.t('admin/content/content___titel') },
 	{ id: 'content_type', label: i18n.t('admin/content/content___content-type') },
 	{ id: 'author', label: i18n.t('admin/content/content___auteur') },

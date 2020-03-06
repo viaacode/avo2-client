@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -35,6 +35,7 @@ import { DELETE_CONTENT, GET_CONTENT_PAGES } from '../content.gql';
 import { ContentFilterFormState, ContentOverviewTableCols } from '../content.types';
 import { generateWhereObject } from '../helpers/filters';
 
+import { FilterTable } from '../../shared/components/FilterTable/FilterTable';
 import './ContentOverview.scss';
 
 interface ContentOverviewProps extends DefaultSecureRouteProps {}
@@ -47,10 +48,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [isNotAdminModalOpen, setIsNotAdminModalOpen] = useState<boolean>(false);
 	const [page, setPage] = useState<number>(0);
 	const [filters, setFilters] = useState<Partial<ContentFilterFormState>>({});
-
-	const [sortColumn, sortOrder, handleSortClick] = useTableSort<ContentOverviewTableCols>(
-		'updated_at'
-	);
 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
@@ -105,19 +102,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		}
 	};
 
-	const hasFilters = () => {
-		return (
-			filters.contentType ||
-			filters.createdDate ||
-			filters.updatedDate ||
-			filters.publishDate ||
-			filters.depublishDate ||
-			filters.query
-		);
-	};
-
 	// Render
-	const renderTableCell = (rowData: Avo.Content.Content, columnId: ContentOverviewTableCols) => {
+	const renderTableCell = (rowData: any, columnId: string): ReactNode => {
 		const { id, profile, title } = rowData;
 
 		switch (columnId) {
@@ -178,7 +164,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			setContentList(contentData);
 		}
 
-		return !contentData.length && !hasFilters ? (
+		return !contentData.length && !!filters ? (
 			<ErrorView
 				message={t(
 					'admin/content/views/content-overview___er-is-nog-geen-content-aangemaakt'
@@ -202,36 +188,21 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			</ErrorView>
 		) : (
 			<>
-				<div className="c-table-responsive u-spacer-bottom">
-					<Table
-						className="c-content-overview__table"
-						columns={CONTENT_OVERVIEW_TABLE_COLS}
-						data={contentData}
-						emptyStateMessage={
-							hasFilters
-								? t(
-										'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
-								  )
-								: t(
-										'admin/content/views/content-overview___er-is-nog-geen-content-beschikbaar'
-								  )
-						}
-						onColumnClick={columId =>
-							handleSortClick(columId as ContentOverviewTableCols)
-						}
-						renderCell={(rowData: Avo.Content.Content, columnId: string) =>
-							renderTableCell(rowData, columnId as ContentOverviewTableCols)
-						}
-						rowKey="id"
-						variant="bordered"
-						sortColumn={sortColumn}
-						sortOrder={sortOrder}
-					/>
-				</div>
-				<Pagination
-					pageCount={Math.ceil(countData / ITEMS_PER_PAGE)}
-					onPageChange={setPage}
-					currentPage={page}
+				<FilterTable
+					data={contentData}
+					itemsPerPage={ITEMS_PER_PAGE}
+					columns={CONTENT_OVERVIEW_TABLE_COLS}
+					dataCount={countData}
+					defaultSortColumn={'updated_at' as keyof Avo.Content.Content}
+					noContentMatchingFiltersMessage={t(
+						'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
+					)}
+					noContentMessage={t(
+						'admin/content/views/content-overview___er-is-nog-geen-content-beschikbaar'
+					)}
+					renderTableCell={renderTableCell}
+					className="c-content-overview__table"
+					onFilterChanged={setFilters}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={() => handleDelete(refetchContentItems)}
@@ -269,7 +240,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
-						<ContentFilters onFiltersChange={setFilters} />
 						<DataQueryComponent
 							renderData={renderContentOverview}
 							query={GET_CONTENT_PAGES}
