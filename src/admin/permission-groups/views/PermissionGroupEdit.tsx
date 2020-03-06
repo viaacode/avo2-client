@@ -364,7 +364,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 									<Select
 										options={getAllPermissions()}
 										placeholder={t('Kies een permissie')}
-										value={selectedPermissionId}
+										value={selectedPermissionId || undefined}
 										onChange={setSelectedPermissionId}
 										loading={!allPermissions}
 									/>
