@@ -1,14 +1,20 @@
-import { get } from 'lodash-es';
+import { flatten, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
+	BlockHeading,
+	Box,
 	Button,
 	ButtonToolbar,
 	Container,
 	Header,
 	HeaderButtons,
+	Panel,
+	PanelBody,
+	PanelHeader,
+	Spacer,
 	Table,
 } from '@viaa/avo2-components';
 
@@ -19,14 +25,20 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { useTableSort } from '../../../shared/hooks';
 import { dataService, ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
+import { PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { GET_USER_GROUP_BY_ID } from '../user-group.gql';
 import { UserGroupService } from '../user-group.service';
-import { UserGroup } from '../user-group.types';
-import { USER_GROUP_PATH } from '../user-group.const';
+import {
+	Permission,
+	PermissionGroupTableCols,
+	UserGroup,
+	UserGroupOverviewTableCols,
+} from '../user-group.types';
 
 interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 
@@ -35,6 +47,9 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 	const [userGroup, setUserGroup] = useState<UserGroup | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
+		'label'
+	);
 
 	const [t] = useTranslation();
 
@@ -46,24 +61,32 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 					id: match.params.id,
 				},
 			});
-			const dbUserGroup = get(response, 'data.users_groups[0]');
-			if (!dbUserGroup) {
-				console.error(
-					new CustomError('Response from graphql is empty', null, {
-						response,
-						query: 'GET_USER_GROUP_BY_ID',
-						variables: {
-							id: match.params.id,
-						},
-					})
-				);
+			const userGroupObj = get(response, 'data.users_groups[0]');
+
+			if (!userGroupObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van de gebruikersgroep is mislukt'),
+					icon: 'search',
+					message: t('Deze gebruiker groep werd niet gevonden'),
 				});
 				return;
 			}
-			setUserGroup(dbUserGroup);
+
+			const permissionGroups: Permission[] = flatten(
+				get(userGroupObj, 'group_user_permission_groups', []).map((userGroupItem: any) => {
+					return get(userGroupItem, 'permission_group', []);
+				})
+			);
+
+			const userGroupSimplified = {
+				permissionGroups,
+				id: userGroupObj.id,
+				label: userGroupObj.label,
+				description: userGroupObj.description,
+				created_at: userGroupObj.created_at,
+				updated_at: userGroupObj.updated_at,
+			};
+			setUserGroup(userGroupSimplified);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get user group by id', err, {
@@ -111,6 +134,24 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 		}
 	};
 
+	const renderTableCell = (rowData: Permission, columnId: UserGroupOverviewTableCols) => {
+		switch (columnId) {
+			case 'label':
+			case 'description':
+				return rowData[columnId];
+
+			case 'created_at':
+			case 'updated_at':
+				return formatDate(rowData[columnId]);
+
+			case 'actions':
+				return null;
+
+			default:
+				return rowData[columnId];
+		}
+	};
+
 	const renderUserDetail = () => {
 		if (!userGroup) {
 			console.error(
@@ -123,52 +164,86 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
-					<Table horizontal variant="invisible">
-						<tbody>
-							<tr>
-								<th>
-									<Trans>Label</Trans>
-								</th>
-								<td>{get(userGroup, 'label') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Description</Trans>
-								</th>
-								<td>{get(userGroup, 'description') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Aangemaakt op</Trans>
-								</th>
-								<td>{formatDate(userGroup.created_at)}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Aangepast op</Trans>
-								</th>
-								<td>{formatDate(userGroup.updated_at)}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Bio</Trans>
-								</th>
-								<td>{get(userGroup, 'bio') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Functie</Trans>
-								</th>
-								<td>{get(userGroup, 'function') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Stamboek nummer</Trans>
-								</th>
-								<td>{get(userGroup, 'stamboek') || '-'}</td>
-							</tr>
-						</tbody>
-					</Table>
+					<Spacer margin="bottom-extra-large">
+						<Box backgroundColor="gray">
+							<Table horizontal variant="invisible">
+								<tbody>
+									<tr>
+										<th>
+											<Trans>Label</Trans>
+										</th>
+										<td>{get(userGroup, 'label') || '-'}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans>Description</Trans>
+										</th>
+										<td>{get(userGroup, 'description') || '-'}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans>Aangemaakt op</Trans>
+										</th>
+										<td>{formatDate(userGroup.created_at)}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans>Aangepast op</Trans>
+										</th>
+										<td>{formatDate(userGroup.updated_at)}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans>Bio</Trans>
+										</th>
+										<td>{get(userGroup, 'bio') || '-'}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans>Functie</Trans>
+										</th>
+										<td>{get(userGroup, 'function') || '-'}</td>
+									</tr>
+									<tr>
+										<th>
+											<Trans>Stamboek nummer</Trans>
+										</th>
+										<td>{get(userGroup, 'stamboek') || '-'}</td>
+									</tr>
+								</tbody>
+							</Table>
+						</Box>
+					</Spacer>
+					<Panel>
+						<PanelHeader>
+							<BlockHeading type="h3">
+								Permissie groepen gelinked aan deze gebruikersgroep:
+							</BlockHeading>
+						</PanelHeader>
+						<PanelBody>
+							<Table
+								columns={PERMISSION_GROUP_TABLE_COLS}
+								data={UserGroupService.sortPermissionGroups(
+									userGroup.permissionGroups || [],
+									sortColumn,
+									sortOrder
+								)}
+								emptyStateMessage={t(
+									'Deze gebruikersgroep is nog niet gelinked aan een permissiegroep'
+								)}
+								onColumnClick={columId =>
+									handleSortClick(columId as PermissionGroupTableCols)
+								}
+								renderCell={(rowData: UserGroup, columnId: string) =>
+									renderTableCell(rowData, columnId as PermissionGroupTableCols)
+								}
+								rowKey="id"
+								variant="bordered"
+								sortColumn={sortColumn}
+								sortOrder={sortOrder}
+							/>
+						</PanelBody>
+					</Panel>
 				</Container>
 			</Container>
 		);

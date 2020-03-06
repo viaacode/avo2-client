@@ -5,7 +5,8 @@ import { SortOrder } from '../../shared/hooks';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import {
-	ADD_PERMISSION_GROUPS_TO_USER_GROUP, DELETE_USER_GROUP,
+	ADD_PERMISSION_GROUPS_TO_USER_GROUP,
+	DELETE_USER_GROUP,
 	INSERT_USER_GROUP,
 	REMOVE_PERMISSION_GROUPS_FROM_USER_GROUP,
 	UPDATE_USER_GROUP,
@@ -26,6 +27,7 @@ export class UserGroupService {
 						user_group_id: userGroupId,
 					})),
 				},
+				update: ApolloCacheManager.clearUserGroupCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to add permission groups to user group', null, {
@@ -54,6 +56,7 @@ export class UserGroupService {
 					permissionGroupIds,
 					userGroupId,
 				},
+				update: ApolloCacheManager.clearUserGroupCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to remove permission groups from user group', null, {
@@ -81,6 +84,7 @@ export class UserGroupService {
 						description: userGroup.description,
 					} as Partial<UserGroup>,
 				},
+				update: ApolloCacheManager.clearUserGroupCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to insert user group in the database', null, {
@@ -110,12 +114,13 @@ export class UserGroupService {
 			const response = await dataService.mutate({
 				mutation: UPDATE_USER_GROUP,
 				variables: {
-					permissionGroup: {
+					userGroup: {
 						label: userGroup.label,
 						description: userGroup.description,
 					} as Partial<UserGroup>,
 					userGroupId: userGroup.id,
 				},
+				update: ApolloCacheManager.clearUserGroupCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to update user group in the database', null, {

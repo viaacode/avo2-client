@@ -20,6 +20,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -42,7 +43,6 @@ import {
 	UserGroupEditFormErrorState,
 	UserGroupOverviewTableCols,
 } from '../user-group.types';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 
 interface UserGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -278,13 +278,15 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				userGroupId
 			);
 
-			ToastService.success(t('De Gebruikersgroep is opgeslagen'), false);
 			if (isCreatePage) {
 				redirectToClientPage(
 					buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, { id: userGroupId }),
 					history
 				);
+			} else {
+				await initOrFetchUserGroup();
 			}
+			ToastService.success(t('De Gebruikersgroep is opgeslagen'), false);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save user group', err, {
