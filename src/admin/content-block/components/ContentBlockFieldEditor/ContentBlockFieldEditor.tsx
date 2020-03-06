@@ -1,4 +1,4 @@
-import { get, isArray, isNil } from 'lodash-es';
+import { debounce, get, isArray, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
@@ -110,6 +110,17 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 			editorProps = {
 				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
 				checked: (state as any)[fieldKey],
+			};
+			break;
+		case ContentBlockEditor.TextArea:
+		case ContentBlockEditor.TextInput:
+			editorProps = {
+				onChange: debounce(
+					(value: any) => handleChange(type, fieldKey, value, stateIndex),
+					150,
+					{ leading: true }
+				),
+				value: (state as any)[fieldKey],
 			};
 			break;
 		default:
