@@ -1,7 +1,8 @@
 import { get, isNil, orderBy } from 'lodash-es';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { CustomError } from '../../shared/helpers';
-import { SortOrder } from '../../shared/hooks';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
 import {
@@ -162,7 +163,7 @@ export class UserGroupService {
 	static sortPermissionGroups(
 		permissionGroups: PermissionGroup[],
 		sortColumn: string,
-		sortOrder: SortOrder
+		sortOrder: Avo.Search.OrderDirection
 	): Permission[] {
 		return orderBy(permissionGroups, [sortColumn], [sortOrder]);
 	}
