@@ -267,17 +267,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 };
 
 export default React.memo(ContentBlockForm, (prevProps, nextProps) => {
-	let areEqual = false;
-	// We don't need to check the other props because they are functions
-	// which will never change
-	if (
+	// We don't need to check the other props because they are functions which will never change
+	// The component will rerender when false is returned
+	return (
 		isEqual(prevProps.config, nextProps.config) &&
 		prevProps.isAccordionOpen === nextProps.isAccordionOpen &&
 		prevProps.blockIndex === nextProps.blockIndex &&
 		prevProps.length === nextProps.length
-	) {
-		areEqual = true;
-	}
-	// The component will rerender when false is returned
-	return areEqual;
+	);
 });
