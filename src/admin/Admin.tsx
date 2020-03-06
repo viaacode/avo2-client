@@ -9,8 +9,9 @@ import { Sidebar } from './shared/components';
 const Admin = () => {
 	const NAV_ITEMS = [
 		{ label: 'Gebruikers', location: ADMIN_PATH.USER, key: 'users' },
-		{ label: 'Navigatie', location: ADMIN_PATH.MENU, key: 'navigatie' },
+		{ label: 'Navigatie', location: ADMIN_PATH.MENU, key: 'navigatie' }, // TODO: Translate to english
 		{ label: 'Content', location: ADMIN_PATH.CONTENT, key: 'content' },
+		{ label: 'Vertaling', location: ADMIN_PATH.TRANSLATIONS, key: 'translations' },
 	];
 
 	return (
