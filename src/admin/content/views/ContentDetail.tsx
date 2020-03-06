@@ -206,6 +206,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 									</tr>
 									<tr>
 										<th>
+											<Trans>Publieke pagina:</Trans>
+										</th>
+										<td>
+											{contentItem.is_public
+												? t('admin/content/views/content-detail___ja')
+												: t('admin/content/views/content-detail___nee')}
+										</td>
+									</tr>
+									<tr>
+										<th>
 											<Trans i18nKey="admin/content/views/content-detail___aangemaakt">
 												Aangemaakt:
 											</Trans>

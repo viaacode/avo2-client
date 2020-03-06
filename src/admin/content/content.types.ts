@@ -63,6 +63,7 @@ export interface ContentEditFormState {
 	title: string;
 	description: string;
 	isProtected: boolean;
+	isPublic: boolean;
 	path: string;
 	contentType: string;
 	contentWidth: Avo.Content.ContentWidth;

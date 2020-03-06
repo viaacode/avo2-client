@@ -126,6 +126,15 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</Column>
 							)}
 							<Column size="12">
+								<FormGroup error={formErrors.isPublic}>
+									<Checkbox
+										checked={formState.isPublic}
+										label={t('Publieke pagina')}
+										onChange={value => onChange('isPublic', value)}
+									/>
+								</FormGroup>
+							</Column>
+							<Column size="12">
 								<FormGroup
 									error={formErrors.path}
 									label={t(
