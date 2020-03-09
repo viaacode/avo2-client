@@ -255,25 +255,25 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return (
 					<ButtonToolbar>
 						<Button
-							icon="info"
+							icon="eye"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
 							size="small"
 							title={t('admin/content/views/content-overview___bekijk-content')}
-							type="tertiary"
+							type="secondary"
 						/>
 						<Button
 							icon="edit"
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 							size="small"
 							title={t('admin/content/views/content-overview___pas-content-aan')}
-							type="tertiary"
+							type="secondary"
 						/>
 						<Button
 							icon="delete"
 							onClick={() => openModal(rowData)}
 							size="small"
 							title={t('admin/content/views/content-overview___verwijder-content')}
-							type="tertiary"
+							type="danger-hover"
 						/>
 					</ButtonToolbar>
 				);
