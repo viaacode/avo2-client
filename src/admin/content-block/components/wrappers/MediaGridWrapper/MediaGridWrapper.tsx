@@ -2,11 +2,24 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
+import {
+	BlockMediaList,
+	ButtonAction,
+	ContentPickerType,
+	MediaListItem,
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
-import { formatDate, navigateToContentType } from '../../../../../shared/helpers';
+import { toEnglishContentType } from '../../../../../collection/collection.types';
+import {
+	CustomError,
+	formatDate,
+	formatDurationHoursMinutesSeconds,
+	navigateToContentType,
+} from '../../../../../shared/helpers';
 import { MediaItemResponse } from '../../../../shared/types';
-import { fetchCollectionOrItem } from '../../../services/block-data.service';
+
+import { fetchCollectionOrItem, fetchSearchQuery } from '../../../services/block-data.service';
 
 interface MediaGridWrapperProps extends RouteComponentProps {
 	ctaTitle?: string;
@@ -14,6 +27,8 @@ interface MediaGridWrapperProps extends RouteComponentProps {
 	ctaButtonAction?: ButtonAction;
 	ctaButtonLabel?: string;
 	elements: { mediaItem: ButtonAction }[];
+	searchQuery?: ButtonAction;
+	searchQueryLimit?: number;
 }
 
 const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
@@ -23,11 +38,14 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	ctaButtonLabel,
 	elements = [],
 	history,
+	searchQuery,
+	searchQueryLimit = 8,
 }) => {
 	// Hooks
 	const [gridData, setGridData] = useState<MediaListItem[]>([]);
+	const [queryData, setQueryData] = useState<MediaListItem[]>([]);
 
-	const mapResponseData = useCallback(
+	const mapCollectionOrItemData = useCallback(
 		(action: ButtonAction, { tileData, count = 0 }: MediaItemResponse): MediaListItem => {
 			const isItem = action.type === 'ITEM';
 			const itemDuration = get(tileData, 'duration', 0);
@@ -56,6 +74,74 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 		[history]
 	);
 
+	const mapSearchData = useCallback(
+		(searchData: Avo.Search.Search): MediaListItem[] => {
+			if (searchData.results.length > 0) {
+				return searchData.results.map(searchItem => {
+					const category = toEnglishContentType(searchItem.administrative_type);
+					const isItem = ['audio', 'video'].includes(category);
+					const duration = formatDurationHoursMinutesSeconds(
+						get(searchItem, 'duration_seconds', 0)
+					);
+
+					return {
+						category,
+						metadata: [
+							{ icon: 'eye', label: String(searchItem.views_count) },
+							{ label: formatDate(searchItem.dcterms_issued) },
+						],
+						navigate: () =>
+							navigateToContentType(
+								{
+									// TODO: add AUDIO and VIDEO to ButtonAction type
+									type: isItem
+										? 'ITEM'
+										: (category.toUpperCase() as ContentPickerType),
+									value: searchItem.external_id,
+								},
+								history
+							),
+						title: searchItem.dc_title,
+						thumbnail: {
+							label: searchItem.administrative_type,
+							meta: isItem ? duration : '', // Amount of items in collection not present in search
+							src: searchItem.thumbnail_path || '',
+						},
+					};
+				});
+			}
+
+			return [];
+		},
+		[history]
+	);
+
+	useEffect(() => {
+		const fetchQueryAndMapData = async () => {
+			if (searchQuery && searchQuery.value) {
+				let valueObj;
+
+				// We have to wrap JSON.parse in this try..catch because if the value is cleared
+				// it returns an invalid JSON string which causes a crash
+				try {
+					valueObj = JSON.parse(searchQuery.value as string);
+				} catch (err) {
+					console.error(new CustomError('Failed to parse search query value', err));
+				}
+
+				const filters: Partial<Avo.Search.Filters> | undefined = get(valueObj, 'filters');
+				const rawData = await fetchSearchQuery(searchQueryLimit, filters);
+
+				if (rawData) {
+					const cleanData = mapSearchData(rawData);
+					setQueryData(cleanData);
+				}
+			}
+		};
+
+		fetchQueryAndMapData();
+	}, [mapSearchData, searchQuery, searchQueryLimit]);
+
 	useEffect(() => {
 		const mediaItems = elements.map(({ mediaItem }) => ({ ...mediaItem }));
 
@@ -69,7 +155,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 					const rawData = await fetchCollectionOrItem(mediaItem);
 
 					if (rawData) {
-						const cleanData = mapResponseData(mediaItem, rawData);
+						const cleanData = mapCollectionOrItemData(mediaItem, rawData);
 
 						newGridData.push(cleanData);
 					}
@@ -82,7 +168,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 		};
 
 		fetchAndMapData();
-	}, [elements, mapResponseData]);
+	}, [elements, mapCollectionOrItemData]);
 
 	// Render
 	return (
@@ -95,7 +181,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 					: () => {}
 			}
 			ctaTitle={ctaTitle}
-			elements={gridData}
+			elements={queryData.concat(gridData)}
 		/>
 	);
 };
