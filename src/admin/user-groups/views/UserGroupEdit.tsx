@@ -433,7 +433,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							sortOrder={sortOrder}
 						/>
 						<DeleteObjectModal
-							deleteObjectCallback={() => handleDelete()}
+							deleteObjectCallback={handleDelete}
 							isOpen={isConfirmModalOpen}
 							onClose={() => setIsConfirmModalOpen(false)}
 						/>

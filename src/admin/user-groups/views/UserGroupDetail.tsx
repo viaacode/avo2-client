@@ -296,7 +296,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 			<AdminLayoutBody>
 				{renderUserDetail()}
 				<DeleteObjectModal
-					deleteObjectCallback={() => handleDelete()}
+					deleteObjectCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 				/>
