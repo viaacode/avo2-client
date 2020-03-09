@@ -325,7 +325,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
 					)}
 					renderNoResults={renderNoResults}
-					renderTableCell={renderTableCell}
+					renderCell={renderTableCell}
 					className="c-content-overview__table"
 					onTableStateChanged={setTableState}
 				/>

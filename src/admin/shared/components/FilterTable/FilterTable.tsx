@@ -67,7 +67,7 @@ interface FilterTableProps extends RouteComponentProps {
 	searchTextPlaceholder: string;
 	noContentMatchingFiltersMessage: string;
 	renderNoResults: () => ReactElement;
-	renderTableCell: (
+	renderCell: (
 		rowData: any,
 		columnId: string,
 		rowIndex: number,
@@ -85,7 +85,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	searchTextPlaceholder,
 	noContentMatchingFiltersMessage,
 	renderNoResults,
-	renderTableCell,
+	renderCell,
 	className,
 	onTableStateChanged,
 }) => {
@@ -237,7 +237,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						onColumnClick={columnId => {
 							handleSortOrderChanged(columnId);
 						}}
-						renderCell={renderTableCell}
+						renderCell={renderCell}
 						rowKey="id"
 						variant="bordered"
 						sortColumn={tableState.sort_column}

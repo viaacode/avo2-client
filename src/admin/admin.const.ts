@@ -1,10 +1,10 @@
+import i18n from '../shared/translations/i18n';
+import { NavigationItemInfo } from '../shared/types';
 import { CONTENT_PATH } from './content/content.const';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { MENU_PATH } from './menu/menu.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
 import { USER_PATH } from './users/user.const';
-import { NavigationItemInfo } from '../shared/types';
-import i18n from '../shared/translations/i18n';
 
 export const ADMIN_PATH = Object.freeze({
 	...DASHBOARD_PATH,
@@ -19,6 +19,12 @@ export const NAV_ITEMS: NavigationItemInfo[] = [
 		label: i18n.t('Gebruikers'),
 		location: ADMIN_PATH.USER,
 		key: 'users',
+		exact: false,
+	},
+	{
+		label: 'Gebruikersgroepen',
+		location: ADMIN_PATH.USER_GROUP_OVERVIEW,
+		key: 'userGroups',
 		exact: false,
 	},
 	{
