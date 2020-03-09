@@ -3,8 +3,7 @@ import React, { ReactNode } from 'react';
 import { SecuredRoute } from '../../authentication/components';
 
 import { PERMISSION_GROUP_PATH } from './permission-group.const';
-import { PermissionGroupDetail, PermissionGroupOverview } from './views';
-import PermissionGroupEdit from './views/PermissionGroupEdit';
+import { PermissionGroupDetail, PermissionGroupEdit, PermissionGroupOverview } from './views';
 
 export const renderAdminPermissionGroupRoutes = (): ReactNode[] => [
 	<SecuredRoute

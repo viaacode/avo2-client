@@ -104,20 +104,6 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 		);
 	};
 
-	const renderTableCell = (rowData: Permission, columnId: PermissionsTableCols) => {
-		switch (columnId) {
-			case 'label':
-			case 'description':
-				return rowData[columnId];
-
-			case 'actions':
-				return null;
-
-			default:
-				return rowData[columnId];
-		}
-	};
-
 	const renderEditPage = () => {
 		if (!permissionGroup) {
 			return;
@@ -154,9 +140,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 							onColumnClick={columId =>
 								handleSortClick(columId as PermissionsTableCols)
 							}
-							renderCell={(rowData: PermissionGroup, columnId: string) =>
-								renderTableCell(rowData, columnId as PermissionsTableCols)
-							}
+							renderCell={(rowData: any, columnId: string) => rowData[columnId]}
 							rowKey="id"
 							variant="bordered"
 							sortColumn={sortColumn}

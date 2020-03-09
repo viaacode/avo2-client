@@ -1,4 +1,4 @@
-import { flatten, get, without } from 'lodash-es';
+import { get, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,11 +24,10 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/compon
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { dataService, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { PERMISSION_GROUP_PATH, PERMISSIONS_TABLE_COLS } from '../permission-group.const';
-import { GET_ALL_PERMISSIONS, GET_PERMISSION_GROUP_BY_ID } from '../permission-group.gql';
 import { PermissionGroupService } from '../permission-group.service';
 import {
 	Permission,
@@ -74,38 +73,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			setPermissionGroup(permGroup);
 		} else {
 			try {
-				const response = await dataService.query({
-					query: GET_PERMISSION_GROUP_BY_ID,
-					variables: { id: match.params.id },
-				});
-
-				const permissionGroupObj = get(response, 'data.users_permission_groups[0]');
-
-				if (!permissionGroupObj) {
-					setLoadingInfo({
-						state: 'error',
-						icon: 'search',
-						message: t('Deze permissie groep werd niet gevonden'),
-					});
-					return;
-				}
-
-				const permissions: Permission[] = flatten(
-					get(permissionGroupObj, 'permission_group_user_permissions', []).map(
-						(permissionGroupItem: any) => {
-							return get(permissionGroupItem, 'permissions', []);
-						}
-					)
+				const permGroup = await PermissionGroupService.fetchPermissionGroup(
+					match.params.id
 				);
-
-				const permGroup = {
-					permissions,
-					id: permissionGroupObj.id,
-					label: permissionGroupObj.label,
-					description: permissionGroupObj.description,
-					created_at: permissionGroupObj.created_at,
-					updated_at: permissionGroupObj.updated_at,
-				};
 				setInitialPermissionGroup(permGroup);
 				setPermissionGroup(permGroup);
 			} catch (err) {
@@ -121,27 +91,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				});
 			}
 		}
-	}, [setLoadingInfo, setPermissionGroup, t]);
+	}, [isCreatePage, match.params.id, setLoadingInfo, setPermissionGroup, t]);
 
 	const fetchAllPermissions = useCallback(async () => {
 		try {
-			const response = await dataService.query({
-				query: GET_ALL_PERMISSIONS,
-			});
-
-			const permissions: Permission[] | undefined = get(response, 'data.users_permissions');
-
-			if (!permissions) {
-				throw new CustomError('Response does not contain permissions', null, { response });
-			}
-
-			setAllPermissions(permissions);
+			setAllPermissions(await PermissionGroupService.fetchAllPermissions());
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to get all permissions from database', err, {
-					query: 'GET_ALL_PERMISSIONS',
-				})
-			);
 			ToastService.danger(t('Het ophalen van alle permissies is mislukt'), false);
 		}
 	}, [setAllPermissions, t]);
@@ -256,7 +211,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				addedPermissions.map(p => p.id),
 				permissionGroupId
 			);
-			await PermissionGroupService.removePermissionsToGroup(
+			await PermissionGroupService.removePermissionsFromPermissionGroup(
 				removedPermissions.map(p => p.id),
 				permissionGroupId
 			);
@@ -293,10 +248,6 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 
 	const renderTableCell = (rowData: Permission, columnId: PermissionsTableCols) => {
 		switch (columnId) {
-			case 'label':
-			case 'description':
-				return rowData[columnId];
-
 			case 'actions':
 				return (
 					<ButtonToolbar>

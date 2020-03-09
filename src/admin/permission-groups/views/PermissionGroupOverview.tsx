@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/react-hooks';
-import { get, isNil } from 'lodash-es';
+import { isNil } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	KeyboardEvent,
@@ -31,9 +30,8 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { formatDate, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import { KeyCode } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
@@ -42,7 +40,7 @@ import {
 	PERMISSION_GROUP_OVERVIEW_TABLE_COLS,
 	PERMISSION_GROUP_PATH,
 } from '../permission-group.const';
-import { DELETE_PERMISSION_GROUP, GET_PERMISSION_GROUPS } from '../permission-group.gql';
+import { PermissionGroupService } from '../permission-group.service';
 import { PermissionGroup, PermissionGroupOverviewTableCols } from '../permission-group.types';
 import './PermissionGroupOverview.scss';
 
@@ -52,9 +50,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 	// Hooks
 	const [permissionGroups, setPermissionGroups] = useState<PermissionGroup[] | null>(null);
 	const [permissionGroupCount, setPermissionGroupCount] = useState<number>(0);
-	const [permissionGroupToDelete, setPermissionGroupToDelete] = useState<PermissionGroup | null>(
-		null
-	);
+	const [permissionGroupIdToDelete, setPermissionGroupIdToDelete] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [queryText, setQueryText] = useState<string>('');
 	const [searchTerm, setSearchTerm] = useState<string>('');
@@ -65,45 +61,27 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		'updated_at'
 	);
 
-	const [triggerPermissionGroupDelete] = useMutation(DELETE_PERMISSION_GROUP);
 	const [t] = useTranslation();
 
 	const fetchPermissionGroups = useCallback(async () => {
-		let variables: any;
 		try {
-			variables = {
-				offset: ITEMS_PER_PAGE * page,
-				limit: ITEMS_PER_PAGE,
-				orderBy: [{ [sortColumn]: sortOrder }],
-				queryText: `%${queryText}%`,
-			};
-			const response = await dataService.query({
-				variables,
-				query: GET_PERMISSION_GROUPS,
-			});
-			const permissionGroups = get(response, 'data.users_permission_groups');
-			const permissionGroupCount = get(
-				response,
-				'data.users_permission_groups_aggregate.aggregate.count'
+			const [
+				permissionGroupTemp,
+				permissionGroupCountTemp,
+			] = await PermissionGroupService.fetchPermissionGroups(
+				page,
+				sortColumn,
+				sortOrder,
+				queryText
 			);
 
-			if (!permissionGroups) {
-				setLoadingInfo({
-					state: 'error',
-					message: t('Het ophalen van de permissie groepen is mislukt'),
-				});
-				return;
-			}
-
-			setPermissionGroups(permissionGroups);
-			setPermissionGroupCount(permissionGroupCount);
+			setPermissionGroups(permissionGroupTemp);
+			setPermissionGroupCount(permissionGroupCountTemp);
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to fetch permission groups from graphql', err, {
-					variables,
-					query: 'GET_PERMISSION_GROUPS',
-				})
-			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het ophalen van de permissie groepen is mislukt'),
+			});
 		}
 	}, [setPermissionGroups, setLoadingInfo, t, page, queryText, sortColumn, sortOrder]);
 
@@ -119,31 +97,12 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 
 	// Methods
 	const handleDelete = async () => {
-		try {
-			if (!permissionGroupToDelete) {
-				return;
-			}
-
-			await triggerPermissionGroupDelete({
-				variables: { id: permissionGroupToDelete.id },
-				update: ApolloCacheManager.clearPermissionCache,
-			});
-
-			ToastService.success(t('De permissie groep is verwijdert'), false);
-			fetchPermissionGroups();
-		} catch (err) {
-			console.error(
-				new CustomError('permission group delete failed', err, {
-					permissionGroupToDelete,
-				})
-			);
-			ToastService.danger(t('Het verwijderen van de permissie groep is mislukt'), false);
-		}
+		await PermissionGroupService.deletePermissionGroup(permissionGroupIdToDelete);
 	};
 
 	const openModal = (permissionGroup: PermissionGroup): void => {
 		setIsConfirmModalOpen(true);
-		setPermissionGroupToDelete(permissionGroup);
+		setPermissionGroupIdToDelete(permissionGroup.id);
 	};
 
 	const handleKeyUp = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -158,10 +117,6 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		columnId: PermissionGroupOverviewTableCols
 	) => {
 		switch (columnId) {
-			case 'label':
-			case 'description':
-				return rowData[columnId];
-
 			case 'created_at':
 			case 'updated_at':
 				return !!rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
@@ -268,7 +223,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 					<Toolbar>
 						<ToolbarRight>
 							<Form type="inline">
-								<FormGroup className="c-content-filters__search" inlineMode="grow">
+								<FormGroup className="c-permission-group__search" inlineMode="grow">
 									<TextInput
 										placeholder={t('Zoek op naam, beschrijving, ...')}
 										icon="search"
