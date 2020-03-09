@@ -14,11 +14,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError, formatDate, getEnv } from '../../../shared/helpers';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
-import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { dataService, ToastService } from '../../../shared/services';
+import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { GET_USER_BY_ID } from '../user.gql';
 
