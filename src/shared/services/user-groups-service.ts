@@ -19,7 +19,7 @@ export interface UserGroup {
 	label: string;
 }
 
-export async function getAllUserGroups(): Promise<TagInfo[]> {
+export async function fetchAllUserGroups(): Promise<TagInfo[]> {
 	try {
 		const response: GetUserGroupsResponse = await dataService.query({
 			query: GET_USER_GROUPS,

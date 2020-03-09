@@ -35,13 +35,13 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 				return (
 					<ButtonToolbar>
 						<Button
-							icon="list"
+							icon="eye"
 							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
 							size="small"
 							title={t(
 								'admin/menu/views/menu-overview___bekijk-alle-navigatie-items'
 							)}
-							type="tertiary"
+							type="secondary"
 						/>
 						<Button
 							icon="plus"
@@ -50,7 +50,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 							title={t(
 								'admin/menu/views/menu-overview___voeg-een-navigatie-item-toe'
 							)}
-							type="tertiary"
+							type="secondary"
 						/>
 					</ButtonToolbar>
 				);

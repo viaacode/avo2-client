@@ -40,4 +40,6 @@ export const ROUTE_PARTS = Object.freeze({
 	notifications: 'notificaties',
 	error: 'error',
 	klaar: 'klaar',
+	user: 'gebruikers',
+	userGroup: 'gebruikersgroep',
 });
