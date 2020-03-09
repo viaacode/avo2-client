@@ -19,10 +19,6 @@ export const USER_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
 		label: i18n.t('Aangemaakt op'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
-		filterProps: {
-			id: 'created_at',
-			label: i18n.t('Aangemaakt op'),
-		},
 	},
 	{ id: 'actions', label: '' },
 ];

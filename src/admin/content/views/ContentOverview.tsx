@@ -135,8 +135,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			label: i18n.t('admin/content/content___content-type'),
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
-				id: 'content-filter-type',
-				label: t('admin/content/components/content-filters/content-filters___type'),
 				options: contentTypeOptions,
 			},
 		},
@@ -147,44 +145,24 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			label: i18n.t('admin/content/content___aangemaakt'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
-			filterProps: {
-				id: 'content-filter-created-date',
-				label: t('admin/content/components/content-filters/content-filters___aanmaakdatum'),
-			},
 		},
 		{
 			id: 'updated_at',
 			label: i18n.t('admin/content/content___laatst-bewerkt'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
-			filterProps: {
-				id: 'content-filter-updated-date',
-				label: t('admin/content/components/content-filters/content-filters___bewerkdatum'),
-			},
 		},
 		{
 			id: 'publish_at',
 			label: i18n.t('admin/content/content___publicatiedatum'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
-			filterProps: {
-				id: 'content-filter-publish-date',
-				label: t(
-					'admin/content/components/content-filters/content-filters___publiceerdatum'
-				),
-			},
 		},
 		{
 			id: 'depublish_at',
 			label: i18n.t('admin/content/content___depublicatiedatum'),
 			sortable: true,
 			filterType: 'DateRangeDropdown',
-			filterProps: {
-				id: 'content-filter-depublish-date',
-				label: t(
-					'admin/content/components/content-filters/content-filters___depubliceerdatum'
-				),
-			},
 		},
 		{ id: 'actions', label: '' },
 	];

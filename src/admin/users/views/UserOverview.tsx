@@ -49,7 +49,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 				message: t('Het ophalen van de gebruikers is mislukt'),
 			});
 		}
-	}, [setLoadingInfo, setProfiles, setProfileCount, tableState]);
+	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, t]);
 
 	useEffect(() => {
 		fetchUsers();

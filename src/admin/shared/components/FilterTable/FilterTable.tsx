@@ -3,6 +3,7 @@ import {
 	cloneDeep,
 	compact,
 	fromPairs,
+	get,
 	isArray,
 	isEmpty,
 	isNil,
@@ -185,11 +186,13 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								case 'CheckboxDropdownModal':
 									return (
 										<CheckboxDropdownModal
-											{...col.filterProps}
+											{...(col.filterProps || {})}
+											id={col.id}
+											label={col.label}
 											onChange={value =>
 												handleTableStateChanged(value, col.id)
 											}
-											options={(col.filterProps.options || []).map(
+											options={get(col, 'filterProps.options', []).map(
 												(option: CheckboxOption) => ({
 													...option,
 													checked: (
@@ -204,7 +207,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								case 'DateRangeDropdown':
 									return (
 										<DateRangeDropdown
-											{...col.filterProps}
+											{...(col.filterProps || {})}
+											id={col.id}
+											label={col.label}
 											onChange={value =>
 												handleTableStateChanged(value, col.id)
 											}

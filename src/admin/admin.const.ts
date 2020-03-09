@@ -1,5 +1,6 @@
 import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
+import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PATH } from './content/content.const';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { MENU_PATH } from './menu/menu.const';
@@ -12,6 +13,7 @@ export const ADMIN_PATH = Object.freeze({
 	...USER_GROUP_PATH,
 	...MENU_PATH,
 	...CONTENT_PATH,
+	...COLLECTIONS_OR_BUNDLES_PATH,
 });
 
 export const NAV_ITEMS: NavigationItemInfo[] = [
@@ -58,5 +60,17 @@ export const NAV_ITEMS: NavigationItemInfo[] = [
 				exact: true,
 			},
 		],
+	},
+	{
+		label: i18n.t('Collecties'),
+		location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
+		key: 'collections',
+		exact: false,
+	},
+	{
+		label: i18n.t('Bundels'),
+		location: ADMIN_PATH.BUNDLES_OVERVIEW,
+		key: 'bundels',
+		exact: false,
 	},
 ];
