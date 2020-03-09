@@ -2,21 +2,17 @@ import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
+import { Container, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
 
-import {
-	ContentBlockComponentState,
-	ContentBlockState,
-	ContentBlockType,
-} from '../../../shared/types';
+import { ContentBlockComponentState, ContentBlockState } from '../../../shared/types';
 import { DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	COMPONENT_PREVIEW_MAP,
 	IGNORE_BLOCK_LEVEL_PROPS,
-	NAVIGATEABLE_CONTENT_BLOCKS,
+	NAVIGABLE_CONTENT_BLOCKS,
 	REPEATABLE_CONTENT_BLOCKS,
 } from './ContentBlockPreview.const';
 
@@ -52,18 +48,11 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		return includeBlockValue ? { ...acc, [key]: blockValue } : acc;
 	}, {});
 
-	if (NAVIGATEABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
-		componentStateProps.elements.map((element: any) => ({
+	if (NAVIGABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
+		componentStateProps.elements = componentStateProps.elements.map((element: any) => ({
 			...element,
 			navigate: () => navigateToContentType(element.buttonAction, history),
 		}));
-	}
-
-	// TODO: components@1.30.0 - Remove this once ProjectSpotlight block is updated
-	if (blockState.blockType === ContentBlockType.ProjectsSpotlight) {
-		componentStateProps.navigate = (buttonAction: ButtonAction) => {
-			navigateToContentType(buttonAction, history);
-		};
 	}
 
 	const hasDarkBg = DARK_BACKGROUND_COLOR_OPTIONS.includes(blockState.backgroundColor);
