@@ -48,4 +48,16 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.ProjectsSpotlight,
 ];
 
-export const IGNORE_BLOCK_LEVEL_PROPS = ['position', 'elements', 'blockType', 'padding'];
+export const NAVIGABLE_CONTENT_BLOCKS = [
+	ContentBlockType.Buttons,
+	ContentBlockType.CTAs,
+	ContentBlockType.ProjectsSpotlight,
+];
+
+export const IGNORE_BLOCK_LEVEL_PROPS = [
+	'backgroundColor',
+	'blockType',
+	'elements',
+	'padding',
+	'position',
+];

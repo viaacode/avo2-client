@@ -19,6 +19,9 @@ export const RICH_TEXT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig
 	name: i18n.t('admin/content-block/helpers/generators/rich-text___tekst'),
 	type: ContentBlockType.RichText,
 	components: {
+		limits: {
+			max: 1,
+		},
 		state: INITIAL_RICH_TEXT_COMPONENTS_STATE(),
 		fields: {
 			content: TEXT_FIELD(),
