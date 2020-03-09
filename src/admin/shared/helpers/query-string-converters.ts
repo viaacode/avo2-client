@@ -4,7 +4,7 @@ import { DateRange } from '../../../shared/components/DateRangeDropdown/DateRang
 export const DateRangeParam = {
 	encode: (value: DateRange | undefined) => {
 		if (!value) {
-			return undefined;
+			return;
 		}
 		return JSON.stringify(value);
 	},
@@ -14,11 +14,11 @@ export const DateRangeParam = {
 				if (value.length) {
 					return JSON.parse(value[0]);
 				}
-				return undefined;
+				return;
 			}
 			return JSON.parse(value);
 		} catch (err) {
-			return undefined;
+			return;
 		}
 	},
 };
@@ -26,7 +26,7 @@ export const DateRangeParam = {
 export const CheckboxListParam = {
 	encode: (value: string[] | undefined) => {
 		if (!value) {
-			return undefined;
+			return;
 		}
 		return value.join(',');
 	},
@@ -40,7 +40,7 @@ export const CheckboxListParam = {
 			}
 			return value.split(',');
 		} catch (err) {
-			return undefined;
+			return;
 		}
 	},
 };

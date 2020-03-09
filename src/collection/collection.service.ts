@@ -498,7 +498,7 @@ export class CollectionService {
 		}
 		// Collection/bundle loaded successfully
 		if (collectionObj.type_id !== ContentTypeNumber[type]) {
-			return undefined;
+			return;
 		}
 
 		return collectionObj;
@@ -511,7 +511,7 @@ export class CollectionService {
 		const collectionObj = await CollectionService.getCollection(collectionId, type);
 
 		if (!collectionObj) {
-			return undefined;
+			return;
 		}
 
 		// Get items/collections for each collection_fragment that has an external_id set

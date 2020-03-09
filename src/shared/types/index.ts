@@ -13,7 +13,7 @@ export type NavigationItemInfo = {
 	target?: string;
 	component?: ReactElement;
 	icon?: IconName;
-	subLink?: boolean;
+	subLinks?: NavigationItemInfo[];
 };
 
 export type ReactSelectOption<T = any> = {

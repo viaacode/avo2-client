@@ -1,13 +1,14 @@
 import classnames from 'classnames';
-import React, { FunctionComponent } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-
+import * as H from 'history';
+import React, { FunctionComponent, ReactElement } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { NavigationItemInfo } from '../../../../shared/types';
 
+import { flatten } from 'lodash-es';
 import { Trans } from 'react-i18next';
 import './Sidebar.scss';
 
-interface SidebarProps extends RouteComponentProps {
+interface SidebarProps {
 	className?: string;
 	headerLink?: string;
 	light?: boolean;
@@ -20,15 +21,51 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 	headerLink,
 	light = false,
 	navItems,
-	location,
 }) => {
-	const isActiveClass = (item: NavigationItemInfo): boolean => {
+	const isActiveClass = (item: NavigationItemInfo, location: H.Location<any>): boolean => {
 		return (
 			(!!item.location && item.location === location.pathname && !item.exact) ||
 			(!!item.location &&
 				item.location === location.pathname + location.search &&
 				!!item.exact)
 		);
+	};
+
+	const renderNavigationItem = (
+		navItem: NavigationItemInfo,
+		index: number | string,
+		isSubLink: boolean
+	): ReactElement => {
+		return (
+			<li
+				key={`${navItem.location}-${index}`}
+				className={classnames('o-sidebar__nav-item-wrapper', {
+					'o-sidebar__nav-item-sublink': isSubLink || false,
+				})}
+			>
+				<NavLink
+					className={classnames('o-sidebar__nav-item')}
+					activeClassName="o-sidebar__nav-item--active"
+					// @ts-ignore
+					isActive={(match, location) => isActiveClass(navItem, location)}
+					to={navItem.location as string}
+				>
+					{navItem.label}
+				</NavLink>
+			</li>
+		);
+	};
+
+	const renderNavItems = () => {
+		const renderedNavItems: ReactElement[] = flatten(
+			(navItems || []).map((navItem, itemIndex): ReactElement[] => [
+				renderNavigationItem(navItem, itemIndex, false),
+				...(navItem.subLinks || []).map((subLinkItem: NavigationItemInfo, subItemIndex) => {
+					return renderNavigationItem(subLinkItem, `${itemIndex}-${subItemIndex}`, true);
+				}),
+			])
+		);
+		return <>{renderedNavItems}</>;
 	};
 
 	return (
@@ -44,25 +81,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 			)}
 			<div className="o-sidebar__content">
 				{navItems ? (
-					<ul className="o-sidebar__nav c-bordered-list">
-						{navItems.map((navItem, index) => (
-							<li
-								key={`${navItem.location}-${index}`}
-								className={classnames('o-sidebar__nav-item-wrapper', {
-									'o-sidebar__nav-item-sublink': navItem.subLink || false,
-								})}
-							>
-								<Link
-									className={classnames('o-sidebar__nav-item', {
-										'o-sidebar__nav-item--active': isActiveClass(navItem),
-									})}
-									to={navItem.location as string}
-								>
-									{navItem.label}
-								</Link>
-							</li>
-						))}
-					</ul>
+					<ul className="o-sidebar__nav c-bordered-list">{renderNavItems()}</ul>
 				) : (
 					children
 				)}
@@ -71,4 +90,4 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 	);
 };
 
-export default withRouter(Sidebar);
+export default Sidebar;
