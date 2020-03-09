@@ -57,12 +57,16 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { isUuid } from '../../shared/helpers/uuid';
-import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	ApolloCacheManager,
+	BookmarksViewsPlaysService,
+	dataService,
+	ToastService,
+} from '../../shared/services';
 import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service.const';
+} from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import {

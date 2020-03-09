@@ -23,12 +23,11 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import { buildLink, CustomError, formatDate, formatTimestamp, fromNow } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkInfo,
 	EventContentType,
-} from '../../shared/services/bookmarks-views-plays-service.const';
+} from '../../shared/services/bookmarks-views-plays-service';
 
 const ITEMS_PER_PAGE = 5;
 

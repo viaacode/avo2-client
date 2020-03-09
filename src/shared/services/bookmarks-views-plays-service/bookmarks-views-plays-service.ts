@@ -2,9 +2,11 @@ import { compact, get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentTypeNumber } from '../../collection/collection.types';
-import { CustomError, normalizeTimestamp } from '../helpers';
-import i18n from '../translations/i18n';
+import { ContentTypeNumber } from '../../../collection/collection.types';
+import { CustomError, normalizeTimestamp } from '../../helpers';
+import i18n from '../../translations/i18n';
+import { ApolloCacheManager, dataService } from '../data-service';
+import { ToastService } from '../toast-service';
 import {
 	AppCollectionBookmark,
 	AppItemBookmark,
@@ -24,8 +26,6 @@ import {
 	GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
 	GET_MULTIPLE_ITEM_VIEW_COUNTS,
 } from './bookmarks-views-plays-service.gql';
-import { ApolloCacheManager, dataService } from './data-service';
-import { ToastService } from './toast-service';
 
 export class BookmarksViewsPlaysService {
 	public static async action(
