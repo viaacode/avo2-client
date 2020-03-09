@@ -115,9 +115,6 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		if (!profiles) {
 			return null;
 		}
-		if (!profiles.length) {
-			return renderNoResults();
-		}
 		return (
 			<>
 				<FilterTable

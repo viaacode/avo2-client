@@ -16,15 +16,19 @@ export const GET_COLLECTIONS = gql`
 			is_deleted
 			created_at
 			profile {
+				id
 				usersByuserId {
+					id
 					first_name
 					last_name
 					role {
+						id
 						label
 					}
 				}
 			}
 			view_counts {
+				id
 				count
 			}
 			lom_context

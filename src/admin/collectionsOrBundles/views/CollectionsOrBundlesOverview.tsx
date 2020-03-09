@@ -47,14 +47,16 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
 		const andFilters: any[] = [];
 		if (filters.query) {
-			const query = `%filters.query%`;
-			andFilters.push({
-				_or: [
-					{ title: { _eq: query } },
-					{ usersByuserId: { first_name: { _ilike: query } } },
-					{ usersByuserId: { last_name: { _ilike: query } } },
-					{ usersByuserId: { role: { label: { _ilike: query } } } },
-				],
+			filters.query.split(' ').forEach(queryPart => {
+				const query = `%${queryPart}%`;
+				andFilters.push({
+					_or: [
+						{ title: { _ilike: query } },
+						{ profile: { usersByuserId: { first_name: { _ilike: query } } } },
+						{ profile: { usersByuserId: { last_name: { _ilike: query } } } },
+						{ profile: { usersByuserId: { role: { label: { _ilike: query } } } } },
+					],
+				});
 			});
 		}
 		if (!isNil(filters.is_public)) {
@@ -207,9 +209,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const renderCollectionsOrBundlesOverview = () => {
 		if (!collections) {
 			return null;
-		}
-		if (!collections.length) {
-			return renderNoResults();
 		}
 		return (
 			<>

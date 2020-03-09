@@ -13,7 +13,7 @@ export class CollectionsOrBundlesService {
 		page: number,
 		sortColumn: string,
 		sortOrder: Avo.Search.OrderDirection,
-		where: any,
+		where: any
 	): Promise<[Avo.Collection.Collection[], number]> {
 		let variables: any;
 		try {
