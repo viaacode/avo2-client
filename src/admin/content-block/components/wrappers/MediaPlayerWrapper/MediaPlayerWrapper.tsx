@@ -9,6 +9,8 @@ import { ToastService } from '../../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
 import i18n from '../../../../../shared/translations/i18n';
 
+import './BlockMediaPlayerWrapper.scss';
+
 interface MediaPlayerProps {
 	title: string;
 	item: ButtonAction;
@@ -38,7 +40,7 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title, width })
 			className={classnames(
 				'c-video-player t-player-skin--dark',
 				`o-media-block-width-${width}`,
-				'u-text-center'
+				'u-center-m'
 			)}
 		>
 			<BlockFlowPlayer
