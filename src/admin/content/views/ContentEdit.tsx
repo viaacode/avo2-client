@@ -155,7 +155,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			title: contentForm.title,
 			description: contentForm.description || null,
 			is_protected: contentForm.isProtected,
-			is_public: contentForm.isPublic,
 			path: contentForm.path || null,
 			content_type: contentForm.contentType,
 			content_width: contentForm.contentWidth,

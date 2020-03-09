@@ -73,7 +73,6 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 								title: contentItem.title,
 								description: contentItem.description || '',
 								isProtected: contentItem.is_protected,
-								isPublic: contentItem.is_public,
 								path: contentItem.path,
 								contentType: contentItem.content_type,
 								contentWidth: contentItem.content_width || ContentWidth.REGULAR,

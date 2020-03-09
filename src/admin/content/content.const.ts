@@ -61,7 +61,6 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	title: '',
 	description: '',
 	isProtected: false,
-	isPublic: false,
 	path: '',
 	contentType: '',
 	contentWidth: ContentWidth.REGULAR,
