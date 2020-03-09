@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import queryString from 'query-string';
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -12,7 +13,6 @@ import { APP_PATH } from '../../constants';
 import { Profile } from '../../settings/components';
 import { buildLink } from '../../shared/helpers';
 
-import { useTranslation } from 'react-i18next';
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
 import { redirectToClientPage } from '../helpers/redirects';

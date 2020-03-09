@@ -53,7 +53,7 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 		(queryParams.message as string) ||
 		message ||
 		i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden');
-	const errorIcon: IconName = (queryParams.icon || icon || 'search') as IconName;
+	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,
 		...(queryParams.actionButtons
