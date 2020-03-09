@@ -14,7 +14,7 @@ import {
 	ContentBlockStateType,
 } from '../../../shared/types';
 
-import { ContentBlockFieldEditor } from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
+import ContentBlockFieldEditor from '../ContentBlockFieldEditor/ContentBlockFieldEditor';
 
 interface ContentBlockFormGroupProps {
 	config: ContentBlockConfig;
@@ -32,7 +32,7 @@ interface ContentBlockFormGroupProps {
 	formErrors: ContentBlockFormError;
 }
 
-export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
+const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
 	config,
 	blockIndex,
 	formGroup,
@@ -77,3 +77,5 @@ export const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps
 		})}
 	</div>
 );
+
+export default React.memo(ContentBlockFormGroup);
