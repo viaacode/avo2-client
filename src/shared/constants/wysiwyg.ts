@@ -7,6 +7,8 @@
 		Implement Plug-in and only for FULL
 */
 
+import { isEqual } from 'lodash-es';
+
 export const WYSIWYG_OPTIONS_ALIGN = ['justifyLeft', 'justifyCenter', 'justifyRight'];
 
 export const WYSIWYG_OPTIONS_BASE = [
@@ -39,3 +41,7 @@ export const WYSIWYG_OPTIONS_FULL = [
 	['viewHTML'],
 	['removeformat'],
 ];
+
+export const WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN = WYSIWYG_OPTIONS_FULL.filter(
+	array => !isEqual(array, WYSIWYG_OPTIONS_ALIGN)
+);

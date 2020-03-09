@@ -1,6 +1,4 @@
-import { isEqual } from 'lodash-es';
-
-import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
+import { WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
@@ -38,9 +36,7 @@ export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 				label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
 				editorType: ContentBlockEditor.WYSIWYG,
 				editorProps: {
-					btns: WYSIWYG_OPTIONS_FULL.filter(
-						array => !isEqual(array, WYSIWYG_OPTIONS_ALIGN)
-					),
+					btns: WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN,
 				},
 			}),
 			align: ALIGN_FIELD(i18n.t('Uitlijning')),
