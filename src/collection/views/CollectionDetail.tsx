@@ -199,7 +199,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					canCreateCollections: rawPermissions[3],
 					canViewItems: rawPermissions[4],
 				};
-				const collectionObj = await CollectionService.getCollectionWithItems(
+				const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
 					uuid,
 					'collection'
 				);
@@ -371,11 +371,15 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
-	const createAssignment = () => {
+	const createAssignment = (): void => {
 		redirectToClientPage(
 			generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'),
 			history
 		);
+	};
+
+	const onDeleteCollection = (): void => {
+		CollectionService.deleteCollection(history, collectionId, triggerCollectionDelete);
 	};
 
 	// Render functions
@@ -702,13 +706,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={() =>
-						CollectionService.onDeleteCollection(
-							history,
-							collectionId,
-							triggerCollectionDelete
-						)
-					}
+					deleteObjectCallback={onDeleteCollection}
 				/>
 				<ShareThroughEmailModal
 					modalTitle={t('collection/views/collection-detail___deel-deze-collectie')}

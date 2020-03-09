@@ -6,7 +6,7 @@ import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { NEW_FRAGMENT } from '../../collection.const';
-import { CollectionService } from '../../collection.service';
+import { reorderFragments } from '../../collection.helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 
 interface FragmentAddProps {
@@ -36,7 +36,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 
 		newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
 
-		return CollectionService.reorderFragments(newFragments);
+		return reorderFragments(newFragments);
 	};
 
 	const handleAddFragmentClick = () => {

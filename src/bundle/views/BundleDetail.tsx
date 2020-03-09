@@ -152,7 +152,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				canCreateBundles: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const bundleObj = await CollectionService.getCollectionWithItems(bundleId, 'bundle');
+			const bundleObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
+				bundleId,
+				'bundle'
+			);
 
 			if (!bundleObj) {
 				setLoadingInfo({
