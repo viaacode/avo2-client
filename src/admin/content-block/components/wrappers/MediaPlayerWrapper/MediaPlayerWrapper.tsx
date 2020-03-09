@@ -4,12 +4,10 @@ import React, { FC, useState } from 'react';
 
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
 
-import { getEnv } from '../../../../shared/helpers';
-import { ToastService } from '../../../../shared/services';
-import { fetchPlayerTicket } from '../../../../shared/services/player-ticket-service';
-import i18n from '../../../../shared/translations/i18n';
-
-import './BlockMediaPlayerWrapper.scss';
+import { getEnv } from '../../../../../shared/helpers';
+import { ToastService } from '../../../../../shared/services';
+import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
+import i18n from '../../../../../shared/translations/i18n';
 
 interface MediaPlayerProps {
 	title: string;
@@ -17,7 +15,7 @@ interface MediaPlayerProps {
 	width?: 'full-width' | '500px' | '400px';
 }
 
-export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title, width }) => {
+export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title, width }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 
 	const initFlowPlayer = () =>
@@ -39,7 +37,8 @@ export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title, width }) => {
 		<div
 			className={classnames(
 				'c-video-player t-player-skin--dark',
-				`o-media-block-width-${width}`
+				`o-media-block-width-${width}`,
+				'u-text-center'
 			)}
 		>
 			<BlockFlowPlayer
