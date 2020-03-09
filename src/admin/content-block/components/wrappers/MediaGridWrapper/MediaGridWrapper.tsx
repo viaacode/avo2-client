@@ -93,6 +93,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 						navigate: () =>
 							navigateToContentType(
 								{
+									// TODO: add AUDIO and VIDEO to ButtonAction type
 									type: isItem
 										? 'ITEM'
 										: (category.toUpperCase() as ContentPickerType),
