@@ -13,7 +13,7 @@ import {
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
-	GET: 'app_content',
+	GET: 'data.app_content',
 	INSERT: 'insert_app_content',
 	UPDATE: 'update_app_content',
 };

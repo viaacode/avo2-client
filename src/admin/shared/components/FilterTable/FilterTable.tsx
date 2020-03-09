@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import {
 	cloneDeep,
 	compact,
@@ -5,12 +6,20 @@ import {
 	isArray,
 	isEmpty,
 	isNil,
-	isObject,
+	isPlainObject,
 	isString,
 	omitBy,
 } from 'lodash-es';
-import React, { FunctionComponent, KeyboardEvent, ReactNode, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	KeyboardEvent,
+	ReactElement,
+	ReactNode,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
+import { RouteComponentProps, withRouter } from 'react-router';
 import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
 
 import {
@@ -22,7 +31,6 @@ import {
 	Spacer,
 	Table,
 	TextInput,
-	useTableSort,
 } from '@viaa/avo2-components';
 import { TableColumn } from '@viaa/avo2-components/src/components/Table/Table'; // TODO use exported version components repo
 import { Avo } from '@viaa/avo2-types';
@@ -30,7 +38,9 @@ import { Avo } from '@viaa/avo2-types';
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
 import { CheckboxOption } from '../../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { KeyCode } from '../../../../shared/types';
-import { ContentOverviewTableCols } from '../../../content/content.types';
+import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
+
+import './FilterTable.scss';
 
 export interface FilterableTableState {
 	query?: string;
@@ -41,20 +51,22 @@ export interface FilterableTableState {
 
 export interface FilterableColumn extends TableColumn {
 	filterType?: 'CheckboxDropdownModal' | 'DateRangeDropdown';
-	props?: any;
-	queryParamConverter?: QueryParamConfig<any>;
+	filterProps?: any;
 }
 
-interface FilterTableProps {
+const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {
+	CheckboxDropdownModal: CheckboxListParam,
+	DateRangeDropdown: DateRangeParam,
+};
+
+interface FilterTableProps extends RouteComponentProps {
 	data: any[];
 	dataCount: number;
 	itemsPerPage: number;
 	columns: FilterableColumn[];
 	searchTextPlaceholder: string;
 	noContentMatchingFiltersMessage: string;
-	noContentMessage: string;
-	defaultSortColumn: string;
-	defaultSortOrder?: Avo.Search.OrderDirection;
+	renderNoResults: () => ReactElement;
 	renderTableCell: (
 		rowData: any,
 		columnId: string,
@@ -65,64 +77,72 @@ interface FilterTableProps {
 	onTableStateChanged: (tableState: { [id: string]: any }) => void;
 }
 
-export const FilterTable: FunctionComponent<FilterTableProps> = ({
+const FilterTable: FunctionComponent<FilterTableProps> = ({
 	data,
 	dataCount,
 	itemsPerPage,
 	columns,
 	searchTextPlaceholder,
 	noContentMatchingFiltersMessage,
-	noContentMessage,
-	defaultSortColumn,
-	defaultSortOrder = 'desc',
+	renderNoResults,
 	renderTableCell,
 	className,
 	onTableStateChanged,
 }) => {
 	const [t] = useTranslation();
 
-	const [sortColumn, sortOrder, handleSortClick] = useTableSort(
-		defaultSortColumn,
-		defaultSortOrder
-	);
-
 	// Holds the text while the user is typing, once they press the search button or enter it will be copied to the tableState.query
 	// This avoids doing a database query on every key press
 	const [searchTerm, setSearchTerm] = useState<string>('');
 
 	// Build an object containing the filterable columns, so they can be converted to and from the query params
-	const [tableState, setTableState] = useQueryParams({
+	const queryParamConfig: { [queryParamId: string]: QueryParamConfig<any> } = {
 		page: NumberParam,
 		...cleanupObject(
 			fromPairs(
 				compact(
 					columns.map((col): [string, QueryParamConfig<any>] | null => {
-						if (col.filterType && col.queryParamConverter) {
-							return [col.id, col.queryParamConverter];
+						if (
+							col.filterType &&
+							FILTER_TYPE_TO_QUERY_PARAM_CONVERTER[col.filterType]
+						) {
+							return [col.id, FILTER_TYPE_TO_QUERY_PARAM_CONVERTER[col.filterType]];
 						}
 						return null;
 					})
 				)
 			)
 		),
+		query: StringParam,
 		sort_column: StringParam,
 		sort_order: StringParam,
-	});
+	};
+	const [tableState, setTableState] = useQueryParams(queryParamConfig);
+
+	useEffect(() => {
+		onTableStateChanged(tableState);
+		setSearchTerm(tableState.query);
+	}, [onTableStateChanged, tableState]);
 
 	const handleTableStateChanged = (value: any, id: string) => {
 		let newTableState: any = cloneDeep(tableState);
 		newTableState = cleanupObject({
 			...newTableState,
-			page: 0,
 			[id]: value,
 		});
 
-		setTableState(newTableState);
+		setTableState(newTableState, 'replace');
 	};
 
-	useEffect(() => {
-		onTableStateChanged(tableState);
-	}, [tableState, onTableStateChanged]);
+	const handleSortOrderChanged = (columnId: string) => {
+		let newTableState: any = cloneDeep(tableState);
+		newTableState = cleanupObject({
+			...newTableState,
+			[columnId]: tableState.sortOrder === 'asc' ? 'desc' : 'asc',
+		});
+
+		setTableState(newTableState, 'replace');
+	};
 
 	const handleKeyUp = (e: KeyboardEvent) => {
 		if (e.keyCode === KeyCode.Enter) {
@@ -157,7 +177,7 @@ export const FilterTable: FunctionComponent<FilterTableProps> = ({
 				<Spacer margin="bottom">
 					<Flex spaced="regular" wrap>
 						{columns.map(col => {
-							if (!col.filterType || !col.id || !col.queryParamConverter) {
+							if (!col.filterType || !col.id) {
 								return null;
 							}
 
@@ -165,11 +185,11 @@ export const FilterTable: FunctionComponent<FilterTableProps> = ({
 								case 'CheckboxDropdownModal':
 									return (
 										<CheckboxDropdownModal
-											{...col.props}
+											{...col.filterProps}
 											onChange={value =>
 												handleTableStateChanged(value, col.id)
 											}
-											options={(col.props.options || []).map(
+											options={(col.filterProps.options || []).map(
 												(option: CheckboxOption) => ({
 													...option,
 													checked: (
@@ -177,20 +197,19 @@ export const FilterTable: FunctionComponent<FilterTableProps> = ({
 													).includes(option.id),
 												})
 											)}
+											key={`filter-${col.id}`}
 										/>
 									);
 
 								case 'DateRangeDropdown':
 									return (
 										<DateRangeDropdown
-											id="content-filter-created-date"
-											label={t(
-												'admin/content/components/content-filters/content-filters___aanmaakdatum'
-											)}
+											{...col.filterProps}
 											onChange={value =>
 												handleTableStateChanged(value, col.id)
 											}
 											range={(tableState as any)[col.id]}
+											key={`filter-${col.id}`}
 										/>
 									);
 
@@ -205,32 +224,39 @@ export const FilterTable: FunctionComponent<FilterTableProps> = ({
 	};
 
 	return (
-		<>
-			{renderFilters()}
-			<Table
-				className={className}
-				columns={columns}
-				data={data}
-				emptyStateMessage={
-					!!getFilters(tableState) ? noContentMatchingFiltersMessage : noContentMessage
-				}
-				onColumnClick={columnId => handleSortClick(columnId as ContentOverviewTableCols)}
-				renderCell={renderTableCell}
-				rowKey="id"
-				variant="bordered"
-				sortColumn={sortColumn}
-				sortOrder={sortOrder}
-			/>
-			<Spacer margin="top-large">
-				<Pagination
-					pageCount={Math.ceil(dataCount / itemsPerPage)}
-					currentPage={tableState.page}
-					onPageChange={newPage => handleTableStateChanged(newPage, 'page')}
-				/>
-			</Spacer>
-		</>
+		<div className={classnames('c-filter-table', className)}>
+			{!data.length && !getFilters(tableState) ? (
+				renderNoResults()
+			) : (
+				<>
+					{renderFilters()}
+					<Table
+						columns={columns}
+						data={data}
+						emptyStateMessage={noContentMatchingFiltersMessage}
+						onColumnClick={columnId => {
+							handleSortOrderChanged(columnId);
+						}}
+						renderCell={renderTableCell}
+						rowKey="id"
+						variant="bordered"
+						sortColumn={tableState.sort_column}
+						sortOrder={tableState.sort_order}
+					/>
+					<Spacer margin="top-large">
+						<Pagination
+							pageCount={Math.ceil(dataCount / itemsPerPage)}
+							currentPage={tableState.page}
+							onPageChange={newPage => handleTableStateChanged(newPage, 'page')}
+						/>
+					</Spacer>
+				</>
+			)}
+		</div>
 	);
 };
+
+export default withRouter(FilterTable);
 
 export function getFilters(tableState: any | undefined) {
 	if (!tableState) {
@@ -244,9 +270,10 @@ export function getFilters(tableState: any | undefined) {
 export function cleanupObject(obj: any) {
 	return omitBy(
 		obj,
-		value =>
+		(value: any) =>
 			isNil(value) ||
 			(isString(value) && !value.length) ||
-			((isObject(value) || isArray(value)) && isEmpty(value))
+			((isPlainObject(value) || isArray(value)) && isEmpty(value)) ||
+			(isPlainObject(value) && value.gte === '' && value.lte === '')
 	);
 }

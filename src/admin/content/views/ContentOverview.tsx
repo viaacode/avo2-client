@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -9,20 +9,29 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ErrorView } from '../../../error/views';
-import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
-import { CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
-import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
-import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import {
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
+import { CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {
+	buildLink,
+	CustomError,
+	formatDate,
+	getFullName,
+	getRole,
+	navigate,
+} from '../../../shared/helpers';
+import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
+import i18n from '../../../shared/translations/i18n';
+import FilterTable, {
 	FilterableColumn,
-	FilterTable,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
-import { CheckboxListParam } from '../../shared/helpers/query-string-converters';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import i18n from '../../../shared/translations/i18n';
-import { CONTENT_PATH, CONTENT_RESULT_PATH, ITEMS_PER_PAGE } from '../content.const';
+import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { DELETE_CONTENT, GET_CONTENT_PAGES } from '../content.gql';
 import { ContentTableState } from '../content.types';
 import { generateWhereObject } from '../helpers/filters';
@@ -33,20 +42,79 @@ interface ContentOverviewProps extends DefaultSecureRouteProps {}
 
 const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, user }) => {
 	// Hooks
-	const [contentList, setContentList] = useState<Avo.Content.Content[]>([]);
+	const [contentPages, setContentPages] = useState<Avo.Content.Content[] | null>(null);
+	const [contentPageCount, setContentPageCount] = useState<number>(0);
+
 	const [contentToDelete, setContentToDelete] = useState<Avo.Content.Content | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [isNotAdminModalOpen, setIsNotAdminModalOpen] = useState<boolean>(false);
 	const [tableState, setTableState] = useState<Partial<ContentTableState>>({});
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
 	const [contentTypes] = useContentTypes();
 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
-	const handleTableStateUpdate = (newTableState: ContentTableState) => {
-		setTableState(newTableState);
-	};
+	const fetchContentPages = useCallback(async () => {
+		let variables: any;
+		try {
+			variables = {
+				offset: (tableState.page || 0) * ITEMS_PER_PAGE,
+				order: {
+					[tableState.sort_column || 'updated_at']: tableState.sort_order || 'desc',
+				},
+				where: generateWhereObject(getFilters(tableState)),
+			};
+			const response = await dataService.query({
+				query: GET_CONTENT_PAGES,
+				variables,
+			});
+
+			const contentPagesArray: Avo.Content.Content[] | null = get(
+				response,
+				'data.app_content',
+				[]
+			);
+			const contentPageCountTemp: number = get(
+				response,
+				'data.app_content_aggregate.aggregate.count',
+				0
+			);
+
+			if (!contentPagesArray) {
+				throw new CustomError('Response did not contain any content pages', null, {
+					response,
+				});
+			}
+
+			setContentPages(contentPagesArray);
+			setContentPageCount(contentPageCountTemp);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get content pages from graphql', err, {
+					variables,
+					tableState,
+					query: 'GET_CONTENT_PAGES',
+				})
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het ophalen van de content paginas is mislukt'),
+				icon: 'alert-triangle',
+			});
+		}
+	}, [setContentPages, setContentPageCount, setLoadingInfo, tableState, t]);
+
+	useEffect(() => {
+		fetchContentPages();
+	}, [fetchContentPages, tableState]);
+
+	useEffect(() => {
+		if (contentPages) {
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [contentPages]);
 
 	// Computed
 	// TODO: clean up admin check
@@ -56,7 +124,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		(option): CheckboxOption => ({
 			id: option.value,
 			label: option.label,
-			checked: (tableState.content_type || []).includes(option.value),
+			checked: get(tableState, 'content_type', [] as string[]).includes(option.value),
 		})
 	);
 
@@ -65,9 +133,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		{
 			id: 'content_type',
 			label: i18n.t('admin/content/content___content-type'),
-			queryParamConverter: CheckboxListParam,
 			filterType: 'CheckboxDropdownModal',
-			props: {
+			filterProps: {
 				id: 'content-filter-type',
 				label: t('admin/content/components/content-filters/content-filters___type'),
 				options: contentTypeOptions,
@@ -76,52 +143,80 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		{ id: 'author', label: i18n.t('admin/content/content___auteur') },
 		{ id: 'role', label: i18n.t('admin/content/content___rol') },
 		{
+			id: 'created_at',
+			label: i18n.t('admin/content/content___aangemaakt'),
+			sortable: true,
+			filterType: 'DateRangeDropdown',
+			filterProps: {
+				id: 'content-filter-created-date',
+				label: t('admin/content/components/content-filters/content-filters___aanmaakdatum'),
+			},
+		},
+		{
+			id: 'updated_at',
+			label: i18n.t('admin/content/content___laatst-bewerkt'),
+			sortable: true,
+			filterType: 'DateRangeDropdown',
+			filterProps: {
+				id: 'content-filter-updated-date',
+				label: t('admin/content/components/content-filters/content-filters___bewerkdatum'),
+			},
+		},
+		{
 			id: 'publish_at',
 			label: i18n.t('admin/content/content___publicatiedatum'),
 			sortable: true,
+			filterType: 'DateRangeDropdown',
+			filterProps: {
+				id: 'content-filter-publish-date',
+				label: t(
+					'admin/content/components/content-filters/content-filters___publiceerdatum'
+				),
+			},
 		},
 		{
 			id: 'depublish_at',
 			label: i18n.t('admin/content/content___depublicatiedatum'),
 			sortable: true,
-		},
-		{ id: 'created_at', label: i18n.t('admin/content/content___aangemaakt'), sortable: true },
-		{
-			id: 'updated_at',
-			label: i18n.t('admin/content/content___laatst-bewerkt'),
-			sortable: true,
+			filterType: 'DateRangeDropdown',
+			filterProps: {
+				id: 'content-filter-depublish-date',
+				label: t(
+					'admin/content/components/content-filters/content-filters___depubliceerdatum'
+				),
+			},
 		},
 		{ id: 'actions', label: '' },
 	];
 
 	// Methods
-	const handleDelete = (refetchContentItems: () => void) => {
-		if (!contentToDelete) {
-			return;
-		}
+	const handleDelete = async () => {
+		try {
+			if (!contentToDelete) {
+				return;
+			}
 
-		triggerContentDelete({
-			variables: { id: contentToDelete.id },
-			update: ApolloCacheManager.clearContentCache,
-		})
-			.then(() => {
-				refetchContentItems();
-				ToastService.success(
-					t(
-						'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
-					),
-					false
-				);
-			})
-			.catch(err => {
-				console.error(err);
-				ToastService.danger(
-					t(
-						'admin/content/views/content-overview___het-verwijderen-van-het-content-item-is-mislukt'
-					),
-					false
-				);
+			await triggerContentDelete({
+				variables: { id: contentToDelete.id },
+				update: ApolloCacheManager.clearContentCache,
 			});
+			ToastService.success(
+				t(
+					'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
+				),
+				false
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to delete content page', err, { contentToDelete })
+			);
+			ToastService.danger(
+				t(
+					'admin/content/views/content-overview___het-verwijderen-van-het-content-item-is-mislukt'
+				),
+				false
+			);
+		}
 	};
 
 	const openModal = (content: Avo.Content.Content): void => {
@@ -188,21 +283,8 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		}
 	};
 
-	const renderContentOverview = (
-		data: {
-			app_content: Avo.Content.Content[];
-			app_content_aggregate: { aggregate: { count: number } };
-		},
-		refetchContentItems: () => void
-	) => {
-		const contentData: Avo.Content.Content[] = get(data, CONTENT_RESULT_PATH.GET, []);
-		const countData: number = get(data, `${CONTENT_RESULT_PATH.COUNT}.aggregate.count`, 0);
-
-		if (contentData.length) {
-			setContentList(contentData);
-		}
-
-		return !contentData.length && !!getFilters(tableState) ? (
+	const renderNoResults = () => {
+		return (
 			<ErrorView
 				message={t(
 					'admin/content/views/content-overview___er-is-nog-geen-content-aangemaakt'
@@ -224,27 +306,31 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					/>
 				</Spacer>
 			</ErrorView>
-		) : (
+		);
+	};
+
+	const renderContentOverview = () => {
+		if (!contentPages) {
+			return null;
+		}
+		return (
 			<>
 				<FilterTable
-					data={contentData}
+					data={contentPages}
 					itemsPerPage={ITEMS_PER_PAGE}
 					columns={columnInfos}
-					dataCount={countData}
-					defaultSortColumn={'updated_at' as keyof Avo.Content.Content}
+					dataCount={contentPageCount}
 					searchTextPlaceholder={t('Zoeken op auteur, titel')}
 					noContentMatchingFiltersMessage={t(
 						'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
 					)}
-					noContentMessage={t(
-						'admin/content/views/content-overview___er-is-nog-geen-content-beschikbaar'
-					)}
+					renderNoResults={renderNoResults}
 					renderTableCell={renderTableCell}
 					className="c-content-overview__table"
-					onTableStateChanged={handleTableStateUpdate as any}
+					onTableStateChanged={setTableState}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={() => handleDelete(refetchContentItems)}
+					deleteObjectCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={
@@ -279,28 +365,19 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
-						<DataQueryComponent
-							renderData={renderContentOverview}
-							query={GET_CONTENT_PAGES}
-							variables={{
-								offset: (tableState.page || 0) * ITEMS_PER_PAGE,
-								order: {
-									[tableState.sort_column || 'updated_at']:
-										tableState.sort_order || 'desc',
-								},
-								where: generateWhereObject(getFilters(tableState)),
-							}}
+						<LoadingErrorLoadedComponent
+							loadingInfo={loadingInfo}
+							dataObject={contentPages}
+							render={renderContentOverview}
 						/>
 					</Container>
 				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
-				{!!contentList.length ? (
-					<Button
-						label={t('admin/content/views/content-overview___content-toevoegen')}
-						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
-					/>
-				) : null}
+				<Button
+					label={t('admin/content/views/content-overview___content-toevoegen')}
+					onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
+				/>
 			</AdminLayoutActions>
 		</AdminLayout>
 	);
