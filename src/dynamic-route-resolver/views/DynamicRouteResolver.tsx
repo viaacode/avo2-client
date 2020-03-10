@@ -117,7 +117,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		}
 
 		analyseRoute();
-	}, [location.pathname, analyseRoute]);
+	}, [location.pathname, loadingInfo.state, analyseRoute]);
 
 	// Check if current user is logged in
 	useEffect(() => {
