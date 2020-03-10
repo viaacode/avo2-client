@@ -637,46 +637,49 @@ export class CollectionService {
 	 *
 	 * @returns Collection or bundle.
 	 */
-	// TODO: apply queryServer.mutate
+	// TODO: apply queryServer.mutate // TODO: Add try/catch
 	public static async fetchCollectionsOrBundlesWithItemsById(
 		collectionId: string,
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
-		const collectionResponse = await this.fetchCollectionOrBundleById(collectionId, type);
+		// retrieve collection or bundle by id
+		const collectionOrBundle = await this.fetchCollectionOrBundleById(collectionId, type);
 
-		if (!collectionResponse) {
+		// handle empty response
+		if (!collectionOrBundle) {
 			return undefined;
 		}
 
-		// Get items/collections for each collection_fragment that has an external_id set
+		// retrieve items/collections for each collection_fragment that has an external_id set
 		const ids: string[] = compact(
-			(collectionResponse.collection_fragments || []).map((collectionFragment, index) => {
-				// Reset the positions to be a nice list of integers in order
-				// The database ensures that they are sorted by their previous position
+			(collectionOrBundle.collection_fragments || []).map((collectionFragment, index) => {
+				// reset positions to a list of ordered integers, db ensures sorting on previoous positin
 				collectionFragment.position = index;
 
-				// Return the external id if it is set
-				// TODO replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
+				// TODO: replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
+				// return external id if set
 				if (collectionFragment.external_id !== '-1') {
 					return collectionFragment.external_id;
 				}
+
 				return null;
 			})
 		);
 
 		try {
+			// retrieve items of collection or bundle
 			const response = await dataService.query({
 				query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
 				variables: { ids },
 			});
 
-			// Add infos to each fragment under the item_meta property
+			// add meta data to each item
 			const itemInfos: any[] = get(response, 'data.items', []);
 
 			itemInfos.forEach((itemInfo: any) => {
 				const collectionFragment:
 					| Avo.Collection.Fragment
-					| undefined = collectionResponse.collection_fragments.find(
+					| undefined = collectionOrBundle.collection_fragments.find(
 					fragment =>
 						fragment.external_id ===
 						(type === 'collection' ? itemInfo.external_id : itemInfo.id)
@@ -691,11 +694,21 @@ export class CollectionService {
 					}
 				}
 			});
-			return collectionResponse;
+
+			return collectionOrBundle;
 		} catch (err) {
-			throw new CustomError('Failed to get fragments inside the collection', err, {
-				ids,
-			});
+			// handle error
+			const customError = new CustomError(
+				'Failed to get fragments inside the collection',
+				err,
+				{
+					ids,
+				}
+			);
+
+			console.error(customError);
+
+			throw customError;
 		}
 	}
 
