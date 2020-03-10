@@ -8,7 +8,7 @@ import i18n from '../../../shared/translations/i18n';
 import { ReactAction } from '../../../shared/types';
 
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
-import { getContentItemById } from '../content.service';
+import { ContentService } from '../content.service';
 import { ContentEditFormState, ContentWidth } from '../content.types';
 
 type SetContentFormParams = Parameters<
@@ -64,7 +64,7 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 		if (id) {
 			setIsLoading(true);
 
-			getContentItemById(Number(id))
+			ContentService.getContentItemById(Number(id))
 				.then((contentItem: Avo.Content.Content | null) => {
 					if (contentItem) {
 						dispatch({

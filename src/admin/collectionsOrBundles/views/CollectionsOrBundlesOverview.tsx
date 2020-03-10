@@ -1,4 +1,4 @@
-import { get, isNil, truncate } from 'lodash-es';
+import { get, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -12,6 +12,11 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/compon
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
+import {
+	getBooleanFilters,
+	getDateRangeFilters,
+	getQueryFilter,
+} from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
@@ -46,34 +51,17 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	// methods
 	const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
 		const andFilters: any[] = [];
-		if (filters.query) {
-			filters.query.split(' ').forEach(queryPart => {
-				const query = `%${queryPart}%`;
-				andFilters.push({
-					_or: [
-						{ title: { _ilike: query } },
-						{ profile: { usersByuserId: { first_name: { _ilike: query } } } },
-						{ profile: { usersByuserId: { last_name: { _ilike: query } } } },
-						{ profile: { usersByuserId: { role: { label: { _ilike: query } } } } },
-					],
-				});
-			});
-		}
-		if (!isNil(filters.is_public)) {
-			andFilters.push({ is_public: filters.is_public });
-		}
-		const dateFilters: CollectionsOrBundlesOverviewTableCols[] = ['created_at', 'updated_at'];
-		dateFilters.forEach((dateProp: CollectionsOrBundlesOverviewTableCols) => {
-			const rangeValue = (filters as any)[dateProp];
-			if (rangeValue) {
-				andFilters.push({
-					[dateProp]: {
-						...(rangeValue && rangeValue.gte ? { _gte: rangeValue.gte } : null),
-						...(rangeValue && rangeValue.lte ? { _lte: rangeValue.lte } : null),
-					},
-				});
-			}
-		});
+		andFilters.push(
+			...getQueryFilter(filters.query, query => [
+				{ title: { _ilike: query } },
+				{ description: { _ilike: query } },
+				{ profile: { usersByuserId: { first_name: { _ilike: query } } } },
+				{ profile: { usersByuserId: { last_name: { _ilike: query } } } },
+				{ profile: { usersByuserId: { role: { label: { _ilike: query } } } } },
+			])
+		);
+		andFilters.push(...getBooleanFilters(filters, ['is_public']));
+		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
 		andFilters.push({
 			type_id: {
 				_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,

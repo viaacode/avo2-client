@@ -6,6 +6,7 @@ import i18n from '../../shared/translations/i18n';
 
 import {
 	ContentEditFormState,
+	ContentOverviewTableCols,
 	ContentPageType,
 	ContentTableState,
 	ContentWidth,
@@ -19,6 +20,19 @@ export const CONTENT_RESULT_PATH = {
 };
 
 export const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
+
+export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
+	{
+		[columnId in ContentOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
+	}
+> = {
+	author: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { last_name: order } },
+	}),
+	role: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { first_name: order } },
+	}),
+};
 
 export const CONTENT_PATH = {
 	CONTENT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}`,

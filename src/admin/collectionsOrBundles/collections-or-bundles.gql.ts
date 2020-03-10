@@ -12,6 +12,7 @@ export const GET_COLLECTIONS = gql`
 			type_id
 			updated_at
 			title
+			description
 			is_public
 			is_deleted
 			created_at

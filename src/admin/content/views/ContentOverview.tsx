@@ -10,11 +10,11 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { ErrorView } from '../../../error/views';
 import {
+	CheckboxOption,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import { CheckboxOption } from '../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import {
 	buildLink,
 	CustomError,
@@ -23,7 +23,7 @@ import {
 	getRole,
 	navigate,
 } from '../../../shared/helpers';
-import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
+import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import FilterTable, {
 	FilterableColumn,
@@ -31,10 +31,16 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
+import {
+	getBooleanFilters,
+	getDateRangeFilters,
+	getMultiOptionFilters,
+	getQueryFilter,
+} from '../../shared/helpers/filters';
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
-import { DELETE_CONTENT, GET_CONTENT_PAGES } from '../content.gql';
-import { ContentTableState } from '../content.types';
-import { generateWhereObject } from '../helpers/filters';
+import { DELETE_CONTENT } from '../content.gql';
+import { ContentService } from '../content.service';
+import { ContentOverviewTableCols, ContentTableState } from '../content.types';
 import { useContentTypes } from '../hooks';
 import './ContentOverview.scss';
 
@@ -56,44 +62,46 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
+	const generateWhereObject = (filters: Partial<ContentTableState>) => {
+		const andFilters: any[] = [];
+		andFilters.push(
+			...getQueryFilter(filters.query, query => [
+				{ title: { _ilike: `%${query}%` } },
+				{ profile: { usersByuserId: { first_name: { _ilike: `%${query}%` } } } },
+				{ profile: { usersByuserId: { last_name: { _ilike: `%${query}%` } } } },
+				{ profile: { usersByuserId: { role: { _ilike: `%${query}%` } } } },
+			])
+		);
+		andFilters.push(...getBooleanFilters(filters, ['is_public']));
+		andFilters.push(
+			...getDateRangeFilters(filters, [
+				'created_at',
+				'updated_at',
+				'publish_at',
+				'depublish_at',
+			])
+		);
+		andFilters.push(...getMultiOptionFilters(filters, ['content_type']));
+		return { _and: andFilters };
+	};
+
 	const fetchContentPages = useCallback(async () => {
-		let variables: any;
 		try {
-			variables = {
-				offset: (tableState.page || 0) * ITEMS_PER_PAGE,
-				order: {
-					[tableState.sort_column || 'updated_at']: tableState.sort_order || 'desc',
-				},
-				where: generateWhereObject(getFilters(tableState)),
-			};
-			const response = await dataService.query({
-				query: GET_CONTENT_PAGES,
-				variables,
-			});
-
-			const contentPagesArray: Avo.Content.Content[] | null = get(
-				response,
-				'data.app_content',
-				[]
+			const [
+				contentPagesArray,
+				contentPageCountTemp,
+			] = await ContentService.fetchContentPages(
+				tableState.page || 0,
+				(tableState.sort_column || 'updated_at') as ContentOverviewTableCols,
+				tableState.sort_order || 'desc',
+				generateWhereObject(getFilters(tableState))
 			);
-			const contentPageCountTemp: number = get(
-				response,
-				'data.app_content_aggregate.aggregate.count',
-				0
-			);
-
-			if (!contentPagesArray) {
-				throw new CustomError('Response did not contain any content pages', null, {
-					response,
-				});
-			}
 
 			setContentPages(contentPagesArray);
 			setContentPageCount(contentPageCountTemp);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get content pages from graphql', err, {
-					variables,
 					tableState,
 					query: 'GET_CONTENT_PAGES',
 				})
@@ -129,17 +137,18 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	);
 
 	const columnInfos: FilterableColumn[] = [
-		{ id: 'title', label: i18n.t('admin/content/content___titel') },
+		{ id: 'title', label: i18n.t('admin/content/content___titel'), sortable: true },
 		{
 			id: 'content_type',
 			label: i18n.t('admin/content/content___content-type'),
+			sortable: true,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: contentTypeOptions,
 			},
 		},
-		{ id: 'author', label: i18n.t('admin/content/content___auteur') },
-		{ id: 'role', label: i18n.t('admin/content/content___rol') },
+		{ id: 'author', label: i18n.t('admin/content/content___auteur'), sortable: true },
+		{ id: 'role', label: i18n.t('admin/content/content___rol'), sortable: true },
 		{
 			id: 'created_at',
 			label: i18n.t('admin/content/content___aangemaakt'),
@@ -298,7 +307,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					itemsPerPage={ITEMS_PER_PAGE}
 					columns={columnInfos}
 					dataCount={contentPageCount}
-					searchTextPlaceholder={t('Zoeken op auteur, titel')}
+					searchTextPlaceholder={t('Zoeken op auteur, titel, rol')}
 					noContentMatchingFiltersMessage={t(
 						'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
 					)}

@@ -16,6 +16,11 @@ import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
+import {
+	getBooleanFilters,
+	getDateRangeFilters,
+	getQueryFilter,
+} from '../../shared/helpers/filters';
 import { ITEM_OVERVIEW_TABLE_COLS, ITEMS_PATH } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
@@ -36,46 +41,27 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, locatio
 	// methods
 	const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 		const andFilters: any[] = [];
-		if (filters.query) {
-			filters.query.split(' ').forEach(queryPart => {
-				const query = `%${queryPart}%`;
-				andFilters.push({
-					_or: [
-						{ external_id: { _eq: filters.query } },
-						{ title: { _ilike: query } },
-						{ description: { _ilike: query } },
-						{ organisation: { name: { _ilike: query } } },
-						{ series: { _ilike: query } },
-					],
-				});
-			});
-		}
-		if (!isNil(filters.is_published)) {
-			andFilters.push({ is_published: { _eq: filters.is_published ? 'true' : 'false' } });
-		}
-		if (!isNil(filters.is_deleted)) {
-			andFilters.push({ is_deleted: { _eq: filters.is_deleted ? 'true' : 'false' } });
-		}
-		const dateFilters: ItemsOverviewTableCols[] = [
-			'created_at',
-			'updated_at',
-			'issued',
-			'expiry_date',
-			'publish_at',
-			'depublish_at',
-			'published_at',
-		];
-		dateFilters.forEach((dateProp: ItemsOverviewTableCols) => {
-			const rangeValue = (filters as any)[dateProp];
-			if (rangeValue) {
-				andFilters.push({
-					[dateProp]: {
-						...(rangeValue && rangeValue.gte ? { _gte: rangeValue.gte } : null),
-						...(rangeValue && rangeValue.lte ? { _lte: rangeValue.lte } : null),
-					},
-				});
-			}
-		});
+		andFilters.push(
+			...getQueryFilter(filters.query, query => [
+				{ external_id: { _eq: filters.query } },
+				{ title: { _ilike: query } },
+				{ description: { _ilike: query } },
+				{ organisation: { name: { _ilike: query } } },
+				{ series: { _ilike: query } },
+			])
+		);
+		andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
+		andFilters.push(
+			...getDateRangeFilters(filters, [
+				'created_at',
+				'updated_at',
+				'issued',
+				'expiry_date',
+				'publish_at',
+				'depublish_at',
+				'published_at',
+			])
+		);
 		if (filters.type && filters.type.length) {
 			andFilters.push({ type: { label: { _in: filters.type } } });
 		}

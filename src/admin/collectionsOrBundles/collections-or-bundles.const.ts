@@ -48,7 +48,12 @@ export const USER_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
 		filterType: 'DateRangeDropdown',
 		filterProps: {},
 	},
-	{ id: 'is_public', label: i18n.t('Publiek'), sortable: true },
+	{
+		id: 'is_public',
+		label: i18n.t('Publiek'),
+		sortable: true,
+		filterType: 'BooleanCheckboxDropdown',
+	},
 	{ id: 'author_role', label: i18n.t('Auteur rol'), sortable: true },
 	{ id: 'views', label: i18n.t('Bekeken'), sortable: true },
 	// { id: 'bookmarks', label: i18n.t('Gebookmarkt'), sortable: true },
