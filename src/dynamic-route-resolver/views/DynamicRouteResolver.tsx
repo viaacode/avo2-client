@@ -2,13 +2,12 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import { Redirect, withRouter } from 'react-router';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
@@ -35,11 +34,12 @@ interface RouteInfo {
 	data: any;
 }
 
-interface DynamicRouteResolverProps extends DefaultSecureRouteProps {
+interface DynamicRouteResolverProps extends RouteComponentProps {
 	getLoginState: () => Dispatch;
 	loginState: Avo.Auth.LoginResponse | null;
 	loginStateError: boolean;
 	loginStateLoading: boolean;
+	user: Avo.User.User;
 }
 
 const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
@@ -117,11 +117,11 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
-		} else if (routeInfo) {
+		} else if (routeInfo && loginState) {
 			// Prevent seeing the content-page before loginState and routeInfo are both done
 			setLoadingInfo({ state: 'loaded' });
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, routeInfo]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, routeInfo, user]);
 
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
