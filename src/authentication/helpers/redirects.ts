@@ -4,9 +4,9 @@ import queryString from 'query-string';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { SEARCH_PATH } from '../../search/search.const';
+import { APP_PATH } from '../../constants';
 import { getEnv } from '../../shared/helpers';
-import { AUTH_PATH, SERVER_LOGOUT_PAGE } from '../authentication.const';
+import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
 
 /**
@@ -33,7 +33,7 @@ export function redirectToServerSmartschoolLogin(location: Location) {
 }
 
 export function redirectToServerArchiefRegistrationIdp(location: Location, stamboekNumber: string) {
-	const returnToUrl = getBaseUrl(location) + AUTH_PATH.LOGIN_AVO;
+	const returnToUrl = getBaseUrl(location) + APP_PATH.LOGIN.route;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify(
 		{
 			returnToUrl,
@@ -98,6 +98,6 @@ function getBaseUrl(location: Location): string {
 	return window.location.href.split(location.pathname)[0];
 }
 
-function getFromPath(location: Location, defaultPath: string = SEARCH_PATH.SEARCH): string {
+function getFromPath(location: Location, defaultPath: string = APP_PATH.SEARCH.route): string {
 	return get(location, 'state.from.pathname', defaultPath);
 }

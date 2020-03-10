@@ -1,6 +1,8 @@
 import {
 	ButtonType,
 	Checkbox,
+	ContentItemStyle,
+	ContentTabStyle,
 	MultiRange,
 	Select,
 	SelectOption,
@@ -8,11 +10,6 @@ import {
 	TextInput,
 	WYSIWYG,
 } from '@viaa/avo2-components';
-import {
-	// TODO: Export from comp lib.
-	ContentItemStyle,
-	ContentTabStyle,
-} from '@viaa/avo2-components/dist/content-blocks/BlockPageOverview/BlockPageOverview';
 
 import { FileUpload } from '../../shared/components';
 import i18n from '../../shared/translations/i18n';
@@ -26,7 +23,7 @@ import {
 	HeadingTypeOption,
 	WidthOption,
 } from '../shared/types';
-import { AlignSelect, ColorSelect } from './components';
+import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
 	BUTTONS_BLOCK_CONFIG,
@@ -119,7 +116,7 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		value: ContentBlockType.Accordions,
 	},
 	{
-		label: i18n.t('Media tegels'),
+		label: i18n.t('admin/content-block/content-block___media-tegels'),
 		value: ContentBlockType.MediaGrid,
 	},
 	{
@@ -152,15 +149,16 @@ export const EDITOR_TYPES_MAP = {
 	AlignSelect,
 	Checkbox,
 	ColorSelect,
+	ContentPicker,
 	ContentTypeAndLabelsPicker,
+	FileUpload,
+	IconPicker,
+	MultiRange,
+	PaddingSelect,
 	Select,
 	TextArea,
 	TextInput,
 	WYSIWYG,
-	IconPicker,
-	ContentPicker,
-	FileUpload,
-	MultiRange,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
@@ -220,31 +218,31 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 // Options
 export const BACKGROUND_COLOR_OPTIONS: SelectOption<BackgroundColorOption>[] = [
 	{
-		label: i18n.t('Wit'),
+		label: i18n.t('admin/content-block/content-block___wit'),
 		value: BackgroundColorOption.White,
 	},
 	{
-		label: i18n.t('Grijs'),
+		label: i18n.t('admin/content-block/content-block___grijs'),
 		value: BackgroundColorOption.Gray50,
 	},
 	{
-		label: i18n.t('Nachtblauw'),
+		label: i18n.t('admin/content-block/content-block___nachtblauw'),
 		value: BackgroundColorOption.NightBlue,
 	},
 	{
-		label: i18n.t('Zachtblauw'),
+		label: i18n.t('admin/content-block/content-block___zachtblauw'),
 		value: BackgroundColorOption.SoftBlue,
 	},
 	{
-		label: i18n.t('Appelblauwzeegroen'),
+		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
 		value: BackgroundColorOption.Teal,
 	},
 	{
-		label: i18n.t('Appelblauwzeegroen helder'),
+		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
 		value: BackgroundColorOption.TealBright,
 	},
 	{
-		label: i18n.t('Oceaangroen'),
+		label: i18n.t('admin/content-block/content-block___oceaangroen'),
 		value: BackgroundColorOption.OceanGreen,
 	},
 ];

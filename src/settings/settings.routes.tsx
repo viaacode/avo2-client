@@ -1,27 +1,28 @@
 import React, { ReactNode } from 'react';
 
 import { SecuredRoute } from '../authentication/components';
+import { APP_PATH } from '../constants';
+
 import { Profile } from './components';
-import { SETTINGS_PATH } from './settings.const';
 import { Settings } from './views';
 
 export const renderSettingsRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		component={Settings}
 		exact
-		path={SETTINGS_PATH.SETTINGS}
-		key={SETTINGS_PATH.SETTINGS}
+		path={APP_PATH.SETTINGS.route}
+		key={APP_PATH.SETTINGS.route}
 	/>,
 	<SecuredRoute
 		component={Settings}
 		exact
-		path={SETTINGS_PATH.SETTINGS_TAB}
-		key={SETTINGS_PATH.SETTINGS_TAB}
+		path={APP_PATH.SETTINGS_TAB.route}
+		key={APP_PATH.SETTINGS_TAB.route}
 	/>,
 	<SecuredRoute
 		component={Profile}
 		exact
-		path={SETTINGS_PATH.COMPLETE_PROFILE}
-		key={SETTINGS_PATH.COMPLETE_PROFILE}
+		path={APP_PATH.COMPLETE_PROFILE.route}
+		key={APP_PATH.COMPLETE_PROFILE.route}
 	/>,
 ];

@@ -127,14 +127,18 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		<ReactSelect
 			{...REACT_SELECT_DEFAULT_OPTIONS}
 			id="content-picker-type"
-			placeholder={t('Type')}
-			aria-label={t('Selecteer een type')}
+			placeholder={t('admin/shared/components/content-picker/content-picker___type')}
+			aria-label={t(
+				'admin/shared/components/content-picker/content-picker___selecteer-een-type'
+			)}
 			options={typeOptions}
 			onChange={onSelectType}
 			value={currentType}
 			isSearchable={false}
 			isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
-			noOptionsMessage={() => t('Geen types')}
+			noOptionsMessage={() =>
+				t('admin/shared/components/content-picker/content-picker___geen-types')
+			}
 		/>
 	);
 
@@ -157,15 +161,23 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		<AsyncSelect
 			{...REACT_SELECT_DEFAULT_OPTIONS}
 			id="content-picker-item"
-			placeholder={t('Selecteer een item')}
-			aria-label={t('Selecteer een item')}
+			placeholder={t(
+				'admin/shared/components/content-picker/content-picker___selecteer-een-item'
+			)}
+			aria-label={t(
+				'admin/shared/components/content-picker/content-picker___selecteer-een-item'
+			)}
 			loadOptions={inflatePicker}
 			onChange={onSelectItem}
 			value={currentItem}
 			defaultOptions={options as any}
 			isClearable
-			noOptionsMessage={() => t('Geen resultaten')}
-			loadingMessage={() => t('Laden...')}
+			noOptionsMessage={() =>
+				t('admin/shared/components/content-picker/content-picker___geen-resultaten')
+			}
+			loadingMessage={() =>
+				t('admin/shared/components/content-picker/content-picker___laden')
+			}
 		/>
 	);
 

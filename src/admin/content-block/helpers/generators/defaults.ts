@@ -7,6 +7,7 @@ import {
 	ContentBlockEditor,
 	ContentBlockField,
 	ContentBlockType,
+	PaddingFieldState,
 } from '../../../shared/types';
 
 import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
@@ -15,15 +16,21 @@ import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.con
 export const BLOCK_STATE_DEFAULTS = (
 	blockType: ContentBlockType,
 	position: number,
-	backgroundColor: BackgroundColorOption = BackgroundColorOption.White
+	backgroundColor: BackgroundColorOption = BackgroundColorOption.White,
+	padding: PaddingFieldState = {
+		top: 'top',
+		bottom: 'bottom',
+	}
 ) => ({
 	blockType,
 	position,
 	backgroundColor,
+	padding,
 });
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
+	padding: PADDING_FIELD(),
 });
 
 // Recurring fields
@@ -36,6 +43,11 @@ export const BACKGROUND_COLOR_FIELD = (
 		options: BACKGROUND_COLOR_OPTIONS,
 		defaultValue: BACKGROUND_COLOR_OPTIONS[0],
 	},
+});
+
+export const PADDING_FIELD = (label = i18n.t('Padding')) => ({
+	label,
+	editorType: ContentBlockEditor.PaddingSelect,
 });
 
 export const ALIGN_FIELD = (

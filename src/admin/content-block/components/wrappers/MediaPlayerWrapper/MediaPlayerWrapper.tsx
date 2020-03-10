@@ -1,20 +1,24 @@
+import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
 
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
 
-import { getEnv } from '../../../../shared/helpers';
-import { ToastService } from '../../../../shared/services';
-import { fetchPlayerTicket } from '../../../../shared/services/player-ticket-service';
-import { getVideoStills } from '../../../../shared/services/stills-service';
-import i18n from '../../../../shared/translations/i18n';
+import { getEnv } from '../../../../../shared/helpers';
+import { ToastService } from '../../../../../shared/services';
+import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
+import { getVideoStills } from '../../../../../shared/services/stills-service';
+import i18n from '../../../../../shared/translations/i18n';
+
+import './BlockMediaPlayerWrapper.scss';
 
 interface MediaPlayerProps {
 	title: string;
 	item: ButtonAction;
+	width?: 'full-width' | '500px' | '400px';
 }
 
-export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title }) => {
+export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title, width }) => {
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [videoStill, setVideoStill] = useState<string>();
 
@@ -44,11 +48,17 @@ export const MediaPlayer: FC<MediaPlayerProps> = ({ item, title }) => {
 			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
 		]);
 
-		setVideoStill(videoStills[0].previewImagePath);
+		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
 	};
 
 	return (
-		<div className="c-video-player t-player-skin--dark">
+		<div
+			className={classnames(
+				'c-video-player t-player-skin--dark',
+				`o-media-block-width-${width}`,
+				'u-center-m'
+			)}
+		>
 			{!!videoStill && (
 				<BlockFlowPlayer
 					title={title}

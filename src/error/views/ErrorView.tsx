@@ -1,9 +1,8 @@
-import { History, Location } from 'history';
 import { uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { match, RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
 	Blankslate,
@@ -21,20 +20,22 @@ import { APP_PATH } from '../../constants';
 import { CustomError } from '../../shared/helpers';
 import i18n from '../../shared/translations/i18n';
 
-interface ErrorViewQueryParams {
+export interface ErrorViewQueryParams {
 	message?: string;
 	icon?: IconName;
-	actionButtons?: string;
+	actionButtons?: Avo.Auth.ErrorActionButton[];
 }
 
-interface ErrorViewProps extends RouteComponentProps {
+interface ErrorViewProps
+	extends RouteComponentProps<{
+		message?: string;
+		icon?: IconName;
+		actionButtons?: string;
+	}> {
 	message?: string;
 	icon?: IconName;
 	actionButtons?: Avo.Auth.ErrorActionButton[];
 	children?: ReactNode;
-	history: History;
-	match: match<ErrorViewQueryParams>;
-	location: Location;
 }
 
 const ErrorView: FunctionComponent<ErrorViewProps> = ({
@@ -47,18 +48,16 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const queryParams = queryString.parse(
-		(location.search || '').substring(1)
-	) as ErrorViewQueryParams;
+	const queryParams = queryString.parse((location.search || '').substring(1));
 	const errorMessage: string =
-		queryParams.message ||
+		(queryParams.message as string) ||
 		message ||
 		i18n.t('error/views/error-view___de-pagina-werd-niet-gevonden');
-	const errorIcon: IconName = queryParams.icon || icon || 'search';
+	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,
 		...(queryParams.actionButtons
-			? queryParams.actionButtons.split(',').map(button => button.trim())
+			? (queryParams.actionButtons as string).split(',').map(button => button.trim())
 			: []),
 	]);
 
@@ -73,6 +72,10 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 		);
 	}
 
+	const goToHome = () => {
+		redirectToClientPage(APP_PATH.LOGGED_OUT_HOME.route, history);
+	};
+
 	return (
 		<Container mode="vertical" background="alt">
 			<Container size="medium" mode="horizontal">
@@ -83,9 +86,7 @@ const ErrorView: FunctionComponent<ErrorViewProps> = ({
 							<ButtonToolbar>
 								{buttons.includes('home') && (
 									<Button
-										onClick={() =>
-											redirectToClientPage(APP_PATH.LOGGED_IN_HOME, history)
-										}
+										onClick={goToHome}
 										label={t(
 											'error/views/error-view___ga-terug-naar-de-homepagina'
 										)}

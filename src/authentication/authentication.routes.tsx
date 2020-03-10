@@ -8,25 +8,30 @@ import StudentTeacher from './views/registration-flow/r10-student-teacher';
 import ManualRegistration from './views/registration-flow/r4-manual-registration';
 
 export const renderAuthenticationRoutes = (): ReactNode[] => [
-	<Route component={Login} exact path={APP_PATH.LOGIN_AVO} key={APP_PATH.LOGIN_AVO} />,
-	<Route component={Logout} exact path={APP_PATH.LOGOUT} key={APP_PATH.LOGOUT} />,
-	<Route component={RegisterStamboek} exact path={APP_PATH.STAMBOEK} key={APP_PATH.STAMBOEK} />,
+	<Route component={Login} exact path={APP_PATH.LOGIN.route} key={APP_PATH.LOGIN.route} />,
+	<Route component={Logout} exact path={APP_PATH.LOGOUT.route} key={APP_PATH.LOGOUT.route} />,
+	<Route
+		component={RegisterStamboek}
+		exact
+		path={APP_PATH.STAMBOEK.route}
+		key={APP_PATH.STAMBOEK.route}
+	/>,
 	<Route
 		component={ManualRegistration}
 		exact
-		path={APP_PATH.MANUAL_ACCESS_REQUEST}
-		key={APP_PATH.MANUAL_ACCESS_REQUEST}
+		path={APP_PATH.MANUAL_ACCESS_REQUEST.route}
+		key={APP_PATH.MANUAL_ACCESS_REQUEST.route}
 	/>,
 	<Route
 		component={StudentTeacher}
 		exact
-		path={APP_PATH.STUDENT_TEACHER}
-		key={APP_PATH.STUDENT_TEACHER}
+		path={APP_PATH.STUDENT_TEACHER.route}
+		key={APP_PATH.STUDENT_TEACHER.route}
 	/>,
 	<Route
 		component={RegisterOrLogin}
 		exact
-		path={APP_PATH.REGISTER_OR_LOGIN}
-		key={APP_PATH.REGISTER_OR_LOGIN}
+		path={APP_PATH.REGISTER_OR_LOGIN.route}
+		key={APP_PATH.REGISTER_OR_LOGIN.route}
 	/>,
 ];

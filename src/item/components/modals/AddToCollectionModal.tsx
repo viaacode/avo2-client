@@ -10,7 +10,6 @@ import {
 	ButtonToolbar,
 	Column,
 	Container,
-	FlowPlayer,
 	Form,
 	FormGroup,
 	Grid,
@@ -38,9 +37,9 @@ import {
 } from '../../../collection/collection.gql';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
+import { FlowPlayerWrapper } from '../../../shared/components';
 import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
-import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
+import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
@@ -351,7 +350,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 							<Form>
 								<Grid>
 									<Column size="2-7">
-										<FlowPlayer
+										<FlowPlayerWrapper
 											src={playerTicket ? playerTicket.toString() : null}
 											poster={itemMetaData.thumbnail_path}
 											title={itemMetaData.title}
@@ -360,6 +359,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											token={getEnv('FLOW_PLAYER_TOKEN')}
 											dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 											logo={get(itemMetaData, 'organisation.logo_url')}
+											itemUuid={(itemMetaData as any).uid} // TODO remove when typings v2.11 is released
 										/>
 										<Container mode="vertical" className="m-time-crop-controls">
 											<TextInput

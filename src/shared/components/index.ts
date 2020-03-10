@@ -9,3 +9,4 @@ export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 export { default as Navigation } from './Navigation/Navigation';
 export { default as FileUpload } from './FileUpload/FileUpload';
 export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';
+export { default as FlowPlayerWrapper } from './FlowPlayerWrapper/FlowPlayerWrapper';

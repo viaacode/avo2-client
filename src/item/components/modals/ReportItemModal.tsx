@@ -32,9 +32,9 @@ interface ReportItemModalProps {
 }
 
 const RADIO_BUTTON_LABELS = {
-	broken: i18n.t('Defect'),
-	inappropriate: i18n.t('Ongepast '),
-	copyright: i18n.t('Schending auteursrechten'),
+	broken: i18n.t('item/components/modals/report-item-modal___defect'),
+	inappropriate: i18n.t('item/components/modals/report-item-modal___ongepast'),
+	copyright: i18n.t('item/components/modals/report-item-modal___schending-auteursrechten'),
 };
 
 const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
@@ -77,17 +77,23 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
   <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___email">Email</Trans></dt><dd>${
 		body.email
   }</dd>
-  <dt><Trans>Reden van rapporteren</Trans></dt><dd>${RADIO_BUTTON_LABELS[reason]}</dd>
-  <dt><Trans>Extra toelichting</Trans></dt><dd>${extraDetails ||
-		t('Geen extra toelichting ingegeven')}</dd>
+  <dt><Trans i18nKey="item/components/modals/report-item-modal___reden-van-rapporteren">Reden van rapporteren</Trans></dt><dd>${
+		RADIO_BUTTON_LABELS[reason]
+  }</dd>
+  <dt><Trans i18nKey="item/components/modals/report-item-modal___extra-toelichting">Extra toelichting</Trans></dt><dd>${extraDetails ||
+		t('item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven')}</dd>
 </dl>`,
 					public: false,
 				},
-				subject: t('Media item gerapporteerd door gebruiker op AvO2'),
+				subject: t(
+					'item/components/modals/report-item-modal___media-item-gerapporteerd-door-gebruiker-op-av-o-2'
+				),
 			};
 			await ZendeskService.createTicket(ticket);
 			onClose();
-			ToastService.success(t('Het item is gerapporteerd'));
+			ToastService.success(
+				t('item/components/modals/report-item-modal___het-item-is-gerapporteerd')
+			);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket for reporting an item', err, {
 				ticket,
@@ -106,7 +112,9 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 	const renderReportItemModal = () => {
 		return (
 			<Modal
-				title={t('Waarom wil je dit fragment rapporteren? ')}
+				title={t(
+					'item/components/modals/report-item-modal___waarom-wil-je-dit-fragment-rapporteren'
+				)}
 				size="medium"
 				isOpen={isOpen}
 				onClose={onClose}
@@ -141,7 +149,11 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 								</RadioButtonGroup>
 							</FormGroup>
 							<Spacer margin="top-large">
-								<FormGroup label={t('Geef eventueel meer toelichting')}>
+								<FormGroup
+									label={t(
+										'item/components/modals/report-item-modal___geef-eventueel-meer-toelichting'
+									)}
+								>
 									<TextArea
 										width="large"
 										rows={5}
@@ -169,7 +181,9 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 										disabled={isProcessing}
 									/>
 									<Button
-										label={t('Verzenden')}
+										label={t(
+											'item/components/modals/report-item-modal___verzenden'
+										)}
 										type="primary"
 										block
 										disabled={isProcessing || !reason}
@@ -177,7 +191,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 											reason
 												? ''
 												: t(
-														'Je moet een reden opgeven om een item te kunnen rapporteren'
+														'item/components/modals/report-item-modal___je-moet-een-reden-opgeven-om-een-item-te-kunnen-rapporteren'
 												  )
 										}
 										onClick={reportItem}

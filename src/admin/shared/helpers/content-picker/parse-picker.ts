@@ -26,7 +26,12 @@ const parseSearchQuery = (input: string): string => {
 		return JSON.stringify(output);
 	} catch (err) {
 		console.error('Failed to parse search query input', err);
-		ToastService.danger(i18n.t('Gelieve een correcte zoekfilter-link in te vullen.'), false);
+		ToastService.danger(
+			i18n.t(
+				'admin/shared/helpers/content-picker/parse-picker___gelieve-een-correcte-zoekfilter-link-in-te-vullen'
+			),
+			false
+		);
 
 		return 'Ongeldige zoekfilter';
 	}

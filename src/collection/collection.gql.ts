@@ -75,14 +75,6 @@ export const GET_COLLECTION_BY_ID = gql`
 			external_id
 			depublish_at
 			created_at
-			label_redactie_id
-			label_redactie {
-				updated_at
-				label
-				id
-				created_at
-				alt_label
-			}
 			lom_classification
 			lom_context
 			lom_intendedenduserrole
@@ -97,6 +89,7 @@ export const GET_ITEMS_BY_IDS = gql`
 	query getCollectionsByIds($ids: [bpchar!]!) {
 		items: app_item_meta(where: { external_id: { _in: $ids } }) {
 			id
+			uid
 			external_id
 			duration
 			title
@@ -142,7 +135,6 @@ export const DELETE_COLLECTION = gql`
 	mutation deleteCollectionById($id: uuid!) {
 		delete_app_collections(where: { id: { _eq: $id } }) {
 			affected_rows
-			__typename
 		}
 	}
 `;
