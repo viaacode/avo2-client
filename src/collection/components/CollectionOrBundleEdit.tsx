@@ -581,7 +581,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		<Button
 			type="primary"
 			label={t('collection/views/collection-edit___opslaan')}
-			onClick={() => onSaveCollection()}
+			onClick={onSaveCollection}
 			disabled={isSavingCollection}
 		/>
 	);

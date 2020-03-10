@@ -577,7 +577,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={() => onDeleteBundle()}
+					deleteObjectCallback={onDeleteBundle}
 				/>
 				<ShareThroughEmailModal
 					modalTitle={t('bundle/views/bundle-detail___deel-deze-bundel')}

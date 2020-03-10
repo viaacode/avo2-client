@@ -302,7 +302,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					variables={{ id }}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={() => handleDelete()}
+					deleteObjectCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={
