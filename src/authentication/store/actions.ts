@@ -2,7 +2,7 @@ import { Action, Dispatch } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { getEnv } from '../../shared/helpers';
+import { CustomError, getEnv } from '../../shared/helpers';
 
 import { LoginMessage } from '../authentication.types';
 import {
@@ -59,6 +59,14 @@ export const getLoginResponse = async (): Promise<Avo.Auth.LoginResponse> => {
 		});
 
 		const data = await response.json();
+
+		if (data.statusCode < 200 || data.statusCode >= 400) {
+			throw new CustomError(
+				'Failed to check login, status code not in expected range (200-399)',
+				null,
+				{ response, data, message: data.message }
+			);
+		}
 
 		return data as Avo.Auth.LoginResponse;
 	} catch (err) {

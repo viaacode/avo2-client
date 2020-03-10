@@ -349,13 +349,7 @@ export class CollectionService {
 	public static cleanCollectionBeforeSave(
 		collection: Partial<Avo.Collection.Collection>
 	): Partial<Avo.Collection.Collection> {
-		const propertiesToDelete = [
-			'collection_fragments',
-			'label_redactie',
-			'__typename',
-			'type',
-			'profile',
-		];
+		const propertiesToDelete = ['collection_fragments', '__typename', 'type', 'profile'];
 
 		return omit(collection, propertiesToDelete);
 	}
