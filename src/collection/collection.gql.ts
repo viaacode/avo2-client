@@ -75,14 +75,6 @@ export const GET_COLLECTION_BY_ID = gql`
 			external_id
 			depublish_at
 			created_at
-			label_redactie_id
-			label_redactie {
-				updated_at
-				label
-				id
-				created_at
-				alt_label
-			}
 			lom_classification
 			lom_context
 			lom_intendedenduserrole
