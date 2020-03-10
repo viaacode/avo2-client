@@ -529,9 +529,13 @@ export class CollectionService {
 				variables: { ids },
 			});
 			// Add infos to each fragment under the item_meta property
-			const itemInfos: any[] = get(response, 'data.items', []);
+			const itemInfos: (Avo.Collection.Collection | Avo.Item.Item)[] = get(
+				response,
+				'data.items',
+				[]
+			);
 			collectionObj.collection_fragments.forEach(fragment => {
-				const itemInfo: Avo.Item.Item | undefined = itemInfos.find(
+				const itemInfo = itemInfos.find(
 					item =>
 						fragment.external_id ===
 						(type === 'collection' ? item.external_id : item.id)
