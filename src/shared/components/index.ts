@@ -1,4 +1,4 @@
-export { default as CheckboxDropdownModal } from './CheckboxDropdownModal/CheckboxDropdownModal';
+export * from './CheckboxDropdownModal/CheckboxDropdownModal';
 export { default as ControlledDropdown } from './ControlledDropdown/ControlledDropdown';
 export { default as DataQueryComponent } from './DataQueryComponent/DataQueryComponent';
 export { default as DateRangeDropdown } from './DateRangeDropdown/DateRangeDropdown';
@@ -10,3 +10,4 @@ export { default as Navigation } from './Navigation/Navigation';
 export { default as FileUpload } from './FileUpload/FileUpload';
 export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';
 export { default as FlowPlayerWrapper } from './FlowPlayerWrapper/FlowPlayerWrapper';
+export { default as BooleanCheckboxDropdown } from './BooleanCheckboxDropdown/BooleanCheckboxDropdown';

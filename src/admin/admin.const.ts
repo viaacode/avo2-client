@@ -3,6 +3,7 @@ import { NavigationItemInfo } from '../shared/types';
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PATH } from './content/content.const';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
+import { ITEMS_PATH } from './items/items.const';
 import { MENU_PATH } from './menu/menu.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
 import { USER_PATH } from './users/user.const';
@@ -14,6 +15,7 @@ export const ADMIN_PATH = Object.freeze({
 	...MENU_PATH,
 	...CONTENT_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
+	...ITEMS_PATH,
 });
 
 export const NAV_ITEMS: NavigationItemInfo[] = [
@@ -60,6 +62,12 @@ export const NAV_ITEMS: NavigationItemInfo[] = [
 				exact: true,
 			},
 		],
+	},
+	{
+		label: i18n.t('Items'),
+		location: ADMIN_PATH.ITEMS_OVERVIEW,
+		key: 'items',
+		exact: false,
 	},
 	{
 		label: i18n.t('Collecties'),

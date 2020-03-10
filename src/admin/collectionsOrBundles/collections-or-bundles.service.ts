@@ -5,28 +5,12 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
-import { ITEMS_PER_PAGE } from './collections-or-bundles.const';
+import {
+	ITEMS_PER_PAGE,
+	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
+} from './collections-or-bundles.const';
 import { GET_COLLECTIONS } from './collections-or-bundles.gql';
 import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
-
-const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
-	{
-		[columnId in CollectionsOrBundlesOverviewTableCols]: (
-			order: Avo.Search.OrderDirection
-		) => any;
-	}
-> = {
-	author_first_name: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { first_name: order } },
-	}),
-	author_last_name: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { first_name: order } },
-	}),
-	author_role: (order: Avo.Search.OrderDirection) => ({
-		profile: { usersByuserId: { first_name: order } },
-	}),
-	views: (order: Avo.Search.OrderDirection) => ({ view_counts_aggregate: { count: order } }),
-};
 
 export class CollectionsOrBundlesService {
 	private static getOrderObject(

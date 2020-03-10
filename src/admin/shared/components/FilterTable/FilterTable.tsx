@@ -21,7 +21,13 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
-import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
+import {
+	BooleanParam,
+	NumberParam,
+	QueryParamConfig,
+	StringParam,
+	useQueryParams,
+} from 'use-query-params';
 
 import {
 	Button,
@@ -36,29 +42,33 @@ import {
 import { TableColumn } from '@viaa/avo2-components/src/components/Table/Table'; // TODO use exported version components repo
 import { Avo } from '@viaa/avo2-types';
 
-import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
-import { CheckboxOption } from '../../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import {
+	BooleanCheckboxDropdown,
+	CheckboxDropdownModal,
+	CheckboxOption,
+	DateRangeDropdown,
+} from '../../../../shared/components';
 import { KeyCode } from '../../../../shared/types';
-import { CollectionsOrBundlesOverviewTableCols } from '../../../collectionsOrBundles/collections-or-bundles.types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
 
 import './FilterTable.scss';
 
 export interface FilterableTableState {
 	query?: string;
-	sort_column: CollectionsOrBundlesOverviewTableCols;
+	sort_column: string;
 	sort_order: Avo.Search.OrderDirection;
 	page: number;
 }
 
 export interface FilterableColumn extends TableColumn {
-	filterType?: 'CheckboxDropdownModal' | 'DateRangeDropdown';
+	filterType?: 'CheckboxDropdownModal' | 'DateRangeDropdown' | 'BooleanCheckboxDropdown';
 	filterProps?: any;
 }
 
 const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {
 	CheckboxDropdownModal: CheckboxListParam,
 	DateRangeDropdown: DateRangeParam,
+	BooleanCheckboxDropdown: BooleanParam,
 };
 
 interface FilterTableProps extends RouteComponentProps {
@@ -77,6 +87,8 @@ interface FilterTableProps extends RouteComponentProps {
 	) => ReactNode;
 	className?: string;
 	onTableStateChanged: (tableState: { [id: string]: any }) => void;
+	rowKey?: string;
+	variant?: 'bordered' | 'invisible' | 'styled';
 }
 
 const FilterTable: FunctionComponent<FilterTableProps> = ({
@@ -90,6 +102,8 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	renderCell,
 	className,
 	onTableStateChanged,
+	rowKey = 'id',
+	variant = 'bordered',
 }) => {
 	const [t] = useTranslation();
 
@@ -220,6 +234,19 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 										/>
 									);
 
+								case 'BooleanCheckboxDropdown':
+									return (
+										<BooleanCheckboxDropdown
+											{...(col.filterProps || {})}
+											id={col.id}
+											label={col.label}
+											onChange={value =>
+												handleTableStateChanged(value, col.id)
+											}
+											key={`filter-${col.id}`}
+										/>
+									);
+
 								default:
 									return null;
 							}
@@ -245,8 +272,8 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 							handleSortOrderChanged(columnId);
 						}}
 						renderCell={renderCell}
-						rowKey="id"
-						variant="bordered"
+						rowKey={rowKey}
+						variant={variant}
 						sortColumn={tableState.sort_column}
 						sortOrder={tableState.sort_order}
 					/>

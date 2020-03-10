@@ -67,7 +67,7 @@ export const countOptions = [
 	},
 ];
 
-describe('<Checkbox />', () => {
+describe('<CheckboxDropdownModal />', () => {
 	it('Should be able to render', () => {
 		shallow(
 			<CheckboxDropdownModal

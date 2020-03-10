@@ -5,6 +5,7 @@ import { renderErrorRoutes } from '../error/error.routes';
 import { renderCollectionOrBundleRoutes } from './collectionsOrBundles/collections-or-bundles.routes';
 import { renderAdminContentRoutes } from './content/content.routes';
 import { renderAdminDashboardRoutes } from './dashboard/dashboard.routes';
+import { renderItemRoutes } from './items/items.routes';
 import { renderAdminMenuRoutes } from './menu/menu.routes';
 import { renderAdminUserGroupRoutes } from './user-groups/user-group.routes';
 import { renderAdminUserRoutes } from './users/user.routes';
@@ -16,6 +17,7 @@ export const renderAdminRoutes = () => (
 		{renderAdminMenuRoutes()}
 		{renderAdminContentRoutes()}
 		{renderAdminUserGroupRoutes()}
+		{renderItemRoutes()}
 		{renderCollectionOrBundleRoutes()}
 		{/* Default routes */}
 		{renderErrorRoutes()}

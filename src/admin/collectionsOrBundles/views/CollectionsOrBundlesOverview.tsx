@@ -89,7 +89,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				collectionsCountTemp,
 			] = await CollectionsOrBundlesService.getCollections(
 				tableState.page || 0,
-				tableState.sort_column || 'created_at',
+				(tableState.sort_column || 'created_at') as CollectionsOrBundlesOverviewTableCols,
 				tableState.sort_order || 'desc',
 				generateWhereObject(getFilters(tableState))
 			);
