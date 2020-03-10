@@ -1,20 +1,32 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { Redirect, withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { getLoginStateAction } from '../../authentication/store/actions';
+import {
+	selectLogin,
+	selectLoginError,
+	selectLoginLoading,
+	selectUser,
+} from '../../authentication/store/selectors';
 import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
 import { APP_PATH } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink, CustomError } from '../../shared/helpers';
+import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 import { getContentPageByPath } from '../../shared/services/navigation-items-service';
+import { AppState } from '../../store';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
 
@@ -23,11 +35,20 @@ interface RouteInfo {
 	data: any;
 }
 
-interface DynamicRouteResolverProps extends DefaultSecureRouteProps {}
+interface DynamicRouteResolverProps extends DefaultSecureRouteProps {
+	getLoginState: () => Dispatch;
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateError: boolean;
+	loginStateLoading: boolean;
+}
 
 const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
+	getLoginState,
 	history,
 	location,
+	loginState,
+	loginStateError,
+	loginStateLoading,
 	match,
 	user,
 }) => {
@@ -91,18 +112,50 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 	// Analyse the path and determine the routeType
 	useEffect(() => {
-		if (!location.pathname) {
+		if (!location.pathname || loadingInfo.state === 'loaded') {
 			return;
 		}
 
 		analyseRoute();
 	}, [location.pathname, analyseRoute]);
 
+	// Check if current user is logged in
+	useEffect(() => {
+		if (!loginState && !loginStateLoading && !loginStateError) {
+			getLoginState();
+		}
+	}, [getLoginState, loginState, loginStateError, loginStateLoading]);
+
 	const renderRouteComponent = () => {
-		if ((routeInfo as RouteInfo).type === 'contentPage') {
+		if (routeInfo && routeInfo.type === 'contentPage') {
+			const routeUserGroupIds = get(routeInfo, 'data.user_group_ids', []);
+			// Check if the page requires the user to be logged in and not both logged in or out
+			if (
+				routeUserGroupIds.includes[SpecialPermissionGroups.loggedInUsers] &&
+				!routeUserGroupIds.includes[SpecialPermissionGroups.loggedOutUsers]
+			) {
+				return (
+					<Redirect
+						to={{
+							pathname: APP_PATH.REGISTER_OR_LOGIN.route,
+							state: { from: location },
+						}}
+					/>
+				);
+			}
+
+			// Special route exceptions
+			// /klaar/archief: redirect teachers to search page with klaar filter
+			const routePath = get(routeInfo, 'data.path', '');
+			// TODO: Ideally this should be based on the users user-group ids
+			const isTeacher = get(user, 'profile.permissions', []).includes(PermissionNames.SEARCH);
+			if (routePath === '/klaar/archief' && isTeacher) {
+				return <Redirect to={generateSearchLinkString('serie', 'Klaar')} />;
+			}
+
 			return (
 				<ContentPage
-					contentPage={(routeInfo as RouteInfo).data}
+					contentPage={routeInfo.data}
 					history={history}
 					location={location}
 					match={match}
@@ -134,4 +187,15 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	);
 };
 
-export default withRouter(DynamicRouteResolver);
+const mapStateToProps = (state: AppState) => ({
+	loginState: selectLogin(state),
+	loginStateLoading: selectLoginLoading(state),
+	loginStateError: selectLoginError(state),
+	user: selectUser(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	getLoginState: () => dispatch(getLoginStateAction() as any),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DynamicRouteResolver));
