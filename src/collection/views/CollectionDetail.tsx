@@ -758,7 +758,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			render={renderCollection}
 			dataObject={permissions}
 			loadingInfo={loadingInfo}
-			showSpinner={true}
 		/>
 	);
 };

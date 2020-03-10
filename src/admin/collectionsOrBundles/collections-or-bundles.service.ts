@@ -7,11 +7,44 @@ import { dataService } from '../../shared/services';
 
 import { ITEMS_PER_PAGE } from './collections-or-bundles.const';
 import { GET_COLLECTIONS } from './collections-or-bundles.gql';
+import { CollectionsOrBundlesOverviewTableCols } from './collections-or-bundles.types';
+
+const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
+	{
+		[columnId in CollectionsOrBundlesOverviewTableCols]: (
+			order: Avo.Search.OrderDirection
+		) => any;
+	}
+> = {
+	author_first_name: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { first_name: order } },
+	}),
+	author_last_name: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { first_name: order } },
+	}),
+	author_role: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { first_name: order } },
+	}),
+	views: (order: Avo.Search.OrderDirection) => ({ view_counts_aggregate: { count: order } }),
+};
 
 export class CollectionsOrBundlesService {
+	private static getOrderObject(
+		sortColumn: CollectionsOrBundlesOverviewTableCols,
+		sortOrder: Avo.Search.OrderDirection
+	) {
+		const getOrderFunc: Function | undefined =
+			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
+		if (getOrderFunc) {
+			return [getOrderFunc(sortOrder)];
+		} else {
+			return [{ [sortColumn]: sortOrder }];
+		}
+	}
+
 	public static async getCollections(
 		page: number,
-		sortColumn: string,
+		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		where: any
 	): Promise<[Avo.Collection.Collection[], number]> {
@@ -21,7 +54,7 @@ export class CollectionsOrBundlesService {
 				where,
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
-				orderBy: [{ [sortColumn]: sortOrder }],
+				orderBy: CollectionsOrBundlesService.getOrderObject(sortColumn, sortOrder),
 			};
 			const response = await dataService.query({
 				variables,

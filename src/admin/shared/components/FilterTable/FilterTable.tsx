@@ -39,13 +39,14 @@ import { Avo } from '@viaa/avo2-types';
 import { CheckboxDropdownModal, DateRangeDropdown } from '../../../../shared/components';
 import { CheckboxOption } from '../../../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
 import { KeyCode } from '../../../../shared/types';
+import { CollectionsOrBundlesOverviewTableCols } from '../../../collectionsOrBundles/collections-or-bundles.types';
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
 
 import './FilterTable.scss';
 
 export interface FilterableTableState {
 	query?: string;
-	sort_column: string;
+	sort_column: CollectionsOrBundlesOverviewTableCols;
 	sort_order: Avo.Search.OrderDirection;
 	page: number;
 }
@@ -139,7 +140,8 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 		let newTableState: any = cloneDeep(tableState);
 		newTableState = cleanupObject({
 			...newTableState,
-			[columnId]: tableState.sortOrder === 'asc' ? 'desc' : 'asc',
+			sort_column: columnId,
+			sort_order: tableState.sort_order === 'asc' ? 'desc' : 'asc',
 		});
 
 		setTableState(newTableState, 'replace');
