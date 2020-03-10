@@ -51,7 +51,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 
 	const navigateToUserDetail = (id: string | undefined) => {
 		if (!id) {
-			ToastService.danger(t('Deze gebruiker heeft geen geldig id'));
+			ToastService.danger(t('Deze gebruiker heeft geen geldig id'), false);
 			return;
 		}
 		const detailRoute = ADMIN_PATH.USER_DETAIL;

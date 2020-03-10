@@ -351,7 +351,6 @@ export class CollectionService {
 	): Partial<Avo.Collection.Collection> {
 		const propertiesToDelete = [
 			'collection_fragments',
-			'label_redactie',
 			'__typename',
 			'type',
 			'profile',

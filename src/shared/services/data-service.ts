@@ -59,6 +59,9 @@ export class ApolloCacheManager {
 	public static clearContentBlocksCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content_blocks');
 
+	public static clearUserGroupCache = (cache: ApolloCache) =>
+		ApolloCacheManager.deleteFromCache(cache, 'users_groups');
+
 	private static deleteFromCache(cache: ApolloCache, substring: string) {
 		Object.keys(cache.data.data).forEach((key: string) => {
 			// Also match keys starting with $ROOT_QUERY. for clearing aggregates cache

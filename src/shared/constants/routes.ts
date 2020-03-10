@@ -42,4 +42,5 @@ export const ROUTE_PARTS = Object.freeze({
 	klaar: 'klaar',
 	permissionGroups: 'permissie-groepen',
 	user: 'gebruikers',
+	userGroup: 'gebruikersgroep',
 });

@@ -5,6 +5,7 @@ export const GET_CONTENT_PAGE_BY_PATH = gql`
 		app_content(where: { path: { _eq: $path } }) {
 			title
 			content_type
+			content_width
 			created_at
 			depublish_at
 			description
