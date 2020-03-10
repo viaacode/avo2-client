@@ -4,7 +4,7 @@ import Select, { Props } from 'react-select';
 
 import { Flex, Spacer } from '@viaa/avo2-components';
 
-import { ReactSelectOption } from '../../../../shared/types';
+import { ReactSelectOption } from '../../../../../shared/types';
 
 import './ColorSelect.scss';
 

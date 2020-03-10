@@ -33,7 +33,7 @@ import {
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
-import { getAllUserGroups } from '../../../shared/services/user-groups-service';
+import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { ContentBlockPreview } from '../../content-block/components';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
@@ -71,7 +71,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	// Get labels of the userGroups, so we can show a readable error message
 	useEffect(() => {
-		getAllUserGroups()
+		fetchAllUserGroups()
 			.then(userGroups => {
 				setAllUserGroups(userGroups);
 			})

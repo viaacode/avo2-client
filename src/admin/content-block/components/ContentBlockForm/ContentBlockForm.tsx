@@ -1,4 +1,4 @@
-import { get, isNil, isNumber } from 'lodash-es';
+import { get, isEqual, isNil, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,8 +29,8 @@ import {
 	ContentBlockStateType,
 } from '../../../shared/types';
 
-import { ContentBlockFormGroup } from '../ContentBlockFormGroup/ContentBlockFormGroup';
-import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview';
+import ContentBlockFormGroup from '../ContentBlockFormGroup/ContentBlockFormGroup';
+import { REPEATABLE_CONTENT_BLOCKS } from '../ContentBlockPreview/ContentBlockPreview.const';
 
 import './ContentBlockForm.scss';
 
@@ -266,4 +266,13 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	return <Form className="c-content-block-form">{renderBlockForm(config)}</Form>;
 };
 
-export default ContentBlockForm;
+export default React.memo(ContentBlockForm, (prevProps, nextProps) => {
+	// We don't need to check the other props because they are functions which will never change
+	// The component will rerender when false is returned
+	return (
+		isEqual(prevProps.config, nextProps.config) &&
+		prevProps.isAccordionOpen === nextProps.isAccordionOpen &&
+		prevProps.blockIndex === nextProps.blockIndex &&
+		prevProps.length === nextProps.length
+	);
+});

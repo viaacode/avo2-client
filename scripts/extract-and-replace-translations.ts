@@ -184,11 +184,14 @@ async function updateTranslations() {
 	const newTranslationKeys: string[] = _.keys(newTranslations);
 	const addedTranslationKeys: string[] = _.without(newTranslationKeys, ...oldTranslationKeys);
 	const removedTranslationKeys: string[] = _.without(oldTranslationKeys, ...newTranslationKeys);
-	const existingTranslationKeys: string[] = _.intersection(newTranslationKeys, oldTranslationKeys);
+	const existingTranslationKeys: string[] = _.intersection(
+		newTranslationKeys,
+		oldTranslationKeys
+	);
 
 	// Console log translations that were found in the json file but not in the code
 	console.warn(
-		`The following translation keys were removed: 
+		`The following translation keys were removed:
 \t${removedTranslationKeys.join('\n\t')}`
 	);
 
@@ -210,7 +213,7 @@ async function updateTranslations() {
 	);
 
 	const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
-	console.log(
+	console.info(
 		`Wrote ${totalTranslations} src/shared/translations/nl.json file
 \t${addedTranslationKeys.length} translations added
 \t${removedTranslationKeys.length} translations deleted`

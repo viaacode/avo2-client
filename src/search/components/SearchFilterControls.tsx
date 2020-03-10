@@ -29,7 +29,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	): ReactNode => {
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
 			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
-				let checkboxLabel = capitalize(option_name);
+				let checkboxLabel = option_name;
 
 				if (propertyName === 'language') {
 					checkboxLabel = languageCodeToLabel(option_name);
@@ -100,10 +100,6 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			{/*	t('search/components/search-filter-controls___domein'),*/}
 			{/*	'domain',*/}
 			{/*)}*/}
-			{renderCheckboxDropdownModal(
-				t('search/components/search-filter-controls___vak'),
-				'subject'
-			)}
 			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___vak'),
 				'subject'
