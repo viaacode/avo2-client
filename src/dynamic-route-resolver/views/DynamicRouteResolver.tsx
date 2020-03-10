@@ -85,16 +85,10 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			if (!contentPage) {
 				setRouteInfo({ type: 'notFound', data: null });
-				setLoadingInfo({
-					state: 'loaded',
-				});
 				return;
 			}
 			// Path is indeed a content page url
 			setRouteInfo({ type: 'contentPage', data: contentPage });
-			setLoadingInfo({
-				state: 'loaded',
-			});
 			return;
 		} catch (err) {
 			console.error(
@@ -123,8 +117,11 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
 			getLoginState();
+		} else if (routeInfo) {
+			// Prevent seeing the content-page before loginState and routeInfo are both done
+			setLoadingInfo({ state: 'loaded' });
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, routeInfo]);
 
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
