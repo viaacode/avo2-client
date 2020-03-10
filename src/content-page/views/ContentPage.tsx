@@ -6,8 +6,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockPreview } from '../../admin/content-block/components';
 import { parseContentBlocks } from '../../admin/content-block/helpers';
-import { SpecialPermissionGroups } from '../../admin/menu/views/MenuEdit';
 import { ContentBlockConfig } from '../../admin/shared/types';
+import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { ErrorView } from '../../error/views';
 import { CustomError } from '../../shared/helpers';

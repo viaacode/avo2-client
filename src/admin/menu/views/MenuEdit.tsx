@@ -17,6 +17,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
@@ -38,11 +39,6 @@ import {
 	MenuEditPageType,
 	MenuEditParams,
 } from '../menu.types';
-
-export enum SpecialPermissionGroups {
-	loggedOutUsers = -1,
-	loggedInUsers = -2,
-}
 
 export interface MenuSchema {
 	id: number;
