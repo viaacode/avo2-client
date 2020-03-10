@@ -106,12 +106,12 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 	// Analyse the path and determine the routeType
 	useEffect(() => {
-		if (!location.pathname || loadingInfo.state === 'loaded') {
+		if (!location.pathname) {
 			return;
 		}
 
 		analyseRoute();
-	}, [location.pathname, loadingInfo.state, analyseRoute]);
+	}, [location.pathname, analyseRoute]);
 
 	// Check if current user is logged in
 	useEffect(() => {
