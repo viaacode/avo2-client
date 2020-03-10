@@ -349,12 +349,7 @@ export class CollectionService {
 	public static cleanCollectionBeforeSave(
 		collection: Partial<Avo.Collection.Collection>
 	): Partial<Avo.Collection.Collection> {
-		const propertiesToDelete = [
-			'collection_fragments',
-			'__typename',
-			'type',
-			'profile',
-		];
+		const propertiesToDelete = ['collection_fragments', '__typename', 'type', 'profile'];
 
 		return omit(collection, propertiesToDelete);
 	}
@@ -535,22 +530,22 @@ export class CollectionService {
 			});
 			// Add infos to each fragment under the item_meta property
 			const itemInfos: any[] = get(response, 'data.items', []);
-			itemInfos.forEach((itemInfo: any) => {
-				const collectionFragment:
-					| Avo.Collection.Fragment
-					| undefined = collectionObj.collection_fragments.find(
-					fragment =>
+			collectionObj.collection_fragments.forEach(fragment => {
+				const itemInfo: Avo.Item.Item | undefined = itemInfos.find(
+					item =>
 						fragment.external_id ===
-						(type === 'collection' ? itemInfo.external_id : itemInfo.id)
+						(type === 'collection' ? item.external_id : item.id)
 				);
-				if (collectionFragment) {
-					collectionFragment.item_meta = itemInfo;
-					if (!collectionFragment.use_custom_fields) {
-						collectionFragment.custom_description = itemInfo.description;
-						collectionFragment.custom_title = itemInfo.title;
+
+				if (itemInfo) {
+					fragment.item_meta = itemInfo;
+					if (!fragment.use_custom_fields) {
+						fragment.custom_description = itemInfo.description;
+						fragment.custom_title = itemInfo.title;
 					}
 				}
 			});
+
 			return collectionObj;
 		} catch (err) {
 			throw new CustomError('Failed to get fragments inside the collection', err, { ids });
