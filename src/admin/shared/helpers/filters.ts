@@ -27,6 +27,7 @@ export function getDateRangeFilters(filters: any, dateProps: string[]): any[] {
 					},
 				};
 			}
+			return null;
 		})
 	);
 }
@@ -38,6 +39,7 @@ export function getBooleanFilters(filters: any, booleanProps: string[]): any[] {
 			if (!isNil(booleanValue)) {
 				return { is_published: { _eq: booleanValue ? 'true' : 'false' } };
 			}
+			return null;
 		})
 	);
 }
@@ -49,6 +51,7 @@ export function getMultiOptionFilters(filters: any, multiOptionProps: string[]):
 			if (multiOptionValue && multiOptionValue.length) {
 				return { [multiOptionProp]: { _in: multiOptionValue } };
 			}
+			return null;
 		})
 	);
 }

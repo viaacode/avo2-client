@@ -49,28 +49,28 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const isCollection = location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTIONS_OVERVIEW;
 
 	// methods
-	const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
-		const andFilters: any[] = [];
-		andFilters.push(
-			...getQueryFilter(filters.query, query => [
-				{ title: { _ilike: query } },
-				{ description: { _ilike: query } },
-				{ profile: { usersByuserId: { first_name: { _ilike: query } } } },
-				{ profile: { usersByuserId: { last_name: { _ilike: query } } } },
-				{ profile: { usersByuserId: { role: { label: { _ilike: query } } } } },
-			])
-		);
-		andFilters.push(...getBooleanFilters(filters, ['is_public']));
-		andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
-		andFilters.push({
-			type_id: {
-				_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
-			},
-		});
-		return { _and: andFilters };
-	};
-
 	const fetchCollectionsOrBundles = useCallback(async () => {
+		const generateWhereObject = (filters: Partial<CollectionsOrBundlesTableState>) => {
+			const andFilters: any[] = [];
+			andFilters.push(
+				...getQueryFilter(filters.query, query => [
+					{ title: { _ilike: query } },
+					{ description: { _ilike: query } },
+					{ profile: { usersByuserId: { first_name: { _ilike: query } } } },
+					{ profile: { usersByuserId: { last_name: { _ilike: query } } } },
+					{ profile: { usersByuserId: { role: { label: { _ilike: query } } } } },
+				])
+			);
+			andFilters.push(...getBooleanFilters(filters, ['is_public']));
+			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
+			andFilters.push({
+				type_id: {
+					_eq: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
+				},
+			});
+			return { _and: andFilters };
+		};
+
 		try {
 			const [
 				collectionsTemp,

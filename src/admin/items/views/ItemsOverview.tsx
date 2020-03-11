@@ -12,31 +12,29 @@ import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
-import { ITEM_OVERVIEW_TABLE_COLS, ITEMS_PATH } from '../items.const';
+import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+
+import { ITEM_OVERVIEW_TABLE_COLS } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 
 interface ItemsOverviewProps extends DefaultSecureRouteProps {}
 
-const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, location }) => {
+const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 	const [t] = useTranslation();
 
 	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
 	const [itemCount, setItemCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
-
-	// computed
-	const isCollection = location.pathname === ITEMS_PATH.ITEMS_OVERVIEW;
 
 	// methods
 	const generateWhereObject = (filters: Partial<ItemsTableState>) => {
@@ -70,7 +68,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, locatio
 
 	const fetchItems = useCallback(async () => {
 		try {
-			const [itemsTemp, collectionsCountTemp] = await ItemsService.getItems(
+			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItems(
 				tableState.page || 0,
 				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
 				tableState.sort_order || 'desc',
@@ -87,7 +85,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, locatio
 				message: t('Het ophalen van de items is mislukt'),
 			});
 		}
-	}, [setLoadingInfo, setItems, setItemCount, tableState, isCollection, t]);
+	}, [setLoadingInfo, setItems, setItemCount, tableState, t]);
 
 	useEffect(() => {
 		fetchItems();
@@ -107,6 +105,15 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, locatio
 			return;
 		}
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
+		redirectToClientPage(link, history);
+	};
+
+	const navigateToAdminItemDetail = (uuid: string | undefined) => {
+		if (!uuid) {
+			ToastService.danger(t('Dit item heeft geen geldig uuid'), false);
+			return;
+		}
+		const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
 		redirectToClientPage(link, history);
 	};
 
@@ -141,6 +148,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history, locatio
 							type="secondary"
 							icon="eye"
 							onClick={() => navigateToItemDetail(rowData.external_id)}
+						/>
+						<Button
+							type="secondary"
+							icon="edit"
+							onClick={() => navigateToAdminItemDetail(rowData.uid)}
 						/>
 					</ButtonToolbar>
 				);

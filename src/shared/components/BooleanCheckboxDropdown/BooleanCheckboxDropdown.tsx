@@ -35,7 +35,7 @@ const BooleanCheckboxDropdown: FunctionComponent<BooleanCheckboxDropdownProps> =
 		} else {
 			onChange(false, id);
 		}
-	}, [checkboxOptions]);
+	}, [checkboxOptions, id, onChange]);
 
 	// Methods
 	const handleCheckboxChange = (selectedCheckboxes: string[]) => {

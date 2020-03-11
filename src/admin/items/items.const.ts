@@ -1,12 +1,15 @@
 import { Avo } from '@viaa/avo2-types';
+
+import { CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+
 import { ItemsOverviewTableCols } from './items.types';
-import { CheckboxOption } from '../../shared/components';
 
 export const ITEMS_PATH = {
 	ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,
+	ITEM_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}/:id`,
 };
 
 export const ITEMS_PER_PAGE = 10;
