@@ -1,3 +1,16 @@
+import {
+	cloneDeep,
+	compact,
+	every,
+	get,
+	isArray,
+	isEmpty,
+	isEqual,
+	isNil,
+	isPlainObject,
+	pickBy,
+} from 'lodash-es';
+import queryString from 'query-string';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -24,29 +37,19 @@ import {
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import {
-	cloneDeep,
-	compact,
-	every,
-	get,
-	isArray,
-	isEmpty,
-	isEqual,
-	isNil,
-	isPlainObject,
-	pickBy,
-} from 'lodash-es';
-import queryString from 'query-string';
 
 import {
 	PermissionGuard,
 	PermissionGuardFail,
 	PermissionGuardPass,
 } from '../../authentication/components';
+import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { APP_PATH } from '../../constants';
+import { ErrorView } from '../../error/views';
 import { copyToClipboard, navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
+import { AppState } from '../../store';
 
-import { APP_PATH } from '../../constants';
 import { SearchFilterControls, SearchResults } from '../components';
 import { DEFAULT_FORM_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import {
@@ -58,8 +61,6 @@ import {
 import { getSearchResults } from '../store/actions';
 import { selectSearchError, selectSearchLoading, selectSearchResults } from '../store/selectors';
 
-import { PermissionNames } from '../../authentication/helpers/permission-service';
-import { ErrorView } from '../../error/views';
 import './Search.scss';
 
 const Search: FunctionComponent<SearchProps> = ({
@@ -473,7 +474,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	);
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
 	searchResults: selectSearchResults(state),
 	searchResultsLoading: selectSearchLoading(state),
 	searchResultsError: selectSearchError(state),

@@ -56,12 +56,11 @@ import {
 	generateSearchLinks,
 	renderAvatar,
 } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service.const';
+} from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import {

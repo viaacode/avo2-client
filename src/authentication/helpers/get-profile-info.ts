@@ -6,8 +6,6 @@ import { getFullName } from '../../shared/helpers';
 import { CustomError } from '../../shared/helpers/error';
 import store from '../../store';
 
-import { LoginMessage } from '../authentication.types';
-
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
 		throw new CustomError(
@@ -104,17 +102,4 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 		!!profile.subjects &&
 		!!profile.subjects.length
 	);
-}
-
-export function isLoggedIn(
-	loginMessage: Avo.Auth.LoginMessage | undefined,
-	user: Avo.User.User | undefined
-): boolean {
-	let message: Avo.Auth.LoginMessage | undefined = loginMessage;
-	if (!message) {
-		const state: any = store.getState();
-		message = get(state, 'loginState.data.message');
-	}
-
-	return !!message && message === LoginMessage.LOGGED_IN && !!user && isProfileComplete(user);
 }
