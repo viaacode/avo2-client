@@ -114,6 +114,7 @@ export const GET_CONTENT_BY_ID = gql`
 	query getContentById($id: Int!) {
 		app_content(where: { id: { _eq: $id } }) {
 			content_type
+			content_width
 			created_at
 			depublish_at
 			description

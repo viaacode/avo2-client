@@ -6,7 +6,7 @@ import { PickerSelectItem } from '../../types';
 import { parsePickerItem } from './parse-picker';
 
 // Fetch content items from GQL
-export const fetchContentPages = async (
+export const retrieveContentPages = async (
 	title: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
