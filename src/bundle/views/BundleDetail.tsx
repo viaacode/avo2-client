@@ -155,7 +155,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				canCreateBundles: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const bundleObj = await CollectionService.getCollectionWithItems(bundleId, 'bundle');
+			const bundleObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
+				bundleId,
+				'bundle'
+			);
 
 			if (!bundleObj) {
 				setLoadingInfo({
@@ -577,7 +580,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={() => onDeleteBundle()}
+					deleteObjectCallback={onDeleteBundle}
 				/>
 				<ShareThroughEmailModal
 					modalTitle={t('bundle/views/bundle-detail___deel-deze-bundel')}

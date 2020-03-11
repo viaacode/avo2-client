@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isEmpty } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
@@ -56,13 +56,7 @@ import {
 	generateSearchLinks,
 	renderAvatar,
 } from '../../shared/helpers';
-import { isUuid } from '../../shared/helpers/uuid';
-import {
-	ApolloCacheManager,
-	BookmarksViewsPlaysService,
-	dataService,
-	ToastService,
-} from '../../shared/services';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -71,7 +65,6 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 
 import {
 	DELETE_COLLECTION,
-	GET_COLLECTION_ID_BY_AVO1_ID,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 } from '../collection.gql';
@@ -128,22 +121,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
-	const getCollectionIdByAvo1Id = async (id: string) => {
-		if (isUuid(id)) {
-			return id;
-		}
-		const response = await dataService.query({
-			query: GET_COLLECTION_ID_BY_AVO1_ID,
-			variables: {
-				avo1Id: id,
-			},
-		});
-		if (!response) {
-			return null;
-		}
-		return get(response, 'data.app_collections[0].id', null);
-	};
-
 	useEffect(() => {
 		trackEvents(
 			{
@@ -161,7 +138,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	useEffect(() => {
 		const checkPermissionsAndGetCollection = async () => {
 			try {
-				const uuid = await getCollectionIdByAvo1Id(collectionId);
+				const uuid = await CollectionService.getCollectionIdByAvo1Id(collectionId);
+
 				if (!uuid) {
 					setLoadingInfo({
 						state: 'error',
@@ -172,6 +150,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					});
 					return;
 				}
+
 				if (collectionId !== uuid) {
 					// Redirect to new url that uses the collection uuid instead of the collection avo1 id
 					// and continue loading the collection
@@ -180,6 +159,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						history
 					);
 				}
+
 				const rawPermissions = await Promise.all([
 					PermissionService.hasPermissions(
 						[
@@ -218,7 +198,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					canCreateCollections: rawPermissions[3],
 					canViewItems: rawPermissions[4],
 				};
-				const collectionObj = await CollectionService.getCollectionWithItems(
+				const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
 					uuid,
 					'collection'
 				);
@@ -319,37 +299,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
-	const onDeleteCollection = async () => {
-		try {
-			await triggerCollectionDelete({
-				variables: {
-					id: collectionId,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
-			history.push(APP_PATH.WORKSPACE.route);
-			ToastService.success(
-				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
-			);
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				t(
-					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
-				)
-			);
-		}
-	};
-
 	const onClickDropdownItem = async (item: ReactText) => {
 		switch (item) {
-			case 'createAssignment':
-				redirectToClientPage(
-					generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'),
-					history
-				);
-				break;
-
 			case 'duplicate':
 				try {
 					if (!collection) {
@@ -419,6 +370,17 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		}
 	};
 
+	const createAssignment = (): void => {
+		redirectToClientPage(
+			generateAssignmentCreateLink('KIJK', `${collectionId}`, 'COLLECTIE'),
+			history
+		);
+	};
+
+	const onDeleteCollection = (): void => {
+		CollectionService.deleteCollection(history, collectionId, triggerCollectionDelete);
+	};
+
 	// Render functions
 	const renderRelatedCollections = () => {
 		if (!relatedCollections || !relatedCollections.length) {
@@ -473,11 +435,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		const COLLECTION_DROPDOWN_ITEMS = [
 			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
 			createDropdownMenuItem(
-				'createAssignment',
-				t('collection/views/collection-detail___maak-opdracht'),
-				'clipboard'
-			),
-			createDropdownMenuItem(
 				'addToBundle',
 				t('collection/views/collection-detail___voeg-toe-aan-bundel'),
 				'plus'
@@ -502,6 +459,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		];
 		return (
 			<ButtonToolbar>
+				<Button
+					label={t('collection/views/collection-detail___maak-opdracht')}
+					type="secondary"
+					icon="clipboard"
+					ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
+					onClick={createAssignment}
+				/>
 				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
@@ -515,7 +479,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					icon="bookmark"
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
-					onClick={() => toggleBookmark()}
+					onClick={toggleBookmark}
 				/>
 				<Button
 					title={t('collection/views/collection-detail___deel')}
@@ -729,9 +693,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						collection={collection as Avo.Collection.Collection}
 						collectionId={collectionId as string}
 						isOpen={isAddToBundleModalOpen}
-						onClose={() => {
-							setIsAddToBundleModalOpen(false);
-						}}
+						onClose={() => setIsAddToBundleModalOpen(false)}
 					/>
 				)}
 				<DeleteObjectModal
@@ -743,7 +705,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={() => onDeleteCollection()}
+					deleteObjectCallback={onDeleteCollection}
 				/>
 				<ShareThroughEmailModal
 					modalTitle={t('collection/views/collection-detail___deel-deze-collectie')}

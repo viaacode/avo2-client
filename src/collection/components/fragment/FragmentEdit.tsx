@@ -36,9 +36,9 @@ import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
-import { isMediaFragment } from '../../helpers';
 
-import { CollectionService } from '../../collection.service';
+import { reorderFragments } from '../../collection.helpers';
+import { isMediaFragment } from '../../helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
@@ -168,7 +168,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			['asc']
 		);
 
-		const positionedFragments = CollectionService.reorderFragments(orderedFragments);
+		const positionedFragments = reorderFragments(orderedFragments);
 
 		changeCollectionState({
 			type: 'UPDATE_COLLECTION_PROP',

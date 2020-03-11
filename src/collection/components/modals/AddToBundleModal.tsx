@@ -70,7 +70,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	const fetchBundles = React.useCallback(
 		() =>
-			CollectionService.getCollectionTitlesByUser('bundle', user)
+			CollectionService.fetchCollectionsOrBundlesByUser('bundle', user)
 				.then((bundleTitles: Partial<Avo.Collection.Collection>[]) => {
 					setBundles(bundleTitles);
 					if (!bundleTitles.length) {

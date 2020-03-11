@@ -62,6 +62,7 @@ import {
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../collection.gql';
+import { getFragmentsFromCollection, cleanCollectionBeforeSave } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ShareCollectionModal } from '../components';
 import { swapFragmentsPositions } from '../helpers';
@@ -207,7 +208,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					return collectionState;
 				}
 
-				const fragments = CollectionService.getFragments(newCurrentCollection);
+				const fragments = getFragmentsFromCollection(newCurrentCollection);
 
 				const delta = action.direction === 'up' ? 1 : -1;
 
@@ -303,7 +304,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				canCreate: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const collectionObj = await CollectionService.getCollectionWithItems(
+			const collectionObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
 				collectionId,
 				type
 			);
@@ -453,9 +454,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				...collectionState.initialCollection,
 				title: newTitle,
 			};
-			const cleanedCollection = CollectionService.cleanCollectionBeforeSave(
-				collectionWithNewName
-			);
+			const cleanedCollection = cleanCollectionBeforeSave(collectionWithNewName);
 
 			// Immediately store the new name, without the user having to click the save button twice
 			await triggerCollectionUpdate({
@@ -582,7 +581,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		<Button
 			type="primary"
 			label={t('collection/views/collection-edit___opslaan')}
-			onClick={() => onSaveCollection()}
+			onClick={onSaveCollection}
 			disabled={isSavingCollection}
 		/>
 	);
