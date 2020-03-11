@@ -1,4 +1,4 @@
-import { compact, isNil } from 'lodash-es';
+import { compact, get, isNil, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -201,16 +201,16 @@ export const getValidationErrorsForPublish = (
 	);
 };
 
-export function getValidationErrorForSave(
+export const getValidationErrorForSave = (
 	collection: Partial<Avo.Collection.Collection>
-): string[] {
+): string[] => {
 	// List of validator functions, so we can use the functions separately as well
 	return compact(
 		VALIDATION_RULES_FOR_SAVE.map(rule =>
 			rule.isValid(collection) ? null : getError(rule, collection)
 		)
 	);
-}
+};
 
 function getError<T>(rule: ValidationRule<T>, object: T) {
 	if (typeof rule.error === 'string') {
@@ -218,3 +218,37 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
 	}
 	return rule.error(object);
 }
+
+export const reorderFragments = (
+	fragments: Avo.Collection.Fragment[]
+): Avo.Collection.Fragment[] => {
+	return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
+		...fragment,
+		position: index + 1,
+	}));
+};
+
+export const getFragmentsFromCollection = (
+	collection: Partial<Avo.Collection.Collection> | null | undefined
+): Avo.Collection.Fragment[] => {
+	return get(collection, 'collection_fragments') || [];
+};
+
+/**
+ * Clean the collection of properties from other tables, properties that can't be saved
+ */
+export const cleanCollectionBeforeSave = (
+	collection: Partial<Avo.Collection.Collection>
+): Partial<Avo.Collection.Collection> => {
+	const propertiesToDelete = ['collection_fragments', '__typename', 'type', 'profile'];
+
+	return omit(collection, propertiesToDelete);
+};
+
+export const getFragmentIdsFromCollection = (
+	collection: Partial<Avo.Collection.Collection> | null
+): number[] => {
+	return getFragmentsFromCollection(collection).map(
+		(fragment: Avo.Collection.Fragment) => fragment.id
+	);
+};
