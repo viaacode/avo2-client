@@ -36,6 +36,8 @@ export class CollectionService {
 	 * Insert collection and underlying collection fragments.
 	 *
 	 * @param newCollection Collection that must be inserted.
+	 * @param triggerCollectionInsert
+	 * @param triggerCollectionFragmentsInsert
 	 */
 	// TODO: apply queryServer.mutate
 	public static async insertCollection(
@@ -104,6 +106,10 @@ export class CollectionService {
 	 *
 	 * @param initialCollection Original collection object.
 	 * @param updatedCollection Collection that must be updated.
+	 * @param triggerCollectionUpdate
+	 * @param triggerCollectionFragmentInsert
+	 * @param triggerCollectionFragmentDelete
+	 * @param triggerCollectionFragmentUpdate
 	 */
 	// TODO: apply queryServer.mutate
 	public static async updateCollection(
@@ -302,6 +308,7 @@ export class CollectionService {
 	 *
 	 * @param history Object to allow navigation when successful.
 	 * @param collectionId Unique identifier of the collection.
+	 * @param triggerCollectionDelete
 	 */
 	// TODO: apply queryServer.mutate
 	public static deleteCollection = async (
@@ -347,8 +354,12 @@ export class CollectionService {
 	/**
 	 * Add duplicate of collection
 	 *
-	 * @param history Object to allow navigation when successful.
-	 * @param collectionId Unique identifier of the collection.
+	 * @param collection
+	 * @param user
+	 * @param copyPrefix
+	 * @param copyRegex
+	 * @param triggerCollectionInsert
+	 * @param triggerCollectionFragmentsInsert
 	 *
 	 * @returns Duplicate collection.
 	 */
@@ -673,24 +684,24 @@ export class CollectionService {
 				variables: { ids },
 			});
 
-			// add meta data to each item
-			const itemInfos: any[] = get(response, 'data.items', []);
-
-			itemInfos.forEach((itemInfo: any) => {
-				const collectionFragment:
-					| Avo.Collection.Fragment
-					| undefined = collectionOrBundle.collection_fragments.find(
-					fragment =>
+			// Add infos to each fragment under the item_meta property
+			const itemInfos: (Avo.Collection.Collection | Avo.Item.Item)[] = get(
+				response,
+				'data.items',
+				[]
+			);
+			collectionOrBundle.collection_fragments.forEach(fragment => {
+				const itemInfo = itemInfos.find(
+					item =>
 						fragment.external_id ===
-						(type === 'collection' ? itemInfo.external_id : itemInfo.id)
+						(type === 'collection' ? item.external_id : item.id)
 				);
 
-				if (collectionFragment) {
-					collectionFragment.item_meta = itemInfo;
-
-					if (!collectionFragment.use_custom_fields) {
-						collectionFragment.custom_description = itemInfo.description;
-						collectionFragment.custom_title = itemInfo.title;
+				if (itemInfo) {
+					fragment.item_meta = itemInfo;
+					if (!fragment.use_custom_fields) {
+						fragment.custom_description = itemInfo.description;
+						fragment.custom_title = itemInfo.title;
 					}
 				}
 			});
