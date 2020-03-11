@@ -1,4 +1,5 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { isNil } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CheckboxOption } from '../CheckboxDropdownModal/CheckboxDropdownModal';
@@ -8,6 +9,7 @@ export interface BooleanCheckboxDropdownProps {
 	label: string;
 	id: string;
 	disabled?: boolean;
+	value: boolean | null | undefined;
 	onChange: (value: boolean | null, id: string) => void;
 }
 
@@ -15,41 +17,35 @@ const BooleanCheckboxDropdown: FunctionComponent<BooleanCheckboxDropdownProps> =
 	label,
 	id,
 	disabled,
+	value,
 	onChange,
 }) => {
 	const [t] = useTranslation();
 
-	const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([
-		{ label: t('Ja'), id: 'true', checked: false },
-		{ label: t('Nee'), id: 'false', checked: false },
-	]);
+	const getOptions = (): CheckboxOption[] => {
+		const statuses = [
+			{ label: t('Ja'), id: 'true', checked: isNil(value) ? false : value },
+			{ label: t('Nee'), id: 'false', checked: isNil(value) ? false : !value },
+		];
+		return statuses;
+	};
 
-	useEffect(() => {
-		if (
-			(checkboxOptions[0].checked && checkboxOptions[1].checked) ||
-			(!checkboxOptions[0].checked && !checkboxOptions[1].checked)
-		) {
+	// Methods
+	const handleCheckboxChange = (selectedCheckboxes: string[]) => {
+		if (selectedCheckboxes.length === 0 || selectedCheckboxes.length === 2) {
 			onChange(null, id);
-		} else if (checkboxOptions[0].checked) {
+		} else if (selectedCheckboxes[0] === 'true') {
 			onChange(true, id);
 		} else {
 			onChange(false, id);
 		}
-	}, [checkboxOptions, id, onChange]);
-
-	// Methods
-	const handleCheckboxChange = (selectedCheckboxes: string[]) => {
-		setCheckboxOptions([
-			{ ...checkboxOptions[0], checked: selectedCheckboxes.includes('true') },
-			{ ...checkboxOptions[1], checked: selectedCheckboxes.includes('false') },
-		]);
 	};
 
 	return (
 		<CheckboxDropdownModal
 			label={label}
 			id={id}
-			options={checkboxOptions}
+			options={getOptions()}
 			onChange={handleCheckboxChange}
 			disabled={disabled}
 		/>

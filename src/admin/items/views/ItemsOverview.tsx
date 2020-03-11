@@ -37,36 +37,36 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 	const [tableState, setTableState] = useState<Partial<ItemsTableState>>({});
 
 	// methods
-	const generateWhereObject = (filters: Partial<ItemsTableState>) => {
-		const andFilters: any[] = [];
-		andFilters.push(
-			...getQueryFilter(filters.query, query => [
-				{ external_id: { _eq: filters.query } },
-				{ title: { _ilike: query } },
-				{ description: { _ilike: query } },
-				{ organisation: { name: { _ilike: query } } },
-				{ series: { _ilike: query } },
-			])
-		);
-		andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
-		andFilters.push(
-			...getDateRangeFilters(filters, [
-				'created_at',
-				'updated_at',
-				'issued',
-				'expiry_date',
-				'publish_at',
-				'depublish_at',
-				'published_at',
-			])
-		);
-		if (filters.type && filters.type.length) {
-			andFilters.push({ type: { label: { _in: filters.type } } });
-		}
-		return { _and: andFilters };
-	};
-
 	const fetchItems = useCallback(async () => {
+		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
+			const andFilters: any[] = [];
+			andFilters.push(
+				...getQueryFilter(filters.query, query => [
+					{ external_id: { _eq: filters.query } },
+					{ title: { _ilike: query } },
+					{ description: { _ilike: query } },
+					{ organisation: { name: { _ilike: query } } },
+					{ series: { _ilike: query } },
+				])
+			);
+			andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
+			andFilters.push(
+				...getDateRangeFilters(filters, [
+					'created_at',
+					'updated_at',
+					'issued',
+					'expiry_date',
+					'publish_at',
+					'depublish_at',
+					'published_at',
+				])
+			);
+			if (filters.type && filters.type.length) {
+				andFilters.push({ type: { label: { _in: filters.type } } });
+			}
+			return { _and: andFilters };
+		};
+
 		try {
 			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItems(
 				tableState.page || 0,

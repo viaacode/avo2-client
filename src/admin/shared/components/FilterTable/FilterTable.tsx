@@ -240,6 +240,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 											{...(col.filterProps || {})}
 											id={col.id}
 											label={col.label}
+											value={(tableState as any)[col.id]}
 											onChange={value =>
 												handleTableStateChanged(value, col.id)
 											}

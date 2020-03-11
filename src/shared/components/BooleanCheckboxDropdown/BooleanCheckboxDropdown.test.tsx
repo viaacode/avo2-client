@@ -10,6 +10,7 @@ describe('<BooleanCheckboxDropdown />', () => {
 			<BooleanCheckboxDropdown
 				label="Deleted"
 				id="is_deleted"
+				value={false}
 				onChange={action('CheckboxDropdown changed')}
 			/>
 		);
@@ -19,7 +20,12 @@ describe('<BooleanCheckboxDropdown />', () => {
 		const onChangeHandler = jest.fn();
 
 		const checkboxDropdownComponent = mount(
-			<BooleanCheckboxDropdown label="Deleted" id="is_deleted" onChange={onChangeHandler} />
+			<BooleanCheckboxDropdown
+				label="Deleted"
+				id="is_deleted"
+				value={false}
+				onChange={onChangeHandler}
+			/>
 		);
 
 		const checkboxes = checkboxDropdownComponent.find('[type="checkbox"]');
