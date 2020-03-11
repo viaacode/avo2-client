@@ -43,6 +43,7 @@ import {
 import { PermissionGroupService } from '../permission-group.service';
 import { PermissionGroup, PermissionGroupOverviewTableCols } from '../permission-group.types';
 import './PermissionGroupOverview.scss';
+import { ToastService } from '../../../shared/services';
 
 interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
 
@@ -98,6 +99,8 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 	// Methods
 	const handleDelete = async () => {
 		await PermissionGroupService.deletePermissionGroup(permissionGroupIdToDelete);
+		await fetchPermissionGroups();
+		ToastService.success(t('De permissie groep is verwijdert'), false);
 	};
 
 	const openModal = (permissionGroup: PermissionGroup): void => {
@@ -134,7 +137,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 							size="small"
 							ariaLabel={t('Bekijk de details van deze permissie groep')}
 							title={t('Bekijk de details van deze permissie groep')}
-							type="tertiary"
+							type="secondary"
 						/>
 						<Button
 							icon="edit"
@@ -146,7 +149,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 							size="small"
 							ariaLabel={t('Bewerk deze permissie groep')}
 							title={t('Bewerk deze permissie groep')}
-							type="tertiary"
+							type="secondary"
 						/>
 						<Button
 							icon="delete"
@@ -154,7 +157,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 							size="small"
 							ariaLabel={t('Verwijder deze permissie groep')}
 							title={t('Verwijder deze permissie groep')}
-							type="tertiary"
+							type="danger-hover"
 						/>
 					</ButtonToolbar>
 				);

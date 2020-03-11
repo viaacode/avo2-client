@@ -1,4 +1,4 @@
-import { get, without } from 'lodash-es';
+import { get, isNil, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +22,7 @@ import {
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
-import { CustomError, navigate } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -35,6 +35,8 @@ import {
 	PermissionGroupEditFormErrorState,
 	PermissionsTableCols,
 } from '../permission-group.types';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { ADMIN_PATH } from '../../admin.const';
 
 interface PermissionGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -147,9 +149,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 		if (!permissionGroup) {
 			return;
 		}
-		if (
-			(permissionGroup.permissions || []).find(pg => String(pg.id) === selectedPermissionId)
-		) {
+		if (isNil(selectedPermissionId)) {
 			ToastService.danger(t('Deze permissie zit reeds in de groep'), false);
 			return;
 		}
@@ -217,7 +217,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			);
 
 			ToastService.success(t('De permissie groep is opgeslagen'), false);
-			setIsSaving(false);
+			if (isCreatePage) {
+				redirectToClientPage(
+					buildLink(ADMIN_PATH.PERMISSION_GROUP_EDIT, { id: permissionGroupId }),
+					history
+				);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save permission group', err, {
@@ -227,6 +232,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			);
 			ToastService.danger(t('Het opslaan van de permissiegroep is mislukt'), false);
 		}
+		setIsSaving(false);
 	};
 
 	const getAllPermissions = () => {
@@ -325,6 +331,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 										label={t('Toevoegen')}
 										onClick={handleAddPermission}
 										type="primary"
+										disabled={isNil(selectedPermissionId)}
+										title={
+											isNil(selectedPermissionId)
+												? t('Kies eerst een permissie uit de lijst')
+												: ''
+										}
 									/>
 								</FormGroup>
 							</Form>

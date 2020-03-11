@@ -6,7 +6,7 @@ import i18n from '../../shared/translations/i18n';
 export const PERMISSION_GROUP_PATH = {
 	PERMISSION_GROUP_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.permissionGroups}`,
 	PERMISSION_GROUP_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.permissionGroups}/:id`,
-	PERMISSION_GROUP_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.permissionGroups}/:id/${ROUTE_PARTS.create}`,
+	PERMISSION_GROUP_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.permissionGroups}/${ROUTE_PARTS.create}`,
 	PERMISSION_GROUP_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.permissionGroups}/:id/${ROUTE_PARTS.edit}`,
 };
 

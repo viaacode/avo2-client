@@ -3,7 +3,7 @@ import { flatten, get, isNil, orderBy } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
-import { dataService, ToastService } from '../../shared/services';
+import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 
 import i18n from '../../shared/translations/i18n';
 import { ITEMS_PER_PAGE } from './permission-group.const';
@@ -113,6 +113,7 @@ export class PermissionGroupService {
 						user_permission_group_id: permissionGroupId,
 					})),
 				},
+				update: ApolloCacheManager.clearPermissionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to add permission to group', null, {
@@ -141,6 +142,7 @@ export class PermissionGroupService {
 					permissionIds,
 					permissionGroupId,
 				},
+				update: ApolloCacheManager.clearPermissionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to remove permissions from group', null, {
@@ -168,6 +170,7 @@ export class PermissionGroupService {
 						description: permissionGroup.description,
 					} as Partial<PermissionGroup>,
 				},
+				update: ApolloCacheManager.clearPermissionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to insert permission group in the database', null, {
@@ -177,7 +180,7 @@ export class PermissionGroupService {
 			}
 			const permissionGroupId = get(
 				response,
-				'data.insert_users_permission_groups.returning.id'
+				'data.insert_users_permission_groups.returning[0].id'
 			);
 			if (isNil(permissionGroupId)) {
 				throw new CustomError(
@@ -206,6 +209,7 @@ export class PermissionGroupService {
 					} as Partial<PermissionGroup>,
 					permissionGroupId: permissionGroup.id,
 				},
+				update: ApolloCacheManager.clearPermissionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to update permission group in the database', null, {
@@ -237,6 +241,7 @@ export class PermissionGroupService {
 				variables: {
 					id: permissionGroupId,
 				},
+				update: ApolloCacheManager.clearPermissionCache,
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to delete permission group from the database', null, {
