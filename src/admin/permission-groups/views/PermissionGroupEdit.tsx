@@ -20,11 +20,13 @@ import {
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
+import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { PERMISSION_GROUP_PATH, PERMISSIONS_TABLE_COLS } from '../permission-group.const';
@@ -35,8 +37,6 @@ import {
 	PermissionGroupEditFormErrorState,
 	PermissionsTableCols,
 } from '../permission-group.types';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { ADMIN_PATH } from '../../admin.const';
 
 interface PermissionGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
 

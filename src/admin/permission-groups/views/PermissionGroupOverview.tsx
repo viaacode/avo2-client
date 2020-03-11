@@ -32,6 +32,7 @@ import {
 } from '../../../shared/components';
 import { formatDate, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
+import { ToastService } from '../../../shared/services';
 import { KeyCode } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
@@ -43,7 +44,6 @@ import {
 import { PermissionGroupService } from '../permission-group.service';
 import { PermissionGroup, PermissionGroupOverviewTableCols } from '../permission-group.types';
 import './PermissionGroupOverview.scss';
-import { ToastService } from '../../../shared/services';
 
 interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
 

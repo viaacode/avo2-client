@@ -64,7 +64,7 @@ export const getLoginResponse = async (): Promise<Avo.Auth.LoginResponse> => {
 			throw new CustomError(
 				'Failed to check login, status code not in expected range (200-399)',
 				null,
-				{ message: data.message, response, data }
+				{ response, data, message: data.message }
 			);
 		}
 

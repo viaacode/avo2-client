@@ -57,8 +57,8 @@ export class PermissionGroupService {
 			return [permissionGroups, permissionGroupCount];
 		} catch (err) {
 			throw new CustomError('Failed to get permission groups from the database', err, {
-				query: 'GET_PERMISSION_GROUPS',
 				variables,
+				query: 'GET_PERMISSION_GROUPS',
 			});
 		}
 	}
@@ -174,8 +174,8 @@ export class PermissionGroupService {
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to insert permission group in the database', null, {
-					errors: response.errors,
 					response,
+					errors: response.errors,
 				});
 			}
 			const permissionGroupId = get(
@@ -213,8 +213,8 @@ export class PermissionGroupService {
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to update permission group in the database', null, {
-					errors: response.errors,
 					response,
+					errors: response.errors,
 				});
 			}
 		} catch (err) {
@@ -245,8 +245,8 @@ export class PermissionGroupService {
 			});
 			if (response.errors) {
 				throw new CustomError('Failed to delete permission group from the database', null, {
-					errors: response.errors,
 					response,
+					errors: response.errors,
 				});
 			}
 		} catch (err) {
