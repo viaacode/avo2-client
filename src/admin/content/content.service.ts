@@ -4,8 +4,7 @@ import { get } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, performQuery } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
-import { ApolloCacheManager, dataService } from '../../shared/services/data-service';
+import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 import {
 	insertContentBlocks,
@@ -16,11 +15,12 @@ import { ContentBlockConfig } from '../shared/types';
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import {
 	GET_CONTENT_BY_ID,
+	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
 	GET_CONTENT_PAGES,
 	GET_CONTENT_PAGES_BY_TITLE,
-	GET_CONTENT_TYPES,
+	GET_CONTENT_TYPES, INSERT_CONTENT_LABEL,
 } from './content.gql';
-import { ContentPageType } from './content.types';
+import { ContentLabel, ContentPageType } from './content.types';
 
 export const getContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
 	const query = {
@@ -174,5 +174,69 @@ export const updateContent = async (
 		);
 
 		return null;
+	}
+};
+
+export const fetchLabelsByContentType = async (contentType: string): Promise<ContentLabel[]> => {
+	let variables: any;
+	try {
+		variables = {
+			contentType,
+		};
+		const response = await dataService.query({
+			query: GET_CONTENT_LABELS_BY_CONTENT_TYPE,
+			variables,
+		});
+		if (response.errors) {
+			throw new CustomError(
+				'Failed to get content labels by content type from database because of graphql errors',
+				null,
+				{ response }
+			);
+		}
+		const labels = get(response, 'data.app_content_labels');
+		if (!labels) {
+			throw new CustomError('The response does not contain any labels', null, { response });
+		}
+		return labels;
+	} catch (err) {
+		throw new CustomError('Failed to get content labels by content type from database', err, {
+			variables,
+			query: 'GET_CONTENT_LABELS_BY_CONTENT_TYPE',
+		});
+	}
+};
+
+export const insertNewContentLabel = async (
+	label: string,
+	contentType: string
+): Promise<ContentLabel> => {
+	let variables: any;
+	try {
+		variables = {
+			label,
+			contentType,
+		};
+		const response = await dataService.mutate({
+			mutation: INSERT_CONTENT_LABEL,
+			variables,
+		});
+		if (response.errors) {
+			throw new CustomError(
+				'Failed to insert content labels in the database because of graphql errors',
+				null,
+				{ response }
+			);
+		}
+		const contentLabel = get(response, 'data.insert_app_content_labels.returning[0]');
+		if (!contentLabel) {
+			throw new CustomError('The response does not contain a label', null, { response });
+		}
+		return contentLabel;
+	} catch (err) {
+		throw new CustomError('Failed to insert content label in the database', err, {
+			variables,
+			query: 'INSERT_CONTENT_LABEL',
+		});
 	}
 };

@@ -22,8 +22,7 @@ import { ErrorView } from '../../../error/views';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { buildLink, formatDate, getFullName, getRole, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
+import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { ContentFilters } from '../components';

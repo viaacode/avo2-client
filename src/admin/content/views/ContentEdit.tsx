@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get } from 'lodash-es';
+import { get, kebabCase } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -133,6 +133,8 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		}
 	};
 
+	const getPathOrDefault = () => contentForm.path || `/${kebabCase(contentForm.title)}`;
+
 	const handleSave = async () => {
 		setIsSaving(true);
 
@@ -155,7 +157,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			title: contentForm.title,
 			description: contentForm.description || null,
 			is_protected: contentForm.isProtected,
-			path: contentForm.path || null,
+			path: getPathOrDefault(),
 			content_type: contentForm.contentType,
 			content_width: contentForm.contentWidth,
 			publish_at: contentForm.publishAt || null,
@@ -210,23 +212,20 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			errors.contentType = t('admin/content/views/content-edit___content-type-is-verplicht');
 		}
 
-		if (!contentForm.path) {
-			errors.path = t('admin/content/views/content-edit___een-url-is-verplicht');
-		} else {
-			// check if it is unique
-			const response = await dataService.query({
-				query: GET_CONTENT_PAGE_BY_PATH,
-				variables: { path: contentForm.path },
-			});
-			const page: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
-			if (page && String(page.id) !== id) {
-				errors.path = t(
-					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
-					{
-						pageTitle: page.title,
-					}
-				);
-			}
+		// check if the path is unique
+		const path = getPathOrDefault();
+		const response = await dataService.query({
+			query: GET_CONTENT_PAGE_BY_PATH,
+			variables: { path },
+		});
+		const page: Avo.Content.Content | undefined = get(response, 'data.app_content[0]');
+		if (page && String(page.id) !== id) {
+			errors.path = t(
+				'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
+				{
+					pageTitle: page.title,
+				}
+			);
 		}
 
 		if (

@@ -1,4 +1,5 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import { kebabCase } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -11,18 +12,25 @@ import {
 	Grid,
 	Select,
 	SelectOption,
+	TagInfo,
+	TagsInput,
 	TextInput,
 	WYSIWYG,
 } from '@viaa/avo2-components';
 
 import { ValueOf } from '../../../../shared/types';
 
+import { ToastService } from '../../../../shared/services';
 import { UserGroupSelect } from '../../../shared/components';
 
+import { DeleteObjectModal } from '../../../../shared/components';
+import { CustomError } from '../../../../shared/helpers';
 import { CONTENT_WIDTH_OPTIONS, DEFAULT_PAGES_WIDTH } from '../../content.const';
+import { fetchLabelsByContentType, insertNewContentLabel } from '../../content.service';
 import {
 	ContentEditFormErrors,
 	ContentEditFormState,
+	ContentLabel,
 	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
@@ -48,6 +56,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	// Hooks
 	const [t] = useTranslation();
 
+	const [contentTypeLabels, setContentTypeLabels] = useState<ContentLabel[]>([]);
+	const [labelToBeCreated, setLabelToBeCreated] = useState<string | null>(null);
+	const [isConfirmCreateModalOpen, setIsConfirmCreateModalOpen] = useState<boolean>(false);
+
 	useEffect(() => {
 		// Set fixed content width for specific page types
 		Object.keys(DEFAULT_PAGES_WIDTH).forEach(key => {
@@ -59,6 +71,20 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 			}
 		});
 	}, [formState.contentType, formState.contentWidth, onChange]);
+
+	useEffect(() => {
+		if (!formState.contentType) {
+			return;
+		}
+		fetchLabelsByContentType(formState.contentType)
+			.then(setContentTypeLabels)
+			.catch(err => {
+				console.error('Failed to fetch content labels by content type', err, {
+					contentType: formState.contentType,
+				});
+				ToastService.danger(t('Het ophalen van de content labels is mislukt'), false);
+			});
+	}, [formState.contentType, setContentTypeLabels]);
 
 	// Computed
 	const contentTypeOptions = [
@@ -76,6 +102,49 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	const handleDateValue = (key: DateFormKeys) => {
 		return formState[key] ? new Date(formState[key] as string) : null;
+	};
+
+	const handleContentTypeChange = (value: string) => {
+		onChange('contentType', value);
+		onChange('labels', []);
+	};
+
+	const handleLabelCreate = async (value: TagInfo) => {
+		if (!value) {
+			return;
+		}
+		setLabelToBeCreated(value.label);
+		setIsConfirmCreateModalOpen(true);
+	};
+
+	const handleLabelCreateConfirmed = async () => {
+		try {
+			if (!labelToBeCreated) {
+				throw new CustomError(
+					'Failed to create label because the labelToBeCreated is undefined'
+				);
+			}
+			const newLabel = await insertNewContentLabel(labelToBeCreated, formState.contentType);
+			onChange('labels', [...formState.labels, newLabel]);
+		} catch (err) {
+			console.error(new CustomError('Failed to create label', err, { labelToBeCreated }));
+			ToastService.danger(t('Het aanmaken van het label is mislukt'), false);
+		}
+	};
+
+	const mapLabelsToTags = (contentLabels: ContentLabel[]): TagInfo[] => {
+		return (contentLabels || []).map(contentLabel => ({
+			label: contentLabel.label,
+			value: contentLabel.id,
+		}));
+	};
+
+	const mapTagsToLabels = (tags: TagInfo[], contentType: string): ContentLabel[] => {
+		return (tags || []).map(tag => ({
+			label: tag.label,
+			id: tag.value,
+			content_type: contentType,
+		}));
 	};
 
 	// Render
@@ -134,7 +203,9 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								>
 									<TextInput
 										onChange={value => onChange('path', value)}
-										value={formState.path || ''}
+										value={
+											formState.path || `/${kebabCase(formState.title || '')}`
+										}
 									/>
 								</FormGroup>
 							</Column>
@@ -146,7 +217,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 									)}
 								>
 									<Select
-										onChange={value => onChange('contentType', value)}
+										onChange={handleContentTypeChange}
 										options={contentTypeOptions}
 										value={formState.contentType}
 									/>
@@ -163,6 +234,29 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										onChange={value => onChange('contentWidth', value)}
 										options={CONTENT_WIDTH_OPTIONS}
 										value={formState.contentWidth}
+									/>
+								</FormGroup>
+							</Column>
+							<Column size="12">
+								<FormGroup label={t('Labels')}>
+									<TagsInput
+										value={mapLabelsToTags(formState.labels)}
+										options={mapLabelsToTags(contentTypeLabels)}
+										placeholder={
+											!!formState.contentType
+												? t('Kies of maak een label (optioneel)')
+												: t('Kies eerst het type pagina')
+										}
+										allowMulti
+										allowCreate
+										onCreate={handleLabelCreate}
+										onChange={values =>
+											onChange(
+												'labels',
+												mapTagsToLabels(values, formState.contentType)
+											)
+										}
+										disabled={!formState.contentType}
 									/>
 								</FormGroup>
 							</Column>
@@ -212,6 +306,14 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							</Column>
 						</Grid>
 					</Form>
+					<DeleteObjectModal
+						title={t('Maak label aan')}
+						body={t('Weet je zeker dat je een nieuw label wil aanmaken?')}
+						confirmLabel={t('Aanmaken')}
+						isOpen={isConfirmCreateModalOpen}
+						onClose={() => setIsConfirmCreateModalOpen(false)}
+						deleteObjectCallback={handleLabelCreateConfirmed}
+					/>
 				</Container>
 			</Container>
 		</Container>

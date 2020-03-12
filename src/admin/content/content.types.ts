@@ -69,6 +69,7 @@ export interface ContentEditFormState {
 	publishAt: string;
 	depublishAt: string;
 	userGroupIds: number[];
+	labels: ContentLabel[];
 }
 
 export interface ContentEditState {
@@ -91,4 +92,13 @@ export enum ContentEditActionType {
 export interface ContentEditAction {
 	type: ContentEditActionType;
 	payload: any;
+}
+
+export interface ContentLabel {
+	id: number | string;
+	label: string;
+	content_type: string;
+	// We don't create a management page for labels, so we won't fetch these
+	// created_at: string;
+	// updated_at: string;
 }
