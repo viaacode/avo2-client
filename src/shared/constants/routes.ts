@@ -43,4 +43,5 @@ export const ROUTE_PARTS = Object.freeze({
 	klaar: 'klaar',
 	user: 'gebruikers',
 	userGroup: 'gebruikersgroep',
+	interactiveTours: 'interactieve-tours',
 });

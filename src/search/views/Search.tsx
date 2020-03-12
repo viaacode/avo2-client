@@ -61,6 +61,7 @@ import { selectSearchError, selectSearchLoading, selectSearchResults } from '../
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { ErrorView } from '../../error/views';
 import './Search.scss';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 
 const Search: FunctionComponent<SearchProps> = ({
 	searchResults,
@@ -381,8 +382,7 @@ const Search: FunctionComponent<SearchProps> = ({
 										/> */}
 									</DropdownContent>
 								</Dropdown>
-								{/* TODO re-enable when interactive tour viewed status can be saved in the database */}
-								{/*<InteractiveTour routeId="SEARCH" user={user} showButton />*/}
+								<InteractiveTour routeId="SEARCH" user={user} showButton />
 							</Flex>
 						</ToolbarRight>
 					</Toolbar>

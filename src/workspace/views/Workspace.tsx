@@ -33,6 +33,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
@@ -261,11 +262,18 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			<>
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
-						<BlockHeading type="h2" className="u-m-0">
-							<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">
-								Mijn Werkruimte
-							</Trans>
-						</BlockHeading>
+						<Toolbar>
+							<ToolbarLeft>
+								<BlockHeading type="h2" className="u-m-0">
+									<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">
+										Mijn Werkruimte
+									</Trans>
+								</BlockHeading>
+							</ToolbarLeft>
+							<ToolbarRight>
+								<InteractiveTour routeId="WORKSPACE" user={user} showButton />
+							</ToolbarRight>
+						</Toolbar>
 					</Container>
 				</Container>
 

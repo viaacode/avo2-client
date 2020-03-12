@@ -50,7 +50,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de permissie groepen is mislukt'),
+				message: t('Het ophalen van de gebruikersgroepen is mislukt'),
 			});
 		}
 	}, [setUserGroups, setLoadingInfo, t, tableState]);
