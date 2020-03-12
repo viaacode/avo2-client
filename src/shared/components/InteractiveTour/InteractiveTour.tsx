@@ -1,32 +1,35 @@
-import { debounce } from 'lodash-es';
+import { Location } from 'history';
+import { debounce, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Joyride, { CallBackProps, STATUS } from 'react-joyride';
+import { matchPath } from 'react-router';
 
 import { Button } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { InteractiveTourStep } from '../../../admin/interactive-tour/interactive-tour.types';
-import { RouteId } from '../../../constants';
+import { APP_PATH, RouteInfo } from '../../../constants';
 import { CustomError } from '../../helpers';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
 
 import './InteractiveTour.scss';
 
 export interface InteractiveTourProps {
-	routeId: RouteId;
+	location: Location;
 	user: Avo.User.User;
 	showButton: boolean;
 }
 
 const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
-	routeId,
+	location,
 	user,
 	showButton,
 }) => {
 	const [t] = useTranslation();
 
 	const [tour, setTour] = useState<TourInfo | null>(null);
+	const [routeId, setRouteId] = useState<string | null>(null);
 
 	const mapSteps = (dbSteps: InteractiveTourStep[]): InteractiveTourStep[] => {
 		return dbSteps.map(
@@ -64,21 +67,43 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 				);
 				return;
 			}
+			// Resolve current page location to route id, so we know which interactive tour to show
+			// We reverse the order of the routes, since more specific routes are always declared later in the list
+			const interactiveRoutePairs = reverse(
+				toPairs(APP_PATH).filter(pair => pair[1].showForInteractiveTour)
+			);
+			const matchingRoutePair: [string, RouteInfo] | undefined = interactiveRoutePairs.find(
+				pair => {
+					const route = pair[1].route;
+					const currentRoute = location.pathname;
+					const match = matchPath(currentRoute, route);
+					return !!match;
+				}
+			);
+
+			if (!matchingRoutePair) {
+				return;
+			}
+
+			const routeId: string = matchingRoutePair[0];
+
+			// Fetch interactive tours for current user and their seen status
 			const tourTemp = await InteractiveTourService.fetchStepsForPage(
 				routeId,
 				user.profile.id
 			);
 			setTour(tourTemp);
+			setRouteId(routeId);
 		} catch (err) {
 			console.error(
 				new CustomError(
 					'Failed to get the steps for the interactive tour from the database',
 					err,
-					{ routeId, user }
+					{ user, pathName: location.pathname }
 				)
 			);
 		}
-	}, [setTour, routeId, user]);
+	}, [setTour, location.pathname, user]);
 
 	useEffect(() => {
 		checkIfTourExistsForCurrentPage();
@@ -86,7 +111,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 
 	const markTourAsSeen = debounce(
 		() => {
-			if (!tour) {
+			if (!tour || !routeId) {
 				return;
 			}
 			InteractiveTourService.setInteractiveTourSeen(

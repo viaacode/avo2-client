@@ -1,4 +1,4 @@
-import { cloneDeep, get, map } from 'lodash-es';
+import { cloneDeep, compact, get, map, orderBy } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useReducer, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -330,6 +330,27 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		setIsSaving(false);
 	};
 
+	/**
+	 * Returns a list op select options for all pages that can have an interactive tour sorted by label
+	 */
+	const getPageOptions = (): SelectOption[] => {
+		return orderBy(
+			compact(
+				map(APP_PATH, (routeInfo, routeId): SelectOption | null => {
+					if (routeInfo.showForInteractiveTour) {
+						return {
+							label: routeInfo.route,
+							value: routeId,
+						};
+					}
+					return null;
+				})
+			),
+			['label'],
+			['asc']
+		);
+	};
+
 	const renderReorderButton = (index: number, direction: 'up' | 'down', disabled: boolean) => (
 		<Button
 			type="secondary"
@@ -349,6 +370,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		if (!interactiveTourState.currentInteractiveTour) {
 			return null;
 		}
+		console.info(APP_PATH);
 		return (
 			<div key={`step_${step.id}`}>
 				<Panel>
@@ -503,13 +525,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 								</FormGroup>
 								<FormGroup label={t('Pagina')} error={formErrors.page_id}>
 									<Select
-										options={map(
-											APP_PATH,
-											(route, routeId): SelectOption => ({
-												label: route.route,
-												value: routeId,
-											})
-										)}
+										options={getPageOptions()}
 										value={
 											interactiveTourState.currentInteractiveTour.page_id ||
 											''

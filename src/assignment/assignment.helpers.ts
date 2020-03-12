@@ -14,9 +14,7 @@ export const getAssignmentContent = async (
 		const queryInfo = CONTENT_LABEL_TO_QUERY[assignment.content_label];
 		const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query({
 			query: queryInfo.query,
-			variables: {
-				id: queryInfo.getVariables(assignment.content_id),
-			},
+			variables: queryInfo.getVariables(assignment.content_id),
 		});
 
 		const newAssignmentContent = get(response, `data.${queryInfo.resultPath}`);

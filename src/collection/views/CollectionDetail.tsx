@@ -65,6 +65,7 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service.const';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	DELETE_COLLECTION,
 	GET_COLLECTION_ID_BY_AVO1_ID,
@@ -552,6 +553,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						/>
 					</Spacer>
 				)}
+				<InteractiveTour location={location} user={user} showButton />
 			</ButtonToolbar>
 		);
 	};

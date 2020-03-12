@@ -382,7 +382,7 @@ const Search: FunctionComponent<SearchProps> = ({
 										/> */}
 									</DropdownContent>
 								</Dropdown>
-								<InteractiveTour routeId="SEARCH" user={user} showButton />
+								<InteractiveTour location={location} user={user} showButton />
 							</Flex>
 						</ToolbarRight>
 					</Toolbar>

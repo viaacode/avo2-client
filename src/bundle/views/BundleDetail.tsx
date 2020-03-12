@@ -56,6 +56,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
@@ -512,6 +513,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 														/>
 													</DropdownContent>
 												</ControlledDropdown>
+												<InteractiveTour
+													location={location}
+													user={user}
+													showButton
+												/>
 											</ButtonToolbar>
 										</ToolbarItem>
 									</ToolbarRight>
