@@ -18,9 +18,8 @@ export class ItemsService {
 			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
 		if (getOrderFunc) {
 			return [getOrderFunc(sortOrder)];
-		} else {
-			return [{ [sortColumn]: sortOrder }];
 		}
+		return [{ [sortColumn]: sortOrder }];
 	}
 
 	public static async fetchItems(

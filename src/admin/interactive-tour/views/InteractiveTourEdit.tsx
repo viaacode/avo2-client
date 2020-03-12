@@ -378,8 +378,8 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										type="danger"
 										onClick={() => {
 											changeInteractiveTourState({
-												type: 'REMOVE_STEP',
 												index,
+												type: 'REMOVE_STEP',
 											});
 										}}
 										ariaLabel={t('Verwijder stap')}

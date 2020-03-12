@@ -35,9 +35,8 @@ export class ContentService {
 			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
 		if (getOrderFunc) {
 			return [getOrderFunc(sortOrder)];
-		} else {
-			return [{ [sortColumn]: sortOrder }];
 		}
+		return [{ [sortColumn]: sortOrder }];
 	}
 
 	public static async fetchContentPages(
@@ -55,8 +54,8 @@ export class ContentService {
 				orderBy: ContentService.getOrderObject(sortColumn, sortOrder),
 			};
 			const response = await dataService.query({
-				query: GET_CONTENT_PAGES,
 				variables,
+				query: GET_CONTENT_PAGES,
 			});
 
 			const contentPages: Avo.Content.Content[] | null = get(

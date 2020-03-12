@@ -47,6 +47,7 @@ import { copyToClipboard, navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
 import { APP_PATH } from '../../constants';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { SearchFilterControls, SearchResults } from '../components';
 import { DEFAULT_FORM_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import {
@@ -61,7 +62,6 @@ import { selectSearchError, selectSearchLoading, selectSearchResults } from '../
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { ErrorView } from '../../error/views';
 import './Search.scss';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 
 const Search: FunctionComponent<SearchProps> = ({
 	searchResults,

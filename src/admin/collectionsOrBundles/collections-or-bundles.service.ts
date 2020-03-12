@@ -21,9 +21,8 @@ export class CollectionsOrBundlesService {
 			TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT[sortColumn];
 		if (getOrderFunc) {
 			return [getOrderFunc(sortOrder)];
-		} else {
-			return [{ [sortColumn]: sortOrder }];
 		}
+		return [{ [sortColumn]: sortOrder }];
 	}
 
 	public static async getCollections(
@@ -59,8 +58,8 @@ export class CollectionsOrBundlesService {
 			return [collections, collectionsCount];
 		} catch (err) {
 			throw new CustomError('Failed to get collections from the database', err, {
-				query: 'GET_COLLECTIONS',
 				variables,
+				query: 'GET_COLLECTIONS',
 			});
 		}
 	}

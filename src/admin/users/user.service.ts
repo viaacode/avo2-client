@@ -39,8 +39,8 @@ export class UserService {
 			return [profiles, profileCount];
 		} catch (err) {
 			throw new CustomError('Failed to get permission groups from the database', err, {
-				query: 'GET_PERMISSION_GROUPS',
 				variables,
+				query: 'GET_PERMISSION_GROUPS',
 			});
 		}
 	}
