@@ -5,7 +5,6 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
-import { Step } from 'react-joyride';
 import { ITEMS_PER_PAGE } from './interactive-tour.const';
 import {
 	DELETE_INTERACTIVE_TOUR,
@@ -14,7 +13,11 @@ import {
 	INSERT_INTERACTIVE_TOUR,
 	UPDATE_INTERACTIVE_TOUR,
 } from './interactive-tour.gql';
-import { InteractiveTour, InteractiveTourOverviewTableCols } from './interactive-tour.types';
+import {
+	InteractiveTour,
+	InteractiveTourOverviewTableCols,
+	InteractiveTourStep,
+} from './interactive-tour.types';
 
 export class InteractiveTourService {
 	public static async fetchInteractiveTours(
@@ -83,18 +86,16 @@ export class InteractiveTourService {
 		}
 	}
 
-	public static async insertInteractiveTour(
-		interactiveTour: InteractiveTour
-	): Promise<number> {
+	public static async insertInteractiveTour(interactiveTour: InteractiveTour): Promise<number> {
 		try {
 			const response = await dataService.mutate({
 				mutation: INSERT_INTERACTIVE_TOUR,
 				variables: {
 					interactiveTour: {
 						name: interactiveTour.name,
-						page: interactiveTour.page,
+						page: interactiveTour.page_id, // Renamed page to page_id, because we already have page n the tableState
 						steps: interactiveTour.steps,
-					} as InteractiveTour,
+					} as any,
 				},
 				update: ApolloCacheManager.clearInteractiveTourCache,
 			});
@@ -104,7 +105,10 @@ export class InteractiveTourService {
 					errors: response.errors,
 				});
 			}
-			const interactiveTourId = get(response, 'data.insert_users_groups.returning[0].id');
+			const interactiveTourId = get(
+				response,
+				'data.insert_app_interactive_tour.returning[0].id'
+			);
 			if (isNil(interactiveTourId)) {
 				throw new CustomError(
 					'Response from database does not contain the id of the inserted interactive tour',
@@ -128,9 +132,9 @@ export class InteractiveTourService {
 				variables: {
 					interactiveTour: {
 						name: interactiveTour.name,
-						page: interactiveTour.page,
+						page: interactiveTour.page_id,
 						steps: interactiveTour.steps,
-					} as InteractiveTour,
+					} as any,
 					interactiveTourId: interactiveTour.id,
 				},
 				update: ApolloCacheManager.clearInteractiveTourCache,
@@ -172,7 +176,11 @@ export class InteractiveTourService {
 		}
 	}
 
-	public static swapStepPositions(steps: Step[], currentStapIndex: number, delta: number) {
+	public static swapStepPositions(
+		steps: InteractiveTourStep[],
+		currentStapIndex: number,
+		delta: number
+	) {
 		const currentStep = steps[currentStapIndex];
 		steps[currentStapIndex] = steps[currentStapIndex + delta];
 		steps[currentStapIndex + delta] = currentStep;

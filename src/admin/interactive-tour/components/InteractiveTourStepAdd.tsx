@@ -1,11 +1,11 @@
 import { cloneDeep } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Step } from 'react-joyride';
 
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 
-import { InteractiveTour } from '../interactive-tour.types';
+import { generateRandomId } from '../../../shared/helpers/uuid';
+import { InteractiveTour, InteractiveTourStep } from '../interactive-tour.types';
 import { InteractiveTourAction } from '../views/InteractiveTourEdit';
 
 interface InteractiveTourAddProps {
@@ -21,13 +21,14 @@ const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const getStepsAfterInsertNewStep = (): Step[] => {
+	const getStepsAfterInsertNewStep = (): InteractiveTourStep[] => {
 		const steps = cloneDeep(interactiveTour.steps || []);
 
 		steps.splice(index, 0, {
 			title: '',
 			content: '',
 			target: '',
+			id: generateRandomId(),
 		});
 		return steps;
 	};

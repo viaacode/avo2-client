@@ -14,22 +14,23 @@ import {
 } from '@viaa/avo2-components';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { APP_PATH } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
-import { dataService, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
+	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
-import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
 import { InteractiveTourService } from '../interactive-tour.service';
 import { InteractiveTour } from '../interactive-tour.types';
 
@@ -45,24 +46,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 
 	const fetchInteractiveTourById = useCallback(async () => {
 		try {
-			const response = await dataService.query({
-				query: GET_INTERACTIVE_TOUR_BY_ID,
-				variables: {
-					id: match.params.id,
-				},
-			});
-			const interactiveTourObj = get(response, 'data.app_interactive_tour[0]');
-
-			if (!interactiveTourObj) {
-				setLoadingInfo({
-					state: 'error',
-					icon: 'search',
-					message: t('Deze interactieve tour werd niet gevonden'),
-				});
-				return;
-			}
-
-			setInteractiveTour(interactiveTourObj);
+			setInteractiveTour(await InteractiveTourService.fetchInteractiveTour(match.params.id));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get interactive tour by id', err, {
@@ -130,10 +114,11 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 					<Spacer margin="bottom-extra-large">
 						<Table horizontal variant="invisible" className="c-table_detail-page">
 							<tbody>
-								{renderSimpleDetailRows(interactiveTour, [
-									['name', t('Naam')],
-									['page', t('Pagina')],
-								])}
+								{renderSimpleDetailRows(interactiveTour, [['name', t('Naam')]])}
+								{renderDetailRow(
+									get(APP_PATH, [interactiveTour.page_id, 'route'], '-'),
+									t('Pagina')
+								)}
 								{renderDateDetailRows(interactiveTour, [
 									['created_at', t('Aangemaakt op')],
 									['updated_at', t('Aangepast op')],

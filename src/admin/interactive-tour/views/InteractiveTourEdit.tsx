@@ -1,7 +1,6 @@
 import { cloneDeep, get, map } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useReducer, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Step } from 'react-joyride';
 
 import {
 	BlockHeading,
@@ -40,17 +39,21 @@ import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
-import { INITIAL_INTERACTIVE_TOUR, INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
+import { getInitialInteractiveTour, INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
 import { InteractiveTourService } from '../interactive-tour.service';
-import { InteractiveTour, InteractiveTourEditFormErrorState } from '../interactive-tour.types';
+import {
+	InteractiveTour,
+	InteractiveTourEditFormErrorState,
+	InteractiveTourStep,
+} from '../interactive-tour.types';
 import './InteractiveTourEdit.scss';
 
 type StepPropUpdateAction = {
 	type: 'UPDATE_STEP_PROP';
 	stepIndex: number;
-	stepProp: keyof Step;
-	stepPropValue: ValueOf<Step>;
+	stepProp: keyof InteractiveTourStep;
+	stepPropValue: ValueOf<InteractiveTourStep>;
 };
 
 type StepSwapAction = {
@@ -185,7 +188,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		if (isCreatePage) {
 			changeInteractiveTourState({
 				type: 'UPDATE_INTERACTIVE_TOUR',
-				newInteractiveTour: INITIAL_INTERACTIVE_TOUR,
+				newInteractiveTour: getInitialInteractiveTour(),
 				updateInitialInteractiveTour: true,
 			});
 		} else {
@@ -257,10 +260,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		}
 		if (
 			!interactiveTourState.currentInteractiveTour ||
-			!interactiveTourState.currentInteractiveTour.page
+			!interactiveTourState.currentInteractiveTour.page_id
 		) {
 			return {
-				page: t('Een pagina is verplicht'),
+				page_id: t('Een pagina is verplicht'),
 			};
 		}
 		return null;
@@ -292,12 +295,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 
 			let interactiveTourId: number | string;
 			if (isCreatePage) {
-				// insert the permission group
+				// insert the interactive tour
 				interactiveTourId = await InteractiveTourService.insertInteractiveTour(
 					interactiveTourState.currentInteractiveTour
 				);
 			} else {
-				// Update existing permission group
+				// Update existing interactive tour
 				await InteractiveTourService.updateInteractiveTour(
 					interactiveTourState.currentInteractiveTour
 				);
@@ -342,12 +345,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		/>
 	);
 
-	const renderStep = (step: Step, index: number) => {
+	const renderStep = (step: InteractiveTourStep, index: number) => {
 		if (!interactiveTourState.currentInteractiveTour) {
 			return null;
 		}
 		return (
-			<>
+			<div key={`step_${step.id}`}>
 				<Panel>
 					<PanelHeader>
 						<Toolbar>
@@ -470,7 +473,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					interactiveTour={interactiveTourState.currentInteractiveTour}
 					changeInteractiveTourState={changeInteractiveTourState}
 				/>
-			</>
+			</div>
 		);
 	};
 
@@ -498,7 +501,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										}
 									/>
 								</FormGroup>
-								<FormGroup label={t('Pagina')} error={formErrors.page}>
+								<FormGroup label={t('Pagina')} error={formErrors.page_id}>
 									<Select
 										options={map(
 											APP_PATH,
@@ -508,13 +511,14 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 											})
 										)}
 										value={
-											interactiveTourState.currentInteractiveTour.page || ''
+											interactiveTourState.currentInteractiveTour.page_id ||
+											''
 										}
-										onChange={newPage =>
+										onChange={newPageId =>
 											changeInteractiveTourState({
 												type: 'UPDATE_INTERACTIVE_TOUR_PROP',
-												interactiveTourProp: 'page',
-												interactiveTourPropValue: newPage,
+												interactiveTourProp: 'page_id',
+												interactiveTourPropValue: newPageId,
 											})
 										}
 									/>

@@ -4,7 +4,7 @@ import { FilterableTableState } from '../shared/components/FilterTable/FilterTab
 
 export type InteractiveTourOverviewTableCols =
 	| 'name'
-	| 'page'
+	| 'page_id'
 	| 'created_at'
 	| 'updated_at'
 	| 'actions';
@@ -12,33 +12,24 @@ export type InteractiveTourOverviewTableCols =
 export interface InteractiveTour {
 	id?: number;
 	name: string;
-	page: string;
+	page_id: string;
 	created_at?: string;
 	updated_at?: string;
-	steps: Step[];
+	steps: InteractiveTourStep[];
 }
 
-export interface InteractiveTourEditParams {
-	interactiveTour?: string;
-	id?: string;
-}
-
-export type InteractiveTourEditPageType = 'edit' | 'create';
-
-export interface InteractiveTourEditFormState {
-	name: string;
-	page: string;
-	steps: Step[];
+export interface InteractiveTourStep extends Step {
+	id: string;
 }
 
 export interface InteractiveTourEditFormErrorState {
 	name?: string;
-	page?: string;
+	page_id?: string;
 }
 
 export interface InteractiveTourTableState extends FilterableTableState {
 	name: string;
-	pageName: string;
+	page_id: string;
 	created_at: string;
 	updated_at: string;
 }

@@ -1,4 +1,5 @@
 import { ROUTE_PARTS } from '../../shared/constants';
+import { generateRandomId } from '../../shared/helpers/uuid';
 import i18n from '../../shared/translations/i18n';
 
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
@@ -15,7 +16,7 @@ export const ITEMS_PER_PAGE = 10;
 
 export const INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
 	{ id: 'name', label: i18n.t('Naam'), sortable: true },
-	{ id: 'page', label: i18n.t('Pagina'), sortable: true },
+	{ id: 'page_id', label: i18n.t('Pagina'), sortable: true },
 	{
 		id: 'created_at',
 		label: i18n.t('Aangemaakt op'),
@@ -31,17 +32,20 @@ export const INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
 	{ id: 'actions', label: '' },
 ];
 
-export const INITIAL_INTERACTIVE_TOUR: InteractiveTour = {
-	name: '',
-	page: '',
-	steps: [
-		{
-			target: '',
-			title: '',
-			content: '',
-		},
-	],
-};
+export function getInitialInteractiveTour(): InteractiveTour {
+	return {
+		name: '',
+		page_id: '',
+		steps: [
+			{
+				target: '',
+				title: '',
+				content: '',
+				id: generateRandomId(),
+			},
+		],
+	};
+}
 
 export const PAGE_TYPES_LANG = {
 	create: i18n.t('Toevoegen'),

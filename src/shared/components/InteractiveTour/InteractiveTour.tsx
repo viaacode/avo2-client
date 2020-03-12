@@ -1,11 +1,12 @@
 import { debounce } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Joyride, { CallBackProps, STATUS, Step } from 'react-joyride';
+import Joyride, { CallBackProps, STATUS } from 'react-joyride';
 
 import { Button } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { InteractiveTourStep } from '../../../admin/interactive-tour/interactive-tour.types';
 import { RouteId } from '../../../constants';
 import { CustomError } from '../../helpers';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
@@ -27,10 +28,10 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 
 	const [tour, setTour] = useState<TourInfo | null>(null);
 
-	const mapSteps = (dbSteps: Step[]): Step[] => {
+	const mapSteps = (dbSteps: InteractiveTourStep[]): InteractiveTourStep[] => {
 		return dbSteps.map(
-			(dbStep): Step => {
-				const mappedStep: Partial<Step> = {};
+			(dbStep): InteractiveTourStep => {
+				const mappedStep: Partial<InteractiveTourStep> = {};
 				if (!dbStep.target) {
 					mappedStep.placement = 'center';
 					mappedStep.target = 'body';
@@ -46,7 +47,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 						}}
 					/>
 				);
-				return mappedStep as Step;
+				return mappedStep as InteractiveTourStep;
 			}
 		);
 	};

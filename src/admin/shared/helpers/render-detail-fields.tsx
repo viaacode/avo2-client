@@ -1,9 +1,18 @@
 import { get, isBoolean, isNil } from 'lodash-es';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import { TagList, TagOption } from '@viaa/avo2-components';
 
 import { formatDate } from '../../../shared/helpers/formatters';
+
+export function renderDetailRow(value: ReactNode, label: string): ReactElement {
+	return (
+		<tr key={`detail-row_${label}`}>
+			<th>{label}</th>
+			<td>{value}</td>
+		</tr>
+	);
+}
 
 export function renderSimpleDetailRows(
 	obj: any,
@@ -14,12 +23,7 @@ export function renderSimpleDetailRows(
 		if (isBoolean(value)) {
 			value = value ? 'Ja' : 'Nee';
 		}
-		return (
-			<tr>
-				<th>{propAndTranslation[1]}</th>
-				<td>{isNil(value) ? '-' : value}</td>
-			</tr>
-		);
+		return renderDetailRow(isNil(value) ? '-' : value, propAndTranslation[1]);
 	});
 }
 
@@ -28,11 +32,9 @@ export function renderDateDetailRows(
 	propAndTranslations: [string, string][]
 ): ReactElement[] {
 	return propAndTranslations.map(propAndTranslation => {
-		return (
-			<tr>
-				<th>{propAndTranslation[1]}</th>
-				<td>{obj[propAndTranslation[0]] ? formatDate(obj[propAndTranslation[0]]) : '-'}</td>
-			</tr>
+		return renderDetailRow(
+			obj[propAndTranslation[0]] ? formatDate(obj[propAndTranslation[0]]) : '-',
+			propAndTranslation[1]
 		);
 	});
 }
@@ -42,25 +44,21 @@ export function renderMultiOptionDetailRows(
 	propAndTranslations: [string, string][]
 ): ReactElement[] {
 	return propAndTranslations.map(propAndTranslation => {
-		return (
-			<tr>
-				<th>{propAndTranslation[1]}</th>
-				<td>
-					{obj[propAndTranslation[0]] ? (
-						<TagList
-							swatches={false}
-							tags={obj[propAndTranslation[0]].map(
-								(subject: string): TagOption => ({
-									id: subject,
-									label: subject,
-								})
-							)}
-						/>
-					) : (
-						'-'
+		return renderDetailRow(
+			obj[propAndTranslation[0]] ? (
+				<TagList
+					swatches={false}
+					tags={obj[propAndTranslation[0]].map(
+						(subject: string): TagOption => ({
+							id: subject,
+							label: subject,
+						})
 					)}
-				</td>
-			</tr>
+				/>
+			) : (
+				'-'
+			),
+			propAndTranslation[1]
 		);
 	});
 }

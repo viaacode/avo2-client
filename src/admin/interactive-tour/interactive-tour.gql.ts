@@ -5,7 +5,7 @@ export const GET_INTERACTIVE_TOUR_BY_ID = gql`
 		app_interactive_tour(where: { id: { _eq: $id } }) {
 			name
 			id
-			page
+			page_id: page
 			created_at
 			updated_at
 			steps
@@ -23,7 +23,7 @@ export const GET_INTERACTIVE_TOURS = gql`
 		app_interactive_tour(limit: $limit, offset: $offset, order_by: $orderBy, where: $where) {
 			name
 			id
-			page
+			page_id: page
 			created_at
 			updated_at
 		}

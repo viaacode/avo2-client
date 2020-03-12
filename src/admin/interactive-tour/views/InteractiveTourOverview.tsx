@@ -1,4 +1,4 @@
-import { isNil } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -6,6 +6,7 @@ import { Button, ButtonToolbar, Container, Spacer } from '@viaa/avo2-components'
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	DeleteObjectModal,
@@ -16,9 +17,9 @@ import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
+import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import {
 	INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
 	INTERACTIVE_TOUR_PATH,
@@ -50,7 +51,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			andFilters.push(
 				...getQueryFilter(filters.query, query => [
 					{ name: { _ilike: query } },
-					{ table: { _ilike: query } },
+					{ page: { _ilike: query } },
 				])
 			);
 			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
@@ -63,7 +64,8 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				interactiveTourCountTemp,
 			] = await InteractiveTourService.fetchInteractiveTours(
 				tableState.page || 0,
-				(tableState.sort_column || 'created_at') as InteractiveTourOverviewTableCols,
+				// We need to substitute page with page_id, because the filter table state already contains a prop "page" for pagination
+				(tableState.sort_column || 'created_at').replace('page_id', 'page') as any,
 				tableState.sort_order || 'desc',
 				generateWhereObject(tableState)
 			);
@@ -135,6 +137,17 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 		columnId: InteractiveTourOverviewTableCols
 	) => {
 		switch (columnId) {
+			case 'page_id':
+				return (
+					<div>
+						<span>{rowData.page_id}</span>
+						<br />
+						<span className="u-text-muted">
+							{get(APP_PATH, [rowData.page_id, 'route'], '-')}
+						</span>
+					</div>
+				);
+
 			case 'created_at':
 			case 'updated_at':
 				return formatDate(rowData[columnId]) || '-';

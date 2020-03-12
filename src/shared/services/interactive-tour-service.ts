@@ -1,19 +1,20 @@
-import gql from 'graphql-tag';
 import { compact, findLast, fromPairs, get, last } from 'lodash-es';
-import { Step } from 'react-joyride';
+
+import { InteractiveTourStep } from '../../admin/interactive-tour/interactive-tour.types';
 import { APP_PATH } from '../../constants';
 import { CustomError } from '../helpers';
+
 import { dataService } from './data-service';
 import {
 	GET_INTERACTIVE_TOUR,
-	// GET_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
+	GET_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
 	INSERT_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
 	UPDATE_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
 } from './interactive-tour-service.gql';
 
 export interface TourInfo {
 	id: number;
-	steps: Step[];
+	steps: InteractiveTourStep[];
 	seen: boolean;
 }
 
@@ -127,19 +128,8 @@ export class InteractiveTourService {
 				key: `INTERACTIVE-TOUR___${routeId}___${interactiveTourId}`,
 			};
 			const getResponse = await dataService.query({
-				variables: {
-					profileId: '69ccef3b-751a-4be4-95bc-5ef365fbd504',
-					key: 'INTERACTIVE-TOUR___WORKSPACE___2',
-				},
-				query: gql`
-					query getInteractiveTour($key: String!, $profileId: uuid!) {
-						users_notifications(
-							where: { profile_id: { _eq: $profileId }, key: { _eq: $key } }
-						) {
-							key
-						}
-					}
-				`,
+				variables,
+				query: GET_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
 			});
 			const notificationEntryExists: boolean = !!get(
 				getResponse,
