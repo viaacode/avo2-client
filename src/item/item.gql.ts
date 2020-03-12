@@ -84,3 +84,12 @@ export const GET_ITEM_TILE_BY_ID = gql`
 		# }
 	}
 `;
+
+export const GET_EXTERNAL_ID_BY_MEDIAMOSA_ID = gql`
+	query getExternalIdByMediaMosaId($mediamosaId: String!) {
+		migrate_reference_ids(where: { mediamosa_id: { _eq: $mediamosaId } }) {
+			external_id
+			id
+		}
+	}
+`;
