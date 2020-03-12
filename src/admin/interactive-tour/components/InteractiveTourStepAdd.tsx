@@ -1,5 +1,7 @@
+import { cloneDeep } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Step } from 'react-joyride';
 
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 
@@ -13,20 +15,29 @@ interface InteractiveTourAddProps {
 }
 
 const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
+	index,
 	interactiveTour,
 	changeInteractiveTourState,
 }) => {
 	const [t] = useTranslation();
+
+	const getStepsAfterInsertNewStep = (): Step[] => {
+		const steps = cloneDeep(interactiveTour.steps || []);
+
+		steps.splice(index, 0, {
+			title: '',
+			content: '',
+			target: '',
+		});
+		return steps;
+	};
 
 	// Listeners
 	const handleAddStepClick = () => {
 		changeInteractiveTourState({
 			type: 'UPDATE_INTERACTIVE_TOUR_PROP',
 			interactiveTourProp: 'steps',
-			interactiveTourPropValue: [
-				...(interactiveTour.steps || []),
-				{ title: '', content: '', target: '' },
-			],
+			interactiveTourPropValue: getStepsAfterInsertNewStep(),
 		});
 	};
 

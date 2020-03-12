@@ -1,3 +1,4 @@
+import { debounce } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Joyride, { CallBackProps, STATUS, Step } from 'react-joyride';
@@ -8,7 +9,8 @@ import { Avo } from '@viaa/avo2-types';
 import { RouteId } from '../../../constants';
 import { CustomError } from '../../helpers';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
-import { debounce } from 'lodash-es';
+
+import './InteractiveTour.scss';
 
 export interface InteractiveTourProps {
 	routeId: RouteId;

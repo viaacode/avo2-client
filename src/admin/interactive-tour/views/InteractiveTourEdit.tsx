@@ -44,6 +44,7 @@ import { INITIAL_INTERACTIVE_TOUR, INTERACTIVE_TOUR_PATH } from '../interactive-
 import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
 import { InteractiveTourService } from '../interactive-tour.service';
 import { InteractiveTour, InteractiveTourEditFormErrorState } from '../interactive-tour.types';
+import './InteractiveTourEdit.scss';
 
 type StepPropUpdateAction = {
 	type: 'UPDATE_STEP_PROP';
@@ -142,7 +143,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					return interactiveTourState;
 				}
 
-				const delta = action.direction === 'up' ? 1 : -1;
+				const delta = action.direction === 'up' ? -1 : 1;
 
 				newCurrentInteractiveTour.steps = InteractiveTourService.swapStepPositions(
 					newCurrentInteractiveTour.steps || [],
@@ -326,12 +327,16 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		setIsSaving(false);
 	};
 
-	const renderReorderButton = (step: Step, direction: 'up' | 'down', disabled: boolean) => (
+	const renderReorderButton = (index: number, direction: 'up' | 'down', disabled: boolean) => (
 		<Button
 			type="secondary"
 			icon={`chevron-${direction}` as IconName}
 			onClick={() => {
-				console.info(step);
+				changeInteractiveTourState({
+					direction,
+					index,
+					type: 'SWAP_STEPS',
+				});
 			}}
 			disabled={disabled}
 		/>
@@ -349,9 +354,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 							<ToolbarLeft>
 								<ToolbarItem>
 									<div className="c-button-toolbar">
-										{renderReorderButton(step, 'up', index === 0)}
+										{renderReorderButton(index, 'up', index === 0)}
 										{renderReorderButton(
-											step,
+											index,
 											'down',
 											index ===
 												(
@@ -435,29 +440,25 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										</span>
 									</TooltipTrigger>
 									<TooltipContent>
-										<p>
+										<Spacer padding="small">
 											<Trans>
 												Je kan een element selector kopieren door:
 												<ul>
 													<li>
-														* Klik rechts op een element op de website
+														Klik rechts op een element op de website
 													</li>
-													<li>* Kies "element inspecteren"</li>
+													<li>Kies "element inspecteren"</li>
 													<li>
-														* Klik rechts op de geselecteerde html code
-														in het nieuwe venster
-													</li>
-													<li>
-														* Klik rechts op de geselecteerde html code
-														in het nieuwe venster
+														Klik rechts op de geselecteerde html code in
+														het nieuwe venster
 													</li>
 													<li>
-														* Kies kopieer => kopieer element selector
+														Kies kopieer => kopieer element selector
 													</li>
-													<li>* Plak de waarde in dit tekst veld</li>
+													<li>Plak de waarde in dit tekst veld</li>
 												</ul>
 											</Trans>
-										</p>
+										</Spacer>
 									</TooltipContent>
 								</Tooltip>
 							</FormGroup>
@@ -537,7 +538,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	const renderPage = () => (
 		<AdminLayout showBackButton pageTitle={t('Interactive tour aanpassen')}>
 			<AdminLayoutBody>
-				<Container mode="vertical" size="small">
+				<Container mode="vertical" size="small" className="m-interactive-tour-edit-view">
 					<Container mode="horizontal">{renderEditPage()}</Container>
 				</Container>
 			</AdminLayoutBody>
