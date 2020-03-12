@@ -41,13 +41,17 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
 			const andFilters: any[] = [];
 			andFilters.push(
-				...getQueryFilter(filters.query, query => [
-					{ external_id: { _eq: filters.query } },
-					{ title: { _ilike: query } },
-					{ description: { _ilike: query } },
-					{ organisation: { name: { _ilike: query } } },
-					{ series: { _ilike: query } },
-				])
+				...getQueryFilter(
+					filters.query,
+					(queryWordWildcard: string, queryWord: string, query: string) => [
+						{ external_id: { _eq: query } },
+						{ title: { _ilike: queryWordWildcard } },
+						{ description: { _ilike: queryWordWildcard } },
+						{ organisation: { name: { _ilike: queryWordWildcard } } },
+						{ series: { _ilike: queryWordWildcard } },
+						{ lom_keywords: { _contains: queryWord } },
+					]
+				)
 			);
 			andFilters.push(...getBooleanFilters(filters, ['is_published', 'is_deleted']));
 			andFilters.push(

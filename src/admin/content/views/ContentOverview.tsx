@@ -65,12 +65,16 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const generateWhereObject = (filters: Partial<ContentTableState>) => {
 		const andFilters: any[] = [];
 		andFilters.push(
-			...getQueryFilter(filters.query, query => [
-				{ title: { _ilike: `%${query}%` } },
-				{ profile: { usersByuserId: { first_name: { _ilike: `%${query}%` } } } },
-				{ profile: { usersByuserId: { last_name: { _ilike: `%${query}%` } } } },
-				{ profile: { usersByuserId: { role: { _ilike: `%${query}%` } } } },
-			])
+			...getQueryFilter(
+				filters.query,
+				// @ts-ignore
+				(queryWordWildcard: string) => [
+					{ title: { _ilike: queryWordWildcard } },
+					{ profile: { usersByuserId: { first_name: { _ilike: queryWordWildcard } } } },
+					{ profile: { usersByuserId: { last_name: { _ilike: queryWordWildcard } } } },
+					{ profile: { usersByuserId: { role: { _ilike: queryWordWildcard } } } },
+				]
+			)
 		);
 		andFilters.push(...getBooleanFilters(filters, ['is_public']));
 		andFilters.push(

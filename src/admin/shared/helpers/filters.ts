@@ -2,13 +2,12 @@ import { compact, isNil } from 'lodash-es';
 
 export function getQueryFilter(
 	query: string | undefined,
-	getQueryFilterObj: (query: string) => any[]
+	getQueryFilterObj: (query: string, queryWord: string, queryWordWildcard: string) => any[]
 ) {
 	if (query) {
-		return query.split(' ').map(queryPart => {
-			const queryPartWildcard = `%${queryPart}%`;
+		return query.split(' ').map(queryWord => {
 			return {
-				_or: getQueryFilterObj(queryPartWildcard),
+				_or: getQueryFilterObj(`%${queryWord}%`, queryWord, query),
 			};
 		});
 	}
