@@ -13,13 +13,13 @@ import {
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { APP_PATH } from '../../constants';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
-import { APP_PATH } from '../../constants';
 import { Account, Email, Notifications, Profile } from '../components';
 import { ACCOUNT_ID, EMAIL_ID, NOTIFICATIONS_ID, PROFILE_ID, SettingsTab } from '../settings.const';
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 
 interface ForPupilsProps extends DefaultSecureRouteProps<{ tabId: string }> {}
 

@@ -1,11 +1,12 @@
 import classnames from 'classnames';
-import * as H from 'history';
+import { Location } from 'history';
+import { flatten } from 'lodash-es';
 import React, { FunctionComponent, ReactElement } from 'react';
+import { Trans } from 'react-i18next';
 import { Link, NavLink } from 'react-router-dom';
+
 import { NavigationItemInfo } from '../../../../shared/types';
 
-import { flatten } from 'lodash-es';
-import { Trans } from 'react-i18next';
 import './Sidebar.scss';
 
 interface SidebarProps {
@@ -22,7 +23,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 	light = false,
 	navItems,
 }) => {
-	const isActiveClass = (item: NavigationItemInfo, location: H.Location<any>): boolean => {
+	const isActiveClass = (item: NavigationItemInfo, location: Location): boolean => {
 		return (
 			(!!item.location && item.location === location.pathname && !item.exact) ||
 			(!!item.location &&
@@ -43,6 +44,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 					'o-sidebar__nav-item-sublink': isSubLink || false,
 				})}
 			>
+				6
 				<NavLink
 					className={classnames('o-sidebar__nav-item')}
 					activeClassName="o-sidebar__nav-item--active"
