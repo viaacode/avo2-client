@@ -22,6 +22,7 @@ import { dataService, ToastService } from '../../../../../shared/services';
 import i18n from '../../../../../shared/translations/i18n';
 import { AppState } from '../../../../../store';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
+import { DbContent } from '../../../../content/content.types';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components';
 import { ContentBlockConfig } from '../../../../shared/types';
 import { parseContentBlocks } from '../../../helpers';
@@ -62,7 +63,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
-	const [pages, setPages] = useState<Avo.Content.Content[]>([] as Avo.Content.Content[]);
+	const [pages, setPages] = useState<DbContent[]>([] as DbContent[]);
 	const [pageCount, setPageCount] = useState<number>(1);
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
@@ -98,47 +99,50 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	};
 
 	const fetchPages = useCallback(async () => {
-		let filteredPages: Avo.Content.Content[] = [];
-		let pageCount = 0;
-		const userGroupIds: number[] = getUserGroupIds(user);
-		if (selectedTabs.length) {
-			// TODO get contentPages from the database that have one of the selected groups
-		} else {
+		try {
+			const userGroupIds: number[] = getUserGroupIds(user);
+
+			const selectedLabelIds = selectedTabs.map(labelObj => labelObj.id);
 			const response = await dataService.query({
 				query:
 					itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
 				variables: {
 					where: {
-						content_type: { _eq: contentTypeAndTabs.selectedContentType },
-						_or: userGroupIds.map(userGroupId => ({
-							user_group_ids: { _contains: userGroupId },
-						})),
+						_and: [
+							{
+								// Get content pages with the selected content type
+								content_type: { _eq: contentTypeAndTabs.selectedContentType },
+							},
+							{
+								// Get pages that are visible to the current user
+								_or: userGroupIds.map(userGroupId => ({
+									user_group_ids: { _contains: userGroupId },
+								})),
+							},
+							// Get pages for the selected labels if some labels are selected
+							...(selectedLabelIds.length
+								? [
+										{
+											content_content_labels: {
+												content_label: { id: { _in: selectedLabelIds } },
+											},
+										},
+								  ]
+								: []),
+						],
 					},
 					offset: currentPage * debouncedItemsPerPage,
 					limit: debouncedItemsPerPage,
 				},
 			});
-			const pageArray: Avo.Content.Content[] = get(response, 'data.app_content', []);
-			pageCount =
-				get(response, 'data.app_content_aggregate.aggregate.count', 0) /
-				debouncedItemsPerPage;
-			filteredPages = pageArray;
-		}
-		setPages(filteredPages);
-		setPageCount(Math.ceil(pageCount / debouncedItemsPerPage));
-	}, [
-		selectedTabs,
-		itemStyle,
-		currentPage,
-		debouncedItemsPerPage,
-		setPages,
-		setPageCount,
-		contentTypeAndTabs,
-		user,
-	]);
-
-	useEffect(() => {
-		fetchPages().catch(err => {
+			setPages(get(response, 'data.app_content', []));
+			setPageCount(
+				Math.ceil(
+					get(response, 'data.app_content_aggregate.aggregate.count', 0) /
+						debouncedItemsPerPage
+				)
+			);
+		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch pages', err, {
 					query: 'GET_CONTENT',
@@ -153,17 +157,21 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-de-paginas-is-mislukt'
 				)
 			);
-		});
+		}
 	}, [
-		contentTypeAndTabs.selectedContentType,
 		selectedTabs,
+		itemStyle,
 		currentPage,
-		setPageCount,
-		setPages,
-		fetchPages,
 		debouncedItemsPerPage,
-		t,
+		setPages,
+		setPageCount,
+		contentTypeAndTabs,
+		user,
 	]);
+
+	useEffect(() => {
+		fetchPages();
+	}, [fetchPages]);
 
 	const handleCurrentPageChanged = (pageIndex: number) => {
 		setCurrentPage(pageIndex);

@@ -225,6 +225,7 @@ export const insertNewContentLabel = async (
 		const response = await dataService.mutate({
 			variables,
 			mutation: INSERT_CONTENT_LABEL,
+			update: ApolloCacheManager.clearContentLabels,
 		});
 		if (response.errors) {
 			throw new CustomError(

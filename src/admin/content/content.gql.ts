@@ -40,6 +40,12 @@ export const GET_CONTENT_PAGES = gql`
 			updated_at
 			user_group_ids
 			user_profile_id
+			content_content_labels {
+				content_label {
+					label
+					id
+				}
+			}
 		}
 		app_content_aggregate(where: $where) {
 			aggregate {
@@ -88,6 +94,12 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 			publish_at
 			title
 			updated_at
+			content_content_labels {
+				content_label {
+					label
+					id
+				}
+			}
 			contentBlockssBycontentId(order_by: { position: asc }) {
 				content_block_type
 				content_id
