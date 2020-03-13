@@ -44,7 +44,6 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 					'o-sidebar__nav-item-sublink': isSubLink || false,
 				})}
 			>
-				6
 				<NavLink
 					className={classnames('o-sidebar__nav-item')}
 					activeClassName="o-sidebar__nav-item--active"
