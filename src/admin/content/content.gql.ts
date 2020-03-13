@@ -205,3 +205,29 @@ export const INSERT_CONTENT_LABEL = gql`
 		}
 	}
 `;
+
+export const GET_CONTENT_LABEL_LINKS = gql`
+	mutation insertContentLabelLinks($objects: [app_content_content_labels_insert_input!]!) {
+		insert_app_content_content_labels(objects: $objects) {
+			affected_rows
+		}
+	}
+`;
+
+export const INSERT_CONTENT_LABEL_LINKS = gql`
+	mutation insertContentLabelLinks($objects: [app_content_content_labels_insert_input!]!) {
+		insert_app_content_content_labels(objects: $objects) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_CONTENT_LABEL_LINKS = gql`
+	mutation deleteContentLabelLinks($contentId: Int!, $labelId: Int!) {
+		delete_app_content_content_labels(
+			where: { label_id: { _eq: $labelId }, content_id: { _eq: $contentId } }
+		) {
+			affected_rows
+		}
+	}
+`;

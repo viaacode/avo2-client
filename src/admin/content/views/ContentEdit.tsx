@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, kebabCase } from 'lodash-es';
+import { get, isNil, kebabCase } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +20,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { getProfileId } from '../../../authentication/helpers/get-profile-info';
 import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql';
 import { DeleteObjectModal } from '../../../shared/components';
-import { navigate } from '../../../shared/helpers';
+import { CustomError, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { dataService, ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
@@ -121,82 +121,103 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		setConfigToDelete(configIndex);
 	};
 
-	const handleResponse = (response: Partial<Avo.Content.Content> | null) => {
-		setIsSaving(false);
+	const getPathOrDefault = () => contentForm.path || `/${kebabCase(contentForm.title)}`;
 
-		if (response) {
+	const handleSave = async () => {
+		try {
+			setIsSaving(true);
+
+			// Validate form
+			const isFormValid = await handleValidation();
+
+			if (!isFormValid) {
+				setIsSaving(false);
+				ToastService.danger(
+					t(
+						'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
+					),
+					false
+				);
+
+				return;
+			}
+
+			const contentItem: Partial<Avo.Content.Content> | any = {
+				title: contentForm.title,
+				description: contentForm.description || null,
+				is_protected: contentForm.isProtected,
+				path: getPathOrDefault(),
+				content_type: contentForm.contentType,
+				content_width: contentForm.contentWidth,
+				publish_at: contentForm.publishAt || null,
+				depublish_at: contentForm.depublishAt || null,
+				user_group_ids: contentForm.userGroupIds,
+			};
+
+			let insertedOrUpdatedContent: Partial<Avo.Content.Content> | null;
+			if (pageType === PageType.Create) {
+				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
+				insertedOrUpdatedContent = await ContentService.insertContent(
+					contentBody,
+					contentBlockConfigs,
+					triggerContentInsert
+				);
+			} else {
+				if (!isNil(id)) {
+					const contentBody = {
+						...contentItem,
+						updated_at: new Date().toISOString(),
+						id: parseInt(id, 10),
+					};
+					insertedOrUpdatedContent = await ContentService.updateContent(
+						contentBody,
+						contentBlocks,
+						contentBlockConfigs,
+						triggerContentUpdate
+					);
+				} else {
+					throw new CustomError(
+						'failed to update content page because the id is undefined',
+						null,
+						{
+							contentItem,
+							contentForm,
+							id,
+						}
+					);
+				}
+			}
+
+			if (!insertedOrUpdatedContent || isNil(insertedOrUpdatedContent.id)) {
+				throw new CustomError(
+					'Failed to save labels because no response or response does not contain a valid id',
+					null,
+					{
+						isCreatePage: pageType === PageType.Create,
+						contentItem,
+						contentForm,
+						insertedOrUpdatedContent,
+					}
+				);
+			}
+
+			// Save content labels
+			await ContentService.updateContentLabelsLinks(
+				insertedOrUpdatedContent.id,
+				contentForm.labels.map(label => label.id)
+			);
+
 			ToastService.success(
 				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen'),
 				false
 			);
-			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: response.id });
-		}
-	};
-
-	const getPathOrDefault = () => contentForm.path || `/${kebabCase(contentForm.title)}`;
-
-	const handleSave = async () => {
-		setIsSaving(true);
-
-		// Validate form
-		const isFormValid = await handleValidation();
-
-		if (!isFormValid) {
-			setIsSaving(false);
-			ToastService.danger(
-				t(
-					'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
-				),
-				false
-			);
-
-			return;
+			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: insertedOrUpdatedContent.id });
+		} catch (err) {
+			console.error(new CustomError('Failed to save content page ', err));
+			ToastService.danger(t('Het opslaan van de content pagina is mislukt'), false);
 		}
 
-		const contentItem: Partial<Avo.Content.Content> | any = {
-			title: contentForm.title,
-			description: contentForm.description || null,
-			is_protected: contentForm.isProtected,
-			path: getPathOrDefault(),
-			content_type: contentForm.contentType,
-			content_width: contentForm.contentWidth,
-			publish_at: contentForm.publishAt || null,
-			depublish_at: contentForm.depublishAt || null,
-			user_group_ids: contentForm.userGroupIds,
-		};
-
-		if (pageType === PageType.Create) {
-			const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
-			const insertedContent = await ContentService.insertContent(
-				contentBody,
-				contentBlockConfigs,
-				triggerContentInsert
-			);
-
-			handleResponse(insertedContent);
-		} else {
-			if (id) {
-				const contentBody = {
-					...contentItem,
-					updated_at: new Date().toISOString(),
-					id: parseInt(id, 10),
-				};
-				const updatedContent = await ContentService.updateContent(
-					contentBody,
-					contentBlocks,
-					contentBlockConfigs,
-					triggerContentUpdate
-				);
-
-				handleResponse(updatedContent);
-			} else {
-				ToastService.danger(
-					t('admin/content/views/content-edit___het-content-id-id-is-ongeldig', { id }),
-					false
-				);
-				history.push(CONTENT_PATH.CONTENT);
-			}
-		}
+		setIsSaving(false);
 	};
 
 	const handleValidation = async (): Promise<boolean> => {

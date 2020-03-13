@@ -18,7 +18,8 @@ import {
 	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
 	GET_CONTENT_PAGES,
 	GET_CONTENT_PAGES_BY_TITLE,
-	GET_CONTENT_TYPES, INSERT_CONTENT_LABEL,
+	GET_CONTENT_TYPES,
+	INSERT_CONTENT_LABEL,
 } from './content.gql';
 import { ContentLabel, ContentPageType } from './content.types';
 
@@ -240,3 +241,36 @@ export const insertNewContentLabel = async (
 		});
 	}
 };
+
+export async function updateContentLabelsLinks(
+	contentPageId: number,
+	labelIds: (number | string)[]
+) {
+	let variables: any;
+	try {
+		variables = {
+			objects: labelIds.map(labelId => ({ content_id: contentPageId, label_id: labelId })),
+		};
+		const response = await dataService.mutate({
+			mutation: INSERT_CONTENT_LABEL_LINKS,
+			variables,
+		});
+		if (response.errors) {
+			throw new CustomError(
+				'Failed to insert content labels in the database because of graphql errors',
+				null,
+				{ response }
+			);
+		}
+		const contentLabel = get(response, 'data.insert_app_content_labels.returning[0]');
+		if (!contentLabel) {
+			throw new CustomError('The response does not contain a label', null, { response });
+		}
+		return contentLabel;
+	} catch (err) {
+		throw new CustomError('Failed to insert content label in the database', err, {
+			variables,
+			query: 'INSERT_CONTENT_LABEL',
+		});
+	}
+}
