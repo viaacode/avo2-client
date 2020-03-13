@@ -13,7 +13,7 @@ export const GET_CONTENT_PAGES = gql`
 		$where: app_content_bool_exp
 		$offset: Int = 0
 		$limit: Int = 10
-		$order: [app_content_order_by!] = {}
+		$order: [app_content_order_by!] = []
 	) {
 		app_content(where: $where, limit: $limit, offset: $offset, order_by: $order) {
 			content_type
@@ -137,6 +137,12 @@ export const GET_CONTENT_BY_ID = gql`
 			title
 			updated_at
 			user_group_ids
+			content_content_labels {
+				content_label {
+					label
+					id
+				}
+			}
 		}
 	}
 `;
@@ -206,14 +212,6 @@ export const INSERT_CONTENT_LABEL = gql`
 	}
 `;
 
-export const GET_CONTENT_LABEL_LINKS = gql`
-	mutation insertContentLabelLinks($objects: [app_content_content_labels_insert_input!]!) {
-		insert_app_content_content_labels(objects: $objects) {
-			affected_rows
-		}
-	}
-`;
-
 export const INSERT_CONTENT_LABEL_LINKS = gql`
 	mutation insertContentLabelLinks($objects: [app_content_content_labels_insert_input!]!) {
 		insert_app_content_content_labels(objects: $objects) {
@@ -223,9 +221,9 @@ export const INSERT_CONTENT_LABEL_LINKS = gql`
 `;
 
 export const DELETE_CONTENT_LABEL_LINKS = gql`
-	mutation deleteContentLabelLinks($contentId: Int!, $labelId: Int!) {
+	mutation deleteContentLabelLinks($contentPageId: Int!, $labelIds: [Int!]!) {
 		delete_app_content_content_labels(
-			where: { label_id: { _eq: $labelId }, content_id: { _eq: $contentId } }
+			where: { label_id: { _in: $labelIds }, content_id: { _eq: $contentPageId } }
 		) {
 			affected_rows
 		}

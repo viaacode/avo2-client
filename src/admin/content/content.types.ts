@@ -69,7 +69,7 @@ export interface ContentEditFormState {
 	publishAt: string;
 	depublishAt: string;
 	userGroupIds: number[];
-	labels: ContentLabel[];
+	labels: Partial<Avo.Content.ContentLabel>[];
 }
 
 export interface ContentEditState {
@@ -94,11 +94,6 @@ export interface ContentEditAction {
 	payload: any;
 }
 
-export interface ContentLabel {
-	id: number | string;
-	label: string;
-	content_type: string;
-	// We don't create a management page for labels, so we won't fetch these
-	// created_at: string;
-	// updated_at: string;
-}
+export type DbContent = Avo.Content.Content & {
+	content_content_labels: Avo.Content.ContentLabelLink[];
+};

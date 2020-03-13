@@ -19,12 +19,10 @@ export const retrieveContentPages = async (
 
 // Parse raw content items to react-select options
 const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItem[] => {
-	const parsedContentItems = raw.map(
+	return raw.map(
 		(item: Avo.Content.Content): PickerSelectItem => ({
 			label: item.title,
 			value: parsePickerItem('CONTENT_PAGE', item.path as string), // TODO enforce path in database
 		})
 	);
-
-	return parsedContentItems;
 };

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
 import { compact, get } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -23,8 +23,13 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import {
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
+import {
+	CustomError,
 	formatDate,
 	getAvatarProps,
 	navigate,
@@ -39,8 +44,9 @@ import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
-import { DELETE_CONTENT, GET_CONTENT_BY_ID } from '../content.gql';
+import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
+import { DELETE_CONTENT } from '../content.gql';
+import { getContentPageById } from '../content.service';
 import { ContentDetailParams } from '../content.types';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
@@ -49,7 +55,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const { id } = match.params;
 
 	// Hooks
-	const [content, setContent] = useState<Avo.Content.Content | null>(null);
+	const [contentPage, setContentPage] = useState<Avo.Content.Content | null>(null);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
 
@@ -63,13 +70,44 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	);
 
 	// Computed
-	const avatarProps = getAvatarProps(get(content, 'profile', null));
+	const avatarProps = getAvatarProps(get(contentPage, 'profile', null));
 	const contentBlockConfigs = parseContentBlocks(contentBlocks);
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
-	const isContentProtected = get(content, 'is_protected', false);
-	const pageTitle = `Content: ${get(content, 'title', '')}`;
+	const isContentProtected = get(contentPage, 'is_protected', false);
+	const pageTitle = `Content: ${get(contentPage, 'title', '')}`;
 
-	// Get labels of the userGroups, so we can show a readable error message
+	const fetchContentPageById = useCallback(async () => {
+		try {
+			setContentPage(await getContentPageById(id));
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get content page by id', err, {
+					query: 'GET_CONTENT_PAGE_BY_ID',
+					variables: {
+						id: match.params.id,
+					},
+				})
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het ophalen van de content pagina is mislukt'),
+			});
+		}
+	}, [setContentPage, setLoadingInfo, t, match.params.id]);
+
+	useEffect(() => {
+		fetchContentPageById();
+	}, [fetchContentPageById]);
+
+	useEffect(() => {
+		if (contentPage) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
+	}, [contentPage, setLoadingInfo]);
+
+	// Get labels of the contentPages, so we can show a readable error message
 	useEffect(() => {
 		fetchAllUserGroups()
 			.then(userGroups => {
@@ -139,27 +177,30 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const renderFormattedDate = (date: string | null | undefined) =>
 		!!date ? formatDate(date) : '-';
 
-	const renderContentDetail = (contentItem: Avo.Content.Content) => {
-		if (contentItem) {
-			setContent(contentItem);
+	const renderContentDetail = (): ReactElement | null => {
+		if (!contentPage) {
+			return null;
 		}
-
 		// TODO: Move tab contents to separate views
 		switch (currentTab) {
 			case 'inhoud':
-				return contentBlockConfigs.map((contentBlockConfig, index) => (
-					<ContentBlockPreview
-						key={contentBlocks[index].id}
-						componentState={contentBlockConfig.components.state}
-						contentWidth={get(content, 'content_width')}
-						blockState={contentBlockConfig.block.state}
-					/>
-				));
+				return (
+					<>
+						{contentBlockConfigs.map((contentBlockConfig, index) => (
+							<ContentBlockPreview
+								key={contentBlocks[index].id}
+								componentState={contentBlockConfig.components.state}
+								contentWidth={get(contentPage, 'content_width')}
+								blockState={contentBlockConfig.block.state}
+							/>
+						))}
+					</>
+				);
 			case 'metadata':
 				return (
 					<Container mode="vertical" size="small">
 						<Container mode="horizontal">
-							{!!contentItem.description && (
+							{!!contentPage.description && (
 								<Spacer margin="bottom-large">
 									<BlockHeading type="h4">
 										<Trans i18nKey="admin/content/views/content-detail___omschrijving">
@@ -169,7 +210,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 									<p
 										dangerouslySetInnerHTML={{
 											__html: sanitize(
-												contentItem.description,
+												contentPage.description,
 												sanitizePresets.link
 											),
 										}}
@@ -190,7 +231,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 												Content type:
 											</Trans>
 										</th>
-										<td>{contentItem.content_type}</td>
+										<td>{contentPage.content_type}</td>
 									</tr>
 									<tr>
 										<th>
@@ -199,7 +240,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 											</Trans>
 										</th>
 										<td>
-											{contentItem.is_protected
+											{contentPage.is_protected
 												? t('admin/content/views/content-detail___ja')
 												: t('admin/content/views/content-detail___nee')}
 										</td>
@@ -210,7 +251,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 												Aangemaakt:
 											</Trans>
 										</th>
-										<td>{renderFormattedDate(contentItem.created_at)}</td>
+										<td>{renderFormattedDate(contentPage.created_at)}</td>
 									</tr>
 									<tr>
 										<th>
@@ -218,7 +259,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 												Laatst bewerkt:
 											</Trans>
 										</th>
-										<td>{renderFormattedDate(contentItem.updated_at)}</td>
+										<td>{renderFormattedDate(contentPage.updated_at)}</td>
 									</tr>
 									<tr>
 										<th>
@@ -226,7 +267,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 												Gepubliceerd:
 											</Trans>
 										</th>
-										<td>{renderFormattedDate(contentItem.publish_at)}</td>
+										<td>{renderFormattedDate(contentPage.publish_at)}</td>
 									</tr>
 									<tr>
 										<th>
@@ -234,7 +275,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 												Gedepubliceerd:
 											</Trans>
 										</th>
-										<td>{renderFormattedDate(contentItem.depublish_at)}</td>
+										<td>{renderFormattedDate(contentPage.depublish_at)}</td>
 									</tr>
 									<tr>
 										<th>
@@ -247,7 +288,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 												swatches={false}
 												selectable={false}
 												closable={false}
-												tags={getUserGroups(contentItem)}
+												tags={getUserGroups(contentPage)}
 											/>
 										</td>
 									</tr>
@@ -295,11 +336,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
-				<DataQueryComponent
-					query={GET_CONTENT_BY_ID}
-					renderData={renderContentDetail}
-					resultPath={`${CONTENT_RESULT_PATH.GET}[0]`}
-					variables={{ id }}
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={contentPage}
+					render={renderContentDetail}
 				/>
 				<DeleteObjectModal
 					deleteObjectCallback={handleDelete}

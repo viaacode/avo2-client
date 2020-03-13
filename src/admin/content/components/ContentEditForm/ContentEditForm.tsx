@@ -17,6 +17,7 @@ import {
 	TextInput,
 	WYSIWYG,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ValueOf } from '../../../../shared/types';
 
@@ -30,7 +31,6 @@ import { fetchLabelsByContentType, insertNewContentLabel } from '../../content.s
 import {
 	ContentEditFormErrors,
 	ContentEditFormState,
-	ContentLabel,
 	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
@@ -56,7 +56,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	// Hooks
 	const [t] = useTranslation();
 
-	const [contentTypeLabels, setContentTypeLabels] = useState<ContentLabel[]>([]);
+	const [contentTypeLabels, setContentTypeLabels] = useState<Avo.Content.ContentLabel[]>([]);
 	const [labelToBeCreated, setLabelToBeCreated] = useState<string | null>(null);
 	const [isConfirmCreateModalOpen, setIsConfirmCreateModalOpen] = useState<boolean>(false);
 
@@ -84,7 +84,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 				});
 				ToastService.danger(t('Het ophalen van de content labels is mislukt'), false);
 			});
-	}, [formState.contentType, setContentTypeLabels]);
+	}, [formState.contentType, setContentTypeLabels, t]);
 
 	// Computed
 	const contentTypeOptions = [
@@ -132,17 +132,20 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		}
 	};
 
-	const mapLabelsToTags = (contentLabels: ContentLabel[]): TagInfo[] => {
+	const mapLabelsToTags = (contentLabels: Partial<Avo.Content.ContentLabel>[]): TagInfo[] => {
 		return (contentLabels || []).map(contentLabel => ({
-			label: contentLabel.label,
-			value: contentLabel.id,
+			label: contentLabel.label as string,
+			value: String(contentLabel.id as number),
 		}));
 	};
 
-	const mapTagsToLabels = (tags: TagInfo[], contentType: string): ContentLabel[] => {
+	const mapTagsToLabels = (
+		tags: TagInfo[],
+		contentType: string
+	): Partial<Avo.Content.ContentLabel>[] => {
 		return (tags || []).map(tag => ({
 			label: tag.label,
-			id: tag.value,
+			id: tag.value as number,
 			content_type: contentType,
 		}));
 	};

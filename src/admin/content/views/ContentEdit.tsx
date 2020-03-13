@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isNil, kebabCase } from 'lodash-es';
+import { get, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -68,7 +68,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [t] = useTranslation();
 
-	const [contentForm, setContentForm, isLoading] = useContentItem(history, id);
+	const [initialContentForm, contentForm, setContentForm, isLoading] = useContentItem(
+		history,
+		id
+	);
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [contentBlocks, isLoadingContentBlocks] = useContentBlocksByContentId(id);
 	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
@@ -193,19 +196,26 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					'Failed to save labels because no response or response does not contain a valid id',
 					null,
 					{
-						isCreatePage: pageType === PageType.Create,
 						contentItem,
 						contentForm,
 						insertedOrUpdatedContent,
+						isCreatePage: pageType === PageType.Create,
 					}
 				);
 			}
 
 			// Save content labels
-			await ContentService.updateContentLabelsLinks(
-				insertedOrUpdatedContent.id,
-				contentForm.labels.map(label => label.id)
-			);
+			const initialLabelIds = initialContentForm.labels.map(label => label.id as number);
+			const labelIds = contentForm.labels.map(label => label.id as number);
+			const addedLabelIds = without(labelIds, ...initialLabelIds);
+			const removedLabelIds = without(initialLabelIds, ...labelIds);
+			await Promise.all([
+				ContentService.insertContentLabelsLinks(insertedOrUpdatedContent.id, addedLabelIds),
+				ContentService.deleteContentLabelsLinks(
+					insertedOrUpdatedContent.id,
+					removedLabelIds
+				),
+			]);
 
 			ToastService.success(
 				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen'),

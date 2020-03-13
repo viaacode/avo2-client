@@ -7,18 +7,25 @@ import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ReactAction } from '../../../shared/types';
 
+import { flatten } from 'lodash-es';
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
-import { getContentItemById } from '../content.service';
-import { ContentEditFormState, ContentWidth } from '../content.types';
+import { getContentPageById } from '../content.service';
+import { ContentEditFormState, ContentWidth, DbContent } from '../content.types';
 
 type SetContentFormParams = Parameters<
 	<K extends keyof ContentEditFormState>(key: K, value: ContentEditFormState[K]) => void
 >;
 
-type UseContentItemTuple = [ContentEditFormState, (...args: SetContentFormParams) => void, boolean];
+type UseContentItemTuple = [
+	ContentEditFormState,
+	ContentEditFormState,
+	(...args: SetContentFormParams) => void,
+	boolean
+];
 
 interface ContentItemState {
 	readonly contentForm: ContentEditFormState;
+	readonly initialContentForm: ContentEditFormState;
 }
 
 enum ContentItemActionType {
@@ -30,6 +37,7 @@ type ContentItemAction = ReactAction<ContentItemActionType>;
 
 const INITIAL_CONTENT_ITEM_STATE = () => ({
 	contentForm: INITIAL_CONTENT_FORM(),
+	initialContentForm: INITIAL_CONTENT_FORM(),
 });
 
 const reducer = (state: ContentItemState, action: ContentItemAction) => {
@@ -38,6 +46,7 @@ const reducer = (state: ContentItemState, action: ContentItemAction) => {
 			return {
 				...state,
 				contentForm: action.payload,
+				initialContentForm: action.payload,
 			};
 		case ContentItemActionType.UPDATE_CONTENT_FORM:
 			return {
@@ -54,18 +63,17 @@ const reducer = (state: ContentItemState, action: ContentItemAction) => {
 
 export const useContentItem = (history: History, id?: string): UseContentItemTuple => {
 	// Hooks
-	const [{ contentForm }, dispatch] = useReducer<Reducer<ContentItemState, ContentItemAction>>(
-		reducer,
-		INITIAL_CONTENT_ITEM_STATE()
-	);
+	const [{ contentForm, initialContentForm }, dispatch] = useReducer<
+		Reducer<ContentItemState, ContentItemAction>
+	>(reducer, INITIAL_CONTENT_ITEM_STATE());
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (id) {
 			setIsLoading(true);
 
-			getContentItemById(Number(id))
-				.then((contentItem: Avo.Content.Content | null) => {
+			getContentPageById(Number(id))
+				.then((contentItem: DbContent | null) => {
 					if (contentItem) {
 						dispatch({
 							type: ContentItemActionType.SET_CONTENT_FORM,
@@ -79,7 +87,12 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 								publishAt: contentItem.publish_at || '',
 								depublishAt: contentItem.depublish_at || '',
 								userGroupIds: contentItem.user_group_ids,
-							},
+								labels: flatten(
+									contentItem.content_content_labels.map(
+										link => link.content_label
+									)
+								),
+							} as Partial<Avo.Content.Content>,
 						});
 					} else {
 						ToastService.danger(
@@ -106,5 +119,5 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 		});
 	};
 
-	return [contentForm, setContentForm, isLoading];
+	return [initialContentForm, contentForm, setContentForm, isLoading];
 };

@@ -1,6 +1,7 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import {
@@ -13,14 +14,16 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { getUserGroupIds } from '../../../../../authentication/authentication.service';
+import { selectUser } from '../../../../../authentication/store/selectors';
 import { CustomError, navigateToContentType } from '../../../../../shared/helpers';
 import { useDebounce } from '../../../../../shared/hooks';
 import { dataService, ToastService } from '../../../../../shared/services';
 import i18n from '../../../../../shared/translations/i18n';
+import { AppState } from '../../../../../store';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components';
 import { ContentBlockConfig } from '../../../../shared/types';
-
 import { parseContentBlocks } from '../../../helpers';
 import ContentBlockPreview from '../../ContentBlockPreview/ContentBlockPreview';
 
@@ -34,6 +37,7 @@ interface PageOverviewWrapperProps extends RouteComponentProps {
 	showDate?: boolean;
 	buttonLabel?: string;
 	itemsPerPage?: number;
+	user: Avo.User.User | null | undefined;
 }
 
 const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
@@ -52,6 +56,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	),
 	itemsPerPage = 20,
 	history,
+	user,
 }) => {
 	const [t] = useTranslation();
 
@@ -95,6 +100,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	const fetchPages = useCallback(async () => {
 		let filteredPages: Avo.Content.Content[] = [];
 		let pageCount = 0;
+		const userGroupIds: number[] = getUserGroupIds(user);
 		if (selectedTabs.length) {
 			// TODO get contentPages from the database that have one of the selected groups
 		} else {
@@ -102,7 +108,12 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 				query:
 					itemStyle === 'ACCORDION' ? GET_CONTENT_PAGES_WITH_BLOCKS : GET_CONTENT_PAGES,
 				variables: {
-					where: { content_type: { _eq: contentTypeAndTabs.selectedContentType } },
+					where: {
+						content_type: { _eq: contentTypeAndTabs.selectedContentType },
+						_or: userGroupIds.map(userGroupId => ({
+							user_group_ids: { _contains: userGroupId },
+						})),
+					},
 					offset: currentPage * debouncedItemsPerPage,
 					limit: debouncedItemsPerPage,
 				},
@@ -123,6 +134,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		setPages,
 		setPageCount,
 		contentTypeAndTabs,
+		user,
 	]);
 
 	useEffect(() => {
@@ -192,4 +204,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	);
 };
 
-export default withRouter(PageOverviewWrapper);
+const mapStateToProps = (state: AppState) => ({
+	user: selectUser(state),
+});
+
+export default withRouter(connect(mapStateToProps)(PageOverviewWrapper));

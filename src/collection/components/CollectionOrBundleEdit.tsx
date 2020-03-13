@@ -52,8 +52,8 @@ import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { AppState } from '../../store';
-
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
+
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import {
 	DELETE_COLLECTION,
@@ -62,7 +62,7 @@ import {
 	UPDATE_COLLECTION,
 	UPDATE_COLLECTION_FRAGMENT,
 } from '../collection.gql';
-import { getFragmentsFromCollection, cleanCollectionBeforeSave } from '../collection.helpers';
+import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ShareCollectionModal } from '../components';
 import { swapFragmentsPositions } from '../helpers';

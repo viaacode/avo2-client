@@ -14,14 +14,16 @@ import { ContentBlockConfig } from '../shared/types';
 
 import { CONTENT_RESULT_PATH, CONTENT_TYPES_LOOKUP_PATH } from './content.const';
 import {
+	DELETE_CONTENT_LABEL_LINKS,
 	GET_CONTENT_BY_ID,
 	GET_CONTENT_LABELS_BY_CONTENT_TYPE,
 	GET_CONTENT_PAGES,
 	GET_CONTENT_PAGES_BY_TITLE,
 	GET_CONTENT_TYPES,
 	INSERT_CONTENT_LABEL,
+	INSERT_CONTENT_LABEL_LINKS,
 } from './content.gql';
-import { ContentLabel, ContentPageType } from './content.types';
+import { ContentPageType, DbContent } from './content.types';
 
 export const getContentItems = async (limit: number): Promise<Avo.Content.Content[] | null> => {
 	const query = {
@@ -61,7 +63,7 @@ export const getContentItemsByTitle = async (
 	);
 };
 
-export const getContentItemById = async (id: number): Promise<Avo.Content.Content | null> => {
+export const getContentPageById = async (id: number | string): Promise<DbContent | null> => {
 	const query = {
 		query: GET_CONTENT_BY_ID,
 		variables: {
@@ -178,15 +180,17 @@ export const updateContent = async (
 	}
 };
 
-export const fetchLabelsByContentType = async (contentType: string): Promise<ContentLabel[]> => {
+export const fetchLabelsByContentType = async (
+	contentType: string
+): Promise<Avo.Content.ContentLabel[]> => {
 	let variables: any;
 	try {
 		variables = {
 			contentType,
 		};
 		const response = await dataService.query({
-			query: GET_CONTENT_LABELS_BY_CONTENT_TYPE,
 			variables,
+			query: GET_CONTENT_LABELS_BY_CONTENT_TYPE,
 		});
 		if (response.errors) {
 			throw new CustomError(
@@ -211,7 +215,7 @@ export const fetchLabelsByContentType = async (contentType: string): Promise<Con
 export const insertNewContentLabel = async (
 	label: string,
 	contentType: string
-): Promise<ContentLabel> => {
+): Promise<Avo.Content.ContentLabel> => {
 	let variables: any;
 	try {
 		variables = {
@@ -219,8 +223,8 @@ export const insertNewContentLabel = async (
 			contentType,
 		};
 		const response = await dataService.mutate({
-			mutation: INSERT_CONTENT_LABEL,
 			variables,
+			mutation: INSERT_CONTENT_LABEL,
 		});
 		if (response.errors) {
 			throw new CustomError(
@@ -242,35 +246,51 @@ export const insertNewContentLabel = async (
 	}
 };
 
-export async function updateContentLabelsLinks(
+export async function insertContentLabelsLinks(
 	contentPageId: number,
 	labelIds: (number | string)[]
-) {
+): Promise<void> {
 	let variables: any;
 	try {
 		variables = {
 			objects: labelIds.map(labelId => ({ content_id: contentPageId, label_id: labelId })),
 		};
 		const response = await dataService.mutate({
-			mutation: INSERT_CONTENT_LABEL_LINKS,
 			variables,
+			mutation: INSERT_CONTENT_LABEL_LINKS,
 		});
 		if (response.errors) {
-			throw new CustomError(
-				'Failed to insert content labels in the database because of graphql errors',
-				null,
-				{ response }
-			);
+			throw new CustomError('Failed due to graphql errors', null, { response });
 		}
-		const contentLabel = get(response, 'data.insert_app_content_labels.returning[0]');
-		if (!contentLabel) {
-			throw new CustomError('The response does not contain a label', null, { response });
-		}
-		return contentLabel;
 	} catch (err) {
-		throw new CustomError('Failed to insert content label in the database', err, {
+		throw new CustomError('Failed to insert content label links in the database', err, {
 			variables,
-			query: 'INSERT_CONTENT_LABEL',
+			query: 'INSERT_CONTENT_LABEL_LINKS',
+		});
+	}
+}
+
+export async function deleteContentLabelsLinks(
+	contentPageId: number,
+	labelIds: (number | string)[]
+): Promise<void> {
+	let variables: any;
+	try {
+		variables = {
+			labelIds,
+			contentPageId,
+		};
+		const response = await dataService.mutate({
+			variables,
+			mutation: DELETE_CONTENT_LABEL_LINKS,
+		});
+		if (response.errors) {
+			throw new CustomError('Failed due to graphql errors', null, { response });
+		}
+	} catch (err) {
+		throw new CustomError('Failed to insert content label links in the database', err, {
+			variables,
+			query: 'DELETE_CONTENT_LABEL_LINKS',
 		});
 	}
 }
