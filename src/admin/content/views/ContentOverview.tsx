@@ -72,7 +72,20 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					{ title: { _ilike: queryWordWildcard } },
 					{ profile: { usersByuserId: { first_name: { _ilike: queryWordWildcard } } } },
 					{ profile: { usersByuserId: { last_name: { _ilike: queryWordWildcard } } } },
-					{ profile: { usersByuserId: { role: { _ilike: queryWordWildcard } } } },
+					{
+						profile: {
+							usersByuserId: { role: { label: { _ilike: queryWordWildcard } } },
+						},
+					},
+					{
+						content_content_labels: {
+							content_label: {
+								label: {
+									_ilike: queryWordWildcard,
+								},
+							},
+						},
+					},
 				]
 			)
 		);
