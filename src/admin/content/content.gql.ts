@@ -56,8 +56,8 @@ export const GET_CONTENT_PAGES = gql`
 `;
 
 export const GET_CONTENT_PAGES_BY_TITLE = gql`
-	query getContent($title: String!, $limit: Int = 20, $order: [app_content_order_by!] = {}) {
-		app_content(where: { title: { _ilike: $title } }, limit: $limit, order_by: $order) {
+	query getContent($title: String!, $limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
+		app_content(where: { title: { _ilike: $title } }, limit: $limit, order_by: $orderBy) {
 			path
 			title
 		}
@@ -69,9 +69,9 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 		$where: app_content_bool_exp
 		$offset: Int = 0
 		$limit: Int = 10
-		$order: [app_content_order_by!] = {}
+		$orderBy: [app_content_order_by!] = {}
 	) {
-		app_content(where: $where, limit: $limit, offset: $offset, order_by: $order) {
+		app_content(where: $where, limit: $limit, offset: $offset, order_by: $orderBy) {
 			content_type
 			created_at
 			depublish_at

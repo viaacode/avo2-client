@@ -36,7 +36,7 @@ export class ContentService {
 			query: GET_CONTENT_PAGES,
 			variables: {
 				limit,
-				order: { title: 'asc' },
+				orderBy: { title: 'asc' },
 			},
 		};
 
@@ -59,7 +59,7 @@ export class ContentService {
 			variables: {
 				title,
 				limit,
-				order: { title: 'asc' },
+				orderBy: { title: 'asc' },
 			},
 		};
 
