@@ -28,7 +28,7 @@ import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.he
 export interface ContentPickerProps {
 	allowedTypes?: ContentPickerType[];
 	initialValues?: PickerItem;
-	onSelect: (value: ValueType<PickerItem>) => void;
+	onSelect: (value: PickerItem | null) => void;
 	errors?: string | string[];
 }
 
@@ -41,7 +41,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const [t] = useTranslation();
 
 	// filter available options for the type picker
-	const typeOptions = filterTypes(CONTENT_TYPES, allowedTypes);
+	const typeOptions = filterTypes(CONTENT_TYPES, allowedTypes as ContentPickerType[]);
 
 	// apply initial type from `initialValues`, default to first available type
 	const currentTypeObject = typeOptions.find(type => type.value === get(initialValues, 'type'));
@@ -64,7 +64,22 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		if (selectedType && !!selectedType.fetch) {
 			selectedType
 				.fetch(keyword, 20)
-				.then((items: any) => callback((items as any) || [])) // TODO: type
+				.then((items: PickerSelectItem[]) => {
+					const initialItem = [
+						{
+							label: get(initialValues, 'label'),
+							value: {
+								type: get(initialValues, 'type'),
+								value: get(initialValues, 'value'),
+							},
+						},
+						...items.filter(
+							(item: PickerSelectItem) => item.label !== get(initialValues, 'label')
+						),
+					];
+
+					return callback((!hasAppliedInitialItem ? initialItem : items) || []);
+				})
 				.catch(handleInflationError);
 		}
 	};
@@ -83,7 +98,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// when selecting a type, reset `selectedItem` and retrieve new item options
 	useEffect(() => {
 		inflatePicker(null, setItemOptions);
-	}, [selectedType]);
+	}, [selectedType]); // eslint-disable-line
 
 	// during the first update of `itemOptions`, set the initial value of the item picker
 	useEffect(() => {
@@ -91,7 +106,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			setSelectedItem(setInitialItem(itemOptions, initialValues));
 			setHasAppliedInitialItem(true);
 		}
-	}, [itemOptions]);
+	}, [itemOptions]); // eslint-disable-line
 
 	// events
 	const onSelectType = (selected: ValueType<PickerTypeOption>) => {
@@ -129,7 +144,10 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		}
 
 		// trigger `onSelect` function, pass selected item
-		onSelect(value);
+		onSelect({
+			...value,
+			label: get(selectedItem, 'label'),
+		});
 
 		// update `selectedItem`
 		setSelectedItem(selectedItem);

@@ -25,6 +25,7 @@ export interface PickerSelectItem {
 }
 
 export interface PickerItem {
+	label?: string;
 	type: ContentPickerType;
 	value: string;
 }
