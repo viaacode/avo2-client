@@ -41,6 +41,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -112,9 +113,9 @@ interface CollectionOrBundleEditProps extends DefaultSecureRouteProps<{ id: stri
 const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = ({
 	type,
 	history,
+	location,
 	match,
 	user,
-	...rest
 }) => {
 	const [t] = useTranslation();
 
@@ -596,9 +597,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							location={location}
 							match={match}
 							user={user}
-							{...rest}
 						/>
 					);
 				case 'metadata':
@@ -693,6 +694,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					</DropdownContent>
 				</ControlledDropdown>
 				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
+				<InteractiveTour location={location} user={user} showButton />
 			</ButtonToolbar>
 		);
 	};
@@ -756,9 +758,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 						})
 					}
 					history={history}
+					location={location}
 					match={match}
 					user={user}
-					{...rest}
 				/>
 				<DeleteObjectModal
 					title={

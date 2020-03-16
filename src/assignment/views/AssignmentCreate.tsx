@@ -49,8 +49,9 @@ import {
 	InputModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
+	renderDropdownButton,
 } from '../../shared/components';
-import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import { dataService, ToastService } from '../../shared/services';
@@ -605,6 +606,11 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 												)}
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
+											/>
+											<InteractiveTour
+												location={location}
+												user={user}
+												showButton
 											/>
 										</ButtonToolbar>
 									</ToolbarItem>

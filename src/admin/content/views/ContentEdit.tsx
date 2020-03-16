@@ -37,7 +37,7 @@ import {
 import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
-import * as ContentService from '../content.service';
+import { ContentService } from '../content.service';
 import {
 	ContentEditAction,
 	ContentEditActionType,

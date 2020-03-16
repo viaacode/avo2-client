@@ -50,6 +50,7 @@ import { copyToClipboard, navigate } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 import { AppState } from '../../store';
 
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { SearchFilterControls, SearchResults } from '../components';
 import { DEFAULT_FORM_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import {
@@ -382,8 +383,7 @@ const Search: FunctionComponent<SearchProps> = ({
 										/> */}
 									</DropdownContent>
 								</Dropdown>
-								{/* TODO re-enable when interactive tour viewed status can be saved in the database */}
-								{/*<InteractiveTour routeId="SEARCH" user={user} showButton />*/}
+								<InteractiveTour location={location} user={user} showButton />
 							</Flex>
 						</ToolbarRight>
 					</Toolbar>

@@ -182,7 +182,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 									Metadata:
 								</Trans>
 							</BlockHeading>
-							<Table horizontal variant="invisible">
+							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
 									<tr>
 										<th>

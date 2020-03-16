@@ -12,6 +12,7 @@ export const ROUTE_PARTS = Object.freeze({
 	bundle: 'bundel',
 	bundles: 'bundels',
 	item: 'item',
+	items: 'items',
 	login: 'login',
 	logout: 'uitloggen',
 	manualAccessRequest: 'manuele-toegangsaanvraag',
@@ -42,4 +43,5 @@ export const ROUTE_PARTS = Object.freeze({
 	klaar: 'klaar',
 	user: 'gebruikers',
 	userGroup: 'gebruikersgroep',
+	interactiveTours: 'interactieve-tours',
 });
