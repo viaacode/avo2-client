@@ -6,6 +6,7 @@ import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';
 import { MENU_PATH } from './menu/menu.const';
+import { PERMISSION_GROUP_PATH } from './permission-groups/permission-group.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
 import { USER_PATH } from './users/user.const';
 
@@ -15,6 +16,7 @@ export const ADMIN_PATH = Object.freeze({
 	...USER_GROUP_PATH,
 	...MENU_PATH,
 	...CONTENT_PATH,
+	...PERMISSION_GROUP_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
 	...ITEMS_PATH,
 	...INTERACTIVE_TOUR_PATH,
@@ -26,12 +28,20 @@ export const NAV_ITEMS: NavigationItemInfo[] = [
 		location: ADMIN_PATH.USER,
 		key: 'users',
 		exact: false,
-	},
-	{
-		label: 'Gebruikersgroepen',
-		location: ADMIN_PATH.USER_GROUP_OVERVIEW,
-		key: 'userGroups',
-		exact: false,
+		subLinks: [
+			{
+				label: i18n.t('Gebruikersgroepen'),
+				location: ADMIN_PATH.USER_GROUP_OVERVIEW,
+				key: 'userGroups',
+				exact: false,
+			},
+			{
+				label: i18n.t('Permissie groepen'),
+				location: ADMIN_PATH.PERMISSION_GROUP_OVERVIEW,
+				key: 'permissionGroups',
+				exact: false,
+			},
+		],
 	},
 	{
 		label: i18n.t('Navigatie'),
@@ -40,7 +50,7 @@ export const NAV_ITEMS: NavigationItemInfo[] = [
 		exact: false,
 	},
 	{
-		label: i18n.t('Content'),
+		label: i18n.t('Content paginas'),
 		location: ADMIN_PATH.CONTENT,
 		key: 'content',
 		exact: false,
@@ -66,22 +76,24 @@ export const NAV_ITEMS: NavigationItemInfo[] = [
 		],
 	},
 	{
-		label: i18n.t('Items'),
+		label: i18n.t('Media items'),
 		location: ADMIN_PATH.ITEMS_OVERVIEW,
 		key: 'items',
 		exact: false,
-	},
-	{
-		label: i18n.t('Collecties'),
-		location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
-		key: 'collections',
-		exact: false,
-	},
-	{
-		label: i18n.t('Bundels'),
-		location: ADMIN_PATH.BUNDLES_OVERVIEW,
-		key: 'bundels',
-		exact: false,
+		subLinks: [
+			{
+				label: i18n.t('Collecties'),
+				location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
+				key: 'collections',
+				exact: false,
+			},
+			{
+				label: i18n.t('Bundels'),
+				location: ADMIN_PATH.BUNDLES_OVERVIEW,
+				key: 'bundels',
+				exact: false,
+			},
+		],
 	},
 	{
 		label: i18n.t('Interactive tours'),
