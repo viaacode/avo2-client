@@ -123,7 +123,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 					'Failed to create label because the labelToBeCreated is undefined'
 				);
 			}
-			const newLabel = await ContentService.insertNewContentLabel(
+			const newLabel = await ContentService.insertContentLabel(
 				labelToBeCreated,
 				formState.contentType
 			);

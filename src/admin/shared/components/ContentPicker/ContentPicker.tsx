@@ -10,13 +10,8 @@ import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 
-import { parsePickerItem } from '../../../shared/helpers';
-import {
-	ContentPickerType,
-	PickerItem,
-	PickerSelectItem,
-	PickerTypeOption,
-} from '../../../shared/types';
+import { parsePickerItem } from '../../helpers';
+import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 import { CONTENT_TYPES, REACT_SELECT_DEFAULT_OPTIONS } from './ContentPicker.const';
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
 

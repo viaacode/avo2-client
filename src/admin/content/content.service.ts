@@ -36,13 +36,13 @@ export class ContentService {
 			query: GET_CONTENT_PAGES,
 			variables: {
 				limit,
-				order: { title: 'asc' },
+				orderBy: { title: 'asc' },
 			},
 		};
 
 		return performQuery(
 			query,
-			`data.${CONTENT_RESULT_PATH.GET}`,
+			CONTENT_RESULT_PATH.GET,
 			'Failed to retrieve content items.',
 			i18n.t(
 				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-items'
@@ -59,13 +59,13 @@ export class ContentService {
 			variables: {
 				title,
 				limit,
-				order: { title: 'asc' },
+				orderBy: { title: 'asc' },
 			},
 		};
 
 		return performQuery(
 			query,
-			`data.${CONTENT_RESULT_PATH.GET}`,
+			CONTENT_RESULT_PATH.GET,
 			'Failed to retrieve content items by title.',
 			i18n.t(
 				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-items'
@@ -83,7 +83,7 @@ export class ContentService {
 
 		return performQuery(
 			query,
-			`data.${CONTENT_RESULT_PATH.GET}[0]`,
+			`${CONTENT_RESULT_PATH.GET}[0]`,
 			`Failed to retrieve content item by id: ${id}.`,
 			i18n.t(
 				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-het-content-item'
@@ -148,7 +148,7 @@ export class ContentService {
 		}
 	}
 
-	public static async insertNewContentLabel(
+	public static async insertContentLabel(
 		label: string,
 		contentType: string
 	): Promise<Avo.Content.ContentLabel> {
@@ -161,6 +161,7 @@ export class ContentService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: INSERT_CONTENT_LABEL,
+				update: ApolloCacheManager.clearContentLabels,
 			});
 			if (response.errors) {
 				throw new CustomError(

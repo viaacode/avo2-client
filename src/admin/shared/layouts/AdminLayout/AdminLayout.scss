@@ -20,7 +20,11 @@ $admin-actions-bar-height: 8.4rem;
 		th,
 		td {
 			padding: 10px 10px;
-			vertical-align: top;
+			vertical-align: middle;
+		}
+
+		th {
+			text-align: right;
 		}
 	}
 }

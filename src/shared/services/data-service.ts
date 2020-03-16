@@ -62,6 +62,9 @@ export class ApolloCacheManager {
 	public static clearUserGroupCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'users_groups');
 
+	public static clearContentLabels = (cache: ApolloCache) =>
+		ApolloCacheManager.deleteFromCache(cache, 'app_content_labels');
+
 	public static clearInteractiveTourCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_interactive_tour');
 
