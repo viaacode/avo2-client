@@ -5,9 +5,11 @@ import { Avo } from '@viaa/avo2-types';
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 
+import { ITEMS_PER_PAGE } from '../content/content.const';
 import {
 	ADD_PERMISSION_GROUPS_TO_USER_GROUP,
 	DELETE_USER_GROUP,
+	GET_USER_GROUPS,
 	INSERT_USER_GROUP,
 	REMOVE_PERMISSION_GROUPS_FROM_USER_GROUP,
 	UPDATE_USER_GROUP,
@@ -15,6 +17,44 @@ import {
 import { Permission, PermissionGroup, UserGroup } from './user-group.types';
 
 export class UserGroupService {
+	public static async fetchUserGroups(
+		page: number,
+		sortColumn: string,
+		sortOrder: Avo.Search.OrderDirection,
+		query: string
+	): Promise<[UserGroup[], number]> {
+		let variables: any;
+		try {
+			variables = {
+				offset: ITEMS_PER_PAGE * page,
+				limit: ITEMS_PER_PAGE,
+				orderBy: [{ [sortColumn]: sortOrder }],
+				queryText: `%${query}%`,
+			};
+			const response = await dataService.query({
+				variables,
+				query: GET_USER_GROUPS,
+			});
+			const userGroups = get(response, 'data.users_groups');
+			const userGroupCount = get(response, 'data.users_groups_aggregate.aggregate.count');
+
+			if (!userGroups) {
+				throw new CustomError(
+					'Response from database does not contain any user groups',
+					null,
+					{ response }
+				);
+			}
+
+			return [userGroups, userGroupCount];
+		} catch (err) {
+			throw new CustomError('Failed to fetch user groups from graphql', err, {
+				variables,
+				query: 'GET_USER_GROUPS',
+			});
+		}
+	}
+
 	public static async addPermissionGroupsToUserGroup(
 		permissionGroupIds: number[],
 		userGroupId: number | string

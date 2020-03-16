@@ -2,7 +2,7 @@ import { action } from '@storybook/addon-actions';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
-import CheckboxDropdownModal from './CheckboxDropdownModal';
+import { CheckboxDropdownModal } from './CheckboxDropdownModal';
 
 export const countOptions = [
 	{
@@ -67,7 +67,7 @@ export const countOptions = [
 	},
 ];
 
-describe('<Checkbox />', () => {
+describe('<CheckboxDropdownModal />', () => {
 	it('Should be able to render', () => {
 		shallow(
 			<CheckboxDropdownModal

@@ -1,93 +1,157 @@
+import { Location } from 'history';
+import { debounce, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Joyride, { CallBackProps, STATUS, Step } from 'react-joyride';
+import Joyride, { CallBackProps, STATUS } from 'react-joyride';
+import { matchPath } from 'react-router';
 
 import { Button } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { RouteId } from '../../../constants';
+import { InteractiveTourStep } from '../../../admin/interactive-tour/interactive-tour.types';
+import { APP_PATH, RouteInfo } from '../../../constants';
 import { CustomError } from '../../helpers';
+import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
+
+import './InteractiveTour.scss';
 
 export interface InteractiveTourProps {
-	routeId: RouteId;
+	location: Location;
 	user: Avo.User.User;
 	showButton: boolean;
 }
 
 const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
-	routeId,
+	location,
 	user,
 	showButton,
 }) => {
 	const [t] = useTranslation();
 
-	const [steps, setSteps] = useState<Step[] | null>(null);
-	const [run, setRun] = useState<boolean>(false);
+	const [tour, setTour] = useState<TourInfo | null>(null);
+	const [routeId, setRouteId] = useState<string | null>(null);
 
-	const mapSteps = (dbSteps: Step[]): Step[] => {
-		return dbSteps.map(dbStep => {
-			if (!dbStep.target) {
-				return {
-					...dbStep,
-					position: 'center',
-				};
+	const mapSteps = (dbSteps: InteractiveTourStep[]): InteractiveTourStep[] => {
+		return dbSteps.map(
+			(dbStep): InteractiveTourStep => {
+				const mappedStep: Partial<InteractiveTourStep> = {};
+				if (!dbStep.target) {
+					mappedStep.placement = 'center';
+					mappedStep.target = 'body';
+				} else {
+					mappedStep.target = dbStep.target;
+				}
+				mappedStep.disableBeacon = true;
+				mappedStep.title = dbStep.title;
+				mappedStep.content = (
+					<div
+						dangerouslySetInnerHTML={{
+							__html: dbStep.content as string,
+						}}
+					/>
+				);
+				return mappedStep as InteractiveTourStep;
 			}
-			return dbStep;
-		});
+		);
 	};
 
 	const checkIfTourExistsForCurrentPage = useCallback(async () => {
 		try {
-			// TODO get steps from database if page has a tour that the user hasn't seen yet
-			setSteps(
-				mapSteps([
-					{
-						title: 'De rondleiding',
-						content: 'Welkom bij de rondleiding voor de zoek pagina',
-						placement: 'center',
-						target: 'body',
-					},
-					{
-						content: 'In het zoekveld kan je een zoekterm ingeven',
-						target: '#query',
-					},
-					{
-						content: 'Met de zoek knop kan je de lijst met resultaten updaten',
-						target:
-							'#root > div > div.c-search-view.o-container > div.c-navbar.c-navbar--bordered-bottom.c-navbar--auto > div > div > div > div > div > div.o-form-group.o-form-group--inline-shrink > div > button > div > div',
-					},
-				])
+			if (!user.profile) {
+				console.error(
+					new CustomError(
+						'Failed to get steps for interactive tour because user does not contain a profile',
+						null,
+						{ user }
+					)
+				);
+				return;
+			}
+			// Resolve current page location to route id, so we know which interactive tour to show
+			// We reverse the order of the routes, since more specific routes are always declared later in the list
+			const interactiveRoutePairs = reverse(
+				toPairs(APP_PATH).filter(pair => pair[1].showForInteractiveTour)
 			);
+			const matchingRoutePair: [string, RouteInfo] | undefined = interactiveRoutePairs.find(
+				pair => {
+					const route = pair[1].route;
+					const currentRoute = location.pathname;
+					const match = matchPath(currentRoute, route);
+					return !!match;
+				}
+			);
+
+			if (!matchingRoutePair) {
+				return;
+			}
+
+			const routeId: string = matchingRoutePair[0];
+
+			// Fetch interactive tours for current user and their seen status
+			const tourTemp = await InteractiveTourService.fetchStepsForPage(
+				routeId,
+				user.profile.id
+			);
+			setTour(tourTemp);
+			setRouteId(routeId);
 		} catch (err) {
 			console.error(
 				new CustomError(
 					'Failed to get the steps for the interactive tour from the database',
 					err,
-					{ routeId, user }
+					{ user, pathName: location.pathname }
 				)
 			);
 		}
-	}, [setSteps, routeId, user]);
-
-	useEffect(() => setRun(!!steps), [steps]);
+	}, [setTour, location.pathname, user]);
 
 	useEffect(() => {
 		checkIfTourExistsForCurrentPage();
 	}, [checkIfTourExistsForCurrentPage]);
 
+	const markTourAsSeen = debounce(
+		() => {
+			if (!tour || !routeId) {
+				return;
+			}
+			InteractiveTourService.setInteractiveTourSeen(
+				routeId,
+				(user.profile as Avo.User.Profile).id,
+				(tour as TourInfo).id
+			).catch(err => {
+				console.error(
+					new CustomError('Failed to store interactive tour seen status', err, {
+						routeId,
+						profileId: (user.profile as Avo.User.Profile).id,
+						tourId: (tour as TourInfo).id,
+					})
+				);
+			});
+			setTour({
+				...tour,
+				seen: true,
+			});
+		},
+		100,
+		{ trailing: true }
+	);
+
 	const handleJoyrideCallback = (data: CallBackProps) => {
+		if (!tour) {
+			return;
+		}
 		const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
 		if (finishedStatuses.includes(data.status)) {
-			setRun(false);
+			markTourAsSeen();
 		}
 	};
 
 	// Render
-	if (steps) {
+	if (tour) {
 		return (
 			<>
 				<Joyride
-					steps={steps}
+					steps={mapSteps(tour.steps)}
 					callback={handleJoyrideCallback}
 					locale={{
 						back: t('shared/components/interactive-tour/interactive-tour___terug'),
@@ -99,7 +163,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 					spotlightPadding={8}
 					scrollOffset={200}
 					continuous
-					run={run}
+					run={!tour.seen}
 					showSkipButton
 					styles={{
 						options: {
@@ -114,7 +178,9 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 							'shared/components/interactive-tour/interactive-tour___rondleiding'
 						)}
 						icon="info"
-						onClick={() => setRun(true)}
+						onClick={() => {
+							setTour({ ...tour, seen: false });
+						}}
 					/>
 				)}
 			</>

@@ -49,6 +49,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -389,6 +390,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											/>
 										</MetaData>
 									</div>
+									<Spacer margin="left-small">
+										<InteractiveTour
+											location={location}
+											user={user}
+											showButton
+										/>
+									</Spacer>
 								</ToolbarItem>
 							</ToolbarRight>
 						</Toolbar>

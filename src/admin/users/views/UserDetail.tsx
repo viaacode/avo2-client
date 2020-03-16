@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -16,8 +16,12 @@ import { Avo } from '@viaa/avo2-types';
 
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { CustomError, formatDate, getEnv } from '../../../shared/helpers';
+import { CustomError, getEnv } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
+import {
+	renderDateDetailRows,
+	renderSimpleDetailRows,
+} from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { GET_USER_BY_ID } from '../user.gql';
@@ -109,7 +113,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
-					<Table horizontal variant="invisible">
+					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
 							<tr>
 								<th>
@@ -120,66 +124,22 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 								</th>
 								<td />
 							</tr>
-							<tr>
-								<th>
-									<Trans>Vooraam</Trans>
-								</th>
-								<td>{get(storedProfile, 'user.first_name') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Achternaam</Trans>
-								</th>
-								<td>{get(storedProfile, 'user.last_name') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Gebruikersnaam</Trans>
-								</th>
-								<td>{storedProfile.alias}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Primair email adres</Trans>
-								</th>
-								<td>{get(storedProfile, 'user.mail') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Secundair email adres</Trans>
-								</th>
-								<td>{get(storedProfile, 'alternative_email') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Aangemaakt op</Trans>
-								</th>
-								<td>{formatDate(storedProfile.created_at)}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Aangepast op</Trans>
-								</th>
-								<td>{formatDate(storedProfile.updated_at)}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Bio</Trans>
-								</th>
-								<td>{get(storedProfile, 'bio') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Functie</Trans>
-								</th>
-								<td>{get(storedProfile, 'function') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Stamboek nummer</Trans>
-								</th>
-								<td>{get(storedProfile, 'stamboek') || '-'}</td>
-							</tr>
+							{renderSimpleDetailRows(storedProfile, [
+								['user.first_name', t('Voornaam')],
+								['user.last_name', t('Achternaam')],
+								['alias', t('Gebruikersnaam')],
+								['user.mail', t('Primair email adres')],
+								['alternative_email', t('Secundair email adres')],
+							])}
+							{renderDateDetailRows(storedProfile, [
+								['created_at', 'Aangemaakt op'],
+								['updated_at', 'Aangepast op'],
+							])}
+							{renderSimpleDetailRows(storedProfile, [
+								['bio', t('Bio')],
+								['function', t('Functie')],
+								['stamboek', t('Stamboek nummer')],
+							])}
 						</tbody>
 					</Table>
 				</Container>
@@ -202,9 +162,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 										false
 									)
 								}
-							/>{' '}
+							/>
 							<Button
-								label={t('Beheer in LDAP deshboard')}
+								label={t('Beheer in Account manager')}
 								disabled={!getLdapDashboardUrl()}
 								title={
 									getLdapDashboardUrl()

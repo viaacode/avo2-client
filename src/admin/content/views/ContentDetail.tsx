@@ -46,7 +46,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/la
 
 import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
-import { getContentPageById } from '../content.service';
+import { ContentService } from '../content.service';
 import { ContentDetailParams } from '../content.types';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
@@ -78,7 +78,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	const fetchContentPageById = useCallback(async () => {
 		try {
-			setContentPage(await getContentPageById(id));
+			setContentPage(await ContentService.getContentPageById(id));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to get content page by id', err, {
@@ -223,7 +223,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 									Metadata:
 								</Trans>
 							</BlockHeading>
-							<Table horizontal variant="invisible">
+							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
 									<tr>
 										<th>

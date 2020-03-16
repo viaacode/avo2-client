@@ -212,14 +212,17 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				pg => String(pg.id) === selectedPermissionGroupId
 			)
 		) {
-			ToastService.danger(t('Deze permissie zit reeds in de groep'), false);
+			ToastService.danger(t('Deze gebruikersgroep zit reeds in de groep'), false);
 			return;
 		}
 		const selectedPermission = allPermissionGroups.find(
 			pg => String(pg.id) === selectedPermissionGroupId
 		);
 		if (!selectedPermission) {
-			ToastService.danger(t('De geselecteerde permissie kon niet worden gevonden'), false);
+			ToastService.danger(
+				t('De geselecteerde gebruikersgroep kon niet worden gevonden'),
+				false
+			);
 			return;
 		}
 		setUserGroup({

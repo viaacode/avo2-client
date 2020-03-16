@@ -1,11 +1,10 @@
 import { flatten, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
 	BlockHeading,
-	Box,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -28,6 +27,10 @@ import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
 import { dataService, ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
+import {
+	renderDateDetailRows,
+	renderSimpleDetailRows,
+} from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
@@ -182,54 +185,18 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Spacer margin="bottom-extra-large">
-						<Box backgroundColor="gray">
-							<Table horizontal variant="invisible">
-								<tbody>
-									<tr>
-										<th>
-											<Trans>Label</Trans>
-										</th>
-										<td>{get(userGroup, 'label') || '-'}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans>Description</Trans>
-										</th>
-										<td>{get(userGroup, 'description') || '-'}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans>Aangemaakt op</Trans>
-										</th>
-										<td>{formatDate(userGroup.created_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans>Aangepast op</Trans>
-										</th>
-										<td>{formatDate(userGroup.updated_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans>Bio</Trans>
-										</th>
-										<td>{get(userGroup, 'bio') || '-'}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans>Functie</Trans>
-										</th>
-										<td>{get(userGroup, 'function') || '-'}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans>Stamboek nummer</Trans>
-										</th>
-										<td>{get(userGroup, 'stamboek') || '-'}</td>
-									</tr>
-								</tbody>
-							</Table>
-						</Box>
+						<Table horizontal variant="invisible" className="c-table_detail-page">
+							<tbody>
+								{renderSimpleDetailRows(userGroup, [
+									['label', t('Label')],
+									['description', t('Beschrijving')],
+								])}
+								{renderDateDetailRows(userGroup, [
+									['created_at', t('Aangemaakt op')],
+									['updated_at', t('Aangepast op')],
+								])}
+							</tbody>
+						</Table>
 					</Spacer>
 					<Panel>
 						<PanelHeader>

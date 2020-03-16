@@ -19,15 +19,14 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ValueOf } from '../../../../shared/types';
-
-import { ToastService } from '../../../../shared/services';
-import { UserGroupSelect } from '../../../shared/components';
-
 import { DeleteObjectModal } from '../../../../shared/components';
 import { CustomError } from '../../../../shared/helpers';
+import { ToastService } from '../../../../shared/services';
+import { ValueOf } from '../../../../shared/types';
+import { UserGroupSelect } from '../../../shared/components';
+
 import { CONTENT_WIDTH_OPTIONS, DEFAULT_PAGES_WIDTH } from '../../content.const';
-import { fetchLabelsByContentType, insertNewContentLabel } from '../../content.service';
+import { ContentService } from '../../content.service';
 import {
 	ContentEditFormErrors,
 	ContentEditFormState,
@@ -76,7 +75,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		if (!formState.contentType) {
 			return;
 		}
-		fetchLabelsByContentType(formState.contentType)
+		ContentService.fetchLabelsByContentType(formState.contentType)
 			.then(setContentTypeLabels)
 			.catch(err => {
 				console.error('Failed to fetch content labels by content type', err, {
@@ -124,7 +123,10 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 					'Failed to create label because the labelToBeCreated is undefined'
 				);
 			}
-			const newLabel = await insertNewContentLabel(labelToBeCreated, formState.contentType);
+			const newLabel = await ContentService.insertContentLabel(
+				labelToBeCreated,
+				formState.contentType
+			);
 			onChange('labels', [...formState.labels, newLabel]);
 		} catch (err) {
 			console.error(new CustomError('Failed to create label', err, { labelToBeCreated }));

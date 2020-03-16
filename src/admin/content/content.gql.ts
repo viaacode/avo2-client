@@ -13,9 +13,9 @@ export const GET_CONTENT_PAGES = gql`
 		$where: app_content_bool_exp
 		$offset: Int = 0
 		$limit: Int = 10
-		$order: [app_content_order_by!] = []
+		$orderBy: [app_content_order_by!] = {}
 	) {
-		app_content(where: $where, limit: $limit, offset: $offset, order_by: $order) {
+		app_content(where: $where, limit: $limit, offset: $offset, order_by: $orderBy) {
 			content_type
 			created_at
 			depublish_at

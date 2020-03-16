@@ -1,4 +1,5 @@
 import { History } from 'history';
+import { flatten } from 'lodash-es';
 import { Reducer, useEffect, useReducer, useState } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
@@ -7,9 +8,8 @@ import { ToastService } from '../../../shared/services';
 import i18n from '../../../shared/translations/i18n';
 import { ReactAction } from '../../../shared/types';
 
-import { flatten } from 'lodash-es';
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
-import { getContentPageById } from '../content.service';
+import { ContentService } from '../content.service';
 import { ContentEditFormState, ContentWidth, DbContent } from '../content.types';
 
 type SetContentFormParams = Parameters<
@@ -71,24 +71,23 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 	useEffect(() => {
 		if (id) {
 			setIsLoading(true);
-
-			getContentPageById(Number(id))
-				.then((contentItem: DbContent | null) => {
-					if (contentItem) {
+			ContentService.getContentPageById(Number(id))
+				.then((dbContentPage: DbContent | null) => {
+					if (dbContentPage) {
 						dispatch({
 							type: ContentItemActionType.SET_CONTENT_FORM,
 							payload: {
-								title: contentItem.title,
-								description: contentItem.description || '',
-								isProtected: contentItem.is_protected,
-								path: contentItem.path,
-								contentType: contentItem.content_type,
-								contentWidth: contentItem.content_width || ContentWidth.REGULAR,
-								publishAt: contentItem.publish_at || '',
-								depublishAt: contentItem.depublish_at || '',
-								userGroupIds: contentItem.user_group_ids,
+								title: dbContentPage.title,
+								description: dbContentPage.description || '',
+								isProtected: dbContentPage.is_protected,
+								path: dbContentPage.path,
+								contentType: dbContentPage.content_type,
+								contentWidth: dbContentPage.content_width || ContentWidth.REGULAR,
+								publishAt: dbContentPage.publish_at || '',
+								depublishAt: dbContentPage.depublish_at || '',
+								userGroupIds: dbContentPage.user_group_ids,
 								labels: flatten(
-									contentItem.content_content_labels.map(
+									dbContentPage.content_content_labels.map(
 										link => link.content_label
 									)
 								),
