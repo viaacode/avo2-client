@@ -7,11 +7,14 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { ContentTypeNumber } from '../../../collection/collection.types';
+import { APP_PATH } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
+import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -19,9 +22,6 @@ import {
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
-import { ContentTypeNumber } from '../../../collection/collection.types';
-import { APP_PATH } from '../../../constants';
-import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	USER_OVERVIEW_TABLE_COLS,

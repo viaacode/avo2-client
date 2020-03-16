@@ -20,7 +20,6 @@ import i18n from '../../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components';
 import { ContentBlockConfig } from '../../../../shared/types';
-
 import { parseContentBlocks } from '../../../helpers';
 import ContentBlockPreview from '../../ContentBlockPreview/ContentBlockPreview';
 
