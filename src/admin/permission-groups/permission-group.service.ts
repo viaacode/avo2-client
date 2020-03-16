@@ -4,8 +4,8 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
-
 import i18n from '../../shared/translations/i18n';
+
 import { ITEMS_PER_PAGE } from './permission-group.const';
 import {
 	ADD_PERMISSIONS_TO_GROUP,
