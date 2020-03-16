@@ -128,7 +128,11 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		);
 
 		if (!newCurrentInteractiveTour) {
-			ToastService.danger(t('De interactieve tour is nog niet geladen'));
+			ToastService.danger(
+				t(
+					'admin/interactive-tour/views/interactive-tour-edit___de-interactieve-tour-is-nog-niet-geladen'
+				)
+			);
 			return interactiveTourState;
 		}
 
@@ -142,7 +146,11 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 
 			case 'SWAP_STEPS':
 				if (!newCurrentInteractiveTour.steps || !newCurrentInteractiveTour.steps.length) {
-					ToastService.danger(t('Deze interactive tour lijkt geen stappen te bevatten'));
+					ToastService.danger(
+						t(
+							'admin/interactive-tour/views/interactive-tour-edit___deze-interactive-tour-lijkt-geen-stappen-te-bevatten'
+						)
+					);
 					return interactiveTourState;
 				}
 
@@ -204,7 +212,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					setLoadingInfo({
 						state: 'error',
 						icon: 'search',
-						message: t('Deze interactieve tour werd niet gevonden'),
+						message: t(
+							'admin/interactive-tour/views/interactive-tour-edit___deze-interactieve-tour-werd-niet-gevonden'
+						),
 					});
 					return;
 				}
@@ -223,7 +233,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van de interactive tour is mislukt'),
+					message: t(
+						'admin/interactive-tour/views/interactive-tour-edit___het-ophalen-van-de-interactive-tour-is-mislukt'
+					),
 				});
 			}
 		}
@@ -255,7 +267,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			!interactiveTourState.currentInteractiveTour.name
 		) {
 			return {
-				name: t('Een naam is verplicht'),
+				name: t(
+					'admin/interactive-tour/views/interactive-tour-edit___een-naam-is-verplicht'
+				),
 			};
 		}
 		if (
@@ -263,7 +277,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			!interactiveTourState.currentInteractiveTour.page_id
 		) {
 			return {
-				page_id: t('Een pagina is verplicht'),
+				page_id: t(
+					'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht'
+				),
 			};
 		}
 		return null;
@@ -274,7 +290,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			const errors = getFormErrors();
 			setFormErrors(errors || {});
 			if (errors) {
-				ToastService.danger(t('De invoer is ongeldig'), false);
+				ToastService.danger(
+					t('admin/interactive-tour/views/interactive-tour-edit___de-invoer-is-ongeldig'),
+					false
+				);
 				return;
 			}
 
@@ -284,7 +303,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			) {
 				ToastService.danger(
 					t(
-						'Het opslaan van de interactive tour is mislukt omdat de interactive tour nog niet is geladen'
+						'admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt-omdat-de-interactive-tour-nog-niet-is-geladen'
 					),
 					false
 				);
@@ -317,7 +336,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			} else {
 				await initOrFetchInteractiveTour();
 			}
-			ToastService.success(t('De Interactive tour is opgeslagen'), false);
+			ToastService.success(
+				t(
+					'admin/interactive-tour/views/interactive-tour-edit___de-interactive-tour-is-opgeslagen'
+				),
+				false
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save interactive tour', err, {
@@ -325,7 +349,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					initialInteractiveTour: interactiveTourState.initialInteractiveTour,
 				})
 			);
-			ToastService.danger(t('Het opslaan van de interactive tour is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt'
+				),
+				false
+			);
 		}
 		setIsSaving(false);
 	};
@@ -404,8 +433,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 												type: 'REMOVE_STEP',
 											});
 										}}
-										ariaLabel={t('Verwijder stap')}
-										title={t('Verwijder stap')}
+										ariaLabel={t(
+											'admin/interactive-tour/views/interactive-tour-edit___verwijder-stap'
+										)}
+										title={t(
+											'admin/interactive-tour/views/interactive-tour-edit___verwijder-stap'
+										)}
 									/>
 								</ToolbarItem>
 							</ToolbarRight>
@@ -413,7 +446,11 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					</PanelHeader>
 					<PanelBody>
 						<Form>
-							<FormGroup label={t('Titel')}>
+							<FormGroup
+								label={t(
+									'admin/interactive-tour/views/interactive-tour-edit___titel'
+								)}
+							>
 								<TextInput
 									value={(step.title || '').toString()}
 									onChange={newTitle => {
@@ -426,7 +463,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									}}
 								/>
 							</FormGroup>
-							<FormGroup label={t('Tekst')} required>
+							<FormGroup
+								label={t(
+									'admin/interactive-tour/views/interactive-tour-edit___tekst'
+								)}
+								required
+							>
 								<WYSIWYG
 									data={(step.content || '').toString()}
 									onChange={newContent => {
@@ -438,11 +480,17 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										});
 									}}
 									id={`content_editor_${index}`}
-									placeholder={t('Vul een stap tekst in')}
+									placeholder={t(
+										'admin/interactive-tour/views/interactive-tour-edit___vul-een-stap-tekst-in'
+									)}
 								/>
 							</FormGroup>
 
-							<FormGroup label={t('Element css selector')}>
+							<FormGroup
+								label={t(
+									'admin/interactive-tour/views/interactive-tour-edit___element-css-selector'
+								)}
+							>
 								<TextInput
 									value={(step.target || '').toString()}
 									onChange={newTarget => {
@@ -466,7 +514,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									</TooltipTrigger>
 									<TooltipContent>
 										<Spacer padding="small">
-											<Trans>
+											<Trans i18nKey="admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector">
 												Je kan een element selector kopieren door:
 												<ul>
 													<li>
@@ -509,7 +557,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					<Spacer margin="bottom-extra-large">
 						<Box backgroundColor="gray">
 							<Form>
-								<FormGroup label={t('Naam')} error={formErrors.name}>
+								<FormGroup
+									label={t(
+										'admin/interactive-tour/views/interactive-tour-edit___naam'
+									)}
+									error={formErrors.name}
+								>
 									<TextInput
 										value={
 											interactiveTourState.currentInteractiveTour.name || ''
@@ -523,7 +576,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 										}
 									/>
 								</FormGroup>
-								<FormGroup label={t('Pagina')} error={formErrors.page_id}>
+								<FormGroup
+									label={t(
+										'admin/interactive-tour/views/interactive-tour-edit___pagina'
+									)}
+									error={formErrors.page_id}
+								>
 									<Select
 										options={getPageOptions()}
 										value={
@@ -543,7 +601,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 						</Box>
 					</Spacer>
 				</Container>
-				<BlockHeading type="h3">{t('Stappen')}</BlockHeading>
+				<BlockHeading type="h3">
+					{t('admin/interactive-tour/views/interactive-tour-edit___stappen')}
+				</BlockHeading>
 				<InteractiveTourAdd
 					index={0}
 					interactiveTour={interactiveTourState.currentInteractiveTour}
@@ -556,15 +616,28 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 
 	// Render
 	const renderPage = () => (
-		<AdminLayout showBackButton pageTitle={t('Interactive tour aanpassen')}>
+		<AdminLayout
+			showBackButton
+			pageTitle={t(
+				'admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen'
+			)}
+		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small" className="m-interactive-tour-edit-view">
 					<Container mode="horizontal">{renderEditPage()}</Container>
 				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
-				<Button label={t('Annuleer')} onClick={navigateBack} type="tertiary" />
-				<Button disabled={isSaving} label={t('Opslaan')} onClick={handleSave} />
+				<Button
+					label={t('admin/interactive-tour/views/interactive-tour-edit___annuleer')}
+					onClick={navigateBack}
+					type="tertiary"
+				/>
+				<Button
+					disabled={isSaving}
+					label={t('admin/interactive-tour/views/interactive-tour-edit___opslaan')}
+					onClick={handleSave}
+				/>
 			</AdminLayoutActions>
 		</AdminLayout>
 	);

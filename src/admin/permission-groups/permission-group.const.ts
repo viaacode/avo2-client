@@ -13,15 +13,39 @@ export const PERMISSION_GROUP_PATH = {
 export const ITEMS_PER_PAGE = 10;
 
 export const PERMISSION_GROUP_OVERVIEW_TABLE_COLS: TableColumn[] = [
-	{ id: 'label', label: i18n.t('naam'), sortable: true },
-	{ id: 'description', label: i18n.t('beschrijving'), sortable: true },
-	{ id: 'created_at', label: i18n.t('gemaakt op'), sortable: true },
-	{ id: 'updated_at', label: i18n.t('aangepast op'), sortable: true },
+	{
+		id: 'label',
+		label: i18n.t('admin/permission-groups/permission-group___naam'),
+		sortable: true,
+	},
+	{
+		id: 'description',
+		label: i18n.t('admin/permission-groups/permission-group___beschrijving'),
+		sortable: true,
+	},
+	{
+		id: 'created_at',
+		label: i18n.t('admin/permission-groups/permission-group___gemaakt-op'),
+		sortable: true,
+	},
+	{
+		id: 'updated_at',
+		label: i18n.t('admin/permission-groups/permission-group___aangepast-op'),
+		sortable: true,
+	},
 	{ id: 'actions', label: '' },
 ];
 
 export const PERMISSIONS_TABLE_COLS: TableColumn[] = [
-	{ id: 'label', label: i18n.t('Permissie Code'), sortable: true },
-	{ id: 'description', label: i18n.t('Permissie beschrijving'), sortable: true },
+	{
+		id: 'label',
+		label: i18n.t('admin/permission-groups/permission-group___permissie-code'),
+		sortable: true,
+	},
+	{
+		id: 'description',
+		label: i18n.t('admin/permission-groups/permission-group___permissie-beschrijving'),
+		sortable: true,
+	},
 	{ id: 'actions', label: '' },
 ];

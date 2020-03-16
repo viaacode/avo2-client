@@ -14,17 +14,21 @@ export const USER_GROUP_PATH = {
 export const ITEMS_PER_PAGE = 10;
 
 export const USER_GROUP_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
-	{ id: 'label', label: i18n.t('Label'), sortable: true },
-	{ id: 'description', label: i18n.t('Beschrijving'), sortable: true },
+	{ id: 'label', label: i18n.t('admin/user-groups/user-group___label'), sortable: true },
+	{
+		id: 'description',
+		label: i18n.t('admin/user-groups/user-group___beschrijving'),
+		sortable: true,
+	},
 	{
 		id: 'created_at',
-		label: i18n.t('Aangemaakt op'),
+		label: i18n.t('admin/user-groups/user-group___aangemaakt-op'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},
 	{
 		id: 'updated_at',
-		label: i18n.t('Aangepast op'),
+		label: i18n.t('admin/user-groups/user-group___aangepast-op'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},
@@ -32,9 +36,21 @@ export const USER_GROUP_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
 ];
 
 export const PERMISSION_GROUP_TABLE_COLS: TableColumn[] = [
-	{ id: 'label', label: i18n.t('Label'), sortable: true },
-	{ id: 'description', label: i18n.t('Beschrijving'), sortable: true },
-	{ id: 'created_at', label: i18n.t('Aangemaakt op'), sortable: true },
-	{ id: 'updated_at', label: i18n.t('Aangepast op'), sortable: true },
+	{ id: 'label', label: i18n.t('admin/user-groups/user-group___label'), sortable: true },
+	{
+		id: 'description',
+		label: i18n.t('admin/user-groups/user-group___beschrijving'),
+		sortable: true,
+	},
+	{
+		id: 'created_at',
+		label: i18n.t('admin/user-groups/user-group___aangemaakt-op'),
+		sortable: true,
+	},
+	{
+		id: 'updated_at',
+		label: i18n.t('admin/user-groups/user-group___aangepast-op'),
+		sortable: true,
+	},
 	{ id: 'actions', label: '' },
 ];

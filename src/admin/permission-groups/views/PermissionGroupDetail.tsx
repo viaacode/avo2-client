@@ -49,7 +49,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 				setLoadingInfo({
 					state: 'error',
 					icon: 'search',
-					message: t('Deze permissie groep werd niet gevonden'),
+					message: t(
+						'admin/permission-groups/views/permission-group-detail___deze-permissie-groep-werd-niet-gevonden'
+					),
 				});
 				return;
 			}
@@ -80,7 +82,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de permissie groep is mislukt'),
+				message: t(
+					'admin/permission-groups/views/permission-group-detail___het-ophalen-van-de-permissie-groep-is-mislukt'
+				),
 			});
 		}
 	}, [setLoadingInfo, setPermissionGroup, t, match.params.id]);
@@ -114,11 +118,19 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 					<Table horizontal variant="invisible">
 						<tbody>
 							<tr>
-								<th>{t('Label')}</th>
+								<th>
+									{t(
+										'admin/permission-groups/views/permission-group-detail___label'
+									)}
+								</th>
 								<td>{permissionGroup.label}</td>
 							</tr>
 							<tr>
-								<th>{t('Beschrijving')}</th>
+								<th>
+									{t(
+										'admin/permission-groups/views/permission-group-detail___beschrijving'
+									)}
+								</th>
 								<td>{permissionGroup.description}</td>
 							</tr>
 						</tbody>
@@ -136,7 +148,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 								sortColumn,
 								sortOrder
 							)}
-							emptyStateMessage={t('Deze groep bevat nog geen permissies')}
+							emptyStateMessage={t(
+								'admin/permission-groups/views/permission-group-detail___deze-groep-bevat-nog-geen-permissies'
+							)}
 							onColumnClick={columId =>
 								handleSortClick(columId as PermissionsTableCols)
 							}
@@ -154,14 +168,22 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 
 	// Render
 	const renderPage = () => (
-		<AdminLayout showBackButton pageTitle={t('Permissie groep details')}>
+		<AdminLayout
+			showBackButton
+			pageTitle={t(
+				'admin/permission-groups/views/permission-group-detail___permissie-groep-details'
+			)}
+		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">{renderEditPage()}</Container>
 				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
-				<Button label={t('Bewerken')} onClick={handleEditClick} />
+				<Button
+					label={t('admin/permission-groups/views/permission-group-detail___bewerken')}
+					onClick={handleEditClick}
+				/>
 			</AdminLayoutActions>
 		</AdminLayout>
 	);

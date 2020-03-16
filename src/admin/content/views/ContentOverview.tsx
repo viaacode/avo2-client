@@ -125,7 +125,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de content paginas is mislukt'),
+				message: t(
+					'admin/content/views/content-overview___het-ophalen-van-de-content-paginas-is-mislukt'
+				),
 				icon: 'alert-triangle',
 			});
 		}
@@ -324,7 +326,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					itemsPerPage={ITEMS_PER_PAGE}
 					columns={columnInfos}
 					dataCount={contentPageCount}
-					searchTextPlaceholder={t('Zoeken op auteur, titel, rol')}
+					searchTextPlaceholder={t(
+						'admin/content/views/content-overview___zoeken-op-auteur-titel-rol'
+					)}
 					noContentMatchingFiltersMessage={t(
 						'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
 					)}
