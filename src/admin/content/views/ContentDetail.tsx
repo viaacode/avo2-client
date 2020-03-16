@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { compact, get } from 'lodash-es';
+import { compact, flatten, get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -30,7 +30,6 @@ import {
 } from '../../../shared/components';
 import {
 	CustomError,
-	formatDate,
 	getAvatarProps,
 	navigate,
 	sanitize,
@@ -42,12 +41,17 @@ import { fetchAllUserGroups } from '../../../shared/services/user-groups-service
 import { ContentBlockPreview } from '../../content-block/components';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
+import {
+	renderDateDetailRows,
+	renderDetailRow,
+	renderSimpleDetailRows,
+} from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
+import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
-import { ContentDetailParams } from '../content.types';
+import { ContentDetailParams, DbContent } from '../content.types';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
@@ -55,7 +59,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const { id } = match.params;
 
 	// Hooks
-	const [contentPage, setContentPage] = useState<Avo.Content.Content | null>(null);
+	const [contentPage, setContentPage] = useState<DbContent | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
@@ -125,9 +129,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	}, [setAllUserGroups, t]);
 
 	// Methods
-	const getUserGroups = (contentItem: Avo.Content.Content): TagOption[] => {
+	const getUserGroups = (contentPage: Avo.Content.Content): TagOption[] => {
 		const tagInfos: TagInfo[] = compact(
-			(contentItem.user_group_ids || []).map((userGroupId: number): TagInfo | undefined => {
+			(contentPage.user_group_ids || []).map((userGroupId: number): TagInfo | undefined => {
 				return allUserGroups.find(userGroupOption => userGroupOption.value === userGroupId);
 			})
 		);
@@ -146,6 +150,25 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				label: t('admin/menu/components/menu-edit-form/menu-edit-form___niemand'),
 			},
 		];
+	};
+
+	const getLabels = (contentPage: DbContent): TagOption[] => {
+		return flatten(
+			(contentPage.content_content_labels || []).map(
+				(contentLabelLink: Avo.Content.ContentLabelLink) => {
+					return contentLabelLink.content_label;
+				}
+			)
+		);
+	};
+
+	const getContentPageWidthLabel = (contentPage: Avo.Content.Content): string => {
+		return (
+			get(
+				CONTENT_WIDTH_OPTIONS.find(option => option.value === contentPage.content_width),
+				'label'
+			) || '-'
+		);
 	};
 
 	const handleDelete = () => {
@@ -174,9 +197,6 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	// Render
-	const renderFormattedDate = (date: string | null | undefined) =>
-		!!date ? formatDate(date) : '-';
-
 	const renderContentDetail = (): ReactElement | null => {
 		if (!contentPage) {
 			return null;
@@ -220,73 +240,76 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___content-type">
-												Content type:
-											</Trans>
-										</th>
-										<td>{contentPage.content_type}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___beschermde-pagina">
-												Beschermde pagina:
-											</Trans>
-										</th>
-										<td>
-											{contentPage.is_protected
-												? t('admin/content/views/content-detail___ja')
-												: t('admin/content/views/content-detail___nee')}
-										</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___aangemaakt">
-												Aangemaakt:
-											</Trans>
-										</th>
-										<td>{renderFormattedDate(contentPage.created_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___laatst-bewerkt">
-												Laatst bewerkt:
-											</Trans>
-										</th>
-										<td>{renderFormattedDate(contentPage.updated_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___gepubliceerd">
-												Gepubliceerd:
-											</Trans>
-										</th>
-										<td>{renderFormattedDate(contentPage.publish_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___gedepubliceerd">
-												Gedepubliceerd:
-											</Trans>
-										</th>
-										<td>{renderFormattedDate(contentPage.depublish_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___toegankelijk-voor">
-												Toegankelijk voor:
-											</Trans>
-										</th>
-										<td>
-											<TagList
-												swatches={false}
-												selectable={false}
-												closable={false}
-												tags={getUserGroups(contentPage)}
-											/>
-										</td>
-									</tr>
+									{renderSimpleDetailRows(contentPage, [
+										['title', t('Titel:')],
+										['description', t('Beschrijving:')],
+										[
+											'content_type',
+											t('admin/content/views/content-detail___content-type'),
+										],
+										['path', t('Pad:')],
+										[
+											'is_protected',
+											t(
+												'admin/content/views/content-detail___beschermde-pagina'
+											),
+										],
+									])}
+									{renderDetailRow(
+										getContentPageWidthLabel(contentPage),
+										t('Breedte:')
+									)}
+									{renderDetailRow(
+										`${get(contentPage, 'profile.user.first_name')} ${get(
+											contentPage,
+											'profile.user.last_name'
+										)}`,
+										t('Auteur:')
+									)}
+									{renderDetailRow(
+										get(contentPage, 'profile.user.role.label'),
+										t('Auteur rol:')
+									)}
+									{renderDateDetailRows(contentPage, [
+										[
+											'created_at',
+											t('admin/content/views/content-detail___aangemaakt'),
+										],
+										[
+											'updated_at',
+											t(
+												'admin/content/views/content-detail___laatst-bewerkt'
+											),
+										],
+										[
+											'publish_at',
+											t('admin/content/views/content-detail___gepubliceerd'),
+										],
+										[
+											'depublish_at',
+											t(
+												'admin/content/views/content-detail___gedepubliceerd'
+											),
+										],
+									])}
+									{renderDetailRow(
+										<TagList
+											swatches={false}
+											selectable={false}
+											closable={false}
+											tags={getUserGroups(contentPage)}
+										/>,
+										t('admin/content/views/content-detail___toegankelijk-voor')
+									)}
+									{renderDetailRow(
+										<TagList
+											swatches={false}
+											selectable={false}
+											closable={false}
+											tags={getLabels(contentPage)}
+										/>,
+										t('Labels:')
+									)}
 								</tbody>
 							</Table>
 						</Container>
