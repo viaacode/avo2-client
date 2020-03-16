@@ -14,7 +14,9 @@ import {
 import { FileUpload } from '../../shared/components';
 import i18n from '../../shared/translations/i18n';
 
-import { ContentPicker, ContentTypeAndLabelsPicker, IconPicker } from '../shared/components';
+import { ContentPicker } from '../shared/components/ContentPicker/ContentPicker';
+import { ContentTypeAndLabelsPicker } from '../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
+import { IconPicker } from '../shared/components/IconPicker/IconPicker';
 import {
 	AlignOption,
 	BackgroundColorOption,

@@ -23,7 +23,7 @@ import i18n from '../../../../../shared/translations/i18n';
 import { AppState } from '../../../../../store';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { DbContent } from '../../../../content/content.types';
-import { ContentTypeAndLabelsValue } from '../../../../shared/components';
+import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
 import { ContentBlockConfig } from '../../../../shared/types';
 import { parseContentBlocks } from '../../../helpers';
 import ContentBlockPreview from '../../ContentBlockPreview/ContentBlockPreview';
