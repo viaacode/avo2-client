@@ -77,6 +77,15 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							usersByuserId: { role: { label: { _ilike: queryWordWildcard } } },
 						},
 					},
+					{
+						content_content_labels: {
+							content_label: {
+								label: {
+									_ilike: queryWordWildcard,
+								},
+							},
+						},
+					},
 				]
 			)
 		);

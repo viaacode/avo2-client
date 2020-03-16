@@ -63,7 +63,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 
 	const [currentPage, setCurrentPage] = useState<number>(0);
 	const [selectedTabs, setSelectedTabs] = useState<LabelObj[]>([]);
-	const [pages, setPages] = useState<DbContent[]>([] as DbContent[]);
+	const [pages, setPages] = useState<DbContent[]>([]);
 	const [pageCount, setPageCount] = useState<number>(1);
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
