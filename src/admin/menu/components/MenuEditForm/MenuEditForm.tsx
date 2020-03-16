@@ -8,13 +8,13 @@ import { Alert, Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
+import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
+import { IconPicker } from '../../../shared/components/IconPicker/IconPicker';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import { PickerItem } from '../../../shared/types';
 import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
 
 import './MenuEditForm.scss';
-import { IconPicker } from '../../../shared/components/IconPicker/IconPicker';
-import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 
 interface MenuEditFormProps {
 	formErrors: MenuEditFormErrorState;
