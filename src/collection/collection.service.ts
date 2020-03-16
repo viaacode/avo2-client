@@ -4,7 +4,12 @@ import { cloneDeep, compact, get, isNil, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
+import {
+	GET_BUNDLES,
+	GET_BUNDLES_BY_TITLE,
+	GET_COLLECTIONS_BY_IDS,
+	GET_QUALITY_LABELS,
+} from '../bundle/bundle.gql';
 import { APP_PATH } from '../constants';
 import { CustomError } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
@@ -516,7 +521,6 @@ export class CollectionService {
 	 *
 	 * @returns Bundles limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	// TODO: apply queryServer.mutate
 	// TODO: Move to bundle.service.ts
 	public static async fetchBundlesByTitle(
 		title: string,
@@ -529,16 +533,38 @@ export class CollectionService {
 				variables: { title, limit },
 			});
 
+			if (response.errors) {
+				throw new CustomError('Response contains errors', null, { response });
+			}
+
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			// handle error
-			const customError = new CustomError('Het ophalen van de bundels is mislukt.', err, {
+			const customError = new CustomError('Failed to get bundles', err, {
 				query: 'GET_BUNDLES_BY_TITLE',
 			});
 
 			console.error(customError);
 
 			throw customError;
+		}
+	}
+
+	public static async fetchQualityLabels(): Promise<string[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_QUALITY_LABELS,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains errors', null, { response });
+			}
+
+			return get(response, 'data.lookup_labels', []);
+		} catch (err) {
+			throw new CustomError('Failed to get quality labels', err, {
+				query: 'GET_BUNDLES_BY_TITLE',
+			});
 		}
 	}
 

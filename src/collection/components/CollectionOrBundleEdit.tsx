@@ -69,6 +69,7 @@ import { ShareCollectionModal } from '../components';
 import { swapFragmentsPositions } from '../helpers';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
+import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -605,6 +606,14 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				case 'metadata':
 					return (
 						<CollectionOrBundleEditMetaData
+							type={type}
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
+						/>
+					);
+				case 'admin':
+					return (
+						<CollectionOrBundleEditAdmin
 							type={type}
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
