@@ -37,7 +37,7 @@ import {
 import { ContentEditForm } from '../components';
 import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
-import * as ContentService from '../content.service';
+import { ContentService } from '../content.service';
 import {
 	ContentEditAction,
 	ContentEditActionType,
@@ -160,7 +160,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			let insertedOrUpdatedContent: Partial<Avo.Content.Content> | null;
 			if (pageType === PageType.Create) {
 				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
-				insertedOrUpdatedContent = await ContentService.insertContent(
+				insertedOrUpdatedContent = await ContentService.insertContentPage(
 					contentBody,
 					contentBlockConfigs,
 					triggerContentInsert
@@ -172,7 +172,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						updated_at: new Date().toISOString(),
 						id: parseInt(id, 10),
 					};
-					insertedOrUpdatedContent = await ContentService.updateContent(
+					insertedOrUpdatedContent = await ContentService.updateContentPage(
 						contentBody,
 						contentBlocks,
 						contentBlockConfigs,

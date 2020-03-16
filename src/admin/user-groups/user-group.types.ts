@@ -1,4 +1,6 @@
 // TODO Use permission and permission group from src\admin\permission-groups\permission-group.types.ts once it is merged
+import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
+
 export interface Permission {
 	id: number;
 	label: string;
@@ -28,6 +30,13 @@ export interface UserGroup {
 export interface UserGroupEditFormErrorState {
 	label?: string;
 	description?: string;
+}
+
+export interface UserGroupTableState extends FilterableTableState {
+	label: string;
+	description: string;
+	created_at: string;
+	updated_at: string;
 }
 
 export type UserGroupOverviewTableCols =

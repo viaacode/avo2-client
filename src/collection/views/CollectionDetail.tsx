@@ -63,6 +63,7 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	DELETE_COLLECTION,
 	INSERT_COLLECTION,
@@ -520,6 +521,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						/>
 					</Spacer>
 				)}
+				<InteractiveTour location={location} user={user} showButton />
 			</ButtonToolbar>
 		);
 	};
@@ -724,7 +726,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			render={renderCollection}
 			dataObject={permissions}
 			loadingInfo={loadingInfo}
-			showSpinner={true}
 		/>
 	);
 };

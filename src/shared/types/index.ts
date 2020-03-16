@@ -9,9 +9,11 @@ export type NavigationItemInfo = {
 	label: string | ReactElement;
 	key: string;
 	location?: string;
+	exact?: boolean;
 	target?: string;
 	component?: ReactElement;
 	icon?: IconName;
+	subLinks?: NavigationItemInfo[];
 };
 
 export type ReactSelectOption<T = any> = {

@@ -48,6 +48,9 @@ export class ApolloCacheManager {
 	public static clearContentCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'app_content');
 
+	public static clearPermissionCache = (cache: ApolloCache) =>
+		ApolloCacheManager.deleteFromCache(cache, 'users_permission');
+
 	/**
 	 * Clears all content blocks related items from the cache
 	 * eg: content
@@ -58,6 +61,9 @@ export class ApolloCacheManager {
 
 	public static clearUserGroupCache = (cache: ApolloCache) =>
 		ApolloCacheManager.deleteFromCache(cache, 'users_groups');
+
+	public static clearInteractiveTourCache = (cache: ApolloCache) =>
+		ApolloCacheManager.deleteFromCache(cache, 'app_interactive_tour');
 
 	private static deleteFromCache(cache: ApolloCache, substring: string) {
 		Object.keys(cache.data.data).forEach((key: string) => {

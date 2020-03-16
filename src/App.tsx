@@ -3,9 +3,10 @@ import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router, RouteComponentProps, withRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Route, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import Zendesk from 'react-zendesk';
+import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
 import { APP_PATH } from './constants';
@@ -13,7 +14,7 @@ import { renderRoutes } from './routes';
 import { Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
 import { getEnv } from './shared/helpers';
-import { dataService } from './shared/services/data-service';
+import { dataService } from './shared/services';
 import './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
@@ -57,7 +58,9 @@ const Root: FunctionComponent = () => (
 		<ApolloHooksProvider client={dataService}>
 			<Provider store={store}>
 				<Router>
-					<AppWithRouter />
+					<QueryParamProvider ReactRouterRoute={Route}>
+						<AppWithRouter />
+					</QueryParamProvider>
 				</Router>
 			</Provider>
 		</ApolloHooksProvider>

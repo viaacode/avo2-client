@@ -1,0 +1,15 @@
+.m-interactive-tour-edit-view {
+	.o-form-group__controls {
+		position: relative;
+
+		.c-tooltip-trigger {
+			position: absolute;
+			right: 10px;
+			top: 5px;
+		}
+
+		.c-tooltip li {
+			list-style: disc;
+		}
+	}
+}

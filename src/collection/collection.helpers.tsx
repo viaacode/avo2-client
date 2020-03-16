@@ -2,7 +2,7 @@ import { compact, get, isNil, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { stripHtml } from '../shared/helpers/formatters/strip-html';
+import { stripHtml } from '../shared/helpers/formatters';
 import i18n from '../shared/translations/i18n';
 
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';

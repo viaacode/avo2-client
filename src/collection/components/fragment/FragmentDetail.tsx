@@ -49,7 +49,6 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 				}
 			};
 		}
-		return undefined;
 	};
 
 	return collectionFragment.item_meta ? (

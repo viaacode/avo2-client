@@ -1,4 +1,4 @@
-.c-content-filters {
+.c-filter-table {
 
 	.c-dropdown__trigger {
 		margin-bottom: 0.8rem;
@@ -7,8 +7,8 @@
 	.c-dropdown__menu {
 		overflow: visible !important;
 	}
-}
 
-.c-content-filters__search {
-	max-width: 40rem;
+	.c-content-filters__search {
+		max-width: 400px;
+	}
 }
