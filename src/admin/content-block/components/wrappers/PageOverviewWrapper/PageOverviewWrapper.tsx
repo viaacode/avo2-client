@@ -167,6 +167,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		setPageCount,
 		contentTypeAndTabs,
 		user,
+		t,
 	]);
 
 	useEffect(() => {

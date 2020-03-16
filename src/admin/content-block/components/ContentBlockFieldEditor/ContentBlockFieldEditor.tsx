@@ -13,7 +13,6 @@ import {
 	ContentBlockStateType,
 	PickerItem,
 } from '../../../shared/types';
-
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 
 interface ContentBlockFieldProps {
@@ -51,6 +50,9 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 		name: editorId,
 	};
 	let editorProps;
+	console.log('EDITOR_TYPES_MAP: ', EDITOR_TYPES_MAP);
+	console.log('editor component: ', EditorComponent);
+	console.log('field: ', field);
 
 	switch (field.editorType) {
 		case ContentBlockEditor.ContentPicker:

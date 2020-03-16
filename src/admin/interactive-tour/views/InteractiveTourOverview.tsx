@@ -238,7 +238,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Interactieve touren')}>
+		<AdminLayout pageTitle={t('Interactieve tours')}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">

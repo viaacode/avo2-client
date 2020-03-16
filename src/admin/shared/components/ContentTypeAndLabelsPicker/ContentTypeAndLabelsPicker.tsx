@@ -16,7 +16,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { ToastService } from '../../../../shared/services';
-import { fetchLabelsByContentType } from '../../../content/content.service';
+import { ContentService } from '../../../content/content.service';
 import { ContentPageType } from '../../../content/content.types';
 import { useContentTypes } from '../../../content/hooks';
 
@@ -47,11 +47,11 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 
 	useEffect(() => {
 		setIsLoading(true);
-		fetchLabelsByContentType(value.selectedContentType)
+		ContentService.fetchLabelsByContentType(value.selectedContentType)
 			.then(setLabels)
-			.catch(err => {
+			.catch((err: any) => {
 				console.error('Failed to get content labels in ContentTypeAndLabelsPicker', err, {
-					value,
+					selectedContentType: value.selectedContentType,
 				});
 				ToastService.danger(t('Het ophalen van de content pagina labels is mislukt'));
 			})

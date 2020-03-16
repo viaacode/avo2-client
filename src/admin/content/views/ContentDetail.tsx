@@ -84,7 +84,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				new CustomError('Failed to get content page by id', err, {
 					query: 'GET_CONTENT_PAGE_BY_ID',
 					variables: {
-						id: match.params.id,
+						id,
 					},
 				})
 			);
@@ -93,7 +93,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				message: t('Het ophalen van de content pagina is mislukt'),
 			});
 		}
-	}, [setContentPage, setLoadingInfo, t, match.params.id]);
+	}, [setContentPage, setLoadingInfo, t, id]);
 
 	useEffect(() => {
 		fetchContentPageById();
@@ -218,11 +218,6 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 								</Spacer>
 							)}
 
-							<BlockHeading type="h4">
-								<Trans i18nKey="admin/content/views/content-detail___metadata">
-									Metadata:
-								</Trans>
-							</BlockHeading>
 							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
 									<tr>
