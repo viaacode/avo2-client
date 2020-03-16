@@ -52,7 +52,7 @@ async function getNavItems(): Promise<NavItemMap> {
 export async function getContentPageByPath(path: string): Promise<Avo.Content.Content | null> {
 	try {
 		const response = await fetch(
-			`${getEnv('PROXY_URL')}/navigation/content?${queryString.stringify({
+			`${getEnv('PROXY_URL')}/content-pages?${queryString.stringify({
 				path,
 			})}`,
 			{
@@ -67,7 +67,7 @@ export async function getContentPageByPath(path: string): Promise<Avo.Content.Co
 			return null;
 		}
 		if (response.status < 200 && response.status >= 400) {
-			throw new CustomError('Failed to get content page from /navigation/content', null, {
+			throw new CustomError('Failed to get content page from /content-pages', null, {
 				path,
 				response,
 			});
