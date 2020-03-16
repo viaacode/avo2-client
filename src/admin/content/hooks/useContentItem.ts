@@ -1,4 +1,5 @@
 import { History } from 'history';
+import { flatten } from 'lodash-es';
 import { Reducer, useEffect, useReducer, useState } from 'react';
 
 import { Avo } from '@viaa/avo2-types';
@@ -9,16 +10,22 @@ import { ReactAction } from '../../../shared/types';
 
 import { CONTENT_PATH, INITIAL_CONTENT_FORM } from '../content.const';
 import { ContentService } from '../content.service';
-import { ContentEditFormState, ContentWidth } from '../content.types';
+import { ContentEditFormState, ContentWidth, DbContent } from '../content.types';
 
 type SetContentFormParams = Parameters<
 	<K extends keyof ContentEditFormState>(key: K, value: ContentEditFormState[K]) => void
 >;
 
-type UseContentItemTuple = [ContentEditFormState, (...args: SetContentFormParams) => void, boolean];
+type UseContentItemTuple = [
+	ContentEditFormState,
+	ContentEditFormState,
+	(...args: SetContentFormParams) => void,
+	boolean
+];
 
 interface ContentItemState {
 	readonly contentForm: ContentEditFormState;
+	readonly initialContentForm: ContentEditFormState;
 }
 
 enum ContentItemActionType {
@@ -30,6 +37,7 @@ type ContentItemAction = ReactAction<ContentItemActionType>;
 
 const INITIAL_CONTENT_ITEM_STATE = () => ({
 	contentForm: INITIAL_CONTENT_FORM(),
+	initialContentForm: INITIAL_CONTENT_FORM(),
 });
 
 const reducer = (state: ContentItemState, action: ContentItemAction) => {
@@ -38,6 +46,7 @@ const reducer = (state: ContentItemState, action: ContentItemAction) => {
 			return {
 				...state,
 				contentForm: action.payload,
+				initialContentForm: action.payload,
 			};
 		case ContentItemActionType.UPDATE_CONTENT_FORM:
 			return {
@@ -54,32 +63,35 @@ const reducer = (state: ContentItemState, action: ContentItemAction) => {
 
 export const useContentItem = (history: History, id?: string): UseContentItemTuple => {
 	// Hooks
-	const [{ contentForm }, dispatch] = useReducer<Reducer<ContentItemState, ContentItemAction>>(
-		reducer,
-		INITIAL_CONTENT_ITEM_STATE()
-	);
+	const [{ contentForm, initialContentForm }, dispatch] = useReducer<
+		Reducer<ContentItemState, ContentItemAction>
+	>(reducer, INITIAL_CONTENT_ITEM_STATE());
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (id) {
 			setIsLoading(true);
-
-			ContentService.getContentItemById(Number(id))
-				.then((contentItem: Avo.Content.Content | null) => {
-					if (contentItem) {
+			ContentService.getContentPageById(Number(id))
+				.then((dbContentPage: DbContent | null) => {
+					if (dbContentPage) {
 						dispatch({
 							type: ContentItemActionType.SET_CONTENT_FORM,
 							payload: {
-								title: contentItem.title,
-								description: contentItem.description || '',
-								isProtected: contentItem.is_protected,
-								path: contentItem.path,
-								contentType: contentItem.content_type,
-								contentWidth: contentItem.content_width || ContentWidth.REGULAR,
-								publishAt: contentItem.publish_at || '',
-								depublishAt: contentItem.depublish_at || '',
-								userGroupIds: contentItem.user_group_ids,
-							},
+								title: dbContentPage.title,
+								description: dbContentPage.description || '',
+								isProtected: dbContentPage.is_protected,
+								path: dbContentPage.path,
+								contentType: dbContentPage.content_type,
+								contentWidth: dbContentPage.content_width || ContentWidth.REGULAR,
+								publishAt: dbContentPage.publish_at || '',
+								depublishAt: dbContentPage.depublish_at || '',
+								userGroupIds: dbContentPage.user_group_ids,
+								labels: flatten(
+									dbContentPage.content_content_labels.map(
+										link => link.content_label
+									)
+								),
+							} as Partial<Avo.Content.Content>,
 						});
 					} else {
 						ToastService.danger(
@@ -106,5 +118,5 @@ export const useContentItem = (history: History, id?: string): UseContentItemTup
 		});
 	};
 
-	return [contentForm, setContentForm, isLoading];
+	return [initialContentForm, contentForm, setContentForm, isLoading];
 };

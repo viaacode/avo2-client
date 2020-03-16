@@ -137,6 +137,12 @@ export const GET_CONTENT_BY_ID = gql`
 			title
 			updated_at
 			user_group_ids
+			content_content_labels {
+				content_label {
+					label
+					id
+				}
+			}
 		}
 	}
 `;
@@ -149,12 +155,6 @@ export const GET_CONTENT_TYPES = gql`
 		}
 	}
 `;
-
-// export const GET_LABELS_FOR_CONTENT_TYPE = gql`
-// 	{
-// 		// TODO implement once this has been added to the database
-// 	}
-// `;
 
 export const UPDATE_CONTENT_BY_ID = gql`
 	mutation updateContentById($id: Int!, $contentItem: app_content_set_input!) {
@@ -186,6 +186,46 @@ export const GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH = gql`
 	query GetPermissionsFromContentPageByPath($path: String!) {
 		app_content(where: { path: { _eq: $path } }) {
 			user_group_ids
+		}
+	}
+`;
+
+export const GET_CONTENT_LABELS_BY_CONTENT_TYPE = gql`
+	query getContentLabls($contentType: String!) {
+		app_content_labels(where: { content_type: { _eq: $contentType } }) {
+			id
+			label
+			content_type
+		}
+	}
+`;
+
+export const INSERT_CONTENT_LABEL = gql`
+	mutation insertContentLabel($label: String!, $contentType: String!) {
+		insert_app_content_labels(objects: { content_type: $contentType, label: $label }) {
+			returning {
+				content_type
+				id
+				label
+			}
+		}
+	}
+`;
+
+export const INSERT_CONTENT_LABEL_LINKS = gql`
+	mutation insertContentLabelLinks($objects: [app_content_content_labels_insert_input!]!) {
+		insert_app_content_content_labels(objects: $objects) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_CONTENT_LABEL_LINKS = gql`
+	mutation deleteContentLabelLinks($contentPageId: Int!, $labelIds: [Int!]!) {
+		delete_app_content_content_labels(
+			where: { label_id: { _in: $labelIds }, content_id: { _eq: $contentPageId } }
+		) {
+			affected_rows
 		}
 	}
 `;

@@ -2,6 +2,8 @@ import queryString from 'query-string';
 import { getEnv } from '../shared/helpers';
 
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import { SpecialPermissionGroups } from './authentication.types';
 
 const stamboekValidationCache: {
 	[stamboekNumber: string]: boolean;
@@ -32,4 +34,11 @@ export async function verifyStamboekNumber(
 		stamboekValidationCache[stamboekNumber] = true;
 	}
 	return data.status;
+}
+
+export function getUserGroupIds(user: Avo.User.User | null | undefined): number[] {
+	return [
+		...get(user, 'profile.userGroupIds', []),
+		user ? SpecialPermissionGroups.loggedInUsers : SpecialPermissionGroups.loggedOutUsers,
+	];
 }

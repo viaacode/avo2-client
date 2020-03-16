@@ -29,14 +29,14 @@ import FilterTable, {
 	FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
-
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
 	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
+import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';

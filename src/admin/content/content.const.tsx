@@ -72,6 +72,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	publishAt: '',
 	depublishAt: '',
 	userGroupIds: [],
+	labels: [],
 });
 
 export const CONTENT_DETAIL_TABS: TabProps[] = [
