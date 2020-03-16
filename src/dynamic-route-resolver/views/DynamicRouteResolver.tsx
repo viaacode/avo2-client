@@ -1,20 +1,31 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { Redirect, RouteComponentProps, withRouter } from 'react-router';
+import { Dispatch } from 'redux';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { SpecialPermissionGroups } from '../../authentication/authentication.types';
+import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { getLoginStateAction } from '../../authentication/store/actions';
+import {
+	selectLogin,
+	selectLoginError,
+	selectLoginLoading,
+	selectUser,
+} from '../../authentication/store/selectors';
 import { GET_COLLECTIONS_BY_AVO1_ID } from '../../bundle/bundle.gql';
 import { APP_PATH } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
-import { LoadingErrorLoadedComponent } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
-import { buildLink, CustomError } from '../../shared/helpers';
-import { dataService } from '../../shared/services/data-service';
+import { GET_EXTERNAL_ID_BY_MEDIAMOSA_ID } from '../../item/item.gql';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
+import { dataService } from '../../shared/services';
 import { getContentPageByPath } from '../../shared/services/navigation-items-service';
+import { AppState } from '../../store';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
 
@@ -23,11 +34,21 @@ interface RouteInfo {
 	data: any;
 }
 
-interface DynamicRouteResolverProps extends DefaultSecureRouteProps {}
+interface DynamicRouteResolverProps extends RouteComponentProps {
+	getLoginState: () => Dispatch;
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateError: boolean;
+	loginStateLoading: boolean;
+	user: Avo.User.User;
+}
 
 const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
+	getLoginState,
 	history,
 	location,
+	loginState,
+	loginStateError,
+	loginStateLoading,
 	match,
 	user,
 }) => {
@@ -39,17 +60,35 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 	const analyseRoute = useCallback(async () => {
 		try {
-			// Check if path points to a bundle
+			// Check if path is an old media url
 			if (/\/media\/[^/]+\/[^/]+/g.test(location.pathname)) {
-				const avo1BundleId = (location.pathname.split('/').pop() || '').trim();
-				if (avo1BundleId) {
-					const response = await dataService.query({
-						query: GET_COLLECTIONS_BY_AVO1_ID,
+				const avo1Id = (location.pathname.split('/').pop() || '').trim();
+				if (avo1Id) {
+					// Check if id matches an item mediamosa id
+					const itemResponse = await dataService.query({
+						query: GET_EXTERNAL_ID_BY_MEDIAMOSA_ID,
 						variables: {
-							avo1Id: avo1BundleId,
+							mediamosaId: avo1Id,
 						},
 					});
-					const bundleUuid: string | undefined = get(response, 'data.items[0].id');
+					const itemExternalId: string | undefined = get(
+						itemResponse,
+						'data.migrate_reference_ids[0].external_id'
+					);
+					if (itemExternalId) {
+						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
+						history.push(buildLink(APP_PATH.ITEM_DETAIL.route, { id: itemExternalId }));
+						return;
+					} // else keep analysing
+
+					// Check if id matches a bundle id
+					const bundleResponse = await dataService.query({
+						query: GET_COLLECTIONS_BY_AVO1_ID,
+						variables: {
+							avo1Id,
+						},
+					});
+					const bundleUuid: string | undefined = get(bundleResponse, 'data.items[0].id');
 					if (bundleUuid) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
 						history.push(buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: bundleUuid }));
@@ -64,16 +103,10 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			if (!contentPage) {
 				setRouteInfo({ type: 'notFound', data: null });
-				setLoadingInfo({
-					state: 'loaded',
-				});
 				return;
 			}
 			// Path is indeed a content page url
 			setRouteInfo({ type: 'contentPage', data: contentPage });
-			setLoadingInfo({
-				state: 'loaded',
-			});
 			return;
 		} catch (err) {
 			console.error(
@@ -98,11 +131,46 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		analyseRoute();
 	}, [location.pathname, analyseRoute]);
 
+	// Check if current user is logged in
+	useEffect(() => {
+		if (!loginState && !loginStateLoading && !loginStateError) {
+			getLoginState();
+		} else if (routeInfo && loginState) {
+			// Prevent seeing the content-page before loginState and routeInfo are both done
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, routeInfo, user]);
+
 	const renderRouteComponent = () => {
-		if ((routeInfo as RouteInfo).type === 'contentPage') {
+		if (routeInfo && routeInfo.type === 'contentPage') {
+			const routeUserGroupIds = get(routeInfo, 'data.user_group_ids', []);
+			// Check if the page requires the user to be logged in and not both logged in or out
+			if (
+				routeUserGroupIds.includes[SpecialPermissionGroups.loggedInUsers] &&
+				!routeUserGroupIds.includes[SpecialPermissionGroups.loggedOutUsers]
+			) {
+				return (
+					<Redirect
+						to={{
+							pathname: APP_PATH.REGISTER_OR_LOGIN.route,
+							state: { from: location },
+						}}
+					/>
+				);
+			}
+
+			// Special route exceptions
+			// /klaar/archief: redirect teachers to search page with klaar filter
+			const routePath = get(routeInfo, 'data.path', '');
+			// TODO: Ideally this should be based on the users user-group ids
+			const isTeacher = get(user, 'profile.permissions', []).includes(PermissionNames.SEARCH);
+			if (routePath === '/klaar/archief' && isTeacher) {
+				return <Redirect to={generateSearchLinkString('serie', 'Klaar')} />;
+			}
+
 			return (
 				<ContentPage
-					contentPage={(routeInfo as RouteInfo).data}
+					contentPage={routeInfo.data}
 					history={history}
 					location={location}
 					match={match}
@@ -134,4 +202,15 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	);
 };
 
-export default withRouter(DynamicRouteResolver);
+const mapStateToProps = (state: AppState) => ({
+	loginState: selectLogin(state),
+	loginStateLoading: selectLoginLoading(state),
+	loginStateError: selectLoginError(state),
+	user: selectUser(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	getLoginState: () => dispatch(getLoginStateAction() as any),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DynamicRouteResolver));

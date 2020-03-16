@@ -1,99 +1,59 @@
-import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { isNil } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
-import {
-	Button,
-	ButtonToolbar,
-	Container,
-	Form,
-	FormGroup,
-	Pagination,
-	Spacer,
-	Table,
-	TextInput,
-	Toolbar,
-	ToolbarRight,
-} from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, Spacer } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { ErrorView } from '../../../error/views';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
 import { CustomError, formatDate, navigate } from '../../../shared/helpers';
-import { useTableSort } from '../../../shared/hooks';
-import { dataService, ToastService } from '../../../shared/services';
-import { KeyCode } from '../../../shared/types';
+import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
+import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
-import { GET_USER_GROUPS } from '../user-group.gql';
 import { UserGroupService } from '../user-group.service';
-import {
-	PermissionGroupTableCols,
-	UserGroup,
-	UserGroupOverviewTableCols,
-} from '../user-group.types';
+import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
 
 interface UserGroupOverviewProps extends DefaultSecureRouteProps {}
 
 const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ history }) => {
 	const [t] = useTranslation();
 
-	// Contains the value of the search field, without triggering a new search query
-	const [searchFieldValue, setSearchFieldValue] = useState<string>('');
-	// Contains the value of the search field when the userGroup triggers a new search query
-	// by pressing enter or pressing the search button
-	const [queryText, setQueryText] = useState<string>('');
-	const [page, setPage] = useState<number>(0);
-	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
-		'label'
-	);
 	const [userGroupIdToDelete, setUserGroupIdToDelete] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [userGroups, setUserGroups] = useState<UserGroup[] | null>(null);
-	const [userGroupCount, setUserGroupCount] = useState<number | null>(null);
+	const [userGroupCount, setUserGroupCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [tableState, setTableState] = useState<Partial<UserGroupTableState>>({});
 
 	const fetchUserGroups = useCallback(async () => {
-		let variables: any;
 		try {
-			variables = {
-				offset: ITEMS_PER_PAGE * page,
-				limit: ITEMS_PER_PAGE,
-				orderBy: [{ [sortColumn]: sortOrder }],
-				queryText: `%${queryText}%`,
-			};
-			const response = await dataService.query({
-				variables,
-				query: GET_USER_GROUPS,
-			});
-			const userGroups = get(response, 'data.users_groups');
-			const userGroupCount = get(response, 'data.users_groups_aggregate.aggregate.count');
-
-			if (!userGroups) {
-				setLoadingInfo({
-					state: 'error',
-					message: t('Het ophalen van de permissie groepen is mislukt'),
-				});
-				return;
-			}
-
-			setUserGroups(userGroups);
-			setUserGroupCount(userGroupCount);
+			const [userGroupsTemp, userGroupCountTemp] = await UserGroupService.fetchUserGroups(
+				tableState.page || 0,
+				tableState.sort_column || 'created_at',
+				tableState.sort_order || 'desc',
+				tableState.query || ''
+			);
+			setUserGroups(userGroupsTemp);
+			setUserGroupCount(userGroupCountTemp);
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to fetch user groups from graphql', err, {
-					variables,
-					query: 'GET_USER_GROUPS',
-				})
+				new CustomError('Failed to fetch user groups from graphql', err, { tableState })
 			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het ophalen van de gebruikersgroepen is mislukt'),
+			});
 		}
-	}, [setUserGroups, setLoadingInfo, t, page, queryText, sortColumn, sortOrder]);
+	}, [setUserGroups, setLoadingInfo, t, tableState]);
 
 	useEffect(() => {
 		fetchUserGroups();
@@ -104,12 +64,6 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			setLoadingInfo({ state: 'loaded' });
 		}
 	}, [userGroups, userGroupCount]);
-
-	const handleKeyUp = (e: KeyboardEvent) => {
-		if (e.keyCode === KeyCode.Enter) {
-			setQueryText(searchFieldValue);
-		}
-	};
 
 	const handleDelete = async () => {
 		try {
@@ -197,64 +151,44 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		}
 	};
 
-	const renderUserGroupTable = () => {
+	const renderNoResults = () => {
 		return (
-			<>
-				<Table
-					columns={USER_GROUP_OVERVIEW_TABLE_COLS}
-					data={userGroups || []}
-					renderCell={(rowData: Partial<UserGroup>, columnId: string) =>
-						renderTableCell(rowData, columnId as UserGroupOverviewTableCols)
-					}
-					sortColumn={sortColumn}
-					sortOrder={sortOrder}
-					onColumnClick={columnId =>
-						handleSortClick(columnId as UserGroupOverviewTableCols)
-					}
-					rowKey="id"
-					variant="bordered"
-				/>
-				<Spacer margin="top-large">
-					<Pagination
-						pageCount={Math.ceil((userGroupCount || 0) / ITEMS_PER_PAGE)}
-						currentPage={page}
-						onPageChange={setPage}
+			<ErrorView message={t('Er zijn nog geen gebruikersgroepen aangemaakt')}>
+				<p>
+					<Trans>Beschrijving hoe gebruikersgroepen toe voegen</Trans>
+				</p>
+				<Spacer margin="top">
+					<Button
+						icon="plus"
+						label={t('Gebruikersgroep aanmaken')}
+						onClick={() => history.push(USER_GROUP_PATH.USER_GROUP_CREATE)}
 					/>
 				</Spacer>
-			</>
+			</ErrorView>
 		);
 	};
 
 	const renderUserGroupPageBody = () => {
+		if (!userGroups) {
+			return null;
+		}
 		return (
 			<>
-				<Spacer margin="bottom-small">
-					<Toolbar>
-						<ToolbarRight>
-							<Form type="inline">
-								<FormGroup className="c-content-filters__search" inlineMode="grow">
-									<TextInput
-										placeholder={t('Zoek op label, beschrijving')}
-										icon="search"
-										onChange={setSearchFieldValue}
-										onKeyUp={handleKeyUp}
-										value={searchFieldValue}
-									/>
-								</FormGroup>
-								<FormGroup inlineMode="shrink">
-									<Button
-										label={t(
-											'admin/content/components/content-filters/content-filters___zoeken'
-										)}
-										type="primary"
-										onClick={() => setQueryText(searchFieldValue)}
-									/>
-								</FormGroup>
-							</Form>
-						</ToolbarRight>
-					</Toolbar>
-				</Spacer>
-				{renderUserGroupTable()}
+				<FilterTable
+					columns={USER_GROUP_OVERVIEW_TABLE_COLS}
+					data={userGroups || []}
+					dataCount={userGroupCount}
+					renderCell={(rowData: Partial<UserGroup>, columnId: string) =>
+						renderTableCell(rowData, columnId as UserGroupOverviewTableCols)
+					}
+					searchTextPlaceholder={t('Zoek op label, beschrijving')}
+					renderNoResults={renderNoResults}
+					onTableStateChanged={setTableState}
+					itemsPerPage={ITEMS_PER_PAGE}
+					noContentMatchingFiltersMessage={t(
+						'Er zijn geen gebruikersgroepen die voldoen aan de filters'
+					)}
+				/>
 				<DeleteObjectModal
 					deleteObjectCallback={handleDelete}
 					isOpen={isConfirmModalOpen}

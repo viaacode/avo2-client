@@ -12,6 +12,7 @@ import { Avo } from '@viaa/avo2-types';
 import { APP_PATH } from '../../constants';
 import { Profile } from '../../settings/components';
 import { buildLink } from '../../shared/helpers';
+import { AppState } from '../../store';
 
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
@@ -132,7 +133,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 	);
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
 	user: selectUser(state),
 	loginState: selectLogin(state),
 	loginStateLoading: selectLoginLoading(state),

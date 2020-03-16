@@ -1,18 +1,18 @@
 import { Avo } from '@viaa/avo2-types';
 
-import { getContentItems, getContentItemsByTitle } from '../../../content/content.service';
-
+import { ContentService } from '../../../content/content.service';
 import { PickerSelectItem } from '../../types';
+
 import { parsePickerItem } from './parse-picker';
 
 // Fetch content items from GQL
-export const fetchContentPages = async (
+export const retrieveContentPages = async (
 	title: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	const contentItems: Avo.Content.Content[] | null = title
-		? await getContentItemsByTitle(`%${title}`, limit)
-		: await getContentItems(limit);
+		? await ContentService.getContentItemsByTitle(`%${title}`, limit)
+		: await ContentService.getContentItems(limit);
 
 	return parseContentPages(contentItems || []);
 };

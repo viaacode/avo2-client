@@ -1,5 +1,4 @@
-import { ApolloCacheManager, dataService } from './data-service';
-import { ToastService, ToastType } from './toast-service';
-import { ZendeskService } from './zendesk-service';
-
-export { dataService, ToastService, ToastType, ApolloCacheManager, ZendeskService };
+export { BookmarksViewsPlaysService } from './bookmarks-views-plays-service';
+export { ApolloCacheManager, dataService } from './data-service';
+export { ToastService, ToastType } from './toast-service';
+export { ZendeskService } from './zendesk-service';

@@ -49,6 +49,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { LANGUAGES } from '../../shared/constants';
 import {
 	buildLink,
@@ -59,12 +60,11 @@ import {
 	generateSearchLinkString,
 	reorderDate,
 } from '../../shared/helpers';
-import { dataService, ToastService } from '../../shared/services';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService, dataService, ToastService } from '../../shared/services';
 import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service.const';
+} from '../../shared/services/bookmarks-views-plays-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import ReportItemModal from '../components/modals/ReportItemModal';
@@ -390,6 +390,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 											/>
 										</MetaData>
 									</div>
+									<Spacer margin="left-small">
+										<InteractiveTour
+											location={location}
+											user={user}
+											showButton
+										/>
+									</Spacer>
 								</ToolbarItem>
 							</ToolbarRight>
 						</Toolbar>

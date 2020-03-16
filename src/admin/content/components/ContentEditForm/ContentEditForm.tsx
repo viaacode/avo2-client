@@ -16,9 +16,7 @@ import {
 } from '@viaa/avo2-components';
 
 import { ValueOf } from '../../../../shared/types';
-
 import { UserGroupSelect } from '../../../shared/components';
-
 import { CONTENT_WIDTH_OPTIONS, DEFAULT_PAGES_WIDTH } from '../../content.const';
 import {
 	ContentEditFormErrors,

@@ -1,3 +1,4 @@
+import { WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	ContentBlockConfig,
@@ -31,10 +32,14 @@ export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
-			content: TEXT_FIELD(),
-			align: ALIGN_FIELD(
-				i18n.t('admin/content-block/helpers/generators/intro___titel-uitlijning')
-			),
+			content: TEXT_FIELD(i18n.t('Tekst is verplicht'), {
+				label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
+				editorType: ContentBlockEditor.WYSIWYG,
+				editorProps: {
+					btns: WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN,
+				},
+			}),
+			align: ALIGN_FIELD(i18n.t('Uitlijning')),
 		},
 	},
 	block: {

@@ -3,7 +3,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { FlowPlayer, FlowPlayerProps } from '@viaa/avo2-components';
 
 import { CustomError } from '../../helpers';
-import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service';
+import { BookmarksViewsPlaysService } from '../../services';
 
 interface FlowPlayerWrapperProps extends FlowPlayerProps {
 	itemUuid?: string;
