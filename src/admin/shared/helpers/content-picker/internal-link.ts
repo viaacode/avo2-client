@@ -6,7 +6,7 @@ import { PickerSelectItem } from '../../types';
 import { parsePickerItem } from './parse-picker';
 
 // Return InternalLinkItems items from APP_PATH
-export const fetchInternalLinks = async (
+export const retrieveInternalLinks = async (
 	keyword: string | null,
 	limit: number
 ): Promise<PickerSelectItem[]> => {

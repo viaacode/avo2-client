@@ -17,6 +17,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
@@ -26,7 +27,7 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 import { ContentPickerType, PickerItem } from '../../shared/types';
 
 import { ApolloQueryResult } from 'apollo-boost';
-import { getAllUserGroups } from '../../../shared/services/user-groups-service';
+import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
@@ -38,11 +39,6 @@ import {
 	MenuEditPageType,
 	MenuEditParams,
 } from '../menu.types';
-
-export enum SpecialPermissionGroups {
-	loggedOutUsers = -1,
-	loggedInUsers = -2,
-}
 
 export interface MenuSchema {
 	id: number;
@@ -134,7 +130,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 
 	// Get labels of the userGroups, so we can show a readable error message
 	useEffect(() => {
-		getAllUserGroups()
+		fetchAllUserGroups()
 			.then(userGroups => {
 				setAllUserGroups(userGroups);
 			})
@@ -268,8 +264,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		if (key === 'content') {
 			setMenuForm({
 				...menuForm,
-				content_type: (value as PickerItem).type,
-				content_path: (value as PickerItem).value,
+				content_type: get(value as PickerItem, 'type'),
+				content_path: get(value as PickerItem, 'value'),
 			});
 		} else {
 			setMenuForm({

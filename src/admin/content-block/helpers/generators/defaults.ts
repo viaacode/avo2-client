@@ -45,7 +45,9 @@ export const BACKGROUND_COLOR_FIELD = (
 	},
 });
 
-export const PADDING_FIELD = (label = i18n.t('Padding')) => ({
+export const PADDING_FIELD = (
+	label = i18n.t('admin/content-block/helpers/generators/defaults___padding')
+) => ({
 	label,
 	editorType: ContentBlockEditor.PaddingSelect,
 });

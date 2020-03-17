@@ -27,6 +27,7 @@ import { selectSearchLoading, selectSearchResults } from '../../search/store/sel
 import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
 import { useDebounce } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
+import { AppState } from '../../store';
 
 import './Home.scss';
 
@@ -200,7 +201,7 @@ const Home: FunctionComponent<HomeProps> = ({
 	);
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
 	searchResults: selectSearchResults(state),
 	searchResultsLoading: selectSearchLoading(state),
 });

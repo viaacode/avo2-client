@@ -2,23 +2,17 @@ import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
+import { Container, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
 
-import {
-	ContentBlockComponentState,
-	ContentBlockState,
-	ContentBlockType,
-} from '../../../shared/types';
-import {
-	CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP,
-	DARK_BACKGROUND_COLOR_OPTIONS,
-} from '../../content-block.const';
+import { ContentBlockComponentState, ContentBlockState } from '../../../shared/types';
+import { DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	COMPONENT_PREVIEW_MAP,
 	IGNORE_BLOCK_LEVEL_PROPS,
+	NAVIGABLE_CONTENT_BLOCKS,
 	REPEATABLE_CONTENT_BLOCKS,
 } from './ContentBlockPreview.const';
 
@@ -45,30 +39,20 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const containerSize = ContentWidthMap[contentWidth];
 	const PreviewComponent = COMPONENT_PREVIEW_MAP[blockState.blockType];
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
-	const stateToSpread: any = needsElements ? { elements: componentState } : componentState;
+	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
-	const initialBlockLevelState = CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP[blockState.blockType];
-	Object.keys(initialBlockLevelState(0)).forEach((prop: string) => {
-		if ((blockState as any)[prop] && !IGNORE_BLOCK_LEVEL_PROPS.includes(prop)) {
-			stateToSpread[prop] = (blockState as any)[prop];
-		}
-	});
+	const blockStateProps = Object.keys(blockState).reduce((acc, key) => {
+		const blockValue = (blockState as any)[key];
+		const includeBlockValue = blockValue && !IGNORE_BLOCK_LEVEL_PROPS.includes(key);
 
-	if (
-		blockState.blockType === ContentBlockType.CTAs ||
-		blockState.blockType === ContentBlockType.Buttons
-	) {
-		stateToSpread.elements.forEach((innerState: any) => {
-			innerState.navigate = () => {
-				navigateToContentType(innerState.buttonAction, history);
-			};
-		});
-	}
+		return includeBlockValue ? { ...acc, [key]: blockValue } : acc;
+	}, {});
 
-	if (blockState.blockType === ContentBlockType.ProjectsSpotlight) {
-		stateToSpread.navigate = (buttonAction: ButtonAction) => {
-			navigateToContentType(buttonAction, history);
-		};
+	if (NAVIGABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
+		componentStateProps.elements = componentStateProps.elements.map((element: any) => ({
+			...element,
+			navigate: () => navigateToContentType(element.buttonAction, history),
+		}));
 	}
 
 	const hasDarkBg = DARK_BACKGROUND_COLOR_OPTIONS.includes(blockState.backgroundColor);
@@ -86,7 +70,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 				mode="horizontal"
 				size={containerSize === ContentWidthMap.REGULAR ? undefined : containerSize}
 			>
-				<PreviewComponent {...stateToSpread} />
+				<PreviewComponent {...componentStateProps} {...blockStateProps} />
 			</Container>
 		</Spacer>
 	);

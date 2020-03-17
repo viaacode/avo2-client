@@ -1,46 +1,46 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { PickerTypeOption } from '../../types';
+import { ContentPickerType, PickerTypeOption } from '../../types';
 
-import { fetchBundles, fetchCollections } from '../../helpers/content-picker/collection';
-import { fetchContentPages } from '../../helpers/content-picker/content-page';
-import { fetchInternalLinks } from '../../helpers/content-picker/internal-link';
-import { fetchItems } from '../../helpers/content-picker/item';
+import { retrieveBundles, retrieveCollections } from '../../helpers/content-picker/collection';
+import { retrieveContentPages } from '../../helpers/content-picker/content-page';
+import { retrieveInternalLinks } from '../../helpers/content-picker/internal-link';
+import { retrieveItems } from '../../helpers/content-picker/item';
 
 export const CONTENT_TYPES: PickerTypeOption[] = [
 	{
 		value: 'CONTENT_PAGE',
 		label: i18n.t('admin/content/content___content'),
 		disabled: false,
-		fetch: fetchContentPages,
+		fetch: retrieveContentPages,
 		picker: 'SELECT',
 	},
 	{
 		value: 'INTERNAL_LINK',
 		label: i18n.t('admin/content/content___statisch'),
 		disabled: false,
-		fetch: fetchInternalLinks,
+		fetch: retrieveInternalLinks,
 		picker: 'SELECT',
 	},
 	{
 		value: 'COLLECTION',
 		label: i18n.t('admin/content/content___collecties'),
 		disabled: false,
-		fetch: fetchCollections,
+		fetch: retrieveCollections,
 		picker: 'SELECT',
 	},
 	{
 		value: 'ITEM',
 		label: i18n.t('admin/content/content___items'),
 		disabled: false,
-		fetch: fetchItems,
+		fetch: retrieveItems,
 		picker: 'SELECT',
 	},
 	{
 		value: 'BUNDLE',
 		label: i18n.t('admin/content/content___bundels'),
 		disabled: false,
-		fetch: fetchBundles,
+		fetch: retrieveBundles,
 		picker: 'SELECT',
 	},
 	{
@@ -61,7 +61,7 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 	},
 ];
 
-export const DEFAULT_ALLOWED_TYPES = [
+export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
 	'CONTENT_PAGE',
 	'ITEM',
 	'COLLECTION',

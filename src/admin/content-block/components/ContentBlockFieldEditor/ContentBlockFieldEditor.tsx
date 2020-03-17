@@ -1,4 +1,4 @@
-import { get, isArray, isNil } from 'lodash-es';
+import { debounce, get, isArray, isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { SelectOption } from '@viaa/avo2-components';
@@ -13,7 +13,6 @@ import {
 	ContentBlockStateType,
 	PickerItem,
 } from '../../../shared/types';
-
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 
 interface ContentBlockFieldProps {
@@ -32,7 +31,7 @@ interface ContentBlockFieldProps {
 	) => void;
 }
 
-export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
+const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 	block,
 	fieldKey,
 	formGroupIndex,
@@ -58,7 +57,7 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 				onSelect: (picked: PickerItem) => {
 					handleChange(type, fieldKey, { value: picked }, stateIndex);
 				},
-				currentSelection: get(state as any, 'buttonAction'),
+				initialValues: get(state as any, fieldKey),
 			};
 			break;
 		case ContentBlockEditor.IconPicker:
@@ -112,6 +111,17 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 				checked: (state as any)[fieldKey],
 			};
 			break;
+		case ContentBlockEditor.TextArea:
+		case ContentBlockEditor.TextInput:
+			editorProps = {
+				onChange: debounce(
+					(value: any) => handleChange(type, fieldKey, value, stateIndex),
+					150,
+					{ leading: true }
+				),
+				value: (state as any)[fieldKey],
+			};
+			break;
 		default:
 			editorProps = {
 				onChange: (value: any) => {
@@ -124,3 +134,5 @@ export const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> 
 
 	return <EditorComponent {...defaultProps} {...editorProps} />;
 };
+
+export default React.memo(ContentBlockFieldEditor);

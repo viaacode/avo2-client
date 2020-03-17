@@ -17,88 +17,118 @@ import {
 	PickerSelectItem,
 	PickerTypeOption,
 } from '../../../shared/types';
-import { CONTENT_TYPES, REACT_SELECT_DEFAULT_OPTIONS } from './ContentPicker.const';
+
+import {
+	CONTENT_TYPES,
+	DEFAULT_ALLOWED_TYPES,
+	REACT_SELECT_DEFAULT_OPTIONS,
+} from './ContentPicker.const';
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
 
 export interface ContentPickerProps {
-	onSelect: (value: ValueType<PickerItem>) => void;
 	allowedTypes?: ContentPickerType[];
+	initialValues?: PickerItem;
+	onSelect: (value: PickerItem | null) => void;
 	errors?: string | string[];
-	currentSelection?: PickerItem;
 }
 
 export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
-	allowedTypes,
+	allowedTypes = DEFAULT_ALLOWED_TYPES,
+	initialValues,
 	onSelect,
 	errors = [],
-	currentSelection,
 }) => {
-	const typeOptions = filterTypes(CONTENT_TYPES, allowedTypes || []);
-	const currentTypeObject = typeOptions.find(
-		type => type.value === get(currentSelection, 'type')
-	);
-
 	const [t] = useTranslation();
 
-	const [currentType, setCurrentType] = useState<PickerTypeOption<ContentPickerType>>(
+	// filter available options for the type picker
+	const typeOptions = filterTypes(CONTENT_TYPES, allowedTypes as ContentPickerType[]);
+
+	// apply initial type from `initialValues`, default to first available type
+	const currentTypeObject = typeOptions.find(type => type.value === get(initialValues, 'type'));
+	const [selectedType, setSelectedType] = useState<PickerTypeOption<ContentPickerType>>(
 		currentTypeObject || typeOptions[0]
 	);
-	const [options, setOptions] = useState<PickerSelectItem[]>([]);
-	const [input, setInput] = useState<string>(
-		setInitialInput(currentTypeObject, currentSelection)
-	);
-	const [currentItem, setCurrentItem] = useState<ValueType<PickerItem> | null>(
-		setInitialItem(options, currentSelection)
-	);
 
-	// inflate content picker
+	// available options for the item picker.
+	const [itemOptions, setItemOptions] = useState<PickerSelectItem[]>([]);
+
+	// selected option, keep track of wether initial item from `initialValues` has been applied
+	const [selectedItem, setSelectedItem] = useState<ValueType<PickerItem>>();
+	const [hasAppliedInitialItem, setHasAppliedInitialItem] = useState<boolean>(false);
+
+	// apply initial input if INPUT-based type, default to ''
+	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, initialValues));
+
+	// inflate item picker // TODO: type
 	const inflatePicker = (keyword: string | null, callback: any) => {
-		if (currentType && !!currentType.fetch) {
-			currentType
+		if (selectedType && !!selectedType.fetch) {
+			selectedType
 				.fetch(keyword, 20)
-				.then((items: any) => {
-					callback((items as any) || []);
-
-					setCurrentItem(null);
-				})
-				.catch((error: any) => {
-					console.error('[Content Picker] - Failed to inflate.', error);
-					ToastService.danger(
-						t(
-							'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
+				.then((items: PickerSelectItem[]) => {
+					const initialItem = [
+						{
+							label: get(initialValues, 'label'),
+							value: {
+								type: get(initialValues, 'type'),
+								value: get(initialValues, 'value'),
+							},
+						},
+						...items.filter(
+							(item: PickerSelectItem) => item.label !== get(initialValues, 'label')
 						),
-						false
-					);
-				});
+					];
+
+					return callback((!hasAppliedInitialItem ? initialItem : items) || []);
+				})
+				.catch(handleInflationError);
 		}
 	};
 
+	// handle error during inflation of item picker // TODO: type
+	const handleInflationError = (error: any) => {
+		console.error('[Content Picker] - Failed to inflate.', error);
+		ToastService.danger(
+			t(
+				'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
+			),
+			false
+		);
+	};
+
+	// when selecting a type, reset `selectedItem` and retrieve new item options
 	useEffect(() => {
-		inflatePicker(null, setOptions);
-	}, [currentType]); // eslint-disable-line
+		inflatePicker(null, setItemOptions);
+	}, [selectedType]); // eslint-disable-line
+
+	// during the first update of `itemOptions`, set the initial value of the item picker
+	useEffect(() => {
+		if (itemOptions.length && !hasAppliedInitialItem) {
+			setSelectedItem(setInitialItem(itemOptions, initialValues));
+			setHasAppliedInitialItem(true);
+		}
+	}, [itemOptions]); // eslint-disable-line
 
 	// events
 	const onSelectType = (selected: ValueType<PickerTypeOption>) => {
-		if (currentType !== selected) {
-			setCurrentType(selected as PickerTypeOption);
-			setCurrentItem(null);
+		if (selectedType !== selected) {
+			setSelectedType(selected as PickerTypeOption);
+			setSelectedItem(null);
 		}
 	};
 
 	const onSelectItem = (selectedItem: ValueType<PickerItem>, event: ActionMeta) => {
+		// reset `selectedItem` when clearing item picker
 		if (event.action === 'clear') {
-			setCurrentItem(null);
-		}
-
-		if (!selectedItem) {
+			setSelectedItem(null);
 			return null;
 		}
 
 		const value = get(selectedItem, 'value', null);
 
+		// if value of selected item is `null`, throw error
 		if (!get(value, 'value')) {
 			onSelect(null);
-			setCurrentItem(null);
+			setSelectedItem(null);
 			console.error(
 				new CustomError('[Content Picker] - Selected item has no value.', null, {
 					selectedItem,
@@ -113,13 +143,19 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			return null;
 		}
 
-		onSelect(value);
-		setCurrentItem(selectedItem);
+		// trigger `onSelect` function, pass selected item
+		onSelect({
+			...value,
+			label: get(selectedItem, 'label'),
+		});
+
+		// update `selectedItem`
+		setSelectedItem(selectedItem);
 	};
 
 	const onChangeInput = (value: string) => {
 		setInput(value);
-		onSelect(parsePickerItem(get(currentType, 'value') as ContentPickerType, value));
+		onSelect(parsePickerItem(get(selectedType, 'value') as ContentPickerType, value));
 	};
 
 	// render controls
@@ -133,7 +169,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			)}
 			options={typeOptions}
 			onChange={onSelectType}
-			value={currentType}
+			value={selectedType}
 			isSearchable={false}
 			isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
 			noOptionsMessage={() =>
@@ -143,11 +179,11 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	);
 
 	const renderItemControl = () => {
-		if (!currentType) {
+		if (!selectedType) {
 			return null;
 		}
 
-		switch (currentType.picker) {
+		switch (selectedType.picker) {
 			case 'SELECT':
 				return renderItemPicker();
 			case 'TEXT_INPUT':
@@ -169,8 +205,8 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			)}
 			loadOptions={inflatePicker}
 			onChange={onSelectItem}
-			value={currentItem}
-			defaultOptions={options as any}
+			value={selectedItem}
+			defaultOptions={itemOptions as any} // TODO: type
 			isClearable
 			noOptionsMessage={() =>
 				t('admin/shared/components/content-picker/content-picker___geen-resultaten')
@@ -189,6 +225,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		/>
 	);
 
+	// render content picker
 	return (
 		<FormGroup error={errors}>
 			<Grid>

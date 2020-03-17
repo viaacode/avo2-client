@@ -1,6 +1,5 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ButtonsBlockComponentState,
@@ -57,9 +56,6 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
-				editorProps: {
-					allowedTypes: DEFAULT_ALLOWED_TYPES,
-				},
 			},
 		},
 	},

@@ -7,7 +7,9 @@ import { ValueType } from 'react-select/src/types';
 import { Alert, Form, FormGroup, Select, TextArea, TextInput } from '@viaa/avo2-components';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
-import { ContentPicker, IconPicker, UserGroupSelect } from '../../../shared/components';
+import { UserGroupSelect } from '../../../shared/components';
+import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
+import { IconPicker } from '../../../shared/components/IconPicker/IconPicker';
 import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import { PickerItem } from '../../../shared/types';
 import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
@@ -106,13 +108,14 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			>
 				<ContentPicker
 					allowedTypes={['CONTENT_PAGE', 'INTERNAL_LINK', 'EXTERNAL_LINK']}
-					onSelect={(item: ValueType<PickerItem>) => {
-						onChange('content', item as PickerItem);
+					onSelect={(item: any) => {
+						onChange('content', item);
 					}}
-					currentSelection={
+					initialValues={
 						formState.content_type && formState.content_path
 							? {
 									type: formState.content_type,
+									label: formState.content_path,
 									value: formState.content_path,
 							  }
 							: undefined

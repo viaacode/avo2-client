@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import {
@@ -14,11 +14,15 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { CustomError, formatDate, getEnv } from '../../../shared/helpers';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import { CustomError, getEnv } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
+import {
+	renderDateDetailRows,
+	renderSimpleDetailRows,
+} from '../../shared/helpers/render-detail-fields';
+import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { GET_USER_BY_ID } from '../user.gql';
 
@@ -52,7 +56,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van de gebruiker info is mislukt'),
+					message: t(
+						'admin/users/views/user-detail___het-ophalen-van-de-gebruiker-info-is-mislukt'
+					),
 				});
 				return;
 			}
@@ -68,7 +74,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de gebruiker info is mislukt'),
+				message: t(
+					'admin/users/views/user-detail___het-ophalen-van-de-gebruiker-info-is-mislukt'
+				),
 			});
 		}
 	}, [setStoredProfile, setLoadingInfo, t, match.params.id]);
@@ -109,7 +117,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 		return (
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
-					<Table horizontal variant="invisible">
+					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
 							<tr>
 								<th>
@@ -120,66 +128,28 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 								</th>
 								<td />
 							</tr>
-							<tr>
-								<th>
-									<Trans>Vooraam</Trans>
-								</th>
-								<td>{get(storedProfile, 'user.first_name') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Achternaam</Trans>
-								</th>
-								<td>{get(storedProfile, 'user.last_name') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Gebruikersnaam</Trans>
-								</th>
-								<td>{storedProfile.alias}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Primair email adres</Trans>
-								</th>
-								<td>{get(storedProfile, 'user.mail') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Secundair email adres</Trans>
-								</th>
-								<td>{get(storedProfile, 'alternative_email') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Aangemaakt op</Trans>
-								</th>
-								<td>{formatDate(storedProfile.created_at)}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Aangepast op</Trans>
-								</th>
-								<td>{formatDate(storedProfile.updated_at)}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Bio</Trans>
-								</th>
-								<td>{get(storedProfile, 'bio') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Functie</Trans>
-								</th>
-								<td>{get(storedProfile, 'function') || '-'}</td>
-							</tr>
-							<tr>
-								<th>
-									<Trans>Stamboek nummer</Trans>
-								</th>
-								<td>{get(storedProfile, 'stamboek') || '-'}</td>
-							</tr>
+							{renderSimpleDetailRows(storedProfile, [
+								['user.first_name', t('admin/users/views/user-detail___voornaam')],
+								['user.last_name', t('admin/users/views/user-detail___achternaam')],
+								['alias', t('admin/users/views/user-detail___gebruikersnaam')],
+								[
+									'user.mail',
+									t('admin/users/views/user-detail___primair-email-adres'),
+								],
+								[
+									'alternative_email',
+									t('admin/users/views/user-detail___secundair-email-adres'),
+								],
+							])}
+							{renderDateDetailRows(storedProfile, [
+								['created_at', 'Aangemaakt op'],
+								['updated_at', 'Aangepast op'],
+							])}
+							{renderSimpleDetailRows(storedProfile, [
+								['bio', t('admin/users/views/user-detail___bio')],
+								['function', t('admin/users/views/user-detail___functie')],
+								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
+							])}
 						</tbody>
 					</Table>
 				</Container>
@@ -190,27 +160,33 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 	const renderUserDetailPage = () => (
 		<AdminLayout showBackButton>
 			<AdminLayoutHeader>
-				<Header category="audio" title={t('Gebruiker details')} showMetaData={false}>
+				<Header
+					category="audio"
+					title={t('admin/users/views/user-detail___gebruiker-details')}
+					showMetaData={false}
+				>
 					<HeaderButtons>
 						<ButtonToolbar>
 							<Button
 								type="danger"
-								label={t('Bannen')}
+								label={t('admin/users/views/user-detail___bannen')}
 								onClick={() =>
 									ToastService.info(
 										t('settings/components/profile___nog-niet-geimplementeerd'),
 										false
 									)
 								}
-							/>{' '}
+							/>
 							<Button
-								label={t('Beheer in LDAP deshboard')}
+								label={t(
+									'admin/users/views/user-detail___beheer-in-account-manager'
+								)}
 								disabled={!getLdapDashboardUrl()}
 								title={
 									getLdapDashboardUrl()
 										? ''
 										: t(
-												'Deze gebruiker is niet gelinked aan een archief account'
+												'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
 										  )
 								}
 								onClick={handleLdapDashboardClick}
