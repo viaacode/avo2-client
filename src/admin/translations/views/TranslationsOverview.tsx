@@ -1,10 +1,11 @@
-import { get } from 'lodash-es';
+import { flatten, get } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Container, KeyValueEditor } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { ToastService } from '../../../shared/services';
 
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { translationsReducer } from '../translations.reducers';
@@ -44,17 +45,27 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		});
 	};
 
-	const onSaveTranslations = () => {
+	const onSaveTranslations = async () => {
 		// convert translations to db format and save translations
-		convertDataToTranslations(translations).forEach((context: TranslationsState) => {
-			updateTranslations(context.name, context);
+		const promises: any = [];
+
+		await convertDataToTranslations(translations).forEach((context: TranslationsState) => {
+			promises.push(updateTranslations(context.name, context));
 		});
+
+		Promise.all(promises)
+			.then(() => {
+				ToastService.success(t('De vertalingen zijn opgeslagen.'));
+			})
+			.catch(() => {
+				ToastService.danger(t('Het opslaan van de vertaling is mislukt.'));
+			});
 	};
 
 	const convertTranslationsToData = (translations: TranslationsState[]) => {
 		// convert translations to state format
-		return translations
-			.map((context: TranslationsState) => {
+		return flatten(
+			translations.map((context: TranslationsState) => {
 				// convert object-based translations to array-based translations
 				const translationsArray: Translation[] = Object.entries(get(context, 'value'));
 
@@ -64,7 +75,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 					item[1],
 				]);
 			})
-			.flat(1);
+		);
 	};
 
 	const convertDataToTranslations = (data: Translation[]) => {
