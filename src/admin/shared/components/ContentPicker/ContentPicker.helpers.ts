@@ -19,18 +19,18 @@ export const filterTypes = (
 
 export const setInitialInput = (
 	type?: PickerTypeOption<ContentPickerType>,
-	currentSelection?: PickerItem
+	initialValues?: PickerItem
 ) => {
 	const isInput = get(type, 'picker') === 'TEXT_INPUT';
 
-	return isInput ? get(currentSelection, 'value', '') : '';
+	return isInput ? get(initialValues, 'value', '') : '';
 };
 
-export const setInitialItem = (options: PickerSelectItem[], currentSelection?: PickerItem) => {
-	return options.find((option: PickerSelectItem) => {
-		return (
-			get(option, 'value.value', 'EMPTY_OPTION') ===
-			get(currentSelection, 'value', 'EMPTY_SELECTION')
-		);
-	}) as ValueType<PickerItem>;
+export const setInitialItem = (options: PickerSelectItem[], initialValues?: PickerItem) => {
+	const currentItem = options.find(
+		(option: PickerSelectItem) =>
+			option.value.value === get(initialValues, 'value', 'EMPTY_SELECTION')
+	) as ValueType<PickerItem>;
+
+	return currentItem;
 };
