@@ -108,13 +108,14 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			>
 				<ContentPicker
 					allowedTypes={['CONTENT_PAGE', 'INTERNAL_LINK', 'EXTERNAL_LINK']}
-					onSelect={(item: ValueType<PickerItem>) => {
-						onChange('content', item as PickerItem);
+					onSelect={(item: any) => {
+						onChange('content', item);
 					}}
-					currentSelection={
+					initialValues={
 						formState.content_type && formState.content_path
 							? {
 									type: formState.content_type,
+									label: formState.content_path,
 									value: formState.content_path,
 							  }
 							: undefined
