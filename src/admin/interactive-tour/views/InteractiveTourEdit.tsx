@@ -1,6 +1,6 @@
 import { cloneDeep, compact, get, map, orderBy } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useReducer, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import {
 	BlockHeading,
@@ -33,7 +33,7 @@ import { redirectToClientPage } from '../../../authentication/helpers/redirects'
 import { APP_PATH } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
-import { buildLink, CustomError, navigate } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate, sanitize } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -514,23 +514,15 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									</TooltipTrigger>
 									<TooltipContent>
 										<Spacer padding="small">
-											<Trans i18nKey="admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector">
-												Je kan een element selector kopieren door:
-												<ul>
-													<li>
-														Klik rechts op een element op de website
-													</li>
-													<li>Kies "element inspecteren"</li>
-													<li>
-														Klik rechts op de geselecteerde html code in
-														het nieuwe venster
-													</li>
-													<li>
-														Kies kopieer => kopieer element selector
-													</li>
-													<li>Plak de waarde in dit tekst veld</li>
-												</ul>
-											</Trans>
+											<div
+												dangerouslySetInnerHTML={{
+													__html: sanitize(
+														t(
+															'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector'
+														)
+													),
+												}}
+											/>
 										</Spacer>
 									</TooltipContent>
 								</Tooltip>
