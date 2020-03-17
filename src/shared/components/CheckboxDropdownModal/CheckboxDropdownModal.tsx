@@ -19,10 +19,8 @@ import {
 	Modal,
 	ModalBody,
 	ModalFooterRight,
-	ModalHeaderRight,
 	Spacer,
 	TagList,
-	TextInput,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
@@ -213,14 +211,15 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 					onClose={closeDropdownOrModal}
 					scrollable
 				>
-					<ModalHeaderRight>
-						<TextInput
-							placeholder={t(
-								'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___zoeken'
-							)}
-							icon="search"
-						/>
-					</ModalHeaderRight>
+					{/* TODO: add search in checkbox modal components */}
+					{/*<ModalHeaderRight>*/}
+					{/*	<TextInput*/}
+					{/*		placeholder={t(*/}
+					{/*			'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___zoeken'*/}
+					{/*		)}*/}
+					{/*		icon="search"*/}
+					{/*	/>*/}
+					{/*</ModalHeaderRight>*/}
 					<ModalBody>
 						<Spacer>
 							<Form>
