@@ -1,4 +1,4 @@
-import { flatten, get } from 'lodash-es';
+import { flatten, fromPairs, get, groupBy, map } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -49,7 +49,8 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		// convert translations to db format and save translations
 		const promises: any = [];
 
-		await convertDataToTranslations(translations).forEach((context: TranslationsState) => {
+		// TODO: type
+		await convertDataToTranslations(translations).forEach((context: any) => {
 			promises.push(updateTranslations(context.name, context));
 		});
 
@@ -78,31 +79,25 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		);
 	};
 
+	const splitOnFirstSlash = (text: string): string[] => {
+		const firstSlashIndex = text.indexOf('/');
+		return [text.substring(0, firstSlashIndex), text.substring(firstSlashIndex + 1)];
+	};
+
 	const convertDataToTranslations = (data: Translation[]) => {
-		return data.reduce((acc: TranslationsState[], curr: Translation) => {
-			// retrieve context name
-			const currentContext = curr[0].split('/')[0];
+		const translationsPerContext = groupBy(data, dataItem => {
+			return splitOnFirstSlash(dataItem[0])[0];
+		});
 
-			// retrieve index of translations of the current context
-			const currentContextIndex = acc.findIndex(
-				(context: any) => context.name === `translations-${currentContext}`
-			);
-
-			// if current context does not exist, make it exist
-			if (!acc.length || !acc[currentContextIndex]) {
-				acc.push({
-					name: `translations-${currentContext}`,
-					value: {
-						[curr[0].replace(`${currentContext}/`, '')]: curr[1],
-					},
-				});
-			} else {
-				// if current context exists, add translation
-				acc[currentContextIndex].value[curr[0].replace(`${currentContext}/`, '')] = curr[1];
-			}
-
-			return acc;
-		}, []);
+		return map(translationsPerContext, (translations: Translation, context: string) => ({
+			name: `translations-${context}`,
+			value: fromPairs(
+				translations.map(translation => [
+					splitOnFirstSlash(translation[0])[1],
+					translation[1],
+				])
+			),
+		}));
 	};
 
 	return (
