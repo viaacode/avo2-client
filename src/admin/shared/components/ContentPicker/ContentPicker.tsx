@@ -78,7 +78,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 						),
 					];
 
-					return callback((!hasAppliedInitialItem ? initialItem : items) || []);
+					return callback(
+						(!hasAppliedInitialItem && initialValues ? initialItem : items) || []
+					);
 				})
 				.catch(handleInflationError);
 		}
@@ -98,7 +100,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// when selecting a type, reset `selectedItem` and retrieve new item options
 	useEffect(() => {
 		inflatePicker(null, setItemOptions);
-	}, [selectedType]); // eslint-disable-line
+	}, [selectedType, setItemOptions]); // eslint-disable-line
 
 	// during the first update of `itemOptions`, set the initial value of the item picker
 	useEffect(() => {
