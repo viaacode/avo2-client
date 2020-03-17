@@ -10,13 +10,13 @@ export const USER_PATH = {
 export const ITEMS_PER_PAGE = 10;
 
 export const USER_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
-	{ id: 'first_name', label: i18n.t('Voornaam'), sortable: true },
-	{ id: 'last_name', label: i18n.t('Achternaam'), sortable: true },
-	{ id: 'mail', label: i18n.t('Email'), sortable: true },
-	{ id: 'stamboek', label: i18n.t('Stamboek'), sortable: true },
+	{ id: 'first_name', label: i18n.t('admin/users/user___voornaam'), sortable: true },
+	{ id: 'last_name', label: i18n.t('admin/users/user___achternaam'), sortable: true },
+	{ id: 'mail', label: i18n.t('admin/users/user___email'), sortable: true },
+	{ id: 'stamboek', label: i18n.t('admin/users/user___stamboek'), sortable: true },
 	{
 		id: 'created_at',
-		label: i18n.t('Aangemaakt op'),
+		label: i18n.t('admin/users/user___aangemaakt-op'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},

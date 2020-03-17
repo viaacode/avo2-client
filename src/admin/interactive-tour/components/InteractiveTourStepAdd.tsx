@@ -58,8 +58,12 @@ const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
 						type="secondary"
 						icon="add"
 						onClick={handleAddStepClick}
-						ariaLabel={t('Stap toevoegen')}
-						title={t('Stap toevoegen')}
+						ariaLabel={t(
+							'admin/interactive-tour/components/interactive-tour-step-add___stap-toevoegen'
+						)}
+						title={t(
+							'admin/interactive-tour/components/interactive-tour-step-add___stap-toevoegen'
+						)}
 					/>
 				</ToolbarItem>
 				{renderDivider()}

@@ -72,7 +72,20 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					{ title: { _ilike: queryWordWildcard } },
 					{ profile: { usersByuserId: { first_name: { _ilike: queryWordWildcard } } } },
 					{ profile: { usersByuserId: { last_name: { _ilike: queryWordWildcard } } } },
-					{ profile: { usersByuserId: { role: { _ilike: queryWordWildcard } } } },
+					{
+						profile: {
+							usersByuserId: { role: { label: { _ilike: queryWordWildcard } } },
+						},
+					},
+					{
+						content_content_labels: {
+							content_label: {
+								label: {
+									_ilike: queryWordWildcard,
+								},
+							},
+						},
+					},
 				]
 			)
 		);
@@ -112,7 +125,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de content paginas is mislukt'),
+				message: t(
+					'admin/content/views/content-overview___het-ophalen-van-de-content-paginas-is-mislukt'
+				),
 				icon: 'alert-triangle',
 			});
 		}
@@ -311,7 +326,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					itemsPerPage={ITEMS_PER_PAGE}
 					columns={columnInfos}
 					dataCount={contentPageCount}
-					searchTextPlaceholder={t('Zoeken op auteur, titel, rol')}
+					searchTextPlaceholder={t(
+						'admin/content/views/content-overview___zoeken-op-auteur-titel-rol'
+					)}
 					noContentMatchingFiltersMessage={t(
 						'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
 					)}

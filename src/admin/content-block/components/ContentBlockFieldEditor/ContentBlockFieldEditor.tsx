@@ -13,7 +13,6 @@ import {
 	ContentBlockStateType,
 	PickerItem,
 } from '../../../shared/types';
-
 import { EDITOR_TYPES_MAP } from '../../content-block.const';
 
 interface ContentBlockFieldProps {

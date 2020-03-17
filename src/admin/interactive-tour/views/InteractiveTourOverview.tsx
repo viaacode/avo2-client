@@ -79,7 +79,9 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de interactive tours is mislukt'),
+				message: t(
+					'admin/interactive-tour/views/interactive-tour-overview___het-ophalen-van-de-interactive-tours-is-mislukt'
+				),
 			});
 		}
 	}, [setInteractiveTours, setLoadingInfo, t, tableState]);
@@ -99,7 +101,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			if (!interactiveTourIdToDelete) {
 				ToastService.danger(
 					t(
-						'Het verwijderen van de interactieve tour is mislukt, probeer de pagina te herladen'
+						'admin/interactive-tour/views/interactive-tour-overview___het-verwijderen-van-de-interactieve-tour-is-mislukt-probeer-de-pagina-te-herladen'
 					),
 					false
 				);
@@ -108,7 +110,12 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 
 			await InteractiveTourService.deleteInteractiveTour(interactiveTourIdToDelete);
 			await fetchInteractiveTours();
-			ToastService.success(t('De interactieve tour is verwijdert'), false);
+			ToastService.success(
+				t(
+					'admin/interactive-tour/views/interactive-tour-overview___de-interactieve-tour-is-verwijdert'
+				),
+				false
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete user group', err, {
@@ -116,14 +123,21 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 					query: 'DELETE_INTERACTIVE_TOUR',
 				})
 			);
-			ToastService.danger(t('Het verwijderen van de interactieve tour is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/interactive-tour/views/interactive-tour-overview___het-verwijderen-van-de-interactieve-tour-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
 	const openModal = (interactiveTourId: number | undefined): void => {
 		if (isNil(interactiveTourId)) {
 			ToastService.danger(
-				t('De interactieve tour kon niet worden verwijdert, probeer de pagina te herladen'),
+				t(
+					'admin/interactive-tour/views/interactive-tour-overview___de-interactieve-tour-kon-niet-worden-verwijdert-probeer-de-pagina-te-herladen'
+				),
 				false
 			);
 			return;
@@ -192,14 +206,22 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('Er zijn nog geen interactieve tours aangemaakt')}>
+			<ErrorView
+				message={t(
+					'admin/interactive-tour/views/interactive-tour-overview___er-zijn-nog-geen-interactieve-tours-aangemaakt'
+				)}
+			>
 				<p>
-					<Trans>Beschrijving hoe interactieve tours toe voegen</Trans>
+					<Trans i18nKey="admin/interactive-tour/views/interactive-tour-overview___beschrijving-hoe-interactieve-tours-toe-voegen">
+						Beschrijving hoe interactieve tours toe voegen
+					</Trans>
 				</p>
 				<Spacer margin="top">
 					<Button
 						icon="plus"
-						label={t('Interactieve tour aanmaken')}
+						label={t(
+							'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-aanmaken'
+						)}
 						onClick={() => history.push(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE)}
 					/>
 				</Spacer>
@@ -220,12 +242,14 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 					renderCell={(rowData: InteractiveTour, columnId: string) =>
 						renderTableCell(rowData, columnId as InteractiveTourOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoek op label, beschrijving')}
+					searchTextPlaceholder={t(
+						'admin/interactive-tour/views/interactive-tour-overview___zoek-op-label-beschrijving'
+					)}
 					renderNoResults={renderNoResults}
 					onTableStateChanged={setTableState}
 					itemsPerPage={ITEMS_PER_PAGE}
 					noContentMatchingFiltersMessage={t(
-						'Er zijn geen interactieve tours die voldoen aan de filters'
+						'admin/interactive-tour/views/interactive-tour-overview___er-zijn-geen-interactieve-tours-die-voldoen-aan-de-filters'
 					)}
 				/>
 				<DeleteObjectModal
@@ -238,7 +262,11 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Interactieve touren')}>
+		<AdminLayout
+			pageTitle={t(
+				'admin/interactive-tour/views/interactive-tour-overview___interactieve-tours'
+			)}
+		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -252,7 +280,9 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			</AdminLayoutBody>
 			<AdminLayoutActions>
 				<Button
-					label={t('Interactieve tour toevoegen')}
+					label={t(
+						'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-toevoegen'
+					)}
 					onClick={() => {
 						redirectToClientPage(
 							INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE,
