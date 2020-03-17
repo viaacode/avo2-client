@@ -50,8 +50,9 @@ import {
 	InputModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
+	renderDropdownButton,
 } from '../../shared/components';
-import { renderDropdownButton } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
 import { dataService, ToastService } from '../../shared/services';
@@ -674,6 +675,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
+											<Spacer margin="left-small">
+												<InteractiveTour
+													location={location}
+													user={user}
+													showButton
+												/>
+											</Spacer>
 										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>

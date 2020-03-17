@@ -52,7 +52,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// available options for the item picker.
 	const [itemOptions, setItemOptions] = useState<PickerSelectItem[]>([]);
 
-	// selected option, keep track of wether initial item from `initialValues` has been applied
+	// selected option, keep track of whether initial item from `initialValues` has been applied
 	const [selectedItem, setSelectedItem] = useState<ValueType<PickerItem>>();
 	const [hasAppliedInitialItem, setHasAppliedInitialItem] = useState<boolean>(false);
 
@@ -95,11 +95,6 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		);
 	};
 
-	// when selecting a type, reset `selectedItem` and retrieve new item options
-	useEffect(() => {
-		inflatePicker(null, setItemOptions);
-	}, [selectedType]); // eslint-disable-line
-
 	// during the first update of `itemOptions`, set the initial value of the item picker
 	useEffect(() => {
 		if (itemOptions.length && !hasAppliedInitialItem) {
@@ -113,6 +108,8 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		if (selectedType !== selected) {
 			setSelectedType(selected as PickerTypeOption);
 			setSelectedItem(null);
+
+			inflatePicker(null, setItemOptions);
 		}
 	};
 

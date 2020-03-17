@@ -12,12 +12,12 @@ import {
 
 import './ActionsBar.scss';
 
-interface ActionsBarprops {
+interface ActionsBarProps {
 	children?: ReactNode;
 	fixed?: boolean;
 }
 
-export const ActionsBar: FunctionComponent<ActionsBarprops> = ({ children, fixed }) => {
+export const ActionsBar: FunctionComponent<ActionsBarProps> = ({ children, fixed }) => {
 	return (
 		<Navbar
 			autoHeight

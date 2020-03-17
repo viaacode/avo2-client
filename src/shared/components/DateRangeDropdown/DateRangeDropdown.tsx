@@ -16,7 +16,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
-import { reorderDate } from '../../helpers/formatters/date';
+import { reorderDate } from '../../helpers/formatters';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface DateRangeDropdownProps {

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/react-hooks';
-import { compact, get } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { compact, flatten, get } from 'lodash-es';
+import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
@@ -23,9 +23,13 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import {
-	formatDate,
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
+import {
+	CustomError,
 	getAvatarProps,
 	navigate,
 	sanitize,
@@ -33,15 +37,21 @@ import {
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
-import { getAllUserGroups } from '../../../shared/services/user-groups-service';
+import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { ContentBlockPreview } from '../../content-block/components';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
+import {
+	renderDateDetailRows,
+	renderDetailRow,
+	renderSimpleDetailRows,
+} from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_RESULT_PATH } from '../content.const';
-import { DELETE_CONTENT, GET_CONTENT_BY_ID } from '../content.gql';
-import { ContentDetailParams } from '../content.types';
+import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_WIDTH_OPTIONS } from '../content.const';
+import { DELETE_CONTENT } from '../content.gql';
+import { ContentService } from '../content.service';
+import { ContentDetailParams, DbContent } from '../content.types';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
@@ -49,7 +59,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const { id } = match.params;
 
 	// Hooks
-	const [content, setContent] = useState<Avo.Content.Content | null>(null);
+	const [contentPage, setContentPage] = useState<DbContent | null>(null);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
 
@@ -63,15 +74,46 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	);
 
 	// Computed
-	const avatarProps = getAvatarProps(get(content, 'profile', null));
+	const avatarProps = getAvatarProps(get(contentPage, 'profile', null));
 	const contentBlockConfigs = parseContentBlocks(contentBlocks);
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
-	const isContentProtected = get(content, 'is_protected', false);
-	const pageTitle = `Content: ${get(content, 'title', '')}`;
+	const isContentProtected = get(contentPage, 'is_protected', false);
+	const pageTitle = `Content: ${get(contentPage, 'title', '')}`;
 
-	// Get labels of the userGroups, so we can show a readable error message
+	const fetchContentPageById = useCallback(async () => {
+		try {
+			setContentPage(await ContentService.getContentPageById(id));
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get content page by id', err, {
+					query: 'GET_CONTENT_PAGE_BY_ID',
+					variables: {
+						id,
+					},
+				})
+			);
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het ophalen van de content pagina is mislukt'),
+			});
+		}
+	}, [setContentPage, setLoadingInfo, t, id]);
+
 	useEffect(() => {
-		getAllUserGroups()
+		fetchContentPageById();
+	}, [fetchContentPageById]);
+
+	useEffect(() => {
+		if (contentPage) {
+			setLoadingInfo({
+				state: 'loaded',
+			});
+		}
+	}, [contentPage, setLoadingInfo]);
+
+	// Get labels of the contentPages, so we can show a readable error message
+	useEffect(() => {
+		fetchAllUserGroups()
 			.then(userGroups => {
 				setAllUserGroups(userGroups);
 			})
@@ -87,9 +129,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	}, [setAllUserGroups, t]);
 
 	// Methods
-	const getUserGroups = (contentItem: Avo.Content.Content): TagOption[] => {
+	const getUserGroups = (contentPage: Avo.Content.Content): TagOption[] => {
 		const tagInfos: TagInfo[] = compact(
-			(contentItem.user_group_ids || []).map((userGroupId: number): TagInfo | undefined => {
+			(contentPage.user_group_ids || []).map((userGroupId: number): TagInfo | undefined => {
 				return allUserGroups.find(userGroupOption => userGroupOption.value === userGroupId);
 			})
 		);
@@ -108,6 +150,25 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				label: t('admin/menu/components/menu-edit-form/menu-edit-form___niemand'),
 			},
 		];
+	};
+
+	const getLabels = (contentPage: DbContent): TagOption[] => {
+		return flatten(
+			(contentPage.content_content_labels || []).map(
+				(contentLabelLink: Avo.Content.ContentLabelLink) => {
+					return contentLabelLink.content_label;
+				}
+			)
+		);
+	};
+
+	const getContentPageWidthLabel = (contentPage: Avo.Content.Content): string => {
+		return (
+			get(
+				CONTENT_WIDTH_OPTIONS.find(option => option.value === contentPage.content_width),
+				'label'
+			) || '-'
+		);
 	};
 
 	const handleDelete = () => {
@@ -136,30 +197,30 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	// Render
-	const renderFormattedDate = (date: string | null | undefined) =>
-		!!date ? formatDate(date) : '-';
-
-	const renderContentDetail = (contentItem: Avo.Content.Content) => {
-		if (contentItem) {
-			setContent(contentItem);
+	const renderContentDetail = (): ReactElement | null => {
+		if (!contentPage) {
+			return null;
 		}
-
 		// TODO: Move tab contents to separate views
 		switch (currentTab) {
 			case 'inhoud':
-				return contentBlockConfigs.map((contentBlockConfig, index) => (
-					<ContentBlockPreview
-						key={contentBlocks[index].id}
-						componentState={contentBlockConfig.components.state}
-						contentWidth={get(content, 'content_width')}
-						blockState={contentBlockConfig.block.state}
-					/>
-				));
+				return (
+					<>
+						{contentBlockConfigs.map((contentBlockConfig, index) => (
+							<ContentBlockPreview
+								key={contentBlocks[index].id}
+								componentState={contentBlockConfig.components.state}
+								contentWidth={get(contentPage, 'content_width')}
+								blockState={contentBlockConfig.block.state}
+							/>
+						))}
+					</>
+				);
 			case 'metadata':
 				return (
 					<Container mode="vertical" size="small">
 						<Container mode="horizontal">
-							{!!contentItem.description && (
+							{!!contentPage.description && (
 								<Spacer margin="bottom-large">
 									<BlockHeading type="h4">
 										<Trans i18nKey="admin/content/views/content-detail___omschrijving">
@@ -169,7 +230,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 									<p
 										dangerouslySetInnerHTML={{
 											__html: sanitize(
-												contentItem.description,
+												contentPage.description,
 												sanitizePresets.link
 											),
 										}}
@@ -177,80 +238,78 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 								</Spacer>
 							)}
 
-							<BlockHeading type="h4">
-								<Trans i18nKey="admin/content/views/content-detail___metadata">
-									Metadata:
-								</Trans>
-							</BlockHeading>
-							<Table horizontal variant="invisible">
+							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___content-type">
-												Content type:
-											</Trans>
-										</th>
-										<td>{contentItem.content_type}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___beschermde-pagina">
-												Beschermde pagina:
-											</Trans>
-										</th>
-										<td>
-											{contentItem.is_protected
-												? t('admin/content/views/content-detail___ja')
-												: t('admin/content/views/content-detail___nee')}
-										</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___aangemaakt">
-												Aangemaakt:
-											</Trans>
-										</th>
-										<td>{renderFormattedDate(contentItem.created_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___laatst-bewerkt">
-												Laatst bewerkt:
-											</Trans>
-										</th>
-										<td>{renderFormattedDate(contentItem.updated_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___gepubliceerd">
-												Gepubliceerd:
-											</Trans>
-										</th>
-										<td>{renderFormattedDate(contentItem.publish_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___gedepubliceerd">
-												Gedepubliceerd:
-											</Trans>
-										</th>
-										<td>{renderFormattedDate(contentItem.depublish_at)}</td>
-									</tr>
-									<tr>
-										<th>
-											<Trans i18nKey="admin/content/views/content-detail___toegankelijk-voor">
-												Toegankelijk voor:
-											</Trans>
-										</th>
-										<td>
-											<TagList
-												swatches={false}
-												selectable={false}
-												closable={false}
-												tags={getUserGroups(contentItem)}
-											/>
-										</td>
-									</tr>
+									{renderSimpleDetailRows(contentPage, [
+										['title', t('Titel:')],
+										['description', t('Beschrijving:')],
+										[
+											'content_type',
+											t('admin/content/views/content-detail___content-type'),
+										],
+										['path', t('Pad:')],
+										[
+											'is_protected',
+											t(
+												'admin/content/views/content-detail___beschermde-pagina'
+											),
+										],
+									])}
+									{renderDetailRow(
+										getContentPageWidthLabel(contentPage),
+										t('Breedte:')
+									)}
+									{renderDetailRow(
+										`${get(contentPage, 'profile.user.first_name')} ${get(
+											contentPage,
+											'profile.user.last_name'
+										)}`,
+										t('Auteur:')
+									)}
+									{renderDetailRow(
+										get(contentPage, 'profile.user.role.label'),
+										t('Auteur rol:')
+									)}
+									{renderDateDetailRows(contentPage, [
+										[
+											'created_at',
+											t('admin/content/views/content-detail___aangemaakt'),
+										],
+										[
+											'updated_at',
+											t(
+												'admin/content/views/content-detail___laatst-bewerkt'
+											),
+										],
+										[
+											'publish_at',
+											t('admin/content/views/content-detail___gepubliceerd'),
+										],
+										[
+											'depublish_at',
+											t(
+												'admin/content/views/content-detail___gedepubliceerd'
+											),
+										],
+									])}
+									{renderDetailRow(
+										<TagList
+											swatches={false}
+											selectable={false}
+											closable={false}
+											tags={getUserGroups(contentPage)}
+										/>,
+										t('admin/content/views/content-detail___toegankelijk-voor')
+									)}
+									{renderDetailRow(
+										<TagList
+											swatches={false}
+											selectable={false}
+											closable={false}
+											tags={getLabels(contentPage)}
+										/>,
+										t('Labels:')
+									)}
 								</tbody>
 							</Table>
 						</Container>
@@ -295,14 +354,13 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
-				<DataQueryComponent
-					query={GET_CONTENT_BY_ID}
-					renderData={renderContentDetail}
-					resultPath={`${CONTENT_RESULT_PATH.GET}[0]`}
-					variables={{ id }}
+				<LoadingErrorLoadedComponent
+					loadingInfo={loadingInfo}
+					dataObject={contentPage}
+					render={renderContentDetail}
 				/>
 				<DeleteObjectModal
-					deleteObjectCallback={() => handleDelete()}
+					deleteObjectCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={

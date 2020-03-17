@@ -39,6 +39,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
@@ -55,7 +56,12 @@ import './AssignmentDetail.scss';
 
 interface AssignmentProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...rest }) => {
+const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
+	location,
+	match,
+	user,
+	...rest
+}) => {
 	// State
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
@@ -390,6 +396,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 							assignment.content_layout === AssignmentLayout.PlayerAndText
 						}
 						linkToItems={false}
+						location={location}
 						match={match}
 						user={user}
 						{...rest}
@@ -400,6 +407,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 					<ItemVideoDescription
 						itemMetaData={assignmentContent as Avo.Item.Item}
 						showDescription={content_layout === AssignmentLayout.PlayerAndText}
+						location={location}
 						match={match}
 						user={user}
 						{...rest}
@@ -479,59 +487,56 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({ match, user, ...
 									</ToolbarItem>
 								</ToolbarLeft>
 								<ToolbarRight>
-									<>
+									<ToolbarItem>
+										<TagList tags={tags} closable={false} swatches bordered />
+									</ToolbarItem>
+									{!!profile && (
 										<ToolbarItem>
-											<TagList
-												tags={tags}
-												closable={false}
-												swatches
-												bordered
-											/>
+											{renderAvatar(profile, {
+												includeRole: true,
+												small: true,
+												dark: true,
+											})}
 										</ToolbarItem>
-										{!!profile && (
-											<ToolbarItem>
-												{renderAvatar(profile, {
-													includeRole: true,
-													small: true,
-													dark: true,
-												})}
-											</ToolbarItem>
-										)}
-										<ToolbarItem>
-											<Dropdown
-												isOpen={isActionsDropdownOpen}
-												menuWidth="fit-content"
-												onClose={() => setActionsDropdownOpen(false)}
-												onOpen={() => setActionsDropdownOpen(true)}
-												placement="bottom-end"
-											>
-												<DropdownButton>
-													<Button
-														icon="more-horizontal"
-														type="secondary"
-													/>
-												</DropdownButton>
-												<DropdownContent>
-													<MenuContent
-														menuItems={[
-															{
-																icon: 'archive',
-																id: 'archive',
-																label: isAssignmentResponseArchived()
-																	? t(
-																			'assignment/views/assignment-detail___dearchiveer'
-																	  )
-																	: t(
-																			'assignment/views/assignment-detail___archiveer'
-																	  ),
-															},
-														]}
-														onClick={handleExtraOptionsClick as any}
-													/>
-												</DropdownContent>
-											</Dropdown>
-										</ToolbarItem>
-									</>
+									)}
+									<ToolbarItem>
+										<Dropdown
+											isOpen={isActionsDropdownOpen}
+											menuWidth="fit-content"
+											onClose={() => setActionsDropdownOpen(false)}
+											onOpen={() => setActionsDropdownOpen(true)}
+											placement="bottom-end"
+										>
+											<DropdownButton>
+												<Button icon="more-horizontal" type="secondary" />
+											</DropdownButton>
+											<DropdownContent>
+												<MenuContent
+													menuItems={[
+														{
+															icon: 'archive',
+															id: 'archive',
+															label: isAssignmentResponseArchived()
+																? t(
+																		'assignment/views/assignment-detail___dearchiveer'
+																  )
+																: t(
+																		'assignment/views/assignment-detail___archiveer'
+																  ),
+														},
+													]}
+													onClick={handleExtraOptionsClick as any}
+												/>
+											</DropdownContent>
+										</Dropdown>
+									</ToolbarItem>
+									<ToolbarItem>
+										<InteractiveTour
+											location={location}
+											user={user}
+											showButton
+										/>
+									</ToolbarItem>
 								</ToolbarRight>
 							</Toolbar>
 						</Container>

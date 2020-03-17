@@ -25,11 +25,16 @@ export const GET_USER_BY_ID = gql`
 `;
 
 export const GET_USERS = gql`
-	query getUsers($offset: Int!, $limit: Int!, $queryText: String!) {
+	query getUsers(
+		$offset: Int!
+		$limit: Int!
+		$orderBy: [users_profiles_order_by!]!
+		$queryText: String!
+	) {
 		users_profiles(
 			offset: $offset
 			limit: $limit
-			order_by: { usersByuserId: { last_name: asc, first_name: asc } }
+			order_by: $orderBy
 			where: {
 				_or: [
 					{ stamboek: { _ilike: $queryText } }

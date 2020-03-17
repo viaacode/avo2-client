@@ -1,14 +1,15 @@
 import { useState } from 'react';
 
-type SortOrder = 'asc' | 'desc';
-type UseTableSortTuple<T> = [T, SortOrder, (columnId: T) => void];
+import { Avo } from '@viaa/avo2-types';
+
+type UseTableSortTuple<T> = [T, Avo.Search.OrderDirection, (columnId: T) => void];
 
 export const useTableSort = <T>(
 	initialSortColumn: T,
-	initialSortOrder: SortOrder = 'desc'
+	initialSortOrder: Avo.Search.OrderDirection = 'desc'
 ): UseTableSortTuple<T> => {
 	const [sortColumn, setSortColumn] = useState<T>(initialSortColumn);
-	const [sortOrder, setSortOrder] = useState<SortOrder>(initialSortOrder);
+	const [sortOrder, setSortOrder] = useState<Avo.Search.OrderDirection>(initialSortOrder);
 
 	const handleTableSortClick = (columnId: T) => {
 		if (sortColumn === columnId) {
