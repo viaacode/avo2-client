@@ -61,6 +61,7 @@ import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
+
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
