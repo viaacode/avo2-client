@@ -316,7 +316,7 @@
   "admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt": "Het opslaan van de interactive tour is mislukt",
   "admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt-omdat-de-interactive-tour-nog-niet-is-geladen": "Het opslaan van de interactive tour is mislukt omdat de interactive tour nog niet is geladen",
   "admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen": "Interactive tour aanpassen",
-  "admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector": "Je kan een element selector kopieren door:\r\n <ul>\r\n <li>\r\n Klik rechts op een element op de website\r\n </li>\r\n <li>Kies \"element inspecteren\"</li>\r\n <li>\r\n Klik rechts op de geselecteerde html code in\r\n het nieuwe venster\r\n </li>\r\n <li>\r\n Kies kopieer => kopieer element selector\r\n </li>\r\n <li>Plak de waarde in dit tekst veld</li>\r\n </ul>",
+  "admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector": "Je kan een element selector kopieren door:<ul><li>Klik rechts op een element op de website</li><li>Kies \"element inspecteren\"</li><li>Klik rechts op de geselecteerde html code in het nieuwe venster</li><li>Kies kopieer => kopieer element selector</li><li>Plak de waarde in dit tekst veld</li></ul>",
   "admin/interactive-tour/views/interactive-tour-edit___naam": "Naam",
   "admin/interactive-tour/views/interactive-tour-edit___opslaan": "Opslaan",
   "admin/interactive-tour/views/interactive-tour-edit___pagina": "Pagina",
