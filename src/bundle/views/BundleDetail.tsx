@@ -56,9 +56,13 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
-import { ApolloCacheManager, ToastService } from '../../shared/services';
-import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	ApolloCacheManager,
+	BookmarksViewsPlaysService,
+	ToastService,
+} from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import './BundleDetail.scss';
@@ -152,7 +156,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				canCreateBundles: rawPermissions[3],
 				canViewItems: rawPermissions[4],
 			};
-			const bundleObj = await CollectionService.getCollectionWithItems(bundleId, 'bundle');
+			const bundleObj = await CollectionService.fetchCollectionsOrBundlesWithItemsById(
+				bundleId,
+				'bundle'
+			);
 
 			if (!bundleObj) {
 				setLoadingInfo({
@@ -512,6 +519,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 														/>
 													</DropdownContent>
 												</ControlledDropdown>
+												<InteractiveTour
+													location={location}
+													user={user}
+													showButton
+												/>
 											</ButtonToolbar>
 										</ToolbarItem>
 									</ToolbarRight>
@@ -574,7 +586,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					)}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={() => onDeleteBundle()}
+					deleteObjectCallback={onDeleteBundle}
 				/>
 				<ShareThroughEmailModal
 					modalTitle={t('bundle/views/bundle-detail___deel-deze-bundel')}

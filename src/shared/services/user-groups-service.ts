@@ -2,6 +2,8 @@ import { capitalize, get, sortBy } from 'lodash-es';
 
 import { TagInfo } from '@viaa/avo2-components';
 
+import { SpecialPermissionGroups } from '../../authentication/authentication.types';
+
 import { CustomError } from '../helpers';
 import { GET_USER_GROUPS } from '../queries/user-groups.gql';
 import i18n from '../translations/i18n';
@@ -19,7 +21,7 @@ export interface UserGroup {
 	label: string;
 }
 
-export async function getAllUserGroups(): Promise<TagInfo[]> {
+export async function fetchAllUserGroups(): Promise<TagInfo[]> {
 	try {
 		const response: GetUserGroupsResponse = await dataService.query({
 			query: GET_USER_GROUPS,
@@ -31,13 +33,13 @@ export async function getAllUserGroups(): Promise<TagInfo[]> {
 					label: i18n.t(
 						'admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'
 					),
-					value: -1,
+					value: SpecialPermissionGroups.loggedOutUsers,
 				},
 				{
 					label: i18n.t(
 						'admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'
 					),
-					value: -2,
+					value: SpecialPermissionGroups.loggedInUsers,
 				},
 				...get(response, 'data.users_groups', []).map(
 					(userGroup: UserGroup): TagInfo => ({

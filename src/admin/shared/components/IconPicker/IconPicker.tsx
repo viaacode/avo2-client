@@ -1,8 +1,8 @@
+import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import Select, { Props } from 'react-select';
 
 import { Flex, Icon, IconName, Spacer } from '@viaa/avo2-components';
-import classnames from 'classnames';
 
 import { ReactSelectOption } from '../../../../shared/types';
 

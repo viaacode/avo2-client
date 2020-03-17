@@ -7,10 +7,14 @@
 		Implement Plug-in and only for FULL
 */
 
-const WYSIWYG_OPTIONS_BASE = [
+import { isEqual } from 'lodash-es';
+
+export const WYSIWYG_OPTIONS_ALIGN = ['justifyLeft', 'justifyCenter', 'justifyRight'];
+
+export const WYSIWYG_OPTIONS_BASE = [
 	['undo', 'redo'],
 	['bold', 'italic', 'strikethrough', 'underline'],
-	['justifyLeft', 'justifyCenter', 'justifyRight'],
+	WYSIWYG_OPTIONS_ALIGN,
 	['unorderedList', 'orderedList'],
 ];
 
@@ -37,3 +41,7 @@ export const WYSIWYG_OPTIONS_FULL = [
 	['viewHTML'],
 	['removeformat'],
 ];
+
+export const WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN = WYSIWYG_OPTIONS_FULL.filter(
+	array => !isEqual(array, WYSIWYG_OPTIONS_ALIGN)
+);

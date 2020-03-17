@@ -10,3 +10,21 @@ $admin-actions-bar-height: 8.4rem;
 	// Prevent overlap with admin actions bar when present
 	padding-bottom: $admin-actions-bar-height;
 }
+
+.c-table.c-table_detail-page  {
+	tr {
+		&:nth-child(even) {
+			background-color: #eee;
+		}
+
+		th,
+		td {
+			padding: 10px 10px;
+			vertical-align: middle;
+		}
+
+		th {
+			text-align: right;
+		}
+	}
+}

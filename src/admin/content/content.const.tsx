@@ -1,56 +1,61 @@
-import { TableColumn, TabProps } from '@viaa/avo2-components';
+import { TabProps } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 
 import {
 	ContentEditFormState,
-	ContentFilterFormState,
+	ContentOverviewTableCols,
 	ContentPageType,
+	ContentTableState,
 	ContentWidth,
 } from './content.types';
 
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
-	GET: 'app_content',
+	GET: 'data.app_content',
 	INSERT: 'insert_app_content',
 	UPDATE: 'update_app_content',
 };
 
 export const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
 
+export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
+	{
+		[columnId in ContentOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
+	}
+> = {
+	author: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { last_name: order } },
+	}),
+	role: (order: Avo.Search.OrderDirection) => ({
+		profile: { usersByuserId: { first_name: order } },
+	}),
+};
+
 export const CONTENT_PATH = {
 	CONTENT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}`,
 	CONTENT_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/${ROUTE_PARTS.create}`,
 	CONTENT_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id`,
 	CONTENT_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id/${ROUTE_PARTS.edit}`,
+	NEWS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=NIEUWS_ITEM`,
+	FAQS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=FAQ_ITEM`,
+	PROJECTS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=PROJECT`,
 };
 
 export const ITEMS_PER_PAGE = 10;
 
-export const CONTENT_OVERVIEW_TABLE_COLS: TableColumn[] = [
-	{ id: 'title', label: i18n.t('admin/content/content___titel') },
-	{ id: 'content_type', label: i18n.t('admin/content/content___content-type') },
-	{ id: 'author', label: i18n.t('admin/content/content___auteur') },
-	{ id: 'role', label: i18n.t('admin/content/content___rol') },
-	{ id: 'publish_at', label: i18n.t('admin/content/content___publicatiedatum'), sortable: true },
-	{
-		id: 'depublish_at',
-		label: i18n.t('admin/content/content___depublicatiedatum'),
-		sortable: true,
-	},
-	{ id: 'created_at', label: i18n.t('admin/content/content___aangemaakt'), sortable: true },
-	{ id: 'updated_at', label: i18n.t('admin/content/content___laatst-bewerkt'), sortable: true },
-	{ id: 'actions', label: '' },
-];
-
-export const INITIAL_FILTER_FORM = (): ContentFilterFormState => ({
-	contentType: [],
-	createdDate: { gte: '', lte: '' },
-	updatedDate: { gte: '', lte: '' },
-	publishDate: { gte: '', lte: '' },
-	depublishDate: { gte: '', lte: '' },
+export const INITIAL_FILTER_FORM = (): ContentTableState => ({
+	content_type: [],
+	created_at: { gte: '', lte: '' },
+	updated_at: { gte: '', lte: '' },
+	publish_at: { gte: '', lte: '' },
+	depublish_at: { gte: '', lte: '' },
 	query: '',
+	page: 0,
+	sort_column: 'updated_at',
+	sort_order: 'desc' as Avo.Search.OrderDirection,
 });
 
 export const INITIAL_CONTENT_OVERVIEW_STATE = () => ({
@@ -67,6 +72,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	publishAt: '',
 	depublishAt: '',
 	userGroupIds: [],
+	labels: [],
 });
 
 export const CONTENT_DETAIL_TABS: TabProps[] = [

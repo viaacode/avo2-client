@@ -2,7 +2,7 @@ import { isNumber } from 'lodash-es';
 import moment, { Moment } from 'moment';
 
 type DateLike = string | Moment | Date | number;
-type DateLikeNullable = DateLike | undefined;
+type DateLikeNullable = DateLike | undefined | null;
 
 /**
  * Converts a date from format 2000-12-31 to 31/12/2000

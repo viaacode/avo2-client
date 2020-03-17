@@ -3,3 +3,9 @@ export function isUuid(id: string) {
 		id
 	);
 }
+
+export function generateRandomId() {
+	return Math.random()
+		.toString()
+		.substring(2, 15);
+}

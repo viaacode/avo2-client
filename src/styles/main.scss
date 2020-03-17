@@ -53,3 +53,9 @@
    ========================================================================== */
 
 @import './trumps/mq-debug';
+
+
+// TODO remove once component lib is updated to v1.32.0
+.c-select__menu {
+	z-index: 22 !important;
+}

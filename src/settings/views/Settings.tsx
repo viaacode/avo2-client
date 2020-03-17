@@ -1,14 +1,23 @@
 import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { BlockHeading, Container, Navbar, Tabs, Toolbar, ToolbarLeft } from '@viaa/avo2-components';
+import {
+	BlockHeading,
+	Container,
+	Navbar,
+	Tabs,
+	Toolbar,
+	ToolbarLeft,
+	ToolbarRight,
+} from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
+import { APP_PATH } from '../../constants';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
-import { APP_PATH } from '../../constants';
 import { Account, Email, Notifications, Profile } from '../components';
 import { ACCOUNT_ID, EMAIL_ID, NOTIFICATIONS_ID, PROFILE_ID, SettingsTab } from '../settings.const';
 
@@ -70,9 +79,22 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 		<>
 			<Container background="alt" mode="vertical" size="small">
 				<Container mode="horizontal">
-					<BlockHeading type="h2" className="u-m-0">
-						<Trans i18nKey="settings/views/settings___instellingen">Instellingen</Trans>
-					</BlockHeading>
+					<Toolbar>
+						<ToolbarLeft>
+							<BlockHeading type="h2" className="u-m-0">
+								<Trans i18nKey="settings/views/settings___instellingen">
+									Instellingen
+								</Trans>
+							</BlockHeading>
+						</ToolbarLeft>
+						<ToolbarRight>
+							<InteractiveTour
+								location={props.location}
+								user={props.user}
+								showButton
+							/>
+						</ToolbarRight>
+					</Toolbar>
 				</Container>
 			</Container>
 

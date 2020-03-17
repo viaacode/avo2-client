@@ -211,7 +211,7 @@ export class AssignmentService {
 	): Promise<string> {
 		let collection: Avo.Collection.Collection | undefined = undefined;
 		if (isString(collectionIdOrCollection)) {
-			collection = await CollectionService.getCollection(
+			collection = await CollectionService.fetchCollectionOrBundleById(
 				collectionIdOrCollection as string,
 				'collection'
 			);
