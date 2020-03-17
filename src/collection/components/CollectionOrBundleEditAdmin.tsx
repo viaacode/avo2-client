@@ -21,23 +21,18 @@ import { CollectionService } from '../collection.service';
 import { CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditAdminProps {
-	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 }
 
 const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdminProps> = ({
-	type,
 	collection,
 	changeCollectionState,
 }) => {
 	const [t] = useTranslation();
 
 	// State
-	const [qualityLabels, setQualityLabels] = useState<TagInfo[]>([]);
-
-	// @ts-ignore
-	const isCollection = type === 'collection';
+	const [qualityLabels, setQualityLabels] = useState<TagInfo[] | null>(null);
 
 	useEffect(() => {
 		CollectionService.fetchQualityLabels()
@@ -55,16 +50,29 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 			});
 	}, [setQualityLabels, t]);
 
-	// const updateCollectionMultiProperty = (
-	// 	selectedTagOptions: TagInfo[],
-	// 	collectionProp: keyof Avo.Collection.Collection
-	// ) => {
-	// 	changeCollectionState({
-	// 		collectionProp,
-	// 		type: 'UPDATE_COLLECTION_PROP',
-	// 		collectionPropValue: (selectedTagOptions || []).map(tag => tag.value as string),
-	// 	});
-	// };
+	const updateCollectionMultiProperty = (
+		selectedTagOptions: TagInfo[],
+		collectionProp: keyof Avo.Collection.Collection | 'collection_labels' // TODO remove labels once update to typings v2.14.0
+	) => {
+		changeCollectionState({
+			collectionProp,
+			type: 'UPDATE_COLLECTION_PROP',
+			collectionPropValue: (selectedTagOptions || []).map(tag => ({
+				label: tag.value as string,
+			})) as any, // TODO remove cast to any once update to typings v2.14.0
+		});
+	};
+
+	const getCollectionLabels = (): TagInfo[] => {
+		if (!qualityLabels) {
+			return [];
+		}
+		// TODO remove cast to any once update to typings v2.14.0
+		const labelIds = ((collection as any).collection_labels || []).map(
+			(item: any) => item.label
+		);
+		return qualityLabels.filter(qualityLabel => labelIds.includes(qualityLabel.value));
+	};
 
 	return (
 		<>
@@ -75,19 +83,19 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 							<Grid>
 								<Column size="3-7">
 									<FormGroup label={t('Kwaliteitslabels')}>
-										<TagsInput
-											options={qualityLabels}
-											value={[].map(
-												// TODO fill quality labels once database is fill in
-												(item: string) => ({
-													value: item,
-													label: item,
-												})
-											)}
-											// onChange={(values: TagInfo[]) => // TODO update once database is fill in
-											// 	updateCollectionMultiProperty(values, 'labels')
-											// }
-										/>
+										{!!qualityLabels && (
+											<TagsInput
+												options={qualityLabels}
+												// TODO remove cast to any once update to typings v2.14.0
+												value={getCollectionLabels()}
+												onChange={(values: TagInfo[]) =>
+													updateCollectionMultiProperty(
+														values,
+														'collection_labels'
+													)
+												}
+											/>
+										)}
 									</FormGroup>
 									<FormGroup
 										label={t(

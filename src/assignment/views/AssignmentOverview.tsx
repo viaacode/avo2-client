@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
@@ -44,14 +43,10 @@ import { useTableSort } from '../../shared/hooks';
 import { dataService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
-import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import {
-	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
-	INSERT_ASSIGNMENT,
-	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
@@ -81,12 +76,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<
 		AssignmentOverviewTableColumns | 'created_at'
 	>('created_at');
-
-	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
-	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
-	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
 		PermissionService.hasPermissions(PermissionNames.EDIT_ASSIGNMENTS, user)
@@ -151,14 +140,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					'Failed to duplicate the assigment because the marked assigment is null'
 				);
 			}
-			await AssignmentService.duplicateAssignment(
-				newTitle,
-				assignment,
-				user,
-				triggerCollectionInsert,
-				triggerCollectionFragmentsInsert,
-				triggerAssignmentInsert
-			);
+			await AssignmentService.duplicateAssignment(newTitle, assignment, user);
 
 			refetchAssignments();
 
@@ -188,12 +170,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					is_archived: !assignment.is_archived,
 				};
 
-				if (
-					await AssignmentService.updateAssignment(
-						triggerAssignmentUpdate,
-						archivedAssigment
-					)
-				) {
+				if (await AssignmentService.updateAssignment(archivedAssigment)) {
 					refetchAssignments();
 					ToastService.success(
 						archivedAssigment.is_archived
@@ -235,7 +212,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				);
 				return;
 			}
-			await AssignmentService.deleteAssignment(triggerAssignmentDelete, assignmentId);
+			await AssignmentService.deleteAssignment(assignmentId);
 			refetchAssignments();
 			ToastService.success(
 				t('assignment/views/assignment-overview___de-opdracht-is-verwijdert')

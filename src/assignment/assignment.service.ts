@@ -1,14 +1,20 @@
-import { ExecutionResult, MutationFunction } from '@apollo/react-common';
+import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, get, isNil, isString } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CustomError } from '../shared/helpers/error';
-import { ToastService } from '../shared/services';
-import { ApolloCacheManager } from '../shared/services/data-service';
+import { CustomError } from '../shared/helpers';
+import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
+import { ApolloQueryResult } from 'apollo-boost';
 import { CollectionService } from '../collection/collection.service';
+import {
+	DELETE_ASSIGNMENT,
+	GET_ASSIGNMENT_BY_ID,
+	INSERT_ASSIGNMENT,
+	UPDATE_ASSIGNMENT,
+} from './assignment.gql';
 import { AssignmentLayout } from './assignment.types';
 
 export const ASSIGNMENT_COPY_PREFIX = 'Opdracht kopie %index%: ';
@@ -80,9 +86,10 @@ export class AssignmentService {
 		return [errors, assignmentToSave as Avo.Assignment.Assignment];
 	}
 
-	public static async deleteAssignment(triggerAssignmentDelete: any, id: number | string) {
+	public static async deleteAssignment(id: number | string) {
 		try {
-			await triggerAssignmentDelete({
+			await dataService.mutate({
+				mutation: DELETE_ASSIGNMENT,
 				variables: { id },
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
@@ -93,7 +100,6 @@ export class AssignmentService {
 	}
 
 	public static async updateAssignment(
-		triggerAssignmentUpdate: any,
 		assignment: Partial<Avo.Assignment.Assignment>
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
@@ -110,7 +116,8 @@ export class AssignmentService {
 
 			const response: void | ExecutionResult<
 				Avo.Assignment.Assignment
-			> = await triggerAssignmentUpdate({
+			> = await dataService.mutate({
+				mutation: UPDATE_ASSIGNMENT,
 				variables: {
 					id: assignment.id,
 					assignment: assignmentToSave,
@@ -131,7 +138,6 @@ export class AssignmentService {
 	}
 
 	public static async insertAssignment(
-		triggerAssignmentInsert: MutationFunction<any>,
 		assignment: Partial<Avo.Assignment.Assignment>
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
@@ -148,7 +154,8 @@ export class AssignmentService {
 
 			const response: void | ExecutionResult<
 				Avo.Assignment.Assignment
-			> = await triggerAssignmentInsert({
+			> = await dataService.mutate({
+				mutation: INSERT_ASSIGNMENT,
 				variables: {
 					assignment: assignmentToSave,
 				},
@@ -174,7 +181,6 @@ export class AssignmentService {
 	}
 
 	public static async insertDuplicateAssignment(
-		triggerAssignmentInsert: any,
 		title: string,
 		assignment: Partial<Avo.Assignment.Assignment> | null
 	): Promise<Avo.Assignment.Assignment | null> {
@@ -193,7 +199,7 @@ export class AssignmentService {
 		delete newAssignment.id;
 
 		try {
-			return await AssignmentService.insertAssignment(triggerAssignmentInsert, newAssignment);
+			return await AssignmentService.insertAssignment(newAssignment);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
@@ -205,9 +211,7 @@ export class AssignmentService {
 
 	public static async duplicateCollectionForAssignment(
 		collectionIdOrCollection: string | Avo.Collection.Collection,
-		user: Avo.User.User,
-		triggerCollectionInsert: MutationFunction<any>,
-		triggerCollectionFragmentsInsert: MutationFunction<any>
+		user: Avo.User.User
 	): Promise<string> {
 		let collection: Avo.Collection.Collection | undefined = undefined;
 		if (isString(collectionIdOrCollection)) {
@@ -227,9 +231,7 @@ export class AssignmentService {
 			collection,
 			user,
 			ASSIGNMENT_COPY_PREFIX,
-			ASSIGNMENT_COPY_REGEX,
-			triggerCollectionInsert,
-			triggerCollectionFragmentsInsert
+			ASSIGNMENT_COPY_REGEX
 		);
 		if (!collectionCopy) {
 			throw new CustomError('Failed to copy collection', null);
@@ -240,10 +242,7 @@ export class AssignmentService {
 	public static async duplicateAssignment(
 		newTitle: string,
 		initialAssignment: Partial<Avo.Assignment.Assignment> | null,
-		user: Avo.User.User,
-		triggerCollectionInsert: MutationFunction<any>,
-		triggerCollectionFragmentsInsert: MutationFunction<any>,
-		triggerAssignmentInsert: MutationFunction<any>
+		user: Avo.User.User
 	): Promise<Avo.Assignment.Assignment> {
 		if (!initialAssignment || !initialAssignment.content_label) {
 			throw new CustomError(
@@ -264,27 +263,20 @@ export class AssignmentService {
 			}
 			duplicateCollectionId = await AssignmentService.duplicateCollectionForAssignment(
 				initialAssignment.content_id,
-				user,
-				triggerCollectionInsert,
-				triggerCollectionFragmentsInsert
+				user
 			);
 		}
 
 		let duplicatedAssigment: Avo.Assignment.Assignment | null;
 		if (!isNil(duplicateCollectionId)) {
 			// Insert the duplicated assigment with its duplicated collection id
-			duplicatedAssigment = await AssignmentService.insertDuplicateAssignment(
-				triggerAssignmentInsert,
-				newTitle,
-				{
-					...initialAssignment,
-					content_id: duplicateCollectionId,
-				}
-			);
+			duplicatedAssigment = await AssignmentService.insertDuplicateAssignment(newTitle, {
+				...initialAssignment,
+				content_id: duplicateCollectionId,
+			});
 		} else {
 			// other assignments do not need to have their content_id updated
 			duplicatedAssigment = await AssignmentService.insertDuplicateAssignment(
-				triggerAssignmentInsert,
 				newTitle,
 				initialAssignment
 			);
@@ -314,6 +306,42 @@ export class AssignmentService {
 					'assignment/assignment___de-leerlingen-zullen-dus-geen-toegang-hebben-tot-deze-opdracht'
 				),
 			]);
+		}
+	}
+
+	static async getAssignmentById(id: string | number): Promise<Avo.Assignment.Assignment> {
+		try {
+			const assignmentQuery = {
+				query: GET_ASSIGNMENT_BY_ID,
+				variables: { id },
+			};
+
+			// Get the assigment from graphql
+			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
+				assignmentQuery
+			);
+
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
+			}
+
+			const assignmentResponse: Avo.Assignment.Assignment | undefined = get(
+				response,
+				'data.app_assignments[0]'
+			);
+
+			if (!assignmentResponse) {
+				throw new CustomError('Response does not contain any assignment response', null, {
+					assignmentResponse,
+				});
+			}
+
+			return assignmentResponse;
+		} catch (err) {
+			throw new CustomError('Failed to get assignment by id from database', err, {
+				id,
+				query: 'GET_ASSIGNMENT_BY_ID',
+			});
 		}
 	}
 }

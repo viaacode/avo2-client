@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { cloneDeep, eq, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,27 +48,21 @@ import {
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
-import { ApolloCacheManager, ToastService } from '../../shared/services';
+import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { AppState } from '../../store';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 
 import { COLLECTION_EDIT_TABS } from '../collection.const';
-import {
-	DELETE_COLLECTION,
-	DELETE_COLLECTION_FRAGMENT,
-	INSERT_COLLECTION_FRAGMENTS,
-	UPDATE_COLLECTION,
-	UPDATE_COLLECTION_FRAGMENT,
-} from '../collection.gql';
+import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ShareCollectionModal } from '../components';
 import { swapFragmentsPositions } from '../helpers';
+import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
-import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -91,7 +84,7 @@ type CollectionUpdateAction = {
 
 type CollectionPropUpdateAction = {
 	type: 'UPDATE_COLLECTION_PROP';
-	collectionProp: keyof Avo.Collection.Collection;
+	collectionProp: keyof Avo.Collection.Collection | 'collection_labels'; // TODO remove labels once update to typings v2.14.0
 	collectionPropValue: ValueOf<Avo.Collection.Collection>;
 	updateInitialCollection?: boolean;
 };
@@ -139,13 +132,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		}>
 	>({});
 	// TODO: DISABLED FEATURE - const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
-
-	// Mutations
-	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
-	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
-	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -388,11 +374,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
 				collectionState.initialCollection,
-				collectionState.currentCollection,
-				triggerCollectionUpdate,
-				triggerCollectionFragmentsInsert,
-				triggerCollectionFragmentDelete,
-				triggerCollectionFragmentUpdate
+				collectionState.currentCollection
 			);
 
 			if (newCollection) {
@@ -459,7 +441,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			const cleanedCollection = cleanCollectionBeforeSave(collectionWithNewName);
 
 			// Immediately store the new name, without the user having to click the save button twice
-			await triggerCollectionUpdate({
+			await dataService.mutate({
+				mutation: UPDATE_COLLECTION,
 				variables: {
 					id: cleanedCollection.id,
 					collection: cleanedCollection,
@@ -499,7 +482,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				);
 				return;
 			}
-			await triggerCollectionDelete({
+			await dataService.mutate({
+				mutation: DELETE_COLLECTION,
 				variables: {
 					id: collectionState.currentCollection.id,
 				},
@@ -614,7 +598,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				case 'admin':
 					return (
 						<CollectionOrBundleEditAdmin
-							type={type}
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 						/>
