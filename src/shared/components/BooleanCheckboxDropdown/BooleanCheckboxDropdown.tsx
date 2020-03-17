@@ -24,8 +24,20 @@ const BooleanCheckboxDropdown: FunctionComponent<BooleanCheckboxDropdownProps> =
 
 	const getOptions = (): CheckboxOption[] => {
 		const statuses = [
-			{ label: t('Ja'), id: 'true', checked: isNil(value) ? false : value },
-			{ label: t('Nee'), id: 'false', checked: isNil(value) ? false : !value },
+			{
+				label: t(
+					'shared/components/boolean-checkbox-dropdown/boolean-checkbox-dropdown___ja'
+				),
+				id: 'true',
+				checked: isNil(value) ? false : value,
+			},
+			{
+				label: t(
+					'shared/components/boolean-checkbox-dropdown/boolean-checkbox-dropdown___nee'
+				),
+				id: 'false',
+				checked: isNil(value) ? false : !value,
+			},
 		];
 		return statuses;
 	};

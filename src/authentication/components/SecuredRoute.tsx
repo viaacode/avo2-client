@@ -72,7 +72,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 				{},
 				queryString.stringify({
 					message: t(
-						'Het inloggen is mislukt, controleer je internet verbinding of probeer later opnieuw'
+						'authentication/components/secured-route___het-inloggen-is-mislukt-controleer-je-internet-verbinding-of-probeer-later-opnieuw'
 					),
 					icon: 'alert-triangle',
 					actionButtons: 'home, helpdesk',

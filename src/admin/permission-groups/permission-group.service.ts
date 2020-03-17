@@ -256,7 +256,11 @@ export class PermissionGroupService {
 					query: 'DELETE_PERMISSION_GROUP',
 				})
 			);
-			ToastService.danger(i18n.t('Het verwijderen van de permissie groep is mislukt'));
+			ToastService.danger(
+				i18n.t(
+					'admin/permission-groups/permission-group___het-verwijderen-van-de-permissie-groep-is-mislukt'
+				)
+			);
 		}
 	}
 

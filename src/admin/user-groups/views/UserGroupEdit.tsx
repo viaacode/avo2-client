@@ -90,7 +90,9 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					setLoadingInfo({
 						state: 'error',
 						icon: 'search',
-						message: t('Deze gebruiker groep werd niet gevonden'),
+						message: t(
+							'admin/user-groups/views/user-group-edit___deze-gebruiker-groep-werd-niet-gevonden'
+						),
 					});
 					return;
 				}
@@ -122,7 +124,9 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van de permissie groep is mislukt'),
+					message: t(
+						'admin/user-groups/views/user-group-edit___het-ophalen-van-de-permissie-groep-is-mislukt'
+					),
 				});
 			}
 		}
@@ -152,7 +156,12 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					query: 'GET_ALL_PERMISSIONS',
 				})
 			);
-			ToastService.danger(t('Het ophalen van alle permissies is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/user-groups/views/user-group-edit___het-ophalen-van-alle-permissies-is-mislukt'
+				),
+				false
+			);
 		}
 	}, [setAllPermissionGroups, t]);
 
@@ -180,7 +189,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	const getFormErrors = (): UserGroupEditFormErrorState | null => {
 		if (!userGroup || !userGroup.label) {
 			return {
-				label: t('Een label is verplicht'),
+				label: t('admin/user-groups/views/user-group-edit___een-label-is-verplicht'),
 			};
 		}
 		return null;
@@ -212,7 +221,12 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 				pg => String(pg.id) === selectedPermissionGroupId
 			)
 		) {
-			ToastService.danger(t('Deze gebruikersgroep zit reeds in de groep'), false);
+			ToastService.danger(
+				t(
+					'admin/user-groups/views/user-group-edit___deze-gebruikersgroep-zit-reeds-in-de-groep'
+				),
+				false
+			);
 			return;
 		}
 		const selectedPermission = allPermissionGroups.find(
@@ -220,7 +234,9 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 		);
 		if (!selectedPermission) {
 			ToastService.danger(
-				t('De geselecteerde gebruikersgroep kon niet worden gevonden'),
+				t(
+					'admin/user-groups/views/user-group-edit___de-geselecteerde-gebruikersgroep-kon-niet-worden-gevonden'
+				),
 				false
 			);
 			return;
@@ -237,14 +253,17 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			const errors = getFormErrors();
 			setFormErrors(errors || {});
 			if (errors) {
-				ToastService.danger(t('De invoer is ongeldig'), false);
+				ToastService.danger(
+					t('admin/user-groups/views/user-group-edit___de-invoer-is-ongeldig'),
+					false
+				);
 				return;
 			}
 
 			if (!initialUserGroup || !userGroup) {
 				ToastService.danger(
 					t(
-						'Het opslaan van de permissie groep is mislukt omdat de permissie groep nog niet is geladen'
+						'admin/user-groups/views/user-group-edit___het-opslaan-van-de-permissie-groep-is-mislukt-omdat-de-permissie-groep-nog-niet-is-geladen'
 					),
 					false
 				);
@@ -289,7 +308,10 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			} else {
 				await initOrFetchUserGroup();
 			}
-			ToastService.success(t('De Gebruikersgroep is opgeslagen'), false);
+			ToastService.success(
+				t('admin/user-groups/views/user-group-edit___de-gebruikersgroep-is-opgeslagen'),
+				false
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save user group', err, {
@@ -297,7 +319,12 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					initialUserGroup,
 				})
 			);
-			ToastService.danger(t('Het opslaan van de gebruikersgroep is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/user-groups/views/user-group-edit___het-opslaan-van-de-gebruikersgroep-is-mislukt'
+				),
+				false
+			);
 		}
 		setIsSaving(false);
 	};
@@ -334,8 +361,8 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							icon="delete"
 							onClick={() => openModal(rowData)}
 							size="small"
-							ariaLabel={t('Verwijder')}
-							title={t('Verwijder')}
+							ariaLabel={t('admin/user-groups/views/user-group-edit___verwijder')}
+							title={t('admin/user-groups/views/user-group-edit___verwijder')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -356,7 +383,10 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					<Spacer margin="bottom-extra-large">
 						<Box backgroundColor="gray">
 							<Form>
-								<FormGroup label={t('Label')} error={formErrors.label}>
+								<FormGroup
+									label={t('admin/user-groups/views/user-group-edit___label')}
+									error={formErrors.label}
+								>
 									<TextInput
 										value={userGroup.label || ''}
 										onChange={newLabel =>
@@ -367,7 +397,12 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 										}
 									/>
 								</FormGroup>
-								<FormGroup label={t('Beschrijving')} error={formErrors.description}>
+								<FormGroup
+									label={t(
+										'admin/user-groups/views/user-group-edit___beschrijving'
+									)}
+									error={formErrors.description}
+								>
 									<TextInput
 										value={userGroup.description || ''}
 										onChange={newDescription =>
@@ -394,12 +429,14 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							<Form type="inline">
 								<FormGroup
 									label={t(
-										'Voeg een permissie groep toe aan deze gebruikersgroep: '
+										'admin/user-groups/views/user-group-edit___voeg-een-permissie-groep-toe-aan-deze-gebruikersgroep'
 									)}
 								>
 									<Select
 										options={getAllPermissionGroups()}
-										placeholder={t('Kies een permissie groep')}
+										placeholder={t(
+											'admin/user-groups/views/user-group-edit___kies-een-permissie-groep'
+										)}
 										value={selectedPermissionGroupId || undefined}
 										onChange={setSelectedPermissionGroupId}
 										loading={!allPermissionGroups}
@@ -407,7 +444,9 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 								</FormGroup>
 								<FormGroup>
 									<Button
-										label={t('Toevoegen')}
+										label={t(
+											'admin/user-groups/views/user-group-edit___toevoegen'
+										)}
 										onClick={handleAddPermissionGroup}
 										type="primary"
 									/>
@@ -422,7 +461,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 								sortOrder
 							)}
 							emptyStateMessage={t(
-								'Deze gebruikersgroep is nog niet gelinked aan een permissiegroep'
+								'admin/user-groups/views/user-group-edit___deze-gebruikersgroep-is-nog-niet-gelinked-aan-een-permissiegroep'
 							)}
 							onColumnClick={columId =>
 								handleSortClick(columId as PermissionGroupTableCols)
@@ -448,15 +487,26 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 
 	// Render
 	const renderPage = () => (
-		<AdminLayout showBackButton pageTitle={t('Gebruikersgroep aanpassen')}>
+		<AdminLayout
+			showBackButton
+			pageTitle={t('admin/user-groups/views/user-group-edit___gebruikersgroep-aanpassen')}
+		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">{renderEditPage()}</Container>
 				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
-				<Button label={t('Annuleer')} onClick={navigateBack} type="tertiary" />
-				<Button disabled={isSaving} label={t('Opslaan')} onClick={handleSave} />
+				<Button
+					label={t('admin/user-groups/views/user-group-edit___annuleer')}
+					onClick={navigateBack}
+					type="tertiary"
+				/>
+				<Button
+					disabled={isSaving}
+					label={t('admin/user-groups/views/user-group-edit___opslaan')}
+					onClick={handleSave}
+				/>
 			</AdminLayoutActions>
 		</AdminLayout>
 	);

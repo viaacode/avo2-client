@@ -70,7 +70,9 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 				setLoadingInfo({
 					state: 'error',
 					icon: 'search',
-					message: t('Deze gebruiker groep werd niet gevonden'),
+					message: t(
+						'admin/user-groups/views/user-group-detail___deze-gebruiker-groep-werd-niet-gevonden'
+					),
 				});
 				return;
 			}
@@ -101,7 +103,9 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de gebruikersgroep is mislukt'),
+				message: t(
+					'admin/user-groups/views/user-group-detail___het-ophalen-van-de-gebruikersgroep-is-mislukt'
+				),
 			});
 		}
 	}, [setUserGroup, setLoadingInfo, t, match.params.id]);
@@ -123,17 +127,25 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 			if (!userGroup) {
 				ToastService.danger(
 					t(
-						'Het verwijderen van de gebruikersgroep is mislukt opdat de groep nog niet geladen is'
+						'admin/user-groups/views/user-group-detail___het-verwijderen-van-de-gebruikersgroep-is-mislukt-opdat-de-groep-nog-niet-geladen-is'
 					)
 				);
 				return;
 			}
 			await UserGroupService.deleteUserGroup(userGroup.id);
-			ToastService.success(t('De gebruikersgroep is verwijdert'), false);
+			ToastService.success(
+				t('admin/user-groups/views/user-group-detail___de-gebruikersgroep-is-verwijdert'),
+				false
+			);
 			redirectToClientPage(ADMIN_PATH.USER_GROUP_OVERVIEW, history);
 		} catch (err) {
 			console.error(new CustomError('Failed to delete user group', err, { userGroup }));
-			ToastService.danger(t('Het verwijderen van de gebruikersgroep is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/user-groups/views/user-group-detail___het-verwijderen-van-de-gebruikersgroep-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -160,8 +172,8 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 								)
 							}
 							size="small"
-							ariaLabel={t('Verwijder')}
-							title={t('Verwijder')}
+							ariaLabel={t('admin/user-groups/views/user-group-detail___verwijder')}
+							title={t('admin/user-groups/views/user-group-detail___verwijder')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -188,12 +200,30 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 						<Table horizontal variant="invisible" className="c-table_detail-page">
 							<tbody>
 								{renderSimpleDetailRows(userGroup, [
-									['label', t('Label')],
-									['description', t('Beschrijving')],
+									[
+										'label',
+										t('admin/user-groups/views/user-group-detail___label'),
+									],
+									[
+										'description',
+										t(
+											'admin/user-groups/views/user-group-detail___beschrijving'
+										),
+									],
 								])}
 								{renderDateDetailRows(userGroup, [
-									['created_at', t('Aangemaakt op')],
-									['updated_at', t('Aangepast op')],
+									[
+										'created_at',
+										t(
+											'admin/user-groups/views/user-group-detail___aangemaakt-op'
+										),
+									],
+									[
+										'updated_at',
+										t(
+											'admin/user-groups/views/user-group-detail___aangepast-op'
+										),
+									],
 								])}
 							</tbody>
 						</Table>
@@ -213,7 +243,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 									sortOrder
 								)}
 								emptyStateMessage={t(
-									'Deze gebruikersgroep is nog niet gelinked aan een permissiegroep'
+									'admin/user-groups/views/user-group-detail___deze-gebruikersgroep-is-nog-niet-gelinked-aan-een-permissiegroep'
 								)}
 								onColumnClick={columId =>
 									handleSortClick(columId as PermissionGroupTableCols)
@@ -236,12 +266,16 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 	const renderUserDetailPage = () => (
 		<AdminLayout showBackButton>
 			<AdminLayoutHeader>
-				<Header category="audio" title={t('Gebruikersgroep details')} showMetaData={false}>
+				<Header
+					category="audio"
+					title={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
+					showMetaData={false}
+				>
 					<HeaderButtons>
 						<ButtonToolbar>
 							<Button
 								type="primary"
-								label={t('Bewerk')}
+								label={t('admin/user-groups/views/user-group-detail___bewerk')}
 								onClick={() => {
 									redirectToClientPage(
 										buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, {
@@ -253,7 +287,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 							/>
 							<Button
 								type="danger"
-								label={t('Verwijderen')}
+								label={t('admin/user-groups/views/user-group-detail___verwijderen')}
 								onClick={() => setIsConfirmModalOpen(true)}
 							/>
 						</ButtonToolbar>

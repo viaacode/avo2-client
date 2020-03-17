@@ -224,7 +224,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id: insertedOrUpdatedContent.id });
 		} catch (err) {
 			console.error(new CustomError('Failed to save content page ', err));
-			ToastService.danger(t('Het opslaan van de content pagina is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/content/views/content-edit___het-opslaan-van-de-content-pagina-is-mislukt'
+				),
+				false
+			);
 		}
 
 		setIsSaving(false);

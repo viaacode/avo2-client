@@ -50,7 +50,9 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de gebruikersgroepen is mislukt'),
+				message: t(
+					'admin/user-groups/views/user-group-overview___het-ophalen-van-de-gebruikersgroepen-is-mislukt'
+				),
 			});
 		}
 	}, [setUserGroups, setLoadingInfo, t, tableState]);
@@ -70,7 +72,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			if (!userGroupIdToDelete) {
 				ToastService.danger(
 					t(
-						'Het verwijderen van de gebruikersgroep is mislukt, probeer de pagina te herladen'
+						'admin/user-groups/views/user-group-overview___het-verwijderen-van-de-gebruikersgroep-is-mislukt-probeer-de-pagina-te-herladen'
 					),
 					false
 				);
@@ -79,7 +81,10 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 
 			await UserGroupService.deleteUserGroup(userGroupIdToDelete);
 			await fetchUserGroups();
-			ToastService.success(t('De gebruikersgroep is verwijdert'), false);
+			ToastService.success(
+				t('admin/user-groups/views/user-group-overview___de-gebruikersgroep-is-verwijdert'),
+				false
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete user group', err, {
@@ -87,14 +92,21 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 					query: 'DELETE_USER_GROUP',
 				})
 			);
-			ToastService.danger(t('Het verwijderen van de gebruikersgroep is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/user-groups/views/user-group-overview___het-verwijderen-van-de-gebruikersgroep-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
 	const openModal = (userGroupId: number | undefined): void => {
 		if (isNil(userGroupId)) {
 			ToastService.danger(
-				t('De gebruikersgroep kon niet worden verwijdert, probeer de pagina te herladen'),
+				t(
+					'admin/user-groups/views/user-group-overview___de-gebruikersgroep-kon-niet-worden-verwijdert-probeer-de-pagina-te-herladen'
+				),
 				false
 			);
 			return;
@@ -153,14 +165,22 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('Er zijn nog geen gebruikersgroepen aangemaakt')}>
+			<ErrorView
+				message={t(
+					'admin/user-groups/views/user-group-overview___er-zijn-nog-geen-gebruikersgroepen-aangemaakt'
+				)}
+			>
 				<p>
-					<Trans>Beschrijving hoe gebruikersgroepen toe voegen</Trans>
+					<Trans i18nKey="admin/user-groups/views/user-group-overview___beschrijving-hoe-gebruikersgroepen-toe-voegen">
+						Beschrijving hoe gebruikersgroepen toe voegen
+					</Trans>
 				</p>
 				<Spacer margin="top">
 					<Button
 						icon="plus"
-						label={t('Gebruikersgroep aanmaken')}
+						label={t(
+							'admin/user-groups/views/user-group-overview___gebruikersgroep-aanmaken'
+						)}
 						onClick={() => history.push(USER_GROUP_PATH.USER_GROUP_CREATE)}
 					/>
 				</Spacer>
@@ -181,12 +201,14 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 					renderCell={(rowData: Partial<UserGroup>, columnId: string) =>
 						renderTableCell(rowData, columnId as UserGroupOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoek op label, beschrijving')}
+					searchTextPlaceholder={t(
+						'admin/user-groups/views/user-group-overview___zoek-op-label-beschrijving'
+					)}
 					renderNoResults={renderNoResults}
 					onTableStateChanged={setTableState}
 					itemsPerPage={ITEMS_PER_PAGE}
 					noContentMatchingFiltersMessage={t(
-						'Er zijn geen gebruikersgroepen die voldoen aan de filters'
+						'admin/user-groups/views/user-group-overview___er-zijn-geen-gebruikersgroepen-die-voldoen-aan-de-filters'
 					)}
 				/>
 				<DeleteObjectModal
@@ -199,7 +221,9 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Gebruikersgroepen')}>
+		<AdminLayout
+			pageTitle={t('admin/user-groups/views/user-group-overview___gebruikersgroepen')}
+		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -213,7 +237,9 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 			</AdminLayoutBody>
 			<AdminLayoutActions>
 				<Button
-					label={t('Gebruikersgroep toevoegen')}
+					label={t(
+						'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
+					)}
 					onClick={() => {
 						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
 					}}

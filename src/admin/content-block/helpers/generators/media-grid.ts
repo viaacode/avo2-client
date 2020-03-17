@@ -46,14 +46,18 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		state: INITIAL_MEDIA_GRID_BLOCK_STATE(position),
 		fields: {
 			searchQuery: {
-				label: i18n.t('Voeg een zoek filter toe'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___voeg-een-zoek-filter-toe'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					allowedTypes: ['SEARCH_QUERY'] as ContentPickerType[],
 				},
 			},
 			searchQueryLimit: {
-				label: i18n.t('Zoekresultaten limiet'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___zoekresultaten-limiet'
+				),
 				editorType: ContentBlockEditor.MultiRange,
 				editorProps: {
 					min: 0,

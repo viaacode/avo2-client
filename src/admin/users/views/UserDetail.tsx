@@ -56,7 +56,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van de gebruiker info is mislukt'),
+					message: t(
+						'admin/users/views/user-detail___het-ophalen-van-de-gebruiker-info-is-mislukt'
+					),
 				});
 				return;
 			}
@@ -72,7 +74,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de gebruiker info is mislukt'),
+				message: t(
+					'admin/users/views/user-detail___het-ophalen-van-de-gebruiker-info-is-mislukt'
+				),
 			});
 		}
 	}, [setStoredProfile, setLoadingInfo, t, match.params.id]);
@@ -125,20 +129,26 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 								<td />
 							</tr>
 							{renderSimpleDetailRows(storedProfile, [
-								['user.first_name', t('Voornaam')],
-								['user.last_name', t('Achternaam')],
-								['alias', t('Gebruikersnaam')],
-								['user.mail', t('Primair email adres')],
-								['alternative_email', t('Secundair email adres')],
+								['user.first_name', t('admin/users/views/user-detail___voornaam')],
+								['user.last_name', t('admin/users/views/user-detail___achternaam')],
+								['alias', t('admin/users/views/user-detail___gebruikersnaam')],
+								[
+									'user.mail',
+									t('admin/users/views/user-detail___primair-email-adres'),
+								],
+								[
+									'alternative_email',
+									t('admin/users/views/user-detail___secundair-email-adres'),
+								],
 							])}
 							{renderDateDetailRows(storedProfile, [
 								['created_at', 'Aangemaakt op'],
 								['updated_at', 'Aangepast op'],
 							])}
 							{renderSimpleDetailRows(storedProfile, [
-								['bio', t('Bio')],
-								['function', t('Functie')],
-								['stamboek', t('Stamboek nummer')],
+								['bio', t('admin/users/views/user-detail___bio')],
+								['function', t('admin/users/views/user-detail___functie')],
+								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
 							])}
 						</tbody>
 					</Table>
@@ -150,12 +160,16 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 	const renderUserDetailPage = () => (
 		<AdminLayout showBackButton>
 			<AdminLayoutHeader>
-				<Header category="audio" title={t('Gebruiker details')} showMetaData={false}>
+				<Header
+					category="audio"
+					title={t('admin/users/views/user-detail___gebruiker-details')}
+					showMetaData={false}
+				>
 					<HeaderButtons>
 						<ButtonToolbar>
 							<Button
 								type="danger"
-								label={t('Bannen')}
+								label={t('admin/users/views/user-detail___bannen')}
 								onClick={() =>
 									ToastService.info(
 										t('settings/components/profile___nog-niet-geimplementeerd'),
@@ -164,13 +178,15 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 								}
 							/>
 							<Button
-								label={t('Beheer in Account manager')}
+								label={t(
+									'admin/users/views/user-detail___beheer-in-account-manager'
+								)}
 								disabled={!getLdapDashboardUrl()}
 								title={
 									getLdapDashboardUrl()
 										? ''
 										: t(
-												'Deze gebruiker is niet gelinked aan een archief account'
+												'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
 										  )
 								}
 								onClick={handleLdapDashboardClick}

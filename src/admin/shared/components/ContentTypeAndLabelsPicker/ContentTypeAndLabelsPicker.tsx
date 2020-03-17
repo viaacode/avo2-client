@@ -53,7 +53,11 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 				console.error('Failed to get content labels in ContentTypeAndLabelsPicker', err, {
 					selectedContentType: value.selectedContentType,
 				});
-				ToastService.danger(t('Het ophalen van de content pagina labels is mislukt'));
+				ToastService.danger(
+					t(
+						'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-labels-is-mislukt'
+					)
+				);
 			})
 			.finally(() => setIsLoading(false));
 	}, [value.selectedContentType, setLabels, t]);
@@ -113,7 +117,9 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 					isLoading={isLoading}
 					placeholder={
 						!value || !value.selectedContentType
-							? t('Kies eerst een content type')
+							? t(
+									'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___kies-eerst-een-content-type'
+							  )
 							: t(
 									'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
 							  )

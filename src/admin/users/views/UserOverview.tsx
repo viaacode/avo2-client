@@ -46,7 +46,9 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de gebruikers is mislukt'),
+				message: t(
+					'admin/users/views/user-overview___het-ophalen-van-de-gebruikers-is-mislukt'
+				),
 			});
 		}
 	}, [setLoadingInfo, setProfiles, setProfileCount, tableState, t]);
@@ -65,7 +67,10 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 
 	const navigateToUserDetail = (id: string | undefined) => {
 		if (!id) {
-			ToastService.danger(t('Deze gebruiker heeft geen geldig id'), false);
+			ToastService.danger(
+				t('admin/users/views/user-overview___deze-gebruiker-heeft-geen-geldig-id'),
+				false
+			);
 			return;
 		}
 		const detailRoute = ADMIN_PATH.USER_DETAIL;
@@ -103,9 +108,13 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('Er bestaan nog geen gebruikers')}>
+			<ErrorView
+				message={t('admin/users/views/user-overview___er-bestaan-nog-geen-gebruikers')}
+			>
 				<p>
-					<Trans>Beschrijving wanneer er nog geen gebruikers zijn</Trans>
+					<Trans i18nKey="admin/users/views/user-overview___beschrijving-wanneer-er-nog-geen-gebruikers-zijn">
+						Beschrijving wanneer er nog geen gebruikers zijn
+					</Trans>
 				</p>
 			</ErrorView>
 		);
@@ -124,9 +133,11 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
 						renderTableCell(rowData, columnId as UserOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoek op naam, email, alias, ...')}
+					searchTextPlaceholder={t(
+						'admin/users/views/user-overview___zoek-op-naam-email-alias'
+					)}
 					noContentMatchingFiltersMessage={t(
-						'Er zijn geen gebruikers doe voldoen aan de opgegeven filters'
+						'admin/users/views/user-overview___er-zijn-geen-gebruikers-doe-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
@@ -137,7 +148,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Gebruikers')}>
+		<AdminLayout pageTitle={t('admin/users/views/user-overview___gebruikers')}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">

@@ -81,7 +81,9 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de permissie groepen is mislukt'),
+				message: t(
+					'admin/permission-groups/views/permission-group-overview___het-ophalen-van-de-permissie-groepen-is-mislukt'
+				),
 			});
 		}
 	}, [setPermissionGroups, setLoadingInfo, t, page, queryText, sortColumn, sortOrder]);
@@ -100,7 +102,12 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 	const handleDelete = async () => {
 		await PermissionGroupService.deletePermissionGroup(permissionGroupIdToDelete);
 		await fetchPermissionGroups();
-		ToastService.success(t('De permissie groep is verwijdert'), false);
+		ToastService.success(
+			t(
+				'admin/permission-groups/views/permission-group-overview___de-permissie-groep-is-verwijdert'
+			),
+			false
+		);
 	};
 
 	const openModal = (permissionGroup: PermissionGroup): void => {
@@ -135,8 +142,12 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 								})
 							}
 							size="small"
-							ariaLabel={t('Bekijk de details van deze permissie groep')}
-							title={t('Bekijk de details van deze permissie groep')}
+							ariaLabel={t(
+								'admin/permission-groups/views/permission-group-overview___bekijk-de-details-van-deze-permissie-groep'
+							)}
+							title={t(
+								'admin/permission-groups/views/permission-group-overview___bekijk-de-details-van-deze-permissie-groep'
+							)}
 							type="secondary"
 						/>
 						<Button
@@ -147,16 +158,24 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 								})
 							}
 							size="small"
-							ariaLabel={t('Bewerk deze permissie groep')}
-							title={t('Bewerk deze permissie groep')}
+							ariaLabel={t(
+								'admin/permission-groups/views/permission-group-overview___bewerk-deze-permissie-groep'
+							)}
+							title={t(
+								'admin/permission-groups/views/permission-group-overview___bewerk-deze-permissie-groep'
+							)}
 							type="secondary"
 						/>
 						<Button
 							icon="delete"
 							onClick={() => openModal(rowData)}
 							size="small"
-							ariaLabel={t('Verwijder deze permissie groep')}
-							title={t('Verwijder deze permissie groep')}
+							ariaLabel={t(
+								'admin/permission-groups/views/permission-group-overview___verwijder-deze-permissie-groep'
+							)}
+							title={t(
+								'admin/permission-groups/views/permission-group-overview___verwijder-deze-permissie-groep'
+							)}
 							type="danger-hover"
 						/>
 					</ButtonToolbar>
@@ -172,9 +191,13 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			return;
 		}
 		return !permissionGroups.length ? (
-			<ErrorView message={t('Er zijn nog geen permissie groepen aangemaakt')}>
+			<ErrorView
+				message={t(
+					'admin/permission-groups/views/permission-group-overview___er-zijn-nog-geen-permissie-groepen-aangemaakt'
+				)}
+			>
 				<p>
-					<Trans>
+					<Trans i18nKey="admin/permission-groups/views/permission-group-overview___beschrijving-wanneer-er-nog-geen-permissie-groepen-zijn-aangemaakt">
 						Beschrijving wanneer er nog geen permissie groepen zijn aangemaakt
 					</Trans>
 				</p>
@@ -187,9 +210,11 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 					emptyStateMessage={
 						queryText
 							? t(
-									'Er zijn geen permissie groepen gevonden die voldoen aan je zoekterm'
+									'admin/permission-groups/views/permission-group-overview___er-zijn-geen-permissie-groepen-gevonden-die-voldoen-aan-je-zoekterm'
 							  )
-							: t('Er zijn nog geen permissie groepen aangemaakt')
+							: t(
+									'admin/permission-groups/views/permission-group-overview___er-zijn-nog-geen-permissie-groepen-aangemaakt'
+							  )
 					}
 					onColumnClick={columId => {
 						setPage(0);
@@ -228,7 +253,9 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 							<Form type="inline">
 								<FormGroup className="c-permission-group__search" inlineMode="grow">
 									<TextInput
-										placeholder={t('Zoek op naam, beschrijving, ...')}
+										placeholder={t(
+											'admin/permission-groups/views/permission-group-overview___zoek-op-naam-beschrijving'
+										)}
 										icon="search"
 										onChange={setSearchTerm}
 										onKeyUp={handleKeyUp}
@@ -237,7 +264,9 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 								</FormGroup>
 								<FormGroup inlineMode="shrink">
 									<Button
-										label={t('Zoeken')}
+										label={t(
+											'admin/permission-groups/views/permission-group-overview___zoeken'
+										)}
 										type="primary"
 										onClick={() => setQueryText(searchTerm)}
 									/>
@@ -252,7 +281,11 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Permissie groepen overzicht')}>
+		<AdminLayout
+			pageTitle={t(
+				'admin/permission-groups/views/permission-group-overview___permissie-groepen-overzicht'
+			)}
+		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -266,7 +299,9 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			</AdminLayoutBody>
 			<AdminLayoutActions>
 				<Button
-					label={t('Permissie groep toevoegen')}
+					label={t(
+						'admin/permission-groups/views/permission-group-overview___permissie-groep-toevoegen'
+					)}
 					onClick={() => history.push(PERMISSION_GROUP_PATH.PERMISSION_GROUP_CREATE)}
 				/>
 			</AdminLayoutActions>

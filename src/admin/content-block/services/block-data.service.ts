@@ -57,7 +57,9 @@ export const fetchSearchQuery = async (
 	} catch (err) {
 		console.error(err);
 		ToastService.danger(
-			i18n.t('Er ging iets mis tijdens het ophalen van de zoekresultaten'),
+			i18n.t(
+				'admin/content-block/services/block-data___er-ging-iets-mis-tijdens-het-ophalen-van-de-zoekresultaten'
+			),
 			false
 		);
 		return null;

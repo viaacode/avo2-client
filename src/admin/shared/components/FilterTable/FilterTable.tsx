@@ -183,7 +183,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						</FormGroup>
 						<FormGroup inlineMode="shrink">
 							<Button
-								label={t('Zoeken')}
+								label={t(
+									'admin/shared/components/filter-table/filter-table___zoeken'
+								)}
 								type="primary"
 								onClick={() => handleTableStateChanged(searchTerm, 'query')}
 							/>

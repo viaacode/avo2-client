@@ -94,7 +94,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de content pagina is mislukt'),
+				message: t(
+					'admin/content/views/content-detail___het-ophalen-van-de-content-pagina-is-mislukt'
+				),
 			});
 		}
 	}, [setContentPage, setLoadingInfo, t, id]);
@@ -241,13 +243,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
 									{renderSimpleDetailRows(contentPage, [
-										['title', t('Titel:')],
-										['description', t('Beschrijving:')],
+										['title', t('admin/content/views/content-detail___titel')],
+										[
+											'description',
+											t('admin/content/views/content-detail___beschrijving'),
+										],
 										[
 											'content_type',
 											t('admin/content/views/content-detail___content-type'),
 										],
-										['path', t('Pad:')],
+										['path', t('admin/content/views/content-detail___pad')],
 										[
 											'is_protected',
 											t(
@@ -257,18 +262,18 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 									])}
 									{renderDetailRow(
 										getContentPageWidthLabel(contentPage),
-										t('Breedte:')
+										t('admin/content/views/content-detail___breedte')
 									)}
 									{renderDetailRow(
 										`${get(contentPage, 'profile.user.first_name')} ${get(
 											contentPage,
 											'profile.user.last_name'
 										)}`,
-										t('Auteur:')
+										t('admin/content/views/content-detail___auteur')
 									)}
 									{renderDetailRow(
 										get(contentPage, 'profile.user.role.label'),
-										t('Auteur rol:')
+										t('admin/content/views/content-detail___auteur-rol')
 									)}
 									{renderDateDetailRows(contentPage, [
 										[
@@ -308,7 +313,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 											closable={false}
 											tags={getLabels(contentPage)}
 										/>,
-										t('Labels:')
+										t('admin/content/views/content-detail___labels')
 									)}
 								</tbody>
 							</Table>
