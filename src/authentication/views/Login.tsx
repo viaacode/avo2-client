@@ -10,6 +10,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { AppState } from '../../store';
 
 import { LoginMessage } from '../authentication.types';
 import { redirectToServerLoginPage } from '../helpers/redirects';
@@ -91,7 +92,7 @@ const Login: FunctionComponent<LoginProps> = ({
 	return null;
 };
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: AppState) => ({
 	loginState: selectLogin(state),
 	loginStateLoading: selectLoginLoading(state),
 	loginStateError: selectLoginError(state),

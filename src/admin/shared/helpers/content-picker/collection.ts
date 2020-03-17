@@ -5,29 +5,34 @@ import { CollectionService } from '../../../../collection/collection.service';
 import { ContentPickerType, PickerSelectItem } from '../../types/content-picker';
 import { parsePickerItem } from './parse-picker';
 
-// TODO: move getBundles and getBundlesByTitle to a seperate bundle service, not collection service.
-const { getBundles, getBundlesByTitle, getCollections, getCollectionsByTitle } = CollectionService;
+// TODO: move fetchBundles and fetchBundlesByTitle to a seperate bundle service, not collection service.
+const {
+	fetchBundles,
+	fetchBundlesByTitle,
+	fetchCollections,
+	fetchCollectionsByTitle,
+} = CollectionService;
 
 // fetch collections by title-wildcard
-export const fetchCollections = async (
+export const retrieveCollections = async (
 	title: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	const collections: Avo.Collection.Collection[] | null = title
-		? await getCollectionsByTitle(`%${title}%`, limit)
-		: await getCollections(limit);
+		? await fetchCollectionsByTitle(`%${title}%`, limit)
+		: await fetchCollections(limit);
 
 	return parseCollections('COLLECTION', collections || []);
 };
 
 // fetch bundles by title-wildcard
-export const fetchBundles = async (
+export const retrieveBundles = async (
 	title: string | null,
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	const bundles: Avo.Collection.Collection[] | null = title
-		? await getBundlesByTitle(`%${title}%`, limit)
-		: await getBundles(limit);
+		? await fetchBundlesByTitle(`%${title}%`, limit)
+		: await fetchBundles(limit);
 
 	return parseCollections('BUNDLE', bundles || []);
 };

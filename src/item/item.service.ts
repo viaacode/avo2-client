@@ -17,7 +17,7 @@ export const getItems = async (limit?: number): Promise<Avo.Item.Item[] | null> 
 
 	return performQuery(
 		query,
-		`data.${ITEM_RESULT_PATH}`,
+		ITEM_RESULT_PATH,
 		'Failed to retrieve items.',
 		i18n.t('item/item___er-ging-iets-mis-tijdens-het-ophalen-van-de-items')
 	);
@@ -34,7 +34,7 @@ export const getItemsByTitle = async (
 
 	return performQuery(
 		query,
-		`data.${ITEM_RESULT_PATH}`,
+		ITEM_RESULT_PATH,
 		'Failed to retrieve items by title.',
 		i18n.t('item/item___er-ging-iets-mis-tijdens-het-ophalen-van-de-items')
 	);

@@ -72,7 +72,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 						)
 					}
 					icon={'search'}
-					actionButtons={['home']}
+					actionButtons={['home', 'helpdesk']}
 				/>
 			);
 

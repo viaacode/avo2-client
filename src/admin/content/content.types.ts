@@ -1,6 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { ContentBlockConfig } from '../shared/types';
 
 // Pages
@@ -36,23 +37,18 @@ export type ContentOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
-export type DateRangeKeys = 'createdDate' | 'updatedDate' | 'publishDate' | 'depublishDate';
+export type DateRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
 export type FilterRangeKeys = 'created_at' | 'updated_at' | 'publish_at' | 'depublish_at';
 export type RangeFilters = {
 	[key in FilterRangeKeys]?: { _gte?: string; _lte?: string };
 };
 
-export interface ContentFilterFormState {
-	contentType: string[];
-	createdDate: DateRange;
-	updatedDate: DateRange;
-	publishDate: DateRange;
-	depublishDate: DateRange;
-	query: string;
-}
-
-export interface ContentOverviewState {
-	filterForm: ContentFilterFormState;
+export interface ContentTableState extends FilterableTableState {
+	content_type: string[];
+	created_at: DateRange;
+	updated_at: DateRange;
+	publish_at: DateRange;
+	depublish_at: DateRange;
 }
 
 // Content Detail
@@ -69,6 +65,7 @@ export interface ContentEditFormState {
 	publishAt: string;
 	depublishAt: string;
 	userGroupIds: number[];
+	labels: Partial<Avo.Content.ContentLabel>[];
 }
 
 export interface ContentEditState {
@@ -92,3 +89,7 @@ export interface ContentEditAction {
 	type: ContentEditActionType;
 	payload: any;
 }
+
+export type DbContent = Avo.Content.Content & {
+	content_content_labels: Avo.Content.ContentLabelLink[];
+};

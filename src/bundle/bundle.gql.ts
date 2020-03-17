@@ -1,7 +1,7 @@
 import { gql } from 'apollo-boost';
 
 export const GET_BUNDLES = gql`
-	query getBundles($limit: Int!) {
+	query fetchBundles($limit: Int!) {
 		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 4 } }, limit: $limit) {
 			id
 			title
@@ -10,7 +10,7 @@ export const GET_BUNDLES = gql`
 `;
 
 export const GET_BUNDLES_BY_TITLE = gql`
-	query getBundles($title: String!, $limit: Int!) {
+	query fetchBundles($title: String!, $limit: Int!) {
 		app_collections(
 			order_by: { title: asc }
 			where: { type_id: { _eq: 4 }, title: { _ilike: $title } }

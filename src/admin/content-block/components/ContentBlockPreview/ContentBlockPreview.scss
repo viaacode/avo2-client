@@ -1,0 +1,10 @@
+@import '../../../../styles/settings/colors';
+
+.c-content-block-preview--dark {
+	// Here you can overwrite styles on content-blocks for previews with a dark background
+	.c-block-media-list {
+		.c-meta-data__item {
+			color: $color-gray-150;
+		}
+	}
+}

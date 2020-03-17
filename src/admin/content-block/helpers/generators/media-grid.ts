@@ -1,3 +1,6 @@
+import { ContentPickerType } from '@viaa/avo2-components';
+import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRange/MultiRange';
+
 import i18n from '../../../../shared/translations/i18n';
 
 import {
@@ -17,6 +20,8 @@ export const INITIAL_MEDIA_GRID_BLOCK_STATE = (position: number): MediaGridBlock
 	ctaContent: '',
 	ctaButtonLabel: '',
 	ctaButtonAction: { type: 'ITEM', value: '' },
+	searchQuery: { type: 'SEARCH_QUERY', value: '' },
+	searchQueryLimit: '8',
 });
 
 export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
@@ -32,7 +37,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
-					allowedTypes: ['ITEM', 'COLLECTION'],
+					allowedTypes: ['COLLECTION', 'ITEM'] as ContentPickerType[],
 				},
 			},
 		},
@@ -40,6 +45,27 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 	block: {
 		state: INITIAL_MEDIA_GRID_BLOCK_STATE(position),
 		fields: {
+			searchQuery: {
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___voeg-een-zoek-filter-toe'
+				),
+				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: ['SEARCH_QUERY'] as ContentPickerType[],
+				},
+			},
+			searchQueryLimit: {
+				label: i18n.t(
+					'admin/content-block/helpers/generators/media-grid___zoekresultaten-limiet'
+				),
+				editorType: ContentBlockEditor.MultiRange,
+				editorProps: {
+					min: 0,
+					max: 20,
+					step: 1,
+					showNumber: true,
+				} as MultiRangeProps,
+			},
 			ctaTitle: TEXT_FIELD('', {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-titel'),
 				editorType: ContentBlockEditor.TextInput,

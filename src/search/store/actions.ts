@@ -1,8 +1,9 @@
 import { Avo } from '@viaa/avo2-types';
 import { Action, Dispatch } from 'redux';
 
-import { CustomError, getEnv } from '../../shared/helpers';
+import { CustomError } from '../../shared/helpers';
 
+import { fetchSearchResults } from '../search.service';
 import {
 	SearchActionTypes,
 	SetSearchResultsErrorAction,
@@ -22,21 +23,14 @@ const getSearchResults = (
 		dispatch(setSearchResultsLoading());
 
 		try {
-			const response = await fetch(`${getEnv('PROXY_URL')}/search`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-				body: JSON.stringify({
-					filters,
-					filterOptionSearch,
-					orderProperty,
-					orderDirection,
-					from,
-					size,
-				}),
-			});
+			const response = await fetchSearchResults(
+				orderProperty,
+				orderDirection,
+				from,
+				size,
+				filters,
+				filterOptionSearch
+			);
 
 			const data = await response.json();
 

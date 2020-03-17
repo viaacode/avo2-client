@@ -2,26 +2,27 @@ import { get } from 'lodash';
 import { compact } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ReactSelect from 'react-select';
-import { ValueType } from 'react-select/src/types';
 
-import { Column, FormGroup, Grid, LabelObj, SelectOption } from '@viaa/avo2-components';
+import {
+	Column,
+	FormGroup,
+	Grid,
+	LabelObj,
+	Select,
+	SelectOption,
+	TagInfo,
+	TagsInput,
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
+import { ToastService } from '../../../../shared/services';
+import { ContentService } from '../../../content/content.service';
 import { ContentPageType } from '../../../content/content.types';
 import { useContentTypes } from '../../../content/hooks';
-import { REACT_SELECT_DEFAULT_OPTIONS } from '../ContentPicker/ContentPicker.const';
 
 export interface ContentTypeAndLabelsValue {
 	selectedContentType: ContentPageType;
-	selectedLabels: ContentLabel[];
-}
-
-export interface ContentLabel {
-	id: number;
-	label: string;
-	content_type: string;
-	created_at: string;
-	updated_at: string;
+	selectedLabels: Avo.Content.ContentLabel[];
 }
 
 export interface ContentTypeAndLabelsProps {
@@ -41,59 +42,38 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 	const [t] = useTranslation();
 
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
-	const [labels, setLabels] = useState<ContentLabel[]>([]);
+	const [labels, setLabels] = useState<Avo.Content.ContentLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		setIsLoading(true);
-		setLabels(
-			[
-				`${value.selectedContentType}-test1`,
-				`${value.selectedContentType}-test2`,
-				`${value.selectedContentType}-test3`,
-			].map(
-				(label, index): ContentLabel => ({
-					label,
-					id: index,
-					content_type: value.selectedContentType,
-					created_at: new Date().toISOString(),
-					updated_at: new Date().toISOString(),
-				})
-			)
-		);
-		setIsLoading(false);
-		// TODO implement once added to the database
-		// dataService
-		// 	.query({
-		// 		query: GET_LABELS_FOR_CONTENT_TYPE,
-		// 	})
-		// 	.then(response => {
-		// 		const types: string[] = get(response, 'data.lookup_enum_content_types', []).map(
-		// 			(type: { value: string }) => type.value
-		// 		);
-		// 		setContentTypes(types);
-		// 	})
-		// 	.catch(err => {
-		// 		console.error('Failed to get content types in ContentTypeAndLabelsPicker', err, {
-		// 			query: 'GET_CONTENT_TYPES',
-		// 		});
-		// 		ToastService.danger(t('admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-types-is-mislukt'));
-		// 	})
-		//  .finally(() => setIsLoading(false));
+		ContentService.fetchLabelsByContentType(value.selectedContentType)
+			.then(setLabels)
+			.catch((err: any) => {
+				console.error('Failed to get content labels in ContentTypeAndLabelsPicker', err, {
+					selectedContentType: value.selectedContentType,
+				});
+				ToastService.danger(
+					t(
+						'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-labels-is-mislukt'
+					)
+				);
+			})
+			.finally(() => setIsLoading(false));
 	}, [value.selectedContentType, setLabels, t]);
 
-	const handleContentTypeChanged = (selectedItem: ValueType<SelectOption<ContentPageType>>) => {
+	const handleContentTypeChanged = (selectedValue: string) => {
 		onChange({
-			selectedContentType: get(selectedItem, 'value'),
+			selectedContentType: selectedValue as ContentPageType,
 			selectedLabels: get(value, 'selectedLabels', []),
 		});
 	};
 
-	const handleLabelsChanged = (newSelectedLabels: SelectOption<number>[]) => {
+	const handleLabelsChanged = (newSelectedLabels: TagInfo[]) => {
 		onChange({
 			selectedContentType: get(value, 'selectedContentType') as ContentPageType,
 			selectedLabels: compact(
-				(newSelectedLabels || []).map((selectedLabel: SelectOption<number>) =>
+				(newSelectedLabels || []).map(selectedLabel =>
 					(labels || []).find(labelObj => {
 						return labelObj.id === get(selectedLabel, 'value');
 					})
@@ -105,30 +85,25 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 	const renderSelectPicker = () => (
 		<Grid>
 			<Column size="1">
-				<ReactSelect
-					{...REACT_SELECT_DEFAULT_OPTIONS}
+				<Select
 					id="content-type-and-label-picker-type"
 					placeholder={t('admin/content/components/content-picker/content-picker___type')}
 					options={contentTypes}
-					isSearchable
-					isMulti={false}
-					isLoading={isLoadingContentTypes}
+					value={get(value, 'selectedContentType')}
+					loading={isLoadingContentTypes}
 					onChange={handleContentTypeChanged}
 				/>
 			</Column>
 			<Column size="3">
-				<ReactSelect
-					{...REACT_SELECT_DEFAULT_OPTIONS}
-					id="content-type-and-label-picker-label"
-					placeholder={t(
-						'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
-					)}
+				<TagsInput
 					options={(labels || []).map(
 						(labelObj): SelectOption<number> => ({
 							label: labelObj.label,
 							value: labelObj.id,
 						})
 					)}
+					allowMulti
+					allowCreate={false}
 					value={compact(
 						((value.selectedLabels || []) as LabelObj[]).map(
 							(labelObj: LabelObj): SelectOption<number> => ({
@@ -137,10 +112,18 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 							})
 						)
 					)}
-					isSearchable
-					isMulti
+					onChange={handleLabelsChanged}
+					disabled={!value || !value.selectedContentType}
 					isLoading={isLoading}
-					onChange={handleLabelsChanged as any}
+					placeholder={
+						!value || !value.selectedContentType
+							? t(
+									'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___kies-eerst-een-content-type'
+							  )
+							: t(
+									'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
+							  )
+					}
 				/>
 			</Column>
 		</Grid>
