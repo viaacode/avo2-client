@@ -39,7 +39,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 			)
 			.catch(err => {
 				console.error(new CustomError('Failed to fetch translations', err));
-				ToastService.danger(t('Het ophalen van de vertalingen is mislukt.'));
+				ToastService.danger(t('Het ophalen van de vertalingen is mislukt.'), false);
 			});
 	}, []);
 
@@ -62,10 +62,10 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		try {
 			await Promise.all(promises);
 
-			ToastService.success(t('De vertalingen zijn opgeslagen.'));
+			ToastService.success(t('De vertalingen zijn opgeslagen.'), false);
 		} catch (err) {
 			console.error(new CustomError('Failed to save translations', err));
-			ToastService.danger(t('Het opslaan van de vertalingen is mislukt.'));
+			ToastService.danger(t('Het opslaan van de vertalingen is mislukt.'), false);
 		}
 	};
 
