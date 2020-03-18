@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Container, KeyValueEditor } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -29,12 +30,17 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 
 	useEffect(() => {
 		// retrieve translations
-		fetchTranslations().then((translations: TranslationsState[]) =>
-			dispatch({
-				type: TranslationsActionType.SET_TRANSLATIONS,
-				payload: convertTranslationsToData(translations),
-			})
-		);
+		fetchTranslations()
+			.then((translations: TranslationsState[]) =>
+				dispatch({
+					type: TranslationsActionType.SET_TRANSLATIONS,
+					payload: convertTranslationsToData(translations),
+				})
+			)
+			.catch(err => {
+				console.error(new CustomError('Failed to fetch translations', err));
+				ToastService.danger(t('Het ophalen van de vertalingen is mislukt.'));
+			});
 	}, []);
 
 	const onChangeTranslations = (updatedTranslations: Translation[]) => {
@@ -49,18 +55,18 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		// convert translations to db format and save translations
 		const promises: any = [];
 
-		// TODO: type
-		await convertDataToTranslations(translations).forEach((context: any) => {
+		convertDataToTranslations(translations).forEach((context: any) => {
 			promises.push(updateTranslations(context.name, context));
 		});
 
-		Promise.all(promises)
-			.then(() => {
-				ToastService.success(t('De vertalingen zijn opgeslagen.'));
-			})
-			.catch(() => {
-				ToastService.danger(t('Het opslaan van de vertaling is mislukt.'));
-			});
+		try {
+			await Promise.all(promises);
+
+			ToastService.success(t('De vertalingen zijn opgeslagen.'));
+		} catch (err) {
+			console.error(new CustomError('Failed to save translations', err));
+			ToastService.danger(t('Het opslaan van de vertalingen is mislukt.'));
+		}
 	};
 
 	const convertTranslationsToData = (translations: TranslationsState[]) => {
