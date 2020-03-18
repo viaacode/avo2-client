@@ -59,6 +59,9 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 					'shared/components/share-through-email-modal/share-through-email-modal___de-email-is-verstuurd'
 				)
 			);
+
+			// close modal when email is sent
+			onClose();
 		} catch (err) {
 			console.error('Failed to send email to share item', err, {
 				emailAddress,
