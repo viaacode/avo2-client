@@ -1,4 +1,5 @@
 import { ExecutionResult } from '@apollo/react-common';
+import { ApolloQueryResult } from 'apollo-boost';
 import { cloneDeep, get, isNil, isString } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
@@ -7,7 +8,6 @@ import { CustomError } from '../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
-import { ApolloQueryResult } from 'apollo-boost';
 import { CollectionService } from '../collection/collection.service';
 import {
 	DELETE_ASSIGNMENT,
