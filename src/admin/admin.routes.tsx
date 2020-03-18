@@ -9,6 +9,7 @@ import { renderInteractiveTourRoutes } from './interactive-tour/interactive-tour
 import { renderItemRoutes } from './items/items.routes';
 import { renderAdminMenuRoutes } from './menu/menu.routes';
 import { renderAdminPermissionGroupRoutes } from './permission-groups/permission-group.routes';
+import { renderAdminTranslationsRoutes } from './translations/translations.routes';
 import { renderAdminUserGroupRoutes } from './user-groups/user-group.routes';
 import { renderAdminUserRoutes } from './users/user.routes';
 
@@ -18,6 +19,7 @@ export const renderAdminRoutes = () => (
 		{renderAdminUserRoutes()}
 		{renderAdminMenuRoutes()}
 		{renderAdminContentRoutes()}
+		{renderAdminTranslationsRoutes()}
 		{renderAdminPermissionGroupRoutes()}
 		{renderAdminUserGroupRoutes()}
 		{renderItemRoutes()}
