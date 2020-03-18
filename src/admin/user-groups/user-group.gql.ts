@@ -26,27 +26,16 @@ export const GET_USER_GROUPS = gql`
 		$limit: Int!
 		$offset: Int!
 		$orderBy: [users_groups_order_by!]!
-		$queryText: String!
+		$where: users_groups_bool_exp!
 	) {
-		users_groups(
-			limit: $limit
-			offset: $offset
-			order_by: $orderBy
-			where: {
-				_or: [{ label: { _ilike: $queryText } }, { description: { _ilike: $queryText } }]
-			}
-		) {
+		users_groups(limit: $limit, offset: $offset, order_by: $orderBy, where: $where) {
 			label
 			id
 			created_at
 			description
 			updated_at
 		}
-		users_groups_aggregate(
-			where: {
-				_or: [{ label: { _ilike: $queryText } }, { description: { _ilike: $queryText } }]
-			}
-		) {
+		users_groups_aggregate(where: $where) {
 			aggregate {
 				count
 			}

@@ -2,30 +2,19 @@ import { gql } from 'apollo-boost';
 
 export const GET_PERMISSION_GROUPS = gql`
 	query getAllPermissionGroups(
+		$where: users_permission_groups_bool_exp!
 		$offset: Int!
 		$limit: Int!
 		$orderBy: [users_permission_groups_order_by!]!
-		$queryText: String!
 	) {
-		users_permission_groups(
-			offset: $offset
-			limit: $limit
-			order_by: $orderBy
-			where: {
-				_or: [{ label: { _ilike: $queryText } }, { description: { _ilike: $queryText } }]
-			}
-		) {
+		users_permission_groups(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
 			label
 			description
 			created_at
 			updated_at
 			id
 		}
-		users_permission_groups_aggregate(
-			where: {
-				_or: [{ label: { _ilike: $queryText } }, { description: { _ilike: $queryText } }]
-			}
-		) {
+		users_permission_groups_aggregate(where: $where) {
 			aggregate {
 				count
 			}
