@@ -11,6 +11,11 @@ export const COLLECTION_EDIT_TABS: TabProps[] = [
 		label: 'Metadata',
 		icon: 'file-text',
 	},
+	{
+		id: 'admin',
+		label: 'Beheer',
+		icon: 'settings',
+	},
 ];
 
 export const STILL_DIMENSIONS = {

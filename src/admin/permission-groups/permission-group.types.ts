@@ -1,3 +1,5 @@
+import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
+
 export type PermissionGroupOverviewTableCols =
 	| 'label'
 	| 'description'
@@ -27,4 +29,11 @@ export interface Permission {
 export interface PermissionGroupEditFormErrorState {
 	label?: string;
 	description?: string;
+}
+
+export interface PermissionGroupTableState extends FilterableTableState {
+	label: string;
+	description: string | null;
+	created_at: string;
+	updated_at: string;
 }

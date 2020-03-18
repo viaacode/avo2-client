@@ -1,11 +1,15 @@
-import { ExecutionResult, MutationFunction } from '@apollo/react-common';
+import { ExecutionResult } from '@apollo/react-common';
 import { cloneDeep, compact, get, isNil, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
-import { APP_PATH } from '../constants';
+import {
+	GET_BUNDLES,
+	GET_BUNDLES_BY_TITLE,
+	GET_COLLECTIONS_BY_IDS,
+	GET_QUALITY_LABELS,
+} from '../bundle/bundle.gql';
 import { CustomError } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
@@ -13,6 +17,9 @@ import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
 import {
+	DELETE_COLLECTION,
+	DELETE_COLLECTION_FRAGMENT,
+	DELETE_COLLECTION_LABELS,
 	GET_BUNDLE_TITLES_BY_OWNER,
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
@@ -21,6 +28,11 @@ import {
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
+	INSERT_COLLECTION,
+	INSERT_COLLECTION_FRAGMENTS,
+	INSERT_COLLECTION_LABELS,
+	UPDATE_COLLECTION,
+	UPDATE_COLLECTION_FRAGMENT,
 } from './collection.gql';
 import {
 	cleanCollectionBeforeSave,
@@ -36,14 +48,10 @@ export class CollectionService {
 	 * Insert collection and underlying collection fragments.
 	 *
 	 * @param newCollection Collection that must be inserted.
-	 * @param triggerCollectionInsert
-	 * @param triggerCollectionFragmentsInsert
 	 */
 	// TODO: apply queryServer.mutate
 	public static async insertCollection(
-		newCollection: Partial<Avo.Collection.Collection>,
-		triggerCollectionInsert: any | undefined, // can be undefined when saving an existing collection TODO: type
-		triggerCollectionFragmentsInsert: MutationFunction<any>
+		newCollection: Partial<Avo.Collection.Collection>
 	): Promise<Avo.Collection.Collection> {
 		try {
 			newCollection.created_at = new Date().toISOString();
@@ -53,7 +61,8 @@ export class CollectionService {
 			// insert collection // TODO: handle undefined TriggerCollectionInsert
 			const insertResponse: void | ExecutionResult<
 				Avo.Collection.Collection
-			> = await triggerCollectionInsert({
+			> = await dataService.mutate({
+				mutation: INSERT_COLLECTION,
 				variables: {
 					collection: cleanedCollection,
 				},
@@ -87,8 +96,7 @@ export class CollectionService {
 			if (fragments && fragments.length) {
 				newCollection.collection_fragments = await this.insertFragments(
 					newCollection.id,
-					fragments,
-					triggerCollectionFragmentsInsert
+					fragments
 				);
 			}
 
@@ -106,19 +114,11 @@ export class CollectionService {
 	 *
 	 * @param initialCollection Original collection object.
 	 * @param updatedCollection Collection that must be updated.
-	 * @param triggerCollectionUpdate
-	 * @param triggerCollectionFragmentInsert
-	 * @param triggerCollectionFragmentDelete
-	 * @param triggerCollectionFragmentUpdate
 	 */
 	// TODO: apply queryServer.mutate
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
-		updatedCollection: Avo.Collection.Collection,
-		triggerCollectionUpdate: MutationFunction<any>,
-		triggerCollectionFragmentInsert: MutationFunction<any>,
-		triggerCollectionFragmentDelete: MutationFunction<any>,
-		triggerCollectionFragmentUpdate: MutationFunction<any>
+		updatedCollection: Avo.Collection.Collection
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			// abort if updatedCollection is empty
@@ -182,12 +182,7 @@ export class CollectionService {
 
 			insertFragmentIds.forEach(tempId => {
 				insertPromises.push(
-					this.insertFragment(
-						updatedCollection,
-						tempId,
-						currentFragments,
-						triggerCollectionFragmentInsert
-					)
+					this.insertFragment(updatedCollection, tempId, currentFragments)
 				);
 			});
 
@@ -196,7 +191,8 @@ export class CollectionService {
 
 			deleteFragmentIds.forEach((id: number) => {
 				deletePromises.push(
-					triggerCollectionFragmentDelete({
+					dataService.mutate({
+						mutation: DELETE_COLLECTION_FRAGMENT,
 						variables: { id },
 					})
 				);
@@ -229,7 +225,8 @@ export class CollectionService {
 				delete fragmentToUpdate.item_meta;
 
 				updatePromises.push(
-					triggerCollectionFragmentUpdate({
+					dataService.mutate({
+						mutation: UPDATE_COLLECTION_FRAGMENT,
 						variables: {
 							id,
 							fragment: fragmentToUpdate,
@@ -273,13 +270,33 @@ export class CollectionService {
 				newCollection
 			);
 
-			await triggerCollectionUpdate({
+			await dataService.mutate({
+				mutation: UPDATE_COLLECTION,
 				variables: {
 					id: cleanedCollection.id,
 					collection: cleanedCollection,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
+
+			// Update collection labels
+			// TODO remove any cast and add collectionLabel types after update to typings v2.14.0
+			const initialLabels: string[] = (initialCollection as any).collection_labels.map(
+				(labelObj: any) => labelObj.label
+			);
+			const updatedLabels: string[] = (updatedCollection as any).collection_labels.map(
+				(labelObj: any) => labelObj.label
+			);
+
+			const addedLabels: string[] = without(updatedLabels, ...initialLabels);
+			const deletedLabels: string[] = without(initialLabels, ...updatedLabels);
+			await Promise.all([
+				CollectionService.addLabelsToCollection(newCollection.id as string, addedLabels),
+				CollectionService.deleteLabelsFromCollection(
+					newCollection.id as string,
+					deletedLabels
+				),
+			]);
 
 			return newCollection as Avo.Collection.Collection;
 		} catch (err) {
@@ -290,10 +307,6 @@ export class CollectionService {
 				{
 					initialCollection,
 					updatedCollection,
-					triggerCollectionUpdate,
-					triggerCollectionFragmentInsert,
-					triggerCollectionFragmentDelete,
-					triggerCollectionFragmentUpdate,
 				}
 			);
 
@@ -306,47 +319,23 @@ export class CollectionService {
 	/**
 	 * Delete collection by id.
 	 *
-	 * @param history Object to allow navigation when successful.
 	 * @param collectionId Unique identifier of the collection.
-	 * @param triggerCollectionDelete
 	 */
-	// TODO: apply queryServer.mutate
-	public static deleteCollection = async (
-		history: any,
-		collectionId: string,
-		triggerCollectionDelete: any
-	) => {
+	public static deleteCollection = async (collectionId: string) => {
 		try {
 			// delete collection by id
-			await triggerCollectionDelete({
+			await dataService.mutate({
+				mutation: DELETE_COLLECTION,
 				variables: {
 					id: collectionId,
 				},
 				update: ApolloCacheManager.clearCollectionCache,
 			});
-
-			// navigate to workspace TODO: This should not be in the service.
-			history.push(APP_PATH.WORKSPACE.route);
-
-			// display success toast
-			ToastService.success(
-				i18n.t(
-					'collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd'
-				)
-			);
 		} catch (err) {
-			// handle error
-			const customError = new CustomError('Failed to delete collection', err, {
-				collectionId,
-			});
-
-			console.error(customError);
-
-			// display error toast
-			ToastService.danger(
-				i18n.t(
-					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
-				)
+			console.error(
+				new CustomError(`Failed to delete collection or bundle'}`, err, {
+					collectionId,
+				})
 			);
 		}
 	};
@@ -358,60 +347,60 @@ export class CollectionService {
 	 * @param user
 	 * @param copyPrefix
 	 * @param copyRegex
-	 * @param triggerCollectionInsert
-	 * @param triggerCollectionFragmentsInsert
 	 *
 	 * @returns Duplicate collection.
 	 */
-	// TODO: apply queryServer.mutate
 	public static async duplicateCollection(
 		collection: Avo.Collection.Collection,
 		user: Avo.User.User,
 		copyPrefix: string,
-		copyRegex: RegExp,
-		triggerCollectionInsert: any,
-		triggerCollectionFragmentsInsert: any
+		copyRegex: RegExp
 	): Promise<Avo.Collection.Collection> {
-		const collectionToInsert = { ...collection };
-
-		// update attributes specific to duplicate
-		collectionToInsert.owner_profile_id = getProfileId(user);
-		collectionToInsert.is_public = false;
-
-		// remove id from duplicate
-		delete collectionToInsert.id;
-
 		try {
-			collectionToInsert.title = await this.getCopyTitleForCollection(
+			const collectionToInsert = { ...collection };
+
+			// update attributes specific to duplicate
+			collectionToInsert.owner_profile_id = getProfileId(user);
+			collectionToInsert.is_public = false;
+
+			// remove id from duplicate
+			delete collectionToInsert.id;
+
+			try {
+				collectionToInsert.title = await this.getCopyTitleForCollection(
+					copyPrefix,
+					copyRegex,
+					collectionToInsert.title,
+					user
+				);
+			} catch (err) {
+				// handle error
+				const customError = new CustomError(
+					'Failed to retrieve title for duplicate collection',
+					err,
+					{
+						collectionToInsert,
+					}
+				);
+
+				console.error(customError);
+
+				// fallback to simple copy title
+				collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${
+					collectionToInsert.title
+				}`;
+			}
+
+			// insert duplicated collection
+			return await CollectionService.insertCollection(collectionToInsert);
+		} catch (err) {
+			throw new CustomError('Failed to duplicate collection', err, {
+				collection,
+				user,
 				copyPrefix,
 				copyRegex,
-				collectionToInsert.title,
-				user
-			);
-		} catch (err) {
-			// handle error
-			const customError = new CustomError(
-				'Failed to retrieve title for duplicate collection',
-				err,
-				{
-					collectionToInsert,
-				}
-			);
-
-			console.error(customError);
-
-			// fallback to simple copy title
-			collectionToInsert.title = `${copyPrefix.replace(' %index%', '')}${
-				collectionToInsert.title
-			}`;
+			});
 		}
-
-		// insert duplicated collection // TODO: Surround with try/catch
-		return await CollectionService.insertCollection(
-			collectionToInsert,
-			triggerCollectionInsert,
-			triggerCollectionFragmentsInsert
-		);
 	}
 
 	/**
@@ -516,7 +505,6 @@ export class CollectionService {
 	 *
 	 * @returns Bundles limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	// TODO: apply queryServer.mutate
 	// TODO: Move to bundle.service.ts
 	public static async fetchBundlesByTitle(
 		title: string,
@@ -529,16 +517,38 @@ export class CollectionService {
 				variables: { title, limit },
 			});
 
+			if (response.errors) {
+				throw new CustomError('Response contains errors', null, { response });
+			}
+
 			return get(response, 'data.app_collections', []);
 		} catch (err) {
 			// handle error
-			const customError = new CustomError('Het ophalen van de bundels is mislukt.', err, {
+			const customError = new CustomError('Failed to get bundles', err, {
 				query: 'GET_BUNDLES_BY_TITLE',
 			});
 
 			console.error(customError);
 
 			throw customError;
+		}
+	}
+
+	public static async fetchQualityLabels(): Promise<string[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_QUALITY_LABELS,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains errors', null, { response });
+			}
+
+			return get(response, 'data.lookup_labels', []);
+		} catch (err) {
+			throw new CustomError('Failed to get quality labels', err, {
+				query: 'GET_BUNDLES_BY_TITLE',
+			});
 		}
 	}
 
@@ -747,8 +757,7 @@ export class CollectionService {
 
 	private static async insertFragments(
 		collectionId: string,
-		fragments: Avo.Collection.Fragment[],
-		triggerCollectionFragmentsInsert: any
+		fragments: Avo.Collection.Fragment[]
 	): Promise<Avo.Collection.Fragment[]> {
 		fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
 		fragments.forEach(fragment => ((fragment as any).collection_id = '')); // TODO remove once database allows it
@@ -760,7 +769,8 @@ export class CollectionService {
 			return fragment;
 		});
 
-		const response = await triggerCollectionFragmentsInsert({
+		const response = await dataService.mutate({
+			mutation: INSERT_COLLECTION_FRAGMENTS,
 			variables: {
 				id: collectionId,
 				fragments: cleanedFragments,
@@ -780,8 +790,7 @@ export class CollectionService {
 	private static async insertFragment(
 		collection: Partial<Avo.Collection.Collection>,
 		tempId: number,
-		currentFragments: Avo.Collection.Fragment[],
-		triggerCollectionFragmentInsert: any
+		currentFragments: Avo.Collection.Fragment[]
 	) {
 		if (!collection) {
 			ToastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
@@ -808,7 +817,8 @@ export class CollectionService {
 		delete (fragmentToAdd as any).__typename;
 		delete fragmentToAdd.item_meta;
 
-		const response = await triggerCollectionFragmentInsert({
+		const response = await dataService.mutate({
+			mutation: INSERT_COLLECTION_FRAGMENTS,
 			variables: {
 				id: collection.id,
 				fragments: fragmentToAdd,
@@ -917,4 +927,56 @@ export class CollectionService {
 
 		return candidateTitle;
 	};
+
+	public static async addLabelsToCollection(
+		collectionId: string,
+		labels: string[]
+	): Promise<void> {
+		let variables: any;
+		try {
+			variables = {
+				objects: labels.map(label => ({
+					label,
+					collection_uuid: collectionId,
+				})),
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: INSERT_COLLECTION_LABELS,
+			});
+			if (response.errors) {
+				throw new CustomError('Failed due to graphql errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to insert collection labels in the database', err, {
+				variables,
+				query: 'INSERT_COLLECTION_LABELS',
+			});
+		}
+	}
+
+	public static async deleteLabelsFromCollection(
+		collectionId: string,
+		labels: string[]
+	): Promise<void> {
+		let variables: any;
+		try {
+			variables = {
+				collectionId,
+				labels,
+			};
+			const response = await dataService.mutate({
+				variables,
+				mutation: DELETE_COLLECTION_LABELS,
+			});
+			if (response.errors) {
+				throw new CustomError('Failed due to graphql errors', null, { response });
+			}
+		} catch (err) {
+			throw new CustomError('Failed to delete collection labels from the database', err, {
+				variables,
+				query: 'DELETE_COLLECTION_LABELS',
+			});
+		}
+	}
 }

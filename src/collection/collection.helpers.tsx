@@ -240,7 +240,13 @@ export const getFragmentsFromCollection = (
 export const cleanCollectionBeforeSave = (
 	collection: Partial<Avo.Collection.Collection>
 ): Partial<Avo.Collection.Collection> => {
-	const propertiesToDelete = ['collection_fragments', '__typename', 'type', 'profile'];
+	const propertiesToDelete = [
+		'collection_fragments',
+		'__typename',
+		'type',
+		'profile',
+		'collection_labels',
+	];
 
 	return omit(collection, propertiesToDelete);
 };

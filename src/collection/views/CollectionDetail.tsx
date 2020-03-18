@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -65,11 +64,6 @@ import {
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import {
-	DELETE_COLLECTION,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../collection.gql';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
@@ -117,11 +111,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-
-	// Mutations
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
 		trackEvents(
@@ -317,9 +306,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						collection,
 						user,
 						COLLECTION_COPY,
-						COLLECTION_COPY_REGEX,
-						triggerCollectionInsert,
-						triggerCollectionFragmentsInsert
+						COLLECTION_COPY_REGEX
 					);
 					redirectToClientPage(
 						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
@@ -379,8 +366,20 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
-	const onDeleteCollection = (): void => {
-		CollectionService.deleteCollection(history, collectionId, triggerCollectionDelete);
+	const onDeleteCollection = async (): Promise<void> => {
+		try {
+			await CollectionService.deleteCollection(collectionId);
+			history.push(APP_PATH.WORKSPACE.route);
+			ToastService.success(
+				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
+			);
+		} catch (err) {
+			ToastService.danger(
+				t(
+					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
+				)
+			);
+		}
 	};
 
 	// Render functions
