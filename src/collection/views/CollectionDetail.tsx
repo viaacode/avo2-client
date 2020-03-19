@@ -290,7 +290,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
-	const onClickDropdownItem = async (item: ReactText) => {
+	const executeAction = async (item: ReactText) => {
 		switch (item) {
 			case 'duplicate':
 				try {
@@ -485,13 +485,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					type="secondary"
 					icon="clipboard"
 					ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
-					onClick={() => onClickDropdownItem('createAssignment')}
+					onClick={() => executeAction('createAssignment')}
 				/>
 				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
-						onClick={() => onClickDropdownItem('openShareCollectionModal')}
+						onClick={() => executeAction('openShareCollectionModal')}
 					/>
 				)}
 				<ToggleButton
@@ -500,14 +500,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					icon="bookmark"
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
-					onClick={() => onClickDropdownItem('toggleBookmark')}
+					onClick={() => executeAction('toggleBookmark')}
 				/>
 				<Button
 					title={t('collection/views/collection-detail___deel')}
 					type="secondary"
 					icon="share-2"
 					ariaLabel={t('collection/views/collection-detail___deel')}
-					onClick={() => onClickDropdownItem('openShareThroughEmail')}
+					onClick={() => executeAction('openShareThroughEmail')}
 				/>
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
@@ -527,7 +527,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<DropdownContent>
 						<MenuContent
 							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={onClickDropdownItem}
+							onClick={executeAction}
 						/>
 					</DropdownContent>
 				</ControlledDropdown>
@@ -537,7 +537,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							type="primary"
 							icon="edit"
 							label={t('collection/views/collection-detail___bewerken')}
-							onClick={() => onClickDropdownItem('editCollection')}
+							onClick={() => executeAction('editCollection')}
 						/>
 					</Spacer>
 				)}
@@ -627,7 +627,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<DropdownContent>
 						<MenuContent
 							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={onClickDropdownItem}
+							onClick={executeAction}
 						/>
 					</DropdownContent>
 				</ControlledDropdown>
