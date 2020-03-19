@@ -44,6 +44,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -55,15 +56,14 @@ import {
 	generateSearchLinks,
 	renderAvatar,
 } from '../../shared/helpers';
+import { isMobileWidth } from '../../shared/helpers/media-queries';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkViewPlayCounts,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-
 import { trackEvents } from '../../shared/services/event-logging-service';
 
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
@@ -338,6 +338,26 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				setIsDeleteModalOpen(true);
 				break;
 
+			case 'openShareThroughEmail':
+				setIsShareThroughEmailModalOpen(true);
+				break;
+
+			case 'openShareCollectionModal':
+				setIsShareModalOpen(!isShareModalOpen);
+				break;
+
+			case 'toggleBookmark':
+				await toggleBookmark();
+				break;
+
+			case 'createAssignment':
+				createAssignment();
+				break;
+
+			case 'editCollection':
+				onEditCollection();
+				break;
+
 			default:
 				return null;
 		}
@@ -465,13 +485,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					type="secondary"
 					icon="clipboard"
 					ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
-					onClick={createAssignment}
+					onClick={() => onClickDropdownItem('createAssignment')}
 				/>
 				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
-						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+						onClick={() => onClickDropdownItem('openShareCollectionModal')}
 					/>
 				)}
 				<ToggleButton
@@ -480,14 +500,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					icon="bookmark"
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
-					onClick={toggleBookmark}
+					onClick={() => onClickDropdownItem('toggleBookmark')}
 				/>
 				<Button
 					title={t('collection/views/collection-detail___deel')}
 					type="secondary"
 					icon="share-2"
 					ariaLabel={t('collection/views/collection-detail___deel')}
-					onClick={() => setIsShareThroughEmailModalOpen(true)}
+					onClick={() => onClickDropdownItem('openShareThroughEmail')}
 				/>
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
@@ -517,11 +537,100 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							type="primary"
 							icon="edit"
 							label={t('collection/views/collection-detail___bewerken')}
-							onClick={onEditCollection}
+							onClick={() => onClickDropdownItem('editCollection')}
 						/>
 					</Spacer>
 				)}
 				<InteractiveTour location={location} user={user} showButton />
+			</ButtonToolbar>
+		);
+	};
+
+	const renderHeaderButtonsMobile = () => {
+		const COLLECTION_DROPDOWN_ITEMS = [
+			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
+			...(permissions.canEditCollections
+				? [
+						createDropdownMenuItem(
+							'editCollection',
+							t('collection/views/collection-detail___bewerken'),
+							'edit'
+						),
+				  ]
+				: []),
+			createDropdownMenuItem(
+				'createAssignment',
+				t('collection/views/collection-detail___maak-opdracht'),
+				'clipboard'
+			),
+			...(permissions.canEditCollections
+				? [
+						createDropdownMenuItem(
+							'openShareCollectionModal',
+							t('collection/views/collection-detail___delen'),
+							'plus'
+						),
+				  ]
+				: []),
+			createDropdownMenuItem(
+				'toggleBookmark',
+				bookmarkViewPlayCounts.isBookmarked
+					? t('Verwijder bladwijzer')
+					: t('Maak bladwijzer'),
+				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
+			),
+			createDropdownMenuItem(
+				'openShareThroughEmail',
+				t('collection/views/collection-detail___deel'),
+				'share-2'
+			),
+			createDropdownMenuItem(
+				'addToBundle',
+				t('collection/views/collection-detail___voeg-toe-aan-bundel'),
+				'plus'
+			),
+			...(permissions.canCreateCollections
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('collection/views/collection-detail___dupliceer'),
+							'copy'
+						),
+				  ]
+				: []),
+			...(permissions.canDeleteCollections
+				? [
+						createDropdownMenuItem(
+							'delete',
+							t('collection/views/collection-detail___verwijder')
+						),
+				  ]
+				: []),
+		];
+		return (
+			<ButtonToolbar>
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
+						/>
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent
+							menuItems={COLLECTION_DROPDOWN_ITEMS}
+							onClick={onClickDropdownItem}
+						/>
+					</DropdownContent>
+				</ControlledDropdown>
 			</ButtonToolbar>
 		);
 	};
@@ -553,7 +662,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount)}
 					views={String(bookmarkViewPlayCounts.viewCount)}
 				>
-					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
+					<HeaderButtons>
+						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+					</HeaderButtons>
 					<HeaderAvatar>
 						{profile && renderAvatar(profile, { includeRole: true, dark: true })}
 					</HeaderAvatar>
