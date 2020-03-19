@@ -58,6 +58,12 @@ export const NAV_ITEMS: NavigationItemInfo[] = [
 		exact: false,
 		subLinks: [
 			{
+				label: i18n.t("Pagina's"),
+				location: ADMIN_PATH.PAGES,
+				key: 'pages',
+				exact: true,
+			},
+			{
 				label: i18n.t('admin/admin___projecten'),
 				location: ADMIN_PATH.PROJECTS,
 				key: 'projects',
@@ -67,6 +73,12 @@ export const NAV_ITEMS: NavigationItemInfo[] = [
 				label: i18n.t('admin/admin___nieuws'),
 				location: ADMIN_PATH.NEWS,
 				key: 'news',
+				exact: true,
+			},
+			{
+				label: i18n.t('Screencasts'),
+				location: ADMIN_PATH.SCREENCAST,
+				key: 'screencasts',
 				exact: true,
 			},
 			{
