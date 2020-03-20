@@ -49,7 +49,6 @@ export class CollectionService {
 	 *
 	 * @param newCollection Collection that must be inserted.
 	 */
-	// TODO: apply queryServer.mutate
 	public static async insertCollection(
 		newCollection: Partial<Avo.Collection.Collection>
 	): Promise<Avo.Collection.Collection> {
@@ -115,7 +114,6 @@ export class CollectionService {
 	 * @param initialCollection Original collection object.
 	 * @param updatedCollection Collection that must be updated.
 	 */
-	// TODO: apply queryServer.mutate
 	public static async updateCollection(
 		initialCollection: Avo.Collection.Collection | null,
 		updatedCollection: Avo.Collection.Collection
@@ -410,7 +408,6 @@ export class CollectionService {
 	 *
 	 * @returns Collections limited by `limit`.
 	 */
-	// TODO: apply queryServer.mutate
 	public static async fetchCollections(limit: number): Promise<Avo.Collection.Collection[]> {
 		try {
 			// retrieve collections
@@ -440,7 +437,6 @@ export class CollectionService {
 	 *
 	 * @returns Bundles limited by `limit`.
 	 */
-	// TODO: apply queryServer.mutate
 	// TODO: Move to bundle.service.ts
 	public static async fetchBundles(limit?: number): Promise<Avo.Collection.Collection[]> {
 		try {
@@ -471,7 +467,6 @@ export class CollectionService {
 	 *
 	 * @returns Collections limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	// TODO: apply queryServer.mutate
 	public static async fetchCollectionsByTitle(
 		title: string,
 		limit: number
@@ -560,7 +555,6 @@ export class CollectionService {
 	 *
 	 * @returns Collections or bundles owned by the user.
 	 */
-	// TODO: apply queryServer.mutate
 	public static async fetchCollectionsOrBundlesByUser(
 		type: 'collection' | 'bundle',
 		user: Avo.User.User | undefined
@@ -609,45 +603,52 @@ export class CollectionService {
 	 *
 	 * @returns Collection or bundle.
 	 */
-	// TODO: apply queryServer.mutate
 	public static async fetchCollectionOrBundleById(
 		collectionId: string,
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
-		// fetch collection or bundle by id // TODO: Add try/catch.
-		const response = await dataService.query({
-			query: GET_COLLECTION_BY_ID,
-			variables: { id: collectionId },
-		});
+		try {
+			const response = await dataService.query({
+				query: GET_COLLECTION_BY_ID,
+				variables: { id: collectionId },
+			});
 
-		if (response.errors) {
-			throw new CustomError(
-				`Failed to retrieve ${type} from database because of graphql errors`,
-				null,
-				{
-					collectionId,
-					errors: response.errors,
-				}
-			);
-		}
+			if (response.errors) {
+				throw new CustomError(
+					`Failed to retrieve ${type} from database because of graphql errors`,
+					null,
+					{
+						collectionId,
+						errors: response.errors,
+					}
+				);
+			}
 
-		const collectionObj: Avo.Collection.Collection | null = get(
-			response,
-			'data.app_collections[0]'
-		);
-
-		if (!collectionObj) {
-			throw new CustomError(`query for ${type} returned empty result`, null, {
-				collectionId,
+			const collectionObj: Avo.Collection.Collection | null = get(
 				response,
+				'data.app_collections[0]'
+			);
+
+			if (!collectionObj) {
+				throw new CustomError(`query for ${type} returned empty result`, null, {
+					collectionId,
+					response,
+				});
+			}
+			// Collection/bundle loaded successfully
+			// If we find a bundle but the function type param asked for a collection, we return undefined (and vice versa)
+			if (collectionObj.type_id !== ContentTypeNumber[type]) {
+				return undefined;
+			}
+
+			return collectionObj;
+		} catch (err) {
+			throw new CustomError('Failed to fetch collection or bundle by id', err, {
+				collectionId,
+				type,
+				query: 'GET_COLLECTION_BY_ID',
 			});
 		}
-		// Collection/bundle loaded successfully
-		if (collectionObj.type_id !== ContentTypeNumber[type]) {
-			return undefined;
-		}
-
-		return collectionObj;
 	}
 
 	/**
@@ -658,78 +659,84 @@ export class CollectionService {
 	 *
 	 * @returns Collection or bundle.
 	 */
-	// TODO: apply queryServer.mutate // TODO: Add try/catch
 	public static async fetchCollectionsOrBundlesWithItemsById(
 		collectionId: string,
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | undefined> {
-		// retrieve collection or bundle by id
-		const collectionOrBundle = await this.fetchCollectionOrBundleById(collectionId, type);
-
-		// handle empty response
-		if (!collectionOrBundle) {
-			return undefined;
-		}
-
-		// retrieve items/collections for each collection_fragment that has an external_id set
-		const ids: string[] = compact(
-			(collectionOrBundle.collection_fragments || []).map((collectionFragment, index) => {
-				// reset positions to a list of ordered integers, db ensures sorting on previoous positin
-				collectionFragment.position = index;
-
-				// TODO: replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
-				// return external id if set
-				if (collectionFragment.external_id !== '-1') {
-					return collectionFragment.external_id;
-				}
-
-				return null;
-			})
-		);
-
 		try {
-			// retrieve items of collection or bundle
-			const response = await dataService.query({
-				query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
-				variables: { ids },
-			});
+			// retrieve collection or bundle by id
+			const collectionOrBundle = await this.fetchCollectionOrBundleById(collectionId, type);
 
-			// Add infos to each fragment under the item_meta property
-			const itemInfos: (Avo.Collection.Collection | Avo.Item.Item)[] = get(
-				response,
-				'data.items',
-				[]
+			// handle empty response
+			if (!collectionOrBundle) {
+				return undefined;
+			}
+
+			// retrieve items/collections for each collection_fragment that has an external_id set
+			const ids: string[] = compact(
+				(collectionOrBundle.collection_fragments || []).map((collectionFragment, index) => {
+					// reset positions to a list of ordered integers, db ensures sorting on previoous positin
+					collectionFragment.position = index;
+
+					// TODO: replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
+					// return external id if set
+					if (collectionFragment.external_id !== '-1') {
+						return collectionFragment.external_id;
+					}
+
+					return null;
+				})
 			);
-			collectionOrBundle.collection_fragments.forEach(fragment => {
-				const itemInfo = itemInfos.find(
-					item =>
-						fragment.external_id ===
-						(type === 'collection' ? item.external_id : item.id)
+
+			try {
+				// retrieve items of collection or bundle
+				const response = await dataService.query({
+					query: type === 'collection' ? GET_ITEMS_BY_IDS : GET_COLLECTIONS_BY_IDS,
+					variables: { ids },
+				});
+
+				// Add infos to each fragment under the item_meta property
+				const itemInfos: (Avo.Collection.Collection | Avo.Item.Item)[] = get(
+					response,
+					'data.items',
+					[]
+				);
+				collectionOrBundle.collection_fragments.forEach(fragment => {
+					const itemInfo = itemInfos.find(
+						item =>
+							fragment.external_id ===
+							(type === 'collection' ? item.external_id : item.id)
+					);
+
+					if (itemInfo) {
+						fragment.item_meta = itemInfo;
+						if (!fragment.use_custom_fields) {
+							fragment.custom_description = itemInfo.description;
+							fragment.custom_title = itemInfo.title;
+						}
+					}
+				});
+
+				return collectionOrBundle;
+			} catch (err) {
+				// handle error
+				const customError = new CustomError(
+					'Failed to get fragments inside the collection',
+					err,
+					{
+						ids,
+					}
 				);
 
-				if (itemInfo) {
-					fragment.item_meta = itemInfo;
-					if (!fragment.use_custom_fields) {
-						fragment.custom_description = itemInfo.description;
-						fragment.custom_title = itemInfo.title;
-					}
-				}
-			});
+				console.error(customError);
 
-			return collectionOrBundle;
+				throw customError;
+			}
 		} catch (err) {
-			// handle error
-			const customError = new CustomError(
-				'Failed to get fragments inside the collection',
-				err,
-				{
-					ids,
-				}
-			);
-
-			console.error(customError);
-
-			throw customError;
+			throw new CustomError('Failed to get collection or bundle with items', err, {
+				collectionId,
+				type,
+			});
 		}
 	}
 
@@ -755,36 +762,54 @@ export class CollectionService {
 		return get(response, 'data.app_collections', []);
 	}
 
-	private static async insertFragments(
+	public static async insertFragments(
 		collectionId: string,
 		fragments: Avo.Collection.Fragment[]
 	): Promise<Avo.Collection.Fragment[]> {
-		fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
-		fragments.forEach(fragment => ((fragment as any).collection_id = '')); // TODO remove once database allows it
+		try {
+			fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
+			fragments.forEach(fragment => ((fragment as any).collection_id = '')); // TODO remove once database allows it
 
-		const cleanedFragments = cloneDeep(fragments).map(fragment => {
-			delete fragment.id;
-			delete (fragment as any).__typename;
-			delete fragment.item_meta;
-			return fragment;
-		});
+			const cleanedFragments = cloneDeep(fragments).map(fragment => {
+				delete fragment.id;
+				delete (fragment as any).__typename;
+				delete fragment.item_meta;
+				return fragment;
+			});
 
-		const response = await dataService.mutate({
-			mutation: INSERT_COLLECTION_FRAGMENTS,
-			variables: {
-				id: collectionId,
-				fragments: cleanedFragments,
-			},
-			update: ApolloCacheManager.clearCollectionCache,
-		});
+			const response = await dataService.mutate({
+				mutation: INSERT_COLLECTION_FRAGMENTS,
+				variables: {
+					id: collectionId,
+					fragments: cleanedFragments,
+				},
+				update: ApolloCacheManager.clearCollectionCache,
+			});
 
-		get(response, 'data.insert_app_collection_fragments.returning', []).forEach(
-			(f: { id: number }, index: number) => {
-				fragments[index].id = f.id;
+			if (response.errors) {
+				throw new CustomError('Response contains graphql errors', null, { response });
 			}
-		);
 
-		return fragments;
+			const fragmentIds = get(response, 'data.insert_app_collection_fragments.returning');
+			if (!fragmentIds) {
+				throw new CustomError('Response does not contain any fragment ids', null, {
+					response,
+				});
+			}
+			get(response, 'data.insert_app_collection_fragments.returning', []).forEach(
+				(f: { id: number }, index: number) => {
+					fragments[index].id = f.id;
+				}
+			);
+
+			return fragments;
+		} catch (err) {
+			throw new CustomError('Failed to insert fragments into collection', err, {
+				collectionId,
+				fragments,
+				query: 'INSERT_COLLECTION_FRAGMENTS',
+			});
+		}
 	}
 
 	private static async insertFragment(

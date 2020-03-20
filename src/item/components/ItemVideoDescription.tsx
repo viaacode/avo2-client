@@ -188,23 +188,23 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				overflowY: 'auto',
 			}}
 		>
-			{showTitle ? (
-				<BlockHeading
-					type="h3"
-					className={onTitleClicked ? 'u-clickable' : ''}
-					onClick={onTitleClicked || (() => {})}
-				>
-					{title}
-				</BlockHeading>
-			) : (
-				<BlockHeading type="h4">
-					<Trans i18nKey="item/components/item-video-description___beschrijving">
-						Beschrijving
-					</Trans>
-				</BlockHeading>
-			)}
-			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (18) */}
-			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 18}>
+			{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
+			<ExpandableContainer collapsedHeight={videoHeight - 36 - 18}>
+				{showTitle ? (
+					<BlockHeading
+						type="h3"
+						className={onTitleClicked ? 'u-clickable' : ''}
+						onClick={onTitleClicked || (() => {})}
+					>
+						{title}
+					</BlockHeading>
+				) : (
+					<BlockHeading type="h4">
+						<Trans i18nKey="item/components/item-video-description___beschrijving">
+							Beschrijving
+						</Trans>
+					</BlockHeading>
+				)}
 				<p>{formatTimestamps(convertToHtml(description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>
