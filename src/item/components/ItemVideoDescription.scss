@@ -1,3 +1,5 @@
+@import '../../styles/settings/variables';
+
 .c-item-video-description {
 	.c-button-toolbar .c-button + .c-button {
 		margin-left: 0;
@@ -8,6 +10,18 @@
 
 		&:not(:last-child) {
 			margin-right: 0.8rem;
+		}
+	}
+
+	@media (max-width: $g-bp2) {
+		.c-video-column {
+			margin-left: 0;
+			margin-right: 0;
+		}
+
+		.c-item-view__main .c-video-player {
+			margin-left: 0;
+			width: 100%;
 		}
 	}
 }
