@@ -2,8 +2,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { getFullName } from '../../shared/helpers';
-import { CustomError } from '../../shared/helpers/error';
+import { CustomError, getFullName } from '../../shared/helpers';
 import store from '../../store';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {

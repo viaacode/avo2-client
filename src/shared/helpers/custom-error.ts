@@ -1,3 +1,5 @@
+import captureStackTrace from 'capture-stack-trace';
+
 import { generateRandomId } from './uuid';
 
 export class CustomError {
@@ -6,7 +8,7 @@ export class CustomError {
 	public additionalInfo: any | null;
 	public identifier: string = generateRandomId();
 	public name: string = 'Error';
-	public stack: string;
+	public stackTrace: string;
 	public timestamp: string = new Date().toISOString();
 
 	constructor(
@@ -17,12 +19,12 @@ export class CustomError {
 		this.message = message;
 		this.innerException = innerException;
 		this.additionalInfo = additionalInfo;
-		Error.captureStackTrace(this, this.constructor);
+		captureStackTrace(this, this.constructor);
 
 		if (innerException && typeof innerException.stack === 'string') {
-			this.stack = innerException.stack;
+			this.stackTrace = innerException.stack;
 		} else {
-			this.stack = new Error().stack || '';
+			this.stackTrace = new Error().stack || '';
 		}
 	}
 
