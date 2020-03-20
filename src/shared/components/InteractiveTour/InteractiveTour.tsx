@@ -181,6 +181,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 						onClick={() => {
 							setTour({ ...tour, seen: false });
 						}}
+						className="c-interactive-tour__button"
 					/>
 				)}
 			</>
