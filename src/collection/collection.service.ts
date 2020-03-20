@@ -636,6 +636,7 @@ export class CollectionService {
 				});
 			}
 			// Collection/bundle loaded successfully
+			// If we find a bundle but the function type param asked for a collection, we return undefined (and vice versa)
 			if (collectionObj.type_id !== ContentTypeNumber[type]) {
 				return undefined;
 			}

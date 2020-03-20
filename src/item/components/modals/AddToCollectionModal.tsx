@@ -268,8 +268,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				);
 
 	const renderAddToCollectionModal = () => {
-		// const initFlowPlayer = () =>
-		// 	!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
 
 		return (
