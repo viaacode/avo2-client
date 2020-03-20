@@ -80,19 +80,21 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			});
 	}, [history, t, user]);
 
-	const mapNavItems = (navItems: NavigationItemInfo[]) => {
+	const mapNavItems = (navItems: NavigationItemInfo[], isMobile: boolean) => {
 		return navItems.map(item => (
 			<NavigationItem
 				key={item.key}
 				item={item}
-				className="c-nav__item c-nav__item--i"
+				className={'c-nav__item c-nav__item--i'}
 				exact={item.location === '/'}
 				showActive={false}
 				areDropdownsOpen={areDropdownsOpen}
 				setDropdownsOpen={setDropdownsOpen}
+				isMobile={isMobile}
 				history={history}
 				location={location}
 				match={match}
+				onNavigate={() => setMobileMenuOpen(false)}
 			/>
 		));
 	};
@@ -229,7 +231,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-has-space">
 									<ul className="c-nav">
-										{mapNavItems(getPrimaryNavigationItems())}
+										{mapNavItems(getPrimaryNavigationItems(), false)}
 									</ul>
 								</div>
 							</ToolbarItem>
@@ -238,7 +240,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-authentication">
 									<ul className="c-nav">
-										{mapNavItems(getSecondaryNavigationItems())}
+										{mapNavItems(getSecondaryNavigationItems(), false)}
 									</ul>
 								</div>
 							</ToolbarItem>
@@ -261,9 +263,11 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 			{isMobileMenuOpen ? (
 				<Container mode="horizontal">
 					<Container mode="vertical">
-						<ul className="c-nav-mobile">{mapNavItems(getPrimaryNavigationItems())}</ul>
 						<ul className="c-nav-mobile">
-							{mapNavItems(getSecondaryNavigationItems())}
+							{mapNavItems(getPrimaryNavigationItems(), true)}
+						</ul>
+						<ul className="c-nav-mobile">
+							{mapNavItems(getSecondaryNavigationItems(), true)}
 						</ul>
 					</Container>
 				</Container>
@@ -278,7 +282,7 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 							<ToolbarLeft>
 								<div className="c-toolbar__item">
 									<ul className="c-nav">
-										{mapNavItems(getPrimaryNavigationItems())}
+										{mapNavItems(getPrimaryNavigationItems(), false)}
 									</ul>
 								</div>
 							</ToolbarLeft>

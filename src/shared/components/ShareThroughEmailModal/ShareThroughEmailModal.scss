@@ -1,0 +1,7 @@
+@import '../../../styles/settings/variables';
+
+.c-share-through-email-modal__link {
+	@media (max-width: $g-bp2) {
+		max-width: calc(100vw - 190px);
+	}
+}

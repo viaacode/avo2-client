@@ -13,11 +13,12 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 
-import { ToastService } from '../../../shared/services';
 import { copyToClipboard } from '../../helpers';
 import { shareThroughEmail } from '../../helpers/share-through-email';
+import { ToastService } from '../../services';
 
 import { EmailTemplateType } from './share-through-email.types';
+import './ShareThroughEmailModal.scss';
 
 interface AddToCollectionModalProps {
 	modalTitle: string;
@@ -96,7 +97,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps> = ({
 				<Spacer margin="top-large">
 					<Box backgroundColor="gray" condensed>
 						<Flex wrap justify="between" align="baseline">
-							<FlexItem className="u-truncate">
+							<FlexItem className="u-truncate c-share-through-email-modal__link">
 								<a href={emailLinkHref}>{emailLinkHref}</a>
 							</FlexItem>
 							<FlexItem shrink>

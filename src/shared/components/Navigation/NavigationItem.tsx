@@ -13,8 +13,10 @@ export interface NavigationItemProps extends RouteComponentProps {
 	className: string;
 	exact: boolean;
 	showActive: boolean;
+	isMobile?: boolean;
 	areDropdownsOpen: BooleanDictionary;
 	setDropdownsOpen: (areDropdownsOpen: BooleanDictionary) => void;
+	onNavigate?: () => void;
 }
 
 export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
@@ -22,8 +24,10 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 	className,
 	exact,
 	showActive,
+	isMobile = false,
 	areDropdownsOpen,
 	setDropdownsOpen,
+	onNavigate = () => {},
 }) => {
 	const setDropdownOpen = (
 		label: string,
@@ -37,7 +41,7 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 	};
 
 	return (
-		<li key={item.key}>
+		<li key={item.key} className={isMobile ? 'c-nav-mobile__item' : ''} onClick={onNavigate}>
 			{!!item.location && !item.location.includes('//') && (
 				<NavLink
 					to={item.location}
@@ -45,8 +49,9 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 					activeClassName={showActive ? 'c-nav__item--active' : undefined}
 					exact={exact}
 				>
-					{item.icon && <Icon name={item.icon} />}
+					{item.icon && !isMobile && <Icon name={item.icon} />}
 					{item.label}
+					{item.icon && isMobile && <Icon name={item.icon} />}
 				</NavLink>
 			)}
 			{!!item.location && item.location.includes('//') && (
