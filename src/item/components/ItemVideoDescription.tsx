@@ -214,7 +214,9 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		<Grid className="c-item-video-description">
 			{showDescription ? (
 				<>
-					<Column size="2-7">{renderMedia()}</Column>
+					<Column size="2-7" className="c-video-column">
+						{renderMedia()}
+					</Column>
 					<Column size="2-5">{renderDescription()}</Column>
 				</>
 			) : (
