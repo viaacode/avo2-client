@@ -1,7 +1,7 @@
 import { EmailTemplateType } from '../components/ShareThroughEmailModal/share-through-email.types';
 
+import { CustomError } from './custom-error';
 import { getEnv } from './env';
-import { CustomError } from './error';
 
 export async function shareThroughEmail(
 	email: string,
