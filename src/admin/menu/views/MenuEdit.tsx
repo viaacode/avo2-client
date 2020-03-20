@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
+import { ApolloQueryResult } from 'apollo-boost';
 import { compact, get, startCase, uniq, without } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -20,13 +21,11 @@ import { Avo } from '@viaa/avo2-types';
 import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
-import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
+import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { ContentPickerType, PickerItem } from '../../shared/types';
 
-import { ApolloQueryResult } from 'apollo-boost';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
@@ -264,8 +263,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		if (key === 'content') {
 			setMenuForm({
 				...menuForm,
-				content_type: (value as PickerItem).type,
-				content_path: (value as PickerItem).value,
+				content_type: get(value as PickerItem, 'type'),
+				content_path: get(value as PickerItem, 'value'),
 			});
 		} else {
 			setMenuForm({

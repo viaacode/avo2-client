@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -40,11 +39,6 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import {
-	DELETE_COLLECTION,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
 import { ShareCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
@@ -58,11 +52,7 @@ import {
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
-import {
-	ApolloCacheManager,
-	BookmarksViewsPlaysService,
-	ToastService,
-} from '../../shared/services';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
 import './BundleDetail.scss';
@@ -95,11 +85,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [viewCountsById, setViewCountsById] = useState<{ [id: string]: number }>({});
-
-	// Mutations
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
 		trackEvents(
@@ -225,12 +210,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	const onDeleteBundle = async () => {
 		try {
-			await triggerCollectionDelete({
-				variables: {
-					id: bundleId,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			await CollectionService.deleteCollection(bundleId);
 			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
@@ -265,9 +245,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						bundle,
 						user,
 						COLLECTION_COPY,
-						COLLECTION_COPY_REGEX,
-						triggerCollectionInsert,
-						triggerCollectionFragmentsInsert
+						COLLECTION_COPY_REGEX
 					);
 					redirectToClientPage(
 						buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),

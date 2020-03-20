@@ -21,15 +21,15 @@ export class UserGroupService {
 		page: number,
 		sortColumn: string,
 		sortOrder: Avo.Search.OrderDirection,
-		query: string
+		where: any
 	): Promise<[UserGroup[], number]> {
 		let variables: any;
 		try {
 			variables = {
+				where,
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
 				orderBy: [{ [sortColumn]: sortOrder }],
-				queryText: `%${query}%`,
 			};
 			const response = await dataService.query({
 				variables,

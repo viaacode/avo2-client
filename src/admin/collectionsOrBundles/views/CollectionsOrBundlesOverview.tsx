@@ -102,8 +102,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t('Het ophalen van de collecties is mislukt')
-					: t('Het ophalen van de bundels is mislukt'),
+					? t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-collecties-is-mislukt'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-bundels-is-mislukt'
+					  ),
 			});
 		}
 	}, [setLoadingInfo, setCollections, setCollectionCount, tableState, isCollection, t]);
@@ -124,8 +128,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		if (!id) {
 			ToastService.danger(
 				isCollection
-					? t('Deze collectie heeft geen geldig id')
-					: t('Deze bundel heeft geen geldig id'),
+					? t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-collectie-heeft-geen-geldig-id'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
+					  ),
 				false
 			);
 			return;
@@ -141,8 +149,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		if (!id) {
 			ToastService.danger(
 				isCollection
-					? t('Deze collectie heeft geen geldig id')
-					: t('Deze bundel heeft geen geldig id'),
+					? t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-collectie-heeft-geen-geldig-id'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
+					  ),
 				false
 			);
 			return;
@@ -169,7 +181,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				return get(rowData, 'profile.usersByuserId.role.label', '-');
 
 			case 'is_public':
-				return rowData[columnId] ? t('Ja') : t('Nee');
+				return rowData[columnId]
+					? t('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
+					: t('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
 
 			case 'created_at':
 			case 'updated_at':
@@ -198,9 +212,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('Er bestaan nog geen collecties')}>
+			<ErrorView
+				message={t(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___er-bestaan-nog-geen-collecties'
+				)}
+			>
 				<p>
-					<Trans>Beschrijving wanneer er nog geen collecties zijn</Trans>
+					<Trans i18nKey="admin/collections-or-bundles/views/collections-or-bundles-overview___beschrijving-wanneer-er-nog-geen-collecties-zijn">
+						Beschrijving wanneer er nog geen collecties zijn
+					</Trans>
 				</p>
 			</ErrorView>
 		);
@@ -219,11 +239,17 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
 						renderTableCell(rowData, columnId as CollectionsOrBundlesOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoek op titel, auteur, rol, ...')}
+					searchTextPlaceholder={t(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___zoek-op-titel-auteur-rol'
+					)}
 					noContentMatchingFiltersMessage={
 						isCollection
-							? t('Er zijn geen collecties doe voldoen aan de opgegeven filters')
-							: t('Er zijn geen bundels doe voldoen aan de opgegeven filters')
+							? t(
+									'admin/collections-or-bundles/views/collections-or-bundles-overview___er-zijn-geen-collecties-doe-voldoen-aan-de-opgegeven-filters'
+							  )
+							: t(
+									'admin/collections-or-bundles/views/collections-or-bundles-overview___er-zijn-geen-bundels-doe-voldoen-aan-de-opgegeven-filters'
+							  )
 					}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
@@ -234,7 +260,17 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	};
 
 	return (
-		<AdminLayout pageTitle={isCollection ? t('Collecties') : t('Bundels')}>
+		<AdminLayout
+			pageTitle={
+				isCollection
+					? t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___collecties'
+					  )
+					: t(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___bundels'
+					  )
+			}
+		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">

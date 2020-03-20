@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
@@ -20,6 +19,7 @@ import {
 	IconName,
 	MenuContent,
 	Pagination,
+	Select,
 	Spacer,
 	Table,
 	TagList,
@@ -40,21 +40,19 @@ import {
 import { APP_PATH } from '../../constants';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import { buildLink, CustomError, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { useTableSort } from '../../shared/hooks';
 import { dataService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
-import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import {
-	DELETE_ASSIGNMENT,
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
 	GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID,
-	INSERT_ASSIGNMENT,
-	UPDATE_ASSIGNMENT,
 } from '../assignment.gql';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentColumn, AssignmentOverviewTableColumns } from '../assignment.types';
+import './AssignmentOverview.scss';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -81,12 +79,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	const [sortColumn, sortOrder, handleColumnClick] = useTableSort<
 		AssignmentOverviewTableColumns | 'created_at'
 	>('created_at');
-
-	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
-	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
-	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
 		PermissionService.hasPermissions(PermissionNames.EDIT_ASSIGNMENTS, user)
@@ -151,14 +143,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					'Failed to duplicate the assigment because the marked assigment is null'
 				);
 			}
-			await AssignmentService.duplicateAssignment(
-				newTitle,
-				assignment,
-				user,
-				triggerCollectionInsert,
-				triggerCollectionFragmentsInsert,
-				triggerAssignmentInsert
-			);
+			await AssignmentService.duplicateAssignment(newTitle, assignment, user);
 
 			refetchAssignments();
 
@@ -188,12 +173,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					is_archived: !assignment.is_archived,
 				};
 
-				if (
-					await AssignmentService.updateAssignment(
-						triggerAssignmentUpdate,
-						archivedAssigment
-					)
-				) {
+				if (await AssignmentService.updateAssignment(archivedAssigment)) {
 					refetchAssignments();
 					ToastService.success(
 						archivedAssigment.is_archived
@@ -235,7 +215,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				);
 				return;
 			}
-			await AssignmentService.deleteAssignment(triggerAssignmentDelete, assignmentId);
+			await AssignmentService.deleteAssignment(assignmentId);
 			refetchAssignments();
 			ToastService.success(
 				t('assignment/views/assignment-overview___de-opdracht-is-verwijdert')
@@ -310,6 +290,74 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		setMarkedAssignment(null);
 	};
 
+	const renderActions = (rowData: Avo.Assignment.Assignment, refetchAssignments: () => void) => {
+		return (
+			<ButtonToolbar>
+				<Dropdown
+					isOpen={dropdownOpenForAssignmentId === rowData.id}
+					menuWidth="fit-content"
+					onClose={() => setDropdownOpenForAssignmentId(null)}
+					onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button icon="more-horizontal" type="borderless" />
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent
+							menuItems={[
+								{
+									icon: 'edit2' as IconName,
+									id: 'edit',
+									label: t('assignment/views/assignment-overview___bewerk'),
+								},
+								{
+									icon: 'archive' as IconName,
+									id: 'archive',
+									label:
+										activeView === 'archived_assignments'
+											? t(
+													'assignment/views/assignment-overview___dearchiveer'
+											  )
+											: t('assignment/views/assignment-overview___archiveer'),
+								},
+								{
+									icon: 'copy' as IconName,
+									id: 'duplicate',
+									label: t('assignment/views/assignment-overview___dupliceer'),
+								},
+								{
+									icon: 'delete' as IconName,
+									id: 'delete',
+									label: t('assignment/views/assignment-overview___verwijder'),
+								},
+							]}
+							onClick={(actionId: ReactText) =>
+								handleExtraOptionsItemClicked(
+									actionId.toString() as ExtraAssignmentOptions,
+									rowData,
+									refetchAssignments
+								)
+							}
+						/>
+					</DropdownContent>
+				</Dropdown>
+
+				{!isMobileWidth() && (
+					<Button
+						icon="chevron-right"
+						onClick={() =>
+							navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
+								id: rowData.id,
+							})
+						}
+						type="borderless"
+					/>
+				)}
+			</ButtonToolbar>
+		);
+	};
+
 	const renderCell = (
 		rowData: Avo.Assignment.Assignment,
 		colKey: AssignmentOverviewTableColumns,
@@ -335,8 +383,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 						</div>
 					</Flex>
 				);
+
 			case 'assignment_type':
 				return `${capitalize(cellData)}`;
+
 			case 'assignment_assignment_tags':
 				const assignmentTags: Avo.Assignment.Tag[] = get(cellData, 'assignment_tag', []);
 				const tagOptions = assignmentTags.map((tag: Avo.Assignment.Tag) => ({
@@ -345,88 +395,23 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					color: tag.color_override || tag.enum_color.label,
 				}));
 				return <TagList tags={tagOptions} swatches closable={false} bordered={false} />;
+
 			case 'class_room':
 				return cellData;
+
 			case 'deadline_at':
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+
 			case 'assignment_responses':
 				return (
 					<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: rowData.id })}>
 						{(cellData || []).length}
 					</Link>
 				);
-			case 'actions':
-				return (
-					<ButtonToolbar>
-						<Dropdown
-							isOpen={dropdownOpenForAssignmentId === rowData.id}
-							menuWidth="fit-content"
-							onClose={() => setDropdownOpenForAssignmentId(null)}
-							onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
-							placement="bottom-end"
-						>
-							<DropdownButton>
-								<Button icon="more-horizontal" type="borderless" />
-							</DropdownButton>
-							<DropdownContent>
-								<MenuContent
-									menuItems={[
-										{
-											icon: 'edit2' as IconName,
-											id: 'edit',
-											label: t(
-												'assignment/views/assignment-overview___bewerk'
-											),
-										},
-										{
-											icon: 'archive' as IconName,
-											id: 'archive',
-											label:
-												activeView === 'archived_assignments'
-													? t(
-															'assignment/views/assignment-overview___dearchiveer'
-													  )
-													: t(
-															'assignment/views/assignment-overview___archiveer'
-													  ),
-										},
-										{
-											icon: 'copy' as IconName,
-											id: 'duplicate',
-											label: t(
-												'assignment/views/assignment-overview___dupliceer'
-											),
-										},
-										{
-											icon: 'delete' as IconName,
-											id: 'delete',
-											label: t(
-												'assignment/views/assignment-overview___verwijder'
-											),
-										},
-									]}
-									onClick={(actionId: ReactText) =>
-										handleExtraOptionsItemClicked(
-											actionId.toString() as ExtraAssignmentOptions,
-											rowData,
-											refetchAssignments
-										)
-									}
-								/>
-							</DropdownContent>
-						</Dropdown>
 
-						<Button
-							icon="chevron-right"
-							onClick={() =>
-								navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
-									id: rowData.id,
-								})
-							}
-							type="borderless"
-						/>
-					</ButtonToolbar>
-				);
+			case 'actions':
+				return renderActions(rowData, refetchAssignments);
+
 			default:
 				return cellData;
 		}
@@ -435,15 +420,23 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	const columns: AssignmentColumn[] = [
 		{ id: 'title', label: t('assignment/views/assignment-overview___titel'), sortable: true },
 		// { id: 'assignment_type', label: t('assignment/views/assignment-overview___type'), sortable: true }, // https://district01.atlassian.net/browse/AVO2-421
-		{
-			id: 'assignment_assignment_tags',
-			label: t('assignment/views/assignment-overview___vak-of-project'),
-		},
-		{
-			id: 'class_room',
-			label: t('assignment/views/assignment-overview___klas'),
-			sortable: true,
-		},
+		...(isMobileWidth()
+			? []
+			: [
+					{
+						id: 'assignment_assignment_tags',
+						label: t('assignment/views/assignment-overview___vak-of-project'),
+					},
+			  ]),
+		...(isMobileWidth()
+			? []
+			: [
+					{
+						id: 'class_room',
+						label: t('assignment/views/assignment-overview___klas'),
+						sortable: true,
+					},
+			  ]),
 		{
 			id: 'deadline_at',
 			label: t('assignment/views/assignment-overview___deadline'),
@@ -451,7 +444,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		},
 		// { id: 'assignment_responses', label: t('assignment/views/assignment-overview___indieningen') }, // https://district01.atlassian.net/browse/AVO2-421
 		{ id: 'actions', label: '' },
-	];
+	] as AssignmentColumn[];
 
 	const renderAssignmentsTable = (
 		data: {
@@ -546,12 +539,34 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		);
 	};
 
-	return (
-		<Container mode="vertical" size="small">
-			<Container mode="horizontal">
-				<Toolbar>
-					<ToolbarLeft>
-						<ToolbarItem>
+	const renderHeader = () => {
+		return (
+			<Toolbar className="m-assignment-overview__header-toolbar">
+				<ToolbarLeft>
+					<ToolbarItem>
+						{isMobileWidth() ? (
+							<Select
+								options={[
+									{
+										label: t(
+											'assignment/views/assignment-overview___opdrachten'
+										),
+										value: 'assignments',
+									},
+									{
+										label: t(
+											'assignment/views/assignment-overview___gearchiveerde-opdrachten'
+										),
+										value: 'archived_assignments',
+									},
+								]}
+								value={activeView}
+								onChange={activeViewId =>
+									setActiveView(activeViewId as Avo.Assignment.View)
+								}
+								className="c-assignment-overview__archive-select"
+							/>
+						) : (
 							<ButtonGroup>
 								<Button
 									type="secondary"
@@ -568,22 +583,30 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 									onClick={() => setActiveView('archived_assignments')}
 								/>
 							</ButtonGroup>
-						</ToolbarItem>
-					</ToolbarLeft>
-					<ToolbarRight>
-						<ToolbarItem>
-							<Form type="inline">
-								<FormGroup>
-									<TextInput
-										icon="filter"
-										value={filterString}
-										onChange={setFilterString}
-									/>
-								</FormGroup>
-							</Form>
-						</ToolbarItem>
-					</ToolbarRight>
-				</Toolbar>
+						)}
+					</ToolbarItem>
+				</ToolbarLeft>
+				<ToolbarRight>
+					<ToolbarItem>
+						<Form type="inline">
+							<FormGroup>
+								<TextInput
+									icon="filter"
+									value={filterString}
+									onChange={setFilterString}
+								/>
+							</FormGroup>
+						</Form>
+					</ToolbarItem>
+				</ToolbarRight>
+			</Toolbar>
+		);
+	};
+
+	return (
+		<Container mode="vertical" size="small">
+			<Container mode="horizontal">
+				{renderHeader()}
 
 				{canEditAssignments !== null && (
 					<DataQueryComponent

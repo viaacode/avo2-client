@@ -28,15 +28,15 @@ export class PermissionGroupService {
 		page: number,
 		sortColumn: PermissionGroupOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		queryText: string
+		where: any
 	): Promise<[PermissionGroup[], number]> {
 		let variables: any;
 		try {
 			variables = {
+				where,
 				offset: ITEMS_PER_PAGE * page,
 				limit: ITEMS_PER_PAGE,
 				orderBy: [{ [sortColumn]: sortOrder }],
-				queryText: `%${queryText}%`,
 			};
 			const response = await dataService.query({
 				variables,
@@ -256,7 +256,11 @@ export class PermissionGroupService {
 					query: 'DELETE_PERMISSION_GROUP',
 				})
 			);
-			ToastService.danger(i18n.t('Het verwijderen van de permissie groep is mislukt'));
+			ToastService.danger(
+				i18n.t(
+					'admin/permission-groups/permission-group___het-verwijderen-van-de-permissie-groep-is-mislukt'
+				)
+			);
 		}
 	}
 

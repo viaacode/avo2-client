@@ -81,6 +81,10 @@ export const GET_COLLECTION_BY_ID = gql`
 			lom_keywords
 			lom_languages
 			lom_typicalagerange
+			collection_labels {
+				label
+				id
+			}
 		}
 	}
 `;
@@ -275,6 +279,24 @@ export const GET_BUNDLES_CONTAINING_COLLECTION = gql`
 		) {
 			id
 			title
+		}
+	}
+`;
+
+export const INSERT_COLLECTION_LABELS = gql`
+	mutation insertCollectionLabels($objects: [app_collection_labels_insert_input!]!) {
+		insert_app_collection_labels(objects: $objects) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_COLLECTION_LABELS = gql`
+	mutation deleteCollectionLabels($labels: [String!]!, $collectionId: uuid!) {
+		delete_app_collection_labels(
+			where: { label: { _in: $labels }, collection_uuid: { _eq: $collectionId } }
+		) {
+			affected_rows
 		}
 	}
 `;

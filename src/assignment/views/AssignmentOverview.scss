@@ -1,0 +1,18 @@
+.c-assignment-overview__archive-select {
+	width: 100%;
+}
+
+.m-assignment-overview__header-toolbar {
+	flex-direction: column;
+	align-items: stretch;
+	height: 12rem;
+
+	.c-toolbar__left,
+	.c-toolbar__right {
+		z-index: initial;
+	}
+
+	.c-toolbar__item {
+		width: 100%;
+	}
+}

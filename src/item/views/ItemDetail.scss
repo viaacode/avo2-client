@@ -1,3 +1,5 @@
+@import '../../styles/settings/variables';
+
 .c-item-view__main {
 	.c-button-toolbar {
 		.c-button + .c-button {
@@ -13,17 +15,9 @@
 		}
 	}
 
-	@media (max-width: 600px) {
-		.c-video-player {
-			margin-left: -1.2rem;
-			width: calc(100% + 2.4rem);
-		}
-	}
-
-	@media (min-width: 300px) {
-		.c-table [class^='o-grid-col'] {
-			flex-shrink: 0;
-			flex-basis: 0;
+	@media (max-width: $g-bp2) {
+		&.o-container-vertical {
+			padding-top: 0;
 		}
 	}
 }

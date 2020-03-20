@@ -110,15 +110,21 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 	}, [checkIfTourExistsForCurrentPage]);
 
 	const markTourAsSeen = debounce(
-		() => {
-			if (!tour || !routeId) {
-				return;
-			}
-			InteractiveTourService.setInteractiveTourSeen(
-				routeId,
-				(user.profile as Avo.User.Profile).id,
-				(tour as TourInfo).id
-			).catch(err => {
+		async () => {
+			try {
+				if (!tour || !routeId) {
+					return;
+				}
+				await InteractiveTourService.setInteractiveTourSeen(
+					routeId,
+					(user.profile as Avo.User.Profile).id,
+					(tour as TourInfo).id
+				);
+				setTour({
+					...tour,
+					seen: true,
+				});
+			} catch (err) {
 				console.error(
 					new CustomError('Failed to store interactive tour seen status', err, {
 						routeId,
@@ -126,11 +132,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 						tourId: (tour as TourInfo).id,
 					})
 				);
-			});
-			setTour({
-				...tour,
-				seen: true,
-			});
+			}
 		},
 		100,
 		{ trailing: true }
@@ -181,6 +183,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 						onClick={() => {
 							setTour({ ...tour, seen: false });
 						}}
+						className="c-interactive-tour__button"
 					/>
 				)}
 			</>

@@ -81,7 +81,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 				console.error('Failed to fetch content labels by content type', err, {
 					contentType: formState.contentType,
 				});
-				ToastService.danger(t('Het ophalen van de content labels is mislukt'), false);
+				ToastService.danger(
+					t(
+						'admin/content/components/content-edit-form/content-edit-form___het-ophalen-van-de-content-labels-is-mislukt'
+					),
+					false
+				);
 			});
 	}, [formState.contentType, setContentTypeLabels, t]);
 
@@ -130,7 +135,12 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 			onChange('labels', [...formState.labels, newLabel]);
 		} catch (err) {
 			console.error(new CustomError('Failed to create label', err, { labelToBeCreated }));
-			ToastService.danger(t('Het aanmaken van het label is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/content/components/content-edit-form/content-edit-form___het-aanmaken-van-het-label-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -243,14 +253,22 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								</FormGroup>
 							</Column>
 							<Column size="12">
-								<FormGroup label={t('Labels')}>
+								<FormGroup
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___labels'
+									)}
+								>
 									<TagsInput
 										value={mapLabelsToTags(formState.labels)}
 										options={mapLabelsToTags(contentTypeLabels)}
 										placeholder={
 											!!formState.contentType
-												? t('Kies of maak een label (optioneel)')
-												: t('Kies eerst het type pagina')
+												? t(
+														'admin/content/components/content-edit-form/content-edit-form___kies-of-maak-een-label-optioneel'
+												  )
+												: t(
+														'admin/content/components/content-edit-form/content-edit-form___kies-eerst-het-type-pagina'
+												  )
 										}
 										allowMulti
 										allowCreate
@@ -312,9 +330,15 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 						</Grid>
 					</Form>
 					<DeleteObjectModal
-						title={t('Maak label aan')}
-						body={t('Weet je zeker dat je een nieuw label wil aanmaken?')}
-						confirmLabel={t('Aanmaken')}
+						title={t(
+							'admin/content/components/content-edit-form/content-edit-form___maak-label-aan'
+						)}
+						body={t(
+							'admin/content/components/content-edit-form/content-edit-form___weet-je-zeker-dat-je-een-nieuw-label-wil-aanmaken'
+						)}
+						confirmLabel={t(
+							'admin/content/components/content-edit-form/content-edit-form___aanmaken'
+						)}
 						isOpen={isConfirmCreateModalOpen}
 						onClose={() => setIsConfirmCreateModalOpen(false)}
 						deleteObjectCallback={handleLabelCreateConfirmed}

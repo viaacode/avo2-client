@@ -1,6 +1,6 @@
 {
 	"name": "avo2-client",
-	"version": "0.30.0",
+	"version": "0.31.0",
 	"private": true,
 	"scripts": {
 		"prestart": "npm run env",
@@ -28,6 +28,7 @@
 		"@viaa/avo2-components": "^1.33.0",
 		"@viaa/avo2-types": "^2.13.0",
 		"apollo-boost": "^0.4.3",
+		"capture-stack-trace": "^1.0.1",
 		"classnames": "^2.2.6",
 		"date-fns": "^2.0.0-beta.1",
 		"glob": "^7.1.6",
@@ -104,6 +105,9 @@
 		"tslint-config-prettier": "^1.18.0",
 		"tslint-plugin-prettier": "^2.0.1",
 		"typescript": "3.5.3"
+	},
+	"peerDependencies": {
+		"avo2-proxy-server": "0.21.0"
 	},
 	"browserslist": {
 		"production": [

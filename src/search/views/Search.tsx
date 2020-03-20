@@ -358,6 +358,7 @@ const Search: FunctionComponent<SearchProps> = ({
 									onOpen={() => setIsOptionsMenuOpen(true)}
 									onClose={() => setIsOptionsMenuOpen(false)}
 									placement="bottom-end"
+									triggerClassName="c-extra-options"
 								>
 									<DropdownButton>
 										<Button type="tertiary" icon="more-horizontal" />

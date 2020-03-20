@@ -89,7 +89,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van de permissie groep is mislukt'),
+					message: t(
+						'admin/permission-groups/views/permission-group-edit___het-ophalen-van-de-permissie-groep-is-mislukt'
+					),
 				});
 			}
 		}
@@ -99,7 +101,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 		try {
 			setAllPermissions(await PermissionGroupService.fetchAllPermissions());
 		} catch (err) {
-			ToastService.danger(t('Het ophalen van alle permissies is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/permission-groups/views/permission-group-edit___het-ophalen-van-alle-permissies-is-mislukt'
+				),
+				false
+			);
 		}
 	}, [setAllPermissions, t]);
 
@@ -127,7 +134,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 	const getFormErrors = (): PermissionGroupEditFormErrorState | null => {
 		if (!permissionGroup || !permissionGroup.label) {
 			return {
-				label: t('Een label is verplicht'),
+				label: t(
+					'admin/permission-groups/views/permission-group-edit___een-label-is-verplicht'
+				),
 			};
 		}
 		return null;
@@ -150,12 +159,22 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			return;
 		}
 		if (isNil(selectedPermissionId)) {
-			ToastService.danger(t('Deze permissie zit reeds in de groep'), false);
+			ToastService.danger(
+				t(
+					'admin/permission-groups/views/permission-group-edit___deze-permissie-zit-reeds-in-de-groep'
+				),
+				false
+			);
 			return;
 		}
 		const selectedPermission = allPermissions.find(p => String(p.id) === selectedPermissionId);
 		if (!selectedPermission) {
-			ToastService.danger(t('De geselecteerde permissie kon niet worden gevonden'), false);
+			ToastService.danger(
+				t(
+					'admin/permission-groups/views/permission-group-edit___de-geselecteerde-permissie-kon-niet-worden-gevonden'
+				),
+				false
+			);
 			return;
 		}
 		setPermissionGroup({
@@ -170,14 +189,19 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 			const errors = getFormErrors();
 			setFormErrors(errors || {});
 			if (errors) {
-				ToastService.danger(t('De invoer is ongeldig'), false);
+				ToastService.danger(
+					t(
+						'admin/permission-groups/views/permission-group-edit___de-invoer-is-ongeldig'
+					),
+					false
+				);
 				return;
 			}
 
 			if (!initialPermissionGroup || !permissionGroup) {
 				ToastService.danger(
 					t(
-						'Het opslaan van de permissie groep is mislukt omdat de permissie groep nog niet is geladen'
+						'admin/permission-groups/views/permission-group-edit___het-opslaan-van-de-permissie-groep-is-mislukt-omdat-de-permissie-groep-nog-niet-is-geladen'
 					),
 					false
 				);
@@ -216,7 +240,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 				permissionGroupId
 			);
 
-			ToastService.success(t('De permissie groep is opgeslagen'), false);
+			ToastService.success(
+				t(
+					'admin/permission-groups/views/permission-group-edit___de-permissie-groep-is-opgeslagen'
+				),
+				false
+			);
 			if (isCreatePage) {
 				redirectToClientPage(
 					buildLink(ADMIN_PATH.PERMISSION_GROUP_EDIT, { id: permissionGroupId }),
@@ -230,7 +259,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 					initialPermissionGroup,
 				})
 			);
-			ToastService.danger(t('Het opslaan van de permissiegroep is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/permission-groups/views/permission-group-edit___het-opslaan-van-de-permissiegroep-is-mislukt'
+				),
+				false
+			);
 		}
 		setIsSaving(false);
 	};
@@ -261,8 +295,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 							icon="delete"
 							onClick={() => deletePermission(rowData.id)}
 							size="small"
-							ariaLabel={t('Verwijder')}
-							title={t('Verwijder')}
+							ariaLabel={t(
+								'admin/permission-groups/views/permission-group-edit___verwijder'
+							)}
+							title={t(
+								'admin/permission-groups/views/permission-group-edit___verwijder'
+							)}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -283,7 +321,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 					<Spacer margin="bottom-extra-large">
 						<Box backgroundColor="gray">
 							<Form>
-								<FormGroup label={t('Label')} error={formErrors.label}>
+								<FormGroup
+									label={t(
+										'admin/permission-groups/views/permission-group-edit___label'
+									)}
+									error={formErrors.label}
+								>
 									<TextInput
 										value={permissionGroup.label || ''}
 										onChange={newLabel =>
@@ -294,7 +337,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 										}
 									/>
 								</FormGroup>
-								<FormGroup label={t('Beschrijving')} error={formErrors.description}>
+								<FormGroup
+									label={t(
+										'admin/permission-groups/views/permission-group-edit___beschrijving'
+									)}
+									error={formErrors.description}
+								>
 									<TextInput
 										value={permissionGroup.description || ''}
 										onChange={newDescription =>
@@ -317,10 +365,16 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 					<PanelBody>
 						<Spacer margin="bottom-large">
 							<Form type="inline">
-								<FormGroup label={t('Voeg een permissie toe aan deze groep: ')}>
+								<FormGroup
+									label={t(
+										'admin/permission-groups/views/permission-group-edit___voeg-een-permissie-toe-aan-deze-groep'
+									)}
+								>
 									<Select
 										options={getAllPermissions()}
-										placeholder={t('Kies een permissie')}
+										placeholder={t(
+											'admin/permission-groups/views/permission-group-edit___kies-een-permissie'
+										)}
 										value={selectedPermissionId || undefined}
 										onChange={setSelectedPermissionId}
 										loading={!allPermissions}
@@ -328,13 +382,17 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 								</FormGroup>
 								<FormGroup>
 									<Button
-										label={t('Toevoegen')}
+										label={t(
+											'admin/permission-groups/views/permission-group-edit___toevoegen'
+										)}
 										onClick={handleAddPermission}
 										type="primary"
 										disabled={isNil(selectedPermissionId)}
 										title={
 											isNil(selectedPermissionId)
-												? t('Kies eerst een permissie uit de lijst')
+												? t(
+														'admin/permission-groups/views/permission-group-edit___kies-eerst-een-permissie-uit-de-lijst'
+												  )
 												: ''
 										}
 									/>
@@ -344,7 +402,9 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 						<Table
 							columns={PERMISSIONS_TABLE_COLS}
 							data={permissionGroup.permissions}
-							emptyStateMessage={t('Deze groep bevat nog geen permissies')}
+							emptyStateMessage={t(
+								'admin/permission-groups/views/permission-group-edit___deze-groep-bevat-nog-geen-permissies'
+							)}
 							onColumnClick={columId =>
 								handleSortClick(columId as PermissionsTableCols)
 							}
@@ -364,15 +424,28 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 
 	// Render
 	const renderPage = () => (
-		<AdminLayout showBackButton pageTitle={t('Permissie groep aanpassen')}>
+		<AdminLayout
+			showBackButton
+			pageTitle={t(
+				'admin/permission-groups/views/permission-group-edit___permissie-groep-aanpassen'
+			)}
+		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">{renderEditPage()}</Container>
 				</Container>
 			</AdminLayoutBody>
 			<AdminLayoutActions>
-				<Button label={t('Annuleer')} onClick={navigateBack} type="tertiary" />
-				<Button disabled={isSaving} label={t('Opslaan')} onClick={handleSave} />
+				<Button
+					label={t('admin/permission-groups/views/permission-group-edit___annuleer')}
+					onClick={navigateBack}
+					type="tertiary"
+				/>
+				<Button
+					disabled={isSaving}
+					label={t('admin/permission-groups/views/permission-group-edit___opslaan')}
+					onClick={handleSave}
+				/>
 			</AdminLayoutActions>
 		</AdminLayout>
 	);

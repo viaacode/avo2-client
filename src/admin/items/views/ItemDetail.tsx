@@ -56,7 +56,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de item info is mislukt'),
+				message: t(
+					'admin/items/views/item-detail___het-ophalen-van-de-item-info-is-mislukt'
+				),
 			});
 		}
 	}, [setItem, setLoadingInfo, t, match.params.id]);
@@ -80,7 +82,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			}
 			await ItemsService.setItemPublishedState(item.uid, !item.is_published);
 			ToastService.success(
-				item.is_published ? t('Het item is gepubliceerd') : t('Het item is gedepubliceerd')
+				item.is_published
+					? t('admin/items/views/item-detail___het-item-is-gepubliceerd')
+					: t('admin/items/views/item-detail___het-item-is-gedepubliceerd')
 			);
 			setItem({
 				...item,
@@ -90,13 +94,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			console.error(
 				new CustomError('Failed to toggle is_published state for item', err, { item })
 			);
-			ToastService.danger(t('Het (de)publiceren van het item is mislukt'));
+			ToastService.danger(
+				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt')
+			);
 		}
 	};
 
 	const navigateToItemDetail = () => {
 		if (!item) {
-			ToastService.danger(t('Dit item heeft geen geldig pid'), false);
+			ToastService.danger(
+				t('admin/items/views/item-detail___dit-item-heeft-geen-geldig-pid'),
+				false
+			);
 			return;
 		}
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: item.external_id });
@@ -119,7 +128,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 						<tbody>
 							<tr>
 								<th>
-									<Trans>Cover Afbeelding</Trans>
+									<Trans i18nKey="admin/items/views/item-detail___cover-afbeelding">
+										Cover Afbeelding
+									</Trans>
 								</th>
 								<td>
 									<Container size="medium">
@@ -131,47 +142,83 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								</td>
 							</tr>
 							{renderSimpleDetailRows(item, [
-								['uid', t('AvO UUID')],
-								['external_id', t('PID')],
-								['title', t('Titel')],
-								['description', t('Beschrijving')],
-								['type.label', t('Type')],
-								['series', t('Reeks')],
-								['organisation.name', t('CP')],
-								['duration', t('Lengte')],
-								['is_published', t('Pubiek')],
-								['is_deleted', t('Verwijderd')],
+								['uid', t('admin/items/views/item-detail___av-o-uuid')],
+								['external_id', t('admin/items/views/item-detail___pid')],
+								['title', t('admin/items/views/item-detail___titel')],
+								['description', t('admin/items/views/item-detail___beschrijving')],
+								['type.label', t('admin/items/views/item-detail___type')],
+								['series', t('admin/items/views/item-detail___reeks')],
+								['organisation.name', t('admin/items/views/item-detail___cp')],
+								['duration', t('admin/items/views/item-detail___lengte')],
+								['is_published', t('admin/items/views/item-detail___pubiek')],
+								['is_deleted', t('admin/items/views/item-detail___verwijderd')],
 							])}
 							{renderDateDetailRows(item, [
-								['created_at', t('Aangemaakt op')],
-								['updated_at', t('Aangepast op')],
-								['issued', t('Uitgegeven op')],
-								['published_at', t('Gepubliceert op')],
-								['publish_at', t('Te publiceren op')],
-								['depublish_at', t('Te depubliceren op')],
-								['expiry_date', t('Expiratie datum')],
+								['created_at', t('admin/items/views/item-detail___aangemaakt-op')],
+								['updated_at', t('admin/items/views/item-detail___aangepast-op')],
+								['issued', t('admin/items/views/item-detail___uitgegeven-op')],
+								[
+									'published_at',
+									t('admin/items/views/item-detail___gepubliceert-op'),
+								],
+								[
+									'publish_at',
+									t('admin/items/views/item-detail___te-publiceren-op'),
+								],
+								[
+									'depublish_at',
+									t('admin/items/views/item-detail___te-depubliceren-op'),
+								],
+								[
+									'expiry_date',
+									t('admin/items/views/item-detail___expiratie-datum'),
+								],
 							])}
 							{renderMultiOptionDetailRows(item, [
-								['lom_classification', t('Vakken')],
-								['lom_context', t('Opleidingniveaus')],
-								['lom_intendedenduserrole', t('Bedoeld voor')],
-								['lom_keywords', t('Trefwoorden')],
-								['lom_languages', t('Talen')],
-								['lom_typicalagerange', t('Leeftijdsgroepen')],
+								['lom_classification', t('admin/items/views/item-detail___vakken')],
+								[
+									'lom_context',
+									t('admin/items/views/item-detail___opleidingniveaus'),
+								],
+								[
+									'lom_intendedenduserrole',
+									t('admin/items/views/item-detail___bedoeld-voor'),
+								],
+								['lom_keywords', t('admin/items/views/item-detail___trefwoorden')],
+								['lom_languages', t('admin/items/views/item-detail___talen')],
+								[
+									'lom_typicalagerange',
+									t('admin/items/views/item-detail___leeftijdsgroepen'),
+								],
 							])}
 							{renderSimpleDetailRows(item, [
-								['view_counts_aggregate.aggregate.count', t('Views')],
+								[
+									'view_counts_aggregate.aggregate.count',
+									t('admin/items/views/item-detail___views'),
+								],
 							])}
 						</tbody>
 					</Table>
 					<DeleteObjectModal
-						title={item.is_published ? t('Depubliceren') : t('Publiceren')}
+						title={
+							item.is_published
+								? t('admin/items/views/item-detail___depubliceren')
+								: t('admin/items/views/item-detail___publiceren')
+						}
 						body={
 							item.is_published
-								? t('Weet je zeker dat je dit item wil depubliceren?')
-								: t('Weet je zeker dat je dit item wil publiceren?')
+								? t(
+										'admin/items/views/item-detail___weet-je-zeker-dat-je-dit-item-wil-depubliceren'
+								  )
+								: t(
+										'admin/items/views/item-detail___weet-je-zeker-dat-je-dit-item-wil-publiceren'
+								  )
 						}
-						confirmLabel={item.is_published ? t('Depubliceren') : 'Publiceren'}
+						confirmLabel={
+							item.is_published
+								? t('admin/items/views/item-detail___depubliceren')
+								: 'Publiceren'
+						}
 						isOpen={isConfirmPublishModalOpen}
 						onClose={() => setIsConfirmPublishModalOpen(false)}
 						deleteObjectCallback={toggleItemPublishedState}
@@ -184,16 +231,26 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const renderItemDetailPage = () => (
 		<AdminLayout showBackButton>
 			<AdminLayoutHeader>
-				<Header category="audio" title={t('Item details')} showMetaData={false}>
+				<Header
+					category="audio"
+					title={t('admin/items/views/item-detail___item-details')}
+					showMetaData={false}
+				>
 					<HeaderButtons>
 						{!!item && (
 							<ButtonToolbar>
 								<Button
-									label={item.is_published ? t('Depubliceren') : t('Publiceren')}
+									label={
+										item.is_published
+											? t('admin/items/views/item-detail___depubliceren')
+											: t('admin/items/views/item-detail___publiceren')
+									}
 									onClick={() => setIsConfirmPublishModalOpen(true)}
 								/>
 								<Button
-									label={t('Bekijk item in de website')}
+									label={t(
+										'admin/items/views/item-detail___bekijk-item-in-de-website'
+									)}
 									onClick={navigateToItemDetail}
 								/>
 							</ButtonToolbar>

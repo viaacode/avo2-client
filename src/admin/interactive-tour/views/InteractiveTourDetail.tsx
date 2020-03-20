@@ -58,7 +58,9 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de interactive tour is mislukt'),
+				message: t(
+					'admin/interactive-tour/views/interactive-tour-detail___het-ophalen-van-de-interactive-tour-is-mislukt'
+				),
 			});
 		}
 	}, [setInteractiveTour, setLoadingInfo, t, match.params.id]);
@@ -85,17 +87,31 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 						{ interactiveTour }
 					)
 				);
-				ToastService.danger(t('Het verwijderen van de interactive tour is mislukt'));
+				ToastService.danger(
+					t(
+						'admin/interactive-tour/views/interactive-tour-detail___het-verwijderen-van-de-interactive-tour-is-mislukt'
+					)
+				);
 				return;
 			}
 			await InteractiveTourService.deleteInteractiveTour(interactiveTour.id);
-			ToastService.success(t('De interactive tour is verwijdert'), false);
+			ToastService.success(
+				t(
+					'admin/interactive-tour/views/interactive-tour-detail___de-interactive-tour-is-verwijdert'
+				),
+				false
+			);
 			redirectToClientPage(ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW, history);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete interactive tour', err, { interactiveTour })
 			);
-			ToastService.danger(t('Het verwijderen van de interactive tour is mislukt'), false);
+			ToastService.danger(
+				t(
+					'admin/interactive-tour/views/interactive-tour-detail___het-verwijderen-van-de-interactive-tour-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -114,14 +130,33 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 					<Spacer margin="bottom-extra-large">
 						<Table horizontal variant="invisible" className="c-table_detail-page">
 							<tbody>
-								{renderSimpleDetailRows(interactiveTour, [['name', t('Naam')]])}
+								{renderSimpleDetailRows(interactiveTour, [
+									[
+										'name',
+										t(
+											'admin/interactive-tour/views/interactive-tour-detail___naam'
+										),
+									],
+								])}
 								{renderDetailRow(
 									get(APP_PATH, [interactiveTour.page_id, 'route'], '-'),
-									t('Pagina')
+									t(
+										'admin/interactive-tour/views/interactive-tour-detail___pagina'
+									)
 								)}
 								{renderDateDetailRows(interactiveTour, [
-									['created_at', t('Aangemaakt op')],
-									['updated_at', t('Aangepast op')],
+									[
+										'created_at',
+										t(
+											'admin/interactive-tour/views/interactive-tour-detail___aangemaakt-op'
+										),
+									],
+									[
+										'updated_at',
+										t(
+											'admin/interactive-tour/views/interactive-tour-detail___aangepast-op'
+										),
+									],
 								])}
 							</tbody>
 						</Table>
@@ -134,12 +169,20 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 	const renderUserDetailPage = () => (
 		<AdminLayout showBackButton>
 			<AdminLayoutHeader>
-				<Header category="audio" title={t('Interactive tour details')} showMetaData={false}>
+				<Header
+					category="audio"
+					title={t(
+						'admin/interactive-tour/views/interactive-tour-detail___interactive-tour-details'
+					)}
+					showMetaData={false}
+				>
 					<HeaderButtons>
 						<ButtonToolbar>
 							<Button
 								type="primary"
-								label={t('Bewerk')}
+								label={t(
+									'admin/interactive-tour/views/interactive-tour-detail___bewerk'
+								)}
 								onClick={() => {
 									redirectToClientPage(
 										buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
@@ -151,7 +194,9 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 							/>
 							<Button
 								type="danger"
-								label={t('Verwijderen')}
+								label={t(
+									'admin/interactive-tour/views/interactive-tour-detail___verwijderen'
+								)}
 								onClick={() => setIsConfirmModalOpen(true)}
 							/>
 						</ButtonToolbar>

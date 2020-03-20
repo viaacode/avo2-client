@@ -31,35 +31,55 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 };
 
 export const USER_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
-	{ id: 'title', label: i18n.t('Title'), sortable: true },
-	{ id: 'author_first_name', label: i18n.t('Auteur voornaam'), sortable: true },
-	{ id: 'author_last_name', label: i18n.t('Auteur achternaam'), sortable: true },
+	{
+		id: 'title',
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___title'),
+		sortable: true,
+	},
+	{
+		id: 'author_first_name',
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-voornaam'),
+		sortable: true,
+	},
+	{
+		id: 'author_last_name',
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-achternaam'),
+		sortable: true,
+	},
 	{
 		id: 'created_at',
-		label: i18n.t('Aangemaakt op'),
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 		filterProps: {},
 	},
 	{
 		id: 'updated_at',
-		label: i18n.t('Aangepast op'),
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 		filterProps: {},
 	},
 	{
 		id: 'is_public',
-		label: i18n.t('Publiek'),
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___publiek'),
 		sortable: true,
 		filterType: 'BooleanCheckboxDropdown',
 	},
-	{ id: 'author_role', label: i18n.t('Auteur rol'), sortable: true },
-	{ id: 'views', label: i18n.t('Bekeken'), sortable: true },
-	// { id: 'bookmarks', label: i18n.t('Gebookmarkt'), sortable: true },
-	// { id: 'in_bundles', label: i18n.t('In Bundel'), sortable: true },
-	// { id: 'subjects', label: i18n.t('Vakken'), sortable: true },
-	// { id: 'education_levels', label: i18n.t('Opleidingsniveaus'), sortable: true },
-	// { id: 'labels', label: i18n.t('Labels'), sortable: true },
+	{
+		id: 'author_role',
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
+		sortable: true,
+	},
+	{
+		id: 'views',
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+		sortable: true,
+	},
+	// { id: 'bookmarks', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___gebookmarkt'), sortable: true },
+	// { id: 'in_bundles', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___in-bundel'), sortable: true },
+	// { id: 'subjects', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'), sortable: true },
+	// { id: 'education_levels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'), sortable: true },
+	// { id: 'labels', label: i18n.t('admin/collections-or-bundles/collections-or-bundles___labels'), sortable: true },
 	{ id: 'actions', label: '' },
 ];

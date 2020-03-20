@@ -75,6 +75,17 @@
 	margin: 1.2rem 0;
 }
 
+.c-nav-mobile {
+	.c-nav__item--i {
+		color: $color-gray-700;
+
+		&:hover,
+		&:focus {
+			background: $color-gray-100;
+		}
+	}
+}
+
 .c-nav-mobile__item {
 	color: $color-gray-500;
 	display: flex;
@@ -84,6 +95,13 @@
 
 	+ .c-nav-mobile__item {
 		border-top: 0.1rem solid $color-gray-100;
+	}
+
+	> .c-nav__item {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	&:hover {

@@ -1,3 +1,23 @@
-.c-search-view__sort-select {
-	min-width: 24rem;
+@import '../../styles/settings/variables';
+
+.c-search-view {
+	.c-search-view__sort-select {
+		min-width: 24rem;
+	}
+
+	@media (max-width: $g-bp2) {
+		.c-navbar {
+			min-height: 13rem;
+
+			.c-toolbar {
+				flex-direction: column;
+				height: 12rem;
+				align-items: flex-start;
+			}
+
+			.c-extra-options {
+				display: none;
+			}
+		}
+	}
 }

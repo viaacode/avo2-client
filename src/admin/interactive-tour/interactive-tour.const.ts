@@ -15,17 +15,21 @@ export const INTERACTIVE_TOUR_PATH = {
 export const ITEMS_PER_PAGE = 10;
 
 export const INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
-	{ id: 'name', label: i18n.t('Naam'), sortable: true },
-	{ id: 'page_id', label: i18n.t('Pagina'), sortable: true },
+	{ id: 'name', label: i18n.t('admin/interactive-tour/interactive-tour___naam'), sortable: true },
+	{
+		id: 'page_id',
+		label: i18n.t('admin/interactive-tour/interactive-tour___pagina'),
+		sortable: true,
+	},
 	{
 		id: 'created_at',
-		label: i18n.t('Aangemaakt op'),
+		label: i18n.t('admin/interactive-tour/interactive-tour___aangemaakt-op'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},
 	{
 		id: 'updated_at',
-		label: i18n.t('aangepast op'),
+		label: i18n.t('admin/interactive-tour/interactive-tour___aangepast-op'),
 		sortable: true,
 		filterType: 'DateRangeDropdown',
 	},
@@ -48,6 +52,6 @@ export function getInitialInteractiveTour(): InteractiveTour {
 }
 
 export const PAGE_TYPES_LANG = {
-	create: i18n.t('Toevoegen'),
-	edit: i18n.t('Aanpassen'),
+	create: i18n.t('admin/interactive-tour/interactive-tour___toevoegen'),
+	edit: i18n.t('admin/interactive-tour/interactive-tour___aanpassen'),
 };

@@ -86,7 +86,9 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de items is mislukt'),
+				message: t(
+					'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt'
+				),
 			});
 		}
 	}, [setLoadingInfo, setItems, setItemCount, tableState, t]);
@@ -105,7 +107,10 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 
 	const navigateToItemDetail = (externalId: string | undefined) => {
 		if (!externalId) {
-			ToastService.danger(t('Dit item heeft geen geldig pid'), false);
+			ToastService.danger(
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid'),
+				false
+			);
 			return;
 		}
 		const link = buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
@@ -114,7 +119,10 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 
 	const navigateToAdminItemDetail = (uuid: string | undefined) => {
 		if (!uuid) {
-			ToastService.danger(t('Dit item heeft geen geldig uuid'), false);
+			ToastService.danger(
+				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid'),
+				false
+			);
 			return;
 		}
 		const link = buildLink(ADMIN_PATH.ITEM_DETAIL, { id: uuid });
@@ -168,9 +176,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('Er bestaan nog geen items')}>
+			<ErrorView message={t('admin/items/views/items-overview___er-bestaan-nog-geen-items')}>
 				<p>
-					<Trans>Beschrijving wanneer er nog geen items zijn</Trans>
+					<Trans i18nKey="admin/items/views/items-overview___beschrijving-wanneer-er-nog-geen-items-zijn">
+						Beschrijving wanneer er nog geen items zijn
+					</Trans>
 				</p>
 			</ErrorView>
 		);
@@ -189,9 +199,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>
 						renderTableCell(rowData, columnId as ItemsOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoek op pid, titel, beschrijving, organisatie, ...')}
+					searchTextPlaceholder={t(
+						'admin/items/views/items-overview___zoek-op-pid-titel-beschrijving-organisatie'
+					)}
 					noContentMatchingFiltersMessage={t(
-						'Er zijn geen items doe voldoen aan de opgegeven filters'
+						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
 					onTableStateChanged={setTableState}
@@ -203,7 +215,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Items')}>
+		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">

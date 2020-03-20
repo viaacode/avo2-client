@@ -1,5 +1,14 @@
+@import '../../../styles/settings/variables';
+
 .react-joyride__tooltip {
 	h4 {
 		font-weight: bold;
 	}
 }
+
+.c-interactive-tour__button {
+	@media (max-width: $g-bp2) {
+		display: none;
+	}
+}
+
