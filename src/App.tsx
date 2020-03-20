@@ -18,6 +18,7 @@ import { dataService } from './shared/services';
 import './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
+import CookieDeclaration from './shared/components/CookieDeclaration/CookieDeclaration';
 
 interface AppProps extends RouteComponentProps {}
 
@@ -45,6 +46,7 @@ const App: FunctionComponent<AppProps> = props => {
 					{renderRoutes()}
 					{props.location.pathname !== APP_PATH.LOGIN.route && <Footer {...props} />}
 					<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} />
+					<CookieDeclaration />
 				</>
 			)}
 		</div>
