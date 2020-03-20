@@ -1,5 +1,12 @@
+@import '../../styles/settings/variables';
+
 .m-collection-overview-thumbnail.c-thumbnail {
 	width: 125px;
 	height: 70px;
 	padding: 0;
+
+	@media (max-width: $g-bp2) {
+		width: 50px;
+		height: 28px;
+	}
 }

@@ -41,7 +41,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 				console.error(new CustomError('Failed to fetch translations', err));
 				ToastService.danger(t('Het ophalen van de vertalingen is mislukt.'), false);
 			});
-	}, []);
+	}, [t]);
 
 	const onChangeTranslations = (updatedTranslations: Translation[]) => {
 		// update translations state
