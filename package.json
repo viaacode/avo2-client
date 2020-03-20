@@ -105,6 +105,9 @@
 		"tslint-plugin-prettier": "^2.0.1",
 		"typescript": "3.5.3"
 	},
+	"peerDependencies": {
+		"avo2-proxy-server": "0.21.0"
+	},
 	"browserslist": {
 		"production": [
 			">0.2%",
