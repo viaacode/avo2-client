@@ -264,11 +264,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					selectedCollection as Partial<Avo.Collection.Collection>
 				);
 
-	const clampDuration = (duration: number, type: 'start' | 'end'): number => {
-		if (type === 'start') {
-			return clamp(duration, minTime, fragmentEndTime);
-		}
-		return clamp(duration, fragmentStartTime, maxTime);
+	const clampDuration = (duration: number): number => {
+		return clamp(duration, minTime, maxTime);
 	};
 
 	const updateStartAndEnd = (type: 'start' | 'end', value?: string) => {
@@ -282,13 +279,21 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			if (/[0-9]{2}:[0-9]{2}:[0-9]{2}/.test(value)) {
 				// full duration
 				if (type === 'start') {
-					const newStartTime = clampDuration(parseDuration(value), type);
+					const newStartTime = clampDuration(parseDuration(value));
 					setFragmentStartTime(newStartTime);
 					setFragmentStartString(formatDurationHoursMinutesSeconds(newStartTime));
+					if (newStartTime > fragmentEndTime) {
+						setFragmentEndTime(newStartTime);
+						setFragmentEndString(formatDurationHoursMinutesSeconds(newStartTime));
+					}
 				} else {
-					const newEndTime = clampDuration(parseDuration(value), type);
+					const newEndTime = clampDuration(parseDuration(value));
 					setFragmentEndTime(newEndTime);
 					setFragmentEndString(formatDurationHoursMinutesSeconds(newEndTime));
+					if (newEndTime < fragmentStartTime) {
+						setFragmentStartTime(newEndTime);
+						setFragmentStartString(formatDurationHoursMinutesSeconds(newEndTime));
+					}
 				}
 			}
 			// else do nothing yet, until the user finishes the time entry
@@ -296,9 +301,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			// on blur event
 			if (type === 'start') {
 				if (/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/.test(fragmentStartString)) {
-					const newStartTime = clampDuration(parseDuration(fragmentStartString), type);
+					const newStartTime = clampDuration(parseDuration(fragmentStartString));
 					setFragmentStartTime(newStartTime);
 					setFragmentStartString(formatDurationHoursMinutesSeconds(newStartTime));
+					if (newStartTime > fragmentEndTime) {
+						setFragmentEndTime(newStartTime);
+						setFragmentEndString(formatDurationHoursMinutesSeconds(newStartTime));
+					}
 				} else {
 					setFragmentStartTime(0);
 					setFragmentStartString(formatDurationHoursMinutesSeconds(0));
@@ -308,9 +317,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				}
 			} else {
 				if (/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/.test(fragmentEndString)) {
-					const newEndTime = clampDuration(parseDuration(fragmentEndString), type);
+					const newEndTime = clampDuration(parseDuration(fragmentEndString));
 					setFragmentEndTime(newEndTime);
 					setFragmentEndString(formatDurationHoursMinutesSeconds(newEndTime));
+					if (newEndTime < fragmentStartTime) {
+						setFragmentStartTime(newEndTime);
+						setFragmentStartString(formatDurationHoursMinutesSeconds(newEndTime));
+					}
 				} else {
 					setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
 					setFragmentEndString(
