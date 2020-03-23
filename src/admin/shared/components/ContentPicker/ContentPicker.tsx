@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -59,60 +59,73 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// apply initial input if INPUT-based type, default to ''
 	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, initialValues));
 
-	// inflate item picker // TODO: type
-	const inflatePicker = (keyword: string | null, callback: any) => {
-		if (selectedType && !!selectedType.fetch) {
-			selectedType
-				.fetch(keyword, 20)
-				.then((items: PickerSelectItem[]) => {
-					const initialItem = [
-						{
-							label: get(initialValues, 'label'),
-							value: {
-								type: get(initialValues, 'type'),
-								value: get(initialValues, 'value'),
-							},
-						},
-						...items.filter(
-							(item: PickerSelectItem) => item.label !== get(initialValues, 'label')
-						),
-					];
-
-					return callback((!hasAppliedInitialItem ? initialItem : items) || []);
-				})
-				.catch(handleInflationError);
-		}
-	};
-
 	// handle error during inflation of item picker // TODO: type
-	const handleInflationError = (error: any) => {
-		console.error('[Content Picker] - Failed to inflate.', error);
-		ToastService.danger(
-			t(
-				'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
-			),
-			false
-		);
-	};
+	const handleInflationError = useCallback(
+		(error: any) => {
+			console.error('[Content Picker] - Failed to inflate.', error);
+			ToastService.danger(
+				t(
+					'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
+				),
+				false
+			);
+		},
+		[t]
+	);
+
+	// inflate item picker // TODO: type
+	const inflatePicker = useCallback(
+		(keyword: string | null, callback: any) => {
+			if (selectedType && !!selectedType.fetch) {
+				selectedType
+					.fetch(keyword, 20)
+					.then((items: PickerSelectItem[]) => {
+						const initialItem = [
+							{
+								label: get(initialValues, 'label'),
+								value: {
+									type: get(initialValues, 'type'),
+									value: get(initialValues, 'value'),
+								},
+							},
+							...items.filter(
+								(item: PickerSelectItem) =>
+									item.label !== get(initialValues, 'label')
+							),
+						];
+
+						return callback(
+							(!hasAppliedInitialItem && initialValues ? initialItem : items) || []
+						);
+					})
+					.catch(handleInflationError);
+			}
+		},
+		[selectedType, handleInflationError, hasAppliedInitialItem, initialValues]
+	);
 
 	// when selecting a type, reset `selectedItem` and retrieve new item options
 	useEffect(() => {
 		inflatePicker(null, setItemOptions);
-	}, [selectedType]); // eslint-disable-line
+	}, [inflatePicker, setItemOptions]);
 
 	// during the first update of `itemOptions`, set the initial value of the item picker
 	useEffect(() => {
 		if (itemOptions.length && !hasAppliedInitialItem) {
 			setSelectedItem(setInitialItem(itemOptions, initialValues));
 			setHasAppliedInitialItem(true);
+
+			inflatePicker(null, setItemOptions);
 		}
 	}, [itemOptions]); // eslint-disable-line
 
 	// events
-	const onSelectType = (selected: ValueType<PickerTypeOption>) => {
+	const onSelectType = async (selected: ValueType<PickerTypeOption>) => {
 		if (selectedType !== selected) {
 			setSelectedType(selected as PickerTypeOption);
 			setSelectedItem(null);
+
+			inflatePicker(null, setItemOptions);
 		}
 	};
 

@@ -5,7 +5,7 @@ import i18n from '../shared/translations/i18n';
 
 import { GET_ITEMS, GET_ITEMS_BY_TITLE } from './item.gql';
 
-const ITEM_RESULT_PATH = 'app_item_meta';
+const ITEM_RESULT_PATH = 'data.app_item_meta';
 
 // TODO: Move to helper file and use in other queries.
 
