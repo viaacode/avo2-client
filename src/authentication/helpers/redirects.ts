@@ -14,8 +14,12 @@ import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stambo
  * Client redirect functions
  *
  **/
-export function redirectToClientPage(path: string, history: History) {
-	history.push(path);
+export function redirectToClientPage(path: string, history: History, fromPath?: string) {
+	if (fromPath) {
+		history.push(path, { from: { pathname: fromPath } });
+	} else {
+		history.push(path);
+	}
 }
 
 /**
@@ -73,6 +77,7 @@ export function redirectToServerLinkAccount(location: Location, idpType: Avo.Aut
 		idpType,
 	})}`;
 }
+
 export function redirectToServerUnlinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
 	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify({
@@ -98,6 +103,9 @@ function getBaseUrl(location: Location): string {
 	return window.location.href.split(location.pathname)[0];
 }
 
-function getFromPath(location: Location, defaultPath: string = APP_PATH.SEARCH.route): string {
+export function getFromPath(
+	location: Location,
+	defaultPath: string = APP_PATH.SEARCH.route
+): string {
 	return get(location, 'state.from.pathname', defaultPath);
 }

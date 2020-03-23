@@ -18,7 +18,7 @@ import {
 import { APP_PATH } from '../../constants';
 
 import LoginOptions from '../components/LoginOptions';
-import { redirectToClientPage } from '../helpers/redirects';
+import { getFromPath, redirectToClientPage } from '../helpers/redirects';
 import './RegisterOrLogin.scss';
 
 export interface RegisterOrLoginProps extends RouteComponentProps {}
@@ -99,6 +99,7 @@ const RegisterOrRegisterOrLogin: FunctionComponent<RegisterOrLoginProps> = ({
 											history={history}
 											location={location}
 											match={match}
+											redirectAfterLogin={getFromPath(location)}
 										/>
 									</FlexItem>
 								</Flex>
