@@ -1,7 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import { capitalize, get } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import {
@@ -45,6 +45,7 @@ import { useTableSort } from '../../shared/hooks';
 import { dataService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
+import { ErrorView } from '../../error/views';
 import {
 	GET_ASSIGNMENT_BY_ID,
 	GET_ASSIGNMENTS_BY_OWNER_ID,
@@ -446,99 +447,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		{ id: 'actions', label: '' },
 	] as AssignmentColumn[];
 
-	const renderAssignmentsTable = (
-		data: {
-			app_assignments?: Avo.Assignment.Assignment[];
-			app_assignment_responses?: Avo.Assignment.Response[];
-			count: { aggregate: { count: number } };
-		},
-		refetchAssignments: () => void
-	) => {
-		const assignments = [];
-		assignments.push(
-			...(data.app_assignment_responses || []).map(response => response.assignment)
-		);
-		assignments.push(...(data.app_assignments || []));
-		return (
-			<>
-				<Table
-					columns={columns}
-					data={assignments}
-					emptyStateMessage={
-						filterString
-							? t(
-									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
-							  )
-							: activeView === 'archived_assignments'
-							? t(
-									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
-							  )
-							: t(
-									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
-							  )
-					}
-					renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
-						renderCell(
-							rowData,
-							colKey as AssignmentOverviewTableColumns,
-							refetchAssignments
-						)
-					}
-					rowKey="id"
-					variant="styled"
-					onColumnClick={columnId =>
-						handleColumnClick(columnId as AssignmentOverviewTableColumns)
-					}
-					sortColumn={sortColumn}
-					sortOrder={sortOrder}
-				/>
-				<Spacer margin="top-large">
-					<Pagination
-						pageCount={Math.ceil(data.count.aggregate.count / ITEMS_PER_PAGE)}
-						currentPage={page}
-						onPageChange={setPage}
-					/>
-				</Spacer>
-
-				<DeleteObjectModal
-					title={t(
-						'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
-					)}
-					body={t(
-						'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
-					isOpen={isDeleteAssignmentModalOpen}
-					onClose={handleDeleteModalClose}
-					deleteObjectCallback={() =>
-						deleteCurrentAssignment(
-							get(markedAssignment, 'id', null),
-							refetchAssignments
-						)
-					}
-				/>
-
-				<InputModal
-					title={t('assignment/views/assignment-overview___dupliceer-taak')}
-					inputLabel={t(
-						'assignment/views/assignment-overview___geef-de-nieuwe-taak-een-naam'
-					)}
-					inputValue={get(markedAssignment, 'title', '')}
-					inputPlaceholder={t(
-						'assignment/views/assignment-overview___titel-van-de-nieuwe-taak'
-					)}
-					isOpen={isDuplicateAssignmentModalOpen}
-					onClose={handleDuplicateModalClose}
-					inputCallback={(newTitle: string) =>
-						attemptDuplicateAssignment(newTitle, markedAssignment, refetchAssignments)
-					}
-					emptyMessage={t(
-						'assignment/views/assignment-overview___gelieve-een-opdracht-titel-in-te-vullen'
-					)}
-				/>
-			</>
-		);
-	};
-
 	const renderHeader = () => {
 		return (
 			<Toolbar className="m-assignment-overview__header-toolbar">
@@ -603,35 +511,149 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		);
 	};
 
-	return (
-		<Container mode="vertical" size="small">
-			<Container mode="horizontal">
-				{renderHeader()}
+	const onClickCreate = () => history.push(buildLink(APP_PATH.SEARCH.route));
 
-				{canEditAssignments !== null && (
-					<DataQueryComponent
-						query={
-							canEditAssignments
-								? GET_ASSIGNMENTS_BY_OWNER_ID
-								: GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID
-						}
-						variables={{
-							owner_profile_id: getProfileId(user),
-							archived: activeView === 'archived_assignments',
-							order: { [sortColumn]: sortOrder },
-							offset: page * ITEMS_PER_PAGE,
-							limit: ITEMS_PER_PAGE,
-							filter: getFilterObject(),
-						}}
-						renderData={renderAssignmentsTable}
-						resultPath=""
-						ignoreNotFound
-						actionButtons={['home']}
-					/>
-				)}
-			</Container>
-		</Container>
+	const renderEmptyFallback = () => (
+		<ErrorView icon="clipboard" message={t('Je hebt nog geen opdrachten aangemaakt')}>
+			<p>
+				<Trans>Beschrijving hoe een opdracht aan te maken</Trans>
+			</p>
+			<Spacer margin="top">
+				<Button
+					type="primary"
+					icon="search"
+					label={t('Zoek een fragment of collectie en maak je eerste opdracht')}
+					onClick={onClickCreate}
+				/>
+			</Spacer>
+		</ErrorView>
 	);
+
+	const renderAssignmentsView = (
+		data: {
+			app_assignments?: Avo.Assignment.Assignment[];
+			app_assignment_responses?: Avo.Assignment.Response[];
+			count: { aggregate: { count: number } };
+		},
+		refetchAssignments: () => void
+	) => {
+		const assignments = [];
+		assignments.push(
+			...(data.app_assignment_responses || []).map(response => response.assignment)
+		);
+		assignments.push(...(data.app_assignments || []));
+
+		if (!assignments.length) {
+			return renderEmptyFallback();
+		}
+		return (
+			<Container mode="vertical" size="small">
+				<Container mode="horizontal">
+					{renderHeader()}
+					<Table
+						columns={columns}
+						data={assignments}
+						emptyStateMessage={
+							filterString
+								? t(
+										'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
+								  )
+								: activeView === 'archived_assignments'
+								? t(
+										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
+								  )
+								: t(
+										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
+								  )
+						}
+						renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
+							renderCell(
+								rowData,
+								colKey as AssignmentOverviewTableColumns,
+								refetchAssignments
+							)
+						}
+						rowKey="id"
+						variant="styled"
+						onColumnClick={columnId =>
+							handleColumnClick(columnId as AssignmentOverviewTableColumns)
+						}
+						sortColumn={sortColumn}
+						sortOrder={sortOrder}
+					/>
+					<Spacer margin="top-large">
+						<Pagination
+							pageCount={Math.ceil(data.count.aggregate.count / ITEMS_PER_PAGE)}
+							currentPage={page}
+							onPageChange={setPage}
+						/>
+					</Spacer>
+
+					<DeleteObjectModal
+						title={t(
+							'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
+						)}
+						body={t(
+							'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+						)}
+						isOpen={isDeleteAssignmentModalOpen}
+						onClose={handleDeleteModalClose}
+						deleteObjectCallback={() =>
+							deleteCurrentAssignment(
+								get(markedAssignment, 'id', null),
+								refetchAssignments
+							)
+						}
+					/>
+
+					<InputModal
+						title={t('assignment/views/assignment-overview___dupliceer-taak')}
+						inputLabel={t(
+							'assignment/views/assignment-overview___geef-de-nieuwe-taak-een-naam'
+						)}
+						inputValue={get(markedAssignment, 'title', '')}
+						inputPlaceholder={t(
+							'assignment/views/assignment-overview___titel-van-de-nieuwe-taak'
+						)}
+						isOpen={isDuplicateAssignmentModalOpen}
+						onClose={handleDuplicateModalClose}
+						inputCallback={(newTitle: string) =>
+							attemptDuplicateAssignment(
+								newTitle,
+								markedAssignment,
+								refetchAssignments
+							)
+						}
+						emptyMessage={t(
+							'assignment/views/assignment-overview___gelieve-een-opdracht-titel-in-te-vullen'
+						)}
+					/>
+				</Container>
+			</Container>
+		);
+	};
+
+	return canEditAssignments !== null ? (
+		<DataQueryComponent
+			query={
+				canEditAssignments
+					? GET_ASSIGNMENTS_BY_OWNER_ID
+					: GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID
+			}
+			variables={{
+				owner_profile_id: getProfileId(user),
+				archived: activeView === 'archived_assignments',
+				order: { [sortColumn]: sortOrder },
+				offset: page * ITEMS_PER_PAGE,
+				limit: ITEMS_PER_PAGE,
+				filter: getFilterObject(),
+			}}
+			renderData={renderAssignmentsView}
+			resultPath=""
+			ignoreNotFound
+			actionButtons={['home']}
+		/>
+	) : null;
 };
 
 export default AssignmentOverview;

@@ -44,7 +44,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const [t] = useTranslation();
 
 	// State
-	const [bookmarks, setBookmarks] = useState<BookmarkInfo[]>([]);
+	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
 	const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
@@ -278,7 +278,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 	const renderBookmarks = () => (
 		<>
-			{bookmarks.length ? renderTable() : renderEmptyFallback()}
+			{bookmarks && bookmarks.length ? renderTable() : renderEmptyFallback()}
 			<DeleteObjectModal
 				title={t('workspace/views/bookmarks___verwijder-bladwijzer')}
 				body={t(
@@ -294,7 +294,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			dataObject={bookmarks[0]}
+			dataObject={bookmarks}
 			render={renderBookmarks}
 		/>
 	);
