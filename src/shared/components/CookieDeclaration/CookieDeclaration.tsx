@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { ToastId } from 'react-toastify';
 
 import { Button } from '@viaa/avo2-components';
@@ -7,7 +8,6 @@ import { Button } from '@viaa/avo2-components';
 import { ToastService } from '../../services';
 
 import './CookieDeclaration.scss';
-import { Link } from 'react-router-dom';
 
 const AVO_COOKIE_ACCEPT_KEY = 'AVO_COOKIE_ACCEPT_KEY';
 
