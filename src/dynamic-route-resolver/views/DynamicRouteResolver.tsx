@@ -24,7 +24,7 @@ import { GET_EXTERNAL_ID_BY_MEDIAMOSA_ID } from '../../item/item.gql';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
-import { getContentPageByPath } from '../../shared/services/navigation-items-service';
+import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
@@ -49,7 +49,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	loginState,
 	loginStateError,
 	loginStateLoading,
-	match,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -98,7 +97,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			}
 
 			// Check if path points to a content page
-			const contentPage: Avo.Content.Content | null = await getContentPageByPath(
+			const contentPage: Avo.Content.Content | null = await ContentPageService.getContentPageByPath(
 				location.pathname
 			);
 			if (!contentPage) {
@@ -168,15 +167,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				return <Redirect to={generateSearchLinkString('serie', 'Klaar')} />;
 			}
 
-			return (
-				<ContentPage
-					contentPage={routeInfo.data}
-					history={history}
-					location={location}
-					match={match}
-					user={user}
-				/>
-			);
+			return <ContentPage contentPage={routeInfo.data} />;
 		}
 		console.error(
 			new CustomError("Route doesn't seem to be a bundle or content page", null, {
