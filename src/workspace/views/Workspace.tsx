@@ -36,8 +36,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import { navigate } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-query';
+import { isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
 import { ASSIGNMENTS_ID, BOOKMARKS_ID, BUNDLES_ID, COLLECTIONS_ID, TABS } from '../workspace.const';

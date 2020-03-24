@@ -51,7 +51,13 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	fromNow,
+	isMobileWidth,
+} from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
@@ -223,7 +229,39 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}
 	};
 
-	const onClickDropdownItem = async (item: ReactText) => {
+	const onDuplicateBundle = async () => {
+		try {
+			if (!bundle) {
+				ToastService.danger(
+					t(
+						'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
+					)
+				);
+				return;
+			}
+			const duplicateCollection = await CollectionService.duplicateCollection(
+				bundle,
+				user,
+				COLLECTION_COPY,
+				COLLECTION_COPY_REGEX
+			);
+			redirectToClientPage(
+				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
+				history
+			);
+			setBundle(duplicateCollection);
+			ToastService.success(
+				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
+			);
+		} catch (err) {
+			console.error('Failed to copy bundle', err, { originalBundle: bundle });
+			ToastService.danger(
+				t('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
+			);
+		}
+	};
+
+	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
 
 		switch (item) {
@@ -232,37 +270,19 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				break;
 
 			case 'duplicate':
-				try {
-					if (!bundle) {
-						ToastService.danger(
-							t(
-								'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
-							)
-						);
-						return;
-					}
-					const duplicateCollection = await CollectionService.duplicateCollection(
-						bundle,
-						user,
-						COLLECTION_COPY,
-						COLLECTION_COPY_REGEX
-					);
-					redirectToClientPage(
-						buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
-						history
-					);
-					setBundle(duplicateCollection);
-					ToastService.success(
-						t(
-							'bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
-						)
-					);
-				} catch (err) {
-					console.error('Failed to copy bundle', err, { originalBundle: bundle });
-					ToastService.danger(
-						t('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
-					);
-				}
+				await onDuplicateBundle();
+				break;
+
+			case 'openShareModal':
+				setIsShareModalOpen(true);
+				break;
+
+			case 'edit':
+				onEditBundle();
+				break;
+
+			case 'openShareThroughEmailModal':
+				setIsShareThroughEmailModalOpen(true);
 				break;
 
 			default:
@@ -368,6 +388,118 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		});
 	}
 
+	const renderActions = () => {
+		if (isMobileWidth()) {
+			const BUNDLE_DROPDOWN_ITEMS = [
+				createDropdownMenuItem(
+					'openShareModal',
+					t('bundle/views/bundle-detail___delen'),
+					'lock'
+				),
+				createDropdownMenuItem('edit', t('bundle/views/bundle-detail___bewerken'), 'edit'),
+				createDropdownMenuItem(
+					'openShareThroughEmailModal',
+					t('bundle/views/bundle-detail___share-bundel'),
+					'share-2'
+				),
+				...(permissions.canCreateBundles
+					? [
+							createDropdownMenuItem(
+								'duplicate',
+								t('bundle/views/bundle-detail___dupliceer'),
+								'copy'
+							),
+					  ]
+					: []),
+				...(permissions.canDeleteBundles
+					? [
+							createDropdownMenuItem(
+								'delete',
+								t('bundle/views/bundle-detail___verwijder')
+							),
+					  ]
+					: []),
+			];
+			return (
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
+						/>
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
+					</DropdownContent>
+				</ControlledDropdown>
+			);
+		}
+		const BUNDLE_DROPDOWN_ITEMS = [
+			...(permissions.canCreateBundles
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('bundle/views/bundle-detail___dupliceer'),
+							'copy'
+						),
+				  ]
+				: []),
+			...(permissions.canDeleteBundles
+				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
+				: []),
+		];
+
+		return (
+			<ButtonToolbar>
+				<Button
+					label={t('bundle/views/bundle-detail___delen')}
+					onClick={() => executeAction('openShareModal')}
+					type="secondary"
+				/>
+				<Button
+					label={t('bundle/views/bundle-detail___bewerken')}
+					onClick={() => executeAction('edit')}
+					type="primary"
+				/>
+				<Button
+					title={t('bundle/views/bundle-detail___share-bundel')}
+					type="secondary"
+					icon="share-2"
+					ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
+					onClick={() => executeAction('openShareThroughEmailModal')}
+				/>
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
+						/>
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
+					</DropdownContent>
+				</ControlledDropdown>
+				<InteractiveTour location={location} user={user} showButton />
+			</ButtonToolbar>
+		);
+	};
+
 	const renderBundle = () => {
 		const {
 			is_public,
@@ -390,21 +522,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			...(lom_context || []).map((context): TagOption => ({ id: context, label: context })),
 		];
 
-		const BUNDLE_DROPDOWN_ITEMS = [
-			...(permissions.canCreateBundles
-				? [
-						createDropdownMenuItem(
-							'duplicate',
-							t('bundle/views/bundle-detail___dupliceer'),
-							'copy'
-						),
-				  ]
-				: []),
-			...(permissions.canDeleteBundles
-				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
-				: []),
-		];
-
 		const organisationName = get(
 			bundle,
 			'organisation.name',
@@ -414,11 +531,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 		return (
 			<>
-				<Container mode="vertical" background="alt">
+				<Container mode="vertical" background="alt" className="m-bundle-detail-header">
 					<Container mode="horizontal">
 						<Grid>
 							<Column size="3-2">
-								<Spacer margin="right-large">
+								{/* TODO remove cast to any after update to components v1.34.0 */}
+								<Spacer margin={isMobileWidth() ? ('none' as any) : 'right-large'}>
 									<Thumbnail
 										category="bundle"
 										src={thumbnail_path || undefined}
@@ -444,66 +562,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										</ToolbarItem>
 									</ToolbarLeft>
 									<ToolbarRight>
-										<ToolbarItem>
-											<ButtonToolbar>
-												<Button
-													label={t('bundle/views/bundle-detail___delen')}
-													onClick={() => setIsShareModalOpen(true)}
-													type="secondary"
-												/>
-												<Button
-													label={t(
-														'bundle/views/bundle-detail___bewerken'
-													)}
-													onClick={onEditBundle}
-													type="primary"
-												/>
-												<Button
-													title={t(
-														'bundle/views/bundle-detail___share-bundel'
-													)}
-													type="secondary"
-													icon="share-2"
-													ariaLabel={t(
-														'bundle/views/bundle-detail___share-bundel'
-													)}
-													onClick={() =>
-														setIsShareThroughEmailModalOpen(true)
-													}
-												/>
-												<ControlledDropdown
-													isOpen={isOptionsMenuOpen}
-													menuWidth="fit-content"
-													onOpen={() => setIsOptionsMenuOpen(true)}
-													onClose={() => setIsOptionsMenuOpen(false)}
-													placement="bottom-end"
-												>
-													<DropdownButton>
-														<Button
-															type="secondary"
-															icon="more-horizontal"
-															ariaLabel={t(
-																'collection/views/collection-detail___meer-opties'
-															)}
-															title={t(
-																'collection/views/collection-detail___meer-opties'
-															)}
-														/>
-													</DropdownButton>
-													<DropdownContent>
-														<MenuContent
-															menuItems={BUNDLE_DROPDOWN_ITEMS}
-															onClick={onClickDropdownItem}
-														/>
-													</DropdownContent>
-												</ControlledDropdown>
-												<InteractiveTour
-													location={location}
-													user={user}
-													showButton
-												/>
-											</ButtonToolbar>
-										</ToolbarItem>
+										<ToolbarItem>{renderActions()}</ToolbarItem>
 									</ToolbarRight>
 								</Toolbar>
 								<p className="c-body-1">{description}</p>

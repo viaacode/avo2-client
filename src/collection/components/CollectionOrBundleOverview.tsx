@@ -35,9 +35,9 @@ import {
 	fromNow,
 	generateAssignmentCreateLink,
 	getAvatarProps,
+	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
