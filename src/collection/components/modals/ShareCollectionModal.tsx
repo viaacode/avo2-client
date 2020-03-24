@@ -89,6 +89,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 
 			const newCollection: Avo.Collection.Collection = {
 				is_public: isCollectionPublic,
+				published_at: new Date().toISOString(),
 			} as Avo.Collection.Collection;
 			await triggerCollectionPropertyUpdate({
 				variables: {

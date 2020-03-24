@@ -40,6 +40,7 @@ import {
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { CollectionService } from '../../collection/collection.service';
+import { toEnglishContentType } from '../../collection/collection.types';
 import { ShareCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH } from '../../constants';
@@ -51,9 +52,16 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	fromNow,
+	generateContentLinkString,
+} from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../shared/services/related-items-service';
 
 import './BundleDetail.scss';
 
@@ -71,9 +79,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedBundles /*, setRelatedBundles */] = useState<Avo.Search.ResultItem[] | null>(
-		null
-	);
+	const [relatedItems, setRelatedBundles] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewBundles: boolean;
@@ -98,20 +104,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			},
 			user
 		);
-
-		// if (!relatedBundles) {
-		// 	getRelatedItems(bundleId, 'bundles', 4)
-		// 		.then((relatedBundles: Avo.Search.ResultItem[]) => setRelatedBundles(relatedBundles))
-		// 		.catch((err: any) => {
-		// 			console.error('Failed to get related items', err, {
-		// 				bundleId,
-		// 				index: 'bundles',
-		// 				limit: 4,
-		// 			});
-		// 			ToastService.danger(t('bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'));
-		// 		});
-		// }
-	}, [bundleId, relatedBundles, t, user]);
+	}, [bundleId, relatedItems, t, user]);
 
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
@@ -203,6 +196,25 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}
 	}, [permissions, bundle, setLoadingInfo]);
 
+	useEffect(() => {
+		getRelatedItems(bundleId, 'bundles', 4)
+			.then(relatedItems => {
+				setRelatedBundles(relatedItems);
+			})
+			.catch(err => {
+				console.error('Failed to get related items', err, {
+					bundleId,
+					type: 'bundles',
+					limit: 4,
+				});
+				ToastService.danger(
+					t(
+						'bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'
+					)
+				);
+			});
+	}, [setRelatedBundles, t, bundleId]);
+
 	// Listeners
 	const onEditBundle = () => {
 		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT.route, { id: bundleId }), history);
@@ -272,37 +284,29 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	// Render functions
 	const renderRelatedBundles = () => {
-		if (!relatedBundles || !relatedBundles.length) {
+		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
+			const contentType = toEnglishContentType(relatedItem.administrative_type);
 			return (
-				<Spacer margin="left-small">
-					<p className="c-body-1">
-						<Trans i18nKey="bundle/views/bundle-detail___de-gerelateerde-bundels-konden-niet-worden-opgehaald">
-							De gerelateerde bundels konden niet worden opgehaald.
-						</Trans>
-					</p>
-				</Spacer>
-			);
-		}
-
-		relatedBundles.map((relatedBundle: Avo.Search.ResultItem) => {
-			return (
-				<Column size="3-3" key={`related-bundle-${relatedBundle.id}`}>
+				<Column size="3-3" key={`related-bundle-${relatedItem.id}`}>
 					<MediaCard
 						className="u-clickable"
-						category="bundle"
+						category={contentType}
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: relatedBundle.id }),
+								generateContentLinkString(
+									relatedItem.administrative_type,
+									relatedItem.id
+								),
 								history
 							)
 						}
 						orientation="vertical"
-						title={relatedBundle.dc_title}
+						title={relatedItem.dc_title}
 					>
 						<MediaCardThumbnail>
 							<Thumbnail
-								category="bundle"
-								src={relatedBundle.thumbnail_path}
+								category={contentType}
+								src={relatedItem.thumbnail_path}
 								meta={t(
 									'bundle/views/bundle-detail___num-of-collection-fragments-items',
 									{
@@ -312,10 +316,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							/>
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
-							<MetaData category="bundle">
-								<MetaDataItem label={'300'} icon="eye" />
-								{/*<MetaDataItem label={fromNow(relatedBundle.updated_at)} />*/}
-								<MetaDataItem label={fromNow(relatedBundle.original_cp || '')} />
+							<MetaData category={contentType}>
+								<MetaDataItem
+									label={String(relatedItem.views_count || 0)}
+									icon="eye"
+								/>
+								<MetaDataItem label={fromNow(relatedItem.dcterms_issued)} />
 							</MetaData>
 						</MediaCardMetaData>
 					</MediaCard>
@@ -528,18 +534,20 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</div>
 					</Container>
 				</Container>
-				<Container mode="vertical" background="alt">
-					<Container mode="horizontal">
-						<BlockHeading type="h3">
-							<Trans i18nKey="bundle/views/bundle-detail___aanbevolen-bundels">
-								Aanbevolen bundels
-							</Trans>
-						</BlockHeading>
-						<div className="c-media-card-list">
-							<Grid>{renderRelatedBundles()}</Grid>
-						</div>
+				{!!relatedItems && !!relatedItems.length && (
+					<Container mode="vertical" background="alt">
+						<Container mode="horizontal">
+							<BlockHeading type="h3">
+								<Trans i18nKey="bundle/views/bundle-detail___aanbevolen-bundels">
+									Aanbevolen bundels
+								</Trans>
+							</BlockHeading>
+							<div className="c-media-card-list">
+								<Grid>{renderRelatedBundles()}</Grid>
+							</div>
+						</Container>
 					</Container>
-				</Container>
+				)}
 				{isPublic !== null && (
 					<ShareCollectionModal
 						collection={{

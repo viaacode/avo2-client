@@ -190,4 +190,5 @@ export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: str
 	audio: APP_PATH.ITEM_DETAIL.route,
 	collectie: APP_PATH.COLLECTION_DETAIL.route,
 	bundel: APP_PATH.BUNDLE_DETAIL.route,
-};
+	map: APP_PATH.BUNDLE_DETAIL.route, // TODO remove once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
+} as any; // TODO remove cast once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
