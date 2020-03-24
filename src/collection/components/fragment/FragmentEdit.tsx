@@ -1,5 +1,5 @@
 import { get, isEqual, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, SetStateAction, useState } from 'react';
+import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -75,6 +75,17 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
 	const isLast = (fragmentIndex: number) => fragmentIndex === numberOfFragments - 1;
 
+	const getTitle = () => {
+		if (fragment.use_custom_fields) {
+			return fragment.custom_title || '';
+		}
+		return get(fragment, 'item_meta.title', '');
+	};
+
+	// Cache title until the text field blurs, then pass title to collection edit reducer
+	// Otherwise rerendering cannot keep up with type speed / delete speed
+	const [tempTitle, setTempTitle] = useState<string>(getTitle());
+
 	const FRAGMENT_DROPDOWN_ITEMS = [
 		// TODO: DISABLED FEATURE
 		// createDropdownMenuItem('duplicate', 'Dupliceren', 'copy'),
@@ -85,24 +96,22 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		// createDropdownMenuItem('moveToCollection', 'Verplaatsen naar andere collectie', 'arrow-right'),
 	];
 
+	useEffect(() => {
+		if (getTitle() !== tempTitle) {
+			setTempTitle(getTitle());
+		}
+	}, [fragment.use_custom_fields]);
+
 	const handleChangedValue = (
 		fragmentProp: keyof Avo.Collection.Fragment,
 		fragmentPropValue: any
 	) => {
 		changeCollectionState({
+			index,
 			fragmentProp,
 			fragmentPropValue,
 			type: 'UPDATE_FRAGMENT_PROP',
-			fragmentId: fragment.id,
 		});
-		// }
-	};
-
-	const getTitle = () => {
-		if (fragment.use_custom_fields) {
-			return fragment.custom_title || '';
-		}
-		return get(fragment, 'item_meta.title', '');
 	};
 
 	const getDescription = () => {
@@ -241,13 +250,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
-						value={getTitle()}
+						value={tempTitle}
 						placeholder={t(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
-						onChange={(newTitle: string) =>
-							handleChangedValue('custom_title', newTitle)
-						}
+						onChange={setTempTitle}
+						onBlur={() => handleChangedValue('custom_title', tempTitle)}
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
@@ -404,6 +412,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					changeCollectionState={changeCollectionState}
 					fragment={fragment}
 					updateCuePoints={setCuePoints}
+					index={index}
 				/>
 			)}
 		</>

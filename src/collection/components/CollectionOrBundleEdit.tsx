@@ -66,7 +66,7 @@ import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
-	fragmentId: number;
+	index: number;
 	fragmentProp: keyof Avo.Collection.Fragment;
 	fragmentPropValue: ValueOf<Avo.Collection.Fragment>;
 };
@@ -183,11 +183,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 
 		switch (action.type) {
 			case 'UPDATE_FRAGMENT_PROP':
-				const fragmentToUpdateIndex = newCurrentCollection.collection_fragments.findIndex(
-					(item: Avo.Collection.Fragment) => item.id === action.fragmentId
-				);
-				newCurrentCollection.collection_fragments[fragmentToUpdateIndex] = {
-					...newCurrentCollection.collection_fragments[fragmentToUpdateIndex],
+				console.log('update fragment prop', action);
+				newCurrentCollection.collection_fragments[action.index] = {
+					...newCurrentCollection.collection_fragments[action.index],
 					[action.fragmentProp]: action.fragmentPropValue,
 				};
 				break;
