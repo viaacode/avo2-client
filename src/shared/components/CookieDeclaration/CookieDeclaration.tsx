@@ -11,9 +11,7 @@ import './CookieDeclaration.scss';
 
 const AVO_COOKIE_ACCEPT_KEY = 'AVO_COOKIE_ACCEPT_KEY';
 
-export interface CookieDeclarationProps {}
-
-const CookieDeclaration: FunctionComponent<CookieDeclarationProps> = () => {
+const CookieDeclaration: FunctionComponent = () => {
 	const [t] = useTranslation();
 
 	const [toastId, setToastId] = useState<ToastId | undefined>();

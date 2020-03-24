@@ -11,14 +11,13 @@ import { QueryParamProvider } from 'use-query-params';
 import Admin from './admin/Admin';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
-import { Footer, Navigation } from './shared/components';
+import { CookieDeclaration, Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
 import { getEnv } from './shared/helpers';
 import { dataService } from './shared/services';
 import './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
-import CookieDeclaration from './shared/components/CookieDeclaration/CookieDeclaration';
 
 interface AppProps extends RouteComponentProps {}
 
