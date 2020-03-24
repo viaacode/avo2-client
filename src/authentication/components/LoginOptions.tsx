@@ -13,12 +13,14 @@ import './LoginOptions.scss';
 
 export interface LoginOptionsProps extends RouteComponentProps {
 	onOptionClicked?: () => void;
+	redirectAfterLogin: string;
 }
 
 const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 	history,
 	location,
 	onOptionClicked = () => {},
+	redirectAfterLogin,
 }) => {
 	const [t] = useTranslation();
 
@@ -35,7 +37,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						className="c-login-with-archief"
 						onClick={() => {
 							onOptionClicked();
-							redirectToClientPage(APP_PATH.LOGIN.route, history);
+							redirectToClientPage(APP_PATH.LOGIN.route, history, redirectAfterLogin);
 						}}
 					/>
 				</Spacer>
