@@ -60,7 +60,6 @@ import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ShareCollectionModal } from '../components';
-import { swapFragmentsPositions } from '../helpers';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
@@ -74,8 +73,19 @@ type FragmentPropUpdateAction = {
 
 type FragmentSwapAction = {
 	type: 'SWAP_FRAGMENTS';
-	currentFragmentId: number;
+	index: number;
 	direction: 'up' | 'down';
+};
+
+type FragmentInsertAction = {
+	type: 'INSERT_FRAGMENT';
+	index: number;
+	fragment: Avo.Collection.Fragment;
+};
+
+type FragmentDeleteAction = {
+	type: 'DELETE_FRAGMENT';
+	index: number;
 };
 
 type CollectionUpdateAction = {
@@ -93,6 +103,8 @@ type CollectionPropUpdateAction = {
 export type CollectionAction =
 	| FragmentPropUpdateAction
 	| FragmentSwapAction
+	| FragmentInsertAction
+	| FragmentDeleteAction
 	| CollectionUpdateAction
 	| CollectionPropUpdateAction;
 
@@ -197,15 +209,28 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					return collectionState;
 				}
 
-				const fragments = getFragmentsFromCollection(newCurrentCollection);
+				const fragments1 = getFragmentsFromCollection(newCurrentCollection);
 
 				const delta = action.direction === 'up' ? 1 : -1;
 
-				newCurrentCollection.collection_fragments = swapFragmentsPositions(
-					fragments,
-					action.currentFragmentId,
-					delta
-				);
+				// Make the swap
+				const tempFragment = fragments1[action.index];
+				fragments1[action.index] = fragments1[action.index + delta];
+				fragments1[action.index + delta] = tempFragment;
+
+				newCurrentCollection.collection_fragments = fragments1;
+				break;
+
+			case 'INSERT_FRAGMENT':
+				const fragments2 = getFragmentsFromCollection(newCurrentCollection);
+				fragments2.splice(action.index, 0, action.fragment);
+				newCurrentCollection.collection_fragments = fragments2;
+				break;
+
+			case 'DELETE_FRAGMENT':
+				const fragments3 = getFragmentsFromCollection(newCurrentCollection);
+				fragments3.splice(action.index, 1);
+				newCurrentCollection.collection_fragments = fragments3;
 				break;
 
 			case 'UPDATE_COLLECTION_PROP':
@@ -614,7 +639,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
-							collection={collectionState.currentCollection}
+							collectionId={collectionState.currentCollection.id}
+							collectionFragments={
+								collectionState.currentCollection.collection_fragments
+							}
 							changeCollectionState={changeCollectionState}
 							history={history}
 							location={location}
