@@ -63,6 +63,8 @@ import {
 	INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
 	INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
 	INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
+	INITIAL_QUOTE_BLOCK_STATE,
+	INITIAL_QUOTE_COMPONENTS_STATE,
 	INITIAL_RICH_TEXT_BLOCK_STATE,
 	INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
@@ -73,6 +75,7 @@ import {
 	MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
 	PAGE_OVERVIEW_BLOCK_CONFIG,
 	PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
+	QUOTE_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
@@ -148,6 +151,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('admin/content-block/content-block___projecten-in-de-kijker'),
 		value: ContentBlockType.ProjectsSpotlight,
 	},
+	{
+		label: i18n.t('Quote'),
+		value: ContentBlockType.Quote,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -178,6 +185,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.MediaGrid]: MEDIA_GRID_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
+	[ContentBlockType.Quote]: QUOTE_BLOCK_CONFIG,
 	[ContentBlockType.PageOverview]: PAGE_OVERVIEW_BLOCK_CONFIG,
 	[ContentBlockType.ProjectsSpotlight]: PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
@@ -198,6 +206,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
+	[ContentBlockType.Quote]: INITIAL_QUOTE_COMPONENTS_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
 };
@@ -216,6 +225,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
+	[ContentBlockType.Quote]: INITIAL_QUOTE_BLOCK_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 };
