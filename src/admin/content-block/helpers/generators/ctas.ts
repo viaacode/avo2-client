@@ -33,7 +33,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/ctas___cta'),
 		limits: {
-			min: 2,
+			min: 1,
 			max: 2,
 		},
 		state: INITIAL_CTAS_COMPONENTS_STATE(),
