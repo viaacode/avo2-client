@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { get, isEqual, isNil, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +40,7 @@ interface ContentBlockFormProps {
 	blockIndex: number;
 	isAccordionOpen: boolean;
 	length: number;
+	hasSubmitted: boolean;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
 	onError: (configIndex: number, hasError: boolean) => void;
 	onRemove: (configIndex: number) => void;
@@ -53,6 +55,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	blockIndex,
 	isAccordionOpen,
 	length,
+	hasSubmitted,
 	onChange,
 	onError,
 	onRemove,
@@ -210,7 +213,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			(isArray(components.state) && components.state.length < get(components, 'limits.max'));
 
 		return (
-			<Accordion isOpen={isAccordionOpen}>
+			<Accordion
+				className={classnames('c-content-block-form__accordion', {
+					'has-error': hasSubmitted && !!config.hasError,
+				})}
+				isOpen={isAccordionOpen}
+			>
 				<AccordionTitle>{accordionTitle}</AccordionTitle>
 				<AccordionActions>
 					<ButtonToolbar>
@@ -280,6 +288,7 @@ export default React.memo(ContentBlockForm, (prevProps, nextProps) => {
 		isEqual(prevProps.config, nextProps.config) &&
 		prevProps.isAccordionOpen === nextProps.isAccordionOpen &&
 		prevProps.blockIndex === nextProps.blockIndex &&
-		prevProps.length === nextProps.length
+		prevProps.length === nextProps.length &&
+		prevProps.hasSubmitted === nextProps.hasSubmitted
 	);
 });

@@ -21,6 +21,7 @@ import {
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	contentWidth: Avo.Content.ContentWidth;
+	hasSubmitted: boolean;
 	onAdd: (config: ContentBlockConfig) => void;
 	onError: (configIndex: number, hasError: boolean) => void;
 	onRemove: (configIndex: number) => void;
@@ -38,6 +39,7 @@ interface ContentEditContentBlocksProps {
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
 	contentBlockConfigs,
 	contentWidth,
+	hasSubmitted,
 	onAdd,
 	onError,
 	onRemove,
@@ -85,6 +87,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					blockIndex={index}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
 					length={contentBlockConfigs.length}
+					hasSubmitted={hasSubmitted}
 					setIsAccordionOpen={() =>
 						setAccordionsOpenState({
 							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],

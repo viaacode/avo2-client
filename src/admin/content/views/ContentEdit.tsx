@@ -65,6 +65,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const [configToDelete, setConfigToDelete] = useState<number>();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
@@ -136,6 +137,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const handleSave = async () => {
 		try {
 			setIsSaving(true);
+			setHasSubmitted(true);
 
 			// Validate form
 			const isFormValid = await handleValidation();
@@ -348,6 +350,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
 						contentWidth={contentForm.contentWidth}
+						hasSubmitted={hasSubmitted}
 						addComponentToState={addComponentToState}
 						removeComponentFromState={removeComponentFromState}
 						onAdd={addContentBlockConfig}
