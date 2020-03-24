@@ -53,9 +53,9 @@ import {
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
+	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-queries';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkViewPlayCounts,

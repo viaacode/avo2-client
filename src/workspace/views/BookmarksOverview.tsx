@@ -22,8 +22,14 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import { buildLink, CustomError, formatDate, formatTimestamp, fromNow } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-query';
+import {
+	buildLink,
+	CustomError,
+	formatDate,
+	formatTimestamp,
+	fromNow,
+	isMobileWidth,
+} from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkInfo,
