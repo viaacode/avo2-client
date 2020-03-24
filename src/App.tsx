@@ -11,7 +11,7 @@ import { QueryParamProvider } from 'use-query-params';
 import Admin from './admin/Admin';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
-import { Footer, Navigation } from './shared/components';
+import { CookieDeclaration, Footer, Navigation } from './shared/components';
 import { ROUTE_PARTS } from './shared/constants';
 import { getEnv } from './shared/helpers';
 import { dataService } from './shared/services';
@@ -45,6 +45,7 @@ const App: FunctionComponent<AppProps> = props => {
 					{renderRoutes()}
 					{props.location.pathname !== APP_PATH.LOGIN.route && <Footer {...props} />}
 					<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} />
+					<CookieDeclaration />
 				</>
 			)}
 		</div>

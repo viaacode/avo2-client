@@ -217,7 +217,13 @@ export const Navigation: FunctionComponent<NavigationProps> = ({
 						<ToolbarLeft>
 							<ToolbarItem>
 								<h1 className="c-brand">
-									<Link to="/">
+									<Link
+										to={
+											user
+												? APP_PATH.LOGGED_IN_HOME.route
+												: APP_PATH.LOGGED_OUT_HOME.route
+										}
+									>
 										<img
 											className="c-brand__image"
 											src="/images/avo-logo-i.svg"

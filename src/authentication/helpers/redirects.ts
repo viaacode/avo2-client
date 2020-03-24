@@ -103,9 +103,6 @@ function getBaseUrl(location: Location): string {
 	return window.location.href.split(location.pathname)[0];
 }
 
-export function getFromPath(
-	location: Location,
-	defaultPath: string = APP_PATH.SEARCH.route
-): string {
+export function getFromPath(location: Location, defaultPath: string = APP_PATH.LOGGED_IN_HOME.route): string {
 	return get(location, 'state.from.pathname', defaultPath);
 }
