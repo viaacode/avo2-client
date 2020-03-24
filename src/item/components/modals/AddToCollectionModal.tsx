@@ -1,7 +1,4 @@
-import { ExecutionResult } from '@apollo/react-common';
-import { useMutation } from '@apollo/react-hooks';
-import { ApolloQueryResult } from 'apollo-client';
-import { get, isNil } from 'lodash-es';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -30,19 +27,13 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
-import {
-	GET_COLLECTION_BY_ID,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../../../collection/collection.gql';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
-import { FlowPlayerWrapper } from '../../../shared/components';
-import { formatDurationHoursMinutesSeconds, getEnv, toSeconds } from '../../../shared/helpers';
-import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
+import { formatDurationHoursMinutesSeconds, toSeconds } from '../../../shared/helpers';
+import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
+import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
 
@@ -58,11 +49,13 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	itemMetaData,
 	isOpen,
 	onClose,
+	history,
+	location,
+	match,
 	user,
 }) => {
 	const [t] = useTranslation();
 
-	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
@@ -75,9 +68,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		toSeconds(itemMetaData.duration) || 0
 	);
 	const [collections, setCollections] = useState<Partial<Avo.Collection.Collection>[]>([]);
-
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
 
 	const fetchCollections = React.useCallback(
 		() =>
@@ -123,21 +113,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		try {
 			setSelectedCollection(undefined);
 			setSelectedCollectionId(id);
-			const response: ApolloQueryResult<Avo.Collection.Collection> = await dataService.query({
-				query: GET_COLLECTION_BY_ID,
-				variables: { id },
-			});
-			const collection = get(response, 'data.app_collections[0]');
-
-			if (collection) {
-				setSelectedCollection(collection);
-			} else {
-				ToastService.danger(
-					t(
-						'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collectie-details-is-mislukt'
-					)
-				);
-			}
+			setSelectedCollection(
+				await CollectionService.fetchCollectionOrBundleById(id, 'collection')
+			);
 		} catch (err) {
 			ToastService.danger(
 				t(
@@ -173,43 +151,27 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		try {
 			const fragment = getFragment(collection);
 			delete fragment.item_meta;
-			const response: void | ExecutionResult<
-				Avo.Collection.Fragment
-			> = await triggerCollectionFragmentsInsert({
-				variables: {
-					id: collection.id,
-					fragments: [fragment],
+			const fragments = await CollectionService.insertFragments(collection.id as string, [
+				fragment as Avo.Collection.Fragment,
+			]);
+			ToastService.success(
+				t(
+					'item/components/modals/add-to-collection-modal___het-fragment-is-toegevoegd-aan-de-collectie'
+				)
+			);
+			onClose();
+			trackEvents(
+				{
+					object: String(collection.id),
+					object_type: 'collections',
+					message: `Gebruiker ${getProfileName(user)} heeft fragment ${get(
+						fragments,
+						'[0].id'
+					)} toegevoegd aan collectie ${collection.id}`,
+					action: 'add_to_collection',
 				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
-
-			if (!response || response.errors) {
-				console.error(get(response, 'errors'));
-				ToastService.danger(
-					t(
-						'item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie'
-					)
-				);
-			} else {
-				ToastService.success(
-					t(
-						'item/components/modals/add-to-collection-modal___het-fragment-is-toegevoegd-aan-de-collectie'
-					)
-				);
-				onClose();
-				trackEvents(
-					{
-						object: String(collection.id),
-						object_type: 'collections',
-						message: `Gebruiker ${getProfileName(user)} heeft fragment ${get(
-							response,
-							'data.insert_app_collection_fragments.returning[0].id'
-						)} toegevoegd aan collectie ${collection.id}`,
-						action: 'add_to_collection',
-					},
-					user
-				);
-			}
+				user
+			);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
@@ -248,38 +210,14 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				});
 			}
 
-			const response: void | ExecutionResult<
-				Avo.Collection.Collection
-			> = await triggerCollectionInsert({
-				variables: {
-					collection: newCollection,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
-
-			const insertedCollection: Partial<Avo.Collection.Collection> = get(
-				response,
-				'data.insert_app_collections.returning[0]'
+			const insertedCollection: Partial<Avo.Collection.Collection> = await CollectionService.insertCollection(
+				newCollection
 			);
 
-			if (!response || response.errors) {
-				ToastService.danger(
-					t(
-						'item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt'
-					)
-				);
-			} else if (!insertedCollection || isNil(insertedCollection.id)) {
-				ToastService.danger(
-					t(
-						'item/components/modals/add-to-collection-modal___de-aangemaakte-collectie-kon-niet-worden-opgehaald'
-					)
-				);
-			} else {
-				// Add fragment to collection
-				await addItemToExistingCollection(insertedCollection);
-				fetchCollections();
-				onClose();
-			}
+			// Add fragment to collection
+			await addItemToExistingCollection(insertedCollection);
+			await fetchCollections();
+			onClose();
 
 			// Re-enable apply button
 			setIsProcessing(false);
@@ -330,8 +268,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				);
 
 	const renderAddToCollectionModal = () => {
-		const initFlowPlayer = () =>
-			!playerTicket && fetchPlayerTicket(externalId).then(data => setPlayerTicket(data));
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
 
 		return (
@@ -339,7 +275,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				title={t(
 					'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
 				)}
-				size="auto"
+				size="extra-large"
 				isOpen={isOpen}
 				onClose={onClose}
 				scrollable
@@ -348,19 +284,17 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					<div className="c-modal__body-add-fragment">
 						<Spacer>
 							<Form>
+								<ItemVideoDescription
+									itemMetaData={itemMetaData}
+									user={user}
+									history={history}
+									location={location}
+									match={match}
+									showTitle
+									showDescription
+								/>
 								<Grid>
 									<Column size="2-7">
-										<FlowPlayerWrapper
-											src={playerTicket ? playerTicket.toString() : null}
-											poster={itemMetaData.thumbnail_path}
-											title={itemMetaData.title}
-											onInit={initFlowPlayer}
-											subtitles={['30-12-2011', 'VRT']}
-											token={getEnv('FLOW_PLAYER_TOKEN')}
-											dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-											logo={get(itemMetaData, 'organisation.logo_url')}
-											itemUuid={(itemMetaData as any).uid} // TODO remove when typings v2.11 is released
-										/>
 										<Container mode="vertical" className="m-time-crop-controls">
 											<TextInput
 												value={formatDurationHoursMinutesSeconds(
@@ -393,20 +327,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 										</Container>
 									</Column>
 									<Column size="2-5">
-										<FormGroup
-											label={t(
-												'item/components/modals/add-to-collection-modal___titel'
-											)}
-										>
-											<span>{itemMetaData.title}</span>
-										</FormGroup>
-										<FormGroup
-											label={t(
-												'item/components/modals/add-to-collection-modal___beschrijving'
-											)}
-										>
-											<span>{itemMetaData.description}</span>
-										</FormGroup>
 										<FormGroup
 											label={t(
 												'item/components/modals/add-to-collection-modal___collectie'

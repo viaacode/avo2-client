@@ -27,29 +27,29 @@ export async function fetchAllUserGroups(): Promise<TagInfo[]> {
 			query: GET_USER_GROUPS,
 		});
 
-		return sortBy(
-			[
-				{
-					label: i18n.t(
-						'admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'
-					),
-					value: SpecialPermissionGroups.loggedOutUsers,
-				},
-				{
-					label: i18n.t(
-						'admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'
-					),
-					value: SpecialPermissionGroups.loggedInUsers,
-				},
-				...get(response, 'data.users_groups', []).map(
+		return [
+			{
+				label: i18n.t(
+					'admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'
+				),
+				value: SpecialPermissionGroups.loggedOutUsers,
+			},
+			{
+				label: i18n.t(
+					'admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'
+				),
+				value: SpecialPermissionGroups.loggedInUsers,
+			},
+			...sortBy(
+				get(response, 'data.users_groups', []).map(
 					(userGroup: UserGroup): TagInfo => ({
 						label: capitalize(userGroup.label),
 						value: userGroup.id,
 					})
 				),
-			],
-			'label'
-		);
+				'label'
+			),
+		];
 	} catch (err) {
 		throw new CustomError('Failed to get user groups', err);
 	}

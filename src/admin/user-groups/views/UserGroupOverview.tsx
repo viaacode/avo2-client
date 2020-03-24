@@ -15,14 +15,14 @@ import {
 import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
+import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
+import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
-import { ItemsTableState } from '../../items/items.types';
-import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 
 interface UserGroupOverviewProps extends DefaultSecureRouteProps {}
 

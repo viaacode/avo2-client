@@ -12,6 +12,8 @@ import {
 	Icon,
 	MenuContent,
 	Navbar,
+	Select,
+	SelectOption,
 	Tabs,
 	Toolbar,
 	ToolbarLeft,
@@ -35,12 +37,13 @@ import {
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { navigate } from '../../shared/helpers';
+import { isMobileWidth } from '../../shared/helpers/media-query';
 import { dataService } from '../../shared/services';
 
 import { ASSIGNMENTS_ID, BOOKMARKS_ID, BUNDLES_ID, COLLECTIONS_ID, TABS } from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabFilter, TabViewMap } from '../workspace.types';
-import Bookmarks from './Bookmarks';
+import BookmarksOverview from './BookmarksOverview';
 import './Workspace.scss';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
@@ -106,10 +109,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						user={user}
 					/>
 				),
-				filter: {
-					label: t('workspace/views/workspace___filter-op-label'),
-					options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
-				},
+				// TODO enable filtering by label
+				// filter: {
+				// 	label: t('workspace/views/workspace___filter-op-label'),
+				// 	options: [{ id: 'all', label: t('workspace/views/workspace___alle') }],
+				// },
 			}),
 			...addTabIfUserHasPerm(ASSIGNMENTS_ID, {
 				component: () => (
@@ -123,7 +127,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			}),
 			...addTabIfUserHasPerm(BOOKMARKS_ID, {
 				component: () => (
-					<Bookmarks
+					<BookmarksOverview
 						history={history}
 						location={location}
 						match={match}
@@ -257,9 +261,22 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		}
 	};
 
+	const renderMobileTabs = () => {
+		return (
+			<Select
+				options={getNavTabs().map(
+					(navTab): SelectOption => ({ label: navTab.label, value: navTab.id.toString() })
+				)}
+				value={tabId || Object.keys(tabs)[0]}
+				onChange={goToTab}
+				className="c-tab-select"
+			/>
+		);
+	};
+
 	const renderTabsAndContent = () => {
 		return (
-			<>
+			<div className="m-workspace">
 				<Container background="alt" mode="vertical" size="small">
 					<Container mode="horizontal">
 						<Toolbar>
@@ -281,7 +298,11 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					<Container mode="horizontal">
 						<Toolbar autoHeight>
 							<ToolbarLeft>
-								<Tabs tabs={getNavTabs()} onClick={goToTab} />
+								{isMobileWidth() ? (
+									renderMobileTabs()
+								) : (
+									<Tabs tabs={getNavTabs()} onClick={goToTab} />
+								)}
 							</ToolbarLeft>
 							<ToolbarRight>
 								<span>{renderFilter()}</span>
@@ -293,7 +314,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">{getActiveTab().component()}</Container>
 				</Container>
-			</>
+			</div>
 		);
 	};
 
