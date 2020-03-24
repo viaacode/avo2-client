@@ -119,6 +119,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
+	const setContentBlockConfigError = (configIndex: number, hasError: boolean) => {
+		dispatch({
+			type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
+			payload: { configIndex, hasError },
+		});
+	};
+
 	const openDeleteModal = (configIndex: number) => {
 		setIsDeleteModalOpen(true);
 		setConfigToDelete(configIndex);
@@ -132,15 +139,22 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 			// Validate form
 			const isFormValid = await handleValidation();
+			const areConfigsValid = !contentBlockConfigs.find(config => config.hasError);
 
-			if (!isFormValid) {
+			if (!isFormValid || !areConfigsValid) {
 				setIsSaving(false);
-				ToastService.danger(
-					t(
-						'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
-					),
-					false
-				);
+
+				if (!isFormValid) {
+					ToastService.danger(
+						t(
+							'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
+						),
+						false
+					);
+				}
+				if (!areConfigsValid) {
+					ToastService.danger(t('Er zijn nog fouten in de content-blocks'), false);
+				}
 
 				return;
 			}
@@ -334,9 +348,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
 						contentWidth={contentForm.contentWidth}
-						onAdd={addContentBlockConfig}
 						addComponentToState={addComponentToState}
 						removeComponentFromState={removeComponentFromState}
+						onAdd={addContentBlockConfig}
+						onError={setContentBlockConfigError}
 						onRemove={openDeleteModal}
 						onReorder={reorderContentBlockConfig}
 						onSave={handleStateSave}

@@ -40,6 +40,7 @@ interface ContentBlockFormProps {
 	isAccordionOpen: boolean;
 	length: number;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
+	onError: (configIndex: number, hasError: boolean) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
 	setIsAccordionOpen: () => void;
@@ -53,6 +54,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	isAccordionOpen,
 	length,
 	onChange,
+	onError,
 	onRemove,
 	onReorder,
 	setIsAccordionOpen,
@@ -114,6 +116,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			}
 		}
 
+		onError(blockIndex, Object.keys(errors).length > 0);
 		setFormErrors(errors);
 	};
 

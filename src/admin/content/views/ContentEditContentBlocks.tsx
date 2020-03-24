@@ -22,6 +22,7 @@ interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	contentWidth: Avo.Content.ContentWidth;
 	onAdd: (config: ContentBlockConfig) => void;
+	onError: (configIndex: number, hasError: boolean) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
 	onSave: (
@@ -38,6 +39,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	contentBlockConfigs,
 	contentWidth,
 	onAdd,
+	onError,
 	onRemove,
 	onReorder,
 	onSave,
@@ -99,6 +101,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					removeComponentFromState={(stateIndex: number) =>
 						removeComponentFromState(index, stateIndex)
 					}
+					onError={onError}
 					onRemove={onRemove}
 					onReorder={handleReorderContentBlock}
 				/>
