@@ -1,5 +1,12 @@
 import { get, isEqual, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactText,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -75,12 +82,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
 	const isLast = (fragmentIndex: number) => fragmentIndex === numberOfFragments - 1;
 
-	const getTitle = () => {
+	const getTitle = useCallback(() => {
 		if (fragment.use_custom_fields) {
 			return fragment.custom_title || '';
 		}
-		return get(fragment, 'item_meta.title', '');
-	};
+		return get(fragment.item_meta, 'title', '');
+	}, [fragment.use_custom_fields, fragment.custom_title, fragment.item_meta]);
 
 	// Cache title until the text field blurs, then pass title to collection edit reducer
 	// Otherwise rerendering cannot keep up with type speed / delete speed
@@ -97,10 +104,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	];
 
 	useEffect(() => {
-		if (getTitle() !== tempTitle) {
-			setTempTitle(getTitle());
-		}
-	}, [fragment.use_custom_fields]);
+		setTempTitle(getTitle());
+	}, [fragment.use_custom_fields, getTitle]);
 
 	const handleChangedValue = (
 		fragmentProp: keyof Avo.Collection.Fragment,
@@ -143,8 +148,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		setOpenOptionsId(null);
 
 		changeCollectionState({
-			type: 'DELETE_FRAGMENT',
 			index,
+			type: 'DELETE_FRAGMENT',
 		});
 
 		ToastService.success(

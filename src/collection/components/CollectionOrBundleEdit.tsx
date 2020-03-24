@@ -183,7 +183,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 
 		switch (action.type) {
 			case 'UPDATE_FRAGMENT_PROP':
-				console.log('update fragment prop', action);
 				newCurrentCollection.collection_fragments[action.index] = {
 					...newCurrentCollection.collection_fragments[action.index],
 					[action.fragmentProp]: action.fragmentPropValue,
