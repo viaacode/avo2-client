@@ -13,6 +13,7 @@ type SetComponentStatePayload = {
 	stateIndex: number;
 };
 type SetBlockStatePayload = { index: number; formGroupState: ContentBlockComponentState[] };
+type SetConfigErrorPayload = { configIndex: number; hasError: boolean };
 
 export const CONTENT_EDIT_INITIAL_STATE = (
 	contentBlockConfigs: ContentBlockConfig[] = []
@@ -90,6 +91,11 @@ export const contentEditReducer = produce(
 				const { formGroupState, index } = payload as SetBlockStatePayload;
 				const { block } = draft.contentBlockConfigs[index];
 				block.state = { ...block.state, ...formGroupState };
+				return;
+			}
+			case ContentEditActionType.SET_CONTENT_BLOCK_ERROR: {
+				const { configIndex, hasError } = payload as SetConfigErrorPayload;
+				draft.contentBlockConfigs[configIndex].hasError = hasError;
 				return;
 			}
 			default:

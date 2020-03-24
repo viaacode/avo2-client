@@ -61,6 +61,7 @@ export interface ContentBlockMeta {
 // CONTENT BLOCK
 export interface ContentBlockConfig {
 	id?: number;
+	hasError?: boolean;
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
