@@ -109,7 +109,11 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 				}
 			} else if (errors[fieldKey]) {
 				if (isNumber(stateIndex)) {
-					delete errors[fieldKey][stateIndex];
+					errors[fieldKey].splice(stateIndex, 1);
+
+					if (errors[fieldKey].length === 0) {
+						delete errors[fieldKey];
+					}
 				} else {
 					delete errors[fieldKey];
 				}
