@@ -11,3 +11,4 @@ export { default as FileUpload } from './FileUpload/FileUpload';
 export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';
 export { default as FlowPlayerWrapper } from './FlowPlayerWrapper/FlowPlayerWrapper';
 export { default as BooleanCheckboxDropdown } from './BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+export { default as CookieDeclaration } from './CookieDeclaration/CookieDeclaration';
