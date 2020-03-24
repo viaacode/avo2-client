@@ -51,11 +51,16 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	fromNow,
+	isMobileWidth,
+} from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 
-import { isMobileWidth } from '../../shared/helpers/media-queries';
 import './BundleDetail.scss';
 
 interface BundleDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -436,72 +441,63 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					</DropdownContent>
 				</ControlledDropdown>
 			);
-		} else {
-			const BUNDLE_DROPDOWN_ITEMS = [
-				...(permissions.canCreateBundles
-					? [
-							createDropdownMenuItem(
-								'duplicate',
-								t('bundle/views/bundle-detail___dupliceer'),
-								'copy'
-							),
-					  ]
-					: []),
-				...(permissions.canDeleteBundles
-					? [
-							createDropdownMenuItem(
-								'delete',
-								t('bundle/views/bundle-detail___verwijder')
-							),
-					  ]
-					: []),
-			];
-
-			return (
-				<ButtonToolbar>
-					<Button
-						label={t('bundle/views/bundle-detail___delen')}
-						onClick={() => executeAction('openShareModal')}
-						type="secondary"
-					/>
-					<Button
-						label={t('bundle/views/bundle-detail___bewerken')}
-						onClick={() => executeAction('edit')}
-						type="primary"
-					/>
-					<Button
-						title={t('bundle/views/bundle-detail___share-bundel')}
-						type="secondary"
-						icon="share-2"
-						ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
-						onClick={() => executeAction('openShareThroughEmailModal')}
-					/>
-					<ControlledDropdown
-						isOpen={isOptionsMenuOpen}
-						menuWidth="fit-content"
-						onOpen={() => setIsOptionsMenuOpen(true)}
-						onClose={() => setIsOptionsMenuOpen(false)}
-						placement="bottom-end"
-					>
-						<DropdownButton>
-							<Button
-								type="secondary"
-								icon="more-horizontal"
-								ariaLabel={t('collection/views/collection-detail___meer-opties')}
-								title={t('collection/views/collection-detail___meer-opties')}
-							/>
-						</DropdownButton>
-						<DropdownContent>
-							<MenuContent
-								menuItems={BUNDLE_DROPDOWN_ITEMS}
-								onClick={executeAction}
-							/>
-						</DropdownContent>
-					</ControlledDropdown>
-					<InteractiveTour location={location} user={user} showButton />
-				</ButtonToolbar>
-			);
 		}
+		const BUNDLE_DROPDOWN_ITEMS = [
+			...(permissions.canCreateBundles
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('bundle/views/bundle-detail___dupliceer'),
+							'copy'
+						),
+				  ]
+				: []),
+			...(permissions.canDeleteBundles
+				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
+				: []),
+		];
+
+		return (
+			<ButtonToolbar>
+				<Button
+					label={t('bundle/views/bundle-detail___delen')}
+					onClick={() => executeAction('openShareModal')}
+					type="secondary"
+				/>
+				<Button
+					label={t('bundle/views/bundle-detail___bewerken')}
+					onClick={() => executeAction('edit')}
+					type="primary"
+				/>
+				<Button
+					title={t('bundle/views/bundle-detail___share-bundel')}
+					type="secondary"
+					icon="share-2"
+					ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
+					onClick={() => executeAction('openShareThroughEmailModal')}
+				/>
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
+						/>
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
+					</DropdownContent>
+				</ControlledDropdown>
+				<InteractiveTour location={location} user={user} showButton />
+			</ButtonToolbar>
+		);
 	};
 
 	const renderBundle = () => {

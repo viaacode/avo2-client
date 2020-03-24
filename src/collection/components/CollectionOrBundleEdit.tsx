@@ -45,10 +45,10 @@ import {
 	buildLink,
 	createDropdownMenuItem,
 	CustomError,
+	isMobileWidth,
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-queries';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';

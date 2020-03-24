@@ -39,8 +39,14 @@ import {
 } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
-import { buildLink, CustomError, formatTimestamp, fromNow, navigate } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-query';
+import {
+	buildLink,
+	CustomError,
+	formatTimestamp,
+	fromNow,
+	isMobileWidth,
+	navigate,
+} from '../../shared/helpers';
 import { useTableSort } from '../../shared/hooks';
 import { dataService, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
