@@ -35,7 +35,7 @@ import {
 } from '../../shared/types';
 
 import { ContentEditForm } from '../components';
-import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
+import { GET_CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { ContentService } from '../content.service';
 import {
@@ -74,7 +74,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	);
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [contentBlocks, isLoadingContentBlocks] = useContentBlocksByContentId(id);
-	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
+	const [currentTab, setCurrentTab, tabs] = useTabs(GET_CONTENT_DETAIL_TABS(), 'inhoud');
 
 	useEffect(() => {
 		if (contentBlocks.length) {
