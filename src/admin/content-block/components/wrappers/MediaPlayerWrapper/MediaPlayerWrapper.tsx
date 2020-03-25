@@ -1,6 +1,6 @@
 import classnames from 'classnames';
 import { get } from 'lodash-es';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
 
@@ -22,9 +22,17 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title, width })
 	const [playerTicket, setPlayerTicket] = useState<string>();
 	const [videoStill, setVideoStill] = useState<string>();
 
+	const retrieveStill = useCallback(async () => {
+		const videoStills = await getVideoStills([
+			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
+		]);
+
+		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
+	}, [item]);
+
 	useEffect(() => {
 		retrieveStill();
-	});
+	}, [retrieveStill]);
 
 	const initFlowPlayer = () => {
 		if (!playerTicket) {
@@ -41,14 +49,6 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title, width })
 					);
 				});
 		}
-	};
-
-	const retrieveStill = async () => {
-		const videoStills = await getVideoStills([
-			{ externalId: get(item, 'value', '').toString(), startTime: 0 },
-		]);
-
-		setVideoStill(get(videoStills[0], 'previewImagePath', '')); // TODO: Default image?
 	};
 
 	return (
