@@ -46,15 +46,9 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import {
-	copyToClipboard,
-	CustomError,
-	generateSearchLinkString,
-	navigate,
-} from '../../shared/helpers';
+import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { AppState } from '../../store';
 
@@ -355,7 +349,10 @@ const Search: FunctionComponent<SearchProps> = ({
 	};
 
 	const handleTagClicked = (tagId: string) => {
-		redirectToClientPage(generateSearchLinkString('collectionLabel' as any, tagId), history); // TODO remove cast	after update to typings 2.14.0
+		setFormState({
+			...DEFAULT_FORM_STATE,
+			collectionLabel: [tagId],
+		} as any); // TODO remove cast	after update to typings 2.14.0
 	};
 
 	// @ts-ignore
