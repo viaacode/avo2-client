@@ -298,7 +298,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	};
 
 	// Render functions
-	const renderRelatedBundles = () => {
+	const renderRelatedContent = () => {
 		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
 			const contentType = toEnglishContentType(relatedItem.administrative_type);
 			return (
@@ -592,12 +592,10 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					<Container mode="vertical" background="alt">
 						<Container mode="horizontal">
 							<BlockHeading type="h3">
-								<Trans i18nKey="bundle/views/bundle-detail___aanbevolen-bundels">
-									Aanbevolen bundels
-								</Trans>
+								<Trans>Bekijk ook</Trans>
 							</BlockHeading>
 							<div className="c-media-card-list">
-								<Grid>{renderRelatedBundles()}</Grid>
+								<Grid>{renderRelatedContent()}</Grid>
 							</div>
 						</Container>
 					</Container>

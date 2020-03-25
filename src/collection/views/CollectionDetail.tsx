@@ -403,7 +403,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	// Render functions
-	const renderRelatedCollections = () => {
+	const renderRelatedContent = () => {
 		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
 			const { id, dc_title, thumbnail_path = undefined, original_cp = '' } = relatedItem;
 			const category = toEnglishContentType(relatedItem.administrative_type);
@@ -763,13 +763,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						{!!relatedItems && !!relatedItems.length && (
 							<>
 								<BlockHeading type="h3">
-									<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
-										Bekijk ook
-									</Trans>
+									<Trans>Bekijk ook</Trans>
 								</BlockHeading>
-								<Grid className="c-media-card-list">
-									{renderRelatedCollections()}
-								</Grid>
+								<Grid className="c-media-card-list">{renderRelatedContent()}</Grid>
 							</>
 						)}
 					</Container>
