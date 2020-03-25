@@ -9,9 +9,10 @@ import {
 	isNil,
 	isPlainObject,
 	pickBy,
+	set,
 } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -37,6 +38,7 @@ import {
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { SearchResultItem } from '@viaa/avo2-types/types/search/index';
 
 import {
 	PermissionGuard,
@@ -44,13 +46,27 @@ import {
 	PermissionGuardPass,
 } from '../../authentication/components';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { copyToClipboard, navigate } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
+import {
+	copyToClipboard,
+	CustomError,
+	generateSearchLinkString,
+	navigate,
+} from '../../shared/helpers';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import { AppState } from '../../store';
 
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
+import {
+	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
+	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED,
+} from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarkRequestInfo,
+	BookmarkStatusLookup,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { SearchFilterControls, SearchResults } from '../components';
 import { DEFAULT_FORM_STATE, DEFAULT_SORT_ORDER, ITEMS_PER_PAGE } from '../search.const';
 import {
@@ -74,6 +90,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	user,
 }) => {
 	const [t] = useTranslation();
+
 	const [formState, setFormState] = useState(DEFAULT_FORM_STATE);
 	const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULT_SORT_ORDER);
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
@@ -81,6 +98,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	const [searchTerms, setSearchTerms] = useState('');
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const [queryParamsAnalysed, setQueryParamsAnalysed] = useState(false);
+	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
 
 	/**
 	 * Update the search results when the formState, sortOrder or the currentPage changes
@@ -146,6 +164,44 @@ const Search: FunctionComponent<SearchProps> = ({
 			window.scrollTo(0, 0);
 		}
 	}, [searchResults, currentPage, formState, history, sortOrder]);
+
+	const getBookmarkStatuses = useCallback(async () => {
+		try {
+			const results = get(searchResults, 'results');
+			const profileId = get(user, 'profile.id');
+
+			if (!results || !profileId) {
+				// search results or user hasn't been loaded yet
+				return;
+			}
+
+			const objectInfos = results.map(
+				(result: Avo.Search.ResultItem): BookmarkRequestInfo => {
+					const type =
+						CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type];
+					return {
+						type,
+						uuid: (result as any).uid, // TODO remove cast	after update to typings 2.14.0
+					};
+				}
+			);
+			setBookmarkStatuses(
+				await BookmarksViewsPlaysService.getBookmarkStatuses(profileId, objectInfos)
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to get bookmark statuses', err, {
+					searchResults,
+					user,
+				})
+			);
+			ToastService.danger(t('Het ophalen van de bladwijzer statusen is mislukt'));
+		}
+	}, [t, setBookmarkStatuses, searchResults, user]);
+
+	useEffect(() => {
+		getBookmarkStatuses();
+	}, [getBookmarkStatuses]);
 
 	const getFiltersFromQueryParams = () => {
 		// Check if current url already has a query param set
@@ -259,8 +315,48 @@ const Search: FunctionComponent<SearchProps> = ({
 		setCurrentPage(pageIndex);
 	};
 
-	// TODO: FEATURE - handle search result bookmark button toggle
-	const handleBookmarkToggle = (/*id: string, active: boolean*/) => {};
+	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
+		try {
+			const results = get(searchResults, 'results', []);
+			const resultItem: SearchResultItem | undefined = results.find(
+				result => (result as any).uid === uuid // TODO remove cast	after update to typings 2.14.0
+			);
+			if (!resultItem) {
+				throw new CustomError('Failed to find search result by id');
+			}
+			const type = CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[resultItem.administrative_type];
+			await BookmarksViewsPlaysService.toggleBookmark(uuid, user, type, !active);
+
+			// Update the local cache of bookmark statuses
+			const bookmarkStatusesTemp = cloneDeep(bookmarkStatuses) || {
+				item: {},
+				collection: {},
+			};
+			set(bookmarkStatusesTemp, `[${type}][${uuid}]`, active);
+			setBookmarkStatuses(bookmarkStatusesTemp);
+			ToastService.success(
+				active ? t('De bladwijzer is aangemaakt') : t('De bladwijzer is verwijderd')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle bookmark', err, {
+					uuid,
+					user,
+					searchResults,
+					isBookmarked: !active,
+				})
+			);
+			ToastService.danger(
+				active
+					? t('Het aanmaken van de bladwijzer is mislukt')
+					: t('Het verwijderen van de bladwijzer is mislukt')
+			);
+		}
+	};
+
+	const handleTagClicked = (tagId: string) => {
+		redirectToClientPage(generateSearchLinkString('collectionLabel' as any, tagId), history); // TODO remove cast	after update to typings 2.14.0
+	};
 
 	// @ts-ignore
 	const handleOriginalCpLinkClicked = async (id: string, originalCp: string | undefined) => {
@@ -450,10 +546,12 @@ const Search: FunctionComponent<SearchProps> = ({
 					currentPage={currentPage}
 					data={searchResults}
 					handleBookmarkToggle={handleBookmarkToggle}
+					handleTagClicked={handleTagClicked}
 					handleOriginalCpLinkClicked={handleOriginalCpLinkClicked}
 					loading={searchResultsLoading}
 					pageCount={pageCount}
 					setPage={setPage}
+					bookmarkStatuses={bookmarkStatuses}
 				/>
 			)}
 		</Container>

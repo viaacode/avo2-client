@@ -34,7 +34,7 @@ import { BookmarksViewsPlaysService, ToastService } from '../../shared/services'
 import {
 	BookmarkInfo,
 	EventContentType,
-} from '../../shared/services/bookmarks-views-plays-service';
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 const ITEMS_PER_PAGE = 5;
 
