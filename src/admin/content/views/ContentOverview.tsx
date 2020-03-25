@@ -352,6 +352,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				<Modal
 					isOpen={isNotAdminModalOpen}
 					onClose={() => setIsNotAdminModalOpen(false)}
+					size="small"
 					title={t(
 						'admin/content/views/content-overview___u-heeft-niet-de-juiste-rechten'
 					)}

@@ -94,8 +94,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		pageType === PageType.Create
 			? t('admin/content/views/content-edit___content-toevoegen')
 			: t('admin/content/views/content-edit___content-aanpassen');
-	// TODO: clean up admin check
-	const isAdminUser = get(user, 'role.name', null) === 'admin';
+	const isAdminUser = get(user, 'profile.permissions', []).includes('EDIT_PROTECTED_PAGE_STATUS');
 
 	// Methods
 	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {
