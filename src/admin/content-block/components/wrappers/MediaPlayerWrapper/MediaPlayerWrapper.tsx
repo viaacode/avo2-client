@@ -4,7 +4,7 @@ import React, { FC, useEffect, useState } from 'react';
 
 import { BlockFlowPlayer, ButtonAction } from '@viaa/avo2-components';
 
-import { getEnv } from '../../../../../shared/helpers';
+import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { ToastService } from '../../../../../shared/services';
 import { fetchPlayerTicket } from '../../../../../shared/services/player-ticket-service';
 import { getVideoStills } from '../../../../../shared/services/stills-service';
@@ -33,7 +33,7 @@ export const MediaPlayerWrapper: FC<MediaPlayerProps> = ({ item, title, width })
 					setPlayerTicket(data);
 				})
 				.catch((err: any) => {
-					console.error(err);
+					console.error(new CustomError('Player ticket kon niet worden opgehaald', err));
 					ToastService.danger(
 						i18n.t(
 							'admin/content-block/helpers/wrappers/block-media-player-wrapper___het-ophalen-van-het-player-ticket-is-mislukt'
