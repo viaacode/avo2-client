@@ -19,11 +19,15 @@ const parseSearchQuery = (input: string): string => {
 			: replacedString;
 
 		// parse as objects
+		let filterDefinition: any;
+		if (splitString.trim()[0] !== '{') {
+			filterDefinition = queryString.parse(splitString);
+			filterDefinition.filters = JSON.parse(filterDefinition.filters as string);
+		} else {
+			filterDefinition = JSON.parse(splitString);
+		}
 
-		const output = queryString.parse(splitString);
-		output.filters = JSON.parse(output.filters as string);
-
-		return JSON.stringify(output);
+		return JSON.stringify(filterDefinition);
 	} catch (err) {
 		console.error('Failed to parse search query input', err);
 		ToastService.danger(

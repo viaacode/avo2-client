@@ -1,5 +1,6 @@
 import queryString from 'query-string';
 
+import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
@@ -35,6 +36,47 @@ export class ContentPageService {
 			return await response.json();
 		} catch (err) {
 			throw new CustomError('Failed to get all user groups', err);
+		}
+	}
+
+	public static async resolveMediaItems(
+		searchQuery: string | undefined,
+		searchQueryLimit: number | undefined,
+		mediaItems:
+			| {
+					mediaItem: ButtonAction;
+			  }[]
+			| undefined
+	): Promise<any[]> {
+		let url: string | undefined;
+		let body: any | undefined;
+		try {
+			url = `${getEnv('PROXY_URL')}/content-pages`;
+			body = {
+				searchQuery,
+				searchQueryLimit,
+				mediaItems,
+			};
+			const response = await fetch(url, {
+				method: 'POST',
+				body: JSON.stringify(body),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+			});
+			if (response.status < 200 && response.status >= 400) {
+				throw new CustomError('response status was unexpected', null, { response });
+			}
+			return await response.json();
+		} catch (err) {
+			throw new CustomError('Failed to resolve media items through proxy', err, {
+				searchQuery,
+				searchQueryLimit,
+				mediaItems,
+				url,
+				body,
+			});
 		}
 	}
 }
