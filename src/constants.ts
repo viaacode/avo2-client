@@ -176,6 +176,11 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = {
 		showInContentPicker: true,
 		showForInteractiveTour: false,
 	},
+	ACCEPT_CONDITIONS: {
+		route: `/${ROUTE_PARTS.acceptConditions}`,
+		showInContentPicker: true,
+		showForInteractiveTour: false,
+	},
 	ERROR: {
 		route: `/${ROUTE_PARTS.error}`,
 		showInContentPicker: false,

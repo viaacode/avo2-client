@@ -6,7 +6,7 @@ import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { connect } from 'react-redux';
-import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
+import { selectUser } from '../../../authentication/store/selectors';
 import { AppState } from '../../../store';
 import { BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import {
@@ -79,7 +79,6 @@ export const Footer: FunctionComponent<FooterProps> = ({ history, location, matc
 };
 
 const mapStateToProps = (state: AppState) => ({
-	loginMessage: selectLoginMessage(state),
 	user: selectUser(state),
 });
 

@@ -103,20 +103,32 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 							/>
 						);
 					}
-					if (isProfileComplete(user)) {
-						const Component = component;
-						return <Component {...props} user={user} />;
+					// TODO remove cast once update to typings 2.14.0
+					if (!(loginState as any).acceptedConditions) {
+						// Redirect to the accept user and privacy declaration
+						return (
+							<Redirect
+								to={{
+									pathname: APP_PATH.ACCEPT_CONDITIONS.route,
+									state: { from: props.location },
+								}}
+							/>
+						);
 					}
-					// Redirect to the complete profile route
-					// So we can redirect to the originally requested route once the user completes their profile info
-					return (
-						<Redirect
-							to={{
-								pathname: APP_PATH.COMPLETE_PROFILE.route,
-								state: { from: props.location },
-							}}
-						/>
-					);
+					if (!isProfileComplete(user)) {
+						// Redirect to the complete profile route
+						// So we can redirect to the originally requested route once the user completes their profile info
+						return (
+							<Redirect
+								to={{
+									pathname: APP_PATH.COMPLETE_PROFILE.route,
+									state: { from: props.location },
+								}}
+							/>
+						);
+					}
+					const Component = component;
+					return <Component {...props} user={user} />;
 				}
 
 				// On errors or not logged in => redirect to login or register page
