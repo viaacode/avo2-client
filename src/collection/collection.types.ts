@@ -68,6 +68,7 @@ export function toEnglishContentType(label: DutchContentType): EnglishContentTyp
 		audio: 'audio',
 		video: 'video',
 		collectie: 'collection',
+		map: 'bundle',
 		bundel: 'bundle',
 		zoek: 'search',
 		zoekopdracht: 'searchquery',

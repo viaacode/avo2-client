@@ -6,30 +6,32 @@ import { CustomError, getEnv } from '../helpers';
 
 export async function getRelatedItems(
 	id: string | number,
-	index: 'both' | 'items' | 'collections' | 'bundles',
+	type: 'items' | 'collections' | 'bundles',
 	limit: number = 5
 ): Promise<Avo.Search.ResultItem[]> {
+	let url: string | undefined;
+	let body: any | undefined;
 	try {
-		const response = await fetch(
-			`${getEnv('PROXY_URL')}/search/related?${stringify({
-				id,
-				index,
-				limit,
-			})}`,
-			{
-				method: 'GET',
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			}
-		);
+		url = `${getEnv('PROXY_URL')}/search/related?${stringify({
+			id,
+			type,
+			limit,
+		})}`;
+		body = {
+			method: 'GET',
+			credentials: 'include',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
+		const response = await fetch(url, body);
 
 		return (await response.json()).results;
 	} catch (err) {
-		throw new CustomError('Failed to get video stills', err, {
+		throw new CustomError('Failed to get related items', err, {
 			id,
-			index,
+			url,
+			body,
 			limit,
 		});
 	}

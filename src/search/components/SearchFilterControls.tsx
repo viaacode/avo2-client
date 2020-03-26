@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CheckboxDropdownModal, DateRangeDropdown } from '../../shared/components';
-import { CheckboxOption } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import { SearchFilterControlsProps } from '../search.types';
 

@@ -12,7 +12,6 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
-	DutchContentType,
 	Grid,
 	Header,
 	HeaderAvatar,
@@ -61,6 +60,7 @@ import { BookmarksViewsPlaysService, ToastService } from '../../shared/services'
 import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../shared/services/related-items-service';
 
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
@@ -70,7 +70,6 @@ import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
-const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -93,9 +92,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedCollections /*, setRelatedCollections */] = useState<
-		Avo.Search.ResultItem[] | null
-	>(null);
+	const [relatedItems, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewCollections: boolean;
@@ -255,21 +252,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		checkPermissionsAndGetCollection();
 	}, [collectionId, t, user, history]);
 
-	// Waiting for ES index for bundles
-	// useEffect(() => {
-	// 	if (!relatedCollections) {
-	// 		getRelatedItems(collectionId, 'collections', 4)
-	// 			.then(relatedItems => setRelatedCollections(relatedItems))
-	// 			.catch(err => {
-	// 				console.error('Failed to get related items', err, {
-	// 					collectionId,
-	// 					index: 'collections',
-	// 					limit: 4,
-	// 				});
-	// 				ToastService.danger(t('collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'));
-	// 			});
-	// 	}
-	// }, [relatedCollections, t, collectionId]);
+	useEffect(() => {
+		getRelatedItems(collectionId, 'collections', 4)
+			.then(relatedItems => {
+				setRelatedCollections(relatedItems);
+			})
+			.catch(err => {
+				console.error('Failed to get related items', err, {
+					collectionId,
+					index: 'collections',
+					limit: 4,
+				});
+				ToastService.danger(
+					t(
+						'collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'
+					)
+				);
+			});
+	}, [setRelatedCollections, t, collectionId]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {
@@ -414,51 +414,37 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	};
 
 	// Render functions
-	const renderRelatedCollections = () => {
-		if (!relatedCollections || !relatedCollections.length) {
-			return (
-				<p className="c-body-1">
-					<Trans i18nKey="collection/views/collection-detail___de-gerelateerde-collecties-konden-niet-worden-opgehaald">
-						De gerelateerde collecties konden niet worden opgehaald.
-					</Trans>
-				</p>
-			);
-		}
-
-		relatedCollections.map((relatedCollection: Avo.Search.ResultItem) => {
-			const {
-				id,
-				dc_title,
-				thumbnail_path = undefined,
-				original_cp = '',
-			} = relatedCollection;
-			const category = toEnglishContentType(CONTENT_TYPE);
+	const renderRelatedContent = () => {
+		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
+			const { id, dc_title, thumbnail_path = undefined, original_cp = '' } = relatedItem;
+			const category = toEnglishContentType(relatedItem.administrative_type);
 
 			return (
-				<Grid className="c-media-card-list">
-					<Column size="3-6">
-						<MediaCard
-							category={category}
-							onClick={() =>
-								redirectToClientPage(
-									buildLink(APP_PATH.COLLECTION_DETAIL.route, { id }),
-									history
-								)
-							}
-							orientation="horizontal"
-							title={dc_title}
-						>
-							<MediaCardThumbnail>
-								<Thumbnail category={category} src={thumbnail_path} />
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category={category}>
-									<MetaDataItem label={original_cp || undefined} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
-					</Column>
-				</Grid>
+				<Column size="2-6" key={`related-item-${id}`}>
+					<MediaCard
+						category={category}
+						onClick={() =>
+							redirectToClientPage(
+								generateContentLinkString(
+									relatedItem.administrative_type,
+									relatedItem.id
+								),
+								history
+							)
+						}
+						orientation="horizontal"
+						title={dc_title}
+					>
+						<MediaCardThumbnail>
+							<Thumbnail category={category} src={thumbnail_path} />
+						</MediaCardThumbnail>
+						<MediaCardMetaData>
+							<MetaData category={category}>
+								<MetaDataItem label={original_cp || undefined} />
+							</MetaData>
+						</MediaCardMetaData>
+					</MediaCard>
+				</Column>
 			);
 		});
 	};
@@ -785,12 +771,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<BlockHeading type="h3">
-							<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
-								Bekijk ook
-							</Trans>
-						</BlockHeading>
-						{renderRelatedCollections()}
+						{!!relatedItems && !!relatedItems.length && (
+							<>
+								<BlockHeading type="h3">
+									<Trans>Bekijk ook</Trans>
+								</BlockHeading>
+								<Grid className="c-media-card-list">{renderRelatedContent()}</Grid>
+							</>
+						)}
 					</Container>
 				</Container>
 				{isPublic !== null && (
