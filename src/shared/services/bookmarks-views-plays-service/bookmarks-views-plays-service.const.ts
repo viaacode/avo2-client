@@ -12,24 +12,11 @@ import {
 	REMOVE_COLLECTION_BOOKMARK,
 	REMOVE_ITEM_BOOKMARK,
 } from './bookmarks-views-plays-service.gql';
-
-export interface BookmarkInfo {
-	createdAt: number;
-	contentId: string;
-	contentLinkId: string;
-	contentType: EventContentType;
-	contentTitle: string;
-	contentThumbnailPath: string | null | undefined;
-	contentCreatedAt: number;
-	contentViews: number;
-}
-
-export interface BookmarkViewPlayCounts {
-	bookmarkCount: number;
-	viewCount: number;
-	playCount: number;
-	isBookmarked: boolean;
-}
+import {
+	BookmarkViewPlayCounts,
+	EventActionExtended, EventContentType,
+	EventContentTypeSimplified,
+} from './bookmarks-views-plays-service.types';
 
 export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 	bookmarkCount: 0,
@@ -37,43 +24,6 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 	playCount: 0,
 	isBookmarked: false,
 };
-
-export interface GetBookmarksForUserResponse {
-	data: {
-		app_item_bookmarks: AppItemBookmark[];
-		app_collection_bookmarks: AppCollectionBookmark[];
-	};
-}
-
-export interface AppItemBookmark {
-	bookmarkedItem?: {
-		title: string;
-		thumbnail_path: string;
-		issued: string;
-		item: {
-			external_id: string;
-		};
-	};
-	item_id: string;
-	created_at: string;
-}
-
-export interface AppCollectionBookmark {
-	bookmarkedCollection?: {
-		title: string;
-		thumbnail_path?: string;
-		created_at: string;
-		type_id: number;
-	};
-	collection_uuid: string;
-	created_at: string;
-}
-
-export type EventAction = 'bookmark' | 'unbookmark' | 'view' | 'play';
-export type EventInitAction = 'viewInit' | 'playInit';
-export type EventActionExtended = EventAction | EventInitAction;
-export type EventContentTypeSimplified = 'item' | 'collection';
-export type EventContentType = EventContentTypeSimplified | 'bundle';
 
 export interface QueryDefinition {
 	query: any;
@@ -177,4 +127,26 @@ export const EVENT_QUERIES: {
 			}),
 		},
 	},
+};
+
+export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: { [type: string]: EventContentTypeSimplified } = {
+	item: 'item',
+	video: 'item',
+	audio: 'item',
+	collection: 'collection',
+	collectie: 'collection',
+	bundle: 'collection',
+	bundel: 'collection',
+	map: 'collection',
+};
+
+export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE: { [type: string]: EventContentType } = {
+	item: 'item',
+	video: 'item',
+	audio: 'item',
+	collection: 'collection',
+	collectie: 'collection',
+	bundle: 'bundle',
+	bundel: 'bundle',
+	map: 'bundle',
 };
