@@ -73,3 +73,5 @@ export function toEnglishContentType(label: DutchContentType): EnglishContentTyp
 		zoekopdracht: 'searchquery',
 	}[label] as EnglishContentType;
 }
+
+export type CollectionLabelLookup = { [id: string]: string };

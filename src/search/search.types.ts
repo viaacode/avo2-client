@@ -1,7 +1,10 @@
-import { Avo } from '@viaa/avo2-types';
 import { Dispatch } from 'redux';
 
+import { Avo } from '@viaa/avo2-types';
+
 import { DefaultSecureRouteProps } from '../authentication/components/SecuredRoute';
+import { CollectionLabelLookup } from '../collection/collection.types';
+import { BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };
@@ -40,12 +43,15 @@ export interface SearchFilterControlsProps {
 }
 
 interface SearchResultItemHandlers {
-	handleBookmarkToggle: (id: string, active: boolean) => void;
+	handleBookmarkToggle: (uuid: string, active: boolean) => void;
+	handleTagClicked: (id: string) => void;
 	handleOriginalCpLinkClicked: (id: string, cp: string) => void;
 }
 
 export interface SearchResultItemProps extends SearchResultItemHandlers {
 	result: Avo.Search.ResultItem;
+	collectionLabelLookup: CollectionLabelLookup;
+	isBookmarked: boolean | null;
 }
 
 export interface SearchResultsProps extends SearchResultItemHandlers {
@@ -54,4 +60,5 @@ export interface SearchResultsProps extends SearchResultItemHandlers {
 	pageCount: number;
 	data: Avo.Search.Search | null;
 	setPage: (page: number) => void;
+	bookmarkStatuses: BookmarkStatusLookup | null;
 }
