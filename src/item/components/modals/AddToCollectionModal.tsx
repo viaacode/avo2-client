@@ -1,4 +1,4 @@
-import { get } from 'lodash-es';
+import { clamp, get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +29,11 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
-import { formatDurationHoursMinutesSeconds, toSeconds } from '../../../shared/helpers';
+import {
+	formatDurationHoursMinutesSeconds,
+	parseDuration,
+	toSeconds,
+} from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
@@ -63,11 +67,19 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		Avo.Collection.Collection | undefined
 	>(undefined);
 	const [newCollectionTitle, setNewCollectionTitle] = useState<string>('');
+
+	const [fragmentStartString, setFragmentStartString] = useState<string>(
+		formatDurationHoursMinutesSeconds(0)
+	);
+	const [fragmentEndString, setFragmentEndString] = useState<string>(itemMetaData.duration);
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
 		toSeconds(itemMetaData.duration) || 0
 	);
 	const [collections, setCollections] = useState<Partial<Avo.Collection.Collection>[]>([]);
+
+	const minTime: number = 0;
+	const maxTime: number = toSeconds(itemMetaData.duration) || 0;
 
 	const fetchCollections = React.useCallback(
 		() =>
@@ -238,26 +250,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		}
 	};
 
-	/**
-	 * Converts a duration of the format "00:03:36" to number of seconds and stores it under the appropriate state
-	 * @param timeString
-	 * @param startOrEnd
-	 */
-	const setFragmentTime = (timeString: string, startOrEnd: 'start' | 'end') => {
-		const setFunctions = {
-			start: setFragmentStartTime,
-			end: setFragmentEndTime,
-		};
-		const seconds = toSeconds(timeString);
-
-		if (seconds !== null) {
-			setFunctions[startOrEnd](seconds);
-		}
-	};
-
 	const onUpdateMultiRangeValues = (values: number[]) => {
 		setFragmentStartTime(values[0]);
 		setFragmentEndTime(values[1]);
+		setFragmentStartString(formatDurationHoursMinutesSeconds(values[0]));
+		setFragmentEndString(formatDurationHoursMinutesSeconds(values[1]));
 	};
 
 	const onApply = createNewCollection
@@ -266,6 +263,79 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				addItemToExistingCollection(
 					selectedCollection as Partial<Avo.Collection.Collection>
 				);
+
+	const clampDuration = (duration: number): number => {
+		return clamp(duration, minTime, maxTime);
+	};
+
+	const updateStartAndEnd = (type: 'start' | 'end', value?: string) => {
+		if (value) {
+			// onChange event
+			if (type === 'start') {
+				setFragmentStartString(value);
+			} else {
+				setFragmentEndString(value);
+			}
+			if (/[0-9]{2}:[0-9]{2}:[0-9]{2}/.test(value)) {
+				// full duration
+				if (type === 'start') {
+					const newStartTime = clampDuration(parseDuration(value));
+					setFragmentStartTime(newStartTime);
+					setFragmentStartString(formatDurationHoursMinutesSeconds(newStartTime));
+					if (newStartTime > fragmentEndTime) {
+						setFragmentEndTime(newStartTime);
+						setFragmentEndString(formatDurationHoursMinutesSeconds(newStartTime));
+					}
+				} else {
+					const newEndTime = clampDuration(parseDuration(value));
+					setFragmentEndTime(newEndTime);
+					setFragmentEndString(formatDurationHoursMinutesSeconds(newEndTime));
+					if (newEndTime < fragmentStartTime) {
+						setFragmentStartTime(newEndTime);
+						setFragmentStartString(formatDurationHoursMinutesSeconds(newEndTime));
+					}
+				}
+			}
+			// else do nothing yet, until the user finishes the time entry
+		} else {
+			// on blur event
+			if (type === 'start') {
+				if (/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/.test(fragmentStartString)) {
+					const newStartTime = clampDuration(parseDuration(fragmentStartString));
+					setFragmentStartTime(newStartTime);
+					setFragmentStartString(formatDurationHoursMinutesSeconds(newStartTime));
+					if (newStartTime > fragmentEndTime) {
+						setFragmentEndTime(newStartTime);
+						setFragmentEndString(formatDurationHoursMinutesSeconds(newStartTime));
+					}
+				} else {
+					setFragmentStartTime(0);
+					setFragmentStartString(formatDurationHoursMinutesSeconds(0));
+					ToastService.danger(
+						t('De ingevulde starttijd heeft niet het correcte formaat (uu:mm:ss)')
+					);
+				}
+			} else {
+				if (/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/.test(fragmentEndString)) {
+					const newEndTime = clampDuration(parseDuration(fragmentEndString));
+					setFragmentEndTime(newEndTime);
+					setFragmentEndString(formatDurationHoursMinutesSeconds(newEndTime));
+					if (newEndTime < fragmentStartTime) {
+						setFragmentStartTime(newEndTime);
+						setFragmentStartString(formatDurationHoursMinutesSeconds(newEndTime));
+					}
+				} else {
+					setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
+					setFragmentEndString(
+						formatDurationHoursMinutesSeconds(toSeconds(itemMetaData.duration) || 0)
+					);
+					ToastService.danger(
+						t('De ingevulde eidntijd heeft niet het correcte formaat (uu:mm:ss)')
+					);
+				}
+			}
+		}
+	};
 
 	const renderAddToCollectionModal = () => {
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
@@ -297,11 +367,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									<Column size="2-7">
 										<Container mode="vertical" className="m-time-crop-controls">
 											<TextInput
-												value={formatDurationHoursMinutesSeconds(
-													fragmentStartTime
-												)}
-												onChange={timeString =>
-													setFragmentTime(timeString, 'start')
+												value={fragmentStartString}
+												onBlur={() => updateStartAndEnd('start')}
+												onChange={endTime =>
+													updateStartAndEnd('start', endTime)
 												}
 											/>
 											<div className="m-multi-range-wrapper">
@@ -317,11 +386,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												/>
 											</div>
 											<TextInput
-												value={formatDurationHoursMinutesSeconds(
-													fragmentEndTime
-												)}
-												onChange={timeString =>
-													setFragmentTime(timeString, 'end')
+												value={fragmentEndString}
+												onBlur={() => updateStartAndEnd('end')}
+												onChange={endTime =>
+													updateStartAndEnd('end', endTime)
 												}
 											/>
 										</Container>

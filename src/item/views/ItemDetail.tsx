@@ -61,10 +61,8 @@ import {
 	reorderDate,
 } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, dataService, ToastService } from '../../shared/services';
-import {
-	BookmarkViewPlayCounts,
-	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import ReportItemModal from '../components/modals/ReportItemModal';
@@ -242,18 +240,32 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 	}, [time, history, videoRef, match.params.id, relatedItems, user]);
 
 	const toggleBookmark = async () => {
-		if (
+		try {
 			await BookmarksViewsPlaysService.toggleBookmark(
 				(item as any).uid,
 				user,
 				'item',
 				bookmarkViewPlayCounts.isBookmarked
-			)
-		) {
+			);
+
 			setBookmarkViewPlayCounts({
 				...bookmarkViewPlayCounts,
 				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
 			});
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle bookmark', err, {
+					itemId: (item as any).uid,
+					user,
+					type: 'item',
+					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
+				})
+			);
+			ToastService.danger(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('Het verwijderen van de bladwijzer is mislukt')
+					: t('Het aanmaken van de bladwijzer is mislukt')
+			);
 		}
 	};
 

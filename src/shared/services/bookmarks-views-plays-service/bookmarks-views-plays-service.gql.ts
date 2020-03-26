@@ -194,3 +194,18 @@ export const GET_BOOKMARKS_FOR_USER = gql`
 		}
 	}
 `;
+
+export const GET_BOOKMARK_STATUSES = gql`
+	query getBookmarkStatuses($profileId: uuid!, $itemUuids: [uuid!]!, $collectionUuids: [uuid!]!) {
+		app_collection_bookmarks(
+			where: { profile_id: { _eq: $profileId }, collection_uuid: { _in: $collectionUuids } }
+		) {
+			collection_uuid
+		}
+		app_item_bookmarks(
+			where: { profile_id: { _eq: $profileId }, item_id: { _in: $itemUuids } }
+		) {
+			item_id
+		}
+	}
+`;

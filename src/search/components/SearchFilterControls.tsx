@@ -1,15 +1,17 @@
 import { capitalize, get } from 'lodash-es';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CheckboxDropdownModal, DateRangeDropdown } from '../../shared/components';
-import { CheckboxOption } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import { SearchFilterControlsProps } from '../search.types';
 
 import './SearchFilterControls.scss';
+import { CollectionService } from '../../collection/collection.service';
+import { CustomError } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
 
 const languageCodeToLabel = (code: string): string => {
 	return capitalize(LANGUAGES.nl[code]) || code;
@@ -22,10 +24,22 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 }) => {
 	const [t] = useTranslation();
 
+	const [collectionLabels, setCollectionLabels] = useState<{ [id: string]: string }>({});
+
+	useEffect(() => {
+		CollectionService.getCollectionLabels()
+			.then(setCollectionLabels)
+			.catch(err => {
+				console.error(new CustomError('Failed to get collection labels', err));
+				ToastService.danger(t('Het ophalen van de kwaliteitslabels is mislukt'));
+			});
+	}, [setCollectionLabels, t]);
+
 	const renderCheckboxDropdownModal = (
 		label: string,
 		propertyName: Avo.Search.FilterProp,
-		disabled: boolean = false
+		disabled: boolean = false,
+		labelsMapping?: { [id: string]: string }
 	): ReactNode => {
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
 			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
@@ -33,6 +47,10 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 
 				if (propertyName === 'language') {
 					checkboxLabel = languageCodeToLabel(option_name);
+				}
+
+				if (labelsMapping) {
+					checkboxLabel = labelsMapping[option_name];
 				}
 
 				return {
@@ -122,8 +140,13 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			)}
 			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___aanbieder'),
-				'provider',
-				false
+				'provider'
+			)}
+			{renderCheckboxDropdownModal(
+				t('Label'),
+				'collectionLabel' as any, // TODO remove cast	after update to typings 2.14.0
+				false,
+				collectionLabels
 			)}
 		</ul>
 	);

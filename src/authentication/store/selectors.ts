@@ -19,5 +19,9 @@ export const selectUser = ({ loginState }: AppState) => {
 };
 
 export const selectLoginMessage = ({ loginState }: AppState) => {
-	return get(loginState, ['data', 'loginMessage']);
+	return get(loginState, ['data', 'message']);
+};
+
+export const selectAcceptedConditions = ({ loginState }: AppState) => {
+	return get(loginState, ['data', 'acceptedConditions']);
 };
