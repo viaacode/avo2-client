@@ -365,7 +365,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderEmptyFallback = () => (
 		<ErrorView
-			icon="collection"
+			icon={isCollection ? 'collection' : 'folder'}
 			message={
 				isCollection
 					? t(
