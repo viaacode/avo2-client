@@ -98,6 +98,7 @@ export interface ContentBlockField {
 // must match the lookup enumeration `content_block_types` on GraphQL.
 export enum ContentBlockType {
 	Accordions = 'ACCORDIONS',
+	AnchorLinks = 'ANCHOR_LINKS',
 	Buttons = 'BUTTONS',
 	CTAs = 'CTAS',
 	Heading = 'HEADING',
@@ -216,6 +217,13 @@ export interface PageOverviewBlockComponentStateFields {
 }
 
 export interface ButtonsBlockComponentState {
+	label: string;
+	icon?: IconName;
+	type?: ButtonType;
+	navigate?: () => void;
+}
+
+export interface AnchorLinksBlockComponentState {
 	label: string;
 	icon?: IconName;
 	type?: ButtonType;

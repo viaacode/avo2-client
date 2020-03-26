@@ -1,0 +1,53 @@
+import i18n from '../../../../shared/translations/i18n';
+
+import {
+	AnchorLinksBlockComponentState,
+	ContentBlockConfig,
+	ContentBlockEditor,
+	ContentBlockType,
+	DefaultContentBlockState,
+} from '../../../shared/types';
+
+import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+
+export const INITIAL_ANCHOR_LINKS_COMPONENTS_STATE = (): AnchorLinksBlockComponentState[] => [
+	{
+		label: '',
+		type: 'link',
+	},
+];
+
+export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
+	BLOCK_STATE_DEFAULTS(ContentBlockType.AnchorLinks, position);
+
+export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+	name: i18n.t('Links'),
+	type: ContentBlockType.AnchorLinks,
+	components: {
+		name: i18n.t('Link'),
+		limits: {
+			max: 7,
+		},
+		state: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE(),
+		fields: {
+			label: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/buttons___knoptekst-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/buttons___tekst'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
+			buttonAction: {
+				label: i18n.t('admin/content-block/helpers/generators/buttons___knop-actie'),
+				editorType: ContentBlockEditor.ContentPicker,
+			},
+		},
+	},
+	block: {
+		state: INITIAL_ANCHOR_LINKS_BLOCK_STATE(position),
+		fields: {
+			align: ALIGN_FIELD(),
+			...BLOCK_FIELD_DEFAULTS(),
+		},
+	},
+});

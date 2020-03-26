@@ -31,6 +31,7 @@ import {
 import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
 	ACCORDIONS_BLOCK_CONFIG,
+	ANCHOR_LINKS_BLOCK_CONFIG,
 	BUTTONS_BLOCK_CONFIG,
 	CTAS_BLOCK_CONFIG,
 	HEADING_BLOCK_CONFIG,
@@ -39,6 +40,8 @@ import {
 	IMAGE_GRID_BLOCK_CONFIG,
 	INITIAL_ACCORDIONS_BLOCK_STATE,
 	INITIAL_ACCORDIONS_COMPONENTS_STATE,
+	INITIAL_ANCHOR_LINKS_BLOCK_STATE,
+	INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	INITIAL_BUTTONS_BLOCK_STATE,
 	INITIAL_BUTTONS_COMPONENTS_STATE,
 	INITIAL_CTAS_BLOCK_STATE,
@@ -148,6 +151,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('admin/content-block/content-block___projecten-in-de-kijker'),
 		value: ContentBlockType.ProjectsSpotlight,
 	},
+	{
+		label: i18n.t('Links'),
+		value: ContentBlockType.AnchorLinks,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -168,6 +175,7 @@ export const EDITOR_TYPES_MAP = {
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
+	[ContentBlockType.AnchorLinks]: ANCHOR_LINKS_BLOCK_CONFIG,
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
 	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
@@ -186,6 +194,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_COMPONENTS_STATE,
+	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_COMPONENTS_STATE,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_COMPONENTS_STATE,
 	[ContentBlockType.Heading]: INITIAL_HEADING_COMPONENTS_STATE,
@@ -204,6 +213,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 
 export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
+	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_BLOCK_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_STATE,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
 	[ContentBlockType.Heading]: INITIAL_HEADING_BLOCK_STATE,
