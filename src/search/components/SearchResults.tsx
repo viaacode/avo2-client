@@ -38,14 +38,11 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 		if (!bookmarkStatuses) {
 			return null;
 		}
-		const isBookmarked =
+		return (
 			bookmarkStatuses[
 				CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type]
-			][(result as any).uid] || false; // TODO remove cast	after update to typings 2.14.0
-
-		console.log('isBookmarked: ', isBookmarked, result.dc_title);
-
-		return isBookmarked;
+			][(result as any).uid] || false
+		); // TODO remove cast	after update to typings 2.14.0
 	};
 
 	return (
