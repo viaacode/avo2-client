@@ -8,7 +8,7 @@ import { Avo } from '@viaa/avo2-types';
 import { navigateToContentType } from '../../../../shared/helpers';
 
 import { ContentBlockComponentState, ContentBlockState } from '../../../shared/types';
-import { DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
+import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	COMPONENT_PREVIEW_MAP,
 	IGNORE_BLOCK_LEVEL_PROPS,
@@ -55,7 +55,7 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 		}));
 	}
 
-	const hasDarkBg = DARK_BACKGROUND_COLOR_OPTIONS.includes(blockState.backgroundColor);
+	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);
 
 	return (
 		<Spacer

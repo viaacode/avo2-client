@@ -32,7 +32,7 @@ import { useTableSort } from '../../../shared/hooks';
 import { dataService, ToastService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
+import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { GET_ALL_PERMISSION_GROUPS, GET_USER_GROUP_BY_ID } from '../user-group.gql';
 import { UserGroupService } from '../user-group.service';
 import {
@@ -454,7 +454,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							</Form>
 						</Spacer>
 						<Table
-							columns={PERMISSION_GROUP_TABLE_COLS}
+							columns={GET_PERMISSION_GROUP_TABLE_COLS()}
 							data={UserGroupService.sortPermissionGroups(
 								userGroup.permissionGroups || [],
 								sortColumn,

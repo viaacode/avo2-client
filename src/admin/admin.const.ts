@@ -24,7 +24,7 @@ export const ADMIN_PATH = Object.freeze({
 	...INTERACTIVE_TOUR_PATH,
 });
 
-export const NAV_ITEMS: NavigationItemInfo[] = [
+export const GET_NAV_ITEMS: () => NavigationItemInfo[] = () => [
 	{
 		label: i18n.t('admin/admin___gebruikers'),
 		location: ADMIN_PATH.USER,

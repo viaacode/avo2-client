@@ -29,7 +29,7 @@ import { ContentPickerType, PickerItem } from '../../shared/types';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
-import { INITIAL_MENU_FORM, MENU_PATH, PAGE_TYPES_LANG } from '../menu.const';
+import { INITIAL_MENU_FORM, MENU_PATH, GET_PAGE_TYPES_LANG } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 import { fetchMenuItemById, fetchMenuItems } from '../menu.service';
 import {
@@ -241,7 +241,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	// Computed
 	const pageType: MenuEditPageType = menuItemId ? 'edit' : 'create';
 	const pageTitle = menuParentId
-		? `${menuName}: item ${PAGE_TYPES_LANG[pageType]}`
+		? `${menuName}: item ${GET_PAGE_TYPES_LANG()[pageType]}`
 		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
 	const menuParentOptions = menuItems.reduce(
 		(acc: SelectOption<string>[], { placement }: Avo.Menu.Menu) => {

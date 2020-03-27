@@ -22,7 +22,7 @@ import {
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
-import { ITEM_OVERVIEW_TABLE_COLS } from '../items.const';
+import { GET_ITEM_OVERVIEW_TABLE_COLS } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 
@@ -193,7 +193,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 		return (
 			<>
 				<FilterTable
-					columns={ITEM_OVERVIEW_TABLE_COLS}
+					columns={GET_ITEM_OVERVIEW_TABLE_COLS()}
 					data={items}
 					dataCount={itemCount}
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>

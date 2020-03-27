@@ -7,7 +7,7 @@ import { retrieveContentPages } from '../../helpers/content-picker/content-page'
 import { retrieveInternalLinks } from '../../helpers/content-picker/internal-link';
 import { retrieveItems } from '../../helpers/content-picker/item';
 
-export const CONTENT_TYPES: PickerTypeOption[] = [
+export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	{
 		value: 'CONTENT_PAGE',
 		label: i18n.t('admin/content/content___content'),

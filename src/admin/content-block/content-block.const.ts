@@ -82,7 +82,7 @@ export const CONTENT_BLOCKS_RESULT_PATH = {
 	INSERT: 'insert_app_content_blocks',
 };
 
-export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
+export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___kies-een-content-block'),
 		value: '',
@@ -221,7 +221,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 };
 
 // Options
-export const BACKGROUND_COLOR_OPTIONS: SelectOption<BackgroundColorOption>[] = [
+export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<BackgroundColorOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___wit'),
 		value: BackgroundColorOption.White,
@@ -252,12 +252,12 @@ export const BACKGROUND_COLOR_OPTIONS: SelectOption<BackgroundColorOption>[] = [
 	},
 ];
 
-export const DARK_BACKGROUND_COLOR_OPTIONS: BackgroundColorOption[] = [
+export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => BackgroundColorOption[] = () => [
 	BackgroundColorOption.NightBlue,
 	BackgroundColorOption.Teal,
 ];
 
-export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
+export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{
 		label: 'Links',
 		value: 'left',
@@ -272,7 +272,7 @@ export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
 	},
 ];
 
-export const HEADING_TYPE_OPTIONS: SelectOption<HeadingTypeOption>[] = [
+export const GET_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___h-2'),
 		value: 'h2',
@@ -287,7 +287,7 @@ export const HEADING_TYPE_OPTIONS: SelectOption<HeadingTypeOption>[] = [
 	},
 ];
 
-export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonType>[] = [
+export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___primair'),
 		value: 'primary',
@@ -330,7 +330,7 @@ export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonType>[] = [
 	},
 ];
 
-export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
+export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___paginabreedte'),
 		value: 'full-width',
@@ -345,7 +345,7 @@ export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
 	},
 ];
 
-export const FILL_OPTIONS: SelectOption<FillOption>[] = [
+export const GET_FILL_OPTIONS: () => SelectOption<FillOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___opvullen'),
 		value: 'cover',
@@ -360,7 +360,7 @@ export const FILL_OPTIONS: SelectOption<FillOption>[] = [
 	},
 ];
 
-export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = [
+export const GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS: () => SelectOption<ContentTabStyle>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___menu-balk'),
 		value: 'MENU_BAR',
@@ -371,7 +371,7 @@ export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = 
 	},
 ];
 
-export const PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: SelectOption<ContentItemStyle>[] = [
+export const GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: () => SelectOption<ContentItemStyle>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___lijst'),
 		value: 'LIST',

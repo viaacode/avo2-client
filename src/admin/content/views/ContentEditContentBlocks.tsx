@@ -7,7 +7,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
-	CONTENT_BLOCK_TYPE_OPTIONS,
+	GET_CONTENT_BLOCK_TYPE_OPTIONS,
 } from '../../content-block/content-block.const';
 import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers';
@@ -132,9 +132,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						)}
 					>
 						<Select
-							options={CONTENT_BLOCK_TYPE_OPTIONS}
+							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
 							onChange={value => handleAddContentBlock(value as ContentBlockType)}
-							value={CONTENT_BLOCK_TYPE_OPTIONS[0].value}
+							value={GET_CONTENT_BLOCK_TYPE_OPTIONS()[0].value}
 						/>
 					</FormGroup>
 				</Form>

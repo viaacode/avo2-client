@@ -16,7 +16,7 @@ import { ITEMS_PER_PAGE } from '../../content/content.const';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
-import { USER_OVERVIEW_TABLE_COLS } from '../user.const';
+import { GET_USER_OVERVIEW_TABLE_COLS } from '../user.const';
 import { UserService } from '../user.service';
 import { UserOverviewTableCols, UserTableState } from '../user.types';
 
@@ -127,7 +127,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 		return (
 			<>
 				<FilterTable
-					columns={USER_OVERVIEW_TABLE_COLS}
+					columns={GET_USER_OVERVIEW_TABLE_COLS()}
 					data={profiles}
 					dataCount={profileCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>

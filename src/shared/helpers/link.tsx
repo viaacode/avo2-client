@@ -19,9 +19,6 @@ const navigationConsoleError = (route: string, missingParams: string[] = []) => 
 	const paramsString = missingParams.join(', ');
 	console.error(`The following params were not included: [${paramsString}] for route ${route}`);
 };
-const navigationToastError = i18n.t(
-	'shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters'
-);
 
 export const buildLink = (route: string, params: RouteParams = {}, search?: string): string => {
 	let builtLink = route;
@@ -55,7 +52,9 @@ export const navigate = (
 	// Abort navigation when params were expected but none were given
 	if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
 		navigationConsoleError(route, missingParams);
-		ToastService.danger(navigationToastError);
+		ToastService.danger(
+			i18n.t('shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters')
+		);
 
 		return;
 	}
@@ -64,7 +63,9 @@ export const navigate = (
 	const builtLink = buildLink(route, params, search);
 
 	if (isEmpty(builtLink)) {
-		ToastService.danger(navigationToastError);
+		ToastService.danger(
+			i18n.t('shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters')
+		);
 
 		return;
 	}

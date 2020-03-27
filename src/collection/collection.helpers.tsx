@@ -37,7 +37,9 @@ type ValidationRule<T> = {
 	isValid: (object: T) => boolean;
 };
 
-const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collection>>[] = [
+const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
+	Partial<Avo.Collection.Collection>
+>[] = () => [
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
@@ -114,9 +116,9 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	// TODO: Add check if owner or write-rights.
 ];
 
-const VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: ValidationRule<
+const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRule<
 	Avo.Collection.Fragment
->[] = [
+>[] = () => [
 	{
 		error: i18n.t('collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
@@ -185,7 +187,7 @@ export const getValidationErrorsForStartAndEnd = (
 	collectionFragment: Avo.Collection.Fragment
 ): string[] => {
 	return compact(
-		VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT.map(rule =>
+		GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT().map(rule =>
 			rule.isValid(collectionFragment) ? null : getError(rule, collectionFragment)
 		)
 	);
@@ -195,7 +197,7 @@ export const getValidationErrorsForPublish = (
 	collection: Partial<Avo.Collection.Collection>
 ): string[] => {
 	return compact(
-		[...VALIDATION_RULES_FOR_SAVE, ...VALIDATION_RULES_FOR_PUBLISH].map(rule => {
+		[...GET_VALIDATION_RULES_FOR_SAVE(), ...VALIDATION_RULES_FOR_PUBLISH].map(rule => {
 			return rule.isValid(collection) ? null : getError(rule, collection);
 		})
 	);
@@ -206,7 +208,7 @@ export const getValidationErrorForSave = (
 ): string[] => {
 	// List of validator functions, so we can use the functions separately as well
 	return compact(
-		VALIDATION_RULES_FOR_SAVE.map(rule =>
+		GET_VALIDATION_RULES_FOR_SAVE().map(rule =>
 			rule.isValid(collection) ? null : getError(rule, collection)
 		)
 	);
