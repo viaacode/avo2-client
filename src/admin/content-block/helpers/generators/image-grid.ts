@@ -84,6 +84,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					max: 800,
 					step: 1,
 					values: [200],
+					showNumber: true,
 				} as MultiRangeProps,
 			},
 			imageHeight: {
@@ -97,6 +98,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					max: 800,
 					step: 1,
 					values: [200],
+					showNumber: true,
 				} as MultiRangeProps,
 			},
 			itemWidth: {
@@ -108,6 +110,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					max: 800,
 					step: 1,
 					values: [200],
+					showNumber: true,
 				} as MultiRangeProps,
 			},
 			fill: {
