@@ -41,7 +41,7 @@ build:
 push:	login
 	login_oc.sh https://do-prd-okp-m0.do.viaa.be:8443 && oc project sc-avo2 
 	docker push docker-registry-default.apps.do-prd-okp-m0.do.viaa.be/sc-avo2/avo2-client:${GIT_VERSION} && \
-	login_oc.sh https://c100-e.eu-de.containers.cloud.ibm.com:31240 &&  oc project sc-avo2 \
+	login_oc.sh https://c100-e.eu-de.containers.cloud.ibm.com:31240 &&  oc project sc-avo2 && \
 	docker push docker-registry-default.meemoo-596946-2bc857e5f10eb63ab790a3a1d19a696c-0001.eu-de.containers.appdomain.cloud/sc-avo2/avo2-client:`git describe --tags` && \ 
 	login_oc.sh https://do-prd-okp-m0.do.viaa.be:8443 && oc project sc-avo2 
 tag_int:
