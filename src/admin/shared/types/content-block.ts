@@ -80,6 +80,7 @@ export interface ContentBlockField {
 // must match the lookup enumeration `content_block_types` on GraphQL.
 export enum ContentBlockType {
 	Accordions = 'ACCORDIONS',
+	AnchorLinks = 'ANCHOR_LINKS',
 	Buttons = 'BUTTONS',
 	CTAs = 'CTAS',
 	Heading = 'HEADING',
@@ -206,6 +207,13 @@ export interface ButtonsBlockComponentState {
 	navigate?: () => void;
 }
 
+export interface AnchorLinksBlockComponentState {
+	label: string;
+	icon?: IconName;
+	type?: ButtonType;
+	navigate?: () => void;
+}
+
 export interface IntroBlockComponentState {
 	title: string;
 	content: string;
@@ -268,4 +276,8 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 	ctaButtonAction?: ButtonAction;
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
+}
+
+export interface AnchorLinksBlockState extends DefaultContentBlockState {
+	align: AlignOption;
 }
