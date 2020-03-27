@@ -176,8 +176,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			const title: string = get(queryParams, 'name', 'bestand') as string;
 			return (
 				<Spacer margin="bottom-small" key={url}>
-					{/* TODO drop body once it becomes optional (components repo update 1.29.0) */}
-					<Blankslate title={title} body="" icon="file" className="a-upload-file-preview">
+					<Blankslate title={title} icon="file" className="a-upload-file-preview">
 						{renderDeleteButton(url)}
 					</Blankslate>
 				</Spacer>

@@ -14,7 +14,8 @@ import {
 } from './bookmarks-views-plays-service.gql';
 import {
 	BookmarkViewPlayCounts,
-	EventActionExtended, EventContentType,
+	EventActionExtended,
+	EventContentType,
 	EventContentTypeSimplified,
 } from './bookmarks-views-plays-service.types';
 
@@ -129,7 +130,9 @@ export const EVENT_QUERIES: {
 	},
 };
 
-export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: { [type: string]: EventContentTypeSimplified } = {
+export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: {
+	[type: string]: EventContentTypeSimplified;
+} = {
 	item: 'item',
 	video: 'item',
 	audio: 'item',

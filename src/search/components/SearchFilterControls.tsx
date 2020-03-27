@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { Avo } from '@viaa/avo2-types';
 
+import { CollectionService } from '../../collection/collection.service';
 import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
+import { CustomError } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
 import { SearchFilterControlsProps } from '../search.types';
 
 import './SearchFilterControls.scss';
-import { CollectionService } from '../../collection/collection.service';
-import { CustomError } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
 
 const languageCodeToLabel = (code: string): string => {
 	return capitalize(LANGUAGES.nl[code]) || code;
