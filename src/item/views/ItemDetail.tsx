@@ -175,8 +175,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					user
 				);
 
-				// TODO remove cast to any when typings v2.11 is released
-				BookmarksViewsPlaysService.action('view', 'item', (itemObj as any).uid, user);
+				BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
 
 				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
 				try {

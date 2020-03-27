@@ -137,7 +137,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			end_oc: null,
 			custom_title: null,
 			custom_description: null,
-			collection_uuid: bundle.id as any, // TODO Remove conversion once update to typings 2.12
+			collection_uuid: bundle.id,
 			item_meta: collection,
 		};
 	};
