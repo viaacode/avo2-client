@@ -1,36 +1,12 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { CustomError, getEnv } from '../helpers';
 
-// TODO use typings version
-export type AssetType =
-	| 'BUNDLE_COVER'
-	| 'COLLECTION_COVER'
-	| 'CONTENT_PAGE_IMAGE'
-	| 'PROFILE_AVATAR'
-	| 'ITEM_SUBTITLE'
-	| 'ZENDESK_ATTACHMENT';
-
-export interface UploadAssetInfo {
-	// TODO use typings version
-	filename: string;
-	content: string;
-	mimeType: string;
-	type: AssetType; // Used to put the asset inside a folder structure inside the bucket
-	ownerId: string;
-}
-
 export interface ZendeskFileInfo {
-	// TODO use typings version
+	// TODO use typings version in v2.14.0
 	base64: string;
 	filename: string;
 	mimeType: string;
-}
-
-export interface AssetInfo {
-	// TODO use typings version
-	url: string;
-	id: string;
-	type: AssetType; // enum in the database
-	objectId: string | number;
 }
 
 function fileToBase64(file: File): Promise<string | null> {
@@ -44,7 +20,7 @@ function fileToBase64(file: File): Promise<string | null> {
 
 export const uploadFile = async (
 	file: File,
-	assetType: AssetType,
+	assetType: Avo.FileUpload.AssetType,
 	ownerId: string
 ): Promise<string> => {
 	if (assetType === 'ZENDESK_ATTACHMENT') {
@@ -89,11 +65,11 @@ export const uploadFileToZendesk = async (file: File): Promise<string> => {
 
 export const uploadFileToBlobStorage = async (
 	file: File,
-	assetType: AssetType,
+	assetType: Avo.FileUpload.AssetType,
 	ownerId: string
 ): Promise<string> => {
 	let url: string | undefined;
-	let body: UploadAssetInfo | undefined;
+	let body: Avo.FileUpload.UploadAssetInfo | undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/assets/upload`;
 		const content = await fileToBase64(file);
@@ -117,7 +93,7 @@ export const uploadFileToBlobStorage = async (
 			body: JSON.stringify(body),
 		});
 
-		const data: AssetInfo | any = await response.json();
+		const data: Avo.FileUpload.AssetInfo | any = await response.json();
 		if (data.statusCode < 200 || data.statusCode >= 400) {
 			throw new CustomError('Failed to upload file: wrong statusCode received', null, data);
 		}
