@@ -1,17 +1,29 @@
-import i18n from 'i18next';
+import I18n from 'i18next';
+import XHR from 'i18next-xhr-backend';
 import { get } from 'lodash-es';
+
 import { initReactI18next } from 'react-i18next';
 
-import translations from './nl.json';
+import { getEnv } from '../helpers';
 
-i18n.use(initReactI18next) // passes i18n down to react-i18next
+let resolveTranslations: () => void | undefined;
+export const waitForTranslations = new Promise(resolve => {
+	resolveTranslations = resolve;
+});
+
+I18n.use(XHR)
+	.use(initReactI18next) // passes i18n down to react-i18next
 	.init({
-		debug: get(window, '_ENV_.ENV') === 'local',
-		resources: {
-			nl: {
-				translation: translations,
+		backend: {
+			loadPath: `${getEnv('PROXY_URL')}/translations/nl.json`,
+			parse: (data: any) => {
+				setTimeout(() => {
+					resolveTranslations();
+				}, 0);
+				return JSON.parse(data).value;
 			},
 		},
+		debug: get(window, '_ENV_.ENV') === 'local',
 		keySeparator: '^',
 		nsSeparator: '^',
 		lng: 'nl',
@@ -19,6 +31,10 @@ i18n.use(initReactI18next) // passes i18n down to react-i18next
 		interpolation: {
 			escapeValue: false,
 		},
+		initImmediate: true,
+		react: {
+			useSuspense: false,
+		},
 	});
 
-export default i18n;
+export default I18n;

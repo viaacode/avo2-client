@@ -20,7 +20,7 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 
 import {
 	ITEMS_PER_PAGE,
-	PERMISSION_GROUP_OVERVIEW_TABLE_COLS,
+	GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS,
 	PERMISSION_GROUP_PATH,
 } from '../permission-group.const';
 import { PermissionGroupService } from '../permission-group.service';
@@ -192,7 +192,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 		return (
 			<>
 				<FilterTable
-					columns={PERMISSION_GROUP_OVERVIEW_TABLE_COLS}
+					columns={GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS()}
 					data={permissionGroups || []}
 					dataCount={permissionGroupCount}
 					renderCell={(rowData: PermissionGroup, columnId: string) =>

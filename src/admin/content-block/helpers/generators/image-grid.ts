@@ -11,7 +11,7 @@ import {
 	ImageGridBlockComponentStateFields,
 } from '../../../shared/types';
 
-import { ALIGN_OPTIONS, FILL_OPTIONS } from '../../content-block.const';
+import { GET_ALIGN_OPTIONS, GET_FILL_OPTIONS } from '../../content-block.const';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
 export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
@@ -114,14 +114,14 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___zoom'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: FILL_OPTIONS,
+					options: GET_FILL_OPTIONS,
 				},
 			},
 			textAlign: {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___text-alignatie'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: ALIGN_OPTIONS,
+					options: GET_ALIGN_OPTIONS,
 				},
 			},
 		},

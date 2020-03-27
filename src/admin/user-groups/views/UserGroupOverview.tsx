@@ -20,7 +20,7 @@ import FilterTable, { getFilters } from '../../shared/components/FilterTable/Fil
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
+import { GET_USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
 
@@ -215,7 +215,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		return (
 			<>
 				<FilterTable
-					columns={USER_GROUP_OVERVIEW_TABLE_COLS}
+					columns={GET_USER_GROUP_OVERVIEW_TABLE_COLS()}
 					data={userGroups || []}
 					dataCount={userGroupCount}
 					renderCell={(rowData: Partial<UserGroup>, columnId: string) =>

@@ -13,7 +13,7 @@ export const USER_GROUP_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const USER_GROUP_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
+export const GET_USER_GROUP_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{ id: 'label', label: i18n.t('admin/user-groups/user-group___label'), sortable: true },
 	{
 		id: 'description',
@@ -35,7 +35,7 @@ export const USER_GROUP_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
 	{ id: 'actions', label: '' },
 ];
 
-export const PERMISSION_GROUP_TABLE_COLS: TableColumn[] = [
+export const GET_PERMISSION_GROUP_TABLE_COLS: () => TableColumn[] = () => [
 	{ id: 'label', label: i18n.t('admin/user-groups/user-group___label'), sortable: true },
 	{
 		id: 'description',

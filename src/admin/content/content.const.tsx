@@ -77,7 +77,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	labels: [],
 });
 
-export const CONTENT_DETAIL_TABS: TabProps[] = [
+export const GET_CONTENT_DETAIL_TABS: () => TabProps[] = () => [
 	{
 		id: 'inhoud',
 		label: i18n.t('admin/content/content___inhoud'),
@@ -90,11 +90,11 @@ export const CONTENT_DETAIL_TABS: TabProps[] = [
 	},
 ];
 
-export const CONTENT_WIDTH_OPTIONS = [
-	{ label: 'Kies een content breedte', value: '', disabled: true },
-	{ label: 'Max. (1300px)', value: 'REGULAR' },
-	{ label: 'Breed (940px)', value: 'LARGE' },
-	{ label: 'Medium (720px)', value: 'MEDIUM' },
+export const GET_CONTENT_WIDTH_OPTIONS = () => [
+	{ label: i18n.t('Kies een content breedte'), value: '', disabled: true },
+	{ label: i18n.t('Max. (1300px)'), value: 'REGULAR' },
+	{ label: i18n.t('Breed (940px)'), value: 'LARGE' },
+	{ label: i18n.t('Medium (720px)'), value: 'MEDIUM' },
 ];
 
 export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: string[] } = {

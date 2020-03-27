@@ -13,5 +13,6 @@ export * from './media-player';
 export * from './media-player-title-text-button';
 export * from './page-overview';
 export * from './projects-spotlight';
+export * from './quote';
 export * from './rich-text';
 export * from './rich-text-two-columns';
