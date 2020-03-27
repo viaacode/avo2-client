@@ -5,9 +5,8 @@ import {
 	ContentTabStyle,
 	GridItem,
 	IconName,
+	SpacerOption,
 } from '@viaa/avo2-components';
-import { SpacerOption } from '@viaa/avo2-components/dist/components/Spacer/Spacer'; // TODO: import from components library when exported.
-import { Avo } from '@viaa/avo2-types';
 
 import { ContentPageType } from '../../content/content.types';
 
@@ -19,23 +18,6 @@ export type FillOption = 'cover' | 'contain' | 'auto';
 export type WidthOption = 'full-width' | '500px' | '400px';
 
 export type HeadingTypeOption = 'h2' | 'h3' | 'h4';
-
-export type ContentBlockStateOptions =
-	| Partial<ContentBlockComponentState>
-	| Partial<ContentBlockComponentState>[]
-	| Partial<ContentBlockState>;
-
-export type ButtonTypeOption =
-	| 'borderless-i'
-	| 'borderless'
-	| 'danger-hover'
-	| 'danger'
-	| 'link'
-	| 'inline-link'
-	| 'primary'
-	| 'secondary-i'
-	| 'secondary'
-	| 'tertiary';
 
 export enum BackgroundColorOption {
 	Gray50 = 'gray-50',
@@ -298,9 +280,4 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 
 export interface AnchorLinksBlockState extends DefaultContentBlockState {
 	align: AlignOption;
-}
-
-export interface MediaItemResponse {
-	tileData: Partial<Avo.Collection.Collection | Avo.Item.Item>;
-	count: number;
 }

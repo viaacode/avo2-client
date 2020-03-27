@@ -610,8 +610,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					<Container mode="horizontal">
 						<Grid>
 							<Column size="3-2">
-								{/* TODO remove cast to any after update to components v1.34.0 */}
-								<Spacer margin={isMobileWidth() ? ('none' as any) : 'right-large'}>
+								<Spacer margin={isMobileWidth() ? 'none' : 'right-large'}>
 									<Thumbnail
 										category="bundle"
 										src={thumbnail_path || undefined}

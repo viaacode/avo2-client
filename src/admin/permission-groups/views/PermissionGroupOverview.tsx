@@ -19,8 +19,8 @@ import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filter
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import {
-	ITEMS_PER_PAGE,
 	GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS,
+	ITEMS_PER_PAGE,
 	PERMISSION_GROUP_PATH,
 } from '../permission-group.const';
 import { PermissionGroupService } from '../permission-group.service';
