@@ -61,7 +61,7 @@ describe('<Navigation />', () => {
 		// https://redux.js.org/recipes/writing-tests#connected-components
 		mount(
 			<MemoryRouter>
-				<Navigation {...mockProps} user={undefined} />
+				<Navigation {...mockProps} user={undefined as any} />
 			</MemoryRouter>
 		);
 	});
@@ -69,7 +69,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged out on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} user={undefined} />
+				<Navigation {...mockProps} user={undefined as any} />
 			</Router>
 		);
 

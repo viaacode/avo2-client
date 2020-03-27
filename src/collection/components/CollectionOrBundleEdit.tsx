@@ -1,7 +1,6 @@
 import { cloneDeep, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { Prompt, withRouter } from 'react-router';
 
 import {
@@ -31,7 +30,6 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
@@ -52,9 +50,10 @@ import {
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
-import { AppState } from '../../store';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 
+import { compose } from 'redux';
+import withUser from '../../shared/hocs/withUser';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
 import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
@@ -113,17 +112,12 @@ interface CollectionState {
 	initialCollection: Avo.Collection.Collection | null;
 }
 
-interface CollectionOrBundleEditProps extends DefaultSecureRouteProps<{ id: string }> {
+interface CollectionOrBundleEditProps {
 	type: 'collection' | 'bundle';
 }
 
-const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = ({
-	type,
-	history,
-	location,
-	match,
-	user,
-}) => {
+const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
+	DefaultSecureRouteProps<{ id: string }>> = ({ type, history, location, match, user }) => {
 	const [t] = useTranslation();
 
 	// State
@@ -913,8 +907,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	user: selectUser(state),
-});
-
-export default withRouter(connect(mapStateToProps)(CollectionOrBundleEdit));
+export default compose(withRouter, withUser)(CollectionOrBundleEdit) as FunctionComponent<
+	CollectionOrBundleEditProps
+>;
