@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { Button, Spacer, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
+import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentPage } from '../../../content-page/views';
@@ -40,6 +40,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	// The term of use and the privacy conditions
 	const [pages, setPages] = useState<(Avo.Content.Content | null)[]>([]);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
 
 	const fetchContentPage = useCallback(async () => {
 		try {
@@ -75,7 +76,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	}, [pages, t]);
 
 	useEffect(() => {
-		if (get(loginState, 'acceptConditions')) {
+		if (get(loginState, 'acceptedConditions')) {
 			const fromRoute = get(location, 'state.from.pathname');
 			if (!fromRoute) {
 				throw new CustomError(
@@ -90,6 +91,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 
 	const handleAcceptConditions = async () => {
 		try {
+			setAcceptInProgress(true);
 			await NotificationService.setNotification(
 				ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS,
 				get(user, 'profile.id'),
@@ -103,6 +105,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				new CustomError('Failed to set accept conditions notification in the database')
 			);
 			ToastService.danger(t('Het opslaan van de accepteer condities is mislukt'));
+			setAcceptInProgress(false); // Disable on on error, if success => we redirect to other route
 		}
 	};
 
@@ -118,11 +121,15 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				<Spacer margin="large">
 					<Toolbar>
 						<ToolbarCenter>
-							<Button
-								label={t('Accepteer voorwaarden')}
-								type="primary"
-								onClick={handleAcceptConditions}
-							/>
+							{acceptInProgress ? (
+								<Spinner size={'large'} />
+							) : (
+								<Button
+									label={t('Accepteer voorwaarden')}
+									type="primary"
+									onClick={handleAcceptConditions}
+								/>
+							)}
 						</ToolbarCenter>
 					</Toolbar>
 				</Spacer>
