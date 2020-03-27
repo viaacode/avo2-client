@@ -202,11 +202,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
 				try {
-					const counts = await BookmarksViewsPlaysService.getCollectionCounts(
-						collectionObj.id,
-						user
+					setBookmarkViewPlayCounts(
+						await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
 					);
-					setBookmarkViewPlayCounts(counts);
 				} catch (err) {
 					console.error(
 						new CustomError('Failed to get getCollectionCounts', err, {
@@ -373,6 +371,11 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				...bookmarkViewPlayCounts,
 				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
 			});
+			ToastService.success(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('De beladwijzer is verwijderd')
+					: t('De bladwijzer is aangemaakt')
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {
@@ -538,7 +541,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						/>
 					</Spacer>
 				)}
-				<InteractiveTour location={location} user={user} showButton />
+				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
 	};
