@@ -21,7 +21,7 @@ import { dataService } from '../../../shared/services';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { PERMISSION_GROUP_PATH, PERMISSIONS_TABLE_COLS } from '../permission-group.const';
+import { PERMISSION_GROUP_PATH, GET_PERMISSIONS_TABLE_COLS } from '../permission-group.const';
 import { GET_PERMISSION_GROUP_BY_ID } from '../permission-group.gql';
 import { PermissionGroupService } from '../permission-group.service';
 import { Permission, PermissionGroup, PermissionsTableCols } from '../permission-group.types';
@@ -142,7 +142,7 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 					</PanelHeader>
 					<PanelBody>
 						<Table
-							columns={PERMISSIONS_TABLE_COLS}
+							columns={GET_PERMISSIONS_TABLE_COLS()}
 							data={PermissionGroupService.sortPermissions(
 								permissionGroup.permissions || [],
 								sortColumn,

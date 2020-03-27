@@ -25,6 +25,7 @@ import {
 	TagList,
 	TagOption,
 	Thumbnail,
+	ToggleButton,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -61,6 +62,8 @@ import {
 	isMobileWidth,
 } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 
@@ -92,6 +95,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [viewCountsById, setViewCountsById] = useState<{ [id: string]: number }>({});
+	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
 	useEffect(() => {
 		trackEvents(
@@ -162,6 +168,21 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to get counts for bundle fragments', err, {})
+				);
+			}
+
+			try {
+				setBookmarkViewPlayCounts(
+					await BookmarksViewsPlaysService.getCollectionCounts(bundleId, user)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getCollectionCounts for bundle', err, {
+						uuid: bundleId,
+					})
+				);
+				ToastService.danger(
+					t('Het ophalen van het aantal keer bekeken gebookmarked is mislukt')
 				);
 			}
 
@@ -288,12 +309,50 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				onEditBundle();
 				break;
 
+			case 'toggleBookmark':
+				await toggleBookmark();
+				break;
+
 			case 'openShareThroughEmailModal':
 				setIsShareThroughEmailModalOpen(true);
 				break;
 
 			default:
 				return null;
+		}
+	};
+
+	const toggleBookmark = async () => {
+		try {
+			await BookmarksViewsPlaysService.toggleBookmark(
+				bundleId,
+				user,
+				'collection',
+				bookmarkViewPlayCounts.isBookmarked
+			);
+			setBookmarkViewPlayCounts({
+				...bookmarkViewPlayCounts,
+				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
+			});
+			ToastService.success(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('De beladwijzer is verwijderd')
+					: t('De bladwijzer is aangemaakt')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle bookmark', err, {
+					bundleId,
+					user,
+					type: 'bundle',
+					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
+				})
+			);
+			ToastService.danger(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('Het verwijderen van de bladwijzer is mislukt')
+					: t('Het aanmaken van de bladwijzer is mislukt')
+			);
 		}
 	};
 
@@ -392,12 +451,19 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const renderActions = () => {
 		if (isMobileWidth()) {
 			const BUNDLE_DROPDOWN_ITEMS = [
+				createDropdownMenuItem('edit', t('bundle/views/bundle-detail___bewerken'), 'edit'),
 				createDropdownMenuItem(
 					'openShareModal',
 					t('bundle/views/bundle-detail___delen'),
 					'lock'
 				),
-				createDropdownMenuItem('edit', t('bundle/views/bundle-detail___bewerken'), 'edit'),
+				createDropdownMenuItem(
+					'toggleBookmark',
+					bookmarkViewPlayCounts.isBookmarked
+						? t('Verwijder bladwijzer')
+						: t('Maak bladwijzer'),
+					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
+				),
 				createDropdownMenuItem(
 					'openShareThroughEmailModal',
 					t('bundle/views/bundle-detail___share-bundel'),
@@ -469,6 +535,14 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					label={t('bundle/views/bundle-detail___bewerken')}
 					onClick={() => executeAction('edit')}
 					type="primary"
+				/>
+				<ToggleButton
+					title={t('collection/views/collection-detail___bladwijzer')}
+					type="secondary"
+					icon="bookmark"
+					active={bookmarkViewPlayCounts.isBookmarked}
+					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
+					onClick={() => executeAction('toggleBookmark')}
 				/>
 				<Button
 					title={t('bundle/views/bundle-detail___share-bundel')}

@@ -48,7 +48,7 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { CONTENT_DETAIL_TABS, CONTENT_PATH, CONTENT_WIDTH_OPTIONS } from '../content.const';
+import { GET_CONTENT_DETAIL_TABS, CONTENT_PATH, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, DbContent } from '../content.types';
@@ -69,8 +69,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	const [contentBlocks] = useContentBlocksByContentId(id);
 	const [currentTab, setCurrentTab, tabs] = useTabs(
-		CONTENT_DETAIL_TABS,
-		CONTENT_DETAIL_TABS[0].id
+		GET_CONTENT_DETAIL_TABS(),
+		GET_CONTENT_DETAIL_TABS()[0].id
 	);
 
 	// Computed
@@ -167,7 +167,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const getContentPageWidthLabel = (contentPage: Avo.Content.Content): string => {
 		return (
 			get(
-				CONTENT_WIDTH_OPTIONS.find(option => option.value === contentPage.content_width),
+				GET_CONTENT_WIDTH_OPTIONS().find(
+					option => option.value === contentPage.content_width
+				),
 				'label'
 			) || '-'
 		);

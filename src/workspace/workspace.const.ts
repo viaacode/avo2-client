@@ -8,7 +8,7 @@ export const BUNDLES_ID = ROUTE_PARTS.bundles;
 export const ASSIGNMENTS_ID = ROUTE_PARTS.assignments;
 export const BOOKMARKS_ID = ROUTE_PARTS.bookmarks;
 
-export const TABS: TabProps[] = [
+export const GET_TABS: () => TabProps[] = () => [
 	{
 		label: i18n.t('workspace/workspace___collecties'),
 		icon: 'collection',

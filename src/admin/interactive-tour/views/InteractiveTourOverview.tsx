@@ -21,7 +21,7 @@ import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filter
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import {
-	INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
+	GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
 	INTERACTIVE_TOUR_PATH,
 } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
@@ -236,7 +236,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 		return (
 			<>
 				<FilterTable
-					columns={INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS}
+					columns={GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS()}
 					data={interactiveTours || []}
 					dataCount={interactiveTourCount}
 					renderCell={(rowData: InteractiveTour, columnId: string) =>

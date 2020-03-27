@@ -31,11 +31,13 @@ interface ReportItemModalProps {
 	user: Avo.User.User;
 }
 
-const RADIO_BUTTON_LABELS = {
+type Reason = 'broken' | 'inappropriate' | 'copyright';
+
+const GET_RADIO_BUTTON_LABELS = () => ({
 	broken: i18n.t('item/components/modals/report-item-modal___defect'),
 	inappropriate: i18n.t('item/components/modals/report-item-modal___ongepast'),
 	copyright: i18n.t('item/components/modals/report-item-modal___schending-auteursrechten'),
-};
+});
 
 const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 	externalId,
@@ -45,7 +47,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [reason, setReason] = useState<keyof typeof RADIO_BUTTON_LABELS | null>(null);
+	const [reason, setReason] = useState<Reason | null>(null);
 	const [extraDetails, setExtraDetails] = useState<string>('');
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
@@ -61,7 +63,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 				firstName: get(user, 'first_name'),
 				lastName: get(user, 'last_name'),
 				email: get(user, 'mail'),
-				reason: RADIO_BUTTON_LABELS[reason],
+				reason: GET_RADIO_BUTTON_LABELS()[reason],
 			};
 			ticket = {
 				comment: {
@@ -78,7 +80,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 		body.email
   }</dd>
   <dt><Trans i18nKey="item/components/modals/report-item-modal___reden-van-rapporteren">Reden van rapporteren</Trans></dt><dd>${
-		RADIO_BUTTON_LABELS[reason]
+		GET_RADIO_BUTTON_LABELS()[reason]
   }</dd>
   <dt><Trans i18nKey="item/components/modals/report-item-modal___extra-toelichting">Extra toelichting</Trans></dt><dd>${extraDetails ||
 		t('item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven')}</dd>
@@ -126,21 +128,21 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 							<FormGroup>
 								<RadioButtonGroup>
 									<RadioButton
-										label={RADIO_BUTTON_LABELS['broken']}
+										label={GET_RADIO_BUTTON_LABELS()['broken']}
 										name="broken"
 										value="broken"
 										checked={reason === 'broken'}
 										onChange={() => setReason('broken')}
 									/>
 									<RadioButton
-										label={RADIO_BUTTON_LABELS['inappropriate']}
+										label={GET_RADIO_BUTTON_LABELS()['inappropriate']}
 										name="inappropriate"
 										value="inappropriate"
 										checked={reason === 'inappropriate'}
 										onChange={() => setReason('inappropriate')}
 									/>
 									<RadioButton
-										label={RADIO_BUTTON_LABELS['copyright']}
+										label={GET_RADIO_BUTTON_LABELS()['copyright']}
 										name="copyright"
 										value="copyright"
 										checked={reason === 'copyright'}

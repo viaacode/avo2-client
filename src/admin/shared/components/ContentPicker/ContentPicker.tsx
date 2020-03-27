@@ -14,7 +14,7 @@ import { parsePickerItem } from '../../helpers';
 import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 import {
-	CONTENT_TYPES,
+	GET_CONTENT_TYPES,
 	DEFAULT_ALLOWED_TYPES,
 	REACT_SELECT_DEFAULT_OPTIONS,
 } from './ContentPicker.const';
@@ -38,7 +38,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const [t] = useTranslation();
 
 	// filter available options for the type picker
-	const typeOptions = filterTypes(CONTENT_TYPES, allowedTypes as ContentPickerType[]);
+	const typeOptions = filterTypes(GET_CONTENT_TYPES(), allowedTypes as ContentPickerType[]);
 
 	// apply initial type from `initialValue`, default to first available type
 	const currentTypeObject = typeOptions.find(type => type.value === get(initialValue, 'type'));

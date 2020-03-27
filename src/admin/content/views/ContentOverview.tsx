@@ -155,7 +155,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 		})
 	);
 
-	const columnInfos: FilterableColumn[] = [
+	const getColumnInfos: () => FilterableColumn[] = () => [
 		{ id: 'title', label: i18n.t('admin/content/content___titel'), sortable: true },
 		{
 			id: 'content_type',
@@ -324,7 +324,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				<FilterTable
 					data={contentPages}
 					itemsPerPage={ITEMS_PER_PAGE}
-					columns={columnInfos}
+					columns={getColumnInfos()}
 					dataCount={contentPageCount}
 					searchTextPlaceholder={t(
 						'admin/content/views/content-overview___zoeken-op-auteur-titel-rol'

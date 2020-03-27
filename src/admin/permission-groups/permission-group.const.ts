@@ -13,7 +13,7 @@ export const PERMISSION_GROUP_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const PERMISSION_GROUP_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
+export const GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{
 		id: 'label',
 		label: i18n.t('admin/permission-groups/permission-group___naam'),
@@ -39,7 +39,7 @@ export const PERMISSION_GROUP_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
 	{ id: 'actions', label: '' },
 ];
 
-export const PERMISSIONS_TABLE_COLS: TableColumn[] = [
+export const GET_PERMISSIONS_TABLE_COLS: () => TableColumn[] = () => [
 	{
 		id: 'label',
 		label: i18n.t('admin/permission-groups/permission-group___permissie-code'),
