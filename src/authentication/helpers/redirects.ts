@@ -14,8 +14,12 @@ import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stambo
  * Client redirect functions
  *
  **/
-export function redirectToClientPage(path: string, history: History) {
-	history.push(path);
+export function redirectToClientPage(path: string, history: History, fromPath?: string) {
+	if (fromPath) {
+		history.push(path, { from: { pathname: fromPath } });
+	} else {
+		history.push(path);
+	}
 }
 
 /**
@@ -28,6 +32,15 @@ export function redirectToServerSmartschoolLogin(location: Location) {
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getBaseUrl(location) + getFromPath(location);
 	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
+		returnToUrl,
+	})}`;
+}
+
+export function redirectToServerKlascementLogin(location: Location) {
+	// Redirect to klascement login form
+	// Url to return to after authentication is completed and server stored auth object in session
+	const returnToUrl = getBaseUrl(location) + getFromPath(location);
+	window.location.href = `${getEnv('PROXY_URL')}/auth/klascement/login?${queryString.stringify({
 		returnToUrl,
 	})}`;
 }
@@ -55,7 +68,7 @@ export function redirectToServerLoginPage(location: Location) {
 
 export function redirectToServerLogoutPage(location: Location) {
 	// Url to return to after logout is completed
-	const returnToUrl = `${getBaseUrl(location)}/`;
+	const returnToUrl = `${getBaseUrl(location)}`;
 	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
 		returnToUrl,
 	})}`;
@@ -67,14 +80,15 @@ export function redirectToServerLogoutPage(location: Location) {
  * @param idpType
  */
 export function redirectToServerLinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
-	const returnToUrl = getBaseUrl(location) + getFromPath(location);
+	const returnToUrl = getBaseUrl(location) + location.pathname;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/link-account?${queryString.stringify({
 		returnToUrl,
 		idpType,
 	})}`;
 }
+
 export function redirectToServerUnlinkAccount(location: Location, idpType: Avo.Auth.IdpType) {
-	const returnToUrl = getBaseUrl(location) + getFromPath(location);
+	const returnToUrl = getBaseUrl(location) + location.pathname;
 	window.location.href = `${getEnv('PROXY_URL')}/auth/unlink-account?${queryString.stringify({
 		returnToUrl,
 		idpType,
@@ -98,6 +112,9 @@ function getBaseUrl(location: Location): string {
 	return window.location.href.split(location.pathname)[0];
 }
 
-function getFromPath(location: Location, defaultPath: string = APP_PATH.SEARCH.route): string {
+export function getFromPath(
+	location: Location,
+	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
+): string {
 	return get(location, 'state.from.pathname', defaultPath);
 }

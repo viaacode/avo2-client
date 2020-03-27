@@ -1,5 +1,5 @@
 import { ExecutionResult } from '@apollo/react-common';
-import { cloneDeep, compact, get, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -24,6 +24,7 @@ import {
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_ID_BY_AVO1_ID,
+	GET_COLLECTION_LABELS,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_TITLE,
@@ -44,6 +45,8 @@ import {
 import { ContentTypeNumber } from './collection.types';
 
 export class CollectionService {
+	private static collectionLabels: { [id: string]: string } | null;
+
 	/**
 	 * Insert collection and underlying collection fragments.
 	 *
@@ -896,22 +899,33 @@ export class CollectionService {
 	}
 
 	public static getCollectionIdByAvo1Id = async (id: string) => {
-		if (isUuid(id)) {
-			return id;
+		try {
+			if (isUuid(id)) {
+				return id;
+			}
+
+			const response = await dataService.query({
+				query: GET_COLLECTION_ID_BY_AVO1_ID,
+				variables: {
+					avo1Id: id,
+				},
+			});
+
+			if (!response) {
+				return null;
+			}
+
+			if (response.errors) {
+				throw new CustomError('Response contains errors', null, { response });
+			}
+
+			return get(response, 'data.app_collections[0].id', null);
+		} catch (err) {
+			throw new CustomError('Failed to get collection id by avo1 id', err, {
+				id,
+				query: 'GET_COLLECTION_ID_BY_AVO1_ID',
+			});
 		}
-
-		const response = await dataService.query({
-			query: GET_COLLECTION_ID_BY_AVO1_ID,
-			variables: {
-				avo1Id: id,
-			},
-		});
-
-		if (!response) {
-			return null;
-		}
-
-		return get(response, 'data.app_collections[0].id', null);
 	};
 
 	/**
@@ -1001,6 +1015,37 @@ export class CollectionService {
 			throw new CustomError('Failed to delete collection labels from the database', err, {
 				variables,
 				query: 'DELETE_COLLECTION_LABELS',
+			});
+		}
+	}
+
+	public static async getCollectionLabels(): Promise<{ [id: string]: string }> {
+		try {
+			if (!CollectionService.collectionLabels) {
+				// Fetch collection labels and cache them in memory
+
+				const response = await dataService.query({
+					query: GET_COLLECTION_LABELS,
+				});
+
+				if (response.errors) {
+					throw new CustomError('Response contains errors', null, { response });
+				}
+
+				// Map result array to dictionary
+				CollectionService.collectionLabels = fromPairs(
+					get(response, 'data.lookup_labels', []).map(
+						(collectionLabel: { description: string; value: string }) => {
+							return [collectionLabel.value, collectionLabel.description];
+						}
+					)
+				);
+			}
+
+			return CollectionService.collectionLabels;
+		} catch (err) {
+			throw new CustomError('Failed to get collection labels', err, {
+				query: 'GET_COLLECTION_LABELS',
 			});
 		}
 	}

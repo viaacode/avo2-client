@@ -1,51 +1,38 @@
-import { orderBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { NEW_FRAGMENT } from '../../collection.const';
-import { reorderFragments } from '../../collection.helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 
 interface FragmentAddProps {
 	index: number;
-	collection: Avo.Collection.Collection;
+	collectionId: string;
+	numberOfFragments: number;
 	changeCollectionState: (action: CollectionAction) => void;
 }
 
 const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	index,
-	collection,
+	collectionId,
+	numberOfFragments,
 	changeCollectionState,
 }) => {
 	const [t] = useTranslation();
 
-	const { collection_fragments, id } = collection;
 	const TEXT_BLOCK_FRAGMENT: any = {
 		...NEW_FRAGMENT.text,
-		id: -collection_fragments.length,
-		collection_uuid: id,
-		collection_id: (collection as any).avo1_id || '', // TODO remove once database allows it
+		id: -numberOfFragments,
+		collection_uuid: collectionId,
 	};
 
 	// Listeners
-	const generateNewFragments = (): Avo.Collection.Fragment[] => {
-		const newFragments = orderBy([...collection_fragments], 'position', 'asc');
-
-		newFragments.splice(index + 1, 0, TEXT_BLOCK_FRAGMENT);
-
-		return reorderFragments(newFragments);
-	};
-
 	const handleAddFragmentClick = () => {
-		const generatedFragments = generateNewFragments();
-
 		changeCollectionState({
-			type: 'UPDATE_COLLECTION_PROP',
-			collectionProp: 'collection_fragments',
-			collectionPropValue: generatedFragments,
+			type: 'INSERT_FRAGMENT',
+			index: index + 1,
+			fragment: TEXT_BLOCK_FRAGMENT,
 		});
 	};
 

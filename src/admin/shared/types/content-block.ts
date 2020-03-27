@@ -109,6 +109,7 @@ export enum ContentBlockType {
 	MediaGrid = 'MEDIA_GRID',
 	MediaPlayer = 'MEDIA_PLAYER',
 	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
+	Quote = 'QUOTE',
 	RichText = 'RICH_TEXT',
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 	PageOverview = 'PAGE_OVERVIEW',
@@ -165,6 +166,7 @@ export type ContentBlockComponentState =
 	| MediaGridBlockComponentState
 	| MediaPlayerBlockComponentState
 	| PageOverviewBlockComponentStateFields
+	| QuoteBlockComponentState
 	| RichTextBlockComponentState;
 
 export interface HeadingBlockComponentState {
@@ -247,6 +249,13 @@ export interface IFrameBlockComponentState {
 export interface AccordionsBlockComponentState {
 	title: string;
 	content: string;
+}
+
+export interface QuoteBlockComponentState {
+	quote: string;
+	authorName: string;
+	authorInitials: string;
+	authorImage?: string;
 }
 
 export interface MediaPlayerBlockComponentState {

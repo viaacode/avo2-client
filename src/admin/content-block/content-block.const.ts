@@ -63,6 +63,8 @@ import {
 	INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
 	INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
 	INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
+	INITIAL_QUOTE_BLOCK_STATE,
+	INITIAL_QUOTE_COMPONENTS_STATE,
 	INITIAL_RICH_TEXT_BLOCK_STATE,
 	INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
@@ -73,6 +75,7 @@ import {
 	MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
 	PAGE_OVERVIEW_BLOCK_CONFIG,
 	PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
+	QUOTE_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 } from './helpers';
@@ -82,7 +85,7 @@ export const CONTENT_BLOCKS_RESULT_PATH = {
 	INSERT: 'insert_app_content_blocks',
 };
 
-export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
+export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___kies-een-content-block'),
 		value: '',
@@ -148,6 +151,10 @@ export const CONTENT_BLOCK_TYPE_OPTIONS: SelectOption[] = [
 		label: i18n.t('admin/content-block/content-block___projecten-in-de-kijker'),
 		value: ContentBlockType.ProjectsSpotlight,
 	},
+	{
+		label: i18n.t('Quote'),
+		value: ContentBlockType.Quote,
+	},
 ];
 
 export const EDITOR_TYPES_MAP = {
@@ -178,6 +185,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.MediaGrid]: MEDIA_GRID_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayer]: MEDIA_PLAYER_BLOCK_CONFIG,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
+	[ContentBlockType.Quote]: QUOTE_BLOCK_CONFIG,
 	[ContentBlockType.PageOverview]: PAGE_OVERVIEW_BLOCK_CONFIG,
 	[ContentBlockType.ProjectsSpotlight]: PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
@@ -198,6 +206,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
+	[ContentBlockType.Quote]: INITIAL_QUOTE_COMPONENTS_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
 };
@@ -216,12 +225,13 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
+	[ContentBlockType.Quote]: INITIAL_QUOTE_BLOCK_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 };
 
 // Options
-export const BACKGROUND_COLOR_OPTIONS: SelectOption<BackgroundColorOption>[] = [
+export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<BackgroundColorOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___wit'),
 		value: BackgroundColorOption.White,
@@ -252,12 +262,12 @@ export const BACKGROUND_COLOR_OPTIONS: SelectOption<BackgroundColorOption>[] = [
 	},
 ];
 
-export const DARK_BACKGROUND_COLOR_OPTIONS: BackgroundColorOption[] = [
+export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => BackgroundColorOption[] = () => [
 	BackgroundColorOption.NightBlue,
 	BackgroundColorOption.Teal,
 ];
 
-export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
+export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{
 		label: 'Links',
 		value: 'left',
@@ -272,7 +282,7 @@ export const ALIGN_OPTIONS: { label: string; value: AlignOption }[] = [
 	},
 ];
 
-export const HEADING_TYPE_OPTIONS: SelectOption<HeadingTypeOption>[] = [
+export const GET_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___h-2'),
 		value: 'h2',
@@ -287,7 +297,7 @@ export const HEADING_TYPE_OPTIONS: SelectOption<HeadingTypeOption>[] = [
 	},
 ];
 
-export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonType>[] = [
+export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___primair'),
 		value: 'primary',
@@ -330,7 +340,7 @@ export const BUTTON_TYPE_OPTIONS: SelectOption<ButtonType>[] = [
 	},
 ];
 
-export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
+export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___paginabreedte'),
 		value: 'full-width',
@@ -345,7 +355,7 @@ export const WIDTH_OPTIONS: SelectOption<WidthOption>[] = [
 	},
 ];
 
-export const FILL_OPTIONS: SelectOption<FillOption>[] = [
+export const GET_FILL_OPTIONS: () => SelectOption<FillOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___opvullen'),
 		value: 'cover',
@@ -360,7 +370,7 @@ export const FILL_OPTIONS: SelectOption<FillOption>[] = [
 	},
 ];
 
-export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = [
+export const GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS: () => SelectOption<ContentTabStyle>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___menu-balk'),
 		value: 'MENU_BAR',
@@ -371,7 +381,7 @@ export const PAGE_OVERVIEW_TAB_STYLE_OPTIONS: SelectOption<ContentTabStyle>[] = 
 	},
 ];
 
-export const PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: SelectOption<ContentItemStyle>[] = [
+export const GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: () => SelectOption<ContentItemStyle>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___lijst'),
 		value: 'LIST',

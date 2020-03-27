@@ -1,5 +1,10 @@
 .m-login-options {
-	.c-button .o-svg-icon * {
-		fill: white;
+	.c-button .o-svg-icon {
+		bottom: 0;
+		margin-right: 0;
+
+		* {
+			fill: white !important;
+		}
 	}
 }

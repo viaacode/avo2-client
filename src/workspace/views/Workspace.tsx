@@ -36,11 +36,16 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import { navigate } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-query';
+import { isMobileWidth, navigate } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
 
-import { ASSIGNMENTS_ID, BOOKMARKS_ID, BUNDLES_ID, COLLECTIONS_ID, TABS } from '../workspace.const';
+import {
+	ASSIGNMENTS_ID,
+	BOOKMARKS_ID,
+	BUNDLES_ID,
+	COLLECTIONS_ID,
+	GET_TABS,
+} from '../workspace.const';
 import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { TabFilter, TabViewMap } from '../workspace.types';
 import BookmarksOverview from './BookmarksOverview';
@@ -214,7 +219,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	}, [setLoadingInfo, getActiveTab, t, permissions, tabs]);
 
 	const getNavTabs = useCallback(() => {
-		return TABS.map(tab => ({
+		return GET_TABS().map(tab => ({
 			...tab,
 			active: (tabId || Object.keys(tabs)[0]) === tab.id,
 			label: tabCounts[tab.id] ? `${tab.label} (${tabCounts[tab.id]})` : tab.label,

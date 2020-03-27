@@ -12,7 +12,7 @@ import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
 
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
-import { MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
+import { GET_MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
 
@@ -90,7 +90,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 
 		return (
 			<Table
-				columns={MENU_OVERVIEW_TABLE_COLS}
+				columns={GET_MENU_OVERVIEW_TABLE_COLS()}
 				data={data}
 				renderCell={(rowData: Partial<Avo.Menu.Menu>, columnId: string) =>
 					renderTableCell(rowData, columnId as MenuOverviewTableCols)

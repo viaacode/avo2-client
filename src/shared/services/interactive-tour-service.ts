@@ -5,12 +5,8 @@ import { APP_PATH } from '../../constants';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';
-import {
-	GET_INTERACTIVE_TOUR,
-	GET_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
-	INSERT_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
-	UPDATE_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
-} from './interactive-tour-service.gql';
+import { GET_INTERACTIVE_TOUR } from './interactive-tour-service.gql';
+import { NotificationService } from './notification-service';
 
 export interface TourInfo {
 	id: number;
@@ -39,6 +35,7 @@ export class InteractiveTourService {
 				profileId,
 				notificationKeyPrefix: `INTERACTIVE-TOUR___${routeId}___%`,
 			};
+
 			const response = await dataService.query({
 				variables,
 				query: GET_INTERACTIVE_TOUR,
@@ -121,42 +118,18 @@ export class InteractiveTourService {
 		profileId: string,
 		interactiveTourId: number
 	): Promise<void> {
-		let variables: any;
 		try {
-			variables = {
+			await NotificationService.setNotification(
+				`INTERACTIVE-TOUR___${routeId}___${interactiveTourId}`,
 				profileId,
-				key: `INTERACTIVE-TOUR___${routeId}___${interactiveTourId}`,
-			};
-			const getResponse = await dataService.query({
-				variables,
-				query: GET_NOTIFICATION_INTERACTIVE_TOUR_SEEN,
-			});
-			const notificationEntryExists: boolean = !!get(
-				getResponse,
-				'data.users_notifications[0]'
+				false,
+				false
 			);
-			// If entry already exists => update existing entry
-			// If no entry exists in the notifications table => insert a new entry
-			const mutation = notificationEntryExists
-				? UPDATE_NOTIFICATION_INTERACTIVE_TOUR_SEEN
-				: INSERT_NOTIFICATION_INTERACTIVE_TOUR_SEEN;
-			const mutateResponse = await dataService.mutate({
-				variables,
-				mutation,
-			});
-			if (mutateResponse.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					mutation,
-					mutateResponse,
-					getResponse,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to mark interactive tour as seen', err, {
 				routeId,
 				profileId,
 				interactiveTourId,
-				variables,
 				query: 'INSERT_NOTIFICATION_INTERACTIVE_TOUR_SEEN',
 			});
 		}

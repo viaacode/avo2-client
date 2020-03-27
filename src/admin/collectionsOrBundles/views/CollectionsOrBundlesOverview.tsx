@@ -24,7 +24,7 @@ import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
-	USER_OVERVIEW_TABLE_COLS,
+	GET_USER_OVERVIEW_TABLE_COLS,
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
@@ -233,7 +233,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		return (
 			<>
 				<FilterTable
-					columns={USER_OVERVIEW_TABLE_COLS}
+					columns={GET_USER_OVERVIEW_TABLE_COLS()}
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>

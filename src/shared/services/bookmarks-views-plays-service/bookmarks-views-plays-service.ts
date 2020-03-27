@@ -1,4 +1,4 @@
-import { compact, get } from 'lodash-es';
+import { compact, fromPairs, get, groupBy } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -7,25 +7,29 @@ import { CustomError, normalizeTimestamp } from '../../helpers';
 import i18n from '../../translations/i18n';
 import { ApolloCacheManager, dataService } from '../data-service';
 import { ToastService } from '../toast-service';
+
+import { EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
-	AppCollectionBookmark,
-	AppItemBookmark,
-	BookmarkInfo,
-	BookmarkViewPlayCounts,
-	EVENT_QUERIES,
-	EventAction,
-	EventContentType,
-	EventContentTypeSimplified,
-	EventInitAction,
-	GetBookmarksForUserResponse,
-} from './bookmarks-views-plays-service.const';
-import {
+	GET_BOOKMARK_STATUSES,
 	GET_BOOKMARKS_FOR_USER,
 	GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
 	GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
 	GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
 	GET_MULTIPLE_ITEM_VIEW_COUNTS,
 } from './bookmarks-views-plays-service.gql';
+import {
+	AppCollectionBookmark,
+	AppItemBookmark,
+	BookmarkInfo,
+	BookmarkRequestInfo,
+	BookmarkStatusLookup,
+	BookmarkViewPlayCounts,
+	EventAction,
+	EventContentType,
+	EventContentTypeSimplified,
+	EventInitAction,
+	GetBookmarksForUserResponse,
+} from './bookmarks-views-plays-service.types';
 
 export class BookmarksViewsPlaysService {
 	public static async action(
@@ -163,7 +167,7 @@ export class BookmarksViewsPlaysService {
 		user: Avo.User.User,
 		type: EventContentType,
 		isBookmarked: boolean
-	): Promise<boolean> {
+	): Promise<void> {
 		try {
 			if (!contentId) {
 				throw new CustomError(
@@ -179,19 +183,8 @@ export class BookmarksViewsPlaysService {
 				user,
 				false
 			);
-			return true;
 		} catch (err) {
-			console.error('Failed to bookmark/unbookmark the item', err, { contentId });
-			ToastService.danger(
-				isBookmarked
-					? i18n.t(
-							'shared/services/bookmarks-views-plays-service___het-aanmaken-van-de-bladwijzer-is-mislukt'
-					  )
-					: i18n.t(
-							'shared/services/bookmarks-views-plays-service___het-verwijderen-van-de-bladwijzer-is-mislukt'
-					  )
-			);
-			return false;
+			throw new CustomError('Failed to bookmark/unbookmark the item', err, { contentId });
 		}
 	}
 
@@ -334,6 +327,84 @@ export class BookmarksViewsPlaysService {
 			} else {
 				throw error;
 			}
+		}
+	}
+
+	/**
+	 * Checks the database if for the provided items and collections there is a bookmark for the current user
+	 * @param profileId the profile id of the current user
+	 * @param objectInfos a list of object infos containing the type: item or collection and the uuid of the item
+	 * @return Promise<lookup> dictionary for looking up the "isBookmarked" status for a specific item or collection
+	 *     {
+	 *       item: {
+	 *         id1: true,
+	 *         id2: false,
+	 *       },
+	 *       collection: {
+	 *         id5: true,
+	 *         id6: true,
+	 *         id8: false
+	 *       }
+	 *     }
+	 */
+	public static async getBookmarkStatuses(
+		profileId: string,
+		objectInfos: BookmarkRequestInfo[]
+	): Promise<BookmarkStatusLookup> {
+		try {
+			const groupedObjectInfos: {
+				[type: string]: BookmarkRequestInfo[];
+			} = groupBy(objectInfos, 'type');
+			const itemObjectInfos: BookmarkRequestInfo[] = groupedObjectInfos['item'] || [];
+			const collectionObjectInfos: BookmarkRequestInfo[] =
+				groupedObjectInfos['collection'] || [];
+
+			// Get list of item ids and collection ids from the object infos
+			const itemUuids: string[] = itemObjectInfos.map(objectInfo => objectInfo.uuid);
+			const collectionUuids: string[] = collectionObjectInfos.map(
+				objectInfo => objectInfo.uuid
+			);
+			const response = await dataService.query({
+				query: GET_BOOKMARK_STATUSES,
+				variables: {
+					profileId,
+					itemUuids,
+					collectionUuids,
+				},
+			});
+			if (response.errors) {
+				throw new CustomError('response contains errors', null, { response });
+			}
+			// Extract the ids of the bookmark items that were found
+			const itemBookmarkIds = get(response, 'data.app_item_bookmarks', []).map(
+				(itemBookmark: { item_id: string }) => itemBookmark.item_id
+			);
+			const collectionBookmarkIds = get(response, 'data.app_collection_bookmarks', []).map(
+				(itemBookmark: { collection_uuid: string }) => itemBookmark.collection_uuid
+			);
+			// Map the ids that were found to the original id
+			// if the id was found we set the isBookmarked status to true
+			// if the id was not found we set the isBookmarked status to false
+			const itemBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
+				itemObjectInfos.map(objectInfo => {
+					return [objectInfo.uuid, itemBookmarkIds.includes(objectInfo.uuid)];
+				})
+			);
+			const collectionBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
+				collectionObjectInfos.map(objectInfo => {
+					return [objectInfo.uuid, collectionBookmarkIds.includes(objectInfo.uuid)];
+				})
+			);
+			return {
+				item: itemBookmarkStatuses,
+				collection: collectionBookmarkStatuses,
+			};
+		} catch (err) {
+			throw new CustomError('Failed to get bookmark statuses', err, {
+				profileId,
+				objectInfos,
+				query: 'GET_BOOKMARK_STATUSES',
+			});
 		}
 	}
 }

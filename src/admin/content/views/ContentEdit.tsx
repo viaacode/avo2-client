@@ -35,7 +35,7 @@ import {
 } from '../../shared/types';
 
 import { ContentEditForm } from '../components';
-import { CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
+import { GET_CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { ContentService } from '../content.service';
 import {
@@ -75,7 +75,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	);
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [contentBlocks, isLoadingContentBlocks] = useContentBlocksByContentId(id);
-	const [currentTab, setCurrentTab, tabs] = useTabs(CONTENT_DETAIL_TABS, 'inhoud');
+	const [currentTab, setCurrentTab, tabs] = useTabs(GET_CONTENT_DETAIL_TABS(), 'inhoud');
 
 	useEffect(() => {
 		if (contentBlocks.length) {
@@ -95,8 +95,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		pageType === PageType.Create
 			? t('admin/content/views/content-edit___content-toevoegen')
 			: t('admin/content/views/content-edit___content-aanpassen');
-	// TODO: clean up admin check
-	const isAdminUser = get(user, 'role.name', null) === 'admin';
+	const isAdminUser = get(user, 'profile.permissions', []).includes('EDIT_PROTECTED_PAGE_STATUS');
 
 	// Methods
 	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {

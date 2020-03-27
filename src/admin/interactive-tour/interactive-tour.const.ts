@@ -14,7 +14,7 @@ export const INTERACTIVE_TOUR_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
+export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{ id: 'name', label: i18n.t('admin/interactive-tour/interactive-tour___naam'), sortable: true },
 	{
 		id: 'page_id',
@@ -50,8 +50,3 @@ export function getInitialInteractiveTour(): InteractiveTour {
 		],
 	};
 }
-
-export const PAGE_TYPES_LANG = {
-	create: i18n.t('admin/interactive-tour/interactive-tour___toevoegen'),
-	edit: i18n.t('admin/interactive-tour/interactive-tour___aanpassen'),
-};

@@ -35,9 +35,9 @@ import {
 	fromNow,
 	generateAssignmentCreateLink,
 	getAvatarProps,
+	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-query';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 
@@ -139,8 +139,15 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	};
 
 	// Render functions
+	const getLinkProps = (id: string, title: string): { to: string; title: string } => ({
+		title,
+		to: buildLink(isCollection ? APP_PATH.COLLECTION_DETAIL.route : BUNDLE_PATH.BUNDLE_DETAIL, {
+			id,
+		}),
+	});
+
 	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
-		<Link to={buildLink(APP_PATH.COLLECTION_DETAIL.route, { id })} title={title}>
+		<Link {...getLinkProps(id, title)}>
 			<Thumbnail
 				alt="thumbnail"
 				category={type}
@@ -153,15 +160,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link
-					to={buildLink(
-						isCollection ? APP_PATH.COLLECTION_DETAIL.route : BUNDLE_PATH.BUNDLE_DETAIL,
-						{ id }
-					)}
-					title={title}
-				>
-					{title}
-				</Link>
+				<Link {...getLinkProps(id, title)}>{title}</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={type}>
@@ -365,7 +364,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderEmptyFallback = () => (
 		<ErrorView
-			icon="collection"
+			icon={isCollection ? 'collection' : 'folder'}
 			message={
 				isCollection
 					? t(

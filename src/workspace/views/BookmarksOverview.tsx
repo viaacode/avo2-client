@@ -22,13 +22,19 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import { buildLink, CustomError, formatDate, formatTimestamp, fromNow } from '../../shared/helpers';
-import { isMobileWidth } from '../../shared/helpers/media-query';
+import {
+	buildLink,
+	CustomError,
+	formatDate,
+	formatTimestamp,
+	fromNow,
+	isMobileWidth,
+} from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkInfo,
 	EventContentType,
-} from '../../shared/services/bookmarks-views-plays-service';
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -44,7 +50,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const [t] = useTranslation();
 
 	// State
-	const [bookmarks, setBookmarks] = useState<BookmarkInfo[]>([]);
+	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
 	const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
@@ -278,7 +284,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 	const renderBookmarks = () => (
 		<>
-			{bookmarks.length ? renderTable() : renderEmptyFallback()}
+			{bookmarks && bookmarks.length ? renderTable() : renderEmptyFallback()}
 			<DeleteObjectModal
 				title={t('workspace/views/bookmarks___verwijder-bladwijzer')}
 				body={t(
@@ -294,7 +300,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			dataObject={bookmarks[0]}
+			dataObject={bookmarks}
 			render={renderBookmarks}
 		/>
 	);

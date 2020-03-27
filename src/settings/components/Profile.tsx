@@ -59,7 +59,7 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	history,
 	user,
 	isCompleteProfileStep = false,
-	redirectTo = APP_PATH.SEARCH.route,
+	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
 }) => {
 	const [t] = useTranslation();
 

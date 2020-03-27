@@ -34,6 +34,7 @@ import { CollectionAction } from '../CollectionOrBundleEdit';
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	itemMetaData: Avo.Item.Item;
+	index: number;
 	fragment: Avo.Collection.Fragment;
 	changeCollectionState: (action: CollectionAction) => void;
 	updateCuePoints: (cuepoints: any) => void;
@@ -41,12 +42,13 @@ interface CutFragmentModalProps {
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
-	onClose,
 	isOpen,
 	itemMetaData,
-	changeCollectionState,
+	index,
 	fragment,
+	changeCollectionState,
 	updateCuePoints,
+	onClose,
 }) => {
 	const [t] = useTranslation();
 
@@ -100,23 +102,23 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		]);
 
 		changeCollectionState({
+			index,
 			type: 'UPDATE_FRAGMENT_PROP',
-			fragmentId: fragment.id,
 			fragmentProp: 'start_oc',
 			fragmentPropValue: start,
 		});
 
 		changeCollectionState({
+			index,
 			type: 'UPDATE_FRAGMENT_PROP',
-			fragmentId: fragment.id,
 			fragmentProp: 'end_oc',
 			fragmentPropValue: endTime,
 		});
 
 		if (videoStills && videoStills.length) {
 			changeCollectionState({
+				index,
 				type: 'UPDATE_FRAGMENT_PROP',
-				fragmentId: fragment.id,
 				fragmentProp: 'thumbnail_path',
 				fragmentPropValue: videoStills[0].previewImagePath,
 			});

@@ -9,7 +9,7 @@ export const USER_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const USER_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
+export const GET_USER_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{ id: 'first_name', label: i18n.t('admin/users/user___voornaam'), sortable: true },
 	{ id: 'last_name', label: i18n.t('admin/users/user___achternaam'), sortable: true },
 	{ id: 'mail', label: i18n.t('admin/users/user___email'), sortable: true },
