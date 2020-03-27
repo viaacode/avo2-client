@@ -19,7 +19,7 @@ export const INITIAL_ANCHOR_LINKS_COMPONENTS_STATE = (): AnchorLinksBlockCompone
 
 export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (position: number): AnchorLinksBlockState => ({
 	...BLOCK_STATE_DEFAULTS(ContentBlockType.AnchorLinks, position),
-	align: 'left',
+	align: 'center',
 });
 
 export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
