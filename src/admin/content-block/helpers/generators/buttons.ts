@@ -1,6 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ButtonsBlockComponentState,
 	ContentBlockConfig,
@@ -36,7 +36,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: GET_BUTTON_TYPE_OPTIONS,
+					options: GET_BUTTON_TYPE_OPTIONS(),
 				},
 			},
 			label: TEXT_FIELD(
@@ -50,7 +50,7 @@ export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				label: i18n.t('admin/content-block/helpers/generators/buttons___icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
-					options: ADMIN_ICON_OPTIONS,
+					options: GET_ADMIN_ICON_OPTIONS(),
 				},
 			},
 			buttonAction: {

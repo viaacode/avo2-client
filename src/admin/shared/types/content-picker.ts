@@ -29,8 +29,3 @@ export interface PickerItem {
 	type: ContentPickerType;
 	value: string;
 }
-
-export interface PickerSelectItemGroup {
-	label: string;
-	options: PickerSelectItem[];
-}
