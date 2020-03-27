@@ -3,6 +3,8 @@ import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Avo } from '@viaa/avo2-types';
+
 import {
 	Blankslate,
 	Box,
@@ -16,7 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services';
-import { AssetType, deleteFile, uploadFile } from '../../services/file-upload-service';
+import { deleteFile, uploadFile } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
 
 import './FileUpload.scss';
@@ -39,7 +41,7 @@ export interface FileUploadProps {
 	label?: string;
 	allowedTypes?: string[];
 	allowMulti?: boolean;
-	assetType: AssetType;
+	assetType: Avo.FileUpload.AssetType;
 	ownerId: string;
 	urls: string[] | null;
 	onChange: (urls: string[]) => void;
