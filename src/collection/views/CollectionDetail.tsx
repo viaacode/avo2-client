@@ -541,7 +541,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						/>
 					</Spacer>
 				)}
-				<InteractiveTour showButton />
+				<InteractiveTour location={location} user={user} showButton />
 			</ButtonToolbar>
 		);
 	};

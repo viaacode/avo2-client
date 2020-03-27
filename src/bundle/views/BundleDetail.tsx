@@ -531,6 +531,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					onClick={() => executeAction('openShareModal')}
 					type="secondary"
 				/>
+				<Button
+					label={t('bundle/views/bundle-detail___bewerken')}
+					onClick={() => executeAction('edit')}
+					type="primary"
+				/>
 				<ToggleButton
 					title={t('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
@@ -538,11 +543,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
-				/>
-				<Button
-					label={t('bundle/views/bundle-detail___bewerken')}
-					onClick={() => executeAction('edit')}
-					type="primary"
 				/>
 				<Button
 					title={t('bundle/views/bundle-detail___share-bundel')}
@@ -570,7 +570,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
 					</DropdownContent>
 				</ControlledDropdown>
-				<InteractiveTour showButton />
+				<InteractiveTour location={location} user={user} showButton />
 			</ButtonToolbar>
 		);
 	};
