@@ -9,6 +9,7 @@ export type InteractiveTourOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
+// TODO use typings version after update to 2.14.0
 export interface InteractiveTour {
 	id?: number;
 	name: string;
@@ -18,6 +19,7 @@ export interface InteractiveTour {
 	steps: InteractiveTourStep[];
 }
 
+// TODO use typings version after update to 2.14.0
 export interface InteractiveTourStep extends Step {
 	id: string;
 }

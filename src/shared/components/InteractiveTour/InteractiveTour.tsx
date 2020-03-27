@@ -79,6 +79,13 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 				routeId = location.pathname;
 			}
 
+			// Get all routes that have an interactive tour
+			const routeIdsWithTour: string[] = await InteractiveTourService.fetchInteractiveTourRouteIds();
+			if (!routeIdsWithTour.includes(routeId)) {
+				// No tour available for this page
+				return;
+			}
+
 			// Fetch interactive tours for current user and their seen status
 			const tourTemp = await InteractiveTourService.fetchStepsForPage(
 				routeId,
