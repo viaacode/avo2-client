@@ -19,6 +19,7 @@ import { ToastService } from '../../shared/services';
 
 import { CollectionService } from '../collection.service';
 import { CollectionAction } from './CollectionOrBundleEdit';
+import { QualityLabel } from '../collection.types';
 
 interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
@@ -38,7 +39,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		CollectionService.fetchQualityLabels()
 			.then(dbLabels =>
 				setQualityLabels(
-					dbLabels.map((dbLabel: any) => ({
+					dbLabels.map((dbLabel: QualityLabel) => ({
 						label: dbLabel.description,
 						value: dbLabel.value,
 					}))

@@ -22,15 +22,6 @@ export const GET_BUNDLES_BY_TITLE = gql`
 	}
 `;
 
-export const GET_QUALITY_LABELS = gql`
-	query getQualityLabels {
-		lookup_labels {
-			description
-			value
-		}
-	}
-`;
-
 // TODO replace with uuid once database has received correct migration
 export const GET_COLLECTIONS_BY_IDS = gql`
 	query getCollectionsByIds($ids: [uuid!]!) {
