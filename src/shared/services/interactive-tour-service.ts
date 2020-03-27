@@ -1,11 +1,14 @@
-import { compact, findLast, fromPairs, get, last } from 'lodash-es';
+import { compact, findLast, forIn, fromPairs, get, last, startsWith, uniqBy } from 'lodash-es';
 
 import { InteractiveTourStep } from '../../admin/interactive-tour/interactive-tour.types';
 import { APP_PATH } from '../../constants';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';
-import { GET_INTERACTIVE_TOUR } from './interactive-tour-service.gql';
+import {
+	GET_INTERACTIVE_TOUR_WITH_STATUSES,
+	GET_INTERACTIVE_TOUR_WITHOUT_STATUSES,
+} from './interactive-tour-service.gql';
 import { NotificationService } from './notification-service';
 
 export interface TourInfo {
@@ -25,31 +28,43 @@ export class InteractiveTourService {
 	 */
 	public static async fetchStepsForPage(
 		routeId: keyof typeof APP_PATH,
-		profileId: string
+		profileId: string | undefined
 	): Promise<TourInfo | null> {
 		let variables: any;
 		try {
-			// Get tours and seen statuses from the database
-			variables = {
-				routeId,
-				profileId,
-				notificationKeyPrefix: `INTERACTIVE-TOUR___${routeId}___%`,
-			};
+			let response: any;
+			if (profileId) {
+				// Get tours and seen statuses from the database
+				variables = {
+					routeId,
+					profileId,
+					notificationKeyPrefix: `INTERACTIVE-TOUR___${routeId}___%`,
+				};
 
-			const response = await dataService.query({
-				variables,
-				query: GET_INTERACTIVE_TOUR,
-			});
+				response = await dataService.query({
+					variables,
+					query: GET_INTERACTIVE_TOUR_WITH_STATUSES,
+				});
+			} else {
+				variables = {
+					routeId,
+				};
+
+				response = await dataService.query({
+					variables,
+					query: GET_INTERACTIVE_TOUR_WITHOUT_STATUSES,
+				});
+			}
 			const tours: Partial<TourInfo>[] = get(response, 'data.app_interactive_tour', null);
+
+			const seenStatuses: { key: string; through_platform: boolean }[] = this.getSeenStatuses(
+				routeId,
+				response
+			);
 
 			// Convert seen statuses to a dictionary lookup with:
 			// key: id of the tour (string)
 			// value: seen status (boolean)
-			const seenStatuses: { key: string; through_platform: boolean }[] = get(
-				response,
-				'data.users_notifications',
-				[]
-			);
 			const tourSeenStatuses = fromPairs(
 				compact(
 					seenStatuses.map(seenStatus => {
@@ -108,6 +123,32 @@ export class InteractiveTourService {
 	}
 
 	/**
+	 * Returns a single list of seen statuses by combining the seen statuses from the database and the ones from localstorage
+	 * The ones in the database were stored when the user was logged in and viewed an interactive tour
+	 * The ones in local storage were stored when the user was not logged in and viewed an interactive tour
+	 * @param routeId
+	 * @param response
+	 */
+	private static getSeenStatuses(
+		routeId: string | number,
+		response: any
+	): { key: string; through_platform: boolean }[] {
+		const seenStatuses: { key: string; through_platform: boolean }[] = get(
+			response,
+			'data.users_notifications',
+			[]
+		);
+		const seenTourKeyPrefix = `INTERACTIVE-TOUR___${routeId}___`;
+		// @ts-ignore
+		forIn(localStorage, (value: string, key: string) => {
+			if (startsWith(key, seenTourKeyPrefix)) {
+				seenStatuses.push({ key, through_platform: true });
+			}
+		});
+		return uniqBy(seenStatuses, status => status.key);
+	}
+
+	/**
 	 * INSERTS or UPDATES the notifications table entry to track that the tour has been seen by the user
 	 * @param routeId
 	 * @param profileId
@@ -115,16 +156,16 @@ export class InteractiveTourService {
 	 */
 	public static async setInteractiveTourSeen(
 		routeId: keyof typeof APP_PATH,
-		profileId: string,
+		profileId: string | undefined,
 		interactiveTourId: number
 	): Promise<void> {
 		try {
-			await NotificationService.setNotification(
-				`INTERACTIVE-TOUR___${routeId}___${interactiveTourId}`,
-				profileId,
-				false,
-				false
-			);
+			const key = `INTERACTIVE-TOUR___${routeId}___${interactiveTourId}`;
+			if (profileId) {
+				await NotificationService.setNotification(key, profileId, false, false);
+			} else {
+				localStorage.setItem(key, 'seen');
+			}
 		} catch (err) {
 			throw new CustomError('Failed to mark interactive tour as seen', err, {
 				routeId,

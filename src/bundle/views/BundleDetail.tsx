@@ -496,7 +496,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
 					</DropdownContent>
 				</ControlledDropdown>
-				<InteractiveTour location={location} user={user} showButton />
+				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
 	};

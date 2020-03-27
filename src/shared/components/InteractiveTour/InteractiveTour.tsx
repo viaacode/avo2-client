@@ -1,30 +1,29 @@
-import { Location } from 'history';
-import { debounce, reverse, toPairs } from 'lodash-es';
+import { debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Joyride, { CallBackProps, STATUS } from 'react-joyride';
-import { matchPath } from 'react-router';
+import { matchPath, withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { InteractiveTourStep } from '../../../admin/interactive-tour/interactive-tour.types';
+import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteInfo } from '../../../constants';
 import { CustomError } from '../../helpers';
+import withUser from '../../hocs/withUser';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
 
 import './InteractiveTour.scss';
 
 export interface InteractiveTourProps {
-	location: Location;
-	user: Avo.User.User;
 	showButton: boolean;
 }
 
-const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
-	location,
-	user,
+const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProps> = ({
 	showButton,
+	user,
+	location,
 }) => {
 	const [t] = useTranslation();
 
@@ -57,16 +56,6 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 
 	const checkIfTourExistsForCurrentPage = useCallback(async () => {
 		try {
-			if (!user.profile) {
-				console.error(
-					new CustomError(
-						'Failed to get steps for interactive tour because user does not contain a profile',
-						null,
-						{ user }
-					)
-				);
-				return;
-			}
 			// Resolve current page location to route id, so we know which interactive tour to show
 			// We reverse the order of the routes, since more specific routes are always declared later in the list
 			const interactiveRoutePairs = reverse(
@@ -81,16 +70,19 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 				}
 			);
 
-			if (!matchingRoutePair) {
-				return;
+			let routeId: string | undefined;
+			if (matchingRoutePair) {
+				// static page
+				routeId = matchingRoutePair[0];
+			} else {
+				// check content pages
+				routeId = location.pathname;
 			}
-
-			const routeId: string = matchingRoutePair[0];
 
 			// Fetch interactive tours for current user and their seen status
 			const tourTemp = await InteractiveTourService.fetchStepsForPage(
 				routeId,
-				user.profile.id
+				get(user, 'profile.id')
 			);
 			setTour(tourTemp);
 			setRouteId(routeId);
@@ -115,9 +107,10 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 				if (!tour || !routeId) {
 					return;
 				}
+				const profileId = get(user, 'profile.id');
 				await InteractiveTourService.setInteractiveTourSeen(
 					routeId,
-					(user.profile as Avo.User.Profile).id,
+					profileId,
 					(tour as TourInfo).id
 				);
 				setTour({
@@ -128,7 +121,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 				console.error(
 					new CustomError('Failed to store interactive tour seen status', err, {
 						routeId,
-						profileId: (user.profile as Avo.User.Profile).id,
+						user,
 						tourId: (tour as TourInfo).id,
 					})
 				);
@@ -192,4 +185,6 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps> = ({
 	return null;
 };
 
-export default InteractiveTour;
+export default compose(withRouter, withUser)(InteractiveTour) as FunctionComponent<
+	InteractiveTourProps
+>;

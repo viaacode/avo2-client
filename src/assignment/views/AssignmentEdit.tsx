@@ -632,11 +632,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												disabled={isSaving}
 											/>
 											<Spacer margin="left-small">
-												<InteractiveTour
-													location={location}
-													user={user}
-													showButton
-												/>
+												<InteractiveTour showButton />
 											</Spacer>
 										</ButtonToolbar>
 									</ToolbarItem>

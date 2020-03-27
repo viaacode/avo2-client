@@ -477,7 +477,7 @@ const Search: FunctionComponent<SearchProps> = ({
 										/> */}
 									</DropdownContent>
 								</Dropdown>
-								<InteractiveTour location={location} user={user} showButton />
+								<InteractiveTour showButton />
 							</Flex>
 						</ToolbarRight>
 					</Toolbar>

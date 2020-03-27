@@ -33,3 +33,5 @@ export interface InteractiveTourTableState extends FilterableTableState {
 	created_at: string;
 	updated_at: string;
 }
+
+export type InteractiveTourPageType = 'static' | 'content';

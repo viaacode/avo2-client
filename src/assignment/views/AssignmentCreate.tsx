@@ -591,11 +591,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
-											<InteractiveTour
-												location={location}
-												user={user}
-												showButton
-											/>
+											<InteractiveTour showButton />
 										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>

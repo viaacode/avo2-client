@@ -287,7 +287,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								</BlockHeading>
 							</ToolbarLeft>
 							<ToolbarRight>
-								<InteractiveTour location={location} user={user} showButton />
+								<InteractiveTour showButton />
 							</ToolbarRight>
 						</Toolbar>
 					</Container>
