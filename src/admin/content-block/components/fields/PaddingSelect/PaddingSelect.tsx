@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { Form, FormGroup, Select, SelectOption } from '@viaa/avo2-components';
-import { SpacerOption } from '@viaa/avo2-components/dist/components/Spacer/Spacer'; // TODO: export from components lib
+import { Form, FormGroup, Select, SelectOption, SpacerOption } from '@viaa/avo2-components';
 
 import { PaddingFieldState } from '../../../../shared/types';
 

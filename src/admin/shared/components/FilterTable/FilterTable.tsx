@@ -37,9 +37,9 @@ import {
 	Pagination,
 	Spacer,
 	Table,
+	TableColumn,
 	TextInput,
 } from '@viaa/avo2-components';
-import { TableColumn } from '@viaa/avo2-components/src/components/Table/Table'; // TODO use exported version components repo
 import { Avo } from '@viaa/avo2-types';
 
 import {

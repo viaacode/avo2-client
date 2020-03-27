@@ -52,13 +52,12 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		);
 	};
 
-	const SearchResultCasted = SearchResult as any; // TODO remove cast when updating to components 1.34.0
 	return (
-		<SearchResultCasted
+		<SearchResult
 			key={`search-result-${result.id}`}
 			type={toEnglishContentType(result.administrative_type)}
 			date={formatDate(result.dcterms_issued)}
-			tags={getTags(result) as any} // TODO remove cast when updating to components 1.34.0
+			tags={getTags(result)}
 			viewCount={result.views_count || 0}
 			bookmarkCount={result.bookmarks_count || 0}
 			description={result.dcterms_abstract || ''}
@@ -87,7 +86,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 					/>
 				</Link>
 			</SearchResultThumbnail>
-		</SearchResultCasted>
+		</SearchResult>
 	);
 };
 
