@@ -296,6 +296,10 @@ export interface MediaGridBlockState extends DefaultContentBlockState {
 	searchQueryLimit: string;
 }
 
+export interface AnchorLinksBlockState extends DefaultContentBlockState {
+	align: AlignOption;
+}
+
 export interface MediaItemResponse {
 	tileData: Partial<Avo.Collection.Collection | Avo.Item.Item>;
 	count: number;
