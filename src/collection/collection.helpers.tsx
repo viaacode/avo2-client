@@ -99,7 +99,10 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				: i18n.t('collection/collection___de-collecties-moeten-een-titel-hebben'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.collection_fragments ||
-			validateFragments(collection.collection_fragments, 'video'),
+			validateFragments(
+				collection.collection_fragments,
+				collection.type_id === ContentTypeNumber.collection ? 'video' : 'collection'
+			),
 	},
 	{
 		error: i18n.t(
@@ -143,7 +146,10 @@ const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRul
 	},
 ];
 
-const validateFragments = (fragments: Avo.Collection.Fragment[], type: string): boolean => {
+const validateFragments = (
+	fragments: Avo.Collection.Fragment[],
+	type: 'text' | 'video' | 'collection'
+): boolean => {
 	if (!fragments || !fragments.length) {
 		return false;
 	}
@@ -164,6 +170,21 @@ const validateFragments = (fragments: Avo.Collection.Fragment[], type: string): 
 				}
 			});
 			break;
+
+		case 'collection':
+			// Check if video fragment has custom_title and custom_description if necessary.
+			fragments.forEach(fragment => {
+				if (
+					fragment.external_id &&
+					fragment.external_id !== '-1' &&
+					fragment.use_custom_fields &&
+					!fragment.custom_title
+				) {
+					isValid = false;
+				}
+			});
+			break;
+
 		case 'text':
 			// Check if text fragment has custom_title or custom_description.
 			fragments.forEach(fragment => {

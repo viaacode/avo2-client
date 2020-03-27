@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"prestart": "npm run env",
-		"start": "react-scripts start",
+		"start": "react-scripts start --no-cache",
 		"env": "node ./scripts/env.js && cp env-config.js ./public",
 		"build": "react-scripts build",
 		"unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
