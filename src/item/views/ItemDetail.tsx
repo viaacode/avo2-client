@@ -255,8 +255,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {
-					itemId: (item as any).uid,
 					user,
+					itemId: (item as any).uid,
 					type: 'item',
 					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
 				})
