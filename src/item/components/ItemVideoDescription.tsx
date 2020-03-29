@@ -175,7 +175,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
 				autoplay
-				itemUuid={(itemMetaData as any).uid} // TODO remove cast to any when typings v2.11 is released
+				itemUuid={itemMetaData.uid}
 			/>
 		</div>
 	);

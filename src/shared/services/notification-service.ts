@@ -37,8 +37,8 @@ export class NotificationService {
 			return get(response, 'data.users_notifications[0]', null);
 		} catch (err) {
 			throw new CustomError('Failed to get user notification', err, {
-				notificationKey: key,
 				profileId,
+				notificationKey: key,
 				query: 'GET_NOTIFICATION',
 			});
 		}
@@ -88,10 +88,10 @@ export class NotificationService {
 			}
 		} catch (err) {
 			throw new CustomError('Failed to set user notification', err, {
-				notificationKey: key,
 				profileId,
 				throughEmail,
 				throughPlatform,
+				notificationKey: key,
 				query: ['GET_NOTIFICATION', 'UPDATE_NOTIFICATION', 'INSERT_NOTIFICATION'],
 			});
 		}

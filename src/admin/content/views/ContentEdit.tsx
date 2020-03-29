@@ -35,7 +35,7 @@ import {
 } from '../../shared/types';
 
 import { ContentEditForm } from '../components';
-import { GET_CONTENT_DETAIL_TABS, CONTENT_PATH } from '../content.const';
+import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
 import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { ContentService } from '../content.service';
 import {
