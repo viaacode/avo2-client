@@ -543,7 +543,7 @@ export class CollectionService {
 				throw new CustomError('Response contains errors', null, { response });
 			}
 
-			return get(response, 'data.lookup_labels', []);
+			return get(response, 'data.lookup_enum_collection_labels', []);
 		} catch (err) {
 			throw new CustomError('Failed to get quality labels', err, {
 				query: 'GET_BUNDLES_BY_TITLE',

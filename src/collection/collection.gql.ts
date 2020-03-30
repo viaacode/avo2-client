@@ -303,7 +303,7 @@ export const DELETE_COLLECTION_LABELS = gql`
 
 export const GET_QUALITY_LABELS = gql`
 	query getQualityLabels {
-		lookup_labels {
+		lookup_enum_collection_labels {
 			description
 			value
 		}
