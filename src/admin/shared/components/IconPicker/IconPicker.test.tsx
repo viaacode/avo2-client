@@ -1,13 +1,13 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
-import { ADMIN_ICON_OPTIONS } from '../../constants';
+import { GET_ADMIN_ICON_OPTIONS } from '../../constants';
 
 import { IconPicker } from './IconPicker';
 
 const iconPickerProps = {
 	className: 'c-icon-picker-custom',
-	options: ADMIN_ICON_OPTIONS,
+	options: GET_ADMIN_ICON_OPTIONS(),
 };
 
 describe('<IconPicker />', () => {
@@ -28,10 +28,10 @@ describe('<IconPicker />', () => {
 		const iconPickerIcon = iconPickeMenu.find('.react-select__option .o-svg-icon');
 
 		expect(
-			iconPickerIcon.at(0).hasClass(`o-svg-icon--${ADMIN_ICON_OPTIONS[0].value}`)
+			iconPickerIcon.at(0).hasClass(`o-svg-icon--${GET_ADMIN_ICON_OPTIONS()[0].value}`)
 		).toBeTruthy();
 		expect(
-			iconPickerIcon.at(1).hasClass(`o-svg-icon--${ADMIN_ICON_OPTIONS[1].value}`)
+			iconPickerIcon.at(1).hasClass(`o-svg-icon--${GET_ADMIN_ICON_OPTIONS()[1].value}`)
 		).toBeTruthy();
 	});
 });

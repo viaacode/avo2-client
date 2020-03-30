@@ -14,8 +14,8 @@ import { parsePickerItem } from '../../helpers';
 import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 import {
-	GET_CONTENT_TYPES,
 	DEFAULT_ALLOWED_TYPES,
+	GET_CONTENT_TYPES,
 	REACT_SELECT_DEFAULT_OPTIONS,
 } from './ContentPicker.const';
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';

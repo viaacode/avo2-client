@@ -45,7 +45,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				label: i18n.t('admin/content-block/helpers/generators/media-player___breedte'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: GET_WIDTH_OPTIONS,
+					options: GET_WIDTH_OPTIONS(),
 				},
 			},
 		},

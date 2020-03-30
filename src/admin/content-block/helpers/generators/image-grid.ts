@@ -84,6 +84,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					max: 800,
 					step: 1,
 					values: [200],
+					showNumber: true,
 				} as MultiRangeProps,
 			},
 			imageHeight: {
@@ -97,6 +98,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					max: 800,
 					step: 1,
 					values: [200],
+					showNumber: true,
 				} as MultiRangeProps,
 			},
 			itemWidth: {
@@ -108,20 +110,21 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 					max: 800,
 					step: 1,
 					values: [200],
+					showNumber: true,
 				} as MultiRangeProps,
 			},
 			fill: {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___zoom'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: GET_FILL_OPTIONS,
+					options: GET_FILL_OPTIONS(),
 				},
 			},
 			textAlign: {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___text-alignatie'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: GET_ALIGN_OPTIONS,
+					options: GET_ALIGN_OPTIONS(),
 				},
 			},
 		},

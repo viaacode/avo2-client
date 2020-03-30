@@ -76,3 +76,8 @@ export function toEnglishContentType(label: DutchContentType): EnglishContentTyp
 }
 
 export type CollectionLabelLookup = { [id: string]: string };
+
+export interface QualityLabel {
+	description: string;
+	value: string;
+}

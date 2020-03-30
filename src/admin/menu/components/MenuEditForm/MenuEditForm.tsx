@@ -10,7 +10,7 @@ import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { IconPicker } from '../../../shared/components/IconPicker/IconPicker';
-import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import { PickerItem } from '../../../shared/types';
 import { MenuEditFormErrorState, MenuEditFormState } from '../../menu.types';
 
@@ -82,11 +82,11 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			)}
 			<FormGroup label={t('admin/menu/components/menu-edit-form/menu-edit-form___icoon')}>
 				<IconPicker
-					options={ADMIN_ICON_OPTIONS}
+					options={GET_ADMIN_ICON_OPTIONS()}
 					onChange={(option: ValueType<ReactSelectOption<string>>) =>
 						onChange('icon', get(option, 'value', ''))
 					}
-					value={ADMIN_ICON_OPTIONS.find(
+					value={GET_ADMIN_ICON_OPTIONS().find(
 						(option: ReactSelectOption<string>) => option.value === formState.icon
 					)}
 				/>

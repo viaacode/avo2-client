@@ -40,7 +40,7 @@ export const BACKGROUND_COLOR_FIELD = (
 	label,
 	editorType: ContentBlockEditor.ColorSelect,
 	editorProps: {
-		options: GET_BACKGROUND_COLOR_OPTIONS,
+		options: GET_BACKGROUND_COLOR_OPTIONS(),
 		defaultValue: GET_BACKGROUND_COLOR_OPTIONS()[0],
 	},
 });
@@ -58,7 +58,7 @@ export const ALIGN_FIELD = (
 	label,
 	editorType: ContentBlockEditor.AlignSelect,
 	editorProps: {
-		options: GET_ALIGN_OPTIONS,
+		options: GET_ALIGN_OPTIONS(),
 	},
 });
 

@@ -3,7 +3,7 @@ import { IconName } from '@viaa/avo2-components';
 import i18n from '../../../shared/translations/i18n';
 import { ReactSelectOption } from '../../../shared/types';
 
-export const ADMIN_ICON_OPTIONS: ReactSelectOption<IconName>[] = [
+export const GET_ADMIN_ICON_OPTIONS: () => ReactSelectOption<IconName>[] = () => [
 	{ label: i18n.t('admin/shared/constants/index___afbeelding'), value: 'image' },
 	{ label: i18n.t('admin/shared/constants/index___aktetas'), value: 'briefcase' },
 	{ label: i18n.t('admin/shared/constants/index___audio'), value: 'headphone' },

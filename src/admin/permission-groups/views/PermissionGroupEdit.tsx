@@ -29,7 +29,7 @@ import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { PERMISSION_GROUP_PATH, GET_PERMISSIONS_TABLE_COLS } from '../permission-group.const';
+import { GET_PERMISSIONS_TABLE_COLS, PERMISSION_GROUP_PATH } from '../permission-group.const';
 import { PermissionGroupService } from '../permission-group.service';
 import {
 	Permission,

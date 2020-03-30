@@ -48,7 +48,7 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { GET_CONTENT_DETAIL_TABS, CONTENT_PATH, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
+import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, DbContent } from '../content.types';

@@ -29,7 +29,7 @@ import { ContentPickerType, PickerItem } from '../../shared/types';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
-import { INITIAL_MENU_FORM, MENU_PATH, GET_PAGE_TYPES_LANG } from '../menu.const';
+import { GET_PAGE_TYPES_LANG, INITIAL_MENU_FORM, MENU_PATH } from '../menu.const';
 import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 import { fetchMenuItemById, fetchMenuItems } from '../menu.service';
 import {

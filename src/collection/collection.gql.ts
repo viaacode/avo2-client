@@ -301,8 +301,8 @@ export const DELETE_COLLECTION_LABELS = gql`
 	}
 `;
 
-export const GET_COLLECTION_LABELS = gql`
-	query getCollectionLabels {
+export const GET_QUALITY_LABELS = gql`
+	query getQualityLabels {
 		lookup_labels {
 			description
 			value
