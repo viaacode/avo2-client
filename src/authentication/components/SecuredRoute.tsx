@@ -20,7 +20,13 @@ import { redirectToClientPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading, selectUser } from '../store/selectors';
 
-export interface SecuredRouteProps extends RouteComponentProps {
+export interface DefaultSecureRouteProps<T = {}> extends RouteComponentProps<T> {
+	// technically this type is incorrect, it should be Avo.User.User | undefined
+	// But practically it's always Avo.User.User where we need a user and this avoids a shit ton of IF checks
+	user: Avo.User.User;
+}
+
+export interface SecuredRouteProps extends DefaultSecureRouteProps {
 	component: ComponentType<any>;
 	exact?: boolean;
 	getLoginState: () => Dispatch;
@@ -28,10 +34,6 @@ export interface SecuredRouteProps extends RouteComponentProps {
 	loginStateError: boolean;
 	loginStateLoading: boolean;
 	path?: string;
-	user: Avo.User.User;
-}
-
-export interface DefaultSecureRouteProps<T = {}> extends RouteComponentProps<T> {
 	user: Avo.User.User;
 }
 
@@ -65,7 +67,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 		);
 	}
 
-	if (loginStateError) {
+	if (loginStateError || !user) {
 		redirectToClientPage(
 			buildLink(
 				APP_PATH.ERROR.route,
