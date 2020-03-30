@@ -34,7 +34,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 
 	const getTags = (result: Avo.Search.ResultItem): TagOption[] => {
 		return compact(
-			get(result, 'collection_labels', []).map((id: string) => {
+			(get(result, 'collection_labels', []) as string[]).map((id: string) => {
 				if (collectionLabelLookup[id]) {
 					return {
 						id,
@@ -62,9 +62,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			bookmarkCount={result.bookmarks_count || 0}
 			description={result.dcterms_abstract || ''}
 			isBookmarked={isBookmarked}
-			onToggleBookmark={(active: boolean) =>
-				handleBookmarkToggle((result as any).uid, active)
-			} // TODO remove cast	after update to typings 2.14.0
+			onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.uid, active)}
 			onTagClicked={handleTagClicked}
 		>
 			<SearchResultTitle>

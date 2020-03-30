@@ -13,11 +13,7 @@ import {
 	INSERT_INTERACTIVE_TOUR,
 	UPDATE_INTERACTIVE_TOUR,
 } from './interactive-tour.gql';
-import {
-	InteractiveTour,
-	InteractiveTourOverviewTableCols,
-	InteractiveTourStep,
-} from './interactive-tour.types';
+import { InteractiveTourOverviewTableCols } from './interactive-tour.types';
 
 export class InteractiveTourService {
 	public static async fetchInteractiveTours(
@@ -25,7 +21,7 @@ export class InteractiveTourService {
 		sortColumn: InteractiveTourOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		where: any
-	): Promise<[InteractiveTour[], number]> {
+	): Promise<[Avo.InteractiveTour.InteractiveTour[], number]> {
 		let variables: any;
 		try {
 			variables = {
@@ -59,7 +55,9 @@ export class InteractiveTourService {
 		}
 	}
 
-	public static async fetchInteractiveTour(id: string): Promise<InteractiveTour> {
+	public static async fetchInteractiveTour(
+		id: string
+	): Promise<Avo.InteractiveTour.InteractiveTour> {
 		let variables: any;
 		try {
 			variables = {
@@ -86,7 +84,9 @@ export class InteractiveTourService {
 		}
 	}
 
-	public static async insertInteractiveTour(interactiveTour: InteractiveTour): Promise<number> {
+	public static async insertInteractiveTour(
+		interactiveTour: Avo.InteractiveTour.InteractiveTour
+	): Promise<number> {
 		try {
 			const response = await dataService.mutate({
 				mutation: INSERT_INTERACTIVE_TOUR,
@@ -125,7 +125,7 @@ export class InteractiveTourService {
 		}
 	}
 
-	static async updateInteractiveTour(interactiveTour: InteractiveTour) {
+	static async updateInteractiveTour(interactiveTour: Avo.InteractiveTour.InteractiveTour) {
 		try {
 			const response = await dataService.mutate({
 				mutation: UPDATE_INTERACTIVE_TOUR,
@@ -177,7 +177,7 @@ export class InteractiveTourService {
 	}
 
 	public static swapStepPositions(
-		steps: InteractiveTourStep[],
+		steps: Avo.InteractiveTour.Step[],
 		currentStapIndex: number,
 		delta: number
 	) {

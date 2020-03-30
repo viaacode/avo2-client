@@ -188,7 +188,6 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		!playerTicket &&
 		fetchPlayerTicket(itemMetaData.external_id).then(data => setPlayerTicket(data));
 
-	// TODO: Replace publisher, published_at by real publisher
 	const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0;
 	return (
 		<Modal
@@ -204,6 +203,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					poster={itemMetaData.thumbnail_path}
 					title={itemMetaData.title}
 					onInit={initFlowPlayer}
+					// TODO: Replace publisher, published_at by real publisher
 					subtitles={['30-12-2011', 'VRT']}
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}

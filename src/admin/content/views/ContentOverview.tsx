@@ -144,8 +144,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	}, [contentPages]);
 
 	// Computed
-	// TODO: clean up admin check
-	const isAdminUser = get(user, 'role.name', null) === 'admin';
+	const isAdminUser = get(user, 'profile.permissions', []).includes('EDIT_PROTECTED_PAGE_STATUS');
 
 	const contentTypeOptions = contentTypes.map(
 		(option): CheckboxOption => ({

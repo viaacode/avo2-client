@@ -6,7 +6,7 @@ import {
 	PickerItem,
 	PickerSelectItem,
 	PickerTypeOption,
-} from '../../../shared/types';
+} from '../../types';
 
 export const filterTypes = (
 	types: PickerTypeOption<ContentPickerType>[],
