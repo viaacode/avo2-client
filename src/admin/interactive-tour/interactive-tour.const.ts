@@ -1,9 +1,10 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { ROUTE_PARTS } from '../../shared/constants';
 import { generateRandomId } from '../../shared/helpers/uuid';
 import i18n from '../../shared/translations/i18n';
 
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
-import { InteractiveTour } from './interactive-tour.types';
 
 export const INTERACTIVE_TOUR_PATH = {
 	INTERACTIVE_TOUR_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.interactiveTours}`,
@@ -36,7 +37,7 @@ export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] 
 	{ id: 'actions', label: '' },
 ];
 
-export function getInitialInteractiveTour(): InteractiveTour {
+export function getInitialInteractiveTour(): Avo.InteractiveTour.InteractiveTour {
 	return {
 		name: '',
 		page_id: '',

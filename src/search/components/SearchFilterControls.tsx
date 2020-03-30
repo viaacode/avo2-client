@@ -148,7 +148,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			)}
 			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___label'),
-				'collectionLabel' as any, // TODO remove cast	after update to typings 2.14.0
+				'collectionLabel',
 				false,
 				collectionLabels
 			)}

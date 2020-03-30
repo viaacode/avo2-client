@@ -6,8 +6,8 @@ import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { Button } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
-import { InteractiveTourStep } from '../../../admin/interactive-tour/interactive-tour.types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteInfo } from '../../../constants';
 import { CustomError } from '../../helpers';
@@ -30,10 +30,10 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 	const [tour, setTour] = useState<TourInfo | null>(null);
 	const [routeId, setRouteId] = useState<string | null>(null);
 
-	const mapSteps = (dbSteps: InteractiveTourStep[]): InteractiveTourStep[] => {
+	const mapSteps = (dbSteps: Avo.InteractiveTour.Step[]): Avo.InteractiveTour.Step[] => {
 		return dbSteps.map(
-			(dbStep): InteractiveTourStep => {
-				const mappedStep: Partial<InteractiveTourStep> = {};
+			(dbStep): Avo.InteractiveTour.Step => {
+				const mappedStep: Partial<Avo.InteractiveTour.Step> = {};
 				if (!dbStep.target) {
 					mappedStep.placement = 'center';
 					mappedStep.target = 'body';
@@ -49,7 +49,7 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 						}}
 					/>
 				);
-				return mappedStep as InteractiveTourStep;
+				return mappedStep as Avo.InteractiveTour.Step;
 			}
 		);
 	};

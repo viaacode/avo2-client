@@ -1,7 +1,8 @@
 import { compact, findLast, forIn, fromPairs, get, last, startsWith, uniqBy } from 'lodash-es';
 import queryString from 'query-string';
 
-import { InteractiveTourStep } from '../../admin/interactive-tour/interactive-tour.types';
+import { Avo } from '@viaa/avo2-types';
+
 import { APP_PATH } from '../../constants';
 import { CustomError, getEnv } from '../helpers';
 
@@ -9,7 +10,7 @@ import { NotificationService } from './notification-service';
 
 export interface TourInfo {
 	id: number;
-	steps: InteractiveTourStep[];
+	steps: Avo.InteractiveTour.Step[];
 	seen: boolean;
 }
 

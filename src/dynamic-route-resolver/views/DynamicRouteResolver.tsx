@@ -161,9 +161,10 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			// Special route exceptions
 			// /klaar/archief: redirect teachers to search page with klaar filter
 			const routePath = get(routeInfo, 'data.path', '');
-			// TODO: Ideally this should be based on the users user-group ids
-			const isTeacher = get(user, 'profile.permissions', []).includes(PermissionNames.SEARCH);
-			if (routePath === '/klaar/archief' && isTeacher) {
+			const canAccessSearch = get(user, 'profile.permissions', []).includes(
+				PermissionNames.SEARCH
+			);
+			if (routePath === '/klaar/archief' && canAccessSearch) {
 				return <Redirect to={generateSearchLinkString('serie', 'Klaar')} />;
 			}
 

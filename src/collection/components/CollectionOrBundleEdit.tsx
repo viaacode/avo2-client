@@ -94,7 +94,7 @@ type CollectionUpdateAction = {
 
 type CollectionPropUpdateAction = {
 	type: 'UPDATE_COLLECTION_PROP';
-	collectionProp: keyof Avo.Collection.Collection | 'collection_labels'; // TODO remove labels once update to typings v2.14.0
+	collectionProp: keyof Avo.Collection.Collection;
 	collectionPropValue: ValueOf<Avo.Collection.Collection>;
 	updateInitialCollection?: boolean;
 };

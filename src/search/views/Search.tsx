@@ -175,7 +175,7 @@ const Search: FunctionComponent<SearchProps> = ({
 						CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type];
 					return {
 						type,
-						uuid: (result as any).uid, // TODO remove cast	after update to typings 2.14.0
+						uuid: result.uid,
 					};
 				}
 			);
@@ -315,7 +315,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		try {
 			const results = get(searchResults, 'results', []);
 			const resultItem: SearchResultItem | undefined = results.find(
-				result => (result as any).uid === uuid // TODO remove cast	after update to typings 2.14.0
+				result => result.uid === uuid
 			);
 			if (!resultItem) {
 				throw new CustomError('Failed to find search result by id');

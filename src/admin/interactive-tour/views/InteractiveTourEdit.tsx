@@ -29,6 +29,7 @@ import {
 	TooltipTrigger,
 	WYSIWYG,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -47,18 +48,16 @@ import { getInitialInteractiveTour, INTERACTIVE_TOUR_PATH } from '../interactive
 import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
-	InteractiveTour,
 	InteractiveTourEditFormErrorState,
 	InteractiveTourPageType,
-	InteractiveTourStep,
 } from '../interactive-tour.types';
 import './InteractiveTourEdit.scss';
 
 type StepPropUpdateAction = {
 	type: 'UPDATE_STEP_PROP';
 	stepIndex: number;
-	stepProp: keyof InteractiveTourStep;
-	stepPropValue: ValueOf<InteractiveTourStep>;
+	stepProp: keyof Avo.InteractiveTour.Step;
+	stepPropValue: ValueOf<Avo.InteractiveTour.Step>;
 };
 
 type StepSwapAction = {
@@ -74,14 +73,14 @@ type StepRemoveAction = {
 
 type InteractiveTourUpdateAction = {
 	type: 'UPDATE_INTERACTIVE_TOUR';
-	newInteractiveTour: InteractiveTour | null;
+	newInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
 	updateInitialInteractiveTour?: boolean;
 };
 
 type InteractiveTourPropUpdateAction = {
 	type: 'UPDATE_INTERACTIVE_TOUR_PROP';
-	interactiveTourProp: keyof InteractiveTour;
-	interactiveTourPropValue: ValueOf<InteractiveTour>;
+	interactiveTourProp: keyof Avo.InteractiveTour.InteractiveTour;
+	interactiveTourPropValue: ValueOf<Avo.InteractiveTour.InteractiveTour>;
 	updateInitialInteractiveTour?: boolean;
 };
 
@@ -93,8 +92,8 @@ export type InteractiveTourAction =
 	| InteractiveTourPropUpdateAction;
 
 interface InteractiveTourState {
-	currentInteractiveTour: InteractiveTour | null;
-	initialInteractiveTour: InteractiveTour | null;
+	currentInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
+	initialInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
 }
 
 interface InteractiveTourEditProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -126,10 +125,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			};
 		}
 
-		const newCurrentInteractiveTour: InteractiveTour | null = cloneDeep(
+		const newCurrentInteractiveTour: Avo.InteractiveTour.InteractiveTour | null = cloneDeep(
 			interactiveTourState.currentInteractiveTour
 		);
-		const newInitialInteractiveTour: InteractiveTour | null = cloneDeep(
+		const newInitialInteractiveTour: Avo.InteractiveTour.InteractiveTour | null = cloneDeep(
 			interactiveTourState.initialInteractiveTour
 		);
 
@@ -217,7 +216,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					variables: { id: match.params.id },
 				});
 
-				const interactiveTourObj: InteractiveTour | undefined = get(
+				const interactiveTourObj: Avo.InteractiveTour.InteractiveTour | undefined = get(
 					response,
 					'data.app_interactive_tour[0]'
 				);
@@ -440,7 +439,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		/>
 	);
 
-	const renderStep = (step: InteractiveTourStep, index: number) => {
+	const renderStep = (step: Avo.InteractiveTour.Step, index: number) => {
 		if (!interactiveTourState.currentInteractiveTour) {
 			return null;
 		}
