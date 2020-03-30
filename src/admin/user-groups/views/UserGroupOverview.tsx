@@ -15,10 +15,12 @@ import {
 import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
-import FilterTable from '../../shared/components/FilterTable/FilterTable';
+import { ItemsTableState } from '../../items/items.types';
+import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
-import { USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
+import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
+import { GET_USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
 
@@ -35,12 +37,24 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 	const [tableState, setTableState] = useState<Partial<UserGroupTableState>>({});
 
 	const fetchUserGroups = useCallback(async () => {
+		const generateWhereObject = (filters: Partial<ItemsTableState>) => {
+			const andFilters: any[] = [];
+			andFilters.push(
+				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
+					{ label: { _ilike: queryWordWildcard } },
+					{ description: { _ilike: queryWordWildcard } },
+				])
+			);
+			andFilters.push(...getDateRangeFilters(filters, ['created_at', 'updated_at']));
+			return { _and: andFilters };
+		};
+
 		try {
 			const [userGroupsTemp, userGroupCountTemp] = await UserGroupService.fetchUserGroups(
 				tableState.page || 0,
 				tableState.sort_column || 'created_at',
 				tableState.sort_order || 'desc',
-				tableState.query || ''
+				generateWhereObject(getFilters(tableState))
 			);
 			setUserGroups(userGroupsTemp);
 			setUserGroupCount(userGroupCountTemp);
@@ -136,6 +150,12 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 									id: rowData.id,
 								})
 							}
+							title={t(
+								'admin/user-groups/views/user-group-overview___bekijk-de-gebruikersgroep-details'
+							)}
+							ariaLabel={t(
+								'admin/user-groups/views/user-group-overview___bekijk-de-gebruikersgroep-details'
+							)}
 						/>
 						<Button
 							icon="edit"
@@ -146,6 +166,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 							}
 							size="small"
 							title={t('admin/content/views/content-overview___pas-content-aan')}
+							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
 							type="secondary"
 						/>
 						<Button
@@ -153,6 +174,9 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 							onClick={() => openModal(rowData.id)}
 							size="small"
 							title={t('admin/content/views/content-overview___verwijder-content')}
+							ariaLabel={t(
+								'admin/content/views/content-overview___verwijder-content'
+							)}
 							type="danger-hover"
 						/>
 					</ButtonToolbar>
@@ -195,7 +219,7 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		return (
 			<>
 				<FilterTable
-					columns={USER_GROUP_OVERVIEW_TABLE_COLS}
+					columns={GET_USER_GROUP_OVERVIEW_TABLE_COLS()}
 					data={userGroups || []}
 					dataCount={userGroupCount}
 					renderCell={(rowData: Partial<UserGroup>, columnId: string) =>

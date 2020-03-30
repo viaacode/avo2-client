@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -12,88 +12,133 @@ import { ToastService } from '../../../../shared/services';
 
 import { parsePickerItem } from '../../helpers';
 import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
-import { CONTENT_TYPES, REACT_SELECT_DEFAULT_OPTIONS } from './ContentPicker.const';
+
+import {
+	DEFAULT_ALLOWED_TYPES,
+	GET_CONTENT_TYPES,
+	REACT_SELECT_DEFAULT_OPTIONS,
+} from './ContentPicker.const';
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
 
 export interface ContentPickerProps {
-	onSelect: (value: ValueType<PickerItem>) => void;
 	allowedTypes?: ContentPickerType[];
+	initialValue?: PickerItem;
+	onSelect: (value: PickerItem | null) => void;
+	hideTypeDropdown?: boolean;
 	errors?: string | string[];
-	currentSelection?: PickerItem;
 }
 
 export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
-	allowedTypes,
+	allowedTypes = DEFAULT_ALLOWED_TYPES,
+	initialValue,
 	onSelect,
+	hideTypeDropdown = false,
 	errors = [],
-	currentSelection,
 }) => {
-	const typeOptions = filterTypes(CONTENT_TYPES, allowedTypes || []);
-	const currentTypeObject = typeOptions.find(
-		type => type.value === get(currentSelection, 'type')
-	);
-
 	const [t] = useTranslation();
 
-	const [currentType, setCurrentType] = useState<PickerTypeOption<ContentPickerType>>(
+	// filter available options for the type picker
+	const typeOptions = filterTypes(GET_CONTENT_TYPES(), allowedTypes as ContentPickerType[]);
+
+	// apply initial type from `initialValue`, default to first available type
+	const currentTypeObject = typeOptions.find(type => type.value === get(initialValue, 'type'));
+	const [selectedType, setSelectedType] = useState<PickerTypeOption<ContentPickerType>>(
 		currentTypeObject || typeOptions[0]
 	);
-	const [options, setOptions] = useState<PickerSelectItem[]>([]);
-	const [input, setInput] = useState<string>(
-		setInitialInput(currentTypeObject, currentSelection)
+
+	// available options for the item picker.
+	const [itemOptions, setItemOptions] = useState<PickerSelectItem[]>([]);
+
+	// selected option, keep track of whether initial item from `initialValue` has been applied
+	const [selectedItem, setSelectedItem] = useState<ValueType<PickerItem>>();
+	const [hasAppliedInitialItem, setHasAppliedInitialItem] = useState<boolean>(false);
+
+	// apply initial input if INPUT-based type, default to ''
+	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, initialValue));
+
+	// handle error during inflation of item picker // TODO: type
+	const handleInflationError = useCallback(
+		(error: any) => {
+			console.error('[Content Picker] - Failed to inflate.', error);
+			ToastService.danger(
+				t(
+					'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
+				),
+				false
+			);
+		},
+		[t]
 	);
-	const [currentItem, setCurrentItem] = useState<ValueType<PickerItem> | null>(
-		setInitialItem(options, currentSelection)
+
+	// inflate item picker // TODO: type
+	const inflatePicker = useCallback(
+		(keyword: string | null, callback: any) => {
+			if (selectedType && !!selectedType.fetch) {
+				selectedType
+					.fetch(keyword, 20)
+					.then((items: PickerSelectItem[]) => {
+						const initialItem = [
+							{
+								label: get(initialValue, 'label'),
+								value: {
+									type: get(initialValue, 'type'),
+									value: get(initialValue, 'value'),
+								},
+							},
+							...items.filter(
+								(item: PickerSelectItem) =>
+									item.label !== get(initialValue, 'label')
+							),
+						];
+
+						return callback(
+							(!hasAppliedInitialItem && initialValue ? initialItem : items) || []
+						);
+					})
+					.catch(handleInflationError);
+			}
+		},
+		[selectedType, handleInflationError, hasAppliedInitialItem, initialValue]
 	);
 
-	// inflate content picker
-	const inflatePicker = (keyword: string | null, callback: any) => {
-		if (currentType && !!currentType.fetch) {
-			currentType
-				.fetch(keyword, 20)
-				.then((items: any) => {
-					callback((items as any) || []);
-
-					setCurrentItem(null);
-				})
-				.catch((error: any) => {
-					console.error('[Content Picker] - Failed to inflate.', error);
-					ToastService.danger(
-						t(
-							'admin/content/components/content-picker/content-picker___het-ophalen-van-de-content-items-is-mislukt'
-						),
-						false
-					);
-				});
-		}
-	};
-
+	// when selecting a type, reset `selectedItem` and retrieve new item options
 	useEffect(() => {
-		inflatePicker(null, setOptions);
-	}, [currentType]); // eslint-disable-line
+		inflatePicker(null, setItemOptions);
+	}, [inflatePicker, setItemOptions]);
+
+	// during the first update of `itemOptions`, set the initial value of the item picker
+	useEffect(() => {
+		if (itemOptions.length && !hasAppliedInitialItem) {
+			setSelectedItem(setInitialItem(itemOptions, initialValue));
+			setHasAppliedInitialItem(true);
+
+			inflatePicker(null, setItemOptions);
+		}
+	}, [itemOptions]); // eslint-disable-line
 
 	// events
-	const onSelectType = (selected: ValueType<PickerTypeOption>) => {
-		if (currentType !== selected) {
-			setCurrentType(selected as PickerTypeOption);
-			setCurrentItem(null);
+	const onSelectType = async (selected: ValueType<PickerTypeOption>) => {
+		if (selectedType !== selected) {
+			setSelectedType(selected as PickerTypeOption);
+			setSelectedItem(null);
+
+			inflatePicker(null, setItemOptions);
 		}
 	};
 
 	const onSelectItem = (selectedItem: ValueType<PickerItem>, event: ActionMeta) => {
+		// reset `selectedItem` when clearing item picker
 		if (event.action === 'clear') {
-			setCurrentItem(null);
-		}
-
-		if (!selectedItem) {
+			setSelectedItem(null);
 			return null;
 		}
 
 		const value = get(selectedItem, 'value', null);
 
+		// if value of selected item is `null`, throw error
 		if (!get(value, 'value')) {
 			onSelect(null);
-			setCurrentItem(null);
+			setSelectedItem(null);
 			console.error(
 				new CustomError('[Content Picker] - Selected item has no value.', null, {
 					selectedItem,
@@ -108,13 +153,19 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			return null;
 		}
 
-		onSelect(value);
-		setCurrentItem(selectedItem);
+		// trigger `onSelect` function, pass selected item
+		onSelect({
+			...value,
+			label: get(selectedItem, 'label'),
+		});
+
+		// update `selectedItem`
+		setSelectedItem(selectedItem);
 	};
 
 	const onChangeInput = (value: string) => {
 		setInput(value);
-		onSelect(parsePickerItem(get(currentType, 'value') as ContentPickerType, value));
+		onSelect(parsePickerItem(get(selectedType, 'value') as ContentPickerType, value));
 	};
 
 	// render controls
@@ -128,7 +179,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			)}
 			options={typeOptions}
 			onChange={onSelectType}
-			value={currentType}
+			value={selectedType}
 			isSearchable={false}
 			isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
 			noOptionsMessage={() =>
@@ -138,11 +189,11 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	);
 
 	const renderItemControl = () => {
-		if (!currentType) {
+		if (!selectedType) {
 			return null;
 		}
 
-		switch (currentType.picker) {
+		switch (selectedType.picker) {
 			case 'SELECT':
 				return renderItemPicker();
 			case 'TEXT_INPUT':
@@ -164,8 +215,8 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			)}
 			loadOptions={inflatePicker}
 			onChange={onSelectItem}
-			value={currentItem}
-			defaultOptions={options as any}
+			value={selectedItem}
+			defaultOptions={itemOptions as any} // TODO: type
 			isClearable
 			noOptionsMessage={() =>
 				t('admin/shared/components/content-picker/content-picker___geen-resultaten')
@@ -184,10 +235,11 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		/>
 	);
 
+	// render content picker
 	return (
 		<FormGroup error={errors}>
 			<Grid>
-				<Column size="1">{renderTypePicker()}</Column>
+				{!hideTypeDropdown && <Column size="1">{renderTypePicker()}</Column>}
 				<Column size="3">{renderItemControl()}</Column>
 			</Grid>
 		</FormGroup>

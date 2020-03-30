@@ -12,6 +12,7 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	IconName,
 	Spacer,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -33,6 +34,41 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 		// TODO replace this with a call to a proxy server route that forwards to the ssum page
 		// with the user already logged in and a redirect url back to this webpage after the user saves their changes
 		return 'https://account.hetarchief.be/';
+	};
+
+	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
+		if (hasIdpLinked(user, idpType)) {
+			return (
+				<>
+					<span>
+						{idpType === 'SMARTSCHOOL'
+							? t(
+									'settings/components/account___uw-smartschool-account-is-reeds-gelinkt'
+							  )
+							: t(
+									'settings/components/account___je-klascement-account-is-reeds-gelinkt'
+							  )}
+					</span>
+					<Button
+						type="link"
+						label={t('settings/components/account___unlink')}
+						onClick={() => redirectToServerUnlinkAccount(location, idpType)}
+					/>
+				</>
+			);
+		}
+		return (
+			<Button
+				className={`c-button-${idpType.toLocaleLowerCase()}`}
+				icon={idpType.toLocaleLowerCase() as IconName}
+				label={
+					idpType === 'SMARTSCHOOL'
+						? t('settings/components/account___link-je-smartschool-account')
+						: t('settings/components/account___link-je-klascement-account')
+				}
+				onClick={() => redirectToServerLinkAccount(location, idpType)}
+			/>
+		);
 	};
 
 	return (
@@ -87,41 +123,8 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 											'settings/components/account___koppel-je-account-met-andere-platformen'
 										)}
 									>
-										{hasIdpLinked(user, 'SMARTSCHOOL') ? (
-											<>
-												<span>
-													<Trans i18nKey="settings/components/account___uw-smartschool-account-is-reeds-gelinkt">
-														Uw smartschool account is reeds gelinkt
-													</Trans>
-												</span>
-												<Button
-													type="link"
-													label={t(
-														'settings/components/account___unlink'
-													)}
-													onClick={() =>
-														redirectToServerUnlinkAccount(
-															location,
-															'SMARTSCHOOL'
-														)
-													}
-												/>
-											</>
-										) : (
-											<Button
-												className="c-button-smartschool"
-												icon="smartschool"
-												label={t(
-													'settings/components/account___link-je-smartschool-account'
-												)}
-												onClick={() =>
-													redirectToServerLinkAccount(
-														location,
-														'SMARTSCHOOL'
-													)
-												}
-											/>
-										)}
+										<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
+										<div>{renderIdpLinkControls('KLASCEMENT')}</div>
 									</FormGroup>
 								</Form>
 							</Column>

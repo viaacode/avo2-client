@@ -81,6 +81,10 @@ export const GET_COLLECTION_BY_ID = gql`
 			lom_keywords
 			lom_languages
 			lom_typicalagerange
+			collection_labels {
+				label
+				id
+			}
 		}
 	}
 `;
@@ -224,30 +228,6 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 	}
 `;
 
-export const GET_COLLECTION_TILE_BY_ID = gql`
-	query getCollectionTileById($id: uuid!) {
-		tileData: app_collections(where: { id: { _eq: $id } }) {
-			created_at
-			collection_fragments_aggregate {
-				aggregate {
-					count
-				}
-			}
-			title
-			thumbnail_path
-			type {
-				label
-			}
-		}
-		# TODO: uncomment when views are available
-		# count: app_collection_views_aggregate(where: { id: { _eq: $id } }) {
-		# 	aggregate {
-		# 		count
-		# 	}
-		# }
-	}
-`;
-
 export const GET_COLLECTIONS = gql`
 	query getCollections($limit: Int!) {
 		app_collections(order_by: { title: asc }, where: { type_id: { _eq: 3 } }, limit: $limit) {
@@ -299,6 +279,33 @@ export const GET_BUNDLES_CONTAINING_COLLECTION = gql`
 		) {
 			id
 			title
+		}
+	}
+`;
+
+export const INSERT_COLLECTION_LABELS = gql`
+	mutation insertCollectionLabels($objects: [app_collection_labels_insert_input!]!) {
+		insert_app_collection_labels(objects: $objects) {
+			affected_rows
+		}
+	}
+`;
+
+export const DELETE_COLLECTION_LABELS = gql`
+	mutation deleteCollectionLabels($labels: [String!]!, $collectionId: uuid!) {
+		delete_app_collection_labels(
+			where: { label: { _in: $labels }, collection_uuid: { _eq: $collectionId } }
+		) {
+			affected_rows
+		}
+	}
+`;
+
+export const GET_QUALITY_LABELS = gql`
+	query getQualityLabels {
+		lookup_enum_collection_labels {
+			description
+			value
 		}
 	}
 `;

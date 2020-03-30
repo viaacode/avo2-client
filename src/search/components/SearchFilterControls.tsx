@@ -1,12 +1,14 @@
 import { capitalize, get } from 'lodash-es';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { CheckboxDropdownModal, DateRangeDropdown } from '../../shared/components';
-import { CheckboxOption } from '../../shared/components/CheckboxDropdownModal/CheckboxDropdownModal';
+import { CollectionService } from '../../collection/collection.service';
+import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
+import { CustomError } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
 import { SearchFilterControlsProps } from '../search.types';
 
 import './SearchFilterControls.scss';
@@ -22,10 +24,26 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 }) => {
 	const [t] = useTranslation();
 
+	const [collectionLabels, setCollectionLabels] = useState<{ [id: string]: string }>({});
+
+	useEffect(() => {
+		CollectionService.getCollectionLabels()
+			.then(setCollectionLabels)
+			.catch(err => {
+				console.error(new CustomError('Failed to get collection labels', err));
+				ToastService.danger(
+					t(
+						'search/components/search-filter-controls___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
+			});
+	}, [setCollectionLabels, t]);
+
 	const renderCheckboxDropdownModal = (
 		label: string,
 		propertyName: Avo.Search.FilterProp,
-		disabled: boolean = false
+		disabled: boolean = false,
+		labelsMapping?: { [id: string]: string }
 	): ReactNode => {
 		const checkboxMultiOptions = (multiOptions[propertyName] || []).map(
 			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
@@ -33,6 +51,10 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 
 				if (propertyName === 'language') {
 					checkboxLabel = languageCodeToLabel(option_name);
+				}
+
+				if (labelsMapping) {
+					checkboxLabel = labelsMapping[option_name];
 				}
 
 				return {
@@ -122,8 +144,13 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			)}
 			{renderCheckboxDropdownModal(
 				t('search/components/search-filter-controls___aanbieder'),
-				'provider',
-				false
+				'provider'
+			)}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___label'),
+				'collectionLabel',
+				false,
+				collectionLabels
 			)}
 		</ul>
 	);

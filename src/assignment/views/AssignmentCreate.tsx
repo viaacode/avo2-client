@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { get, isEmpty, isNil, remove } from 'lodash-es';
 import queryString from 'query-string';
@@ -41,7 +40,6 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
-import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { toEnglishContentType } from '../../collection/collection.types';
 import {
 	checkPermissions,
@@ -60,7 +58,6 @@ import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
 import { APP_PATH } from '../../constants';
 import { CONTENT_LABEL_TO_QUERY } from '../assignment.const';
-import { DELETE_ASSIGNMENT, INSERT_ASSIGNMENT } from '../assignment.gql';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
@@ -103,11 +100,6 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 	const [initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
 		{}
 	);
-
-	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
-	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	const setBothAssignments = useCallback(
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
@@ -255,7 +247,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				);
 				return;
 			}
-			await AssignmentService.deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
+			await AssignmentService.deleteAssignment(currentAssignment.id);
 			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 			ToastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
@@ -278,7 +270,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
-		if (currentAssignment.id) {
+		if (currentAssignment.id && user) {
 			trackEvents(
 				{
 					object: String(currentAssignment.id),
@@ -304,13 +296,16 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				);
 				return;
 			}
+			if (!user) {
+				ToastService.danger(
+					'De opdracht kan niet gedupliceerd worden omdat je niet meer bent ingelogd.'
+				);
+				return;
+			}
 			const duplicatedAssigment = await AssignmentService.duplicateAssignment(
 				newTitle,
 				assignment,
-				user,
-				triggerCollectionInsert,
-				triggerCollectionFragmentsInsert,
-				triggerAssignmentInsert
+				user
 			);
 
 			setCurrentAssignment({});
@@ -339,7 +334,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 	};
 
 	const trackAddObjectToAssignment = (assignment: Avo.Assignment.Assignment) => {
-		if (!assignment.content_label || !assignment.content_id) {
+		if (!assignment.content_label || !assignment.content_id || !user) {
 			return;
 		}
 		trackEvents(
@@ -369,9 +364,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				const sourceCollection = assignmentContent as Avo.Collection.Collection;
 				assignment.content_id = await AssignmentService.duplicateCollectionForAssignment(
 					sourceCollection,
-					user,
-					triggerCollectionInsert,
-					triggerCollectionFragmentsInsert
+					user
 				);
 			}
 
@@ -380,10 +373,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 				...assignment,
 				owner_profile_id: getProfileId(user),
 			} as Avo.Assignment.Assignment;
-			const insertedAssignment = await AssignmentService.insertAssignment(
-				triggerAssignmentInsert,
-				newAssignment
-			);
+			const insertedAssignment = await AssignmentService.insertAssignment(newAssignment);
 
 			if (insertedAssignment) {
 				setBothAssignments(insertedAssignment);
@@ -607,11 +597,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
-											<InteractiveTour
-												location={location}
-												user={user}
-												showButton
-											/>
+											<InteractiveTour showButton />
 										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>

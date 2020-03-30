@@ -1,8 +1,6 @@
-import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, eq, isEmpty } from 'lodash-es';
+import { cloneDeep, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { Prompt, withRouter } from 'react-router';
 
 import {
@@ -32,7 +30,6 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH } from '../../constants';
 import {
 	ControlledDropdown,
@@ -46,41 +43,48 @@ import {
 	buildLink,
 	createDropdownMenuItem,
 	CustomError,
+	isMobileWidth,
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
-import { ApolloCacheManager, ToastService } from '../../shared/services';
+import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
-import { AppState } from '../../store';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 
+import { compose } from 'redux';
+import withUser from '../../shared/hocs/withUser';
 import { COLLECTION_EDIT_TABS } from '../collection.const';
-import {
-	DELETE_COLLECTION,
-	DELETE_COLLECTION_FRAGMENT,
-	INSERT_COLLECTION_FRAGMENTS,
-	UPDATE_COLLECTION,
-	UPDATE_COLLECTION_FRAGMENT,
-} from '../collection.gql';
+import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ShareCollectionModal } from '../components';
-import { swapFragmentsPositions } from '../helpers';
+import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
-	fragmentId: number;
+	index: number;
 	fragmentProp: keyof Avo.Collection.Fragment;
 	fragmentPropValue: ValueOf<Avo.Collection.Fragment>;
 };
 
 type FragmentSwapAction = {
 	type: 'SWAP_FRAGMENTS';
-	currentFragmentId: number;
+	index: number;
 	direction: 'up' | 'down';
+};
+
+type FragmentInsertAction = {
+	type: 'INSERT_FRAGMENT';
+	index: number;
+	fragment: Avo.Collection.Fragment;
+};
+
+type FragmentDeleteAction = {
+	type: 'DELETE_FRAGMENT';
+	index: number;
 };
 
 type CollectionUpdateAction = {
@@ -98,6 +102,8 @@ type CollectionPropUpdateAction = {
 export type CollectionAction =
 	| FragmentPropUpdateAction
 	| FragmentSwapAction
+	| FragmentInsertAction
+	| FragmentDeleteAction
 	| CollectionUpdateAction
 	| CollectionPropUpdateAction;
 
@@ -106,17 +112,12 @@ interface CollectionState {
 	initialCollection: Avo.Collection.Collection | null;
 }
 
-interface CollectionOrBundleEditProps extends DefaultSecureRouteProps<{ id: string }> {
+interface CollectionOrBundleEditProps {
 	type: 'collection' | 'bundle';
 }
 
-const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = ({
-	type,
-	history,
-	location,
-	match,
-	user,
-}) => {
+const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
+	DefaultSecureRouteProps<{ id: string }>> = ({ type, history, location, match, user }) => {
 	const [t] = useTranslation();
 
 	// State
@@ -138,13 +139,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		}>
 	>({});
 	// TODO: DISABLED FEATURE - const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
-
-	// Mutations
-	const [triggerCollectionUpdate] = useMutation(UPDATE_COLLECTION);
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
-	const [triggerCollectionFragmentDelete] = useMutation(DELETE_COLLECTION_FRAGMENT);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
-	const [triggerCollectionFragmentUpdate] = useMutation(UPDATE_COLLECTION_FRAGMENT);
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -183,11 +177,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 
 		switch (action.type) {
 			case 'UPDATE_FRAGMENT_PROP':
-				const fragmentToUpdateIndex = newCurrentCollection.collection_fragments.findIndex(
-					(item: Avo.Collection.Fragment) => item.id === action.fragmentId
-				);
-				newCurrentCollection.collection_fragments[fragmentToUpdateIndex] = {
-					...newCurrentCollection.collection_fragments[fragmentToUpdateIndex],
+				newCurrentCollection.collection_fragments[action.index] = {
+					...newCurrentCollection.collection_fragments[action.index],
 					[action.fragmentProp]: action.fragmentPropValue,
 				};
 				break;
@@ -209,15 +200,28 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					return collectionState;
 				}
 
-				const fragments = getFragmentsFromCollection(newCurrentCollection);
+				const fragments1 = getFragmentsFromCollection(newCurrentCollection);
 
 				const delta = action.direction === 'up' ? 1 : -1;
 
-				newCurrentCollection.collection_fragments = swapFragmentsPositions(
-					fragments,
-					action.currentFragmentId,
-					delta
-				);
+				// Make the swap
+				const tempFragment = fragments1[action.index];
+				fragments1[action.index] = fragments1[action.index + delta];
+				fragments1[action.index + delta] = tempFragment;
+
+				newCurrentCollection.collection_fragments = fragments1;
+				break;
+
+			case 'INSERT_FRAGMENT':
+				const fragments2 = getFragmentsFromCollection(newCurrentCollection);
+				fragments2.splice(action.index, 0, action.fragment);
+				newCurrentCollection.collection_fragments = fragments2;
+				break;
+
+			case 'DELETE_FRAGMENT':
+				const fragments3 = getFragmentsFromCollection(newCurrentCollection);
+				fragments3.splice(action.index, 1);
+				newCurrentCollection.collection_fragments = fragments3;
 				break;
 
 			case 'UPDATE_COLLECTION_PROP':
@@ -387,11 +391,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		if (collectionState.currentCollection) {
 			const newCollection = await CollectionService.updateCollection(
 				collectionState.initialCollection,
-				collectionState.currentCollection,
-				triggerCollectionUpdate,
-				triggerCollectionFragmentsInsert,
-				triggerCollectionFragmentDelete,
-				triggerCollectionFragmentUpdate
+				collectionState.currentCollection
 			);
 
 			if (newCollection) {
@@ -458,7 +458,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 			const cleanedCollection = cleanCollectionBeforeSave(collectionWithNewName);
 
 			// Immediately store the new name, without the user having to click the save button twice
-			await triggerCollectionUpdate({
+			await dataService.mutate({
+				mutation: UPDATE_COLLECTION,
 				variables: {
 					id: cleanedCollection.id,
 					collection: cleanedCollection,
@@ -498,7 +499,8 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 				);
 				return;
 			}
-			await triggerCollectionDelete({
+			await dataService.mutate({
+				mutation: DELETE_COLLECTION,
 				variables: {
 					id: collectionState.currentCollection.id,
 				},
@@ -535,14 +537,48 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	// TODO: DISABLED FEATURE
 	// const onPreviewCollection = () => {};
 
-	const onClickDropdownItem = (item: ReactText) => {
+	const executeAction = async (item: ReactText) => {
 		switch (item) {
 			case 'rename':
 				onClickRename();
 				break;
+
 			case 'delete':
 				onClickDelete();
 				break;
+
+			case 'save':
+				if (!isSavingCollection) {
+					await onSaveCollection();
+				}
+				break;
+
+			case 'openShareModal':
+				if (hasUnsavedChanged()) {
+					ToastService.info(
+						t(
+							'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
+						)
+					);
+				} else {
+					setIsShareModalOpen(!isShareModalOpen);
+				}
+				break;
+
+			case 'redirectToDetail':
+				redirectToClientPage(
+					buildLink(
+						isCollection
+							? APP_PATH.COLLECTION_DETAIL.route
+							: APP_PATH.BUNDLE_DETAIL.route,
+						{
+							id: match.params.id,
+						}
+					),
+					history
+				);
+				break;
+
 			default:
 				return null;
 		}
@@ -582,7 +618,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 		<Button
 			type="primary"
 			label={t('collection/views/collection-edit___opslaan')}
-			onClick={onSaveCollection}
+			onClick={() => executeAction('save')}
 			disabled={isSavingCollection}
 		/>
 	);
@@ -594,7 +630,10 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
-							collection={collectionState.currentCollection}
+							collectionId={collectionState.currentCollection.id}
+							collectionFragments={
+								collectionState.currentCollection.collection_fragments
+							}
 							changeCollectionState={changeCollectionState}
 							history={history}
 							location={location}
@@ -606,6 +645,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					return (
 						<CollectionOrBundleEditMetaData
 							type={type}
+							collection={collectionState.currentCollection}
+							changeCollectionState={changeCollectionState}
+						/>
+					);
+				case 'admin':
+					return (
+						<CollectionOrBundleEditAdmin
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 						/>
@@ -625,7 +671,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					: t('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
 				'folder'
 			),
-			createDropdownMenuItem('delete', 'Verwijderen'),
+			createDropdownMenuItem('delete', 'Verwijderen', 'delete'),
 		];
 		return (
 			<ButtonToolbar>
@@ -634,13 +680,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					label={t('collection/views/collection-edit___delen')}
 					disabled={hasUnsavedChanged()}
 					title={
-						!eq(collectionState.currentCollection, collectionState.initialCollection)
+						hasUnsavedChanged()
 							? t(
 									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 							  )
 							: ''
 					}
-					onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+					onClick={() => executeAction('openShareModal')}
 				/>
 				<Button
 					type="secondary"
@@ -654,19 +700,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 									'collection/components/collection-or-bundle-edit___bekijk-hoe-de-bundel-er-zal-uit-zien'
 							  )
 					}
-					onClick={() =>
-						redirectToClientPage(
-							buildLink(
-								isCollection
-									? APP_PATH.COLLECTION_DETAIL.route
-									: APP_PATH.BUNDLE_DETAIL.route,
-								{
-									id: match.params.id,
-								}
-							),
-							history
-						)
-					}
+					onClick={() => executeAction('redirectToDetail')}
 				/>
 				{/* TODO: DISABLED FEATURE
 					<Button
@@ -689,12 +723,68 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					<DropdownContent>
 						<MenuContent
 							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={onClickDropdownItem}
+							onClick={executeAction}
 						/>
 					</DropdownContent>
 				</ControlledDropdown>
 				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
-				<InteractiveTour location={location} user={user} showButton />
+				<InteractiveTour showButton />
+			</ButtonToolbar>
+		);
+	};
+
+	const renderHeaderButtonsMobile = () => {
+		// TODO: DISABLED FEATURE
+		// 			<Button
+		// 				type = "secondary"
+		// 				label={t('collection/views/collection-edit___herschik-alle-items')}
+		// 				onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
+		// 				disabled
+		// 			/>
+		const COLLECTION_DROPDOWN_ITEMS = [
+			createDropdownMenuItem(
+				'save',
+				t('collection/views/collection-edit___opslaan'),
+				'download'
+			),
+			createDropdownMenuItem(
+				'openShareModal',
+				t('collection/components/collection-or-bundle-edit___delen'),
+				'share-2'
+			),
+			createDropdownMenuItem(
+				'redirectToDetail',
+				t('collection/components/collection-or-bundle-edit___bekijk'),
+				'eye'
+			),
+			createDropdownMenuItem(
+				'rename',
+				isCollection
+					? 'Collectie hernoemen'
+					: t('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
+				'folder'
+			),
+			createDropdownMenuItem('delete', 'Verwijderen', 'delete'),
+		];
+		return (
+			<ButtonToolbar>
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button type="secondary" icon="more-horizontal" />
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent
+							menuItems={COLLECTION_DROPDOWN_ITEMS}
+							onClick={executeAction}
+						/>
+					</DropdownContent>
+				</ControlledDropdown>
 			</ButtonToolbar>
 		);
 	};
@@ -718,7 +808,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 					bookmarks="0" // TODO: Real bookmark count
 					views="0" // TODO: Real view count
 				>
-					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
+					<HeaderButtons>
+						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+					</HeaderButtons>
 					<HeaderAvatar>
 						{profile && renderAvatar(profile, { includeRole: true, dark: true })}
 					</HeaderAvatar>
@@ -819,8 +911,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps> = (
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	user: selectUser(state),
-});
-
-export default withRouter(connect(mapStateToProps)(CollectionOrBundleEdit));
+export default compose(withRouter, withUser)(CollectionOrBundleEdit) as FunctionComponent<
+	CollectionOrBundleEditProps
+>;

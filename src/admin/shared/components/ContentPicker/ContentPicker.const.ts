@@ -1,13 +1,13 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { PickerTypeOption } from '../../types';
+import { ContentPickerType, PickerTypeOption } from '../../types';
 
 import { retrieveBundles, retrieveCollections } from '../../helpers/content-picker/collection';
 import { retrieveContentPages } from '../../helpers/content-picker/content-page';
 import { retrieveInternalLinks } from '../../helpers/content-picker/internal-link';
 import { retrieveItems } from '../../helpers/content-picker/item';
 
-export const CONTENT_TYPES: PickerTypeOption[] = [
+export const GET_CONTENT_TYPES: () => PickerTypeOption[] = () => [
 	{
 		value: 'CONTENT_PAGE',
 		label: i18n.t('admin/content/content___content'),
@@ -61,7 +61,7 @@ export const CONTENT_TYPES: PickerTypeOption[] = [
 	},
 ];
 
-export const DEFAULT_ALLOWED_TYPES = [
+export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
 	'CONTENT_PAGE',
 	'ITEM',
 	'COLLECTION',

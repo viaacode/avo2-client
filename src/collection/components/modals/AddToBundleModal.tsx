@@ -26,8 +26,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../../authentication/helpers/get-profile-info';
-import { ToastService } from '../../../shared/services';
-import { ApolloCacheManager, dataService } from '../../../shared/services/data-service';
+import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getThumbnailForCollection } from '../../../shared/services/stills-service';
 import {
@@ -138,7 +137,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			end_oc: null,
 			custom_title: null,
 			custom_description: null,
-			collection_uuid: bundle.id as any, // TODO Remove conversion once update to typings 2.12
+			collection_uuid: bundle.id,
 			item_meta: collection,
 		};
 	};

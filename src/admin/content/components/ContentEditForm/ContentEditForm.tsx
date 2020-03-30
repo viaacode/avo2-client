@@ -25,7 +25,7 @@ import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
 
-import { CONTENT_WIDTH_OPTIONS, DEFAULT_PAGES_WIDTH } from '../../content.const';
+import { DEFAULT_PAGES_WIDTH, GET_CONTENT_WIDTH_OPTIONS } from '../../content.const';
 import { ContentService } from '../../content.service';
 import {
 	ContentEditFormErrors,
@@ -247,7 +247,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 								>
 									<Select
 										onChange={value => onChange('contentWidth', value)}
-										options={CONTENT_WIDTH_OPTIONS}
+										options={GET_CONTENT_WIDTH_OPTIONS()}
 										value={formState.contentWidth}
 									/>
 								</FormGroup>

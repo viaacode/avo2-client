@@ -27,17 +27,17 @@ import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
 import { dataService, ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
+import { Permission } from '../../permission-groups/permission-group.types';
 import {
 	renderDateDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
-import { PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
+import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { GET_USER_GROUP_BY_ID } from '../user-group.gql';
 import { UserGroupService } from '../user-group.service';
 import {
-	Permission,
 	PermissionGroupTableCols,
 	UserGroup,
 	UserGroupOverviewTableCols,
@@ -236,7 +236,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 						</PanelHeader>
 						<PanelBody>
 							<Table
-								columns={PERMISSION_GROUP_TABLE_COLS}
+								columns={GET_PERMISSION_GROUP_TABLE_COLS()}
 								data={UserGroupService.sortPermissionGroups(
 									userGroup.permissionGroups || [],
 									sortColumn,

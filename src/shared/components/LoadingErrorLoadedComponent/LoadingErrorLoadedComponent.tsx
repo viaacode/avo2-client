@@ -1,19 +1,18 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
+import { Container, Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { Permissions, PermissionService } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
+import { ErrorViewQueryParams } from '../../../error/views/ErrorView';
 import i18n from '../../translations/i18n';
 
 export type LoadingState = 'loading' | 'loaded' | 'error';
 
-export interface LoadingInfo {
+export interface LoadingInfo extends ErrorViewQueryParams {
 	state: LoadingState;
-	message?: string;
-	icon?: IconName;
 }
 
 export interface LoadingErrorLoadedComponentProps {
@@ -50,7 +49,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 				)
 			}
 			icon={loadingInfo.icon || 'alert-triangle'}
-			actionButtons={['home']}
+			actionButtons={loadingInfo.actionButtons || ['home']}
 		/>
 	);
 
@@ -84,12 +83,15 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 
 export async function checkPermissions(
 	permissions: Permissions,
-	user: Avo.User.User,
+	user: Avo.User.User | undefined,
 	successFunc: () => void,
 	setLoadingInfo: (info: LoadingInfo) => void,
 	noPermissionsMessage?: string
 ) {
 	try {
+		if (!user) {
+			return;
+		}
 		if (await PermissionService.hasPermissions(permissions, user)) {
 			successFunc();
 		} else {

@@ -10,7 +10,7 @@ import {
 	PaddingFieldState,
 } from '../../../shared/types';
 
-import { ALIGN_OPTIONS, BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
+import { GET_ALIGN_OPTIONS, GET_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 
 // Block config defaults
 export const BLOCK_STATE_DEFAULTS = (
@@ -40,8 +40,8 @@ export const BACKGROUND_COLOR_FIELD = (
 	label,
 	editorType: ContentBlockEditor.ColorSelect,
 	editorProps: {
-		options: BACKGROUND_COLOR_OPTIONS,
-		defaultValue: BACKGROUND_COLOR_OPTIONS[0],
+		options: GET_BACKGROUND_COLOR_OPTIONS(),
+		defaultValue: GET_BACKGROUND_COLOR_OPTIONS()[0],
 	},
 });
 
@@ -58,7 +58,7 @@ export const ALIGN_FIELD = (
 	label,
 	editorType: ContentBlockEditor.AlignSelect,
 	editorProps: {
-		options: ALIGN_OPTIONS,
+		options: GET_ALIGN_OPTIONS(),
 	},
 });
 

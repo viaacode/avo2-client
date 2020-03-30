@@ -1,9 +1,10 @@
+import { Avo } from '@viaa/avo2-types';
+
 import { ROUTE_PARTS } from '../../shared/constants';
 import { generateRandomId } from '../../shared/helpers/uuid';
 import i18n from '../../shared/translations/i18n';
 
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
-import { InteractiveTour } from './interactive-tour.types';
 
 export const INTERACTIVE_TOUR_PATH = {
 	INTERACTIVE_TOUR_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.interactiveTours}`,
@@ -14,7 +15,7 @@ export const INTERACTIVE_TOUR_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
+export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{ id: 'name', label: i18n.t('admin/interactive-tour/interactive-tour___naam'), sortable: true },
 	{
 		id: 'page_id',
@@ -36,7 +37,7 @@ export const INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
 	{ id: 'actions', label: '' },
 ];
 
-export function getInitialInteractiveTour(): InteractiveTour {
+export function getInitialInteractiveTour(): Avo.InteractiveTour.InteractiveTour {
 	return {
 		name: '',
 		page_id: '',
@@ -50,8 +51,3 @@ export function getInitialInteractiveTour(): InteractiveTour {
 		],
 	};
 }
-
-export const PAGE_TYPES_LANG = {
-	create: i18n.t('admin/interactive-tour/interactive-tour___toevoegen'),
-	edit: i18n.t('admin/interactive-tour/interactive-tour___aanpassen'),
-};

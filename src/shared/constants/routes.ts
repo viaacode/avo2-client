@@ -36,6 +36,7 @@ export const ROUTE_PARTS = Object.freeze({
 	loggedInHome: 'home',
 	profile: 'profiel',
 	completeProfile: 'vervolledig-profiel',
+	acceptConditions: 'accepteer-voorwaarden',
 	account: 'account',
 	email: 'email',
 	notifications: 'notificaties',
@@ -43,6 +44,7 @@ export const ROUTE_PARTS = Object.freeze({
 	klaar: 'klaar',
 	permissionGroups: 'permissie-groepen',
 	user: 'gebruikers',
+	translations: 'vertaling',
 	userGroup: 'gebruikersgroep',
 	interactiveTours: 'interactieve-tours',
 });

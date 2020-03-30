@@ -8,6 +8,7 @@ import {
 	BlockImage,
 	BlockIntro,
 	BlockProjectsSpotlight,
+	BlockQuote,
 	BlockRichText,
 } from '@viaa/avo2-components';
 
@@ -21,6 +22,7 @@ import {
 
 export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.Accordions]: BlockAccordions,
+	[ContentBlockType.AnchorLinks]: BlockButtons,
 	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
 	[ContentBlockType.Heading]: BlockHeading,
@@ -31,6 +33,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.MediaGrid]: MediaGridWrapper,
 	[ContentBlockType.MediaPlayer]: MediaPlayerWrapper,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButtonWrapper,
+	[ContentBlockType.Quote]: BlockQuote,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
@@ -39,6 +42,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 
 export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.Accordions,
+	ContentBlockType.AnchorLinks,
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
 	ContentBlockType.RichText,
@@ -49,6 +53,7 @@ export const REPEATABLE_CONTENT_BLOCKS = [
 ];
 
 export const NAVIGABLE_CONTENT_BLOCKS = [
+	ContentBlockType.AnchorLinks,
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
 	ContentBlockType.ProjectsSpotlight,

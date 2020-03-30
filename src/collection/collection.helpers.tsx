@@ -37,7 +37,9 @@ type ValidationRule<T> = {
 	isValid: (object: T) => boolean;
 };
 
-const VALIDATION_RULES_FOR_SAVE: ValidationRule<Partial<Avo.Collection.Collection>>[] = [
+const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
+	Partial<Avo.Collection.Collection>
+>[] = () => [
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
@@ -97,7 +99,10 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				: i18n.t('collection/collection___de-collecties-moeten-een-titel-hebben'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.collection_fragments ||
-			validateFragments(collection.collection_fragments, 'video'),
+			validateFragments(
+				collection.collection_fragments,
+				collection.type_id === ContentTypeNumber.collection ? 'video' : 'collection'
+			),
 	},
 	{
 		error: i18n.t(
@@ -114,9 +119,9 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	// TODO: Add check if owner or write-rights.
 ];
 
-const VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: ValidationRule<
+const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRule<
 	Avo.Collection.Fragment
->[] = [
+>[] = () => [
 	{
 		error: i18n.t('collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'),
 		isValid: (collectionFragment: Avo.Collection.Fragment) => {
@@ -141,7 +146,10 @@ const VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: ValidationRule<
 	},
 ];
 
-const validateFragments = (fragments: Avo.Collection.Fragment[], type: string): boolean => {
+const validateFragments = (
+	fragments: Avo.Collection.Fragment[],
+	type: 'text' | 'video' | 'collection'
+): boolean => {
 	if (!fragments || !fragments.length) {
 		return false;
 	}
@@ -162,6 +170,21 @@ const validateFragments = (fragments: Avo.Collection.Fragment[], type: string): 
 				}
 			});
 			break;
+
+		case 'collection':
+			// Check if video fragment has custom_title and custom_description if necessary.
+			fragments.forEach(fragment => {
+				if (
+					fragment.external_id &&
+					fragment.external_id !== '-1' &&
+					fragment.use_custom_fields &&
+					!fragment.custom_title
+				) {
+					isValid = false;
+				}
+			});
+			break;
+
 		case 'text':
 			// Check if text fragment has custom_title or custom_description.
 			fragments.forEach(fragment => {
@@ -185,7 +208,7 @@ export const getValidationErrorsForStartAndEnd = (
 	collectionFragment: Avo.Collection.Fragment
 ): string[] => {
 	return compact(
-		VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT.map(rule =>
+		GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT().map(rule =>
 			rule.isValid(collectionFragment) ? null : getError(rule, collectionFragment)
 		)
 	);
@@ -195,7 +218,7 @@ export const getValidationErrorsForPublish = (
 	collection: Partial<Avo.Collection.Collection>
 ): string[] => {
 	return compact(
-		[...VALIDATION_RULES_FOR_SAVE, ...VALIDATION_RULES_FOR_PUBLISH].map(rule => {
+		[...GET_VALIDATION_RULES_FOR_SAVE(), ...VALIDATION_RULES_FOR_PUBLISH].map(rule => {
 			return rule.isValid(collection) ? null : getError(rule, collection);
 		})
 	);
@@ -206,7 +229,7 @@ export const getValidationErrorForSave = (
 ): string[] => {
 	// List of validator functions, so we can use the functions separately as well
 	return compact(
-		VALIDATION_RULES_FOR_SAVE.map(rule =>
+		GET_VALIDATION_RULES_FOR_SAVE().map(rule =>
 			rule.isValid(collection) ? null : getError(rule, collection)
 		)
 	);
@@ -240,7 +263,13 @@ export const getFragmentsFromCollection = (
 export const cleanCollectionBeforeSave = (
 	collection: Partial<Avo.Collection.Collection>
 ): Partial<Avo.Collection.Collection> => {
-	const propertiesToDelete = ['collection_fragments', '__typename', 'type', 'profile'];
+	const propertiesToDelete = [
+		'collection_fragments',
+		'__typename',
+		'type',
+		'profile',
+		'collection_labels',
+	];
 
 	return omit(collection, propertiesToDelete);
 };

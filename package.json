@@ -1,6 +1,6 @@
 {
 	"name": "avo2-client",
-	"version": "0.30.0",
+	"version": "0.31.0",
 	"private": true,
 	"scripts": {
 		"prestart": "npm run env",
@@ -25,14 +25,16 @@
 	],
 	"dependencies": {
 		"@apollo/react-hooks": "^3.0.0",
-		"@viaa/avo2-components": "^1.33.0",
-		"@viaa/avo2-types": "^2.13.0",
+		"@viaa/avo2-components": "^1.34.0",
+		"@viaa/avo2-types": "^2.14.2",
 		"apollo-boost": "^0.4.3",
+		"capture-stack-trace": "^1.0.1",
 		"classnames": "^2.2.6",
 		"date-fns": "^2.0.0-beta.1",
 		"glob": "^7.1.6",
 		"graphql": "^14.5.8",
 		"i18next": "^19.0.2",
+		"i18next-xhr-backend": "^3.2.2",
 		"immer": "^6.0.0",
 		"lodash-es": "^4.17.11",
 		"marked": "^0.7.0",
@@ -68,6 +70,7 @@
 		"@types/enzyme": "^3.9.3",
 		"@types/enzyme-adapter-react-16": "^1.0.5",
 		"@types/glob": "^7.1.1",
+		"@types/i18next-xhr-backend": "^1.4.2",
 		"@types/jest": "^24.0.25",
 		"@types/jest-expect-message": "^1.0.1",
 		"@types/lodash-es": "^4.17.3",
@@ -104,6 +107,9 @@
 		"tslint-config-prettier": "^1.18.0",
 		"tslint-plugin-prettier": "^2.0.1",
 		"typescript": "3.5.3"
+	},
+	"peerDependencies": {
+		"avo2-proxy-server": "0.21.0"
 	},
 	"browserslist": {
 		"production": [

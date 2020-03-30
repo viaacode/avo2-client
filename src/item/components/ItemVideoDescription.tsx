@@ -175,7 +175,7 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				dataPlayerId={getEnv('FLOW_PLAYER_ID')}
 				logo={get(itemMetaData, 'organisation.logo_url')}
 				autoplay
-				itemUuid={(itemMetaData as any).uid} // TODO remove cast to any when typings v2.11 is released
+				itemUuid={itemMetaData.uid}
 			/>
 		</div>
 	);
@@ -188,23 +188,23 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 				overflowY: 'auto',
 			}}
 		>
-			{showTitle ? (
-				<BlockHeading
-					type="h3"
-					className={onTitleClicked ? 'u-clickable' : ''}
-					onClick={onTitleClicked || (() => {})}
-				>
-					{title}
-				</BlockHeading>
-			) : (
-				<BlockHeading type="h4">
-					<Trans i18nKey="item/components/item-video-description___beschrijving">
-						Beschrijving
-					</Trans>
-				</BlockHeading>
-			)}
-			{/* TODO: Fix label height - "Beschrijving" label height (22) + padding (15 * 2) + read more button (36) - additional margin (18) */}
-			<ExpandableContainer collapsedHeight={videoHeight - 22 - 15 * 2 - 36 - 18}>
+			{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
+			<ExpandableContainer collapsedHeight={videoHeight - 36 - 18}>
+				{showTitle ? (
+					<BlockHeading
+						type="h3"
+						className={onTitleClicked ? 'u-clickable' : ''}
+						onClick={onTitleClicked || (() => {})}
+					>
+						{title}
+					</BlockHeading>
+				) : (
+					<BlockHeading type="h4">
+						<Trans i18nKey="item/components/item-video-description___beschrijving">
+							Beschrijving
+						</Trans>
+					</BlockHeading>
+				)}
 				<p>{formatTimestamps(convertToHtml(description))}</p>
 			</ExpandableContainer>
 		</Scrollbar>
@@ -214,7 +214,9 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 		<Grid className="c-item-video-description">
 			{showDescription ? (
 				<>
-					<Column size="2-7">{renderMedia()}</Column>
+					<Column size="2-7" className="c-video-column">
+						{renderMedia()}
+					</Column>
 					<Column size="2-5">{renderDescription()}</Column>
 				</>
 			) : (

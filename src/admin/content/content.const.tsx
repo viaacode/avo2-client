@@ -39,8 +39,10 @@ export const CONTENT_PATH = {
 	CONTENT_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/${ROUTE_PARTS.create}`,
 	CONTENT_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id`,
 	CONTENT_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id/${ROUTE_PARTS.edit}`,
+	PAGES: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=PAGINA`,
 	NEWS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=NIEUWS_ITEM`,
 	FAQS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=FAQ_ITEM`,
+	SCREENCAST: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=SCREENCAST`,
 	PROJECTS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=PROJECT`,
 };
 
@@ -75,7 +77,7 @@ export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
 	labels: [],
 });
 
-export const CONTENT_DETAIL_TABS: TabProps[] = [
+export const GET_CONTENT_DETAIL_TABS: () => TabProps[] = () => [
 	{
 		id: 'inhoud',
 		label: i18n.t('admin/content/content___inhoud'),
@@ -88,11 +90,15 @@ export const CONTENT_DETAIL_TABS: TabProps[] = [
 	},
 ];
 
-export const CONTENT_WIDTH_OPTIONS = [
-	{ label: 'Kies een content breedte', value: '', disabled: true },
-	{ label: 'Max. (1300px)', value: 'REGULAR' },
-	{ label: 'Breed (940px)', value: 'LARGE' },
-	{ label: 'Medium (720px)', value: 'MEDIUM' },
+export const GET_CONTENT_WIDTH_OPTIONS = () => [
+	{
+		label: i18n.t('admin/content/content___kies-een-content-breedte'),
+		value: '',
+		disabled: true,
+	},
+	{ label: i18n.t('admin/content/content___max-1300-px'), value: 'REGULAR' },
+	{ label: i18n.t('admin/content/content___breed-940-px'), value: 'LARGE' },
+	{ label: i18n.t('admin/content/content___medium-720-px'), value: 'MEDIUM' },
 ];
 
 export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: string[] } = {

@@ -1,8 +1,6 @@
 import { memoize } from 'lodash-es';
-import queryString from 'query-string';
 
 import { IconName } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
 
@@ -42,35 +40,6 @@ async function getNavItems(): Promise<NavItemMap> {
 		});
 		if (response.status < 200 && response.status >= 400) {
 			throw new CustomError('Failed to get navigation items from server', null, { response });
-		}
-		return await response.json();
-	} catch (err) {
-		throw new CustomError('Failed to get all user groups', err);
-	}
-}
-
-export async function getContentPageByPath(path: string): Promise<Avo.Content.Content | null> {
-	try {
-		const response = await fetch(
-			`${getEnv('PROXY_URL')}/navigation/content?${queryString.stringify({
-				path,
-			})}`,
-			{
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			}
-		);
-		if (response.status === 404) {
-			return null;
-		}
-		if (response.status < 200 && response.status >= 400) {
-			throw new CustomError('Failed to get content page from /navigation/content', null, {
-				path,
-				response,
-			});
 		}
 		return await response.json();
 	} catch (err) {

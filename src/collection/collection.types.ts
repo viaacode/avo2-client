@@ -68,8 +68,16 @@ export function toEnglishContentType(label: DutchContentType): EnglishContentTyp
 		audio: 'audio',
 		video: 'video',
 		collectie: 'collection',
+		map: 'bundle',
 		bundel: 'bundle',
 		zoek: 'search',
 		zoekopdracht: 'searchquery',
 	}[label] as EnglishContentType;
+}
+
+export type CollectionLabelLookup = { [id: string]: string };
+
+export interface QualityLabel {
+	description: string;
+	value: string;
 }

@@ -531,11 +531,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 										</Dropdown>
 									</ToolbarItem>
 									<ToolbarItem>
-										<InteractiveTour
-											location={location}
-											user={user}
-											showButton
-										/>
+										<InteractiveTour showButton />
 									</ToolbarItem>
 								</ToolbarRight>
 							</Toolbar>

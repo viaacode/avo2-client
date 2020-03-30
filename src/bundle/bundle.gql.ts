@@ -22,7 +22,6 @@ export const GET_BUNDLES_BY_TITLE = gql`
 	}
 `;
 
-// TODO replace with uuid once database has received correct migration
 export const GET_COLLECTIONS_BY_IDS = gql`
 	query getCollectionsByIds($ids: [uuid!]!) {
 		items: app_collections(where: { id: { _in: $ids } }) {

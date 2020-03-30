@@ -22,12 +22,19 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import { buildLink, CustomError, formatDate, formatTimestamp, fromNow } from '../../shared/helpers';
+import {
+	buildLink,
+	CustomError,
+	formatDate,
+	formatTimestamp,
+	fromNow,
+	isMobileWidth,
+} from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
 import {
 	BookmarkInfo,
 	EventContentType,
-} from '../../shared/services/bookmarks-views-plays-service';
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 const ITEMS_PER_PAGE = 5;
 
@@ -43,7 +50,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const [t] = useTranslation();
 
 	// State
-	const [bookmarks, setBookmarks] = useState<BookmarkInfo[]>([]);
+	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
 	const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
@@ -60,14 +67,18 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			col: '6',
 			sortable: true,
 		},
-		{
-			id: 'createdAt',
-			label: t('workspace/views/bookmarks___aangemaakt-op'),
-			col: '3',
-			sortable: true,
-		},
+		...(isMobileWidth()
+			? []
+			: [
+					{
+						id: 'createdAt',
+						label: t('workspace/views/bookmarks___aangemaakt-op'),
+						col: '3',
+						sortable: true,
+					},
+			  ]),
 		{ id: 'actions', label: '', col: '1' },
-	];
+	] as TableColumn[];
 
 	const fetchBookmarks = useCallback(async () => {
 		try {
@@ -195,9 +206,10 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const renderDeleteAction = (bookmarkInfo: BookmarkInfo) => {
 		return (
 			<Button
-				label={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-				icon="bookmark"
-				type="borderless"
+				title={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+				ariaLabel={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+				icon="delete"
+				type="danger-hover"
 				onClick={() => {
 					setBookmarkToDelete(bookmarkInfo);
 					setIsDeleteModalOpen(true);
@@ -210,13 +222,17 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		switch (colKey as keyof BookmarkInfo | 'actions') {
 			case 'contentThumbnailPath':
 				return renderThumbnail(bookmarkInfo);
+
 			case 'contentTitle':
 				return renderTitle(bookmarkInfo);
+
 			case 'createdAt':
 				const cellData = bookmarkInfo.createdAt;
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+
 			case 'actions':
 				return renderDeleteAction(bookmarkInfo);
+
 			default:
 				return null;
 		}
@@ -268,7 +284,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 	const renderBookmarks = () => (
 		<>
-			{bookmarks.length ? renderTable() : renderEmptyFallback()}
+			{bookmarks && bookmarks.length ? renderTable() : renderEmptyFallback()}
 			<DeleteObjectModal
 				title={t('workspace/views/bookmarks___verwijder-bladwijzer')}
 				body={t(
@@ -284,7 +300,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	return (
 		<LoadingErrorLoadedComponent
 			loadingInfo={loadingInfo}
-			dataObject={bookmarks[0]}
+			dataObject={bookmarks}
 			render={renderBookmarks}
 		/>
 	);

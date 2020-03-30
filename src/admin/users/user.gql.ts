@@ -61,7 +61,9 @@ export const GET_USERS = gql`
 				mail
 				idpmaps(where: { idp: { _eq: HETARCHIEF } }) {
 					idp_user_id
+					id
 				}
+				id
 			}
 			function
 			avatar

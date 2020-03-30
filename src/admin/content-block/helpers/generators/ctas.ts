@@ -1,7 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
-import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -9,7 +8,7 @@ import {
 	CTAsBlockComponentState,
 	DefaultContentBlockState,
 } from '../../../shared/types';
-import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
+import { GET_BUTTON_TYPE_OPTIONS, GET_HEADING_TYPE_OPTIONS } from '../../content-block.const';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
 const EMPTY_CTA: CTAsBlockComponentState = {
@@ -34,7 +33,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/ctas___cta'),
 		limits: {
-			min: 2,
+			min: 1,
 			max: 2,
 		},
 		state: INITIAL_CTAS_COMPONENTS_STATE(),
@@ -43,7 +42,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___titel-stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_TYPE_OPTIONS,
+					options: GET_HEADING_TYPE_OPTIONS(),
 				},
 			},
 			heading: TEXT_FIELD(
@@ -58,7 +57,7 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-type'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: BUTTON_TYPE_OPTIONS,
+					options: GET_BUTTON_TYPE_OPTIONS(),
 				},
 			},
 			buttonLabel: TEXT_FIELD(
@@ -72,15 +71,12 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
-					options: ADMIN_ICON_OPTIONS,
+					options: GET_ADMIN_ICON_OPTIONS(),
 				},
 			},
 			buttonAction: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
-				editorProps: {
-					allowedTypes: DEFAULT_ALLOWED_TYPES,
-				},
 			},
 		},
 	},

@@ -12,6 +12,7 @@ import {
 	Spacer,
 	Table,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
@@ -32,13 +33,15 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/la
 
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
-import { InteractiveTour } from '../interactive-tour.types';
 
 interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 
 const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, match }) => {
 	// Hooks
-	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);
+	const [
+		interactiveTour,
+		setInteractiveTour,
+	] = useState<Avo.InteractiveTour.InteractiveTour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 

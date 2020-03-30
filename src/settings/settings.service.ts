@@ -1,6 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { getEnv } from '../shared/helpers';
-import { CustomError } from '../shared/helpers/error';
+import { CustomError, getEnv } from '../shared/helpers';
 
 interface UpdateProfileValues {
 	educationLevels: {

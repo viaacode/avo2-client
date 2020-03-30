@@ -37,7 +37,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
-					allowedTypes: ['COLLECTION', 'ITEM'] as ContentPickerType[],
+					allowedTypes: ['ITEM', 'COLLECTION', 'BUNDLE'] as ContentPickerType[],
 				},
 			},
 		},
@@ -52,6 +52,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					allowedTypes: ['SEARCH_QUERY'] as ContentPickerType[],
+					hideTypeDropdown: true,
 				},
 			},
 			searchQueryLimit: {

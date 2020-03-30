@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -26,6 +25,7 @@ import {
 	TagList,
 	TagOption,
 	Thumbnail,
+	ToggleButton,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
@@ -40,12 +40,8 @@ import {
 	PermissionService,
 } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import {
-	DELETE_COLLECTION,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../../collection/collection.gql';
 import { CollectionService } from '../../collection/collection.service';
+import { toEnglishContentType } from '../../collection/collection.types';
 import { ShareCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH } from '../../constants';
@@ -57,13 +53,19 @@ import {
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import { buildLink, createDropdownMenuItem, CustomError, fromNow } from '../../shared/helpers';
 import {
-	ApolloCacheManager,
-	BookmarksViewsPlaysService,
-	ToastService,
-} from '../../shared/services';
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	fromNow,
+	generateContentLinkString,
+	isMobileWidth,
+} from '../../shared/helpers';
+import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../shared/services/related-items-service';
 
 import './BundleDetail.scss';
 
@@ -81,9 +83,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedBundles /*, setRelatedBundles */] = useState<Avo.Search.ResultItem[] | null>(
-		null
-	);
+	const [relatedItems, setRelatedBundles] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewBundles: boolean;
@@ -95,11 +95,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [viewCountsById, setViewCountsById] = useState<{ [id: string]: number }>({});
-
-	// Mutations
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
+	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
 	useEffect(() => {
 		trackEvents(
@@ -113,20 +111,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			},
 			user
 		);
-
-		// if (!relatedBundles) {
-		// 	getRelatedItems(bundleId, 'bundles', 4)
-		// 		.then((relatedBundles: Avo.Search.ResultItem[]) => setRelatedBundles(relatedBundles))
-		// 		.catch((err: any) => {
-		// 			console.error('Failed to get related items', err, {
-		// 				bundleId,
-		// 				index: 'bundles',
-		// 				limit: 4,
-		// 			});
-		// 			ToastService.danger(t('bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'));
-		// 		});
-		// }
-	}, [bundleId, relatedBundles, t, user]);
+	}, [bundleId, relatedItems, t, user]);
 
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
@@ -186,6 +171,23 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				);
 			}
 
+			try {
+				setBookmarkViewPlayCounts(
+					await BookmarksViewsPlaysService.getCollectionCounts(bundleId, user)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getCollectionCounts for bundle', err, {
+						uuid: bundleId,
+					})
+				);
+				ToastService.danger(
+					t(
+						'bundle/views/bundle-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
+			}
+
 			setPermissions(permissionObj);
 			setBundle(bundleObj || null);
 		};
@@ -218,6 +220,25 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}
 	}, [permissions, bundle, setLoadingInfo]);
 
+	useEffect(() => {
+		getRelatedItems(bundleId, 'bundles', 4)
+			.then(relatedItems => {
+				setRelatedBundles(relatedItems);
+			})
+			.catch(err => {
+				console.error('Failed to get related items', err, {
+					bundleId,
+					type: 'bundles',
+					limit: 4,
+				});
+				ToastService.danger(
+					t(
+						'bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'
+					)
+				);
+			});
+	}, [setRelatedBundles, t, bundleId]);
+
 	// Listeners
 	const onEditBundle = () => {
 		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT.route, { id: bundleId }), history);
@@ -225,12 +246,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 	const onDeleteBundle = async () => {
 		try {
-			await triggerCollectionDelete({
-				variables: {
-					id: bundleId,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
-			});
+			await CollectionService.deleteCollection(bundleId);
 			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
 				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
@@ -243,7 +259,39 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}
 	};
 
-	const onClickDropdownItem = async (item: ReactText) => {
+	const onDuplicateBundle = async () => {
+		try {
+			if (!bundle) {
+				ToastService.danger(
+					t(
+						'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
+					)
+				);
+				return;
+			}
+			const duplicateCollection = await CollectionService.duplicateCollection(
+				bundle,
+				user,
+				COLLECTION_COPY,
+				COLLECTION_COPY_REGEX
+			);
+			redirectToClientPage(
+				buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
+				history
+			);
+			setBundle(duplicateCollection);
+			ToastService.success(
+				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
+			);
+		} catch (err) {
+			console.error('Failed to copy bundle', err, { originalBundle: bundle });
+			ToastService.danger(
+				t('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
+			);
+		}
+	};
+
+	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
 
 		switch (item) {
@@ -252,39 +300,23 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				break;
 
 			case 'duplicate':
-				try {
-					if (!bundle) {
-						ToastService.danger(
-							t(
-								'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
-							)
-						);
-						return;
-					}
-					const duplicateCollection = await CollectionService.duplicateCollection(
-						bundle,
-						user,
-						COLLECTION_COPY,
-						COLLECTION_COPY_REGEX,
-						triggerCollectionInsert,
-						triggerCollectionFragmentsInsert
-					);
-					redirectToClientPage(
-						buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: duplicateCollection.id }),
-						history
-					);
-					setBundle(duplicateCollection);
-					ToastService.success(
-						t(
-							'bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
-						)
-					);
-				} catch (err) {
-					console.error('Failed to copy bundle', err, { originalBundle: bundle });
-					ToastService.danger(
-						t('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
-					);
-				}
+				await onDuplicateBundle();
+				break;
+
+			case 'openShareModal':
+				setIsShareModalOpen(true);
+				break;
+
+			case 'edit':
+				onEditBundle();
+				break;
+
+			case 'toggleBookmark':
+				await toggleBookmark();
+				break;
+
+			case 'openShareThroughEmailModal':
+				setIsShareThroughEmailModalOpen(true);
 				break;
 
 			default:
@@ -292,39 +324,65 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		}
 	};
 
-	// Render functions
-	const renderRelatedBundles = () => {
-		if (!relatedBundles || !relatedBundles.length) {
-			return (
-				<Spacer margin="left-small">
-					<p className="c-body-1">
-						<Trans i18nKey="bundle/views/bundle-detail___de-gerelateerde-bundels-konden-niet-worden-opgehaald">
-							De gerelateerde bundels konden niet worden opgehaald.
-						</Trans>
-					</p>
-				</Spacer>
+	const toggleBookmark = async () => {
+		try {
+			await BookmarksViewsPlaysService.toggleBookmark(
+				bundleId,
+				user,
+				'collection',
+				bookmarkViewPlayCounts.isBookmarked
+			);
+			setBookmarkViewPlayCounts({
+				...bookmarkViewPlayCounts,
+				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
+			});
+			ToastService.success(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('bundle/views/bundle-detail___de-beladwijzer-is-verwijderd')
+					: t('bundle/views/bundle-detail___de-bladwijzer-is-aangemaakt')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle bookmark', err, {
+					bundleId,
+					user,
+					type: 'bundle',
+					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
+				})
+			);
+			ToastService.danger(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('bundle/views/bundle-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
+					: t('bundle/views/bundle-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
 			);
 		}
+	};
 
-		relatedBundles.map((relatedBundle: Avo.Search.ResultItem) => {
+	// Render functions
+	const renderRelatedContent = () => {
+		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
+			const contentType = toEnglishContentType(relatedItem.administrative_type);
 			return (
-				<Column size="3-3" key={`related-bundle-${relatedBundle.id}`}>
+				<Column size="3-3" key={`related-bundle-${relatedItem.id}`}>
 					<MediaCard
 						className="u-clickable"
-						category="bundle"
+						category={contentType}
 						onClick={() =>
 							redirectToClientPage(
-								buildLink(APP_PATH.BUNDLE_DETAIL.route, { id: relatedBundle.id }),
+								generateContentLinkString(
+									relatedItem.administrative_type,
+									relatedItem.id
+								),
 								history
 							)
 						}
 						orientation="vertical"
-						title={relatedBundle.dc_title}
+						title={relatedItem.dc_title}
 					>
 						<MediaCardThumbnail>
 							<Thumbnail
-								category="bundle"
-								src={relatedBundle.thumbnail_path}
+								category={contentType}
+								src={relatedItem.thumbnail_path}
 								meta={t(
 									'bundle/views/bundle-detail___num-of-collection-fragments-items',
 									{
@@ -334,10 +392,12 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							/>
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
-							<MetaData category="bundle">
-								<MetaDataItem label={'300'} icon="eye" />
-								{/*<MetaDataItem label={fromNow(relatedBundle.updated_at)} />*/}
-								<MetaDataItem label={fromNow(relatedBundle.original_cp || '')} />
+							<MetaData category={contentType}>
+								<MetaDataItem
+									label={String(relatedItem.views_count || 0)}
+									icon="eye"
+								/>
+								<MetaDataItem label={fromNow(relatedItem.dcterms_issued)} />
 							</MetaData>
 						</MediaCardMetaData>
 					</MediaCard>
@@ -390,6 +450,133 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		});
 	}
 
+	const renderActions = () => {
+		if (isMobileWidth()) {
+			const BUNDLE_DROPDOWN_ITEMS = [
+				createDropdownMenuItem('edit', t('bundle/views/bundle-detail___bewerken'), 'edit'),
+				createDropdownMenuItem(
+					'openShareModal',
+					t('bundle/views/bundle-detail___delen'),
+					'lock'
+				),
+				createDropdownMenuItem(
+					'toggleBookmark',
+					bookmarkViewPlayCounts.isBookmarked
+						? t('bundle/views/bundle-detail___verwijder-bladwijzer')
+						: t('bundle/views/bundle-detail___maak-bladwijzer'),
+					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
+				),
+				createDropdownMenuItem(
+					'openShareThroughEmailModal',
+					t('bundle/views/bundle-detail___share-bundel'),
+					'share-2'
+				),
+				...(permissions.canCreateBundles
+					? [
+							createDropdownMenuItem(
+								'duplicate',
+								t('bundle/views/bundle-detail___dupliceer'),
+								'copy'
+							),
+					  ]
+					: []),
+				...(permissions.canDeleteBundles
+					? [
+							createDropdownMenuItem(
+								'delete',
+								t('bundle/views/bundle-detail___verwijder')
+							),
+					  ]
+					: []),
+			];
+			return (
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
+						/>
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
+					</DropdownContent>
+				</ControlledDropdown>
+			);
+		}
+		const BUNDLE_DROPDOWN_ITEMS = [
+			...(permissions.canCreateBundles
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('bundle/views/bundle-detail___dupliceer'),
+							'copy'
+						),
+				  ]
+				: []),
+			...(permissions.canDeleteBundles
+				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
+				: []),
+		];
+
+		return (
+			<ButtonToolbar>
+				<Button
+					label={t('bundle/views/bundle-detail___delen')}
+					onClick={() => executeAction('openShareModal')}
+					type="secondary"
+				/>
+				<Button
+					label={t('bundle/views/bundle-detail___bewerken')}
+					onClick={() => executeAction('edit')}
+					type="primary"
+				/>
+				<ToggleButton
+					title={t('collection/views/collection-detail___bladwijzer')}
+					type="secondary"
+					icon="bookmark"
+					active={bookmarkViewPlayCounts.isBookmarked}
+					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
+					onClick={() => executeAction('toggleBookmark')}
+				/>
+				<Button
+					title={t('bundle/views/bundle-detail___share-bundel')}
+					type="secondary"
+					icon="share-2"
+					ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
+					onClick={() => executeAction('openShareThroughEmailModal')}
+				/>
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
+						/>
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
+					</DropdownContent>
+				</ControlledDropdown>
+				<InteractiveTour showButton />
+			</ButtonToolbar>
+		);
+	};
+
 	const renderBundle = () => {
 		const {
 			is_public,
@@ -412,21 +599,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			...(lom_context || []).map((context): TagOption => ({ id: context, label: context })),
 		];
 
-		const BUNDLE_DROPDOWN_ITEMS = [
-			...(permissions.canCreateBundles
-				? [
-						createDropdownMenuItem(
-							'duplicate',
-							t('bundle/views/bundle-detail___dupliceer'),
-							'copy'
-						),
-				  ]
-				: []),
-			...(permissions.canDeleteBundles
-				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
-				: []),
-		];
-
 		const organisationName = get(
 			bundle,
 			'organisation.name',
@@ -436,11 +608,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 
 		return (
 			<>
-				<Container mode="vertical" background="alt">
+				<Container mode="vertical" background="alt" className="m-bundle-detail-header">
 					<Container mode="horizontal">
 						<Grid>
 							<Column size="3-2">
-								<Spacer margin="right-large">
+								<Spacer margin={isMobileWidth() ? 'none' : 'right-large'}>
 									<Thumbnail
 										category="bundle"
 										src={thumbnail_path || undefined}
@@ -466,66 +638,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 										</ToolbarItem>
 									</ToolbarLeft>
 									<ToolbarRight>
-										<ToolbarItem>
-											<ButtonToolbar>
-												<Button
-													label={t('bundle/views/bundle-detail___delen')}
-													onClick={() => setIsShareModalOpen(true)}
-													type="secondary"
-												/>
-												<Button
-													label={t(
-														'bundle/views/bundle-detail___bewerken'
-													)}
-													onClick={onEditBundle}
-													type="primary"
-												/>
-												<Button
-													title={t(
-														'bundle/views/bundle-detail___share-bundel'
-													)}
-													type="secondary"
-													icon="share-2"
-													ariaLabel={t(
-														'bundle/views/bundle-detail___share-bundel'
-													)}
-													onClick={() =>
-														setIsShareThroughEmailModalOpen(true)
-													}
-												/>
-												<ControlledDropdown
-													isOpen={isOptionsMenuOpen}
-													menuWidth="fit-content"
-													onOpen={() => setIsOptionsMenuOpen(true)}
-													onClose={() => setIsOptionsMenuOpen(false)}
-													placement="bottom-end"
-												>
-													<DropdownButton>
-														<Button
-															type="secondary"
-															icon="more-horizontal"
-															ariaLabel={t(
-																'collection/views/collection-detail___meer-opties'
-															)}
-															title={t(
-																'collection/views/collection-detail___meer-opties'
-															)}
-														/>
-													</DropdownButton>
-													<DropdownContent>
-														<MenuContent
-															menuItems={BUNDLE_DROPDOWN_ITEMS}
-															onClick={onClickDropdownItem}
-														/>
-													</DropdownContent>
-												</ControlledDropdown>
-												<InteractiveTour
-													location={location}
-													user={user}
-													showButton
-												/>
-											</ButtonToolbar>
-										</ToolbarItem>
+										<ToolbarItem>{renderActions()}</ToolbarItem>
 									</ToolbarRight>
 								</Toolbar>
 								<p className="c-body-1">{description}</p>
@@ -550,18 +663,20 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</div>
 					</Container>
 				</Container>
-				<Container mode="vertical" background="alt">
-					<Container mode="horizontal">
-						<BlockHeading type="h3">
-							<Trans i18nKey="bundle/views/bundle-detail___aanbevolen-bundels">
-								Aanbevolen bundels
-							</Trans>
-						</BlockHeading>
-						<div className="c-media-card-list">
-							<Grid>{renderRelatedBundles()}</Grid>
-						</div>
+				{!!relatedItems && !!relatedItems.length && (
+					<Container mode="vertical" background="alt">
+						<Container mode="horizontal">
+							<BlockHeading type="h3">
+								<Trans i18nKey="bundle/views/bundle-detail___bekijk-ook">
+									Bekijk ook
+								</Trans>
+							</BlockHeading>
+							<div className="c-media-card-list">
+								<Grid>{renderRelatedContent()}</Grid>
+							</div>
+						</Container>
 					</Container>
-				</Container>
+				)}
 				{isPublic !== null && (
 					<ShareCollectionModal
 						collection={{

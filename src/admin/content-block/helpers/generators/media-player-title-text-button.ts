@@ -1,8 +1,7 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
-import { DEFAULT_ALLOWED_TYPES } from '../../../shared/components/ContentPicker/ContentPicker.const';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -10,7 +9,7 @@ import {
 	DefaultContentBlockState,
 	MediaPlayerTitleTextButtonBlockComponentState,
 } from '../../../shared/types';
-import { BUTTON_TYPE_OPTIONS, HEADING_TYPE_OPTIONS } from '../../content-block.const';
+import { GET_BUTTON_TYPE_OPTIONS, GET_HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
 import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
@@ -70,7 +69,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: HEADING_TYPE_OPTIONS,
+					options: GET_HEADING_TYPE_OPTIONS(),
 				},
 			},
 			content: TEXT_FIELD(),
@@ -78,7 +77,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-type'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: BUTTON_TYPE_OPTIONS,
+					options: GET_BUTTON_TYPE_OPTIONS(),
 				},
 			},
 			buttonLabel: TEXT_FIELD(
@@ -92,7 +91,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
-					options: ADMIN_ICON_OPTIONS,
+					options: GET_ADMIN_ICON_OPTIONS(),
 				},
 			},
 			buttonAction: {
@@ -100,9 +99,6 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 					'admin/content-block/helpers/generators/media-player-title-text-button___knop-actie'
 				),
 				editorType: ContentBlockEditor.ContentPicker,
-				editorProps: {
-					allowedTypes: DEFAULT_ALLOWED_TYPES,
-				},
 			},
 			align: ALIGN_FIELD(),
 		},

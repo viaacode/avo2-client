@@ -61,10 +61,8 @@ import {
 	reorderDate,
 } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, dataService, ToastService } from '../../shared/services';
-import {
-	BookmarkViewPlayCounts,
-	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 import ReportItemModal from '../components/modals/ReportItemModal';
@@ -177,8 +175,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 					user
 				);
 
-				// TODO remove cast to any when typings v2.11 is released
-				BookmarksViewsPlaysService.action('view', 'item', (itemObj as any).uid, user);
+				BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
 
 				retrieveRelatedItems(match.params.id, RELATED_ITEMS_AMOUNT);
 				try {
@@ -242,18 +239,32 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 	}, [time, history, videoRef, match.params.id, relatedItems, user]);
 
 	const toggleBookmark = async () => {
-		if (
+		try {
 			await BookmarksViewsPlaysService.toggleBookmark(
 				(item as any).uid,
 				user,
 				'item',
 				bookmarkViewPlayCounts.isBookmarked
-			)
-		) {
+			);
+
 			setBookmarkViewPlayCounts({
 				...bookmarkViewPlayCounts,
 				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
 			});
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle bookmark', err, {
+					user,
+					itemId: (item as any).uid,
+					type: 'item',
+					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
+				})
+			);
+			ToastService.danger(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('item/views/item-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
+					: t('item/views/item-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
+			);
 		}
 	};
 
@@ -391,11 +402,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 										</MetaData>
 									</div>
 									<Spacer margin="left-small">
-										<InteractiveTour
-											location={location}
-											user={user}
-											showButton
-										/>
+										<InteractiveTour showButton />
 									</Spacer>
 								</ToolbarItem>
 							</ToolbarRight>

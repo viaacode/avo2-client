@@ -1,14 +1,11 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router';
 
 import { Container } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
-import { connect } from 'react-redux';
-import { selectLoginMessage, selectUser } from '../../../authentication/store/selectors';
-import { AppState } from '../../../store';
 import { BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
+import withUser, { UserProps } from '../../hocs/withUser';
 import {
 	AppContentNavElement,
 	getNavigationItems,
@@ -19,11 +16,12 @@ import NavigationItem from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 
-export interface FooterProps extends RouteComponentProps {
-	user: Avo.User.User | undefined;
-}
-
-export const Footer: FunctionComponent<FooterProps> = ({ history, location, match, user }) => {
+export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
+	history,
+	location,
+	match,
+	user,
+}) => {
 	const [t] = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
@@ -78,9 +76,4 @@ export const Footer: FunctionComponent<FooterProps> = ({ history, location, matc
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	loginMessage: selectLoginMessage(state),
-	user: selectUser(state),
-});
-
-export default connect(mapStateToProps)(Footer);
+export default withUser(Footer) as FunctionComponent<RouteComponentProps>;

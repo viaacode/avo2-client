@@ -34,6 +34,7 @@ import { CollectionAction } from '../CollectionOrBundleEdit';
 interface CutFragmentModalProps {
 	isOpen: boolean;
 	itemMetaData: Avo.Item.Item;
+	index: number;
 	fragment: Avo.Collection.Fragment;
 	changeCollectionState: (action: CollectionAction) => void;
 	updateCuePoints: (cuepoints: any) => void;
@@ -41,12 +42,13 @@ interface CutFragmentModalProps {
 }
 
 const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
-	onClose,
 	isOpen,
 	itemMetaData,
-	changeCollectionState,
+	index,
 	fragment,
+	changeCollectionState,
 	updateCuePoints,
+	onClose,
 }) => {
 	const [t] = useTranslation();
 
@@ -100,23 +102,23 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		]);
 
 		changeCollectionState({
+			index,
 			type: 'UPDATE_FRAGMENT_PROP',
-			fragmentId: fragment.id,
 			fragmentProp: 'start_oc',
 			fragmentPropValue: start,
 		});
 
 		changeCollectionState({
+			index,
 			type: 'UPDATE_FRAGMENT_PROP',
-			fragmentId: fragment.id,
 			fragmentProp: 'end_oc',
 			fragmentPropValue: endTime,
 		});
 
 		if (videoStills && videoStills.length) {
 			changeCollectionState({
+				index,
 				type: 'UPDATE_FRAGMENT_PROP',
-				fragmentId: fragment.id,
 				fragmentProp: 'thumbnail_path',
 				fragmentPropValue: videoStills[0].previewImagePath,
 			});
@@ -186,7 +188,6 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		!playerTicket &&
 		fetchPlayerTicket(itemMetaData.external_id).then(data => setPlayerTicket(data));
 
-	// TODO: Replace publisher, published_at by real publisher
 	const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0;
 	return (
 		<Modal
@@ -202,6 +203,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					poster={itemMetaData.thumbnail_path}
 					title={itemMetaData.title}
 					onInit={initFlowPlayer}
+					// TODO: Replace publisher, published_at by real publisher
 					subtitles={['30-12-2011', 'VRT']}
 					token={getEnv('FLOW_PLAYER_TOKEN')}
 					dataPlayerId={getEnv('FLOW_PLAYER_ID')}

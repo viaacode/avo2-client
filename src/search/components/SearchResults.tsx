@@ -1,8 +1,14 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Blankslate, Container, Flex, Pagination, Spacer, Spinner } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
+import { CollectionService } from '../../collection/collection.service';
+import { CustomError } from '../../shared/helpers';
+import { ToastService } from '../../shared/services';
+
+import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
 import { SearchResultsProps } from '../search.types';
 import SearchResultItem from './SearchResultItem';
 
@@ -12,9 +18,36 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	data,
 	pageCount,
 	setPage,
+	bookmarkStatuses,
 	...resultProps
 }) => {
 	const [t] = useTranslation();
+
+	const [collectionLabels, setCollectionLabels] = useState<{ [id: string]: string }>({});
+
+	useEffect(() => {
+		CollectionService.getCollectionLabels()
+			.then(setCollectionLabels)
+			.catch(err => {
+				console.error(new CustomError('Failed to get collection labels', err));
+				ToastService.danger(
+					t(
+						'search/components/search-results___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
+			});
+	}, [setCollectionLabels, t]);
+
+	const getIsBookmarked = (result: Avo.Search.ResultItem) => {
+		if (!bookmarkStatuses) {
+			return null;
+		}
+		return (
+			bookmarkStatuses[
+				CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type]
+			][result.uid] || false
+		);
+	};
 
 	return (
 		<Container mode="vertical">
@@ -31,6 +64,8 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 									{...resultProps}
 									key={`search-result-item-${index}`}
 									result={result}
+									collectionLabelLookup={collectionLabels}
+									isBookmarked={getIsBookmarked(result)}
 								/>
 							))}
 						</ul>

@@ -17,6 +17,7 @@ import {
 	Pagination,
 	Spacer,
 	Table,
+	TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -34,6 +35,7 @@ import {
 	fromNow,
 	generateAssignmentCreateLink,
 	getAvatarProps,
+	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
 import { ApolloCacheManager, ToastService } from '../../shared/services';
@@ -112,7 +114,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		setIdToDelete(null);
 	};
 
-	// TODO add bundles once available as a filter in elasticsearch
 	const onClickCreate = () =>
 		history.push(
 			buildLink(
@@ -137,8 +138,15 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	};
 
 	// Render functions
+	const getLinkProps = (id: string, title: string): { to: string; title: string } => ({
+		title,
+		to: buildLink(isCollection ? APP_PATH.COLLECTION_DETAIL.route : BUNDLE_PATH.BUNDLE_DETAIL, {
+			id,
+		}),
+	});
+
 	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
-		<Link to={buildLink(APP_PATH.COLLECTION_DETAIL.route, { id })} title={title}>
+		<Link {...getLinkProps(id, title)}>
 			<Thumbnail
 				alt="thumbnail"
 				category={type}
@@ -151,15 +159,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderTitle = ({ id, title, created_at }: Avo.Collection.Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link
-					to={buildLink(
-						isCollection ? APP_PATH.COLLECTION_DETAIL.route : BUNDLE_PATH.BUNDLE_DETAIL,
-						{ id }
-					)}
-					title={title}
-				>
-					{title}
-				</Link>
+				<Link {...getLinkProps(id, title)}>{title}</Link>
 			</h3>
 			<div className="c-content-header__meta u-text-muted">
 				<MetaData category={type}>
@@ -237,19 +237,21 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					</DropdownContent>
 				</Dropdown>
 
-				<Button
-					icon="chevron-right"
-					onClick={() =>
-						navigate(
-							history,
-							isCollection
-								? APP_PATH.COLLECTION_DETAIL.route
-								: BUNDLE_PATH.BUNDLE_DETAIL,
-							{ id: collectionId }
-						)
-					}
-					type="borderless"
-				/>
+				{!isMobileWidth() && (
+					<Button
+						icon="chevron-right"
+						onClick={() =>
+							navigate(
+								history,
+								isCollection
+									? APP_PATH.COLLECTION_DETAIL.route
+									: BUNDLE_PATH.BUNDLE_DETAIL,
+								{ id: collectionId }
+							)
+						}
+						type="borderless"
+					/>
+				)}
 			</ButtonToolbar>
 		);
 	};
@@ -260,12 +262,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		switch (colKey) {
 			case 'thumbnail':
 				return renderThumbnail(collection);
+
 			case 'title':
 				return renderTitle(collection);
+
 			case 'inFolder':
 				const isInFolder = true; // TODO: Check if collection is in bundle
-
 				return isInFolder && <Button icon="folder" type="borderless" />;
+
 			case 'access':
 				const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
 				const avatarProps = userProfiles.map(userProfile => {
@@ -275,51 +279,69 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				});
 
 				return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
+
 			case 'actions':
 				return renderActions(id);
+
 			case 'created_at':
 			case 'updated_at':
 				const cellData = collection[colKey as 'created_at' | 'updated_at'];
-
 				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+
 			default:
 				return null;
 		}
 	};
 
+	const getColumns = (): TableColumn[] => {
+		if (isMobileWidth()) {
+			return [
+				{ id: 'thumbnail', label: '', col: '2' },
+				{
+					id: 'title',
+					label: t('collection/views/collection-overview___titel'),
+					col: '6',
+					sortable: true,
+				},
+				{ id: 'actions', label: '', col: '1' },
+			];
+		}
+		return [
+			{ id: 'thumbnail', label: '', col: '2' },
+			{
+				id: 'title',
+				label: t('collection/views/collection-overview___titel'),
+				col: '6',
+				sortable: true,
+			},
+			{
+				id: 'updated_at',
+				label: t('collection/views/collection-overview___laatst-bewerkt'),
+				col: '3',
+				sortable: true,
+			},
+			...(isCollection
+				? [
+						{
+							id: 'inFolder',
+							label: t('collection/views/collection-overview___in-map'),
+							col: '2' as any,
+						},
+				  ]
+				: []),
+			{
+				id: 'access',
+				label: t('collection/views/collection-overview___toegang'),
+				col: '2',
+			},
+			{ id: 'actions', label: '', col: '1' },
+		];
+	};
+
 	const renderTable = (collections: Avo.Collection.Collection[]) => (
 		<>
 			<Table
-				columns={[
-					{ id: 'thumbnail', label: '', col: '2' },
-					{
-						id: 'title',
-						label: t('collection/views/collection-overview___titel'),
-						col: '6',
-						sortable: true,
-					},
-					{
-						id: 'updated_at',
-						label: t('collection/views/collection-overview___laatst-bewerkt'),
-						col: '3',
-						sortable: true,
-					},
-					...(isCollection
-						? [
-								{
-									id: 'inFolder',
-									label: t('collection/views/collection-overview___in-map'),
-									col: '2' as any,
-								},
-						  ]
-						: []),
-					{
-						id: 'access',
-						label: t('collection/views/collection-overview___toegang'),
-						col: '2',
-					},
-					{ id: 'actions', label: '', col: '1' },
-				]}
+				columns={getColumns()}
 				data={collections}
 				emptyStateMessage={t(
 					'collection/views/collection-overview___geen-resultaten-gevonden'
@@ -341,7 +363,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderEmptyFallback = () => (
 		<ErrorView
-			icon="collection"
+			icon={isCollection ? 'collection' : 'folder'}
 			message={
 				isCollection
 					? t(

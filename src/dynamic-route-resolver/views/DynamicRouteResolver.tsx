@@ -24,7 +24,7 @@ import { GET_EXTERNAL_ID_BY_MEDIAMOSA_ID } from '../../item/item.gql';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { buildLink, CustomError, generateSearchLinkString } from '../../shared/helpers';
 import { dataService } from '../../shared/services';
-import { getContentPageByPath } from '../../shared/services/navigation-items-service';
+import { ContentPageService } from '../../shared/services/content-page-service';
 import { AppState } from '../../store';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound';
@@ -49,7 +49,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	loginState,
 	loginStateError,
 	loginStateLoading,
-	match,
 	user,
 }) => {
 	const [t] = useTranslation();
@@ -98,7 +97,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			}
 
 			// Check if path points to a content page
-			const contentPage: Avo.Content.Content | null = await getContentPageByPath(
+			const contentPage: Avo.Content.Content | null = await ContentPageService.getContentPageByPath(
 				location.pathname
 			);
 			if (!contentPage) {
@@ -162,21 +161,14 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			// Special route exceptions
 			// /klaar/archief: redirect teachers to search page with klaar filter
 			const routePath = get(routeInfo, 'data.path', '');
-			// TODO: Ideally this should be based on the users user-group ids
-			const isTeacher = get(user, 'profile.permissions', []).includes(PermissionNames.SEARCH);
-			if (routePath === '/klaar/archief' && isTeacher) {
+			const canAccessSearch = get(user, 'profile.permissions', []).includes(
+				PermissionNames.SEARCH
+			);
+			if (routePath === '/klaar/archief' && canAccessSearch) {
 				return <Redirect to={generateSearchLinkString('serie', 'Klaar')} />;
 			}
 
-			return (
-				<ContentPage
-					contentPage={routeInfo.data}
-					history={history}
-					location={location}
-					match={match}
-					user={user}
-				/>
-			);
+			return <ContentPage contentPage={routeInfo.data} />;
 		}
 		console.error(
 			new CustomError("Route doesn't seem to be a bundle or content page", null, {

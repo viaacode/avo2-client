@@ -1,6 +1,12 @@
-import { get, isNil, orderBy } from 'lodash-es';
-import React, { FunctionComponent, ReactText, SetStateAction, useEffect, useState } from 'react';
-import { withApollo } from 'react-apollo';
+import { get, isEqual, isNil } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactText,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -26,42 +32,39 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
 import { ControlledDropdown, DeleteObjectModal } from '../../../shared/components';
 import { WYSIWYG_OPTIONS_AUTHOR, WYSIWYG_OPTIONS_DEFAULT } from '../../../shared/constants';
 import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 
-import { reorderFragments } from '../../collection.helpers';
 import { isMediaFragment } from '../../helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
 
-interface FragmentEditProps extends DefaultSecureRouteProps {
+interface FragmentEditProps {
 	type: 'itemOrText' | 'collection';
 	index: number;
-	collection: Avo.Collection.Collection;
+	collectionId: string;
+	numberOfFragments: number;
 	changeCollectionState: (action: CollectionAction) => void;
 	openOptionsId: number | null;
 	setOpenOptionsId: React.Dispatch<SetStateAction<number | null>>;
 	fragment: Avo.Collection.Fragment;
+	allowedToAddLinks: boolean;
 }
 
 const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	type,
 	index,
-	collection,
+	collectionId,
+	numberOfFragments,
 	changeCollectionState,
 	openOptionsId,
 	setOpenOptionsId,
 	fragment,
-	user,
+	allowedToAddLinks,
 }) => {
 	const [t] = useTranslation();
 
@@ -72,14 +75,23 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 		start: fragment.start_oc,
 		end: fragment.end_oc,
 	});
-	const [allowedToAddLinks, setAllowedToAddLinks] = useState<boolean | null>(null);
 
 	const isCollection = type === 'collection';
 
 	// Check whether the current fragment is the first and/or last fragment in collection
 	const isFirst = (fragmentIndex: number) => fragmentIndex === 0;
-	const isLast = (fragmentIndex: number) =>
-		fragmentIndex === collection.collection_fragments.length - 1;
+	const isLast = (fragmentIndex: number) => fragmentIndex === numberOfFragments - 1;
+
+	const getTitle = useCallback(() => {
+		if (fragment.use_custom_fields) {
+			return fragment.custom_title || '';
+		}
+		return get(fragment.item_meta, 'title', '');
+	}, [fragment.use_custom_fields, fragment.custom_title, fragment.item_meta]);
+
+	// Cache title until the text field blurs, then pass title to collection edit reducer
+	// Otherwise rerendering cannot keep up with type speed / delete speed
+	const [tempTitle, setTempTitle] = useState<string>(getTitle());
 
 	const FRAGMENT_DROPDOWN_ITEMS = [
 		// TODO: DISABLED FEATURE
@@ -92,42 +104,19 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	];
 
 	useEffect(() => {
-		PermissionService.hasPermission(PermissionNames.ADD_HYPERLINK_COLLECTIONS, null, user)
-			.then(hasPermission => {
-				setAllowedToAddLinks(hasPermission);
-			})
-			.catch(err => {
-				console.error(
-					'Failed to check permissions for adding hyperlinks in collection fragment editors',
-					err,
-					{ user, permission: PermissionNames.ADD_HYPERLINK_COLLECTIONS }
-				);
-				ToastService.danger(
-					t(
-						'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt'
-					)
-				);
-			});
-	}, [user, t]);
+		setTempTitle(getTitle());
+	}, [fragment.use_custom_fields, getTitle]);
 
 	const handleChangedValue = (
 		fragmentProp: keyof Avo.Collection.Fragment,
 		fragmentPropValue: any
 	) => {
 		changeCollectionState({
+			index,
 			fragmentProp,
 			fragmentPropValue,
 			type: 'UPDATE_FRAGMENT_PROP',
-			fragmentId: fragment.id,
 		});
-		// }
-	};
-
-	const getTitle = () => {
-		if (fragment.use_custom_fields) {
-			return fragment.custom_title || '';
-		}
-		return get(fragment, 'item_meta.title', '');
 	};
 
 	const getDescription = () => {
@@ -155,25 +144,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	const itemMetaData = (fragment as any).item_meta;
 
-	const onDeleteFragment = (fragmentId: number) => {
+	const onDeleteFragment = () => {
 		setOpenOptionsId(null);
 
-		// Sort fragments by position
-		const orderedFragments = orderBy(
-			collection.collection_fragments.filter(
-				({ id: collectionFragmentId }: Avo.Collection.Fragment) =>
-					collectionFragmentId !== fragmentId
-			),
-			['position'],
-			['asc']
-		);
-
-		const positionedFragments = reorderFragments(orderedFragments);
-
 		changeCollectionState({
-			type: 'UPDATE_COLLECTION_PROP',
-			collectionProp: 'collection_fragments',
-			collectionPropValue: positionedFragments,
+			index,
+			type: 'DELETE_FRAGMENT',
 		});
 
 		ToastService.success(
@@ -236,15 +212,15 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	};
 
 	// Render functions
-	const renderReorderButton = (fragmentId: number, direction: 'up' | 'down') => (
+	const renderReorderButton = (index: number, direction: 'up' | 'down') => (
 		<Button
 			type="secondary"
 			icon={`chevron-${direction}` as IconName}
 			onClick={() => {
 				changeCollectionState({
+					index,
 					direction,
 					type: 'SWAP_FRAGMENTS',
-					currentFragmentId: fragmentId,
 				});
 			}}
 		/>
@@ -252,15 +228,21 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 
 	const renderForm = () => {
 		const disableVideoFields: boolean =
-			!fragment.use_custom_fields && !!isMediaFragment(fragment);
+			!fragment.use_custom_fields && !!isMediaFragment(fragment); // TODO replace isMediaFragment by looking at the type of the fragment
 
 		return (
 			<Form>
 				{itemMetaData && (
 					<FormGroup
-						label={t(
-							'collection/components/fragment/fragment-edit___alternatieve-tekst'
-						)}
+						label={
+							type === 'itemOrText'
+								? t(
+										'collection/components/fragment/fragment-edit___alternatieve-tekst'
+								  )
+								: t(
+										'collection/components/fragment/fragment-edit___eigen-collectie-titel'
+								  )
+						}
 						labelFor="customFields"
 					>
 						<Toggle
@@ -279,13 +261,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
-						value={getTitle()}
+						value={tempTitle}
 						placeholder={t(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
-						onChange={(newTitle: string) =>
-							handleChangedValue('custom_title', newTitle)
-						}
+						onChange={setTempTitle}
+						onBlur={() => handleChangedValue('custom_title', tempTitle)}
 						disabled={disableVideoFields}
 					/>
 				</FormGroup>
@@ -328,10 +309,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 						<ToolbarLeft>
 							<ToolbarItem>
 								<div className="c-button-toolbar">
-									{!isFirst(index) &&
-										renderReorderButton(fragment.position, 'up')}
-									{!isLast(index) &&
-										renderReorderButton(fragment.position, 'down')}
+									{!isFirst(index) && renderReorderButton(index, 'up')}
+									{!isLast(index) && renderReorderButton(index, 'down')}
 									{itemMetaData && !isCollection && (
 										<Button
 											icon="scissors"
@@ -412,7 +391,8 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			{!isCollection && (
 				<FragmentAdd
 					index={index}
-					collection={collection}
+					collectionId={collectionId}
+					numberOfFragments={numberOfFragments}
 					changeCollectionState={changeCollectionState}
 				/>
 			)}
@@ -432,7 +412,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => setDeleteModalOpen(false)}
-				deleteObjectCallback={() => onDeleteFragment(fragment.id)}
+				deleteObjectCallback={() => onDeleteFragment()}
 			/>
 
 			{itemMetaData && !isCollection && (
@@ -443,10 +423,22 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					changeCollectionState={changeCollectionState}
 					fragment={fragment}
 					updateCuePoints={setCuePoints}
+					index={index}
 				/>
 			)}
 		</>
 	);
 };
 
-export default withApollo(FragmentEdit);
+function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
+	return (
+		prevProps.numberOfFragments === nextProps.numberOfFragments &&
+		prevProps.collectionId === nextProps.collectionId &&
+		isEqual(prevProps.fragment, nextProps.fragment) &&
+		prevProps.allowedToAddLinks === nextProps.allowedToAddLinks &&
+		prevProps.index === nextProps.index &&
+		prevProps.type === nextProps.type
+	);
+}
+
+export default React.memo(FragmentEdit, areEqual);

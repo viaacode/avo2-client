@@ -5,20 +5,24 @@ import { RouteComponentProps } from 'react-router';
 import { Button, Spacer } from '@viaa/avo2-components';
 
 import { APP_PATH } from '../../constants';
-import { ToastService } from '../../shared/services';
-
-import { redirectToClientPage, redirectToServerSmartschoolLogin } from '../helpers/redirects';
+import {
+	redirectToClientPage,
+	redirectToServerKlascementLogin,
+	redirectToServerSmartschoolLogin,
+} from '../helpers/redirects';
 
 import './LoginOptions.scss';
 
 export interface LoginOptionsProps extends RouteComponentProps {
 	onOptionClicked?: () => void;
+	redirectAfterLogin: string;
 }
 
 const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 	history,
 	location,
 	onOptionClicked = () => {},
+	redirectAfterLogin,
 }) => {
 	const [t] = useTranslation();
 
@@ -35,7 +39,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						className="c-login-with-archief"
 						onClick={() => {
 							onOptionClicked();
-							redirectToClientPage(APP_PATH.LOGIN.route, history);
+							redirectToClientPage(APP_PATH.LOGIN.route, history, redirectAfterLogin);
 						}}
 					/>
 				</Spacer>
@@ -64,9 +68,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				label={t('authentication/components/login-options___inloggen-met-klas-cement')}
 				onClick={() => {
 					onOptionClicked();
-					ToastService.info(
-						t('authentication/components/login-options___nog-niet-geimplementeerd')
-					);
+					redirectToServerKlascementLogin(location);
 				}}
 			/>
 		</div>

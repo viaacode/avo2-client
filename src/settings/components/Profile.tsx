@@ -1,8 +1,6 @@
 import { get, pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 
 import {
 	Alert,
@@ -32,11 +30,7 @@ import {
 	getProfileId,
 } from '../../authentication/helpers/get-profile-info';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
-import {
-	getLoginResponse,
-	getLoginStateAction,
-	setLoginSuccess,
-} from '../../authentication/store/actions';
+import { getLoginResponse, setLoginSuccess } from '../../authentication/store/actions';
 import { APP_PATH } from '../../constants';
 import { DataQueryComponent } from '../../shared/components';
 import { GET_CLASSIFICATIONS_AND_SUBJECTS } from '../../shared/queries/lookup.gql';
@@ -56,10 +50,10 @@ export interface ProfileProps extends DefaultSecureRouteProps {
 }
 
 const Profile: FunctionComponent<ProfileProps> = ({
+	isCompleteProfileStep = false,
+	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
 	history,
 	user,
-	isCompleteProfileStep = false,
-	redirectTo = APP_PATH.SEARCH.route,
 }) => {
 	const [t] = useTranslation();
 
@@ -490,10 +484,4 @@ const Profile: FunctionComponent<ProfileProps> = ({
 	);
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
-	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
-	};
-};
-
-export default connect(mapDispatchToProps)(Profile);
+export default Profile;

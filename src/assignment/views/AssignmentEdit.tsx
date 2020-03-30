@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
 import { get, isEmpty, isNil, remove } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
@@ -41,7 +40,6 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
-import { INSERT_COLLECTION, INSERT_COLLECTION_FRAGMENTS } from '../../collection/collection.gql';
 import { toEnglishContentType } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import {
@@ -60,12 +58,6 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
 import { CONTENT_LABEL_TO_QUERY } from '../assignment.const';
-import {
-	DELETE_ASSIGNMENT,
-	GET_ASSIGNMENT_BY_ID,
-	INSERT_ASSIGNMENT,
-	UPDATE_ASSIGNMENT,
-} from '../assignment.gql';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
@@ -101,12 +93,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [initialAssignment, setInitialAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
 		{}
 	);
-
-	const [triggerAssignmentDelete] = useMutation(DELETE_ASSIGNMENT);
-	const [triggerAssignmentInsert] = useMutation(INSERT_ASSIGNMENT);
-	const [triggerAssignmentUpdate] = useMutation(UPDATE_ASSIGNMENT);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	const setBothAssignments = useCallback(
 		(assignment: Partial<Avo.Assignment.Assignment>) => {
@@ -155,34 +141,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			id: string | number
 		): Promise<Avo.Assignment.Assignment | null> => {
 			try {
-				const assignmentQuery = {
-					query: GET_ASSIGNMENT_BY_ID,
-					variables: { id },
-				};
-
-				// Get the assigment from graphql
-				const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
-					assignmentQuery
-				);
-
-				const assignmentResponse: Avo.Assignment.Assignment | undefined = get(
-					response,
-					'data.app_assignments[0]'
-				);
-				if (!assignmentResponse) {
-					setLoadingInfo({
-						state: 'error',
-						message: t(
-							'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-inhoud-is-mislukt-leeg-antwoord'
-						),
-						icon: 'search',
-					});
-					return null;
-				}
-				return assignmentResponse;
+				return await AssignmentService.getAssignmentById(id);
 			} catch (err) {
 				console.error(err);
-
 				setLoadingInfo({
 					state: 'error',
 					message: t(
@@ -276,7 +237,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				);
 				return;
 			}
-			await AssignmentService.deleteAssignment(triggerAssignmentDelete, currentAssignment.id);
+			await AssignmentService.deleteAssignment(currentAssignment.id);
 			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: ASSIGNMENTS_ID });
 			ToastService.success(t('assignment/views/assignment-edit___de-opdracht-is-verwijderd'));
 		} catch (err) {
@@ -331,9 +292,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				is_archived: shouldBeArchived,
 			});
 
-			if (
-				await AssignmentService.updateAssignment(triggerAssignmentUpdate, archivedAssigment)
-			) {
+			if (await AssignmentService.updateAssignment(archivedAssigment)) {
 				ToastService.success(
 					shouldBeArchived
 						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
@@ -369,10 +328,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			const duplicatedAssigment = await AssignmentService.duplicateAssignment(
 				newTitle,
 				assignment,
-				user,
-				triggerCollectionInsert,
-				triggerCollectionFragmentsInsert,
-				triggerAssignmentInsert
+				user
 			);
 
 			setCurrentAssignment({});
@@ -425,7 +381,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			setIsSaving(true);
 			// edit => update graphql
-			await AssignmentService.updateAssignment(triggerAssignmentUpdate, assignment);
+			await AssignmentService.updateAssignment(assignment);
 			setBothAssignments(assignment);
 			ToastService.success(
 				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
@@ -676,11 +632,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												disabled={isSaving}
 											/>
 											<Spacer margin="left-small">
-												<InteractiveTour
-													location={location}
-													user={user}
-													showButton
-												/>
+												<InteractiveTour showButton />
 											</Spacer>
 										</ButtonToolbar>
 									</ToolbarItem>

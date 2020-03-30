@@ -30,7 +30,7 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<
 	views: (order: Avo.Search.OrderDirection) => ({ view_counts_aggregate: { count: order } }),
 };
 
-export const USER_OVERVIEW_TABLE_COLS: FilterableColumn[] = [
+export const GET_USER_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{
 		id: 'title',
 		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___title'),

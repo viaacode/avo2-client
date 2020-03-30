@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -13,7 +12,6 @@ import {
 	Container,
 	DropdownButton,
 	DropdownContent,
-	DutchContentType,
 	Grid,
 	Header,
 	HeaderAvatar,
@@ -45,6 +43,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
@@ -54,21 +53,15 @@ import {
 	generateAssignmentCreateLink,
 	generateContentLinkString,
 	generateSearchLinks,
+	isMobileWidth,
 	renderAvatar,
 } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
-import {
-	BookmarkViewPlayCounts,
-	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
-} from '../../shared/services/bookmarks-views-plays-service';
+import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { getRelatedItems } from '../../shared/services/related-items-service';
 
-import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
-import {
-	DELETE_COLLECTION,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-} from '../collection.gql';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, toEnglishContentType } from '../collection.types';
 import { FragmentList, ShareCollectionModal } from '../components';
@@ -77,7 +70,6 @@ import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
-const CONTENT_TYPE: DutchContentType = ContentTypeString.collection;
 
 interface CollectionDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -100,9 +92,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isFirstRender, setIsFirstRender] = useState<boolean>(false);
 	const [isPublic, setIsPublic] = useState<boolean | null>(null);
-	const [relatedCollections /*, setRelatedCollections */] = useState<
-		Avo.Search.ResultItem[] | null
-	>(null);
+	const [relatedItems, setRelatedCollections] = useState<Avo.Search.ResultItem[] | null>(null);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canViewCollections: boolean;
@@ -116,11 +106,6 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 	const [bookmarkViewPlayCounts, setBookmarkViewPlayCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-
-	// Mutations
-	const [triggerCollectionDelete] = useMutation(DELETE_COLLECTION);
-	const [triggerCollectionInsert] = useMutation(INSERT_COLLECTION);
-	const [triggerCollectionFragmentsInsert] = useMutation(INSERT_COLLECTION_FRAGMENTS);
 
 	useEffect(() => {
 		trackEvents(
@@ -217,11 +202,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 
 				BookmarksViewsPlaysService.action('view', 'collection', collectionObj.id, user);
 				try {
-					const counts = await BookmarksViewsPlaysService.getCollectionCounts(
-						collectionObj.id,
-						user
+					setBookmarkViewPlayCounts(
+						await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
 					);
-					setBookmarkViewPlayCounts(counts);
 				} catch (err) {
 					console.error(
 						new CustomError('Failed to get getCollectionCounts', err, {
@@ -267,21 +250,24 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		checkPermissionsAndGetCollection();
 	}, [collectionId, t, user, history]);
 
-	// Waiting for ES index for bundles
-	// useEffect(() => {
-	// 	if (!relatedCollections) {
-	// 		getRelatedItems(collectionId, 'collections', 4)
-	// 			.then(relatedItems => setRelatedCollections(relatedItems))
-	// 			.catch(err => {
-	// 				console.error('Failed to get related items', err, {
-	// 					collectionId,
-	// 					index: 'collections',
-	// 					limit: 4,
-	// 				});
-	// 				ToastService.danger(t('collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'));
-	// 			});
-	// 	}
-	// }, [relatedCollections, t, collectionId]);
+	useEffect(() => {
+		getRelatedItems(collectionId, 'collections', 4)
+			.then(relatedItems => {
+				setRelatedCollections(relatedItems);
+			})
+			.catch(err => {
+				console.error('Failed to get related items', err, {
+					collectionId,
+					index: 'collections',
+					limit: 4,
+				});
+				ToastService.danger(
+					t(
+						'collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'
+					)
+				);
+			});
+	}, [setRelatedCollections, t, collectionId]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection) {
@@ -300,7 +286,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
-	const onClickDropdownItem = async (item: ReactText) => {
+	const executeAction = async (item: ReactText) => {
 		switch (item) {
 			case 'duplicate':
 				try {
@@ -316,9 +302,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						collection,
 						user,
 						COLLECTION_COPY,
-						COLLECTION_COPY_REGEX,
-						triggerCollectionInsert,
-						triggerCollectionFragmentsInsert
+						COLLECTION_COPY_REGEX
 					);
 					redirectToClientPage(
 						buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: duplicateCollection.id }),
@@ -350,24 +334,66 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				setIsDeleteModalOpen(true);
 				break;
 
+			case 'openShareThroughEmail':
+				setIsShareThroughEmailModalOpen(true);
+				break;
+
+			case 'openShareCollectionModal':
+				setIsShareModalOpen(!isShareModalOpen);
+				break;
+
+			case 'toggleBookmark':
+				await toggleBookmark();
+				break;
+
+			case 'createAssignment':
+				createAssignment();
+				break;
+
+			case 'editCollection':
+				onEditCollection();
+				break;
+
 			default:
 				return null;
 		}
 	};
 
 	const toggleBookmark = async () => {
-		if (
+		try {
 			await BookmarksViewsPlaysService.toggleBookmark(
 				collectionId,
 				user,
 				'collection',
 				bookmarkViewPlayCounts.isBookmarked
-			)
-		) {
+			);
 			setBookmarkViewPlayCounts({
 				...bookmarkViewPlayCounts,
 				isBookmarked: !bookmarkViewPlayCounts.isBookmarked,
 			});
+			ToastService.success(
+				bookmarkViewPlayCounts.isBookmarked
+					? t('collection/views/collection-detail___de-beladwijzer-is-verwijderd')
+					: t('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle bookmark', err, {
+					collectionId,
+					user,
+					type: 'collection',
+					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
+				})
+			);
+			ToastService.danger(
+				bookmarkViewPlayCounts.isBookmarked
+					? t(
+							'collection/views/collection-detail___het-verwijderen-van-de-bladwijzer-is-mislukt'
+					  )
+					: t(
+							'collection/views/collection-detail___het-aanmaken-van-de-bladwijzer-is-mislukt'
+					  )
+			);
 		}
 	};
 
@@ -378,56 +404,54 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 		);
 	};
 
-	const onDeleteCollection = (): void => {
-		CollectionService.deleteCollection(history, collectionId, triggerCollectionDelete);
+	const onDeleteCollection = async (): Promise<void> => {
+		try {
+			await CollectionService.deleteCollection(collectionId);
+			history.push(APP_PATH.WORKSPACE.route);
+			ToastService.success(
+				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
+			);
+		} catch (err) {
+			ToastService.danger(
+				t(
+					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
+				)
+			);
+		}
 	};
 
 	// Render functions
-	const renderRelatedCollections = () => {
-		if (!relatedCollections || !relatedCollections.length) {
-			return (
-				<p className="c-body-1">
-					<Trans i18nKey="collection/views/collection-detail___de-gerelateerde-collecties-konden-niet-worden-opgehaald">
-						De gerelateerde collecties konden niet worden opgehaald.
-					</Trans>
-				</p>
-			);
-		}
-
-		relatedCollections.map((relatedCollection: Avo.Search.ResultItem) => {
-			const {
-				id,
-				dc_title,
-				thumbnail_path = undefined,
-				original_cp = '',
-			} = relatedCollection;
-			const category = toEnglishContentType(CONTENT_TYPE);
+	const renderRelatedContent = () => {
+		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
+			const { id, dc_title, thumbnail_path = undefined, original_cp = '' } = relatedItem;
+			const category = toEnglishContentType(relatedItem.administrative_type);
 
 			return (
-				<Grid className="c-media-card-list">
-					<Column size="3-6">
-						<MediaCard
-							category={category}
-							onClick={() =>
-								redirectToClientPage(
-									buildLink(APP_PATH.COLLECTION_DETAIL.route, { id }),
-									history
-								)
-							}
-							orientation="horizontal"
-							title={dc_title}
-						>
-							<MediaCardThumbnail>
-								<Thumbnail category={category} src={thumbnail_path} />
-							</MediaCardThumbnail>
-							<MediaCardMetaData>
-								<MetaData category={category}>
-									<MetaDataItem label={original_cp || undefined} />
-								</MetaData>
-							</MediaCardMetaData>
-						</MediaCard>
-					</Column>
-				</Grid>
+				<Column size="2-6" key={`related-item-${id}`}>
+					<MediaCard
+						category={category}
+						onClick={() =>
+							redirectToClientPage(
+								generateContentLinkString(
+									relatedItem.administrative_type,
+									relatedItem.id
+								),
+								history
+							)
+						}
+						orientation="horizontal"
+						title={dc_title}
+					>
+						<MediaCardThumbnail>
+							<Thumbnail category={category} src={thumbnail_path} />
+						</MediaCardThumbnail>
+						<MediaCardMetaData>
+							<MetaData category={category}>
+								<MetaDataItem label={original_cp || undefined} />
+							</MetaData>
+						</MediaCardMetaData>
+					</MediaCard>
+				</Column>
 			);
 		});
 	};
@@ -465,13 +489,13 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					type="secondary"
 					icon="clipboard"
 					ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
-					onClick={createAssignment}
+					onClick={() => executeAction('createAssignment')}
 				/>
 				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
-						onClick={() => setIsShareModalOpen(!isShareModalOpen)}
+						onClick={() => executeAction('openShareCollectionModal')}
 					/>
 				)}
 				<ToggleButton
@@ -480,14 +504,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					icon="bookmark"
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
-					onClick={toggleBookmark}
+					onClick={() => executeAction('toggleBookmark')}
 				/>
 				<Button
 					title={t('collection/views/collection-detail___deel')}
 					type="secondary"
 					icon="share-2"
 					ariaLabel={t('collection/views/collection-detail___deel')}
-					onClick={() => setIsShareThroughEmailModalOpen(true)}
+					onClick={() => executeAction('openShareThroughEmail')}
 				/>
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
@@ -507,7 +531,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					<DropdownContent>
 						<MenuContent
 							menuItems={COLLECTION_DROPDOWN_ITEMS}
-							onClick={onClickDropdownItem}
+							onClick={executeAction}
 						/>
 					</DropdownContent>
 				</ControlledDropdown>
@@ -517,11 +541,100 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							type="primary"
 							icon="edit"
 							label={t('collection/views/collection-detail___bewerken')}
-							onClick={onEditCollection}
+							onClick={() => executeAction('editCollection')}
 						/>
 					</Spacer>
 				)}
-				<InteractiveTour location={location} user={user} showButton />
+				<InteractiveTour showButton />
+			</ButtonToolbar>
+		);
+	};
+
+	const renderHeaderButtonsMobile = () => {
+		const COLLECTION_DROPDOWN_ITEMS = [
+			// TODO: DISABLED_FEATURE - createDropdownMenuItem("play", 'Alle items afspelen')
+			...(permissions.canEditCollections
+				? [
+						createDropdownMenuItem(
+							'editCollection',
+							t('collection/views/collection-detail___bewerken'),
+							'edit'
+						),
+				  ]
+				: []),
+			createDropdownMenuItem(
+				'createAssignment',
+				t('collection/views/collection-detail___maak-opdracht'),
+				'clipboard'
+			),
+			...(permissions.canEditCollections
+				? [
+						createDropdownMenuItem(
+							'openShareCollectionModal',
+							t('collection/views/collection-detail___delen'),
+							'plus'
+						),
+				  ]
+				: []),
+			createDropdownMenuItem(
+				'toggleBookmark',
+				bookmarkViewPlayCounts.isBookmarked
+					? t('collection/views/collection-detail___verwijder-bladwijzer')
+					: t('collection/views/collection-detail___maak-bladwijzer'),
+				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
+			),
+			createDropdownMenuItem(
+				'openShareThroughEmail',
+				t('collection/views/collection-detail___deel'),
+				'share-2'
+			),
+			createDropdownMenuItem(
+				'addToBundle',
+				t('collection/views/collection-detail___voeg-toe-aan-bundel'),
+				'plus'
+			),
+			...(permissions.canCreateCollections
+				? [
+						createDropdownMenuItem(
+							'duplicate',
+							t('collection/views/collection-detail___dupliceer'),
+							'copy'
+						),
+				  ]
+				: []),
+			...(permissions.canDeleteCollections
+				? [
+						createDropdownMenuItem(
+							'delete',
+							t('collection/views/collection-detail___verwijder')
+						),
+				  ]
+				: []),
+		];
+		return (
+			<ButtonToolbar>
+				<ControlledDropdown
+					isOpen={isOptionsMenuOpen}
+					menuWidth="fit-content"
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					placement="bottom-end"
+				>
+					<DropdownButton>
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('collection/views/collection-detail___meer-opties')}
+							title={t('collection/views/collection-detail___meer-opties')}
+						/>
+					</DropdownButton>
+					<DropdownContent>
+						<MenuContent
+							menuItems={COLLECTION_DROPDOWN_ITEMS}
+							onClick={executeAction}
+						/>
+					</DropdownContent>
+				</ControlledDropdown>
 			</ButtonToolbar>
 		);
 	};
@@ -553,7 +666,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount)}
 					views={String(bookmarkViewPlayCounts.viewCount)}
 				>
-					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
+					<HeaderButtons>
+						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+					</HeaderButtons>
 					<HeaderAvatar>
 						{profile && renderAvatar(profile, { includeRole: true, dark: true })}
 					</HeaderAvatar>
@@ -663,12 +778,16 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							</Column>
 						</Grid>
 						<hr className="c-hr" />
-						<BlockHeading type="h3">
-							<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
-								Bekijk ook
-							</Trans>
-						</BlockHeading>
-						{renderRelatedCollections()}
+						{!!relatedItems && !!relatedItems.length && (
+							<>
+								<BlockHeading type="h3">
+									<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
+										Bekijk ook
+									</Trans>
+								</BlockHeading>
+								<Grid className="c-media-card-list">{renderRelatedContent()}</Grid>
+							</>
+						)}
 					</Container>
 				</Container>
 				{isPublic !== null && (
