@@ -36,7 +36,7 @@ export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig =
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: GET_HEADING_TYPE_OPTIONS,
+					options: GET_HEADING_TYPE_OPTIONS(),
 				},
 			},
 			align: ALIGN_FIELD(),

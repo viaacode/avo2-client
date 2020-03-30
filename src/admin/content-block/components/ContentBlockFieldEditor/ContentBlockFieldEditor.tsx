@@ -65,9 +65,9 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 			editorProps = {
 				onChange: (option: SelectOption) =>
 					handleChange(type, fieldKey, get(option, 'value', ''), stateIndex),
-				value: defaultProps
-					.options()
-					.find((opt: SelectOption) => opt.value === (state as any)[fieldKey]),
+				value: defaultProps.options.find(
+					(opt: SelectOption) => opt.value === (state as any)[fieldKey]
+				),
 			};
 			break;
 		case ContentBlockEditor.WYSIWYG:

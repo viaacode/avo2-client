@@ -58,7 +58,7 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					),
 					editorType: ContentBlockEditor.Select,
 					editorProps: {
-						options: GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS,
+						options: GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS(),
 					},
 				},
 				allowMultiple: {
@@ -75,7 +75,7 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 					),
 					editorType: ContentBlockEditor.Select,
 					editorProps: {
-						options: GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS,
+						options: GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS(),
 					},
 				},
 				showTitle: {

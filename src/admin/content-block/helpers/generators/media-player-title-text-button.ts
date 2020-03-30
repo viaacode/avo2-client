@@ -1,6 +1,6 @@
 import i18n from '../../../../shared/translations/i18n';
 
-import { ADMIN_ICON_OPTIONS } from '../../../shared/constants';
+import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
 import {
 	ContentBlockConfig,
@@ -69,7 +69,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/heading___stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: GET_HEADING_TYPE_OPTIONS,
+					options: GET_HEADING_TYPE_OPTIONS(),
 				},
 			},
 			content: TEXT_FIELD(),
@@ -77,7 +77,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-type'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					options: GET_BUTTON_TYPE_OPTIONS,
+					options: GET_BUTTON_TYPE_OPTIONS(),
 				},
 			},
 			buttonLabel: TEXT_FIELD(
@@ -91,7 +91,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
-					options: ADMIN_ICON_OPTIONS,
+					options: GET_ADMIN_ICON_OPTIONS(),
 				},
 			},
 			buttonAction: {

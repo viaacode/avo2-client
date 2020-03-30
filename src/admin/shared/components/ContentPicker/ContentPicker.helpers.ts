@@ -26,11 +26,12 @@ export const setInitialInput = (
 	return isInput ? get(initialValues, 'value', '') : '';
 };
 
-export const setInitialItem = (options: PickerSelectItem[], initialValues?: PickerItem) => {
-	const currentItem = options.find(
+export const setInitialItem = (
+	options: PickerSelectItem[],
+	initialValues?: PickerItem
+): ValueType<PickerItem> => {
+	return options.find(
 		(option: PickerSelectItem) =>
 			option.value.value === get(initialValues, 'value', 'EMPTY_SELECTION')
 	) as ValueType<PickerItem>;
-
-	return currentItem;
 };
