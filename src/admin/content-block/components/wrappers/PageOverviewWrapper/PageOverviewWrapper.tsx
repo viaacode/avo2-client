@@ -1,8 +1,8 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import {
 	BlockPageOverview,
@@ -15,12 +15,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { getUserGroupIds } from '../../../../../authentication/authentication.service';
-import { selectUser } from '../../../../../authentication/store/selectors';
+import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { CustomError, navigateToContentType } from '../../../../../shared/helpers';
+import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
 import { dataService, ToastService } from '../../../../../shared/services';
 import i18n from '../../../../../shared/translations/i18n';
-import { AppState } from '../../../../../store';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { DbContent } from '../../../../content/content.types';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
@@ -28,7 +28,7 @@ import { ContentBlockConfig } from '../../../../shared/types';
 import { parseContentBlocks } from '../../../helpers';
 import ContentBlockPreview from '../../ContentBlockPreview/ContentBlockPreview';
 
-interface PageOverviewWrapperProps extends RouteComponentProps {
+interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
@@ -38,10 +38,10 @@ interface PageOverviewWrapperProps extends RouteComponentProps {
 	showDate?: boolean;
 	buttonLabel?: string;
 	itemsPerPage?: number;
-	user: Avo.User.User | null | undefined;
 }
 
-const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
+const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
+	DefaultSecureRouteProps> = ({
 	contentTypeAndTabs = {
 		selectedContentType: 'PROJECT',
 		selectedLabels: [],
@@ -213,8 +213,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	user: selectUser(state),
-});
-
-export default withRouter(connect(mapStateToProps)(PageOverviewWrapper));
+export default compose(withRouter, withUser)(PageOverviewWrapper) as FunctionComponent<
+	PageOverviewWrapperProps
+>;
