@@ -155,11 +155,11 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 		value: ContentBlockType.ProjectsSpotlight,
 	},
 	{
-		label: i18n.t('Quote'),
+		label: i18n.t('admin/content-block/content-block___quote'),
 		value: ContentBlockType.Quote,
 	},
 	{
-		label: i18n.t('Links'),
+		label: i18n.t('admin/content-block/content-block___links'),
 		value: ContentBlockType.AnchorLinks,
 	},
 ];

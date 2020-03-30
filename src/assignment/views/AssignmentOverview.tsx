@@ -520,15 +520,24 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	const onClickCreate = () => history.push(buildLink(APP_PATH.SEARCH.route));
 
 	const renderEmptyFallback = () => (
-		<ErrorView icon="clipboard" message={t('Je hebt nog geen opdrachten aangemaakt')}>
+		<ErrorView
+			icon="clipboard"
+			message={t(
+				'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
+			)}
+		>
 			<p>
-				<Trans>Beschrijving hoe een opdracht aan te maken</Trans>
+				<Trans i18nKey="assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken">
+					Beschrijving hoe een opdracht aan te maken
+				</Trans>
 			</p>
 			<Spacer margin="top">
 				<Button
 					type="primary"
 					icon="search"
-					label={t('Zoek een fragment of collectie en maak je eerste opdracht')}
+					label={t(
+						'assignment/views/assignment-overview___zoek-een-fragment-of-collectie-en-maak-je-eerste-opdracht'
+					)}
 					onClick={onClickCreate}
 				/>
 			</Spacer>

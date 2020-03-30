@@ -52,7 +52,10 @@ function getFormattedKey(filePath: string, key: string) {
 }
 
 function getFormattedTranslation(translation: string) {
-	return translation.trim().replace(/\t\t(\t)+/g, ' ');
+	return translation
+		.trim()
+		.replace(/\t\t(\t)+/g, ' ')
+		.replace(/(\s?(\\n|\\r)\s?)+/g, ' ');
 }
 
 async function getFilesByGlob(globPattern: string): Promise<string[]> {
@@ -82,6 +85,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 			// Replace Trans objects
 			content = content.replace(
 				/<Trans( i18nKey="([^"]+)")?>([\s\S]*?)<\/Trans>/g,
+				// @ts-ignore
 				(match: string, keyAttribute: string, key: string, translation: string) => {
 					let formattedKey: string | undefined = key;
 					const formattedTranslation: string = getFormattedTranslation(translation);
@@ -123,7 +127,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					// If translation contains '___', use original translation, otherwise use translation found by the regexp
 					newTranslations[formattedKey] =
 						(formattedTranslation.includes('___')
-							? (oldTranslations as keyMap)[formattedKey]
+							? getFormattedTranslation((oldTranslations as keyMap)[formattedKey])
 							: formattedTranslation) || '';
 					return `${prefix}t('${formattedKey}'${translationParams})`;
 				}

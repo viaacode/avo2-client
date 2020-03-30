@@ -31,7 +31,11 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			.then(setCollectionLabels)
 			.catch(err => {
 				console.error(new CustomError('Failed to get collection labels', err));
-				ToastService.danger(t('Het ophalen van de kwaliteitslabels is mislukt'));
+				ToastService.danger(
+					t(
+						'search/components/search-filter-controls___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
 			});
 	}, [setCollectionLabels, t]);
 
@@ -142,7 +146,12 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 				t('search/components/search-filter-controls___aanbieder'),
 				'provider'
 			)}
-			{renderCheckboxDropdownModal(t('Label'), 'collectionLabel', false, collectionLabels)}
+			{renderCheckboxDropdownModal(
+				t('search/components/search-filter-controls___label'),
+				'collectionLabel',
+				false,
+				collectionLabels
+			)}
 		</ul>
 	);
 };

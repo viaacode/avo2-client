@@ -53,7 +53,9 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de gebruikers- en privacy voorwaarden is mislukt'),
+				message: t(
+					'authentication/views/registration-flow/l-8-accept-conditions___het-ophalen-van-de-gebruikers-en-privacy-voorwaarden-is-mislukt'
+				),
 			});
 		}
 	}, [setLoadingInfo, setPages, t]);
@@ -69,7 +71,9 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			} else {
 				setLoadingInfo({
 					state: 'error',
-					message: t('Het ophalen van de gebruikers- en privacy voorwaarden is mislukt'),
+					message: t(
+						'authentication/views/registration-flow/l-8-accept-conditions___het-ophalen-van-de-gebruikers-en-privacy-voorwaarden-is-mislukt'
+					),
 				});
 			}
 		}
@@ -104,7 +108,11 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			console.error(
 				new CustomError('Failed to set accept conditions notification in the database')
 			);
-			ToastService.danger(t('Het opslaan van de accepteer condities is mislukt'));
+			ToastService.danger(
+				t(
+					'authentication/views/registration-flow/l-8-accept-conditions___het-opslaan-van-de-accepteer-condities-is-mislukt'
+				)
+			);
 			setAcceptInProgress(false); // Disable on on error, if success => we redirect to other route
 		}
 	};
@@ -125,7 +133,9 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 								<Spinner size={'large'} />
 							) : (
 								<Button
-									label={t('Accepteer voorwaarden')}
+									label={t(
+										'authentication/views/registration-flow/l-8-accept-conditions___accepteer-voorwaarden'
+									)}
 									type="primary"
 									onClick={handleAcceptConditions}
 								/>

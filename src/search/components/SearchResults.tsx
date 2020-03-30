@@ -30,7 +30,11 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 			.then(setCollectionLabels)
 			.catch(err => {
 				console.error(new CustomError('Failed to get collection labels', err));
-				ToastService.danger(t('Het ophalen van de kwaliteitslabels is mislukt'));
+				ToastService.danger(
+					t(
+						'search/components/search-results___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
 			});
 	}, [setCollectionLabels, t]);
 

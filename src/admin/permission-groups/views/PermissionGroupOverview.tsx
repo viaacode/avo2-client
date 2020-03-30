@@ -198,7 +198,9 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 					renderCell={(rowData: PermissionGroup, columnId: string) =>
 						renderTableCell(rowData, columnId as PermissionGroupOverviewTableCols)
 					}
-					searchTextPlaceholder={t('Zoek op naam, beschrijving')}
+					searchTextPlaceholder={t(
+						'admin/permission-groups/views/permission-group-overview___zoek-op-naam-beschrijving'
+					)}
 					renderNoResults={renderNoResults}
 					noContentMatchingFiltersMessage={t(
 						'admin/permission-groups/views/permission-group-overview___er-zijn-geen-permissie-groepen-gevonden-die-voldoen-aan-je-zoekterm'
