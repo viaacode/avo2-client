@@ -18,8 +18,8 @@ import { CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
 import { CollectionService } from '../collection.service';
-import { CollectionAction } from './CollectionOrBundleEdit';
 import { QualityLabel } from '../collection.types';
+import { CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
