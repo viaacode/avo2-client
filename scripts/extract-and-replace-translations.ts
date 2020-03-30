@@ -55,7 +55,7 @@ function getFormattedTranslation(translation: string) {
 	return translation
 		.trim()
 		.replace(/\t\t(\t)+/g, ' ')
-		.replace(/[\n\r]+/g, ' ');
+		.replace(/(\s?(\\n|\\r)\s?)+/g, ' ');
 }
 
 async function getFilesByGlob(globPattern: string): Promise<string[]> {
