@@ -18,6 +18,7 @@ import { CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
 import { CollectionService } from '../collection.service';
+import { QualityLabel } from '../collection.types';
 import { CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditAdminProps {
@@ -38,7 +39,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		CollectionService.fetchQualityLabels()
 			.then(dbLabels =>
 				setQualityLabels(
-					dbLabels.map((dbLabel: any) => ({
+					dbLabels.map((dbLabel: QualityLabel) => ({
 						label: dbLabel.description,
 						value: dbLabel.value,
 					}))

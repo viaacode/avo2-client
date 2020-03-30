@@ -4,12 +4,7 @@ import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import {
-	GET_BUNDLES,
-	GET_BUNDLES_BY_TITLE,
-	GET_COLLECTIONS_BY_IDS,
-	GET_QUALITY_LABELS,
-} from '../bundle/bundle.gql';
+import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
@@ -24,11 +19,11 @@ import {
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_ID_BY_AVO1_ID,
-	GET_COLLECTION_LABELS,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
+	GET_QUALITY_LABELS,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
@@ -42,7 +37,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber } from './collection.types';
+import { ContentTypeNumber, QualityLabel } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -532,7 +527,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchQualityLabels(): Promise<string[]> {
+	public static async fetchQualityLabels(): Promise<QualityLabel[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_QUALITY_LABELS,
@@ -1024,21 +1019,14 @@ export class CollectionService {
 			if (!CollectionService.collectionLabels) {
 				// Fetch collection labels and cache them in memory
 
-				const response = await dataService.query({
-					query: GET_COLLECTION_LABELS,
-				});
-
-				if (response.errors) {
-					throw new CustomError('Response contains errors', null, { response });
-				}
+				const labels: QualityLabel[] = (await this.fetchQualityLabels()) || [];
 
 				// Map result array to dictionary
 				CollectionService.collectionLabels = fromPairs(
-					get(response, 'data.lookup_labels', []).map(
-						(collectionLabel: { description: string; value: string }) => {
-							return [collectionLabel.value, collectionLabel.description];
-						}
-					)
+					labels.map(collectionLabel => [
+						collectionLabel.value,
+						collectionLabel.description,
+					])
 				);
 			}
 
