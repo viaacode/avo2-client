@@ -2,13 +2,6 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
 
-export interface ZendeskFileInfo {
-	// TODO use typings version in v2.14.0
-	base64: string;
-	filename: string;
-	mimeType: string;
-}
-
 function fileToBase64(file: File): Promise<string | null> {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
@@ -31,7 +24,7 @@ export const uploadFile = async (
 
 export const uploadFileToZendesk = async (file: File): Promise<string> => {
 	let url: string | undefined;
-	let body: ZendeskFileInfo | undefined;
+	let body: Avo.FileUpload.ZendeskFileInfo | undefined;
 	try {
 		url = `${getEnv('PROXY_URL')}/zendesk/upload-attachment`;
 		const base64 = await fileToBase64(file);

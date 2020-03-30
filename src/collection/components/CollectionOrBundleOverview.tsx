@@ -114,7 +114,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		setIdToDelete(null);
 	};
 
-	// TODO add bundles once available as a filter in elasticsearch
 	const onClickCreate = () =>
 		history.push(
 			buildLink(

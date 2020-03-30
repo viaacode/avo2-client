@@ -3,14 +3,14 @@ import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import { InteractiveTour, InteractiveTourStep } from '../interactive-tour.types';
 import { InteractiveTourAction } from '../views/InteractiveTourEdit';
 
 interface InteractiveTourAddProps {
 	index: number;
-	interactiveTour: InteractiveTour;
+	interactiveTour: Avo.InteractiveTour.InteractiveTour;
 	changeInteractiveTourState: (action: InteractiveTourAction) => void;
 }
 
@@ -21,7 +21,7 @@ const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const getStepsAfterInsertNewStep = (): InteractiveTourStep[] => {
+	const getStepsAfterInsertNewStep = (): Avo.InteractiveTour.Step[] => {
 		const steps = cloneDeep(interactiveTour.steps || []);
 
 		steps.splice(index, 0, {

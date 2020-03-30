@@ -4,8 +4,9 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
-
 import { ITEMS_PER_PAGE } from '../content/content.const';
+import { Permission, PermissionGroup } from '../permission-groups/permission-group.types';
+
 import {
 	ADD_PERMISSION_GROUPS_TO_USER_GROUP,
 	DELETE_USER_GROUP,
@@ -14,7 +15,7 @@ import {
 	REMOVE_PERMISSION_GROUPS_FROM_USER_GROUP,
 	UPDATE_USER_GROUP,
 } from './user-group.gql';
-import { Permission, PermissionGroup, UserGroup } from './user-group.types';
+import { UserGroup } from './user-group.types';
 
 export class UserGroupService {
 	public static async fetchUserGroups(

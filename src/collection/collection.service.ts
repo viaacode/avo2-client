@@ -11,6 +11,7 @@ import { ApolloCacheManager, dataService, ToastService } from '../shared/service
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
+import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -55,7 +56,7 @@ export class CollectionService {
 			newCollection.updated_at = newCollection.created_at;
 			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 
-			// insert collection // TODO: handle undefined TriggerCollectionInsert
+			// insert collection
 			const insertResponse: void | ExecutionResult<
 				Avo.Collection.Collection
 			> = await dataService.mutate({
@@ -86,7 +87,7 @@ export class CollectionService {
 
 			newCollection.id = insertedCollection.id;
 
-			// retrieve collection ragments from inserted collection
+			// retrieve collection fragments from inserted collection
 			const fragments = getFragmentsFromCollection(newCollection);
 
 			// insert fragments
@@ -104,6 +105,12 @@ export class CollectionService {
 				newCollection,
 			});
 		}
+	}
+
+	private static getLabels(
+		collection: Avo.Collection.Collection | null
+	): CollectionLabelSchema[] {
+		return get(collection, 'collection_labels', []) as CollectionLabelSchema[];
 	}
 
 	/**
@@ -276,11 +283,10 @@ export class CollectionService {
 			});
 
 			// Update collection labels
-			// TODO remove any cast and add collectionLabel types after update to typings v2.14.0
-			const initialLabels: string[] = (initialCollection as any).collection_labels.map(
+			const initialLabels: string[] = this.getLabels(initialCollection).map(
 				(labelObj: any) => labelObj.label
 			);
-			const updatedLabels: string[] = (updatedCollection as any).collection_labels.map(
+			const updatedLabels: string[] = this.getLabels(updatedCollection).map(
 				(labelObj: any) => labelObj.label
 			);
 
@@ -766,7 +772,6 @@ export class CollectionService {
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
 			fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
-			fragments.forEach(fragment => ((fragment as any).collection_id = '')); // TODO remove once database allows it
 
 			const cleanedFragments = cloneDeep(fragments).map(fragment => {
 				delete fragment.id;

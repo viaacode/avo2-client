@@ -142,12 +142,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 				t('search/components/search-filter-controls___aanbieder'),
 				'provider'
 			)}
-			{renderCheckboxDropdownModal(
-				t('Label'),
-				'collectionLabel' as any, // TODO remove cast	after update to typings 2.14.0
-				false,
-				collectionLabels
-			)}
+			{renderCheckboxDropdownModal(t('Label'), 'collectionLabel', false, collectionLabels)}
 		</ul>
 	);
 };
