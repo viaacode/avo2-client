@@ -28,7 +28,7 @@ export const setInitialInput = (
 
 export const setInitialItem = (
 	options: PickerSelectItem[],
-	initialValues?: PickerItem
+	initialValue?: PickerItem
 ): ValueType<PickerItem> => {
 	return options.find(
 		(option: PickerSelectItem) =>
