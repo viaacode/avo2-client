@@ -262,8 +262,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 			);
 			ToastService.danger(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('Het verwijderen van de bladwijzer is mislukt')
-					: t('Het aanmaken van de bladwijzer is mislukt')
+					? t('item/views/item-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
+					: t('item/views/item-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
 			);
 		}
 	};

@@ -747,7 +747,11 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				t('collection/views/collection-edit___opslaan'),
 				'download'
 			),
-			createDropdownMenuItem('openShareModal', t('Delen'), 'share-2'),
+			createDropdownMenuItem(
+				'openShareModal',
+				t('collection/components/collection-or-bundle-edit___delen'),
+				'share-2'
+			),
 			createDropdownMenuItem(
 				'redirectToDetail',
 				t('collection/components/collection-or-bundle-edit___bekijk'),

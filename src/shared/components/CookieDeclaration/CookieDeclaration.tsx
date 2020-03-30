@@ -32,15 +32,26 @@ const CookieDeclaration: FunctionComponent = () => {
 				ToastService.info(
 					<p>
 						{t(
-							'Deze website maakt gebruik van cookies om uw gebruikservaring te verbeteren.'
+							'shared/components/cookie-declaration/cookie-declaration___deze-website-maakt-gebruik-van-cookies-om-uw-gebruikservaring-te-verbeteren'
 						)}
 						<br />
-						<Link to={t('/cookies')}>
-							<Trans>Meer informatie</Trans>
+						<Link
+							to={t(
+								'shared/components/cookie-declaration/cookie-declaration___cookies'
+							)}
+						>
+							<Trans i18nKey="shared/components/cookie-declaration/cookie-declaration___meer-informatie">
+								Meer informatie
+							</Trans>
 						</Link>
 						<br />
 						<br />
-						<Button label={t('Akkoord')} onClick={() => setAccepted(true)} />
+						<Button
+							label={t(
+								'shared/components/cookie-declaration/cookie-declaration___akkoord'
+							)}
+							onClick={() => setAccepted(true)}
+						/>
 					</p>,
 					true,
 					{

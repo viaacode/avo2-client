@@ -239,7 +239,9 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 								? t(
 										'collection/components/fragment/fragment-edit___alternatieve-tekst'
 								  )
-								: t('Eigen collectie titel')
+								: t(
+										'collection/components/fragment/fragment-edit___eigen-collectie-titel'
+								  )
 						}
 						labelFor="customFields"
 					>

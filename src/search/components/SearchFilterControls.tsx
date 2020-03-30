@@ -31,7 +31,11 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			.then(setCollectionLabels)
 			.catch(err => {
 				console.error(new CustomError('Failed to get collection labels', err));
-				ToastService.danger(t('Het ophalen van de kwaliteitslabels is mislukt'));
+				ToastService.danger(
+					t(
+						'search/components/search-filter-controls___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
 			});
 	}, [setCollectionLabels, t]);
 
@@ -143,7 +147,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 				'provider'
 			)}
 			{renderCheckboxDropdownModal(
-				t('Label'),
+				t('search/components/search-filter-controls___label'),
 				'collectionLabel' as any, // TODO remove cast	after update to typings 2.14.0
 				false,
 				collectionLabels

@@ -91,10 +91,14 @@ export const GET_CONTENT_DETAIL_TABS: () => TabProps[] = () => [
 ];
 
 export const GET_CONTENT_WIDTH_OPTIONS = () => [
-	{ label: i18n.t('Kies een content breedte'), value: '', disabled: true },
-	{ label: i18n.t('Max. (1300px)'), value: 'REGULAR' },
-	{ label: i18n.t('Breed (940px)'), value: 'LARGE' },
-	{ label: i18n.t('Medium (720px)'), value: 'MEDIUM' },
+	{
+		label: i18n.t('admin/content/content___kies-een-content-breedte'),
+		value: '',
+		disabled: true,
+	},
+	{ label: i18n.t('admin/content/content___max-1300-px'), value: 'REGULAR' },
+	{ label: i18n.t('admin/content/content___breed-940-px'), value: 'LARGE' },
+	{ label: i18n.t('admin/content/content___medium-720-px'), value: 'MEDIUM' },
 ];
 
 export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: string[] } = {

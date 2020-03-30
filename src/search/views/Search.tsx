@@ -189,7 +189,9 @@ const Search: FunctionComponent<SearchProps> = ({
 					user,
 				})
 			);
-			ToastService.danger(t('Het ophalen van de bladwijzer statusen is mislukt'));
+			ToastService.danger(
+				t('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
+			);
 		}
 	}, [t, setBookmarkStatuses, searchResults, user]);
 
@@ -329,7 +331,9 @@ const Search: FunctionComponent<SearchProps> = ({
 			set(bookmarkStatusesTemp, `[${type}][${uuid}]`, active);
 			setBookmarkStatuses(bookmarkStatusesTemp);
 			ToastService.success(
-				active ? t('De bladwijzer is aangemaakt') : t('De bladwijzer is verwijderd')
+				active
+					? t('search/views/search___de-bladwijzer-is-aangemaakt')
+					: t('search/views/search___de-bladwijzer-is-verwijderd')
 			);
 		} catch (err) {
 			console.error(
@@ -342,8 +346,8 @@ const Search: FunctionComponent<SearchProps> = ({
 			);
 			ToastService.danger(
 				active
-					? t('Het aanmaken van de bladwijzer is mislukt')
-					: t('Het verwijderen van de bladwijzer is mislukt')
+					? t('search/views/search___het-aanmaken-van-de-bladwijzer-is-mislukt')
+					: t('search/views/search___het-verwijderen-van-de-bladwijzer-is-mislukt')
 			);
 		}
 	};

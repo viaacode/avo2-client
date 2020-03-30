@@ -39,7 +39,12 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 			)
 			.catch(err => {
 				console.error(new CustomError('Failed to fetch translations', err));
-				ToastService.danger(t('Het ophalen van de vertalingen is mislukt.'), false);
+				ToastService.danger(
+					t(
+						'admin/translations/views/translations-overview___het-ophalen-van-de-vertalingen-is-mislukt'
+					),
+					false
+				);
 			});
 	}, [t]);
 
@@ -62,10 +67,20 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 		try {
 			await Promise.all(promises);
 
-			ToastService.success(t('De vertalingen zijn opgeslagen.'), false);
+			ToastService.success(
+				t(
+					'admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen'
+				),
+				false
+			);
 		} catch (err) {
 			console.error(new CustomError('Failed to save translations', err));
-			ToastService.danger(t('Het opslaan van de vertalingen is mislukt.'), false);
+			ToastService.danger(
+				t(
+					'admin/translations/views/translations-overview___het-opslaan-van-de-vertalingen-is-mislukt'
+				),
+				false
+			);
 		}
 	};
 
@@ -107,7 +122,7 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Vertalingen')}>
+		<AdminLayout pageTitle={t('admin/translations/views/translations-overview___vertalingen')}>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">

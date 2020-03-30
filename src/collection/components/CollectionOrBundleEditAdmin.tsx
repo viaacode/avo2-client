@@ -47,7 +47,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 			)
 			.catch(err => {
 				console.error(new CustomError('Failed to fetch quality labels', err));
-				ToastService.danger(t('Het ophalen van de kwaliteitslabels is mislukt.'));
+				ToastService.danger(
+					t(
+						'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
 			});
 	}, [setQualityLabels, t]);
 
@@ -83,7 +87,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
-									<FormGroup label={t('Kwaliteitslabels')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-admin___kwaliteitslabels'
+										)}
+									>
 										{!!qualityLabels && (
 											<TagsInput
 												options={qualityLabels}

@@ -60,7 +60,9 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het laden van deze media tegel grid is mislukt'),
+				message: t(
+					'admin/content-block/components/wrappers/media-grid-wrapper/media-grid-wrapper___het-laden-van-deze-media-tegel-grid-is-mislukt'
+				),
 				actionButtons: [],
 			});
 		}

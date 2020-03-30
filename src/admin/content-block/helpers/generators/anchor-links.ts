@@ -23,10 +23,10 @@ export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (position: number): AnchorLinksB
 });
 
 export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('Links'),
+	name: i18n.t('admin/content-block/helpers/generators/anchor-links___links'),
 	type: ContentBlockType.AnchorLinks,
 	components: {
-		name: i18n.t('Link'),
+		name: i18n.t('admin/content-block/helpers/generators/anchor-links___link'),
 		state: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE(),
 		fields: {
 			label: TEXT_FIELD(

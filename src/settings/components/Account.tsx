@@ -45,7 +45,9 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 							? t(
 									'settings/components/account___uw-smartschool-account-is-reeds-gelinkt'
 							  )
-							: t('Je Klascement account is reeds gelinkt')}
+							: t(
+									'settings/components/account___je-klascement-account-is-reeds-gelinkt'
+							  )}
 					</span>
 					<Button
 						type="link"
@@ -62,7 +64,7 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 				label={
 					idpType === 'SMARTSCHOOL'
 						? t('settings/components/account___link-je-smartschool-account')
-						: t('Link je Klascement account')
+						: t('settings/components/account___link-je-klascement-account')
 				}
 				onClick={() => redirectToServerLinkAccount(location, idpType)}
 			/>

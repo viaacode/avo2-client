@@ -624,11 +624,15 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 												options={[
 													{
 														value: 'static',
-														label: t('Statische pagina'),
+														label: t(
+															'admin/interactive-tour/views/interactive-tour-edit___statische-pagina'
+														),
 													},
 													{
 														value: 'content',
-														label: t('Content pagina'),
+														label: t(
+															'admin/interactive-tour/views/interactive-tour-edit___content-pagina'
+														),
 													},
 												]}
 												value={selectedPageType}
