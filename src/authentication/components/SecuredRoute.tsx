@@ -20,7 +20,13 @@ import { redirectToClientPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading, selectUser } from '../store/selectors';
 
-export interface SecuredRouteProps extends RouteComponentProps {
+export interface DefaultSecureRouteProps<T = {}> extends RouteComponentProps<T> {
+	// technically this type is incorrect, it should be Avo.User.User | undefined
+	// But practically it's always Avo.User.User where we need a user and this avoids a shit ton of IF checks
+	user: Avo.User.User;
+}
+
+export interface SecuredRouteProps extends DefaultSecureRouteProps {
 	component: ComponentType<any>;
 	exact?: boolean;
 	getLoginState: () => Dispatch;
@@ -28,10 +34,6 @@ export interface SecuredRouteProps extends RouteComponentProps {
 	loginStateError: boolean;
 	loginStateLoading: boolean;
 	path?: string;
-	user: Avo.User.User;
-}
-
-export interface DefaultSecureRouteProps<T = {}> extends RouteComponentProps<T> {
 	user: Avo.User.User;
 }
 
@@ -65,7 +67,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 		);
 	}
 
-	if (loginStateError) {
+	if (loginStateError || !user) {
 		redirectToClientPage(
 			buildLink(
 				APP_PATH.ERROR.route,
@@ -90,7 +92,6 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 			render={props => {
 				// Already logged in
 				if (loginState && loginState.message === LoginMessage.LOGGED_IN && user) {
-					// TODO enable this once we can save profile info
 					if (path === APP_PATH.COMPLETE_PROFILE.route) {
 						// Force user to complete their profile before letting them in
 						// This has to happen in the secure route component so we can pass the user object to the profile component
@@ -103,8 +104,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 							/>
 						);
 					}
-					// TODO remove cast once update to typings 2.14.0
-					if (!(loginState as any).acceptedConditions) {
+					if (!loginState.acceptedConditions) {
 						// Redirect to the accept user and privacy declaration
 						return (
 							<Redirect

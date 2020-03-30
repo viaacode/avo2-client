@@ -6,7 +6,7 @@ import {
 	PickerItem,
 	PickerSelectItem,
 	PickerTypeOption,
-} from '../../../shared/types';
+} from '../../types';
 
 export const filterTypes = (
 	types: PickerTypeOption<ContentPickerType>[],
@@ -19,18 +19,19 @@ export const filterTypes = (
 
 export const setInitialInput = (
 	type?: PickerTypeOption<ContentPickerType>,
-	initialValues?: PickerItem
+	initialValue?: PickerItem
 ) => {
 	const isInput = get(type, 'picker') === 'TEXT_INPUT';
 
-	return isInput ? get(initialValues, 'value', '') : '';
+	return isInput ? get(initialValue, 'value', '') : '';
 };
 
-export const setInitialItem = (options: PickerSelectItem[], initialValues?: PickerItem) => {
-	const currentItem = options.find(
+export const setInitialItem = (
+	options: PickerSelectItem[],
+	initialValue?: PickerItem
+): ValueType<PickerItem> => {
+	return options.find(
 		(option: PickerSelectItem) =>
-			option.value.value === get(initialValues, 'value', 'EMPTY_SELECTION')
+			option.value.value === get(initialValue, 'value', 'EMPTY_SELECTION')
 	) as ValueType<PickerItem>;
-
-	return currentItem;
 };

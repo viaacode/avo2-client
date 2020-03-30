@@ -5,6 +5,7 @@ import { Avo } from '@viaa/avo2-types';
 import { ContentBlockPreview } from '../../admin/content-block/components';
 import { parseContentBlocks } from '../../admin/content-block/helpers';
 import { ContentBlockConfig } from '../../admin/shared/types';
+import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 
 import './ContentPage.scss';
 
@@ -18,6 +19,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps> = ({ contentPage })
 	);
 	return (
 		<>
+			<InteractiveTour showButton={false} />
 			{contentBlockConfig.map((contentBlockConfig: ContentBlockConfig, index) => (
 				<ContentBlockPreview
 					key={contentPage.contentBlockssBycontentId[index].id}

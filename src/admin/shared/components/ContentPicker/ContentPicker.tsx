@@ -22,15 +22,17 @@ import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.he
 
 export interface ContentPickerProps {
 	allowedTypes?: ContentPickerType[];
-	initialValues?: PickerItem;
+	initialValue?: PickerItem;
 	onSelect: (value: PickerItem | null) => void;
+	hideTypeDropdown?: boolean;
 	errors?: string | string[];
 }
 
 export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	allowedTypes = DEFAULT_ALLOWED_TYPES,
-	initialValues,
+	initialValue,
 	onSelect,
+	hideTypeDropdown = false,
 	errors = [],
 }) => {
 	const [t] = useTranslation();
@@ -38,8 +40,8 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// filter available options for the type picker
 	const typeOptions = filterTypes(GET_CONTENT_TYPES(), allowedTypes as ContentPickerType[]);
 
-	// apply initial type from `initialValues`, default to first available type
-	const currentTypeObject = typeOptions.find(type => type.value === get(initialValues, 'type'));
+	// apply initial type from `initialValue`, default to first available type
+	const currentTypeObject = typeOptions.find(type => type.value === get(initialValue, 'type'));
 	const [selectedType, setSelectedType] = useState<PickerTypeOption<ContentPickerType>>(
 		currentTypeObject || typeOptions[0]
 	);
@@ -47,12 +49,12 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// available options for the item picker.
 	const [itemOptions, setItemOptions] = useState<PickerSelectItem[]>([]);
 
-	// selected option, keep track of wether initial item from `initialValues` has been applied
+	// selected option, keep track of whether initial item from `initialValue` has been applied
 	const [selectedItem, setSelectedItem] = useState<ValueType<PickerItem>>();
 	const [hasAppliedInitialItem, setHasAppliedInitialItem] = useState<boolean>(false);
 
 	// apply initial input if INPUT-based type, default to ''
-	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, initialValues));
+	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, initialValue));
 
 	// handle error during inflation of item picker // TODO: type
 	const handleInflationError = useCallback(
@@ -77,26 +79,26 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 					.then((items: PickerSelectItem[]) => {
 						const initialItem = [
 							{
-								label: get(initialValues, 'label'),
+								label: get(initialValue, 'label'),
 								value: {
-									type: get(initialValues, 'type'),
-									value: get(initialValues, 'value'),
+									type: get(initialValue, 'type'),
+									value: get(initialValue, 'value'),
 								},
 							},
 							...items.filter(
 								(item: PickerSelectItem) =>
-									item.label !== get(initialValues, 'label')
+									item.label !== get(initialValue, 'label')
 							),
 						];
 
 						return callback(
-							(!hasAppliedInitialItem && initialValues ? initialItem : items) || []
+							(!hasAppliedInitialItem && initialValue ? initialItem : items) || []
 						);
 					})
 					.catch(handleInflationError);
 			}
 		},
-		[selectedType, handleInflationError, hasAppliedInitialItem, initialValues]
+		[selectedType, handleInflationError, hasAppliedInitialItem, initialValue]
 	);
 
 	// when selecting a type, reset `selectedItem` and retrieve new item options
@@ -107,7 +109,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	// during the first update of `itemOptions`, set the initial value of the item picker
 	useEffect(() => {
 		if (itemOptions.length && !hasAppliedInitialItem) {
-			setSelectedItem(setInitialItem(itemOptions, initialValues));
+			setSelectedItem(setInitialItem(itemOptions, initialValue));
 			setHasAppliedInitialItem(true);
 
 			inflatePicker(null, setItemOptions);
@@ -237,7 +239,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	return (
 		<FormGroup error={errors}>
 			<Grid>
-				<Column size="1">{renderTypePicker()}</Column>
+				{!hideTypeDropdown && <Column size="1">{renderTypePicker()}</Column>}
 				<Column size="3">{renderItemControl()}</Column>
 			</Grid>
 		</FormGroup>

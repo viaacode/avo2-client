@@ -57,7 +57,7 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 				onSelect: (picked: PickerItem) => {
 					handleChange(type, fieldKey, { value: picked }, stateIndex);
 				},
-				initialValues: get(state as any, fieldKey),
+				initialValue: get(state as any, fieldKey),
 			};
 			break;
 		case ContentBlockEditor.IconPicker:
@@ -65,9 +65,9 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 			editorProps = {
 				onChange: (option: SelectOption) =>
 					handleChange(type, fieldKey, get(option, 'value', ''), stateIndex),
-				value: defaultProps
-					.options()
-					.find((opt: SelectOption) => opt.value === (state as any)[fieldKey]),
+				value: defaultProps.options.find(
+					(opt: SelectOption) => opt.value === (state as any)[fieldKey]
+				),
 			};
 			break;
 		case ContentBlockEditor.WYSIWYG:

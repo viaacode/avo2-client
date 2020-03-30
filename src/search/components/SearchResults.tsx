@@ -30,7 +30,11 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 			.then(setCollectionLabels)
 			.catch(err => {
 				console.error(new CustomError('Failed to get collection labels', err));
-				ToastService.danger(t('Het ophalen van de kwaliteitslabels is mislukt'));
+				ToastService.danger(
+					t(
+						'search/components/search-results___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
 			});
 	}, [setCollectionLabels, t]);
 
@@ -41,8 +45,8 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 		return (
 			bookmarkStatuses[
 				CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type]
-			][(result as any).uid] || false
-		); // TODO remove cast	after update to typings 2.14.0
+			][result.uid] || false
+		);
 	};
 
 	return (

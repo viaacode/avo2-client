@@ -270,7 +270,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			t('assignment/views/assignment-edit___de-url-is-naar-het-klembord-gekopieerd')
 		);
 
-		if (currentAssignment.id) {
+		if (currentAssignment.id && user) {
 			trackEvents(
 				{
 					object: String(currentAssignment.id),
@@ -293,6 +293,12 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 			if (isNil(assignment.id)) {
 				ToastService.danger(
 					'Je kan een opdracht pas dupliceren nadat je hem hebt opgeslagen.'
+				);
+				return;
+			}
+			if (!user) {
+				ToastService.danger(
+					'De opdracht kan niet gedupliceerd worden omdat je niet meer bent ingelogd.'
 				);
 				return;
 			}
@@ -328,7 +334,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 	};
 
 	const trackAddObjectToAssignment = (assignment: Avo.Assignment.Assignment) => {
-		if (!assignment.content_label || !assignment.content_id) {
+		if (!assignment.content_label || !assignment.content_id || !user) {
 			return;
 		}
 		trackEvents(
@@ -591,11 +597,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
-											<InteractiveTour
-												location={location}
-												user={user}
-												showButton
-											/>
+											<InteractiveTour showButton />
 										</ButtonToolbar>
 									</ToolbarItem>
 								</ToolbarRight>

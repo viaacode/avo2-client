@@ -150,8 +150,12 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 									id: rowData.id,
 								})
 							}
-							title={t('Bekijk de gebruikersgroep details')}
-							ariaLabel={t('Bekijk de gebruikersgroep details')}
+							title={t(
+								'admin/user-groups/views/user-group-overview___bekijk-de-gebruikersgroep-details'
+							)}
+							ariaLabel={t(
+								'admin/user-groups/views/user-group-overview___bekijk-de-gebruikersgroep-details'
+							)}
 						/>
 						<Button
 							icon="edit"

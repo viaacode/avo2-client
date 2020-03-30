@@ -18,6 +18,7 @@ export const DEFAULT_FORM_STATE: Avo.Search.Filters = {
 	subject: [],
 	serie: [],
 	provider: [],
+	collectionLabel: [],
 };
 
 export const DEFAULT_SORT_ORDER: SortOrder = {

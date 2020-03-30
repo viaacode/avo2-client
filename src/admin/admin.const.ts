@@ -76,7 +76,7 @@ export const GET_NAV_ITEMS: () => NavigationItemInfo[] = () => [
 				exact: true,
 			},
 			{
-				label: i18n.t('Screencasts'),
+				label: i18n.t('admin/admin___screencasts'),
 				location: ADMIN_PATH.SCREENCAST,
 				key: 'screencasts',
 				exact: true,
@@ -116,7 +116,7 @@ export const GET_NAV_ITEMS: () => NavigationItemInfo[] = () => [
 		exact: false,
 	},
 	{
-		label: i18n.t('Vertaling'),
+		label: i18n.t('admin/admin___vertaling'),
 		location: ADMIN_PATH.TRANSLATIONS,
 		key: 'translations',
 		exact: false,

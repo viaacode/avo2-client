@@ -13,11 +13,13 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index'; // TODO fix after typings update 2.15
 
 import { CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
 
 import { CollectionService } from '../collection.service';
+import { QualityLabel } from '../collection.types';
 import { CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditAdminProps {
@@ -38,7 +40,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		CollectionService.fetchQualityLabels()
 			.then(dbLabels =>
 				setQualityLabels(
-					dbLabels.map((dbLabel: any) => ({
+					dbLabels.map((dbLabel: QualityLabel) => ({
 						label: dbLabel.description,
 						value: dbLabel.value,
 					}))
@@ -46,20 +48,24 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 			)
 			.catch(err => {
 				console.error(new CustomError('Failed to fetch quality labels', err));
-				ToastService.danger(t('Het ophalen van de kwaliteitslabels is mislukt.'));
+				ToastService.danger(
+					t(
+						'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
 			});
 	}, [setQualityLabels, t]);
 
 	const updateCollectionMultiProperty = (
 		selectedTagOptions: TagInfo[],
-		collectionProp: keyof Avo.Collection.Collection | 'collection_labels' // TODO remove labels once update to typings v2.14.0
+		collectionProp: keyof Avo.Collection.Collection
 	) => {
 		changeCollectionState({
 			collectionProp,
 			type: 'UPDATE_COLLECTION_PROP',
 			collectionPropValue: (selectedTagOptions || []).map(tag => ({
 				label: tag.value as string,
-			})) as any, // TODO remove cast to any once update to typings v2.14.0
+			})) as any,
 		});
 	};
 
@@ -67,8 +73,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		if (!qualityLabels) {
 			return [];
 		}
-		// TODO remove cast to any once update to typings v2.14.0
-		const labelIds = ((collection as any).collection_labels || []).map(
+		const labelIds = ((collection.collection_labels || []) as CollectionLabelSchema[]).map(
 			(item: any) => item.label
 		);
 		return qualityLabels.filter(qualityLabel => labelIds.includes(qualityLabel.value));
@@ -82,11 +87,14 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
-									<FormGroup label={t('Kwaliteitslabels')}>
+									<FormGroup
+										label={t(
+											'collection/components/collection-or-bundle-edit-admin___kwaliteitslabels'
+										)}
+									>
 										{!!qualityLabels && (
 											<TagsInput
 												options={qualityLabels}
-												// TODO remove cast to any once update to typings v2.14.0
 												value={getCollectionLabels()}
 												onChange={(values: TagInfo[]) =>
 													updateCollectionMultiProperty(

@@ -373,8 +373,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			});
 			ToastService.success(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('De beladwijzer is verwijderd')
-					: t('De bladwijzer is aangemaakt')
+					? t('collection/views/collection-detail___de-beladwijzer-is-verwijderd')
+					: t('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {
 			console.error(
@@ -387,8 +387,12 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			);
 			ToastService.danger(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('Het verwijderen van de bladwijzer is mislukt')
-					: t('Het aanmaken van de bladwijzer is mislukt')
+					? t(
+							'collection/views/collection-detail___het-verwijderen-van-de-bladwijzer-is-mislukt'
+					  )
+					: t(
+							'collection/views/collection-detail___het-aanmaken-van-de-bladwijzer-is-mislukt'
+					  )
 			);
 		}
 	};
@@ -541,7 +545,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						/>
 					</Spacer>
 				)}
-				<InteractiveTour location={location} user={user} showButton />
+				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
 	};
@@ -575,8 +579,8 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 			createDropdownMenuItem(
 				'toggleBookmark',
 				bookmarkViewPlayCounts.isBookmarked
-					? t('Verwijder bladwijzer')
-					: t('Maak bladwijzer'),
+					? t('collection/views/collection-detail___verwijder-bladwijzer')
+					: t('collection/views/collection-detail___maak-bladwijzer'),
 				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 			),
 			createDropdownMenuItem(
@@ -777,7 +781,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 						{!!relatedItems && !!relatedItems.length && (
 							<>
 								<BlockHeading type="h3">
-									<Trans>Bekijk ook</Trans>
+									<Trans i18nKey="collection/views/collection-detail___bekijk-ook">
+										Bekijk ook
+									</Trans>
 								</BlockHeading>
 								<Grid className="c-media-card-list">{renderRelatedContent()}</Grid>
 							</>

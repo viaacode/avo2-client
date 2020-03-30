@@ -7,6 +7,8 @@ import {
 	Box,
 	Button,
 	Container,
+	Flex,
+	FlexItem,
 	Form,
 	FormGroup,
 	Icon,
@@ -27,6 +29,7 @@ import {
 	TooltipTrigger,
 	WYSIWYG,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -38,22 +41,23 @@ import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
+import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
+import { PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import { getInitialInteractiveTour, INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
-	InteractiveTour,
 	InteractiveTourEditFormErrorState,
-	InteractiveTourStep,
+	InteractiveTourPageType,
 } from '../interactive-tour.types';
 import './InteractiveTourEdit.scss';
 
 type StepPropUpdateAction = {
 	type: 'UPDATE_STEP_PROP';
 	stepIndex: number;
-	stepProp: keyof InteractiveTourStep;
-	stepPropValue: ValueOf<InteractiveTourStep>;
+	stepProp: keyof Avo.InteractiveTour.Step;
+	stepPropValue: ValueOf<Avo.InteractiveTour.Step>;
 };
 
 type StepSwapAction = {
@@ -69,14 +73,14 @@ type StepRemoveAction = {
 
 type InteractiveTourUpdateAction = {
 	type: 'UPDATE_INTERACTIVE_TOUR';
-	newInteractiveTour: InteractiveTour | null;
+	newInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
 	updateInitialInteractiveTour?: boolean;
 };
 
 type InteractiveTourPropUpdateAction = {
 	type: 'UPDATE_INTERACTIVE_TOUR_PROP';
-	interactiveTourProp: keyof InteractiveTour;
-	interactiveTourPropValue: ValueOf<InteractiveTour>;
+	interactiveTourProp: keyof Avo.InteractiveTour.InteractiveTour;
+	interactiveTourPropValue: ValueOf<Avo.InteractiveTour.InteractiveTour>;
 	updateInitialInteractiveTour?: boolean;
 };
 
@@ -88,8 +92,8 @@ export type InteractiveTourAction =
 	| InteractiveTourPropUpdateAction;
 
 interface InteractiveTourState {
-	currentInteractiveTour: InteractiveTour | null;
-	initialInteractiveTour: InteractiveTour | null;
+	currentInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
+	initialInteractiveTour: Avo.InteractiveTour.InteractiveTour | null;
 }
 
 interface InteractiveTourEditProps extends DefaultSecureRouteProps<{ id: string }> {}
@@ -105,6 +109,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	const [formErrors, setFormErrors] = useState<InteractiveTourEditFormErrorState>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [selectedPageType, setSelectedPageType] = useState<InteractiveTourPageType>('static');
 
 	const isCreatePage: boolean = location.pathname.includes(`/${ROUTE_PARTS.create}`);
 
@@ -120,10 +125,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			};
 		}
 
-		const newCurrentInteractiveTour: InteractiveTour | null = cloneDeep(
+		const newCurrentInteractiveTour: Avo.InteractiveTour.InteractiveTour | null = cloneDeep(
 			interactiveTourState.currentInteractiveTour
 		);
-		const newInitialInteractiveTour: InteractiveTour | null = cloneDeep(
+		const newInitialInteractiveTour: Avo.InteractiveTour.InteractiveTour | null = cloneDeep(
 			interactiveTourState.initialInteractiveTour
 		);
 
@@ -192,6 +197,11 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		initialInteractiveTour: null,
 	});
 
+	const getPageType = (pageId: string): InteractiveTourPageType => {
+		const staticPageIds = getPageOptions().map(pageOption => pageOption.value);
+		return staticPageIds.includes(pageId) ? 'static' : 'content';
+	};
+
 	const initOrFetchInteractiveTour = useCallback(async () => {
 		if (isCreatePage) {
 			changeInteractiveTourState({
@@ -206,7 +216,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					variables: { id: match.params.id },
 				});
 
-				const interactiveTourObj = get(response, 'data.app_interactive_tour[0]');
+				const interactiveTourObj: Avo.InteractiveTour.InteractiveTour | undefined = get(
+					response,
+					'data.app_interactive_tour[0]'
+				);
 
 				if (!interactiveTourObj) {
 					setLoadingInfo({
@@ -224,6 +237,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					newInteractiveTour: interactiveTourObj,
 					updateInitialInteractiveTour: true,
 				});
+				setSelectedPageType(getPageType(interactiveTourObj.page_id));
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to get interactive tour by id', err, {
@@ -359,6 +373,36 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		setIsSaving(false);
 	};
 
+	const handleContentPageSelect = (item: PickerItem | null) => {
+		if (!item) {
+			return;
+		}
+		changeInteractiveTourState({
+			type: 'UPDATE_INTERACTIVE_TOUR_PROP',
+			interactiveTourProp: 'page_id',
+			interactiveTourPropValue: item.value,
+		});
+	};
+
+	const handleStaticPageSelect = (newPageId: string) => {
+		changeInteractiveTourState({
+			type: 'UPDATE_INTERACTIVE_TOUR_PROP',
+			interactiveTourProp: 'page_id',
+			interactiveTourPropValue: newPageId,
+		});
+	};
+
+	const getContentPickerInitialValue = (): PickerItem | undefined => {
+		if (selectedPageType === 'content' && interactiveTourState.currentInteractiveTour) {
+			return {
+				value: interactiveTourState.currentInteractiveTour.page_id,
+				label: interactiveTourState.currentInteractiveTour.page_id,
+				type: 'CONTENT_PAGE',
+			};
+		}
+		return undefined;
+	};
+
 	/**
 	 * Returns a list op select options for all pages that can have an interactive tour sorted by label
 	 */
@@ -395,11 +439,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		/>
 	);
 
-	const renderStep = (step: InteractiveTourStep, index: number) => {
+	const renderStep = (step: Avo.InteractiveTour.Step, index: number) => {
 		if (!interactiveTourState.currentInteractiveTour) {
 			return null;
 		}
-		console.info(APP_PATH);
 		return (
 			<div key={`step_${step.id}`}>
 				<Panel>
@@ -574,20 +617,55 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									)}
 									error={formErrors.page_id}
 								>
-									<Select
-										options={getPageOptions()}
-										value={
-											interactiveTourState.currentInteractiveTour.page_id ||
-											''
-										}
-										onChange={newPageId =>
-											changeInteractiveTourState({
-												type: 'UPDATE_INTERACTIVE_TOUR_PROP',
-												interactiveTourProp: 'page_id',
-												interactiveTourPropValue: newPageId,
-											})
-										}
-									/>
+									<Flex>
+										<FlexItem>
+											<Select
+												options={[
+													{
+														value: 'static',
+														label: t(
+															'admin/interactive-tour/views/interactive-tour-edit___statische-pagina'
+														),
+													},
+													{
+														value: 'content',
+														label: t(
+															'admin/interactive-tour/views/interactive-tour-edit___content-pagina'
+														),
+													},
+												]}
+												value={selectedPageType}
+												onChange={value =>
+													setSelectedPageType(
+														value as InteractiveTourPageType
+													)
+												}
+											/>
+										</FlexItem>
+										<FlexItem>
+											<Spacer margin="left-small">
+												{selectedPageType === 'static' && (
+													<Select
+														options={getPageOptions()}
+														value={
+															interactiveTourState
+																.currentInteractiveTour.page_id ||
+															''
+														}
+														onChange={handleStaticPageSelect}
+													/>
+												)}
+												{selectedPageType === 'content' && (
+													<ContentPicker
+														initialValue={getContentPickerInitialValue()}
+														onSelect={handleContentPageSelect}
+														allowedTypes={['CONTENT_PAGE']}
+														hideTypeDropdown
+													/>
+												)}
+											</Spacer>
+										</FlexItem>
+									</Flex>
 								</FormGroup>
 							</Form>
 						</Box>

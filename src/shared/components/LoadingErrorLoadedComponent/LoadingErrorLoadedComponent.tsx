@@ -83,12 +83,15 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 
 export async function checkPermissions(
 	permissions: Permissions,
-	user: Avo.User.User,
+	user: Avo.User.User | undefined,
 	successFunc: () => void,
 	setLoadingInfo: (info: LoadingInfo) => void,
 	noPermissionsMessage?: string
 ) {
 	try {
+		if (!user) {
+			return;
+		}
 		if (await PermissionService.hasPermissions(permissions, user)) {
 			successFunc();
 		} else {

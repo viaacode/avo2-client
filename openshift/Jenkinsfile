@@ -40,10 +40,10 @@ pipeline {
                         openshift.withProject("sc-avo2") {
                             echo "Using project: ${openshift.project()}"
                             echo "Building docker image the avo2-client This is a plain docker build"
-			                echo "Running login script for the external docker agent"
+			                echo "Testing login script for the external docker agent"
 			                sh '''#!/bin/bash
-			                 /usr/local/bin/agent-login.sh
-			                '''
+					   login_oc.sh https://do-prd-okp-m0.do.viaa.be:8443 && oc project sc-avo2
+					   '''
                         }
                     }
                 }//end script

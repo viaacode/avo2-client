@@ -234,9 +234,15 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 			<Form>
 				{itemMetaData && (
 					<FormGroup
-						label={t(
-							'collection/components/fragment/fragment-edit___alternatieve-tekst'
-						)}
+						label={
+							type === 'itemOrText'
+								? t(
+										'collection/components/fragment/fragment-edit___alternatieve-tekst'
+								  )
+								: t(
+										'collection/components/fragment/fragment-edit___eigen-collectie-titel'
+								  )
+						}
 						labelFor="customFields"
 					>
 						<Toggle

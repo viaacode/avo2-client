@@ -175,7 +175,7 @@ const Search: FunctionComponent<SearchProps> = ({
 						CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type];
 					return {
 						type,
-						uuid: (result as any).uid, // TODO remove cast	after update to typings 2.14.0
+						uuid: result.uid,
 					};
 				}
 			);
@@ -189,7 +189,9 @@ const Search: FunctionComponent<SearchProps> = ({
 					user,
 				})
 			);
-			ToastService.danger(t('Het ophalen van de bladwijzer statusen is mislukt'));
+			ToastService.danger(
+				t('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
+			);
 		}
 	}, [t, setBookmarkStatuses, searchResults, user]);
 
@@ -313,7 +315,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		try {
 			const results = get(searchResults, 'results', []);
 			const resultItem: SearchResultItem | undefined = results.find(
-				result => (result as any).uid === uuid // TODO remove cast	after update to typings 2.14.0
+				result => result.uid === uuid
 			);
 			if (!resultItem) {
 				throw new CustomError('Failed to find search result by id');
@@ -329,7 +331,9 @@ const Search: FunctionComponent<SearchProps> = ({
 			set(bookmarkStatusesTemp, `[${type}][${uuid}]`, active);
 			setBookmarkStatuses(bookmarkStatusesTemp);
 			ToastService.success(
-				active ? t('De bladwijzer is aangemaakt') : t('De bladwijzer is verwijderd')
+				active
+					? t('search/views/search___de-bladwijzer-is-aangemaakt')
+					: t('search/views/search___de-bladwijzer-is-verwijderd')
 			);
 		} catch (err) {
 			console.error(
@@ -342,8 +346,8 @@ const Search: FunctionComponent<SearchProps> = ({
 			);
 			ToastService.danger(
 				active
-					? t('Het aanmaken van de bladwijzer is mislukt')
-					: t('Het verwijderen van de bladwijzer is mislukt')
+					? t('search/views/search___het-aanmaken-van-de-bladwijzer-is-mislukt')
+					: t('search/views/search___het-verwijderen-van-de-bladwijzer-is-mislukt')
 			);
 		}
 	};
@@ -477,7 +481,7 @@ const Search: FunctionComponent<SearchProps> = ({
 										/> */}
 									</DropdownContent>
 								</Dropdown>
-								<InteractiveTour location={location} user={user} showButton />
+								<InteractiveTour showButton />
 							</Flex>
 						</ToolbarRight>
 					</Toolbar>

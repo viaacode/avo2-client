@@ -20,23 +20,32 @@ export const INITIAL_QUOTE_BLOCK_STATE = (position: number): DefaultContentBlock
 	BLOCK_STATE_DEFAULTS(ContentBlockType.Quote, position);
 
 export const QUOTE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('Quote'),
+	name: i18n.t('admin/content-block/helpers/generators/quote___quote'),
 	type: ContentBlockType.Intro,
 	components: {
 		state: INITIAL_QUOTE_COMPONENTS_STATE(),
 		fields: {
-			quote: TEXT_FIELD(i18n.t('Quote is verplicht'), {
-				label: i18n.t('Quote'),
-				editorType: ContentBlockEditor.TextInput,
-			}),
-			authorName: TEXT_FIELD(i18n.t('Auteur is verplicht'), {
-				label: i18n.t('Auteur'),
-				editorType: ContentBlockEditor.TextInput,
-			}),
-			authorInitials: TEXT_FIELD(i18n.t('Initialen is verplicht'), {
-				label: i18n.t('Initialen'),
-				editorType: ContentBlockEditor.TextInput,
-			}),
+			quote: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/quote___quote-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/quote___quote'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
+			authorName: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/quote___auteur-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/quote___auteur'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
+			authorInitials: TEXT_FIELD(
+				i18n.t('admin/content-block/helpers/generators/quote___initialen-is-verplicht'),
+				{
+					label: i18n.t('admin/content-block/helpers/generators/quote___initialen'),
+					editorType: ContentBlockEditor.TextInput,
+				}
+			),
 			authorImage: FILE_FIELD(
 				i18n.t(
 					'admin/content-block/helpers/generators/image___een-afbeelding-is-verplicht'

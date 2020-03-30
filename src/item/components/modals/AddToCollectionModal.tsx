@@ -312,7 +312,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 					setFragmentStartTime(0);
 					setFragmentStartString(formatDurationHoursMinutesSeconds(0));
 					ToastService.danger(
-						t('De ingevulde starttijd heeft niet het correcte formaat (uu:mm:ss)')
+						t(
+							'item/components/modals/add-to-collection-modal___de-ingevulde-starttijd-heeft-niet-het-correcte-formaat-uu-mm-ss'
+						)
 					);
 				}
 			} else {
@@ -330,7 +332,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 						formatDurationHoursMinutesSeconds(toSeconds(itemMetaData.duration) || 0)
 					);
 					ToastService.danger(
-						t('De ingevulde eidntijd heeft niet het correcte formaat (uu:mm:ss)')
+						t(
+							'item/components/modals/add-to-collection-modal___de-ingevulde-eidntijd-heeft-niet-het-correcte-formaat-uu-mm-ss'
+						)
 					);
 				}
 			}

@@ -4,18 +4,14 @@ import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import { Avo } from '@viaa/avo2-types';
 
 import { getProfileId } from '../authentication/helpers/get-profile-info';
-import {
-	GET_BUNDLES,
-	GET_BUNDLES_BY_TITLE,
-	GET_COLLECTIONS_BY_IDS,
-	GET_QUALITY_LABELS,
-} from '../bundle/bundle.gql';
+import { GET_BUNDLES, GET_BUNDLES_BY_TITLE, GET_COLLECTIONS_BY_IDS } from '../bundle/bundle.gql';
 import { CustomError } from '../shared/helpers';
 import { isUuid } from '../shared/helpers/uuid';
 import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
 import { getThumbnailForCollection } from '../shared/services/stills-service';
 import i18n from '../shared/translations/i18n';
 
+import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index';
 import {
 	DELETE_COLLECTION,
 	DELETE_COLLECTION_FRAGMENT,
@@ -24,11 +20,11 @@ import {
 	GET_BUNDLES_CONTAINING_COLLECTION,
 	GET_COLLECTION_BY_ID,
 	GET_COLLECTION_ID_BY_AVO1_ID,
-	GET_COLLECTION_LABELS,
 	GET_COLLECTION_TITLES_BY_OWNER,
 	GET_COLLECTIONS,
 	GET_COLLECTIONS_BY_TITLE,
 	GET_ITEMS_BY_IDS,
+	GET_QUALITY_LABELS,
 	INSERT_COLLECTION,
 	INSERT_COLLECTION_FRAGMENTS,
 	INSERT_COLLECTION_LABELS,
@@ -42,7 +38,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber } from './collection.types';
+import { ContentTypeNumber, QualityLabel } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -60,7 +56,7 @@ export class CollectionService {
 			newCollection.updated_at = newCollection.created_at;
 			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 
-			// insert collection // TODO: handle undefined TriggerCollectionInsert
+			// insert collection
 			const insertResponse: void | ExecutionResult<
 				Avo.Collection.Collection
 			> = await dataService.mutate({
@@ -91,7 +87,7 @@ export class CollectionService {
 
 			newCollection.id = insertedCollection.id;
 
-			// retrieve collection ragments from inserted collection
+			// retrieve collection fragments from inserted collection
 			const fragments = getFragmentsFromCollection(newCollection);
 
 			// insert fragments
@@ -109,6 +105,12 @@ export class CollectionService {
 				newCollection,
 			});
 		}
+	}
+
+	private static getLabels(
+		collection: Avo.Collection.Collection | null
+	): CollectionLabelSchema[] {
+		return get(collection, 'collection_labels', []) as CollectionLabelSchema[];
 	}
 
 	/**
@@ -281,11 +283,10 @@ export class CollectionService {
 			});
 
 			// Update collection labels
-			// TODO remove any cast and add collectionLabel types after update to typings v2.14.0
-			const initialLabels: string[] = (initialCollection as any).collection_labels.map(
+			const initialLabels: string[] = this.getLabels(initialCollection).map(
 				(labelObj: any) => labelObj.label
 			);
-			const updatedLabels: string[] = (updatedCollection as any).collection_labels.map(
+			const updatedLabels: string[] = this.getLabels(updatedCollection).map(
 				(labelObj: any) => labelObj.label
 			);
 
@@ -532,7 +533,7 @@ export class CollectionService {
 		}
 	}
 
-	public static async fetchQualityLabels(): Promise<string[]> {
+	public static async fetchQualityLabels(): Promise<QualityLabel[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_QUALITY_LABELS,
@@ -542,7 +543,7 @@ export class CollectionService {
 				throw new CustomError('Response contains errors', null, { response });
 			}
 
-			return get(response, 'data.lookup_labels', []);
+			return get(response, 'data.lookup_enum_collection_labels', []);
 		} catch (err) {
 			throw new CustomError('Failed to get quality labels', err, {
 				query: 'GET_BUNDLES_BY_TITLE',
@@ -771,7 +772,6 @@ export class CollectionService {
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
 			fragments.forEach(fragment => ((fragment as any).collection_uuid = collectionId));
-			fragments.forEach(fragment => ((fragment as any).collection_id = '')); // TODO remove once database allows it
 
 			const cleanedFragments = cloneDeep(fragments).map(fragment => {
 				delete fragment.id;
@@ -1024,21 +1024,14 @@ export class CollectionService {
 			if (!CollectionService.collectionLabels) {
 				// Fetch collection labels and cache them in memory
 
-				const response = await dataService.query({
-					query: GET_COLLECTION_LABELS,
-				});
-
-				if (response.errors) {
-					throw new CustomError('Response contains errors', null, { response });
-				}
+				const labels: QualityLabel[] = (await this.fetchQualityLabels()) || [];
 
 				// Map result array to dictionary
 				CollectionService.collectionLabels = fromPairs(
-					get(response, 'data.lookup_labels', []).map(
-						(collectionLabel: { description: string; value: string }) => {
-							return [collectionLabel.value, collectionLabel.description];
-						}
-					)
+					labels.map(collectionLabel => [
+						collectionLabel.value,
+						collectionLabel.description,
+					])
 				);
 			}
 

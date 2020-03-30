@@ -182,7 +182,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					})
 				);
 				ToastService.danger(
-					t('Het ophalen van het aantal keer bekeken gebookmarked is mislukt')
+					t(
+						'bundle/views/bundle-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
 				);
 			}
 
@@ -336,8 +338,8 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			});
 			ToastService.success(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('De beladwijzer is verwijderd')
-					: t('De bladwijzer is aangemaakt')
+					? t('bundle/views/bundle-detail___de-beladwijzer-is-verwijderd')
+					: t('bundle/views/bundle-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {
 			console.error(
@@ -350,8 +352,8 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			);
 			ToastService.danger(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('Het verwijderen van de bladwijzer is mislukt')
-					: t('Het aanmaken van de bladwijzer is mislukt')
+					? t('bundle/views/bundle-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
+					: t('bundle/views/bundle-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
 			);
 		}
 	};
@@ -460,8 +462,8 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 				createDropdownMenuItem(
 					'toggleBookmark',
 					bookmarkViewPlayCounts.isBookmarked
-						? t('Verwijder bladwijzer')
-						: t('Maak bladwijzer'),
+						? t('bundle/views/bundle-detail___verwijder-bladwijzer')
+						: t('bundle/views/bundle-detail___maak-bladwijzer'),
 					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 				),
 				createDropdownMenuItem(
@@ -570,7 +572,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						<MenuContent menuItems={BUNDLE_DROPDOWN_ITEMS} onClick={executeAction} />
 					</DropdownContent>
 				</ControlledDropdown>
-				<InteractiveTour location={location} user={user} showButton />
+				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
 	};
@@ -665,7 +667,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 					<Container mode="vertical" background="alt">
 						<Container mode="horizontal">
 							<BlockHeading type="h3">
-								<Trans>Bekijk ook</Trans>
+								<Trans i18nKey="bundle/views/bundle-detail___bekijk-ook">
+									Bekijk ook
+								</Trans>
 							</BlockHeading>
 							<div className="c-media-card-list">
 								<Grid>{renderRelatedContent()}</Grid>

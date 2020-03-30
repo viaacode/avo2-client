@@ -27,6 +27,7 @@ import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
 import { dataService, ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
+import { Permission } from '../../permission-groups/permission-group.types';
 import {
 	renderDateDetailRows,
 	renderSimpleDetailRows,
@@ -37,7 +38,6 @@ import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.
 import { GET_USER_GROUP_BY_ID } from '../user-group.gql';
 import { UserGroupService } from '../user-group.service';
 import {
-	Permission,
 	PermissionGroupTableCols,
 	UserGroup,
 	UserGroupOverviewTableCols,
