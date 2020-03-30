@@ -728,7 +728,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					</DropdownContent>
 				</ControlledDropdown>
 				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
-				<InteractiveTour location={location} user={user} showButton />
+				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
 	};

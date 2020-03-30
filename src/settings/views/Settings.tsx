@@ -88,11 +88,7 @@ const Settings: FunctionComponent<ForPupilsProps> = props => {
 							</BlockHeading>
 						</ToolbarLeft>
 						<ToolbarRight>
-							<InteractiveTour
-								location={props.location}
-								user={props.user}
-								showButton
-							/>
+							<InteractiveTour showButton />
 						</ToolbarRight>
 					</Toolbar>
 				</Container>

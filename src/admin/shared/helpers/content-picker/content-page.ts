@@ -11,7 +11,7 @@ export const retrieveContentPages = async (
 	limit: number = 5
 ): Promise<PickerSelectItem[]> => {
 	const contentItems: Avo.Content.Content[] | null = title
-		? await ContentService.getContentItemsByTitle(`%${title}`, limit)
+		? await ContentService.getContentItemsByTitle(`%${title}%`, limit)
 		: await ContentService.getContentItems(limit);
 
 	return parseContentPages(contentItems || []);

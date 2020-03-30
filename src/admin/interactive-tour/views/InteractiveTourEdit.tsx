@@ -7,6 +7,8 @@ import {
 	Box,
 	Button,
 	Container,
+	Flex,
+	FlexItem,
 	Form,
 	FormGroup,
 	Icon,
@@ -38,6 +40,8 @@ import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
+import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
+import { PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import { getInitialInteractiveTour, INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
@@ -45,6 +49,7 @@ import { InteractiveTourService } from '../interactive-tour.service';
 import {
 	InteractiveTour,
 	InteractiveTourEditFormErrorState,
+	InteractiveTourPageType,
 	InteractiveTourStep,
 } from '../interactive-tour.types';
 import './InteractiveTourEdit.scss';
@@ -105,6 +110,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	const [formErrors, setFormErrors] = useState<InteractiveTourEditFormErrorState>({});
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [selectedPageType, setSelectedPageType] = useState<InteractiveTourPageType>('static');
 
 	const isCreatePage: boolean = location.pathname.includes(`/${ROUTE_PARTS.create}`);
 
@@ -192,6 +198,11 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		initialInteractiveTour: null,
 	});
 
+	const getPageType = (pageId: string): InteractiveTourPageType => {
+		const staticPageIds = getPageOptions().map(pageOption => pageOption.value);
+		return staticPageIds.includes(pageId) ? 'static' : 'content';
+	};
+
 	const initOrFetchInteractiveTour = useCallback(async () => {
 		if (isCreatePage) {
 			changeInteractiveTourState({
@@ -206,7 +217,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					variables: { id: match.params.id },
 				});
 
-				const interactiveTourObj = get(response, 'data.app_interactive_tour[0]');
+				const interactiveTourObj: InteractiveTour | undefined = get(
+					response,
+					'data.app_interactive_tour[0]'
+				);
 
 				if (!interactiveTourObj) {
 					setLoadingInfo({
@@ -224,6 +238,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					newInteractiveTour: interactiveTourObj,
 					updateInitialInteractiveTour: true,
 				});
+				setSelectedPageType(getPageType(interactiveTourObj.page_id));
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to get interactive tour by id', err, {
@@ -359,6 +374,36 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		setIsSaving(false);
 	};
 
+	const handleContentPageSelect = (item: PickerItem | null) => {
+		if (!item) {
+			return;
+		}
+		changeInteractiveTourState({
+			type: 'UPDATE_INTERACTIVE_TOUR_PROP',
+			interactiveTourProp: 'page_id',
+			interactiveTourPropValue: item.value,
+		});
+	};
+
+	const handleStaticPageSelect = (newPageId: string) => {
+		changeInteractiveTourState({
+			type: 'UPDATE_INTERACTIVE_TOUR_PROP',
+			interactiveTourProp: 'page_id',
+			interactiveTourPropValue: newPageId,
+		});
+	};
+
+	const getContentPickerInitialValue = (): PickerItem | undefined => {
+		if (selectedPageType === 'content' && interactiveTourState.currentInteractiveTour) {
+			return {
+				value: interactiveTourState.currentInteractiveTour.page_id,
+				label: interactiveTourState.currentInteractiveTour.page_id,
+				type: 'CONTENT_PAGE',
+			};
+		}
+		return undefined;
+	};
+
 	/**
 	 * Returns a list op select options for all pages that can have an interactive tour sorted by label
 	 */
@@ -399,7 +444,6 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		if (!interactiveTourState.currentInteractiveTour) {
 			return null;
 		}
-		console.info(APP_PATH);
 		return (
 			<div key={`step_${step.id}`}>
 				<Panel>
@@ -574,20 +618,51 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									)}
 									error={formErrors.page_id}
 								>
-									<Select
-										options={getPageOptions()}
-										value={
-											interactiveTourState.currentInteractiveTour.page_id ||
-											''
-										}
-										onChange={newPageId =>
-											changeInteractiveTourState({
-												type: 'UPDATE_INTERACTIVE_TOUR_PROP',
-												interactiveTourProp: 'page_id',
-												interactiveTourPropValue: newPageId,
-											})
-										}
-									/>
+									<Flex>
+										<FlexItem>
+											<Select
+												options={[
+													{
+														value: 'static',
+														label: t('Statische pagina'),
+													},
+													{
+														value: 'content',
+														label: t('Content pagina'),
+													},
+												]}
+												value={selectedPageType}
+												onChange={value =>
+													setSelectedPageType(
+														value as InteractiveTourPageType
+													)
+												}
+											/>
+										</FlexItem>
+										<FlexItem>
+											<Spacer margin="left-small">
+												{selectedPageType === 'static' && (
+													<Select
+														options={getPageOptions()}
+														value={
+															interactiveTourState
+																.currentInteractiveTour.page_id ||
+															''
+														}
+														onChange={handleStaticPageSelect}
+													/>
+												)}
+												{selectedPageType === 'content' && (
+													<ContentPicker
+														initialValue={getContentPickerInitialValue()}
+														onSelect={handleContentPageSelect}
+														allowedTypes={['CONTENT_PAGE']}
+														hideTypeDropdown
+													/>
+												)}
+											</Spacer>
+										</FlexItem>
+									</Flex>
 								</FormGroup>
 							</Form>
 						</Box>

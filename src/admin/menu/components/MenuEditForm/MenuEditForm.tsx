@@ -111,7 +111,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 					onSelect={(item: any) => {
 						onChange('content', item);
 					}}
-					initialValues={
+					initialValue={
 						formState.content_type && formState.content_path
 							? {
 									type: formState.content_type,

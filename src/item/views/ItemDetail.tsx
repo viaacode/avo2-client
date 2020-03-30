@@ -402,11 +402,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 										</MetaData>
 									</div>
 									<Spacer margin="left-small">
-										<InteractiveTour
-											location={location}
-											user={user}
-											showButton
-										/>
+										<InteractiveTour showButton />
 									</Spacer>
 								</ToolbarItem>
 							</ToolbarRight>
