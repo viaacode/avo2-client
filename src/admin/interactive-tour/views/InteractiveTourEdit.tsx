@@ -197,10 +197,34 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		initialInteractiveTour: null,
 	});
 
-	const getPageType = (pageId: string): InteractiveTourPageType => {
-		const staticPageIds = getPageOptions().map(pageOption => pageOption.value);
-		return staticPageIds.includes(pageId) ? 'static' : 'content';
-	};
+	/**
+	 * Returns a list op select options for all pages that can have an interactive tour sorted by label
+	 */
+	const getPageOptions = useCallback((): SelectOption[] => {
+		return orderBy(
+			compact(
+				map(APP_PATH, (routeInfo, routeId): SelectOption | null => {
+					if (routeInfo.showForInteractiveTour) {
+						return {
+							label: routeInfo.route,
+							value: routeId,
+						};
+					}
+					return null;
+				})
+			),
+			['label'],
+			['asc']
+		);
+	}, []);
+
+	const getPageType = useCallback(
+		(pageId: string): InteractiveTourPageType => {
+			const staticPageIds = getPageOptions().map(pageOption => pageOption.value);
+			return staticPageIds.includes(pageId) ? 'static' : 'content';
+		},
+		[getPageOptions]
+	);
 
 	const initOrFetchInteractiveTour = useCallback(async () => {
 		if (isCreatePage) {
@@ -253,7 +277,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				});
 			}
 		}
-	}, [setLoadingInfo, changeInteractiveTourState, t, isCreatePage, match.params.id]);
+	}, [setLoadingInfo, changeInteractiveTourState, t, isCreatePage, getPageType, match.params.id]);
 
 	useEffect(() => {
 		initOrFetchInteractiveTour();
@@ -401,27 +425,6 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			};
 		}
 		return undefined;
-	};
-
-	/**
-	 * Returns a list op select options for all pages that can have an interactive tour sorted by label
-	 */
-	const getPageOptions = (): SelectOption[] => {
-		return orderBy(
-			compact(
-				map(APP_PATH, (routeInfo, routeId): SelectOption | null => {
-					if (routeInfo.showForInteractiveTour) {
-						return {
-							label: routeInfo.route,
-							value: routeId,
-						};
-					}
-					return null;
-				})
-			),
-			['label'],
-			['asc']
-		);
 	};
 
 	const renderReorderButton = (index: number, direction: 'up' | 'down', disabled: boolean) => (
