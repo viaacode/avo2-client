@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,9 +26,12 @@ import { dataService, ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
+import { validateContentBlockField } from '../../shared/helpers';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 import {
+	ContentBlockComponentState,
 	ContentBlockConfig,
+	ContentBlockErrors,
 	ContentBlockStateOption,
 	ContentBlockStateType,
 	ContentBlockType,
@@ -119,10 +122,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
-	const setContentBlockConfigError = (configIndex: number, hasError: boolean) => {
+	const setContentBlockConfigError = (configIndex: number, errors: ContentBlockErrors) => {
 		dispatch({
 			type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
-			payload: { configIndex, hasError },
+			payload: { configIndex, errors },
 		});
 	};
 
@@ -140,11 +143,47 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 			// Validate form
 			const isFormValid = await handleValidation();
-			const areConfigsValid = !contentBlockConfigs.find(config => config.hasError);
+			let areConfigsValid = true;
+
+			if (!hasSubmitted) {
+				setHasSubmitted(true);
+			}
+			// Run validators on to check untouched inputs
+			contentBlockConfigs.forEach((config, configIndex) => {
+				const { fields, state } = config.components;
+				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
+				let errors: ContentBlockErrors = {};
+
+				if (keysToValidate.length > 0) {
+					keysToValidate.forEach(key => {
+						const validator = fields[key].validator;
+
+						if (Array.isArray(state) && state.length > 0) {
+							state.forEach((singleState, stateIndex) => {
+								errors = validateContentBlockField(
+									key,
+									validator,
+									config.errors,
+									singleState[key as keyof ContentBlockComponentState],
+									stateIndex
+								);
+							});
+						} else if (has(state, key)) {
+							errors = validateContentBlockField(
+								key,
+								validator,
+								config.errors,
+								state[key as keyof ContentBlockComponentState]
+							);
+						}
+					});
+					areConfigsValid = Object.keys(errors).length === 0;
+					setContentBlockConfigError(configIndex, errors);
+				}
+			});
 
 			if (!isFormValid || !areConfigsValid) {
 				setIsSaving(false);
-
 				if (!isFormValid) {
 					ToastService.danger(
 						t(
@@ -157,6 +196,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					ToastService.danger(t('Er zijn nog fouten in de content-blocks'), false);
 				}
 
+				return;
+			}
+
+			// TODO: remove this!!!!!!!!!!!!
+			if (areConfigsValid || isFormValid) {
+				setIsSaving(false);
 				return;
 			}
 

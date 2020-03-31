@@ -13,6 +13,7 @@ import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers';
 import {
 	ContentBlockConfig,
+	ContentBlockErrors,
 	ContentBlockStateOption,
 	ContentBlockStateType,
 	ContentBlockType,
@@ -23,7 +24,7 @@ interface ContentEditContentBlocksProps {
 	contentWidth: Avo.Content.ContentWidth;
 	hasSubmitted: boolean;
 	onAdd: (config: ContentBlockConfig) => void;
-	onError: (configIndex: number, hasError: boolean) => void;
+	onError: (configIndex: number, errors: ContentBlockErrors) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
 	onSave: (

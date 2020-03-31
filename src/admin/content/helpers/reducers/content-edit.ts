@@ -1,6 +1,10 @@
 import produce, { Draft } from 'immer';
 
-import { ContentBlockComponentState, ContentBlockConfig } from '../../../shared/types';
+import {
+	ContentBlockComponentState,
+	ContentBlockConfig,
+	ContentBlockErrors,
+} from '../../../shared/types';
 
 import { ContentEditAction, ContentEditActionType, ContentEditState } from '../../content.types';
 
@@ -13,7 +17,7 @@ type SetComponentStatePayload = {
 	stateIndex: number;
 };
 type SetBlockStatePayload = { index: number; formGroupState: ContentBlockComponentState[] };
-type SetConfigErrorPayload = { configIndex: number; hasError: boolean };
+type SetConfigErrorPayload = { configIndex: number; errors: ContentBlockErrors };
 
 export const CONTENT_EDIT_INITIAL_STATE = (
 	contentBlockConfigs: ContentBlockConfig[] = []
@@ -94,8 +98,8 @@ export const contentEditReducer = produce(
 				return;
 			}
 			case ContentEditActionType.SET_CONTENT_BLOCK_ERROR: {
-				const { configIndex, hasError } = payload as SetConfigErrorPayload;
-				draft.contentBlockConfigs[configIndex].hasError = hasError;
+				const { configIndex, errors } = payload as SetConfigErrorPayload;
+				draft.contentBlockConfigs[configIndex].errors = errors;
 				return;
 			}
 			default:

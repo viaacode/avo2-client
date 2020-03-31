@@ -1,6 +1,6 @@
 import classnames from 'classnames';
-import { get, isEqual, isNil, isNumber } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import { get, isEqual, isNil } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -20,12 +20,13 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { validateContentBlockField } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,
 	ContentBlockComponentsConfig,
 	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockFormError,
+	ContentBlockErrors,
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../../shared/types';
@@ -42,7 +43,7 @@ interface ContentBlockFormProps {
 	length: number;
 	hasSubmitted: boolean;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
-	onError: (configIndex: number, hasError: boolean) => void;
+	onError: (configIndex: number, newErrors: ContentBlockErrors) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
 	setIsAccordionOpen: () => void;
@@ -66,10 +67,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 }) => {
 	const { components, block } = config;
 	const { isArray } = Array;
+	const configErrors = config.errors || {};
 
 	// Hooks
-	const [formErrors, setFormErrors] = useState<ContentBlockFormError>({});
-
 	const [t] = useTranslation();
 
 	// Methods
@@ -95,36 +95,18 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		updatedFormValue: any,
 		stateIndex?: number
 	) => {
-		const errors: ContentBlockFormError = { ...formErrors };
-
 		const field = config[formGroupType].fields[fieldKey];
 		const validator = get(field, 'validator');
 
-		if (validator) {
-			const errorArray = validator(updatedFormValue);
+		const errors = validateContentBlockField(
+			fieldKey,
+			validator,
+			configErrors,
+			updatedFormValue,
+			stateIndex
+		);
 
-			if (errorArray.length) {
-				if (isNumber(stateIndex)) {
-					errors[fieldKey] = errors[fieldKey] || [];
-					errors[fieldKey][stateIndex] = errorArray;
-				} else {
-					errors[fieldKey] = errorArray;
-				}
-			} else if (errors[fieldKey]) {
-				if (isNumber(stateIndex)) {
-					errors[fieldKey].splice(stateIndex, 1);
-
-					if (errors[fieldKey].length === 0) {
-						delete errors[fieldKey];
-					}
-				} else {
-					delete errors[fieldKey];
-				}
-			}
-		}
-
-		onError(blockIndex, Object.keys(errors).length > 0);
-		setFormErrors(errors);
+		onError(blockIndex, errors);
 	};
 
 	const renderRemoveButton = (stateIndex: number) => {
@@ -156,7 +138,6 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			formGroup,
 			formGroupType,
 			handleChange,
-			formErrors,
 		};
 
 		// Render each state individually in a ContentBlockFormGroup
@@ -215,7 +196,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		return (
 			<Accordion
 				className={classnames('c-content-block-form__accordion', {
-					'has-error': hasSubmitted && !!config.hasError,
+					'has-error': hasSubmitted && Object.keys(configErrors).length > 0,
 				})}
 				isOpen={isAccordionOpen}
 			>

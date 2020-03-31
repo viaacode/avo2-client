@@ -43,7 +43,7 @@ export interface ContentBlockMeta {
 // CONTENT BLOCK
 export interface ContentBlockConfig {
 	id?: number;
-	hasError?: boolean;
+	errors?: ContentBlockErrors;
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
@@ -100,7 +100,7 @@ export enum ContentBlockType {
 }
 
 // if 1 block, errors is a string[]. If multiple, it is a string[] index by their stateIndex, so string[][].
-export type ContentBlockFormError = { [key: string]: string[] | string[][] };
+export type ContentBlockErrors = { [key: string]: (string | string[])[] };
 
 /* CONTENT BLOCK STATE */
 export interface DefaultContentBlockState {

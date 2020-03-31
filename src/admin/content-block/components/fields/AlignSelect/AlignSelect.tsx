@@ -6,14 +6,14 @@ import { AlignOption } from '../../../../shared/types';
 
 interface AlignSelectProps {
 	onChange: (value: string) => void;
-	options: () => { label: string; value: AlignOption }[];
+	options: { label: string; value: AlignOption }[];
 	value: AlignOption;
 }
 
 const AlignSelect: FunctionComponent<AlignSelectProps> = ({ onChange, options, value }) => {
 	return (
 		<ButtonGroup>
-			{options().map(option => (
+			{options.map(option => (
 				<Button
 					key={`heading-block-align-${option.value}`}
 					active={value === option.value}
