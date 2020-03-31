@@ -5,10 +5,12 @@ export const GET_USER_BY_ID = gql`
 		users_profiles(offset: 0, limit: 1, where: { id: { _eq: $id } }) {
 			id
 			user: usersByuserId {
+				id
 				first_name
 				last_name
 				mail
 				idpmaps(where: { idp: { _eq: HETARCHIEF } }) {
+					id
 					idp_user_id
 				}
 			}
