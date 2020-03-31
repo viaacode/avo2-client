@@ -19,10 +19,7 @@ export const validateContentBlockField = (
 	if (errorArray.length) {
 		if (isNumber(stateIndex)) {
 			const errorsByKey = [...(oldErrors[fieldKey] || [])];
-
-			// if (errorsByKey && Array.isArray(errorsByKey[stateIndex])) {
-			// 	(errorsByKey[stateIndex] as string[]).splice(stateIndex, 1, ...errorArray);
-			// }
+			errorsByKey[stateIndex] = errorArray;
 
 			return {
 				...oldErrors,
@@ -36,10 +33,10 @@ export const validateContentBlockField = (
 		};
 	}
 
-	// If no errors are given, cleanup
+	// If no errors are given, cleanup empty properties
 	if (isNumber(stateIndex)) {
 		const errorsByKey = [...(oldErrors[fieldKey] || [])];
-		errorsByKey.splice(stateIndex, 1);
+		delete errorsByKey[stateIndex];
 
 		const updatedErrors = {
 			...oldErrors,

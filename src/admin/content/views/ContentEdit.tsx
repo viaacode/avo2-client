@@ -152,7 +152,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			contentBlockConfigs.forEach((config, configIndex) => {
 				const { fields, state } = config.components;
 				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
-				let errors: ContentBlockErrors = {};
+				let newErrors: ContentBlockErrors = {};
 
 				if (keysToValidate.length > 0) {
 					keysToValidate.forEach(key => {
@@ -160,25 +160,25 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 						if (Array.isArray(state) && state.length > 0) {
 							state.forEach((singleState, stateIndex) => {
-								errors = validateContentBlockField(
+								newErrors = validateContentBlockField(
 									key,
 									validator,
-									config.errors,
+									newErrors,
 									singleState[key as keyof ContentBlockComponentState],
 									stateIndex
 								);
 							});
 						} else if (has(state, key)) {
-							errors = validateContentBlockField(
+							newErrors = validateContentBlockField(
 								key,
 								validator,
-								config.errors,
+								newErrors,
 								state[key as keyof ContentBlockComponentState]
 							);
 						}
 					});
-					areConfigsValid = Object.keys(errors).length === 0;
-					setContentBlockConfigError(configIndex, errors);
+					areConfigsValid = Object.keys(newErrors).length === 0;
+					setContentBlockConfigError(configIndex, newErrors);
 				}
 			});
 
@@ -196,12 +196,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					ToastService.danger(t('Er zijn nog fouten in de content-blocks'), false);
 				}
 
-				return;
-			}
-
-			// TODO: remove this!!!!!!!!!!!!
-			if (areConfigsValid || isFormValid) {
-				setIsSaving(false);
 				return;
 			}
 
