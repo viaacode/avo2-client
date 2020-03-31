@@ -12,11 +12,10 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/compon
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
-import { GET_USER_OVERVIEW_TABLE_COLS } from '../user.const';
+import { GET_USER_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../user.const';
 import { UserService } from '../user.service';
 import { UserOverviewTableCols, UserTableState } from '../user.types';
 

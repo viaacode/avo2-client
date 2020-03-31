@@ -4,9 +4,9 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
-import { ITEMS_PER_PAGE } from '../content/content.const';
 import { Permission, PermissionGroup } from '../permission-groups/permission-group.types';
 
+import { ITEMS_PER_PAGE } from './user-group.const';
 import {
 	ADD_PERMISSION_GROUPS_TO_USER_GROUP,
 	DELETE_USER_GROUP,

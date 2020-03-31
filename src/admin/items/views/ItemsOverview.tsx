@@ -13,7 +13,6 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/compon
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
@@ -22,7 +21,7 @@ import {
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
-import { GET_ITEM_OVERVIEW_TABLE_COLS } from '../items.const';
+import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 
