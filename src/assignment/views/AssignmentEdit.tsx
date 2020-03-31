@@ -57,20 +57,12 @@ import { dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
-import { CONTENT_LABEL_TO_QUERY } from '../assignment.const';
+import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
 
-const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
-	ITEM: ROUTE_PARTS.item,
-	COLLECTIE: ROUTE_PARTS.collections,
-	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
-};
-
-interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string }> {}
-
-const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
+const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
 	location,
 	match,
@@ -78,9 +70,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | undefined>(
-		undefined
-	);
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);

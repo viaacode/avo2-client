@@ -41,6 +41,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
 import { PermissionNames } from '../../authentication/helpers/permission-service';
 import { toEnglishContentType } from '../../collection/collection.types';
+import { APP_PATH } from '../../constants';
 import {
 	checkPermissions,
 	DeleteObjectModal,
@@ -56,29 +57,16 @@ import { dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
-import { APP_PATH } from '../../constants';
-import { CONTENT_LABEL_TO_QUERY } from '../assignment.const';
+import {
+	CONTENT_LABEL_TO_EVENT_OBJECT_TYPE,
+	CONTENT_LABEL_TO_QUERY,
+	CONTENT_LABEL_TO_ROUTE_PARTS,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
 
-const CONTENT_LABEL_TO_ROUTE_PARTS: { [contentType in Avo.Assignment.ContentLabel]: string } = {
-	ITEM: ROUTE_PARTS.item,
-	COLLECTIE: ROUTE_PARTS.collections,
-	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
-};
-
-const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
-	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
-} = {
-	ITEM: 'avo_item_pid',
-	COLLECTIE: 'collections',
-	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
-};
-
-interface AssignmentCreateProps extends DefaultSecureRouteProps {}
-
-const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
+const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	history,
 	location,
 	match,
@@ -86,9 +74,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content | undefined>(
-		undefined
-	);
+	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);

@@ -4,6 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { GET_COLLECTION_BY_ID } from '../collection/collection.gql';
 import { GET_ITEM_BY_ID } from '../item/item.gql';
+import { ROUTE_PARTS } from '../shared/constants';
 
 export const CONTENT_LABEL_TO_QUERY: {
 	[contentType in Avo.Assignment.ContentLabel]: {
@@ -28,4 +29,20 @@ export const CONTENT_LABEL_TO_QUERY: {
 		// resultPath: 'app_item_meta[0]',
 		// getVariables: (id: string) => ({ id }),
 	} as any,
+};
+
+export const CONTENT_LABEL_TO_ROUTE_PARTS: {
+	[contentType in Avo.Assignment.ContentLabel]: string;
+} = {
+	ITEM: ROUTE_PARTS.item,
+	COLLECTIE: ROUTE_PARTS.collections,
+	ZOEKOPDRACHT: ROUTE_PARTS.searchQuery,
+};
+
+export const CONTENT_LABEL_TO_EVENT_OBJECT_TYPE: {
+	[contentType in Avo.Assignment.ContentLabel]: Avo.EventLogging.ObjectType;
+} = {
+	ITEM: 'avo_item_pid',
+	COLLECTIE: 'collections',
+	ZOEKOPDRACHT: 'avo_search_query' as any, // TODO add this object type to the database
 };
