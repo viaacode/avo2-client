@@ -54,7 +54,7 @@ import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 
 import { compose } from 'redux';
 import withUser from '../../shared/hocs/withUser';
-import { COLLECTION_EDIT_TABS } from '../collection.const';
+import { COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
 import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
@@ -885,6 +885,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							: t('collection/components/collection-or-bundle-edit___naam-bundel')
 					}
 					inputValue={title}
+					maxLength={MAX_TITLE_LENGTH}
 					isOpen={isRenameModalOpen}
 					onClose={() => setIsRenameModalOpen(false)}
 					inputCallback={onRenameCollection}

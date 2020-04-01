@@ -23,6 +23,7 @@ export const STILL_DIMENSIONS = {
 	height: 100,
 };
 
+export const MAX_TITLE_LENGTH = 110;
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
 
 export const NEW_FRAGMENT = {
