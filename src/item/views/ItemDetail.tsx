@@ -33,10 +33,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	ContentTypeNumber,
@@ -128,9 +125,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({
 			try {
 				const hasPermission: boolean = await PermissionService.hasPermissions(
 					[
-						PermissionNames.VIEW_ITEMS,
+						PermissionName.VIEW_ITEMS,
 						{
-							name: PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT,
+							name: PermissionName.VIEW_ITEMS_LINKED_TO_ASSIGNMENT,
 							obj: match.params.id,
 						},
 					],

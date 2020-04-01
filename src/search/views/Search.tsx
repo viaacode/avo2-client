@@ -45,7 +45,7 @@ import {
 	PermissionGuardFail,
 	PermissionGuardPass,
 } from '../../authentication/components';
-import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
@@ -559,7 +559,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	);
 
 	return (
-		<PermissionGuard permissions={PermissionNames.SEARCH} user={user}>
+		<PermissionGuard permissions={PermissionName.SEARCH} user={user}>
 			<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
 			<PermissionGuardFail>
 				<ErrorView

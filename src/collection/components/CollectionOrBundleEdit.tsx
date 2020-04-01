@@ -25,10 +25,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import {
@@ -257,19 +254,19 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
 			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_BUNDLES }], user),
+				PermissionService.hasPermissions([{ name: PermissionName.VIEW_BUNDLES }], user),
 				PermissionService.hasPermissions(
 					[
 						{
 							name: isCollection
-								? PermissionNames.EDIT_OWN_COLLECTIONS
-								: PermissionNames.EDIT_OWN_BUNDLES,
+								? PermissionName.EDIT_OWN_COLLECTIONS
+								: PermissionName.EDIT_OWN_BUNDLES,
 							obj: collectionId,
 						},
 						{
 							name: isCollection
-								? PermissionNames.EDIT_ANY_COLLECTIONS
-								: PermissionNames.EDIT_ANY_BUNDLES,
+								? PermissionName.EDIT_ANY_COLLECTIONS
+								: PermissionName.EDIT_ANY_BUNDLES,
 						},
 					],
 					user
@@ -278,14 +275,14 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					[
 						{
 							name: isCollection
-								? PermissionNames.DELETE_OWN_COLLECTIONS
-								: PermissionNames.DELETE_OWN_BUNDLES,
+								? PermissionName.DELETE_OWN_COLLECTIONS
+								: PermissionName.DELETE_OWN_BUNDLES,
 							obj: collectionId,
 						},
 						{
 							name: isCollection
-								? PermissionNames.DELETE_ANY_COLLECTIONS
-								: PermissionNames.DELETE_ANY_BUNDLES,
+								? PermissionName.DELETE_ANY_COLLECTIONS
+								: PermissionName.DELETE_ANY_BUNDLES,
 						},
 					],
 					user
@@ -294,13 +291,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					[
 						{
 							name: isCollection
-								? PermissionNames.CREATE_COLLECTIONS
-								: PermissionNames.CREATE_BUNDLES,
+								? PermissionName.CREATE_COLLECTIONS
+								: PermissionName.CREATE_BUNDLES,
 						},
 					],
 					user
 				),
-				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
 			]);
 			const permissionObj = {
 				canView: rawPermissions[0],

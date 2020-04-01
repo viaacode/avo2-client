@@ -25,6 +25,10 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
 import { GET_USER_BY_ID } from '../user.gql';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 
 interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -106,7 +110,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	};
 
 	const canBanUser = (): boolean => {
-		return get(user, 'profile.permissions', []).includes('EDIT_BAN_USER_STATUS');
+		return PermissionService.hasPerm(user, PermissionName.EDIT_BAN_USER_STATUS);
 	};
 
 	const renderUserDetail = () => {

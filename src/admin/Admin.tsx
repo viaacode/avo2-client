@@ -1,12 +1,13 @@
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Flex } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../shared/components';
 import withUser from '../shared/hocs/withUser';
+
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
 import { Sidebar } from './shared/components';
@@ -20,8 +21,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 		if (!user) {
 			return;
 		}
-		const permissions = get(user, 'profile.permissions', []);
-		if (permissions.includes('VIEW_ADMIN_DASHBOARD')) {
+		if (PermissionService.hasPerm(user, PermissionName.VIEW_ADMIN_DASHBOARD)) {
 			setLoadingInfo({ state: 'loaded' });
 		} else {
 			setLoadingInfo({
@@ -36,7 +36,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 	}, [user, setLoadingInfo, t]);
 
 	const renderAdminPage = () => {
-		const userPermissions = get(user, 'profile.permissions', []);
+		const userPermissions = PermissionService.getUserPermissions(user);
 		return (
 			<Flex>
 				<Sidebar

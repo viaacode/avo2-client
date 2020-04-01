@@ -33,10 +33,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import {
@@ -88,14 +85,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	>('created_at');
 
 	useEffect(() => {
-		PermissionService.hasPermissions(PermissionNames.EDIT_ASSIGNMENTS, user)
+		PermissionService.hasPermissions(PermissionName.EDIT_ASSIGNMENTS, user)
 			.then((hasPermission: boolean) => {
 				setCanEditAssignments(hasPermission);
 			})
 			.catch(err => {
 				console.error('Failed to check permissions', err, {
 					user,
-					permissions: PermissionNames.EDIT_ASSIGNMENTS,
+					permissions: PermissionName.EDIT_ASSIGNMENTS,
 				});
 				ToastService.danger(
 					t(

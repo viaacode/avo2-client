@@ -54,8 +54,8 @@ export const renderAdminRoutes = (userPermissions: string[]) => {
 				['VIEW_COLLECTIONS_OVERVIEW', 'VIEW_BUNDLES_OVERVIEW'],
 				'OR'
 			)}
-			{renderWithPermissions(renderInteractiveTourRoutes, ['VIEW_USERS'])}
-			{renderWithPermissions(renderAdminTranslationsRoutes, ['VIEW_USERS'])}
+			{renderWithPermissions(renderInteractiveTourRoutes, ['EDIT_INTERACTIVE_TOURS'])}
+			{renderWithPermissions(renderAdminTranslationsRoutes, ['EDIT_TRANSLATIONS'])}
 			{/* Default routes */}
 			{renderErrorRoutes()}
 		</Switch>

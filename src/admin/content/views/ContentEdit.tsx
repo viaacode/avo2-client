@@ -50,6 +50,10 @@ import { useContentItem, useContentTypes } from '../hooks';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 import './ContentEdit.scss';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
@@ -94,7 +98,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		pageType === PageType.Create
 			? t('admin/content/views/content-edit___content-toevoegen')
 			: t('admin/content/views/content-edit___content-aanpassen');
-	const isAdminUser = get(user, 'profile.permissions', []).includes('EDIT_PROTECTED_PAGE_STATUS');
+	const isAdminUser = PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS);
 
 	// Methods
 	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {

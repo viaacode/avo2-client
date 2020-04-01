@@ -8,7 +8,7 @@ import { Dispatch } from 'redux';
 import { Avo } from '@viaa/avo2-types';
 
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
-import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
 	selectLogin,
@@ -161,10 +161,10 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			// Special route exceptions
 			// /klaar/archief: redirect teachers to search page with klaar filter
 			const routePath = get(routeInfo, 'data.path', '');
-			const canAccessSearch = get(user, 'profile.permissions', []).includes(
-				PermissionNames.SEARCH
-			);
-			if (routePath === '/klaar/archief' && canAccessSearch) {
+			if (
+				routePath === '/klaar/archief' &&
+				PermissionService.hasPerm(user, PermissionName.SEARCH)
+			) {
 				return <Redirect to={generateSearchLinkString('serie', 'Klaar')} />;
 			}
 
