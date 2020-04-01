@@ -36,11 +36,15 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 	}, [user, setLoadingInfo, t]);
 
 	const renderAdminPage = () => {
+		const userPermissions = get(user, 'profile.permissions', []);
 		return (
 			<Flex>
-				<Sidebar headerLink={ADMIN_PATH.DASHBOARD} navItems={GET_NAV_ITEMS()} />
+				<Sidebar
+					headerLink={ADMIN_PATH.DASHBOARD}
+					navItems={GET_NAV_ITEMS(userPermissions)}
+				/>
 				<Flex className="o-app--admin__main u-flex-auto u-scroll" orientation="vertical">
-					{renderAdminRoutes()}
+					{renderAdminRoutes(userPermissions)}
 				</Flex>
 			</Flex>
 		);

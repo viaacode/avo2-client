@@ -24,27 +24,49 @@ export const ADMIN_PATH = Object.freeze({
 	...INTERACTIVE_TOUR_PATH,
 });
 
-export const GET_NAV_ITEMS: () => NavigationItemInfo[] = () => [
-	{
+function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
+	const userNavItem = {
 		label: i18n.t('admin/admin___gebruikers'),
 		location: ADMIN_PATH.USER,
 		key: 'users',
 		exact: false,
-		subLinks: [
+	};
+	const userGroupNavItem = {
+		label: i18n.t('admin/admin___gebruikersgroepen'),
+		location: ADMIN_PATH.USER_GROUP_OVERVIEW,
+		key: 'userGroups',
+		exact: false,
+	};
+	const permissionGroupNavItem = {
+		label: i18n.t('admin/admin___permissie-groepen'),
+		location: ADMIN_PATH.PERMISSION_GROUP_OVERVIEW,
+		key: 'permissionGroups',
+		exact: false,
+	};
+	const availableNavItems = [];
+	if (userPermissions.includes('VIEW_USERS')) {
+		availableNavItems.push(userNavItem);
+	}
+	if (userPermissions.includes('VIEW_COLLECTIONS_OVERVIEW')) {
+		availableNavItems.push(userGroupNavItem);
+	}
+	if (userPermissions.includes('VIEW_BUNDLES_OVERVIEW')) {
+		availableNavItems.push(permissionGroupNavItem);
+	}
+	if (availableNavItems[0]) {
+		return [
 			{
-				label: i18n.t('admin/admin___gebruikersgroepen'),
-				location: ADMIN_PATH.USER_GROUP_OVERVIEW,
-				key: 'userGroups',
-				exact: false,
+				...availableNavItems[0],
+				subLinks: availableNavItems.slice(1),
 			},
-			{
-				label: i18n.t('admin/admin___permissie-groepen'),
-				location: ADMIN_PATH.PERMISSION_GROUP_OVERVIEW,
-				key: 'permissionGroups',
-				exact: false,
-			},
-		],
-	},
+		];
+	} else {
+		return [];
+	}
+}
+
+export const GET_NAV_ITEMS = (userPermissions: string[]): NavigationItemInfo[] => [
+	...getUserNavItems(userPermissions),
 	{
 		label: i18n.t('admin/admin___navigatie'),
 		location: ADMIN_PATH.MENU,
