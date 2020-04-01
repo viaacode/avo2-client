@@ -1,6 +1,6 @@
 import I18n from 'i18next';
 import XHR from 'i18next-xhr-backend';
-import { get } from 'lodash-es';
+import { get, lowerCase, upperFirst } from 'lodash-es';
 
 import { initReactI18next } from 'react-i18next';
 
@@ -34,6 +34,9 @@ I18n.use(XHR)
 		initImmediate: true,
 		react: {
 			useSuspense: false,
+		},
+		parseMissingKeyHandler: key => {
+			return `${upperFirst(lowerCase(key.split('___').pop()))} ***`;
 		},
 	});
 
