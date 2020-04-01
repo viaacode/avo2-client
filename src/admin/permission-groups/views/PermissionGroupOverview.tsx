@@ -49,7 +49,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			const andFilters: any[] = [];
 			andFilters.push(
 				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-					{ title: { _ilike: queryWordWildcard } },
+					{ label: { _ilike: queryWordWildcard } },
 					{ description: { _ilike: queryWordWildcard } },
 				])
 			);
