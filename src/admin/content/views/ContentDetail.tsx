@@ -4,14 +4,10 @@ import React, { FunctionComponent, ReactElement, useCallback, useEffect, useStat
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
-	Avatar,
 	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
-	Header,
-	HeaderAvatar,
-	HeaderButtons,
 	Navbar,
 	Spacer,
 	Table,
@@ -28,13 +24,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import {
-	CustomError,
-	getAvatarProps,
-	navigate,
-	sanitize,
-	sanitizePresets,
-} from '../../../shared/helpers';
+import { CustomError, navigate, sanitize, sanitizePresets } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
@@ -48,6 +38,7 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 
+import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
@@ -74,7 +65,6 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	);
 
 	// Computed
-	const avatarProps = getAvatarProps(get(contentPage, 'profile', null));
 	const contentBlockConfigs = parseContentBlocks(contentBlocks);
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 	const isContentProtected = get(contentPage, 'is_protected', false);
@@ -329,31 +319,24 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	return (
-		<AdminLayout showBackButton>
-			<AdminLayoutHeader>
-				<Header category="audio" title={pageTitle} showMetaData={false}>
-					{(avatarProps.name || avatarProps.initials) && (
-						<HeaderAvatar>
-							<Avatar {...avatarProps} dark />
-						</HeaderAvatar>
+		<AdminLayout showBackButton pageTitle={pageTitle}>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						label={t('admin/content/views/content-detail___bewerken')}
+						onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
+					/>
+					{/* TODO: also check permissions */}
+					{(!isContentProtected || (isContentProtected && isAdminUser)) && (
+						<Button
+							label={t('admin/content/views/content-detail___verwijderen')}
+							onClick={() => setIsConfirmModalOpen(true)}
+							type="danger-hover"
+						/>
 					)}
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								label={t('admin/content/views/content-detail___bewerken')}
-								onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
-							/>
-							{/* TODO: also check permissions */}
-							{(!isContentProtected || (isContentProtected && isAdminUser)) && (
-								<Button
-									label={t('admin/content/views/content-detail___verwijderen')}
-									onClick={() => setIsConfirmModalOpen(true)}
-									type="danger-hover"
-								/>
-							)}
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
+			<AdminLayoutHeader>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={setCurrentTab} />

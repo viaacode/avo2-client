@@ -4,7 +4,13 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import { Container, useSlot } from '@viaa/avo2-components';
 
 import { ActionsBar, TopBar } from '../../components';
-import { AdminLayoutActions, AdminLayoutBody, AdminLayoutHeader } from './AdminLayout.slots';
+import {
+	AdminLayoutActions,
+	AdminLayoutBody,
+	AdminLayoutHeader,
+	AdminLayoutTopBarCenter,
+	AdminLayoutTopBarRight,
+} from './AdminLayout.slots';
 
 import './AdminLayout.scss';
 
@@ -23,18 +29,22 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 }) => {
 	const actions = useSlot(AdminLayoutActions, children);
 	const body = useSlot(AdminLayoutBody, children);
+	const topBarCenter = useSlot(AdminLayoutTopBarCenter, children);
+	const topBarRight = useSlot(AdminLayoutTopBarRight, children);
 	const header = useSlot(AdminLayoutHeader, children);
 
 	return (
 		<div className={classnames('l-admin', { 'l-admin--with-actions': !!actions })}>
-			<TopBar showBackButton={showBackButton} />
+			<TopBar
+				showBackButton={showBackButton}
+				title={pageTitle}
+				center={topBarCenter}
+				right={topBarRight}
+			/>
 			{header}
-			{(pageTitle || (children && !body)) && (
+			{children && !body && (
 				<Container className={className} mode="vertical" size="small">
-					<Container mode="horizontal">
-						{pageTitle && <h1 className="c-h2 u-m-0">{pageTitle}</h1>}
-						{!body && children}
-					</Container>
+					<Container mode="horizontal">{!body && children}</Container>
 				</Container>
 			)}
 			{body}

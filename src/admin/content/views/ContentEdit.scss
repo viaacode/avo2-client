@@ -3,7 +3,7 @@
 .c-content-edit-view__sidebar,
 .c-content-edit-view__preview {
 	width: 100%;
-	height: calc(100vh - 221px);
+	height: calc(100vh - 113px);
 	overflow-y: auto;
 }
 
@@ -23,7 +23,7 @@
 .m-resizable-panels.m-edit-content-blocks {
 	> div {
 		> div:not(.resizable-fragment) {
-			height: calc(100vh - 221px) !important;
+			height: calc(100vh - 113px) !important;
 		}
 	}
 }

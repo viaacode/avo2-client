@@ -4,23 +4,28 @@ import { useTranslation } from 'react-i18next';
 
 import {
 	BlockHeading,
-	Box,
 	Button,
+	ButtonToolbar,
 	Container,
 	Panel,
 	PanelBody,
 	PanelHeader,
+	Spacer,
 	Table,
 } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
 import { dataService } from '../../../shared/services';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import {
+	renderDateDetailRows,
+	renderSimpleDetailRows,
+} from '../../shared/helpers/render-detail-fields';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GET_PERMISSIONS_TABLE_COLS, PERMISSION_GROUP_PATH } from '../permission-group.const';
 import { GET_PERMISSION_GROUP_BY_ID } from '../permission-group.gql';
 import { PermissionGroupService } from '../permission-group.service';
@@ -108,85 +113,95 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 		);
 	};
 
-	const renderEditPage = () => {
+	const renderDetailPage = () => {
 		if (!permissionGroup) {
 			return;
 		}
 		return (
 			<>
-				<Box backgroundColor="gray">
-					<Table horizontal variant="invisible">
-						<tbody>
-							<tr>
-								<th>
-									{t(
-										'admin/permission-groups/views/permission-group-detail___label'
-									)}
-								</th>
-								<td>{permissionGroup.label}</td>
-							</tr>
-							<tr>
-								<th>
-									{t(
-										'admin/permission-groups/views/permission-group-detail___beschrijving'
-									)}
-								</th>
-								<td>{permissionGroup.description}</td>
-							</tr>
-						</tbody>
-					</Table>
-				</Box>
-				<Panel>
-					<PanelHeader>
-						<BlockHeading type="h3">Permissies in deze groep:</BlockHeading>
-					</PanelHeader>
-					<PanelBody>
-						<Table
-							columns={GET_PERMISSIONS_TABLE_COLS()}
-							data={PermissionGroupService.sortPermissions(
-								permissionGroup.permissions || [],
-								sortColumn,
-								sortOrder
-							)}
-							emptyStateMessage={t(
-								'admin/permission-groups/views/permission-group-detail___deze-groep-bevat-nog-geen-permissies'
-							)}
-							onColumnClick={columId =>
-								handleSortClick(columId as PermissionsTableCols)
-							}
-							renderCell={(rowData: any, columnId: string) => rowData[columnId]}
-							rowKey="id"
-							variant="bordered"
-							sortColumn={sortColumn}
-							sortOrder={sortOrder}
-						/>
-					</PanelBody>
-				</Panel>
+				<Table horizontal variant="invisible" className="c-table_detail-page">
+					<tbody>
+						{renderSimpleDetailRows(permissionGroup, [
+							[
+								'label',
+								t('admin/permission-groups/views/permission-group-detail___label'),
+							],
+							[
+								'description',
+								t(
+									'admin/permission-groups/views/permission-group-detail___beschrijving'
+								),
+							],
+						])}
+						{renderDateDetailRows(permissionGroup, [
+							['created_at', t('Aangemaakt op')],
+							['updated_at', t('Aangepast op')],
+						])}
+					</tbody>
+				</Table>
+				<Spacer margin="top-extra-large">
+					<Panel>
+						<PanelHeader>
+							<BlockHeading type="h3">Permissies in deze groep:</BlockHeading>
+						</PanelHeader>
+						<PanelBody>
+							<Table
+								columns={GET_PERMISSIONS_TABLE_COLS()}
+								data={PermissionGroupService.sortPermissions(
+									permissionGroup.permissions || [],
+									sortColumn,
+									sortOrder
+								)}
+								emptyStateMessage={t(
+									'admin/permission-groups/views/permission-group-detail___deze-groep-bevat-nog-geen-permissies'
+								)}
+								onColumnClick={columId =>
+									handleSortClick(columId as PermissionsTableCols)
+								}
+								renderCell={(rowData: any, columnId: string) => rowData[columnId]}
+								rowKey="id"
+								variant="bordered"
+								sortColumn={sortColumn}
+								sortOrder={sortOrder}
+							/>
+						</PanelBody>
+					</Panel>
+				</Spacer>
 			</>
 		);
 	};
 
 	// Render
-	const renderPage = () => (
-		<AdminLayout
-			showBackButton
-			pageTitle={t(
-				'admin/permission-groups/views/permission-group-detail___permissie-groep-details'
-			)}
-		>
-			<AdminLayoutBody>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{renderEditPage()}</Container>
-				</Container>
-			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t('admin/permission-groups/views/permission-group-detail___bewerken')}
-					onClick={handleEditClick}
-				/>
-			</AdminLayoutActions>
-		</AdminLayout>
-	);
+	const renderPage = () => {
+		if (!permissionGroup) {
+			return null;
+		}
+		return (
+			<AdminLayout
+				showBackButton
+				pageTitle={t(
+					'admin/permission-groups/views/permission-group-detail___permissie-groep-details'
+				)}
+			>
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						<Button
+							type="primary"
+							label={t(
+								'admin/permission-groups/views/permission-group-detail___bewerken'
+							)}
+							onClick={handleEditClick}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>
+					<Container mode="vertical" size="small">
+						<Container mode="horizontal">{renderDetailPage()}</Container>
+					</Container>
+				</AdminLayoutBody>
+			</AdminLayout>
+		);
+	};
 
 	return (
 		<LoadingErrorLoadedComponent

@@ -6,6 +6,7 @@ import {
 	BlockHeading,
 	Box,
 	Button,
+	ButtonToolbar,
 	Container,
 	Flex,
 	FlexItem,
@@ -39,7 +40,7 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, navigate, sanitize } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../shared/types';
@@ -695,23 +696,25 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				'admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen'
 			)}
 		>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						label={t('admin/interactive-tour/views/interactive-tour-edit___annuleer')}
+						onClick={navigateBack}
+						type="tertiary"
+					/>
+					<Button
+						disabled={isSaving}
+						label={t('admin/interactive-tour/views/interactive-tour-edit___opslaan')}
+						onClick={handleSave}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small" className="m-interactive-tour-edit-view">
 					<Container mode="horizontal">{renderEditPage()}</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t('admin/interactive-tour/views/interactive-tour-edit___annuleer')}
-					onClick={navigateBack}
-					type="tertiary"
-				/>
-				<Button
-					disabled={isSaving}
-					label={t('admin/interactive-tour/views/interactive-tour-edit___opslaan')}
-					onClick={handleSave}
-				/>
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 

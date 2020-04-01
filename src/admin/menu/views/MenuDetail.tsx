@@ -17,10 +17,9 @@ import { Avo } from '@viaa/avo2-types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
 import { navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
+import { ApolloCacheManager, ToastService } from '../../../shared/services';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
 import { DELETE_MENU_ITEM, GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 
@@ -194,6 +193,20 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 
 		return (
 			<AdminLayout className="c-menu-detail" showBackButton pageTitle={startCase(menuId)}>
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						<Button
+							label={t('admin/menu/views/menu-detail___annuleer')}
+							onClick={() => handleNavigate(MENU_PATH.MENU)}
+							type="tertiary"
+						/>
+						<Button
+							disabled={isEqual(initialMenuItems, menuItems) || isSaving}
+							label={t('admin/menu/views/menu-detail___opslaan')}
+							onClick={() => handleSave(refetchMenuItems)}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
 				<AdminLayoutBody>
 					<Container mode="vertical" size="small">
 						<Container mode="horizontal">
@@ -267,18 +280,6 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 						</Container>
 					</Container>
 				</AdminLayoutBody>
-				<AdminLayoutActions>
-					<Button
-						label={t('admin/menu/views/menu-detail___annuleer')}
-						onClick={() => handleNavigate(MENU_PATH.MENU)}
-						type="tertiary"
-					/>
-					<Button
-						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
-						label={t('admin/menu/views/menu-detail___opslaan')}
-						onClick={() => handleSave(refetchMenuItems)}
-					/>
-				</AdminLayoutActions>
 			</AdminLayout>
 		);
 	};

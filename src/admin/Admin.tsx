@@ -12,7 +12,7 @@ const Admin = () => (
 	<div className="m-resizable-panels">
 		<ResizablePanels
 			displayDirection="row"
-			panelsSize={[380]}
+			panelsSize={[260]}
 			sizeUnitMeasure="px"
 			resizerSize="15px"
 		>
