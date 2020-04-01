@@ -39,7 +39,7 @@ const PupilOrTeacherDropdown: FunctionComponent<PupilOrTeacherDropdownProps> = (
 						)}
 						onClick={() => {
 							closeDropdown();
-							redirectToClientPage(APP_PATH.FOR_TEACHERS.route, history);
+							redirectToClientPage(APP_PATH.STAMBOEK.route, history);
 						}}
 					/>
 				</Spacer>
