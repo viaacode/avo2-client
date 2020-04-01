@@ -36,13 +36,18 @@ import {
 	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import {
+	AdminLayout,
+	AdminLayoutBody,
+	AdminLayoutHeader,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts';
 
-import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, DbContent } from '../content.types';
+import './ContentDetail.scss';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
@@ -344,23 +349,25 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={contentPage}
-					render={renderContentDetail}
-				/>
-				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
-					isOpen={isConfirmModalOpen}
-					onClose={() => setIsConfirmModalOpen(false)}
-					body={
-						isContentProtected
-							? t(
-									'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
-							  )
-							: ''
-					}
-				/>
+				<div className="m-content-detail-preview">
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={contentPage}
+						render={renderContentDetail}
+					/>
+					<DeleteObjectModal
+						deleteObjectCallback={handleDelete}
+						isOpen={isConfirmModalOpen}
+						onClose={() => setIsConfirmModalOpen(false)}
+						body={
+							isContentProtected
+								? t(
+										'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
+								  )
+								: ''
+						}
+					/>
+				</div>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

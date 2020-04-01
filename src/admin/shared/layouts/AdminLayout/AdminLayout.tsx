@@ -41,14 +41,16 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 				center={topBarCenter}
 				right={topBarRight}
 			/>
-			{header}
-			{children && !body && (
-				<Container className={className} mode="vertical" size="small">
-					<Container mode="horizontal">{!body && children}</Container>
-				</Container>
-			)}
-			{body}
-			{actions && <ActionsBar fixed>{actions}</ActionsBar>}
+			<div className="m-admin-layout-content">
+				{header}
+				{children && !body && (
+					<Container className={className} mode="vertical" size="small">
+						<Container mode="horizontal">{!body && children}</Container>
+					</Container>
+				)}
+				{body}
+				{actions && <ActionsBar fixed>{actions}</ActionsBar>}
+			</div>
 		</div>
 	);
 };
