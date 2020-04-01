@@ -60,8 +60,8 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
 		'label'
 	);
-	const [permissionGroupIdToDelete, setPermissionIdToDelete] = useState<number | null>(null);
-	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+	const [permissionGroupIdToDelete, setPermissionGroupIdToDelete] = useState<number | null>(null);
+	const [isConfirmDeleteModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
 	const isCreatePage: boolean = location.pathname.includes(`/${ROUTE_PARTS.create}`);
 
@@ -194,19 +194,19 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 		return null;
 	};
 
-	const openModal = (permission: Permission): void => {
+	const openConfirmDeleteModal = (permissionGroup: PermissionGroup): void => {
 		setIsConfirmModalOpen(true);
-		setPermissionIdToDelete(permission.id);
+		setPermissionGroupIdToDelete(permissionGroup.id);
 	};
 
-	const handleDelete = () => {
+	const handlePermissionGroupDelete = () => {
 		if (!userGroup) {
 			return;
 		}
 		setUserGroup({
 			...userGroup,
 			permissionGroups: (userGroup.permissionGroups || []).filter(
-				permissionGroup => permissionGroup.id === permissionGroupIdToDelete
+				permissionGroup => permissionGroup.id !== permissionGroupIdToDelete
 			),
 		});
 	};
@@ -245,6 +245,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			permissionGroups: [...userGroup.permissionGroups, selectedPermission],
 		});
 		setSelectedPermissionGroupId(null);
+		ToastService.success(t('Permissie groep tegevoegd'), false);
 	};
 
 	const handleSave = async () => {
@@ -358,7 +359,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					<ButtonToolbar>
 						<Button
 							icon="delete"
-							onClick={() => openModal(rowData)}
+							onClick={() => openConfirmDeleteModal(rowData)}
 							size="small"
 							ariaLabel={t('admin/user-groups/views/user-group-edit___verwijder')}
 							title={t('admin/user-groups/views/user-group-edit___verwijder')}
@@ -474,8 +475,8 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							sortOrder={sortOrder}
 						/>
 						<DeleteObjectModal
-							deleteObjectCallback={handleDelete}
-							isOpen={isConfirmModalOpen}
+							deleteObjectCallback={handlePermissionGroupDelete}
+							isOpen={isConfirmDeleteModalOpen}
 							onClose={() => setIsConfirmModalOpen(false)}
 						/>
 					</PanelBody>
