@@ -1,6 +1,5 @@
-import { useMutation } from '@apollo/react-hooks';
 import { ApolloQueryResult } from 'apollo-boost';
-import { compact, get, startCase, uniq, without } from 'lodash-es';
+import { compact, get, isNil, startCase, uniq, without } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -21,7 +20,7 @@ import { Avo } from '@viaa/avo2-types';
 import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CustomError, navigate } from '../../../shared/helpers';
-import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
+import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { ContentPickerType, PickerItem } from '../../shared/types';
@@ -30,8 +29,7 @@ import { fetchAllUserGroups } from '../../../shared/services/user-groups-service
 import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { MenuEditForm } from '../components';
 import { GET_PAGE_TYPES_LANG, INITIAL_MENU_FORM, MENU_PATH } from '../menu.const';
-import { INSERT_MENU_ITEM, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
-import { fetchMenuItemById, fetchMenuItems } from '../menu.service';
+import { MenuService } from '../menu.service';
 import {
 	MenuEditFormErrorState,
 	MenuEditFormState,
@@ -72,13 +70,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	const [permissionWarning, setPermissionWarning] = useState<ReactNode | null>(null);
 	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
 
-	const [triggerMenuItemInsert] = useMutation(INSERT_MENU_ITEM);
-	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
-
 	// Fetch menu items depending on menu parent param
 	// This is necessary for populating the menu parent options for our form
 	useEffect(() => {
-		fetchMenuItems(menuParentId).then(menuItemsByPosition => {
+		MenuService.fetchMenuItems(menuParentId).then(menuItemsByPosition => {
 			if (menuItemsByPosition && menuItemsByPosition.length) {
 				setMenuItems(menuItemsByPosition);
 			} else {
@@ -102,7 +97,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		if (menuItemId) {
 			setIsLoading(true);
 			// Fetch menu item by id so we can populate our form for editing
-			fetchMenuItemById(Number(menuItemId))
+			MenuService.fetchMenuItemById(Number(menuItemId))
 				.then((menuItem: Avo.Menu.Menu | null) => {
 					if (menuItem) {
 						// Remove unnecessary props for saving
@@ -274,93 +269,67 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		}
 	};
 
-	const handleSave = (): void => {
-		setIsSaving(true);
+	const handleSave = async () => {
+		try {
+			setIsSaving(true);
 
-		// Validate form
-		const isFormValid = handleValidation();
+			// Validate form
+			const isFormValid = handleValidation();
 
-		if (!isFormValid) {
-			setIsSaving(false);
+			if (!isFormValid) {
+				setIsSaving(false);
 
-			return;
-		}
+				return;
+			}
 
-		const menuItem: Partial<MenuSchema> = {
-			icon_name: menuForm.icon,
-			label: menuForm.label,
-			content_path: menuForm.content_path,
-			content_type: menuForm.content_type,
-			link_target: menuForm.link_target,
-			user_group_ids: menuForm.user_group_ids,
-			placement: menuForm.placement,
-		};
+			const menuItem: Partial<MenuSchema> = {
+				icon_name: menuForm.icon,
+				label: menuForm.label,
+				content_path: menuForm.content_path,
+				content_type: menuForm.content_type,
+				link_target: menuForm.link_target,
+				user_group_ids: menuForm.user_group_ids,
+				placement: menuForm.placement,
+			};
 
-		if (pageType === 'create') {
-			triggerMenuItemInsert({
-				variables: {
-					menuItem: {
-						...menuItem,
-						// Get description from existing items or use form description field
-						description: get(menuItems, '[0].description', menuForm.description),
-						position: menuItems.length,
-					},
-				},
-				update: ApolloCacheManager.clearNavElementsCache,
-			})
-				.then(() =>
-					handleResponse(
-						t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt')
-					)
-				)
-				.catch(err =>
-					handleResponse(
-						t(
-							'admin/menu/views/menu-edit___het-aanmaken-van-het-navigatie-item-is-mislukt'
-						),
-						err || null
-					)
+			if (pageType === 'create') {
+				await MenuService.insertMenuItem({
+					...menuItem,
+					// Get description from existing items or use form description field
+					description: get(menuItems, '[0].description', menuForm.description),
+					position: menuItems.length,
+				} as Avo.Menu.Menu);
+				ToastService.success(
+					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt'),
+					false
 				);
-		} else {
-			triggerMenuItemUpdate({
-				variables: {
-					id: menuItemId,
-					menuItem: {
+			} else {
+				if (isNil(menuItemId)) {
+					throw new CustomError('cannot update menu item because id is undefined', null, {
+						menuItemId,
+					});
+				}
+				await MenuService.updateMenuItems([
+					{
 						...initialMenuItem,
 						...menuItem,
+						id: +menuItemId,
 						updated_at: new Date().toISOString(),
-					},
-				},
-				update: ApolloCacheManager.clearNavElementsCache,
-			})
-				.then(() =>
-					handleResponse(
-						t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet')
-					)
-				)
-				.catch(err =>
-					handleResponse(
-						t(
-							'admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'
-						),
-						err || null
-					)
+					} as Avo.Menu.Menu,
+				]);
+				ToastService.success(
+					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet'),
+					false
 				);
+			}
+		} catch (err) {
+			console.error(new CustomError('Failed to save menu item', err, { menuForm }));
+			ToastService.danger(
+				t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt'),
+				false
+			);
 		}
-	};
-
-	const handleResponse = (message: string, err?: any): void => {
 		setIsSaving(false);
-
-		const hasError = err || err === null;
-		ToastService[hasError ? 'danger' : 'success'](message, false);
-
-		if (hasError) {
-			console.error(err);
-			return;
-		}
-
-		navigate(history, MENU_PATH.MENU_DETAIL, { menu: menuForm.placement });
 	};
 
 	const handleValidation = (): boolean => {

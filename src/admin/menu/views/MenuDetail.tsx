@@ -1,10 +1,10 @@
-import { useMutation } from '@apollo/react-hooks';
-import { cloneDeep, isEqual, startCase } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { cloneDeep, isEqual, isNil, startCase } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
+	ButtonGroup,
 	ButtonToolbar,
 	Container,
 	Flex,
@@ -15,15 +15,18 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { DataQueryComponent, DeleteObjectModal } from '../../../shared/components';
-import { navigate } from '../../../shared/helpers';
+import {
+	DeleteObjectModal,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
+import { CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-import { ApolloCacheManager } from '../../../shared/services/data-service';
 
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
-import { DELETE_MENU_ITEM, GET_MENU_ITEMS_BY_PLACEMENT, UPDATE_MENU_ITEM_BY_ID } from '../menu.gql';
 
+import { MenuService } from '../menu.service';
 import './MenuDetail.scss';
 
 interface MenuDetailProps extends DefaultSecureRouteProps<{ menu: string }> {}
@@ -31,18 +34,45 @@ interface MenuDetailProps extends DefaultSecureRouteProps<{ menu: string }> {}
 const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	const [t] = useTranslation();
 
+	const menuId = match.params.menu;
+
 	const [activeRow, setActiveRow] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [idToDelete, setIdToDelete] = useState<number | null>(null);
-	const [initialMenuItems, setInitialMenuItems] = useState<Avo.Menu.Menu[]>([]);
-	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[]>([]);
+	const [menuItems, setMenuItems] = useState<Avo.Menu.Menu[] | null>(null);
+	const [initialMenuItems, setInitialMenuItems] = useState<Avo.Menu.Menu[] | null>(null);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
-	const [triggerMenuItemDelete] = useMutation(DELETE_MENU_ITEM);
-	const [triggerMenuItemUpdate] = useMutation(UPDATE_MENU_ITEM_BY_ID);
-
-	const hasInitialData = useRef<boolean>(false);
 	const timeout = useRef<NodeJS.Timeout | null>(null);
+
+	const fetchMenuItems = useCallback(async () => {
+		try {
+			const tempMenuItems = await MenuService.fetchMenuItems(menuId);
+
+			// Set items position property equal to index in array
+			const reindexedMenuItems = reindexMenuItems(tempMenuItems);
+
+			setInitialMenuItems(reindexedMenuItems);
+			setMenuItems(reindexedMenuItems);
+		} catch (err) {
+			console.error('Failed to fetch menu items', err, { menuId });
+			setLoadingInfo({
+				state: 'error',
+				message: t('Het laden van de menu items is mislukt'),
+			});
+		}
+	}, [menuId, setMenuItems, setLoadingInfo, t]);
+
+	useEffect(() => {
+		fetchMenuItems();
+	}, [fetchMenuItems]);
+
+	useEffect(() => {
+		if (menuItems) {
+			setLoadingInfo({ state: 'loaded' });
+		}
+	}, [menuItems, setLoadingInfo]);
 
 	useEffect(() => {
 		// Reset active row to clear styling
@@ -57,75 +87,54 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		};
 	}, [activeRow]);
 
-	// Computed
-	const menuId = match.params.menu;
-
 	// Methods
-	const handleDelete = (refetchMenuItems: () => void): void => {
-		triggerMenuItemDelete({
-			variables: { id: idToDelete },
-			update: ApolloCacheManager.clearNavElementsCache,
-		})
-			.then(() => {
-				refetchMenuItems();
-				ToastService.success(
-					t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd'),
-					false
-				);
-			})
-			.catch(err => {
-				console.error(err);
-				ToastService.danger(
-					t(
-						'admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'
-					),
-					false
-				);
-			});
+	const handleDelete = async (): Promise<void> => {
+		try {
+			if (isNil(idToDelete)) {
+				throw new CustomError('The idToDelete is not defined', null, { idToDelete });
+			}
+			await MenuService.deleteMenuItem(idToDelete);
+			fetchMenuItems();
+			ToastService.success(
+				t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd'),
+				false
+			);
+		} catch (err) {
+			console.error(new CustomError('Failed to delete menu item', err, { idToDelete }));
+			ToastService.danger(
+				t(
+					'admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'
+				),
+				false
+			);
+		}
 	};
 
 	const handleNavigate = (path: string, params: { [key: string]: string } = {}): void => {
 		navigate(history, path, params);
 	};
 
-	const handleSave = (refetch: () => void): void => {
-		setIsSaving(true);
+	const handleSave = async () => {
+		try {
+			if (!menuItems) {
+				return;
+			}
+			setIsSaving(true);
 
-		const promises: Promise<any>[] = [];
-		menuItems.forEach(menuItem => {
-			promises.push(
-				triggerMenuItemUpdate({
-					variables: {
-						id: menuItem.id,
-						menuItem: {
-							...menuItem,
-							updated_at: new Date().toISOString(),
-						},
-					},
-					update: ApolloCacheManager.clearNavElementsCache,
-				})
+			await MenuService.updateMenuItems(menuItems);
+
+			fetchMenuItems();
+			ToastService.success(
+				t('admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'),
+				false
 			);
-		});
-
-		Promise.all(promises)
-			.then(() => {
-				refetch();
-				ToastService.success(
-					t(
-						'admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen'
-					),
-					false
-				);
-			})
-			.catch(err => {
-				console.error(err);
-				ToastService.danger(
-					t(
-						'admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'
-					),
-					false
-				);
-			});
+		} catch (err) {
+			console.error(new CustomError('Failed to update menu items', err, { menuItems }));
+			ToastService.danger(
+				t('admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'),
+				false
+			);
+		}
 	};
 
 	const openConfirmModal = (id: number): void => {
@@ -133,7 +142,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		setIsConfirmModalOpen(true);
 	};
 
-	const reindexMenuitems = (items: Avo.Menu.Menu[]): Avo.Menu.Menu[] =>
+	const reindexMenuItems = (items: Avo.Menu.Menu[]): Avo.Menu.Menu[] =>
 		items.map((item, index) => {
 			item.position = index;
 			// Remove properties that we don't need for save
@@ -143,6 +152,9 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		});
 
 	const reorderMenuItem = (currentIndex: number, indexUpdate: number, id: number): void => {
+		if (!menuItems) {
+			return;
+		}
 		const newIndex = currentIndex + indexUpdate;
 		const menuItemsCopy = cloneDeep(menuItems);
 		// Get updated item and remove it from copy
@@ -151,11 +163,16 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		menuItemsCopy.splice(newIndex, 0, updatedItem);
 
 		setActiveRow(id);
-		setMenuItems(reindexMenuitems(menuItemsCopy));
+		setMenuItems(reindexMenuItems(menuItemsCopy));
 	};
 
 	// Render
-	const renderReorderButton = (dir: 'up' | 'down', index: number, id: number) => {
+	const renderReorderButton = (
+		dir: 'up' | 'down',
+		index: number,
+		id: number,
+		disabled: boolean
+	) => {
 		const decrease = dir === 'up';
 		const indexUpdate = decrease ? -1 : 1;
 
@@ -165,28 +182,20 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				onClick={() => reorderMenuItem(index, indexUpdate, id)}
 				title={`Verplaats item naar ${decrease ? 'boven' : 'onder'}`}
 				type="secondary"
+				disabled={disabled}
 			/>
 		);
 	};
 
-	const renderMenuDetail = (menu: Avo.Menu.Menu[], refetchMenuItems: () => void) => {
+	const renderMenuDetail = () => {
 		// Return to overview if menu is empty
-		if (!menu.length) {
+		if (!menuItems) {
 			ToastService.danger(
 				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden'),
 				false
 			);
 			handleNavigate(MENU_PATH.MENU);
-		}
-
-		// Reindex and set initial data
-		if (!hasInitialData.current) {
-			hasInitialData.current = true;
-			// Set items position property equal to index in array
-			const reindexedMenuItems = reindexMenuitems(menu);
-
-			setInitialMenuItems(reindexedMenuItems);
-			setMenuItems(reindexedMenuItems);
+			return null;
 		}
 
 		const isFirst = (i: number) => i === 0;
@@ -209,12 +218,20 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 											}
 										>
 											<td className="o-table-col-1">
-												<ButtonToolbar>
-													{!isFirst(index) &&
-														renderReorderButton('up', index, item.id)}
-													{!isLast(index) &&
-														renderReorderButton('down', index, item.id)}
-												</ButtonToolbar>
+												<ButtonGroup>
+													{renderReorderButton(
+														'up',
+														index,
+														item.id,
+														isFirst(index)
+													)}
+													{renderReorderButton(
+														'down',
+														index,
+														item.id,
+														isLast(index)
+													)}
+												</ButtonGroup>
 											</td>
 											<td>{item.label}</td>
 											<td>
@@ -235,7 +252,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 													<Button
 														icon="delete"
 														onClick={() => openConfirmModal(item.id)}
-														type="secondary"
+														type="danger-hover"
 													/>
 												</ButtonToolbar>
 											</td>
@@ -260,7 +277,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 								</Flex>
 							</Spacer>
 							<DeleteObjectModal
-								deleteObjectCallback={() => handleDelete(refetchMenuItems)}
+								deleteObjectCallback={() => handleDelete()}
 								isOpen={isConfirmModalOpen}
 								onClose={() => setIsConfirmModalOpen(false)}
 							/>
@@ -276,7 +293,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 					<Button
 						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
 						label={t('admin/menu/views/menu-detail___opslaan')}
-						onClick={() => handleSave(refetchMenuItems)}
+						onClick={() => handleSave()}
 					/>
 				</AdminLayoutActions>
 			</AdminLayout>
@@ -284,11 +301,10 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 	};
 
 	return (
-		<DataQueryComponent
-			query={GET_MENU_ITEMS_BY_PLACEMENT}
-			renderData={renderMenuDetail}
-			resultPath="app_content_nav_elements"
-			variables={{ placement: menuId }}
+		<LoadingErrorLoadedComponent
+			loadingInfo={loadingInfo}
+			dataObject={menuItems}
+			render={renderMenuDetail}
 		/>
 	);
 };
