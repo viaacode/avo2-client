@@ -37,7 +37,7 @@ export async function updateProfileInfo(
 			credentials: 'include',
 			body: JSON.stringify(variables),
 		});
-		if (response.status < 200 && response.status >= 400) {
+		if (response.status < 200 || response.status >= 400) {
 			throw new CustomError(
 				"Failed to update profile because response status wasn't in the valid range",
 				null,

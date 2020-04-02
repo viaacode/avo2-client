@@ -38,7 +38,7 @@ async function getNavItems(): Promise<NavItemMap> {
 			},
 			credentials: 'include',
 		});
-		if (response.status < 200 && response.status >= 400) {
+		if (response.status < 200 || response.status >= 400) {
 			throw new CustomError('Failed to get navigation items from server', null, { response });
 		}
 		return await response.json();

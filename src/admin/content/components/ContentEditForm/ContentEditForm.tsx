@@ -92,7 +92,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	// Computed
 	const contentTypeOptions = [
-		{ label: 'Kies een content type', value: '', disabled: true },
+		{ label: t('Kies een content type'), value: '', disabled: true },
 		...contentTypes.map(contentType => ({
 			label: contentType.value,
 			value: contentType.value,

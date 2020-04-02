@@ -54,7 +54,7 @@ import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 
 import { compose } from 'redux';
 import withUser from '../../shared/hocs/withUser';
-import { COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
+import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
 import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
@@ -375,7 +375,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	// Add active state to current tab
-	const tabs: TabProps[] = COLLECTION_EDIT_TABS.map((tab: TabProps) => ({
+	const tabs: TabProps[] = GET_COLLECTION_EDIT_TABS().map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));

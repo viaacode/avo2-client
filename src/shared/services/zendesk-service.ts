@@ -12,7 +12,7 @@ export class ZendeskService {
 			credentials: 'include',
 			body: JSON.stringify(ticket),
 		});
-		if (response.status < 200 && response.status >= 400) {
+		if (response.status < 200 || response.status >= 400) {
 			throw response;
 		}
 		return await response.json();

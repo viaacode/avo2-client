@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,9 +26,12 @@ import { dataService, ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
+import { validateContentBlockField } from '../../shared/helpers';
 import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
 import {
+	ContentBlockComponentState,
 	ContentBlockConfig,
+	ContentBlockErrors,
 	ContentBlockStateOption,
 	ContentBlockStateType,
 	ContentBlockType,
@@ -65,6 +68,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const [configToDelete, setConfigToDelete] = useState<number>();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
@@ -118,6 +122,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
+	const setContentBlockConfigError = (configIndex: number, errors: ContentBlockErrors) => {
+		dispatch({
+			type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
+			payload: { configIndex, errors },
+		});
+	};
+
 	const openDeleteModal = (configIndex: number) => {
 		setIsDeleteModalOpen(true);
 		setConfigToDelete(configIndex);
@@ -128,18 +139,62 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const handleSave = async () => {
 		try {
 			setIsSaving(true);
+			setHasSubmitted(true);
 
 			// Validate form
 			const isFormValid = await handleValidation();
+			let areConfigsValid = true;
 
-			if (!isFormValid) {
+			if (!hasSubmitted) {
+				setHasSubmitted(true);
+			}
+			// Run validators on to check untouched inputs
+			contentBlockConfigs.forEach((config, configIndex) => {
+				const { fields, state } = config.components;
+				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
+				let newErrors: ContentBlockErrors = {};
+
+				if (keysToValidate.length > 0) {
+					keysToValidate.forEach(key => {
+						const validator = fields[key].validator;
+
+						if (Array.isArray(state) && state.length > 0) {
+							state.forEach((singleState, stateIndex) => {
+								newErrors = validateContentBlockField(
+									key,
+									validator,
+									newErrors,
+									singleState[key as keyof ContentBlockComponentState],
+									stateIndex
+								);
+							});
+						} else if (has(state, key)) {
+							newErrors = validateContentBlockField(
+								key,
+								validator,
+								newErrors,
+								state[key as keyof ContentBlockComponentState]
+							);
+						}
+					});
+					areConfigsValid = Object.keys(newErrors).length === 0;
+					setContentBlockConfigError(configIndex, newErrors);
+				}
+			});
+
+			if (!isFormValid || !areConfigsValid) {
 				setIsSaving(false);
-				ToastService.danger(
-					t(
-						'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
-					),
-					false
-				);
+				if (!isFormValid) {
+					ToastService.danger(
+						t(
+							'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
+						),
+						false
+					);
+				}
+				if (!areConfigsValid) {
+					ToastService.danger(t('Er zijn nog fouten in de content-blocks'), false);
+				}
 
 				return;
 			}
@@ -333,9 +388,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
 						contentWidth={contentForm.contentWidth}
-						onAdd={addContentBlockConfig}
+						hasSubmitted={hasSubmitted}
 						addComponentToState={addComponentToState}
 						removeComponentFromState={removeComponentFromState}
+						onAdd={addContentBlockConfig}
+						onError={setContentBlockConfigError}
 						onRemove={openDeleteModal}
 						onReorder={reorderContentBlockConfig}
 						onSave={handleStateSave}
