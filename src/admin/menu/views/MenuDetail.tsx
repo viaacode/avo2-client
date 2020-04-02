@@ -272,7 +272,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 												menu: menuId,
 											})
 										}
-										type="borderless"
+										type="primary"
 									/>
 								</Flex>
 							</Spacer>
