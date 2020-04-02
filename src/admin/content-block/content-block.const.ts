@@ -279,15 +279,15 @@ export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => BackgroundColorOption[] = 
 
 export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{
-		label: 'Links',
+		label: i18n.t('Links'),
 		value: 'left',
 	},
 	{
-		label: 'Gecentreerd',
+		label: i18n.t('Gecentreerd'),
 		value: 'center',
 	},
 	{
-		label: 'Rechts',
+		label: i18n.t('Rechts'),
 		value: 'right',
 	},
 ];
