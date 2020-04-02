@@ -27,7 +27,7 @@ export class ContentPageService {
 			if (response.status === 404) {
 				return null;
 			}
-			if (response.status < 200 && response.status >= 400) {
+			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError('Failed to get content page from /content-pages', null, {
 					path,
 					response,
@@ -65,7 +65,7 @@ export class ContentPageService {
 				},
 				credentials: 'include',
 			});
-			if (response.status < 200 && response.status >= 400) {
+			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError('response status was unexpected', null, { response });
 			}
 			return await response.json();

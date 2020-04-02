@@ -83,6 +83,7 @@ export enum ContentEditActionType {
 	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
 	REMOVE_COMPONENTS_STATE = '@@admin-content-edit/REMOVE_COMPONENTS_STATE',
 	SET_BLOCK_STATE = '@@admin-content-edit/SET_BLOCK_STATE',
+	SET_CONTENT_BLOCK_ERROR = '@@admin-content-edit/SET_CONTENT_BLOCK_ERROR',
 }
 
 export interface ContentEditAction {
