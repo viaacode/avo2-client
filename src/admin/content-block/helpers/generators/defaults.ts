@@ -1,4 +1,4 @@
-import { isEmpty, isNil } from 'lodash-es';
+import { isEmpty, isNil, without } from 'lodash-es';
 
 import i18n from '../../../../shared/translations/i18n';
 
@@ -11,6 +11,8 @@ import {
 } from '../../../shared/types';
 
 import { GET_ALIGN_OPTIONS, GET_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
+import { WYSIWYGProps } from '@viaa/avo2-components';
+import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 
 // Block config defaults
 export const BLOCK_STATE_DEFAULTS = (
@@ -79,6 +81,14 @@ export const TEXT_FIELD = (
 
 		return errorArray;
 	},
+	editorProps: {
+		btns: without(WYSIWYG_OPTIONS_FULL, WYSIWYG_OPTIONS_ALIGN),
+		plugins: {
+			table: {
+				styler: 'c-table--styled',
+			},
+		},
+	} as Partial<WYSIWYGProps>,
 	...propOverride,
 });
 
