@@ -77,13 +77,19 @@ export const GET_NAV_ITEMS: () => NavigationItemInfo[] = () => [
 			},
 			{
 				label: i18n.t('admin/admin___screencasts'),
-				location: ADMIN_PATH.SCREENCAST,
+				location: ADMIN_PATH.SCREENCASTS,
 				key: 'screencasts',
 				exact: true,
 			},
 			{
 				label: i18n.t('admin/admin___fa-qs'),
 				location: ADMIN_PATH.FAQS,
+				key: 'faqs',
+				exact: true,
+			},
+			{
+				label: i18n.t("Overzichtspagina's"),
+				location: ADMIN_PATH.OVERVIEWS,
 				key: 'faqs',
 				exact: true,
 			},
