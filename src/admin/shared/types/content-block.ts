@@ -17,7 +17,7 @@ export type FillOption = 'cover' | 'contain' | 'auto';
 
 export type WidthOption = 'full-width' | '500px' | '400px';
 
-export type HeadingTypeOption = 'h2' | 'h3' | 'h4';
+export type HeadingTypeOption = 'h1' | 'h2' | 'h3' | 'h4';
 
 export enum BackgroundColorOption {
 	Gray50 = 'gray-50',

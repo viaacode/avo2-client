@@ -307,6 +307,14 @@ export const GET_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] =
 	},
 ];
 
+export const GET_FULL_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] = () => [
+	{
+		label: i18n.t('H1'),
+		value: 'h1',
+	},
+	...GET_HEADING_TYPE_OPTIONS(),
+];
+
 export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___primair'),
