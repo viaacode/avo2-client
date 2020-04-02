@@ -58,7 +58,7 @@ export const GET_NAV_ITEMS: () => NavigationItemInfo[] = () => [
 		exact: false,
 		subLinks: [
 			{
-				label: i18n.t("Pagina's"),
+				label: i18n.t('admin/admin___paginas'),
 				location: ADMIN_PATH.PAGES,
 				key: 'pages',
 				exact: true,

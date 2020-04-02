@@ -87,7 +87,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 								<span>
 									{isInputTooLong()
 										? `${t(
-												'De invoer is te lang, maxiumum lengte: '
+												'shared/components/input-modal/input-modal___de-invoer-is-te-lang-maxiumum-lengte'
 										  )} ${maxLength}`
 										: `${input.length}/${maxLength}`}
 								</span>

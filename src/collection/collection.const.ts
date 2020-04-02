@@ -5,17 +5,17 @@ import i18n from '../shared/translations/i18n';
 export const GET_COLLECTION_EDIT_TABS = (): TabProps[] => [
 	{
 		id: 'inhoud',
-		label: i18n.t('Inhoud'),
+		label: i18n.t('collection/collection___inhoud'),
 		icon: 'collection',
 	},
 	{
 		id: 'metadata',
-		label: i18n.t('Publicatiedetails'),
+		label: i18n.t('collection/collection___publicatiedetails'),
 		icon: 'file-text',
 	},
 	{
 		id: 'admin',
-		label: i18n.t('Beheer'),
+		label: i18n.t('collection/collection___beheer'),
 		icon: 'settings',
 	},
 ];

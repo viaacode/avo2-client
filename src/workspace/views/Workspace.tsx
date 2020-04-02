@@ -94,12 +94,12 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				),
 				// TODO: DISABLED_FEATURE filter
 				// filter: {
-				// 	label: t('Auteur'),
+				// 	label: t('workspace/views/workspace___auteur'),
 				// 	options: [
-				// 		{ id: 'all', label: t('Alles') },
-				// 		{ id: 'owner', label: t('Enkel waar ik eigenaar ben') },
-				// 		{ id: 'sharedWith', label: t('Enkel gedeeld met mij') },
-				// 		{ id: 'sharedBy', label: t('Enkel gedeeld door mij') },
+				// 		{ id: 'all', label: t('workspace/views/workspace___alles') },
+				// 		{ id: 'owner', label: t('workspace/views/workspace___enkel-waar-ik-eigenaar-ben') },
+				// 		{ id: 'sharedWith', label: t('workspace/views/workspace___enkel-gedeeld-met-mij') },
+				// 		{ id: 'sharedBy', label: t('workspace/views/workspace___enkel-gedeeld-door-mij') },
 				// 	],
 				// },
 			}),
