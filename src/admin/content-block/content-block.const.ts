@@ -123,10 +123,6 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 		value: ContentBlockType.IFrame,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___accordeons'),
-		value: ContentBlockType.Accordions,
-	},
-	{
 		label: i18n.t('admin/content-block/content-block___media-tegels'),
 		value: ContentBlockType.MediaGrid,
 	},
