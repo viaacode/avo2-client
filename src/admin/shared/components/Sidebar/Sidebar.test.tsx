@@ -8,8 +8,16 @@ import Sidebar from './Sidebar';
 const sidebarProps = {
 	headerLink: '/beheer',
 	navItems: [
-		{ label: i18n.t('Navigatie'), location: '/beheer/navigatie', key: 'navigatie' },
-		{ label: i18n.t('Content'), location: '/beheer/content', key: 'content' },
+		{
+			label: i18n.t('admin/shared/components/sidebar/sidebar___navigatie'),
+			location: '/beheer/navigatie',
+			key: 'navigatie',
+		},
+		{
+			label: i18n.t('admin/shared/components/sidebar/sidebar___content'),
+			location: '/beheer/content',
+			key: 'content',
+		},
 	],
 };
 

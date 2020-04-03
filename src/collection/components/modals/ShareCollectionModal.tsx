@@ -37,12 +37,12 @@ interface ShareCollectionModalProps extends DefaultSecureRouteProps {
 const GET_SHARE_OPTIONS = () => [
 	{
 		value: 'private',
-		label: i18n.t('Niet openbaar'),
+		label: i18n.t('collection/components/modals/share-collection-modal___niet-openbaar'),
 		isPublic: false,
 	},
 	{
 		value: 'public',
-		label: i18n.t('Openbaar'),
+		label: i18n.t('collection/components/modals/share-collection-modal___openbaar'),
 		isPublic: true,
 	},
 ];

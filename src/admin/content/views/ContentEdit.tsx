@@ -193,7 +193,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					);
 				}
 				if (!areConfigsValid) {
-					ToastService.danger(t('Er zijn nog fouten in de content-blocks'), false);
+					ToastService.danger(
+						t(
+							'admin/content/views/content-edit___er-zijn-nog-fouten-in-de-content-blocks'
+						),
+						false
+					);
 				}
 
 				return;

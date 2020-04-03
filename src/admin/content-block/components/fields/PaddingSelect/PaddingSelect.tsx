@@ -17,10 +17,30 @@ const PaddingSelect: FunctionComponent<PaddingSelectProps> = ({ onChange, value 
 
 	const generateOptions = (direction: PaddingDirection) =>
 		[
-			{ label: t('Klein'), value: `${direction}-small` },
-			{ label: t('Medium'), value: `${direction}` },
-			{ label: t('Groot'), value: `${direction}-large` },
-			{ label: t('Extra groot'), value: `${direction}-extra-large` },
+			{
+				label: t(
+					'admin/content-block/components/fields/padding-select/padding-select___klein'
+				),
+				value: `${direction}-small`,
+			},
+			{
+				label: t(
+					'admin/content-block/components/fields/padding-select/padding-select___medium'
+				),
+				value: `${direction}`,
+			},
+			{
+				label: t(
+					'admin/content-block/components/fields/padding-select/padding-select___groot'
+				),
+				value: `${direction}-large`,
+			},
+			{
+				label: t(
+					'admin/content-block/components/fields/padding-select/padding-select___extra-groot'
+				),
+				value: `${direction}-extra-large`,
+			},
 		] as SelectOption<SpacerOption>[];
 
 	const handleChange = (newValue: string, direction: PaddingDirection) => {
