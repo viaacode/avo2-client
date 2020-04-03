@@ -8,6 +8,10 @@ import { Button, ButtonToolbar, Container, Modal, ModalBody, Spacer } from '@via
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
 import {
 	CheckboxOption,
@@ -62,48 +66,64 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
-	const generateWhereObject = (filters: Partial<ContentTableState>) => {
-		const andFilters: any[] = [];
-		andFilters.push(
-			...getQueryFilter(
-				filters.query,
-				// @ts-ignore
-				(queryWordWildcard: string) => [
-					{ title: { _ilike: queryWordWildcard } },
-					{ profile: { usersByuserId: { first_name: { _ilike: queryWordWildcard } } } },
-					{ profile: { usersByuserId: { last_name: { _ilike: queryWordWildcard } } } },
-					{
-						profile: {
-							usersByuserId: { role: { label: { _ilike: queryWordWildcard } } },
-						},
-					},
-					{
-						content_content_labels: {
-							content_label: {
-								label: {
-									_ilike: queryWordWildcard,
-								},
-							},
-						},
-					},
-				]
-			)
-		);
-		andFilters.push(...getBooleanFilters(filters, ['is_public']));
-		andFilters.push(
-			...getDateRangeFilters(filters, [
-				'created_at',
-				'updated_at',
-				'publish_at',
-				'depublish_at',
-			])
-		);
-		andFilters.push(...getMultiOptionFilters(filters, ['content_type']));
-		return { _and: andFilters };
-	};
-
 	const fetchContentPages = useCallback(async () => {
 		try {
+			const generateWhereObject = (filters: Partial<ContentTableState>) => {
+				const andFilters: any[] = [];
+				andFilters.push(
+					...getQueryFilter(
+						filters.query,
+						// @ts-ignore
+						(queryWordWildcard: string) => [
+							{ title: { _ilike: queryWordWildcard } },
+							{
+								profile: {
+									usersByuserId: { first_name: { _ilike: queryWordWildcard } },
+								},
+							},
+							{
+								profile: {
+									usersByuserId: { last_name: { _ilike: queryWordWildcard } },
+								},
+							},
+							{
+								profile: {
+									usersByuserId: {
+										role: { label: { _ilike: queryWordWildcard } },
+									},
+								},
+							},
+							{
+								content_content_labels: {
+									content_label: {
+										label: {
+											_ilike: queryWordWildcard,
+										},
+									},
+								},
+							},
+						]
+					)
+				);
+				andFilters.push(...getBooleanFilters(filters, ['is_public']));
+				andFilters.push(
+					...getDateRangeFilters(filters, [
+						'created_at',
+						'updated_at',
+						'publish_at',
+						'depublish_at',
+					])
+				);
+				andFilters.push(...getMultiOptionFilters(filters, ['content_type']));
+
+				// When you get to this point we assume you already have either the EDIT_ANY_CONTENT_PAGES or EDIT_OWN_CONTENT_PAGES permission
+				if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_CONTENT_PAGES)) {
+					// Add filter to only allow the content pages for which the user is the author
+					andFilters.push({ user_profile_id: { _eq: get(user, 'profile.id') } });
+				}
+				return { _and: andFilters };
+			};
+
 			const [
 				contentPagesArray,
 				contentPageCountTemp,
@@ -142,9 +162,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			setLoadingInfo({ state: 'loaded' });
 		}
 	}, [contentPages]);
-
-	// Computed
-	const isAdminUser = get(user, 'profile.permissions', []).includes('EDIT_PROTECTED_PAGE_STATUS');
 
 	const contentTypeOptions = contentTypes.map(
 		(option): CheckboxOption => ({
@@ -227,7 +244,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const openModal = (content: Avo.Content.Content): void => {
 		if (content.is_protected) {
 			// Only allow admins to delete protected content
-			if (isAdminUser) {
+			if (PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS)) {
 				setContentToDelete(content);
 				setIsConfirmModalOpen(true);
 			} else {

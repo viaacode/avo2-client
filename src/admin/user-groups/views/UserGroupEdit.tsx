@@ -29,12 +29,12 @@ import {
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { dataService, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
+import { PermissionGroupService } from '../../permission-groups/permission-group.service';
 import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
-import { GET_ALL_PERMISSION_GROUPS, GET_USER_GROUP_BY_ID } from '../user-group.gql';
 import { UserGroupService } from '../user-group.service';
 import {
 	PermissionGroupTableCols,
@@ -60,8 +60,8 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	const [sortColumn, sortOrder, handleSortClick] = useTableSort<PermissionGroupTableCols>(
 		'label'
 	);
-	const [permissionGroupIdToDelete, setPermissionIdToDelete] = useState<number | null>(null);
-	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
+	const [permissionGroupIdToDelete, setPermissionGroupIdToDelete] = useState<number | null>(null);
+	const [isConfirmDeleteModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
 	const isCreatePage: boolean = location.pathname.includes(`/${ROUTE_PARTS.create}`);
 
@@ -78,12 +78,9 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			setUserGroup(permGroup);
 		} else {
 			try {
-				const response = await dataService.query({
-					query: GET_USER_GROUP_BY_ID,
-					variables: { id: match.params.id },
-				});
-
-				const userGroupObj = get(response, 'data.users_groups[0]');
+				const userGroupObj:
+					| UserGroup
+					| undefined = await UserGroupService.fetchUserGroupById(match.params.id);
 
 				if (!userGroupObj) {
 					setLoadingInfo({
@@ -133,28 +130,9 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 
 	const fetchAllPermissionGroups = useCallback(async () => {
 		try {
-			const response = await dataService.query({
-				query: GET_ALL_PERMISSION_GROUPS,
-			});
-
-			const permissionGroups: PermissionGroup[] | undefined = get(
-				response,
-				'data.users_permission_groups'
-			);
-
-			if (!permissionGroups) {
-				throw new CustomError('Response does not contain permissionGroups', null, {
-					response,
-				});
-			}
-
-			setAllPermissionGroups(permissionGroups);
+			setAllPermissionGroups(await PermissionGroupService.fetchAllPermissionGroups());
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to get all permissionGroups from database', err, {
-					query: 'GET_ALL_PERMISSIONS',
-				})
-			);
+			console.error(new CustomError('Failed to get all permissionGroups from database', err));
 			ToastService.danger(
 				t(
 					'admin/user-groups/views/user-group-edit___het-ophalen-van-alle-permissies-is-mislukt'
@@ -194,19 +172,19 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 		return null;
 	};
 
-	const openModal = (permission: Permission): void => {
+	const openConfirmDeleteModal = (permissionGroup: PermissionGroup): void => {
 		setIsConfirmModalOpen(true);
-		setPermissionIdToDelete(permission.id);
+		setPermissionGroupIdToDelete(permissionGroup.id);
 	};
 
-	const handleDelete = () => {
+	const handlePermissionGroupDelete = () => {
 		if (!userGroup) {
 			return;
 		}
 		setUserGroup({
 			...userGroup,
 			permissionGroups: (userGroup.permissionGroups || []).filter(
-				permissionGroup => permissionGroup.id === permissionGroupIdToDelete
+				permissionGroup => permissionGroup.id !== permissionGroupIdToDelete
 			),
 		});
 	};
@@ -245,6 +223,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 			permissionGroups: [...userGroup.permissionGroups, selectedPermission],
 		});
 		setSelectedPermissionGroupId(null);
+		ToastService.success(t('Permissie groep tegevoegd'), false);
 	};
 
 	const handleSave = async () => {
@@ -346,6 +325,19 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	const renderTableCell = (rowData: Permission, columnId: UserGroupOverviewTableCols) => {
 		switch (columnId) {
 			case 'label':
+				return (
+					<div className="c-user-group__permission-list">
+						<div>{rowData.label}</div>
+						{UserGroupService.getPermissions(rowData).map((permission: Permission) => {
+							return (
+								<div key={`permission-group-list-${rowData.id}-${permission.id}`}>
+									{permission.description}
+								</div>
+							);
+						})}
+					</div>
+				);
+
 			case 'description':
 				return rowData[columnId];
 
@@ -358,7 +350,7 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 					<ButtonToolbar>
 						<Button
 							icon="delete"
-							onClick={() => openModal(rowData)}
+							onClick={() => openConfirmDeleteModal(rowData)}
 							size="small"
 							ariaLabel={t('admin/user-groups/views/user-group-edit___verwijder')}
 							title={t('admin/user-groups/views/user-group-edit___verwijder')}
@@ -474,8 +466,8 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							sortOrder={sortOrder}
 						/>
 						<DeleteObjectModal
-							deleteObjectCallback={handleDelete}
-							isOpen={isConfirmModalOpen}
+							deleteObjectCallback={handlePermissionGroupDelete}
+							isOpen={isConfirmDeleteModalOpen}
 							onClose={() => setIsConfirmModalOpen(false)}
 						/>
 					</PanelBody>

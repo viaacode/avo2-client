@@ -95,7 +95,13 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	// Computed
 	const contentTypeOptions = [
-		{ label: t('Kies een content type'), value: '', disabled: true },
+		{
+			label: t(
+				'admin/content/components/content-edit-form/content-edit-form___kies-een-content-type'
+			),
+			value: '',
+			disabled: true,
+		},
 		...contentTypes.map(contentType => ({
 			label: contentType.value,
 			value: contentType.value,

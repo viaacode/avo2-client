@@ -24,6 +24,8 @@ import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
+import { SecuredRoute } from './authentication/components';
+import { ADMIN_PATH } from './admin/admin.const';
 
 interface AppProps extends RouteComponentProps {}
 
@@ -53,7 +55,7 @@ const App: FunctionComponent<AppProps> = props => {
 				/>
 				{/* TODO: Based on current user permissions */}
 				{isAdminRoute ? (
-					<Admin />
+					<SecuredRoute component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
 				) : (
 					<>
 						{props.location.pathname !== APP_PATH.LOGIN.route && (

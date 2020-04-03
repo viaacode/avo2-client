@@ -1,7 +1,9 @@
-import { isEmpty, isNil } from 'lodash-es';
+import { isEmpty, isNil, without } from 'lodash-es';
 
+import { WYSIWYGProps } from '@viaa/avo2-components';
+
+import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
-
 import {
 	BackgroundColorOption,
 	ContentBlockEditor,
@@ -91,6 +93,14 @@ export const TEXT_FIELD = (
 
 		return errorArray;
 	},
+	editorProps: {
+		btns: without(WYSIWYG_OPTIONS_FULL, WYSIWYG_OPTIONS_ALIGN),
+		plugins: {
+			table: {
+				styler: 'c-table--styled',
+			},
+		},
+	} as Partial<WYSIWYGProps>,
 	...propOverride,
 });
 

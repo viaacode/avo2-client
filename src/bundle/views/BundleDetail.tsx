@@ -35,10 +35,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { CollectionService } from '../../collection/collection.service';
 import { toEnglishContentType } from '../../collection/collection.types';
@@ -116,23 +113,23 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
 			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_BUNDLES }], user),
+				PermissionService.hasPermissions([{ name: PermissionName.VIEW_BUNDLES }], user),
 				PermissionService.hasPermissions(
 					[
-						{ name: PermissionNames.EDIT_OWN_BUNDLES, obj: bundleId },
-						{ name: PermissionNames.EDIT_ANY_BUNDLES },
+						{ name: PermissionName.EDIT_OWN_BUNDLES, obj: bundleId },
+						{ name: PermissionName.EDIT_ANY_BUNDLES },
 					],
 					user
 				),
 				PermissionService.hasPermissions(
 					[
-						{ name: PermissionNames.DELETE_OWN_BUNDLES, obj: bundleId },
-						{ name: PermissionNames.DELETE_ANY_BUNDLES },
+						{ name: PermissionName.DELETE_OWN_BUNDLES, obj: bundleId },
+						{ name: PermissionName.DELETE_ANY_BUNDLES },
 					],
 					user
 				),
-				PermissionService.hasPermissions([{ name: PermissionNames.CREATE_BUNDLES }], user),
-				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+				PermissionService.hasPermissions([{ name: PermissionName.CREATE_BUNDLES }], user),
+				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
 			]);
 			const permissionObj = {
 				canViewBundles: rawPermissions[0],

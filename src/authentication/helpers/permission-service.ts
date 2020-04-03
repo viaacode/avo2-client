@@ -2,7 +2,7 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { dataService } from '../../shared/services/data-service';
+import { dataService } from '../../shared/services';
 import { getProfileId } from './get-profile-info';
 import {
 	GET_LINKED_COLLECTIONS,
@@ -10,55 +10,78 @@ import {
 	GET_LINKED_SEARCH_QUERIES,
 } from './permission-service.gql';
 
-type PermissionInfo = { name: PermissionNames; obj?: any | null };
+type PermissionInfo = { name: PermissionName; obj?: any | null };
 
-export type Permissions = PermissionNames | PermissionInfo | (PermissionNames | PermissionInfo)[];
+export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
 
-export enum PermissionNames {
-	ADD_HYPERLINK_COLLECTIONS = 'ADD_HYPERLINK_COLLECTIONS',
-	CREATE_ACCOUNT = 'CREATE_ACCOUNT',
-	CREATE_ASSIGNMENT_RESPONSE = 'CREATE_ASSIGNMENT_RESPONSE',
-	CREATE_ASSIGNMENTS = 'CREATE_ASSIGNMENTS',
-	CREATE_BUNDLES = 'CREATE_BUNDLES',
-	CREATE_COLLECTIONS = 'CREATE_COLLECTIONS',
-	CREATE_CONTENT_PAGES = 'CREATE_CONTENT_PAGES',
-	DELETE_ANY_ACCOUNTS = 'DELETE_ANY_ACCOUNTS',
-	DELETE_ANY_BUNDLES = 'DELETE_ANY_BUNDLES',
-	DELETE_ANY_COLLECTIONS = 'DELETE_ANY_COLLECTIONS',
-	DELETE_ANY_CONTENT_PAGES = 'DELETE_ANY_CONTENT_PAGES',
-	DELETE_ASSIGNMENTS = 'DELETE_ASSIGNMENTS',
-	DELETE_OWN_BUNDLES = 'DELETE_OWN_BUNDLES',
-	DELETE_OWN_COLLECTIONS = 'DELETE_OWN_COLLECTIONS',
-	DELETE_OWN_CONTENT_PAGES = 'DELETE_OWN_CONTENT_PAGES',
-	EDIT_ANY_ACCOUNTS = 'EDIT_ANY_ACCOUNTS',
-	EDIT_ANY_BUNDLES = 'EDIT_ANY_BUNDLES',
-	EDIT_ANY_COLLECTIONS = 'EDIT_ANY_COLLECTIONS',
-	EDIT_ANY_CONTENT_PAGES = 'EDIT_ANY_CONTENT_PAGES',
-	EDIT_ASSIGNMENTS = 'EDIT_ASSIGNMENTS',
-	EDIT_OWN_BUNDLES = 'EDIT_OWN_BUNDLES',
+export enum PermissionName {
+	VIEW_OWN_SEARCH_QUERIES = 'VIEW_OWN_SEARCH_QUERIES',
 	EDIT_OWN_COLLECTIONS = 'EDIT_OWN_COLLECTIONS',
-	EDIT_OWN_CONTENT_PAGES = 'EDIT_OWN_CONTENT_PAGES',
-	EDIT_SITE_SETTINGS = 'EDIT_SITE_SETTINGS',
-	PUBLISH_ALL_BUNDLES = 'PUBLISH_ALL_BUNDLES',
-	PUBLISH_ALL_COLLECTIONS = 'PUBLISH_ALL_COLLECTIONS',
-	PUBLISH_BUNDLES_WITH_LABEL = 'PUBLISH_BUNDLES_WITH_LABEL',
-	PUBLISH_COLLECTION_WITH_LABEL = 'PUBLISH_COLLECTION_WITH_LABEL',
-	PUBLISH_OWN_BUNDLES = 'PUBLISH_OWN_BUNDLES',
-	PUBLISH_OWN_COLLECTIONS = 'PUBLISH_OWN_COLLECTIONS',
+	EDIT_OWN_SEARCH_QUERIES = 'EDIT_OWN_SEARCH_QUERIES',
+	CREATE_COLLECTIONS = 'CREATE_COLLECTIONS',
+	DELETE_OWN_SEARCH_QUERIES = 'DELETE_OWN_SEARCH_QUERIES',
 	SEARCH = 'SEARCH',
-	SHARE_BUNDLES_BY_LINK = 'SHARE_BUNDLES_BY_LINK',
+	ADD_HYPERLINK_COLLECTIONS = 'ADD_HYPERLINK_COLLECTIONS',
+	EDIT_OWN_BUNDLES = 'EDIT_OWN_BUNDLES',
+	CREATE_BUNDLES = 'CREATE_BUNDLES',
+	EDIT_PROTECTED_PAGE_STATUS = 'EDIT_PROTECTED_PAGE_STATUS',
+	PUBLISH_ALL_BUNDLES = 'PUBLISH_ALL_BUNDLES',
+	PUBLISH_OWN_BUNDLES = 'PUBLISH_OWN_BUNDLES',
+	PUBLISH_ALL_COLLECTIONS = 'PUBLISH_ALL_COLLECTIONS',
+	PUBLISH_OWN_COLLECTIONS = 'PUBLISH_OWN_COLLECTIONS',
 	SHARE_COLLECTIONS_BY_LINK = 'SHARE_COLLECTIONS_BY_LINK',
+	SHARE_BUNDLES_BY_LINK = 'SHARE_BUNDLES_BY_LINK',
+	PUBLISH_COLLECTION_WITH_LABEL = 'PUBLISH_COLLECTION_WITH_LABEL',
+	PUBLISH_BUNDLES_WITH_LABEL = 'PUBLISH_BUNDLES_WITH_LABEL',
+	CREATE_ASSIGNMENTS = 'CREATE_ASSIGNMENTS',
+	EDIT_ASSIGNMENTS = 'EDIT_ASSIGNMENTS',
+	DELETE_ASSIGNMENTS = 'DELETE_ASSIGNMENTS',
+	CREATE_ASSIGNMENT_RESPONSE = 'CREATE_ASSIGNMENT_RESPONSE',
+	EDIT_NAVIGATION_BARS = 'EDIT_NAVIGATION_BARS',
+	VIEW_ADMIN_DASHBOARD = 'VIEW_ADMIN_DASHBOARD',
+	EDIT_ANY_COLLECTIONS = 'EDIT_ANY_COLLECTIONS',
+	EDIT_ANY_BUNDLES = 'EDIT_ANY_BUNDLES',
+	VIEW_USERS = 'VIEW_USERS',
+	EDIT_SITE_SETTINGS = 'EDIT_SITE_SETTINGS',
+	CREATE_CONTENT_PAGES = 'CREATE_CONTENT_PAGES',
+	EDIT_ANY_CONTENT_PAGES = 'EDIT_ANY_CONTENT_PAGES',
+	EDIT_OWN_CONTENT_PAGES = 'EDIT_OWN_CONTENT_PAGES',
+	DELETE_ANY_CONTENT_PAGES = 'DELETE_ANY_CONTENT_PAGES',
+	DELETE_OWN_CONTENT_PAGES = 'DELETE_OWN_CONTENT_PAGES',
+	DELETE_OWN_COLLECTIONS = 'DELETE_OWN_COLLECTIONS',
+	DELETE_ANY_COLLECTIONS = 'DELETE_ANY_COLLECTIONS',
+	DELETE_OWN_BUNDLES = 'DELETE_OWN_BUNDLES',
+	DELETE_ANY_BUNDLES = 'DELETE_ANY_BUNDLES',
 	VIEW_CONTENT_FROM_ASSIGNMENT = 'VIEW_CONTENT_FROM_ASSIGNMENT',
 	VIEW_ITEMS = 'VIEW_ITEMS',
 	VIEW_COLLECTIONS = 'VIEW_COLLECTIONS',
 	VIEW_BUNDLES = 'VIEW_BUNDLES',
 	CREATE_BOOKMARKS = 'CREATE_BOOKMARKS',
+	DELETE_BOOKMARKS = 'DELETE_BOOKMARKS',
+	VIEW_BOOKMARKS = 'VIEW_BOOKMARKS',
+	PUBLISH_ITEMS = 'PUBLISH_ITEMS',
+	VIEW_ITEMS_OVERVIEW = 'VIEW_ITEMS_OVERVIEW',
+	VIEW_COLLECTIONS_OVERVIEW = 'VIEW_COLLECTIONS_OVERVIEW',
 	VIEW_ITEMS_LINKED_TO_ASSIGNMENT = 'VIEW_ITEMS_LINKED_TO_ASSIGNMENT',
 	VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT = 'VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT',
 	VIEW_SEARCH_QUERIES_LINKED_TO_ASSIGNMENT = 'VIEW_SEARCH_QUERIES_LINKED_TO_ASSIGNMENT',
+	VIEW_BUNDLES_OVERVIEW = 'VIEW_BUNDLES_OVERVIEW',
+	EDIT_INTERACTIVE_TOURS = 'EDIT_INTERACTIVE_TOURS',
+	EDIT_TRANSLATIONS = 'EDIT_TRANSLATIONS',
+	EDIT_USER_GROUPS = 'EDIT_USER_GROUPS',
+	EDIT_PERMISSION_GROUPS = 'EDIT_PERMISSION_GROUPS',
+	EDIT_BAN_USER_STATUS = 'EDIT_BAN_USER_STATUS',
 }
 
 export class PermissionService {
+	public static hasPerm(user: Avo.User.User | undefined, permName: PermissionName): boolean {
+		return this.getUserPermissions(user).includes(permName);
+	}
+
+	public static getUserPermissions(user: Avo.User.User | undefined): PermissionName[] {
+		return get(user, 'profile.permissions', []);
+	}
+
 	public static async hasPermissions(
 		permissions: Permissions,
 		user: Avo.User.User | null
@@ -67,7 +90,7 @@ export class PermissionService {
 		let permissionList: PermissionInfo[];
 		if (typeof permissions === 'string') {
 			// Single permission by name
-			permissionList = [{ name: permissions as PermissionNames }];
+			permissionList = [{ name: permissions as PermissionName }];
 		} else if ((permissions as PermissionInfo).name) {
 			// Single permission by name and object
 			permissionList = [permissions as PermissionInfo];
@@ -77,7 +100,7 @@ export class PermissionService {
 				(permission: string | PermissionInfo): PermissionInfo => {
 					if (typeof permission === 'string') {
 						// Single permission by name
-						return { name: permission as PermissionNames };
+						return { name: permission as PermissionName };
 					}
 					// Single permission by name and object
 					return permission as PermissionInfo;
@@ -101,32 +124,32 @@ export class PermissionService {
 	}
 
 	public static async hasPermission(
-		permissionName: PermissionNames,
+		permissionName: PermissionName,
 		obj: any | null | undefined,
 		user: Avo.User.User
 	): Promise<boolean> {
-		const permissions = get(user, 'profile.permissions');
-		if (!user || !permissions) {
+		const userPermissions = PermissionService.getUserPermissions(user);
+		if (!user || !userPermissions) {
 			return false;
 		}
 		// Check if user has the requested permission
 		const profileId = getProfileId(user);
-		if (!permissions.includes(permissionName)) {
+		if (!userPermissions.includes(permissionName)) {
 			return false;
 		}
 		// Special checks on top of name being in the permission list
 		switch (permissionName) {
-			case PermissionNames.EDIT_OWN_COLLECTIONS:
+			case PermissionName.EDIT_OWN_COLLECTIONS:
 				const ownerId = get(obj, 'owner_profile_id');
 				return profileId && ownerId && profileId === ownerId;
 
-			case PermissionNames.VIEW_ITEMS_LINKED_TO_ASSIGNMENT:
+			case PermissionName.VIEW_ITEMS_LINKED_TO_ASSIGNMENT:
 				return this.checkViewItemsLinkedToAssignment(user, obj, 'ITEM');
 
-			case PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT:
+			case PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT:
 				return this.checkViewItemsLinkedToAssignment(user, obj, 'COLLECTIE');
 
-			case PermissionNames.VIEW_SEARCH_QUERIES_LINKED_TO_ASSIGNMENT:
+			case PermissionName.VIEW_SEARCH_QUERIES_LINKED_TO_ASSIGNMENT:
 				return this.checkViewItemsLinkedToAssignment(user, obj, 'ZOEKOPDRACHT');
 
 			default:

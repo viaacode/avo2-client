@@ -16,7 +16,6 @@ import {
 } from '../../../shared/components';
 import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
@@ -24,6 +23,7 @@ import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/l
 import {
 	GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
 	INTERACTIVE_TOUR_PATH,
+	ITEMS_PER_PAGE,
 } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
