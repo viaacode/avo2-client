@@ -1,0 +1,31 @@
+@import '../styles/settings/colors';
+
+.m-resizable-panels {
+	> div {
+		> .resizable-fragment {
+			width: 100%;
+		}
+
+		> div:not(.resizable-fragment) {
+			position: relative;
+			background-color: rgba($color-gray-50, 0.4);
+			height: 100vh !important;
+
+			&:after {
+				content: '||';
+				border: solid 1px #666;
+				border-width: 0 1px;
+				margin: -10px 0 0 3.5px;
+				height: 20px;
+				width: 4px;
+				overflow: hidden;
+				color: transparent;
+				top: 50%;
+				left: 3px;
+				transform: translateX(-50%);
+				position: absolute;
+			}
+		}
+	}
+
+}
