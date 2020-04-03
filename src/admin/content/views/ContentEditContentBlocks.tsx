@@ -5,7 +5,8 @@ import ResizablePanels from 'resizable-panels-react';
 import { FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
+import { ContentPage } from '../../../content-page/views';
+import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
 	GET_CONTENT_BLOCK_TYPE_OPTIONS,
@@ -114,20 +115,6 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		});
 	};
 
-	const renderBlockPreviews = () =>
-		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
-			const { components, block } = contentBlockConfig;
-
-			return (
-				<ContentBlockPreview
-					key={createKey('preview', blockIndex)}
-					componentState={components.state}
-					contentWidth={contentWidth}
-					blockState={block.state}
-				/>
-			);
-		});
-
 	return (
 		<div className="m-resizable-panels m-edit-content-blocks">
 			<ResizablePanels
@@ -137,7 +124,10 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 				resizerSize="15px"
 			>
 				<FlexItem className="c-content-edit-view__preview">
-					{renderBlockPreviews()}
+					<ContentPage
+						contentBlockConfigs={contentBlockConfigs}
+						contentWidth={contentWidth}
+					/>
 				</FlexItem>
 				<Sidebar className="c-content-edit-view__sidebar" light>
 					{renderContentBlockForms()}

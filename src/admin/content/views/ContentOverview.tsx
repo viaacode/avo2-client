@@ -151,11 +151,11 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				icon: 'alert-triangle',
 			});
 		}
-	}, [setContentPages, setContentPageCount, setLoadingInfo, tableState, t]);
+	}, [user, setContentPages, setContentPageCount, setLoadingInfo, tableState, t]);
 
 	useEffect(() => {
 		fetchContentPages();
-	}, [fetchContentPages, tableState]);
+	}, [fetchContentPages]);
 
 	useEffect(() => {
 		if (contentPages) {

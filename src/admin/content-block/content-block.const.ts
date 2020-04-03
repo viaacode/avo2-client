@@ -14,6 +14,7 @@ import {
 import { FileUpload } from '../../shared/components';
 import i18n from '../../shared/translations/i18n';
 
+import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
 // More info on the bug that occurs:
 // https://github.com/viaacode/avo2-client/commit/7112c51cc1a84d482b5f67b21326784be8df42f3
@@ -171,6 +172,7 @@ export const EDITOR_TYPES_MAP = {
 	TextArea,
 	TextInput,
 	WYSIWYG,
+	UserGroupSelect,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {

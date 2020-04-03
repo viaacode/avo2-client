@@ -5,7 +5,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 
 import {
-	ContentEditFormState,
+	ContentPageEditFormState,
 	ContentOverviewTableCols,
 	ContentPageType,
 	ContentTableState,
@@ -65,7 +65,7 @@ export const INITIAL_CONTENT_OVERVIEW_STATE = () => ({
 	filterForm: INITIAL_FILTER_FORM(),
 });
 
-export const INITIAL_CONTENT_FORM = (): ContentEditFormState => ({
+export const INITIAL_CONTENT_FORM = (): ContentPageEditFormState => ({
 	title: '',
 	description: '',
 	isProtected: false,
