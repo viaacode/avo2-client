@@ -61,11 +61,6 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = {
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
-	FOR_TEACHERS: {
-		route: `/${ROUTE_PARTS.forTeachers}`,
-		showInContentPicker: true,
-		showForInteractiveTour: false,
-	},
 	LOGGED_OUT_HOME: {
 		route: '/',
 		showInContentPicker: true,
@@ -73,7 +68,7 @@ export const APP_PATH: Readonly<{ [pageId: string]: RouteInfo }> = {
 	},
 	FOR_PUPILS: {
 		route: `/${ROUTE_PARTS.forPupils}`,
-		showInContentPicker: true,
+		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
 	LOGGED_IN_HOME: {

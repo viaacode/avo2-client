@@ -26,7 +26,7 @@ export class InteractiveTourService {
 						'Content-Type': 'application/json',
 					},
 				});
-				if (response.status < 200 && response.status >= 400) {
+				if (response.status < 200 || response.status >= 400) {
 					throw new CustomError('invalid status code', null, {
 						response,
 					});
@@ -135,7 +135,7 @@ export class InteractiveTourService {
 					credentials: 'include',
 				}
 			);
-			if (response.status < 200 && response.status >= 400) {
+			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError('unexpected status code in response', null, {
 					response,
 				});

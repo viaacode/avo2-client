@@ -599,19 +599,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 																{
 																	icon: 'copy',
 																	id: 'duplicate',
-																	label: 'Dupliceer',
+																	label: t('Dupliceer'),
 																},
 																{
 																	icon: 'archive',
 																	id: 'archive',
 																	label: initialAssignment.is_archived
-																		? 'Dearchiveer'
-																		: 'Archiveer',
+																		? t('Dearchiveer')
+																		: t('Archiveer'),
 																},
 																{
 																	icon: 'delete',
 																	id: 'delete',
-																	label: 'Verwijder',
+																	label: t('Verwijder'),
 																},
 															]}
 															onClick={id =>

@@ -1,19 +1,21 @@
 import { TabProps } from '@viaa/avo2-components';
 
-export const COLLECTION_EDIT_TABS: TabProps[] = [
+import i18n from '../shared/translations/i18n';
+
+export const GET_COLLECTION_EDIT_TABS = (): TabProps[] => [
 	{
 		id: 'inhoud',
-		label: 'Inhoud',
+		label: i18n.t('Inhoud'),
 		icon: 'collection',
 	},
 	{
 		id: 'metadata',
-		label: 'Metadata',
+		label: i18n.t('Publicatiedetails'),
 		icon: 'file-text',
 	},
 	{
 		id: 'admin',
-		label: 'Beheer',
+		label: i18n.t('Beheer'),
 		icon: 'settings',
 	},
 ];
@@ -23,6 +25,7 @@ export const STILL_DIMENSIONS = {
 	height: 100,
 };
 
+export const MAX_TITLE_LENGTH = 110;
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
 
 export const NEW_FRAGMENT = {

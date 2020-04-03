@@ -43,10 +43,12 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			if (results && results.length) {
 				// Results are filled in, we can render the block
 				setResolvedResults(results);
+				return;
 			}
 			if (results && elements && !elements.length) {
 				// Results is empty, but elements is also empty, so we don't need to render anything
 				setResolvedResults(results);
+				return;
 			}
 			// If we get no results, but we do get elements, then the block is loaded in preview mode,
 			// and we should resolve the results ourselves using a separate route on the server

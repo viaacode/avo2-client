@@ -1,4 +1,5 @@
 import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	Button,
@@ -23,6 +24,7 @@ interface InputModalProps {
 	confirmLabel?: string;
 	inputValue?: string;
 	inputPlaceholder?: string;
+	maxLength?: number;
 	isOpen: boolean;
 	onClose?: () => void;
 	inputCallback: (input: string) => void;
@@ -36,6 +38,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	title = i18n.t('shared/components/input-modal/input-modal___vul-in'),
 	inputLabel = '',
 	inputPlaceholder = '',
+	maxLength,
 	cancelLabel = i18n.t('shared/components/input-modal/input-modal___annuleer'),
 	confirmLabel = i18n.t('shared/components/input-modal/input-modal___opslaan'),
 	onClose = () => {},
@@ -43,6 +46,8 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 		'shared/components/input-modal/input-modal___gelieve-een-waarde-in-te-vullen'
 	),
 }) => {
+	const [t] = useTranslation();
+
 	const [input, setInput] = useState<string>(inputValue || '');
 
 	// Listeners
@@ -61,6 +66,10 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 		inputCallback(input);
 	};
 
+	const isInputTooLong = () => {
+		return input.length > (maxLength || Infinity);
+	};
+
 	// Render
 	return (
 		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
@@ -73,6 +82,17 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 							onChange={setInput}
 							placeholder={inputPlaceholder}
 						/>
+						{maxLength && (
+							<Spacer margin="top-small">
+								<span>
+									{isInputTooLong()
+										? `${t(
+												'De invoer is te lang, maxiumum lengte: '
+										  )} ${maxLength}`
+										: `${input.length}/${maxLength}`}
+								</span>
+							</Spacer>
+						)}
 					</FormGroup>
 				</Spacer>
 				<Toolbar>
@@ -87,7 +107,8 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 								<Button
 									type="primary"
 									label={confirmLabel}
-									onClick={onClickConfirm}
+									onClick={isInputTooLong() ? () => {} : onClickConfirm}
+									disabled={isInputTooLong()}
 								/>
 							</ButtonToolbar>
 						</ToolbarItem>

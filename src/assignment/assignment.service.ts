@@ -17,30 +17,31 @@ import {
 } from './assignment.gql';
 import { AssignmentLayout } from './assignment.types';
 
-export const ASSIGNMENT_COPY_PREFIX = 'Opdracht kopie %index%: ';
-export const ASSIGNMENT_COPY_REGEX = /^Opdracht kopie [0-9]+: /gi;
+export const GET_ASSIGNMENT_COPY_PREFIX = () => `${i18n.t('Opdracht kopie')} %index%: `;
+export const GET_ASSIGNMENT_COPY_REGEX = () =>
+	new RegExp(`^${i18n.t('Opdracht kopie')} [0-9]+`, 'gi');
 
 interface AssignmentProperty {
 	name: string;
 	label: string;
 }
 
-const OBLIGATORY_PROPERTIES: AssignmentProperty[] = [
+const GET_OBLIGATORY_PROPERTIES = (): AssignmentProperty[] => [
 	{
 		name: 'title',
-		label: 'titel',
+		label: i18n.t('titel'),
 	},
 	{
 		name: 'description',
-		label: 'beschrijving',
+		label: i18n.t('beschrijving'),
 	},
 	{
 		name: 'deadline_at',
-		label: 'deadline',
+		label: i18n.t('deadline'),
 	},
 	{
 		name: 'class_room',
-		label: 'klas of groep',
+		label: i18n.t('klas of groep'),
 	},
 ];
 
@@ -57,7 +58,7 @@ export class AssignmentService {
 		const errors: string[] = [];
 
 		// Validate obligatory fields
-		OBLIGATORY_PROPERTIES.forEach((prop: AssignmentProperty) => {
+		GET_OBLIGATORY_PROPERTIES().forEach((prop: AssignmentProperty) => {
 			if (!(assignmentToSave as any)[prop.name]) {
 				errors.push(
 					i18n.t('assignment/assignment___een-eigenschap-is-verplicht', {
@@ -230,8 +231,8 @@ export class AssignmentService {
 		const collectionCopy = await CollectionService.duplicateCollection(
 			collection,
 			user,
-			ASSIGNMENT_COPY_PREFIX,
-			ASSIGNMENT_COPY_REGEX
+			GET_ASSIGNMENT_COPY_PREFIX(),
+			GET_ASSIGNMENT_COPY_REGEX()
 		);
 		if (!collectionCopy) {
 			throw new CustomError('Failed to copy collection', null);

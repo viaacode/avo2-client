@@ -11,6 +11,7 @@ import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { ToastService } from '../services';
 import i18n from '../translations/i18n';
+import { getEnv } from './env';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
@@ -98,7 +99,10 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 				});
 				break;
 			case 'EXTERNAL_LINK':
-				window.location.href = value as string;
+				window.location.href = ((value as string) || '').replace(
+					'{{PROXY_URL}}',
+					getEnv('PROXY_URL') || ''
+				);
 				break;
 			default:
 				break;
