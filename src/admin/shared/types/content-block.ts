@@ -107,6 +107,7 @@ export interface DefaultContentBlockState {
 	blockType: ContentBlockType;
 	position: number;
 	padding: PaddingFieldState;
+	userGroupIds: number[];
 }
 
 export type ContentBlockState = DefaultContentBlockState;
@@ -133,6 +134,7 @@ export enum ContentBlockEditor {
 	TextArea = 'TextArea',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
+	UserGroupSelect = 'UserGroupSelect',
 }
 
 /* CONTENT BLOCKS */

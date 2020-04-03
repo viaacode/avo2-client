@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
+import { ContentPage } from '../../../content-page/views';
+import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
 	GET_CONTENT_BLOCK_TYPE_OPTIONS,
@@ -113,23 +114,14 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		});
 	};
 
-	const renderBlockPreviews = () =>
-		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
-			const { components, block } = contentBlockConfig;
-
-			return (
-				<ContentBlockPreview
-					key={createKey('preview', blockIndex)}
-					componentState={components.state}
-					contentWidth={contentWidth}
-					blockState={block.state}
-				/>
-			);
-		});
-
 	return (
 		<Flex className="c-content-edit-view__content">
-			<FlexItem className="c-content-edit-view__preview">{renderBlockPreviews()}</FlexItem>
+			<FlexItem className="c-content-edit-view__preview">
+				<ContentPage
+					contentBlockConfigs={contentBlockConfigs}
+					contentWidth={contentWidth}
+				/>
+			</FlexItem>
 			<Sidebar className="c-content-edit-view__sidebar" light>
 				{renderContentBlockForms()}
 				<Form>

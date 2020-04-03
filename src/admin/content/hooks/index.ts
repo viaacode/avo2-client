@@ -1,2 +1,2 @@
-export * from './useContentItem';
+export * from './useContentPage';
 export * from './useContentTypes';

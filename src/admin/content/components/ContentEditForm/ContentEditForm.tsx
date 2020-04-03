@@ -29,7 +29,7 @@ import { DEFAULT_PAGES_WIDTH, GET_CONTENT_WIDTH_OPTIONS } from '../../content.co
 import { ContentService } from '../../content.service';
 import {
 	ContentEditFormErrors,
-	ContentEditFormState,
+	ContentPageEditFormState,
 	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
@@ -38,9 +38,12 @@ import './ContentEditForm.scss';
 interface ContentEditFormProps {
 	contentTypes: SelectOption<ContentPageType>[];
 	formErrors: ContentEditFormErrors;
-	formState: ContentEditFormState;
+	formState: ContentPageEditFormState;
 	isAdminUser: boolean;
-	onChange: (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => void;
+	onChange: (
+		key: keyof ContentPageEditFormState,
+		value: ValueOf<ContentPageEditFormState>
+	) => void;
 }
 
 type DateFormKeys = 'publishAt' | 'depublishAt';

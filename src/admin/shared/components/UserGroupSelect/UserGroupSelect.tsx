@@ -7,7 +7,7 @@ import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
 import { ToastService } from '../../../../shared/services';
 import { fetchAllUserGroups } from '../../../../shared/services/user-groups-service';
 
-interface UserGroupSelectProps {
+export interface UserGroupSelectProps {
 	label: string;
 	error: string | undefined;
 	placeholder: string;

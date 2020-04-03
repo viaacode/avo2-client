@@ -49,7 +49,7 @@ import {
 	PageType,
 } from '../content.types';
 import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducers';
-import { useContentItem, useContentTypes } from '../hooks';
+import { useContentPage, useContentTypes } from '../hooks';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 import './ContentEdit.scss';
@@ -72,7 +72,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	const [t] = useTranslation();
 
-	const [initialContentForm, contentForm, setContentForm, isLoading] = useContentItem(
+	const [initialContentForm, contentForm, setContentForm, isLoading] = useContentPage(
 		history,
 		id
 	);
