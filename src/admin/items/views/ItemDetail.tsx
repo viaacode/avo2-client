@@ -3,15 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
-import {
-	Button,
-	ButtonToolbar,
-	Container,
-	Header,
-	HeaderButtons,
-	Table,
-	Thumbnail,
-} from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, Table, Thumbnail } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -28,7 +20,7 @@ import {
 	renderMultiOptionDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { ItemsService } from '../items.service';
 
@@ -228,39 +220,40 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const renderItemDetailPage = () => (
-		<AdminLayout showBackButton>
-			<AdminLayoutHeader>
-				<Header
-					category="audio"
-					title={t('admin/items/views/item-detail___item-details')}
-					showMetaData={false}
-				>
-					<HeaderButtons>
-						{!!item && (
-							<ButtonToolbar>
-								<Button
-									label={
-										item.is_published
-											? t('admin/items/views/item-detail___depubliceren')
-											: t('admin/items/views/item-detail___publiceren')
-									}
-									onClick={() => setIsConfirmPublishModalOpen(true)}
-								/>
-								<Button
-									label={t(
-										'admin/items/views/item-detail___bekijk-item-in-de-website'
-									)}
-									onClick={navigateToItemDetail}
-								/>
-							</ButtonToolbar>
-						)}
-					</HeaderButtons>
-				</Header>
-			</AdminLayoutHeader>
-			<AdminLayoutBody>{renderItemDetail()}</AdminLayoutBody>
-		</AdminLayout>
-	);
+	const renderItemDetailPage = () => {
+		if (!item) {
+			return null;
+		}
+		return (
+			<AdminLayout
+				showBackButton
+				pageTitle={`${t('admin/items/views/item-detail___item-details')}: ${item.title}`}
+			>
+				<AdminLayoutTopBarRight>
+					{!!item && (
+						<ButtonToolbar>
+							<Button
+								type="danger"
+								label={
+									item.is_published
+										? t('admin/items/views/item-detail___depubliceren')
+										: t('admin/items/views/item-detail___publiceren')
+								}
+								onClick={() => setIsConfirmPublishModalOpen(true)}
+							/>
+							<Button
+								label={t(
+									'admin/items/views/item-detail___bekijk-item-in-de-website'
+								)}
+								onClick={navigateToItemDetail}
+							/>
+						</ButtonToolbar>
+					)}
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>{renderItemDetail()}</AdminLayoutBody>
+			</AdminLayout>
+		);
+	};
 
 	return (
 		<LoadingErrorLoadedComponent

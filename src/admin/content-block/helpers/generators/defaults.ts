@@ -4,6 +4,7 @@ import { WYSIWYGProps } from '@viaa/avo2-components';
 
 import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
+import { UserGroupSelectProps } from '../../../shared/components';
 import {
 	BackgroundColorOption,
 	ContentBlockEditor,
@@ -13,7 +14,6 @@ import {
 } from '../../../shared/types';
 
 import { GET_ALIGN_OPTIONS, GET_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
-import { UserGroupSelectProps } from '../../../shared/components';
 
 // Block config defaults
 export const BLOCK_STATE_DEFAULTS = (

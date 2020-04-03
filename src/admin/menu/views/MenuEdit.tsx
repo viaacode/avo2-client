@@ -22,7 +22,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { CustomError, navigate } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import { ValueOf } from '../../../shared/types';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { ContentPickerType, PickerItem } from '../../shared/types';
 
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
@@ -367,6 +367,20 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		</Flex>
 	) : (
 		<AdminLayout showBackButton pageTitle={pageTitle}>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						label={t('admin/menu/views/menu-edit___annuleer')}
+						onClick={navigateBack}
+						type="tertiary"
+					/>
+					<Button
+						disabled={isSaving}
+						label={t('admin/menu/views/menu-edit___opslaan')}
+						onClick={handleSave}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -381,18 +395,6 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t('admin/menu/views/menu-edit___annuleer')}
-					onClick={navigateBack}
-					type="tertiary"
-				/>
-				<Button
-					disabled={isSaving}
-					label={t('admin/menu/views/menu-edit___opslaan')}
-					onClick={handleSave}
-				/>
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };

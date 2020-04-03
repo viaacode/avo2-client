@@ -64,8 +64,8 @@ export class UserGroupService {
 				id,
 			};
 			const response = await dataService.query({
-				query: GET_USER_GROUP_BY_ID,
 				variables,
+				query: GET_USER_GROUP_BY_ID,
 			});
 
 			if (response.errors) {

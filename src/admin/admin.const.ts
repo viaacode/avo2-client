@@ -46,10 +46,9 @@ function getNavWithSubLinks(
 				subLinks: availableNavItems.slice(1),
 			},
 		];
-	} else {
-		// None of the items the current user can see
-		return [];
 	}
+	// None of the items the current user can see
+	return [];
 }
 
 function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {

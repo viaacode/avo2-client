@@ -11,7 +11,7 @@ import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
 
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
@@ -104,6 +104,14 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 
 	return (
 		<AdminLayout pageTitle={t('admin/menu/views/menu-overview___navigatie-overzicht')}>
+			{!!menus.length && (
+				<AdminLayoutTopBarRight>
+					<Button
+						label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
+						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
+					/>
+				</AdminLayoutTopBarRight>
+			)}
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -115,14 +123,6 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			{!!menus.length && (
-				<AdminLayoutActions>
-					<Button
-						label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
-						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
-					/>
-				</AdminLayoutActions>
-			)}
 		</AdminLayout>
 	);
 };

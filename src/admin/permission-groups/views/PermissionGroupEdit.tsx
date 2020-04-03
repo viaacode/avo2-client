@@ -27,7 +27,8 @@ import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
 import { GET_PERMISSIONS_TABLE_COLS, PERMISSION_GROUP_PATH } from '../permission-group.const';
 import { PermissionGroupService } from '../permission-group.service';
@@ -434,23 +435,25 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 					  )
 			}
 		>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						label={t('admin/permission-groups/views/permission-group-edit___annuleer')}
+						onClick={navigateBack}
+						type="tertiary"
+					/>
+					<Button
+						disabled={isSaving}
+						label={t('admin/permission-groups/views/permission-group-edit___opslaan')}
+						onClick={handleSave}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">{renderEditPage()}</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t('admin/permission-groups/views/permission-group-edit___annuleer')}
-					onClick={navigateBack}
-					type="tertiary"
-				/>
-				<Button
-					disabled={isSaving}
-					label={t('admin/permission-groups/views/permission-group-edit___opslaan')}
-					onClick={handleSave}
-				/>
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 

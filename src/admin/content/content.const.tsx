@@ -5,8 +5,8 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import i18n from '../../shared/translations/i18n';
 
 import {
-	ContentPageEditFormState,
 	ContentOverviewTableCols,
+	ContentPageEditFormState,
 	ContentPageType,
 	ContentTableState,
 	ContentWidth,

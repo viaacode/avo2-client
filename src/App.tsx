@@ -9,6 +9,8 @@ import Zendesk from 'react-zendesk';
 import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
+import { ADMIN_PATH } from './admin/admin.const';
+import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import {
@@ -24,8 +26,6 @@ import { dataService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
-import { SecuredRoute } from './authentication/components';
-import { ADMIN_PATH } from './admin/admin.const';
 
 interface AppProps extends RouteComponentProps {}
 

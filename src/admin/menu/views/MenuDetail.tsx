@@ -22,10 +22,9 @@ import {
 } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
-
 import { MenuService } from '../menu.service';
 import './MenuDetail.scss';
 
@@ -203,6 +202,20 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 
 		return (
 			<AdminLayout className="c-menu-detail" showBackButton pageTitle={startCase(menuId)}>
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						<Button
+							label={t('admin/menu/views/menu-detail___annuleer')}
+							onClick={() => handleNavigate(MENU_PATH.MENU)}
+							type="tertiary"
+						/>
+						<Button
+							disabled={isEqual(initialMenuItems, menuItems) || isSaving}
+							label={t('admin/menu/views/menu-detail___opslaan')}
+							onClick={() => handleSave()}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
 				<AdminLayoutBody>
 					<Container mode="vertical" size="small">
 						<Container mode="horizontal">
@@ -284,18 +297,6 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 						</Container>
 					</Container>
 				</AdminLayoutBody>
-				<AdminLayoutActions>
-					<Button
-						label={t('admin/menu/views/menu-detail___annuleer')}
-						onClick={() => handleNavigate(MENU_PATH.MENU)}
-						type="tertiary"
-					/>
-					<Button
-						disabled={isEqual(initialMenuItems, menuItems) || isSaving}
-						label={t('admin/menu/views/menu-detail___opslaan')}
-						onClick={() => handleSave()}
-					/>
-				</AdminLayoutActions>
 			</AdminLayout>
 		);
 	};

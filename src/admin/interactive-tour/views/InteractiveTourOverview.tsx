@@ -18,7 +18,7 @@ import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import {
 	GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS,
@@ -269,18 +269,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				'admin/interactive-tour/views/interactive-tour-overview___interactieve-tours'
 			)}
 		>
-			<AdminLayoutBody>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">
-						<LoadingErrorLoadedComponent
-							loadingInfo={loadingInfo}
-							dataObject={interactiveTours}
-							render={renderInteractiveTourPageBody}
-						/>
-					</Container>
-				</Container>
-			</AdminLayoutBody>
-			<AdminLayoutActions>
+			<AdminLayoutTopBarRight>
 				<Button
 					label={t(
 						'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-toevoegen'
@@ -292,7 +281,18 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 						);
 					}}
 				/>
-			</AdminLayoutActions>
+			</AdminLayoutTopBarRight>
+			<AdminLayoutBody>
+				<Container mode="vertical" size="small">
+					<Container mode="horizontal">
+						<LoadingErrorLoadedComponent
+							loadingInfo={loadingInfo}
+							dataObject={interactiveTours}
+							render={renderInteractiveTourPageBody}
+						/>
+					</Container>
+				</Container>
+			</AdminLayoutBody>
 		</AdminLayout>
 	);
 };

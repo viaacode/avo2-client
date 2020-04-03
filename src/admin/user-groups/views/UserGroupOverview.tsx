@@ -16,7 +16,7 @@ import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
 import {
@@ -251,6 +251,16 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		<AdminLayout
 			pageTitle={t('admin/user-groups/views/user-group-overview___gebruikersgroepen')}
 		>
+			<AdminLayoutTopBarRight>
+				<Button
+					label={t(
+						'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
+					)}
+					onClick={() => {
+						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
+					}}
+				/>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -262,16 +272,6 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t(
-						'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
-					)}
-					onClick={() => {
-						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
-					}}
-				/>
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };

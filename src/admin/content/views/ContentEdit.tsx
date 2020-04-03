@@ -8,8 +8,6 @@ import {
 	ButtonToolbar,
 	Container,
 	Flex,
-	Header,
-	HeaderButtons,
 	Navbar,
 	Spinner,
 	Tabs,
@@ -31,7 +29,12 @@ import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-blo
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
 import { validateContentBlockField } from '../../shared/helpers';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import {
+	AdminLayout,
+	AdminLayoutBody,
+	AdminLayoutHeader,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts';
 import {
 	ContentBlockComponentState,
 	ContentBlockConfig,
@@ -54,9 +57,8 @@ import {
 } from '../content.types';
 import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducers';
 import { useContentPage, useContentTypes } from '../hooks';
-import ContentEditContentBlocks from './ContentEditContentBlocks';
-
 import './ContentEdit.scss';
+import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
@@ -268,8 +270,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			}
 
 			// Save content labels
-			const initialLabelIds = initialContentForm.labels.map(label => label.id as number);
-			const labelIds = contentForm.labels.map(label => label.id as number);
+			const initialLabelIds = initialContentForm.labels.map(
+				(label: any) => label.id as number
+			);
+			const labelIds = contentForm.labels.map((label: any) => label.id as number);
 			const addedLabelIds = without(labelIds, ...initialLabelIds);
 			const removedLabelIds = without(initialLabelIds, ...labelIds);
 			await Promise.all([
@@ -427,24 +431,22 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout showBackButton>
+		<AdminLayout showBackButton pageTitle={pageTitle}>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						label={t('admin/content/views/content-edit___annuleer')}
+						onClick={navigateBack}
+						type="tertiary"
+					/>
+					<Button
+						disabled={isSaving}
+						label={t('admin/content/views/content-edit___opslaan')}
+						onClick={handleSave}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutHeader>
-				<Header category="audio" title={pageTitle} showMetaData={false}>
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								label={t('admin/content/views/content-edit___annuleer')}
-								onClick={navigateBack}
-								type="tertiary"
-							/>
-							<Button
-								disabled={isSaving}
-								label={t('admin/content/views/content-edit___opslaan')}
-								onClick={handleSave}
-							/>
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={setCurrentTab} />

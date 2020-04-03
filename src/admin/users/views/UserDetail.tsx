@@ -2,18 +2,14 @@ import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-	Avatar,
-	Button,
-	ButtonToolbar,
-	Container,
-	Header,
-	HeaderButtons,
-	Table,
-} from '@viaa/avo2-components';
+import { Avatar, Button, ButtonToolbar, Container, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError, getEnv } from '../../../shared/helpers';
@@ -22,13 +18,9 @@ import {
 	renderDateDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { GET_USER_BY_ID } from '../user.gql';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
 
 interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
@@ -166,47 +158,38 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	};
 
 	const renderUserDetailPage = () => (
-		<AdminLayout showBackButton>
-			<AdminLayoutHeader>
-				<Header
-					category="audio"
-					title={t('admin/users/views/user-detail___gebruiker-details')}
-					showMetaData={false}
-				>
-					<HeaderButtons>
-						<ButtonToolbar>
-							{canBanUser() && (
-								<Button
-									type="danger"
-									label={t('admin/users/views/user-detail___bannen')}
-									onClick={() =>
-										ToastService.info(
-											t(
-												'settings/components/profile___nog-niet-geimplementeerd'
-											),
-											false
-										)
-									}
-								/>
-							)}
-							<Button
-								label={t(
-									'admin/users/views/user-detail___beheer-in-account-manager'
-								)}
-								disabled={!getLdapDashboardUrl()}
-								title={
-									getLdapDashboardUrl()
-										? ''
-										: t(
-												'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
-										  )
-								}
-								onClick={handleLdapDashboardClick}
-							/>
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
-			</AdminLayoutHeader>
+		<AdminLayout
+			showBackButton
+			pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
+		>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					{canBanUser() && (
+						<Button
+							type="danger"
+							label={t('admin/users/views/user-detail___bannen')}
+							onClick={() =>
+								ToastService.info(
+									t('settings/components/profile___nog-niet-geimplementeerd'),
+									false
+								)
+							}
+						/>
+					)}
+					<Button
+						label={t('admin/users/views/user-detail___beheer-in-account-manager')}
+						disabled={!getLdapDashboardUrl()}
+						title={
+							getLdapDashboardUrl()
+								? ''
+								: t(
+										'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
+								  )
+						}
+						onClick={handleLdapDashboardClick}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
 		</AdminLayout>
 	);

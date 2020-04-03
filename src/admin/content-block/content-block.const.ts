@@ -88,7 +88,7 @@ export const CONTENT_BLOCKS_RESULT_PATH = {
 
 export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___kies-een-content-block'),
+		label: i18n.t('Voeg een content blok toe'),
 		value: '',
 		disabled: true,
 	},
