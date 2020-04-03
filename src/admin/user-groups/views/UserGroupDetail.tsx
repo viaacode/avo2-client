@@ -145,21 +145,13 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 		}
 	};
 
-	const getPermissions = (permissionGroup: any): Permission[] => {
-		return get(permissionGroup, 'permission_group_user_permissions', []).map(
-			(permissionLink: any) => {
-				return get(permissionLink, 'permission');
-			}
-		);
-	};
-
 	const renderTableCell = (rowData: PermissionGroup, columnId: UserGroupOverviewTableCols) => {
 		switch (columnId) {
 			case 'label':
 				return (
 					<div className="c-user-group__permission-list">
 						<div>{rowData.label}</div>
-						{getPermissions(rowData).map((permission: Permission) => {
+						{UserGroupService.getPermissions(rowData).map((permission: Permission) => {
 							return (
 								<div key={`permission-group-list-${rowData.id}-${permission.id}`}>
 									{permission.description}

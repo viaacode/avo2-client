@@ -203,7 +203,7 @@ export class UserGroupService {
 		}
 	}
 
-	static async deleteUserGroup(userGroupId: number) {
+	public static async deleteUserGroup(userGroupId: number) {
 		try {
 			const response = await dataService.mutate({
 				mutation: DELETE_USER_GROUP,
@@ -226,7 +226,7 @@ export class UserGroupService {
 		}
 	}
 
-	static sortPermissionGroups(
+	public static sortPermissionGroups(
 		permissionGroups: PermissionGroup[],
 		sortColumn: string,
 		sortOrder: Avo.Search.OrderDirection
@@ -234,6 +234,14 @@ export class UserGroupService {
 		return uniqBy(
 			orderBy(permissionGroups, [sortColumn], [sortOrder]),
 			permissionGroup => permissionGroup.id
+		);
+	}
+
+	public static getPermissions(permissionGroup: any): Permission[] {
+		return get(permissionGroup, 'permission_group_user_permissions', []).map(
+			(permissionLink: any) => {
+				return get(permissionLink, 'permission');
+			}
 		);
 	}
 }
