@@ -18,6 +18,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-info';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql';
 import { DeleteObjectModal } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
@@ -98,7 +102,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		pageType === PageType.Create
 			? t('admin/content/views/content-edit___content-toevoegen')
 			: t('admin/content/views/content-edit___content-aanpassen');
-	const isAdminUser = get(user, 'profile.permissions', []).includes('EDIT_PROTECTED_PAGE_STATUS');
+	const isAdminUser = PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS);
 
 	// Methods
 	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {

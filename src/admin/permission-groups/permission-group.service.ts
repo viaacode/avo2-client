@@ -6,6 +6,7 @@ import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
 
+import { GET_ALL_PERMISSION_GROUPS } from '../user-groups/user-group.gql';
 import { ITEMS_PER_PAGE } from './permission-group.const';
 import {
 	ADD_PERMISSIONS_TO_GROUP,
@@ -59,6 +60,37 @@ export class PermissionGroupService {
 			throw new CustomError('Failed to get permission groups from the database', err, {
 				variables,
 				query: 'GET_PERMISSION_GROUPS',
+			});
+		}
+	}
+
+	public static async fetchAllPermissionGroups(): Promise<PermissionGroup[]> {
+		try {
+			const response = await dataService.query({
+				query: GET_ALL_PERMISSION_GROUPS,
+			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains errors', null, {
+					response,
+				});
+			}
+
+			const permissionGroups: PermissionGroup[] | undefined = get(
+				response,
+				'data.users_permission_groups'
+			);
+
+			if (!permissionGroups) {
+				throw new CustomError('Response does not contain permissionGroups', null, {
+					response,
+				});
+			}
+
+			return permissionGroups;
+		} catch (err) {
+			throw new CustomError('Failed to get all permissionGroups from database', err, {
+				query: 'GET_ALL_PERMISSIONS',
 			});
 		}
 	}

@@ -426,9 +426,13 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({
 	const renderPage = () => (
 		<AdminLayout
 			showBackButton
-			pageTitle={t(
-				'admin/permission-groups/views/permission-group-edit___permissie-groep-aanpassen'
-			)}
+			pageTitle={
+				isCreatePage
+					? t('Permissie groep aanmaken')
+					: t(
+							'admin/permission-groups/views/permission-group-edit___permissie-groep-aanpassen'
+					  )
+			}
 		>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">

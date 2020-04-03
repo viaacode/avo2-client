@@ -14,13 +14,16 @@ import {
 } from '../../../shared/components';
 import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
 
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { GET_USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
+import {
+	GET_USER_GROUP_OVERVIEW_TABLE_COLS,
+	ITEMS_PER_PAGE,
+	USER_GROUP_PATH,
+} from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
 
@@ -52,8 +55,8 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		try {
 			const [userGroupsTemp, userGroupCountTemp] = await UserGroupService.fetchUserGroups(
 				tableState.page || 0,
-				tableState.sort_column || 'created_at',
-				tableState.sort_order || 'desc',
+				tableState.sort_column || 'label',
+				tableState.sort_order || 'asc',
 				generateWhereObject(getFilters(tableState))
 			);
 			setUserGroups(userGroupsTemp);
