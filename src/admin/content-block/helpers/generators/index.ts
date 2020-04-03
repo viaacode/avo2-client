@@ -1,4 +1,3 @@
-export * from './accordions';
 export * from './anchor-links';
 export * from './buttons';
 export * from './ctas';
