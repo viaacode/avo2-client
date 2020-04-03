@@ -1,11 +1,15 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouteComponentProps } from 'react-router';
 
 import { Avatar, Button, ButtonToolbar, Container, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError, getEnv } from '../../../shared/helpers';
@@ -14,14 +18,13 @@ import {
 	renderDateDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { GET_USER_BY_ID } from '../user.gql';
 
-interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
+interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
+const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -98,6 +101,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 		redirectToExternalPage(getLdapDashboardUrl() as string, '_blank');
 	};
 
+	const canBanUser = (): boolean => {
+		return PermissionService.hasPerm(user, PermissionName.EDIT_BAN_USER_STATUS);
+	};
+
 	const renderUserDetail = () => {
 		if (!storedProfile) {
 			console.error(
@@ -157,16 +164,18 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
-					<Button
-						type="danger"
-						label={t('admin/users/views/user-detail___bannen')}
-						onClick={() =>
-							ToastService.info(
-								t('settings/components/profile___nog-niet-geimplementeerd'),
-								false
-							)
-						}
-					/>
+					{canBanUser() && (
+						<Button
+							type="danger"
+							label={t('admin/users/views/user-detail___bannen')}
+							onClick={() =>
+								ToastService.info(
+									t('settings/components/profile___nog-niet-geimplementeerd'),
+									false
+								)
+							}
+						/>
+					)}
 					<Button
 						label={t('admin/users/views/user-detail___beheer-in-account-manager')}
 						disabled={!getLdapDashboardUrl()}

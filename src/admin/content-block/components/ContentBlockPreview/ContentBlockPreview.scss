@@ -7,4 +7,18 @@
 			color: $color-gray-150;
 		}
 	}
+
+	.c-quote {
+		.c-quote__text {
+			color: $color-gray-50;
+		}
+
+		.c-quote__author {
+			color: $color-gray-100;
+
+			.c-avatar {
+				background: $color-gray-400;
+			}
+		}
+	}
 }

@@ -5,7 +5,8 @@ import ResizablePanels from 'resizable-panels-react';
 import { Navbar, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
+import { ContentPage } from '../../../content-page/views';
+import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
 	GET_CONTENT_BLOCK_TYPE_OPTIONS,
@@ -14,6 +15,7 @@ import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers';
 import {
 	ContentBlockConfig,
+	ContentBlockErrors,
 	ContentBlockStateOption,
 	ContentBlockStateType,
 	ContentBlockType,
@@ -22,7 +24,9 @@ import {
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	contentWidth: Avo.Content.ContentWidth;
+	hasSubmitted: boolean;
 	onAdd: (config: ContentBlockConfig) => void;
+	onError: (configIndex: number, errors: ContentBlockErrors) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
 	onSave: (
@@ -38,7 +42,9 @@ interface ContentEditContentBlocksProps {
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
 	contentBlockConfigs,
 	contentWidth,
+	hasSubmitted,
 	onAdd,
+	onError,
 	onRemove,
 	onReorder,
 	onSave,
@@ -99,6 +105,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					blockIndex={index}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
 					length={contentBlockConfigs.length}
+					hasSubmitted={hasSubmitted}
 					setIsAccordionOpen={() =>
 						setAccordionsOpenState({
 							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
@@ -115,26 +122,13 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					removeComponentFromState={(stateIndex: number) =>
 						removeComponentFromState(index, stateIndex)
 					}
+					onError={onError}
 					onRemove={onRemove}
 					onReorder={handleReorderContentBlock}
 				/>
 			);
 		});
 	};
-
-	const renderBlockPreviews = () =>
-		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
-			const { components, block } = contentBlockConfig;
-
-			return (
-				<ContentBlockPreview
-					key={createKey('preview', blockIndex)}
-					componentState={components.state}
-					contentWidth={contentWidth}
-					blockState={block.state}
-				/>
-			);
-		});
 
 	return (
 		<div className="m-resizable-panels m-edit-content-blocks">
@@ -145,7 +139,10 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 				resizerSize="15px"
 			>
 				<div className="c-content-edit-view__preview" ref={previewScrollable}>
-					{renderBlockPreviews()}
+					<ContentPage
+						contentBlockConfigs={contentBlockConfigs}
+						contentWidth={contentWidth}
+					/>
 				</div>
 				<Sidebar className="c-content-edit-view__sidebar" light>
 					<Navbar background="alt">

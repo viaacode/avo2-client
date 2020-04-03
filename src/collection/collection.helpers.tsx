@@ -69,8 +69,8 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	{
 		error: collection =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t("De collectie heeft geen onderwijsniveau's.")
-				: i18n.t("De bundel heeft geen onderwijsniveau's."),
+				? i18n.t('collection/collection___de-collectie-heeft-geen-onderwijsniveaus')
+				: i18n.t('collection/collection___de-bundel-heeft-geen-onderwijsniveaus'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.lom_context && collection.lom_context.length),
 	},

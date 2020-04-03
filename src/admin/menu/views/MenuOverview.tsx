@@ -80,6 +80,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 							icon="plus"
 							label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
 							onClick={() => history.push(MENU_PATH.MENU_CREATE)}
+							type="primary"
 						/>
 					</Spacer>
 				</ErrorView>

@@ -1,7 +1,10 @@
-import { isEmpty, isNil } from 'lodash-es';
+import { isEmpty, isNil, without } from 'lodash-es';
 
+import { WYSIWYGProps } from '@viaa/avo2-components';
+
+import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
-
+import { UserGroupSelectProps } from '../../../shared/components';
 import {
 	BackgroundColorOption,
 	ContentBlockEditor,
@@ -20,23 +23,26 @@ export const BLOCK_STATE_DEFAULTS = (
 	padding: PaddingFieldState = {
 		top: 'top',
 		bottom: 'bottom',
-	}
+	},
+	userGroupIds: number[] = [] // empty list means everybody with access to the page can see this content block
 ) => ({
 	blockType,
 	position,
 	backgroundColor,
 	padding,
+	userGroupIds,
 });
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
 	padding: PADDING_FIELD(),
+	userGroupIds: USER_GROUP_SELECT(),
 });
 
 // Recurring fields
 export const BACKGROUND_COLOR_FIELD = (
 	label: string = i18n.t('admin/content-block/helpers/generators/defaults___achtergrondkleur')
-) => ({
+): ContentBlockField => ({
 	label,
 	editorType: ContentBlockEditor.ColorSelect,
 	editorProps: {
@@ -47,14 +53,22 @@ export const BACKGROUND_COLOR_FIELD = (
 
 export const PADDING_FIELD = (
 	label = i18n.t('admin/content-block/helpers/generators/defaults___padding')
-) => ({
+): ContentBlockField => ({
 	label,
 	editorType: ContentBlockEditor.PaddingSelect,
 });
 
+export const USER_GROUP_SELECT = (label = i18n.t('Zichtbaar voor')): ContentBlockField => ({
+	label,
+	editorType: ContentBlockEditor.UserGroupSelect,
+	editorProps: {
+		placeholder: i18n.t('Iedereen met toegang tot de pagina'),
+	} as UserGroupSelectProps,
+});
+
 export const ALIGN_FIELD = (
 	label: string = i18n.t('admin/content-block/helpers/generators/defaults___uitlijning')
-) => ({
+): ContentBlockField => ({
 	label,
 	editorType: ContentBlockEditor.AlignSelect,
 	editorProps: {
@@ -67,7 +81,7 @@ export const TEXT_FIELD = (
 		'admin/content-block/helpers/generators/defaults___tekst-is-verplicht'
 	),
 	propOverride?: Partial<ContentBlockField>
-) => ({
+): ContentBlockField => ({
 	label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
 	editorType: ContentBlockEditor.WYSIWYG,
 	validator: (value: string) => {
@@ -79,6 +93,14 @@ export const TEXT_FIELD = (
 
 		return errorArray;
 	},
+	editorProps: {
+		btns: without(WYSIWYG_OPTIONS_FULL, WYSIWYG_OPTIONS_ALIGN),
+		plugins: {
+			table: {
+				styler: 'c-table--styled',
+			},
+		},
+	} as Partial<WYSIWYGProps>,
 	...propOverride,
 });
 
@@ -87,7 +109,7 @@ export const FILE_FIELD = (
 		'admin/content-block/helpers/generators/defaults___een-bestand-is-verplicht'
 	),
 	propOverride?: Partial<ContentBlockField>
-) => ({
+): ContentBlockField => ({
 	label: i18n.t('admin/content-block/helpers/generators/defaults___bestand'),
 	editorType: ContentBlockEditor.FileUpload,
 	validator: (value: string) => {
@@ -103,7 +125,9 @@ export const FILE_FIELD = (
 	...propOverride,
 });
 
-export const CONTENT_TYPE_AND_LABELS_INPUT = (propOverride?: Partial<ContentBlockField>) => ({
+export const CONTENT_TYPE_AND_LABELS_INPUT = (
+	propOverride?: Partial<ContentBlockField>
+): ContentBlockField => ({
 	label: i18n.t('admin/content-block/helpers/generators/defaults___type-en-labels'),
 	editorType: ContentBlockEditor.ContentTypeAndLabelsPicker,
 	validator: () => [],

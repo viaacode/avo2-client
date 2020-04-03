@@ -30,10 +30,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import {
@@ -149,9 +146,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				const rawPermissions = await Promise.all([
 					PermissionService.hasPermissions(
 						[
-							{ name: PermissionNames.VIEW_COLLECTIONS },
+							{ name: PermissionName.VIEW_COLLECTIONS },
 							{
-								name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
+								name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
 								obj: collectionId,
 							},
 						],
@@ -159,23 +156,23 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					),
 					PermissionService.hasPermissions(
 						[
-							{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: collectionId },
-							{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
+							{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
+							{ name: PermissionName.EDIT_ANY_COLLECTIONS },
 						],
 						user
 					),
 					PermissionService.hasPermissions(
 						[
-							{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: collectionId },
-							{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
+							{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
+							{ name: PermissionName.DELETE_ANY_COLLECTIONS },
 						],
 						user
 					),
 					PermissionService.hasPermissions(
-						[{ name: PermissionNames.CREATE_COLLECTIONS }],
+						[{ name: PermissionName.CREATE_COLLECTIONS }],
 						user
 					),
-					PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+					PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
 				]);
 				const permissionObj = {
 					canViewCollections: rawPermissions[0],

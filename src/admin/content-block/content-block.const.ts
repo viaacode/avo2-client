@@ -14,6 +14,7 @@ import {
 import { FileUpload } from '../../shared/components';
 import i18n from '../../shared/translations/i18n';
 
+import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
 // More info on the bug that occurs:
 // https://github.com/viaacode/avo2-client/commit/7112c51cc1a84d482b5f67b21326784be8df42f3
@@ -30,7 +31,6 @@ import {
 } from '../shared/types';
 import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
-	ACCORDIONS_BLOCK_CONFIG,
 	ANCHOR_LINKS_BLOCK_CONFIG,
 	BUTTONS_BLOCK_CONFIG,
 	CTAS_BLOCK_CONFIG,
@@ -38,8 +38,6 @@ import {
 	IFRAME_BLOCK_CONFIG,
 	IMAGE_BLOCK_CONFIG,
 	IMAGE_GRID_BLOCK_CONFIG,
-	INITIAL_ACCORDIONS_BLOCK_STATE,
-	INITIAL_ACCORDIONS_COMPONENTS_STATE,
 	INITIAL_ANCHOR_LINKS_BLOCK_STATE,
 	INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	INITIAL_BUTTONS_BLOCK_STATE,
@@ -123,10 +121,6 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 		value: ContentBlockType.IFrame,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___accordeons'),
-		value: ContentBlockType.Accordions,
-	},
-	{
 		label: i18n.t('admin/content-block/content-block___media-tegels'),
 		value: ContentBlockType.MediaGrid,
 	},
@@ -178,10 +172,10 @@ export const EDITOR_TYPES_MAP = {
 	TextArea,
 	TextInput,
 	WYSIWYG,
+	UserGroupSelect,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
-	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
 	[ContentBlockType.AnchorLinks]: ANCHOR_LINKS_BLOCK_CONFIG,
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
 	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
@@ -201,7 +195,6 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
-	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_COMPONENTS_STATE,
 	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_COMPONENTS_STATE,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_COMPONENTS_STATE,
@@ -221,7 +214,6 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 };
 
 export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
-	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
 	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_BLOCK_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_STATE,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
@@ -279,15 +271,15 @@ export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => BackgroundColorOption[] = 
 
 export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{
-		label: 'Links',
+		label: i18n.t('admin/content-block/content-block___links'),
 		value: 'left',
 	},
 	{
-		label: 'Gecentreerd',
+		label: i18n.t('admin/content-block/content-block___gecentreerd'),
 		value: 'center',
 	},
 	{
-		label: 'Rechts',
+		label: i18n.t('admin/content-block/content-block___rechts'),
 		value: 'right',
 	},
 ];
@@ -305,6 +297,14 @@ export const GET_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] =
 		label: i18n.t('admin/content-block/content-block___h-4'),
 		value: 'h4',
 	},
+];
+
+export const GET_FULL_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] = () => [
+	{
+		label: i18n.t('H1'),
+		value: 'h1',
+	},
+	...GET_HEADING_TYPE_OPTIONS(),
 ];
 
 export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [

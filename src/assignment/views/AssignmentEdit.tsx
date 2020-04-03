@@ -39,7 +39,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-service';
 import { toEnglishContentType } from '../../collection/collection.types';
 import { APP_PATH } from '../../constants';
 import {
@@ -205,7 +205,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		};
 
 		checkPermissions(
-			PermissionNames.EDIT_ASSIGNMENTS,
+			PermissionName.EDIT_ASSIGNMENTS,
 			user,
 			initAssignmentData,
 			setLoadingInfo,
@@ -599,19 +599,27 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 																{
 																	icon: 'copy',
 																	id: 'duplicate',
-																	label: 'Dupliceer',
+																	label: t(
+																		'assignment/views/assignment-edit___dupliceer'
+																	),
 																},
 																{
 																	icon: 'archive',
 																	id: 'archive',
 																	label: initialAssignment.is_archived
-																		? 'Dearchiveer'
-																		: 'Archiveer',
+																		? t(
+																				'assignment/views/assignment-edit___dearchiveer'
+																		  )
+																		: t(
+																				'assignment/views/assignment-edit___archiveer'
+																		  ),
 																},
 																{
 																	icon: 'delete',
 																	id: 'delete',
-																	label: 'Verwijder',
+																	label: t(
+																		'assignment/views/assignment-edit___verwijder'
+																	),
 																},
 															]}
 															onClick={id =>

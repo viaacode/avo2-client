@@ -11,7 +11,7 @@ export const USER_GROUP_PATH = {
 	USER_GROUP_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.userGroup}/:id/${ROUTE_PARTS.edit}`,
 };
 
-export const ITEMS_PER_PAGE = 10;
+export const ITEMS_PER_PAGE = 20;
 
 export const GET_USER_GROUP_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
 	{ id: 'label', label: i18n.t('admin/user-groups/user-group___label'), sortable: true },

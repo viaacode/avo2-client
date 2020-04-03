@@ -99,10 +99,35 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 			);
 
 			// Replace t() functions ( including i18n.t() )
+			const beforeTFunction = '([^a-zA-Z])';
+			const tFuncStart = 't\\(';
+			const whitespace = '\\s*';
+			const quote = '[\'"]';
+			const translation = '([\\s\\S]+?)';
+			const translationVariables = `([s]*|,[^)]*)?`;
+			const tFuncEnd = '\\)';
+			const combinedRegex = [
+				beforeTFunction,
+				tFuncStart,
+				whitespace,
+				quote,
+				translation,
+				quote,
+				whitespace,
+				translationVariables,
+				whitespace,
+				tFuncEnd,
+			].join('');
+			const regex = new RegExp(combinedRegex, 'gim');
 			content = content.replace(
 				// Match char before t function to make sure it isn't part of a bigger function name, eg: sent()
-				/([^a-zA-Z])t\(\s*'([\s\S]+?)'([^)]*)\)/g,
-				(match: string, prefix: string, translation: string, translationParams: string) => {
+				regex,
+				(
+					match: string,
+					prefix: string,
+					translation: string,
+					translationParams: string | undefined
+				) => {
 					let formattedKey: string | undefined;
 					const formattedTranslation: string = getFormattedTranslation(translation);
 					if (formattedTranslation.includes('___')) {
@@ -110,7 +135,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					} else {
 						formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
 					}
-					if (translationParams.includes('(')) {
+					if ((translationParams || '').includes('(')) {
 						console.warn(
 							'WARNING: Translation params should not contain any function calls, ' +
 								'since the regex replacement cannot deal with brackets inside the t() function. ' +
@@ -129,7 +154,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 						(formattedTranslation.includes('___')
 							? getFormattedTranslation((oldTranslations as keyMap)[formattedKey])
 							: formattedTranslation) || '';
-					return `${prefix}t('${formattedKey}'${translationParams})`;
+					return `${prefix}t('${formattedKey}'${translationParams || ''})`;
 				}
 			);
 
@@ -208,7 +233,10 @@ async function updateTranslations() {
 		combinedTranslations[key] = onlineTranslations[key] || newTranslations[key];
 	});
 
-	const nlJsonContent = JSON.stringify(sortObject(combinedTranslations), null, 2);
+	const nlJsonContent = JSON.stringify(sortObject(combinedTranslations), null, 2).replace(
+		/\s*(\\n|\\r)+\s*/g, // replace new line chars with a single space
+		' '
+	);
 	checkTranslationsForKeysAsValue(nlJsonContent); // Throws error if any key is found as a value
 
 	fs.writeFileSync(

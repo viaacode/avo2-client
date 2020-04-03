@@ -16,7 +16,7 @@ import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import {
 	GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS,
@@ -30,7 +30,6 @@ import {
 	PermissionGroupTableState,
 } from '../permission-group.types';
 import './PermissionGroupOverview.scss';
-import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
 interface PermissionGroupOverviewProps extends DefaultSecureRouteProps {}
 
@@ -50,7 +49,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			const andFilters: any[] = [];
 			andFilters.push(
 				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-					{ title: { _ilike: queryWordWildcard } },
+					{ label: { _ilike: queryWordWildcard } },
 					{ description: { _ilike: queryWordWildcard } },
 				])
 			);

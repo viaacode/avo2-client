@@ -155,6 +155,19 @@ export const GET_CONTENT_BY_ID = gql`
 					id
 				}
 			}
+			contentBlockssBycontentId(order_by: { position: asc }) {
+				content_block_type
+				content_id
+				created_at
+				id
+				position
+				updated_at
+				variables
+				enum_content_block_type {
+					description
+					value
+				}
+			}
 		}
 	}
 `;

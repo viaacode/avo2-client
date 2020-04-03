@@ -1,5 +1,6 @@
-import { get, isEqual, isNil, isNumber } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import classnames from 'classnames';
+import { get, isEqual, isNil } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -19,12 +20,13 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 
+import { validateContentBlockField } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,
 	ContentBlockComponentsConfig,
 	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockFormError,
+	ContentBlockErrors,
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../../shared/types';
@@ -39,7 +41,9 @@ interface ContentBlockFormProps {
 	blockIndex: number;
 	isAccordionOpen: boolean;
 	length: number;
+	hasSubmitted: boolean;
 	onChange: (formGroupType: ContentBlockStateType, input: any, stateIndex?: number) => void;
+	onError: (configIndex: number, newErrors: ContentBlockErrors) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
 	setIsAccordionOpen: () => void;
@@ -52,7 +56,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	blockIndex,
 	isAccordionOpen,
 	length,
+	hasSubmitted,
 	onChange,
+	onError,
 	onRemove,
 	onReorder,
 	setIsAccordionOpen,
@@ -61,10 +67,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 }) => {
 	const { components, block } = config;
 	const { isArray } = Array;
+	const configErrors = config.errors || {};
 
 	// Hooks
-	const [formErrors, setFormErrors] = useState<ContentBlockFormError>({});
-
 	const [t] = useTranslation();
 
 	// Methods
@@ -90,31 +95,18 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		updatedFormValue: any,
 		stateIndex?: number
 	) => {
-		const errors: ContentBlockFormError = { ...formErrors };
-
 		const field = config[formGroupType].fields[fieldKey];
 		const validator = get(field, 'validator');
 
-		if (validator) {
-			const errorArray = validator(updatedFormValue);
+		const errors = validateContentBlockField(
+			fieldKey,
+			validator,
+			configErrors,
+			updatedFormValue,
+			stateIndex
+		);
 
-			if (errorArray.length) {
-				if (isNumber(stateIndex)) {
-					errors[fieldKey] = errors[fieldKey] || [];
-					errors[fieldKey][stateIndex] = errorArray;
-				} else {
-					errors[fieldKey] = errorArray;
-				}
-			} else if (errors[fieldKey]) {
-				if (isNumber(stateIndex)) {
-					delete errors[fieldKey][stateIndex];
-				} else {
-					delete errors[fieldKey];
-				}
-			}
-		}
-
-		setFormErrors(errors);
+		onError(blockIndex, errors);
 	};
 
 	const renderRemoveButton = (stateIndex: number) => {
@@ -146,7 +138,6 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			formGroup,
 			formGroupType,
 			handleChange,
-			formErrors,
 		};
 
 		// Render each state individually in a ContentBlockFormGroup
@@ -203,7 +194,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 			(isArray(components.state) && components.state.length < get(components, 'limits.max'));
 
 		return (
-			<Accordion isOpen={isAccordionOpen}>
+			<Accordion
+				className={classnames('c-content-block-form__accordion', {
+					'has-error': hasSubmitted && Object.keys(configErrors).length > 0,
+				})}
+				isOpen={isAccordionOpen}
+			>
 				<AccordionTitle>{accordionTitle}</AccordionTitle>
 				<AccordionActions>
 					<ButtonToolbar>
@@ -263,7 +259,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		);
 	};
 
-	return <Form className="c-content-block-form">{renderBlockForm(config)}</Form>;
+	return <Form className="c-content-block-form c-content">{renderBlockForm(config)}</Form>;
 };
 
 export default React.memo(ContentBlockForm, (prevProps, nextProps) => {
@@ -273,6 +269,7 @@ export default React.memo(ContentBlockForm, (prevProps, nextProps) => {
 		isEqual(prevProps.config, nextProps.config) &&
 		prevProps.isAccordionOpen === nextProps.isAccordionOpen &&
 		prevProps.blockIndex === nextProps.blockIndex &&
-		prevProps.length === nextProps.length
+		prevProps.length === nextProps.length &&
+		prevProps.hasSubmitted === nextProps.hasSubmitted
 	);
 });

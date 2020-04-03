@@ -19,6 +19,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { ContentPage } from '../../../content-page/views';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
@@ -28,9 +29,6 @@ import { CustomError, navigate, sanitize, sanitizePresets } from '../../../share
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
-import { ContentBlockPreview } from '../../content-block/components';
-import { parseContentBlocks } from '../../content-block/helpers';
-import { useContentBlocksByContentId } from '../../content-block/hooks';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
@@ -63,14 +61,12 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
-	const [contentBlocks] = useContentBlocksByContentId(id);
 	const [currentTab, setCurrentTab, tabs] = useTabs(
 		GET_CONTENT_DETAIL_TABS(),
 		GET_CONTENT_DETAIL_TABS()[0].id
 	);
 
 	// Computed
-	const contentBlockConfigs = parseContentBlocks(contentBlocks);
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 	const isContentProtected = get(contentPage, 'is_protected', false);
 	const pageTitle = `Content: ${get(contentPage, 'title', '')}`;
@@ -203,18 +199,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		// TODO: Move tab contents to separate views
 		switch (currentTab) {
 			case 'inhoud':
-				return (
-					<>
-						{contentBlockConfigs.map((contentBlockConfig, index) => (
-							<ContentBlockPreview
-								key={contentBlocks[index].id}
-								componentState={contentBlockConfig.components.state}
-								contentWidth={get(contentPage, 'content_width')}
-								blockState={contentBlockConfig.block.state}
-							/>
-						))}
-					</>
-				);
+				return <ContentPage contentPage={contentPage} />;
 			case 'metadata':
 				return (
 					<Container mode="vertical" size="small">

@@ -24,10 +24,7 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH } from '../../constants';
 import {
@@ -94,12 +91,12 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				),
 				// TODO: DISABLED_FEATURE filter
 				// filter: {
-				// 	label: 'Auteur',
+				// 	label: t('workspace/views/workspace___auteur'),
 				// 	options: [
-				// 		{ id: 'all', label: 'Alles' },
-				// 		{ id: 'owner', label: 'Enkel waar ik eigenaar ben' },
-				// 		{ id: 'sharedWith', label: 'Enkel gedeeld met mij' },
-				// 		{ id: 'sharedBy', label: 'Enkel gedeeld door mij' },
+				// 		{ id: 'all', label: t('workspace/views/workspace___alles') },
+				// 		{ id: 'owner', label: t('workspace/views/workspace___enkel-waar-ik-eigenaar-ben') },
+				// 		{ id: 'sharedWith', label: t('workspace/views/workspace___enkel-gedeeld-met-mij') },
+				// 		{ id: 'sharedBy', label: t('workspace/views/workspace___enkel-gedeeld-door-mij') },
 				// 	],
 				// },
 			}),
@@ -163,10 +160,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				query: GET_WORKSPACE_TAB_COUNTS,
 				variables: { owner_profile_id: getProfileId(user) },
 			}),
-			PermissionService.hasPermission(PermissionNames.CREATE_COLLECTIONS, null, user),
-			PermissionService.hasPermission(PermissionNames.CREATE_BUNDLES, null, user),
-			PermissionService.hasPermission(PermissionNames.CREATE_ASSIGNMENTS, null, user),
-			PermissionService.hasPermission(PermissionNames.CREATE_BOOKMARKS, null, user),
+			PermissionService.hasPermission(PermissionName.CREATE_COLLECTIONS, null, user),
+			PermissionService.hasPermission(PermissionName.CREATE_BUNDLES, null, user),
+			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
+			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, user),
 		])
 			.then(response => {
 				setTabCounts({

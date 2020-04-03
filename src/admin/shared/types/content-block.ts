@@ -17,7 +17,7 @@ export type FillOption = 'cover' | 'contain' | 'auto';
 
 export type WidthOption = 'full-width' | '500px' | '400px';
 
-export type HeadingTypeOption = 'h2' | 'h3' | 'h4';
+export type HeadingTypeOption = 'h1' | 'h2' | 'h3' | 'h4';
 
 export enum BackgroundColorOption {
 	Gray50 = 'gray-50',
@@ -43,6 +43,7 @@ export interface ContentBlockMeta {
 // CONTENT BLOCK
 export interface ContentBlockConfig {
 	id?: number;
+	errors?: ContentBlockErrors;
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
@@ -79,7 +80,6 @@ export interface ContentBlockField {
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
 export enum ContentBlockType {
-	Accordions = 'ACCORDIONS',
 	AnchorLinks = 'ANCHOR_LINKS',
 	Buttons = 'BUTTONS',
 	CTAs = 'CTAS',
@@ -99,7 +99,7 @@ export enum ContentBlockType {
 }
 
 // if 1 block, errors is a string[]. If multiple, it is a string[] index by their stateIndex, so string[][].
-export type ContentBlockFormError = { [key: string]: string[] | string[][] };
+export type ContentBlockErrors = { [key: string]: (string | string[])[] };
 
 /* CONTENT BLOCK STATE */
 export interface DefaultContentBlockState {
@@ -107,6 +107,7 @@ export interface DefaultContentBlockState {
 	blockType: ContentBlockType;
 	position: number;
 	padding: PaddingFieldState;
+	userGroupIds: number[];
 }
 
 export type ContentBlockState = DefaultContentBlockState;
@@ -133,11 +134,11 @@ export enum ContentBlockEditor {
 	TextArea = 'TextArea',
 	TextInput = 'TextInput',
 	WYSIWYG = 'WYSIWYG',
+	UserGroupSelect = 'UserGroupSelect',
 }
 
 /* CONTENT BLOCKS */
 export type ContentBlockComponentState =
-	| AccordionsBlockComponentState
 	| ButtonsBlockComponentState
 	| CTAsBlockComponentState
 	| HeadingBlockComponentState
@@ -233,11 +234,6 @@ export interface CTAsBlockComponentState {
 export interface IFrameBlockComponentState {
 	title: string;
 	src: string;
-}
-
-export interface AccordionsBlockComponentState {
-	title: string;
-	content: string;
 }
 
 export interface QuoteBlockComponentState {

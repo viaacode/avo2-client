@@ -1,5 +1,4 @@
 import {
-	BlockAccordions,
 	BlockButtons,
 	BlockCTAs,
 	BlockGrid,
@@ -21,7 +20,6 @@ import {
 } from '../wrappers';
 
 export const COMPONENT_PREVIEW_MAP = Object.freeze({
-	[ContentBlockType.Accordions]: BlockAccordions,
 	[ContentBlockType.AnchorLinks]: BlockButtons,
 	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
@@ -41,7 +39,6 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
-	ContentBlockType.Accordions,
 	ContentBlockType.AnchorLinks,
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
