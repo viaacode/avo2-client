@@ -12,7 +12,7 @@ import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } f
 
 export const INITIAL_HEADING_COMPONENTS_STATE = (): HeadingBlockComponentState => ({
 	children: '',
-	type: 'h1',
+	type: 'h2',
 	align: 'center',
 });
 
