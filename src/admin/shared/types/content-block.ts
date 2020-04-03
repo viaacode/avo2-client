@@ -17,7 +17,7 @@ export type FillOption = 'cover' | 'contain' | 'auto';
 
 export type WidthOption = 'full-width' | '500px' | '400px';
 
-export type HeadingTypeOption = 'h2' | 'h3' | 'h4';
+export type HeadingTypeOption = 'h1' | 'h2' | 'h3' | 'h4';
 
 export enum BackgroundColorOption {
 	Gray50 = 'gray-50',
@@ -80,7 +80,6 @@ export interface ContentBlockField {
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
 export enum ContentBlockType {
-	Accordions = 'ACCORDIONS',
 	AnchorLinks = 'ANCHOR_LINKS',
 	Buttons = 'BUTTONS',
 	CTAs = 'CTAS',
@@ -138,7 +137,6 @@ export enum ContentBlockEditor {
 
 /* CONTENT BLOCKS */
 export type ContentBlockComponentState =
-	| AccordionsBlockComponentState
 	| ButtonsBlockComponentState
 	| CTAsBlockComponentState
 	| HeadingBlockComponentState
@@ -234,11 +232,6 @@ export interface CTAsBlockComponentState {
 export interface IFrameBlockComponentState {
 	title: string;
 	src: string;
-}
-
-export interface AccordionsBlockComponentState {
-	title: string;
-	content: string;
 }
 
 export interface QuoteBlockComponentState {

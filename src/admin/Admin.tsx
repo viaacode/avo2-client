@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ResizablePanels from 'resizable-panels-react';
 
 import { Flex } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -10,6 +11,7 @@ import withUser from '../shared/hocs/withUser';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
+import './Admin.scss';
 import { Sidebar } from './shared/components';
 
 const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
@@ -38,15 +40,25 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 	const renderAdminPage = () => {
 		const userPermissions = PermissionService.getUserPermissions(user);
 		return (
-			<Flex>
-				<Sidebar
-					headerLink={ADMIN_PATH.DASHBOARD}
-					navItems={GET_NAV_ITEMS(userPermissions)}
-				/>
-				<Flex className="o-app--admin__main u-flex-auto u-scroll" orientation="vertical">
-					{renderAdminRoutes(userPermissions)}
-				</Flex>
-			</Flex>
+			<div className="m-resizable-panels">
+				<ResizablePanels
+					displayDirection="row"
+					panelsSize={[380]}
+					sizeUnitMeasure="px"
+					resizerSize="15px"
+				>
+					<Sidebar
+						headerLink={ADMIN_PATH.DASHBOARD}
+						navItems={GET_NAV_ITEMS(userPermissions)}
+					/>
+					<Flex
+						className="o-app--admin__main u-flex-auto u-scroll"
+						orientation="vertical"
+					>
+						{renderAdminRoutes(userPermissions)}
+					</Flex>
+				</ResizablePanels>
+			</div>
 		);
 	};
 

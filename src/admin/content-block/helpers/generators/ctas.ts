@@ -28,7 +28,7 @@ export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockS
 	BLOCK_STATE_DEFAULTS(ContentBlockType.CTAs, position);
 
 export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t("CTA's"),
+	name: i18n.t('admin/content-block/helpers/generators/ctas___ctas'),
 	type: ContentBlockType.CTAs,
 	components: {
 		name: i18n.t('admin/content-block/helpers/generators/ctas___cta'),

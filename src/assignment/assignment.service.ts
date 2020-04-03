@@ -17,9 +17,10 @@ import {
 } from './assignment.gql';
 import { AssignmentLayout } from './assignment.types';
 
-export const GET_ASSIGNMENT_COPY_PREFIX = () => `${i18n.t('Opdracht kopie')} %index%: `;
+export const GET_ASSIGNMENT_COPY_PREFIX = () =>
+	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
 export const GET_ASSIGNMENT_COPY_REGEX = () =>
-	new RegExp(`^${i18n.t('Opdracht kopie')} [0-9]+`, 'gi');
+	new RegExp(`^${i18n.t('assignment/assignment___opdracht-kopie')} [0-9]+`, 'gi');
 
 interface AssignmentProperty {
 	name: string;
@@ -29,19 +30,19 @@ interface AssignmentProperty {
 const GET_OBLIGATORY_PROPERTIES = (): AssignmentProperty[] => [
 	{
 		name: 'title',
-		label: i18n.t('titel'),
+		label: i18n.t('assignment/assignment___titel'),
 	},
 	{
 		name: 'description',
-		label: i18n.t('beschrijving'),
+		label: i18n.t('assignment/assignment___beschrijving'),
 	},
 	{
 		name: 'deadline_at',
-		label: i18n.t('deadline'),
+		label: i18n.t('assignment/assignment___deadline'),
 	},
 	{
 		name: 'class_room',
-		label: i18n.t('klas of groep'),
+		label: i18n.t('assignment/assignment___klas-of-groep'),
 	},
 ];
 
