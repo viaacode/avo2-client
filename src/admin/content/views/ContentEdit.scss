@@ -1,9 +1,40 @@
 @import '../../../styles/settings/colors';
 
-.c-content-edit-view__sidebar,
+$content-top-bar-and-tabs-height: 113px;
+
+.c-content-edit-view__sidebar {
+	height: calc(100vh - #{$content-top-bar-and-tabs-height});
+
+	> .o-sidebar__content > .c-scrollable {
+		width: 100%;
+		height: calc(100vh - #{$content-top-bar-and-tabs-height} - 68px);
+		overflow-y: auto;
+		padding: 0 1.6rem 1.6rem;
+	}
+
+	> .o-sidebar__content > .c-navbar {
+		padding: 1.6rem;
+		height: 70px;
+
+		.c-select__control {
+			border: 1px solid #25a4cf;
+			background: #25a4cf;
+
+			.c-select__single-value,
+			svg {
+				color: #fff;
+			}
+		}
+
+		.c-select__placeholder {
+			color: #fff;
+		}
+	}
+}
+
 .c-content-edit-view__preview {
 	width: 100%;
-	height: calc(100vh - 113px);
+	height: calc(100vh - #{$content-top-bar-and-tabs-height});
 	overflow-y: auto;
 }
 
@@ -16,14 +47,10 @@
 	}
 }
 
-.c-content-edit-view__sidebar {
-	padding: 0 1.6rem 1.6rem;
-}
-
 .m-resizable-panels.m-edit-content-blocks {
 	> div {
 		> div:not(.resizable-fragment) {
-			height: calc(100vh - 113px) !important;
+			height: calc(100vh - #{$content-top-bar-and-tabs-height}) !important;
 		}
 	}
 }

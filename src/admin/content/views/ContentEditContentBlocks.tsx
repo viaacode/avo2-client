@@ -1,8 +1,8 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ResizablePanels from 'resizable-panels-react';
 
-import { FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
+import { Navbar, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
@@ -45,10 +45,13 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	addComponentToState,
 	removeComponentFromState,
 }) => {
+	const [t] = useTranslation();
+
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
 
-	const [t] = useTranslation();
+	const previewScrollable: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+	const sidebarScrollable: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
 	// Methods
 	const getFormKey = (name: string, blockIndex: number, stateIndex: number = 0) =>
@@ -63,6 +66,18 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 		// Set newly added config accordion as open
 		setAccordionsOpenState({ [contentBlockFormKey]: true });
+
+		// Scroll preview and sidebar to the bottom
+		scrollToBottom(previewScrollable);
+		scrollToBottom(sidebarScrollable);
+	};
+
+	const scrollToBottom = (ref: RefObject<HTMLDivElement>) => {
+		setTimeout(() => {
+			if (ref.current) {
+				ref.current.scroll({ left: 0, top: 1000000, behavior: 'smooth' });
+			}
+		}, 0);
 	};
 
 	const handleReorderContentBlock = (configIndex: number, indexUpdate: number) => {
@@ -129,24 +144,21 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 				sizeUnitMeasure="%"
 				resizerSize="15px"
 			>
-				<FlexItem className="c-content-edit-view__preview">
+				<div className="c-content-edit-view__preview" ref={previewScrollable}>
 					{renderBlockPreviews()}
-				</FlexItem>
+				</div>
 				<Sidebar className="c-content-edit-view__sidebar" light>
-					{renderContentBlockForms()}
-					<Form>
-						<FormGroup
-							label={t(
-								'admin/content/views/content-edit-content-blocks___voeg-een-content-block-toe'
-							)}
-						>
-							<Select
-								options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
-								onChange={value => handleAddContentBlock(value as ContentBlockType)}
-								value={GET_CONTENT_BLOCK_TYPE_OPTIONS()[0].value}
-							/>
-						</FormGroup>
-					</Form>
+					<Navbar background="alt">
+						<Select
+							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
+							onChange={value => handleAddContentBlock(value as ContentBlockType)}
+							placeholder={t('Voeg een content blok toe')}
+							value={null}
+						/>
+					</Navbar>
+					<div className="c-scrollable" ref={sidebarScrollable}>
+						{renderContentBlockForms()}
+					</div>
 				</Sidebar>
 			</ResizablePanels>
 		</div>
