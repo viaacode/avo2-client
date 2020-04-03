@@ -1,7 +1,8 @@
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ResizablePanels from 'resizable-panels-react';
 
-import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
+import { FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
@@ -128,25 +129,34 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		});
 
 	return (
-		<Flex className="c-content-edit-view__content">
-			<FlexItem className="c-content-edit-view__preview">{renderBlockPreviews()}</FlexItem>
-			<Sidebar className="c-content-edit-view__sidebar" light>
-				{renderContentBlockForms()}
-				<Form>
-					<FormGroup
-						label={t(
-							'admin/content/views/content-edit-content-blocks___voeg-een-content-block-toe'
-						)}
-					>
-						<Select
-							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
-							onChange={value => handleAddContentBlock(value as ContentBlockType)}
-							value={GET_CONTENT_BLOCK_TYPE_OPTIONS()[0].value}
-						/>
-					</FormGroup>
-				</Form>
-			</Sidebar>
-		</Flex>
+		<div className="m-resizable-panels m-edit-content-blocks">
+			<ResizablePanels
+				displayDirection="row"
+				panelsSize={[60, 40]}
+				sizeUnitMeasure="%"
+				resizerSize="15px"
+			>
+				<FlexItem className="c-content-edit-view__preview">
+					{renderBlockPreviews()}
+				</FlexItem>
+				<Sidebar className="c-content-edit-view__sidebar" light>
+					{renderContentBlockForms()}
+					<Form>
+						<FormGroup
+							label={t(
+								'admin/content/views/content-edit-content-blocks___voeg-een-content-block-toe'
+							)}
+						>
+							<Select
+								options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
+								onChange={value => handleAddContentBlock(value as ContentBlockType)}
+								value={GET_CONTENT_BLOCK_TYPE_OPTIONS()[0].value}
+							/>
+						</FormGroup>
+					</Form>
+				</Sidebar>
+			</ResizablePanels>
+		</div>
 	);
 };
 

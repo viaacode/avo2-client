@@ -1,7 +1,10 @@
 @import '../../../styles/settings/colors';
 
-.c-content-edit-view__content {
-	flex: 1 1 auto;
+.c-content-edit-view__sidebar,
+.c-content-edit-view__preview {
+	width: 100%;
+	height: calc(100vh - 221px);
+	overflow-y: auto;
 }
 
 .c-content-edit-view__preview {
@@ -14,8 +17,13 @@
 }
 
 .c-content-edit-view__sidebar {
-	max-width: 45%;
-	height: auto;
 	padding: 0 1.6rem 1.6rem;
-	border-left: 2px solid $color-gray-50;
+}
+
+.m-resizable-panels.m-edit-content-blocks {
+	> div {
+		> div:not(.resizable-fragment) {
+			height: calc(100vh - 221px) !important;
+		}
+	}
 }
