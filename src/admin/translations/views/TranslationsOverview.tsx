@@ -8,7 +8,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { translationsReducer } from '../translations.reducers';
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import {
@@ -123,6 +123,9 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 
 	return (
 		<AdminLayout pageTitle={t('admin/translations/views/translations-overview___vertalingen')}>
+			<AdminLayoutTopBarRight>
+				<Button label="Opslaan" onClick={onSaveTranslations} />
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -132,9 +135,6 @@ const TranslationsOverview: FunctionComponent<TranslationsOverviewProps> = () =>
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button label="Opslaan" onClick={onSaveTranslations} />
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };

@@ -31,7 +31,7 @@ import { buildLink, CustomError, formatDate, navigate } from '../../../shared/he
 import { useTableSort } from '../../../shared/hooks';
 import { dataService, ToastService } from '../../../shared/services';
 import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { GET_ALL_PERMISSION_GROUPS, GET_USER_GROUP_BY_ID } from '../user-group.gql';
@@ -485,30 +485,38 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 	};
 
 	// Render
-	const renderPage = () => (
-		<AdminLayout
-			showBackButton
-			pageTitle={t('admin/user-groups/views/user-group-edit___gebruikersgroep-aanpassen')}
-		>
-			<AdminLayoutBody>
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{renderEditPage()}</Container>
-				</Container>
-			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t('admin/user-groups/views/user-group-edit___annuleer')}
-					onClick={navigateBack}
-					type="tertiary"
-				/>
-				<Button
-					disabled={isSaving}
-					label={t('admin/user-groups/views/user-group-edit___opslaan')}
-					onClick={handleSave}
-				/>
-			</AdminLayoutActions>
-		</AdminLayout>
-	);
+	const renderPage = () => {
+		if (!userGroup) {
+			return null;
+		}
+		return (
+			<AdminLayout
+				showBackButton
+				pageTitle={t('admin/user-groups/views/user-group-edit___gebruikersgroep-aanpassen')}
+			>
+				{' '}
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						<Button
+							label={t('admin/user-groups/views/user-group-edit___annuleer')}
+							onClick={navigateBack}
+							type="tertiary"
+						/>
+						<Button
+							disabled={isSaving}
+							label={t('admin/user-groups/views/user-group-edit___opslaan')}
+							onClick={handleSave}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
+				<AdminLayoutBody>
+					<Container mode="vertical" size="small">
+						<Container mode="horizontal">{renderEditPage()}</Container>
+					</Container>
+				</AdminLayoutBody>
+			</AdminLayout>
+		);
+	};
 
 	return (
 		<LoadingErrorLoadedComponent

@@ -35,7 +35,7 @@ import {
 	getMultiOptionFilters,
 	getQueryFilter,
 } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { CONTENT_PATH, ITEMS_PER_PAGE } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
@@ -370,6 +370,12 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 	return (
 		<AdminLayout pageTitle={t('admin/content/views/content-overview___content-overzicht')}>
+			<AdminLayoutTopBarRight>
+				<Button
+					label={t('admin/content/views/content-overview___content-toevoegen')}
+					onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
+				/>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -381,12 +387,6 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t('admin/content/views/content-overview___content-toevoegen')}
-					onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
-				/>
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };

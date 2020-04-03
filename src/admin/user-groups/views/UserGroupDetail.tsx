@@ -8,8 +8,6 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	Header,
-	HeaderButtons,
 	Panel,
 	PanelBody,
 	PanelHeader,
@@ -32,7 +30,8 @@ import {
 	renderDateDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
 import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
 import { GET_USER_GROUP_BY_ID } from '../user-group.gql';
@@ -264,36 +263,31 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 	};
 
 	const renderUserDetailPage = () => (
-		<AdminLayout showBackButton>
-			<AdminLayoutHeader>
-				<Header
-					category="audio"
-					title={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
-					showMetaData={false}
-				>
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								type="primary"
-								label={t('admin/user-groups/views/user-group-detail___bewerk')}
-								onClick={() => {
-									redirectToClientPage(
-										buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, {
-											id: match.params.id,
-										}),
-										history
-									);
-								}}
-							/>
-							<Button
-								type="danger"
-								label={t('admin/user-groups/views/user-group-detail___verwijderen')}
-								onClick={() => setIsConfirmModalOpen(true)}
-							/>
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
-			</AdminLayoutHeader>
+		<AdminLayout
+			showBackButton
+			pageTitle={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
+		>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						type="primary"
+						label={t('admin/user-groups/views/user-group-detail___bewerk')}
+						onClick={() => {
+							redirectToClientPage(
+								buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, {
+									id: match.params.id,
+								}),
+								history
+							);
+						}}
+					/>
+					<Button
+						type="danger"
+						label={t('admin/user-groups/views/user-group-detail___verwijderen')}
+						onClick={() => setIsConfirmModalOpen(true)}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				{renderUserDetail()}
 				<DeleteObjectModal

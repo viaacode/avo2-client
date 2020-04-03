@@ -8,8 +8,6 @@ import {
 	ButtonToolbar,
 	Container,
 	Flex,
-	Header,
-	HeaderButtons,
 	Navbar,
 	Spinner,
 	Tabs,
@@ -26,7 +24,12 @@ import { dataService, ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import {
+	AdminLayout,
+	AdminLayoutBody,
+	AdminLayoutHeader,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts';
 import {
 	ContentBlockConfig,
 	ContentBlockStateOption,
@@ -361,24 +364,22 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout showBackButton>
+		<AdminLayout showBackButton pageTitle={pageTitle}>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						label={t('admin/content/views/content-edit___annuleer')}
+						onClick={navigateBack}
+						type="tertiary"
+					/>
+					<Button
+						disabled={isSaving}
+						label={t('admin/content/views/content-edit___opslaan')}
+						onClick={handleSave}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutHeader>
-				<Header category="audio" title={pageTitle} showMetaData={false}>
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								label={t('admin/content/views/content-edit___annuleer')}
-								onClick={navigateBack}
-								type="tertiary"
-							/>
-							<Button
-								disabled={isSaving}
-								label={t('admin/content/views/content-edit___opslaan')}
-								onClick={handleSave}
-							/>
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={setCurrentTab} />
