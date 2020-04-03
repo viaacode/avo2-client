@@ -259,7 +259,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		);
 	};
 
-	return <Form className="c-content-block-form">{renderBlockForm(config)}</Form>;
+	return <Form className="c-content-block-form c-content">{renderBlockForm(config)}</Form>;
 };
 
 export default React.memo(ContentBlockForm, (prevProps, nextProps) => {
