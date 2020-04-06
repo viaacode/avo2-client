@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { Container, Spacer } from '@viaa/avo2-components';
+import { ButtonAction, Container, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
@@ -16,6 +16,7 @@ import {
 	REPEATABLE_CONTENT_BLOCKS,
 } from './ContentBlockPreview.const';
 
+import { omit } from 'lodash-es';
 import './ContentBlockPreview.scss';
 
 interface ContentBlockPreviewProps extends RouteComponentProps {
@@ -41,18 +42,18 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(blockState.blockType);
 	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
-	const blockStateProps = Object.keys(blockState).reduce((acc, key) => {
-		const blockValue = (blockState as any)[key];
-		const includeBlockValue = blockValue && !IGNORE_BLOCK_LEVEL_PROPS.includes(key);
-
-		return includeBlockValue ? { ...acc, [key]: blockValue } : acc;
-	}, {});
+	const blockStateProps: { [key: string]: any } = omit(blockState, IGNORE_BLOCK_LEVEL_PROPS);
 
 	if (NAVIGABLE_CONTENT_BLOCKS.includes(blockState.blockType)) {
+		// Pass the navigate function to each element (deprecated) => prefer passing the navigate function once to the block
 		componentStateProps.elements = componentStateProps.elements.map((element: any) => ({
 			...element,
 			navigate: () => navigateToContentType(element.buttonAction, history),
 		}));
+		// Pass the navigate function to the block
+		blockStateProps.navigate = (buttonAction: ButtonAction) => {
+			navigateToContentType(buttonAction, history);
+		};
 	}
 
 	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);

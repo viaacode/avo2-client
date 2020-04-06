@@ -11,7 +11,7 @@ import {
 	ImageGridBlockComponentStateFields,
 } from '../../../shared/types';
 
-import { GET_ALIGN_OPTIONS, GET_FILL_OPTIONS } from '../../content-block.const';
+import { GET_ALIGN_OPTIONS, GET_BUTTON_TYPE_OPTIONS, GET_FILL_OPTIONS } from '../../content-block.const';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
 export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
@@ -19,6 +19,9 @@ export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentSt
 		source: undefined,
 		title: '',
 		text: '',
+		buttonLabel: '',
+		buttonType: 'primary',
+		buttonTitle: '',
 		action: undefined,
 	} as any,
 ];
@@ -66,7 +69,27 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),
-			// action: // TODO add content picker to select what has to happen when the user clicks an element in the grid
+			buttonLabel: TEXT_FIELD('', {
+				label: i18n.t('Knop tekst'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: () => [],
+			}),
+			buttonTitle: TEXT_FIELD('', {
+				label: i18n.t('Knop tooltip'),
+				editorType: ContentBlockEditor.TextInput,
+				validator: () => [],
+			}),
+			buttonType: {
+				label: i18n.t('Knop type / kleur'),
+				editorType: ContentBlockEditor.Select,
+				editorProps: {
+					options: GET_BUTTON_TYPE_OPTIONS(),
+				},
+			},
+			action: {
+				label: i18n.t('Link'),
+				editorType: ContentBlockEditor.ContentPicker,
+			},
 		},
 	},
 	block: {
