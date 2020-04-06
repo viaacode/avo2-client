@@ -424,7 +424,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 							)
 						}
 						orientation="vertical"
-						title={collection.title}
+						title={
+							fragment.use_custom_fields
+								? fragment.custom_title || ''
+								: collection.title
+						}
 					>
 						<MediaCardThumbnail>
 							<Thumbnail
