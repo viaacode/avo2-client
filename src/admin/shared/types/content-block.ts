@@ -224,6 +224,8 @@ export interface PageOverviewBlockComponentStateFields {
 	tabs?: string[];
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
+	centerHeader?: boolean;
+	headerBackgroundColor?: string;
 	contentType: ContentPageType;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;

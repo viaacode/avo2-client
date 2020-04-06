@@ -16,6 +16,7 @@ import {
 } from '../../content-block.const';
 
 import {
+	BACKGROUND_COLOR_FIELD,
 	BLOCK_FIELD_DEFAULTS,
 	BLOCK_STATE_DEFAULTS,
 	CONTENT_TYPE_AND_LABELS_INPUT,
@@ -25,6 +26,8 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 	tabs: [],
 	tabStyle: 'MENU_BAR',
 	allowMultiple: false,
+	centerHeader: false,
+	headerBackgroundColor: 'transparent',
 	contentType: ContentPageType.Project, // lookup options in lookup.enum_content_types
 	itemStyle: 'LIST',
 	showTitle: true,
@@ -69,6 +72,15 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 						),
 					} as CheckboxProps,
 				},
+				centerHeader: {
+					editorType: ContentBlockEditor.Checkbox,
+					editorProps: {
+						label: i18n.t('Menu items centereren'),
+					} as CheckboxProps,
+				},
+				headerBackgroundColor: BACKGROUND_COLOR_FIELD(
+					i18n.t('Menu items achtergrond kleur')
+				),
 				itemStyle: {
 					label: i18n.t(
 						'admin/content-block/helpers/generators/page-overview___item-type'

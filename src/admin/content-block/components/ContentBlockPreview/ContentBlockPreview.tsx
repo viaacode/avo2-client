@@ -58,22 +58,23 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);
 
 	return (
-		<Spacer
-			className={classnames('c-content-block-preview', 'c-content', {
-				'c-content-block-preview--dark': hasDarkBg,
-				'u-color-white': hasDarkBg,
-			})}
-			style={{ backgroundColor: blockState.backgroundColor }}
-			margin={[]}
-			padding={[blockState.padding.top, blockState.padding.bottom]}
-		>
-			<Container
-				mode="horizontal"
-				size={containerSize === ContentWidthMap.REGULAR ? undefined : containerSize}
+		<div style={{ backgroundColor: blockState.backgroundColor }}>
+			<Spacer
+				className={classnames('c-content-block-preview', {
+					'c-content-block-preview--dark': hasDarkBg,
+					'u-color-white': hasDarkBg,
+				})}
+				margin={[]}
+				padding={[blockState.padding.top, blockState.padding.bottom]}
 			>
-				<PreviewComponent {...componentStateProps} {...blockStateProps} />
-			</Container>
-		</Spacer>
+				<Container
+					mode="horizontal"
+					size={containerSize === ContentWidthMap.REGULAR ? undefined : containerSize}
+				>
+					<PreviewComponent {...componentStateProps} {...blockStateProps} />
+				</Container>
+			</Spacer>
+		</div>
 	);
 };
 
