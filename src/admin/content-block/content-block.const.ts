@@ -282,26 +282,6 @@ export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 		label: i18n.t('admin/content-block/content-block___wit'),
 		value: Color.White,
 	},
-	{
-		label: i18n.t('admin/content-block/content-block___nachtblauw'),
-		value: Color.NightBlue,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___zachtblauw'),
-		value: Color.SoftBlue,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
-		value: Color.Teal,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
-		value: Color.TealBright,
-	},
-	{
-		label: i18n.t('admin/content-block/content-block___oceaangroen'),
-		value: Color.OceanGreen,
-	},
 ];
 
 export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [Color.NightBlue, Color.Teal];
