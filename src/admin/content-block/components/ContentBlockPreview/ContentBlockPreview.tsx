@@ -59,15 +59,11 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 
 	return (
 		<Spacer
-			className={classnames(
-				'c-content-block-preview',
-				'c-content',
-				`u-bg-${blockState.backgroundColor}`,
-				{
-					'c-content-block-preview--dark': hasDarkBg,
-					'u-color-white': hasDarkBg,
-				}
-			)}
+			className={classnames('c-content-block-preview', 'c-content', {
+				'c-content-block-preview--dark': hasDarkBg,
+				'u-color-white': hasDarkBg,
+			})}
+			style={{ backgroundColor: blockState.backgroundColor }}
 			margin={[]}
 			padding={[blockState.padding.top, blockState.padding.bottom]}
 		>
