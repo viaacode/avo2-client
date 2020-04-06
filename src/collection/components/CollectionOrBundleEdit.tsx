@@ -199,7 +199,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 
 				const fragments1 = getFragmentsFromCollection(newCurrentCollection);
 
-				const delta = action.direction === 'up' ? 1 : -1;
+				const delta = action.direction === 'up' ? -1 : 1;
 
 				// Make the swap
 				const tempFragment = fragments1[action.index];
