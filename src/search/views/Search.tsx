@@ -160,7 +160,15 @@ const Search: FunctionComponent<SearchProps> = ({
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
 		}
-	}, [searchResults, currentPage, formState, history, sortOrder, queryParamsAnalysed]);
+	}, [
+		searchResults,
+		currentPage,
+		formState,
+		history,
+		sortOrder,
+		queryParamsAnalysed,
+		location.search,
+	]);
 
 	const getBookmarkStatuses = useCallback(async () => {
 		try {
