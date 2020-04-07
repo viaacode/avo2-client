@@ -7,7 +7,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { navigateToContentType } from '../../../../shared/helpers';
 
-import { ContentBlockComponentState, ContentBlockState } from '../../../shared/types';
+import { Color, ContentBlockComponentState, ContentBlockState } from '../../../shared/types';
 import { GET_DARK_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
 import {
 	COMPONENT_PREVIEW_MAP,
@@ -58,22 +58,33 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);
 
 	return (
-		<div style={{ backgroundColor: blockState.backgroundColor }}>
-			<Spacer
-				className={classnames('c-content-block-preview', {
-					'c-content-block-preview--dark': hasDarkBg,
-					'u-color-white': hasDarkBg,
-				})}
-				margin={[]}
-				padding={[blockState.padding.top, blockState.padding.bottom]}
-			>
-				<Container
-					mode="horizontal"
-					size={containerSize === ContentWidthMap.REGULAR ? undefined : containerSize}
+		<div className="c-content-block" style={{ backgroundColor: blockState.backgroundColor }}>
+			<div>
+				{blockState.headerBackgroundColor !== Color.Transparent && (
+					<div
+						className="c-content-block__header-bg-color"
+						style={{
+							backgroundColor: blockState.headerBackgroundColor,
+							height: blockState.headerHeight,
+						}}
+					/>
+				)}
+				<Spacer
+					className={classnames('c-content-block-preview', {
+						'c-content-block-preview--dark': hasDarkBg,
+						'u-color-white': hasDarkBg,
+					})}
+					margin={[]}
+					padding={[blockState.padding.top, blockState.padding.bottom]}
 				>
-					<PreviewComponent {...componentStateProps} {...blockStateProps} />
-				</Container>
-			</Spacer>
+					<Container
+						mode="horizontal"
+						size={containerSize === ContentWidthMap.REGULAR ? undefined : containerSize}
+					>
+						<PreviewComponent {...componentStateProps} {...blockStateProps} />
+					</Container>
+				</Spacer>
+			</div>
 		</div>
 	);
 };

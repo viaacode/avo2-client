@@ -60,6 +60,7 @@ export enum Color {
 	TealBright200 = '#CFE3E9',
 	BorderColor = '#3FB1D6',
 	InputBoxShadow = '#69C2dF',
+	Transparent = 'transparent',
 }
 
 export interface PaddingFieldState {
@@ -137,6 +138,8 @@ export type ContentBlockErrors = { [key: string]: (string | string[])[] };
 /* CONTENT BLOCK STATE */
 export interface DefaultContentBlockState {
 	backgroundColor: Color;
+	headerBackgroundColor?: Color; // css color string. eg: '#222' or 'black' or 'rgb(0, 0, 255)'
+	headerHeight?: string; // css height string. eg: '20px' or '15%'
 	blockType: ContentBlockType;
 	position: number;
 	padding: PaddingFieldState;

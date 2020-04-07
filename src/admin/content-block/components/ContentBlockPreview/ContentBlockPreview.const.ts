@@ -58,6 +58,7 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [
 	'backgroundColor',
+	'headerBackgroundColor',
 	'blockType',
 	'elements',
 	'padding',

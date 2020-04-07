@@ -4,6 +4,7 @@ import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRang
 import i18n from '../../../../shared/translations/i18n';
 import { ContentPageType } from '../../../content/content.types';
 import {
+	Color,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -16,7 +17,6 @@ import {
 } from '../../content-block.const';
 
 import {
-	BACKGROUND_COLOR_FIELD,
 	BLOCK_FIELD_DEFAULTS,
 	BLOCK_STATE_DEFAULTS,
 	CONTENT_TYPE_AND_LABELS_INPUT,
@@ -39,7 +39,13 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 
 export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (position: number): DefaultContentBlockState => {
 	return {
-		...BLOCK_STATE_DEFAULTS(ContentBlockType.PageOverview, position),
+		...BLOCK_STATE_DEFAULTS(
+			ContentBlockType.PageOverview,
+			position,
+			Color.White,
+			Color.Transparent,
+			'70px'
+		),
 	};
 };
 
@@ -78,9 +84,6 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 						label: i18n.t('Menu items centereren'),
 					} as CheckboxProps,
 				},
-				headerBackgroundColor: BACKGROUND_COLOR_FIELD(
-					i18n.t('Menu items achtergrond kleur')
-				),
 				itemStyle: {
 					label: i18n.t(
 						'admin/content-block/helpers/generators/page-overview___item-type'

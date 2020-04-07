@@ -10,6 +10,7 @@ import {
 	ContentBlockEditor,
 	ContentBlockField,
 	ContentBlockType,
+	DefaultContentBlockState,
 	PaddingFieldState,
 } from '../../../shared/types';
 
@@ -24,21 +25,29 @@ export const BLOCK_STATE_DEFAULTS = (
 	blockType: ContentBlockType,
 	position: number,
 	backgroundColor: Color = Color.White,
+	headerBackgroundColor: Color = Color.Transparent,
+	headerHeight: string = '0', // Currently we only need 2 block background colors for the PageOverviewBlock component
 	padding: PaddingFieldState = {
 		top: 'top',
 		bottom: 'bottom',
 	},
 	userGroupIds: number[] = [] // empty list means everybody with access to the page can see this content block
-) => ({
+): DefaultContentBlockState => ({
 	blockType,
 	position,
 	backgroundColor,
+	headerBackgroundColor,
+	headerHeight,
 	padding,
 	userGroupIds,
 });
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
+	headerBackgroundColor: BACKGROUND_COLOR_FIELD(i18n.t('Header kleur'), {
+		label: i18n.t('Transparant'),
+		value: Color.Transparent,
+	}),
 	padding: PADDING_FIELD(),
 	userGroupIds: USER_GROUP_SELECT(),
 });
