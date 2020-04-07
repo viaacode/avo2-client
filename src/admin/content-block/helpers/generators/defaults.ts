@@ -44,7 +44,7 @@ export const BLOCK_STATE_DEFAULTS = (
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
-	headerBackgroundColor: BACKGROUND_COLOR_FIELD(i18n.t('Header kleur'), {
+	headerBackgroundColor: BACKGROUND_COLOR_FIELD(i18n.t('Titelbalk achtergrondkleur'), {
 		label: i18n.t('Transparant'),
 		value: Color.Transparent,
 	}),
