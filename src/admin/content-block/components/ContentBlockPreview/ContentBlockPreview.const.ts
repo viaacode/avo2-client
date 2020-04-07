@@ -54,6 +54,7 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
 	ContentBlockType.ProjectsSpotlight,
+	ContentBlockType.ImageGrid,
 ];
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [
