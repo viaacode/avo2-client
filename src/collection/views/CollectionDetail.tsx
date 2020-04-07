@@ -700,11 +700,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</p>
 									<p className="c-body-1">
 										{lom_context && lom_context.length ? (
-											generateSearchLinks(
-												`${id}`,
-												'educationLevel',
-												lom_context
-											)
+											generateSearchLinks(id, 'educationLevel', lom_context)
 										) : (
 											<span className="u-d-block">-</span>
 										)}
@@ -762,11 +758,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</p>
 									<p className="c-body-1">
 										{lom_classification && lom_classification.length ? (
-											generateSearchLinks(
-												`${id}`,
-												'subject',
-												lom_classification
-											)
+											generateSearchLinks(id, 'subject', lom_classification)
 										) : (
 											<span className="u-d-block">-</span>
 										)}

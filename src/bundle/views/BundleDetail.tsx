@@ -22,8 +22,6 @@ import {
 	MetaData,
 	MetaDataItem,
 	Spacer,
-	TagList,
-	TagOption,
 	Thumbnail,
 	ToggleButton,
 	Toolbar,
@@ -54,8 +52,10 @@ import {
 	buildLink,
 	createDropdownMenuItem,
 	CustomError,
+	formatDate,
 	fromNow,
 	generateContentLinkString,
+	generateSearchLinks,
 	isMobileWidth,
 } from '../../shared/helpers';
 import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
@@ -360,7 +360,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		return (relatedItems || []).map((relatedItem: Avo.Search.ResultItem) => {
 			const contentType = toEnglishContentType(relatedItem.administrative_type);
 			return (
-				<Column size="3-3" key={`related-bundle-${relatedItem.id}`}>
+				<Column size="2-6" key={`related-bundle-${relatedItem.id}`}>
 					<MediaCard
 						className="u-clickable"
 						category={contentType}
@@ -373,20 +373,11 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 								history
 							)
 						}
-						orientation="vertical"
+						orientation="horizontal"
 						title={relatedItem.dc_title}
 					>
 						<MediaCardThumbnail>
-							<Thumbnail
-								category={contentType}
-								src={relatedItem.thumbnail_path}
-								meta={t(
-									'bundle/views/bundle-detail___num-of-collection-fragments-items',
-									{
-										numOfCollectionFragments: 3 /*relatedBundle.numOfCollectionFragments*/,
-									}
-								)}
-							/>
+							<Thumbnail category={contentType} src={relatedItem.thumbnail_path} />
 						</MediaCardThumbnail>
 						<MediaCardMetaData>
 							<MetaData category={contentType}>
@@ -578,27 +569,96 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 		);
 	};
 
+	const renderMetaDataAndRelated = () => {
+		if (!bundle) {
+			return null;
+		}
+		const {
+			id,
+			lom_context,
+			updated_at,
+			lom_classification,
+		} = bundle as Avo.Collection.Collection;
+		return (
+			<Container mode="vertical">
+				<Container mode="horizontal">
+					<h3 className="c-h3">
+						<Trans>Over deze bundel</Trans>
+					</h3>
+					<Grid>
+						<Column size="3-3">
+							<Spacer margin="top">
+								<p className="u-text-bold">
+									<Trans i18nKey="collection/views/collection-detail___onderwijsniveau">
+										Onderwijsniveau
+									</Trans>
+								</p>
+								<p className="c-body-1">
+									{lom_context && lom_context.length ? (
+										generateSearchLinks(id, 'educationLevel', lom_context)
+									) : (
+										<span className="u-d-block">-</span>
+									)}
+								</p>
+							</Spacer>
+						</Column>
+						<Column size="3-3">
+							<Spacer margin="top">
+								<p className="u-text-bold">
+									<Trans i18nKey="collection/views/collection-detail___vakken">
+										Vakken
+									</Trans>
+								</p>
+								<p className="c-body-1">
+									{lom_classification && lom_classification.length ? (
+										generateSearchLinks(id, 'subject', lom_classification)
+									) : (
+										<span className="u-d-block">-</span>
+									)}
+								</p>
+							</Spacer>
+						</Column>
+						<Column size="3-3">
+							<Spacer margin="top">
+								<p className="u-text-bold">
+									<Trans i18nKey="collection/views/collection-detail___laatst-aangepast">
+										Laatst aangepast
+									</Trans>
+								</p>
+								<p className="c-body-1">{formatDate(updated_at)}</p>
+							</Spacer>
+						</Column>
+					</Grid>
+					<hr className="c-hr" />
+					{!!relatedItems && !!relatedItems.length && (
+						<>
+							<BlockHeading type="h3">
+								<Trans i18nKey="bundle/views/bundle-detail___bekijk-ook">
+									Bekijk ook
+								</Trans>
+							</BlockHeading>
+							<div className="c-media-card-list">
+								<Grid>{renderRelatedContent()}</Grid>
+							</div>
+						</>
+					)}
+				</Container>
+			</Container>
+		);
+	};
+
 	const renderBundle = () => {
 		const {
 			is_public,
 			thumbnail_path,
 			title,
 			description,
-			lom_context,
-			lom_classification,
 		} = bundle as Avo.Collection.Collection;
 
 		if (!isFirstRender) {
 			setIsPublic(is_public);
 			setIsFirstRender(true);
 		}
-
-		const tags = [
-			...(lom_classification || []).map(
-				(classification): TagOption => ({ id: classification, label: classification })
-			),
-			...(lom_context || []).map((context): TagOption => ({ id: context, label: context })),
-		];
 
 		const organisationName = get(
 			bundle,
@@ -651,7 +711,6 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 											dark
 										/>
 									</FlexItem>
-									<TagList tags={tags} />
 								</Flex>
 							</Column>
 						</Grid>
@@ -664,20 +723,7 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 						</div>
 					</Container>
 				</Container>
-				{!!relatedItems && !!relatedItems.length && (
-					<Container mode="vertical" background="alt">
-						<Container mode="horizontal">
-							<BlockHeading type="h3">
-								<Trans i18nKey="bundle/views/bundle-detail___bekijk-ook">
-									Bekijk ook
-								</Trans>
-							</BlockHeading>
-							<div className="c-media-card-list">
-								<Grid>{renderRelatedContent()}</Grid>
-							</div>
-						</Container>
-					</Container>
-				)}
+				{renderMetaDataAndRelated()}
 				{isPublic !== null && (
 					<ShareCollectionModal
 						collection={{
