@@ -28,4 +28,10 @@ export interface PickerItem {
 	label?: string;
 	type: ContentPickerType;
 	value: string;
+	target?: LinkTarget;
+}
+
+export enum LinkTarget { // Replace by enum in components repo after 1.35.0
+	Self = '_self',
+	Blank = '_blank',
 }

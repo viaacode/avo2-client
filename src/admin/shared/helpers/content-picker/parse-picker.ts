@@ -3,9 +3,9 @@ import queryString from 'query-string';
 import { ToastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
 
-import { ContentPickerType, PickerItem } from '../../types';
+import { ContentPickerType, LinkTarget, PickerItem } from '../../types';
 
-const parseSearchQuery = (input: string): string => {
+export const parseSearchQuery = (input: string): string => {
 	try {
 		// replace %22 by "
 		const replacedString = decodeURI(input);
@@ -41,7 +41,12 @@ const parseSearchQuery = (input: string): string => {
 	}
 };
 
-export const parsePickerItem = (type: ContentPickerType, value: string): PickerItem => ({
+export const parsePickerItem = (
+	type: ContentPickerType,
+	value: string,
+	target: LinkTarget = LinkTarget.Blank
+): PickerItem => ({
 	type,
+	target,
 	value: type === 'SEARCH_QUERY' ? parseSearchQuery(value) : value,
 });
