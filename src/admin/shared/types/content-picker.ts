@@ -6,7 +6,8 @@ export type ContentPickerType =
 	| 'INTERNAL_LINK'
 	| 'EXTERNAL_LINK'
 	| 'BUNDLE'
-	| 'SEARCH_QUERY';
+	| 'SEARCH_QUERY'
+	| 'PROJECTS';
 
 export type PickerItemControls = 'SELECT' | 'TEXT_INPUT';
 

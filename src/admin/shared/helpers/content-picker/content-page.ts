@@ -17,6 +17,18 @@ export const retrieveContentPages = async (
 	return parseContentPages(contentItems || []);
 };
 
+// Fetch content items of type PROJECT from GQL
+export const retrieveProjectContentPages = async (
+	title: string | null,
+	limit: number = 5
+): Promise<PickerSelectItem[]> => {
+	const contentItems: Avo.Content.Content[] | null = title
+		? await ContentService.getProjectContentItemsByTitle(`%${title}%`, limit)
+		: await ContentService.getProjectContentItems(limit);
+
+	return parseContentPages(contentItems || []);
+};
+
 // Parse raw content items to react-select options
 const parseContentPages = (raw: Avo.Content.Content[]): PickerSelectItem[] => {
 	return raw.map(

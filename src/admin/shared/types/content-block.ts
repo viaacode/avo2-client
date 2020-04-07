@@ -96,6 +96,7 @@ export enum ContentBlockType {
 	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
 	PageOverview = 'PAGE_OVERVIEW',
 	ProjectsSpotlight = 'PROJECTS_SPOTLIGHT',
+	Spotlight = 'SPOTLIGHT',
 }
 
 // if 1 block, errors is a string[]. If multiple, it is a string[] index by their stateIndex, so string[][].
