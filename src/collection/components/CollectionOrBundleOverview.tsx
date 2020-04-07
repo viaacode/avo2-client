@@ -11,6 +11,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Icon,
 	MenuContent,
 	MetaData,
 	MetaDataItem,
@@ -270,6 +271,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				const isInFolder = true; // TODO: Check if collection is in bundle
 				return isInFolder && <Button icon="folder" type="borderless" />;
 
+			case 'isPublic':
+				return (
+					<div title={collection.is_public ? t('Publiek') : t('Niet publiek')}>
+						<Icon name={collection.is_public ? 'eye' : 'lock'} />
+					</div>
+				);
+
 			case 'access':
 				const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
 				const avatarProps = userProfiles.map(userProfile => {
@@ -318,6 +326,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				id: 'updated_at',
 				label: t('collection/views/collection-overview___laatst-bewerkt'),
 				col: '3',
+				sortable: true,
+			},
+			{
+				id: 'isPublic',
+				label: t('Is publiek'),
+				col: '2',
 				sortable: true,
 			},
 			...(isCollection
