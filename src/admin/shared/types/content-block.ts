@@ -3,7 +3,6 @@ import {
 	ButtonType,
 	ContentItemStyle,
 	ContentTabStyle,
-	GridItem,
 	IconName,
 	SpacerOption,
 } from '@viaa/avo2-components';
@@ -14,6 +13,8 @@ import { ContentPageType } from '../../content/content.types';
 export type AlignOption = 'left' | 'right' | 'center';
 
 export type FillOption = 'cover' | 'contain' | 'auto';
+
+export type BlockGridFormatOption = 'squareSmall' | 'squareLarge' | '4:3' | '2:1' | '6:9';
 
 export type WidthOption = 'full-width' | '500px' | '400px';
 
@@ -174,17 +175,6 @@ export interface ImageGridBlockComponentStateFields {
 	title?: string;
 	text?: string;
 	action?: ButtonAction;
-}
-
-export interface ImageGridBlockComponentStateBlockFields extends DefaultContentBlockState {
-	elements: GridItem[];
-	imageWidth?: number;
-	imageHeight?: number;
-	itemWidth?: number;
-	fill?: FillOption;
-	textAlign?: AlignOption;
-	className?: string;
-	navigate?: (action: ButtonAction) => void;
 }
 
 export interface PageOverviewBlockComponentStateFields {

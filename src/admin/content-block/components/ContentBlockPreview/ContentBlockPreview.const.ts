@@ -1,7 +1,6 @@
 import {
 	BlockButtons,
 	BlockCTAs,
-	BlockGrid,
 	BlockHeading,
 	BlockIFrame,
 	BlockImage,
@@ -13,6 +12,7 @@ import {
 
 import { ContentBlockType } from '../../../shared/types';
 import {
+	BlockGridWrapper,
 	MediaGridWrapper,
 	MediaPlayerTitleTextButtonWrapper,
 	MediaPlayerWrapper,
@@ -27,7 +27,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.ImageGrid]: BlockGrid,
+	[ContentBlockType.ImageGrid]: BlockGridWrapper,
 	[ContentBlockType.MediaGrid]: MediaGridWrapper,
 	[ContentBlockType.MediaPlayer]: MediaPlayerWrapper,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButtonWrapper,
