@@ -21,6 +21,7 @@ export const GET_CONTENT_PAGES = gql`
 			depublish_at
 			description
 			id
+			thumbnail_path
 			is_protected
 			is_public
 			is_published
@@ -99,6 +100,7 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 			depublish_at
 			description
 			id
+			thumbnail_path
 			is_protected
 			is_public
 			is_published
@@ -153,6 +155,7 @@ export const GET_CONTENT_BY_ID = gql`
 			depublish_at
 			description
 			id
+			thumbnail_path
 			is_protected
 			is_public
 			is_published

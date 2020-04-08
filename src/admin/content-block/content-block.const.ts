@@ -70,6 +70,8 @@ import {
 	INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
+	INITIAL_SPOTLIGHT_BLOCK_STATE,
+	INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	INTRO_BLOCK_CONFIG,
 	MEDIA_GRID_BLOCK_CONFIG,
 	MEDIA_PLAYER_BLOCK_CONFIG,
@@ -79,6 +81,7 @@ import {
 	QUOTE_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
@@ -149,6 +152,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 		value: ContentBlockType.ProjectsSpotlight,
 	},
 	{
+		label: i18n.t('In de kijker'),
+		value: ContentBlockType.Spotlight,
+	},
+	{
 		label: i18n.t('admin/content-block/content-block___quote'),
 		value: ContentBlockType.Quote,
 	},
@@ -190,6 +197,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Quote]: QUOTE_BLOCK_CONFIG,
 	[ContentBlockType.PageOverview]: PAGE_OVERVIEW_BLOCK_CONFIG,
 	[ContentBlockType.ProjectsSpotlight]: PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
+	[ContentBlockType.Spotlight]: SPOTLIGHT_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 };
@@ -208,6 +216,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
+	[ContentBlockType.Spotlight]: INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	[ContentBlockType.Quote]: INITIAL_QUOTE_COMPONENTS_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
@@ -227,6 +236,7 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
+	[ContentBlockType.Spotlight]: INITIAL_SPOTLIGHT_BLOCK_STATE,
 	[ContentBlockType.Quote]: INITIAL_QUOTE_BLOCK_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,

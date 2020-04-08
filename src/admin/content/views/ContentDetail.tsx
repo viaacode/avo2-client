@@ -15,6 +15,7 @@ import {
 	TagInfo,
 	TagList,
 	TagOption,
+	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
@@ -224,6 +225,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
+									{/*TODO remove cast after typings update to 2.15.0*/}
+									{renderDetailRow(
+										<div style={{ width: '400px' }}>
+											<Thumbnail
+												category="item"
+												src={(contentPage as any).thumbnail_path}
+											/>
+										</div>,
+										t('Cover afbeelding')
+									)}
 									{renderSimpleDetailRows(contentPage, [
 										['title', t('admin/content/views/content-detail___titel')],
 										[

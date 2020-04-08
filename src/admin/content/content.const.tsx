@@ -66,6 +66,7 @@ export const INITIAL_CONTENT_OVERVIEW_STATE = () => ({
 });
 
 export const INITIAL_CONTENT_FORM = (): ContentPageEditFormState => ({
+	thumbnail_path: null,
 	title: '',
 	description: '',
 	isProtected: false,
