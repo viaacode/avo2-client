@@ -11,7 +11,7 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/
 import { formatDate, navigateToContentType } from '../../../../../shared/helpers';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
-import { MediaGridBlockState } from '../../../../shared/types';
+import { LinkTarget, MediaGridBlockState, PickerItem } from '../../../../shared/types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState, RouteComponentProps {
 	searchQuery?: ButtonAction;
@@ -112,7 +112,8 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 						value: (isItem
 							? itemOrCollection.external_id
 							: itemOrCollection.id) as string,
-					},
+						target: (searchQuery as PickerItem).target || LinkTarget.Self, // TODO remove cast after update to components 1.35.0
+					} as PickerItem, // TODO remove cast after update to components 1.35.0
 					history
 				),
 			title: itemOrCollection.title || '',
