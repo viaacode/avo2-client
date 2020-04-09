@@ -17,44 +17,51 @@ import {
 	MediaPlayerTitleTextButtonWrapper,
 	MediaPlayerWrapper,
 	PageOverviewWrapper,
+	ProjectSpotlightWrapper,
 } from '../wrappers';
 
 export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.AnchorLinks]: BlockButtons,
-	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Buttons]: BlockButtons,
+	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.IFrame]: BlockIFrame,
-	[ContentBlockType.Intro]: BlockIntro,
-	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.ImageGrid]: BlockGridWrapper,
+	[ContentBlockType.Image]: BlockImage,
+	[ContentBlockType.Image]: BlockImage,
+	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.MediaGrid]: MediaGridWrapper,
-	[ContentBlockType.MediaPlayer]: MediaPlayerWrapper,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButtonWrapper,
-	[ContentBlockType.Quote]: BlockQuote,
-	[ContentBlockType.RichText]: BlockRichText,
-	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
+	[ContentBlockType.MediaPlayer]: MediaPlayerWrapper,
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
-	[ContentBlockType.ProjectsSpotlight]: BlockSpotlight,
+	[ContentBlockType.PageOverview]: PageOverviewWrapper,
+	[ContentBlockType.ProjectsSpotlight]: ProjectSpotlightWrapper,
+	[ContentBlockType.Quote]: BlockQuote,
+	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
+	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
+	[ContentBlockType.RichText]: BlockRichText,
+	[ContentBlockType.Spotlight]: BlockSpotlight,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
 	ContentBlockType.AnchorLinks,
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
+	ContentBlockType.ImageGrid,
+	ContentBlockType.MediaGrid,
+	ContentBlockType.ProjectsSpotlight,
 	ContentBlockType.RichText,
 	ContentBlockType.RichTextTwoColumns,
-	ContentBlockType.MediaGrid,
-	ContentBlockType.ImageGrid,
-	ContentBlockType.ProjectsSpotlight,
+	ContentBlockType.Spotlight,
 ];
 
 export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.AnchorLinks,
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
-	ContentBlockType.ProjectsSpotlight,
 	ContentBlockType.ImageGrid,
+	ContentBlockType.ProjectsSpotlight,
+	ContentBlockType.Spotlight,
 ];
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [

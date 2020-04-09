@@ -16,6 +16,7 @@ import { CustomError, getEnv } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import {
 	renderDateDetailRows,
+	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -119,15 +120,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 				<Container mode="horizontal">
 					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
-							<tr>
-								<th>
-									<Avatar
-										image={get(storedProfile, 'profile.avatar')}
-										size="large"
-									/>
-								</th>
-								<td />
-							</tr>
+							{renderDetailRow(
+								<Avatar
+									image={get(storedProfile, 'profile.avatar')}
+									size="large"
+								/>,
+								t('Avatar')
+							)}
 							{renderSimpleDetailRows(storedProfile, [
 								['user.first_name', t('admin/users/views/user-detail___voornaam')],
 								['user.last_name', t('admin/users/views/user-detail___achternaam')],

@@ -83,6 +83,7 @@ export const useContentPage = (history: History, id?: string): UseContentPageTup
 				dispatch({
 					type: ContentPageActionType.SET_CONTENT_PAGE_FORM,
 					payload: {
+						thumbnail_path: (dbContentPage as any).thumbnail_path, // Remove cast after update to typings 2.15.0
 						title: dbContentPage.title,
 						description: dbContentPage.description || '',
 						isProtected: dbContentPage.is_protected,

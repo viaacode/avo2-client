@@ -100,10 +100,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
-	const pageTitle =
-		pageType === PageType.Create
-			? t('admin/content/views/content-edit___content-toevoegen')
-			: t('admin/content/views/content-edit___content-aanpassen');
+	let pageTitle = t('admin/content/views/content-edit___content-toevoegen');
+	if (pageType !== PageType.Create) {
+		pageTitle =
+			t('admin/content/views/content-edit___content-aanpassen') +
+			': ' +
+			get(contentForm, 'title', '');
+	}
 	const isAdminUser = PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS);
 
 	// Methods
@@ -211,6 +214,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			}
 
 			const contentItem: Partial<Avo.Content.Content> | any = {
+				thumbnail_path: contentForm.thumbnail_path,
 				title: contentForm.title,
 				description: contentForm.description || null,
 				is_protected: contentForm.isProtected,
@@ -419,6 +423,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						formState={contentForm}
 						isAdminUser={isAdminUser}
 						onChange={setContentForm}
+						user={user}
 					/>
 				);
 			default:

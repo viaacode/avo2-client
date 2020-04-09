@@ -56,6 +56,7 @@ export type ContentDetailParams = { id: string };
 
 // Content Edit
 export interface ContentPageEditFormState {
+	thumbnail_path: string | null;
 	title: string;
 	description: string;
 	isProtected: boolean;

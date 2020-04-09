@@ -5,6 +5,7 @@ import { ImageInfo } from '@viaa/avo2-components';
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
 
+import { ContentPickerProps } from '../../../shared/components/ContentPicker/ContentPicker';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -42,29 +43,27 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 		},
 		state: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE(),
 		fields: {
-			image: FILE_FIELD(
-				i18n.t(
-					'admin/content-block/helpers/generators/projects-spotlight___een-afbeelding-is-verplicht'
-				),
-				{
-					label: i18n.t(
-						'admin/content-block/helpers/generators/projects-spotlight___afbeelding'
-					),
-					editorProps: {
-						assetType: 'CONTENT_PAGE_IMAGE',
-						allowMulti: false,
-					} as FileUploadProps,
-				}
-			),
-			title: TEXT_FIELD('', {
-				label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___titel'),
+			project: {
+				label: i18n.t('Project pagina'),
+				editorType: ContentBlockEditor.ContentPicker,
+				editorProps: {
+					allowedTypes: ['PROJECTS'],
+					hideTypeDropdown: true,
+				} as ContentPickerProps,
+			},
+			customImage: FILE_FIELD('', {
+				label: i18n.t('Aangepaste afbeelding (optioneel)'),
+				editorProps: {
+					assetType: 'CONTENT_PAGE_IMAGE',
+					allowMulti: false,
+				} as FileUploadProps,
+				validator: () => [],
+			}),
+			customTitle: TEXT_FIELD('', {
+				label: i18n.t('Aangepaste titel (optioneel)'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),
-			buttonAction: {
-				label: i18n.t('admin/content-block/helpers/generators/projects-spotlight___link'),
-				editorType: ContentBlockEditor.ContentPicker,
-			},
 		},
 	},
 	block: {
