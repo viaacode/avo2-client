@@ -24,6 +24,7 @@ import { IconPicker } from '../shared/components/IconPicker/IconPicker';
 import {
 	AlignOption,
 	BackgroundColorOption,
+	BlockGridFormatOption,
 	ContentBlockType,
 	FillOption,
 	HeadingTypeOption,
@@ -377,6 +378,29 @@ export const GET_FILL_OPTIONS: () => SelectOption<FillOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___oorspronkelijke-grootte'),
 		value: 'auto',
+	},
+];
+
+export const GET_IMAGE_GRID_FORMAT_OPTIONS: () => SelectOption<BlockGridFormatOption>[] = () => [
+	{
+		label: i18n.t('Vierkant klein (200 x 200)'),
+		value: 'squareSmall',
+	},
+	{
+		label: i18n.t('Vierkant groot (275 x 275)'),
+		value: 'squareLarge',
+	},
+	{
+		label: i18n.t('4x3 (400 x 300)'),
+		value: '4:3',
+	},
+	{
+		label: i18n.t('2x1 (200 x 100)'),
+		value: '2:1',
+	},
+	{
+		label: i18n.t('6x9 (400 x 225)'),
+		value: '6:9',
 	},
 ];
 

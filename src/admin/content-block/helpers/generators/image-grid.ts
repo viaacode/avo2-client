@@ -1,5 +1,4 @@
 import { GridItem } from '@viaa/avo2-components';
-import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRange/MultiRange';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
@@ -7,11 +6,17 @@ import {
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
-	ImageGridBlockComponentStateBlockFields,
+	DefaultContentBlockState,
 	ImageGridBlockComponentStateFields,
 } from '../../../shared/types';
 
-import { GET_ALIGN_OPTIONS, GET_BUTTON_TYPE_OPTIONS, GET_FILL_OPTIONS } from '../../content-block.const';
+import { BlockGridWrapperProps } from '../../components/wrappers/ImageGridWrapper/ImageGridWrapper';
+import {
+	GET_ALIGN_OPTIONS,
+	GET_BUTTON_TYPE_OPTIONS,
+	GET_FILL_OPTIONS,
+	GET_IMAGE_GRID_FORMAT_OPTIONS,
+} from '../../content-block.const';
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
 
 export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentStateFields[] => [
@@ -28,13 +33,11 @@ export const INITIAL_IMAGE_GRID_COMPONENTS_STATE = (): ImageGridBlockComponentSt
 
 export const INITIAL_IMAGE_GRID_BLOCK_STATE = (
 	position: number
-): ImageGridBlockComponentStateBlockFields => {
+): BlockGridWrapperProps & DefaultContentBlockState => {
 	return {
 		...BLOCK_STATE_DEFAULTS(ContentBlockType.ImageGrid, position),
 		elements: [] as GridItem[],
-		imageWidth: 200,
-		imageHeight: 200,
-		itemWidth: 200,
+		format: 'squareLarge',
 		fill: 'cover',
 		textAlign: 'center',
 	};
@@ -96,45 +99,12 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		state: INITIAL_IMAGE_GRID_BLOCK_STATE(position),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
-			imageWidth: {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/image-grid___afbeelding-breedte'
-				),
-				editorType: ContentBlockEditor.MultiRange,
-				validator: () => [],
+			format: {
+				label: i18n.t('Formaat'),
+				editorType: ContentBlockEditor.Select,
 				editorProps: {
-					min: 0,
-					max: 800,
-					step: 1,
-					values: [200],
-					showNumber: true,
-				} as MultiRangeProps,
-			},
-			imageHeight: {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/image-grid___afbeelding-hoogte'
-				),
-				editorType: ContentBlockEditor.MultiRange,
-				validator: () => [],
-				editorProps: {
-					min: 0,
-					max: 800,
-					step: 1,
-					values: [200],
-					showNumber: true,
-				} as MultiRangeProps,
-			},
-			itemWidth: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___item-breedte'),
-				editorType: ContentBlockEditor.MultiRange,
-				validator: () => [],
-				editorProps: {
-					min: 0,
-					max: 800,
-					step: 1,
-					values: [200],
-					showNumber: true,
-				} as MultiRangeProps,
+					options: GET_IMAGE_GRID_FORMAT_OPTIONS(),
+				},
 			},
 			fill: {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___zoom'),

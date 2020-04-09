@@ -146,6 +146,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 				</div>
 				<Sidebar className="c-content-edit-view__sidebar" light>
 					<Navbar background="alt">
+						{/* TODO remove cast after update to components 1.35.0 */}
 						<Select
 							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
 							onChange={value => handleAddContentBlock(value as ContentBlockType)}
