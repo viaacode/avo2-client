@@ -1,24 +1,25 @@
-import { get } from 'lodash';
+import { get, isNull } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
 import { ActionMeta, ValueType } from 'react-select/src/types';
 
-import { Column, FormGroup, Grid, TextInput } from '@viaa/avo2-components';
+import { Button, Flex, FlexItem, FormGroup, LinkTarget, TextInput } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 
-import { parsePickerItem } from '../../helpers';
 import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
+import { parseSearchQuery } from '../../helpers/content-picker/parse-picker';
 import {
 	DEFAULT_ALLOWED_TYPES,
 	GET_CONTENT_TYPES,
 	REACT_SELECT_DEFAULT_OPTIONS,
 } from './ContentPicker.const';
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
+import './ContentPicker.scss';
 
 export interface ContentPickerProps {
 	allowedTypes?: ContentPickerType[];
@@ -55,6 +56,10 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	// apply initial input if INPUT-based type, default to ''
 	const [input, setInput] = useState<string>(setInitialInput(currentTypeObject, initialValue));
+
+	const [isTargetSelf, setIsTargetSelf] = useState<boolean>(
+		(get(initialValue, 'target') || LinkTarget.Self) === LinkTarget.Self
+	);
 
 	// handle error during inflation of item picker // TODO: type
 	const handleInflationError = useCallback(
@@ -121,14 +126,15 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		if (selectedType !== selected) {
 			setSelectedType(selected as PickerTypeOption);
 			setSelectedItem(null);
+			propertyChanged('selectedItem', null);
 
 			inflatePicker(null, setItemOptions);
 		}
 	};
 
-	const onSelectItem = (selectedItem: ValueType<PickerItem>, event: ActionMeta) => {
+	const onSelectItem = (selectedItem: ValueType<PickerItem>, event?: ActionMeta) => {
 		// reset `selectedItem` when clearing item picker
-		if (event.action === 'clear') {
+		if (get(event, 'action') === 'clear') {
 			setSelectedItem(null);
 			return null;
 		}
@@ -137,7 +143,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 		// if value of selected item is `null`, throw error
 		if (!get(value, 'value')) {
-			onSelect(null);
+			propertyChanged('value', null);
 			setSelectedItem(null);
 			console.error(
 				new CustomError('[Content Picker] - Selected item has no value.', null, {
@@ -153,11 +159,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			return null;
 		}
 
-		// trigger `onSelect` function, pass selected item
-		onSelect({
-			...value,
-			label: get(selectedItem, 'label'),
-		});
+		propertyChanged('selectedItem', selectedItem);
 
 		// update `selectedItem`
 		setSelectedItem(selectedItem);
@@ -165,7 +167,55 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 
 	const onChangeInput = (value: string) => {
 		setInput(value);
-		onSelect(parsePickerItem(get(selectedType, 'value') as ContentPickerType, value));
+		propertyChanged('value', value);
+	};
+
+	const propertyChanged = (
+		prop: 'type' | 'selectedItem' | 'value' | 'target' | 'label',
+		propValue: ContentPickerType | ValueType<PickerItem> | string | number | null | LinkTarget
+	) => {
+		let newType: ContentPickerType;
+		if (prop === 'type') {
+			newType = propValue as ContentPickerType;
+		} else {
+			newType = selectedType.value;
+		}
+
+		let newValue: string | null;
+		let newLabel: string | undefined;
+		if (prop === 'value') {
+			newValue = propValue as string | null;
+		} else if (prop === 'selectedItem') {
+			newValue = get(propValue, 'value.value', null);
+			newLabel = get(propValue, 'label');
+		} else if (selectedType.picker === 'TEXT_INPUT') {
+			newValue = input;
+		} else if (selectedType.picker === 'SELECT' && selectedItem) {
+			newValue = (selectedItem as PickerItem).value;
+		} else {
+			newValue = null;
+		}
+		if (newType === 'SEARCH_QUERY' && newValue) {
+			newValue = parseSearchQuery(newValue);
+		}
+
+		let newTarget: LinkTarget;
+		if (prop === 'target') {
+			newTarget = propValue as LinkTarget;
+		} else {
+			newTarget = isTargetSelf ? LinkTarget.Self : LinkTarget.Blank;
+		}
+
+		if (isNull(newValue)) {
+			onSelect(null);
+		} else {
+			onSelect({
+				type: newType,
+				value: newValue,
+				target: newTarget,
+				label: newLabel,
+			});
+		}
 	};
 
 	// render controls
@@ -235,13 +285,34 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 		/>
 	);
 
+	const renderLinkTargetControl = () => {
+		return (
+			<Button
+				className="c-content-picker__toggle-target-button"
+				type={'borderless'}
+				icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
+				title={
+					isTargetSelf
+						? t('Open de link in hetzelfde tablad')
+						: t('Open de link in een nieuw tabblad')
+				}
+				onClick={() => {
+					setIsTargetSelf(!isTargetSelf);
+					propertyChanged('target', isTargetSelf ? LinkTarget.Blank : LinkTarget.Self);
+				}}
+				disabled={!(selectedType.picker === 'TEXT_INPUT' ? input : selectedItem)}
+			/>
+		);
+	};
+
 	// render content picker
 	return (
-		<FormGroup error={errors}>
-			<Grid>
-				{!hideTypeDropdown && <Column size="1">{renderTypePicker()}</Column>}
-				<Column size="3">{renderItemControl()}</Column>
-			</Grid>
+		<FormGroup error={errors} className="c-content-picker">
+			<Flex spaced="regular">
+				{!hideTypeDropdown && <FlexItem shrink>{renderTypePicker()}</FlexItem>}
+				<FlexItem>{renderItemControl()}</FlexItem>
+				<FlexItem shrink>{renderLinkTargetControl()}</FlexItem>
+			</Flex>
 		</FormGroup>
 	);
 };

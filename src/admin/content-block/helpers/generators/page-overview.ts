@@ -4,6 +4,7 @@ import { MultiRangeProps } from '@viaa/avo2-components/dist/components/MultiRang
 import i18n from '../../../../shared/translations/i18n';
 import { ContentPageType } from '../../../content/content.types';
 import {
+	Color,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
@@ -25,6 +26,8 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 	tabs: [],
 	tabStyle: 'MENU_BAR',
 	allowMultiple: false,
+	centerHeader: false,
+	headerBackgroundColor: 'transparent',
 	contentType: ContentPageType.Project, // lookup options in lookup.enum_content_types
 	itemStyle: 'LIST',
 	showTitle: true,
@@ -36,7 +39,13 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE = (): PageOverviewBlockCompo
 
 export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (position: number): DefaultContentBlockState => {
 	return {
-		...BLOCK_STATE_DEFAULTS(ContentBlockType.PageOverview, position),
+		...BLOCK_STATE_DEFAULTS(
+			ContentBlockType.PageOverview,
+			position,
+			Color.White,
+			Color.Transparent,
+			'70px'
+		),
 	};
 };
 
@@ -67,6 +76,12 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 						label: i18n.t(
 							'admin/content-block/helpers/generators/page-overview___mag-meerdere-menu-items-selecteren'
 						),
+					} as CheckboxProps,
+				},
+				centerHeader: {
+					editorType: ContentBlockEditor.Checkbox,
+					editorProps: {
+						label: i18n.t('Menu items centereren'),
 					} as CheckboxProps,
 				},
 				itemStyle: {

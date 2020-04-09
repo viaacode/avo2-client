@@ -108,7 +108,7 @@ export function redirectToExternalPage(link: string, target: '_blank' | string |
 	}
 }
 
-function getBaseUrl(location: Location): string {
+export function getBaseUrl(location: Location): string {
 	return window.location.href.split(location.pathname)[0];
 }
 

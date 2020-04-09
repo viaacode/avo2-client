@@ -1,7 +1,6 @@
 import {
 	BlockButtons,
 	BlockCTAs,
-	BlockGrid,
 	BlockHeading,
 	BlockIFrame,
 	BlockImage,
@@ -13,6 +12,7 @@ import {
 
 import { ContentBlockType } from '../../../shared/types';
 import {
+	BlockGridWrapper,
 	MediaGridWrapper,
 	MediaPlayerTitleTextButtonWrapper,
 	MediaPlayerWrapper,
@@ -26,15 +26,18 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.CTAs]: BlockCTAs,
 	[ContentBlockType.Heading]: BlockHeading,
 	[ContentBlockType.IFrame]: BlockIFrame,
-	[ContentBlockType.ImageGrid]: BlockGrid,
+	[ContentBlockType.ImageGrid]: BlockGridWrapper,
+	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.Image]: BlockImage,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.MediaGrid]: MediaGridWrapper,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButtonWrapper,
 	[ContentBlockType.MediaPlayer]: MediaPlayerWrapper,
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
+	[ContentBlockType.PageOverview]: PageOverviewWrapper,
 	[ContentBlockType.ProjectsSpotlight]: ProjectSpotlightWrapper,
 	[ContentBlockType.Quote]: BlockQuote,
+	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.Spotlight]: BlockSpotlight,
@@ -63,6 +66,7 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [
 	'backgroundColor',
+	'headerBackgroundColor',
 	'blockType',
 	'elements',
 	'padding',

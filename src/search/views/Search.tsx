@@ -367,7 +367,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		setFormState({
 			...DEFAULT_FORM_STATE,
 			collectionLabel: [tagId],
-		} as any); // TODO remove cast	after update to typings 2.14.0
+		});
 	};
 
 	// @ts-ignore

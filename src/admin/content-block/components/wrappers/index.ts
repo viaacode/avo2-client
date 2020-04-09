@@ -3,3 +3,4 @@ export { default as MediaPlayerTitleTextButtonWrapper } from './MediaPlayerTitle
 export * from './MediaPlayerWrapper/MediaPlayerWrapper';
 export { default as PageOverviewWrapper } from './PageOverviewWrapper/PageOverviewWrapper';
 export { default as ProjectSpotlightWrapper } from './ProjectSpotlightWrapper/ProjectSpotlightWrapper';
+export { BlockGridWrapper } from './ImageGridWrapper/ImageGridWrapper';

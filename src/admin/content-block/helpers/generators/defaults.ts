@@ -1,53 +1,79 @@
 import { isEmpty, isNil, without } from 'lodash-es';
 
-import { WYSIWYGProps } from '@viaa/avo2-components';
+import { SelectOption, WYSIWYGProps } from '@viaa/avo2-components';
 
 import { WYSIWYG_OPTIONS_ALIGN, WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import i18n from '../../../../shared/translations/i18n';
 import { UserGroupSelectProps } from '../../../shared/components';
 import {
-	BackgroundColorOption,
+	Color,
 	ContentBlockEditor,
 	ContentBlockField,
 	ContentBlockType,
+	DefaultContentBlockState,
 	PaddingFieldState,
 } from '../../../shared/types';
 
-import { GET_ALIGN_OPTIONS, GET_BACKGROUND_COLOR_OPTIONS } from '../../content-block.const';
+import {
+	GET_ALIGN_OPTIONS,
+	GET_BACKGROUND_COLOR_OPTIONS,
+	GET_FOREGROUND_COLOR_OPTIONS,
+} from '../../content-block.const';
 
 // Block config defaults
 export const BLOCK_STATE_DEFAULTS = (
 	blockType: ContentBlockType,
 	position: number,
-	backgroundColor: BackgroundColorOption = BackgroundColorOption.White,
+	backgroundColor: Color = Color.White,
+	headerBackgroundColor: Color = Color.Transparent,
+	headerHeight: string = '0', // Currently we only need 2 block background colors for the PageOverviewBlock component
 	padding: PaddingFieldState = {
 		top: 'top',
 		bottom: 'bottom',
 	},
 	userGroupIds: number[] = [] // empty list means everybody with access to the page can see this content block
-) => ({
+): DefaultContentBlockState => ({
 	blockType,
 	position,
 	backgroundColor,
+	headerBackgroundColor,
+	headerHeight,
 	padding,
 	userGroupIds,
 });
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
+	headerBackgroundColor: BACKGROUND_COLOR_FIELD(i18n.t('Titelbalk achtergrondkleur'), {
+		label: i18n.t('Transparant'),
+		value: Color.Transparent,
+	}),
 	padding: PADDING_FIELD(),
 	userGroupIds: USER_GROUP_SELECT(),
 });
 
 // Recurring fields
+export const FOREGROUND_COLOR_FIELD = (
+	label: string = i18n.t('Tekst kleur'),
+	defaultValue?: SelectOption<Color>
+): ContentBlockField => ({
+	label,
+	editorType: ContentBlockEditor.ColorSelect,
+	editorProps: {
+		options: GET_FOREGROUND_COLOR_OPTIONS(),
+		defaultValue: defaultValue || GET_FOREGROUND_COLOR_OPTIONS()[0],
+	},
+});
+
 export const BACKGROUND_COLOR_FIELD = (
-	label: string = i18n.t('admin/content-block/helpers/generators/defaults___achtergrondkleur')
+	label: string = i18n.t('admin/content-block/helpers/generators/defaults___achtergrondkleur'),
+	defaultValue?: SelectOption<Color>
 ): ContentBlockField => ({
 	label,
 	editorType: ContentBlockEditor.ColorSelect,
 	editorProps: {
 		options: GET_BACKGROUND_COLOR_OPTIONS(),
-		defaultValue: GET_BACKGROUND_COLOR_OPTIONS()[0],
+		defaultValue: defaultValue || GET_BACKGROUND_COLOR_OPTIONS()[0],
 	},
 });
 
