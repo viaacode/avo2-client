@@ -1,5 +1,4 @@
-import { MutationFunction } from '@apollo/react-common';
-import { get } from 'lodash-es';
+import { get, omit } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -27,8 +26,10 @@ import {
 	GET_CONTENT_TYPES,
 	GET_PROJECT_CONTENT_PAGES,
 	GET_PROJECT_CONTENT_PAGES_BY_TITLE,
+	INSERT_CONTENT,
 	INSERT_CONTENT_LABEL,
 	INSERT_CONTENT_LABEL_LINKS,
+	UPDATE_CONTENT_BY_ID,
 } from './content.gql';
 import { ContentOverviewTableCols, ContentPageType, DbContent } from './content.types';
 
@@ -333,16 +334,30 @@ export class ContentService {
 		}
 	}
 
+	private static cleanupBeforeInsert(contentPage: Partial<DbContent>): Partial<DbContent> {
+		return omit(contentPage, [
+			'contentBlockssBycontentId',
+			'profile',
+			'__typename',
+			'content_content_labels',
+		]);
+	}
+
 	public static async insertContentPage(
-		contentPage: Partial<Avo.Content.Content>,
-		contentBlockConfigs: ContentBlockConfig[],
-		triggerContentInsert: MutationFunction<Partial<Avo.Content.Content>>
+		contentPage: Partial<DbContent>,
+		contentBlockConfigs: ContentBlockConfig[]
 	): Promise<Partial<Avo.Content.Content> | null> {
 		try {
-			const response = await triggerContentInsert({
-				variables: { contentItem: contentPage },
+			const response = await dataService.mutate({
+				mutation: INSERT_CONTENT,
+				variables: { contentItem: this.cleanupBeforeInsert(contentPage) },
 				update: ApolloCacheManager.clearContentCache,
 			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains errors', null, { response });
+			}
+
 			const id: number | null = get(
 				response,
 				`data.${CONTENT_RESULT_PATH.INSERT}.returning[0].id`,
@@ -378,22 +393,27 @@ export class ContentService {
 	}
 
 	public static async updateContentPage(
-		contentPage: Partial<Avo.Content.Content>,
-		initialContentBlocks: Avo.ContentBlocks.ContentBlocks[],
-		contentBlockConfigs: ContentBlockConfig[],
-		triggerContentUpdate: MutationFunction<Partial<Avo.Content.Content>>
+		contentPage: Partial<DbContent>,
+		initialContentBlocks?: Avo.ContentBlocks.ContentBlocks[],
+		contentBlockConfigs?: ContentBlockConfig[]
 	): Promise<Partial<Avo.Content.Content> | null> {
 		try {
-			const response = await triggerContentUpdate({
+			const response = await dataService.mutate({
+				mutation: UPDATE_CONTENT_BY_ID,
 				variables: {
-					contentItem: contentPage,
+					contentItem: this.cleanupBeforeInsert(contentPage),
 					id: contentPage.id,
 				},
 				update: ApolloCacheManager.clearContentCache,
 			});
+
+			if (response.errors) {
+				throw new CustomError('Response contains errors', null, { response });
+			}
+
 			const updatedContent = get(response, 'data', null);
 
-			if (contentBlockConfigs && contentBlockConfigs.length) {
+			if (contentBlockConfigs && contentBlockConfigs.length && initialContentBlocks) {
 				await updateContentBlocks(
 					contentPage.id as number,
 					initialContentBlocks,
