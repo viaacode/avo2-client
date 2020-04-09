@@ -8,7 +8,7 @@ import { ReactSelectOption } from '../../../../../shared/types';
 
 import './ColorSelect.scss';
 
-interface ColorSelectProps extends Props {}
+export interface ColorSelectProps extends Props {}
 
 const ColorSelect: FunctionComponent<ColorSelectProps> = ({
 	className,
@@ -18,7 +18,7 @@ const ColorSelect: FunctionComponent<ColorSelectProps> = ({
 }) => {
 	const renderLabel = ({ label, value }: ReactSelectOption<string>) => (
 		<Flex>
-			<div className={`c-color-select__preview u-bg-${value}`} />
+			<div className={`c-color-select__preview`} style={{ background: value }} />
 			<Spacer margin="left-small">{label}</Spacer>
 		</Flex>
 	);

@@ -3,6 +3,7 @@ import {
 	ButtonType,
 	ContentItemStyle,
 	ContentTabStyle,
+	CTAProps,
 	IconName,
 	SpacerOption,
 } from '@viaa/avo2-components';
@@ -20,14 +21,47 @@ export type WidthOption = 'full-width' | '500px' | '400px';
 
 export type HeadingTypeOption = 'h1' | 'h2' | 'h3' | 'h4';
 
-export enum BackgroundColorOption {
-	Gray50 = 'gray-50',
-	White = 'white',
-	NightBlue = 'night-blue',
-	Teal = 'teal',
-	TealBright = 'teal-bright',
-	SoftBlue = 'soft-blue',
-	OceanGreen = 'ocean-green',
+export enum Color {
+	White = '#FFF',
+	Black = '#000',
+	Gray1000 = '#000000',
+	Gray900 = '#0F171D',
+	Gray800 = '#1D2B35',
+	Gray700 = '#2B414F',
+	Gray600 = '#385265',
+	Gray500 = '#45647B',
+	Gray400 = '#557891',
+	Gray300 = '#7894A7',
+	Gray200 = '#9CAFBD',
+	Gray150 = '#BAC7D1',
+	Gray100 = '#D6DEE3',
+	Gray50 = '#EDEFF2',
+	GrayShadow = '#222',
+	NightBlue = '#3A586F',
+	DarkNightBlue = '#182F42',
+	TealBright = '#25A4CF',
+	Teal = '#1D637A',
+	TealDark = '#124455',
+	Error200 = '#EE8176',
+	Green = '#46D46E',
+	Blue = '#4D76F3',
+	SoftBlue = '#7CAACF',
+	OceanGreen = '#57C2A0',
+	Silver = '#DBDBDB',
+	Tapestry = '#B75B99',
+	WineRed = '#98485C',
+	Yellow = '#F3AA2E',
+	DarkOrange = '#D03F06',
+	FrenchRose = '#F33F67',
+	Primary = '#25A4CF',
+	Success = '#57C2A0',
+	Error = '#DA3F34',
+	AlertBackground = '#FFFFCC',
+	AlertAccent = '#E9E994',
+	TealBright200 = '#CFE3E9',
+	BorderColor = '#3FB1D6',
+	InputBoxShadow = '#69C2dF',
+	Transparent = 'transparent',
 }
 
 export interface PaddingFieldState {
@@ -104,7 +138,9 @@ export type ContentBlockErrors = { [key: string]: (string | string[])[] };
 
 /* CONTENT BLOCK STATE */
 export interface DefaultContentBlockState {
-	backgroundColor: BackgroundColorOption;
+	backgroundColor: Color;
+	headerBackgroundColor?: Color; // css color string. eg: '#222' or 'black' or 'rgb(0, 0, 255)'
+	headerHeight?: string; // css height string. eg: '20px' or '15%'
 	blockType: ContentBlockType;
 	position: number;
 	padding: PaddingFieldState;
@@ -141,7 +177,7 @@ export enum ContentBlockEditor {
 /* CONTENT BLOCKS */
 export type ContentBlockComponentState =
 	| ButtonsBlockComponentState
-	| CTAsBlockComponentState
+	| Partial<CTAProps>
 	| HeadingBlockComponentState
 	| IFrameBlockComponentState
 	| ImageBlockComponentState
@@ -181,6 +217,8 @@ export interface PageOverviewBlockComponentStateFields {
 	tabs?: string[];
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
+	centerHeader?: boolean;
+	headerBackgroundColor?: string;
 	contentType: ContentPageType;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
@@ -209,16 +247,6 @@ export interface IntroBlockComponentState {
 	title: string;
 	content: string;
 	align: AlignOption;
-}
-
-export interface CTAsBlockComponentState {
-	heading: string;
-	headingType: HeadingTypeOption;
-	content: string | string[];
-	buttonLabel: string;
-	buttonIcon?: IconName;
-	buttonType?: ButtonType;
-	buttonAction?: ButtonAction;
 }
 
 export interface IFrameBlockComponentState {

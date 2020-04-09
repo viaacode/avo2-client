@@ -1,17 +1,28 @@
 import i18n from '../../../../shared/translations/i18n';
 
+import { CTAProps } from '@viaa/avo2-components';
+
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
-	CTAsBlockComponentState,
 	DefaultContentBlockState,
 } from '../../../shared/types';
-import { GET_BUTTON_TYPE_OPTIONS, GET_HEADING_TYPE_OPTIONS } from '../../content-block.const';
-import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import {
+	GET_BACKGROUND_COLOR_OPTIONS,
+	GET_BUTTON_TYPE_OPTIONS,
+	GET_HEADING_TYPE_OPTIONS,
+} from '../../content-block.const';
+import {
+	BACKGROUND_COLOR_FIELD,
+	BLOCK_FIELD_DEFAULTS,
+	BLOCK_STATE_DEFAULTS,
+	FOREGROUND_COLOR_FIELD,
+	TEXT_FIELD,
+} from './defaults';
 
-const EMPTY_CTA: CTAsBlockComponentState = {
+const EMPTY_CTA: Partial<CTAProps> = {
 	headingType: 'h2',
 	heading: '',
 	content: '',
@@ -19,10 +30,7 @@ const EMPTY_CTA: CTAsBlockComponentState = {
 	buttonLabel: '',
 };
 
-export const INITIAL_CTAS_COMPONENTS_STATE = (): CTAsBlockComponentState[] => [
-	EMPTY_CTA,
-	EMPTY_CTA,
-];
+export const INITIAL_CTAS_COMPONENTS_STATE = (): Partial<CTAProps>[] => [EMPTY_CTA, EMPTY_CTA];
 
 export const INITIAL_CTAS_BLOCK_STATE = (position: number): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS(ContentBlockType.CTAs, position);
@@ -52,7 +60,9 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
+			headingColor: FOREGROUND_COLOR_FIELD(i18n.t('Titel kleur')),
 			content: TEXT_FIELD(),
+			contentColor: FOREGROUND_COLOR_FIELD(i18n.t('Tekst kleur')),
 			buttonType: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-type'),
 				editorType: ContentBlockEditor.Select,
@@ -78,6 +88,10 @@ export const CTAS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
+			backgroundColor: BACKGROUND_COLOR_FIELD(
+				i18n.t('Achtergrond kleur'),
+				GET_BACKGROUND_COLOR_OPTIONS()[1]
+			),
 		},
 	},
 	block: {

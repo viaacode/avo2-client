@@ -23,7 +23,7 @@ import { ContentTypeAndLabelsPicker } from '../shared/components/ContentTypeAndL
 import { IconPicker } from '../shared/components/IconPicker/IconPicker';
 import {
 	AlignOption,
-	BackgroundColorOption,
+	Color,
 	BlockGridFormatOption,
 	ContentBlockType,
 	FillOption,
@@ -234,41 +234,58 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 };
 
 // Options
-export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<BackgroundColorOption>[] = () => [
+export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___wit'),
-		value: BackgroundColorOption.White,
+		value: Color.White,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___grijs'),
-		value: BackgroundColorOption.Gray50,
+		value: Color.Gray50,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___nachtblauw'),
-		value: BackgroundColorOption.NightBlue,
+		value: Color.NightBlue,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___zachtblauw'),
-		value: BackgroundColorOption.SoftBlue,
+		value: Color.SoftBlue,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
-		value: BackgroundColorOption.Teal,
+		value: Color.Teal,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
-		value: BackgroundColorOption.TealBright,
+		value: Color.TealBright,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___oceaangroen'),
-		value: BackgroundColorOption.OceanGreen,
+		value: Color.OceanGreen,
 	},
 ];
 
-export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => BackgroundColorOption[] = () => [
-	BackgroundColorOption.NightBlue,
-	BackgroundColorOption.Teal,
+// TODO update list with required colors once provided in https://meemoo.atlassian.net/browse/AVO-216
+export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
+	{
+		label: i18n.t('Zwart'),
+		value: Color.Black,
+	},
+	{
+		label: i18n.t('Donker grijs'),
+		value: Color.Gray700,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___grijs'),
+		value: Color.Gray50,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___wit'),
+		value: Color.White,
+	},
 ];
+
+export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [Color.NightBlue, Color.Teal];
 
 export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{

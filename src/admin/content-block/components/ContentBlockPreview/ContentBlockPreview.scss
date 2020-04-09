@@ -1,5 +1,28 @@
 @import '../../../../styles/settings/colors';
 
+.c-content-block {
+	position: relative;
+	z-index: 1;
+
+	> div {
+		z-index: 2;
+
+		.c-content-block__header-bg-color {
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			width: 100%;
+			height: 0; // Will be overridden by a dynamic style in the ContentBlockPreview component
+			z-index: -1; // put absolutely positioned header background below block content but above the .c-content-block div
+		}
+
+		.c-content-block-preview {
+			z-index: 1;
+		}
+	}
+}
+
 .c-content-block-preview--dark {
 	// Here you can overwrite styles on content-blocks for previews with a dark background
 	.c-block-media-list {
