@@ -183,6 +183,8 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 							label={t(
 								'admin/interactive-tour/views/interactive-tour-detail___bewerk'
 							)}
+							title={t('Bewerk deze rondleiding')}
+							ariaLabel={t('Bewerk deze rondleiding')}
 							onClick={() => {
 								redirectToClientPage(
 									buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
@@ -197,6 +199,8 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 							label={t(
 								'admin/interactive-tour/views/interactive-tour-detail___verwijderen'
 							)}
+							title={t('Verwijder deze rondleiding')}
+							ariaLabel={t('Verwijder deze rondleiding')}
 							onClick={() => setIsConfirmModalOpen(true)}
 						/>
 					</ButtonToolbar>

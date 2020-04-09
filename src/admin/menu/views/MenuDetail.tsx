@@ -179,7 +179,16 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			<Button
 				icon={`chevron-${dir}` as IconName}
 				onClick={() => reorderMenuItem(index, indexUpdate, id)}
-				title={`Verplaats item naar ${decrease ? 'boven' : 'onder'}`}
+				title={
+					dir === 'up'
+						? t('Verplaats het item naar boven')
+						: t('Verplaats het item naar onder')
+				}
+				ariaLabel={
+					dir === 'up'
+						? t('Verplaats het item naar boven')
+						: t('Verplaats het item naar onder')
+				}
 				type="secondary"
 				disabled={disabled}
 			/>
@@ -260,10 +269,16 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 																}
 															)
 														}
+														title={t('Bewerk dit navigatie item')}
+														ariaLabel={t('Bewerk dit navigatie item')}
 														type="secondary"
 													/>
 													<Button
 														icon="delete"
+														title={t('Verwijder dit navigatie item')}
+														ariaLabel={t(
+															'Verwijder dit navigatie item'
+														)}
 														onClick={() => openConfirmModal(item.id)}
 														type="danger-hover"
 													/>

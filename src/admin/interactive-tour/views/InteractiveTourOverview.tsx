@@ -179,6 +179,8 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 									id: rowData.id,
 								})
 							}
+							title={t('Bekijk de rondleiding detail pagina')}
+							ariaLabel={t('Bekijk de rondleiding detail pagina')}
 						/>
 						<Button
 							icon="edit"
@@ -188,14 +190,16 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 								})
 							}
 							size="small"
-							title={t('admin/content/views/content-overview___pas-content-aan')}
+							title={t('Bewerk de rondleiding')}
+							ariaLabel={t('Bewerk de rondleiding')}
 							type="secondary"
 						/>
 						<Button
 							icon="delete"
 							onClick={() => openModal(rowData.id)}
 							size="small"
-							title={t('admin/content/views/content-overview___verwijder-content')}
+							title={t('Verwijder de rondleiding')}
+							ariaLabel={t('Verwijder de rondleiding')}
 							type="danger-hover"
 						/>
 					</ButtonToolbar>

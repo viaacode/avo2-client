@@ -231,7 +231,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button icon="more-horizontal" type="borderless" />
+						<Button icon="more-horizontal" type="borderless" title={t('Meer opties')} />
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent menuItems={ROW_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
@@ -250,6 +250,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								{ id: collectionId }
 							)
 						}
+						title={isCollection ? t('Bekijk deze collectie') : t('Bekijk deze bundel')}
 						type="borderless"
 					/>
 				)}

@@ -136,6 +136,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 									label={t(
 										'authentication/views/registration-flow/l-8-accept-conditions___accepteer-voorwaarden'
 									)}
+									title={t('Accepteer de gebruiks- en privacy voorwaarden')}
 									type="primary"
 									onClick={handleAcceptConditions}
 								/>

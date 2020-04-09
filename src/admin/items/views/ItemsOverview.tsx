@@ -159,11 +159,15 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 							type="secondary"
 							icon="eye"
 							onClick={() => navigateToItemDetail(rowData.external_id)}
+							title={t('Bekijk item in de website')}
+							ariaLabel={t('Bekijk item in de website')}
 						/>
 						<Button
 							type="secondary"
 							icon="edit"
 							onClick={() => navigateToAdminItemDetail(rowData.uid)}
+							title={t('Bekijk item details in het beheer')}
+							ariaLabel={t('Bekijk item details in het beheer')}
 						/>
 					</ButtonToolbar>
 				);

@@ -168,18 +168,16 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 								})
 							}
 							size="small"
-							title={t('admin/content/views/content-overview___pas-content-aan')}
-							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
+							title={t('Bewerk deze gebruikersgroep')}
+							ariaLabel={t('Bewerk deze gebruikersgroep')}
 							type="secondary"
 						/>
 						<Button
 							icon="delete"
 							onClick={() => openModal(rowData.id)}
 							size="small"
-							title={t('admin/content/views/content-overview___verwijder-content')}
-							ariaLabel={t(
-								'admin/content/views/content-overview___verwijder-content'
-							)}
+							title={t('Verwijder deze gebruikersgroep')}
+							ariaLabel={t('Verwijder deze gebruikersgroep')}
 							type="danger-hover"
 						/>
 					</ButtonToolbar>

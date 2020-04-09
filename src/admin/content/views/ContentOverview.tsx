@@ -281,6 +281,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_DETAIL, { id })}
 							size="small"
 							title={t('admin/content/views/content-overview___bekijk-content')}
+							ariaLabel={t('admin/content/views/content-overview___bekijk-content')}
 							type="secondary"
 						/>
 						<Button
@@ -288,6 +289,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 							size="small"
 							title={t('admin/content/views/content-overview___pas-content-aan')}
+							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
 							type="secondary"
 						/>
 						<Button
@@ -295,6 +297,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							onClick={() => openModal(rowData)}
 							size="small"
 							title={t('admin/content/views/content-overview___verwijder-content')}
+							ariaLabel={t(
+								'admin/content/views/content-overview___verwijder-content'
+							)}
 							type="danger-hover"
 						/>
 					</ButtonToolbar>
@@ -324,6 +329,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					<Button
 						icon="plus"
 						label={t('admin/content/views/content-overview___content-toevoegen')}
+						title={t('Maak een nieuwe content pagina aan')}
 						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
 					/>
 				</Spacer>
@@ -390,6 +396,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			<AdminLayoutTopBarRight>
 				<Button
 					label={t('admin/content/views/content-overview___content-toevoegen')}
+					title={t('Maak een nieuwe content pagina aan')}
 					onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
 				/>
 			</AdminLayoutTopBarRight>

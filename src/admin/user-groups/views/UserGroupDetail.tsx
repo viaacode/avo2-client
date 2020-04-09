@@ -180,8 +180,8 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 								)
 							}
 							size="small"
-							ariaLabel={t('admin/user-groups/views/user-group-detail___verwijder')}
-							title={t('admin/user-groups/views/user-group-detail___verwijder')}
+							ariaLabel={t('Verwijder deze gebruikersgroep')}
+							title={t('Verwijder deze gebruikersgroep')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -281,6 +281,8 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 					<Button
 						type="primary"
 						label={t('admin/user-groups/views/user-group-detail___bewerk')}
+						title={t('Bewerk deze gebruikersgroep')}
+						ariaLabel={t('Bewerk deze gebruikersgroep')}
 						onClick={() => {
 							redirectToClientPage(
 								buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, {
@@ -293,6 +295,8 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 					<Button
 						type="danger"
 						label={t('admin/user-groups/views/user-group-detail___verwijderen')}
+						title={t('Verwijder deze gebruikersgroep')}
+						ariaLabel={t('Verwijder deze gebruikersgroep')}
 						onClick={() => setIsConfirmModalOpen(true)}
 					/>
 				</ButtonToolbar>

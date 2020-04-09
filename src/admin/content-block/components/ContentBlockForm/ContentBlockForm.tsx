@@ -122,6 +122,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						type="danger"
 						onClick={() => removeComponentFromState(stateIndex)}
 						size="small"
+						title={t('Verwijder sectie')}
+						ariaLabel={t('Verwijder sectie')}
 					/>
 				</FlexItem>
 			)
@@ -179,6 +181,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
 					{ label }
 				)}
+				title={t('Voeg sectie toe')}
 				icon="add"
 				type="secondary"
 				onClick={addComponentToState}
@@ -211,6 +214,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							title={t(
 								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
 							)}
+							ariaLabel={t(
+								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
+							)}
 							type="tertiary"
 						/>
 						<Button
@@ -219,6 +225,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							onClick={() => onReorder(blockIndex, 1)}
 							size="small"
 							title={t(
+								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
+							)}
+							ariaLabel={t(
 								'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
 							)}
 							type="tertiary"
@@ -230,6 +239,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							title={t(
 								'admin/content-block/components/content-block-form/content-block-form___bewerk-content-block'
 							)}
+							ariaLabel={t(
+								'admin/content-block/components/content-block-form/content-block-form___bewerk-content-block'
+							)}
 							type="tertiary"
 						/>
 						<Button
@@ -237,6 +249,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							onClick={() => onRemove(blockIndex)}
 							size="small"
 							title={t(
+								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
+							)}
+							ariaLabel={t(
 								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
 							)}
 							type="danger"

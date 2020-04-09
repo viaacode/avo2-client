@@ -249,9 +249,8 @@ export const Navigation: FunctionComponent<DefaultSecureRouteProps> = ({
 									<Button
 										icon="menu"
 										type="borderless-i"
-										ariaLabel={t(
-											'shared/components/navigation/navigation___menu'
-										)}
+										title={t('Open het navigatie menu')}
+										ariaLabel={t('Open het navigatie menu')}
 										onClick={onToggleMenu}
 									/>
 								</div>

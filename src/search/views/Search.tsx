@@ -469,7 +469,12 @@ const Search: FunctionComponent<SearchProps> = ({
 									triggerClassName="c-extra-options"
 								>
 									<DropdownButton>
-										<Button type="tertiary" icon="more-horizontal" />
+										<Button
+											type="tertiary"
+											icon="more-horizontal"
+											title={t('Meer opties')}
+											ariaLabel={t('Meer opties')}
+										/>
 									</DropdownButton>
 									<DropdownContent>
 										<Button

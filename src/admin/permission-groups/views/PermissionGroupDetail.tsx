@@ -190,6 +190,8 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 							label={t(
 								'admin/permission-groups/views/permission-group-detail___bewerken'
 							)}
+							title={t('Bewerk deze permissie groep')}
+							ariaLabel={t('Bewerk deze permissie groep')}
 							onClick={handleEditClick}
 						/>
 					</ButtonToolbar>

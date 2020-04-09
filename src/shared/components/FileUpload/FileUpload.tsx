@@ -149,6 +149,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				type="danger-hover"
 				icon="trash-2"
 				ariaLabel={t('shared/components/file-upload/file-upload___verwijder-bestand')}
+				title={t('shared/components/file-upload/file-upload___verwijder-bestand')}
 				autoHeight
 				disabled={isProcessing}
 				onClick={() => deleteUploadedFile(url)}

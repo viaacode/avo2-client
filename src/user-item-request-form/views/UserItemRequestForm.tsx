@@ -142,11 +142,15 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	const renderForm = () => {
 		return (
 			<>
-				<Button type="secondary" onClick={history.goBack}>
-					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___terug">
-						Terug
-					</Trans>
-				</Button>
+				<Button
+					type="secondary"
+					onClick={history.goBack}
+					label={t(
+						'authentication/views/registration-flow/r-4-manual-registration___terug'
+					)}
+					title={t('Keer terug naar het stamboek scherm')}
+					ariaLabel={t('Keer terug naar het stamboek scherm')}
+				/>
 				<BlockHeading type="h2">
 					<Trans i18nKey="user-item-request-form/views/user-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan">
 						Niet gevonden wat je zocht? Vraag het aan!
@@ -209,11 +213,13 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 							{isLoading ? (
 								<Spinner size="large" />
 							) : (
-								<Button type="primary" onClick={onSend}>
-									<Trans i18nKey="user-item-request-form/views/user-item-request-form___aanvraag-indienen">
-										Aanvraag indienen
-									</Trans>
-								</Button>
+								<Button
+									type="primary"
+									onClick={onSend}
+									label={t(
+										'user-item-request-form/views/user-item-request-form___aanvraag-indienen'
+									)}
+								/>
 							)}
 						</FormGroup>
 					</Spacer>

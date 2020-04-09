@@ -168,6 +168,8 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 						<Button
 							type="danger"
 							label={t('admin/users/views/user-detail___bannen')}
+							title={t('Ban deze gebruiker van het AvO platform')}
+							ariaLabel={t('Ban deze gebruiker van het AvO platform')}
 							onClick={() =>
 								ToastService.info(
 									t('settings/components/profile___nog-niet-geimplementeerd'),
@@ -178,10 +180,15 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 					)}
 					<Button
 						label={t('admin/users/views/user-detail___beheer-in-account-manager')}
+						ariaLabel={t(
+							'Open deze gebruiker in het account beheer dashboard van meemoo'
+						)}
 						disabled={!getLdapDashboardUrl()}
 						title={
 							getLdapDashboardUrl()
-								? ''
+								? t(
+										'Open deze gebruiker in het account beheer dashboard van meemoo'
+								  )
 								: t(
 										'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
 								  )

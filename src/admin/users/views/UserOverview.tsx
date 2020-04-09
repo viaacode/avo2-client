@@ -97,7 +97,13 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ history }) => {
 
 			case 'actions':
 				return (
-					<Button type="secondary" icon="eye" onClick={() => navigateToUserDetail(id)} />
+					<Button
+						type="secondary"
+						icon="eye"
+						onClick={() => navigateToUserDetail(id)}
+						title={t('Bekijk de details van deze gebruiker')}
+						ariaLabel={t('Bekijk de details van deze gebruiker')}
+					/>
 				);
 
 			default:
