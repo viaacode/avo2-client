@@ -106,9 +106,12 @@ export const navigateToContentType = (action: ButtonAction, history: History) =>
 	if (action) {
 		const { type, value, target } = action;
 
-		switch (type as Avo.Core.ContentPickerType) {
+		switch (
+			type as Avo.Core.ContentPickerType | 'PROJECTS' // TODO remove after update to typings 2.16.0
+		) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
+			case 'PROJECTS':
 				navigateToAbsoluteOrRelativeUrl(String(value), history, target);
 				break;
 
