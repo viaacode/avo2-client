@@ -1,3 +1,5 @@
+import { LinkTarget } from '@viaa/avo2-components';
+
 export type ContentPickerType =
 	| 'CONTENT_PAGE'
 	| 'COLLECTION'
@@ -29,9 +31,4 @@ export interface PickerItem {
 	type: ContentPickerType;
 	value: string;
 	target?: LinkTarget;
-}
-
-export enum LinkTarget { // Replace by enum in components repo after 1.35.0
-	Self = '_self',
-	Blank = '_blank',
 }

@@ -4,10 +4,9 @@ import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ButtonAction } from '@viaa/avo2-components';
+import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { LinkTarget, PickerItem } from '../../admin/shared/types';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { ToastService } from '../services';
@@ -105,12 +104,12 @@ function navigateToAbsoluteOrRelativeUrl(
 
 export const navigateToContentType = (action: ButtonAction, history: History) => {
 	if (action) {
-		const { type, value, target } = action as PickerItem; // TODO remove cast after update to components 1.35.0
+		const { type, value, target } = action;
 
 		switch (type as Avo.Core.ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
-				navigateToAbsoluteOrRelativeUrl(value, history, target);
+				navigateToAbsoluteOrRelativeUrl(String(value), history, target);
 				break;
 
 			case 'COLLECTION':
