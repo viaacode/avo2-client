@@ -80,21 +80,25 @@ function navigateToAbsoluteOrRelativeUrl(
 	history: History,
 	target: LinkTarget = LinkTarget.Self
 ) {
+	let fullUrl = url;
+	if (url.startsWith('www.')) {
+		fullUrl = `//${url}`;
+	}
 	if (target === LinkTarget.Self) {
-		if (url.includes('//')) {
+		if (fullUrl.includes('//')) {
 			// absolute url
-			window.location.href = url;
+			window.location.href = fullUrl;
 		} else {
 			// relative url
-			history.push(url);
+			history.push(fullUrl);
 		}
 	} else {
-		if (url.includes('//')) {
-			// absolute url
-			window.open(url);
+		if (fullUrl.includes('//')) {
+			// absolute fullUrl
+			window.open(fullUrl);
 		} else {
 			// relative url
-			window.open(`${window.location.origin}${url}`);
+			window.open(`${window.location.origin}${fullUrl}`);
 		}
 	}
 }

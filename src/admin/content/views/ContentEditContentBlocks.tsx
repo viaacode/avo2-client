@@ -150,7 +150,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
 							onChange={value => handleAddContentBlock(value as ContentBlockType)}
 							placeholder={t('Voeg een content blok toe')}
-							value={null}
+							value={null as any}
 						/>
 					</Navbar>
 					<div className="c-scrollable" ref={sidebarScrollable}>
