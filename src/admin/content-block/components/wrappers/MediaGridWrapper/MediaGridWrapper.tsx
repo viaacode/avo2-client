@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
+import { BlockMediaList, ButtonAction, LinkTarget, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { toEnglishContentType } from '../../../../../collection/collection.types';
@@ -112,6 +112,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 						value: (isItem
 							? itemOrCollection.external_id
 							: itemOrCollection.id) as string,
+						target: get(searchQuery, 'target') || LinkTarget.Self,
 					},
 					history
 				),

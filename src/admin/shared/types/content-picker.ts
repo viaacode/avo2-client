@@ -1,3 +1,5 @@
+import { LinkTarget } from '@viaa/avo2-components';
+
 export type ContentPickerType =
 	| 'CONTENT_PAGE'
 	| 'COLLECTION'
@@ -28,4 +30,5 @@ export interface PickerItem {
 	label?: string;
 	type: ContentPickerType;
 	value: string;
+	target?: LinkTarget;
 }

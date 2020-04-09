@@ -1,6 +1,6 @@
 import { isNumber, pick, pickBy } from 'lodash-es';
 
-import { ContentBlockErrors } from '../../shared/types';
+import { ContentBlockErrors } from '../types';
 
 // Handle content-block config components/block state validation
 export const validateContentBlockField = (

@@ -4,7 +4,7 @@ import queryString from 'query-string';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ButtonAction } from '@viaa/avo2-components';
+import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
@@ -74,36 +74,73 @@ export const navigate = (
 	history.push(builtLink);
 };
 
+function navigateToAbsoluteOrRelativeUrl(
+	url: string,
+	history: History,
+	target: LinkTarget = LinkTarget.Self
+) {
+	let fullUrl = url;
+	if (url.startsWith('www.')) {
+		fullUrl = `//${url}`;
+	}
+	if (target === LinkTarget.Self) {
+		if (fullUrl.includes('//')) {
+			// absolute url
+			window.location.href = fullUrl;
+		} else {
+			// relative url
+			history.push(fullUrl);
+		}
+	} else {
+		if (fullUrl.includes('//')) {
+			// absolute fullUrl
+			window.open(fullUrl);
+		} else {
+			// relative url
+			window.open(`${window.location.origin}${fullUrl}`);
+		}
+	}
+}
+
 export const navigateToContentType = (action: ButtonAction, history: History) => {
 	if (action) {
-		const { type, value } = action;
+		const { type, value, target } = action;
 
 		switch (type as Avo.Core.ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
-				history.push(value as string);
+				navigateToAbsoluteOrRelativeUrl(String(value), history, target);
 				break;
+
 			case 'COLLECTION':
-				navigate(history, APP_PATH.COLLECTION_DETAIL.route, {
+				const collectionUrl = buildLink(APP_PATH.COLLECTION_DETAIL.route, {
 					id: value as string,
 				});
+				navigateToAbsoluteOrRelativeUrl(collectionUrl, history, target);
 				break;
+
 			case 'ITEM':
-				navigate(history, APP_PATH.ITEM_DETAIL.route, {
+				const itemUrl = buildLink(APP_PATH.ITEM_DETAIL.route, {
 					id: value,
 				});
+				navigateToAbsoluteOrRelativeUrl(itemUrl, history, target);
 				break;
+
 			case 'BUNDLE':
-				navigate(history, BUNDLE_PATH.BUNDLE_DETAIL, {
+				const bundleUrl = buildLink(BUNDLE_PATH.BUNDLE_DETAIL, {
 					id: value,
 				});
+				navigateToAbsoluteOrRelativeUrl(bundleUrl, history, target);
 				break;
+
 			case 'EXTERNAL_LINK':
-				window.location.href = ((value as string) || '').replace(
+				const externalUrl = ((value as string) || '').replace(
 					'{{PROXY_URL}}',
 					getEnv('PROXY_URL') || ''
 				);
+				navigateToAbsoluteOrRelativeUrl(externalUrl, history, target);
 				break;
+
 			default:
 				break;
 		}

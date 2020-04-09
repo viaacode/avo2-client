@@ -1,18 +1,18 @@
 import {
 	BlockButtons,
 	BlockCTAs,
-	BlockGrid,
 	BlockHeading,
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
-	BlockProjectsSpotlight,
 	BlockQuote,
 	BlockRichText,
+	BlockSpotlight,
 } from '@viaa/avo2-components';
 
 import { ContentBlockType } from '../../../shared/types';
 import {
+	BlockGridWrapper,
 	MediaGridWrapper,
 	MediaPlayerTitleTextButtonWrapper,
 	MediaPlayerWrapper,
@@ -27,7 +27,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.IFrame]: BlockIFrame,
 	[ContentBlockType.Intro]: BlockIntro,
 	[ContentBlockType.Image]: BlockImage,
-	[ContentBlockType.ImageGrid]: BlockGrid,
+	[ContentBlockType.ImageGrid]: BlockGridWrapper,
 	[ContentBlockType.MediaGrid]: MediaGridWrapper,
 	[ContentBlockType.MediaPlayer]: MediaPlayerWrapper,
 	[ContentBlockType.MediaPlayerTitleTextButton]: MediaPlayerTitleTextButtonWrapper,
@@ -35,7 +35,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
-	[ContentBlockType.ProjectsSpotlight]: BlockProjectsSpotlight,
+	[ContentBlockType.ProjectsSpotlight]: BlockSpotlight,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
@@ -54,6 +54,7 @@ export const NAVIGABLE_CONTENT_BLOCKS = [
 	ContentBlockType.Buttons,
 	ContentBlockType.CTAs,
 	ContentBlockType.ProjectsSpotlight,
+	ContentBlockType.ImageGrid,
 ];
 
 export const IGNORE_BLOCK_LEVEL_PROPS = [
