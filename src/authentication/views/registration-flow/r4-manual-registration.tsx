@@ -145,11 +145,13 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				<Button
 					type="secondary"
 					onClick={() => redirectToClientPage(APP_PATH.STAMBOEK.route, history)}
-				>
-					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___terug">
-						Terug
-					</Trans>
-				</Button>
+					title={t(
+						'authentication/views/registration-flow/r-4-manual-registration___terug'
+					)}
+					ariaLabel={t(
+						'authentication/views/registration-flow/r-4-manual-registration___terug'
+					)}
+				/>
 				<BlockHeading type="h2">
 					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
 						Vraag een account aan op het Archief voor Onderwijs

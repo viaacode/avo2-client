@@ -571,6 +571,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 															ariaLabel={t(
 																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
 															)}
+															title={t(
+																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
+															)}
 															onClick={copyAssignmentUrl}
 														/>
 													</Spacer>
@@ -820,6 +823,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 										<Button
 											type="primary"
 											label={t('assignment/views/assignment-edit___opslaan')}
+											title={t('Sla de opdracht op')}
 											onClick={() => saveAssignment(currentAssignment)}
 											disabled={isSaving}
 										/>

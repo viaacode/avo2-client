@@ -50,6 +50,7 @@ const CookieDeclaration: FunctionComponent = () => {
 							label={t(
 								'shared/components/cookie-declaration/cookie-declaration___akkoord'
 							)}
+							title={t('Ga akkoord met de cookie voorwaarden')}
 							onClick={() => setAccepted(true)}
 						/>
 					</p>,

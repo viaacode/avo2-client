@@ -486,12 +486,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					type="secondary"
 					icon="clipboard"
 					ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
+					title={t('Neem deze collectie op in een opdracht')}
 					onClick={() => executeAction('createAssignment')}
 				/>
 				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
+						title={t('Maak deze collectie publiek / niet publiek')}
 						onClick={() => executeAction('openShareCollectionModal')}
 					/>
 				)}
@@ -538,6 +540,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							type="primary"
 							icon="edit"
 							label={t('collection/views/collection-detail___bewerken')}
+							title={t('Pas deze collectie aan')}
 							onClick={() => executeAction('editCollection')}
 						/>
 					</Spacer>

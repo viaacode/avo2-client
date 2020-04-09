@@ -38,18 +38,16 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 							icon="eye"
 							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
 							size="small"
-							title={t(
-								'admin/menu/views/menu-overview___bekijk-alle-navigatie-items'
-							)}
+							title={t('Bekijk de navigatie items voor deze navigatie balk')}
+							ariaLabel={t('Bekijk de navigatie items voor deze navigatie balk')}
 							type="secondary"
 						/>
 						<Button
 							icon="plus"
 							onClick={() => navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu })}
 							size="small"
-							title={t(
-								'admin/menu/views/menu-overview___voeg-een-navigatie-item-toe'
-							)}
+							title={t('Voeg een navigatie item toe aan deze navigatie balk')}
+							ariaLabel={t('Voeg een navigatie item toe aan deze navigatie balk')}
 							type="secondary"
 						/>
 					</ButtonToolbar>

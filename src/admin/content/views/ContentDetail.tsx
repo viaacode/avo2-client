@@ -325,12 +325,14 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				<ButtonToolbar>
 					<Button
 						label={t('admin/content/views/content-detail___bewerken')}
+						title={t('Bewerk deze content pagina')}
 						onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
 					/>
 					{/* TODO: also check permissions */}
 					{(!isContentProtected || (isContentProtected && isAdminUser)) && (
 						<Button
 							label={t('admin/content/views/content-detail___verwijderen')}
+							title={t('Verwijder deze content pagina')}
 							onClick={() => setIsConfirmModalOpen(true)}
 							type="danger-hover"
 						/>

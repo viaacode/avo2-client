@@ -555,6 +555,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 															ariaLabel={t(
 																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
 															)}
+															title={t(
+																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
+															)}
 															onClick={copyAssignmentUrl}
 														/>
 													</Spacer>
@@ -572,6 +575,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 													onClick={viewAsStudent}
 													label={t(
 														'assignment/views/assignment-edit___bekijk-als-leerling'
+													)}
+													title={t(
+														'Bekijk de opdracht zoals een leerling die zal zien'
 													)}
 												/>
 												<Dropdown
@@ -636,6 +642,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												label={t(
 													'assignment/views/assignment-edit___opslaan'
 												)}
+												title={t('Sla de opdracht op')}
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
@@ -864,6 +871,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										<Button
 											type="primary"
 											label={t('assignment/views/assignment-edit___opslaan')}
+											title={t('Sla de opdracht op')}
 											onClick={() => saveAssignment(currentAssignment)}
 											disabled={isSaving}
 										/>
