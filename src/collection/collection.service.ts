@@ -682,9 +682,8 @@ export class CollectionService {
 					// reset positions to a list of ordered integers, db ensures sorting on previoous positin
 					collectionFragment.position = index;
 
-					// TODO: replace this by a check on collectionFragment.type === 'ITEM' || collectionFragment.type === 'COLLECTION'
 					// return external id if set
-					if (collectionFragment.external_id !== '-1') {
+					if (collectionFragment.type !== 'TEXT') {
 						return collectionFragment.external_id;
 					}
 

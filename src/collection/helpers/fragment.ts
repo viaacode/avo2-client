@@ -2,10 +2,6 @@ import { get } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
-	return fragmentInfo.external_id && fragmentInfo.external_id !== '-1';
-};
-
 export const getFragmentProperty = (
 	itemMetaData: Avo.Item.Item,
 	fragment: Avo.Collection.Fragment,
