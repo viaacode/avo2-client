@@ -5,9 +5,9 @@ import {
 	BlockIFrame,
 	BlockImage,
 	BlockIntro,
-	BlockProjectsSpotlight,
 	BlockQuote,
 	BlockRichText,
+	BlockSpotlight,
 } from '@viaa/avo2-components';
 
 import { ContentBlockType } from '../../../shared/types';
@@ -35,7 +35,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.RichText]: BlockRichText,
 	[ContentBlockType.RichTextTwoColumns]: BlockRichText,
 	[ContentBlockType.PageOverview]: PageOverviewWrapper,
-	[ContentBlockType.ProjectsSpotlight]: BlockProjectsSpotlight,
+	[ContentBlockType.ProjectsSpotlight]: BlockSpotlight,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [
