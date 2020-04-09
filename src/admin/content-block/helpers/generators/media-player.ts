@@ -39,6 +39,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					allowedTypes: ['ITEM'],
+					hideTargetSwitch: true,
 				},
 			},
 			width: {
