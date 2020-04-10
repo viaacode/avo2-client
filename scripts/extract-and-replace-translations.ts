@@ -36,7 +36,6 @@ import localTranslations from '../src/shared/translations/nl.json';
 type keyMap = { [key: string]: string };
 
 const oldTranslations: keyMap = localTranslations;
-console.log(oldTranslations);
 
 const sortObject = require('sort-object-keys');
 
@@ -97,7 +96,6 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 				(match: string, keyAttribute: string, key: string, translation: string) => {
 					let formattedKey: string | undefined = key;
 
-					console.log('OKE', match, keyAttribute, translation, key);
 					const formattedTranslation: string = getFormattedTranslation(translation);
 					if (!key) {
 						// new Trans without a key
@@ -138,7 +136,6 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					translation: string,
 					translationParams: string | undefined
 				) => {
-					console.log('WEW', match, prefix, translation, translationParams);
 					let formattedKey: string | undefined;
 					const formattedTranslation: string = getFormattedTranslation(translation);
 					if (formattedTranslation.includes('___')) {
@@ -160,7 +157,6 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 							}
 						);
 					}
-					console.log('WHAT', match, prefix, translation, translationParams);
 					// If translation contains '___', use original translation, otherwise use translation found by the regexp
 					newTranslations[formattedKey] =
 						(formattedTranslation.includes('___')
@@ -179,7 +175,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 }
 
 async function getOnlineTranslations() {
-	const response = await fetch(`http://localhost:3000/translations/nl.json`, {
+	const response = await fetch(`${process.env.PROXY_URL}/translations/nl.json`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -252,7 +248,6 @@ async function updateTranslations() {
 
 	const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
 
-	console.log(totalTranslations);
 	console.info(
 		`Wrote ${totalTranslations} src/shared/translations/nl.json file
 	\t${addedTranslationKeys.length} translations added
