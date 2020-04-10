@@ -1,8 +1,9 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { get, isEmpty, isNil, remove } from 'lodash-es';
+import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { ValueType } from 'react-select';
 
 import {
 	Alert,
@@ -25,6 +26,7 @@ import {
 	RadioButton,
 	RadioButtonGroup,
 	Spacer,
+	TagList,
 	TagOption,
 	TextInput,
 	Thumbnail,
@@ -48,18 +50,19 @@ import {
 	InputModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
-	renderDropdownButton,
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { buildLink, copyToClipboard, navigate } from '../../shared/helpers';
-import { dataService, ToastService } from '../../shared/services';
+import { AssignmentLabelsService, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
+import { ColorSelect } from '../../admin/content-block/components/fields';
+import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
 import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentLayout } from '../assignment.types';
+import { AssignmentLabel, AssignmentLayout } from '../assignment.types';
 import './AssignmentEdit.scss';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
@@ -72,7 +75,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const [assignmentContent, setAssignmentContent] = useState<Avo.Assignment.Content>();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tagsDropdownOpen, setTagsDropdownOpen] = useState<boolean>(false);
+	const [assignmentLabels, setAssignmentLabels] = useState<AssignmentLabel[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<AssignmentLabel[]>([]);
 	const [isExtraOptionsMenuOpen, setExtraOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
@@ -111,11 +115,18 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				// Fetch the content if the assignment has content
 				const tempAssignmentContent = await fetchAssignmentContent(tempAssignment);
 
+				setAllAssignmentLabels(
+					await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'))
+				);
+
 				setAssignmentContent(tempAssignmentContent);
 				setBothAssignments({
 					...tempAssignment,
 					title: tempAssignment.title || get(tempAssignmentContent, 'title', ''),
 				});
+				setAssignmentLabels(
+					AssignmentLabelsService.getLabelsFromAssignment(tempAssignment)
+				);
 			} catch (err) {
 				setLoadingInfo({
 					state: 'error',
@@ -270,11 +281,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const archiveAssignment = async (shouldBeArchived: boolean) => {
 		try {
 			// Use initialAssignment to avoid saving changes the user made, but hasn't explicitly saved yet
-			const archivedAssigment: Partial<Avo.Assignment.Assignment> = {
+			const archivedAssignment: Partial<Avo.Assignment.Assignment> = {
 				...initialAssignment,
 				is_archived: shouldBeArchived,
 			};
-			setInitialAssignment(archivedAssigment);
+			setInitialAssignment(archivedAssignment);
 
 			// Also set the currentAssignment to archived, so if the user saves, the assignment will stay archived
 			setCurrentAssignment({
@@ -282,7 +293,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				is_archived: shouldBeArchived,
 			});
 
-			if (await AssignmentService.updateAssignment(archivedAssigment)) {
+			if (await AssignmentService.updateAssignment(archivedAssignment)) {
 				ToastService.success(
 					shouldBeArchived
 						? t('assignment/views/assignment-edit___de-opdracht-is-gearchiveerd')
@@ -315,7 +326,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				);
 				return;
 			}
-			const duplicatedAssigment = await AssignmentService.duplicateAssignment(
+			const duplicatedAssignment = await AssignmentService.duplicateAssignment(
 				newTitle,
 				assignment,
 				user
@@ -324,7 +335,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			setCurrentAssignment({});
 			setLoadingInfo({ state: 'loading' });
 
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssigment.id });
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id });
 			ToastService.success(
 				t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'
@@ -371,7 +382,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		try {
 			setIsSaving(true);
 			// edit => update graphql
-			await AssignmentService.updateAssignment(assignment);
+			await AssignmentService.updateAssignment(
+				assignment,
+				AssignmentLabelsService.getLabelsFromAssignment(initialAssignment),
+				assignmentLabels
+			);
 			setBothAssignments(assignment);
 			ToastService.success(
 				t('assignment/views/assignment-edit___de-opdracht-is-succesvol-geupdatet')
@@ -393,71 +408,85 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		);
 	};
 
-	const getTagOptions = (): TagOption[] => {
-		return get(currentAssignment, 'assignment_assignment_tags.assignment_tag', []).map(
-			(assignmentTag: Avo.Assignment.Tag) => {
-				return {
-					label: assignmentTag.label,
-					id: assignmentTag.id,
-					// assignmentTag.enum_color.label contains hex code (graphql enum quirk)
-					// The value of the enum has to be uppercase text, so the value contains the color name
-					color: assignmentTag.color_override || assignmentTag.enum_color.label,
-				};
-			}
+	const getTagOptions = (labels: AssignmentLabel[]): TagOption[] => {
+		return labels.map(labelObj => ({
+			label: labelObj.label || '',
+			id: labelObj.id,
+			// labelObj.enum_color.label contains hex code (graphql enum quirk)
+			// The value of the enum has to be uppercase text, so the value contains the color name
+			color: labelObj.color_override || get(labelObj, 'enum_color.label'),
+		}));
+	};
+
+	const getColorOptions = (labels: AssignmentLabel[]): ColorOption[] => {
+		return labels.map(labelObj => ({
+			label: labelObj.label || '',
+			value: String(labelObj.id),
+			// labelObj.enum_color.label contains hex code (graphql enum quirk)
+			// The value of the enum has to be uppercase text, so the value contains the color name
+			color: labelObj.color_override || get(labelObj, 'enum_color.label'),
+		}));
+	};
+
+	const addAssignmentLabel = (labelOption: ValueType<ColorOption>) => {
+		if (!labelOption) {
+			ToastService.danger(
+				t('Het geselecteerde label kon niet worden toegevoegd aan de opdracht')
+			);
+			return;
+		}
+		const assignmentLabel = allAssignmentLabels.find(
+			labelObj => String(labelObj.id) === (labelOption as ColorOption).value
+		);
+		if (!assignmentLabel) {
+			ToastService.danger(
+				t('Het geselecteerde label kon niet worden toegevoegd aan de opdracht')
+			);
+			return;
+		}
+		setAssignmentLabels([...assignmentLabels, assignmentLabel]);
+	};
+
+	const deleteAssignmentLabel = (labelId: string | number, evt: MouseEvent) => {
+		evt.stopPropagation();
+		setAssignmentLabels(
+			assignmentLabels.filter((labelObj: AssignmentLabel) => labelObj.id !== labelId)
 		);
 	};
 
-	const removeTag = (tagId: string | number, evt: MouseEvent) => {
-		evt.stopPropagation();
-		const tags: Avo.Assignment.Tag[] = [
-			...get(currentAssignment, 'assignment_assignment_tags.assignment_tag', []),
-		];
-		remove(tags, (tag: Avo.Assignment.Tag) => tag.id === tagId);
-		setCurrentAssignment({
-			...currentAssignment,
-			assignment_assignment_tags: {
-				assignment_tag: tags,
-			},
-		});
-	};
-
-	const renderTagsDropdown = () => {
-		const tags = getTagOptions();
+	const renderLabelControls = () => {
+		const assignmentLabelIds = assignmentLabels.map(labelObj => labelObj.id);
+		const unselectedLabels = allAssignmentLabels.filter(
+			labelObj => !assignmentLabelIds.includes(labelObj.id)
+		);
 
 		return (
-			<Dropdown
-				isOpen={tagsDropdownOpen}
-				menuWidth="fit-content"
-				onOpen={() => setTagsDropdownOpen(true)}
-				onClose={() => setTagsDropdownOpen(false)}
-			>
-				<DropdownButton>
-					{renderDropdownButton(
-						tags.length ? '' : t('assignment/views/assignment-edit___geen'),
-						false,
-						tags,
-						removeTag
-					)}
-				</DropdownButton>
-				<DropdownContent>
-					<Spacer>
-						<Form>
-							<Button
-								type="borderless"
-								block
-								label={t('assignment/views/assignment-edit___geen')}
-							/>
-							<Button
-								type="borderless"
-								block
-								label={t(
-									'assignment/views/assignment-edit___beheer-vakken-en-projecten'
-								)}
-							/>
-						</Form>
-					</Spacer>
-				</DropdownContent>
-			</Dropdown>
+			<>
+				<TagList
+					closable={true}
+					tags={getTagOptions(assignmentLabels)}
+					onTagClosed={deleteAssignmentLabel}
+				/>
+				<Flex>
+					<FlexItem>
+						<ColorSelect
+							options={getColorOptions(unselectedLabels)}
+							value={null}
+							onChange={addAssignmentLabel}
+							placeholder={t('Voeg een Vak of Project toe')}
+							noOptionsMessage={() => t('Geen Vakken of Projecten beschikbaar')}
+						/>
+					</FlexItem>
+					<FlexItem shrink>
+						<Button
+							icon="settings"
+							title="Beheer je vakken en projecten"
+							ariaLabel="Beheer je vakken en projecten"
+							type="borderless"
+						/>
+					</FlexItem>
+				</Flex>
+			</>
 		);
 	};
 
@@ -735,7 +764,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							<FormGroup
 								label={t('assignment/views/assignment-edit___vak-of-project')}
 							>
-								{renderTagsDropdown()}
+								{renderLabelControls()}
 							</FormGroup>
 							<FormGroup
 								label={t('assignment/views/assignment-edit___antwoorden-op')}

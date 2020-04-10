@@ -143,7 +143,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			}
 
 			if (!newAssignment.assignment_type) {
-				throw new CustomError('Failed to create assignment without assigment type');
+				throw new CustomError('Failed to create assignment without assignment type');
 			}
 
 			return newAssignment;
@@ -288,7 +288,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				);
 				return;
 			}
-			const duplicatedAssigment = await AssignmentService.duplicateAssignment(
+			const duplicatedAssignment = await AssignmentService.duplicateAssignment(
 				newTitle,
 				assignment,
 				user
@@ -297,7 +297,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			setCurrentAssignment({});
 			setLoadingInfo({ state: 'loading' });
 
-			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssigment.id });
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: duplicatedAssignment.id });
 			ToastService.success(
 				t(
 					'assignment/views/assignment-edit___de-opdracht-is-succesvol-gedupliceerd-u-kijkt-nu-naar-het-duplicaat'

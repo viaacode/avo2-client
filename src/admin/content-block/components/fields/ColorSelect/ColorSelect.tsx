@@ -8,26 +8,44 @@ import { ReactSelectOption } from '../../../../../shared/types';
 
 import './ColorSelect.scss';
 
-export interface ColorSelectProps extends Props {}
+export interface ColorOption {
+	label: string;
+	value: string;
+	color?: string; // Defaults to value for the hex color code
+}
+
+export interface ColorSelectProps extends Props {
+	options: ColorOption[];
+}
 
 const ColorSelect: FunctionComponent<ColorSelectProps> = ({
 	className,
 	noOptionsMessage = ({ inputValue }) => `Geen kleuren gevonden: ${inputValue}`,
 	placeholder = '',
+	options,
 	...rest
 }) => {
-	const renderLabel = ({ label, value }: ReactSelectOption<string>) => (
-		<Flex>
-			<div className={`c-color-select__preview`} style={{ background: value }} />
-			<Spacer margin="left-small">{label}</Spacer>
-		</Flex>
-	);
+	const renderLabel = ({ label, value }: ReactSelectOption<string>) => {
+		const option: ColorOption | undefined = options.find(option => option.value === value);
+		return (
+			<Flex>
+				{!!option && (
+					<div
+						className={`c-color-select__preview`}
+						style={{ background: option.color || option.value }}
+					/>
+				)}
+				<Spacer margin="left-small">{label}</Spacer>
+			</Flex>
+		);
+	};
 
 	return (
 		<Select
 			className={classnames(className, 'c-color-select')}
 			noOptionsMessage={noOptionsMessage}
 			placeholder={placeholder}
+			options={options}
 			{...rest}
 			classNamePrefix="react-select"
 			formatOptionLabel={renderLabel}

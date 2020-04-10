@@ -2,7 +2,6 @@ import { every, some } from 'lodash-es';
 
 import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
-import { ASSIGNMENT_PATH } from './assignments/assignments.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PATH } from './content/content.const';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
@@ -25,7 +24,6 @@ export const ADMIN_PATH = Object.freeze({
 	...COLLECTIONS_OR_BUNDLES_PATH,
 	...ITEMS_PATH,
 	...INTERACTIVE_TOUR_PATH,
-	...ASSIGNMENT_PATH,
 });
 
 function getNavWithSubLinks(
