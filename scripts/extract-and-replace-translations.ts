@@ -28,27 +28,35 @@
 import * as fs from 'fs';
 import glob from 'glob';
 import * as _ from 'lodash';
+import fetch from 'node-fetch';
 import * as path from 'path';
+
 import localTranslations from '../src/shared/translations/nl.json';
 
 type keyMap = { [key: string]: string };
 
 const oldTranslations: keyMap = localTranslations;
+console.log(oldTranslations);
 
 const sortObject = require('sort-object-keys');
 
 function getFormattedKey(filePath: string, key: string) {
-	const fileKey = filePath
-		.replace(/[\\\/]+/g, '/')
-		.split('.')[0]
-		.split(/[\\\/]/g)
-		.map(part => _.kebabCase(part))
-		.join('/')
-		.toLowerCase()
-		.replace(/(^\/+|\/+$)/g, '')
-		.trim();
-	const formattedKey = _.kebabCase(key);
-	return `${fileKey}___${formattedKey}`;
+	try {
+		const fileKey = filePath
+			.replace(/[\\\/]+/g, '/')
+			.split('.')[0]
+			.split(/[\\\/]/g)
+			.map(part => _.kebabCase(part))
+			.join('/')
+			.toLowerCase()
+			.replace(/(^\/+|\/+$)/g, '')
+			.trim();
+		const formattedKey = _.kebabCase(key);
+
+		return `${fileKey}___${formattedKey}`;
+	} catch (err) {
+		console.error('Failed to format key', filePath, key);
+	}
 }
 
 function getFormattedTranslation(translation: string) {
@@ -88,6 +96,8 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 				// @ts-ignore
 				(match: string, keyAttribute: string, key: string, translation: string) => {
 					let formattedKey: string | undefined = key;
+
+					console.log('OKE', match, keyAttribute, translation, key);
 					const formattedTranslation: string = getFormattedTranslation(translation);
 					if (!key) {
 						// new Trans without a key
@@ -128,6 +138,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					translation: string,
 					translationParams: string | undefined
 				) => {
+					console.log('WEW', match, prefix, translation, translationParams);
 					let formattedKey: string | undefined;
 					const formattedTranslation: string = getFormattedTranslation(translation);
 					if (formattedTranslation.includes('___')) {
@@ -149,6 +160,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 							}
 						);
 					}
+					console.log('WHAT', match, prefix, translation, translationParams);
 					// If translation contains '___', use original translation, otherwise use translation found by the regexp
 					newTranslations[formattedKey] =
 						(formattedTranslation.includes('___')
@@ -167,20 +179,14 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 }
 
 async function getOnlineTranslations() {
-	// Read file from poeditor website under /src/shared/translations/poeditor/project-id/nl.json
-	const poEditorFiles = await getFilesByGlob('shared/translations/poeditor/*/nl.json');
-	const poEditorFile: string = poEditorFiles[0];
-	if (!poEditorFile) {
-		throw new Error(
-			'File fetched from poEditor website could not be found: /src/shared/translations/poeditor/*/nl.json'
-		);
-	}
-	try {
-		const filePath = path.resolve(__dirname, '../src/', poEditorFile);
-		return JSON.parse(fs.readFileSync(filePath).toString());
-	} catch (err) {
-		throw new Error(`Failed to parse json file from poeditor: ${JSON.stringify(err, null, 2)}`);
-	}
+	const response = await fetch(`http://localhost:3000/translations/nl.json`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+	});
+
+	return (await response.json()).value;
 }
 
 function checkTranslationsForKeysAsValue(translationJson: string) {
@@ -204,11 +210,11 @@ function checkTranslationsForKeysAsValue(translationJson: string) {
 async function updateTranslations() {
 	const onlineTranslations = await getOnlineTranslations();
 
-	// Extract translations from code and replace code by reference to translation key
+	// 	// Extract translations from code and replace code by reference to translation key
 	const codeFiles = await getFilesByGlob('**/*.@(ts|tsx)');
 	const newTranslations: keyMap = extractTranslationsFromCodeFiles(codeFiles);
 
-	// Compare existing translations to the new translations
+	// 	// Compare existing translations to the new translations
 	const oldTranslationKeys: string[] = _.keys(oldTranslations);
 	const newTranslationKeys: string[] = _.keys(newTranslations);
 	const addedTranslationKeys: string[] = _.without(newTranslationKeys, ...oldTranslationKeys);
@@ -218,13 +224,13 @@ async function updateTranslations() {
 		oldTranslationKeys
 	);
 
-	// Console log translations that were found in the json file but not in the code
+	// 	// Console log translations that were found in the json file but not in the code
 	console.warn(
 		`The following translation keys were removed:
-\t${removedTranslationKeys.join('\n\t')}`
+	\t${removedTranslationKeys.join('\n\t')}`
 	);
 
-	// Combine the translations in the json with the freshly extracted translations from the code
+	// 	// Combine the translations in the json with the freshly extracted translations from the code
 	const combinedTranslations: keyMap = {};
 	existingTranslationKeys.forEach((key: string) => {
 		combinedTranslations[key] = onlineTranslations[key] || oldTranslations[key];
@@ -245,10 +251,12 @@ async function updateTranslations() {
 	);
 
 	const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
+
+	console.log(totalTranslations);
 	console.info(
 		`Wrote ${totalTranslations} src/shared/translations/nl.json file
-\t${addedTranslationKeys.length} translations added
-\t${removedTranslationKeys.length} translations deleted`
+	\t${addedTranslationKeys.length} translations added
+	\t${removedTranslationKeys.length} translations deleted`
 	);
 }
 
