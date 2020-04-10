@@ -206,11 +206,11 @@ function checkTranslationsForKeysAsValue(translationJson: string) {
 async function updateTranslations() {
 	const onlineTranslations = await getOnlineTranslations();
 
-	// 	// Extract translations from code and replace code by reference to translation key
+	// Extract translations from code and replace code by reference to translation key
 	const codeFiles = await getFilesByGlob('**/*.@(ts|tsx)');
 	const newTranslations: keyMap = extractTranslationsFromCodeFiles(codeFiles);
 
-	// 	// Compare existing translations to the new translations
+	// Compare existing translations to the new translations
 	const oldTranslationKeys: string[] = _.keys(oldTranslations);
 	const newTranslationKeys: string[] = _.keys(newTranslations);
 	const addedTranslationKeys: string[] = _.without(newTranslationKeys, ...oldTranslationKeys);
@@ -220,13 +220,13 @@ async function updateTranslations() {
 		oldTranslationKeys
 	);
 
-	// 	// Console log translations that were found in the json file but not in the code
+	// Console log translations that were found in the json file but not in the code
 	console.warn(
 		`The following translation keys were removed:
 	\t${removedTranslationKeys.join('\n\t')}`
 	);
 
-	// 	// Combine the translations in the json with the freshly extracted translations from the code
+	// Combine the translations in the json with the freshly extracted translations from the code
 	const combinedTranslations: keyMap = {};
 	existingTranslationKeys.forEach((key: string) => {
 		combinedTranslations[key] = onlineTranslations[key] || oldTranslations[key];
