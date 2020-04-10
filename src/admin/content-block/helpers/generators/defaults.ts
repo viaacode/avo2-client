@@ -151,6 +151,28 @@ export const FILE_FIELD = (
 	...propOverride,
 });
 
+export const VIDEO_FIELD = (
+	emptyFieldValidatorMessage = i18n.t('Selecteren van video-item is verplicht.'),
+	propOverride?: Partial<ContentBlockField>
+): ContentBlockField => ({
+	label: i18n.t('admin/content-block/helpers/generators/media-player___video-of-audio-item'),
+	editorType: ContentBlockEditor.ContentPicker,
+	validator: (value: string) => {
+		const errorArray: string[] = [];
+
+		if (isNil(value) || isEmpty(value)) {
+			errorArray.push(emptyFieldValidatorMessage);
+		}
+
+		return errorArray;
+	},
+	editorProps: {
+		allowedTypes: ['ITEM'],
+		hideTargetSwitch: true,
+	},
+	...propOverride,
+});
+
 export const CONTENT_TYPE_AND_LABELS_INPUT = (
 	propOverride?: Partial<ContentBlockField>
 ): ContentBlockField => ({
