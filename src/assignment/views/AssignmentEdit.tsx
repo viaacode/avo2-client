@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-boost';
-import { get, isEmpty, isNil } from 'lodash-es';
+import { cloneDeep, get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -63,7 +63,7 @@ import { ColorOption } from '../../admin/content-block/components/fields/ColorSe
 import { CONTENT_LABEL_TO_QUERY, CONTENT_LABEL_TO_ROUTE_PARTS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentLabel, AssignmentLayout } from '../assignment.types';
-import './AssignmentEdit.scss';
+import ManageAssignmentLabels from '../components/modals/ManageAssignmentLabels';
 
 const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
@@ -81,6 +81,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 	const [isDuplicateModalOpen, setDuplicateModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 	const [currentAssignment, setCurrentAssignment] = useState<Partial<Avo.Assignment.Assignment>>(
 		{}
 	);
@@ -95,6 +96,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		},
 		[setCurrentAssignment, setInitialAssignment]
 	);
+
+	const fetchAssignmentLabels = useCallback(async () => {
+		// Fetch labels every time the manage labels modal closes and once at startup
+		const labels = await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'));
+		setAllAssignmentLabels(labels);
+	}, [user, setAllAssignmentLabels]);
 
 	/**
 	 *  Get query string variables and store them into the assignment state object
@@ -115,9 +122,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				// Fetch the content if the assignment has content
 				const tempAssignmentContent = await fetchAssignmentContent(tempAssignment);
 
-				setAllAssignmentLabels(
-					await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'))
-				);
+				await fetchAssignmentLabels();
 
 				setAssignmentContent(tempAssignmentContent);
 				setBothAssignments({
@@ -408,6 +413,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		);
 	};
 
+	const handleManageAssignmentLabelsModalClosed = () => {
+		fetchAssignmentLabels();
+		setIsManageLabelsModalOpen(false);
+	};
+
 	const getTagOptions = (labels: AssignmentLabel[]): TagOption[] => {
 		return labels.map(labelObj => ({
 			label: labelObj.label || '',
@@ -456,8 +466,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderLabelControls = () => {
 		const assignmentLabelIds = assignmentLabels.map(labelObj => labelObj.id);
-		const unselectedLabels = allAssignmentLabels.filter(
-			labelObj => !assignmentLabelIds.includes(labelObj.id)
+		const unselectedLabels = cloneDeep(
+			allAssignmentLabels.filter(labelObj => !assignmentLabelIds.includes(labelObj.id))
 		);
 
 		return (
@@ -469,20 +479,25 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				/>
 				<Flex>
 					<FlexItem>
-						<ColorSelect
-							options={getColorOptions(unselectedLabels)}
-							value={null}
-							onChange={addAssignmentLabel}
-							placeholder={t('Voeg een Vak of Project toe')}
-							noOptionsMessage={() => t('Geen Vakken of Projecten beschikbaar')}
-						/>
+						<Spacer margin="right-small">
+							<ColorSelect
+								options={getColorOptions(unselectedLabels)}
+								value={null}
+								onChange={addAssignmentLabel}
+								placeholder={t('Voeg een Vak of Project toe')}
+								noOptionsMessage={() => t('Geen Vakken of Projecten beschikbaar')}
+							/>
+						</Spacer>
 					</FlexItem>
+					{/*TODO remove cast after update to components 1.36.0*/}
 					<FlexItem shrink>
 						<Button
 							icon="settings"
 							title="Beheer je vakken en projecten"
 							ariaLabel="Beheer je vakken en projecten"
 							type="borderless"
+							size={'large' as any}
+							onClick={() => setIsManageLabelsModalOpen(true)}
 						/>
 					</FlexItem>
 				</Flex>
@@ -930,6 +945,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					emptyMessage={t(
 						'assignment/views/assignment-edit___gelieve-een-opdracht-titel-in-te-geven'
 					)}
+				/>
+
+				<ManageAssignmentLabels
+					onClose={handleManageAssignmentLabelsModalClosed}
+					isOpen={isManageLabelsModalOpen}
+					user={user}
 				/>
 			</>
 		);

@@ -1,8 +1,10 @@
-import { get } from 'lodash-es';
+import { get, omit } from 'lodash-es';
+
+import { Avo } from '@viaa/avo2-types';
 
 import { AssignmentLabel, AssignmentLabelColor } from '../../../assignment/assignment.types';
 import { CustomError } from '../../helpers';
-import { dataService } from '../data-service';
+import { ApolloCacheManager, dataService } from '../data-service';
 import {
 	DELETE_ASSIGNMENT_LABELS,
 	GET_ALL_ASSIGNMENT_LABEL_COLORS,
@@ -12,7 +14,6 @@ import {
 	UNLINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT,
 	UPDATE_ASSIGNMENT_LABEL,
 } from './assignment-labels-service.gql';
-import { Avo } from '@viaa/avo2-types';
 
 export class AssignmentLabelsService {
 	// TODO replace with typings type: Avo.Assignments.Label after update to v2.16.0
@@ -38,15 +39,16 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static async insertLabels(labels: AssignmentLabel): Promise<number[]> {
+	public static async insertLabels(labels: AssignmentLabel[]): Promise<number[]> {
 		let variables;
 		try {
 			variables = {
-				objects: labels,
+				objects: labels.map(labelObj => omit(labelObj, ['__typename', 'enum_color', 'id'])),
 			};
 			const response = await dataService.mutate({
 				variables,
 				mutation: INSERT_ASSIGNMENT_LABELS,
+				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			if (response.errors) {
@@ -81,6 +83,7 @@ export class AssignmentLabelsService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: UPDATE_ASSIGNMENT_LABEL,
+				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			if (response.errors) {
@@ -94,7 +97,7 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static async deleteLabel(profileId: string, labelIds: number[]): Promise<void> {
+	public static async deleteLabels(profileId: string, labelIds: number[]): Promise<void> {
 		let variables;
 		try {
 			variables = {
@@ -104,6 +107,7 @@ export class AssignmentLabelsService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: DELETE_ASSIGNMENT_LABELS,
+				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			if (response.errors) {
@@ -135,6 +139,7 @@ export class AssignmentLabelsService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: LINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT,
+				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			if (response.errors) {
@@ -164,6 +169,7 @@ export class AssignmentLabelsService {
 			const response = await dataService.mutate({
 				variables,
 				mutation: UNLINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT,
+				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			if (response.errors) {
@@ -202,5 +208,5 @@ export class AssignmentLabelsService {
 		return (get(assignment, 'assignment_assignment_tags', []) as any[]).map(
 			(assignmentLabelLink: any): AssignmentLabel => assignmentLabelLink.assignment_tag
 		);
-	};
+	}
 }

@@ -28,15 +28,17 @@ const ColorSelect: FunctionComponent<ColorSelectProps> = ({
 	const renderLabel = ({ label, value }: ReactSelectOption<string>) => {
 		const option: ColorOption | undefined = options.find(option => option.value === value);
 		return (
-			<Flex>
-				{!!option && (
-					<div
-						className={`c-color-select__preview`}
-						style={{ background: option.color || option.value }}
-					/>
-				)}
-				<Spacer margin="left-small">{label}</Spacer>
-			</Flex>
+			<div key={`color-select-${label}-${value}`}>
+				<Flex>
+					{!!option && (
+						<div
+							className={`c-color-select__preview`}
+							style={{ background: option.color || option.value }}
+						/>
+					)}
+					{!!label && <Spacer margin="left-small">{label}</Spacer>}
+				</Flex>
+			</div>
 		);
 	};
 

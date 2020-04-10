@@ -2,7 +2,10 @@ import { gql } from 'apollo-boost';
 
 export const GET_ASSIGNMENT_LABELS_BY_PROFILE_ID = gql`
 	query getAssignmentLabels($profileId: uuid!) {
-		app_assignment_labels(where: { owner_profile_id: { _eq: $profileId } }) {
+		app_assignment_labels(
+			where: { owner_profile_id: { _eq: $profileId } }
+			order_by: { label: asc }
+		) {
 			color_enum_value
 			color_override
 			label
@@ -46,6 +49,9 @@ export const DELETE_ASSIGNMENT_LABELS = gql`
 		delete_app_assignment_labels(
 			where: { owner_profile_id: { _eq: $profileId }, id: { _in: $labelIds } }
 		) {
+			affected_rows
+		}
+		delete_app_assignment_assignment_tags(where: { assignment_tag_id: { _in: $labelIds } }) {
 			affected_rows
 		}
 	}
