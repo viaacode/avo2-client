@@ -1,14 +1,25 @@
-import { cloneDeep, isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useReducer, useState } from 'react';
+import { cloneDeep, get, isEmpty, truncate } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	ReactText,
+	useEffect,
+	useReducer,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { Prompt, withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import {
+	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
 	DropdownButton,
 	DropdownContent,
+	Flex,
+	FlexItem,
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
@@ -35,6 +46,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import DraggableListModal from '../../shared/components/DraggableList/DraggableListModal';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import {
 	buildLink,
@@ -44,18 +56,22 @@ import {
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 
-import { compose } from 'redux';
-import withUser from '../../shared/hocs/withUser';
 import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
 import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
-import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
+import {
+	cleanCollectionBeforeSave,
+	getFragmentsFromCollection,
+	reorderFragments,
+} from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ShareCollectionModal } from '../components';
+import { getFragmentProperty } from '../helpers';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
 import CollectionOrBundleEditContent from './CollectionOrBundleEditContent';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
@@ -125,6 +141,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
+	const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -135,7 +152,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 			canViewItems: boolean;
 		}>
 	>({});
-	// TODO: DISABLED FEATURE - const [isReorderModalOpen, setIsReorderModalOpen] = useState<boolean>(false);
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -620,6 +636,42 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		/>
 	);
 
+	const handleReorderModalClosed = (fragments?: Avo.Collection.Fragment[]) => {
+		if (fragments) {
+			changeCollectionState({
+				type: 'UPDATE_COLLECTION_PROP',
+				updateInitialCollection: false,
+				collectionProp: 'collection_fragments',
+				collectionPropValue: reorderFragments(fragments),
+			});
+		}
+		setIsReorderModalOpen(false);
+	};
+
+	const renderDraggableFragment = (fragment: Avo.Collection.Fragment): ReactNode => {
+		const thumbnail = get(fragment, 'item_meta.thumbnail_path');
+		return (
+			<Flex className="c-collection-or-bundle-edit__draggable-item">
+				<FlexItem shrink>
+					{<div style={{ backgroundImage: `url(${thumbnail})` }} />}
+				</FlexItem>
+				<FlexItem>
+					<BlockHeading type="h4">
+						{truncate(
+							getFragmentProperty(
+								fragment.item_meta,
+								fragment,
+								fragment.use_custom_fields,
+								'title'
+							),
+							{ length: 50 }
+						)}
+					</BlockHeading>
+				</FlexItem>
+			</Flex>
+		);
+	};
+
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
@@ -701,15 +753,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					}
 					onClick={() => executeAction('redirectToDetail')}
 				/>
-				{/* TODO: DISABLED FEATURE
-					<Button
-						type = "secondary"
-						label={t('collection/views/collection-edit___herschik-alle-items')}
-						title={t('Herorden de items via drag-and-drop')}
-						onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
-						disabled
-					/>
-				*/}
+				<Button
+					type="secondary"
+					label={t('Herorden fragmenten')}
+					title={t('Herorden de fragmenten via drag-and-drop')}
+					onClick={() => setIsReorderModalOpen(true)}
+				/>
 				<ControlledDropdown
 					isOpen={isOptionsMenuOpen}
 					menuWidth="fit-content"
@@ -739,14 +788,6 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	const renderHeaderButtonsMobile = () => {
-		// TODO: DISABLED FEATURE
-		// 			<Button
-		// 				type = "secondary"
-		// 				label={t('collection/views/collection-edit___herschik-alle-items')}
-		//        title={t('Herorden de items via drag-and-drop')}
-		// 				onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
-		// 				disabled
-		// 			/>
 		const COLLECTION_DROPDOWN_ITEMS = [
 			createDropdownMenuItem(
 				'save',
@@ -904,6 +945,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 									'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
 							  )
 					}
+				/>
+				<DraggableListModal
+					items={getFragmentsFromCollection(collectionState.currentCollection)}
+					renderItem={renderDraggableFragment}
+					isOpen={isReorderModalOpen}
+					onClose={handleReorderModalClosed}
 				/>
 			</>
 		);
