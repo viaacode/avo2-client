@@ -1,0 +1,14 @@
+.c-content-picker {
+	> .o-form-group__controls {
+		> .o-flex {
+			> .o-flex__item:first-child {
+				min-width: 200px;
+			}
+		}
+	}
+
+	.c-content-picker__toggle-target-button {
+		padding: 0.9rem;
+		max-height: none;
+	}
+}

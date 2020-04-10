@@ -196,11 +196,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							type="secondary"
 							icon="eye"
 							onClick={() => navigateToCollectionDetail(rowData.id)}
+							ariaLabel={
+								isCollection ? t('Bekijk de collectie') : t('Bekijk de bundel')
+							}
+							title={isCollection ? t('Bekijk de collectie') : t('Bekijk de bundel')}
 						/>
 						<Button
 							type="secondary"
 							icon="edit"
 							onClick={() => navigateToCollectionEdit(rowData.id)}
+							ariaLabel={
+								isCollection ? t('Bewerk de collectie') : t('Bewerk de bundel')
+							}
+							title={isCollection ? t('Bewerk de collectie') : t('Bewerk de bundel')}
 						/>
 					</ButtonToolbar>
 				);

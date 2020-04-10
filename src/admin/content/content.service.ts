@@ -25,6 +25,8 @@ import {
 	GET_CONTENT_PAGES,
 	GET_CONTENT_PAGES_BY_TITLE,
 	GET_CONTENT_TYPES,
+	GET_PROJECT_CONTENT_PAGES,
+	GET_PROJECT_CONTENT_PAGES_BY_TITLE,
 	INSERT_CONTENT_LABEL,
 	INSERT_CONTENT_LABEL_LINKS,
 } from './content.gql';
@@ -49,6 +51,24 @@ export class ContentService {
 			)
 		);
 	}
+	public static async getProjectContentItems(
+		limit: number
+	): Promise<Avo.Content.Content[] | null> {
+		const query = {
+			query: GET_PROJECT_CONTENT_PAGES,
+			variables: {
+				limit,
+				orderBy: { title: 'asc' },
+			},
+		};
+
+		return performQuery(
+			query,
+			CONTENT_RESULT_PATH.GET,
+			'Failed to retrieve project content items.',
+			i18n.t("Er ging iets mis tijdens het ophalen van de project pagina's")
+		);
+	}
 
 	public static async getContentItemsByTitle(
 		title: string,
@@ -70,6 +90,27 @@ export class ContentService {
 			i18n.t(
 				'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-items'
 			)
+		);
+	}
+
+	public static async getProjectContentItemsByTitle(
+		title: string,
+		limit: number
+	): Promise<Avo.Content.Content[] | null> {
+		const query = {
+			query: GET_PROJECT_CONTENT_PAGES_BY_TITLE,
+			variables: {
+				title,
+				limit,
+				orderBy: { title: 'asc' },
+			},
+		};
+
+		return performQuery(
+			query,
+			CONTENT_RESULT_PATH.GET,
+			'Failed to retrieve content items by title.',
+			i18n.t("Er ging iets mis tijdens het ophalen van de project pagina's")
 		);
 	}
 

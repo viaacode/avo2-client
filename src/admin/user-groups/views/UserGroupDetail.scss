@@ -1,0 +1,8 @@
+@import '../../../styles/settings/colors';
+
+.c-user-group__permission-list {
+	> div:not(:first-child) {
+		padding-left: 20px;
+		color: $color-gray-200;
+	}
+}

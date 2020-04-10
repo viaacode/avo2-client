@@ -23,6 +23,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { getProfileName } from '../../../authentication/helpers/get-profile-info';
 import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import i18n from '../../../shared/translations/i18n';
 import { UPDATE_COLLECTION } from '../../collection.gql';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 
@@ -33,15 +34,15 @@ interface ShareCollectionModalProps extends DefaultSecureRouteProps {
 	collection: Avo.Collection.Collection;
 }
 
-const shareOptions = [
+const GET_SHARE_OPTIONS = () => [
 	{
 		value: 'private',
-		label: 'Niet openbaar',
+		label: i18n.t('collection/components/modals/share-collection-modal___niet-openbaar'),
 		isPublic: false,
 	},
 	{
 		value: 'public',
-		label: 'Openbaar',
+		label: i18n.t('collection/components/modals/share-collection-modal___openbaar'),
 		isPublic: true,
 	},
 ];
@@ -172,7 +173,7 @@ const ShareCollectionModal: FunctionComponent<ShareCollectionModalProps> = ({
 						</BlockHeading>
 					</Spacer>
 					<RadioButtonGroup>
-						{shareOptions.map((shareOption, index) => (
+						{GET_SHARE_OPTIONS().map((shareOption, index) => (
 							<RadioButton
 								key={index}
 								name={shareOption.value}

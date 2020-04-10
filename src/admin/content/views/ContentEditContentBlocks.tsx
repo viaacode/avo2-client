@@ -1,10 +1,12 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ResizablePanels from 'resizable-panels-react';
 
-import { Flex, FlexItem, Form, FormGroup, Select } from '@viaa/avo2-components';
+import { Navbar, Select } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { ContentBlockForm, ContentBlockPreview } from '../../content-block/components';
+import { ContentPage } from '../../../content-page/views';
+import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
 	GET_CONTENT_BLOCK_TYPE_OPTIONS,
@@ -13,6 +15,7 @@ import { Sidebar } from '../../shared/components';
 import { createKey } from '../../shared/helpers';
 import {
 	ContentBlockConfig,
+	ContentBlockErrors,
 	ContentBlockStateOption,
 	ContentBlockStateType,
 	ContentBlockType,
@@ -21,7 +24,9 @@ import {
 interface ContentEditContentBlocksProps {
 	contentBlockConfigs: ContentBlockConfig[];
 	contentWidth: Avo.Content.ContentWidth;
+	hasSubmitted: boolean;
 	onAdd: (config: ContentBlockConfig) => void;
+	onError: (configIndex: number, errors: ContentBlockErrors) => void;
 	onRemove: (configIndex: number) => void;
 	onReorder: (configIndex: number, indexUpdate: number) => void;
 	onSave: (
@@ -37,17 +42,22 @@ interface ContentEditContentBlocksProps {
 const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps> = ({
 	contentBlockConfigs,
 	contentWidth,
+	hasSubmitted,
 	onAdd,
+	onError,
 	onRemove,
 	onReorder,
 	onSave,
 	addComponentToState,
 	removeComponentFromState,
 }) => {
+	const [t] = useTranslation();
+
 	// Hooks
 	const [accordionsOpenState, setAccordionsOpenState] = useState<{ [key: string]: boolean }>({});
 
-	const [t] = useTranslation();
+	const previewScrollable: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+	const sidebarScrollable: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
 	// Methods
 	const getFormKey = (name: string, blockIndex: number, stateIndex: number = 0) =>
@@ -62,6 +72,18 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 		// Set newly added config accordion as open
 		setAccordionsOpenState({ [contentBlockFormKey]: true });
+
+		// Scroll preview and sidebar to the bottom
+		scrollToBottom(previewScrollable);
+		scrollToBottom(sidebarScrollable);
+	};
+
+	const scrollToBottom = (ref: RefObject<HTMLDivElement>) => {
+		setTimeout(() => {
+			if (ref.current) {
+				ref.current.scroll({ left: 0, top: 1000000, behavior: 'smooth' });
+			}
+		}, 0);
 	};
 
 	const handleReorderContentBlock = (configIndex: number, indexUpdate: number) => {
@@ -83,6 +105,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					blockIndex={index}
 					isAccordionOpen={accordionsOpenState[contentBlockFormKey] || false}
 					length={contentBlockConfigs.length}
+					hasSubmitted={hasSubmitted}
 					setIsAccordionOpen={() =>
 						setAccordionsOpenState({
 							[contentBlockFormKey]: !accordionsOpenState[contentBlockFormKey],
@@ -99,6 +122,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					removeComponentFromState={(stateIndex: number) =>
 						removeComponentFromState(index, stateIndex)
 					}
+					onError={onError}
 					onRemove={onRemove}
 					onReorder={handleReorderContentBlock}
 				/>
@@ -106,40 +130,35 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 		});
 	};
 
-	const renderBlockPreviews = () =>
-		contentBlockConfigs.map((contentBlockConfig, blockIndex) => {
-			const { components, block } = contentBlockConfig;
-
-			return (
-				<ContentBlockPreview
-					key={createKey('preview', blockIndex)}
-					componentState={components.state}
-					contentWidth={contentWidth}
-					blockState={block.state}
-				/>
-			);
-		});
-
 	return (
-		<Flex className="c-content-edit-view__content">
-			<FlexItem className="c-content-edit-view__preview">{renderBlockPreviews()}</FlexItem>
-			<Sidebar className="c-content-edit-view__sidebar" light>
-				{renderContentBlockForms()}
-				<Form>
-					<FormGroup
-						label={t(
-							'admin/content/views/content-edit-content-blocks___voeg-een-content-block-toe'
-						)}
-					>
+		<div className="m-resizable-panels m-edit-content-blocks">
+			<ResizablePanels
+				displayDirection="row"
+				panelsSize={[60, 40]}
+				sizeUnitMeasure="%"
+				resizerSize="15px"
+			>
+				<div className="c-content-edit-view__preview" ref={previewScrollable}>
+					<ContentPage
+						contentBlockConfigs={contentBlockConfigs}
+						contentWidth={contentWidth}
+					/>
+				</div>
+				<Sidebar className="c-content-edit-view__sidebar" light>
+					<Navbar background="alt">
 						<Select
 							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
 							onChange={value => handleAddContentBlock(value as ContentBlockType)}
-							value={GET_CONTENT_BLOCK_TYPE_OPTIONS()[0].value}
+							placeholder={t('Voeg een content blok toe')}
+							value={null as any}
 						/>
-					</FormGroup>
-				</Form>
-			</Sidebar>
-		</Flex>
+					</Navbar>
+					<div className="c-scrollable" ref={sidebarScrollable}>
+						{renderContentBlockForms()}
+					</div>
+				</Sidebar>
+			</ResizablePanels>
+		</div>
 	);
 };
 

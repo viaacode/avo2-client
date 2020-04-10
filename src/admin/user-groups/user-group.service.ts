@@ -1,15 +1,16 @@
-import { get, isNil, orderBy } from 'lodash-es';
+import { get, isNil, orderBy, uniqBy } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
 import { ApolloCacheManager, dataService } from '../../shared/services';
-import { ITEMS_PER_PAGE } from '../content/content.const';
 import { Permission, PermissionGroup } from '../permission-groups/permission-group.types';
 
+import { ITEMS_PER_PAGE } from './user-group.const';
 import {
 	ADD_PERMISSION_GROUPS_TO_USER_GROUP,
 	DELETE_USER_GROUP,
+	GET_USER_GROUP_BY_ID,
 	GET_USER_GROUPS,
 	INSERT_USER_GROUP,
 	REMOVE_PERMISSION_GROUPS_FROM_USER_GROUP,
@@ -52,6 +53,30 @@ export class UserGroupService {
 			throw new CustomError('Failed to fetch user groups from graphql', err, {
 				variables,
 				query: 'GET_USER_GROUPS',
+			});
+		}
+	}
+
+	public static async fetchUserGroupById(id: string): Promise<UserGroup | undefined> {
+		let variables: any;
+		try {
+			variables = {
+				id,
+			};
+			const response = await dataService.query({
+				variables,
+				query: GET_USER_GROUP_BY_ID,
+			});
+
+			if (response.errors) {
+				throw new CustomError('response contains errors', null, { response });
+			}
+
+			return get(response, 'data.users_groups[0]');
+		} catch (err) {
+			throw new CustomError('Failed to fetch user group by id from graphql', err, {
+				variables,
+				query: 'GET_USER_GROUP_BY_ID',
 			});
 		}
 	}
@@ -178,7 +203,7 @@ export class UserGroupService {
 		}
 	}
 
-	static async deleteUserGroup(userGroupId: number) {
+	public static async deleteUserGroup(userGroupId: number) {
 		try {
 			const response = await dataService.mutate({
 				mutation: DELETE_USER_GROUP,
@@ -201,11 +226,22 @@ export class UserGroupService {
 		}
 	}
 
-	static sortPermissionGroups(
+	public static sortPermissionGroups(
 		permissionGroups: PermissionGroup[],
 		sortColumn: string,
 		sortOrder: Avo.Search.OrderDirection
 	): Permission[] {
-		return orderBy(permissionGroups, [sortColumn], [sortOrder]);
+		return uniqBy(
+			orderBy(permissionGroups, [sortColumn], [sortOrder]),
+			permissionGroup => permissionGroup.id
+		);
+	}
+
+	public static getPermissions(permissionGroup: any): Permission[] {
+		return get(permissionGroup, 'permission_group_user_permissions', []).map(
+			(permissionLink: any) => {
+				return get(permissionLink, 'permission');
+			}
+		);
 	}
 }

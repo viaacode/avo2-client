@@ -9,7 +9,6 @@ import {
 	ContentBlockComponentsConfig,
 	ContentBlockComponentState,
 	ContentBlockConfig,
-	ContentBlockFormError,
 	ContentBlockState,
 	ContentBlockStateType,
 } from '../../../shared/types';
@@ -29,7 +28,6 @@ interface ContentBlockFormGroupProps {
 		value: any,
 		stateIndex?: number
 	) => void;
-	formErrors: ContentBlockFormError;
 }
 
 const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
@@ -40,13 +38,14 @@ const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
 	formGroupType,
 	stateIndex,
 	handleChange,
-	formErrors,
 }) => (
 	<div className="c-content-block-form-group">
 		{Object.keys(formGroup.fields).map((key: string, formGroupIndex: number) => {
 			let error: string[];
-			const formErrorsForBlock: string[] | string[][] =
-				formErrors[key as keyof ContentBlockComponentState | keyof ContentBlockState];
+			const configErrors = config.errors || {};
+			const stateKey = key as keyof ContentBlockComponentState | keyof ContentBlockState;
+			const formErrorsForBlock = configErrors[stateKey];
+
 			if (isNumber(stateIndex)) {
 				error = get(formErrorsForBlock, [stateIndex]) as string[];
 			} else {
@@ -61,9 +60,7 @@ const ContentBlockFormGroup: FunctionComponent<ContentBlockFormGroupProps> = ({
 					<FormGroup label={formGroup.fields[key].label} error={error}>
 						<ContentBlockFieldEditor
 							block={{ config, index: blockIndex }}
-							fieldKey={
-								key as keyof ContentBlockComponentState | keyof ContentBlockState
-							}
+							fieldKey={stateKey}
 							field={formGroup.fields[key]}
 							state={formGroupState}
 							type={formGroupType}

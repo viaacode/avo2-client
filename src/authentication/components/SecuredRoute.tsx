@@ -67,7 +67,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 		);
 	}
 
-	if (loginStateError || !user) {
+	if (loginStateError) {
 		redirectToClientPage(
 			buildLink(
 				APP_PATH.ERROR.route,

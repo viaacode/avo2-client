@@ -7,7 +7,6 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	Header,
 	HeaderButtons,
 	Spacer,
 	Table,
@@ -29,7 +28,7 @@ import {
 	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
@@ -170,42 +169,43 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 	};
 
 	const renderUserDetailPage = () => (
-		<AdminLayout showBackButton>
-			<AdminLayoutHeader>
-				<Header
-					category="audio"
-					title={t(
-						'admin/interactive-tour/views/interactive-tour-detail___interactive-tour-details'
-					)}
-					showMetaData={false}
-				>
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								type="primary"
-								label={t(
-									'admin/interactive-tour/views/interactive-tour-detail___bewerk'
-								)}
-								onClick={() => {
-									redirectToClientPage(
-										buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
-											id: match.params.id,
-										}),
-										history
-									);
-								}}
-							/>
-							<Button
-								type="danger"
-								label={t(
-									'admin/interactive-tour/views/interactive-tour-detail___verwijderen'
-								)}
-								onClick={() => setIsConfirmModalOpen(true)}
-							/>
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
-			</AdminLayoutHeader>
+		<AdminLayout
+			showBackButton
+			pageTitle={t(
+				'admin/interactive-tour/views/interactive-tour-detail___interactive-tour-details'
+			)}
+		>
+			<AdminLayoutTopBarRight>
+				<HeaderButtons>
+					<ButtonToolbar>
+						<Button
+							type="primary"
+							label={t(
+								'admin/interactive-tour/views/interactive-tour-detail___bewerk'
+							)}
+							title={t('Bewerk deze rondleiding')}
+							ariaLabel={t('Bewerk deze rondleiding')}
+							onClick={() => {
+								redirectToClientPage(
+									buildLink(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
+										id: match.params.id,
+									}),
+									history
+								);
+							}}
+						/>
+						<Button
+							type="danger"
+							label={t(
+								'admin/interactive-tour/views/interactive-tour-detail___verwijderen'
+							)}
+							title={t('Verwijder deze rondleiding')}
+							ariaLabel={t('Verwijder deze rondleiding')}
+							onClick={() => setIsConfirmModalOpen(true)}
+						/>
+					</ButtonToolbar>
+				</HeaderButtons>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				{renderInteractiveTourDetail()}
 				<DeleteObjectModal

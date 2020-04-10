@@ -11,6 +11,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Icon,
 	MenuContent,
 	MetaData,
 	MetaDataItem,
@@ -230,7 +231,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button icon="more-horizontal" type="borderless" />
+						<Button icon="more-horizontal" type="borderless" title={t('Meer opties')} />
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent menuItems={ROW_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
@@ -249,6 +250,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								{ id: collectionId }
 							)
 						}
+						title={isCollection ? t('Bekijk deze collectie') : t('Bekijk deze bundel')}
 						type="borderless"
 					/>
 				)}
@@ -269,6 +271,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			case 'inFolder':
 				const isInFolder = true; // TODO: Check if collection is in bundle
 				return isInFolder && <Button icon="folder" type="borderless" />;
+
+			case 'isPublic':
+				return (
+					<div title={collection.is_public ? t('Publiek') : t('Niet publiek')}>
+						<Icon name={collection.is_public ? 'eye' : 'lock'} />
+					</div>
+				);
 
 			case 'access':
 				const userProfiles: Avo.User.Profile[] = compact([profile]); // TODO: Get all users that are allowed to edit this collection
@@ -318,6 +327,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				id: 'updated_at',
 				label: t('collection/views/collection-overview___laatst-bewerkt'),
 				col: '3',
+				sortable: true,
+			},
+			{
+				id: 'isPublic',
+				label: t('Is publiek'),
+				col: '2',
 				sortable: true,
 			},
 			...(isCollection

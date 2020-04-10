@@ -122,6 +122,12 @@ const ContentBlockFieldEditor: FunctionComponent<ContentBlockFieldProps> = ({
 				value: (state as any)[fieldKey],
 			};
 			break;
+		case ContentBlockEditor.UserGroupSelect:
+			editorProps = {
+				onChange: (value: any) => handleChange(type, fieldKey, value, stateIndex),
+				values: (state as any)[fieldKey],
+			};
+			break;
 		default:
 			editorProps = {
 				onChange: (value: any) => {

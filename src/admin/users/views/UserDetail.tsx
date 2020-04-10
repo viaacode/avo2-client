@@ -1,34 +1,31 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RouteComponentProps } from 'react-router';
 
-import {
-	Avatar,
-	Button,
-	ButtonToolbar,
-	Container,
-	Header,
-	HeaderButtons,
-	Table,
-} from '@viaa/avo2-components';
+import { Avatar, Button, ButtonToolbar, Container, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { redirectToExternalPage } from '../../../authentication/helpers/redirects';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError, getEnv } from '../../../shared/helpers';
 import { dataService, ToastService } from '../../../shared/services';
 import {
 	renderDateDetailRows,
+	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { GET_USER_BY_ID } from '../user.gql';
 
-interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
+interface UserDetailProps extends DefaultSecureRouteProps<{ id: string }> {}
 
-const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
+const UserDetail: FunctionComponent<UserDetailProps> = ({ match, user }) => {
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -105,6 +102,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 		redirectToExternalPage(getLdapDashboardUrl() as string, '_blank');
 	};
 
+	const canBanUser = (): boolean => {
+		return PermissionService.hasPerm(user, PermissionName.EDIT_BAN_USER_STATUS);
+	};
+
 	const renderUserDetail = () => {
 		if (!storedProfile) {
 			console.error(
@@ -119,15 +120,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 				<Container mode="horizontal">
 					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
-							<tr>
-								<th>
-									<Avatar
-										image={get(storedProfile, 'profile.avatar')}
-										size="large"
-									/>
-								</th>
-								<td />
-							</tr>
+							{renderDetailRow(
+								<Avatar
+									image={get(storedProfile, 'profile.avatar')}
+									size="large"
+								/>,
+								t('Avatar')
+							)}
 							{renderSimpleDetailRows(storedProfile, [
 								['user.first_name', t('admin/users/views/user-detail___voornaam')],
 								['user.last_name', t('admin/users/views/user-detail___achternaam')],
@@ -158,43 +157,45 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ match }) => {
 	};
 
 	const renderUserDetailPage = () => (
-		<AdminLayout showBackButton>
-			<AdminLayoutHeader>
-				<Header
-					category="audio"
-					title={t('admin/users/views/user-detail___gebruiker-details')}
-					showMetaData={false}
-				>
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								type="danger"
-								label={t('admin/users/views/user-detail___bannen')}
-								onClick={() =>
-									ToastService.info(
-										t('settings/components/profile___nog-niet-geimplementeerd'),
-										false
-									)
-								}
-							/>
-							<Button
-								label={t(
-									'admin/users/views/user-detail___beheer-in-account-manager'
-								)}
-								disabled={!getLdapDashboardUrl()}
-								title={
-									getLdapDashboardUrl()
-										? ''
-										: t(
-												'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
-										  )
-								}
-								onClick={handleLdapDashboardClick}
-							/>
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
-			</AdminLayoutHeader>
+		<AdminLayout
+			showBackButton
+			pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
+		>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					{canBanUser() && (
+						<Button
+							type="danger"
+							label={t('admin/users/views/user-detail___bannen')}
+							title={t('Ban deze gebruiker van het AvO platform')}
+							ariaLabel={t('Ban deze gebruiker van het AvO platform')}
+							onClick={() =>
+								ToastService.info(
+									t('settings/components/profile___nog-niet-geimplementeerd'),
+									false
+								)
+							}
+						/>
+					)}
+					<Button
+						label={t('admin/users/views/user-detail___beheer-in-account-manager')}
+						ariaLabel={t(
+							'Open deze gebruiker in het account beheer dashboard van meemoo'
+						)}
+						disabled={!getLdapDashboardUrl()}
+						title={
+							getLdapDashboardUrl()
+								? t(
+										'Open deze gebruiker in het account beheer dashboard van meemoo'
+								  )
+								: t(
+										'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
+								  )
+						}
+						onClick={handleLdapDashboardClick}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
 		</AdminLayout>
 	);

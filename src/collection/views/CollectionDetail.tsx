@@ -30,10 +30,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import {
@@ -149,9 +146,9 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 				const rawPermissions = await Promise.all([
 					PermissionService.hasPermissions(
 						[
-							{ name: PermissionNames.VIEW_COLLECTIONS },
+							{ name: PermissionName.VIEW_COLLECTIONS },
 							{
-								name: PermissionNames.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
+								name: PermissionName.VIEW_COLLECTIONS_LINKED_TO_ASSIGNMENT,
 								obj: collectionId,
 							},
 						],
@@ -159,23 +156,23 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					),
 					PermissionService.hasPermissions(
 						[
-							{ name: PermissionNames.EDIT_OWN_COLLECTIONS, obj: collectionId },
-							{ name: PermissionNames.EDIT_ANY_COLLECTIONS },
+							{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
+							{ name: PermissionName.EDIT_ANY_COLLECTIONS },
 						],
 						user
 					),
 					PermissionService.hasPermissions(
 						[
-							{ name: PermissionNames.DELETE_OWN_COLLECTIONS, obj: collectionId },
-							{ name: PermissionNames.DELETE_ANY_COLLECTIONS },
+							{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
+							{ name: PermissionName.DELETE_ANY_COLLECTIONS },
 						],
 						user
 					),
 					PermissionService.hasPermissions(
-						[{ name: PermissionNames.CREATE_COLLECTIONS }],
+						[{ name: PermissionName.CREATE_COLLECTIONS }],
 						user
 					),
-					PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+					PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
 				]);
 				const permissionObj = {
 					canViewCollections: rawPermissions[0],
@@ -489,12 +486,14 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 					type="secondary"
 					icon="clipboard"
 					ariaLabel={t('collection/views/collection-detail___maak-opdracht')}
+					title={t('Neem deze collectie op in een opdracht')}
 					onClick={() => executeAction('createAssignment')}
 				/>
 				{permissions.canEditCollections && (
 					<Button
 						type="secondary"
 						label={t('collection/views/collection-detail___delen')}
+						title={t('Maak deze collectie publiek / niet publiek')}
 						onClick={() => executeAction('openShareCollectionModal')}
 					/>
 				)}
@@ -541,6 +540,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 							type="primary"
 							icon="edit"
 							label={t('collection/views/collection-detail___bewerken')}
+							title={t('Pas deze collectie aan')}
 							onClick={() => executeAction('editCollection')}
 						/>
 					</Spacer>
@@ -703,11 +703,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</p>
 									<p className="c-body-1">
 										{lom_context && lom_context.length ? (
-											generateSearchLinks(
-												`${id}`,
-												'educationLevel',
-												lom_context
-											)
+											generateSearchLinks(id, 'educationLevel', lom_context)
 										) : (
 											<span className="u-d-block">-</span>
 										)}
@@ -765,11 +761,7 @@ const CollectionDetail: FunctionComponent<CollectionDetailProps> = ({
 									</p>
 									<p className="c-body-1">
 										{lom_classification && lom_classification.length ? (
-											generateSearchLinks(
-												`${id}`,
-												'subject',
-												lom_classification
-											)
+											generateSearchLinks(id, 'subject', lom_classification)
 										) : (
 											<span className="u-d-block">-</span>
 										)}

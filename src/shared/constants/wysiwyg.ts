@@ -32,6 +32,7 @@ export const WYSIWYG_OPTIONS_AUTHOR = [
 
 // Admin
 export const WYSIWYG_OPTIONS_FULL = [
+	['table'],
 	...WYSIWYG_OPTIONS_BASE,
 	['superscript', 'subscript'],
 	['link'],

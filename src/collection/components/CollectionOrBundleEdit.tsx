@@ -25,10 +25,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileName } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import {
@@ -54,7 +51,7 @@ import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 
 import { compose } from 'redux';
 import withUser from '../../shared/hocs/withUser';
-import { COLLECTION_EDIT_TABS } from '../collection.const';
+import { GET_COLLECTION_EDIT_TABS, MAX_TITLE_LENGTH } from '../collection.const';
 import { DELETE_COLLECTION, UPDATE_COLLECTION } from '../collection.gql';
 import { cleanCollectionBeforeSave, getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
@@ -202,7 +199,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 
 				const fragments1 = getFragmentsFromCollection(newCurrentCollection);
 
-				const delta = action.direction === 'up' ? 1 : -1;
+				const delta = action.direction === 'up' ? -1 : 1;
 
 				// Make the swap
 				const tempFragment = fragments1[action.index];
@@ -257,19 +254,19 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
 			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_BUNDLES }], user),
+				PermissionService.hasPermissions([{ name: PermissionName.VIEW_BUNDLES }], user),
 				PermissionService.hasPermissions(
 					[
 						{
 							name: isCollection
-								? PermissionNames.EDIT_OWN_COLLECTIONS
-								: PermissionNames.EDIT_OWN_BUNDLES,
+								? PermissionName.EDIT_OWN_COLLECTIONS
+								: PermissionName.EDIT_OWN_BUNDLES,
 							obj: collectionId,
 						},
 						{
 							name: isCollection
-								? PermissionNames.EDIT_ANY_COLLECTIONS
-								: PermissionNames.EDIT_ANY_BUNDLES,
+								? PermissionName.EDIT_ANY_COLLECTIONS
+								: PermissionName.EDIT_ANY_BUNDLES,
 						},
 					],
 					user
@@ -278,14 +275,14 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					[
 						{
 							name: isCollection
-								? PermissionNames.DELETE_OWN_COLLECTIONS
-								: PermissionNames.DELETE_OWN_BUNDLES,
+								? PermissionName.DELETE_OWN_COLLECTIONS
+								: PermissionName.DELETE_OWN_BUNDLES,
 							obj: collectionId,
 						},
 						{
 							name: isCollection
-								? PermissionNames.DELETE_ANY_COLLECTIONS
-								: PermissionNames.DELETE_ANY_BUNDLES,
+								? PermissionName.DELETE_ANY_COLLECTIONS
+								: PermissionName.DELETE_ANY_BUNDLES,
 						},
 					],
 					user
@@ -294,13 +291,13 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					[
 						{
 							name: isCollection
-								? PermissionNames.CREATE_COLLECTIONS
-								: PermissionNames.CREATE_BUNDLES,
+								? PermissionName.CREATE_COLLECTIONS
+								: PermissionName.CREATE_BUNDLES,
 						},
 					],
 					user
 				),
-				PermissionService.hasPermissions([{ name: PermissionNames.VIEW_ITEMS }], user),
+				PermissionService.hasPermissions([{ name: PermissionName.VIEW_ITEMS }], user),
 			]);
 			const permissionObj = {
 				canView: rawPermissions[0],
@@ -375,7 +372,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 	};
 
 	// Add active state to current tab
-	const tabs: TabProps[] = COLLECTION_EDIT_TABS.map((tab: TabProps) => ({
+	const tabs: TabProps[] = GET_COLLECTION_EDIT_TABS().map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));
@@ -684,7 +681,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							? t(
 									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 							  )
-							: ''
+							: isCollection
+							? t('Maak deze collectie publiek / niet publiek')
+							: t('Maak deze bundel publiek / niet publiek')
 					}
 					onClick={() => executeAction('openShareModal')}
 				/>
@@ -706,6 +705,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					<Button
 						type = "secondary"
 						label={t('collection/views/collection-edit___herschik-alle-items')}
+						title={t('Herorden de items via drag-and-drop')}
 						onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 						disabled
 					/>
@@ -718,7 +718,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button type="secondary" icon="more-horizontal" />
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('Meer opties')}
+							title={t('Meer opties')}
+						/>
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent
@@ -738,6 +743,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		// 			<Button
 		// 				type = "secondary"
 		// 				label={t('collection/views/collection-edit___herschik-alle-items')}
+		//        title={t('Herorden de items via drag-and-drop')}
 		// 				onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 		// 				disabled
 		// 			/>
@@ -776,7 +782,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button type="secondary" icon="more-horizontal" />
+						<Button type="secondary" icon="more-horizontal" title={t('Meer opties')} />
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent
@@ -885,6 +891,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							: t('collection/components/collection-or-bundle-edit___naam-bundel')
 					}
 					inputValue={title}
+					maxLength={MAX_TITLE_LENGTH}
 					isOpen={isRenameModalOpen}
 					onClose={() => setIsRenameModalOpen(false)}
 					inputCallback={onRenameCollection}

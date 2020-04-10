@@ -14,6 +14,7 @@ import {
 import { FileUpload } from '../../shared/components';
 import i18n from '../../shared/translations/i18n';
 
+import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
 // More info on the bug that occurs:
 // https://github.com/viaacode/avo2-client/commit/7112c51cc1a84d482b5f67b21326784be8df42f3
@@ -22,7 +23,8 @@ import { ContentTypeAndLabelsPicker } from '../shared/components/ContentTypeAndL
 import { IconPicker } from '../shared/components/IconPicker/IconPicker';
 import {
 	AlignOption,
-	BackgroundColorOption,
+	Color,
+	BlockGridFormatOption,
 	ContentBlockType,
 	FillOption,
 	HeadingTypeOption,
@@ -30,7 +32,6 @@ import {
 } from '../shared/types';
 import { AlignSelect, ColorSelect, PaddingSelect } from './components';
 import {
-	ACCORDIONS_BLOCK_CONFIG,
 	ANCHOR_LINKS_BLOCK_CONFIG,
 	BUTTONS_BLOCK_CONFIG,
 	CTAS_BLOCK_CONFIG,
@@ -38,8 +39,6 @@ import {
 	IFRAME_BLOCK_CONFIG,
 	IMAGE_BLOCK_CONFIG,
 	IMAGE_GRID_BLOCK_CONFIG,
-	INITIAL_ACCORDIONS_BLOCK_STATE,
-	INITIAL_ACCORDIONS_COMPONENTS_STATE,
 	INITIAL_ANCHOR_LINKS_BLOCK_STATE,
 	INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	INITIAL_BUTTONS_BLOCK_STATE,
@@ -72,6 +71,8 @@ import {
 	INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 	INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
+	INITIAL_SPOTLIGHT_BLOCK_STATE,
+	INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	INTRO_BLOCK_CONFIG,
 	MEDIA_GRID_BLOCK_CONFIG,
 	MEDIA_PLAYER_BLOCK_CONFIG,
@@ -81,6 +82,7 @@ import {
 	QUOTE_BLOCK_CONFIG,
 	RICH_TEXT_BLOCK_CONFIG,
 	RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
+	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers';
 
 export const CONTENT_BLOCKS_RESULT_PATH = {
@@ -90,7 +92,7 @@ export const CONTENT_BLOCKS_RESULT_PATH = {
 
 export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___kies-een-content-block'),
+		label: i18n.t('Voeg een content blok toe'),
 		value: '',
 		disabled: true,
 	},
@@ -123,10 +125,6 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 		value: ContentBlockType.IFrame,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___accordeons'),
-		value: ContentBlockType.Accordions,
-	},
-	{
 		label: i18n.t('admin/content-block/content-block___media-tegels'),
 		value: ContentBlockType.MediaGrid,
 	},
@@ -155,6 +153,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 		value: ContentBlockType.ProjectsSpotlight,
 	},
 	{
+		label: i18n.t('In de kijker'),
+		value: ContentBlockType.Spotlight,
+	},
+	{
 		label: i18n.t('admin/content-block/content-block___quote'),
 		value: ContentBlockType.Quote,
 	},
@@ -178,10 +180,10 @@ export const EDITOR_TYPES_MAP = {
 	TextArea,
 	TextInput,
 	WYSIWYG,
+	UserGroupSelect,
 };
 
 export const CONTENT_BLOCK_CONFIG_MAP = {
-	[ContentBlockType.Accordions]: ACCORDIONS_BLOCK_CONFIG,
 	[ContentBlockType.AnchorLinks]: ANCHOR_LINKS_BLOCK_CONFIG,
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
 	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
@@ -196,12 +198,12 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Quote]: QUOTE_BLOCK_CONFIG,
 	[ContentBlockType.PageOverview]: PAGE_OVERVIEW_BLOCK_CONFIG,
 	[ContentBlockType.ProjectsSpotlight]: PROJECTS_SPOTLIGHT_BLOCK_CONFIG,
+	[ContentBlockType.Spotlight]: SPOTLIGHT_BLOCK_CONFIG,
 	[ContentBlockType.RichText]: RICH_TEXT_BLOCK_CONFIG,
 	[ContentBlockType.RichTextTwoColumns]: RICH_TEXT_TWO_COLUMNS_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
-	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_COMPONENTS_STATE,
 	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_COMPONENTS_STATE,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_COMPONENTS_STATE,
@@ -215,13 +217,13 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP = {
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE,
+	[ContentBlockType.Spotlight]: INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	[ContentBlockType.Quote]: INITIAL_QUOTE_COMPONENTS_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_COMPONENTS_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_COMPONENTS_STATE,
 };
 
 export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
-	[ContentBlockType.Accordions]: INITIAL_ACCORDIONS_BLOCK_STATE,
 	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_BLOCK_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_BLOCK_STATE,
 	[ContentBlockType.CTAs]: INITIAL_CTAS_BLOCK_STATE,
@@ -235,59 +237,77 @@ export const CONTENT_BLOCK_INITIAL_BLOCK_STATE_MAP = {
 	[ContentBlockType.MediaPlayerTitleTextButton]: INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_STATE,
 	[ContentBlockType.PageOverview]: INITIAL_PAGE_OVERVIEW_BLOCK_STATE,
 	[ContentBlockType.ProjectsSpotlight]: INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE,
+	[ContentBlockType.Spotlight]: INITIAL_SPOTLIGHT_BLOCK_STATE,
 	[ContentBlockType.Quote]: INITIAL_QUOTE_BLOCK_STATE,
 	[ContentBlockType.RichText]: INITIAL_RICH_TEXT_BLOCK_STATE,
 	[ContentBlockType.RichTextTwoColumns]: INITIAL_RICH_TEXT_TWO_COLUMNS_BLOCK_STATE,
 };
 
 // Options
-export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<BackgroundColorOption>[] = () => [
+export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___wit'),
-		value: BackgroundColorOption.White,
+		value: Color.White,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___grijs'),
-		value: BackgroundColorOption.Gray50,
+		value: Color.Gray50,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___nachtblauw'),
-		value: BackgroundColorOption.NightBlue,
+		value: Color.NightBlue,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___zachtblauw'),
-		value: BackgroundColorOption.SoftBlue,
+		value: Color.SoftBlue,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
-		value: BackgroundColorOption.Teal,
+		value: Color.Teal,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
-		value: BackgroundColorOption.TealBright,
+		value: Color.TealBright,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___oceaangroen'),
-		value: BackgroundColorOption.OceanGreen,
+		value: Color.OceanGreen,
 	},
 ];
 
-export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => BackgroundColorOption[] = () => [
-	BackgroundColorOption.NightBlue,
-	BackgroundColorOption.Teal,
+// TODO update list with required colors once provided in https://meemoo.atlassian.net/browse/AVO-216
+export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
+	{
+		label: i18n.t('Zwart'),
+		value: Color.Black,
+	},
+	{
+		label: i18n.t('Donker grijs'),
+		value: Color.Gray700,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___grijs'),
+		value: Color.Gray50,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___wit'),
+		value: Color.White,
+	},
 ];
+
+export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [Color.NightBlue, Color.Teal];
 
 export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{
-		label: 'Links',
+		label: i18n.t('admin/content-block/content-block___links'),
 		value: 'left',
 	},
 	{
-		label: 'Gecentreerd',
+		label: i18n.t('admin/content-block/content-block___gecentreerd'),
 		value: 'center',
 	},
 	{
-		label: 'Rechts',
+		label: i18n.t('admin/content-block/content-block___rechts'),
 		value: 'right',
 	},
 ];
@@ -305,6 +325,14 @@ export const GET_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] =
 		label: i18n.t('admin/content-block/content-block___h-4'),
 		value: 'h4',
 	},
+];
+
+export const GET_FULL_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] = () => [
+	{
+		label: i18n.t('H1'),
+		value: 'h1',
+	},
+	...GET_HEADING_TYPE_OPTIONS(),
 ];
 
 export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
@@ -377,6 +405,29 @@ export const GET_FILL_OPTIONS: () => SelectOption<FillOption>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___oorspronkelijke-grootte'),
 		value: 'auto',
+	},
+];
+
+export const GET_IMAGE_GRID_FORMAT_OPTIONS: () => SelectOption<BlockGridFormatOption>[] = () => [
+	{
+		label: i18n.t('Vierkant klein (200 x 200)'),
+		value: 'squareSmall',
+	},
+	{
+		label: i18n.t('Vierkant groot (275 x 275)'),
+		value: 'squareLarge',
+	},
+	{
+		label: i18n.t('4x3 (400 x 300)'),
+		value: '4:3',
+	},
+	{
+		label: i18n.t('2x1 (200 x 100)'),
+		value: '2:1',
+	},
+	{
+		label: i18n.t('6x9 (400 x 225)'),
+		value: '6:9',
 	},
 ];
 

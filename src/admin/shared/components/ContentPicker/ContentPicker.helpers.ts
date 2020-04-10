@@ -1,12 +1,7 @@
 import { get } from 'lodash';
 import { ValueType } from 'react-select/src/types';
 
-import {
-	ContentPickerType,
-	PickerItem,
-	PickerSelectItem,
-	PickerTypeOption,
-} from '../../types';
+import { ContentPickerType, PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 export const filterTypes = (
 	types: PickerTypeOption<ContentPickerType>[],

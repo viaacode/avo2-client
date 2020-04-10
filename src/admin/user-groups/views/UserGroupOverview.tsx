@@ -14,13 +14,16 @@ import {
 } from '../../../shared/components';
 import { CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { GET_USER_GROUP_OVERVIEW_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
+import {
+	GET_USER_GROUP_OVERVIEW_TABLE_COLS,
+	ITEMS_PER_PAGE,
+	USER_GROUP_PATH,
+} from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
 import { UserGroup, UserGroupOverviewTableCols, UserGroupTableState } from '../user-group.types';
 
@@ -52,8 +55,8 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		try {
 			const [userGroupsTemp, userGroupCountTemp] = await UserGroupService.fetchUserGroups(
 				tableState.page || 0,
-				tableState.sort_column || 'created_at',
-				tableState.sort_order || 'desc',
+				tableState.sort_column || 'label',
+				tableState.sort_order || 'asc',
 				generateWhereObject(getFilters(tableState))
 			);
 			setUserGroups(userGroupsTemp);
@@ -165,18 +168,16 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 								})
 							}
 							size="small"
-							title={t('admin/content/views/content-overview___pas-content-aan')}
-							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
+							title={t('Bewerk deze gebruikersgroep')}
+							ariaLabel={t('Bewerk deze gebruikersgroep')}
 							type="secondary"
 						/>
 						<Button
 							icon="delete"
 							onClick={() => openModal(rowData.id)}
 							size="small"
-							title={t('admin/content/views/content-overview___verwijder-content')}
-							ariaLabel={t(
-								'admin/content/views/content-overview___verwijder-content'
-							)}
+							title={t('Verwijder deze gebruikersgroep')}
+							ariaLabel={t('Verwijder deze gebruikersgroep')}
 							type="danger-hover"
 						/>
 					</ButtonToolbar>
@@ -248,6 +249,16 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 		<AdminLayout
 			pageTitle={t('admin/user-groups/views/user-group-overview___gebruikersgroepen')}
 		>
+			<AdminLayoutTopBarRight>
+				<Button
+					label={t(
+						'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
+					)}
+					onClick={() => {
+						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
+					}}
+				/>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -259,16 +270,6 @@ const UserGroupGroupOverview: FunctionComponent<UserGroupOverviewProps> = ({ his
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t(
-						'admin/user-groups/views/user-group-overview___gebruikersgroep-toevoegen'
-					)}
-					onClick={() => {
-						redirectToClientPage(USER_GROUP_PATH.USER_GROUP_CREATE, history);
-					}}
-				/>
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };

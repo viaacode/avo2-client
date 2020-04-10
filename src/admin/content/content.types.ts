@@ -55,7 +55,8 @@ export interface ContentTableState extends FilterableTableState {
 export type ContentDetailParams = { id: string };
 
 // Content Edit
-export interface ContentEditFormState {
+export interface ContentPageEditFormState {
+	thumbnail_path: string | null;
 	title: string;
 	description: string;
 	isProtected: boolean;
@@ -72,7 +73,7 @@ export interface ContentEditState {
 	readonly contentBlockConfigs: ContentBlockConfig[];
 }
 
-export type ContentEditFormErrors = Partial<{ [key in keyof ContentEditFormState]: string }>;
+export type ContentEditFormErrors = Partial<{ [key in keyof ContentPageEditFormState]: string }>;
 
 export enum ContentEditActionType {
 	ADD_CONTENT_BLOCK_CONFIG = '@@admin-content-edit/ADD_CONTENT_BLOCK_CONFIG',
@@ -83,6 +84,7 @@ export enum ContentEditActionType {
 	SET_COMPONENTS_STATE = '@@admin-content-edit/SET_COMPONENTS_STATE',
 	REMOVE_COMPONENTS_STATE = '@@admin-content-edit/REMOVE_COMPONENTS_STATE',
 	SET_BLOCK_STATE = '@@admin-content-edit/SET_BLOCK_STATE',
+	SET_CONTENT_BLOCK_ERROR = '@@admin-content-edit/SET_CONTENT_BLOCK_ERROR',
 }
 
 export interface ContentEditAction {
