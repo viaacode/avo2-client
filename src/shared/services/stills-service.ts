@@ -2,7 +2,6 @@ import { compact, uniq } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
-import { isMediaFragment } from '../../collection/collection.helpers';
 import { ContentTypeString } from '../../collection/collection.types';
 import { CustomError, getEnv, toSeconds } from '../helpers';
 
@@ -37,7 +36,7 @@ export const getThumbnailsForCollection = async (
 ): Promise<string[]> => {
 	// Only request the thumbnail of one audio fragment since those thumbnails are all identical
 	const mediaFragments = (collection.collection_fragments || []).filter(
-		fragment => isMediaFragment(fragment) && fragment.item_meta
+		fragment => fragment.type === 'ITEM'
 	);
 	const videoFragments = mediaFragments.filter(
 		fragment =>
