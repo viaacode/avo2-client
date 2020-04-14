@@ -1,4 +1,4 @@
-import { compact, get, isNil, omit } from 'lodash-es';
+import { compact, get, isNil, omit, sortBy } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -7,10 +7,6 @@ import i18n from '../shared/translations/i18n';
 
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from './collection.const';
 import { ContentTypeNumber } from './collection.types';
-
-export const isMediaFragment = (fragmentInfo: { external_id: string | undefined }) => {
-	return fragmentInfo.external_id && fragmentInfo.external_id !== '-1';
-};
 
 export const getValidationFeedbackForShortDescription = (
 	description: string | null,
@@ -161,8 +157,7 @@ const validateFragments = (
 			// Check if video fragment has custom_title and custom_description if necessary.
 			fragments.forEach(fragment => {
 				if (
-					fragment.external_id &&
-					fragment.external_id !== '-1' &&
+					fragment.type === 'ITEM' &&
 					fragment.use_custom_fields &&
 					(!fragment.custom_title || !fragment.custom_description)
 				) {
@@ -175,8 +170,7 @@ const validateFragments = (
 			// Check if video fragment has custom_title and custom_description if necessary.
 			fragments.forEach(fragment => {
 				if (
-					fragment.external_id &&
-					fragment.external_id !== '-1' &&
+					fragment.type === 'COLLECTION' &&
 					fragment.use_custom_fields &&
 					!fragment.custom_title
 				) {
@@ -189,7 +183,7 @@ const validateFragments = (
 			// Check if text fragment has custom_title or custom_description.
 			fragments.forEach(fragment => {
 				if (
-					!fragment.external_id &&
+					fragment.type === 'TEXT' &&
 					!stripHtml(fragment.custom_title || '').trim() &&
 					!stripHtml(fragment.custom_description || '').trim()
 				) {
@@ -254,7 +248,7 @@ export const reorderFragments = (
 export const getFragmentsFromCollection = (
 	collection: Partial<Avo.Collection.Collection> | null | undefined
 ): Avo.Collection.Fragment[] => {
-	return get(collection, 'collection_fragments') || [];
+	return sortBy(get(collection, 'collection_fragments') || [], ['position']);
 };
 
 /**

@@ -8,7 +8,7 @@ import {
 } from '../../../shared/types';
 import { GET_WIDTH_OPTIONS } from '../../content-block.const';
 
-import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD, VIDEO_FIELD } from './defaults';
 
 export const INITIAL_MEDIA_PLAYER_COMPONENTS_STATE = (): MediaPlayerBlockComponentState => ({
 	title: '',
@@ -32,16 +32,7 @@ export const MEDIA_PLAYER_BLOCK_CONFIG = (position: number = 0): ContentBlockCon
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
-			item: {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/media-player___video-of-audio-item'
-				),
-				editorType: ContentBlockEditor.ContentPicker,
-				editorProps: {
-					allowedTypes: ['ITEM'],
-					hideTargetSwitch: true,
-				},
-			},
+			item: VIDEO_FIELD(),
 			width: {
 				label: i18n.t('admin/content-block/helpers/generators/media-player___breedte'),
 				editorType: ContentBlockEditor.Select,

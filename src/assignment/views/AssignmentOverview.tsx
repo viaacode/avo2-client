@@ -121,7 +121,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		];
 	};
 
-	const getAssigmentById = async (
+	const getAssignmentById = async (
 		assignmentId: number | string
 	): Promise<Avo.Assignment.Assignment> => {
 		const response: ApolloQueryResult<Avo.Assignment.Assignment> = await dataService.query({
@@ -144,7 +144,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		try {
 			if (!assignment) {
 				throw new CustomError(
-					'Failed to duplicate the assigment because the marked assigment is null'
+					'Failed to duplicate the assignment because the marked assignment is null'
 				);
 			}
 			await AssignmentService.duplicateAssignment(newTitle, assignment, user);
@@ -167,20 +167,20 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 		refetchAssignments: () => void
 	) => {
 		try {
-			const assignment: Avo.Assignment.Assignment | null = await getAssigmentById(
+			const assignment: Avo.Assignment.Assignment | null = await getAssignmentById(
 				assignmentId
 			);
 
 			if (assignment) {
-				const archivedAssigment: Partial<Avo.Assignment.Assignment> = {
+				const archivedAssignment: Partial<Avo.Assignment.Assignment> = {
 					...assignment,
 					is_archived: !assignment.is_archived,
 				};
 
-				if (await AssignmentService.updateAssignment(archivedAssigment)) {
+				if (await AssignmentService.updateAssignment(archivedAssignment)) {
 					refetchAssignments();
 					ToastService.success(
-						archivedAssigment.is_archived
+						archivedAssignment.is_archived
 							? t(
 									'assignment/views/assignment-overview___de-opdracht-is-gearchiveerd'
 							  )
@@ -253,14 +253,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				break;
 			case 'duplicate':
 				try {
-					const assignment: Avo.Assignment.Assignment = await getAssigmentById(
+					const assignment: Avo.Assignment.Assignment = await getAssignmentById(
 						dataRow.id
 					);
 
 					setMarkedAssignment(assignment);
 					setDuplicateAssignmentModalOpen(true);
 				} catch (err) {
-					console.error('Failed to duplicate assigment', err, {
+					console.error('Failed to duplicate assignment', err, {
 						assignmentId: dataRow.id,
 					});
 					ToastService.danger(

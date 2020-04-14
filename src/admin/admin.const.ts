@@ -2,7 +2,6 @@ import { every, some } from 'lodash-es';
 
 import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
-
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PATH } from './content/content.const';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';

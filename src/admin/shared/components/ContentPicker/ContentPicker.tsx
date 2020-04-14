@@ -137,6 +137,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const onSelectItem = (selectedItem: ValueType<PickerItem>, event?: ActionMeta) => {
 		// reset `selectedItem` when clearing item picker
 		if (get(event, 'action') === 'clear') {
+			propertyChanged('selectedItem', null);
 			setSelectedItem(null);
 			return null;
 		}
@@ -290,7 +291,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const renderLinkTargetControl = () => {
 		return (
 			<Button
-				className="c-content-picker__toggle-target-button"
+				size="large"
 				type={'borderless'}
 				icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
 				title={

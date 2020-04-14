@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import { get, has, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -46,7 +45,6 @@ import {
 
 import { ContentEditForm } from '../components';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
-import { INSERT_CONTENT, UPDATE_CONTENT_BY_ID } from '../content.gql';
 import { ContentService } from '../content.service';
 import {
 	ContentEditAction,
@@ -94,9 +92,6 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			});
 		}
 	}, [contentBlocks]);
-
-	const [triggerContentInsert] = useMutation(INSERT_CONTENT);
-	const [triggerContentUpdate] = useMutation(UPDATE_CONTENT_BY_ID);
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
@@ -232,8 +227,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				const contentBody = { ...contentItem, user_profile_id: getProfileId(user) };
 				insertedOrUpdatedContent = await ContentService.insertContentPage(
 					contentBody,
-					contentBlockConfigs,
-					triggerContentInsert
+					contentBlockConfigs
 				);
 			} else {
 				if (!isNil(id)) {
@@ -245,8 +239,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					insertedOrUpdatedContent = await ContentService.updateContentPage(
 						contentBody,
 						contentBlocks,
-						contentBlockConfigs,
-						triggerContentUpdate
+						contentBlockConfigs
 					);
 				} else {
 					throw new CustomError(

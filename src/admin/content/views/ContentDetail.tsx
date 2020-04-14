@@ -42,6 +42,7 @@ import {
 	AdminLayoutTopBarRight,
 } from '../../shared/layouts';
 
+import ShareContentPageModal from '../components/ShareContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
@@ -58,6 +59,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [allUserGroups, setAllUserGroups] = useState<TagInfo[]>([]);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
@@ -192,6 +194,34 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			});
 	};
 
+	const handleShareModalClose = async (newContentPage?: Partial<DbContent>) => {
+		try {
+			if (newContentPage) {
+				await ContentService.updateContentPage({
+					...contentPage,
+					...newContentPage,
+				});
+
+				ToastService.success(
+					newContentPage.is_public
+						? t('De content pagina is nu publiek')
+						: t('De content pagina is nu niet meer publiek'),
+					false
+				);
+			}
+		} catch (err) {
+			console.error('Failed to save is_public state to content page', err, {
+				newContentPage,
+				contentPage,
+			});
+			ToastService.danger(
+				t('Het opslaan van de publiek status van de content pagina is mislukt'),
+				false
+			);
+		}
+		setIsShareModalOpen(false);
+	};
+
 	// Render
 	const renderContentDetail = (): ReactElement | null => {
 		if (!contentPage) {
@@ -324,6 +354,14 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
 					<Button
+						type="secondary"
+						icon="lock"
+						label={t('Delen')}
+						title={t('Maak de content pagina publiek / niet publiek')}
+						ariaLabel={t('Maak de content pagina publiek / niet publiek')}
+						onClick={() => setIsShareModalOpen(true)}
+					/>
+					<Button
 						label={t('admin/content/views/content-detail___bewerken')}
 						title={t('Bewerk deze content pagina')}
 						onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
@@ -365,6 +403,13 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 								: ''
 						}
 					/>
+					{!!contentPage && (
+						<ShareContentPageModal
+							contentPage={contentPage}
+							isOpen={isShareModalOpen}
+							onClose={handleShareModalClose}
+						/>
+					)}
 				</div>
 			</AdminLayoutBody>
 		</AdminLayout>
