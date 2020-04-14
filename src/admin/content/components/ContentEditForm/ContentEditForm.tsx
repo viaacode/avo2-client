@@ -183,14 +183,18 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 							<Column size="12">
 								<FormGroup
 									error={formErrors.thumbnail_path}
-									label={t('Cover afbeelding')}
+									label={t(
+										'admin/content/components/content-edit-form/content-edit-form___cover-afbeelding'
+									)}
 								>
 									<FileUpload
 										ownerId={get(user, 'profile.id')}
 										urls={compact([formState.thumbnail_path])}
 										assetType={'CONTENT_PAGE_IMAGE'}
 										allowMulti={false}
-										label={t('Cover afbeelding')}
+										label={t(
+											'admin/content/components/content-edit-form/content-edit-form___cover-afbeelding'
+										)}
 										onChange={urls => onChange('thumbnail_path', urls[0])}
 									/>
 								</FormGroup>

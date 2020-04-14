@@ -522,13 +522,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			<ButtonToolbar>
 				<Button
 					label={t('bundle/views/bundle-detail___delen')}
-					title={t('Maak de bundel publiek / niet publiek')}
+					title={t('bundle/views/bundle-detail___maak-de-bundel-publiek-niet-publiek')}
 					onClick={() => executeAction('openShareModal')}
 					type="secondary"
 				/>
 				<Button
 					label={t('bundle/views/bundle-detail___bewerken')}
-					title={t('Pas de bundel aan')}
+					title={t('bundle/views/bundle-detail___pas-de-bundel-aan')}
 					onClick={() => executeAction('edit')}
 					type="primary"
 				/>
@@ -585,7 +585,9 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<h3 className="c-h3">
-						<Trans>Over deze bundel</Trans>
+						<Trans i18nKey="bundle/views/bundle-detail___over-deze-bundel">
+							Over deze bundel
+						</Trans>
 					</h3>
 					<Grid>
 						<Column size="3-3">

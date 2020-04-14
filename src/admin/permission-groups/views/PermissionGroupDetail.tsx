@@ -134,8 +134,18 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 							],
 						])}
 						{renderDateDetailRows(permissionGroup, [
-							['created_at', t('Aangemaakt op')],
-							['updated_at', t('Aangepast op')],
+							[
+								'created_at',
+								t(
+									'admin/permission-groups/views/permission-group-detail___aangemaakt-op'
+								),
+							],
+							[
+								'updated_at',
+								t(
+									'admin/permission-groups/views/permission-group-detail___aangepast-op'
+								),
+							],
 						])}
 					</tbody>
 				</Table>
@@ -190,8 +200,12 @@ const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ hist
 							label={t(
 								'admin/permission-groups/views/permission-group-detail___bewerken'
 							)}
-							title={t('Bewerk deze permissie groep')}
-							ariaLabel={t('Bewerk deze permissie groep')}
+							title={t(
+								'admin/permission-groups/views/permission-group-detail___bewerk-deze-permissie-groep'
+							)}
+							ariaLabel={t(
+								'admin/permission-groups/views/permission-group-detail___bewerk-deze-permissie-groep'
+							)}
 							onClick={handleEditClick}
 						/>
 					</ButtonToolbar>

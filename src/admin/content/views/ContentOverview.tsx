@@ -329,7 +329,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					<Button
 						icon="plus"
 						label={t('admin/content/views/content-overview___content-toevoegen')}
-						title={t('Maak een nieuwe content pagina aan')}
+						title={t(
+							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
+						)}
 						onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
 					/>
 				</Spacer>
@@ -396,7 +398,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			<AdminLayoutTopBarRight>
 				<Button
 					label={t('admin/content/views/content-overview___content-toevoegen')}
-					title={t('Maak een nieuwe content pagina aan')}
+					title={t(
+						'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
+					)}
 					onClick={() => history.push(CONTENT_PATH.CONTENT_CREATE)}
 				/>
 			</AdminLayoutTopBarRight>

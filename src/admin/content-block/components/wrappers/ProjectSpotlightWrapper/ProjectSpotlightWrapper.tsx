@@ -49,7 +49,9 @@ const ProjectSpotlightWrapper: FunctionComponent<ProjectSpotlightWrapperProps &
 			console.error(new CustomError('Failed to get projects by path', err, { elements }));
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het ophalen van de projecten in de kijker is mislukt'),
+				message: t(
+					'admin/content-block/components/wrappers/project-spotlight-wrapper/project-spotlight-wrapper___het-ophalen-van-de-projecten-in-de-kijker-is-mislukt'
+				),
 				actionButtons: [],
 			});
 		}

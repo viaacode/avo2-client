@@ -516,8 +516,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 												<Button
 													icon="more-horizontal"
 													type="secondary"
-													ariaLabel={t('Meer opties')}
-													title={t('Meer opties')}
+													ariaLabel={t(
+														'assignment/views/assignment-detail___meer-opties'
+													)}
+													title={t(
+														'assignment/views/assignment-detail___meer-opties'
+													)}
 												/>
 											</DropdownButton>
 											<DropdownContent>

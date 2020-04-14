@@ -305,7 +305,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button icon="more-horizontal" type="borderless" title={t('Meer opties')} />
+						<Button
+							icon="more-horizontal"
+							type="borderless"
+							title={t('assignment/views/assignment-overview___meer-opties')}
+						/>
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent
@@ -350,7 +354,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				{!isMobileWidth() && (
 					<Button
 						icon="chevron-right"
-						title={t('Bewerk de opdracht')}
+						title={t('assignment/views/assignment-overview___bewerk-de-opdracht')}
 						onClick={() =>
 							navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
 								id: rowData.id,
@@ -483,7 +487,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 								<Button
 									type="secondary"
 									label={t('assignment/views/assignment-overview___opdrachten')}
-									title={t('Filter op niet gearchiveerde opdrachten')}
+									title={t(
+										'assignment/views/assignment-overview___filter-op-niet-gearchiveerde-opdrachten'
+									)}
 									active={activeView === 'assignments'}
 									onClick={() => setActiveView('assignments')}
 								/>
@@ -492,7 +498,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 									label={t(
 										'assignment/views/assignment-overview___gearchiveerde-opdrachten'
 									)}
-									title={t('Filter op gearchiveerde opdrachten')}
+									title={t(
+										'assignment/views/assignment-overview___filter-op-gearchiveerde-opdrachten'
+									)}
 									active={activeView === 'archived_assignments'}
 									onClick={() => setActiveView('archived_assignments')}
 								/>

@@ -81,7 +81,9 @@ export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockCo
 				centerHeader: {
 					editorType: ContentBlockEditor.Checkbox,
 					editorProps: {
-						label: i18n.t('Menu items centereren'),
+						label: i18n.t(
+							'admin/content-block/helpers/generators/page-overview___menu-items-centereren'
+						),
 					} as CheckboxProps,
 				},
 				itemStyle: {

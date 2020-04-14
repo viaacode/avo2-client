@@ -210,7 +210,7 @@ export class CollectionService {
 								{ id }
 							)
 						);
-						return;
+						return null;
 					}
 
 					fragmentToUpdate = cloneDeep(fragmentToUpdate);
