@@ -44,7 +44,6 @@ export const GET_COLLECTION_BY_ID = gql`
 				alternative_email
 				avatar
 				id
-				location
 				stamboek
 				updated_at
 				user_id
@@ -205,7 +204,6 @@ export const GET_COLLECTIONS_BY_OWNER = gql`
 				alternative_email
 				avatar
 				created_at
-				location
 				stamboek
 				updated_at
 				user_id
