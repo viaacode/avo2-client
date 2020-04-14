@@ -6,10 +6,7 @@ import { Container } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { ToastService } from '../../shared/services';
 
 import { FragmentAdd, FragmentEdit } from '../components';
@@ -38,7 +35,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	const isCollection = type === 'collection';
 
 	useEffect(() => {
-		PermissionService.hasPermission(PermissionNames.ADD_HYPERLINK_COLLECTIONS, null, user)
+		PermissionService.hasPermission(PermissionName.ADD_HYPERLINK_COLLECTIONS, null, user)
 			.then(hasPermission => {
 				setAllowedToAddLinks(hasPermission);
 			})
@@ -46,7 +43,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 				console.error(
 					'Failed to check permissions for adding hyperlinks in collection fragment editors',
 					err,
-					{ user, permission: PermissionNames.ADD_HYPERLINK_COLLECTIONS }
+					{ user, permission: PermissionName.ADD_HYPERLINK_COLLECTIONS }
 				);
 				ToastService.danger(
 					t(

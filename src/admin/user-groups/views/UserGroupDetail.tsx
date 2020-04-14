@@ -8,8 +8,6 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	Header,
-	HeaderButtons,
 	Panel,
 	PanelBody,
 	PanelHeader,
@@ -25,23 +23,25 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { useTableSort } from '../../../shared/hooks';
-import { dataService, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { Permission } from '../../permission-groups/permission-group.types';
+import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';
 import {
 	renderDateDetailRows,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayoutTopBarRight } from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 
 import { GET_PERMISSION_GROUP_TABLE_COLS, USER_GROUP_PATH } from '../user-group.const';
-import { GET_USER_GROUP_BY_ID } from '../user-group.gql';
 import { UserGroupService } from '../user-group.service';
 import {
 	PermissionGroupTableCols,
 	UserGroup,
 	UserGroupOverviewTableCols,
 } from '../user-group.types';
+
+import './UserGroupDetail.scss';
 
 interface UserDetailProps extends RouteComponentProps<{ id: string }> {}
 
@@ -58,14 +58,9 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 
 	const fetchUserGroupById = useCallback(async () => {
 		try {
-			const response = await dataService.query({
-				query: GET_USER_GROUP_BY_ID,
-				variables: {
-					id: match.params.id,
-				},
-			});
-			const userGroupObj = get(response, 'data.users_groups[0]');
-
+			const userGroupObj: UserGroup | undefined = await UserGroupService.fetchUserGroupById(
+				match.params.id
+			);
 			if (!userGroupObj) {
 				setLoadingInfo({
 					state: 'error',
@@ -77,7 +72,7 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 				return;
 			}
 
-			const permissionGroups: Permission[] = flatten(
+			const permissionGroups: PermissionGroup[] = flatten(
 				get(userGroupObj, 'group_user_permission_groups', []).map((userGroupItem: any) => {
 					return get(userGroupItem, 'permission_group', []);
 				})
@@ -149,9 +144,22 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 		}
 	};
 
-	const renderTableCell = (rowData: Permission, columnId: UserGroupOverviewTableCols) => {
+	const renderTableCell = (rowData: PermissionGroup, columnId: UserGroupOverviewTableCols) => {
 		switch (columnId) {
 			case 'label':
+				return (
+					<div className="c-user-group__permission-list">
+						<div>{rowData.label}</div>
+						{UserGroupService.getPermissions(rowData).map((permission: Permission) => {
+							return (
+								<div key={`permission-group-list-${rowData.id}-${permission.id}`}>
+									{permission.description}
+								</div>
+							);
+						})}
+					</div>
+				);
+
 			case 'description':
 				return rowData[columnId];
 
@@ -172,8 +180,8 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 								)
 							}
 							size="small"
-							ariaLabel={t('admin/user-groups/views/user-group-detail___verwijder')}
-							title={t('admin/user-groups/views/user-group-detail___verwijder')}
+							ariaLabel={t('Verwijder deze gebruikersgroep')}
+							title={t('Verwijder deze gebruikersgroep')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -264,36 +272,35 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 	};
 
 	const renderUserDetailPage = () => (
-		<AdminLayout showBackButton>
-			<AdminLayoutHeader>
-				<Header
-					category="audio"
-					title={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
-					showMetaData={false}
-				>
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								type="primary"
-								label={t('admin/user-groups/views/user-group-detail___bewerk')}
-								onClick={() => {
-									redirectToClientPage(
-										buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, {
-											id: match.params.id,
-										}),
-										history
-									);
-								}}
-							/>
-							<Button
-								type="danger"
-								label={t('admin/user-groups/views/user-group-detail___verwijderen')}
-								onClick={() => setIsConfirmModalOpen(true)}
-							/>
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
-			</AdminLayoutHeader>
+		<AdminLayout
+			showBackButton
+			pageTitle={t('admin/user-groups/views/user-group-detail___gebruikersgroep-details')}
+		>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						type="primary"
+						label={t('admin/user-groups/views/user-group-detail___bewerk')}
+						title={t('Bewerk deze gebruikersgroep')}
+						ariaLabel={t('Bewerk deze gebruikersgroep')}
+						onClick={() => {
+							redirectToClientPage(
+								buildLink(USER_GROUP_PATH.USER_GROUP_EDIT, {
+									id: match.params.id,
+								}),
+								history
+							);
+						}}
+					/>
+					<Button
+						type="danger"
+						label={t('admin/user-groups/views/user-group-detail___verwijderen')}
+						title={t('Verwijder deze gebruikersgroep')}
+						ariaLabel={t('Verwijder deze gebruikersgroep')}
+						onClick={() => setIsConfirmModalOpen(true)}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				{renderUserDetail()}
 				<DeleteObjectModal

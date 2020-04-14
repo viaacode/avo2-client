@@ -1,4 +1,4 @@
-import { kebabCase } from 'lodash-es';
+import { compact, get, kebabCase } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { DeleteObjectModal } from '../../../../shared/components';
+import { DeleteObjectModal, FileUpload } from '../../../../shared/components';
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
@@ -29,7 +29,7 @@ import { DEFAULT_PAGES_WIDTH, GET_CONTENT_WIDTH_OPTIONS } from '../../content.co
 import { ContentService } from '../../content.service';
 import {
 	ContentEditFormErrors,
-	ContentEditFormState,
+	ContentPageEditFormState,
 	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
@@ -38,9 +38,13 @@ import './ContentEditForm.scss';
 interface ContentEditFormProps {
 	contentTypes: SelectOption<ContentPageType>[];
 	formErrors: ContentEditFormErrors;
-	formState: ContentEditFormState;
+	formState: ContentPageEditFormState;
 	isAdminUser: boolean;
-	onChange: (key: keyof ContentEditFormState, value: ValueOf<ContentEditFormState>) => void;
+	onChange: (
+		key: keyof ContentPageEditFormState,
+		value: ValueOf<ContentPageEditFormState>
+	) => void;
+	user: Avo.User.User;
 }
 
 type DateFormKeys = 'publishAt' | 'depublishAt';
@@ -51,6 +55,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	formState,
 	isAdminUser,
 	onChange,
+	user,
 }) => {
 	// Hooks
 	const [t] = useTranslation();
@@ -92,7 +97,13 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	// Computed
 	const contentTypeOptions = [
-		{ label: 'Kies een content type', value: '', disabled: true },
+		{
+			label: t(
+				'admin/content/components/content-edit-form/content-edit-form___kies-een-content-type'
+			),
+			value: '',
+			disabled: true,
+		},
 		...contentTypes.map(contentType => ({
 			label: contentType.value,
 			value: contentType.value,
@@ -169,6 +180,21 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 				<Container size="medium">
 					<Form className="c-content-edit-form">
 						<Grid>
+							<Column size="12">
+								<FormGroup
+									error={formErrors.thumbnail_path}
+									label={t('Cover afbeelding')}
+								>
+									<FileUpload
+										ownerId={get(user, 'profile.id')}
+										urls={compact([formState.thumbnail_path])}
+										assetType={'CONTENT_PAGE_IMAGE'}
+										allowMulti={false}
+										label={t('Cover afbeelding')}
+										onChange={urls => onChange('thumbnail_path', urls[0])}
+									/>
+								</FormGroup>
+							</Column>
 							<Column size="12">
 								<FormGroup
 									error={formErrors.title}

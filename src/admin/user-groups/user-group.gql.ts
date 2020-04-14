@@ -15,6 +15,13 @@ export const GET_USER_GROUP_BY_ID = gql`
 					created_at
 					description
 					updated_at
+					permission_group_user_permissions {
+						permission {
+							label
+							description
+							id
+						}
+					}
 				}
 			}
 		}

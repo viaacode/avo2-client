@@ -39,7 +39,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId, getProfileName } from '../../authentication/helpers/get-profile-info';
-import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-service';
 import { toEnglishContentType } from '../../collection/collection.types';
 import {
 	checkPermissions,
@@ -217,7 +217,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 		};
 
 		checkPermissions(
-			PermissionNames.CREATE_ASSIGNMENTS,
+			PermissionName.CREATE_ASSIGNMENTS,
 			user,
 			initAssignmentData,
 			setLoadingInfo,
@@ -571,6 +571,9 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 															ariaLabel={t(
 																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
 															)}
+															title={t(
+																'assignment/views/assignment-edit___kopieer-de-opdracht-url'
+															)}
 															onClick={copyAssignmentUrl}
 														/>
 													</Spacer>
@@ -820,6 +823,7 @@ const AssignmentCreate: FunctionComponent<AssignmentCreateProps> = ({
 										<Button
 											type="primary"
 											label={t('assignment/views/assignment-edit___opslaan')}
+											title={t('Sla de opdracht op')}
 											onClick={() => saveAssignment(currentAssignment)}
 											disabled={isSaving}
 										/>

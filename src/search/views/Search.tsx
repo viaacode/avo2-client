@@ -1,6 +1,5 @@
 import {
 	cloneDeep,
-	compact,
 	every,
 	get,
 	isArray,
@@ -45,7 +44,7 @@ import {
 	PermissionGuardFail,
 	PermissionGuardPass,
 } from '../../authentication/components';
-import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { copyToClipboard, CustomError, navigate } from '../../shared/helpers';
@@ -121,7 +120,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	 * display the search results on the page and in the url when the results change
 	 */
 	useEffect(() => {
-		if (searchResults) {
+		if (searchResults && queryParamsAnalysed) {
 			const filterOptions: Partial<Avo.Search.Filters> = cleanupFilterObject(
 				cloneDeep(formState)
 			);
@@ -133,31 +132,43 @@ const Search: FunctionComponent<SearchProps> = ({
 			setMultiOptions(searchResults.aggregations);
 
 			// Remember this search by adding it to the query params in the url
-			const filters = isEmpty(filterOptions)
-				? null
-				: `filters=${JSON.stringify(filterOptions)}`;
-			const orderProperty =
-				sortOrder.orderProperty === 'relevance'
-					? null
-					: `orderProperty=${sortOrder.orderProperty}`;
-			const orderDirection =
-				sortOrder.orderDirection === 'desc'
-					? null
-					: `orderDirection=${sortOrder.orderDirection}`;
-			const page = currentPage === 0 ? null : `page=${currentPage + 1}`;
+			const queryParams: any = {};
+			if (!isEmpty(filterOptions)) {
+				queryParams.filters = JSON.stringify(filterOptions);
+			}
+			if (sortOrder.orderProperty !== 'relevance') {
+				queryParams.orderProperty = sortOrder.orderProperty;
+			}
+			if (sortOrder.orderDirection !== 'desc') {
+				queryParams.orderDirection = sortOrder.orderDirection;
+			}
+			if (currentPage !== 0) {
+				queryParams.page = currentPage + 1;
+			}
+			const queryParamString = queryString.stringify(queryParams);
 
-			const queryParams: string = compact([
-				filters,
-				orderProperty,
-				orderDirection,
-				page,
-			]).join('&');
-			navigate(history, APP_PATH.SEARCH.route, {}, queryParams.length ? queryParams : '');
+			// Only update the url if the query params differ
+			if (queryParamString !== location.search.substring(1)) {
+				navigate(
+					history,
+					APP_PATH.SEARCH.route,
+					{},
+					queryParamString.length ? queryParamString : ''
+				);
+			}
 
 			//  Scroll to the first search result
 			window.scrollTo(0, 0);
 		}
-	}, [searchResults, currentPage, formState, history, sortOrder]);
+	}, [
+		searchResults,
+		currentPage,
+		formState,
+		history,
+		sortOrder,
+		queryParamsAnalysed,
+		location.search,
+	]);
 
 	const getBookmarkStatuses = useCallback(async () => {
 		try {
@@ -245,8 +256,8 @@ const Search: FunctionComponent<SearchProps> = ({
 		setQueryParamsAnalysed(true);
 	};
 
-	// Only execute this effect once after the first render (componentDidMount)
-	useEffect(getFiltersFromQueryParams, []);
+	// Analyse the search query params every time the url changes
+	useEffect(getFiltersFromQueryParams, [location.search]);
 
 	const handleFilterFieldChange = async (
 		value: SearchFilterFieldValues,
@@ -356,7 +367,7 @@ const Search: FunctionComponent<SearchProps> = ({
 		setFormState({
 			...DEFAULT_FORM_STATE,
 			collectionLabel: [tagId],
-		} as any); // TODO remove cast	after update to typings 2.14.0
+		});
 	};
 
 	// @ts-ignore
@@ -458,7 +469,12 @@ const Search: FunctionComponent<SearchProps> = ({
 									triggerClassName="c-extra-options"
 								>
 									<DropdownButton>
-										<Button type="tertiary" icon="more-horizontal" />
+										<Button
+											type="tertiary"
+											icon="more-horizontal"
+											title={t('Meer opties')}
+											ariaLabel={t('Meer opties')}
+										/>
 									</DropdownButton>
 									<DropdownContent>
 										<Button
@@ -559,7 +575,7 @@ const Search: FunctionComponent<SearchProps> = ({
 	);
 
 	return (
-		<PermissionGuard permissions={PermissionNames.SEARCH} user={user}>
+		<PermissionGuard permissions={PermissionName.SEARCH} user={user}>
 			<PermissionGuardPass>{renderSearchPage()}</PermissionGuardPass>
 			<PermissionGuardFail>
 				<ErrorView

@@ -13,7 +13,6 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection/index'; // TODO fix after typings update 2.15
 
 import { CustomError } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
@@ -73,7 +72,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<CollectionOrBundleEditAdmin
 		if (!qualityLabels) {
 			return [];
 		}
-		const labelIds = ((collection.collection_labels || []) as CollectionLabelSchema[]).map(
+		const labelIds = ((collection.collection_labels || []) as Avo.Collection.Label[]).map(
 			(item: any) => item.label
 		);
 		return qualityLabels.filter(qualityLabel => labelIds.includes(qualityLabel.value));

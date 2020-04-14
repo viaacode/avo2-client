@@ -33,10 +33,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import {
-	PermissionNames,
-	PermissionService,
-} from '../../authentication/helpers/permission-service';
+import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { DataQueryComponent, DeleteObjectModal, InputModal } from '../../shared/components';
 import {
@@ -88,14 +85,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 	>('created_at');
 
 	useEffect(() => {
-		PermissionService.hasPermissions(PermissionNames.EDIT_ASSIGNMENTS, user)
+		PermissionService.hasPermissions(PermissionName.EDIT_ASSIGNMENTS, user)
 			.then((hasPermission: boolean) => {
 				setCanEditAssignments(hasPermission);
 			})
 			.catch(err => {
 				console.error('Failed to check permissions', err, {
 					user,
-					permissions: PermissionNames.EDIT_ASSIGNMENTS,
+					permissions: PermissionName.EDIT_ASSIGNMENTS,
 				});
 				ToastService.danger(
 					t(
@@ -308,7 +305,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button icon="more-horizontal" type="borderless" />
+						<Button icon="more-horizontal" type="borderless" title={t('Meer opties')} />
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent
@@ -353,6 +350,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 				{!isMobileWidth() && (
 					<Button
 						icon="chevron-right"
+						title={t('Bewerk de opdracht')}
 						onClick={() =>
 							navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, {
 								id: rowData.id,
@@ -485,6 +483,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 								<Button
 									type="secondary"
 									label={t('assignment/views/assignment-overview___opdrachten')}
+									title={t('Filter op niet gearchiveerde opdrachten')}
 									active={activeView === 'assignments'}
 									onClick={() => setActiveView('assignments')}
 								/>
@@ -493,6 +492,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({ histor
 									label={t(
 										'assignment/views/assignment-overview___gearchiveerde-opdrachten'
 									)}
+									title={t('Filter op gearchiveerde opdrachten')}
 									active={activeView === 'archived_assignments'}
 									onClick={() => setActiveView('archived_assignments')}
 								/>

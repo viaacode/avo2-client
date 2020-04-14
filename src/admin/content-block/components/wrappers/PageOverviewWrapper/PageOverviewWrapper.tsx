@@ -16,6 +16,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { getUserGroupIds } from '../../../../../authentication/authentication.service';
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
+import { ContentPage } from '../../../../../content-page/views';
 import { CustomError, navigateToContentType } from '../../../../../shared/helpers';
 import withUser from '../../../../../shared/hocs/withUser';
 import { useDebounce } from '../../../../../shared/hooks';
@@ -24,14 +25,13 @@ import i18n from '../../../../../shared/translations/i18n';
 import { GET_CONTENT_PAGES, GET_CONTENT_PAGES_WITH_BLOCKS } from '../../../../content/content.gql';
 import { DbContent } from '../../../../content/content.types';
 import { ContentTypeAndLabelsValue } from '../../../../shared/components/ContentTypeAndLabelsPicker/ContentTypeAndLabelsPicker';
-import { ContentBlockConfig } from '../../../../shared/types';
-import { parseContentBlocks } from '../../../helpers';
-import ContentBlockPreview from '../../ContentBlockPreview/ContentBlockPreview';
 
 interface PageOverviewWrapperProps {
 	contentTypeAndTabs: ContentTypeAndLabelsValue;
 	tabStyle?: ContentTabStyle;
 	allowMultiple?: boolean;
+	centerHeader?: boolean;
+	headerBackgroundColor?: string;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
 	showDescription?: boolean;
@@ -48,6 +48,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 	},
 	tabStyle = 'MENU_BAR',
 	allowMultiple = false,
+	centerHeader = false,
+	headerBackgroundColor = 'transparent',
 	itemStyle = 'LIST',
 	showTitle = true,
 	showDescription = true,
@@ -68,20 +70,6 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 
 	const debouncedItemsPerPage = useDebounce(itemsPerPage || 1000, 200); // Default to 1000 if itemsPerPage is zero
 
-	const renderContentPage = (contentPage: Avo.Content.Content) => {
-		const contentBlockConfig: ContentBlockConfig[] = parseContentBlocks(
-			contentPage.contentBlockssBycontentId
-		);
-		return contentBlockConfig.map((contentBlockConfig: ContentBlockConfig, index) => (
-			<ContentBlockPreview
-				key={contentPage.contentBlockssBycontentId[index].id}
-				componentState={contentBlockConfig.components.state}
-				contentWidth={contentPage.content_width}
-				blockState={contentBlockConfig.block.state}
-			/>
-		));
-	};
-
 	const dbToPageOverviewContentPage = (dbContentPage: Avo.Content.Content): ContentPageInfo => {
 		return {
 			thumbnail_path: '/images/placeholder.png',
@@ -90,9 +78,9 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			description: dbContentPage.description,
 			title: dbContentPage.title,
 			id: dbContentPage.id,
-			blocks: dbContentPage.contentBlockssBycontentId
-				? renderContentPage(dbContentPage)
-				: null,
+			blocks: dbContentPage.contentBlockssBycontentId ? (
+				<ContentPage contentPage={dbContentPage} />
+			) : null,
 			content_width: dbContentPage.content_width,
 			path: dbContentPage.path as string, // TODO enforce path in database
 		};
@@ -195,6 +183,8 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps &
 			tabStyle={tabStyle}
 			itemStyle={itemStyle}
 			allowMultiple={allowMultiple}
+			centerHeader={centerHeader}
+			headerBackgroundColor={headerBackgroundColor}
 			showTitle={showTitle}
 			showDescription={showDescription}
 			showDate={showDate}

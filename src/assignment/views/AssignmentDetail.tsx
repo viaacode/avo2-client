@@ -29,7 +29,7 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-info';
-import { PermissionNames } from '../../authentication/helpers/permission-service';
+import { PermissionName } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -270,7 +270,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 		checkPermissions(
 			{
-				name: PermissionNames.CREATE_ASSIGNMENT_RESPONSE,
+				name: PermissionName.CREATE_ASSIGNMENT_RESPONSE,
 				obj: match.params.id,
 			},
 			user,
@@ -508,7 +508,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 											placement="bottom-end"
 										>
 											<DropdownButton>
-												<Button icon="more-horizontal" type="secondary" />
+												<Button
+													icon="more-horizontal"
+													type="secondary"
+													ariaLabel={t('Meer opties')}
+													title={t('Meer opties')}
+												/>
 											</DropdownButton>
 											<DropdownContent>
 												<MenuContent

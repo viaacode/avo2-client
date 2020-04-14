@@ -3,7 +3,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { BlockMediaList, ButtonAction, MediaListItem } from '@viaa/avo2-components';
+import { BlockMediaList, ButtonAction, LinkTarget, MediaListItem } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { toEnglishContentType } from '../../../../../collection/collection.types';
@@ -43,10 +43,12 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			if (results && results.length) {
 				// Results are filled in, we can render the block
 				setResolvedResults(results);
+				return;
 			}
 			if (results && elements && !elements.length) {
 				// Results is empty, but elements is also empty, so we don't need to render anything
 				setResolvedResults(results);
+				return;
 			}
 			// If we get no results, but we do get elements, then the block is loaded in preview mode,
 			// and we should resolve the results ourselves using a separate route on the server
@@ -110,6 +112,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 						value: (isItem
 							? itemOrCollection.external_id
 							: itemOrCollection.id) as string,
+						target: get(searchQuery, 'target') || LinkTarget.Self,
 					},
 					history
 				),

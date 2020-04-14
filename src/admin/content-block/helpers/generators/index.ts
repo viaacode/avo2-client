@@ -1,4 +1,3 @@
-export * from './accordions';
 export * from './anchor-links';
 export * from './buttons';
 export * from './ctas';
@@ -12,7 +11,8 @@ export * from './media-grid';
 export * from './media-player';
 export * from './media-player-title-text-button';
 export * from './page-overview';
-export * from './projects-spotlight';
+export * from './project-spotlight';
 export * from './quote';
 export * from './rich-text';
 export * from './rich-text-two-columns';
+export * from './spotlight';

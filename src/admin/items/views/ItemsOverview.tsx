@@ -13,7 +13,6 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/compon
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import {
 	getBooleanFilters,
@@ -22,7 +21,7 @@ import {
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
-import { GET_ITEM_OVERVIEW_TABLE_COLS } from '../items.const';
+import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 
@@ -160,11 +159,15 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ history }) => {
 							type="secondary"
 							icon="eye"
 							onClick={() => navigateToItemDetail(rowData.external_id)}
+							title={t('Bekijk item in de website')}
+							ariaLabel={t('Bekijk item in de website')}
 						/>
 						<Button
 							type="secondary"
 							icon="edit"
 							onClick={() => navigateToAdminItemDetail(rowData.uid)}
+							title={t('Bekijk item details in het beheer')}
+							ariaLabel={t('Bekijk item details in het beheer')}
 						/>
 					</ButtonToolbar>
 				);

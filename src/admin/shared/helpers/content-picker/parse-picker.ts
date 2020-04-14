@@ -1,11 +1,13 @@
 import queryString from 'query-string';
 
+import { LinkTarget } from '@viaa/avo2-components';
+
 import { ToastService } from '../../../../shared/services';
 import i18n from '../../../../shared/translations/i18n';
 
 import { ContentPickerType, PickerItem } from '../../types';
 
-const parseSearchQuery = (input: string): string => {
+export const parseSearchQuery = (input: string): string => {
 	try {
 		// replace %22 by "
 		const replacedString = decodeURI(input);
@@ -41,7 +43,12 @@ const parseSearchQuery = (input: string): string => {
 	}
 };
 
-export const parsePickerItem = (type: ContentPickerType, value: string): PickerItem => ({
+export const parsePickerItem = (
+	type: ContentPickerType,
+	value: string,
+	target: LinkTarget = LinkTarget.Blank
+): PickerItem => ({
 	type,
+	target,
 	value: type === 'SEARCH_QUERY' ? parseSearchQuery(value) : value,
 });

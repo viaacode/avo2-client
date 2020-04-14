@@ -16,7 +16,7 @@ import { ToastService } from '../../../shared/services';
 import { ItemsTableState } from '../../items/items.types';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
 import {
 	GET_PERMISSION_GROUP_OVERVIEW_TABLE_COLS,
@@ -49,7 +49,7 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 			const andFilters: any[] = [];
 			andFilters.push(
 				...getQueryFilter(filters.query, (queryWordWildcard: string) => [
-					{ title: { _ilike: queryWordWildcard } },
+					{ label: { _ilike: queryWordWildcard } },
 					{ description: { _ilike: queryWordWildcard } },
 				])
 			);
@@ -223,6 +223,14 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 				'admin/permission-groups/views/permission-group-overview___permissie-groepen-overzicht'
 			)}
 		>
+			<AdminLayoutTopBarRight>
+				<Button
+					label={t(
+						'admin/permission-groups/views/permission-group-overview___permissie-groep-toevoegen'
+					)}
+					onClick={() => history.push(PERMISSION_GROUP_PATH.PERMISSION_GROUP_CREATE)}
+				/>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -234,14 +242,6 @@ const PermissionGroupOverview: FunctionComponent<PermissionGroupOverviewProps> =
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			<AdminLayoutActions>
-				<Button
-					label={t(
-						'admin/permission-groups/views/permission-group-overview___permissie-groep-toevoegen'
-					)}
-					onClick={() => history.push(PERMISSION_GROUP_PATH.PERMISSION_GROUP_CREATE)}
-				/>
-			</AdminLayoutActions>
 		</AdminLayout>
 	);
 };

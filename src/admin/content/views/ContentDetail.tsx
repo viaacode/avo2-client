@@ -4,14 +4,10 @@ import React, { FunctionComponent, ReactElement, useCallback, useEffect, useStat
 import { Trans, useTranslation } from 'react-i18next';
 
 import {
-	Avatar,
 	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
-	Header,
-	HeaderAvatar,
-	HeaderButtons,
 	Navbar,
 	Spacer,
 	Table,
@@ -19,39 +15,38 @@ import {
 	TagInfo,
 	TagList,
 	TagOption,
+	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { ContentPage } from '../../../content-page/views';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import {
-	CustomError,
-	getAvatarProps,
-	navigate,
-	sanitize,
-	sanitizePresets,
-} from '../../../shared/helpers';
+import { CustomError, navigate, sanitize, sanitizePresets } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
 import { ApolloCacheManager, ToastService } from '../../../shared/services';
 import { fetchAllUserGroups } from '../../../shared/services/user-groups-service';
-import { ContentBlockPreview } from '../../content-block/components';
-import { parseContentBlocks } from '../../content-block/helpers';
-import { useContentBlocksByContentId } from '../../content-block/hooks';
 import {
 	renderDateDetailRows,
 	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import {
+	AdminLayout,
+	AdminLayoutBody,
+	AdminLayoutHeader,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts';
 
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS, GET_CONTENT_WIDTH_OPTIONS } from '../content.const';
 import { DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, DbContent } from '../content.types';
+import './ContentDetail.scss';
 
 interface ContentDetailProps extends DefaultSecureRouteProps<ContentDetailParams> {}
 
@@ -67,15 +62,12 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [triggerContentDelete] = useMutation(DELETE_CONTENT);
 	const [t] = useTranslation();
 
-	const [contentBlocks] = useContentBlocksByContentId(id);
 	const [currentTab, setCurrentTab, tabs] = useTabs(
 		GET_CONTENT_DETAIL_TABS(),
 		GET_CONTENT_DETAIL_TABS()[0].id
 	);
 
 	// Computed
-	const avatarProps = getAvatarProps(get(contentPage, 'profile', null));
-	const contentBlockConfigs = parseContentBlocks(contentBlocks);
 	const isAdminUser = get(user, 'role.name', null) === 'admin';
 	const isContentProtected = get(contentPage, 'is_protected', false);
 	const pageTitle = `Content: ${get(contentPage, 'title', '')}`;
@@ -208,18 +200,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		// TODO: Move tab contents to separate views
 		switch (currentTab) {
 			case 'inhoud':
-				return (
-					<>
-						{contentBlockConfigs.map((contentBlockConfig, index) => (
-							<ContentBlockPreview
-								key={contentBlocks[index].id}
-								componentState={contentBlockConfig.components.state}
-								contentWidth={get(contentPage, 'content_width')}
-								blockState={contentBlockConfig.block.state}
-							/>
-						))}
-					</>
-				);
+				return <ContentPage contentPage={contentPage} />;
 			case 'metadata':
 				return (
 					<Container mode="vertical" size="small">
@@ -244,6 +225,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 							<Table horizontal variant="invisible" className="c-table_detail-page">
 								<tbody>
+									{/*TODO remove cast after typings update to 2.15.0*/}
+									{renderDetailRow(
+										<div style={{ width: '400px' }}>
+											<Thumbnail
+												category="item"
+												src={(contentPage as any).thumbnail_path}
+											/>
+										</div>,
+										t('Cover afbeelding')
+									)}
 									{renderSimpleDetailRows(contentPage, [
 										['title', t('admin/content/views/content-detail___titel')],
 										[
@@ -329,31 +320,26 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	};
 
 	return (
-		<AdminLayout showBackButton>
-			<AdminLayoutHeader>
-				<Header category="audio" title={pageTitle} showMetaData={false}>
-					{(avatarProps.name || avatarProps.initials) && (
-						<HeaderAvatar>
-							<Avatar {...avatarProps} dark />
-						</HeaderAvatar>
+		<AdminLayout showBackButton pageTitle={pageTitle}>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						label={t('admin/content/views/content-detail___bewerken')}
+						title={t('Bewerk deze content pagina')}
+						onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
+					/>
+					{/* TODO: also check permissions */}
+					{(!isContentProtected || (isContentProtected && isAdminUser)) && (
+						<Button
+							label={t('admin/content/views/content-detail___verwijderen')}
+							title={t('Verwijder deze content pagina')}
+							onClick={() => setIsConfirmModalOpen(true)}
+							type="danger-hover"
+						/>
 					)}
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								label={t('admin/content/views/content-detail___bewerken')}
-								onClick={() => navigate(history, CONTENT_PATH.CONTENT_EDIT, { id })}
-							/>
-							{/* TODO: also check permissions */}
-							{(!isContentProtected || (isContentProtected && isAdminUser)) && (
-								<Button
-									label={t('admin/content/views/content-detail___verwijderen')}
-									onClick={() => setIsConfirmModalOpen(true)}
-									type="danger-hover"
-								/>
-							)}
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
+			<AdminLayoutHeader>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={setCurrentTab} />
@@ -361,23 +347,25 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				</Navbar>
 			</AdminLayoutHeader>
 			<AdminLayoutBody>
-				<LoadingErrorLoadedComponent
-					loadingInfo={loadingInfo}
-					dataObject={contentPage}
-					render={renderContentDetail}
-				/>
-				<DeleteObjectModal
-					deleteObjectCallback={handleDelete}
-					isOpen={isConfirmModalOpen}
-					onClose={() => setIsConfirmModalOpen(false)}
-					body={
-						isContentProtected
-							? t(
-									'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
-							  )
-							: ''
-					}
-				/>
+				<div className="m-content-detail-preview">
+					<LoadingErrorLoadedComponent
+						loadingInfo={loadingInfo}
+						dataObject={contentPage}
+						render={renderContentDetail}
+					/>
+					<DeleteObjectModal
+						deleteObjectCallback={handleDelete}
+						isOpen={isConfirmModalOpen}
+						onClose={() => setIsConfirmModalOpen(false)}
+						body={
+							isContentProtected
+								? t(
+										'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
+								  )
+								: ''
+						}
+					/>
+				</div>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

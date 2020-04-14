@@ -11,7 +11,7 @@ import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { buildLink, navigate } from '../../../shared/helpers';
 
-import { AdminLayout, AdminLayoutActions, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { GET_MENUS } from '../menu.gql';
 import { MenuOverviewTableCols } from '../menu.types';
@@ -38,18 +38,16 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 							icon="eye"
 							onClick={() => navigate(history, MENU_PATH.MENU_DETAIL, { menu })}
 							size="small"
-							title={t(
-								'admin/menu/views/menu-overview___bekijk-alle-navigatie-items'
-							)}
+							title={t('Bekijk de navigatie items voor deze navigatie balk')}
+							ariaLabel={t('Bekijk de navigatie items voor deze navigatie balk')}
 							type="secondary"
 						/>
 						<Button
 							icon="plus"
 							onClick={() => navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu })}
 							size="small"
-							title={t(
-								'admin/menu/views/menu-overview___voeg-een-navigatie-item-toe'
-							)}
+							title={t('Voeg een navigatie item toe aan deze navigatie balk')}
+							ariaLabel={t('Voeg een navigatie item toe aan deze navigatie balk')}
 							type="secondary"
 						/>
 					</ButtonToolbar>
@@ -80,6 +78,7 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 							icon="plus"
 							label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
 							onClick={() => history.push(MENU_PATH.MENU_CREATE)}
+							type="primary"
 						/>
 					</Spacer>
 				</ErrorView>
@@ -103,6 +102,14 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 
 	return (
 		<AdminLayout pageTitle={t('admin/menu/views/menu-overview___navigatie-overzicht')}>
+			{!!menus.length && (
+				<AdminLayoutTopBarRight>
+					<Button
+						label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
+						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
+					/>
+				</AdminLayoutTopBarRight>
+			)}
 			<AdminLayoutBody>
 				<Container mode="vertical" size="small">
 					<Container mode="horizontal">
@@ -114,14 +121,6 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 					</Container>
 				</Container>
 			</AdminLayoutBody>
-			{!!menus.length && (
-				<AdminLayoutActions>
-					<Button
-						label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
-						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
-					/>
-				</AdminLayoutActions>
-			)}
 		</AdminLayout>
 	);
 };

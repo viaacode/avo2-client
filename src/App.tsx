@@ -9,6 +9,8 @@ import Zendesk from 'react-zendesk';
 import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
+import { ADMIN_PATH } from './admin/admin.const';
+import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
 import {
@@ -53,7 +55,7 @@ const App: FunctionComponent<AppProps> = props => {
 				/>
 				{/* TODO: Based on current user permissions */}
 				{isAdminRoute ? (
-					<Admin />
+					<SecuredRoute component={Admin} exact={false} path={ADMIN_PATH.DASHBOARD} />
 				) : (
 					<>
 						{props.location.pathname !== APP_PATH.LOGIN.route && (

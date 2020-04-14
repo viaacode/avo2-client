@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { Trans } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import { BlockHeading, Button, Container } from '@viaa/avo2-components';
@@ -10,6 +10,8 @@ import { redirectToClientPage } from '../../helpers/redirects';
 export interface StudentTeacherProps extends RouteComponentProps {}
 
 const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => {
+	const [t] = useTranslation();
+
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
@@ -19,11 +21,13 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 						onClick={() =>
 							redirectToClientPage(APP_PATH.MANUAL_ACCESS_REQUEST.route, history)
 						}
-					>
-						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___terug">
-							Terug
-						</Trans>
-					</Button>
+						title={t(
+							'authentication/views/registration-flow/r-10-student-teacher___terug'
+						)}
+						ariaLabel={t(
+							'authentication/views/registration-flow/r-10-student-teacher___terug'
+						)}
+					/>
 					<BlockHeading type="h2">
 						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___het-archief-voor-onderwijs-voor-student-leerkrachten">
 							Het Archief voor Onderwijs voor Student-leerkrachten

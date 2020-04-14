@@ -182,6 +182,15 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												label={t(
 													'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
 												)}
+												title={
+													isCollection
+														? t(
+																'Kies een afbeelding om te gebruiken als de cover van deze collectie'
+														  )
+														: t(
+																'Kies een afbeelding om te gebruiken als de cover van deze bundel'
+														  )
+												}
 												onClick={() => setCollectionsStillsModalOpen(true)}
 											/>
 										) : (

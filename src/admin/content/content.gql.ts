@@ -21,6 +21,7 @@ export const GET_CONTENT_PAGES = gql`
 			depublish_at
 			description
 			id
+			thumbnail_path
 			is_protected
 			is_public
 			is_published
@@ -55,9 +56,31 @@ export const GET_CONTENT_PAGES = gql`
 	}
 `;
 
+export const GET_PROJECT_CONTENT_PAGES = gql`
+	query getContent($limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
+		app_content(where: { content_type: { _eq: PROJECT } }, limit: $limit, order_by: $orderBy) {
+			path
+			title
+		}
+	}
+`;
+
 export const GET_CONTENT_PAGES_BY_TITLE = gql`
 	query getContent($title: String!, $limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
 		app_content(where: { title: { _ilike: $title } }, limit: $limit, order_by: $orderBy) {
+			path
+			title
+		}
+	}
+`;
+
+export const GET_PROJECT_CONTENT_PAGES_BY_TITLE = gql`
+	query getContent($title: String!, $limit: Int = 20, $orderBy: [app_content_order_by!] = {}) {
+		app_content(
+			where: { title: { _ilike: $title }, content_type: { _eq: PROJECT } }
+			limit: $limit
+			order_by: $orderBy
+		) {
 			path
 			title
 		}
@@ -77,6 +100,7 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 			depublish_at
 			description
 			id
+			thumbnail_path
 			is_protected
 			is_public
 			is_published
@@ -131,6 +155,7 @@ export const GET_CONTENT_BY_ID = gql`
 			depublish_at
 			description
 			id
+			thumbnail_path
 			is_protected
 			is_public
 			is_published
@@ -153,6 +178,19 @@ export const GET_CONTENT_BY_ID = gql`
 				content_label {
 					label
 					id
+				}
+			}
+			contentBlockssBycontentId(order_by: { position: asc }) {
+				content_block_type
+				content_id
+				created_at
+				id
+				position
+				updated_at
+				variables
+				enum_content_block_type {
+					description
+					value
 				}
 			}
 		}

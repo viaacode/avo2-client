@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/react-hooks';
-import { get, isNil, kebabCase, without } from 'lodash-es';
+import { get, has, isNil, kebabCase, without } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,8 +8,6 @@ import {
 	ButtonToolbar,
 	Container,
 	Flex,
-	Header,
-	HeaderButtons,
 	Navbar,
 	Spinner,
 	Tabs,
@@ -18,6 +16,10 @@ import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-info';
+import {
+	PermissionName,
+	PermissionService,
+} from '../../../authentication/helpers/permission-service';
 import { GET_CONTENT_PAGE_BY_PATH } from '../../../content-page/content-page.gql';
 import { DeleteObjectModal } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
@@ -26,9 +28,17 @@ import { dataService, ToastService } from '../../../shared/services';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { useContentBlocksByContentId } from '../../content-block/hooks';
-import { AdminLayout, AdminLayoutBody, AdminLayoutHeader } from '../../shared/layouts';
+import { validateContentBlockField } from '../../shared/helpers';
 import {
+	AdminLayout,
+	AdminLayoutBody,
+	AdminLayoutHeader,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts';
+import {
+	ContentBlockComponentState,
 	ContentBlockConfig,
+	ContentBlockErrors,
 	ContentBlockStateOption,
 	ContentBlockStateType,
 	ContentBlockType,
@@ -46,10 +56,9 @@ import {
 	PageType,
 } from '../content.types';
 import { CONTENT_EDIT_INITIAL_STATE, contentEditReducer } from '../helpers/reducers';
-import { useContentItem, useContentTypes } from '../hooks';
-import ContentEditContentBlocks from './ContentEditContentBlocks';
-
+import { useContentPage, useContentTypes } from '../hooks';
 import './ContentEdit.scss';
+import ContentEditContentBlocks from './ContentEditContentBlocks';
 
 interface ContentEditProps extends DefaultSecureRouteProps<{ id?: string }> {}
 
@@ -65,10 +74,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const [configToDelete, setConfigToDelete] = useState<number>();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
-	const [initialContentForm, contentForm, setContentForm, isLoading] = useContentItem(
+	const [initialContentForm, contentForm, setContentForm, isLoading] = useContentPage(
 		history,
 		id
 	);
@@ -90,11 +100,15 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
-	const pageTitle =
-		pageType === PageType.Create
-			? t('admin/content/views/content-edit___content-toevoegen')
-			: t('admin/content/views/content-edit___content-aanpassen');
-	const isAdminUser = get(user, 'profile.permissions', []).includes('EDIT_PROTECTED_PAGE_STATUS');
+	let pageTitle = t('admin/content/views/content-edit___content-toevoegen');
+	if (pageType !== PageType.Create) {
+		pageTitle = `${t('admin/content/views/content-edit___content-aanpassen')}: ${get(
+			contentForm,
+			'title',
+			''
+		)}`;
+	}
+	const isAdminUser = PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS);
 
 	// Methods
 	const addContentBlockConfig = (newConfig: ContentBlockConfig) => {
@@ -118,6 +132,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		});
 	};
 
+	const setContentBlockConfigError = (configIndex: number, errors: ContentBlockErrors) => {
+		dispatch({
+			type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
+			payload: { configIndex, errors },
+		});
+	};
+
 	const openDeleteModal = (configIndex: number) => {
 		setIsDeleteModalOpen(true);
 		setConfigToDelete(configIndex);
@@ -128,23 +149,73 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const handleSave = async () => {
 		try {
 			setIsSaving(true);
+			setHasSubmitted(true);
 
 			// Validate form
 			const isFormValid = await handleValidation();
+			let areConfigsValid = true;
 
-			if (!isFormValid) {
+			if (!hasSubmitted) {
+				setHasSubmitted(true);
+			}
+			// Run validators on to check untouched inputs
+			contentBlockConfigs.forEach((config, configIndex) => {
+				const { fields, state } = config.components;
+				const keysToValidate = Object.keys(fields).filter(key => fields[key].validator);
+				let newErrors: ContentBlockErrors = {};
+
+				if (keysToValidate.length > 0) {
+					keysToValidate.forEach(key => {
+						const validator = fields[key].validator;
+
+						if (Array.isArray(state) && state.length > 0) {
+							state.forEach((singleState, stateIndex) => {
+								newErrors = validateContentBlockField(
+									key,
+									validator,
+									newErrors,
+									singleState[key as keyof ContentBlockComponentState],
+									stateIndex
+								);
+							});
+						} else if (has(state, key)) {
+							newErrors = validateContentBlockField(
+								key,
+								validator,
+								newErrors,
+								state[key as keyof ContentBlockComponentState]
+							);
+						}
+					});
+					areConfigsValid = Object.keys(newErrors).length === 0;
+					setContentBlockConfigError(configIndex, newErrors);
+				}
+			});
+
+			if (!isFormValid || !areConfigsValid) {
 				setIsSaving(false);
-				ToastService.danger(
-					t(
-						'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
-					),
-					false
-				);
+				if (!isFormValid) {
+					ToastService.danger(
+						t(
+							'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
+						),
+						false
+					);
+				}
+				if (!areConfigsValid) {
+					ToastService.danger(
+						t(
+							'admin/content/views/content-edit___er-zijn-nog-fouten-in-de-content-blocks'
+						),
+						false
+					);
+				}
 
 				return;
 			}
 
 			const contentItem: Partial<Avo.Content.Content> | any = {
+				thumbnail_path: contentForm.thumbnail_path,
 				title: contentForm.title,
 				description: contentForm.description || null,
 				is_protected: contentForm.isProtected,
@@ -204,8 +275,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			}
 
 			// Save content labels
-			const initialLabelIds = initialContentForm.labels.map(label => label.id as number);
-			const labelIds = contentForm.labels.map(label => label.id as number);
+			const initialLabelIds = initialContentForm.labels.map(
+				(label: any) => label.id as number
+			);
+			const labelIds = contentForm.labels.map((label: any) => label.id as number);
 			const addedLabelIds = without(labelIds, ...initialLabelIds);
 			const removedLabelIds = without(initialLabelIds, ...labelIds);
 			await Promise.all([
@@ -333,9 +406,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<ContentEditContentBlocks
 						contentBlockConfigs={contentBlockConfigs}
 						contentWidth={contentForm.contentWidth}
-						onAdd={addContentBlockConfig}
+						hasSubmitted={hasSubmitted}
 						addComponentToState={addComponentToState}
 						removeComponentFromState={removeComponentFromState}
+						onAdd={addContentBlockConfig}
+						onError={setContentBlockConfigError}
 						onRemove={openDeleteModal}
 						onReorder={reorderContentBlockConfig}
 						onSave={handleStateSave}
@@ -349,6 +424,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						formState={contentForm}
 						isAdminUser={isAdminUser}
 						onChange={setContentForm}
+						user={user}
 					/>
 				);
 			default:
@@ -361,24 +437,22 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			<Spinner size="large" />
 		</Flex>
 	) : (
-		<AdminLayout showBackButton>
+		<AdminLayout showBackButton pageTitle={pageTitle}>
+			<AdminLayoutTopBarRight>
+				<ButtonToolbar>
+					<Button
+						label={t('admin/content/views/content-edit___annuleer')}
+						onClick={navigateBack}
+						type="tertiary"
+					/>
+					<Button
+						disabled={isSaving}
+						label={t('admin/content/views/content-edit___opslaan')}
+						onClick={handleSave}
+					/>
+				</ButtonToolbar>
+			</AdminLayoutTopBarRight>
 			<AdminLayoutHeader>
-				<Header category="audio" title={pageTitle} showMetaData={false}>
-					<HeaderButtons>
-						<ButtonToolbar>
-							<Button
-								label={t('admin/content/views/content-edit___annuleer')}
-								onClick={navigateBack}
-								type="tertiary"
-							/>
-							<Button
-								disabled={isSaving}
-								label={t('admin/content/views/content-edit___opslaan')}
-								onClick={handleSave}
-							/>
-						</ButtonToolbar>
-					</HeaderButtons>
-				</Header>
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={setCurrentTab} />
