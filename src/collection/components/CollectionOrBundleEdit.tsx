@@ -222,19 +222,19 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 				fragments1[action.index] = fragments1[action.index + delta];
 				fragments1[action.index + delta] = tempFragment;
 
-				newCurrentCollection.collection_fragments = fragments1;
+				newCurrentCollection.collection_fragments = reorderFragments(fragments1);
 				break;
 
 			case 'INSERT_FRAGMENT':
 				const fragments2 = getFragmentsFromCollection(newCurrentCollection);
 				fragments2.splice(action.index, 0, action.fragment);
-				newCurrentCollection.collection_fragments = fragments2;
+				newCurrentCollection.collection_fragments = reorderFragments(fragments2);
 				break;
 
 			case 'DELETE_FRAGMENT':
 				const fragments3 = getFragmentsFromCollection(newCurrentCollection);
 				fragments3.splice(action.index, 1);
-				newCurrentCollection.collection_fragments = fragments3;
+				newCurrentCollection.collection_fragments = reorderFragments(fragments3);
 				break;
 
 			case 'UPDATE_COLLECTION_PROP':

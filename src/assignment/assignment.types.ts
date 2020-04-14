@@ -23,3 +23,18 @@ export enum AssignmentRetrieveError {
 	NOT_YET_AVAILABLE = 'NOT_YET_AVAILABLE',
 	PAST_DEADLINE = 'PAST_DEADLINE',
 }
+
+// TODO replace with typings version after update to 2.16.0
+export interface AssignmentLabel {
+	id: number;
+	label: string | null; // Wiskunde
+	color_enum_value: string; // BRIGHT_RED
+	color_override: string | null; // #FFFF00
+	owner_profile_id: string;
+	enum_color?: AssignmentLabelColor;
+}
+
+export interface AssignmentLabelColor {
+	label: string; // #FF0000
+	value: string; // BRIGHT_RED
+}
