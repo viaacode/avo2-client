@@ -102,10 +102,11 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const pageType = id ? PageType.Edit : PageType.Create;
 	let pageTitle = t('admin/content/views/content-edit___content-toevoegen');
 	if (pageType !== PageType.Create) {
-		pageTitle =
-			t('admin/content/views/content-edit___content-aanpassen') +
-			': ' +
-			get(contentForm, 'title', '');
+		pageTitle = `${t('admin/content/views/content-edit___content-aanpassen')}: ${get(
+			contentForm,
+			'title',
+			''
+		)}`;
 	}
 	const isAdminUser = PermissionService.hasPerm(user, PermissionName.EDIT_PROTECTED_PAGE_STATUS);
 

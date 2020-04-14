@@ -3,7 +3,10 @@ import i18n from '../../../../shared/translations/i18n';
 import { ContentPickerType, PickerTypeOption } from '../../types';
 
 import { retrieveBundles, retrieveCollections } from '../../helpers/content-picker/collection';
-import { retrieveContentPages, retrieveProjectContentPages } from '../../helpers/content-picker/content-page';
+import {
+	retrieveContentPages,
+	retrieveProjectContentPages,
+} from '../../helpers/content-picker/content-page';
 import { retrieveInternalLinks } from '../../helpers/content-picker/internal-link';
 import { retrieveItems } from '../../helpers/content-picker/item';
 
