@@ -38,7 +38,7 @@ import {
 	getValidationErrorForSave,
 	getValidationErrorsForPublish,
 } from './collection.helpers';
-import { ContentTypeNumber, QualityLabel } from './collection.types';
+import { ContentTypeNumber, InsertFragmentResponse, QualityLabel } from './collection.types';
 
 export class CollectionService {
 	private static collectionLabels: { [id: string]: string } | null;
@@ -147,7 +147,7 @@ export class CollectionService {
 				return null;
 			}
 
-			let newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
+			const newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
 
 			// remove custom_title and custom_description if user wants to use the item's original title and description
 			(newCollection.collection_fragments || []).forEach(
@@ -162,7 +162,6 @@ export class CollectionService {
 			// null should not default to to prevent defaulting of null, we don't use lodash's default value parameter
 			const initialFragmentIds: number[] = getFragmentIdsFromCollection(initialCollection);
 			const currentFragmentIds: number[] = getFragmentIdsFromCollection(updatedCollection);
-			const newFragmentIds: number[] = getFragmentIdsFromCollection(newCollection);
 			const currentFragments: Avo.Collection.Fragment[] = get(
 				updatedCollection,
 				'collection_fragments',
@@ -170,10 +169,10 @@ export class CollectionService {
 			);
 
 			// insert fragments that were added to collection
-			const insertFragmentIds = without(newFragmentIds, ...initialFragmentIds);
+			const insertFragmentIds = without(currentFragmentIds, ...initialFragmentIds);
 
 			// delete fragments that were removed from collection
-			const deleteFragmentIds = without(initialFragmentIds, ...newFragmentIds);
+			const deleteFragmentIds = without(initialFragmentIds, ...currentFragmentIds);
 
 			// update fragments that are neither inserted nor deleted
 			const updateFragmentIds = currentFragmentIds.filter((fragmentId: number) =>
@@ -181,62 +180,53 @@ export class CollectionService {
 			);
 
 			// insert fragments
-			const insertPromises: Promise<any>[] = [];
-
-			insertFragmentIds.forEach(tempId => {
-				insertPromises.push(
-					this.insertFragment(updatedCollection, tempId, currentFragments)
-				);
-			});
+			const insertPromises: Promise<InsertFragmentResponse | null>[] = insertFragmentIds.map(
+				tempId => this.insertFragment(updatedCollection, tempId, currentFragments)
+			);
 
 			// delete fragments
-			const deletePromises: Promise<any>[] = [];
-
-			deleteFragmentIds.forEach((id: number) => {
-				deletePromises.push(
-					dataService.mutate({
-						mutation: DELETE_COLLECTION_FRAGMENT,
-						variables: { id },
-					})
-				);
-			});
+			const deletePromises: Promise<any>[] = deleteFragmentIds.map((id: number) =>
+				dataService.mutate({
+					mutation: DELETE_COLLECTION_FRAGMENT,
+					variables: { id },
+				})
+			);
 
 			// update fragments
-			const updatePromises: Promise<any>[] = [];
-			updateFragmentIds.forEach((id: number) => {
-				let fragmentToUpdate:
-					| Avo.Collection.Fragment
-					| undefined = getFragmentsFromCollection(updatedCollection).find(
-					(fragment: Avo.Collection.Fragment) => {
-						return Number(id) === fragment.id;
-					}
-				);
-
-				if (!fragmentToUpdate) {
-					ToastService.info(
-						i18n.t(
-							'collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id',
-							{ id }
-						)
+			const updatePromises: Promise<any>[] = compact(
+				updateFragmentIds.map((id: number) => {
+					let fragmentToUpdate:
+						| Avo.Collection.Fragment
+						| undefined = getFragmentsFromCollection(updatedCollection).find(
+						(fragment: Avo.Collection.Fragment) => {
+							return Number(id) === fragment.id;
+						}
 					);
-					return;
-				}
 
-				fragmentToUpdate = cloneDeep(fragmentToUpdate);
+					if (!fragmentToUpdate) {
+						ToastService.info(
+							i18n.t(
+								'collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id',
+								{ id }
+							)
+						);
+						return;
+					}
 
-				delete (fragmentToUpdate as any).__typename;
-				delete fragmentToUpdate.item_meta;
+					fragmentToUpdate = cloneDeep(fragmentToUpdate);
 
-				updatePromises.push(
-					dataService.mutate({
+					delete (fragmentToUpdate as any).__typename;
+					delete fragmentToUpdate.item_meta;
+
+					return dataService.mutate({
 						mutation: UPDATE_COLLECTION_FRAGMENT,
 						variables: {
 							id,
 							fragment: fragmentToUpdate,
 						},
-					})
-				);
-			});
+					});
+				})
+			);
 
 			// perform crud requests in parallel
 			const crudPromises: Promise<any[]>[] = [
@@ -247,18 +237,14 @@ export class CollectionService {
 
 			const crudResponses = await Promise.all(crudPromises);
 
-			// process responses of inserted fragments
-			crudResponses[0].forEach((data: any) => {
-				const newFragments = [
-					...getFragmentsFromCollection(newCollection).filter(
-						(fragment: Avo.Collection.Fragment) => fragment.id !== data.oldId
-					),
-					data.newFragment,
-				];
-				newCollection = {
-					...newCollection,
-					collection_fragments: newFragments,
-				};
+			// Replace ids in local fragment array with ids of newly inserted fragments
+			compact(crudResponses[0]).forEach((insertResponse: InsertFragmentResponse) => {
+				const insertedFragment = (newCollection.collection_fragments || []).find(
+					fragment => fragment.id === insertResponse.oldId
+				);
+				if (insertedFragment) {
+					insertedFragment.id = insertResponse.newId;
+				}
 			});
 
 			if (newCollection.type_id === ContentTypeNumber.collection) {
@@ -819,10 +805,10 @@ export class CollectionService {
 		collection: Partial<Avo.Collection.Collection>,
 		tempId: number,
 		currentFragments: Avo.Collection.Fragment[]
-	) {
+	): Promise<InsertFragmentResponse | null> {
 		if (!collection) {
 			ToastService.danger(i18n.t('collection/collection___de-collectie-was-niet-ingesteld'));
-			return;
+			return null;
 		}
 
 		const tempFragment = currentFragments.find(
@@ -835,7 +821,7 @@ export class CollectionService {
 					id: tempId,
 				})
 			);
-			return;
+			return null;
 		}
 
 		const fragmentToAdd: Avo.Collection.Fragment = { ...tempFragment };
@@ -854,10 +840,10 @@ export class CollectionService {
 			update: ApolloCacheManager.clearCollectionCache,
 		});
 
-		const newFragment = get(response, 'data.insert_app_collection_fragments.returning[0]');
+		const newId = get(response, 'data.insert_app_collection_fragments.returning[0].id');
 
 		return {
-			newFragment,
+			newId,
 			oldId,
 		};
 	}
