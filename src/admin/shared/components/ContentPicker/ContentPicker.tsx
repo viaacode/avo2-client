@@ -137,6 +137,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const onSelectItem = (selectedItem: ValueType<PickerItem>, event?: ActionMeta) => {
 		// reset `selectedItem` when clearing item picker
 		if (get(event, 'action') === 'clear') {
+			propertyChanged('selectedItem', null);
 			setSelectedItem(null);
 			return null;
 		}

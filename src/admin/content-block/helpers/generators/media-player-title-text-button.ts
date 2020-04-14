@@ -11,7 +11,13 @@ import {
 } from '../../../shared/types';
 import { GET_BUTTON_TYPE_OPTIONS, GET_HEADING_TYPE_OPTIONS } from '../../content-block.const';
 
-import { ALIGN_FIELD, BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import {
+	ALIGN_FIELD,
+	BLOCK_FIELD_DEFAULTS,
+	BLOCK_STATE_DEFAULTS,
+	TEXT_FIELD,
+	VIDEO_FIELD,
+} from './defaults';
 
 export const INITIAL_MEDIA_PLAYER_TITLE_TEXT_BUTTON_COMPONENTS_STATE = (): MediaPlayerTitleTextButtonBlockComponentState => ({
 	mediaTitle: '',
@@ -49,16 +55,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
-			mediaItem: {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/media-player-title-text-button___video-of-audio-item'
-				),
-				editorType: ContentBlockEditor.ContentPicker,
-				editorProps: {
-					allowedTypes: ['ITEM'],
-					hideTargetSwitch: true,
-				},
-			},
+			mediaItem: VIDEO_FIELD(),
 			headingTitle: TEXT_FIELD(
 				i18n.t('admin/content-block/helpers/generators/heading___titel-is-verplicht'),
 				{
