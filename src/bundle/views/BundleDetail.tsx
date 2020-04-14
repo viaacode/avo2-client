@@ -522,11 +522,13 @@ const BundleDetail: FunctionComponent<BundleDetailProps> = ({ history, location,
 			<ButtonToolbar>
 				<Button
 					label={t('bundle/views/bundle-detail___delen')}
+					title={t('Maak de bundel publiek / niet publiek')}
 					onClick={() => executeAction('openShareModal')}
 					type="secondary"
 				/>
 				<Button
 					label={t('bundle/views/bundle-detail___bewerken')}
+					title={t('Pas de bundel aan')}
 					onClick={() => executeAction('edit')}
 					type="primary"
 				/>

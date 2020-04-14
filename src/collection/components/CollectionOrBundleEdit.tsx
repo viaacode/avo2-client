@@ -681,7 +681,9 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 							? t(
 									'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 							  )
-							: ''
+							: isCollection
+							? t('Maak deze collectie publiek / niet publiek')
+							: t('Maak deze bundel publiek / niet publiek')
 					}
 					onClick={() => executeAction('openShareModal')}
 				/>
@@ -703,6 +705,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					<Button
 						type = "secondary"
 						label={t('collection/views/collection-edit___herschik-alle-items')}
+						title={t('Herorden de items via drag-and-drop')}
 						onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 						disabled
 					/>
@@ -715,7 +718,12 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button type="secondary" icon="more-horizontal" />
+						<Button
+							type="secondary"
+							icon="more-horizontal"
+							ariaLabel={t('Meer opties')}
+							title={t('Meer opties')}
+						/>
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent
@@ -735,6 +743,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 		// 			<Button
 		// 				type = "secondary"
 		// 				label={t('collection/views/collection-edit___herschik-alle-items')}
+		//        title={t('Herorden de items via drag-and-drop')}
 		// 				onClick={() => setIsReorderModalOpen(!isReorderModalOpen)}
 		// 				disabled
 		// 			/>
@@ -773,7 +782,7 @@ const CollectionOrBundleEdit: FunctionComponent<CollectionOrBundleEditProps &
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button type="secondary" icon="more-horizontal" />
+						<Button type="secondary" icon="more-horizontal" title={t('Meer opties')} />
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent

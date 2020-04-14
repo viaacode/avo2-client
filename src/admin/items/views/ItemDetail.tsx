@@ -239,6 +239,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 										? t('admin/items/views/item-detail___depubliceren')
 										: t('admin/items/views/item-detail___publiceren')
 								}
+								ariaLabel={
+									item.is_published
+										? t('Depubliceer dit item')
+										: t('Publiceer dit item')
+								}
+								title={
+									item.is_published
+										? t('Depubliceer dit item')
+										: t('Publiceer dit item')
+								}
 								onClick={() => setIsConfirmPublishModalOpen(true)}
 							/>
 							<Button

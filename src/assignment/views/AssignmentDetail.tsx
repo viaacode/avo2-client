@@ -508,7 +508,12 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 											placement="bottom-end"
 										>
 											<DropdownButton>
-												<Button icon="more-horizontal" type="secondary" />
+												<Button
+													icon="more-horizontal"
+													type="secondary"
+													ariaLabel={t('Meer opties')}
+													title={t('Meer opties')}
+												/>
 											</DropdownButton>
 											<DropdownContent>
 												<MenuContent

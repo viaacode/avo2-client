@@ -352,8 +352,8 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 							icon="delete"
 							onClick={() => openConfirmDeleteModal(rowData)}
 							size="small"
-							ariaLabel={t('admin/user-groups/views/user-group-edit___verwijder')}
-							title={t('admin/user-groups/views/user-group-edit___verwijder')}
+							ariaLabel={t('Verwijder deze gebruikersgroep')}
+							title={t('Verwijder deze gebruikersgroep')}
 							type="tertiary"
 						/>
 					</ButtonToolbar>
@@ -437,6 +437,12 @@ const UserGroupEdit: FunctionComponent<UserGroupEditProps> = ({ history, match, 
 									<Button
 										label={t(
 											'admin/user-groups/views/user-group-edit___toevoegen'
+										)}
+										title={t(
+											'Voeg de geselecteerde permissie groep toe aan deze gebruikersgroep'
+										)}
+										ariaLabel={t(
+											'Voeg de geselecteerde permissie groep toe aan deze gebruikersgroep'
 										)}
 										onClick={handleAddPermissionGroup}
 										type="primary"

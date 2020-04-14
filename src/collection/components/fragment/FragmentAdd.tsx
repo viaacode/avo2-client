@@ -55,6 +55,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 						ariaLabel={t(
 							'collection/components/fragment/fragment-add___sectie-toevoegen'
 						)}
+						title={t('collection/components/fragment/fragment-add___sectie-toevoegen')}
 					/>
 				</ToolbarItem>
 				{renderDivider()}
