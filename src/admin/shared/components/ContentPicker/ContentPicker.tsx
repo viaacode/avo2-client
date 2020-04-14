@@ -288,11 +288,9 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	);
 
 	const renderLinkTargetControl = () => {
-		// TODO remove cast  and delete class after update to components 1.36.0
 		return (
 			<Button
-				className="c-content-picker__toggle-target-button"
-				size={'large' as any}
+				size="large"
 				type={'borderless'}
 				icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
 				title={
