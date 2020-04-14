@@ -1,4 +1,4 @@
-import { compact, get, isNil, omit } from 'lodash-es';
+import { compact, get, isNil, omit, sortBy } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
@@ -254,7 +254,7 @@ export const reorderFragments = (
 export const getFragmentsFromCollection = (
 	collection: Partial<Avo.Collection.Collection> | null | undefined
 ): Avo.Collection.Fragment[] => {
-	return get(collection, 'collection_fragments') || [];
+	return sortBy(get(collection, 'collection_fragments') || [], ['position']);
 };
 
 /**

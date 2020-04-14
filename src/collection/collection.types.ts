@@ -81,3 +81,8 @@ export interface QualityLabel {
 	description: string;
 	value: string;
 }
+
+export type InsertFragmentResponse = {
+	newId: number;
+	oldId: number;
+};
