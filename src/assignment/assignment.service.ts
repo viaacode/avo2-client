@@ -1,11 +1,16 @@
 import { ExecutionResult } from '@apollo/react-common';
 import { ApolloQueryResult } from 'apollo-boost';
-import { cloneDeep, get, isNil, isString } from 'lodash-es';
+import { cloneDeep, get, isNil, isString, without } from 'lodash-es';
 
 import { Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../shared/helpers';
-import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
+import {
+	ApolloCacheManager,
+	AssignmentLabelsService,
+	dataService,
+	ToastService,
+} from '../shared/services';
 import i18n from '../shared/translations/i18n';
 
 import { CollectionService } from '../collection/collection.service';
@@ -15,7 +20,7 @@ import {
 	INSERT_ASSIGNMENT,
 	UPDATE_ASSIGNMENT,
 } from './assignment.gql';
-import { AssignmentLayout } from './assignment.types';
+import { AssignmentLabel, AssignmentLayout } from './assignment.types';
 
 export const GET_ASSIGNMENT_COPY_PREFIX = () =>
 	`${i18n.t('assignment/assignment___opdracht-kopie')} %index%: `;
@@ -48,7 +53,7 @@ const GET_OBLIGATORY_PROPERTIES = (): AssignmentProperty[] => [
 
 export class AssignmentService {
 	/**
-	 * Helper functions for inserting, updating, validating and deleting assigment
+	 * Helper functions for inserting, updating, validating and deleting assignment
 	 * This will be used by the Assignments view and the AssignmentEdit view
 	 * @param assignment
 	 */
@@ -102,9 +107,19 @@ export class AssignmentService {
 	}
 
 	public static async updateAssignment(
-		assignment: Partial<Avo.Assignment.Assignment>
+		assignment: Partial<Avo.Assignment.Assignment>,
+		initialLabels?: AssignmentLabel[],
+		updatedLabels?: AssignmentLabel[]
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
+			if (isNil(assignment.id)) {
+				throw new CustomError(
+					'Failed to update assignment because its id is undefined',
+					null,
+					assignment
+				);
+			}
+
 			const [validationErrors, assignmentToSave] = AssignmentService.validateAssignment({
 				...assignment,
 			});
@@ -130,6 +145,23 @@ export class AssignmentService {
 			if (!response || !response.data) {
 				console.error('assignment update returned empty response', response);
 				throw new CustomError('Het opslaan van de opdracht is mislukt', null, { response });
+			}
+
+			if (initialLabels && updatedLabels) {
+				// Update labels
+				const initialLabelIds = initialLabels.map(labelObj => labelObj.id);
+				const updatedLabelIds = updatedLabels.map(labelObj => labelObj.id);
+
+				const newLabelIds = without(updatedLabelIds, ...initialLabelIds);
+				const deletedLabelIds = without(initialLabelIds, ...updatedLabelIds);
+
+				await Promise.all([
+					AssignmentLabelsService.linkLabelsFromAssignment(assignment.id, newLabelIds),
+					AssignmentLabelsService.unlinkLabelsFromAssignment(
+						assignment.id,
+						deletedLabelIds
+					),
+				]);
 			}
 
 			return assignment as Avo.Assignment.Assignment;
@@ -225,7 +257,7 @@ export class AssignmentService {
 			collection = collectionIdOrCollection as Avo.Collection.Collection;
 		}
 		if (!collection) {
-			throw new CustomError('The collection for this assigment could not be loaded', null, {
+			throw new CustomError('The collection for this assignment could not be loaded', null, {
 				collectionIdOrCollection,
 			});
 		}
@@ -269,24 +301,24 @@ export class AssignmentService {
 			);
 		}
 
-		let duplicatedAssigment: Avo.Assignment.Assignment | null;
+		let duplicatedAssignment: Avo.Assignment.Assignment | null;
 		if (!isNil(duplicateCollectionId)) {
-			// Insert the duplicated assigment with its duplicated collection id
-			duplicatedAssigment = await AssignmentService.insertDuplicateAssignment(newTitle, {
+			// Insert the duplicated assignment with its duplicated collection id
+			duplicatedAssignment = await AssignmentService.insertDuplicateAssignment(newTitle, {
 				...initialAssignment,
 				content_id: duplicateCollectionId,
 			});
 		} else {
 			// other assignments do not need to have their content_id updated
-			duplicatedAssigment = await AssignmentService.insertDuplicateAssignment(
+			duplicatedAssignment = await AssignmentService.insertDuplicateAssignment(
 				newTitle,
 				initialAssignment
 			);
 		}
 
-		if (!duplicatedAssigment) {
+		if (!duplicatedAssignment) {
 			throw new CustomError(
-				'Failed to copy assigment because the insert method returned null',
+				'Failed to copy assignment because the insert method returned null',
 				null,
 				{
 					newTitle,
@@ -296,10 +328,10 @@ export class AssignmentService {
 			);
 		}
 
-		return duplicatedAssigment;
+		return duplicatedAssignment;
 	}
 
-	private static async warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
+	private static warnAboutDeadlineInThePast(assignment: Avo.Assignment.Assignment) {
 		// Validate if deadline_at is not in the past
 		if (assignment.deadline_at && new Date(assignment.deadline_at) < new Date(Date.now())) {
 			ToastService.info([
@@ -318,7 +350,7 @@ export class AssignmentService {
 				variables: { id },
 			};
 
-			// Get the assigment from graphql
+			// Get the assignment from graphql
 			const response: ApolloQueryResult<Avo.Assignment.Content> = await dataService.query(
 				assignmentQuery
 			);
