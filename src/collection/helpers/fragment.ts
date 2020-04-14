@@ -7,7 +7,7 @@ export const isMediaFragment = (fragmentInfo: { external_id: string | undefined 
 };
 
 export const getFragmentProperty = (
-	itemMetaData: Avo.Item.Item,
+	itemMetaData: Avo.Item.Item | Avo.Collection.Collection | undefined,
 	fragment: Avo.Collection.Fragment,
 	useCustomFields: Boolean,
 	prop: 'title' | 'description'
