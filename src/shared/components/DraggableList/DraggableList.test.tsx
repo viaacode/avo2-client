@@ -1,18 +1,20 @@
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
-import { DraggableList } from './DraggableList';
+import DraggableList from './DraggableList';
 
 const mockElements = [<div>Element 1</div>, <div>Element 2</div>];
 
 describe('<DraggableList />', () => {
 	it('Should be able to render', () => {
-		shallow(<DraggableList elements={mockElements} onListChange={() => {}} />);
+		shallow(
+			<DraggableList renderItem={() => null} items={mockElements} onListChange={() => {}} />
+		);
 	});
 
 	it('Should set the correct className', () => {
 		const draggableListComponent = shallow(
-			<DraggableList elements={mockElements} onListChange={() => {}} />
+			<DraggableList renderItem={() => null} items={mockElements} onListChange={() => {}} />
 		);
 
 		expect(draggableListComponent.hasClass('c-table-view')).toEqual(true);
@@ -20,7 +22,7 @@ describe('<DraggableList />', () => {
 
 	it('Should correctly pass children', () => {
 		const draggableListComponent = mount(
-			<DraggableList elements={mockElements} onListChange={() => {}} />
+			<DraggableList renderItem={() => null} items={mockElements} onListChange={() => {}} />
 		);
 
 		const draggableListItems = draggableListComponent.find('.c-table-view__item');
@@ -30,7 +32,7 @@ describe('<DraggableList />', () => {
 
 	it('Should initialize with null as currentlyBeingDragged state', () => {
 		const draggableListComponent = mount(
-			<DraggableList elements={mockElements} onListChange={() => {}} />
+			<DraggableList renderItem={() => null} items={mockElements} onListChange={() => {}} />
 		);
 
 		expect(draggableListComponent.state('currentlyBeingDragged')).toEqual(null);
@@ -38,7 +40,7 @@ describe('<DraggableList />', () => {
 
 	it('Should initialize with null as currentlyBeingDragged state', () => {
 		const draggableListComponent = mount(
-			<DraggableList elements={mockElements} onListChange={() => {}} />
+			<DraggableList renderItem={() => null} items={mockElements} onListChange={() => {}} />
 		);
 
 		expect(draggableListComponent.state('currentlyBeingDragged')).toEqual(null);
@@ -46,7 +48,7 @@ describe('<DraggableList />', () => {
 
 	it('Should set currentlyBeingDragged state on onDragStart', () => {
 		const draggableListComponent = mount(
-			<DraggableList elements={mockElements} onListChange={() => {}} />
+			<DraggableList renderItem={() => null} items={mockElements} onListChange={() => {}} />
 		);
 
 		const draggableListItems = draggableListComponent.find('.c-table-view__item');
@@ -57,7 +59,7 @@ describe('<DraggableList />', () => {
 
 	it('Should clear currentlyBeingDragged state on onDragEnd', () => {
 		const draggableListComponent = mount(
-			<DraggableList elements={mockElements} onListChange={() => {}} />
+			<DraggableList renderItem={() => null} items={mockElements} onListChange={() => {}} />
 		);
 
 		const draggableListItems = draggableListComponent.find('.c-table-view__item');

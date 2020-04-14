@@ -14,7 +14,6 @@ export const GET_USER_BY_ID = gql`
 					idp_user_id
 				}
 			}
-			function
 			avatar
 			alias
 			stamboek
@@ -43,7 +42,6 @@ export const GET_USERS = gql`
 					{ alternative_email: { _ilike: $queryText } }
 					{ bio: { _ilike: $queryText } }
 					{ alias: { _ilike: $queryText } }
-					{ function: { _ilike: $queryText } }
 					{
 						usersByuserId: {
 							_or: [
@@ -67,7 +65,6 @@ export const GET_USERS = gql`
 				}
 				id
 			}
-			function
 			avatar
 			alias
 			stamboek
@@ -83,7 +80,6 @@ export const GET_USERS = gql`
 					{ alternative_email: { _ilike: $queryText } }
 					{ bio: { _ilike: $queryText } }
 					{ alias: { _ilike: $queryText } }
-					{ function: { _ilike: $queryText } }
 					{
 						usersByuserId: {
 							_or: [

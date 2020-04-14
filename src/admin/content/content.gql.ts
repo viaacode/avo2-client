@@ -24,7 +24,6 @@ export const GET_CONTENT_PAGES = gql`
 			thumbnail_path
 			is_protected
 			is_public
-			is_published
 			path
 			profile {
 				user: usersByuserId {
@@ -103,7 +102,6 @@ export const GET_CONTENT_PAGES_WITH_BLOCKS = gql`
 			thumbnail_path
 			is_protected
 			is_public
-			is_published
 			path
 			profile {
 				user: usersByuserId {
@@ -158,7 +156,6 @@ export const GET_CONTENT_BY_ID = gql`
 			thumbnail_path
 			is_protected
 			is_public
-			is_published
 			path
 			profile {
 				user: usersByuserId {

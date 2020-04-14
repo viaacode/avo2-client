@@ -13,7 +13,6 @@ export const GET_CONTENT_PAGE_BY_PATH = gql`
 			id
 			is_protected
 			is_public
-			is_published
 			publish_at
 			path
 			contentBlockssBycontentId(order_by: { position: asc }) {

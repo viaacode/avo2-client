@@ -219,7 +219,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 			)
 		);
-	}, [location, match.params, setLoadingInfo, setAssignmentContent, t, user, setBothAssignments]);
+	}, [
+		location,
+		match.params,
+		setLoadingInfo,
+		setAssignmentContent,
+		t,
+		user,
+		setBothAssignments,
+		fetchAssignmentLabels,
+	]);
 
 	useEffect(() => {
 		if (
