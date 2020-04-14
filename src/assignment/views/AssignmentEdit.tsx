@@ -489,14 +489,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							/>
 						</Spacer>
 					</FlexItem>
-					{/*TODO remove cast after update to components 1.36.0*/}
 					<FlexItem shrink>
 						<Button
 							icon="settings"
 							title="Beheer je vakken en projecten"
 							ariaLabel="Beheer je vakken en projecten"
 							type="borderless"
-							size={'large' as any}
+							size="large"
 							onClick={() => setIsManageLabelsModalOpen(true)}
 						/>
 					</FlexItem>
