@@ -56,6 +56,7 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					allowedTypes: ['ITEM'],
+					hideTargetSwitch: true,
 				},
 			},
 			headingTitle: TEXT_FIELD(

@@ -23,8 +23,8 @@ import { ContentTypeAndLabelsPicker } from '../shared/components/ContentTypeAndL
 import { IconPicker } from '../shared/components/IconPicker/IconPicker';
 import {
 	AlignOption,
-	Color,
 	BlockGridFormatOption,
+	Color,
 	ContentBlockType,
 	FillOption,
 	HeadingTypeOption,
