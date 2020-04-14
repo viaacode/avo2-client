@@ -185,10 +185,10 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												title={
 													isCollection
 														? t(
-																'Kies een afbeelding om te gebruiken als de cover van deze collectie'
+																'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-collectie'
 														  )
 														: t(
-																'Kies een afbeelding om te gebruiken als de cover van deze bundel'
+																'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-bundel'
 														  )
 												}
 												onClick={() => setCollectionsStillsModalOpen(true)}

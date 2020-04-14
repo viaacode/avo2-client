@@ -30,7 +30,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 				state: 'error',
 				icon: 'lock',
 				message: t(
-					'Je hebt geen rechten om het beheer dashboard te bekijken (VIEW_ADMIN_DASHBOARD)'
+					'admin/admin___je-hebt-geen-rechten-om-het-beheer-dashboard-te-bekijken-view-admin-dashboard'
 				),
 				actionButtons: ['home', 'helpdesk'],
 			});

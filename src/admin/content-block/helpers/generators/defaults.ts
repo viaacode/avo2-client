@@ -44,17 +44,20 @@ export const BLOCK_STATE_DEFAULTS = (
 
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
-	headerBackgroundColor: BACKGROUND_COLOR_FIELD(i18n.t('Titelbalk achtergrondkleur'), {
-		label: i18n.t('Transparant'),
-		value: Color.Transparent,
-	}),
+	headerBackgroundColor: BACKGROUND_COLOR_FIELD(
+		i18n.t('admin/content-block/helpers/generators/defaults___titelbalk-achtergrondkleur'),
+		{
+			label: i18n.t('admin/content-block/helpers/generators/defaults___transparant'),
+			value: Color.Transparent,
+		}
+	),
 	padding: PADDING_FIELD(),
 	userGroupIds: USER_GROUP_SELECT(),
 });
 
 // Recurring fields
 export const FOREGROUND_COLOR_FIELD = (
-	label: string = i18n.t('Tekst kleur'),
+	label: string = i18n.t('admin/content-block/helpers/generators/defaults___tekst-kleur'),
 	defaultValue?: SelectOption<Color>
 ): ContentBlockField => ({
 	label,
@@ -84,11 +87,15 @@ export const PADDING_FIELD = (
 	editorType: ContentBlockEditor.PaddingSelect,
 });
 
-export const USER_GROUP_SELECT = (label = i18n.t('Zichtbaar voor')): ContentBlockField => ({
+export const USER_GROUP_SELECT = (
+	label = i18n.t('admin/content-block/helpers/generators/defaults___zichtbaar-voor')
+): ContentBlockField => ({
 	label,
 	editorType: ContentBlockEditor.UserGroupSelect,
 	editorProps: {
-		placeholder: i18n.t('Iedereen met toegang tot de pagina'),
+		placeholder: i18n.t(
+			'admin/content-block/helpers/generators/defaults___iedereen-met-toegang-tot-de-pagina'
+		),
 	} as UserGroupSelectProps,
 });
 
@@ -152,7 +159,9 @@ export const FILE_FIELD = (
 });
 
 export const VIDEO_FIELD = (
-	emptyFieldValidatorMessage = i18n.t('Selecteren van video-item is verplicht.'),
+	emptyFieldValidatorMessage = i18n.t(
+		'admin/content-block/helpers/generators/defaults___selecteren-van-video-item-is-verplicht'
+	),
 	propOverride?: Partial<ContentBlockField>
 ): ContentBlockField => ({
 	label: i18n.t('admin/content-block/helpers/generators/media-player___video-of-audio-item'),

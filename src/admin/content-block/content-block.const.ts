@@ -92,7 +92,7 @@ export const CONTENT_BLOCKS_RESULT_PATH = {
 
 export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 	{
-		label: i18n.t('Voeg een content blok toe'),
+		label: i18n.t('admin/content-block/content-block___voeg-een-content-blok-toe'),
 		value: '',
 		disabled: true,
 	},
@@ -153,7 +153,7 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption[] = () => [
 		value: ContentBlockType.ProjectsSpotlight,
 	},
 	{
-		label: i18n.t('In de kijker'),
+		label: i18n.t('admin/content-block/content-block___in-de-kijker'),
 		value: ContentBlockType.Spotlight,
 	},
 	{
@@ -278,11 +278,11 @@ export const GET_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 // TODO update list with required colors once provided in https://meemoo.atlassian.net/browse/AVO-216
 export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
-		label: i18n.t('Zwart'),
+		label: i18n.t('admin/content-block/content-block___zwart'),
 		value: Color.Black,
 	},
 	{
-		label: i18n.t('Donker grijs'),
+		label: i18n.t('admin/content-block/content-block___donker-grijs'),
 		value: Color.Gray700,
 	},
 	{
@@ -329,7 +329,7 @@ export const GET_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] =
 
 export const GET_FULL_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] = () => [
 	{
-		label: i18n.t('H1'),
+		label: i18n.t('admin/content-block/content-block___h-1'),
 		value: 'h1',
 	},
 	...GET_HEADING_TYPE_OPTIONS(),
@@ -410,23 +410,23 @@ export const GET_FILL_OPTIONS: () => SelectOption<FillOption>[] = () => [
 
 export const GET_IMAGE_GRID_FORMAT_OPTIONS: () => SelectOption<BlockGridFormatOption>[] = () => [
 	{
-		label: i18n.t('Vierkant klein (200 x 200)'),
+		label: i18n.t('admin/content-block/content-block___vierkant-klein-200-x-200'),
 		value: 'squareSmall',
 	},
 	{
-		label: i18n.t('Vierkant groot (275 x 275)'),
+		label: i18n.t('admin/content-block/content-block___vierkant-groot-275-x-275'),
 		value: 'squareLarge',
 	},
 	{
-		label: i18n.t('4x3 (400 x 300)'),
+		label: i18n.t('admin/content-block/content-block___4-x-3-400-x-300'),
 		value: '4:3',
 	},
 	{
-		label: i18n.t('2x1 (200 x 100)'),
+		label: i18n.t('admin/content-block/content-block___2-x-1-200-x-100'),
 		value: '2:1',
 	},
 	{
-		label: i18n.t('6x9 (400 x 225)'),
+		label: i18n.t('admin/content-block/content-block___6-x-9-400-x-225'),
 		value: '6:9',
 	},
 ];

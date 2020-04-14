@@ -197,18 +197,46 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							icon="eye"
 							onClick={() => navigateToCollectionDetail(rowData.id)}
 							ariaLabel={
-								isCollection ? t('Bekijk de collectie') : t('Bekijk de bundel')
+								isCollection
+									? t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-collectie'
+									  )
+									: t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-bundel'
+									  )
 							}
-							title={isCollection ? t('Bekijk de collectie') : t('Bekijk de bundel')}
+							title={
+								isCollection
+									? t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-collectie'
+									  )
+									: t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-bundel'
+									  )
+							}
 						/>
 						<Button
 							type="secondary"
 							icon="edit"
 							onClick={() => navigateToCollectionEdit(rowData.id)}
 							ariaLabel={
-								isCollection ? t('Bewerk de collectie') : t('Bewerk de bundel')
+								isCollection
+									? t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
+									  )
+									: t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
+									  )
 							}
-							title={isCollection ? t('Bewerk de collectie') : t('Bewerk de bundel')}
+							title={
+								isCollection
+									? t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
+									  )
+									: t(
+											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
+									  )
+							}
 						/>
 					</ButtonToolbar>
 				);

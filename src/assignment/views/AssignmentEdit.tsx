@@ -450,7 +450,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const addAssignmentLabel = (labelOption: ValueType<ColorOption>) => {
 		if (!labelOption) {
 			ToastService.danger(
-				t('Het geselecteerde label kon niet worden toegevoegd aan de opdracht')
+				t(
+					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
+				)
 			);
 			return;
 		}
@@ -459,7 +461,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		);
 		if (!assignmentLabel) {
 			ToastService.danger(
-				t('Het geselecteerde label kon niet worden toegevoegd aan de opdracht')
+				t(
+					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
+				)
 			);
 			return;
 		}
@@ -493,8 +497,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 								options={getColorOptions(unselectedLabels)}
 								value={null}
 								onChange={addAssignmentLabel}
-								placeholder={t('Voeg een Vak of Project toe')}
-								noOptionsMessage={() => t('Geen Vakken of Projecten beschikbaar')}
+								placeholder={t(
+									'assignment/views/assignment-edit___voeg-een-vak-of-project-toe'
+								)}
+								noOptionsMessage={() =>
+									t(
+										'assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'
+									)
+								}
 							/>
 						</Spacer>
 					</FlexItem>
@@ -619,7 +629,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 														'assignment/views/assignment-edit___bekijk-als-leerling'
 													)}
 													title={t(
-														'Bekijk de opdracht zoals een leerling die zal zien'
+														'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 													)}
 												/>
 												<Dropdown
@@ -684,7 +694,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 												label={t(
 													'assignment/views/assignment-edit___opslaan'
 												)}
-												title={t('Sla de opdracht op')}
+												title={t(
+													'assignment/views/assignment-edit___sla-de-opdracht-op'
+												)}
 												onClick={() => saveAssignment(currentAssignment)}
 												disabled={isSaving}
 											/>
@@ -913,7 +925,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 										<Button
 											type="primary"
 											label={t('assignment/views/assignment-edit___opslaan')}
-											title={t('Sla de opdracht op')}
+											title={t(
+												'assignment/views/assignment-edit___sla-de-opdracht-op'
+											)}
 											onClick={() => saveAssignment(currentAssignment)}
 											disabled={isSaving}
 										/>

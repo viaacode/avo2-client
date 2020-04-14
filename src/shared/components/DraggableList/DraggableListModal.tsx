@@ -24,7 +24,13 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 	const [reorderedElements, setReorderedElements] = useState<any[]>(items);
 
 	return (
-		<Modal title={t('Herschik items')} isOpen={isOpen} size={size} scrollable onClose={onClose}>
+		<Modal
+			title={t('shared/components/draggable-list/draggable-list-modal___herschik-items')}
+			isOpen={isOpen}
+			size={size}
+			scrollable
+			onClose={onClose}
+		>
 			<ModalBody>
 				<DraggableList
 					items={reorderedElements}
@@ -34,9 +40,15 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 			</ModalBody>
 			<ModalFooterRight>
 				<ButtonToolbar>
-					<Button label={t('Annuleer')} type="secondary" onClick={() => onClose()} />
 					<Button
-						label={t('Opslaan')}
+						label={t(
+							'shared/components/draggable-list/draggable-list-modal___annuleer'
+						)}
+						type="secondary"
+						onClick={() => onClose()}
+					/>
+					<Button
+						label={t('shared/components/draggable-list/draggable-list-modal___opslaan')}
 						type="primary"
 						onClick={() => onClose(reorderedElements)}
 					/>

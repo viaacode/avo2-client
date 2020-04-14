@@ -296,8 +296,12 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 				icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
 				title={
 					isTargetSelf
-						? t('Open de link in hetzelfde tablad')
-						: t('Open de link in een nieuw tabblad')
+						? t(
+								'admin/shared/components/content-picker/content-picker___open-de-link-in-hetzelfde-tablad'
+						  )
+						: t(
+								'admin/shared/components/content-picker/content-picker___open-de-link-in-een-nieuw-tabblad'
+						  )
 				}
 				onClick={() => {
 					setIsTargetSelf(!isTargetSelf);

@@ -187,7 +187,7 @@ export const GET_NAV_ITEMS = (userPermissions: string[]): NavigationItemInfo[] =
 				exact: true,
 			},
 			{
-				label: i18n.t("Overzichtspagina's"),
+				label: i18n.t('admin/admin___overzichtspaginas'),
 				location: ADMIN_PATH.OVERVIEWS,
 				key: 'faqs',
 				exact: true,

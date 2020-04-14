@@ -29,10 +29,10 @@ export const INITIAL_SPOTLIGHT_BLOCK_STATE = (position: number): DefaultContentB
 	BLOCK_STATE_DEFAULTS(ContentBlockType.Spotlight, position);
 
 export const SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
-	name: i18n.t('In de kijker'),
+	name: i18n.t('admin/content-block/helpers/generators/spotlight___in-de-kijker'),
 	type: ContentBlockType.Spotlight,
 	components: {
-		name: i18n.t('Item'),
+		name: i18n.t('admin/content-block/helpers/generators/spotlight___item'),
 		limits: {
 			min: 3,
 			max: 3,
