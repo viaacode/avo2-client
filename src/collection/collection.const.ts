@@ -39,5 +39,6 @@ export const NEW_FRAGMENT = {
 		end_oc: null,
 		start_oc: null,
 		use_custom_fields: true,
+		type: 'TEXT',
 	},
 };

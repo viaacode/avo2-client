@@ -38,7 +38,6 @@ import { createDropdownMenuItem, getEnv } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { fetchPlayerTicket } from '../../../shared/services/player-ticket-service';
 
-import { isMediaFragment } from '../../helpers';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 import FragmentAdd from './FragmentAdd';
@@ -229,8 +228,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 	);
 
 	const renderForm = () => {
-		const disableVideoFields: boolean =
-			!fragment.use_custom_fields && !!isMediaFragment(fragment); // TODO replace isMediaFragment by looking at the type of the fragment
+		const disableVideoFields: boolean = !fragment.use_custom_fields && fragment.type !== 'TEXT';
 
 		return (
 			<Form>
@@ -362,7 +360,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps> = ({
 					</Toolbar>
 				</div>
 				<div className="c-panel__body">
-					{(isMediaFragment(fragment) && itemMetaData) || isCollection ? (
+					{fragment.type !== 'TEXT' && itemMetaData ? (
 						<Grid>
 							<Column size="3-6">
 								{!isCollection ? (

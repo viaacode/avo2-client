@@ -153,7 +153,8 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			custom_description: null,
 			collection_uuid: collection.id,
 			item_meta: itemMetaData,
-		} as any;
+			type: 'ITEM',
+		};
 	};
 
 	const addItemToExistingCollection = async (collection: Partial<Avo.Collection.Collection>) => {

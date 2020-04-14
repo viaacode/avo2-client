@@ -139,6 +139,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			custom_description: null,
 			collection_uuid: bundle.id,
 			item_meta: collection,
+			type: 'COLLECTION',
 		};
 	};
 

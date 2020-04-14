@@ -10,8 +10,10 @@ export const GET_ASSIGNMENT_BY_ID = gql`
 					color_override
 					enum_color {
 						label
+						value
 					}
 					id
+					label
 				}
 			}
 			assignment_responses {
@@ -63,8 +65,10 @@ export const GET_ASSIGNMENTS_BY_OWNER_ID = gql`
 					color_override
 					enum_color {
 						label
+						value
 					}
 					id
+					label
 				}
 			}
 			assignment_responses {
@@ -123,8 +127,10 @@ export const GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID = gql`
 						color_override
 						enum_color {
 							label
+							value
 						}
 						id
+						label
 					}
 				}
 				assignment_responses {
@@ -171,8 +177,10 @@ export const GET_ASSIGNMENT_WITH_RESPONSE = gql`
 					color_override
 					enum_color {
 						label
+						value
 					}
 					id
+					label
 				}
 			}
 			assignment_responses(where: { owner_profile_ids: { _has_key: $studentUuid } }) {

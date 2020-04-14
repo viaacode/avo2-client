@@ -41,7 +41,12 @@ import {
 } from '../../shared/components';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import { buildLink, CustomError, renderAvatar } from '../../shared/helpers';
-import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import {
+	ApolloCacheManager,
+	AssignmentLabelsService,
+	dataService,
+	ToastService,
+} from '../../shared/services';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
 
 import {
@@ -50,7 +55,7 @@ import {
 	UPDATE_ASSIGNMENT_RESPONSE,
 } from '../assignment.gql';
 import { getAssignmentContent } from '../assignment.helpers';
-import { AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
+import { AssignmentLabel, AssignmentLayout, AssignmentRetrieveError } from '../assignment.types';
 
 import './AssignmentDetail.scss';
 
@@ -65,7 +70,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 	// State
 	const [isActionsDropdownOpen, setActionsDropdownOpen] = useState<boolean>(false);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment>();
-	const [assignmentContent, setAssigmentContent] = useState<
+	const [assignmentContent, setAssignmentContent] = useState<
 		Avo.Assignment.Content | null | undefined
 	>();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -188,7 +193,7 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 					// Load content (collection, item or search query) according to assignment
 					getAssignmentContent(tempAssignment)
 						.then((response: Avo.Assignment.Content | null) => {
-							setAssigmentContent(response);
+							setAssignmentContent(response);
 							setAssignment(tempAssignment);
 						})
 						.catch(err => {
@@ -461,13 +466,13 @@ const AssignmentDetail: FunctionComponent<AssignmentProps> = ({
 
 		const { answer_url, description, profile, title } = assignment;
 
-		const tags: TagOption[] = (
-			get(assignment, 'assignment_assignment_tags.assignment_tag') || []
-		).map(({ id, label, color_override, enum_color }: Avo.Assignment.Tag) => ({
-			id,
-			label,
-			color: color_override || enum_color.label,
-		}));
+		const tags: TagOption[] = AssignmentLabelsService.getLabelsFromAssignment(assignment).map(
+			({ id, label, color_override, enum_color }: AssignmentLabel) => ({
+				id,
+				label: label || '',
+				color: color_override || get(enum_color, 'label'),
+			})
+		);
 
 		return (
 			<div className="c-assignment-detail">

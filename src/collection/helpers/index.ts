@@ -1,3 +1,3 @@
-import { getFragmentProperty, isMediaFragment } from './fragment';
+import { getFragmentProperty } from './fragment';
 
-export { getFragmentProperty, isMediaFragment };
+export { getFragmentProperty };

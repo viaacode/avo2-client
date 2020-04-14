@@ -26,6 +26,7 @@ export interface ContentPickerProps {
 	initialValue?: PickerItem;
 	onSelect: (value: PickerItem | null) => void;
 	hideTypeDropdown?: boolean;
+	hideTargetSwitch?: boolean;
 	errors?: string | string[];
 }
 
@@ -34,6 +35,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	initialValue,
 	onSelect,
 	hideTypeDropdown = false,
+	hideTargetSwitch = false,
 	errors = [],
 }) => {
 	const [t] = useTranslation();
@@ -289,7 +291,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 	const renderLinkTargetControl = () => {
 		return (
 			<Button
-				className="c-content-picker__toggle-target-button"
+				size="large"
 				type={'borderless'}
 				icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
 				title={
@@ -312,7 +314,7 @@ export const ContentPicker: FunctionComponent<ContentPickerProps> = ({
 			<Flex spaced="regular">
 				{!hideTypeDropdown && <FlexItem shrink>{renderTypePicker()}</FlexItem>}
 				<FlexItem>{renderItemControl()}</FlexItem>
-				<FlexItem shrink>{renderLinkTargetControl()}</FlexItem>
+				{!hideTargetSwitch && <FlexItem shrink>{renderLinkTargetControl()}</FlexItem>}
 			</Flex>
 		</FormGroup>
 	);
