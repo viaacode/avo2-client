@@ -75,8 +75,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			await ItemsService.setItemPublishedState(item.uid, !item.is_published);
 			ToastService.success(
 				item.is_published
-					? t('admin/items/views/item-detail___het-item-is-gepubliceerd')
-					: t('admin/items/views/item-detail___het-item-is-gedepubliceerd')
+					? t('admin/items/views/item-detail___het-item-is-gedepubliceerd')
+					: t('admin/items/views/item-detail___het-item-is-gepubliceerd'),
+				false
 			);
 			setItem({
 				...item,
@@ -87,7 +88,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				new CustomError('Failed to toggle is_published state for item', err, { item })
 			);
 			ToastService.danger(
-				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt')
+				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt'),
+				false
 			);
 		}
 	};
@@ -233,7 +235,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					{!!item && (
 						<ButtonToolbar>
 							<Button
-								type="danger"
+								type={item.is_published ? 'danger' : 'primary'}
 								label={
 									item.is_published
 										? t('admin/items/views/item-detail___depubliceren')
@@ -249,7 +251,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 										? t('admin/items/views/item-detail___depubliceer-dit-item')
 										: t('admin/items/views/item-detail___publiceer-dit-item')
 								}
-								onClick={() => setIsConfirmPublishModalOpen(true)}
+								onClick={() => {
+									if (item.is_published) {
+										setIsConfirmPublishModalOpen(true);
+									} else {
+										toggleItemPublishedState();
+									}
+								}}
 							/>
 							<Button
 								label={t(
