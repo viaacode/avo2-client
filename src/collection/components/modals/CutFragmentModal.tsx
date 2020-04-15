@@ -105,7 +105,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			index,
 			type: 'UPDATE_FRAGMENT_PROP',
 			fragmentProp: 'start_oc',
-			fragmentPropValue: start,
+			fragmentPropValue: startTime,
 		});
 
 		changeCollectionState({
