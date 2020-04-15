@@ -809,7 +809,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 										<Button
 											type="primary"
 											label={t('assignment/views/assignment-edit___opslaan')}
-											title={t('Sla de opdracht op')}
+											title={t(
+												'assignment/views/assignment-create___sla-de-opdracht-op'
+											)}
 											onClick={() => saveAssignment(currentAssignment)}
 											disabled={isSaving}
 										/>

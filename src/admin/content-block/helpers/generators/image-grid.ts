@@ -73,24 +73,26 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 				validator: () => [],
 			}),
 			buttonLabel: TEXT_FIELD('', {
-				label: i18n.t('Knop tekst'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),
 			buttonTitle: TEXT_FIELD('', {
-				label: i18n.t('Knop tooltip'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tooltip'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),
 			buttonType: {
-				label: i18n.t('Knop type / kleur'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image-grid___knop-type-kleur'
+				),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_BUTTON_TYPE_OPTIONS(),
 				},
 			},
 			action: {
-				label: i18n.t('Link'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___link'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 		},
@@ -100,7 +102,7 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position: number = 0): ContentBlockConfi
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 			format: {
-				label: i18n.t('Formaat'),
+				label: i18n.t('admin/content-block/helpers/generators/image-grid___formaat'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_IMAGE_GRID_FORMAT_OPTIONS(),

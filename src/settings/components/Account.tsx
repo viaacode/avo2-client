@@ -52,7 +52,9 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 					<Button
 						type="link"
 						label={t('settings/components/account___unlink')}
-						title={t('Koppel je Smartschool account los van je archief account')}
+						title={t(
+							'settings/components/account___koppel-je-smartschool-account-los-van-je-archief-account'
+						)}
 						onClick={() => redirectToServerUnlinkAccount(location, idpType)}
 					/>
 				</>
@@ -69,8 +71,12 @@ const Account: FunctionComponent<AccountProps> = ({ location, user }) => {
 				}
 				title={
 					idpType === 'SMARTSCHOOL'
-						? t('Koppel je Smartschool account aan je archief account')
-						: t('Koppel je Klascement account aan je archief account')
+						? t(
+								'settings/components/account___koppel-je-smartschool-account-aan-je-archief-account'
+						  )
+						: t(
+								'settings/components/account___koppel-je-klascement-account-aan-je-archief-account'
+						  )
 				}
 				onClick={() => redirectToServerLinkAccount(location, idpType)}
 			/>

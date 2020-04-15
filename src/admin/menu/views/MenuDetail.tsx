@@ -58,7 +58,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			console.error('Failed to fetch menu items', err, { menuId });
 			setLoadingInfo({
 				state: 'error',
-				message: t('Het laden van de menu items is mislukt'),
+				message: t('admin/menu/views/menu-detail___het-laden-van-de-menu-items-is-mislukt'),
 			});
 		}
 	}, [menuId, setMenuItems, setLoadingInfo, t]);
@@ -181,13 +181,13 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				onClick={() => reorderMenuItem(index, indexUpdate, id)}
 				title={
 					dir === 'up'
-						? t('Verplaats het item naar boven')
-						: t('Verplaats het item naar onder')
+						? t('admin/menu/views/menu-detail___verplaats-het-item-naar-boven')
+						: t('admin/menu/views/menu-detail___verplaats-het-item-naar-onder')
 				}
 				ariaLabel={
 					dir === 'up'
-						? t('Verplaats het item naar boven')
-						: t('Verplaats het item naar onder')
+						? t('admin/menu/views/menu-detail___verplaats-het-item-naar-boven')
+						: t('admin/menu/views/menu-detail___verplaats-het-item-naar-onder')
 				}
 				type="secondary"
 				disabled={disabled}
@@ -269,15 +269,21 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 																}
 															)
 														}
-														title={t('Bewerk dit navigatie item')}
-														ariaLabel={t('Bewerk dit navigatie item')}
+														title={t(
+															'admin/menu/views/menu-detail___bewerk-dit-navigatie-item'
+														)}
+														ariaLabel={t(
+															'admin/menu/views/menu-detail___bewerk-dit-navigatie-item'
+														)}
 														type="secondary"
 													/>
 													<Button
 														icon="delete"
-														title={t('Verwijder dit navigatie item')}
+														title={t(
+															'admin/menu/views/menu-detail___verwijder-dit-navigatie-item'
+														)}
 														ariaLabel={t(
-															'Verwijder dit navigatie item'
+															'admin/menu/views/menu-detail___verwijder-dit-navigatie-item'
 														)}
 														onClick={() => openConfirmModal(item.id)}
 														type="danger-hover"

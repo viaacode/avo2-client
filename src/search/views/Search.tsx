@@ -472,8 +472,8 @@ const Search: FunctionComponent<SearchProps> = ({
 										<Button
 											type="tertiary"
 											icon="more-horizontal"
-											title={t('Meer opties')}
-											ariaLabel={t('Meer opties')}
+											title={t('search/views/search___meer-opties')}
+											ariaLabel={t('search/views/search___meer-opties')}
 										/>
 									</DropdownButton>
 									<DropdownContent>

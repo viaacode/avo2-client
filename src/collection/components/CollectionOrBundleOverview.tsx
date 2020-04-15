@@ -231,7 +231,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					placement="bottom-end"
 				>
 					<DropdownButton>
-						<Button icon="more-horizontal" type="borderless" title={t('Meer opties')} />
+						<Button
+							icon="more-horizontal"
+							type="borderless"
+							title={t(
+								'collection/components/collection-or-bundle-overview___meer-opties'
+							)}
+						/>
 					</DropdownButton>
 					<DropdownContent>
 						<MenuContent menuItems={ROW_DROPDOWN_ITEMS} onClick={onClickDropdownItem} />
@@ -250,7 +256,15 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								{ id: collectionId }
 							)
 						}
-						title={isCollection ? t('Bekijk deze collectie') : t('Bekijk deze bundel')}
+						title={
+							isCollection
+								? t(
+										'collection/components/collection-or-bundle-overview___bekijk-deze-collectie'
+								  )
+								: t(
+										'collection/components/collection-or-bundle-overview___bekijk-deze-bundel'
+								  )
+						}
 						type="borderless"
 					/>
 				)}
@@ -274,7 +288,15 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 			case 'isPublic':
 				return (
-					<div title={collection.is_public ? t('Publiek') : t('Niet publiek')}>
+					<div
+						title={
+							collection.is_public
+								? t('collection/components/collection-or-bundle-overview___publiek')
+								: t(
+										'collection/components/collection-or-bundle-overview___niet-publiek'
+								  )
+						}
+					>
 						<Icon name={collection.is_public ? 'eye' : 'lock'} />
 					</div>
 				);
@@ -331,7 +353,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			},
 			{
 				id: 'isPublic',
-				label: t('Is publiek'),
+				label: t('collection/components/collection-or-bundle-overview___is-publiek'),
 				col: '2',
 				sortable: true,
 			},
