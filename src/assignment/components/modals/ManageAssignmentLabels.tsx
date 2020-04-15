@@ -56,7 +56,11 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			console.error(
 				new CustomError('Failed to fetch assignment labels for user', err, { user })
 			);
-			ToastService.danger(t('Het ophalen van je labels is mislukt'));
+			ToastService.danger(
+				t(
+					'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-labels-is-mislukt'
+				)
+			);
 		}
 	}, [user, setAssignmentLabels, t]);
 
@@ -65,7 +69,11 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			setAssignmentLabelColors(await AssignmentLabelsService.getLabelColors());
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch assignment label colors', err));
-			ToastService.danger(t('Het ophalen van je label kleuren is mislukt'));
+			ToastService.danger(
+				t(
+					'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-label-kleuren-is-mislukt'
+				)
+			);
 		}
 	}, [setAssignmentLabelColors, t]);
 
@@ -142,7 +150,11 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				),
 			]);
 			onClose();
-			ToastService.success(t('De labels zijn opgeslagen'));
+			ToastService.success(
+				t(
+					'assignment/components/modals/manage-assignment-labels___de-labels-zijn-opgeslagen'
+				)
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save label changes', err, {
@@ -150,7 +162,11 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 					assignmentLabels,
 				})
 			);
-			ToastService.danger(t('Het opslaan van de labels is mislukt'));
+			ToastService.danger(
+				t(
+					'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt'
+				)
+			);
 		}
 		setIsProcessing(false);
 	};
@@ -190,8 +206,12 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			case 'actions':
 				return (
 					<Button
-						ariaLabel={t('Verwijder dit label')}
-						title={t('Verwijder dit label')}
+						ariaLabel={t(
+							'assignment/components/modals/manage-assignment-labels___verwijder-dit-label'
+						)}
+						title={t(
+							'assignment/components/modals/manage-assignment-labels___verwijder-dit-label'
+						)}
 						onClick={() => handleRowDelete(assignmentLabel.id)}
 						type="danger-hover"
 						icon="delete"
@@ -203,7 +223,9 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	return (
 		<Modal
 			className="m-manage-assignment-labels"
-			title={t('Beheer vakken en projecten')}
+			title={t(
+				'assignment/components/modals/manage-assignment-labels___beheer-vakken-en-projecten'
+			)}
 			size="large"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -212,7 +234,9 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			<ModalBody>
 				<Spacer margin="bottom-large">
 					<Button
-						label={t('Label toevoegen')}
+						label={t(
+							'assignment/components/modals/manage-assignment-labels___label-toevoegen'
+						)}
 						icon="plus"
 						onClick={handleAddLabelClick}
 						type="secondary"
@@ -220,11 +244,24 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				</Spacer>
 				<Table
 					columns={[
-						{ label: t('Kleur'), id: 'color', col: '2' },
-						{ label: t('Label'), id: 'label' },
+						{
+							label: t(
+								'assignment/components/modals/manage-assignment-labels___kleur'
+							),
+							id: 'color',
+							col: '2',
+						},
+						{
+							label: t(
+								'assignment/components/modals/manage-assignment-labels___label'
+							),
+							id: 'label',
+						},
 						{ label: '', id: 'actions' },
 					]}
-					emptyStateMessage={t('Er zijn nog geen labels aangemaakt')}
+					emptyStateMessage={t(
+						'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-labels-aangemaakt'
+					)}
 					data={assignmentLabels}
 					renderCell={renderCell}
 					rowKey="id"
@@ -237,14 +274,18 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 							<ButtonToolbar>
 								{isProcessing && <Spinner />}
 								<Button
-									label={t('Annuleren')}
+									label={t(
+										'assignment/components/modals/manage-assignment-labels___annuleren'
+									)}
 									type="secondary"
 									block
 									onClick={onClose}
 									disabled={isProcessing}
 								/>
 								<Button
-									label={t('Opslaan')}
+									label={t(
+										'assignment/components/modals/manage-assignment-labels___opslaan'
+									)}
 									type="primary"
 									block
 									disabled={isProcessing}

@@ -66,7 +66,11 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 			setValidationError(undefined);
 			closeModal(newContent);
 		} catch (err) {
-			ToastService.danger(t('De aanpassingen kunnen niet worden opgeslagen'));
+			ToastService.danger(
+				t(
+					'admin/content/components/share-content-page-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'
+				)
+			);
 		}
 	};
 
@@ -78,31 +82,39 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('Maak deze content pagina publiek')}
+			title={t(
+				'admin/content/components/share-content-page-modal___maak-deze-content-pagina-publiek'
+			)}
 			size="large"
 			onClose={onClose}
 			scrollable
 		>
 			<ModalBody>
-				<p>{t('Bepaald in hoevere je pagina zichtbaar is voor andere gebruikers')}</p>
+				<p>
+					{t(
+						'admin/content/components/share-content-page-modal___bepaald-in-hoevere-je-pagina-zichtbaar-is-voor-andere-gebruikers'
+					)}
+				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">
 						<BlockHeading className="u-m-0" type="h4">
-							{t('Zichtbaarheid')}
+							{t('admin/content/components/share-content-page-modal___zichtbaarheid')}
 						</BlockHeading>
 					</Spacer>
 					<RadioButtonGroup>
 						<RadioButton
 							key="private"
 							name="private"
-							label={t('Prive')}
+							label={t('admin/content/components/share-content-page-modal___prive')}
 							value="private"
 							checked={!isContentPublic}
 						/>
 						<RadioButton
 							key="public"
 							name="private"
-							label={t('Openbaar')}
+							label={t(
+								'admin/content/components/share-content-page-modal___openbaar'
+							)}
 							value="public"
 							onChange={setIsContentPublic}
 							checked={isContentPublic}
@@ -116,14 +128,14 @@ const ShareContentPageModal: FunctionComponent<ShareContentPageModalProps> = ({
 								<Button
 									type="secondary"
 									label={t(
-										'Content/components/modals/share-Content-modal___annuleren'
+										'admin/content/components/share-content-page-modal___annuleren'
 									)}
 									onClick={() => onClose()}
 								/>
 								<Button
 									type="primary"
 									label={t(
-										'Content/components/modals/share-Content-modal___opslaan'
+										'admin/content/components/share-content-page-modal___opslaan'
 									)}
 									onClick={onSave}
 								/>

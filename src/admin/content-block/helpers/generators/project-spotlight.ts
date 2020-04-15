@@ -44,7 +44,9 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 		state: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE(),
 		fields: {
 			project: {
-				label: i18n.t('Project pagina'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/project-spotlight___project-pagina'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 				editorProps: {
 					allowedTypes: ['PROJECTS'],
@@ -52,7 +54,9 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 				} as ContentPickerProps,
 			},
 			customImage: FILE_FIELD('', {
-				label: i18n.t('Aangepaste afbeelding (optioneel)'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/project-spotlight___aangepaste-afbeelding-optioneel'
+				),
 				editorProps: {
 					assetType: 'CONTENT_PAGE_IMAGE',
 					allowMulti: false,
@@ -60,7 +64,9 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 				validator: () => [],
 			}),
 			customTitle: TEXT_FIELD('', {
-				label: i18n.t('Aangepaste titel (optioneel)'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/project-spotlight___aangepaste-titel-optioneel'
+				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: () => [],
 			}),

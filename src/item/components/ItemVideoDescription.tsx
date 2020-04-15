@@ -116,8 +116,14 @@ const ItemVideoDescription: FunctionComponent<ItemVideoDescriptionProps> = ({
 					<Button
 						type="link"
 						key={`description-link-${index}`}
-						title={t('Sprint naar tijdscode: {{code}}', { code: part })}
-						ariaLabel={t('Sprint naar tijdscode: {{code}}', { code: part })}
+						title={t(
+							'item/components/item-video-description___sprint-naar-tijdscode-code',
+							{ code: part }
+						)}
+						ariaLabel={t(
+							'item/components/item-video-description___sprint-naar-tijdscode-code',
+							{ code: part }
+						)}
 						className="u-clickable"
 						onClick={() => handleTimeLinkClicked(part)}
 					>

@@ -179,7 +179,9 @@ const InteractiveTour: FunctionComponent<InteractiveTourProps & SecuredRouteProp
 						label={t(
 							'shared/components/interactive-tour/interactive-tour___rondleiding'
 						)}
-						title={t('Start een rondleiding om wegwijs te geraken op deze pagina')}
+						title={t(
+							'shared/components/interactive-tour/interactive-tour___start-een-rondleiding-om-wegwijs-te-geraken-op-deze-pagina'
+						)}
 						icon="info"
 						onClick={() => {
 							setTour({ ...tour, seen: false });

@@ -149,7 +149,9 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						<Select
 							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
 							onChange={value => handleAddContentBlock(value as ContentBlockType)}
-							placeholder={t('Voeg een content blok toe')}
+							placeholder={t(
+								'admin/content/views/content-edit-content-blocks___voeg-een-content-blok-toe'
+							)}
 							value={null as any}
 						/>
 					</Navbar>

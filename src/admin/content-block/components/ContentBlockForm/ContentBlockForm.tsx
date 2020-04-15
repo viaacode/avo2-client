@@ -122,8 +122,12 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						type="danger"
 						onClick={() => removeComponentFromState(stateIndex)}
 						size="small"
-						title={t('Verwijder sectie')}
-						ariaLabel={t('Verwijder sectie')}
+						title={t(
+							'admin/content-block/components/content-block-form/content-block-form___verwijder-sectie'
+						)}
+						ariaLabel={t(
+							'admin/content-block/components/content-block-form/content-block-form___verwijder-sectie'
+						)}
 					/>
 				</FlexItem>
 			)
@@ -181,7 +185,9 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 					'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
 					{ label }
 				)}
-				title={t('Voeg sectie toe')}
+				title={t(
+					'admin/content-block/components/content-block-form/content-block-form___voeg-sectie-toe'
+				)}
 				icon="add"
 				type="secondary"
 				onClick={addComponentToState}
