@@ -1,11 +1,12 @@
-import { compact, intersection } from 'lodash-es';
+import { cloneDeep, compact, intersection, set } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
+import { BlockImageProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ContentBlockPreview } from '../../admin/content-block/components';
 import { parseContentBlocks } from '../../admin/content-block/helpers';
-import { ContentBlockConfig } from '../../admin/shared/types';
+import { ContentBlockConfig, ContentBlockType } from '../../admin/shared/types';
 import { getUserGroupIds } from '../../authentication/authentication.service';
 import InteractiveTour from '../../shared/components/InteractiveTour/InteractiveTour';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -33,6 +34,21 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = props
 		contentBlockConfigs = (props as any).contentBlockConfigs || [];
 		contentWidth = (props as any).contentWidth;
 	}
+
+	// images can have a setting to go full width
+	// so we need to set the block prop: fullWidth to true if we find an image block with size setting: pageWidth
+	contentBlockConfigs = contentBlockConfigs.map(contentBlockConfig => {
+		const width = (contentBlockConfig.components.state as BlockImageProps).width;
+		if (
+			contentBlockConfig.type === ContentBlockType.Image &&
+			width &&
+			!width.endsWith('%') &&
+			!width.endsWith('px')
+		) {
+			return set(cloneDeep(contentBlockConfig), 'block.state.fullWidth', true);
+		}
+		return contentBlockConfig;
+	});
 
 	const getVisibleContentBlocks = (contentBlockConfigs: ContentBlockConfig[]) => {
 		return compact(
