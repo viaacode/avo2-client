@@ -59,7 +59,12 @@ const ContentBlockPreview: FunctionComponent<ContentBlockPreviewProps> = ({
 	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);
 
 	return (
-		<div className="c-content-block" style={{ backgroundColor: blockState.backgroundColor }}>
+		<div
+			className="c-content-block"
+			style={{ backgroundColor: blockState.backgroundColor }}
+			id={blockState.anchor}
+			data-anchor={blockState.anchor}
+		>
 			<div>
 				{blockState.headerBackgroundColor !== Color.Transparent && (
 					<div
